@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -46,7 +46,7 @@
 <para>
   The ooDialog framework provides a number of utility classes that are useful when writing more complex
   programs.  These classes do not easily fit into the category of a type of dialog or a type of dialog
-  control and are therefore documented separately.  In addition ooDialog places some globally available
+  control and are therefore documented separately.  In addition, ooDialog places some globally available
   objects in the <computeroutput>.local</computeroutput> envirnoment.
 </para>
 <para>
@@ -162,84 +162,82 @@ System error code: 2
 <section id="clsDlgUtil"><title>DlgUtil Class</title>
 <indexterm><primary>DlgUtil class</primary></indexterm>
 <para>
-  All the methods of the DlgUitl class are class methods. There are no instance methods, other than
-  inherited methods, for this class.  The class methods are a collection of common utilities, mostly
-  for converting different Windows values, getting version information, and the like.
+  All the methods of the DlgUitl class are class methods. There are no instance methods, other than inherited methods,
+  for this class.  The class methods are a collection of common utilities, mostly for converting different Windows
+  values, getting version information, and the like.
 </para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The DlgUtil class requires the class definition file
-<computeroutput>oodPlain.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodPlain.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem>
+
+<section id="sctMethodsDlgUtil"><title>Method Table</title>
 <para>
-  The class methods of DlgUtil are listed in the following table:
-</para>
-<table id="tblDlgUtilMethods" frame="all">
+  The <computeroutput>DlgUtil</computeroutput> class implements the methods listed in the following table.
+
+<table id="tDlgUtilMethods" frame="all">
 <title>Methods of the DlgUtil class</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...description</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>colorRef (Class Method)</entry>
-<entry><link linkend="mthColorRef">colorRef</link></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>comCtl32Version (Class Method)</entry>
-<entry><link linkend="mthComCtl32Version">comCtl32Version</link></entry>
-</row>
-<row>
-<entry>getBValue (Class Method)</entry>
-<entry><link linkend="mthGetBValue">getBValue</link></entry>
-</row>
-<row>
-<entry>getGValue (Class Method)</entry>
-<entry><link linkend="mthGetGValue">getGValue</link></entry>
-</row>
-<row>
-<entry>getRValue (Class Method)</entry>
-<entry><link linkend="mthGetRValue">getRValue</link></entry>
-</row>
-<row>
-<entry>getSystemMetrics (Class Method)</entry>
-<entry><link linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics</link></entry>
-</row>
-<row>
-<entry>hiWord (Class Method)</entry>
-<entry><link linkend="mthHiWord">hiWord</link></entry>
-</row>
-<row>
-<entry>loWord (Class Method)</entry>
-<entry><link linkend="mthLoWord">loWord</link></entry>
-</row>
-<row>
-<entry>or (Class Method)</entry>
-<entry><link linkend="mthOrClsDlgUtil">or</link></entry>
-</row>
-<row>
-<entry>and (Class Method)</entry>
 <entry><link linkend="mthAndClsDlgUtil">and</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>version (Class Method)</entry>
+<entry><link linkend="mthComCtl32Version">comCtl32Version</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthHiWord">hiWord</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthLoWord">loWord</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthMakeLParam">makeLParam</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthMakeWParam">makeWParam</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthOrClsDlgUtil">or</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthScreenArea">screenArea</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthScreenSize">screenSize</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthThreadID">threadID</link></entry>
+<entry>xx</entry>
+</row>
+<row>
 <entry><link linkend="mthVersion">version</link></entry>
+<entry>xx</entry>
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
-
+</para>
+</section>
 
 <section id="mthVersion"><title>version (Class Method)</title>
 <indexterm><primary>version</primary></indexterm>
@@ -543,6 +541,132 @@ return .true
 </section>
 
 
+<section id="mthMakeLParam"><title>makeLParam (Class Method)</title>
+<indexterm><primary>makeLParam</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>makeLParam</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--makeLParam(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::makeLParam() -->
+
+<section id="mthMakeWParam"><title>makeWParam (Class Method)</title>
+<indexterm><primary>makeWParam</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>makeWParam</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--makeWParam(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::makeWParam() -->
+
 <section id="mthOrClsDlgUtil"><title>or (Class Method)</title>
 <indexterm><primary>or</primary>
 <secondary>DlgUtil class</secondary></indexterm>
@@ -810,6 +934,195 @@ return .true
 </variablelist>
 </section>  <!-- End DlgUtil::getSystemMetrics() [class method] -->
 
+<section id="mthScreenArea"><title>screenArea (Class Method)</title>
+<indexterm><primary>screenArea</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>screenArea</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--screenArea(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::screenArea() -->
+
+<section id="mthScreenSize"><title>screenSize (Class Method)</title>
+<indexterm><primary>screenSize</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>screenSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--screenSize(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::screenSize() -->
+
+<section id="mthThreadID"><title>threadID (Class Method)</title>
+<indexterm><primary>threadID</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>threadID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--threadID-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::threadID() -->
+
 </section> <!-- End DlgUtil Class -->
 
 
@@ -827,6 +1140,7 @@ return .true
   The following table lists the class and instance methods of the <computeroutput>Window</computeroutput> class:
 <table id="tblMethodsWindow" frame="all"> <title>Window Class Method Reference</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
 <entry>Window Method</entry>
@@ -836,7 +1150,7 @@ return .true
 <tbody>
 <row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="mthNewClsWindow">new</link></entry>
@@ -844,7 +1158,7 @@ return .true
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
-<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="wbwFactorX">factorX</link></entry>
@@ -1688,53 +2002,81 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <section id="clsOs"><title>OS Class</title>
 <indexterm><primary>OS class</primary></indexterm>
 <para>
-  The <emphasis role="italic">OS</emphasis> provides methods for extracting information about the operating system a
+  The <computeroutput>OS</computeroutput> class provides methods for extracting information about the operating system a
   program is currently executing on. All the methods of the OS class are class methods.  In general these methods are
   easy to use, returning true or false about a specific piece of information. See the <link
   linkend="mthIsAtLeastVista">isAtLeastVista</link>() method for an example of usage.
 </para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem>
+
+
+<section id="sctMethodsOS"><title>Method Table</title>
 <para>
-  The <emphasis role="italic">OS</emphasis> class requires the class definition file
-  <computeroutput>ooDialog.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "ooDialog.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem>
-<para>
-  The class methods of <link linkend="clsOS"></link> class are listed in the following table:
-</para>
-<table id="tblOSMethods" frame="all">
-<title>Methods of the OS class</title>
+  The following table lists the class methods of the <computeroutput>OS</computeroutput> class:
+<table id="tblMethodsOS" frame="all"> <title>OS Class Method Reference</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...description</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
-<row>
-<entry><link linkend="mthIs64bit"></link>is64bit (Class Method)</entry>
-<entry>Tests if running under ooRexx 64-bit</entry>
-</row>
 <row>
 <entry><link linkend="mthIs32on64bit"></link>is32on64bit (Class Method)</entry>
 <entry>Tests if running under ooRexx 32-bit on a 64 bit system</entry>
 </row>
 <row>
-<entry><link linkend="mthIsWow64"></link>isWow64 (Class Method)</entry>
-<entry>Alias for the <emphasis role="italic">is32on64bit</emphasis>() method</entry>
+<entry><link linkend="mthIs64bit"></link>is64bit (Class Method)</entry>
+<entry>Tests if running under ooRexx 64-bit</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastVista"></link>isAtLeastVista (Class Method)</entry>
+<entry>Tests if operating system is Windows Vista or later</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastW2K"></link>isAtLeastW2K (Class Method)</entry>
+<entry>Tests if operating system is Windows 2000 or later</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastW2K3"></link>isAtLeastW2K3 (Class Method)</entry>
+<entry>Tests if operating system is Windows 2003 or later</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastWindows7"></link>isAtLeastWindows7 (Class Method)</entry>
+<entry>Tests if operating system is Windows 7 or later</entry>
+</row>
+<row>
+<entry><link linkend="mthIsAtLeastXP"></link>isAtLeastXP (Class Method)</entry>
+<entry>Tests if operating system is Windows XP or later</entry>
+</row>
+<row>
+<entry><link linkend="mthIsServer2008"></link>isServer2008 (Class Method)</entry>
+<entry>Tests if operating system is Windows Server 2008</entry>
+</row>
+<row>
+<entry><link linkend="mthIsServer2008R2"></link>isServer2008R2 (Class Method)</entry>
+<entry>Tests if operating system is Windows Server 2008 Release 2</entry>
+</row>
+<row>
+<entry><link linkend="mthIsVista"></link>isVista (Class Method)</entry>
+<entry>Tests if operating system is Windows Vista</entry>
 </row>
 <row>
 <entry><link linkend="mthIsW2K"></link>isW2K (Class Method)</entry>
 <entry>Tests if operating system is Windows 2000</entry>
+</row>
+<row>
+<entry><link linkend="mthIsW2K3"></link>isW2K3 (Class Method)</entry>
+<entry>Tests if operating system is Windows 2003</entry>
+</row>
+<row>
+<entry><link linkend="mthIsWindows7"></link>isWindows7 (Class Method)</entry>
+<entry>Tests if operating system is Windows 7</entry>
+</row>
+<row>
+<entry><link linkend="mthIsWow64"></link>isWow64 (Class Method)</entry>
+<entry>Alias for the <emphasis role="italic">is32on64bit</emphasis>() method</entry>
 </row>
 <row>
 <entry><link linkend="mthIsXP"></link>isXP (Class Method)</entry>
@@ -1748,50 +2090,10 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <entry><link linkend="mthIsXP64"></link>isXP64 (Class Method)</entry>
 <entry>Tests if operating system is 64-bit Windows XP</entry>
 </row>
-<row>
-<entry><link linkend="mthIsW2K3"></link>isW2K3 (Class Method)</entry>
-<entry>Tests if operating system is Windows 2003</entry>
-</row>
-<row>
-<entry><link linkend="mthIsVista"></link>isVista (Class Method)</entry>
-<entry>Tests if operating system is Windows Vista</entry>
-</row>
-<row>
-<entry><link linkend="mthIsServer2008"></link>isServer2008 (Class Method)</entry>
-<entry>Tests if operating system is Windows Server 2008</entry>
-</row>
-<row>
-<entry><link linkend="mthIsWindows7"></link>isWindows7 (Class Method)</entry>
-<entry>Tests if operating system is Windows 7</entry>
-</row>
-<row>
-<entry><link linkend="mthIsServer2008R2"></link>isServer2008R2 (Class Method)</entry>
-<entry>Tests if operating system is Windows Server 2008 Release 2</entry>
-</row>
-<row>
-<entry><link linkend="mthIsAtLeastW2K"></link>isAtLeastW2K (Class Method)</entry>
-<entry>Tests if operating system is Windows 2000 or later</entry>
-</row>
-<row>
-<entry><link linkend="mthIsAtLeastXP"></link>isAtLeastXP (Class Method)</entry>
-<entry>Tests if operating system is Windows XP or later</entry>
-</row>
-<row>
-<entry><link linkend="mthIsAtLeastW2K3"></link>isAtLeastW2K3 (Class Method)</entry>
-<entry>Tests if operating system is Windows 2003 or later</entry>
-</row>
-<row>
-<entry><link linkend="mthIsAtLeastVista"></link>isAtLeastVista (Class Method)</entry>
-<entry>Tests if operating system is Windows Vista or later</entry>
-</row>
-<row>
-<entry><link linkend="mthIsAtLeastWindows7"></link>isAtLeastWindows7 (Class Method)</entry>
-<entry>Tests if operating system is Windows 7 or later</entry>
-</row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
+</para>
+</section>
 
 
 <section id="mthIs64bit"><title>is64bit (Class Method)</title>
@@ -2082,78 +2384,73 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <section id="clsRect"><title>Rect Class</title>
 <indexterm><primary>Rect class</primary></indexterm>
 <para>
-  The Rect object is most often used to represent a rectangle on a coordinate system, specifically
-  the coordinate system used by Windows where the upper left corner is considered (0,0).  However,
-  it is convenient to use the Rect object for other things, for instance the margin around a
-  rectangle.
-</para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem>
-<para>
-  The Rect class requires the class definition file <computeroutput>oodPlain.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodPlain.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem>
-<para>
-  Instances of the Rect class implement the methods listed in the following table:
+  The Rect object is most often used to represent a rectangle on a coordinate system, specifically the coordinate system
+  used by Windows where the upper left corner is considered (0,0).  However, it is convenient to use the Rect object for
+  other things, for instance the margin around a rectangle.
 </para>
 
-<table id="tblRectMethods" frame="all">
-<title>Rect Instance Methods</title>
+
+<section id="sctMethodsRect"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>Rect</computeroutput> class:
+<table id="tblMethodsRect" frame="all"> <title>Rect Class Method Reference</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>new (Class Method)</entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
 <entry><link linkend="mthNewClsRect">new</link></entry>
+<entry>Instantiates a new <computeroutput>Rect</computeroutput> object.</entry>
 </row>
 <row>
-<entry>bottom</entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
 <entry><link linkend="mthBottom">bottom</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>bottom=</entry>
 <entry><link linkend="mthBottomEquals">bottom=</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>left</entry>
 <entry><link linkend="mthLeft">left</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>left=</entry>
 <entry><link linkend="mthLeftEquals">left=</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>right</entry>
 <entry><link linkend="mthRight">right</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>right=</entry>
 <entry><link linkend="mthRightEquals">right=</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>top</entry>
 <entry><link linkend="mthTop">top</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>top=</entry>
 <entry><link linkend="mthTopEquals">top=</link></entry>
+<entry>xx</entry>
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
+</para>
+</section>
 
 
 <section id="mthNewClsRect"><title>new (Class Method)</title>
@@ -2453,60 +2750,66 @@ New upper corner (55,75) new lower corner 110,125)
 <para>
   The Point class represents a point in a 2-D coordinate system.
 </para>
-<para>
-</para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem>
-<para>
-  The Point class requires the class definition file <computeroutput>oodPlain.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodPlain.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem>
-<para>
-  Instances of the Point class implement the methods listed in the following table:
-</para>
 
-<table id="tblPointMethods" frame="all">
-<title>Point Class and Instance Methods</title>
+
+<section id="sctMethodsPoint"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>Point</computeroutput> class:
+
+<table id="tblMethodsPoint" frame="all"> <title>Point Class Method Reference</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>new (Class Method)</entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
 <entry><link linkend="mthNewClsPoint">new</link></entry>
 </row>
 <row>
-<entry>x</entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthPlus">+</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthMinus">-</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthIncr">incr</link></entry>
+<entry>xx</entry>
+</row>
+<row>
 <entry><link linkend="mthX">x</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>x=</entry>
 <entry><link linkend="mthXEquals">x=</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>y</entry>
 <entry><link linkend="mthY">y</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>y=</entry>
 <entry><link linkend="mthYEquals">y=</link></entry>
+<entry>xx</entry>
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
-
+</para>
+</section>
 
 <section id="mthNewClsPoint"><title>new (Class Method)</title>
 <indexterm><primary>new</primary>
@@ -2674,6 +2977,195 @@ Changed point q to be at (150,300)
 </variablelist>
 </section>
 
+<section id="mthPlus"><title>+</title>
+<indexterm><primary>+</primary></indexterm>
+<indexterm><primary>Point class</primary><secondary>+</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--"+"--point2----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Point::+() -->
+
+<section id="mthMinus"><title>-</title>
+<indexterm><primary>-</primary></indexterm>
+<indexterm><primary>Point class</primary><secondary>-</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--"-"--point2----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Point::-() -->
+
+<section id="mthIncr"><title>incr</title>
+<indexterm><primary>incr</primary></indexterm>
+<indexterm><primary>Point class</primary><secondary>incr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--incr(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Point::incr() -->
+
 </section> <!-- End Point Class -->
 
 
@@ -2682,45 +3174,33 @@ Changed point q to be at (150,300)
 <para>
   A Size object encapsulates a width and height dimension in a 2-D coordinate system.
 </para>
-<para>
-</para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The Size class requires the class
-definition file <computeroutput>oodPlain.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodPlain.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem>
-<para>
-  Instances of the Size class implement the methods listed in the following table:
-</para>
 
-<table id="tblSizeMethods" frame="all">
-<title>Size Class and Instance Methods</title>
+
+<section id="sctMethodsSize"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>Size</computeroutput> class:
+
+<table id="tblMethodsSize" frame="all"> <title>Size Class Method Reference</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>new (Class Method)</entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
 <entry><link linkend="mthNewClsSize">new</link></entry>
 </row>
 <row>
-<entry>width</entry>
-<entry><link linkend="mthWidth">width</link></entry>
-</row>
-<row>
-<entry>width=</entry>
-<entry><link linkend="mthWidthEquals">width=</link></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
 <entry>height</entry>
@@ -2730,11 +3210,18 @@ definition file <computeroutput>oodPlain.cls</computeroutput>:
 <entry>height=</entry>
 <entry><link linkend="mthHeightEquals">height=</link></entry>
 </row>
+<row>
+<entry>width</entry>
+<entry><link linkend="mthWidth">width</link></entry>
+</row>
+<row>
+<entry>width=</entry>
+<entry><link linkend="mthWidthEquals">width=</link></entry>
+</row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
-
+</para>
+</section>
 
 <section id="mthNewClsSize"><title>new (Class Method)</title>
 <indexterm><primary>new</primary>
@@ -2917,22 +3404,755 @@ New width: 100 new height: 300
 </section> <!-- End Size Class -->
 
 
+<section id="clsDayState"><title>DayState Class</title>
+<indexterm><primary>DayState class</primary></indexterm>
+<para>
+  A DayState object ...
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsDayState"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>DayState</computeroutput> class:
+
+<table id="tblMethodsDayState" frame="all"> <title>DayState Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsDayState">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthValue">value</link></entry>
+<entry>xx</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsDayState"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>DayState class</secondary></indexterm>
+<indexterm><primary>DayState class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayState::new() -->
+
+<section id="mthValue"><title>value</title>
+<indexterm><primary>value</primary></indexterm>
+<indexterm><primary>DayState class</primary><secondary>value</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--value----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayState::value() -->
+
+</section> <!-- End DayState Class -->
+
+
+<section id="clsDayStates"><title>DayStates Class</title>
+<indexterm><primary>DayStates class</primary></indexterm>
+<para>
+  A DayStates object ...
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsDayStates"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>DayStates</computeroutput> class:
+
+<table id="tblMethodsDayStates" frame="all"> <title>DayStates Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsDayStates">new</link></entry>
+</row>
+<row>
+<entry><link linkend="mthMakeDayStateBuffer">makeDayStateBuffer</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthQuickDayStateBuffer">quickDayStateBuffer</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrEndMonth">endMonth</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="atrStartMonth">startMonth</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAddMonth">addMonth</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthAddYear">addYear</link></entry>
+<entry>xx</entry>
+</row>
+<row>
+<entry><link linkend="mthGetDayStateBuffer">getDayStateBuffer</link></entry>
+<entry>xx</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsDayStates"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>DayStates class</secondary></indexterm>
+<indexterm><primary>DayStates class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayStates::new() -->
+
+<section id="mthMakeDayStateBuffer"><title>makeDayStateBuffer (Class method)</title>
+<indexterm><primary>makeDayStateBuffer</primary></indexterm>
+<indexterm><primary>DayStates class</primary><secondary>makeDayStateBuffer</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--makeDayStateBuffer(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayStates::makeDayStateBuffer() -->
+
+<section id="mthQuickDayStateBuffer"><title>quickDayStateBuffer (Class method)</title>
+<indexterm><primary>quickDayStateBuffer</primary></indexterm>
+<indexterm><primary>DayStates class</primary><secondary>quickDayStateBuffer</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--quickDayStateBuffer(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayStates::quickDayStateBuffer() -->
+
+<section id="atrEndMonth"><title>endMonth (Attribute)</title>
+<indexterm><primary>endMonth</primary></indexterm>
+<indexterm><primary>DayStates class</primary><secondary>endMonth</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--endMonth-----------------------------------------------------><
+
+>>--endMonth-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">endMonth get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">endMonth set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayStates::endMonth() [attribute]  -->
+
+<section id="atrStartMonth"><title>startMonth (Attribute)</title>
+<indexterm><primary>startMonth</primary></indexterm>
+<indexterm><primary>DayStates class</primary><secondary>startMonth</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--startMonth-----------------------------------------------------><
+
+>>--startMonth-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">startMonth get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">startMonth set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayStates::startMonth() [attribute]  -->
+
+<section id="mthAddMonth"><title>addMonth</title>
+<indexterm><primary>addMonth</primary></indexterm>
+<indexterm><primary>DayStates class</primary><secondary>addMonth</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addMonth(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayStates::addMonth() -->
+
+<section id="mthAddYear"><title>addYear</title>
+<indexterm><primary>addYear</primary></indexterm>
+<indexterm><primary>DayStates class</primary><secondary>addYear</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addYear(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayStates::addYear() -->
+
+<section id="mthGetDayStatebuffer"><title>getDayStateBuffer</title>
+<indexterm><primary>getDayStateBuffer</primary></indexterm>
+<indexterm><primary>DayStates class</primary><secondary>getDayStateBuffer</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getDayStateBuffer(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DayStates::getDayStateBuffer() -->
+
+</section> <!-- End DayStates Class -->
+
+
 <section id="clsDlgArea"><title>DlgArea Class</title>
 <indexterm><primary>DlgArea class</primary></indexterm>
 <para>
-  The DlgArea class provides assistance in laying out the dialog controls in a
-  dynamically defined dialog.  The class defines an area of a UserDialog and
-  provides coordinates of and within it. It is a helper for the defineDialog
-  Method of an ooDialog UserDialog Object and has no effect on any Windows
-  Object.
+  The <computeroutput>DlgArea</computeroutput> class provides assistance in laying out the dialog controls in a
+  dynamically defined dialog.  The class defines an area of a <link linkend="clsUserDialog">UserDialog</link> and
+  provides coordinates of and within it. It is a helper class for the <link
+  linkend="mthDefineDialog">defineDialog</link> method of a <computeroutput>UserDialog</computeroutput> and has no
+  effect on any <link linkend="ovvUnderlying">underlying</link> Windows Object.
 </para>
-<para>To use objects of the DlgArea class include this line in your code:
+<para>T
+  he following figure shows the measuement attributes used to position a <computeroutput>DlgArea</computeroutput> on a
+  <computeroutput>UserDialog</computeroutput>.
 </para>
-<programlisting>
-::requires "OODIALOG.CLS"
-</programlisting>
-<para>The following figure shows the measuement attributes used to position a
-DlgArea on a UserDialog.</para>
 <figure id="dlgareafig"><title>DlgArea Measurements</title>
 <mediaobject>
 <imageobject>
@@ -2942,91 +4162,238 @@ DlgArea on a UserDialog.</para>
 </mediaobject>
 </figure>
 
-<section id="dlgareainit"><title>init</title>
-<indexterm><primary>init</primary>
-<secondary>DlgArea class</secondary></indexterm>
+<section id="sctMethodsDlgArea"><title>Method Table</title>
+<para>
+  The following table lists the class methods, attributes, and instance methods of the
+  <computeroutput>DlgArea</computeroutput> class:
+
+<table id="tblMethodsDlgArea" frame="all"> <title>DlgArea Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsDlgArea">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsDlgArea"><title>init</title>
+<indexterm><primary>new</primary><secondary>DlgArea class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>- aDlgArea~init(--X--,--Y--,--Width--,--Height--+-------------+--)--><
-                                                  +--,--Margin--+
+>>--new(--x--,--y--,--width--,--height--+-------------+--)---------------------><
+                                        +--,--margin--+
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  Instantiates a new <computeroutput>DlgArea</computeroutput> object.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the new method when creating a
-DlgArea Object are:
-<variablelist>
-<varlistentry><term>X</term>
-<listitem><para>The X coordinate in dialog units relative to the UserDialog
-of the top left corner of the area you wish to define
-</para></listitem></varlistentry>
-<varlistentry><term>Y</term>
-<listitem><para>The Y coordinate in dialog units relative to the UserDialog
-of the top left corner of the area you wish to define.
-</para></listitem></varlistentry>
-<varlistentry><term>Width</term>
-<listitem><para>The width in dialog units of the area of the UserDialog you
-wish to define
-</para></listitem></varlistentry>
-<varlistentry><term>Height</term>
-<listitem><para>The height in dialog units of the area of the UserDialog you
-wish to define</para>
-</listitem></varlistentry>
-<varlistentry><term>Margin</term>
-<listitem><para>An inner margin within the DlgArea in Dialog Units to be left
-blank. The default is 5
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-</para></listitem></varlistentry>
-</variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>x [required]</term>
+      <listitem>
+      <para>
+        The x coordinate, in dialog <link linkend="defDialogUnit">units</link>, relative to the top left corner of the
+        <link linkend="defClientArea">client</link> area of the <computeroutput>UserDialog</computeroutput>, for the area
+        you wish to define.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y [required]</term>
+      <listitem>
+      <para>
+        The y coordinate, in dialog units, relative to the top left corner of the client area of the
+        <computeroutput>UserDialog</computeroutput>, for the area you wish to define.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>width [required]</term>
+      <listitem>
+      <para>
+        The width, in dialog units of the area you wish to define .
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>height [required]</term>
+      <listitem>
+      <para>
+        The height, in dialog units, of the area you wish to define
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>margin [optional]</term>
+      <listitem>
+      <para>
+        An inner margin, in dialog units, within the dialog area to be left blank. The default is 5
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This examples defines two dialog areas in a dialog:
+  </para>
 
 <programlisting>
 <![CDATA[
-u = .dlgArea~new(0, 0, self~SizeX,Self~SizeY)          /* u is whole of UserDialog */
+u = .dlgArea~new(0, 0, self~sizeX,self~sizeY)          /* u is whole of UserDialog */
 b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons */
 ]]>
 </programlisting>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
-<section id="dlgareab"><title>B</title>
-<indexterm><primary>B</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the y coordinate of the bottom margin in dialog units relative to
-UserDialog.
-</para>
+<section id="atrT"><title>t</title>
+<indexterm><primary>t</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>t</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--ADlgArea~B--------------------------------------------------------><
+>>--t--------------------------------------------><
 ]]>
 </programlisting>
+<para>
+  Reflects the y coordinate, in dialog units, of the top margin relative to the client area of the
+  <computeroutput>UserDialog</computeroutput>.
+</para>
+
+</section>
+
+<section id="atrL"><title>l</title>
+<indexterm><primary>l</primary></indexterm>
+<indexterm><primary>DlgArea class</primary<secondary>l</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--l--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the x coordinate, in dialog units, of the left margin relative to the client area of the
+  <computeroutput>UserDialog</computeroutput>.
+</para>
+
+</section>
+
+<section id="atrB"><title>b</title>
+<indexterm><primary>b</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>b</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--b--------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the y coordinate, in dialog units, of the bottom margin relative to the client area of the
+  <computeroutput>UserDialog</computeroutput>.
+</para>
 
 <para></para>
 </section>
 
-<section id="dlgareabottom"><title>Bottom</title>
-<indexterm><primary>Bottom</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the y coordinate of the bottom edge in dialog units relative to
-UserDialog.
-</para>
+<section id="atrR"><title>r</title>
+<indexterm><primary>r</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>r</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--ADlgArea~Bottom---------------------------------------------------><
+>>--r--------------------------------------------><
 ]]>
 </programlisting>
+<para>
+  Reflects the x coordinate, in dialog units, of the right margin relative to the client area of the
+  <computeroutput>UserDialog</computeroutput>.
+</para>
 
-<para></para>
 </section>
 
-<section id="dlgareacx"><title>CX</title>
-<indexterm><primary>CX</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Synonym for the W method.
+<section id="atrTop"><title>top</title>
+<indexterm><primary>top</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>top</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--top------------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the y coordinate, in dialog units, of the top edge relative to the client area of the
+  <computeroutput>UserDialog</computeroutput>.
+</para>
+
+</section>
+
+<section id="atrLeft"><title>left</title>
+<indexterm><primary>left</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>left</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--left-----------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the x coordinate, in dialog units, of the left edge relative to the client area of the
+  <computeroutput>UserDialog</computeroutput>.
+</para>
+
+</section>
+
+<section id="atrWidthop"><title>width</title>
+<indexterm><primary>width</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>width</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--width----------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the ??? TODO WHAT IS THIS ????  y coordinate, in dialog units, of the top edge relative to the client area of
+  the <computeroutput>UserDialog</computeroutput>.
+</para>
+
+</section>
+
+<section id="atrHeight"><title>height</title>
+<indexterm><primary>height</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>height</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--height---------------------------------------><
+]]>
+</programlisting>
+<para>
+  Reflects the ???? TODO WHATIS THIS ?????? x coordinate, in dialog units, of the left edge relative to the client area
+  of the <computeroutput>UserDialog</computeroutput>.
+</para>
+
+</section>
+
+<section id="mthCX"><title>cx</title>
+<indexterm><primary>cx</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>cx</secondary></indexterm>
+<para>
+  A synonym for the <link linkend="mthW">w</link> method.
 </para>
 <programlisting>
 <![CDATA[
@@ -3036,7 +4403,6 @@ UserDialog.
 ]]>
 </programlisting>
 
-<para></para>
 </section>
 
 <section id="dlgareacy"><title>CY</title>
@@ -3103,36 +4469,6 @@ units. This is equivalent to ~H("R").
 <para></para>
 </section>
 
-<section id="dlgareal"><title>L</title>
-<indexterm><primary>L</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the x coordinate of the left margin in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~L--------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgarealeft"><title>Left</title>
-<indexterm><primary>Left</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the x coordinate of the left edge in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~Left-----------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
 <section id="atrMargin"><title>Margin</title>
 <indexterm><primary>Margim</primary>
 <secondary>DlgArea class</secondary></indexterm>
@@ -3141,21 +4477,6 @@ UserDialog.
 <programlisting>
 <![CDATA[
 >>--ADlgArea~Margin---------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgarear"><title>R</title>
-<indexterm><primary>R</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the x coordinate of the right margin in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~R--------------------------------------------------------><
 ]]>
 </programlisting>
 
@@ -3177,66 +4498,69 @@ UserDialog.
 <para></para>
 </section>
 
-<section id="dlgareat"><title>T</title>
-<indexterm><primary>T</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the y coordinate of the top margin in dialog units relative to
-UserDialog.
-</para>
+<section id="mthW"><title>w</title>
+<indexterm><primary>w</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>w</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--ADlgArea~T--------------------------------------------------------><
+>>--w(--+---------+--)---------------------------><
+        +--flag---+
+
 ]]>
 </programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareatop"><title>Top</title>
-<indexterm><primary>Top</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the y coordinate of the top edge in dialog units relative to
-UserDialog.
+<para>
+  Returns a width, in dialog units, relative to the width of the dialog area.
 </para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~Top------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareaw"><title>W</title>
-<indexterm><primary>W</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns a width in dialog units relative to the dialog area.
+<para>
+  If no argument is passed returns the inter-margin width.
 </para>
-<para>If no argument is passed returns the inter-margin width.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~w(--+-------+--)-----------------------------------------><
-                 +--n%---+
-                 +--"R"--+
-]]>
-</programlisting>
 
-<para></para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the Y method are:
-<variablelist>
-<varlistentry><term>n%</term>
-<listitem><para>If <computeroutput>n</computeroutput> is a percentage returns
-<computeroutput>n%</computeroutput> of the inter-margin width.
-</para></listitem></varlistentry>
-<varlistentry><term>"R"</term>
-<listitem><para>If "R" is passed returns Remaining width between last ~x and
-right margin.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The flag argument signals what part of the width to return. If the flag is omitted, than the entire width of the
+        dialog area is returned. Recall that if there is a margin in effect, than that width does not include the
+        margin. If flag is not omitted it is one of the following:
+      </para>
+      <simplelist type='vert' columns='3'>
+        <member>n%</member>
+        <member>R</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the dialog
+           area width should be returned. E.g., <computeroutput>10%</computeroutput> would mean to return 10 percent of
+           the dialog area width.  <computeroutput>8%</computeroutput> would ask for 8 percent of the width, etc.,
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area width should be returned. I.e., that portion of the width between the last invocation of the <link
+          linkend="mthX">x</link> method and the right margin.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area width as specified by the <emphasis role="italic">flag</emphasis>
+    arguement.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -3428,7 +4752,7 @@ self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
 <colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Dialog Method</entry>
+<entry>Method</entry>
 <entry>Description</entry>
 </row>
 </thead>
