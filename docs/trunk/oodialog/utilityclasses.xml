@@ -103,7 +103,7 @@
 <entry>An object encapsulating a width and height dimension in a 2-D coordinate system.</entry>
 </row>
 <row>
-<entry><link linkend="clsVK">VirtualKeyCodes Class</link></entry>
+<entry><link linkend="clsVK">VK Class</link></entry>
 <entry>Translates back and forth between virtual key code numbers and symbolic names.</entry>
 </row>
 <row>
@@ -4154,534 +4154,969 @@ New width: 100 new height: 300
 <indexterm><primary>virtual key codes</primary></indexterm>
 <para>
   The <computeroutput>VK</computeroutput> class allows the programmer to use symbolic names in a program instead of the
-  numeric value of the virtual keys.
+  numeric value of the virtual key codes.
+</para>
+  The Windows operating system assigns a value to each key on the keyboard called a scan code. Scan codes are device
+  <emphasis role="italic">dependent</emphasis>. To notify an application that the user has pressed a key, the operating system translates the scan
+  code into a <emphasis role="italic">virtual key code</emphasis>. Virtual key codes are device <emphasis
+  role="italic">independent</emphasis>. This allows the programmer to write a program without worrying about what
+  keyboard the user may have.
 </para>
 <para>
+  Virtual key codes are in the range of 0 through 255. However a number of the possible codes are unassigned, perhaps 30
+  or 40. The <computeroutput>VK</computeroutput> class provides constants for every assigned key code. The constants
+  serve as symbolic names for the key codes. In addition, the <link linkend="mthKey2Name">key2name</link> method is
+  provided that translates a numeric number into its human-readable string name.
+</para>
+<para>
+  There are two ways to use the <computeroutput>VK</computeroutput> class. The class is a <emphasis
+  role="italic">mixinclass</emphasis>. It can be inherited by a class to provide that class with all the constants and
+  methods of the <computeroutput>VK</computeroutput> class. Recall that the <emphasis
+  role="italic">::constant</emphasis> directive defines both a class and an instance method that returns a constant
+  value. Therefore, the constant values can be accessed directly through the class methods of the
+  <computeroutput>VK</computeroutput> class.  There is also a <emphasis role="italic">key2name</emphasis> class method
+  along with the instance method. The following two examples should clarify that:
 </para>
 
-<section id="virkeyccmeth"><title>Methods of the VirtualKeyCodes Class</title>
-<para>Instances of the VirtualKeyCodes class implement the methods described
-in the following sections.</para>
-
-<section id="vcode"><title>VCode</title>
-<indexterm><primary>VCode</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aVirtualKeyCodes~VCode(--keyname--)-------------------------><
 
+::class 'SimpleDlg' subclass RcDialog inherit VK
+
+::method onKeyDown
+  use arg controlID, key
+
+  say "The key pressed was the" self~name2key(key) "virtual key"
+
+  if key == self~DELETE then do
+    return self~deleteAllItems
+  end
 
 ]]>
 </programlisting>
+<para>
+  The above example inherits the <computeroutput>VK</computeroutput> class and thus the DELETE constant and the
+  <emphasis role="italic">key2name</emphasis> method become part of the  <computeroutput>SimpleDlg</computeroutput>
+  class. The same thing can be acomplished using the class methods of the <computeroutput>VK</computeroutput> class:
+</para>
 
-<para>The VCode method returns the decimal value of a
-symbolic key name.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>keyname</term>
-<listitem><para>The symbolic key name. See
-<link linkend="virtualkeys">Symbolic Names for Virtual Keys</link>
-for a list of key names.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The decimal value of the symbolic key name. If the symbolic
-name is not found, 255 is returned.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="keyname"><title>KeyName</title>
-<indexterm><primary>KeyName</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aVirtualKeyCodes~KeyName(--vcode--)-------------------------><
 
+::class 'SimpleDlg' subclass RcDialog
+
+::method onKeyDown
+  use arg controlID, key
+
+  say "The key pressed was the" .VK~name2key(key) "virtual key"
+
+  if key == .VK~DELETE then do
+    return self~deleteAllItems
+  end
 
 ]]>
 </programlisting>
+<para>
+  Using the class methods of <computeroutput>VK</computeroutput> has the advantage of not conflicting with any existing
+  method the <computeroutput>SimpleDlg</computeroutput> may have.
+</para>
 
-<para>The KeyName method returns the symbolic key name
-of the specified hexadecimal code.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>vcode</term>
-<listitem><para>The hexadecimal code of the key.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The symbolic key name of the specified code.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example deletes or inserts an item in a tree
-view depending on the selected key:
-<programlisting>
-<![CDATA[
-::method OnKeyDown_IDC_TREE
-  use arg treeId, key
-  curTree = self~newTreeView(treeId)
-  /* if the Delete key is pressed, delete the selected item */
-  if self~KeyName(key) = "DELETE" then
-     curTree~Delete(curTree~selected)
-  else
-  /* if the Insert key is pressed, simulate pressing the New button */
-  if self~KeyName(key) = "INSERT" then
-     self~IDC_PB_NEW
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-</section>
+<section id="sctMethodsVK"><title>Constant and Method Table</title>
+<para>
+  The <computeroutput>VK</computeroutput> class primarily consists of constants. The implemented constants and methods
+  are listed in the following table.
 
-<section id="virtualkeys"><title>Symbolic Names for Virtual Keys</title>
-<indexterm><primary>symbolic names for virtual keys</primary></indexterm>
-<para><link linkend="t000018">Symbolic Names for Virtual Keys</link>
-shows the symbolic names and the keyboard equivalents
-for the virtual keys used by Object Rexx:</para>
-
-<table id="t000018" frame="all">
-<title>Symbolic Names for Virtual Keys</title>
+<table id="tblVKMethods" frame="all">
+<title>Methods of the DlgUtil class</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Symbolic Name</entry>
-<entry>Mouse or Keyboard Equivalent</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>LBUTTON</entry>
-<entry>Left mouse button</entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>RBUTTON</entry>
-<entry>Right mouse button</entry>
+<entry><link linkend="mthKey2Name">key2name</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>CANCEL</entry>
-<entry>Control-break processing</entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>MBUTTON</entry>
-<entry>Middle mouse button (three-button mouse)</entry>
+<entry><link linkend="mthKey2Name">key2name</link></entry>
+<entry>xx</entry>
 </row>
 <row>
-<entry>BACK</entry>
-<entry>BACKSPACE key</entry>
+<entry align="center"><emphasis role="bold">Constants</emphasis></entry>
+<entry align="center"><emphasis role="bold">Constants</emphasis></entry>
 </row>
+
 <row>
-<entry>TAB</entry>
-<entry>TAB key</entry>
+<entry>K_LBUTTON</entry>
+<entry>x01 Left mouse button</entry>
 </row>
 <row>
-<entry>CLEAR</entry>
-<entry>CLEAR key</entry>
+<entry>K_RBUTTON/<entry>
+<entry>x02 Right mouse button</entry>
 </row>
 <row>
-<entry>RETURN</entry>
-<entry>ENTER key</entry>
+<entry>K_CANCE</entry>
+<entry>x03 Control-break processing</entry>
 </row>
 <row>
-<entry>SHIFT</entry>
-<entry>SHIFT key</entry>
+<entry>K_MBUTTON</entry>
+<entry>x04 Middle mouse button (three-button mouse)</entry>
 </row>
 <row>
-<entry>CONTROL</entry>
-<entry>CRTL key</entry>
+<entry>K_XBUTTON</entry>
+<entry>x05 X1 mouse button</entry>
 </row>
 <row>
-<entry>MENU</entry>
-<entry>ALT key</entry>
+<entry>K_XBUTTON</entry>
+<entry>x06 X2 mouse button</entry>
 </row>
 <row>
-<entry>PAUSE</entry>
-<entry>PAUSE key</entry>
+<entry>x07</entry>
+<entry>undefined</entry>
 </row>
 <row>
-<entry>CAPITAL</entry>
-<entry>CAPS LOCK key</entry>
+<entry>K_BACK</entry>
+<entry>x08 BACKSPACE key</entry>
 </row>
 <row>
-<entry>ESCAPE</entry>
-<entry>ESC key</entry>
+<entry>K_TAB</entry>
+<entry>x09 TAB key</entry>
 </row>
 <row>
-<entry>SPACE</entry>
-<entry>SPACEBAR</entry>
+<entry>x0A-0B</entry>
+<entry>eserved</entry>
 </row>
 <row>
-<entry>PRIOR</entry>
-<entry>PAGE UP key</entry>
+<entry>K_CLEAR</entry>
+<entry>x0C CLEAR key</entry>
 </row>
 <row>
-<entry>NEXT</entry>
-<entry>PAGE DOWN key</entry>
+<entry>K_RETURN</entry>
+<entry>x0D ENTER key</entry>
 </row>
 <row>
-<entry>END</entry>
-<entry>END key</entry>
+<entry>x0E-0F</entry>
+<entry>ndefined</entry>
 </row>
 <row>
-<entry>HOME</entry>
-<entry>HOME key</entry>
+<entry>K_SHIFT</entry>
+<entry>x10 SHIFT key</entry>
 </row>
 <row>
-<entry>LEFT</entry>
-<entry>LEFT ARROW key</entry>
+<entry>K_CONTROL</entry>
+<entry>x11 CTRL key</entry>
 </row>
 <row>
-<entry>UP</entry>
-<entry>UP ARROW key</entry>
+<entry>K_MENU</entry>
+<entry>x12 ALT key</entry>
 </row>
 <row>
-<entry>RIGHT</entry>
-<entry>RIGHT ARROW key</entry>
+<entry>K_PAUSE</entry>
+<entry>x13 PAUSE key</entry>
 </row>
 <row>
-<entry>DOWN</entry>
-<entry>DOWN ARROW key</entry>
+<entry>K_CAPITAL</entry>
+<entry>x14 CAPS LOCK key</entry>
 </row>
 <row>
-<entry>SELECT</entry>
-<entry>SELECT key</entry>
+<entry>K_KANA</entry>
+<entry>x15 IME Kana mode</entry>
 </row>
 <row>
-<entry>EXECUTE</entry>
-<entry>EXECUTE key</entry>
+<entry>K_HANGUEL</entry>
+<entry>x15 IME Hanguel mode (maintained for compatibility; use VK_HANGUL)</entry>
 </row>
 <row>
-<entry>SNAPSHOT</entry>
-<entry>PRINT SCREEN key</entry>
+<entry>K_HANGUL</entry>
+<entry>x15 IME Hangul mode</entry>
 </row>
 <row>
-<entry>INSERT</entry>
-<entry>INS key</entry>
+<entry>x16</entry>
+<entry>ndefined</entry>
 </row>
 <row>
-<entry>DELETE</entry>
-<entry>DEL key</entry>
+<entry>K_JUNJA</entry>
+<entry>x17 IME Junja mode</entry>
 </row>
 <row>
-<entry>HELP</entry>
-<entry>HELP key</entry>
+<entry>K_FINAL</entry>
+<entry>x18 IME final mode</entry>
 </row>
 <row>
-<entry>0</entry>
-<entry>0 key</entry>
+<entry>K_HANJA</entry>
+<entry>x19 IME Hanja mode</entry>
 </row>
 <row>
-<entry>1</entry>
-<entry>1 key</entry>
+<entry>K_KANJI</entry>
+<entry>x19 IME Kanji mode</entry>
 </row>
 <row>
-<entry>2</entry>
-<entry>2 key</entry>
+<entry>x1A</entry>
+<entry>ndefined</entry>
 </row>
 <row>
-<entry>3</entry>
-<entry>3 key</entry>
+<entry>K_ESCAPE</entry>
+<entry>x1B ESC key</entry>
 </row>
 <row>
-<entry>4</entry>
-<entry>4 key</entry>
+<entry>K_CONVERT</entry>
+<entry>x1C IME convert</entry>
 </row>
 <row>
-<entry>5</entry>
-<entry>5 key</entry>
+<entry>K_NONCONVERT</entry>
+<entry>x1D IME nonconvert</entry>
 </row>
 <row>
-<entry>6</entry>
-<entry>6 key</entry>
+<entry>K_ACCEPT</entry>
+<entry>x1E IME accept</entry>
 </row>
 <row>
-<entry>7</entry>
-<entry>7 key</entry>
+<entry>K_MODECHANGE</entry>
+<entry>x1F IME mode change request</entry>
 </row>
 <row>
-<entry>8</entry>
-<entry>8 key</entry>
+<entry>K_SPACE</entry>
+<entry>x20 SPACEBAR</entry>
 </row>
 <row>
-<entry>9</entry>
-<entry>9 key</entry>
+<entry>K_PRIOR</entry>
+<entry>x21 PAGE UP key</entry>
 </row>
 <row>
-<entry>A</entry>
-<entry>A key</entry>
+<entry>K_NEXT</entry>
+<entry>x22 PAGE DOWN key</entry>
 </row>
 <row>
-<entry>B</entry>
-<entry>B key</entry>
+<entry>K_END</entry>
+<entry>x23 END key</entry>
 </row>
 <row>
-<entry>C</entry>
-<entry>C key</entry>
+<entry>K_HOME</entry>
+<entry>x24 HOME key</entry>
 </row>
 <row>
-<entry>D</entry>
-<entry>D key</entry>
+<entry>K_LEFT</entry>
+<entry>x25 LEFT ARROW key</entry>
 </row>
 <row>
-<entry>E</entry>
-<entry>E key</entry>
+<entry>K_UP</entry>
+<entry>x26 UP ARROW key</entry>
 </row>
 <row>
-<entry>F</entry>
-<entry>F key</entry>
+<entry>K_RIGHT</entry>
+<entry>x27 RIGHT ARROW key</entry>
 </row>
 <row>
-<entry>G</entry>
-<entry>G key</entry>
+<entry>K_DOWN</entry>
+<entry>x28 DOWN ARROW key</entry>
 </row>
 <row>
-<entry>H</entry>
-<entry>H key</entry>
+<entry>K_SELECT</entry>
+<entry>x29 SELECT key</entry>
 </row>
 <row>
-<entry>I</entry>
-<entry>I key</entry>
+<entry>K_PRINT</entry>
+<entry>x2A PRINT key</entry>
 </row>
 <row>
-<entry>J</entry>
-<entry>J key</entry>
+<entry>K_EXECUTE</entry>
+<entry>x2B EXECUTE key</entry>
 </row>
 <row>
-<entry>K</entry>
-<entry>K key</entry>
+<entry>K_SNAPSHOT</entry>
+<entry>x2C PRINT SCREEN key</entry>
 </row>
 <row>
-<entry>L</entry>
-<entry>L key</entry>
+<entry>K_INSERT</entry>
+<entry>x2D INS key</entry>
 </row>
 <row>
-<entry>M</entry>
-<entry>M key</entry>
+<entry>K_DELETE</entry>
+<entry>x2E DEL key</entry>
 </row>
 <row>
-<entry>N</entry>
-<entry>N key</entry>
+<entry>K_HELP</entry>
+<entry>x2F HELP key</entry>
 </row>
 <row>
-<entry>O</entry>
-<entry>O key</entry>
+<entry>x30</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>Q</entry>
-<entry>Q key</entry>
+<entry>x31</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>R</entry>
-<entry>R key</entry>
+<entry>x32</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>S</entry>
-<entry>S key</entry>
+<entry>x33</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>T</entry>
-<entry>T key</entry>
+<entry>x34</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>U</entry>
-<entry>U key</entry>
+<entry>x35</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>V</entry>
-<entry>V key</entry>
+<entry>x36</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>W</entry>
-<entry>W key</entry>
+<entry>x37</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>X</entry>
-<entry>X key</entry>
+<entry>x38</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>Y</entry>
-<entry>Y key</entry>
+<entry>x39</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>Z</entry>
-<entry>Z key</entry>
+<entry>x3A-40</entry>
+<entry>ndefined</entry>
 </row>
 <row>
-<entry>NUMPAD0</entry>
-<entry>Numeric keypad 0 key</entry>
+<entry>x41</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>NUMPAD1</entry>
-<entry>Numeric keypad 1 key</entry>
+<entry>x42</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>NUMPAD2</entry>
-<entry>Numeric keypad 2 key</entry>
+<entry>x43</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>NUMPAD3</entry>
-<entry>Numeric keypad 3 key</entry>
+<entry>x44</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>NUMPAD4</entry>
-<entry>Numeric keypad 4 key</entry>
+<entry>x45</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>NUMPAD5</entry>
-<entry>Numeric keypad 5 key</entry>
+<entry>x46</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>NUMPAD6</entry>
-<entry>Numeric keypad 6 key</entry>
+<entry>x47</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>NUMPAD7</entry>
-<entry>Numeric keypad 7 key</entry>
+<entry>x48</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>NUMPAD8</entry>
-<entry>Numeric keypad 8 key</entry>
+<entry>x49</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>NUMPAD9</entry>
-<entry>Numeric keypad 9 key</entry>
+<entry>x4A</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>MULTIPLY</entry>
-<entry>Multiply key</entry>
+<entry>x4B</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>ADD</entry>
-<entry>Add key</entry>
+<entry>x4C</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>SEPARATOR</entry>
-<entry>Separator key</entry>
+<entry>x4D</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>SUBTRACT</entry>
-<entry>Subtract key</entry>
+<entry>x4E</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>DECIMAL</entry>
-<entry>Decimal key</entry>
+<entry>x4F</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>DIVIDE</entry>
-<entry>Divide key</entry>
+<entry>x50</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F1</entry>
-<entry>F1 key</entry>
+<entry>x51</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F2</entry>
-<entry>F2 key</entry>
+<entry>x52</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F3</entry>
-<entry>F3 key</entry>
+<entry>x53</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F4</entry>
-<entry>F4 key</entry>
+<entry>x54</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F5</entry>
-<entry>F5 key</entry>
+<entry>x55</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F6</entry>
-<entry>F6 key</entry>
+<entry>x56</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F7</entry>
-<entry>F7 key</entry>
+<entry>x57</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F8</entry>
-<entry>F8 key</entry>
+<entry>x58</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F9</entry>
-<entry>F9 key</entry>
+<entry>x59</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F10</entry>
-<entry>F10 key</entry>
+<entry>x5A</entry>
+<entry> key</entry>
 </row>
 <row>
-<entry>F11</entry>
-<entry>F11 key</entry>
+<entry>K_LWIN</entry>
+<entry>x5B Left Windows key (Natural keyboard)</entry>
 </row>
 <row>
-<entry>F12</entry>
-<entry>F12 key</entry>
+<entry>K_RWIN</entry>
+<entry>x5C Right Windows key (Natural keyboard)</entry>
 </row>
 <row>
-<entry>F13</entry>
-<entry>F13 key</entry>
+<entry>K_APPS</entry>
+<entry>x5D Applications key (Natural keyboard)</entry>
 </row>
 <row>
-<entry>F14</entry>
-<entry>F14 key</entry>
+<entry>x5E</entry>
+<entry>eserved</entry>
 </row>
 <row>
-<entry>F15</entry>
-<entry>F15 key</entry>
+<entry>K_SLEEP</entry>
+<entry>x5F Computer Sleep key</entry>
 </row>
 <row>
-<entry>F16</entry>
-<entry>F16 key</entry>
+<entry>K_NUMPAD0</entry>
+<entry>x60 Numeric keypad 0 key</entry>
 </row>
 <row>
-<entry>F17</entry>
-<entry>F17 key</entry>
+<entry>K_NUMPAD1</entry>
+<entry>x61 Numeric keypad 1 key</entry>
 </row>
 <row>
-<entry>F18</entry>
-<entry>F18 key</entry>
+<entry>K_NUMPAD2</entry>
+<entry>x62 Numeric keypad 2 key</entry>
 </row>
 <row>
-<entry>F19</entry>
-<entry>F19 key</entry>
+<entry>K_NUMPAD3</entry>
+<entry>x63 Numeric keypad 3 key</entry>
 </row>
 <row>
-<entry>F20</entry>
-<entry>F20 key</entry>
+<entry>K_NUMPAD4</entry>
+<entry>x64 Numeric keypad 4 key</entry>
 </row>
 <row>
-<entry>F21</entry>
-<entry>F21 key</entry>
+<entry>K_NUMPAD5</entry>
+<entry>x65 Numeric keypad 5 key</entry>
 </row>
 <row>
-<entry>F22</entry>
-<entry>F22 key</entry>
+<entry>K_NUMPAD6</entry>
+<entry>x66 Numeric keypad 6 key</entry>
 </row>
 <row>
-<entry>F23</entry>
-<entry>F23 key</entry>
+<entry>K_NUMPAD7</entry>
+<entry>x67 Numeric keypad 7 key</entry>
 </row>
 <row>
-<entry>F24</entry>
-<entry>F24 key</entry>
+<entry>K_NUMPAD8</entry>
+<entry>x68 Numeric keypad 8 key</entry>
 </row>
 <row>
-<entry>NUMLOCK</entry>
-<entry>NUM LOCK key</entry>
+<entry>K_NUMPAD9</entry>
+<entry>x69 Numeric keypad 9 key</entry>
 </row>
 <row>
-<entry>SCROLL</entry>
-<entry>SCROLL LOCK key</entry>
+<entry>K_MULTIPLY</entry>
+<entry>x6A Multiply key</entry>
 </row>
+<row>
+<entry>K_ADD</entry>
+<entry>x6B Add key</entry>
+</row>
+<row>
+<entry>K_SEPARATOR</entry>
+<entry>x6C Separator key</entry>
+</row>
+<row>
+<entry>K_SUBTRACT</entry>
+<entry>x6D Subtract key</entry>
+</row>
+<row>
+<entry>K_DECIMAL</entry>
+<entry>x6E Decimal key</entry>
+</row>
+<row>
+<entry>K_DIVIDE</entry>
+<entry>x6F Divide key</entry>
+</row>
+<row>
+<entry>K_F1</entry>
+<entry>x70 F1 key</entry>
+</row>
+<row>
+<entry>K_F2</entry>
+<entry>x71 F2 key</entry>
+</row>
+<row>
+<entry>K_F3</entry>
+<entry>x72 F3 key</entry>
+</row>
+<row>
+<entry>K_F4</entry>
+<entry>x73 F4 key</entry>
+</row>
+<row>
+<entry>K_F5</entry>
+<entry>x74 F5 key</entry>
+</row>
+<row>
+<entry>K_F6</entry>
+<entry>x75 F6 key</entry>
+</row>
+<row>
+<entry>K_F7</entry>
+<entry>x76 F7 key</entry>
+</row>
+<row>
+<entry>K_F8</entry>
+<entry>x77 F8 key</entry>
+</row>
+<row>
+<entry>K_F9</entry>
+<entry>x78 F9 key</entry>
+</row>
+<row>
+<entry>K_F10</entry>
+<entry>x79 F10 key</entry>
+</row>
+<row>
+<entry>K_F11</entry>
+<entry>x7A F11 key</entry>
+</row>
+<row>
+<entry>K_F12</entry>
+<entry>x7B F12 key</entry>
+</row>
+<row>
+<entry>K_F13</entry>
+<entry>x7C F13 key</entry>
+</row>
+<row>
+<entry>K_F14</entry>
+<entry>x7D F14 key</entry>
+</row>
+<row>
+<entry>K_F15</entry>
+<entry>x7E F15 key</entry>
+</row>
+<row>
+<entry>K_F16</entry>
+<entry>x7F F16 key</entry>
+</row>
+<row>
+<entry>K_F17</entry>
+<entry>x80H F17 key</entry>
+</row>
+<row>
+<entry>K_F18</entry>
+<entry>x81H F18 key</entry>
+</row>
+<row>
+<entry>K_F19</entry>
+<entry>x82H F19 key</entry>
+</row>
+<row>
+<entry>K_F20</entry>
+<entry>x83H F20 key</entry>
+</row>
+<row>
+<entry>K_F21</entry>
+<entry>x84H F21 key</entry>
+</row>
+<row>
+<entry>K_F22</entry>
+<entry>x85H F22 key</entry>
+</row>
+<row>
+<entry>K_F23</entry>
+<entry>x86H F23 key</entry>
+</row>
+<row>
+<entry>K_F24</entry>
+<entry>x87H F24 key</entry>
+</row>
+<row>
+<entry>x88-8F</entry>
+<entry>nassigned</entry>
+</row>
+<row>
+<entry>K_NUMLOCK</entry>
+<entry>x90 NUM LOCK key</entry>
+</row>
+<row>
+<entry>K_SCROLL</entry>
+<entry>x91 SCROLL LOCK key</entry>
+</row>
+<row>
+<entry>x92-96</entry>
+<entry>EM specific</entry>
+</row>
+<row>
+<entry>x97-9F</entry>
+<entry>nassigned</entry>
+</row>
+<row>
+<entry>K_LSHIFT</entry>
+<entry>xA0 Left SHIFT key</entry>
+</row>
+<row>
+<entry>K_RSHIFT</entry>
+<entry>xA1 Right SHIFT key</entry>
+</row>
+<row>
+<entry>K_LCONTROL</entry>
+<entry>xA2 Left CONTROL key</entry>
+</row>
+<row>
+<entry>K_RCONTROL</entry>
+<entry>xA3 Right CONTROL key</entry>
+</row>
+<row>
+<entry>K_LMENU</entry>
+<enctry>xA4 Left MENU key</entry>
+<row>
+<entry>K_RMENU</entry>
+<entry>xA5 Right MENU key</entry>
+<row>
+</row>
+<entry>K_BROWSER_BACK</entry>
+<entry>xA6 Browser Back key</entry>
+<row>
+</row>
+<entry>K_BROWSER_FORWARD</entry>
+<entry>xA7 Browser Forward key</entry>
+<row>
+</row>
+<entry>K_BROWSER_REFRESH</entry>
+<entry>xA8 Browser Refresh key</entry>
+<row>
+</row>
+<entry>K_BROWSER_STOP</entry>
+<entry>xA9 Browser Stop key</entry>
+<row>
+</row>
+<entry>K_BROWSER_SEARCH</entry>
+<entry>xAA Browser Search key</entry>
+<row>
+</row>
+<entry>K_BROWSER_FAVORITES</entry>
+<entry>xAB Browser Favorites key</entry>
+<row>
+</row>
+<entry>K_BROWSER_HOME</entry>
+<entry>xAC Browser Start and Home key</entry>
+<row>
+</row>
+<entry>K_VOLUME_MUTE</entry>
+<entry>xAD Volume Mute key</entry>
+<row>
+</row>
+<entry>K_VOLUME_DOWN</entry>
+<entry>xAE Volume Down key</entry>
+<row>
+</row>
+<entry>K_VOLUME_UP</entry>
+<entry>xAF Volume Up key</entry>
+<row>
+</row>
+<entry>K_MEDIA_NEXT_TRACK</entry>
+<entry>xB0 Next Track key</entry>
+<row>
+</row>
+<entry>K_MEDIA_PREV_TRACK</entry>
+<entry>xB1 Previous Track key</entry>
+<row>
+</row>
+<entry>K_MEDIA_STOP</entry>
+<entry>xB2 Stop Media key</entry>
+<row>
+</row>
+<entry>K_MEDIA_PLAY_PAUSE</entry>
+<entry>xB3 Play/Pause Media key</entry>
+<row>
+</row>
+<entry>K_LAUNCH_MAIL</entry>
+<entry>xB4 Start Mail key</entry>
+<row>
+</row>
+<entry>K_LAUNCH_MEDIA_SELECT</entry>
+<entry>xB5 Select Media key</entry>
+<row>
+</row>
+<entry>K_LAUNCH_APP1</entry>
+<entry>xB6 Start Application 1 key</entry>
+<row>
+</row>
+<entry>K_LAUNCH_APP2</entry>
+<entry>xB7 Start Application 2 key</entry>
+<row>
+</row>
+<entry>xB8-B9</entry>
+<entry>eserved</entry>
+<row>
+</row>
+<entry>K_OEM_1</entry>
+<entry>xBA Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ';:' key</entry>
+<row>
+<entry>K_OEM_PLUS</entry>
+<entry>xBB For any country/region, the '+' key</entry>
+<row>
+<entry>K_OEM_COMMA</entry>
+<entry>xBC For any country/region, the ',' key</entry>
+</row>
+<row>
+<entry>K_OEM_MINUS</entry>
+<entry>xBD For any country/region, the '-' key</entry>
+</row>
+<row>
+<entry>K_OEM_PERIOD</entry>
+<entry>xBE For any country/region, the '.' key</entry>
+</row>
+<row>
+<entry>K_OEM_2</entry>
+<entry>xBF Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '/?' key</entry>
+</row>
+<row>
+<entry>K_OEM_3</entry>
+<entry>xC0 Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '`~' key</entry>
+</row>
+<row>
+<entry>xC1-D7</entry>
+<entry>eserved</entry>
+</row>
+<row>
+<entry>xD8-DA</entry>
+<entry>nassigned</entry>
+</row>
+<row>
+<entry>K_OEM_4</entry>
+<entry>xDB Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '[{' key</entry>
+</row>
+<row>
+<entry>K_OEM_5</entry>
+<entry>xDC Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '\|' key</entry>
+</row>
+<row>
+<entry>K_OEM_6</entry>
+<entry>xDD Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ']}' key</entry>
+</row>
+<row>
+<entry>K_OEM_7</entry>
+<entry>xDE Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the 'single-quote/double-quote' key</entry>
+</row>
+<row>
+<entry>K_OEM_8</entry>
+<entry>xDF Used for miscellaneous characters; it can vary by keyboard.</entry>
+</row>
+<row>
+<entry>xE0</entry>
+<entry>eserved</entry>
+</row>
+<row>
+<entry>xE1</entry>
+<entry>EM specific</entry>
+</row>
+<row>
+<entry>K_OEM_102</entry>
+<entry>xE2 Either the angle bracket key or the backslash key on the RT 102-key keyboard</entry>
+</row>
+<row>
+<entry>xE3-E4</entry>
+<entry>EM specific</entry>
+</row>
+<row>
+<entry>K_PROCESSKEY</entry>
+<entry>xE5 IME PROCESS key</entry>
+</row>
+<row>
+<entry>xE6</entry>
+<entry>EM specific</entry>
+</row>
+<row>
+<entry>K_PACKET</entry>
+<entry>xE7 Used to pass Unicode characters as if they were keystrokes. The VK_PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP</entry>
+</row>
+<row>
+<entry>xE8</entry>
+<entry>nassigned</entry>
+</row>
+<row>
+<entry>xE9-F5</entry>
+<entry>EM specific</entry>
+</row>
+<row>
+<entry>K_ATTN</entry>
+<entry>xF6 Attn key</entry>
+</row>
+<row>
+<entry>K_CRSEL</entry>
+<entry>xF7 CrSel key</entry>
+</row>
+<row>
+<entry>K_EXSEL</entry>
+<entry>xF8 ExSel key</entry>
+</row>
+<row>
+<entry>K_EREOF</entry>
+<entry>xF9 Erase EOF key</entry>
+</row>
+<row>
+<entry>K_PLAY</entry>
+<entry>xFA Play key</entry>
+</row>
+<row>
+<entry>K_ZOOM</entry>
+<entry>xFB Zoom key</entry>
+</row>
+<row>
+<entry>K_NONAME</entry>
+<entry>xFC Reserved</entry>
+</row>
+<row>
+<entry>K_PA1</entry>
+<entry>xFD PA1 key</entry>
+</row>
+<row>
+<entry>K_OEM_CLEAR</entry>
+<entry>xFE Clear key</entry>
+</row>
+
+
 </tbody></tgroup>
 </table>
+</para>
 </section>
+
+
+<section id="mthKey2Name"><title>key2name</title>
+<indexterm><primary>key2name</primary></indexterm>
+<indexterm><primary>VK class</primary><secondary>key2name</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--key2name(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example connects the key down event in a tree control with a method in the dialog. If the user presses the
+    delete key while the tree control has the focus, the selected item is deleted. Likewise, if the user presses the
+    insert key he is given the opportunity to insert a new item into the tree.
+<programlisting>
+<![CDATA[
+
+::class 'TreeDlg' subclass ResDialog inherit VK
+  ...
+
+::method initDialog
+
+  self~connectTreeViewEvent(IDC_TREE, "KEYDOWN", onKeyDown)
+  ...
+
+::method onKeyDown
+  use arg treeId, key
+  tree = self~newTreeView(treeId)
+
+  -- If the delete key is pressed, delete the selected item, or if the insert
+  -- key is pressed insert a new item by programmaticaly clicking the New Item
+  -- button. Otherwise ignore key.
+  if self~key2name(key) = "VK_DELETE" then
+     tree~delete(tree~selected)
+  else if self~key2name(key) = "VK_INSERT" then
+     self~newPushButton(IDC_PB_NEW_ITEM)~push
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End VK::key2name() -->
+
+
 </section> <!-- End VK Class -->
 
 

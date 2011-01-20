@@ -1186,10 +1186,10 @@ Help request:
   ...
 
   -- Capture F2 key presses, but not Ctrl-F2 or Alt-F2, etc..
-  self~connectKeyPress(onF2, self~vCode('F2'), "NONE")
+  self~connectKeyPress(onF2, .VK~VK_F2, "NONE")
 
   -- Same idea for F3, F4, and F5.  This uses the actual numeric value for the
-  -- keys without bothering to use the VirtualKeyCodes class to translate.
+  -- keys without bothering to use the VK class to translate.
   self~connectKeyPress(onF3, 114, "NONE")
   self~connectKeyPress(onF4, 115, "NONE")
   self~connectKeyPress(onF5, 116, "NONE")
@@ -1480,7 +1480,7 @@ Help request:
   ...
 
   -- Capture F2 key presses, but not Ctrl-F2 or Alt-F2, etc..
-  self~connectKeyPress(onF2, self~vCode('F2'), "NONE")
+  self~connectKeyPress(onF2, .VK~F2, "NONE")
 
   -- Same idea for F3, F4, F5, and F7.  This uses the actual numeric value for
   -- the keys without bothering to use the VirtualKeyCodes class to translate.
@@ -3456,8 +3456,8 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 </programlisting>
 <para>
   The event-handling method connected to KEYDOWN receives two arguments: the control ID of the list view control and the
-  virtual key code pressed. Use the method <link linkend="keyname">KeyName</link> of the VirtualKeyCodes class to get
-  the name of the key. Note that your class must inherit from the VirtualKeyCodes class to use the KeyName method.
+  virtual key code pressed. Use the <link linkend="mthKey2Name">key2name</link> method of the <link
+  linkend="clsVK">VK</link> class to determine which key was pressed.
 </para>
 
 </section>
@@ -3673,13 +3673,12 @@ Example:
   use arg item, newText
 ]]>
 </programlisting></para></listitem>
-<listitem><para>The event-handling method connected to KEYDOWN receives two arguments:
-the control ID of the tree view control and the virtual key code pressed.
-Use the method <link linkend="keyname">KeyName</link> of the VirtualKeyCodes class to get
-the name of the key. Note that your class must inherit from the VirtualKeyCodes
-class to use the KeyName method. Example:
-<programlisting>
-<![CDATA[
+<listitem>
+<para>
+  The event-handling method connected to KEYDOWN receives two arguments: the control ID of the tree view control and the
+  virtual key code pressed. Use the <link linkend="mthKey2Name">key2name</link>method of the <link
+  linkend="clsVK">VK</link> class to determine which key was pressed. Example:
+<programlisting> <![CDATA[
 ::method OnKeyDown
   use arg id, vkey
   say "Key" self~KeyName(vkey) "was pressed."
@@ -3825,13 +3824,12 @@ separated by a blank). Example:
 <orderedlist>
 <listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
 before init:super has been called.</para></listitem>
-<listitem><para>The event-handling method that is connected to KEYDOWN receives two arguments:
-the control ID of the tab control and the virtual key code that has been pressed.
-Use the method <link linkend="keyname">KeyName</link> of the VirtualKeyCodes class to get
-the name of the key. Note that your class must inherit from the VirtualKeyCodes
-class to use the KeyName method. Example:
-<programlisting>
-<![CDATA[
+<listitem>
+<para>
+  The event-handling method that is connected to KEYDOWN receives two arguments: the control ID of the tab control and
+  the virtual key code that has been pressed. Use the <link linkend="mthKey2Name">key2name</link> method of the <link
+linkend="clsVK">VK</link> class to determine which key was pressed. Example:
+<programlisting> <![CDATA[
 ::method OnKeyDown
   use arg id, vkey
   say "Key" self~KeyName(vkey) "was pressed."
