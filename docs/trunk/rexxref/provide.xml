@@ -515,7 +515,8 @@ can be used track the messages that are sent to an object:</para>
 expose target      -- will receive all of the messages
 use arg name, arguments
 say name "invoked with" arguments~toString
-forward to(target)   -- send along the message with the original args
+-- send along the message with the original args
+forward to(target) message(name) arguments(arguments)
 ]]>
 </programlisting>
 </section>
