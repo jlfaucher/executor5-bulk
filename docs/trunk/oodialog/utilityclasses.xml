@@ -54,6 +54,7 @@
 <table id="tUtilityClasses" frame="all">
 <title>ooDialog Utilitiy Classes and Objects</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
 <entry>Utility Class or Object</entry>
@@ -64,6 +65,14 @@
 <row>
 <entry><link linkend="dotSystemErrorCode">.SystemErrorCode</link></entry>
 <entry>Reflects the <link linkend="defSystemErrorCode">system error code</link> if set.</entry>
+</row>
+<row>
+<entry><link linkend="clsDayState">DayState Class</link></entry>
+<entry>Represents the state of each day within a single month. A helper class for the <link linkend="clsMonthCalendar">MonthCalendar</link>.</entry>
+</row>
+<row>
+<entry><link linkend="clsDayStates">DayStates Class</link></entry>
+<entry>A sequential collection of day state objects.</entry>
 </row>
 <row>
 <entry><link linkend="clsDlgArea">DlgArea Class</link></entry>
@@ -94,8 +103,8 @@
 <entry>An object encapsulating a width and height dimension in a 2-D coordinate system.</entry>
 </row>
 <row>
-<entry><link linkend="clsVirtualKeyCodes">VirtualKeyCodes Class</link></entry>
-<entry>Translates back and forth between key codes to symbolic names.</entry>
+<entry><link linkend="clsVK">VirtualKeyCodes Class</link></entry>
+<entry>Translates back and forth between virtual key code numbers and symbolic names.</entry>
 </row>
 <row>
 <entry><link linkend="clsWindow">Window Class</link></entry>
@@ -2432,7 +2441,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <entry>xx</entry>
 </row>
 <row>
-<entry><link linkend="mthRight">right</link></entry>
+<entry><link linkend="mthRightClsPoint">right</link></entry>
 <entry>xx</entry>
 </row>
 <row>
@@ -2636,9 +2645,9 @@ New upper corner (55,75) new lower corner 110,125)
 </variablelist>
 </section>
 
-<section id="mthRight"><title>right</title>
-<indexterm><primary>right</primary>
-<secondary>Rect class</secondary></indexterm>
+<section id="mthRightClsPoint"><title>right</title>
+<indexterm><primary>right</primary><secondary>Rect class</secondary></indexterm>
+<indexterm><primary>Rect class</primary><secondary>right</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aRect~right---------------------------------------------><
@@ -2791,7 +2800,7 @@ New upper corner (55,75) new lower corner 110,125)
 <entry>xx</entry>
 </row>
 <row>
-<entry><link linkend="mthX">x</link></entry>
+<entry><link linkend="mthXClsPoint">x</link></entry>
 <entry>xx</entry>
 </row>
 <row>
@@ -2799,7 +2808,7 @@ New upper corner (55,75) new lower corner 110,125)
 <entry>xx</entry>
 </row>
 <row>
-<entry><link linkend="mthY">y</link></entry>
+<entry><link linkend="mthYClsPoint">y</link></entry>
 <entry>xx</entry>
 </row>
 <row>
@@ -2871,9 +2880,9 @@ Changed point q to be at (150,300)
 </variablelist>
 </section>
 
-<section id="mthX"><title>x</title>
-<indexterm><primary>x</primary>
-<secondary>Point class</secondary></indexterm>
+<section id="mthXClsPoint"><title>x</title>
+<indexterm><primary>x</primary><secondary>Point class</secondary></indexterm>
+<indexterm><primary>Point class</primary><secondary>x</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aPoint~x------------------------------------------------><
@@ -2924,9 +2933,9 @@ Changed point q to be at (150,300)
 </variablelist>
 </section>
 
-<section id="mthY"><title>y</title>
-<indexterm><primary>y</primary>
-<secondary>Point class</secondary></indexterm>
+<section id="mthYClsPoint"><title>y</title>
+<indexterm><primary>y</primary><secondary>Point class</secondary></indexterm>
+<indexterm><primary>Point class</primary><secondary>y</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aPoint~y------------------------------------------------><
@@ -4140,18 +4149,559 @@ New width: 100 new height: 300
 </section> <!-- End DayStates Class -->
 
 
+<section id="clsVK"><title>VK Class</title>
+<indexterm><primary>VK class</primary></indexterm>
+<indexterm><primary>virtual key codes</primary></indexterm>
+<para>
+  The <computeroutput>VK</computeroutput> class allows the programmer to use symbolic names in a program instead of the
+  numeric value of the virtual keys.
+</para>
+<para>
+</para>
+
+<section id="virkeyccmeth"><title>Methods of the VirtualKeyCodes Class</title>
+<para>Instances of the VirtualKeyCodes class implement the methods described
+in the following sections.</para>
+
+<section id="vcode"><title>VCode</title>
+<indexterm><primary>VCode</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aVirtualKeyCodes~VCode(--keyname--)-------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The VCode method returns the decimal value of a
+symbolic key name.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>keyname</term>
+<listitem><para>The symbolic key name. See
+<link linkend="virtualkeys">Symbolic Names for Virtual Keys</link>
+for a list of key names.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The decimal value of the symbolic key name. If the symbolic
+name is not found, 255 is returned.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="keyname"><title>KeyName</title>
+<indexterm><primary>KeyName</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aVirtualKeyCodes~KeyName(--vcode--)-------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The KeyName method returns the symbolic key name
+of the specified hexadecimal code.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>vcode</term>
+<listitem><para>The hexadecimal code of the key.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The symbolic key name of the specified code.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example deletes or inserts an item in a tree
+view depending on the selected key:
+<programlisting>
+<![CDATA[
+::method OnKeyDown_IDC_TREE
+  use arg treeId, key
+  curTree = self~newTreeView(treeId)
+  /* if the Delete key is pressed, delete the selected item */
+  if self~KeyName(key) = "DELETE" then
+     curTree~Delete(curTree~selected)
+  else
+  /* if the Insert key is pressed, simulate pressing the New button */
+  if self~KeyName(key) = "INSERT" then
+     self~IDC_PB_NEW
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+</section>
+
+<section id="virtualkeys"><title>Symbolic Names for Virtual Keys</title>
+<indexterm><primary>symbolic names for virtual keys</primary></indexterm>
+<para><link linkend="t000018">Symbolic Names for Virtual Keys</link>
+shows the symbolic names and the keyboard equivalents
+for the virtual keys used by Object Rexx:</para>
+
+<table id="t000018" frame="all">
+<title>Symbolic Names for Virtual Keys</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Symbolic Name</entry>
+<entry>Mouse or Keyboard Equivalent</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>LBUTTON</entry>
+<entry>Left mouse button</entry>
+</row>
+<row>
+<entry>RBUTTON</entry>
+<entry>Right mouse button</entry>
+</row>
+<row>
+<entry>CANCEL</entry>
+<entry>Control-break processing</entry>
+</row>
+<row>
+<entry>MBUTTON</entry>
+<entry>Middle mouse button (three-button mouse)</entry>
+</row>
+<row>
+<entry>BACK</entry>
+<entry>BACKSPACE key</entry>
+</row>
+<row>
+<entry>TAB</entry>
+<entry>TAB key</entry>
+</row>
+<row>
+<entry>CLEAR</entry>
+<entry>CLEAR key</entry>
+</row>
+<row>
+<entry>RETURN</entry>
+<entry>ENTER key</entry>
+</row>
+<row>
+<entry>SHIFT</entry>
+<entry>SHIFT key</entry>
+</row>
+<row>
+<entry>CONTROL</entry>
+<entry>CRTL key</entry>
+</row>
+<row>
+<entry>MENU</entry>
+<entry>ALT key</entry>
+</row>
+<row>
+<entry>PAUSE</entry>
+<entry>PAUSE key</entry>
+</row>
+<row>
+<entry>CAPITAL</entry>
+<entry>CAPS LOCK key</entry>
+</row>
+<row>
+<entry>ESCAPE</entry>
+<entry>ESC key</entry>
+</row>
+<row>
+<entry>SPACE</entry>
+<entry>SPACEBAR</entry>
+</row>
+<row>
+<entry>PRIOR</entry>
+<entry>PAGE UP key</entry>
+</row>
+<row>
+<entry>NEXT</entry>
+<entry>PAGE DOWN key</entry>
+</row>
+<row>
+<entry>END</entry>
+<entry>END key</entry>
+</row>
+<row>
+<entry>HOME</entry>
+<entry>HOME key</entry>
+</row>
+<row>
+<entry>LEFT</entry>
+<entry>LEFT ARROW key</entry>
+</row>
+<row>
+<entry>UP</entry>
+<entry>UP ARROW key</entry>
+</row>
+<row>
+<entry>RIGHT</entry>
+<entry>RIGHT ARROW key</entry>
+</row>
+<row>
+<entry>DOWN</entry>
+<entry>DOWN ARROW key</entry>
+</row>
+<row>
+<entry>SELECT</entry>
+<entry>SELECT key</entry>
+</row>
+<row>
+<entry>EXECUTE</entry>
+<entry>EXECUTE key</entry>
+</row>
+<row>
+<entry>SNAPSHOT</entry>
+<entry>PRINT SCREEN key</entry>
+</row>
+<row>
+<entry>INSERT</entry>
+<entry>INS key</entry>
+</row>
+<row>
+<entry>DELETE</entry>
+<entry>DEL key</entry>
+</row>
+<row>
+<entry>HELP</entry>
+<entry>HELP key</entry>
+</row>
+<row>
+<entry>0</entry>
+<entry>0 key</entry>
+</row>
+<row>
+<entry>1</entry>
+<entry>1 key</entry>
+</row>
+<row>
+<entry>2</entry>
+<entry>2 key</entry>
+</row>
+<row>
+<entry>3</entry>
+<entry>3 key</entry>
+</row>
+<row>
+<entry>4</entry>
+<entry>4 key</entry>
+</row>
+<row>
+<entry>5</entry>
+<entry>5 key</entry>
+</row>
+<row>
+<entry>6</entry>
+<entry>6 key</entry>
+</row>
+<row>
+<entry>7</entry>
+<entry>7 key</entry>
+</row>
+<row>
+<entry>8</entry>
+<entry>8 key</entry>
+</row>
+<row>
+<entry>9</entry>
+<entry>9 key</entry>
+</row>
+<row>
+<entry>A</entry>
+<entry>A key</entry>
+</row>
+<row>
+<entry>B</entry>
+<entry>B key</entry>
+</row>
+<row>
+<entry>C</entry>
+<entry>C key</entry>
+</row>
+<row>
+<entry>D</entry>
+<entry>D key</entry>
+</row>
+<row>
+<entry>E</entry>
+<entry>E key</entry>
+</row>
+<row>
+<entry>F</entry>
+<entry>F key</entry>
+</row>
+<row>
+<entry>G</entry>
+<entry>G key</entry>
+</row>
+<row>
+<entry>H</entry>
+<entry>H key</entry>
+</row>
+<row>
+<entry>I</entry>
+<entry>I key</entry>
+</row>
+<row>
+<entry>J</entry>
+<entry>J key</entry>
+</row>
+<row>
+<entry>K</entry>
+<entry>K key</entry>
+</row>
+<row>
+<entry>L</entry>
+<entry>L key</entry>
+</row>
+<row>
+<entry>M</entry>
+<entry>M key</entry>
+</row>
+<row>
+<entry>N</entry>
+<entry>N key</entry>
+</row>
+<row>
+<entry>O</entry>
+<entry>O key</entry>
+</row>
+<row>
+<entry>Q</entry>
+<entry>Q key</entry>
+</row>
+<row>
+<entry>R</entry>
+<entry>R key</entry>
+</row>
+<row>
+<entry>S</entry>
+<entry>S key</entry>
+</row>
+<row>
+<entry>T</entry>
+<entry>T key</entry>
+</row>
+<row>
+<entry>U</entry>
+<entry>U key</entry>
+</row>
+<row>
+<entry>V</entry>
+<entry>V key</entry>
+</row>
+<row>
+<entry>W</entry>
+<entry>W key</entry>
+</row>
+<row>
+<entry>X</entry>
+<entry>X key</entry>
+</row>
+<row>
+<entry>Y</entry>
+<entry>Y key</entry>
+</row>
+<row>
+<entry>Z</entry>
+<entry>Z key</entry>
+</row>
+<row>
+<entry>NUMPAD0</entry>
+<entry>Numeric keypad 0 key</entry>
+</row>
+<row>
+<entry>NUMPAD1</entry>
+<entry>Numeric keypad 1 key</entry>
+</row>
+<row>
+<entry>NUMPAD2</entry>
+<entry>Numeric keypad 2 key</entry>
+</row>
+<row>
+<entry>NUMPAD3</entry>
+<entry>Numeric keypad 3 key</entry>
+</row>
+<row>
+<entry>NUMPAD4</entry>
+<entry>Numeric keypad 4 key</entry>
+</row>
+<row>
+<entry>NUMPAD5</entry>
+<entry>Numeric keypad 5 key</entry>
+</row>
+<row>
+<entry>NUMPAD6</entry>
+<entry>Numeric keypad 6 key</entry>
+</row>
+<row>
+<entry>NUMPAD7</entry>
+<entry>Numeric keypad 7 key</entry>
+</row>
+<row>
+<entry>NUMPAD8</entry>
+<entry>Numeric keypad 8 key</entry>
+</row>
+<row>
+<entry>NUMPAD9</entry>
+<entry>Numeric keypad 9 key</entry>
+</row>
+<row>
+<entry>MULTIPLY</entry>
+<entry>Multiply key</entry>
+</row>
+<row>
+<entry>ADD</entry>
+<entry>Add key</entry>
+</row>
+<row>
+<entry>SEPARATOR</entry>
+<entry>Separator key</entry>
+</row>
+<row>
+<entry>SUBTRACT</entry>
+<entry>Subtract key</entry>
+</row>
+<row>
+<entry>DECIMAL</entry>
+<entry>Decimal key</entry>
+</row>
+<row>
+<entry>DIVIDE</entry>
+<entry>Divide key</entry>
+</row>
+<row>
+<entry>F1</entry>
+<entry>F1 key</entry>
+</row>
+<row>
+<entry>F2</entry>
+<entry>F2 key</entry>
+</row>
+<row>
+<entry>F3</entry>
+<entry>F3 key</entry>
+</row>
+<row>
+<entry>F4</entry>
+<entry>F4 key</entry>
+</row>
+<row>
+<entry>F5</entry>
+<entry>F5 key</entry>
+</row>
+<row>
+<entry>F6</entry>
+<entry>F6 key</entry>
+</row>
+<row>
+<entry>F7</entry>
+<entry>F7 key</entry>
+</row>
+<row>
+<entry>F8</entry>
+<entry>F8 key</entry>
+</row>
+<row>
+<entry>F9</entry>
+<entry>F9 key</entry>
+</row>
+<row>
+<entry>F10</entry>
+<entry>F10 key</entry>
+</row>
+<row>
+<entry>F11</entry>
+<entry>F11 key</entry>
+</row>
+<row>
+<entry>F12</entry>
+<entry>F12 key</entry>
+</row>
+<row>
+<entry>F13</entry>
+<entry>F13 key</entry>
+</row>
+<row>
+<entry>F14</entry>
+<entry>F14 key</entry>
+</row>
+<row>
+<entry>F15</entry>
+<entry>F15 key</entry>
+</row>
+<row>
+<entry>F16</entry>
+<entry>F16 key</entry>
+</row>
+<row>
+<entry>F17</entry>
+<entry>F17 key</entry>
+</row>
+<row>
+<entry>F18</entry>
+<entry>F18 key</entry>
+</row>
+<row>
+<entry>F19</entry>
+<entry>F19 key</entry>
+</row>
+<row>
+<entry>F20</entry>
+<entry>F20 key</entry>
+</row>
+<row>
+<entry>F21</entry>
+<entry>F21 key</entry>
+</row>
+<row>
+<entry>F22</entry>
+<entry>F22 key</entry>
+</row>
+<row>
+<entry>F23</entry>
+<entry>F23 key</entry>
+</row>
+<row>
+<entry>F24</entry>
+<entry>F24 key</entry>
+</row>
+<row>
+<entry>NUMLOCK</entry>
+<entry>NUM LOCK key</entry>
+</row>
+<row>
+<entry>SCROLL</entry>
+<entry>SCROLL LOCK key</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+</section> <!-- End VK Class -->
+
+
 <section id="clsDlgArea"><title>DlgArea Class</title>
 <indexterm><primary>DlgArea class</primary></indexterm>
 <para>
   The <computeroutput>DlgArea</computeroutput> class provides assistance in laying out the dialog controls in a
-  dynamically defined dialog.  The class defines an area of a <link linkend="clsUserDialog">UserDialog</link> and
-  provides coordinates of and within it. It is a helper class for the <link
+  dynamically defined dialog.  The class defines an area within the <link linkend="defClientArea">client</link> area of
+  a <link linkend="clsUserDialog">UserDialog</link>. It is a helper class for the <link
   linkend="mthDefineDialog">defineDialog</link> method of a <computeroutput>UserDialog</computeroutput> and has no
-  effect on any <link linkend="ovvUnderlying">underlying</link> Windows Object.
+  effect on any <link linkend="ovvUnderlying">underlying</link> window.
 </para>
-<para>T
-  he following figure shows the measuement attributes used to position a <computeroutput>DlgArea</computeroutput> on a
-  <computeroutput>UserDialog</computeroutput>.
+<para>
+  The methods and attributes of the <computeroutput>DlgArea</computeroutput> provide the coordinates of, and within, the
+  defined area. All coordinates are specified as <emphasis role="italic">client area</emphasis> coordinates. That is,
+  all coordinates are relative to the origin (0, 0) of the client area of the dialog.
+</para>
+<para>
+  The following figure shows the measuement attributes used to position a <computeroutput>DlgArea</computeroutput> on
+  the client area of a <computeroutput>UserDialog</computeroutput>.
 </para>
 <figure id="dlgareafig"><title>DlgArea Measurements</title>
 <mediaobject>
@@ -4182,16 +4732,88 @@ New width: 100 new height: 300
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
 <entry><link linkend="mthNewClsDlgArea">new</link></entry>
+<entry>Instantiates a new <computeroutput>DlgArea</computeroutput> object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
 </row>
 <row>
+<entry><link linkend="atrB">b</link></entry>
+<entry>Reflects the y coordinate, in dialog units, of the bottom margin of the dialog area.</entry>
+</row>
+<row>
+<entry><link linkend="atrHeight">height</link></entry>
+<entry>Reflects the height of the dialog area in dialog units.</entry>
+</row>
+<row>
+<entry><link linkend="atrL">l</link></entry>
+<entry>Reflects the x coordinate, in dialog units, of the left margin of the area.</entry>
+</row>
+<row>
+<entry><link linkend="atrLeft">left</link></entry>
+<entry>Reflects the x coordinate, in dialog units, of the left edge of the area.</entry>
+</row>
+<row>
+<entry><link linkend="atrMargin">margin</link></entry>
+<entry>Reflects the size, in dialog units, of the dialog area margin.</entry>
+</row>
+<row>
+<entry><link linkend="atrR">r</link></entry>
+<entry>Reflects the x coordinate, in dialog units, of the right margin of the area.</entry>
+</row>
+<row>
+<entry><link linkend="atrT">t</link></entry>
+<entry>Reflects the y coordinate, in dialog units, of the top margin of the area.</entry>
+</row>
+<row>
+<entry><link linkend="atrTop">top</link></entry>
+<entry>Reflects the y coordinate, in dialog units, of the top edge of the area.</entry>
+</row>
+<row>
+<entry><link linkend="atrWidth">width</link></entry>
+<entry>Reflects the width of the dialog area in dialog units.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthCX">cx</link></entry>
+<entry>Returns a width, in dialog units, relative to the width of the dialog area.</entry>
+</row>
+<row>
+<entry><link linkend="mthCY">cy</link></entry>
+<entry>Returns a height, in dialog units, relative to the height of the dialog area.</entry>
+</row>
+<row>
+<entry><link linkend="mthH">h</link></entry>
+<entry>Returns a height, in dialog units, relative to the height of the dialog area.</entry>
+</row>
+<row>
+<entry><link linkend="mthHR">hr</link></entry>
+<entry>Returns the remaining height, in dialog units, between the last y invocation and the bottom margin of the area.</entry>
+</row>
+<row>
+<entry><link linkend="mthRightClsDlgArea">right</link></entry>
+<entry>Returns the x coordinate, in dialog units, of the right edge of the area.</entry>
+</row>
+<row>
+<entry><link linkend="mthW">w</link></entry>
+<entry>Returns a width, in dialog units, relative to the width of the dialog area.</entry>
+</row>
+<row>
+<entry><link linkend="mthWR">wr</link></entry>
+<entry>Returns the remaining width, in dialog units, between the last x invocation and the right margin of the area.</entry>
+</row>
+<row>
+<entry><link linkend="mthXClsDlgArea">x</link></entry>
+<entry>Returns a x coordinate relative to the client area of the dialog by specifying an offset relative to the defined dialog area.</entry>
+</row>
+<row>
+<entry><link linkend="mthYClsDlgArea">y</link></entry>
+<entry>Returns a y coordinate relative to the client area of the dialog by specifying an offset relative to the defined dialog area.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -4219,28 +4841,28 @@ New width: 100 new height: 300
       <varlistentry><term>x [required]</term>
       <listitem>
       <para>
-        The x coordinate, in dialog <link linkend="defDialogUnit">units</link>, relative to the top left corner of the
-        <link linkend="defClientArea">client</link> area of the <computeroutput>UserDialog</computeroutput>, for the area
-        you wish to define.
+        The x coordinate for the area to be defined. The coordinate is specified in dialog <link
+        linkend="defDialogUnit">units</link> and is relative to the top left corner of the <link
+        linkend="defClientArea">client</link> area of the <computeroutput>UserDialog</computeroutput>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>y [required]</term>
       <listitem>
       <para>
-        The y coordinate, in dialog units, relative to the top left corner of the client area of the
-        <computeroutput>UserDialog</computeroutput>, for the area you wish to define.
+        The y coordinate for the area to be defined. The coordinate is specified in dialog units and is relative to the
+        top left corner of the client area of the <computeroutput>UserDialog</computeroutput>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>width [required]</term>
       <listitem>
       <para>
-        The width, in dialog units of the area you wish to define .
+        The width, in dialog units, of the area being defined.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>height [required]</term>
       <listitem>
       <para>
-        The height, in dialog units, of the area you wish to define
+        The height, in dialog units, of the area being defined.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>margin [optional]</term>
@@ -4255,20 +4877,22 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This examples defines two dialog areas in a dialog:
+    This examples defines two dialog areas in a dialog. The first area, <emphasis role="italic">u</emphasis>, is defined
+    for the entire client area of the dialog. The second area, <computeroutput>b</computeroutput> is defined as a
+    sub-area of the <computeroutput>u</computeroutput> area.
   </para>
 
 <programlisting>
 <![CDATA[
-u = .dlgArea~new(0, 0, self~sizeX,self~sizeY)          /* u is whole of UserDialog */
-b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons */
+u = .dlgArea~new(0, 0, self~sizeX,self~sizeY)
+b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 ]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="atrT"><title>t</title>
+<section id="atrT"><title>t (Attribute)</title>
 <indexterm><primary>t</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>t</secondary></indexterm>
 <programlisting>
@@ -4277,13 +4901,12 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons *
 ]]>
 </programlisting>
 <para>
-  Reflects the y coordinate, in dialog units, of the top margin relative to the client area of the
-  <computeroutput>UserDialog</computeroutput>.
+  Reflects the y coordinate, in dialog units, of the top margin of the area.
 </para>
 
 </section>
 
-<section id="atrL"><title>l</title>
+<section id="atrL"><title>l (Attribute)</title>
 <indexterm><primary>l</primary></indexterm>
 <indexterm><primary>DlgArea class</primary<secondary>l</secondary></indexterm>
 <programlisting>
@@ -4292,13 +4915,12 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons *
 ]]>
 </programlisting>
 <para>
-  Reflects the x coordinate, in dialog units, of the left margin relative to the client area of the
-  <computeroutput>UserDialog</computeroutput>.
+  Reflects the x coordinate, in dialog units, of the left margin of the area.
 </para>
 
 </section>
 
-<section id="atrB"><title>b</title>
+<section id="atrB"><title>b (Attribute)</title>
 <indexterm><primary>b</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>b</secondary></indexterm>
 <programlisting>
@@ -4307,14 +4929,13 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons *
 ]]>
 </programlisting>
 <para>
-  Reflects the y coordinate, in dialog units, of the bottom margin relative to the client area of the
-  <computeroutput>UserDialog</computeroutput>.
+  Reflects the y coordinate, in dialog units, of the bottom margin of the area.
 </para>
 
 <para></para>
 </section>
 
-<section id="atrR"><title>r</title>
+<section id="atrR"><title>r (Attribute)</title>
 <indexterm><primary>r</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>r</secondary></indexterm>
 <programlisting>
@@ -4323,13 +4944,12 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons *
 ]]>
 </programlisting>
 <para>
-  Reflects the x coordinate, in dialog units, of the right margin relative to the client area of the
-  <computeroutput>UserDialog</computeroutput>.
+  Reflects the x coordinate, in dialog units, of the right margin of the area.
 </para>
 
 </section>
 
-<section id="atrTop"><title>top</title>
+<section id="atrTop"><title>top (Attribute)</title>
 <indexterm><primary>top</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>top</secondary></indexterm>
 <programlisting>
@@ -4338,13 +4958,12 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons *
 ]]>
 </programlisting>
 <para>
-  Reflects the y coordinate, in dialog units, of the top edge relative to the client area of the
-  <computeroutput>UserDialog</computeroutput>.
+  Reflects the y coordinate, in dialog units, of the top edge of the area.
 </para>
 
 </section>
 
-<section id="atrLeft"><title>left</title>
+<section id="atrLeft"><title>left (Attribute)</title>
 <indexterm><primary>left</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>left</secondary></indexterm>
 <programlisting>
@@ -4353,13 +4972,12 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons *
 ]]>
 </programlisting>
 <para>
-  Reflects the x coordinate, in dialog units, of the left edge relative to the client area of the
-  <computeroutput>UserDialog</computeroutput>.
+  Reflects the x coordinate, in dialog units, of the left edge of the area.
 </para>
 
 </section>
 
-<section id="atrWidthop"><title>width</title>
+<section id="atrWidth"><title>width (Attribute)</title>
 <indexterm><primary>width</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>width</secondary></indexterm>
 <programlisting>
@@ -4368,13 +4986,12 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons *
 ]]>
 </programlisting>
 <para>
-  Reflects the ??? TODO WHAT IS THIS ????  y coordinate, in dialog units, of the top edge relative to the client area of
-  the <computeroutput>UserDialog</computeroutput>.
+  Reflects the width of the dialog area in dialog units.
 </para>
 
 </section>
 
-<section id="atrHeight"><title>height</title>
+<section id="atrHeight"><title>height (Attribute)</title>
 <indexterm><primary>height</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>height</secondary></indexterm>
 <programlisting>
@@ -4383,8 +5000,22 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons *
 ]]>
 </programlisting>
 <para>
-  Reflects the ???? TODO WHATIS THIS ?????? x coordinate, in dialog units, of the left edge relative to the client area
-  of the <computeroutput>UserDialog</computeroutput>.
+  Reflects the height of the dialog area in dialog units.
+</para>
+
+</section>
+
+<section id="atrMargin"><title>margin (Attribute)</title>
+<indexterm><primary>margin</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>margin</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--margin---------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Reflects the size, in dialog units, of the dialog area margin.
 </para>
 
 </section>
@@ -4392,127 +5023,16 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R")) /* sub area for buttons *
 <section id="mthCX"><title>cx</title>
 <indexterm><primary>cx</primary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>cx</secondary></indexterm>
-<para>
-  A synonym for the <link linkend="mthW">w</link> method.
-</para>
 <programlisting>
 <![CDATA[
->>--ADlgArea~cx(--+-------+--)----------------------------------------><
-                  +--n%---+
-                  +--"R"--+
-]]>
-</programlisting>
-
-</section>
-
-<section id="dlgareacy"><title>CY</title>
-<indexterm><primary>CY</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Synonym for the H method.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~cy(--+-------+--)----------------------------------------><
-                  +--n%---+
-                  +--"R"--+
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgareah"><title>H</title>
-<indexterm><primary>H</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns a height in dialog units relative to the dialog area.
-</para>
-<para>If no argument is passed returns the inter-margin height.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~h(--+-------+--)-----------------------------------------><
-                 +--n%---+
-                 +--"R"--+
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the H method are:
-<variablelist>
-<varlistentry><term>n%</term>
-<listitem><para>If <computeroutput>n</computeroutput> is a percentage returns
-<computeroutput>n%</computeroutput> of the inter-margin height.
-</para></listitem></varlistentry>
-<varlistentry><term>"R"</term>
-<listitem><para>If "R" is passed returns Remaining height between last ~y and
-bottom margin.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="dlgareahr"><title>HR</title>
-<indexterm><primary>HR</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the remaining height between last ~Y and bottom margin in dialog
-units. This is equivalent to ~H("R").
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~hr-------------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="atrMargin"><title>Margin</title>
-<indexterm><primary>Margim</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Size in dialog units of DlgArea margin.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~Margin---------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="dlgarearight"><title>Right</title>
-<indexterm><primary>Right</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the x coordinate of the right edge in dialog units relative to
-UserDialog.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~Right----------------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-</section>
-
-<section id="mthW"><title>w</title>
-<indexterm><primary>w</primary></indexterm>
-<indexterm><primary>DlgArea class</primary><secondary>w</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--w(--+---------+--)---------------------------><
-        +--flag---+
+>>--cx(--+---------+--)--------------------------><
+         +--flag---+
 
 ]]>
 </programlisting>
 <para>
-  Returns a width, in dialog units, relative to the width of the dialog area.
-</para>
-<para>
-  If no argument is passed returns the inter-margin width.
+  Returns a width, in dialog units, relative to the width of the dialog area. The <emphasis role="italic">cx</emphasis>
+  and <link linkend="mthW">w</link> methods are synonomous.
 </para>
 
 <variablelist>
@@ -4524,21 +5044,20 @@ UserDialog.
       <varlistentry><term>flag [optional]</term>
       <listitem>
       <para>
-        The flag argument signals what part of the width to return. If the flag is omitted, than the entire width of the
-        dialog area is returned. Recall that if there is a margin in effect, than that width does not include the
-        margin. If flag is not omitted it is one of the following:
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the width to return.
       </para>
-      <simplelist type='vert' columns='3'>
-        <member>n%</member>
-        <member>R</member>
-      </simplelist>
+      <para>
+        If the flag is omitted, then the entire width of the dialog area, excluding the margins, is returned. If flag is
+        not omitted, it should be one of the following symbols:
+      </para>
       <variablelist>
         <varlistentry><term>n%</term>
         <listitem>
         <para>
-           <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the dialog
-           area width should be returned. E.g., <computeroutput>10%</computeroutput> would mean to return 10 percent of
-           the dialog area width.  <computeroutput>8%</computeroutput> would ask for 8 percent of the width, etc.,
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area width should be returned. E.g., <computeroutput>10%</computeroutput> would mean to return 10
+           percent of the dialog area width.  <computeroutput>8%</computeroutput> would ask for 8 percent of the width,
+           etc..
         </para>
         </listitem></varlistentry>
         <varlistentry><term>R</term>
@@ -4546,7 +5065,7 @@ UserDialog.
         <para>
           A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
           dialog area width should be returned. I.e., that portion of the width between the last invocation of the <link
-          linkend="mthX">x</link> method and the right margin.
+          linkend="mthXClsDlgArea">x</link> method and the right margin.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -4561,109 +5080,376 @@ UserDialog.
     arguement.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="dlgareawr"><title>WR</title>
-<indexterm><primary>WR</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns the remaining width between last ~X and right margin in dialog
-units. This is equivalent to ~W("R").
-</para>
+<section id="mthCY"><title>cy</title>
+<indexterm><primary>cy</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>cy</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--ADlgArea~wr-------------------------------------------------------><
+>>--cy(--+---------+--)--------------------------><
+         +--flag---+
+
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  Returns a height, in dialog units, relative to the height of the dialog area. The <emphasis
+  role="italic">cy</emphasis> and <link linkend="mthH">h</link> methods are synonomous.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the height to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire height of the dialog area, excluding the margins, is returned. If flag
+        is not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area height should be returned. E.g., <computeroutput>4%</computeroutput> would mean to return 4
+           percent of the dialog area height  <computeroutput>20%</computeroutput> would ask for 20 percent of the
+           height, etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area height should be returned. I.e., that portion of the height between the last invocation of the
+          <link linkend="mthYClsDlgArea">y</link> method and the bottom margin.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area height as specified by the <emphasis role="italic">flag</emphasis>
+    arguement.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
-<section id="dlgareax"><title>X</title>
-<indexterm><primary>X</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns an X Coordinate in dialog units relative to the dialog area.
-</para>
-<para>If no <computeroutput>n</computeroutput> is passed returns the x
-coordinate of the left margin.
-</para>
-<programlisting>
-<![CDATA[
->>--ADlgArea~x(--+------+--)------------------------------------------><
-                 +--n---+
-                 +--n%--+
-]]>
-</programlisting>
+<section id="mthH"><title>h</title>
+<indexterm><primary>h</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>h</secondary></indexterm>
 
-<para></para>
+<para>
+  Returns a height, in dialog units, relative to the height of the dialog area. The <emphasis
+  role="italic">h</emphasis> and <link linkend="mthCY">cy</link> methods are synonomous.
+</para>
+
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the X method are:
-<variablelist>
-<varlistentry><term>n</term>
-<listitem><para>If <computeroutput>n</computeroutput> is passed and is positive,
-then returns the x coordinate <computeroutput>n</computeroutput> dialog units
-to the right of the left margin.
-If <computeroutput>n</computeroutput> is passed and is negative, then returns
-the x coordinate <computeroutput>n</computeroutput> dialog units to the left of
-the right margin..
-</para></listitem></varlistentry>
-<varlistentry><term>n%</term>
-<listitem><para>If <computeroutput>n</computeroutput> is passed and is a
-percentage, then returns the x coordinate <computeroutput>n%</computeroutput>
-of the way between the left and right margins.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the height to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire height of the dialog area, excluding the margins, is returned. If flag
+        is not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area height should be returned. E.g., <computeroutput>4%</computeroutput> would mean to return 5
+           percent of the dialog area height  <computeroutput>20%</computeroutput> would ask for 20 percent of the
+           height, etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area height should be returned. I.e., that portion of the height between the last invocation of the
+          <link linkend="mthYClsDlgArea">y</link> method and the bottom margin.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area height as specified by the <emphasis role="italic">flag</emphasis>
+    arguement.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="dlgareay"><title>Y</title>
-<indexterm><primary>Y</primary>
-<secondary>DlgArea class</secondary></indexterm>
-<para>Returns an Y Coordinate in dialog units relative to the dialog area.
-</para>
-<para>If no <computeroutput>n</computeroutput> is passed returns the x
-coordinate of the top margin.
-</para>
+<section id="mthHR"><title>hr</title>
+<indexterm><primary>hr</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>hr</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--ADlgArea~y(--+------+--)------------------------------------------><
-                 +--n---+
-                 +--n%--+
+>>--hr-------------------------------------------><
 ]]>
 </programlisting>
 
-<para></para>
+<para>
+  Returns the remaining height, in dialog units, between the last <link linkend="mthYClsDlgArea">y</link> invocation and
+  the bottom margin of the area. This is equivalent to <link linkend="mthH">h("R")</link>.
+</para>
+
+</section>
+
+<section id="mthRightClsDlgArea"><title>right</title>
+<indexterm><primary>right</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>right</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--right----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the x coordinate, in dialog units, of the right edge of the area.
+</para>
+
+</section>
+
+<section id="mthW"><title>w</title>
+<indexterm><primary>w</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>w</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--w(--+---------+--)---------------------------><
+        +--flag---+
+
+]]>
+</programlisting>
+<para>
+  Returns a width, in dialog units, relative to the width of the dialog area. The <link linkend="mthCX">cx</link> and
+  <emphasis role="italic">w</emphasis> methods are synonomous.
+</para>
+
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments you pass to the Y method are:
-<variablelist>
-<varlistentry><term>n</term>
-<listitem><para>If <computeroutput>n</computeroutput> is passed and is positive,
-then returns the y coordinate <computeroutput>n</computeroutput> dialog units
-below the topmargin.
-If <computeroutput>n</computeroutput> is passed and is negative, then returns
-the y coordinate <computeroutput>n</computeroutput> dialog units above
-the bottom margin..
-</para></listitem></varlistentry>
-<varlistentry><term>n%</term>
-<listitem><para>If <computeroutput>n</computeroutput> is passed and is a
-percentage, then returns the y coordinate <computeroutput>n%</computeroutput>
-of the way between the top and bottom margins.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">flag</emphasis> argument signals what part of the width to return.
+      </para>
+      <para>
+        If the flag is omitted, then the entire width of the dialog area, excluding the margins, is returned. If flag is
+        not omitted, it should be one of the following symbols:
+      </para>
+      <variablelist>
+        <varlistentry><term>n%</term>
+        <listitem>
+        <para>
+           Where <computeroutput>n</computeroutput> is a number and the percent sign signals that a percentage of the
+           dialog area width should be returned. E.g., <computeroutput>10%</computeroutput> would mean to return 10
+           percent of the dialog area width.  <computeroutput>8%</computeroutput> would ask for 8 percent of the width,
+           etc..
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>R</term>
+        <listitem>
+        <para>
+          A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
+          dialog area width should be returned. I.e., that portion of the width between the last invocation of the <link
+          linkend="mthXClsDlgArea">x</link> method and the right margin.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The return is part, or all, of the dialog area width as specified by the <emphasis role="italic">flag</emphasis>
+    arguement.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Rigours error checking of the argument is not done. If the argument is not recognized it is just ignored and treated
+    as if the argument was omitted.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
+</section>
+
+<section id="mthWR"><title>wr</title>
+<indexterm><primary>wr</primary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>wr</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wr-------------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns the remaining width, in dialog units, between the last <link linkend="mthXClsDlgArea">x</link> invocation and the
+  right margin of the area. This is equivalent to <link linkend="mthW">w("R")</link>.
+</para>
+
+</section>
+
+<section id="mthXClsDlgArea"><title>x</title>
+<indexterm><primary>x</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>x</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--x(--+----------+--)--------------------------><
+        +--offSet--+
+
+]]>
+</programlisting>
+
+<para>
+  Returns a x coordinate relative to the <link linkend="defClientArea">client</link> area of the dialog by specifying
+  an offset relative to the defined dialog area.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>offset [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">offset</emphasis> is omitted, then the x coordinate of the left margin is returned.
+      </para>
+      <para>
+        Otherwise, <emphasis role="italic">offset</emphasis> is specified as either a concrete number or as a
+        percentage. To specify a percentage add the percent sign to the number, e.g. for twenty percent use
+        <computeroutput>20%</computeroutput>.
+      </para>
+      <para>
+        In addition, <emphasis role="italic">offset</emphasis> can be negative or positve. When positive, the offset is
+        an amount to the right of the left margin. When negative, the offset is an amount to the left of the right
+        margin. Both concrete and percentage offsets can be negative.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The appropriate <link linkend="defClientArea">client</link> area x coordinate, in dialog units, as specified by the
+    <emphasis role="italic">offset</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthYClsDlgArea"><title>y</title>
+<indexterm><primary>y</primary><secondary>DlgArea class</secondary></indexterm>
+<indexterm><primary>DlgArea class</primary><secondary>y</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--y(--+----------+--)--------------------------><
+        +--offSet--+
+
+]]>
+</programlisting>
+
+<para>
+  Returns a y coordinate relative to the <link linkend="defClientArea">client</link> area of the dialog by specifying
+  an offset relative to the defined dialog area.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>offset [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">offset</emphasis> is omitted, then the y coordinate of the top margin is returned.
+      </para>
+      <para>
+        Otherwise, <emphasis role="italic">offset</emphasis> is specified as either a concrete number or as a
+        percentage. To specify a percentage add the percent sign to the number, e.g. for twenty percent use
+        <computeroutput>20%</computeroutput>.
+      </para>
+      <para>
+        In addition, <emphasis role="italic">offset</emphasis> can be negative or positve. When positive, the offset is
+        an amount below the top margin. When negative, the offset is an amount above the bottom margin. Both concrete
+        and percentage offsets can be negative.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Returns:</emphasis></term>
+  <listitem>
+  <para>
+    The appropriate <link linkend="defClientArea">client</link> area y coordinate, in dialog units, as specified by the
+    <emphasis role="italic">offset</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="exampleDlgArea"><title>DlgArea Example</title>
-<para>On a UserDialog we want the top left to be an entry area, with an area
-for buttons on the right and a status area below.</para>
-<para>We decide to give 70% of the width and 90% of the height to the entry area.
-We leave the margin as the default.
-We want all the areas to resize themselves if we change the UserDialog size
-except the OK button should remain 15 units high.</para>
+<para>
+  With a <computeroutput>UserDialog</computeroutput> we want the top left to be an edit control, with an area for
+  buttons on the right and a status area below.
+</para>
+<para>
+  We decide to give 70% of the width and 90% of the height to the edit control. We leave the margin as the default.
+</para>
 <figure id="dlgareaplanfig"><title>DlgArea Plan</title>
 <mediaobject>
 <imageobject>
@@ -4672,7 +5458,9 @@ except the OK button should remain 15 units high.</para>
 </imageobject>
 </mediaobject>
 </figure>
-<para>Here is what our defineDialog method might look like:</para>
+<para>
+  Here is what our defineDialog method might look like:
+</para>
 <programlisting>
 <![CDATA[
 /* ------------------------------------------------------------------------- */
@@ -4681,7 +5469,7 @@ except the OK button should remain 15 units high.</para>
 /* define DlgArea named u as whole of user dialog                            */
 u=.dlgArea~new(  0       ,         0,self~SizeX,Self~SizeY)   /* whole dlg   */
 
-/* define DlgArea named e within DlgArea u for entry line                    */
+/* define DlgArea named e within DlgArea u for edit control                  */
 e=.dlgArea~new(u~x       ,u~y       ,u~w("70%"),u~h("90%"))
 
 /* define DlgArea named s within DlgArea u for Status Area in remaining height*/
@@ -4690,7 +5478,7 @@ s=.dlgArea~new(u~x       ,u~y("90%"),u~w("70%"),u~hr      )
 /* define DlgArea named b within DlgArea u for Button area                   */
 b=.dlgArea~new(u~x("70%"),u~y       ,u~wr      ,u~hr      )
 
-/* entry line coterminous with area e margins                                */
+/* Edit control coterminous with area e margins                              */
 self~createEdit(12, e~x, e~y, e~w, e~h, "multiline", "text")
 
 /* Status Area Coterminous with area s margins                               */
@@ -4698,14 +5486,16 @@ self~createStaticText(11, s~x, s~y, s~w, s~h, , "Status info appears here")
 
 /* Seven buttons evenly spaced at 10% intervals, 9% high                     */
 do i = 0 to 6
-   self~addButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"),"Button" i,"Button"||i)
+   self~createPushButton(12+i,b~x,b~y((i * 10)||"%"),b~w,b~h("9%"), ,"Button" i,"Button"||i)
 end /* DO */
 
 /* ok button 15 dialog units high at bottom of area b                        */
-self~addButton(1,b~x,b~y(-15),b~w,15,"OK","OK","Default")
+self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 ]]>
 </programlisting>
-<para>Here is the resultant dialog.</para>
+<para>
+  Here is the resultant dialog.
+</para>
 <figure id="dlgareasample"><title>Sample DlgArea</title>
 <mediaobject>
 <imageobject>
@@ -5456,547 +6246,6 @@ u~resize(self, sizeinfo)
   This achieves the same dialog as the previous <link linkend="exampleDlgArea"> DlgArea example</link>, but now it is
   resizable by dragging the frame.
 </para>
-</section>
-</section>
-
-<section id="clsVirtualKeyCodes"><title>VirtualKeyCodes Class</title>
-<indexterm><primary>VirtualKeyCodes class</primary></indexterm>
-<para>
-  The methods of the VirtualKeyCodes class can be used for all objects of the
-  WindowsProgramManager and WindowObject classes. These classes inherit from the
-  VirtualKeyCodes class. The VirtualKeyCodes class cannot be used as a
-  standalone class.
-</para>
-<para>The VirtualKeyCodes class requires the class definition
-file <computeroutput>WinSystm.cls</computeroutput>:</para>
-<programlisting>
-<![CDATA[
-::requires "WinSystm.cls"
-]]>
-</programlisting>
-
-<section id="virkeyccmeth"><title>Methods of the VirtualKeyCodes Class</title>
-<para>Instances of the VirtualKeyCodes class implement the methods described
-in the following sections.</para>
-
-<section id="vcode"><title>VCode</title>
-<indexterm><primary>VCode</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aVirtualKeyCodes~VCode(--keyname--)-------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The VCode method returns the decimal value of a
-symbolic key name.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>keyname</term>
-<listitem><para>The symbolic key name. See
-<link linkend="virtualkeys">Symbolic Names for Virtual Keys</link>
-for a list of key names.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The decimal value of the symbolic key name. If the symbolic
-name is not found, 255 is returned.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="keyname"><title>KeyName</title>
-<indexterm><primary>KeyName</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aVirtualKeyCodes~KeyName(--vcode--)-------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The KeyName method returns the symbolic key name
-of the specified hexadecimal code.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>vcode</term>
-<listitem><para>The hexadecimal code of the key.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The symbolic key name of the specified code.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example deletes or inserts an item in a tree
-view depending on the selected key:
-<programlisting>
-<![CDATA[
-::method OnKeyDown_IDC_TREE
-  use arg treeId, key
-  curTree = self~newTreeView(treeId)
-  /* if the Delete key is pressed, delete the selected item */
-  if self~KeyName(key) = "DELETE" then
-     curTree~Delete(curTree~selected)
-  else
-  /* if the Insert key is pressed, simulate pressing the New button */
-  if self~KeyName(key) = "INSERT" then
-     self~IDC_PB_NEW
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-</section>
-
-<section id="virtualkeys"><title>Symbolic Names for Virtual Keys</title>
-<indexterm><primary>symbolic names for virtual keys</primary></indexterm>
-<para><link linkend="t000018">Symbolic Names for Virtual Keys</link>
-shows the symbolic names and the keyboard equivalents
-for the virtual keys used by Object Rexx:</para>
-
-<table id="t000018" frame="all">
-<title>Symbolic Names for Virtual Keys</title>
-<tgroup cols="2">
-<thead>
-<row>
-<entry>Symbolic Name</entry>
-<entry>Mouse or Keyboard Equivalent</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry>LBUTTON</entry>
-<entry>Left mouse button</entry>
-</row>
-<row>
-<entry>RBUTTON</entry>
-<entry>Right mouse button</entry>
-</row>
-<row>
-<entry>CANCEL</entry>
-<entry>Control-break processing</entry>
-</row>
-<row>
-<entry>MBUTTON</entry>
-<entry>Middle mouse button (three-button mouse)</entry>
-</row>
-<row>
-<entry>BACK</entry>
-<entry>BACKSPACE key</entry>
-</row>
-<row>
-<entry>TAB</entry>
-<entry>TAB key</entry>
-</row>
-<row>
-<entry>CLEAR</entry>
-<entry>CLEAR key</entry>
-</row>
-<row>
-<entry>RETURN</entry>
-<entry>ENTER key</entry>
-</row>
-<row>
-<entry>SHIFT</entry>
-<entry>SHIFT key</entry>
-</row>
-<row>
-<entry>CONTROL</entry>
-<entry>CRTL key</entry>
-</row>
-<row>
-<entry>MENU</entry>
-<entry>ALT key</entry>
-</row>
-<row>
-<entry>PAUSE</entry>
-<entry>PAUSE key</entry>
-</row>
-<row>
-<entry>CAPITAL</entry>
-<entry>CAPS LOCK key</entry>
-</row>
-<row>
-<entry>ESCAPE</entry>
-<entry>ESC key</entry>
-</row>
-<row>
-<entry>SPACE</entry>
-<entry>SPACEBAR</entry>
-</row>
-<row>
-<entry>PRIOR</entry>
-<entry>PAGE UP key</entry>
-</row>
-<row>
-<entry>NEXT</entry>
-<entry>PAGE DOWN key</entry>
-</row>
-<row>
-<entry>END</entry>
-<entry>END key</entry>
-</row>
-<row>
-<entry>HOME</entry>
-<entry>HOME key</entry>
-</row>
-<row>
-<entry>LEFT</entry>
-<entry>LEFT ARROW key</entry>
-</row>
-<row>
-<entry>UP</entry>
-<entry>UP ARROW key</entry>
-</row>
-<row>
-<entry>RIGHT</entry>
-<entry>RIGHT ARROW key</entry>
-</row>
-<row>
-<entry>DOWN</entry>
-<entry>DOWN ARROW key</entry>
-</row>
-<row>
-<entry>SELECT</entry>
-<entry>SELECT key</entry>
-</row>
-<row>
-<entry>EXECUTE</entry>
-<entry>EXECUTE key</entry>
-</row>
-<row>
-<entry>SNAPSHOT</entry>
-<entry>PRINT SCREEN key</entry>
-</row>
-<row>
-<entry>INSERT</entry>
-<entry>INS key</entry>
-</row>
-<row>
-<entry>DELETE</entry>
-<entry>DEL key</entry>
-</row>
-<row>
-<entry>HELP</entry>
-<entry>HELP key</entry>
-</row>
-<row>
-<entry>0</entry>
-<entry>0 key</entry>
-</row>
-<row>
-<entry>1</entry>
-<entry>1 key</entry>
-</row>
-<row>
-<entry>2</entry>
-<entry>2 key</entry>
-</row>
-<row>
-<entry>3</entry>
-<entry>3 key</entry>
-</row>
-<row>
-<entry>4</entry>
-<entry>4 key</entry>
-</row>
-<row>
-<entry>5</entry>
-<entry>5 key</entry>
-</row>
-<row>
-<entry>6</entry>
-<entry>6 key</entry>
-</row>
-<row>
-<entry>7</entry>
-<entry>7 key</entry>
-</row>
-<row>
-<entry>8</entry>
-<entry>8 key</entry>
-</row>
-<row>
-<entry>9</entry>
-<entry>9 key</entry>
-</row>
-<row>
-<entry>A</entry>
-<entry>A key</entry>
-</row>
-<row>
-<entry>B</entry>
-<entry>B key</entry>
-</row>
-<row>
-<entry>C</entry>
-<entry>C key</entry>
-</row>
-<row>
-<entry>D</entry>
-<entry>D key</entry>
-</row>
-<row>
-<entry>E</entry>
-<entry>E key</entry>
-</row>
-<row>
-<entry>F</entry>
-<entry>F key</entry>
-</row>
-<row>
-<entry>G</entry>
-<entry>G key</entry>
-</row>
-<row>
-<entry>H</entry>
-<entry>H key</entry>
-</row>
-<row>
-<entry>I</entry>
-<entry>I key</entry>
-</row>
-<row>
-<entry>J</entry>
-<entry>J key</entry>
-</row>
-<row>
-<entry>K</entry>
-<entry>K key</entry>
-</row>
-<row>
-<entry>L</entry>
-<entry>L key</entry>
-</row>
-<row>
-<entry>M</entry>
-<entry>M key</entry>
-</row>
-<row>
-<entry>N</entry>
-<entry>N key</entry>
-</row>
-<row>
-<entry>O</entry>
-<entry>O key</entry>
-</row>
-<row>
-<entry>Q</entry>
-<entry>Q key</entry>
-</row>
-<row>
-<entry>R</entry>
-<entry>R key</entry>
-</row>
-<row>
-<entry>S</entry>
-<entry>S key</entry>
-</row>
-<row>
-<entry>T</entry>
-<entry>T key</entry>
-</row>
-<row>
-<entry>U</entry>
-<entry>U key</entry>
-</row>
-<row>
-<entry>V</entry>
-<entry>V key</entry>
-</row>
-<row>
-<entry>W</entry>
-<entry>W key</entry>
-</row>
-<row>
-<entry>X</entry>
-<entry>X key</entry>
-</row>
-<row>
-<entry>Y</entry>
-<entry>Y key</entry>
-</row>
-<row>
-<entry>Z</entry>
-<entry>Z key</entry>
-</row>
-<row>
-<entry>NUMPAD0</entry>
-<entry>Numeric keypad 0 key</entry>
-</row>
-<row>
-<entry>NUMPAD1</entry>
-<entry>Numeric keypad 1 key</entry>
-</row>
-<row>
-<entry>NUMPAD2</entry>
-<entry>Numeric keypad 2 key</entry>
-</row>
-<row>
-<entry>NUMPAD3</entry>
-<entry>Numeric keypad 3 key</entry>
-</row>
-<row>
-<entry>NUMPAD4</entry>
-<entry>Numeric keypad 4 key</entry>
-</row>
-<row>
-<entry>NUMPAD5</entry>
-<entry>Numeric keypad 5 key</entry>
-</row>
-<row>
-<entry>NUMPAD6</entry>
-<entry>Numeric keypad 6 key</entry>
-</row>
-<row>
-<entry>NUMPAD7</entry>
-<entry>Numeric keypad 7 key</entry>
-</row>
-<row>
-<entry>NUMPAD8</entry>
-<entry>Numeric keypad 8 key</entry>
-</row>
-<row>
-<entry>NUMPAD9</entry>
-<entry>Numeric keypad 9 key</entry>
-</row>
-<row>
-<entry>MULTIPLY</entry>
-<entry>Multiply key</entry>
-</row>
-<row>
-<entry>ADD</entry>
-<entry>Add key</entry>
-</row>
-<row>
-<entry>SEPARATOR</entry>
-<entry>Separator key</entry>
-</row>
-<row>
-<entry>SUBTRACT</entry>
-<entry>Subtract key</entry>
-</row>
-<row>
-<entry>DECIMAL</entry>
-<entry>Decimal key</entry>
-</row>
-<row>
-<entry>DIVIDE</entry>
-<entry>Divide key</entry>
-</row>
-<row>
-<entry>F1</entry>
-<entry>F1 key</entry>
-</row>
-<row>
-<entry>F2</entry>
-<entry>F2 key</entry>
-</row>
-<row>
-<entry>F3</entry>
-<entry>F3 key</entry>
-</row>
-<row>
-<entry>F4</entry>
-<entry>F4 key</entry>
-</row>
-<row>
-<entry>F5</entry>
-<entry>F5 key</entry>
-</row>
-<row>
-<entry>F6</entry>
-<entry>F6 key</entry>
-</row>
-<row>
-<entry>F7</entry>
-<entry>F7 key</entry>
-</row>
-<row>
-<entry>F8</entry>
-<entry>F8 key</entry>
-</row>
-<row>
-<entry>F9</entry>
-<entry>F9 key</entry>
-</row>
-<row>
-<entry>F10</entry>
-<entry>F10 key</entry>
-</row>
-<row>
-<entry>F11</entry>
-<entry>F11 key</entry>
-</row>
-<row>
-<entry>F12</entry>
-<entry>F12 key</entry>
-</row>
-<row>
-<entry>F13</entry>
-<entry>F13 key</entry>
-</row>
-<row>
-<entry>F14</entry>
-<entry>F14 key</entry>
-</row>
-<row>
-<entry>F15</entry>
-<entry>F15 key</entry>
-</row>
-<row>
-<entry>F16</entry>
-<entry>F16 key</entry>
-</row>
-<row>
-<entry>F17</entry>
-<entry>F17 key</entry>
-</row>
-<row>
-<entry>F18</entry>
-<entry>F18 key</entry>
-</row>
-<row>
-<entry>F19</entry>
-<entry>F19 key</entry>
-</row>
-<row>
-<entry>F20</entry>
-<entry>F20 key</entry>
-</row>
-<row>
-<entry>F21</entry>
-<entry>F21 key</entry>
-</row>
-<row>
-<entry>F22</entry>
-<entry>F22 key</entry>
-</row>
-<row>
-<entry>F23</entry>
-<entry>F23 key</entry>
-</row>
-<row>
-<entry>F24</entry>
-<entry>F24 key</entry>
-</row>
-<row>
-<entry>NUMLOCK</entry>
-<entry>NUM LOCK key</entry>
-</row>
-<row>
-<entry>SCROLL</entry>
-<entry>SCROLL LOCK key</entry>
-</row>
-</tbody></tgroup>
-</table>
 </section>
 </section>
 

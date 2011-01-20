@@ -892,9 +892,10 @@ Help request:
     </para>
     <para>
       The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
-      are 0 through 255, although both 0 and 255 are not used.  The <link
-      linkend="clsVirtualKeyCodes">VirtualKeyCodes</link> class can be used to make a program more readable. However,
-      at this time, this class does not cover the full range of keys available
+      are 0 through 255. There are some integer values between 0 and 255 that do not have a vitural key assigned to
+      them. For example, 0, 7, 10, 11, and 255 are not used. The <link
+      linkend="clsVK">VK</link> class can be used to make a program more readable. The class covers every key Microsoft
+      defines.
     </para>
     <para>
       <emphasis role="bold">Note</emphasis>that the programmer can use the <link linkend="defWindowsDoc">Windows
