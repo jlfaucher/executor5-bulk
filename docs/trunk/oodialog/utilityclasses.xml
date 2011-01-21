@@ -197,23 +197,23 @@ System error code: 2
 </row>
 <row>
 <entry><link linkend="mthAndClsDlgUtil">and</link></entry>
-<entry>xx</entry>
+<entry><emphasis role="italic">and's</emphasis> two numbers and returns the result.</entry>
 </row>
 <row>
 <entry><link linkend="mthComCtl32Version">comCtl32Version</link></entry>
-<entry>xx</entry>
+<entry>Determines the Common Controls Library version in use by ooDialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics</link></entry>
-<entry>xx</entry>
+<entry>Obtains the system metric value for a given index.</entry>
 </row>
 <row>
 <entry><link linkend="mthHiWord">hiWord</link></entry>
-<entry>xx</entry>
+<entry>Returns the high-order word portion of a number.</entry>
 </row>
 <row>
 <entry><link linkend="mthLoWord">loWord</link></entry>
-<entry>xx</entry>
+<entry>Returns the low-order word portion of a number.</entry>
 </row>
 <row>
 <entry><link linkend="mthMakeLParam">makeLParam</link></entry>
@@ -225,7 +225,7 @@ System error code: 2
 </row>
 <row>
 <entry><link linkend="mthOrClsDlgUtil">or</link></entry>
-<entry>xx</entry>
+<entry><emphasis role="italic">or's</emphasis> two or more numbers and returns the result.</entry>
 </row>
 <row>
 <entry><link linkend="mthScreenArea">screenArea</link></entry>
@@ -241,7 +241,7 @@ System error code: 2
 </row>
 <row>
 <entry><link linkend="mthVersion">version</link></entry>
-<entry>xx</entry>
+<entry>Returns the ooDialog version string.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -250,11 +250,12 @@ System error code: 2
 
 <section id="mthVersion"><title>version (Class Method)</title>
 <indexterm><primary>version</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>version</secondary></indexterm>
 <programlisting>
 <![CDATA[
 
->>-.DlgUtil~version(--+---------+-)--------------><
-                      +-format--+
+>>-version(--+---------+-)-----------------------><
+             +-format--+
 ]]>
 </programlisting>
 
@@ -267,7 +268,7 @@ System error code: 2
   <para>
     The single arguemnt is:
     <variablelist>
-    <varlistentry><term>format</term>
+    <varlistentry><term>format [optional]</term>
     <listitem>
     <para>
       A keyword indicating the format of the returned version string.  Only the first letter is needed and case is not
@@ -345,75 +346,84 @@ Too bad, you are still running ooRexx 4.0.0
 
 <section id="mthComCtl32Version"><title>comCtl32Version (Class Method)</title>
 <indexterm><primary>comCtl32Version</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>comCtl32Version</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                              +-Short---+
->>-.DlgUtil~comCtl32Version(--+---------+-)----------------><
-                              +-Number--+
-                              +-OS------+
-                              +-Full----+
+
+>>--comCtl32Version(--+----------+-)-------------><
+                      +--format--+
+
 ]]>
 </programlisting>
 
 <para>
-  Use this method to determine the version of the<link linkend="ovvComctl32">
-  Common Controls Library</link> used by ooDialog on the current system.
+  Use this method to determine the version of the<link linkend="ovvComctl32"> Common Controls Library</link> used by
+  ooDialog on the current system.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The single argument is:
-<variablelist>
-<varlistentry><term>format</term>
-<listitem>
-<para>
-  A keyword indicating the format of the returned version string.  Only the first letter is
-  needed and case is not significant.  Any unrecognized keyword is ignored and the default
-  format is used.  The format for each keyword is as follows:
-</para>
-<variablelist>
-<varlistentry><term>Short</term>
-<listitem>
-<para>
-  The version number, for instance <computeroutput>4.72</computeroutput> or
-  <computeroutput>6.0</computeroutput>. This is the default.
-</para></listitem></varlistentry>
-<varlistentry><term>Number</term>
-<listitem><para>This is an alias for short.
-</para></listitem></varlistentry>
-<varlistentry><term>OS</term>
-<listitem>
-<para>
-  The minimum operating system that can be expected to be compatible with the libray.
-  Earlier versions of the common control library were also distributed with Internet
-  Explorer and so an OS part of say, <computeroutput>W98 / IE 4.01</computeroutput> would
-  indicate that the current common control library supports all the features available on
-  Windows 98 or with Internet Explorer 4.01.
-</para></listitem></varlistentry>
-<varlistentry><term>Full</term>
-<listitem>
-<para>
-  The full format string in the format <computeroutput>comctl32.dll version 6.0
-  (XP)</computeroutput>. Where the 6.0 is the number part and XP is the OS part.
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-<para>
-  This method returns a string in one of the formats described above.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para>
-  In the following example, the programmer repositions the dialog controls under certain
-  conditions.  In Windows XP and later, this task is more accurate if the
-  <computeroutput>getIdealSize()</computeroutput> method of the Button class is used.
-  However, the programmer needs the application to also run on Windows 2000.  He uses the
-  <computeroutput>comCtl32Version()</computeroutput> method to determine if the <link
-  linkend="mthGetIdealSize">getIdealSize</link> method is available.  If it is not available
-  he uses an alternative, but less accurate method to reposition the controls.
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+    <varlistentry><term>format [optional]</term>
+    <listitem>
+    <para>
+      A keyword indicating the format of the returned version string.  Only the first letter is needed and case is not
+      significant.  Any unrecognized keyword is ignored and the default format is used.  The format for each keyword is
+      as follows:
+    </para>
+    <variablelist>
+      <varlistentry><term>Short</term>
+      <listitem>
+      <para>
+        The version number, for instance <computeroutput>4.72</computeroutput> or <computeroutput>6.0</computeroutput>.
+        This is the default.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Number</term>
+      <listitem>
+      <para>
+        This is an alias for short.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>OS</term>
+      <listitem>
+      <para>
+        The minimum operating system that can be expected to be compatible with the libray. Earlier versions of the
+        common control library were also distributed with Internet Explorer and so an OS part of say,
+        <computeroutput>W98 / IE 4.01</computeroutput> would indicate that the current common control library supports
+        all the features available on Windows 98 or with Internet Explorer 4.01.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Full</term>
+      <listitem>
+      <para>
+        The full format string in the format <computeroutput>comctl32.dll version 6.0 (XP)</computeroutput>. Where the
+        6.0 is the number part and XP is the OS part.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns a string in one of the formats described above.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In the following example, the programmer repositions the dialog controls under certain conditions.  In Windows XP
+    and later, this task is more accurate if the <computeroutput>getIdealSize()</computeroutput> method of the Button
+    class is used. However, the programmer needs the application to also run on Windows 2000.  He uses the
+    <computeroutput>comCtl32Version()</computeroutput> method to determine if the <link
+    linkend="mthGetIdealSize">getIdealSize</link> method is available.  If it is not available he uses an alternative,
+    but less accurate method to reposition the controls.
+
 <programlisting>
 <![CDATA[
 ::method repositionControls
@@ -428,7 +438,7 @@ Too bad, you are still running ooRexx 4.0.0
 return .true
 ]]>
 </programlisting>
-  An alternative way to achieve the same thing might be:
+    An alternative way to achieve the same thing might be:
 <programlisting>
 <![CDATA[
 ::method repositionControls
@@ -441,46 +451,54 @@ return .true
 return .true
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="mthLoWord"><title>loWord (Class Method)</title>
 <indexterm><primary>loWord</primary></indexterm>
+<indexterm><primary>DlgUtil</primary><secondary>loWord</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-.DlgUtil~loWord(--param--)------------------------------><
+>>--loWord(--param--)----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The Windows API often packs two values into a single number.  One value in the low-order word and
-  the other value in the high-order word.  In ooDialog this is most often seen in the arguments
-  passed to event notification methods.  This utility method is used to extract the low-order word
-  from a number.
+  The Windows API often packs two values into a single number.  One value in the low-order word and the other value in
+  the high-order word.  In ooDialog this is most often seen in the arguments passed to event notification methods.  This
+  utility method is used to extract the low-order word from a number.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>param</term>
-<listitem><para>The number whose low-order word is needed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return is the low-order word portion of the number.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para>
-  A common place in the Windows API where two values are packed into a single number is where the
-  API deals with position.  This example shows how to extract the x and y position coordinates of a
-  dialog after it has been moved.  The example is complete, it can be cut and pasted into a file and
-  will execute as is.
-<programlisting id="exampleLoWordClsDlgUtil">
-<![CDATA[
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>param [required]</term>
+      <listitem>
+      <para>
+        The number whose low-order word is needed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the low-order word portion of the number.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    A common place in the Windows API where two values are packed into a single number is where the API deals with
+    position.  This example shows how to extract the x and y position coordinates of a dialog after it has been moved.
+    The example is complete, it can be cut and pasted into a file and will execute as is.
+<programlisting id="exampleLoWordClsDlgUtil"> <![CDATA[
 
   dlg = .MovingDialog~new
   dlg~createCenter(100, 60, "Move Me")
@@ -498,54 +516,59 @@ return .true
 ::method onMove
   use arg unUsed, posInfo
 
-  -- Look at our message queue to see if the next message in the queue is also
-  -- onMove.  If so, just return.
-  msg = self~peekDialogMessage
-  if msg~left(6) = "ONMOVE" then return
-
-  -- Now, we should be done moving, print out where we are.
   x = .DlgUtil~loWord(posInfo)
   y = .DlgUtil~hiWord(posInfo)
   say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
 
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
 <section id="mthHiWord"><title>hiWord (Class Method)</title>
 <indexterm><primary>hiWord</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-.DlgUtil~hiWord(--param--)------------------------------><
+>>--hiWord(--param--)----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The Windows API often packs two values into a single number.  One value in the low-order word and
-  the other value in the high-order word.  In ooDialog this is most often seen in the arguments
-  passed to event notification methods.  This utility method is used to extract the high-order word
-  from a number.
+  The Windows API often packs two values into a single number.  One value in the low-order word and the other value in
+  the high-order word.  In ooDialog this is most often seen in the arguments passed to event notification methods.  This
+  utility method is used to extract the high-order word from a number.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>param</term>
-<listitem><para>The number whose high-order word is needed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return is the high-order word portion of the number.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para>
-  See the <link linkend="exampleLoWordClsDlgUtil">loWord() example</link>.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>param</term>
+      <listitem>
+      <para>
+        The number whose high-order word is needed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the high-order word portion of the number.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    See the <link linkend="exampleLoWordClsDlgUtil">loWord() example</link>.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -779,7 +802,7 @@ return .true
 <secondary>DlgUtil class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--.DlgUtil~and(--number1-,-number2--)----------------------------><
+>>--and(--number1-,-number2--)-------------------><
 
 ]]>
 </programlisting>
@@ -794,7 +817,7 @@ return .true
   The normal use of an <emphasis role="italic">and</emphasis> operation in ooDialog programs is to
   extract the low or high words from an argument returned from the operating system. The addition of the
   <link linkend="mthLoWord">loWord</link>() and <link linkend="mthHiWord">hiWord</link>() methods to the
-  ooDialog framework have eliminated the reason for this usage.
+  ooDialog framework have eliminated most of the reason for this usage.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4218,11 +4241,11 @@ New width: 100 new height: 300
 ]]>
 </programlisting>
 <para>
-  Using the class methods of <computeroutput>VK</computeroutput> has the advantage of not conflicting with any existing
-  method the <computeroutput>SimpleDlg</computeroutput> may have.
+  Using the class methods of the <computeroutput>VK</computeroutput> class has the advantage of not conflicting with any
+  existing method the <computeroutput>SimpleDlg</computeroutput> may have.
 </para>
 
-<section id="sctMethodsVK"><title>Constant and Method Table</title>
+<section id="sctMethodsVK"><title>Method Table</title>
 <para>
   The <computeroutput>VK</computeroutput> class primarily consists of constants. The implemented constants and methods
   are listed in the following table.
@@ -4244,7 +4267,7 @@ New width: 100 new height: 300
 </row>
 <row>
 <entry><link linkend="mthKey2Name">key2name</link></entry>
-<entry>xx</entry>
+<entry>Returns the symbolic name for a numeric key code as a string</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -4252,782 +4275,767 @@ New width: 100 new height: 300
 </row>
 <row>
 <entry><link linkend="mthKey2Name">key2name</link></entry>
-<entry>xx</entry>
+<entry>Returns the symbolic name for a numeric key code as a string</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Constants</emphasis></entry>
 <entry align="center"><emphasis role="bold">Constants</emphasis></entry>
 </row>
 <row>
-<entry>K_LBUTTON</entry>
-<entry>x01 Left mouse button</entry>
+<entry>LBUTTON</entry>
+<entry>The Left mouse button</entry>
 </row>
 <row>
-<entry>K_RBUTTON</entry>
-<entry>x02 Right mouse button</entry>
+<entry>RBUTTON</entry>
+<entry>The Right mouse button</entry>
 </row>
 <row>
-<entry>K_CANCE</entry>
-<entry>x03 Control-break processing</entry>
+<entry>CANCEL</entry>
+<entry>The Control-break processing</entry>
 </row>
 <row>
-<entry>K_MBUTTON</entry>
-<entry>x04 Middle mouse button (three-button mouse)</entry>
+<entry>MBUTTON</entry>
+<entry>The Middle mouse button (three-button mouse)</entry>
 </row>
 <row>
-<entry>K_XBUTTON</entry>
-<entry>x05 X1 mouse button</entry>
+<entry>XBUTTON</entry>
+<entry>The X1 mouse button</entry>
 </row>
 <row>
-<entry>K_XBUTTON</entry>
-<entry>x06 X2 mouse button</entry>
+<entry>XBUTTON</entry>
+<entry>The X2 mouse button</entry>
 </row>
 <row>
-<entry>x07</entry>
-<entry>undefined</entry>
+<entry>BACK</entry>
+<entry>The BACKSPACE key</entry>
 </row>
 <row>
-<entry>K_BACK</entry>
-<entry>x08 BACKSPACE key</entry>
+<entry>TAB</entry>
+<entry>The TAB key</entry>
 </row>
 <row>
-<entry>K_TAB</entry>
-<entry>x09 TAB key</entry>
+<entry>CLEAR</entry>
+<entry>The CLEAR key</entry>
 </row>
 <row>
-<entry>x0A-0B</entry>
-<entry>eserved</entry>
+<entry>RETURN</entry>
+<entry>The ENTER key</entry>
 </row>
 <row>
-<entry>K_CLEAR</entry>
-<entry>x0C CLEAR key</entry>
+<entry>SHIFT</entry>
+<entry>The SHIFT key</entry>
 </row>
 <row>
-<entry>K_RETURN</entry>
-<entry>x0D ENTER key</entry>
+<entry>CONTROL</entry>
+<entry>The CTRL key</entry>
 </row>
 <row>
-<entry>x0E-0F</entry>
-<entry>ndefined</entry>
+<entry>MENU</entry>
+<entry>The ALT key</entry>
 </row>
 <row>
-<entry>K_SHIFT</entry>
-<entry>x10 SHIFT key</entry>
+<entry>PAUSE</entry>
+<entry>The PAUSE key</entry>
 </row>
 <row>
-<entry>K_CONTROL</entry>
-<entry>x11 CTRL key</entry>
+<entry>CAPITAL</entry>
+<entry>The CAPS LOCK key</entry>
 </row>
 <row>
-<entry>K_MENU</entry>
-<entry>x12 ALT key</entry>
+<entry>KANA</entry>
+<entry>The IME Kana mode</entry>
 </row>
 <row>
-<entry>K_PAUSE</entry>
-<entry>x13 PAUSE key</entry>
+<entry>HANGUL</entry>
+<entry>The IME Hangul mode</entry>
 </row>
 <row>
-<entry>K_CAPITAL</entry>
-<entry>x14 CAPS LOCK key</entry>
+<entry>JUNJA</entry>
+<entry>The IME Junja mode</entry>
 </row>
 <row>
-<entry>K_KANA</entry>
-<entry>x15 IME Kana mode</entry>
+<entry>FINAL</entry>
+<entry>The IME final mode</entry>
 </row>
 <row>
-<entry>K_HANGUEL</entry>
-<entry>x15 IME Hanguel mode (maintained for compatibility; use VK_HANGUL)</entry>
+<entry>HANJA</entry>
+<entry>The IME Hanja mode</entry>
 </row>
 <row>
-<entry>K_HANGUL</entry>
-<entry>x15 IME Hangul mode</entry>
+<entry>KANJI</entry>
+<entry>The IME Kanji mode</entry>
 </row>
 <row>
-<entry>x16</entry>
-<entry>ndefined</entry>
+<entry>ESCAPE</entry>
+<entry>The ESC key</entry>
 </row>
 <row>
-<entry>K_JUNJA</entry>
-<entry>x17 IME Junja mode</entry>
+<entry>CONVERT</entry>
+<entry>The IME convert</entry>
 </row>
 <row>
-<entry>K_FINAL</entry>
-<entry>x18 IME final mode</entry>
+<entry>NONCONVERT</entry>
+<entry>The IME nonconvert</entry>
 </row>
 <row>
-<entry>K_HANJA</entry>
-<entry>x19 IME Hanja mode</entry>
+<entry>ACCEPT</entry>
+<entry>The IME accept</entry>
 </row>
 <row>
-<entry>K_KANJI</entry>
-<entry>x19 IME Kanji mode</entry>
+<entry>MODECHANGE</entry>
+<entry>The IME mode change request</entry>
 </row>
 <row>
-<entry>x1A</entry>
-<entry>ndefined</entry>
+<entry>SPACE</entry>
+<entry>The SPACEBAR</entry>
 </row>
 <row>
-<entry>K_ESCAPE</entry>
-<entry>x1B ESC key</entry>
+<entry>PRIOR</entry>
+<entry>The PAGE UP key</entry>
 </row>
 <row>
-<entry>K_CONVERT</entry>
-<entry>x1C IME convert</entry>
+<entry>NEXT</entry>
+<entry>The PAGE DOWN key</entry>
 </row>
 <row>
-<entry>K_NONCONVERT</entry>
-<entry>x1D IME nonconvert</entry>
+<entry>END</entry>
+<entry>The END key</entry>
 </row>
 <row>
-<entry>K_ACCEPT</entry>
-<entry>x1E IME accept</entry>
+<entry>HOME</entry>
+<entry>The HOME key</entry>
 </row>
 <row>
-<entry>K_MODECHANGE</entry>
-<entry>x1F IME mode change request</entry>
+<entry>LEFT</entry>
+<entry>The LEFT ARROW key</entry>
 </row>
 <row>
-<entry>K_SPACE</entry>
-<entry>x20 SPACEBAR</entry>
+<entry>UP</entry>
+<entry>The UP ARROW key</entry>
 </row>
 <row>
-<entry>K_PRIOR</entry>
-<entry>x21 PAGE UP key</entry>
+<entry>RIGHT</entry>
+<entry>The RIGHT ARROW key</entry>
 </row>
 <row>
-<entry>K_NEXT</entry>
-<entry>x22 PAGE DOWN key</entry>
+<entry>DOWN</entry>
+<entry>The DOWN ARROW key</entry>
 </row>
 <row>
-<entry>K_END</entry>
-<entry>x23 END key</entry>
+<entry>SELECT</entry>
+<entry>The SELECT key</entry>
 </row>
 <row>
-<entry>K_HOME</entry>
-<entry>x24 HOME key</entry>
+<entry>PRINT</entry>
+<entry>The PRINT key</entry>
 </row>
 <row>
-<entry>K_LEFT</entry>
-<entry>x25 LEFT ARROW key</entry>
+<entry>EXECUTE</entry>
+<entry>The EXECUTE key</entry>
 </row>
 <row>
-<entry>K_UP</entry>
-<entry>x26 UP ARROW key</entry>
+<entry>SNAPSHOT</entry>
+<entry>The PRINT SCREEN key</entry>
 </row>
 <row>
-<entry>K_RIGHT</entry>
-<entry>x27 RIGHT ARROW key</entry>
+<entry>INSERT</entry>
+<entry>The INS key</entry>
 </row>
 <row>
-<entry>K_DOWN</entry>
-<entry>x28 DOWN ARROW key</entry>
+<entry>DELETE</entry>
+<entry>The DEL key</entry>
 </row>
 <row>
-<entry>K_SELECT</entry>
-<entry>x29 SELECT key</entry>
+<entry>HELP</entry>
+<entry>The HELP key</entry>
 </row>
 <row>
-<entry>K_PRINT</entry>
-<entry>x2A PRINT key</entry>
+<entry><emphasis role="bold">0</emphasis></entry>
+<entry>The <emphasis role="bold">0</emphasis> key</entry>
 </row>
 <row>
-<entry>K_EXECUTE</entry>
-<entry>x2B EXECUTE key</entry>
+<entry><emphasis role="bold">1</emphasis></entry>
+<entry>The <emphasis role="bold">1</emphasis> key</entry>
 </row>
 <row>
-<entry>K_SNAPSHOT</entry>
-<entry>x2C PRINT SCREEN key</entry>
+<entry><emphasis role="bold">2</emphasis></entry>
+<entry>The <emphasis role="bold">2</emphasis> key</entry>
 </row>
 <row>
-<entry>K_INSERT</entry>
-<entry>x2D INS key</entry>
+<entry><emphasis role="bold">3</emphasis></entry>
+<entry>The <emphasis role="bold">3</emphasis> key</entry>
 </row>
 <row>
-<entry>K_DELETE</entry>
-<entry>x2E DEL key</entry>
+<entry><emphasis role="bold">4</emphasis></entry>
+<entry>The <emphasis role="bold">4</emphasis> key</entry>
 </row>
 <row>
-<entry>K_HELP</entry>
-<entry>x2F HELP key</entry>
+<entry><emphasis role="bold">5</emphasis></entry>
+<entry>The <emphasis role="bold">5</emphasis> key</entry>
 </row>
 <row>
-<entry>x30</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">6</emphasis></entry>
+<entry>The <emphasis role="bold">6</emphasis> key</entry>
 </row>
 <row>
-<entry>x31</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">7</emphasis></entry>
+<entry>The <emphasis role="bold">7</emphasis> key</entry>
 </row>
 <row>
-<entry>x32</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">8</emphasis></entry>
+<entry>The <emphasis role="bold">8</emphasis> key</entry>
 </row>
 <row>
-<entry>x33</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">9</emphasis></entry>
+<entry>The <emphasis role="bold">9</emphasis> key</entry>
 </row>
 <row>
-<entry>x34</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">A</emphasis></entry>
+<entry>The <emphasis role="bold">A</emphasis> key</entry>
 </row>
 <row>
-<entry>x35</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">B</emphasis></entry>
+<entry>The <emphasis role="bold">B</emphasis> key</entry>
 </row>
 <row>
-<entry>x36</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">C</emphasis></entry>
+<entry>The <emphasis role="bold">C</emphasis> key</entry>
 </row>
 <row>
-<entry>x37</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">D</emphasis></entry>
+<entry>The <emphasis role="bold">D</emphasis> key</entry>
 </row>
 <row>
-<entry>x38</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">E</emphasis></entry>
+<entry>The <emphasis role="bold">E</emphasis> key</entry>
 </row>
 <row>
-<entry>x39</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">F</emphasis></entry>
+<entry>The <emphasis role="bold">F</emphasis> key</entry>
 </row>
 <row>
-<entry>x3A-40</entry>
-<entry>ndefined</entry>
+<entry><emphasis role="bold">G</emphasis></entry>
+<entry>The <emphasis role="bold">G</emphasis> key</entry>
 </row>
 <row>
-<entry>x41</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">H</emphasis></entry>
+<entry>The <emphasis role="bold">H</emphasis> key</entry>
 </row>
 <row>
-<entry>x42</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">I</emphasis></entry>
+<entry>The <emphasis role="bold">I</emphasis> key</entry>
 </row>
 <row>
-<entry>x43</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">J</emphasis></entry>
+<entry>The <emphasis role="bold">J</emphasis> key</entry>
 </row>
 <row>
-<entry>x44</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">K</emphasis></entry>
+<entry>The <emphasis role="bold">K</emphasis> key</entry>
 </row>
 <row>
-<entry>x45</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">L</emphasis></entry>
+<entry>The <emphasis role="bold">L</emphasis> key</entry>
 </row>
 <row>
-<entry>x46</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">M</emphasis></entry>
+<entry>The <emphasis role="bold">M</emphasis> key</entry>
 </row>
 <row>
-<entry>x47</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">N</emphasis></entry>
+<entry>The <emphasis role="bold">N</emphasis> key</entry>
 </row>
 <row>
-<entry>x48</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">O</emphasis></entry>
+<entry>The <emphasis role="bold">O</emphasis> key</entry>
 </row>
 <row>
-<entry>x49</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">P</emphasis></entry>
+<entry>The <emphasis role="bold">P</emphasis> key</entry>
 </row>
 <row>
-<entry>x4A</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">Q</emphasis></entry>
+<entry>The <emphasis role="bold">Q</emphasis> key</entry>
 </row>
 <row>
-<entry>x4B</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">R</emphasis></entry>
+<entry>The <emphasis role="bold">R</emphasis> key</entry>
 </row>
 <row>
-<entry>x4C</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">S</emphasis></entry>
+<entry>The <emphasis role="bold">S</emphasis> key</entry>
 </row>
 <row>
-<entry>x4D</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">T</emphasis></entry>
+<entry>The <emphasis role="bold">T</emphasis> key</entry>
 </row>
 <row>
-<entry>x4E</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">U</emphasis></entry>
+<entry>The <emphasis role="bold">U</emphasis> key</entry>
 </row>
 <row>
-<entry>x4F</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">V</emphasis></entry>
+<entry>The <emphasis role="bold">V</emphasis> key</entry>
 </row>
 <row>
-<entry>x50</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">W</emphasis></entry>
+<entry>The <emphasis role="bold">W</emphasis> key</entry>
 </row>
 <row>
-<entry>x51</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">X</emphasis></entry>
+<entry>The <emphasis role="bold">X</emphasis> key</entry>
 </row>
 <row>
-<entry>x52</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">Y</emphasis></entry>
+<entry>The <emphasis role="bold">Y</emphasis> key</entry>
 </row>
 <row>
-<entry>x53</entry>
-<entry> key</entry>
+<entry><emphasis role="bold">Z</emphasis></entry>
+<entry>The <emphasis role="bold">Z</emphasis> key</entry>
 </row>
 <row>
-<entry>x54</entry>
-<entry> key</entry>
+<entry>LWIN</entry>
+<entry>The Left Windows key (Natural keyboard)</entry>
 </row>
 <row>
-<entry>x55</entry>
-<entry> key</entry>
+<entry>RWIN</entry>
+<entry>The Right Windows key (Natural keyboard)</entry>
 </row>
 <row>
-<entry>x56</entry>
-<entry> key</entry>
+<entry>APPS</entry>
+<entry>The Applications key (Natural keyboard)</entry>
 </row>
 <row>
-<entry>x57</entry>
-<entry> key</entry>
+<entry>SLEEP</entry>
+<entry>The Computer Sleep key</entry>
 </row>
 <row>
-<entry>x58</entry>
-<entry> key</entry>
+<entry>NUMPAD0</entry>
+<entry>The Numeric keypad 0 key</entry>
 </row>
 <row>
-<entry>x59</entry>
-<entry> key</entry>
+<entry>NUMPAD1</entry>
+<entry>The Numeric keypad 1 key</entry>
 </row>
 <row>
-<entry>x5A</entry>
-<entry> key</entry>
+<entry>NUMPAD2</entry>
+<entry>The Numeric keypad 2 key</entry>
 </row>
 <row>
-<entry>K_LWIN</entry>
-<entry>x5B Left Windows key (Natural keyboard)</entry>
+<entry>NUMPAD3</entry>
+<entry>The Numeric keypad 3 key</entry>
 </row>
 <row>
-<entry>K_RWIN</entry>
-<entry>x5C Right Windows key (Natural keyboard)</entry>
+<entry>NUMPAD4</entry>
+<entry>The Numeric keypad 4 key</entry>
 </row>
 <row>
-<entry>K_APPS</entry>
-<entry>x5D Applications key (Natural keyboard)</entry>
+<entry>NUMPAD5</entry>
+<entry>Numeric keypad 5 key</entry>
 </row>
 <row>
-<entry>x5E</entry>
-<entry>eserved</entry>
+<entry>NUMPAD6</entry>
+<entry>The Numeric keypad 6 key</entry>
 </row>
 <row>
-<entry>K_SLEEP</entry>
-<entry>x5F Computer Sleep key</entry>
+<entry>NUMPAD7</entry>
+<entry>The Numeric keypad 7 key</entry>
 </row>
 <row>
-<entry>K_NUMPAD0</entry>
-<entry>x60 Numeric keypad 0 key</entry>
+<entry>NUMPAD8</entry>
+<entry>The Numeric keypad 8 key</entry>
 </row>
 <row>
-<entry>K_NUMPAD1</entry>
-<entry>x61 Numeric keypad 1 key</entry>
+<entry>NUMPAD9</entry>
+<entry>The Numeric keypad 9 key</entry>
 </row>
 <row>
-<entry>K_NUMPAD2</entry>
-<entry>x62 Numeric keypad 2 key</entry>
+<entry>MULTIPLY</entry>
+<entry>The Multiply key</entry>
 </row>
 <row>
-<entry>K_NUMPAD3</entry>
-<entry>x63 Numeric keypad 3 key</entry>
+<entry>ADD</entry>
+<entry>The Add key</entry>
 </row>
 <row>
-<entry>K_NUMPAD4</entry>
-<entry>x64 Numeric keypad 4 key</entry>
+<entry>SEPARATOR</entry>
+<entry>The Separator key</entry>
 </row>
 <row>
-<entry>K_NUMPAD5</entry>
-<entry>x65 Numeric keypad 5 key</entry>
+<entry>SUBTRACT</entry>
+<entry>The Subtract key</entry>
 </row>
 <row>
-<entry>K_NUMPAD6</entry>
-<entry>x66 Numeric keypad 6 key</entry>
+<entry>DECIMAL</entry>
+<entry>The Decimal key</entry>
 </row>
 <row>
-<entry>K_NUMPAD7</entry>
-<entry>x67 Numeric keypad 7 key</entry>
+<entry>DIVIDE</entry>
+<entry>The Divide key</entry>
 </row>
 <row>
-<entry>K_NUMPAD8</entry>
-<entry>x68 Numeric keypad 8 key</entry>
+<entry>F1</entry>
+<entry>The F1 key</entry>
 </row>
 <row>
-<entry>K_NUMPAD9</entry>
-<entry>x69 Numeric keypad 9 key</entry>
+<entry>F2</entry>
+<entry>The F2 key</entry>
 </row>
 <row>
-<entry>K_MULTIPLY</entry>
-<entry>x6A Multiply key</entry>
+<entry>F3</entry>
+<entry>The F3 key</entry>
 </row>
 <row>
-<entry>K_ADD</entry>
-<entry>x6B Add key</entry>
+<entry>F4</entry>
+<entry>The F4 key</entry>
 </row>
 <row>
-<entry>K_SEPARATOR</entry>
-<entry>x6C Separator key</entry>
+<entry>F5</entry>
+<entry>The F5 key</entry>
 </row>
 <row>
-<entry>K_SUBTRACT</entry>
-<entry>x6D Subtract key</entry>
+<entry>F6</entry>
+<entry>The F6 key</entry>
 </row>
 <row>
-<entry>K_DECIMAL</entry>
-<entry>x6E Decimal key</entry>
+<entry>F7</entry>
+<entry>The F7 key</entry>
 </row>
 <row>
-<entry>K_DIVIDE</entry>
-<entry>x6F Divide key</entry>
+<entry>F8</entry>
+<entry>The F8 key</entry>
 </row>
 <row>
-<entry>K_F1</entry>
-<entry>x70 F1 key</entry>
+<entry>F9</entry>
+<entry>The F9 key</entry>
 </row>
 <row>
-<entry>K_F2</entry>
-<entry>x71 F2 key</entry>
+<entry>F10</entry>
+<entry>The F10 key</entry>
 </row>
 <row>
-<entry>K_F3</entry>
-<entry>x72 F3 key</entry>
+<entry>F11</entry>
+<entry>The F11 key</entry>
 </row>
 <row>
-<entry>K_F4</entry>
-<entry>x73 F4 key</entry>
+<entry>F12</entry>
+<entry>The F12 key</entry>
 </row>
 <row>
-<entry>K_F5</entry>
-<entry>x74 F5 key</entry>
+<entry>F13</entry>
+<entry>The F13 key</entry>
 </row>
 <row>
-<entry>K_F6</entry>
-<entry>x75 F6 key</entry>
+<entry>F14</entry>
+<entry>The F14 key</entry>
 </row>
 <row>
-<entry>K_F7</entry>
-<entry>x76 F7 key</entry>
+<entry>F15</entry>
+<entry>The F15 key</entry>
 </row>
 <row>
-<entry>K_F8</entry>
-<entry>x77 F8 key</entry>
+<entry>F16</entry>
+<entry>The F16 key</entry>
 </row>
 <row>
-<entry>K_F9</entry>
-<entry>x78 F9 key</entry>
+<entry>F17</entry>
+<entry>The F17 key</entry>
 </row>
 <row>
-<entry>K_F10</entry>
-<entry>x79 F10 key</entry>
+<entry>F18</entry>
+<entry>The F18 key</entry>
 </row>
 <row>
-<entry>K_F11</entry>
-<entry>x7A F11 key</entry>
+<entry>F19</entry>
+<entry>The F19 key</entry>
 </row>
 <row>
-<entry>K_F12</entry>
-<entry>x7B F12 key</entry>
+<entry>F20</entry>
+<entry>The F20 key</entry>
 </row>
 <row>
-<entry>K_F13</entry>
-<entry>x7C F13 key</entry>
+<entry>F21</entry>
+<entry>The F21 key</entry>
 </row>
 <row>
-<entry>K_F14</entry>
-<entry>x7D F14 key</entry>
+<entry>F22</entry>
+<entry>The F22 key</entry>
 </row>
 <row>
-<entry>K_F15</entry>
-<entry>x7E F15 key</entry>
+<entry>F23</entry>
+<entry>The F23 key</entry>
 </row>
 <row>
-<entry>K_F16</entry>
-<entry>x7F F16 key</entry>
+<entry>F24</entry>
+<entry>The F24 key</entry>
 </row>
 <row>
-<entry>K_F17</entry>
-<entry>x80H F17 key</entry>
+<entry>NUMLOCK</entry>
+<entry>The NUM LOCK key</entry>
 </row>
 <row>
-<entry>K_F18</entry>
-<entry>x81H F18 key</entry>
+<entry>SCROLL</entry>
+<entry>The SCROLL LOCK key</entry>
 </row>
 <row>
-<entry>K_F19</entry>
-<entry>x82H F19 key</entry>
+<entry>LSHIFT</entry>
+<entry>The Left SHIFT key</entry>
 </row>
 <row>
-<entry>K_F20</entry>
-<entry>x83H F20 key</entry>
+<entry>RSHIFT</entry>
+<entry>The Right SHIFT key</entry>
 </row>
 <row>
-<entry>K_F21</entry>
-<entry>x84H F21 key</entry>
+<entry>LCONTROL</entry>
+<entry>The Left CONTROL key</entry>
 </row>
 <row>
-<entry>K_F22</entry>
-<entry>x85H F22 key</entry>
+<entry>RCONTROL</entry>
+<entry>The Right CONTROL key</entry>
 </row>
 <row>
-<entry>K_F23</entry>
-<entry>x86H F23 key</entry>
+<entry>LMENU</entry>
+<entry>The Left MENU key</entry>
 </row>
 <row>
-<entry>K_F24</entry>
-<entry>x87H F24 key</entry>
+<entry>RMENU</entry>
+<entry>The Right MENU key</entry>
 </row>
 <row>
-<entry>x88-8F</entry>
-<entry>nassigned</entry>
+<entry>BROWSER_BACK</entry>
+<entry>The Browser Back key</entry>
 </row>
 <row>
-<entry>K_NUMLOCK</entry>
-<entry>x90 NUM LOCK key</entry>
+<entry>BROWSER_FORWARD</entry>
+<entry>The Browser Forward key</entry>
 </row>
 <row>
-<entry>K_SCROLL</entry>
-<entry>x91 SCROLL LOCK key</entry>
+<entry>BROWSER_REFRESH</entry>
+<entry>The Browser Refresh key</entry>
 </row>
 <row>
-<entry>x92-96</entry>
-<entry>EM specific</entry>
+<entry>BROWSER_STOP</entry>
+<entry>The Browser Stop key</entry>
 </row>
 <row>
-<entry>x97-9F</entry>
-<entry>nassigned</entry>
+<entry>BROWSER_SEARCH</entry>
+<entry>The Browser Search key</entry>
 </row>
 <row>
-<entry>K_LSHIFT</entry>
-<entry>xA0 Left SHIFT key</entry>
+<entry>BROWSER_FAVORITES</entry>
+<entry>The Browser Favorites key</entry>
 </row>
 <row>
-<entry>K_RSHIFT</entry>
-<entry>xA1 Right SHIFT key</entry>
+<entry>BROWSER_HOME</entry>
+<entry>The Browser Start and Home key</entry>
 </row>
 <row>
-<entry>K_LCONTROL</entry>
-<entry>xA2 Left CONTROL key</entry>
+<entry>VOLUME_MUTE</entry>
+<entry>The Volume Mute key</entry>
 </row>
 <row>
-<entry>K_RCONTROL</entry>
-<entry>xA3 Right CONTROL key</entry>
+<entry>VOLUME_DOWN</entry>
+<entry>The Volume Down key</entry>
 </row>
 <row>
-<entry>K_LMENU</entry>
-<entry>xA4 Left MENU key</entry>
+<entry>VOLUME_UP</entry>
+<entry>The Volume Up key</entry>
 </row>
 <row>
-<entry>K_RMENU</entry>
-<entry>xA5 Right MENU key</entry>
+<entry>MEDIA_NEXT_TRACK</entry>
+<entry>The Next Track key</entry>
 </row>
 <row>
-<entry>K_BROWSER_BACK</entry>
-<entry>xA6 Browser Back key</entry>
+<entry>MEDIA_PREV_TRACK</entry>
+<entry>The Previous Track key</entry>
 </row>
 <row>
-<entry>K_BROWSER_FORWARD</entry>
-<entry>xA7 Browser Forward key</entry>
+<entry>MEDIA_STOP</entry>
+<entry>The Stop Media key</entry>
 </row>
 <row>
-<entry>K_BROWSER_REFRESH</entry>
-<entry>xA8 Browser Refresh key</entry>
+<entry>MEDIA_PLAY_PAUSE</entry>
+<entry>The Play/Pause Media key</entry>
 </row>
 <row>
-<entry>K_BROWSER_STOP</entry>
-<entry>xA9 Browser Stop key</entry>
+<entry>LAUNCH_MAIL</entry>
+<entry>The Start Mail key</entry>
 </row>
 <row>
-<entry>K_BROWSER_SEARCH</entry>
-<entry>xAA Browser Search key</entry>
+<entry>LAUNCH_MEDIA_SELECT</entry>
+<entry>The Select Media key</entry>
 </row>
 <row>
-<entry>K_BROWSER_FAVORITES</entry>
-<entry>xAB Browser Favorites key</entry>
+<entry>LAUNCH_APP1</entry>
+<entry>The Start Application 1 key</entry>
 </row>
 <row>
-<entry>K_BROWSER_HOME</entry>
-<entry>xAC Browser Start and Home key</entry>
+<entry>LAUNCH_APP2</entry>
+<entry>The Start Application 2 key</entry>
 </row>
 <row>
-<entry>K_VOLUME_MUTE</entry>
-<entry>xAD Volume Mute key</entry>
+<entry>OEM_1</entry>
+<entry>Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ';:' key</entry>
 </row>
 <row>
-<entry>K_VOLUME_DOWN</entry>
-<entry>xAE Volume Down key</entry>
+<entry>OEM_PLUS</entry>
+<entry>For any country/region, the '+' key</entry>
 </row>
 <row>
-<entry>K_VOLUME_UP</entry>
-<entry>xAF Volume Up key</entry>
+<entry>OEM_COMMA</entry>
+<entry>For any country/region, the ',' key</entry>
 </row>
 <row>
-<entry>K_MEDIA_NEXT_TRACK</entry>
-<entry>xB0 Next Track key</entry>
+<entry>OEM_MINUS</entry>
+<entry>For any country/region, the '-' key</entry>
 </row>
 <row>
-<entry>K_MEDIA_PREV_TRACK</entry>
-<entry>xB1 Previous Track key</entry>
+<entry>OEM_PERIOD</entry>
+<entry>For any country/region, the '.' key</entry>
 </row>
 <row>
-<entry>K_MEDIA_STOP</entry>
-<entry>xB2 Stop Media key</entry>
+<entry>OEM_2</entry>
+<entry>Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '/?' key</entry>
 </row>
 <row>
-<entry>K_MEDIA_PLAY_PAUSE</entry>
-<entry>xB3 Play/Pause Media key</entry>
+<entry>OEM_3</entry>
+<entry>Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '`~' key</entry>
 </row>
 <row>
-<entry>K_LAUNCH_MAIL</entry>
-<entry>xB4 Start Mail key</entry>
+<entry>OEM_4</entry>
+<entry>Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '[{' key</entry>
 </row>
 <row>
-<entry>K_LAUNCH_MEDIA_SELECT</entry>
-<entry>xB5 Select Media key</entry>
+<entry>OEM_5</entry>
+<entry>Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '\|' key</entry>
 </row>
 <row>
-<entry>K_LAUNCH_APP1</entry>
-<entry>xB6 Start Application 1 key</entry>
+<entry>OEM_6</entry>
+<entry>Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ']}' key</entry>
 </row>
 <row>
-<entry>K_LAUNCH_APP2</entry>
-<entry>xB7 Start Application 2 key</entry>
+<entry>OEM_7</entry>
+<entry>Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the 'single-quote/double-quote' key</entry>
 </row>
 <row>
-<entry>xB8-B9</entry>
-<entry>eserved</entry>
+<entry>OEM_8</entry>
+<entry>Used for miscellaneous characters; it can vary by keyboard.</entry>
 </row>
 <row>
-<entry>K_OEM_1</entry>
-<entry>xBA Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ';:' key</entry>
+<entry>OEM_AX</entry>
+<entry>The <emphasis role="italic">AX</emphasis> key on Japanese AX kbd</entry>
 </row>
 <row>
-<entry>K_OEM_PLUS</entry>
-<entry>xBB For any country/region, the '+' key</entry>
+<entry>OEM_102</entry>
+<entry>Either the angle bracket key or the backslash key on the RT 102-key keyboard</entry>
 </row>
 <row>
-<entry>K_OEM_COMMA</entry>
-<entry>xBC For any country/region, the ',' key</entry>
+<entry>ICO_HELP</entry>
+<entry>The Help key on ICO</entry>
 </row>
 <row>
-<entry>K_OEM_MINUS</entry>
-<entry>xBD For any country/region, the '-' key</entry>
+<entry>ICO_00</entry>
+<entry>The 00 key on ICO</entry>
 </row>
 <row>
-<entry>K_OEM_PERIOD</entry>
-<entry>xBE For any country/region, the '.' key</entry>
+<entry>PROCESSKEY</entry>
+<entry>The IME PROCESS key</entry>
 </row>
 <row>
-<entry>K_OEM_2</entry>
-<entry>xBF Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '/?' key</entry>
+<entry>ICO_CLEAR</entry>
+<entry>No explanation</entry>
 </row>
 <row>
-<entry>K_OEM_3</entry>
-<entry>xC0 Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '`~' key</entry>
+<entry>PACKET</entry>
+<entry>
+  Used to pass Unicode characters as if they were keystrokes. The PACKET key is the low word of a 32-bit Virtual Key value used
+  for non-keyboard input methods.
+</entry>
 </row>
 <row>
-<entry>xC1-D7</entry>
-<entry>eserved</entry>
+<entry>OEM_RESET</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>xD8-DA</entry>
-<entry>nassigned</entry>
+<entry>OEM_JUMP</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>K_OEM_4</entry>
-<entry>xDB Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '[{' key</entry>
+<entry>OEM_PA1</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>K_OEM_5</entry>
-<entry>xDC Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the '\|' key</entry>
+<entry>OEM_PA2</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>K_OEM_6</entry>
-<entry>xDD Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the ']}' key</entry>
+<entry>OEM_PA3</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>K_OEM_7</entry>
-<entry>xDE Used for miscellaneous characters; it can vary by keyboard. For the US standard keyboard, the 'single-quote/double-quote' key</entry>
+<entry>OEM_WSCTRL</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>K_OEM_8</entry>
-<entry>xDF Used for miscellaneous characters; it can vary by keyboard.</entry>
+<entry>OEM_CUSEL</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>xE0</entry>
-<entry>eserved</entry>
+<entry>OEM_ATTN</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>xE1</entry>
-<entry>EM specific</entry>
+<entry>OEM_FINISH</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>K_OEM_102</entry>
-<entry>xE2 Either the angle bracket key or the backslash key on the RT 102-key keyboard</entry>
+<entry>OEM_COPY</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>xE3-E4</entry>
-<entry>EM specific</entry>
+<entry>OEM_AUTO</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>K_PROCESSKEY</entry>
-<entry>xE5 IME PROCESS key</entry>
+<entry>OEM_ENLW</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>xE6</entry>
-<entry>EM specific</entry>
+<entry>OEM_BACKTAB</entry>
+<entry>Nokia/Ericsson definition</entry>
 </row>
 <row>
-<entry>K_PACKET</entry>
-<entry>xE7 Used to pass Unicode characters as if they were keystrokes. The VK_PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP</entry>
+<entry>ATTN</entry>
+<entry>The Attn key</entry>
 </row>
 <row>
-<entry>xE8</entry>
-<entry>nassigned</entry>
+<entry>CRSEL</entry>
+<entry>The CrSel key</entry>
 </row>
 <row>
-<entry>xE9-F5</entry>
-<entry>EM specific</entry>
+<entry>EXSEL</entry>
+<entry>The ExSel key</entry>
 </row>
 <row>
-<entry>K_ATTN</entry>
-<entry>xF6 Attn key</entry>
+<entry>EREOF</entry>
+<entry>The Erase EOF key</entry>
 </row>
 <row>
-<entry>K_CRSEL</entry>
-<entry>xF7 CrSel key</entry>
+<entry>PLAY</entry>
+<entry>The Play key</entry>
 </row>
 <row>
-<entry>K_EXSEL</entry>
-<entry>xF8 ExSel key</entry>
+<entry>ZOOM</entry>
+<entry>The Zoom key</entry>
 </row>
 <row>
-<entry>K_EREOF</entry>
-<entry>xF9 Erase EOF key</entry>
+<entry>PA1</entry>
+<entry>The PA1 key</entry>
 </row>
 <row>
-<entry>K_PLAY</entry>
-<entry>xFA Play key</entry>
+<entry>OEM_CLEAR</entry>
+<entry>The Clear key</entry>
 </row>
-<row>
-<entry>K_ZOOM</entry>
-<entry>xFB Zoom key</entry>
-</row>
-<row>
-<entry>K_NONAME</entry>
-<entry>xFC Reserved</entry>
-</row>
-<row>
-<entry>K_PA1</entry>
-<entry>xFD PA1 key</entry>
-</row>
-<row>
-<entry>K_OEM_CLEAR</entry>
-<entry>xFE Clear key</entry>
-</row>
-
-
 </tbody></tgroup>
 </table>
 </para>
@@ -5039,24 +5047,24 @@ New width: 100 new height: 300
 <indexterm><primary>VK class</primary><secondary>key2name</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--key2name(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--key2name(--numericCode--)--------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Converts a numeric virtual key code into the string version of its constant name.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The only argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>numericCode [required]</term>
     <listitem>
     <para>
-      xx
+      The numeric value of a virtual key code. Virtual key codes are whole numbers in the range 0 through 255.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5065,60 +5073,110 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the constant method name for the specified virtual key code as a string.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example connects the key down event in a tree control with a method in the dialog. If the user presses the
-    delete key while the tree control has the focus, the selected item is deleted. Likewise, if the user presses the
-    insert key he is given the opportunity to insert a new item into the tree.
+    There is both a class method and an instance method with this method's name. Therefore the method can be use like
+    this:
 <programlisting>
 <![CDATA[
+  ::class 'MyClass' subclass ResDialog inherit VK
+    ...
+    say "The key pressed was:" self~key2Name(key)
 
-::class 'TreeDlg' subclass ResDialog inherit VK
-  ...
+]]>
+</programlisting>
 
-::method initDialog
+    or like this:
 
-  self~connectTreeViewEvent(IDC_TREE, "KEYDOWN", onKeyDown)
-  ...
+<programlisting>
+<![CDATA[
+  ::class 'MyClass' subclass RcDialog
+    ...
+    say "The key pressed was:" .VK~key2name(key)
 
-::method onKeyDown
-  use arg treeId, key
-  tree = self~newTreeView(treeId)
+]]>
+</programlisting>
 
-  -- If the delete key is pressed, delete the selected item, or if the insert
-  -- key is pressed insert a new item by programmaticaly clicking the New Item
-  -- button. Otherwise ignore key.
-  if self~key2name(key) = "VK_DELETE" then
-     tree~delete(tree~selected)
-  else if self~key2name(key) = "VK_INSERT" then
-     self~newPushButton(IDC_PB_NEW_ITEM)~push
+  </para>
+  <para>
+    Not all possible key codes are assigned. The empty string is returned for those numbers.
+  </para>
+  <para>
+    This method is a convenience method which allows a program to print the key code name to the screen in a say
+    statement. The method is usually not needed. In particular, code like this:
+
+<programlisting>
+<![CDATA[
+  ::method someMethod
+    use arg key
+    ...
+    if .VK~key2Name(key) == "INSERT" then
+      ...
+
+]]>
+</programlisting>
+
+    can be replaced by this:
+
+<programlisting>
+<![CDATA[
+  ::method someMethod
+    use arg key
+    ...
+    if key == .VK~INSERT then
+      ...
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    A syntax error is raised if <emphasis role="italic">numericCode</emphasis> is not a whole number the range of 0
+    through 255.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End VK::key2name() -->
 
+<section id="exampleVKConstant"><title>Example VK Constant Use</title>
+<para>
+  This example connects the key down event in a tree control with a method in the dialog. If the user presses the
+  delete key while the tree control has the focus, the selected item is deleted. Likewise, if the user presses the
+  insert key he is given the opportunity to insert a new item into the tree.
+</para>
+
+<programlisting>
+<![CDATA[
+
+::class 'TreeDlg' subclass ResDialog
+...
+
+::method initDialog
+
+self~connectTreeViewEvent(IDC_TREE, "KEYDOWN", onKeyDown)
+...
+
+::method onKeyDown
+use arg treeId, key
+tree = self~newTreeView(treeId)
+
+-- If the delete key is pressed, delete the selected item, or if the insert
+-- key is pressed insert a new item by programmaticaly clicking the New Item
+-- button. Otherwise ignore key.
+if key == .VK~DELETE then
+   tree~delete(tree~selected)
+else if key == .VK~INSERT then
+   self~newPushButton(IDC_PB_NEW_ITEM)~push
+
+]]>
+</programlisting>
+</section>
 
 </section> <!-- End VK Class -->
 
@@ -6109,7 +6167,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 </programlisting>
 
 <para>
-  An attribute containing the value used to adjust the ratio of the top & left margins to the bottom &amp; right
+  An attribute containing the value used to adjust the ratio of the top &amp; left margins to the bottom &amp; right
   margins. (The default correction factor is set to 1.05.) The <link linkend="sctDlgAreaUProblems">Possible
   Problems</link> section has additional details on using the <emphasis role="italic">correctionFactor</emphasis>
   attribute.

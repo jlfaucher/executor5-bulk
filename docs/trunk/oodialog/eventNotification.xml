@@ -969,7 +969,7 @@ Help request:
   -- Alt-Shift-C or Alt-Shift-D.  But the method would not be invoked for Alt-C
   -- or Shift-D (or any other key press event.)
 
-  keys = self~vCode('C') "," self~vCode('D')
+  keys = .VK~C "," .VK~D
   self~connectKeyPress(onAltCD, keys, "ALT AND SHIFT")
 
   -- The below would invoke the onAltCD method any time a C or a D was typed
@@ -986,7 +986,7 @@ Help request:
   -- The below would invoke the onF4 method only when the F4 key was pressed by
   -- itself. Alt-F4, Ctrl-F4, etc., would not invoke the method.
 
-  self~connectKeyPress(onF4, self~vCode('F4'), "NONE")
+  self~connectKeyPress(onF4, .VK~F4, "NONE")
 ]]>
 </programlisting>
 
@@ -1014,7 +1014,7 @@ Help request:
       returned:
 <programlisting> <![CDATA[
 
-  keys = self~vCode('C') ", dog," self~vCode('D')
+  keys = .VK~C ", dog," .VK~D
   ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
   say 'Got a return of:' ret
   say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
@@ -1237,7 +1237,7 @@ Help request:
 <![CDATA[
 ::method initDialog
   ...
-  keys = self~vCode('F2') "-" self~vCode('F24')
+  keys = .VK~F2 "-" .VK~F24
   self~connectKeyPress(methodName, keys, "NONE")
 ]]>
 </programlisting>
@@ -1354,7 +1354,7 @@ Help request:
     use arg keyPressed
 
     select
-      when self~keyName(keyPressed) == 'F2' then self~showCustomerLookupDialog
+      when keyPressed == .VK~F2 then self~showCustomerLookupDialog
 
       when keyPressed = 114 then do
         prodNum = self~newEdit(IDC_EDIT_PRODUCT)~getText
@@ -1483,7 +1483,7 @@ Help request:
   self~connectKeyPress(onF2, .VK~F2, "NONE")
 
   -- Same idea for F3, F4, F5, and F7.  This uses the actual numeric value for
-  -- the keys without bothering to use the VirtualKeyCodes class to translate.
+  -- the keys without bothering to use the VK class to translate.
   self~connectKeyPress(onF3, 114, "NONE")
   self~connectKeyPress(onF4, 115, "NONE")
   self~connectKeyPress(onF5, 116, "NONE")
@@ -3451,7 +3451,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 <![CDATA[
 ::method OnKeyDown
   use arg id, vkey
-  say "Key" self~KeyName(vkey) "was pressed."
+  say "Key" .VK~key2name(vkey) "was pressed."
 ]]>
 </programlisting>
 <para>
@@ -3681,7 +3681,7 @@ Example:
 <programlisting> <![CDATA[
 ::method OnKeyDown
   use arg id, vkey
-  say "Key" self~KeyName(vkey) "was pressed."
+  say "Key" .VK~name2key(vkey) "was pressed."
 ]]>
 </programlisting></para></listitem>
 <listitem><para>The event-handling method connected to EXPANDED or EXPANDING receives
@@ -3828,13 +3828,17 @@ before init:super has been called.</para></listitem>
 <para>
   The event-handling method that is connected to KEYDOWN receives two arguments: the control ID of the tab control and
   the virtual key code that has been pressed. Use the <link linkend="mthKey2Name">key2name</link> method of the <link
-linkend="clsVK">VK</link> class to determine which key was pressed. Example:
-<programlisting> <![CDATA[
+  linkend="clsVK">VK</link> class to determine which key was pressed. Example:
+
+<programlisting>
+<![CDATA[
 ::method OnKeyDown
   use arg id, vkey
-  say "Key" self~KeyName(vkey) "was pressed."
+  say "Key" .VK~name2key(vkey) "was pressed."
 ]]>
-</programlisting></para></listitem>
+</programlisting>
+  </para>
+</listitem>
 <listitem><para>All other event-handling methods receive two arguments: the ID of the
 tab control (extract the low-order word) and the handle to the tab control.
 Example:
