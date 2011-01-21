@@ -548,7 +548,7 @@ return .true
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>param</term>
+      <varlistentry><term>param [required]</term>
       <listitem>
       <para>
         The number whose high-order word is needed.
@@ -578,24 +578,35 @@ return .true
 <indexterm><primary>DlgUtil class</primary><secondary>makeLParam</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--makeLParam(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--makeLParam(--numLow--,--numHigh--)-----------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  When a <link linkend="ovvWindowMessages">message</link> is <link linkend="mthSendMessage">sent</link> to an <link
+  linkend="ovvUnderlying">underlying</link> window two of the arguments are the WPARAM and the LPARAM paramters. Quite
+  often the Windows API requires that two numbers be packed into the LPARAM argument. The <emphasis
+  role="italic">makeLParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
+  <link linkend="mthLoWord">loWord</link> and <link linkend="mthHiWord">hiWord</link> methods, but works in the
+  opposite direction.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>numLow [required]</term>
     <listitem>
     <para>
-      xx
+      A whole number to be packed into the low word position of the LPARAM number.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>numHigh [required]</term>
+    <listitem>
+    <para>
+      A whole number to be packed into the high word position of the LPARAM number.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -604,13 +615,8 @@ return .true
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The return is a number suitable for the LPARAM argument in a messge sent to an underlying window, when the message
+    requires two values in LPARAM.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -618,47 +624,45 @@ return .true
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::makeLParam() -->
+
 
 <section id="mthMakeWParam"><title>makeWParam (Class Method)</title>
 <indexterm><primary>makeWParam</primary></indexterm>
 <indexterm><primary>DlgUtil class</primary><secondary>makeWParam</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--makeWParam(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--makeWParam(--numLow--,--numHigh--)-----------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  When a <link linkend="ovvWindowMessages">message</link> is <link linkend="mthSendMessage">sent</link> to an <link
+  linkend="ovvUnderlying">underlying</link> window two of the arguments are the WPARAM and the LPARAM paramters. Quite
+  often the Windows API requires that two numbers be packed into the WPARAM argument. The <emphasis
+  role="italic">makeWParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
+  <link linkend="mthLoWord">loWord</link> and <link linkend="mthHiWord">hiWord</link> methods, but works in the
+  opposite direction.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>numLow [required]</term>
     <listitem>
     <para>
-      xx
+      A whole number to be packed into the low word position of the WPARAM number.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>numHigh [required]</term>
+    <listitem>
+    <para>
+      A whole number to be packed into the high word position of the WPARAM number.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -667,13 +671,8 @@ return .true
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The return is a number suitable for the WPARAM argument in a messge sent to an underlying window, when the message
+    requires two values in WPARAM.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -681,23 +680,10 @@ return .true
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::makeWParam() -->
+
 
 <section id="mthOrClsDlgUtil"><title>or (Class Method)</title>
 <indexterm><primary>or</primary>

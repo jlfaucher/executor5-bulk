@@ -507,18 +507,6 @@ The dialog unit height of the button is: 14
   Sends a Windows message to the underlying window this object represents and returns the response as a whole number.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  <para>
-    This method requires an <link linkend="ovvWindowMessages">understanding</link> of Windows messages.
-  </para>
-  <para>
-    Using this method before the underlying dialog is created does nothing.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -559,6 +547,22 @@ The dialog unit height of the button is: 14
     linkend="defHandle">handle</link>. For those cases, use the <link
     linkend="mthSendMessageHandle">sendMessageHandle</link>() method.
   </para>
+  <para>
+    It is not possible in ooRexx to send a message directly to a window when either the WPARAM or LPARAM arguments are
+    strings. For those cases use a suitable method in one of the classes provided by the ooDialog framework.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method requires an <link linkend="ovvWindowMessages">understanding</link> of Windows messages.
+  </para>
+  <para>
+    This method can not be used before the underlying dialog is created.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -593,15 +597,6 @@ MovableDialog~sendMessage"0x0402", 0, 0)
   returns the response as a <link linkend="defHandle">handle</link>.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  <para>
-    This method requires an <link linkend="ovvWindowMessages">understanding</link> of Windows messages.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -640,6 +635,22 @@ MovableDialog~sendMessage"0x0402", 0, 0)
   <para>
     This method returns the response as a handle. This will not be usable if the response is a whole number. For those
     cases, use the <link linkend="mthSendMessage">sendMessage</link>() method.
+  </para>
+  <para>
+    It is not possible in ooRexx to send a message directly to a window when either the WPARAM or LPARAM arguments are
+    strings. For those cases use a suitable method in one of the classes provided by the ooDialog framework.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    This method requires an <link linkend="ovvWindowMessages">understanding</link> of Windows messages.
+  </para>
+  <para>
+    This method can not be used before the underlying dialog is created.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
