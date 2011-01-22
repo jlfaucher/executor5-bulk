@@ -187,7 +187,7 @@ methods listed in the
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~Add(--listEntry--)---------------------------------><
+>>-add(--listEntry--)------------------------------------------><
 
 
 ]]>
@@ -216,8 +216,8 @@ been added, or 0 or a value less than 0 to indicate an error.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~insert(--+-------+--,--listEntry--)----------------><
-                     +-index-+
+>>-insert(--+-------+--,--listEntry--)-------------------------><
+            +-index-+
 
 
 ]]>
@@ -251,8 +251,8 @@ been added, or 0 or a value less than 0 to indicate an error.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~delete(--+-------+--)------------------------------><
-                     +-index-+
+>>-delete(--+-------+--)---------------------------------------><
+            +-index-+
 
 
 ]]>
@@ -281,7 +281,7 @@ list. If this argument is omitted, the currently selected item is deleted.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~DeleteAll------------------------------------------><
+>>-deleteAll---------------------------------------------------><
 
 
 ]]>
@@ -296,9 +296,9 @@ the associated list box.</para>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~Find(--TextorPrefix--+---------------------------------+--)-><
-                                 +-,--+------------+--+----------+-+
-                                      +-startIndex-+  +-,--exact-+
+>>-find(--TextorPrefix--+---------------------------------+--)----------------><
+                        +-,--+------------+--+----------+-+
+                             +-startIndex-+  +-,--exact-+
 
 
 ]]>
@@ -337,7 +337,7 @@ or 0 if not found.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~SelectedIndex--------------------------------------><
+>>-selectedIndex-----------------------------------------------><
 
 
 ]]>
@@ -360,7 +360,7 @@ is selected.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~Selected-------------------------------------------><
+>>-selected----------------------------------------------------><
 
 
 ]]>
@@ -381,7 +381,7 @@ none is selected.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~selectIndex(--index--)-----------------------------><
+>>-selectIndex(--index--)--------------------------------------><
 
 
 ]]>
@@ -413,8 +413,8 @@ the selection.
 <indexterm><primary>DeselectIndex</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~DeSelectIndex(--+-------+--)-----------------------><
-                            +-index-+
+>>-deSelectIndex(--+-------+--)--------------------------------><
+                   +-index-+
 
 
 ]]>
@@ -444,7 +444,7 @@ specify no index or 0 for this argument, all items are deselected.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~select(--ItemText--)-------------------------------><
+>>-select(--ItemText--)----------------------------------------><
 
 
 ]]>
@@ -471,9 +471,9 @@ the specified text.</para>
 <indexterm><primary>SelectRange</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~SelectRange(--+-----------------------------+--)---><
-                          +-startIndex--+-------------+-+
-                                        +-,--endIndex-+
+>>-selectRange(--+-----------------------------+--)------------><
+                 +-startIndex--+-------------+-+
+                               +-,--endIndex-+
 
 
 ]]>
@@ -518,9 +518,9 @@ lb~SelectRange(5,9)
 <indexterm><primary>DeselectRange</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~DeselectRange(--+-----------------------------+--)-><
-                            +-startIndex--+-------------+-+
-                                          +-,--endIndex-+
+>>-deselectRange(--+-----------------------------+--)----------><
+                   +-startIndex--+-------------+-+
+                                 +-,--endIndex-+
 
 
 ]]>
@@ -566,7 +566,7 @@ lb~DeselectRange(,6)
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~Items----------------------------------------------><
+>>-items-------------------------------------------------------><
 
 
 ]]>
@@ -586,7 +586,7 @@ in the list box.</para>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~SelectedItems--------------------------------------><
+>>-selectedItems-----------------------------------------------><
 
 
 ]]>
@@ -609,7 +609,7 @@ example if the list box is no multiselection list box.
 <indexterm><primary>SelectedIndexes</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~SelectedIndexes------------------------------------><
+>>-selectedIndexes---------------------------------------------><
 
 
 ]]>
@@ -650,7 +650,7 @@ end
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~MakeFirstVisible(--index--)------------------------><
+>>-makeFirstVisible(--index--)---------------------------------><
 
 
 ]]>
@@ -678,7 +678,7 @@ down.</para>
 <indexterm><primary>GetFirstVisible</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~GetFirstVisible------------------------------------><
+>>-getFirstVisible---------------------------------------------><
 
 
 ]]>
@@ -698,7 +698,7 @@ of the first list item visible in the list box.</para>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~GetText(--index--)---------------------------------><
+>>-getText(--index--)------------------------------------------><
 
 
 ]]>
@@ -728,8 +728,8 @@ if the <emphasis role="italic">index</emphasis> does not refer to an item or an 
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~modify(--+-------+--,--newText--)------------------><
-                     +-index-+
+>>-modify(--+-------+--,--newText--)---------------------------><
+            +-index-+
 
 
 ]]>
@@ -762,9 +762,9 @@ does not refer to an item.
 <indexterm><primary>SetTabulators</primary></indexterm>
 <programlisting>
 <![CDATA[
-                            +-,------+
-                            V        |
->>-aListBox~SetTabulators(----tabPos-+--)----------------------><
+                   +-,------+
+                   V        |
+>>-setTabulators(----tabPos-+--)-------------------------------><
 
 
 ]]>
@@ -808,14 +808,14 @@ lb~Add(textcol1 || "09"x || textcol2 || "09"x || textcol3 || "09"x ||,
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                          +---------------+
-                                          V               |
->>-aListBox~AddDirectory(--drvPath--,--"----+-READWRITE-+-+--"--)-><
-                                            +-READONLY--+
-                                            +-HIDDEN----+
-                                            +-SYSTEM----+
-                                            +-DIRECTORY-+
-                                            +-ARCHIVE---+
+                                 +---------------+
+                                 V               |
+>>-addDirectory(--drvPath--,--"----+-READWRITE-+-+--"--)-------><
+                                   +-READONLY--+
+                                   +-HIDDEN----+
+                                   +-SYSTEM----+
+                                   +-DIRECTORY-+
+                                   +-ARCHIVE---+
 
 
 ]]>
@@ -875,7 +875,7 @@ MyDialog~AddDirectory(203, drive":\"path"\*.rex", "READWRITE")
 <indexterm><primary>SetWidth</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~SetWidth(--width--)--------------------------------><
+>>-setWidth(--width--)-----------------------------------------><
 
 
 ]]>
@@ -913,7 +913,7 @@ lb~SetWidth(lb~SizeX*2)
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~Width----------------------------------------------><
+>>-width-------------------------------------------------------><
 
 
 ]]>
@@ -933,7 +933,7 @@ occurred.
 <indexterm><primary>ItemHeight</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~ItemHeight-----------------------------------------><
+>>-itemHeight--------------------------------------------------><
 
 
 ]]>
@@ -952,7 +952,7 @@ items in the list box, in dialog units.</para>
 <indexterm><primary>ItemHeight=</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~ItemHeight=--height--------------------------------><
+>>-itemHeight=--height-----------------------------------------><
 
 
 ]]>
@@ -976,7 +976,7 @@ in the list box, in dialog units.</para>
 <indexterm><primary>ColumnWidth=</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListBox~ColumnWidth=--width--------------------------------><
+>>-columnWidth=--width-----------------------------------------><
 
 
 ]]>
