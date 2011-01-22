@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -1393,6 +1393,20 @@ of the width is at index 1 and the height in dialog units is at index 2. The
 size in pixels of the width is at index 3 and the height in pixels is at index
 4.
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+<listitem>
+<para>
+  There are a few problems with this routine. The main problem is with the values returned for the <link
+  linkend="defDialogUnit">dialog units</link>. Since dialog units are depenedent on the font in use for a specific
+  dialog, and there is no dialog involved here, the routine calculates the dialog units using 8 point System font. It is
+  higly unlikely that this is correct for any specific dialog.
+</para>
+<para>
+  The <link linkend="mthScreenSize">screenSize</link> method of the <link linkend="clsDlgUtil">DlgUtil</link> class is
+  a better way to get the screen size. It can provide accurate dialog units and may be more convenient to use since the
+  programmer seldom needs to get the size in both pixels and dialog units.
+</para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example</emphasis></term>
 <listitem><para>Get the screen size and display it to the user.
 <programlisting>

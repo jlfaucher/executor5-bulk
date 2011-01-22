@@ -217,11 +217,11 @@ System error code: 2
 </row>
 <row>
 <entry><link linkend="mthMakeLParam">makeLParam</link></entry>
-<entry>xx</entry>
+<entry>Packs two numbers into a LPARAM argument and returns the result.</entry>
 </row>
 <row>
 <entry><link linkend="mthMakeWParam">makeWParam</link></entry>
-<entry>xx</entry>
+<entry>Packs two numbers into a WPARAM argument and returns the result</entry>
 </row>
 <row>
 <entry><link linkend="mthOrClsDlgUtil">or</link></entry>
@@ -229,15 +229,15 @@ System error code: 2
 </row>
 <row>
 <entry><link linkend="mthScreenArea">screenArea</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the usable screen area (work area.) on the primary display monitor.</entry>
 </row>
 <row>
 <entry><link linkend="mthScreenSize">screenSize</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the screen size in either pixels, dialog units, or both.</entry>
 </row>
 <row>
 <entry><link linkend="mthThreadID">threadID</link></entry>
-<entry>xx</entry>
+<entry>Returns the thread identifier of the thread the method is executing in.</entry>
 </row>
 <row>
 <entry><link linkend="mthVersion">version</link></entry>
@@ -458,7 +458,7 @@ return .true
 
 <section id="mthLoWord"><title>loWord (Class Method)</title>
 <indexterm><primary>loWord</primary></indexterm>
-<indexterm><primary>DlgUtil</primary><secondary>loWord</secondary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>loWord</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--loWord(--param--)----------------------------><
@@ -529,7 +529,7 @@ return .true
 
 <section id="mthHiWord"><title>hiWord (Class Method)</title>
 <indexterm><primary>hiWord</primary></indexterm>
-<indexterm><primary>DlgUtil class</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>hiWord</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--hiWord(--param--)----------------------------><
@@ -625,6 +625,35 @@ return .true
     Raises syntax errors when incorrect arguments are detected.
   </para>
   </listitem></varlistentry>
+  <varlistentry id="exampleMakeLParam"><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the implementation of a method used to set the margins in an edit control
+<programlisting>
+<![CDATA[
+::method setEditMargins
+    use arg left, right
+
+    EC_LEFTMARGIN  = "0x0001"
+    EC_RIGHTMARGIN = "0x0002"
+    EC_USEFONTINFO = "0xFFFF"
+    EM_SETMARGINS  = "0x00D3"
+
+    if arg(1, 'O'), arg(2, 'O') then do
+       self~sendMessage(EM_SETMARGINS, 0, EC_USEFONTINFO)
+    end
+    else do
+       flag = 0
+       if arg(1, 'E') then flag = EC_LEFTMARGIN
+       if arg(2, 'E') then flag = .DlgUtil~or(flag, EC_RIGHTMARGIN)
+       lParam = .DlgUtil~makeLParam(left, right)
+       self~sendMessage(EM_SETMARGINS, flag, lParam)
+    end
+    return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::makeLParam() -->
 
@@ -681,64 +710,71 @@ return .true
     Raises syntax errors when incorrect arguments are detected.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    Although the <link linkend="exampleMakeLParam">example</link> for <emphasis role="italic">makeLParam</emphasis> does
+    not show the use of <emphasis role="italic">makeWParam</emphasis>, the basic idea in using either method is
+    essentially the same.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::makeWParam() -->
 
-
 <section id="mthOrClsDlgUtil"><title>or (Class Method)</title>
-<indexterm><primary>or</primary>
-<secondary>DlgUtil class</secondary></indexterm>
+<indexterm><primary>or</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>or</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                  +-,-------+
-                  V         |
->>--.DlgUtil~or(----number--+--)-----------------------------------><
+         +-,-------+
+         V         |
+>>--or(----number--+--)--------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Combines any number of numerical values into a single number by <emphasis
-  role="italic">oring</emphasis> the individual numbers together.  This is the typical or operation used
-  by assembly and C programmer's.  The ooDialog programmer does not need to understand the concept to use
-  this method.  Some arguments to some methods in the ooDialog framework can take a value that is a
-  combination of some individual <emphasis role="italic">flags</emphasis>.  The or method is provided to
-  construct this combination.</para>
+  Combines any number of numerical values into a single number by <emphasis role="italic">oring</emphasis> the
+  individual numbers together.  This is the typical or operation used by assembly and C programmer's.  The ooDialog
+  programmer does not need to understand the concept to use this method.  Some arguments to some methods in the ooDialog
+  framework can take a value that is a combination of some individual <emphasis role="italic">flags</emphasis>.  The or
+  method is provided to construct this combination.
+</para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      There is no restriction on the number of arguments to this method, other than each argument must
-      represent a whole number.
-    </para>
-    <para>
-      As a convenience, the whole numbers can also be specified as a string with the following format:
-      <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such
-      as <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
-      <computeroutput>"0x00000080"</computeroutput>. This makes it easy to look up and use the value of a
-      flag directly. For instance looking up the value of <computeroutput>ILC_COLOR24</computeroutput>,
-      one would see it is <computeroutput>0x00000018</computeroutput>. This value could be used directly
-      in the <computeroutput>or()</computeroutput> method. Case is not significant in the string.
-    </para>
+  <para>
+    There is no restriction on the number of arguments to this method, other than each argument must represent a whole
+    number.
+  </para>
+  <para>
+    As a convenience, the whole numbers can also be specified as a string with the following format:
+    <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such as
+    <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
+    <computeroutput>"0x00000080"</computeroutput>. This makes it easy to look up and use the value of a flag directly.
+    For instance looking up the value of <computeroutput>ILC_COLOR24</computeroutput>, one would see it is
+    <computeroutput>0x00000018</computeroutput>. This value could be used directly in the
+    <computeroutput>or()</computeroutput> method. Case is not significant in the string.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The return value is a number that is the result of combining all the individual arguments together.
-    </para>
+  <para>
+    The return value is a number that is the result of combining all the individual arguments together.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      One method that has an argument that can be the result of combining a number of flags is the <link
-      linkend="mthCreateClsImageList">create()</link> method of the <link
-      linkend="clsImage">.ImageList</link> class.  This is how the or method might be used
+  <para>
+    One method that has an argument that can be the result of combining a number of flags is the <link
+    linkend="mthCreateClsImageList">create()</link> method of the <link
+    linkend="clsImage">.ImageList</link> class.  This is how the or method might be used
 <programlisting>
 <![CDATA[
   flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
@@ -758,9 +794,9 @@ return .true
   imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10);
 ]]>
 </programlisting>
-    </para>
-    <para>
-      To round out the examples a little:
+  </para>
+  <para>
+    To round out the examples a little:
 <programlisting>
 <![CDATA[
   flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
@@ -778,14 +814,14 @@ return .true
 */
 ]]>
 </programlisting>
-    </para>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::or() [class method] -->
 
 <section id="mthAndClsDlgUtil"><title>and (Class Method)</title>
-<indexterm><primary>or</primary>
-<secondary>DlgUtil class</secondary></indexterm>
+<indexterm><primary>and</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>and</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--and(--number1-,-number2--)-------------------><
@@ -794,54 +830,53 @@ return .true
 </programlisting>
 
 <para>
-  Combines two numbers into a single number by <emphasis role="italic">anding</emphasis> the individual
-  numbers together.  This is the typical <emphasis role="italic">and</emphasis> operation used by
-  assembly and C programmer's. The typical ooDialog programmer would have no need of the method. It is
-  provided as a convenience for use in sophisticated ooDialog programs.
+  Combines two numbers into a single number by <emphasis role="italic">anding</emphasis> the individual numbers
+  together.  This is the typical <emphasis role="italic">and</emphasis> operation used by assembly and C programmer's.
+  The typical ooDialog programmer would have no need of the method. It is provided as a convenience for use in
+  sophisticated ooDialog programs.
 </para>
 <para>
-  The normal use of an <emphasis role="italic">and</emphasis> operation in ooDialog programs is to
-  extract the low or high words from an argument returned from the operating system. The addition of the
-  <link linkend="mthLoWord">loWord</link>() and <link linkend="mthHiWord">hiWord</link>() methods to the
-  ooDialog framework have eliminated most of the reason for this usage.
+  The normal use of an <emphasis role="italic">and</emphasis> operation in ooDialog programs is to extract the low or
+  high words from an argument returned from the operating system. The addition of the <link
+  linkend="mthLoWord">loWord</link>() and <link linkend="mthHiWord">hiWord</link>() methods to the ooDialog framework
+  have eliminated most of the reason for this usage.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The required two arguments are the whole numbers to be <emphasis role="italic">anded</emphasis>
-      together.
-    </para>
-    <para>
-      As a convenience, the whole numbers can also be specified as a string with the following format:
-      <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such
-      as <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
-      <computeroutput>"0x00000080"</computeroutput>.
-    </para>
+  <para>
+    The required two arguments are the whole numbers to be <emphasis role="italic">anded</emphasis> together.
+  </para>
+  <para>
+    As a convenience, the whole numbers can also be specified as a string with the following format:
+    <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such as
+    <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
+    <computeroutput>"0x00000080"</computeroutput>.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The return value is the number that is the result of <emphasis role="italic">anding</emphasis> the
-      two arguments together.
-    </para>
+  <para>
+    The return value is the number that is the result of <emphasis role="italic">anding</emphasis> the two arguments
+    together.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example is part of a generic method in an application that returns the text of an
-      edit control. The application is a complex one and has many edit controls that are read only. The
-      text for read only controls is ignored. The method returns .nil for read only controls to
-      differentiate the difference between a read only control and a control that has the empty string.
-    </para>
-    <para>
-      The value of the ES_READONLY style is 0x0800.
+  <para>
+    The following example is part of a generic method in an application that returns the text of an edit control. The
+    application is a complex one and has many edit controls that are read only. The text for read only controls is
+    ignored. The method returns .nil for read only controls to differentiate the difference between a read only
+    control and a control that has the empty string.
+  </para>
+  <para>
+    The value of the ES_READONLY style is 0x0800.
 <programlisting>
 <![CDATA[
 
@@ -854,17 +889,17 @@ return .true
   ...
 ]]>
 </programlisting>
-    </para>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::and() [class method] -->
 
 <section id="mthGetSystemMetricsClsDlgUtil"><title>getSystemMetrics (Class Method)</title>
-<indexterm><primary>getSystemMetrics</primary>
-<secondary>DlgUtil class</secondary></indexterm>
+<indexterm><primary>getSystemMetrics</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>getSystemMetrics</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--.DlgUtil~GetSystemMetrics(--index--)-----------------------><
+>>--getSystemMetrics(--index--)------------------><
 
 ]]>
 </programlisting>
@@ -875,79 +910,81 @@ return .true
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The only argument is:
-    <variablelist>
-      <varlistentry><term>index</term>
-      <listitem>
-        <para>
-          The numeric index of the system metric.
-        </para>
-        <para>
-          Good documentation on the system metrics is found in the <link linkend="defWindowsDoc">MSDN
-          Library</link> under the GetSystemMetrics function.  This documentation contains both the
-          numeric value of the different indexes and information on what is returned for each index. The
-          documentation is easy to found using a Google search of &quot;GetSystemMetrics MSDN
-          library&quot;
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <para>The only argument is:
+  <variablelist>
+    <varlistentry><term>index</term>
+    <listitem>
+    <para>
+      The numeric index of the system metric.
     </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The return value is dependent on the index queried.  Consult the MSDN library for information on
-      the returned values.
-      <note><title>Note</title><para>
-        The OS will return 0 if an invalid index is used.  Hoever, the return value for some indexes is
-        also 0.  The programmer will need to determine from the context if 0 is an error return or not.
-      </para></note>
-    </para>
+  <para>
+    The return value is dependent on the index queried. See the <emphasis role="italic">remarks</emphasis> section.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Good documentation on the system metrics is found in the <link linkend="defWindowsDoc">MSDN
+    Library</link> under the GetSystemMetrics function.  This documentation contains both the
+    numeric value of the different indexes and information on what is returned for each index. The
+    documentation is easy to found using a Google search of &quot;GetSystemMetrics MSDN
+    library&quot;
+  </para>
+  <para>
+    The OS will return 0 if an invalid index is used.  Hoever, the return value for some indexes is also 0.  The
+    programmer will need to determine from the context if 0 is an error return or not.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following code snippet is from an application where the user can have 5, 6, or more,
-      independent dialogs open at one time.  One of the menu options is &quot;Tile Dialogs.&quot; When
-      the user selects this option all the open dialogs are &quot;tiled.&quot;
-    </para>
-    <para>
-      All the open dialog objects are stored in a queue.  In the <computeroutput>onTile</computeroutput>
-      method, which is invoked when the user selects the menu item, each dialog is fetched in turn from the
-      queue.  Then the  dialog is repositioned at an offset from the preceding dialog. It is shifted to the
-      right the width of 2 scroll bars and shifted down the the width of the title bar.  (This width is the
-      title bar width plus the thin border around the title bar.)  The height of the thin border, the
-      height of the title bar, and the width of a scroll bar are all determined by querying the system
-      metrics.
-      <programlisting> <![CDATA[
+  <para>
+    The following code snippet is from an application where the user can have 5, 6, or more, independent dialogs open at
+    one time. One of the menu options is &quot;Tile Dialogs.&quot; When the user selects this option all the open
+    dialogs are &quot;tiled.&quot;
+  </para>
+  <para>
+    All the open dialog objects are stored in a queue.  In the <computeroutput>onTile</computeroutput> method, which is
+    invoked when the user selects the menu item, each dialog is fetched in turn from the queue.  Then the  dialog is
+    repositioned at an offset from the preceding dialog. It is shifted to the right the width of 2 scroll bars and
+    shifted down the the width of the title bar.  (This width is the title bar width plus the thin border around the
+    title bar.)  The height of the thin border, the height of the title bar, and the width of a scroll bar are all
+    determined by querying the system metrics.
+<programlisting>
+<![CDATA[
 
-      ::method onTile
-        expose offSetX offSetY dialogQueue
+::method onTile
+  expose offSetX offSetY dialogQueue
 
-        -- SM_CXVSCROLL = 20
-        -- SM_CYCAPTION = 4
-        -- SM_CYBORDER  = 6
+  -- SM_CXVSCROLL = 20
+  -- SM_CYCAPTION = 4
+  -- SM_CYBORDER  = 6
 
-        if \ offSetX~datatype('W') then do
-          scrollBarX = .DlgUtil~getSystemMetrics(20)
-          titleBarY = .DlgUtil~getSystemMetrics(4)
-          windowBorderY = .DlgUtil~getSystemMetrics(6)
+  if \ offSetX~datatype('W') then do
+    scrollBarX = .DlgUtil~getSystemMetrics(20)
+    titleBarY = .DlgUtil~getSystemMetrics(4)
+    windowBorderY = .DlgUtil~getSystemMetrics(6)
 
-          offSetX = 2 * scrollBarX
-          offSetY = (2 * windowBorderY) + titleBarY
-        end
+    offSetX = 2 * scrollBarX
+    offSetY = (2 * windowBorderY) + titleBarY
+  end
 
-        parse value self~getWindowRect(self~dlgHandle) with x y .
+  parse value self~getWindowRect(self~dlgHandle) with x y .
 
-        do dlg over dialogQueue
-          x += offSetX
-          y += offSetY
+  do dlg over dialogQueue
+    x += offSetX
+    y += offSetY
 
-          self~setWindowRect(dlg~dlgHandle, x, y, 0, 0, "NOSIZE")
-        end
-      ]]>
-      </programlisting>
-    </para>
+    self~setWindowRect(dlg~dlgHandle, x, y, 0, 0, "NOSIZE")
+  end
+]]>
+</programlisting>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::getSystemMetrics() [class method] -->
@@ -957,59 +994,25 @@ return .true
 <indexterm><primary>DlgUtil class</primary><secondary>screenArea</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--screenArea(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--screenArea-----------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the usable screen area (work area.) on the primary display monitor. The work area is the portion of the screen
+  not obscured by the system taskbar or by application desktop toolbars.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
+    This method takes no arguments.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    A <link linkend="clsRect">.Rect</link> object that contains the coordinates of the work area. The coordinates are
+    expressed in <link linkend="defScreenCoordinates">screen</link> coordinates.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1020,39 +1023,71 @@ return .true
 <indexterm><primary>DlgUtil class</primary><secondary>screenSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--screenSize(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--screenSize(--+--------+--+-----------+--)----><
+                 +--flag--+  +-,-dlgObj--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the screen size in either pixels, dialog units, or both.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>flag [optional]</term>
+      <listitem>
+      <para>
+        A keyword signaling whether to return the size in pixels, dialog units, or both. The default is both. The keywords
+        are PIXELS, DIALOGUNITS, and BOTH.  Only the first letter is needed and case is insignificant.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>dlgObj [optional]</term>
+      <listitem>
+      <para>
+        A Rexx dialog object. When this argument is used, dialog units are calculated correctly for the dialog. If it is
+        omitted, the dialog units will most likely be incorrect. See the remarks section
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is dependent on the flag in use:
+    <variablelist>
+      <varlistentry><term>Pixels:</term>
+      <listitem>
+      <para>
+        A <link linkend="clsSize">Size</link> object with the screen size in pixels.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DialogUnits</term>
+      <listitem>
+      <para>
+        A <link linkend="clsSize">Size</link> object with the screen size in dialog units.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Both</term>
+      <listitem>
+      <para>
+        An <computeroutput>Array</computeroutput>> with the screen size in dialog units at indexes 1 and 2 and the size
+        in pixels at indexes 3 and 4. Indexes 1 and 3 contain the width, indexes 2 and 4 contain the height..
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If a Rexx dialog object is not supplied, it is unlikely that the <link linkend="defDialogUnit">dialog units</link>
+    will be correct. Without a reference to a dialog, the method calculates the dialog units using 8 point System font.
+    Since dialog units are depenedent on the font in use for a specific dialog, It is higly unlikely that this is
+    correct for any specific dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1060,17 +1095,21 @@ return .true
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example calculates the mid-point of the upper left quadrant of the screen and positions the dialog at that
+    point:
 <programlisting>
 <![CDATA[
 
+::method initDialog
+
+  -- Get the screen size and then position ourself in the upper left quadrant.
+  s = .DlgUtil~screenSize('P')
+  p = .Point~new(s~width % 4, s~height % 4)
+  self~moveTo(p, "SHOWWINDOW")
 ]]>
 </programlisting>
   </para>
@@ -1089,51 +1128,80 @@ return .true
 </programlisting>
 
 <para>
-  xx
+  Returns the thread identifier of the thread the method is executing in.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a non-zero positive number, the number the operating system uses to identify the current thread.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Until the thread terminates, the thread identifier uniquely identifies the thread throughout the operating system.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    This is a convenience method for the use of the developers more than anything. However, for any user of ooRexx it
+    does provide some insight into the concurrency functionality of ooRexx.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example displays the thread ID from several different threads, (activities,) during the life cycle of a dialog.
 <programlisting>
 <![CDATA[
 
+  dlg = .SimpleDialog~new
+  say "In the start up of the program thread ID:  " .DlgUtil~threadID
+  dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+::requires "ooDialog.cls"
+
+::class 'SimpleDialog' subclass UserDialog
+
+::method init
+  forward class (super) continue
+
+  self~create(30, 30, 257, 123, "Simple Dialog", "CENTER")
+
+::method defineDialog
+
+  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
+
+::method initDialog
+
+  say "In initDialog() thread ID:                 " .DlgUtil~threadID
+  self~start("secondActivity")
+
+::method secondActivity unguarded
+
+  reply 0
+  j = SysSleep(1)
+  say "Executing in the second activity thread ID:" .DlgUtil~threadID
+
+::method ok unguarded
+
+  say "In the ok method thread ID:                " .DlgUtil~threadID
+  return self~ok:super
+
+/* The output on the console might ge:
+
+In the start up of the program thread ID:   128
+In initDialog() thread ID:                  128
+Executing in the second activity thread ID: 2672
+In the ok method thread ID:                 2344
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -1397,31 +1465,41 @@ return .true
 <programlisting>
 <![CDATA[
 
->>-.Window~new(--hwnd--)---------------------------------------><
+>>--new(--hwnd--)--------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Given a window handle, instantiates a new <emphasis role="italic">Window</emphasis> object.
+  Given a window <link linkend="defHandle">handle</link>, instantiates a new <computeroutput>Window</computeroutput>
+  object.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The required argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The window
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method returns a new Window object.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para>
-  Given an array of dialog control resource IDs this method enables all the controls without having to know what the
-  type of the individual control is:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns a new <computeroutput>Window</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    Given an array of dialog control resource IDs this method enables all the controls without having to know what the
+    type of the individual control is:
 <programlisting>
 <![CDATA[
 ::method enableControls
@@ -1436,7 +1514,8 @@ return .true
 
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -2041,71 +2120,75 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 </thead>
 <tbody>
 <row>
-<entry><link linkend="mthIs32on64bit"></link>is32on64bit (Class Method)</entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthIs32on64bit">is32on64bit</link></entry>
 <entry>Tests if running under ooRexx 32-bit on a 64 bit system</entry>
 </row>
 <row>
-<entry><link linkend="mthIs64bit"></link>is64bit (Class Method)</entry>
+<entry><link linkend="mthIs64bit">is64bit</link></entry>
 <entry>Tests if running under ooRexx 64-bit</entry>
 </row>
 <row>
-<entry><link linkend="mthIsAtLeastVista"></link>isAtLeastVista (Class Method)</entry>
+<entry><link linkend="mthIsAtLeastVista">isAtLeastVista</link></entry>
 <entry>Tests if operating system is Windows Vista or later</entry>
 </row>
 <row>
-<entry><link linkend="mthIsAtLeastW2K"></link>isAtLeastW2K (Class Method)</entry>
+<entry><link linkend="mthIsAtLeastW2K">isAtLeastW2K</link></entry>
 <entry>Tests if operating system is Windows 2000 or later</entry>
 </row>
 <row>
-<entry><link linkend="mthIsAtLeastW2K3"></link>isAtLeastW2K3 (Class Method)</entry>
+<entry><link linkend="mthIsAtLeastW2K3">isAtLeastW2K3</link></entry>
 <entry>Tests if operating system is Windows 2003 or later</entry>
 </row>
 <row>
-<entry><link linkend="mthIsAtLeastWindows7"></link>isAtLeastWindows7 (Class Method)</entry>
+<entry><link linkend="mthIsAtLeastWindows7">isAtLeastWindows7</link></entry>
 <entry>Tests if operating system is Windows 7 or later</entry>
 </row>
 <row>
-<entry><link linkend="mthIsAtLeastXP"></link>isAtLeastXP (Class Method)</entry>
+<entry><link linkend="mthIsAtLeastXP">isAtLeastXP</link></entry>
 <entry>Tests if operating system is Windows XP or later</entry>
 </row>
 <row>
-<entry><link linkend="mthIsServer2008"></link>isServer2008 (Class Method)</entry>
+<entry><link linkend="mthIsServer2008">isServer2008</link></entry>
 <entry>Tests if operating system is Windows Server 2008</entry>
 </row>
 <row>
-<entry><link linkend="mthIsServer2008R2"></link>isServer2008R2 (Class Method)</entry>
+<entry><link linkend="mthIsServer2008R2">isServer2008R2</link></entry>
 <entry>Tests if operating system is Windows Server 2008 Release 2</entry>
 </row>
 <row>
-<entry><link linkend="mthIsVista"></link>isVista (Class Method)</entry>
+<entry><link linkend="mthIsVista">isVista</link></entry>
 <entry>Tests if operating system is Windows Vista</entry>
 </row>
 <row>
-<entry><link linkend="mthIsW2K"></link>isW2K (Class Method)</entry>
+<entry><link linkend="mthIsW2K">isW2K</link></entry>
 <entry>Tests if operating system is Windows 2000</entry>
 </row>
 <row>
-<entry><link linkend="mthIsW2K3"></link>isW2K3 (Class Method)</entry>
+<entry><link linkend="mthIsW2K3">isW2K3</link></entry>
 <entry>Tests if operating system is Windows 2003</entry>
 </row>
 <row>
-<entry><link linkend="mthIsWindows7"></link>isWindows7 (Class Method)</entry>
+<entry><link linkend="mthIsWindows7">isWindows7</link></entry>
 <entry>Tests if operating system is Windows 7</entry>
 </row>
 <row>
-<entry><link linkend="mthIsWow64"></link>isWow64 (Class Method)</entry>
+<entry><link linkend="mthIsWow64">isWow64</link></entry>
 <entry>Alias for the <emphasis role="italic">is32on64bit</emphasis>() method</entry>
 </row>
 <row>
-<entry><link linkend="mthIsXP"></link>isXP (Class Method)</entry>
+<entry><link linkend="mthIsXP">isXP</link></entry>
 <entry>Tests if operating system is Windows XP</entry>
 </row>
 <row>
-<entry><link linkend="mthIsXP32"></link>isXP32 (Class Method)</entry>
+<entry><link linkend="mthIsXP32">isXP32</link></entry>
 <entry>Tests if operating system is 32-bit Windows XP</entry>
 </row>
 <row>
-<entry><link linkend="mthIsXP64"></link>isXP64 (Class Method)</entry>
+<entry><link linkend="mthIsXP64">isXP64</link></entry>
 <entry>Tests if operating system is 64-bit Windows XP</entry>
 </row>
 </tbody></tgroup>
@@ -2120,7 +2203,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~is64bit---------------------------------------------><
+>>--is64bit--------------------------------------><
 
 ]]>
 </programlisting>
@@ -2136,7 +2219,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <indexterm><primary>OS class</primary><secondary>is32on64bit</secondary></indexterm>
 <programlisting> <![CDATA[
 
->>-.OS~is32on64bit-----------------------------------------><
+>>--is32on64bit----------------------------------><
 
 ]]>
 </programlisting>
@@ -2153,7 +2236,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isWow64---------------------------------------------><
+>>--isWow64--------------------------------------><
 
 ]]>
 </programlisting>
@@ -2172,7 +2255,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~is64bit---------------------------------------------><
+>>--isW2K----------------------------------------><
 
 ]]>
 </programlisting>
@@ -2188,7 +2271,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isXP------------------------------------------------><
+>>--isXP-----------------------------------------><
 
 ]]>
 </programlisting>
@@ -2204,7 +2287,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~is64bit---------------------------------------------><
+>>--isXP-----------------------------------------><
 
 ]]>
 </programlisting>
@@ -2220,7 +2303,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isXP64----------------------------------------------><
+>>--isXP64---------------------------------------><
 
 ]]>
 </programlisting>
@@ -2236,7 +2319,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isW2K3----------------------------------------------><
+>>--isW2K3---------------------------------------><
 
 ]]>
 </programlisting>
@@ -2252,7 +2335,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isVista---------------------------------------------><
+>>--isVista--------------------------------------><
 
 ]]>
 </programlisting>
@@ -2260,16 +2343,6 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <para>
   Returns true if the currently executing program is running on Windows Vista, otherwise false.
 </para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem><para>
-<programlisting>
-<![CDATA[
-  NEED an EXAMPLE HERE.
-]]>
-</programlisting>
-  </para></listitem></varlistentry>
-</variablelist>
 </section>  <!-- End OS::isVista() [class method] -->
 
 <section id="mthIsServer2008"><title>isServer2008 (Class Method)</title>
@@ -2278,7 +2351,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isServer2008----------------------------------------><
+>>--isServer2008---------------------------------><
 
 ]]>
 </programlisting>
@@ -2294,7 +2367,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isWindows7------------------------------------------><
+>>--isWindows7-----------------------------------><
 
 ]]>
 </programlisting>
@@ -2310,7 +2383,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isServer2008R2--------------------------------------><
+>>--isServer2008R2-------------------------------><
 
 ]]>
 </programlisting>
@@ -2326,14 +2399,15 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isAtLeastW2K----------------------------------------><
+>>--isAtLeastW2K---------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   Returns true if the currently executing program is running on Windows 2000, or later. Otherwise it returns false.
-</para> </section>  <!-- End OS::isAtLeastW2K() [class method] -->
+</para>
+</section>  <!-- End OS::isAtLeastW2K() [class method] -->
 
 <section id="mthIsAtLeastXP"><title>isAtLeastXP (Class Method)</title>
 <indexterm><primary>isAtLeastXP</primary></indexterm>
@@ -2341,14 +2415,15 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isAtLeastXP-----------------------------------------><
+>>--isAtLeastXP----------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   Returns true if the currently executing program is running on Windows XP, or later. Otherwise it returns false.
-</para> </section>  <!-- End OS::isAtLeastXP() [class method] -->
+</para>
+</section>  <!-- End OS::isAtLeastXP() [class method] -->
 
 <section id="mthIsAtLeastW2K3"><title>isAtLeastW2K3 (Class Method)</title>
 <indexterm><primary>isAtLeastW2K3</primary></indexterm>
@@ -2356,14 +2431,15 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isAtLeastW2K3---------------------------------------><
+>>--isAtLeastW2K3--------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   Returns true if the currently executing program is running on Windows 2003, or later. Otherwise it returns false.
-</para> </section>  <!-- End OS::isAtLeastW2K3() [class method] -->
+</para>
+</section>  <!-- End OS::isAtLeastW2K3() [class method] -->
 
 <section id="mthIsAtLeastVista"><title>isAtLeastVista (Class Method)</title>
 <indexterm><primary>isAtLeastVista</primary></indexterm>
@@ -2371,14 +2447,40 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isAtLeastVista--------------------------------------><
+>>--isAtLeastVista-------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   Returns true if the currently executing program is running on Windows Vista, or later. Otherwise it returns false.
-</para> </section>  <!-- End OS::isAtLeastVista() [class method] -->
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="clsMonthCalendar">MonthCalendar</link> class has a number of methods that are only available on
+    Windows Vista or Windows 7. This example is from a program that demonstrates those methods. It first checks if the
+    program is running on Vista, and if not it quits.
+<programlisting>
+<![CDATA[
+
+/* Simple MonthCalendar example */
+
+  -- We demonstrate some of the MonthCalendar features here that are
+  -- only available on Vista.  So, be sure we are running on Vista and
+  -- abort if not.
+  if \ .OS~isAtLeastVista then do
+    info = "This program requires Windows Vista or later."
+    return messageDialog(info, , "Error", "OK", "HAND")
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End OS::isAtLeastVista() [class method] -->
 
 <section id="mthIsAtLeastWindows7"><title>isAtLeastWindows7 (Class Method)</title>
 <indexterm><primary>isAtLeastWindows7</primary></indexterm>
@@ -2386,14 +2488,15 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>-.OS~isAtLeastWindows7-----------------------------------><
+>>--isAtLeastWindows7----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   Returns true if the currently executing program is running on Windows 7, or later. Otherwise it returns false.
-</para> </section>  <!-- End OS::isAtLeastWindows7() [class method] -->
+</para>
+</section>  <!-- End OS::isAtLeastWindows7() [class method] -->
 
 
 </section> <!-- End OS Class -->
@@ -2402,11 +2505,10 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <section id="clsRect"><title>Rect Class</title>
 <indexterm><primary>Rect class</primary></indexterm>
 <para>
-  The Rect object is most often used to represent a rectangle on a coordinate system, specifically the coordinate system
-  used by Windows where the upper left corner is considered (0,0).  However, it is convenient to use the Rect object for
-  other things, for instance the margin around a rectangle.
+  The <computeroutput>Rect</computeroutput> object is most often used to represent a rectangle on a coordinate system,
+  specifically the coordinate system used by Windows where the upper left corner is considered (0,0).  However, it is
+  convenient to use the Rect object for other things, for instance the margin around a rectangle.
 </para>
-
 
 <section id="sctMethodsRect"><title>Method Table</title>
 <para>
@@ -2430,39 +2532,23 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <entry>Instantiates a new <computeroutput>Rect</computeroutput> object.</entry>
 </row>
 <row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthBottom">bottom</link></entry>
+<entry><link linkend="atrBottomClsRect">bottom</link></entry>
 <entry>xx</entry>
 </row>
 <row>
-<entry><link linkend="mthBottomEquals">bottom=</link></entry>
+<entry><link linkend="atrLeftClsRect">left</link></entry>
 <entry>xx</entry>
 </row>
 <row>
-<entry><link linkend="mthLeft">left</link></entry>
+<entry><link linkend="atrRightClsRect">right</link></entry>
 <entry>xx</entry>
 </row>
 <row>
-<entry><link linkend="mthLeftEquals">left=</link></entry>
-<entry>xx</entry>
-</row>
-<row>
-<entry><link linkend="mthRightClsPoint">right</link></entry>
-<entry>xx</entry>
-</row>
-<row>
-<entry><link linkend="mthRightEquals">right=</link></entry>
-<entry>xx</entry>
-</row>
-<row>
-<entry><link linkend="mthTop">top</link></entry>
-<entry>xx</entry>
-</row>
-<row>
-<entry><link linkend="mthTopEquals">top=</link></entry>
+<entry><link linkend="atrTopClsRect">top</link></entry>
 <entry>xx</entry>
 </row>
 </tbody></tgroup>
@@ -2470,45 +2556,68 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 </para>
 </section>
 
-
 <section id="mthNewClsRect"><title>new (Class Method)</title>
-<indexterm><primary>new</primary>
-<secondary>Rect class</secondary></indexterm>
+<indexterm><primary>new</primary><secondary>Rect class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-               +-0----+     +-left-+     +-left--+     +-left---+
->>-aRect~new(--+------+--,--+------+--,--+-------+--,--+--------+--)------><
-               +-left-+     +-top--+     +-right-+     +-bottom-+
+
+>>--new(--+------+--+--------+--+---------+--+----------+--)-------------------><
+          +-left-+  +-,-top--+  +-,-right-+  +-,-bottom-+
 
 ]]>
 </programlisting>
 
 <para>
-  Instantiates a new Rect object.  All the arguments are whole numbers.
+  Instantiates a new <computeroutput>Rect</computeroutput> object.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>left</term>
-<listitem><para>The left postion. The default is 0.
-</para></listitem></varlistentry>
-<varlistentry><term>top</term>
-<listitem><para>The top position. The default is the value of left.
-</para></listitem></varlistentry>
-<varlistentry><term>right</term>
-<listitem><para>The right position. The default is the value of left.
-</para></listitem></varlistentry>
-<varlistentry><term>bottom</term>
-<listitem><para>The bottom position. The default is the value of left.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The new Rect object is returned.
-</para></listitem></varlistentry>
-<varlistentry id="exampleNewClsRect"><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The arguments are:
+  <variablelist>
+    <varlistentry><term>left [optional]</term>
+    <listitem>
+    <para>
+      The left coordinate of the rectangle. The default is 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>top [optional]</term>
+    <listitem>
+    <para>
+      The top coordinate of the rectangle. The default is the value of <emphasis role="italic">left</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>right [optional]</term>
+    <listitem>
+    <para>
+      The right coordinate of the rectangle. The default is the value of <emphasis role="italic">left</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bottom [optional]</term>
+    <listitem>
+    <para>
+      The bottom coordinate of the rectangle. The default is the value of <emphasis role="italic">left</emphasis>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The new <computeroutput>Rect</computeroutput> object is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    All the coordinates of the rectangel are whole numbers in the range of -2147483648 to 2147483647, inclusive. Note
+    that the <emphasis role="italic">left</emphasis> argument is checked first, if it is omitted, its value is set to 0.
+    All other arguments, if omitted, are set to the value of <emphasis role="italic">left</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleNewClsRect"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
 <programlisting>
 <![CDATA[
 r = .Rect~new(3, 4, 13, 9)
@@ -2544,221 +2653,220 @@ New upper corner (55,75) new lower corner 110,125)
 
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthLeft"><title>left</title>
-<indexterm><primary>left</primary>
-<secondary>Rect class</secondary></indexterm>
+<section id="atrLeft"><title>left (Attribute)</title>
+<indexterm><primary>left</primary></indexterm>
+<indexterm><primary>Rect class</primary><secondary>left</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRect~left----------------------------------------------><
+>>--left-----------------------------------------------------><
+
+>>--left-=-varName-------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>Retrieves the left value of the rectangle.</para>
+<para>
+  The <emphasis role="italic">left</emphasis> attribute reflects the x coordinate of the upper left corner of the
+  rectangle.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method takes no arguments
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return value is the numeric value for the left of the rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">left get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the value of <emphasis role="italic">left</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">left set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the value of the <emphasis role="italic">left</emphasis> coordinate of the rectangle. The value must be a
+    whole number in the range of -2147483648 to 2147483647, inclusive.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    See <link linkend="exampleNewClsRect">.Rect~new</link> example.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Rect::left() [attribute]  -->
 
-<section id="mthLeftEquals"><title>left=</title>
-<indexterm><primary>left=</primary>
-<secondary>Rect class</secondary></indexterm>
+<section id="atrTopClsRect"><title>top (Attribute)</title>
+<indexterm><primary>top</primary></indexterm>
+<indexterm><primary>Rect class</primary><secondary>top</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRect~left=value----------------------------------------><
+>>--top-----------------------------------------------------><
+
+>>--top-=-varName-------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>Sets the left value of the rectangle.</para>
+<para>
+  xx
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This has one argument:
-<variablelist>
-<varlistentry><term>value</term>
-<listitem><para>The left value for the rectangle.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthTop"><title>top</title>
-<indexterm><primary>top</primary>
-<secondary>Rect class</secondary></indexterm>
+  <varlistentry><term><emphasis role="bold">top get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">top set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
 <programlisting>
 <![CDATA[
->>-aRect~top-----------------------------------------------><
+
 
 ]]>
 </programlisting>
-
-<para>Retrieves the top value of the rectangle.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method takes no arguments
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return value is the numeric value for the top of the rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Rect::top() [attribute]  -->
 
-<section id="mthTopEquals"><title>top=</title>
-<indexterm><primary>top=</primary>
-<secondary>Rect class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aRect~top=value-----------------------------------------><
-
-]]>
-</programlisting>
-
-<para>Sets the top value of the rectangle.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method takes one argument:
-<variablelist>
-<varlistentry><term>value</term>
-<listitem><para>The top value for the rectangle.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return any value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthRightClsPoint"><title>right</title>
-<indexterm><primary>right</primary><secondary>Rect class</secondary></indexterm>
+<section id="atrRightClsRect"><title>right (Attribute)</title>
+<indexterm><primary>right</primary></indexterm>
 <indexterm><primary>Rect class</primary><secondary>right</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRect~right---------------------------------------------><
+>>--right-----------------------------------------------------><
+
+>>--right-=-varName-------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>Retrieves the right value of the rectangle.</para>
+<para>
+  xx
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method takes no arguments
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return value is the numeric value for the right of the rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthRightEquals"><title>right=</title>
-<indexterm><primary>right=</primary>
-<secondary>Rect class</secondary></indexterm>
+  <varlistentry><term><emphasis role="bold">right get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">right set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
 <programlisting>
 <![CDATA[
->>-aRect~right=value---------------------------------------><
+
 
 ]]>
 </programlisting>
-
-<para>Sets the right value of the rectangle.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method has one argument:
-<variablelist>
-<varlistentry><term>value</term>
-<listitem><para>The new right value for the rectangle.
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>There is nor return value for this method.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End Rect::right() [attribute]  -->
 
-<section id="mthBottom"><title>bottom</title>
-<indexterm><primary>bottom</primary>
-<secondary>Rect class</secondary></indexterm>
+<section id="atrBottomClsRect"><title>bottom (Attribute)</title>
+<indexterm><primary>bottom</primary></indexterm>
+<indexterm><primary>Rect class</primary><secondary>bottom</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aRect~bottom--------------------------------------------><
+>>--bottom-----------------------------------------------------><
+
+>>--bottom-=-varName-------------------------------------------><
 
 ]]>
 </programlisting>
 
-<para>Retrieves the bottom value of the rectangle.</para>
+<para>
+  xx
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method takes no arguments
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return value is the numeric value for the bottom of the rectangle.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthBottomEquals"><title>bottom=</title>
-<indexterm><primary>bottom=</primary>
-<secondary>Rect class</secondary></indexterm>
+  <varlistentry><term><emphasis role="bold">bottom get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">bottom set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
 <programlisting>
 <![CDATA[
->>-aRect~bottom=value--------------------------------------><
+
 
 ]]>
 </programlisting>
-
-<para>Sets the bottom value of the rectangle.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method has one argument:
-<variablelist>
-<varlistentry><term>value</term>
-<listitem><para>The bottom value for the rectangle.
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The method does not return a value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsRect">.Rect~new</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End Rect::bottom() [attribute]  -->
 
 </section> <!-- End Rect Class -->
 
@@ -2766,7 +2874,7 @@ New upper corner (55,75) new lower corner 110,125)
 <section id="clsPoint"><title>Point Class</title>
 <indexterm><primary>Point class</primary></indexterm>
 <para>
-  The Point class represents a point in a 2-D coordinate system.
+  The <computeroutput>Point</computeroutput> class represents a point in a 2-D coordinate system.
 </para>
 
 
