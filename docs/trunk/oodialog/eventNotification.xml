@@ -222,22 +222,6 @@ Help request:
   dialog with a method in the Rexx dialog. The notification is sent to the dialog after its size has changed.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    size events happen.
-  </para>
-  <para>
-    The underlying dialog recieves the WM_SIZE message as the notification for this event.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -269,6 +253,22 @@ Help request:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    size events happen.
+  </para>
+  <para>
+    The underlying dialog recieves the WM_SIZE message as the notification for this event.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example 1:</emphasis></term>
   <listitem>
@@ -3182,8 +3182,16 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   </listitem></varlistentry>
 </variablelist>
 
-<section id="evtListViewCLICK"><title>List View CLICK Event</title>
+<section id="evtListViewCLICK"><title>CLICK Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>CLICK</secondary></indexterm>
+<para>
+  The event handling method for the CLICK event is invoked when the user clicks on the list view with the left mouse.
+  This excludes the column headers in report view. Note that the user can click on a list view item, or on the
+  background of the list view. When the click is on the background of the list view then both the <emphasis
+  role="italic">itemIndex</emphasis> and <emphasis role="italic">columnInex</emphasis> will be -1. The method will
+  receive four arugments:
+</para>
+
 <programlisting>
 <![CDATA[
   ::method onClick
@@ -3192,13 +3200,6 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 ]]>
 </programlisting>
 
-<para>
-  The event handling method for the CLICK event is invoked when the user clicks on the list view with the left mouse.
-  This excludes the column headers in report view. Note that the user can click on a list view item, or on the
-  background of the list view. When the click is on the background of the list view then both the <emphasis
-  role="italic">itemIndex</emphasis> and <emphasis role="italic">columnInex</emphasis> will be -1. The method will
-  receive four arugments:
-</para>
 <variablelist>
   <varlistentry><term>id</term>
   <listitem>
@@ -3234,8 +3235,13 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 </variablelist>
 </section>
 
-<section id="evtListViewCHECKBOXCHANGED"><title>List View CHECKBOXCHANGED Event</title>
+<section id="evtListViewCHECKBOXCHANGED"><title>CHECKBOXCHANGED Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>CHECKBOXCHANGED</secondary></indexterm>
+<para>
+  The event handler for the checkbox changed event is invoked when the user checks or unchecks a checkbox in the
+  <computeroutput>ListView</computeroutput> control. The method recieves three arguments:
+</para>
+
 <programlisting>
 <![CDATA[
 ::method onCheckboxChanged
@@ -3243,10 +3249,6 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 
 ]]>
 </programlisting>
-<para>
-  The method invoked for the checkbox changed event recieves three arguments. The method signature will look as
-  follows:
-</para>
 <variablelist>
   <varlistentry><term>id</term>
   <listitem>
@@ -3266,7 +3268,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   </para></listitem></varlistentry>
 </variablelist>
 <para>
-  <emphasis role="bold">Example:</emphasis>The following example is from an address book application. A list view
+  <emphasis role="bold">Example:</emphasis> The following example is from an address book application. A list view
   control is filled with the information from the address book, one item for each entry.  The check box changed event is
   connected to the <emphasis role="italic">onCheckboxChanged</emphasis> method. The <emphasis
   role="italic">onCheckboxChanged</emphasis> method will receive 3 arguments: the resource ID of the control, the index
@@ -3301,10 +3303,15 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 ]]>
 </programlisting>
 
-</section>
+</section>  <!-- End CheckBoxChanged Event Handler -->
 
-<section id="evtListViewSELECTCHANGE"><title>List View SELECTCHANGE Event</title>
+<section id="evtListViewSELECTCHANGE"><title>SELECTCHANGE Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>SELECTCHANGE</secondary></indexterm>
+<para>
+  The event handler for the selection changed event is invoked when the selection state of an item changes. The method
+  recieves three arguments:
+</para>
+
 <programlisting>
 <![CDATA[
 ::method onSelectChanged
@@ -3313,10 +3320,6 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 ]]>
 </programlisting>
 
-<para>
-  The method invoked when the selection changes will recieve three arguments.  The method signature will look as
-  follows:
-</para>
 <variablelist>
   <varlistentry><term>id</term>
   <listitem>
@@ -3342,6 +3345,11 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 
 <section id="evtListViewFOCUSCHANGED"><title>List View FOCUSCHANGED Event</title>
 <indexterm><primary>ListView Event</primary><secondary>FOCUSCHANGED</secondary></indexterm>
+<para>
+  The event handler for the focus changed event is invoked when an item gains or loses focus. The method recieves three
+  arguments:
+</para>
+
 <programlisting>
 <![CDATA[
 ::method onFocusChanged
@@ -3349,9 +3357,6 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 
 ]]>
 </programlisting>
-<para>
-  The method invoked for the focus changed event recieves three arguments:
-</para>
 <variablelist>
   <varlistentry><term>id</term>
   <listitem>
@@ -3375,8 +3380,13 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 </variablelist>
 </section>
 
-<section id="evtListViewSELECTFOCUSCHANGED"><title>List View SELECTFOCUSCHANGED Event</title>
+<section id="evtListViewSELECTFOCUSCHANGED"><title>SELECTFOCUSCHANGED Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>SELECTFOCUSCHANGED</secondary></indexterm>
+<para>
+  The event handle for the selection or focus changed event is invoked when either the selection or the focus of an item
+  changes. The method recieves 3 arguments:
+</para>
+
 <programlisting>
 <![CDATA[
 ::method onSelectFocusChanged
@@ -3384,10 +3394,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 
 ]]>
 </programlisting>
-<para>
-  The method invoked for the selection or focus changed event recieves three arguments. The method signature will
-  look as follows:
-</para>
+
 <variablelist>
   <varlistentry><term>id</term>
   <listitem>
@@ -3415,38 +3422,46 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 
 </section>
 
-<section id="evtListViewENDEDIT"><title>List View ENDEDIT Event</title>
+<section id="evtListViewENDEDIT"><title>ENDEDIT Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>ENDEDIT</secondary></indexterm>
+<para>
+  The event-handling method connected to ENDEDIT receives two arguments: the item ID of which the label has been edited
+  and the newly entered text.
+</para>
+
 <programlisting>
 <![CDATA[
 ::method OnEndEdit
   use arg item, newText
 ]]>
 </programlisting>
-<para>
-  The event-handling method connected to ENDEDIT receives two arguments: the item ID of which the label has been edited
-  and the newly entered text.
-</para>
 
 </section>
 
-<section id="evtListViewCOLUMNCLICK"><title>List View COLUMNCLICK Event</title>
+<section id="evtListViewCOLUMNCLICK"><title>COLUMNCLICK Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>COLUMNCLICK</secondary></indexterm>
+<para>
+  The event-handling method connected to COLUMNCLICK receives two arguments: the control ID of the list view control and
+  the zero-based column number of which the header button was pressed.
+</para>
+
 <programlisting>
 <![CDATA[
 ::method OnColumnClick
   use arg id, column
 ]]>
 </programlisting>
-<para>
-  The event-handling method connected to COLUMNCLICK receives two arguments: the control ID of the list view control and
-  the zero-based column number of which the header button was pressed.
-</para>
 
 </section>
 
-<section id="evtListViewKEYDOWN"><title>List View KEYDOWN Event</title>
+<section id="evtListViewKEYDOWN"><title>KEYDOWN Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>KEYDOWN</secondary></indexterm>
+<para>
+  The event-handling method connected to KEYDOWN receives two arguments: the control ID of the list view control and the
+  virtual key code pressed. Use the <link linkend="mthKey2Name">key2name</link> method of the <link
+  linkend="clsVK">VK</link> class to determine which key was pressed.
+</para>
+
 <programlisting>
 <![CDATA[
 ::method OnKeyDown
@@ -3454,38 +3469,28 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   say "Key" .VK~key2name(vkey) "was pressed."
 ]]>
 </programlisting>
-<para>
-  The event-handling method connected to KEYDOWN receives two arguments: the control ID of the list view control and the
-  virtual key code pressed. Use the <link linkend="mthKey2Name">key2name</link> method of the <link
-  linkend="clsVK">VK</link> class to determine which key was pressed.
-</para>
 
 </section>
 
-<section id="evtListViewBEGINDRAG"><title>List View BEGINDRAG Event</title>
+<section id="evtListViewBEGINDRAG"><title>BEGINDRAG Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>BEGINDRAG</secondary></indexterm>
-<programlisting>
-<![CDATA[
-::method 0nBeginDrag
-  use arg id, item, where
-]]>
-</programlisting>
 
 <para>
   The event-handling method connected to BEGINDRAG receives three arguments: the control ID of the list view control,
   the index of the list item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
   separated by a blank).
 </para>
-</section>
 
-<section id="evtListViewBEGINRDRAG"><title>List View BEGINRDRAG Event</title>
-<indexterm><primary>ListView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
 <programlisting>
 <![CDATA[
-::method 0nBeginRightDrag
+::method 0nBeginDrag
   use arg id, item, where
 ]]>
 </programlisting>
+</section>
+
+<section id="evtListViewBEGINRDRAG"><title>BEGINRDRAG Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
 
 <para>
   The event-handling method connected to BEGINRDRAG receives three arguments: the control ID of the list view control,
@@ -3493,6 +3498,12 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   separated by a blank).
 </para>
 
+<programlisting>
+<![CDATA[
+::method 0nBeginRightDrag
+  use arg id, item, where
+]]>
+</programlisting>
 </section>
 
 </section>
@@ -4133,26 +4144,20 @@ trackbar position by extracting the high-oder word. Example:
 
 <section id="mthConnectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
 <indexterm><primary>connectMonthCalendarEvent</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectMonthCalendarEvent</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectMonthCalendarEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectMonthCalendarEvent(--id--,--event--,-+---------------+--)-----------><
-                                                +-,--methodName-+
+>>--connectMonthCalendarEvent(--id-,-event-+-----------+-+---------------+-)---><
+                                           +-,-methodName-+ +-,-wilReply-+
 
 ]]>
 </programlisting>
 
 <para>
-  PLEASE FIXE ME TODO
-  The connectStaticEvent connects a notification message from a static control to a method, defined by
-  the programmer, of the dialog.  Normally, static controls do not send notification messages.  A static
-  control will only send the messages when it has the SS_NOTIFY style.  The notification messages inform
-  the dialog that an event has occurred with regard to the static control.
-</para>
-<para>
-  For user defined dialogs use the NOTIFY style keyword in the <link
-  linkend="sctCreateStaticControls">create...</link> static control methods when the control is defined. For
-  dialogs created from a compiled resource or a resource script file use the SS_NOTIFY style when
-  defining the control in a resource editor.
+  The <emphasis role="italic">connectMonthCalendar</emphasis> method connects an <link linkend="ovvEvents">event</link>
+  notification message from a <link linkend="clsMonthCalendar">month</link> calendar control to a method in the Rexx
+  dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4160,144 +4165,284 @@ trackbar position by extracting the high-oder word. Example:
   <para>
     The arguments are:
     <variablelist>
-    <varlistentry><term>id</term>
-    <listitem>
+      <varlistentry><term>id [reguired]</term>
+      <listitem>
       <para>
-        The resource ID of the static control.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>event</term>
-    <listitem>
-      <para>
-        A keyword specifying the event to be connected with a method:
-        <variablelist>
-          <varlistentry><term>CLICK</term>
-          <listitem>
-            <para>
-              The static control has been clicked with the mouse.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DBLCLK</term>
-          <listitem>
-            <para>
-              The static control has been double-clicked with the mouse.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLE</term>
-          <listitem>
-            <para>
-              The static control has been disabled.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>ENABLE</term>
-          <listitem>
-            <para>
-              The static control has been enabled.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
+        The resource ID of the month calendar control. May be numeric or <link linkend="defSymbolicId">symbolic</link>.
       </para>
-    </listitem></varlistentry>
-    <varlistentry><term>methodName</term>
-    <listitem>
+      </listitem></varlistentry>
+      <varlistentry><term>event [required]</term>
+      <listitem>
       <para>
-        The name of the method that is to be invoked whenever the specified notification is received from the static
-        control. The programmer defines this method. If this argument is omitted, a method name is automatically
-        generated that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
-        <computeroutput>onClick</computeroutput>. The method name can not be the empty string and must be less than 256
-        characters in length.
+        Exactly one of the following keywords. The keyword specifies the event to be connected. Case is not significant:
       </para>
-    </listitem></varlistentry>
+      <para>
+        <simplelist type='vert' columns='2'>
+          <member>GETDAYSTATE</member>  <member>SELCHANGE</member>
+          <member>RELEASED</member>     <member>VIEWCHANGE</member>
+          <member>SELECT</member>
+        </simplelist>
+      </para>
+      <variablelist>
+        <varlistentry><term>GETDAYSTATE</term>
+        <listitem>
+        <para>
+           Sent by a month calendar control to request information about how individual days should be displayed. This
+           notification message is only sent if the month calendar control has the DAYSTATE style. The <emphasis
+           role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
+           <link linkend="sctCodingEventHandlers">return</link> a reply.
+           bold.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RELEASED</term>
+        <listitem>
+        <para>
+          Sent by the month calendar when the control is releasing the mouse capture. The return value from the event
+          handler is ignored for this event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SELECT</term>
+        <listitem>
+        <para>
+          Sent by a month calendar control when the user makes an explicit date selection within the control. The return
+          value from the event handler is ignored for this event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SELCHANGE</term>
+        <listitem>
+        <para>
+          Sent by a month calendar control when the currently selected date or range of dates changes. The return value
+          from the event handler is ignored for this event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VIEWCHANGE</term>
+        <listitem>
+        <para>
+          Sent by a month calendar control when the current view changes. Connecting this event requires Windows Vista
+          or later. The return value from the event handler is ignored for this event.
+        </para>
+        </listitem></varlistentry>
+      </variablelist> </listitem></varlistentry>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        The name of the method that is to be invoked whenever the specified notification is received from the month
+        calendar control. The programmer defines this method. If this argument is omitted, a method name is
+        automatically generated that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For
+        instance, <computeroutput>onGetDayState</computeroutput>. The method name can not be the empty string and must
+        be less than 256 characters in length.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>willReply [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreters waits for the reply
+        from the event handler. The default is <computeroutput>.true</computeroutput>. If <emphasis
+        role="italic">willReply</emphasis> is <computeroutput>.false</computeroutput>, the interpreter will not wait
+        for the reply. However, this argument is ignored for the GETDAYSTATE event.
+      </para>
+      </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
+  <para>
+    The return codes are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
     <para>
-      The return codes are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          No error detected.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-        <para>
-          The resource ID could not be resolved or the event argument is incorrect.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>1</term>
-      <listitem>
-        <para>
-          The message was not connected correctly. The message was not connected
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
+      No error detected.
     </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The resource ID could not be resolved or the event argument is incorrect.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The event notification was not connected correctly.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
-  <orderedlist>
+  <para>
+    Common guidelines on <link linkend="">where</link> to invoke the <emphasis
+    role="italic">connectMonthCalendar</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link> to
+    code event handlers are included in the documentation for the <link
+    linkend="clsEventNotification">EventNotification</link> class.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    There are some <link linkend="paraWhereToConnectEvents">common</link> guidelines for the invocation of the event
-    connection methods.
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    The defined event-handling method will receive two arguments. The first arg contains information about the
-    specific control and its event. The second arg is the window handle of the static control.
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
   </para>
   <para>
-    The low word of the first arg is the control ID and the high word is the event ID.
+    Syntax errors are raised when incorrect usage is detected. A syntax error is raised if the programmer tries to
+    connect the VIEWCHANGED event when the operating system is not Windows Vista or later.
   </para>
-  </listitem>
-  </orderedlist>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
+    connected event happens.
+  </para>
+  <para>
+    The underlying dialog recieves the MCN_* messages as the notifications for the month calendar events.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example comes from an application that displays employee statistics.  A single click
-      on the employee number field advances the display to the next employee.  A double click on either
-      the employee name or employee job duties alllows those fields to be edited.
-    </para>
+  <para>
+    The following example updates the text of a static control whenever the user selects a new date in the calendar.
+  </para>
 <programlisting>
 <![CDATA[
+
 ::method initDialog
 
-  self~connectStaticEvent(IDC_ST_EMPNO, "CLICK", empLookup)
+  self~connectMonthCalendarEvent(IDC_MC, "SELECT", onSelect)
 
-  self~connectStaticEvent(IDC_ST_EMPJOB, "DBLCLK", editStats)
-  self~connectStaticEvent(IDC_ST_EMPNAME, "DBLCLK", editStats)
+::method onSelect unguarded
+  expose dateText
+  use arg startDate, endDate
 
-  first = self~initDatabase
-  self~setStats(first)
-]]>
-</programlisting>
-      <para>
-        In this example, (a continuation of the above example,) the control ID determines if the user has
-        double clicked on the employee job duties field, or the employee name field.  The event ID is not
-        used, or needed. Its purpose in the code snippet is simply an example. The same thing applies to
-        the window handle.
-      </para>
-<programlisting>
-<![CDATA[
-::method editStats
-  use arg ctrlInfo, ctrlHwnd
+  dateText~setText(self~formatDate(startDate))
+  return 0
 
-  ctrlID = .DlgUtil~loWord(ctrlInfo)
-  eventID = .DlgUtil~hiWord(ctrlInfo)
-
-  rec = self~getCurrentRecord
-
-  if self~userUpdate(ctrlID, rec) then self~setStats(rec)
 ]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="evtMonthCalendarGETDAYSTATE"><title>GETDAYSTATE Event Handler</title>
+<indexterm><primary>MonthCalendar Event</primary><secondary>GETDAYSTATE</secondary></indexterm>
+<para>
+  The event handler for the get day state event is invoked when the month calendar control requests information on how
+  to dispaly days in the calendar. The notification is only sent when the month calendar has the DAYSTATE style. The
+  programmer must reply to this notification and <emphasis role="bold">must</emphasis> use the <link
+  linkend="clsDayStates">DayStates</link> class to properly construct the reply.
+</para>
+<para>
+  The reply is a buffer containing a sequential collection of <link linkend="clsDayState">DayState</link> values. Each
+  individual day state value specifies how each day in a single month should be displayed. If a day in the day state
+  value is turned on, the day is displayed in bold. If a day is not turned on, it is displayed with no emphasis. The
+  <computeroutput>DayStates</computeroutput> and <computeroutput>DayState</computeroutput> classes provide methods to
+  properly construct the day state values and the buffer containing the values.
+</para>
+<para>
+  Essentially, the programmer constructs a number of day state values and then returns a buffer containing those values.
+</para>
+<para>
+  The event handler recieves 4 arguments and must return a buffer obtained through the
+  <computeroutput>DayStates</computeroutput> class:
+</para>
+
+<programlisting>
+<![CDATA[
+::method onGetDayState unguarded
+  use arg startDate, count, id, hwnd
+
+  return dayStateBuffer
+]]>
+</programlisting>
+<variablelist>
+  <varlistentry><term>startDate</term>
+  <listitem>
+  <para>
+    A <computeroutput>DateTime</computeroutput> object that specifies the start date the month calendar control needs
+    day state values for. Each day state value specifies the state for every day in a month, even if the <emphasis
+    role="italic">dayState</emphasis> arg is a date in the middle of a month. I.e., if the start date is January 11,
+    2011, the first day state value should be for the month of January.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>count</term>
+  <listitem>
+  <para>
+    The number of day state values required.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>id</term>
+  <listitem>
+  <para>
+    The resource ID for the month calendar control requesting the information.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>hwnd</term>
+  <listitem>
+  <para>
+    The window <link linkend="defHandle">handle</link> for the month calendar control requesting the information.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  <emphasis role="bold">Example:</emphasis> The following example is used in a application that displays the 1st and the
+  15th of each month in bold. The start date can be ignored in this case because the day state value is the same for any
+  month.
+</para>
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  -- Connect the GETDAYSTATE event.
+  self~connectMonthCalendarEvent(IDC_MC_PAYDAYS, "GETDAYSTATE", onGetDayState)
+
+::method onGetDayState unguarded
+  use arg startDate, count, id, hwnd
+
+  dayStates = .array~new(count)
+  do i = 1 to count
+    dayStates[i] = .DayState~new(1, 15)
+  end
+
+  buffer = .DayStates~makeDayStateBuffer(dayStates)
+  return buffer
+
+]]>
+</programlisting>
+
+</section>  <!-- End GetDayState Event Handler -->
+
+
+<section id="evtMonthCalendarRELEASED"><title>RELEASED Event Handler</title>
+<indexterm><primary>MonthCalendar Event</primary><secondary>RELEASED</secondary></indexterm>
+<para>
+  The event handler for the released event is invoked when the month calendar releases the moust capture. The method
+  recieves 2 arguments:
+</para>
+
+<programlisting>
+<![CDATA[
+::method onRelease unguarded
+  use arg id, hwnd
+
+  return 0
+]]>
+</programlisting>
+<variablelist>
+  <varlistentry><term>id</term>
+  <listitem>
+  <para>
+    The resource ID of the month calendar sending the notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>hwnd</term>
+  <listitem>
+  <para>
+    The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Released Event Handler -->
+
 </section>
 
 <section id="mthConnectUpDownEvent"><title>connectUpDownEvent</title>

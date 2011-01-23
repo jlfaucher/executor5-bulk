@@ -3624,10 +3624,15 @@ New width: 100 new height: 300
 <section id="clsDayState"><title>DayState Class</title>
 <indexterm><primary>DayState class</primary></indexterm>
 <para>
-  A DayState object ...
+  A <computeroutput>DayState</computeroutput> object represents the state of each day in a month. It is a specialty
+  class used by the <link linkend="MonthCalendar">MonthCalendar</link> class when the month calendar needs to reply to
+  the <link linkend="getDayStateEvent">GETDAYSTATE</link> event.
 </para>
 <para>
-  xx
+  Each <computeroutput>DayState</computeroutput> object contains a single value. The value encodes the state of each day
+  in a format understood by the underly Windows month calendar control. The state of a single day is a binary value.
+  I.e., on or off, true or false, special or not special, however it is convenient for the programmer to think of. When
+  the state of a day is on, the month calendar displays that day in bold.
 </para>
 
 <section id="sctMethodsDayState"><title>Method Table</title>
@@ -3649,8 +3654,8 @@ New width: 100 new height: 300
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
 <entry><link linkend="mthNewClsDayState">new</link></entry>
+<entry>Instantiates a new <computeroutput>DayState</computeroutput> object and sets the state of each day.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -3658,7 +3663,7 @@ New width: 100 new height: 300
 </row>
 <row>
 <entry><link linkend="mthValue">value</link></entry>
-<entry>xx</entry>
+<entry>Returns the <emphasis role="italic">value</emphasis> of the <computeroutput>DayState</computeroutput> object.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -3670,24 +3675,30 @@ New width: 100 new height: 300
 <indexterm><primary>DayState class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+
+          +--,-----+
+          V        |
+>>--new(---dayNum--+--)--------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>DayState</computeroutput> object and sets the state of each day.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>dayNum [optional]</term>
     <listitem>
     <para>
-      xx
+      A single <emphasis role="italic">dayNum</emphasis> argument is the number of a day within a month whose state
+      should be turned <emphasis role="italic">on</emphasis>. If there are no arguments, none of the days in the month
+      are turned on. The arguments can repeat any number of times, but each argument must be a whole number within the
+      range of 1 to 32, inclusive.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3696,13 +3707,13 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A new <computeroutput>DayState</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
