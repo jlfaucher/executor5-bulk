@@ -2667,7 +2667,7 @@ New upper corner (55,75) new lower corner 110,125)
 </section>
 
 <section id="atrLeftClsRect"><title>left (Attribute)</title>
-<indexterm><primary>left</primary></indexterm>
+<indexterm><primary>left</primary><secondary>Rect class</secondary></indexterm>
 <indexterm><primary>Rect class</primary><secondary>left</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2712,7 +2712,7 @@ New upper corner (55,75) new lower corner 110,125)
 </section>  <!-- End Rect::left() [attribute]  -->
 
 <section id="atrTopClsRect"><title>top (Attribute)</title>
-<indexterm><primary>top</primary></indexterm>
+<indexterm><primary>top</primary><secondary>Rect class</secondary></indexterm>
 <indexterm><primary>Rect class</primary><secondary>top</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2757,7 +2757,7 @@ New upper corner (55,75) new lower corner 110,125)
 </section>  <!-- End Rect::top() [attribute]  -->
 
 <section id="atrRightClsRect"><title>right (Attribute)</title>
-<indexterm><primary>right</primary></indexterm>
+<indexterm><primary>right</primary><secondary>Rect class</secondary></indexterm>
 <indexterm><primary>Rect class</primary><secondary>right</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2802,7 +2802,7 @@ New upper corner (55,75) new lower corner 110,125)
 </section>  <!-- End Rect::right() [attribute]  -->
 
 <section id="atrBottomClsRect"><title>bottom (Attribute)</title>
-<indexterm><primary>bottom</primary></indexterm>
+<indexterm><primary>bottom</primary><secondary>Rect class</secondary></indexterm>
 <indexterm><primary>Rect class</primary><secondary>bottom</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3007,7 +3007,7 @@ Changed point q to be at (150,300)
 </section>
 
 <section id="atrXClsPoint"><title>x (Attribute)</title>
-<indexterm><primary>x</primary></indexterm>
+<indexterm><primary>x</primary><secondary>Point class</secondary></indexterm>
 <indexterm><primary>Point class</primary><secondary>x</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3051,7 +3051,7 @@ Changed point q to be at (150,300)
 </section>  <!-- End Point::x() [attribute]  -->
 
 <section id="atrYClsPoint"><title>y (Attribute)</title>
-<indexterm><primary>y</primary></indexterm>
+<indexterm><primary>y</primary><secondary>Point class</secondary></indexterm>
 <indexterm><primary>Point class</primary><secondary>y</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3386,7 +3386,7 @@ Changed point q to be at (150,300)
 <section id="clsSize"><title>Size Class</title>
 <indexterm><primary>Size class</primary></indexterm>
 <para>
-  A Size object encapsulates a width and height dimension in a 2-D coordinate system.
+  A <computeroutput>Size</computeroutput> object encapsulates a width and height dimension in a 2-D coordinate system.
 </para>
 
 
@@ -3409,28 +3409,20 @@ Changed point q to be at (150,300)
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
 <entry><link linkend="mthNewClsSize">new</link></entry>
+<entry>Instantiates a new <computeroutput>Size</computeroutput> object.</entry>
 </row>
 <row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes </emphasis></entry>
 </row>
 <row>
-<entry>height</entry>
-<entry><link linkend="mthHeight">height</link></entry>
+<entry><link linkend="atrHeightClsPoint">height</link></entry>
+<entry>Reflects the height of the <computeroutput>Size</computeroutput> object.</entry>
 </row>
 <row>
-<entry>height=</entry>
-<entry><link linkend="mthHeightEquals">height=</link></entry>
-</row>
-<row>
-<entry>width</entry>
-<entry><link linkend="mthWidth">width</link></entry>
-</row>
-<row>
-<entry>width=</entry>
-<entry><link linkend="mthWidthEquals">width=</link></entry>
+<entry><link linkend="atrWidthClsPoint">width</link></entry>
+<entry>Reflects the width of the <computeroutput>Size</computeroutput> object.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -3438,41 +3430,63 @@ Changed point q to be at (150,300)
 </section>
 
 <section id="mthNewClsSize"><title>new (Class Method)</title>
-<indexterm><primary>new</primary>
-<secondary>Size class</secondary></indexterm>
+<indexterm><primary>new</primary><secondary>Size class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-               +-0-----+     +-width---+
->>-.Size~new(--+-------+--,--+---------+--)----------------><
+
+>>-.Size~new(--+-------+--,--+---------+--)------><
                +-width-+     +-height--+
 ]]>
 </programlisting>
 <para>
-  Instantiates a new Size object with the dimensions specified.
+  Instantiates a new <computeroutput>Size</computeroutput> object with the dimensions specified.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>width</term>
-<listitem>
-<para>
-  The whole number value of the width of the new object.  The defualt is 0.
-</para>
-</listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem>
-<para>
-  The whole number value of the height for the new object.  The default is the width value.
-</para>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method returns the new Size object.
-</para></listitem></varlistentry>
-<varlistentry id="exampleNewClsSize"><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>width</term>
+      <listitem>
+      <para>
+        The width for the new object.  The default is 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>height</term>
+      <listitem>
+      <para>
+        The height for the new object.  The default is the <emphasis role="italic">width</emphasis> value.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the new <computeroutput>Size</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Both the <emphasis role="italic">width</emphasis> and the <emphasis role="italic">height</emphasis>  of a
+    <computeroutput>Size</computeroutput> object are whole numbers in the range of -2147483648 to 2147483647, inclusive.
+    Note that the <emphasis role="italic">width</emphasis> argument is checked first, if it is omitted, its value is set
+    to 0. The <emphasis role="italic">height</emphasis>, if omitted, is then set to the value of <emphasis
+    role="italic">width</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleNewClsSize"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
 <programlisting>
 <![CDATA[
 
@@ -3490,7 +3504,7 @@ size2~height = 300
 say 'New width:' size2~width 'new height:' size2~height
 say
 
-::requires 'oodPlain.cls'
+::requires 'ooDialog.cls'
 
 /* Output would be:
 
@@ -3505,115 +3519,105 @@ New width: 100 new height: 300
 */
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthWidth"><title>width</title>
-<indexterm><primary>width</primary>
-<secondary>Size class</secondary></indexterm>
+<section id="atrWidthClsPoint"><title>width (Attribute)</title>
+<indexterm><primary>width</primary><secondary>Size class</secondary></indexterm>
+<indexterm><primary>Size class</primary><secondary>width</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSize~width---------------------------------------------><
+>>--width----------------------------------------><
+
+>>--width-=-number-------------------------------><
 
 ]]>
 </programlisting>
 
-<para>Retrieves the width of the size object.</para>
+<para>
+  Reflects the width of the <computeroutput>Size</computeroutput> object.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method takes no arguments
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return value is the width of the object
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">width get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the value of <emphasis role="italic">width</emphasis> of the <computeroutput>Size</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">width set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the value of the <emphasis role="italic">width</emphasis> of the <computeroutput>Size</computeroutput> object.
+    The value must be a whole number in the range of -2147483648 to 2147483647, inclusive.
+  </para>
+  </listitem></varlistentry>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    See <link linkend="exampleNewClsSize">.Size~new</link> example.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Size::width() [attribute]  -->
 
-<section id="mthWidthEquals"><title>width=</title>
-<indexterm><primary>width=</primary>
-<secondary>Size class</secondary></indexterm>
+<section id="atrHeightClsPoint"><title>height (Attribute)</title>
+<indexterm><primary>height</primary><secondary>Size class</secondary></indexterm>
+<indexterm><primary>Size class</primary><secondary>height</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSize~width=value---------------------------------------><
+>>--height---------------------------------------><
+
+>>--height-=-number------------------------------><
 
 ]]>
 </programlisting>
 
-<para>Sets the width of the size object.</para>
+<para>
+  Reflects the height of the <computeroutput>Size</computeroutput> object.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method has one argument:
-<variablelist>
-<varlistentry><term>value</term>
-<listitem><para>The new width of the size object.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">height get:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the value of <emphasis role="italic">height</emphasis> of the <computeroutput>Size</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">height set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the value of the <emphasis role="italic">height</emphasis> of the <computeroutput>Size</computeroutput> object.
+    The value must be a whole number in the range of -2147483648 to 2147483647, inclusive.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    See <link linkend="exampleNewClsSize">.Size~new</link> example.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthHeight"><title>height</title>
-<indexterm><primary>height</primary>
-<secondary>Size class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aSize~height--------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>Retrieves the height of the size object.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method takes no arguments
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>Returns the height of the size object.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthHeightEquals"><title>height=</title>
-<indexterm><primary>height=</primary>
-<secondary>Size class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aSize~height=value--------------------------------------><
-
-]]>
-</programlisting>
-
-<para>Sets the height of the size object.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method has one argument:
-<variablelist>
-<varlistentry><term>value</term>
-<listitem><para>The new height of the size object.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="exampleNewClsSize">.Size~new</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End Size::height() [attribute]  -->
 
 </section> <!-- End Size Class -->
 
@@ -5628,7 +5632,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 </section>
 
 <section id="atrTop"><title>top (Attribute)</title>
-<indexterm><primary>top</primary></indexterm>
+<indexterm><primary>top</primary><secondary>DlgArea class</secondary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>top</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5642,7 +5646,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 </section>
 
 <section id="atrLeft"><title>left (Attribute)</title>
-<indexterm><primary>left</primary></indexterm>
+<indexterm><primary>left</primary><secondary>DlgArea class</secondary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>left</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5656,7 +5660,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 </section>
 
 <section id="atrWidth"><title>width (Attribute)</title>
-<indexterm><primary>width</primary></indexterm>
+<indexterm><primary>width</primary><secondary>DlgArea class</secondary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>width</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5670,7 +5674,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
 </section>
 
 <section id="atrHeight"><title>height (Attribute)</title>
-<indexterm><primary>height</primary></indexterm>
+<indexterm><primary>height</primary><secondary>DlgArea class</secondary></indexterm>
 <indexterm><primary>DlgArea class</primary><secondary>height</secondary></indexterm>
 <programlisting>
 <![CDATA[
