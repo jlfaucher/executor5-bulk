@@ -172,7 +172,7 @@ methods listed in the
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~Add(--listEntry--)--------------------------------><
+>>--add(--listEntry--)-----------------------------------------><
 
 
 ]]>
@@ -202,8 +202,8 @@ been added, or 0 or a value less than 0 to indicate an error.
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~insert(--+-------+--,--listEntry--)---------------><
-                      +-index-+
+>>--insert(--+-------+--,--listEntry--)------------------------><
+             +-index-+
 
 
 ]]>
@@ -237,7 +237,7 @@ been added, or 0 or a value less than 0 to indicate an error.
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~delete(--index--)---------------------------------><
+>>--delete(--index--)------------------------------------------><
 
 
 ]]>
@@ -266,7 +266,7 @@ list. If this argument is omitted, the currently selected item is deleted.
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~DeleteAll-----------------------------------------><
+>>--deleteAll--------------------------------------------------><
 
 
 ]]>
@@ -295,9 +295,9 @@ list. If this argument is omitted, the currently selected item is deleted.
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~Find(--TextorPrefix--+---------------------------------+--)-><
-                                  +-,--+------------+--+----------+-+
-                                       +-startIndex-+  +-,--exact-+
+>>--find(--TextorPrefix--+---------------------------------+--)---------------><
+                         +-,--+------------+--+----------+-+
+                              +-startIndex-+  +-,--exact-+
 
 
 ]]>
@@ -337,7 +337,7 @@ or 0 if not found.
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~SelectedIndex-------------------------------------><
+>>--selectedIndex----------------------------------------------><
 
 
 ]]>
@@ -359,7 +359,7 @@ is selected.
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~Selected------------------------------------------><
+>>--selected---------------------------------------------------><
 
 
 ]]>
@@ -380,7 +380,7 @@ none is selected.
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~selectIndex(--index--)----------------------------><
+>>--selectIndex(--index--)-------------------------------------><
 
 
 ]]>
@@ -411,7 +411,7 @@ specify 0 for this argument, the combo box must not contain any selection.
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~select(--ItemText--)------------------------------><
+>>--select(--ItemText--)---------------------------------------><
 
 
 ]]>
@@ -439,7 +439,7 @@ the specified text.</para>
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~Items---------------------------------------------><
+>>--items------------------------------------------------------><
 
 
 ]]>
@@ -459,7 +459,7 @@ in the combo box.</para>
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~GetText(--index--)--------------------------------><
+>>--getText(--index--)-----------------------------------------><
 
 
 ]]>
@@ -490,7 +490,7 @@ item or an error occurred.
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~modify(--index--,--newText--)---------------------><
+>>--modify(--index--,--newText--)------------------------------><
 
 
 ]]>
@@ -524,14 +524,14 @@ The return value is 0 if an error occurred, or -1 if the
 <secondary>ComboBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                           +---------------+
-                                           V               |
->>-aComboBox~AddDirectory(--drvPath--,--"----+-READWRITE-+-+--"--)-><
-                                             +-READONLY--+
-                                             +-HIDDEN----+
-                                             +-SYSTEM----+
-                                             +-DIRECTORY-+
-                                             +-ARCHIVE---+
+                                  +---------------+
+                                  V               |
+>>--addDirectory(--drvPath--,--"----+-READWRITE-+-+--"--)------><
+                                    +-READONLY--+
+                                    +-HIDDEN----+
+                                    +-SYSTEM----+
+                                    +-DIRECTORY-+
+                                    +-ARCHIVE---+
 
 
 ]]>
@@ -592,7 +592,7 @@ MyDialog~AddDirectory(203, drive":\"path"\*.rex", "READWRITE")
 <indexterm><primary>OpenDropDown</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~OpenDropDown--------------------------------------><
+>>--openDropDown-----------------------------------------------><
 
 
 ]]>
@@ -606,7 +606,7 @@ associated combo box.</para>
 <indexterm><primary>CloseDropDown</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~CloseDropDown-------------------------------------><
+>>--closeDropDown----------------------------------------------><
 
 
 ]]>
@@ -620,7 +620,7 @@ the associated combo box.</para>
 <indexterm><primary>IsDropDownOpen</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aComboBox~IsDropDownOpen------------------------------------><
+>>--isDropDownOpen---------------------------------------------><
 
 
 ]]>
@@ -647,7 +647,7 @@ list box of the associated combo box is open, that is, visible.</para>
 <indexterm><primary>editSelection</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-editSelection(--startIndex--,--endIndex--)-----------------------><
+>>--editSelection(--startIndex--,--endIndex--)-----------------><
 
 
 ]]>

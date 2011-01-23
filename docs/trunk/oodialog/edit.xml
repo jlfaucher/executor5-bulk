@@ -293,7 +293,7 @@
   linkend="chpDialogObject">object</link>. The syntax is:
 <programlisting>
 <![CDATA[
->>-newEdit(--id--)---------------------><
+>>--newEdit(--id--)--------------------------------------------><
 
 ]]>
 </programlisting>
@@ -306,8 +306,8 @@
   An edit control can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
   dialog through the <link linkend="mthCreateEdit">createEdit</link>() method. The basic syntax is:
 <programlisting> <![CDATA[
->>--createEdit(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
-                                           +-,-style-+  +-,-attributeName-+
+>>--createEdit(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)--><
+                                         +-,-style-+  +-,-attributeName-+
 
 ]]>
 </programlisting>
@@ -322,8 +322,8 @@
   linkend="chpDialogObject">dialog</link> object. The basic syntax is:
 
 <programlisting> <![CDATA[
->>-connectEditEvent(--id--,--event--+----------------+--)------------><
-                                      +--,-methodName--+
+>>--connectEditEvent(--id--,--event--+----------------+--)-----><
+                                     +--,-methodName--+
 
 ]]>
 </programlisting>
@@ -336,9 +336,9 @@
 <indexterm><primary>Edit class</primary><secondary>passwordChar</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--passwordChar-----------------------------------------------------><
+>>--passwordChar-----------------------------------------------><
 
->>--passwordChar-=-varName-------------------------------------------><
+>>--passwordChar-=-varName-------------------------------------><
 
 ]]>
 </programlisting>
@@ -381,7 +381,7 @@
 <secondary>Edit class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~Selected--------------------------------------><
+>>--selected---------------------------------------------------><
 
 
 ]]>
@@ -420,7 +420,7 @@ edit~select(1,0)
 <secondary>Edit class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~select(--start--,--end--)---------------------><
+>>--select(--start--,--end--)----------------------------------><
 
 
 ]]>
@@ -454,15 +454,15 @@ set.
 <indexterm><primary>scrollCommand</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                    +-UP--------+
->>-anEditControl~scrollCommand(--"--+-----------+--"--+----------------+--)-><
-                                    +-LEFT------+     +-,--repetitions-+
-                                    +-DOWN------+
-                                    +-RIGHT-----+
-                                    +-PAGEUP----+
-                                    +-PAGELEFT--+
-                                    +-PAGEDOWN--+
-                                    +-PAGERIGHT-+
+                       +-UP--------+
+>>--scrollCommand(--"--+-----------+--"--+----------------+--)----------------><
+                       +-LEFT------+     +-,--repetitions-+
+                       +-DOWN------+
+                       +-RIGHT-----+
+                       +-PAGEUP----+
+                       +-PAGELEFT--+
+                       +-PAGEDOWN--+
+                       +-PAGERIGHT-+
 
 
 ]]>
@@ -515,7 +515,7 @@ edit~scrollCommand("DOWN",3)
 <indexterm><primary>lineScroll</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~lineScroll(--sChars--,--sLines--)-------------><
+>>--lineScroll(--sChars--,--sLines--)--------------------------><
 
 
 ]]>
@@ -564,8 +564,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>canUndo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--canUndo(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--canUndo(--+--------+--)------------------------------------><
+              +--type--+
 ]]>
 </programlisting>
 
@@ -627,8 +627,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>clearText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--clearText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--clearText(--+--------+--)----------------------------------><
+                +--type--+
 ]]>
 </programlisting>
 
@@ -690,8 +690,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>copyText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--copyText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--copyText(--+--------+--)-----------------------------------><
+               +--type--+
 ]]>
 </programlisting>
 
@@ -753,8 +753,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>cutText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--cutText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--cutText(--+--------+--)------------------------------------><
+              +--type--+
 ]]>
 </programlisting>
 
@@ -816,8 +816,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>getMargins</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMargins(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getMargins(--+--------+--)---------------------------------><
+                 +--type--+
 ]]>
 </programlisting>
 
@@ -879,8 +879,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>isSingleLine</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isSingleLine(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--isSingleLine(--+--------+--)-------------------------------><
+                   +--type--+
 ]]>
 </programlisting>
 
@@ -942,8 +942,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>disableInternalResize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--disableInternalResize(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--disableInternalResize(--+--------+--)----------------------><
+                            +--type--+
 ]]>
 </programlisting>
 
@@ -1005,8 +1005,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>noContextMenu</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--noContextMenu(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--noContextMenu(--+--------+--)-----------------------------><
+                    +--type--+
 ]]>
 </programlisting>
 
@@ -1068,8 +1068,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>pasteText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--pasteText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--pasteText(--+--------+--)---------------------------------><
+                +--type--+
 ]]>
 </programlisting>
 
@@ -1131,8 +1131,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>selection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selection(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--selection(--+--------+--)---------------------------------><
+                +--type--+
 ]]>
 </programlisting>
 
@@ -1194,8 +1194,8 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>undo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--undo(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--undo(--+--------+--)--------------------------------------><
+           +--type--+
 ]]>
 </programlisting>
 
@@ -1257,7 +1257,7 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>ensureCaretVisibility</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~ensureCaretVisibility-------------------------><
+>>--ensureCaretVisibility-------------------------------------><
 
 
 ]]>
@@ -1277,7 +1277,7 @@ control until the caret (cursor) is visible.</para>
 <indexterm><primary>Edit class</primary><secondary>firstVisibleLine</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--firstVisibleLine-----------------------------><
+>>--firstVisibleLine------------------------------------------><
 
 ]]>
 </programlisting>
@@ -1334,7 +1334,7 @@ control until the caret (cursor) is visible.</para>
 <indexterm><primary>isModified</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--isModified-----------------------------------><
+>>--isModified------------------------------------------------><
 
 
 ]]>
@@ -1370,7 +1370,7 @@ if edit~isModified = 1 then MyDialog~Save
 <indexterm><primary>setModified</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~setModified(--bool--)-------------------------><
+>>--setModified(--bool--)-------------------------------------><
 
 
 ]]>
@@ -1415,7 +1415,7 @@ contents in a file and clears the modified flag.
 <indexterm><primary>lines</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~lines-----------------------------------------><
+>>--lines-----------------------------------------------------><
 
 
 ]]>
@@ -1437,7 +1437,7 @@ of a multiline edit control.</para>
 <indexterm><primary>lineIndex</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~lineIndex(--line--)---------------------------><
+>>--lineIndex(--line--)---------------------------------------><
 
 
 ]]>
@@ -1491,7 +1491,7 @@ Result: Number of lines: 3
 <indexterm><primary>lineFromIndex</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~lineFromIndex(--index--)----------------------><
+>>--lineFromIndex(--index--)----------------------------------><
 
 
 ]]>
@@ -1537,7 +1537,7 @@ Result: Character 55 is contained in line 2
 <indexterm><primary>lineLength</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~lineLength(--line--)--------------------------><
+>>--lineLength(--line--)--------------------------------------><
 
 
 ]]>
@@ -1568,8 +1568,8 @@ Line numbers are incremented by 1, starting with 1.
 <indexterm><primary>getLine</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~getLine--(--line--+--------------+--)---------><
-                                   +-,--maxLength-+
+>>--getLine--(--line--+--------------+--)---------------------><
+                      +-,--maxLength-+
 
 
 ]]>
@@ -1621,7 +1621,7 @@ text string.
 <indexterm><primary>replaceSelText</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~replaceSelText(--text--)----------------------><
+>>--replaceSelText(--text--)----------------------------------><
 
 
 ]]>
@@ -1660,7 +1660,7 @@ Result: Object Rexx is an interpreted language.
 <indexterm><primary>setLimit</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~setLimit(--chars--)---------------------------><
+>>--setLimit(--chars--)---------------------------------------><
 
 
 ]]>
@@ -1685,7 +1685,7 @@ characters that the associated edit control can contain.</para>
 <indexterm><primary>Edit class</primary><secondary>setReadOnly</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setReadOnly(--+------+--)--------------------><
+>>--setReadOnly(--+------+--)---------------------------------><
                   +-mode-+
 ]]>
 </programlisting>
@@ -1735,7 +1735,7 @@ characters that the associated edit control can contain.</para>
 <indexterm><primary>setMargins</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~setMargins(--left--,--right--)----------------><
+>>--setMargins(--left--,--right--)----------------------------><
 
 
 ]]>
@@ -1777,7 +1777,7 @@ edit~setMargins(10, 5)
 <indexterm><primary>margins</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~margins---------------------------------------><
+>>--margins---------------------------------------------------><
 
 
 ]]>
@@ -1799,7 +1799,7 @@ margins of the associated edit control.</para>
 <indexterm><primary>setCue</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--setCue(--text--)-----------------------------><
+>>--setCue(--text--)------------------------------------------><
 
 ]]>
 </programlisting>
@@ -1882,7 +1882,7 @@ showBalloon</link> example.
 <indexterm><primary>Edit class</primary><secondary>setTabStops</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-setTabStops(--tabStops--)-----------------------------------><
+>>--setTabStops(--tabStops--)---------------------------------><
 
 ]]>
 </programlisting>
@@ -1952,7 +1952,7 @@ showBalloon</link> example.
 <indexterm><primary>Edit class</primary><secondary>tab=</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-tab-=-tabStops-----------------------------------------><
+--->>--tab-=-tabStops-----------------------------------------><
 
 ]]>
 </programlisting>
@@ -1969,8 +1969,8 @@ showBalloon</link> example.
 <indexterm><primary>showBalloon</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~showBalloon(--title,--text--+----------+--)---><
-                                             +-,--icon--+
+>>--showBalloon(--title,--text--+----------+--)---------------><
+                                +-,--icon--+
 
 ]]>
 </programlisting>
@@ -2130,10 +2130,10 @@ ballon tip is hidden by the program.
 </section>
 
 <section id="mthHideBalloon"><title>hideBalloon</title>
-<indexterm><primary>showBalloon</primary></indexterm>
+<indexterm><primary>hideBalloon</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-anEditControl~hideBalloon-----------------------------------><
+>>--hideBalloon-----------------------------------------------><
 
 ]]>
 </programlisting>
@@ -2194,15 +2194,15 @@ showBalloon</link> example.
 <secondary>Edit class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                              +----------------+
-                              V                |
->>-anEditControl~addStyle(--"---+-UPPER------+-+--"--)---------><
-                                +-LOWER------+
-                                +-NUMBER-----+
-                                +-WANTRETURN-+
-                                +-OEM--------+
-                                +-TAB--------+
-                                +-GROUP------+
+                 +----------------+
+                 V                |
+>>--addStyle(--"---+-UPPER------+-+--"--)---------------------><
+                   +-LOWER------+
+                   +-NUMBER-----+
+                   +-WANTRETURN-+
+                   +-OEM--------+
+                   +-TAB--------+
+                   +-GROUP------+
 
 ]]>
 </programlisting>
@@ -2302,15 +2302,15 @@ editControl~addStyle("NUMBER TAB GROUP")
 <secondary>Edit class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                 +----------------+
-                                 V                |
->>-anEditControl~removeStyle(--"---+-UPPER------+-+--"--)------><
-                                   +-LOWER------+
-                                   +-NUMBER-----+
-                                   +-WANTRETURN-+
-                                   +-OEM--------+
-                                   +-TAB--------+
-                                   +-GROUP------+
+                    +----------------+
+                    V                |
+>>--removeStyle(--"---+-UPPER------+-+--"--)------------------><
+                      +-LOWER------+
+                      +-NUMBER-----+
+                      +-WANTRETURN-+
+                      +-OEM--------+
+                      +-TAB--------+
+                      +-GROUP------+
 
 ]]>
 </programlisting>
@@ -2374,15 +2374,15 @@ editControl~removeStyle("LOWER GROUP")
 <secondary>Edit class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                +---------------+     +---------------+
-                                V               |     V               |
->>-anEditControl~replaceStyle(-"--+-UPPER-----+-+-",-"--+-UPPER-----+-+-"-)--><
-                                  +-LOWER-----+         +-LOWER-----+
-                                  +-NUMBER----+         +-NUMBER----+
-                                  +-WANTRETURN+         +-WANTRETURN+
-                                  +-OEM-------+         +-OEM-------+
-                                  +-TAB-------+         +-TAB-------+
-                                  +-GROUP-----+         +-GROUP-----+
+                    +---------------+      +---------------+
+                    V               |      V               |
+>>--replaceStyle(--"--+-UPPER-----+-+-",--"--+-UPPER-----+-+-"-)--------------><
+                      +-LOWER-----+          +-LOWER-----+
+                      +-NUMBER----+          +-NUMBER----+
+                      +-WANTRETURN+          +-WANTRETURN+
+                      +-OEM-------+          +-OEM-------+
+                      +-TAB-------+          +-TAB-------+
+                      +-GROUP-----+          +-GROUP-----+
 
 ]]>
 </programlisting>
@@ -2454,7 +2454,7 @@ editControl~replaceStyle("NUMBER TAB", "UPPER GROUP")
 <indexterm><primary>Edit class</primary><secondary>getStyle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getStyle-------------------------------------><
+>>--getStyle--------------------------------------------------><
 
 ]]>
 </programlisting>

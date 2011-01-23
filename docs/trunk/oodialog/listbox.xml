@@ -182,18 +182,18 @@ methods listed in the
 </listitem></varlistentry>
 </variablelist>
 
-<section id="add"><title>Add</title>
-<indexterm><primary>Add</primary>
+<section id="add"><title>add</title>
+<indexterm><primary>add</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-add(--listEntry--)------------------------------------------><
+>>--add(--listEntry--)-----------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Add method adds a new item to the list. If
+<para>The add method adds a new item to the list. If
 the list is not sorted, the new item is added to the end of the list.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -216,8 +216,8 @@ been added, or 0 or a value less than 0 to indicate an error.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-insert(--+-------+--,--listEntry--)-------------------------><
-            +-index-+
+>>--insert(--+-------+--,--listEntry--)------------------------><
+             +-index-+
 
 
 ]]>
@@ -251,8 +251,8 @@ been added, or 0 or a value less than 0 to indicate an error.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-delete(--+-------+--)---------------------------------------><
-            +-index-+
+>>--delete(--+-------+--)--------------------------------------><
+             +-index-+
 
 
 ]]>
@@ -281,7 +281,7 @@ list. If this argument is omitted, the currently selected item is deleted.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-deleteAll---------------------------------------------------><
+>>--deleteAll--------------------------------------------------><
 
 
 ]]>
@@ -291,20 +291,20 @@ list. If this argument is omitted, the currently selected item is deleted.
 the associated list box.</para>
 </section>
 
-<section id="find"><title>Find</title>
-<indexterm><primary>Find</primary>
+<section id="find"><title>find</title>
+<indexterm><primary>find</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-find(--TextorPrefix--+---------------------------------+--)----------------><
-                        +-,--+------------+--+----------+-+
-                             +-startIndex-+  +-,--exact-+
+>>--find(--TextorPrefix--+---------------------------------+--)---------------><
+                         +-,--+------------+--+----------+-+
+                              +-startIndex-+  +-,--exact-+
 
 
 ]]>
 </programlisting>
 
-<para>The Find method searches the list box for a list
+<para>The find method searches the list box for a list
 entry containing the specified text or prefix. The search is caseless.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -337,7 +337,7 @@ or 0 if not found.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-selectedIndex-----------------------------------------------><
+>>--selectedIndex----------------------------------------------><
 
 
 ]]>
@@ -360,7 +360,7 @@ is selected.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-selected----------------------------------------------------><
+>>--selected---------------------------------------------------><
 
 
 ]]>
@@ -381,7 +381,7 @@ none is selected.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-selectIndex(--index--)--------------------------------------><
+>>--selectIndex(--index--)-------------------------------------><
 
 
 ]]>
@@ -409,18 +409,18 @@ the selection.
 </variablelist>
 </section>
 
-<section id="deselectindex"><title>DeSelectIndex</title>
-<indexterm><primary>DeselectIndex</primary></indexterm>
+<section id="deselectindex"><title>deSelectIndex</title>
+<indexterm><primary>deSelectIndex</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-deSelectIndex(--+-------+--)--------------------------------><
-                   +-index-+
+>>--deSelectIndex(--+-------+--)-------------------------------><
+                    +-index-+
 
 
 ]]>
 </programlisting>
 
-<para>The DeSelectIndex method deselects the list entry
+<para>The deSelectIndex method deselects the list entry
 at the specified position for multiple selection listboxes. The currently
 selected list item is highlighted and surrounded by a dotted border.</para>
 <variablelist>
@@ -444,7 +444,7 @@ specify no index or 0 for this argument, all items are deselected.
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-select(--ItemText--)----------------------------------------><
+>>--select(--itemText--)---------------------------------------><
 
 
 ]]>
@@ -456,7 +456,7 @@ the specified text.</para>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
 <variablelist>
-<varlistentry><term>ItemText</term>
+<varlistentry><term>itemText</term>
 <listitem><para>The text that the list box is searched for.
 </para></listitem></varlistentry>
 </variablelist>
@@ -467,19 +467,19 @@ the specified text.</para>
 </variablelist>
 </section>
 
-<section id="selectrange"><title>SelectRange</title>
-<indexterm><primary>SelectRange</primary></indexterm>
+<section id="selectrange"><title>selectRange</title>
+<indexterm><primary>selectRange</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-selectRange(--+-----------------------------+--)------------><
-                 +-startIndex--+-------------+-+
-                               +-,--endIndex-+
+>>--selectRange(--+-----------------------------+--)-----------><
+                  +-startIndex--+-------------+-+
+                                +-,--endIndex-+
 
 
 ]]>
 </programlisting>
 
-<para>The SelectRange method selects one or more consecutive
+<para>The selectRange method selects one or more consecutive
 items of the associated multiselection list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -507,26 +507,26 @@ list box is not a multiselection list box.
 <![CDATA[
 lb = self~newListBox("Offers")
 if lb == .Nil then return
-lb~SelectRange(5,9)
+lb~selectRange(5,9)
 ]]>
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="deselectrange"><title>DeselectRange</title>
-<indexterm><primary>DeselectRange</primary></indexterm>
+<section id="deselectrange"><title>deselectRange</title>
+<indexterm><primary>deselectRange</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-deselectRange(--+-----------------------------+--)----------><
-                   +-startIndex--+-------------+-+
-                                 +-,--endIndex-+
+>>--deselectRange(--+-----------------------------+--)---------><
+                    +-startIndex--+-------------+-+
+                                  +-,--endIndex-+
 
 
 ]]>
 </programlisting>
 
-<para>The DeselectRange method removes the selection
+<para>The deselectRange method removes the selection
 for one or more consecutive items of the associated multiselection list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -554,7 +554,7 @@ list box is no multiselection list box.
 <![CDATA[
 lb = self~newListBox("Offers")
 if lb == .Nil then return
-lb~DeselectRange(,6)
+lb~deselectRange(,6)
 ]]>
 </programlisting>
 </listitem></varlistentry>
@@ -566,7 +566,7 @@ lb~DeselectRange(,6)
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-items-------------------------------------------------------><
+>>--items------------------------------------------------------><
 
 
 ]]>
@@ -581,18 +581,18 @@ in the list box.</para>
 </variablelist>
 </section>
 
-<section id="selecteditems"><title>SelectedItems</title>
-<indexterm><primary>SelectedItems</primary>
+<section id="selecteditems"><title>selectedItems</title>
+<indexterm><primary>selectedItems</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-selectedItems-----------------------------------------------><
+>>--selectedItems----------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SelectedItems method retrieves the number of
+<para>The selectedItems method retrieves the number of
 items that are currently selected in the associated multiselection list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -605,17 +605,17 @@ example if the list box is no multiselection list box.
 </variablelist>
 </section>
 
-<section id="selectedindexes"><title>SelectedIndexes</title>
-<indexterm><primary>SelectedIndexes</primary></indexterm>
+<section id="selectedindexes"><title>selectedIndexes</title>
+<indexterm><primary>selectedIndexes</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-selectedIndexes---------------------------------------------><
+>>--selectedIndexes--------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SelectedIndexes method retrieves the indexes
+<para>The selectedIndexes method retrieves the indexes
 of all items that are currently selected in the associated multiselection
 list box.</para>
 <variablelist>
@@ -630,13 +630,13 @@ list box:
 <![CDATA[
 lb = self~newListBox("Offers")
 if lb == .Nil then return
-sit = lb~SelectedItems
+sit = lb~selectedItems
 if sit > 0 then do
    say "You ordered:"
-   sndx = lb~SelectedIndexes
+   sndx = lb~selectedIndexes
    do i = 1 to sit
       parse var sndx order sndx
-      say "1 x" lb~GetText(order)
+      say "1 x" lb~getText(order)
    end
 end
 ]]>
@@ -645,18 +645,18 @@ end
 </variablelist>
 </section>
 
-<section id="makefirstvisible"><title>MakeFirstVisible</title>
-<indexterm><primary>MakeFirstVisible</primary>
+<section id="makefirstvisible"><title>makeFirstVisible</title>
+<indexterm><primary>makeFirstVisible</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-makeFirstVisible(--index--)---------------------------------><
+>>--makeFirstVisible(--index--)--------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The MakeFirstVisible method makes the list entry
+<para>The makeFirstVisible method makes the list entry
 at the specified position the first visible list item when you scroll up or
 down.</para>
 <variablelist>
@@ -674,17 +674,17 @@ down.</para>
 </variablelist>
 </section>
 
-<section id="getfirstvisible"><title>GetFirstVisible</title>
-<indexterm><primary>GetFirstVisible</primary></indexterm>
+<section id="getfirstvisible"><title>getFirstVisible</title>
+<indexterm><primary>getFirstVisible</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-getFirstVisible---------------------------------------------><
+>>--getFirstVisible--------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetFirstVisible method retrieves the index
+<para>The getFirstVisible method retrieves the index
 of the first list item visible in the list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -693,18 +693,18 @@ of the first list item visible in the list box.</para>
 </variablelist>
 </section>
 
-<section id="gettext"><title>GetText</title>
-<indexterm><primary>GetText</primary>
+<section id="gettext"><title>getText</title>
+<indexterm><primary>getText</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-getText(--index--)------------------------------------------><
+>>--getText(--index--)-----------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetText method gets the text of the list item
+<para>The getText method gets the text of the list item
 at the specified position in the list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -728,8 +728,8 @@ if the <emphasis role="italic">index</emphasis> does not refer to an item or an 
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-modify(--+-------+--,--newText--)---------------------------><
-            +-index-+
+>>--modify(--+-------+--,--newText--)--------------------------><
+             +-index-+
 
 
 ]]>
@@ -758,19 +758,19 @@ does not refer to an item.
 </variablelist>
 </section>
 
-<section id="settabulators"><title>SetTabulators</title>
-<indexterm><primary>SetTabulators</primary></indexterm>
+<section id="settabulators"><title>setTabulators</title>
+<indexterm><primary>setTabulators</primary></indexterm>
 <programlisting>
 <![CDATA[
-                   +-,------+
-                   V        |
->>-setTabulators(----tabPos-+--)-------------------------------><
+                    +-,------+
+                    V        |
+>>--setTabulators(----tabPos-+--)------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SetTabulators method sets the tabulators for
+<para>The setTabulators method sets the tabulators for
 the associated list box control. This enables you to use items containing
 tab characters ("09"x), which is useful if you want to format the
 list in more than one column when using proportional fonts.</para>
@@ -794,8 +794,8 @@ in a list entry. The tabulator positions are 10, 20, and 30.
 <![CDATA[
 lb = MyDialog~newListBox(102)
 if lb == .Nil then return
-lb~SetTabulators(10, 20, 30)
-lb~Add(textcol1 || "09"x || textcol2 || "09"x || textcol3 || "09"x ||,
+lb~setTabulators(10, 20, 30)
+lb~add(textcol1 || "09"x || textcol2 || "09"x || textcol3 || "09"x ||,
    textcol4)
 ]]>
 </programlisting>
@@ -803,31 +803,31 @@ lb~Add(textcol1 || "09"x || textcol2 || "09"x || textcol3 || "09"x ||,
 </variablelist>
 </section>
 
-<section id="adddirectory"><title>AddDirectory</title>
-<indexterm><primary>AddDirectory</primary>
+<section id="adddirectory"><title>addDirectory</title>
+<indexterm><primary>addDirectory</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                 +---------------+
-                                 V               |
->>-addDirectory(--drvPath--,--"----+-READWRITE-+-+--"--)-------><
-                                   +-READONLY--+
-                                   +-HIDDEN----+
-                                   +-SYSTEM----+
-                                   +-DIRECTORY-+
-                                   +-ARCHIVE---+
+                                  +---------------+
+                                  V               |
+>>--addDirectory(--drvPath--,--"----+-READWRITE-+-+--"--)------><
+                                    +-READONLY--+
+                                    +-HIDDEN----+
+                                    +-SYSTEM----+
+                                    +-DIRECTORY-+
+                                    +-ARCHIVE---+
 
 
 ]]>
 </programlisting>
 
-<para>The AddDirectory method adds all or selected file
+<para>The addDirectory method adds all or selected file
 names of a given directory to the list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>drvpath</term>
+<varlistentry><term>drvPath</term>
 <listitem><para>The drive, path, and name pattern.
 </para></listitem></varlistentry>
 <varlistentry><term>fileAttributes</term>
@@ -864,24 +864,24 @@ occurred.
 .REX in the given directory of the list box:
 <programlisting>
 <![CDATA[
-MyDialog~AddDirectory(203, drive":\"path"\*.rex", "READWRITE")
+MyDialog~addDirectory(203, drive":\"path"\*.rex", "READWRITE")
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="setwidth"><title>SetWidth</title>
-<indexterm><primary>SetWidth</primary></indexterm>
+<section id="setwidth"><title>setWidth</title>
+<indexterm><primary>setWidth</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-setWidth(--width--)-----------------------------------------><
+>>--setWidth(--width--)----------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SetWidth method sets the internal width of
+<para>The setWidth method sets the internal width of
 the list box, in dialog units. If the internal width exceeds the width of
 the list box control and the list box has the HSCROLL style, the list box
 provides a horizontal scroll bar.</para>
@@ -901,25 +901,25 @@ list box control:
 <![CDATA[
 lb = MyDialog~newListBox(102)
 if lb == .Nil then return
-lb~SetWidth(lb~SizeX*2)
+lb~setWidth(lb~SizeX*2)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="width"><title>Width</title>
-<indexterm><primary>Width</primary>
+<section id="width"><title>width</title>
+<indexterm><primary>width</primary>
 <secondary>ListBox class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-width-------------------------------------------------------><
+>>--width------------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Width method retrieves the internal width of
+<para>The width method retrieves the internal width of
 the associated list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -929,17 +929,17 @@ occurred.
 </variablelist>
 </section>
 
-<section id="itemheight"><title>ItemHeight</title>
-<indexterm><primary>ItemHeight</primary></indexterm>
+<section id="itemheight"><title>itemHeight</title>
+<indexterm><primary>itemHeight</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-itemHeight--------------------------------------------------><
+>>--itemHeight-------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The ItemHeight method retrieves the height of the
+<para>The itemHeight method retrieves the height of the
 items in the list box, in dialog units.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -948,17 +948,17 @@ items in the list box, in dialog units.</para>
 </variablelist>
 </section>
 
-<section id="itemheightnew"><title>ItemHeight=</title>
-<indexterm><primary>ItemHeight=</primary></indexterm>
+<section id="itemheightnew"><title>itemHeight=</title>
+<indexterm><primary>itemHeight=</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-itemHeight=--height-----------------------------------------><
+>>--itemHeight=--height----------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The ItemHeight= method sets the height of the items
+<para>The itemHeight= method sets the height of the items
 in the list box, in dialog units.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -972,17 +972,17 @@ in the list box, in dialog units.</para>
 </variablelist>
 </section>
 
-<section id="columnwidthnew"><title>ColumnWidth=</title>
-<indexterm><primary>ColumnWidth=</primary></indexterm>
+<section id="columnwidthnew"><title>columnWidth=</title>
+<indexterm><primary>columnWidth=</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-columnWidth=--width-----------------------------------------><
+>>--columnWidth=--width----------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The ColumnWidth= method sets the width of the list
+<para>The columnWidth= method sets the width of the list
 box columns in a multicolumn list box control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>

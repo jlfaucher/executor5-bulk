@@ -178,17 +178,17 @@ the methods listed in the
 </listitem></varlistentry>
 </variablelist>
 
-<section id="posnew"><title>Pos=</title>
-<indexterm><primary>Pos=</primary></indexterm>
+<section id="posnew"><title>pos=</title>
+<indexterm><primary>pos=</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~Pos=--value----------------------------------><
+>>--pos=--value------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Pos= method sets the new logical position of
+<para>The pos= method sets the new logical position of
 the trackbar and redraws the slider.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -210,9 +210,9 @@ position.
 <secondary>Trackbar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                   +-0-+
->>-aSliderControl~setPos(--pos--,--+---+--)--------------------><
-                                   +-1-+
+                     +-0-+
+>>--setPos(--pos--,--+---+--)----------------------------------><
+                     +-1-+
 
 
 ]]>
@@ -243,7 +243,7 @@ the new position is set regardless of the redraw argument.
 the range of the trackbar already been set to 0 to 100 using the setRange method:
 <programlisting>
 <![CDATA[
-::method SetToMax
+::method setToMax
   ctrl=self~newTrackBar("IDC_1")
   ctrl~setPos(100,1)
 ]]>
@@ -252,17 +252,17 @@ the range of the trackbar already been set to 0 to 100 using the setRange method
 </variablelist>
 </section>
 
-<section id="pos"><title>Pos</title>
-<indexterm><primary>Pos</primary></indexterm>
+<section id="pos"><title>pos</title>
+<indexterm><primary>pos</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~Pos------------------------------------------><
+>>--pos--------------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Pos method retrieves the current logical position
+<para>The pos method retrieves the current logical position
 of the slider.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -272,9 +272,9 @@ of the slider.</para>
 <listitem><para>The following example displays the current trackbar position:
 <programlisting>
 <![CDATA[
-::method DisplayPos
+::method displayPos
   ctrl=self~newTrackBar("IDC_1")
-  pos = ctrl~Pos
+  pos = ctrl~pos
   say pos
 ]]>
 </programlisting>
@@ -286,9 +286,9 @@ of the slider.</para>
 <indexterm><primary>initRange</primary></indexterm>
 <programlisting>
 <![CDATA[
-                              +-0---+     +-100-+     +-0-+
->>-aSliderControl~initRange(--+-----+--,--+-----+--,--+---+--)-><
-                              +-min-+     +-max-+     +-1-+
+                +-0---+     +-100-+     +-0-+
+>>--initRange(--+-----+--,--+-----+--,--+---+--)---------------><
+                +-min-+     +-max-+     +-1-+
 
 
 ]]>
@@ -328,12 +328,12 @@ is set. If you specify 0 or omit this argument, the trackbar is not redrawn.
 and the tick frequency of the slider:
 <programlisting>
 <![CDATA[
-::method InitDialog
+::method initDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
     curSL~initRange(0,100)
-    curSL~SetLineStep(1)
-    curSL~SetPageStep(10)
+    curSL~setLineStep(1)
+    curSL~setPageStep(10)
     curSL~setTickFrequency(10)
   end
 ]]>
@@ -342,19 +342,19 @@ and the tick frequency of the slider:
 </variablelist>
 </section>
 
-<section id="setmin"><title>SetMin</title>
-<indexterm><primary>SetMin</primary></indexterm>
+<section id="setmin"><title>setMin</title>
+<indexterm><primary>setMin</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                   +-1-+
->>-aSliderControl~SetMin(--min--,--+---+--)--------------------><
-                                   +-0-+
+                     +-1-+
+>>--setMin(--min--,--+---+--)----------------------------------><
+                     +-0-+
 
 
 ]]>
 </programlisting>
 
-<para>The SetMin method sets the minimum logical position
+<para>The setMin method sets the minimum logical position
 for a trackbar and redraws the trackbar, if required.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -384,19 +384,19 @@ is not redrawn.
 </variablelist>
 </section>
 
-<section id="setmax"><title>SetMax</title>
-<indexterm><primary>SetMax</primary></indexterm>
+<section id="setmax"><title>setMax</title>
+<indexterm><primary>setMax</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                   +-1-+
->>-aSliderControl~SetMax(--max--,--+---+--)--------------------><
-                                   +-0-+
+                     +-1-+
+>>--setMax(--max--,--+---+--)----------------------------------><
+                     +-0-+
 
 
 ]]>
 </programlisting>
 
-<para>The SetMax method sets the maximum logical position
+<para>The setMax method sets the maximum logical position
 for a trackbar and redraws the trackbar, if required.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -426,18 +426,18 @@ is not redrawn.
 </variablelist>
 </section>
 
-<section id="rangesc"><title>Range</title>
-<indexterm><primary>Range</primary>
+<section id="rangesc"><title>range</title>
+<indexterm><primary>range</primary>
 <secondary>Trackbar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~Range----------------------------------------><
+>>--range------------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Range method retrieves the minimum and maximum
+<para>The range method retrieves the minimum and maximum
 positions of the slider.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -447,9 +447,9 @@ positions of the slider.</para>
 <listitem><para>The following example displays the range of a slider:
 <programlisting>
 <![CDATA[
-::method DisplayRange
+::method displayRange
   ctrl=self~newTrackBar("IDC_1")
-  range = ctrl~Range
+  range = ctrl~range
   parse var range min max
   say min max
 ]]>
@@ -458,19 +458,19 @@ positions of the slider.</para>
 </variablelist>
 </section>
 
-<section id="clearticks"><title>ClearTicks</title>
-<indexterm><primary>ClearTicks</primary></indexterm>
+<section id="clearticks"><title>clearTicks</title>
+<indexterm><primary>clearTicks</primary></indexterm>
 <programlisting>
 <![CDATA[
-                               +-1-+
->>-aSliderControl~ClearTicks(--+---+--)------------------------><
-                               +-0-+
+                 +-1-+
+>>--clearTicks(--+---+--)--------------------------------------><
+                 +-0-+
 
 
 ]]>
 </programlisting>
 
-<para>The ClearTicks method removes the current tick
+<para>The clearTicks method removes the current tick
 marks from a slider. It does not, however, remove the first and last tick
 marks because they are created automatically by the slider.</para>
 <variablelist>
@@ -490,17 +490,17 @@ is not redrawn.
 </variablelist>
 </section>
 
-<section id="countticks"><title>CountTicks</title>
-<indexterm><primary>CountTicks</primary></indexterm>
+<section id="countticks"><title>countTicks</title>
+<indexterm><primary>countTicks</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~CountTicks-----------------------------------><
+>>--countTicks-------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The CountTicks method retrieves the number of tick
+<para>The countTicks method retrieves the number of tick
 marks in a trackbar, including the first and last tick marks, which are created
 automatically by the slider.</para>
 <variablelist>
@@ -510,17 +510,17 @@ automatically by the slider.</para>
 </variablelist>
 </section>
 
-<section id="gettick"><title>GetTick</title>
-<indexterm><primary>GetTick</primary></indexterm>
+<section id="gettick"><title>getTick</title>
+<indexterm><primary>getTick</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~GetTick(--tic--)-----------------------------><
+>>--getTick(--tic--)-------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetTick method retrieves the logical position
+<para>The getTick method retrieves the logical position
 of a tick mark in a slider. A valid position is an integer value within the
 minimum and maximum positions of the slider.</para>
 <variablelist>
@@ -529,8 +529,8 @@ minimum and maximum positions of the slider.</para>
 <variablelist>
 <varlistentry><term>tic</term>
 <listitem><para>A zero-based index identifying a tick mark. A valid index is in the
-range of 0 to 2 ticks less than the tick count returned by the CountTicks
-method (see <link linkend="countticks">CountTicks</link>).
+range of 0 to 2 ticks less than the tick count returned by the countTicks
+method (see <link linkend="countticks">countTicks</link>).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -545,7 +545,7 @@ did not specify a valid index for <emphasis role="italic">tic</emphasis>.
 <indexterm><primary>setTickAt</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~setTickAt(--pos--)---------------------------><
+>>--setTickAt(--pos--)-----------------------------------------><
 
 
 ]]>
@@ -583,9 +583,9 @@ logical position in the slider.</para>
 <indexterm><primary>setTickFrequency</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                     +-1----+
->>-aSliderControl~setTickFrequency(--+------+--)---------------><
-                                     +-freq-+
+                       +-1----+
+>>--setTickFrequency(--+------+--)-----------------------------><
+                       +-freq-+
 
 
 ]]>
@@ -623,12 +623,12 @@ every increment in the range is associated with a tick mark.
 and the tick frequency of the slider:
 <programlisting>
 <![CDATA[
-::method InitDialog
+::method initDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
     curSL~initRange(0,100)
-    curSL~SetLineStep(1)
-    curSL~SetPageStep(10)
+    curSL~setLineStep(1)
+    curSL~setPageStep(10)
     curSL~setTickFrequency(10)
   end
 ]]>
@@ -637,17 +637,17 @@ and the tick frequency of the slider:
 </variablelist>
 </section>
 
-<section id="getlinestep"><title>GetLineStep</title>
-<indexterm><primary>GetLineStep</primary></indexterm>
+<section id="getlinestep"><title>getLineStep</title>
+<indexterm><primary>getLineStep</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~GetLineStep----------------------------------><
+>>--getLineStep------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetLineStep method retrieves the number of
+<para>The getLineStep method retrieves the number of
 logical positions that the trackbar moves in response to keyboard input from
 the arrow keys, such as the Right arrow or the Down arrow keys. The logical
 positions are the integer increments within the minimum and maximum positions
@@ -659,17 +659,17 @@ of the slider.</para>
 </variablelist>
 </section>
 
-<section id="getpagestep"><title>GetPageStep</title>
-<indexterm><primary>GetPageStep</primary></indexterm>
+<section id="getpagestep"><title>getPageStep</title>
+<indexterm><primary>getPageStep</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~GetPageStep----------------------------------><
+>>--getPageStep------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetPageStep method retrieves the number of
+<para>The getPageStep method retrieves the number of
 logical positions that the trackbar moves in response to keyboard input, such
 as the PageUp or PageDown keys, or mouse input, such as clicks in the trackbar's
 channel. The logical positions are the integer increments within the minimum
@@ -681,17 +681,17 @@ and maximum positions of the slider.</para>
 </variablelist>
 </section>
 
-<section id="setlinestep"><title>SetLineStep</title>
-<indexterm><primary>SetLineStep</primary></indexterm>
+<section id="setlinestep"><title>setLineStep</title>
+<indexterm><primary>setLineStep</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~SetLineStep(--step--)------------------------><
+>>--setLineStep(--step--)--------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SetLineStep method sets the number of logical
+<para>The setLineStep method sets the number of logical
 positions that the trackbar moves in response to keyboard input from the arrow
 keys, such as the Right arrow or the Down arrow keys. The logical positions
 are the integer increments within the minimum and maximum positions of the
@@ -714,12 +714,12 @@ slider.</para>
 and the tick frequency of the slider:
 <programlisting>
 <![CDATA[
-::method InitDialog
+::method initDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
     curSL~initRange(0,100)
-    curSL~SetLineStep(1)
-    curSL~SetPageStep(10)
+    curSL~setLineStep(1)
+    curSL~setPageStep(10)
     curSL~setTickFrequency(10)
   end
 ]]>
@@ -728,17 +728,17 @@ and the tick frequency of the slider:
 </variablelist>
 </section>
 
-<section id="setpagestep"><title>SetPageStep</title>
-<indexterm><primary>SetPageStep</primary></indexterm>
+<section id="setpagestep"><title>setPageStep</title>
+<indexterm><primary>setPageStep</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~SetPageStep(--step--)------------------------><
+>>--setPageStep(--step--)--------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SetPageStep method sets the number of logical
+<para>The setPageStep method sets the number of logical
 positions that the trackbar moves in response to keyboard input, such as the
 PageUp or PageDown keys, or mouse input, such as clicks in the trackbar's
 channel. The logical positions are the integer increments within the minimum
@@ -760,12 +760,12 @@ and maximum positions of the slider.</para>
 and the tick frequency of the slider:
 <programlisting>
 <![CDATA[
-::method InitDialog
+::method initDialog
   curSL = self~newTrackBar("IDC_1")
   if curSL \= .Nil then do
     curSL~initRange(0,100)
-    curSL~SetLineStep(1)
-    curSL~SetPageStep(10)
+    curSL~setLineStep(1)
+    curSL~setPageStep(10)
     curSL~setTickFrequency(10)
   end
 ]]>
@@ -774,19 +774,19 @@ and the tick frequency of the slider:
 </variablelist>
 </section>
 
-<section id="initselrange"><title>InitSelRange</title>
-<indexterm><primary>InitSelRange</primary></indexterm>
+<section id="initselrange"><title>initSelRange</title>
+<indexterm><primary>initSelRange</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                 +-0---+                 +-0------+
->>-aSliderControl~InitSelRange(--+-----+--,--+-----+--,--+--------+--)-><
-                                 +-min-+     +-max-+     +-redraw-+
+                   +-0---+                 +-0------+
+>>--initSelRange(--+-----+--,--+-----+--,--+--------+--)-------><
+                   +-min-+     +-max-+     +-redraw-+
 
 
 ]]>
 </programlisting>
 
-<para>The InitSelRange method sets the starting and ending
+<para>The initSelRange method sets the starting and ending
 logical positions for the current selection range in a slider. It is ignored
 if the trackbar does not have a selection range.</para>
 <variablelist>
@@ -822,19 +822,19 @@ is set but the trackbar is not redrawn.
 </variablelist>
 </section>
 
-<section id="setselstart"><title>SetSelStart</title>
-<indexterm><primary>SetSelStart</primary></indexterm>
+<section id="setselstart"><title>setSelStart</title>
+<indexterm><primary>setSelStart</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                        +-1------+
->>-aSliderControl~SetSelStart(--min--,--+--------+--)----------><
-                                        +-redraw-+
+                          +-1------+
+>>--setSelStart(--min--,--+--------+--)------------------------><
+                          +-redraw-+
 
 
 ]]>
 </programlisting>
 
-<para>The SetSelStart method sets the starting logical
+<para>The setSelStart method sets the starting logical
 position for the current selection range in a slider. It is ignored if the
 trackbar does not have a selection range.</para>
 <variablelist>
@@ -865,19 +865,19 @@ starting position is set but the trackbar is not redrawn.
 </variablelist>
 </section>
 
-<section id="setselend"><title>SetSelEnd</title>
-<indexterm><primary>SetSelEnd</primary></indexterm>
+<section id="setselend"><title>setSelEnd</title>
+<indexterm><primary>setSelEnd</primary></indexterm>
 <programlisting>
 <![CDATA[
-                                      +-1------+
->>-aSliderControl~SetSelEnd(--max--,--+--------+--)------------><
-                                      +-redraw-+
+                        +-1------+
+>>--setSelEnd(--max--,--+--------+--)--------------------------><
+                        +-redraw-+
 
 
 ]]>
 </programlisting>
 
-<para>The SetSelEnd method sets the logical ending position
+<para>The setSelEnd method sets the logical ending position
 for the current selection range in a slider. It is ignored if the trackbar does
 not have a selection range.</para>
 <variablelist>
@@ -908,17 +908,17 @@ the ending position is set but the trackbar is not redrawn.
 </variablelist>
 </section>
 
-<section id="clearselrange"><title>ClearSelRange</title>
-<indexterm><primary>ClearSelRange</primary></indexterm>
+<section id="clearselrange"><title>clearSelRange</title>
+<indexterm><primary>clearSelRange</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~ClearSelRange(--redraw--)--------------------><
+>>--clearSelRange(--redraw--)----------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The ClearSelRange method clears the current selection
+<para>The clearSelRange method clears the current selection
 range in a slider.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -936,17 +936,17 @@ the selection is cleared.
 </variablelist>
 </section>
 
-<section id="selrange"><title>SelRange</title>
-<indexterm><primary>SelRange</primary></indexterm>
+<section id="selrange"><title>selRange</title>
+<indexterm><primary>selRange</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aSliderControl~SelRange-------------------------------------><
+>>--selRange---------------------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The SelRange method retrieves the starting position
+<para>The selRange method retrieves the starting position
 of the current selection range in a slider.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
