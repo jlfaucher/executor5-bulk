@@ -3630,9 +3630,10 @@ New width: 100 new height: 300
 </para>
 <para>
   Each <computeroutput>DayState</computeroutput> object contains a single value. The value encodes the state of each day
-  in a format understood by the underly Windows month calendar control. The state of a single day is a binary value.
-  I.e., on or off, true or false, special or not special, however it is convenient for the programmer to think of. When
-  the state of a day is on, the month calendar displays that day in bold.
+  in a format understood by the <link linkend="ovvUnderlying">underlying</link> Windows month calendar control. The
+  state of a single day is a binary value. I.e., on or off, true or false, special or not special, however it is
+  convenient for the programmer to think of. When the state of a day is on, the month calendar displays that day in
+  bold.
 </para>
 
 <section id="sctMethodsDayState"><title>Method Table</title>
@@ -3710,27 +3711,28 @@ New width: 100 new height: 300
     A new <computeroutput>DayState</computeroutput> object.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example constructs a day state for an application that displays the author's birth date in a <link
+    linkend="clsMonthCalendar">month</link> calendar control in bold. All other days of the year are displayed without
+    emphasis.
 <programlisting>
 <![CDATA[
+
+::method getProperDayState private
+  use strict arg date
+
+  if date~orderedDate~substr(3, 2) == 07, date~orderedDate~right(2) == 14 then
+    return .DayState~new(14)
+  else
+    return .DayState~new
 
 ]]>
 </programlisting>
@@ -3750,33 +3752,33 @@ New width: 100 new height: 300
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">value</emphasis> method returns the encoded value of the
+  <computeroutput>DayState</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a number that encodes the state of every day within a month.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    There is probably no practical use of this method for the programmer, other than perhaps curiosity. The method is
+    used by the interpreter to get the encoded numerical value of a <computeroutput>DayState</computeroutput> object and
+    send that number to the underlying month calendar control.
+  </para>
+  <para>
+    For those curious, the encoding is essentially a bit field. Each bit, 1 through 31 represents the state of the
+    corresponding day in a month. If the bit is on, the month calendar displays that day in bold. If the bit is not on,
+    the day is displayed normally.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3784,17 +3786,22 @@ New width: 100 new height: 300
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is for the curious and displays the bit encoding of a day state value:
 <programlisting>
 <![CDATA[
 
+  dayState = .DayState~new(1, 4, 17)
+  say 'dayState value:' dayState~value 'binary form:' dayState~value~d2x~x2b
+
+  /* Output would be:
+
+     dayState value: 65545 binary form: 00010000000000001001
+
+  */
 ]]>
 </programlisting>
   </para>
@@ -3808,10 +3815,16 @@ New width: 100 new height: 300
 <section id="clsDayStates"><title>DayStates Class</title>
 <indexterm><primary>DayStates class</primary></indexterm>
 <para>
-  A DayStates object ...
+  A <computeroutput>DayStates</computeroutput> object is a sequential collection of <link linkend="clsDayState">day
+  state</link> objects. It is a speciality class used to construct the proper reply value for the <link
+  linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link> event of the <link linkend="clsMonthCalendar">month</link>
+  calendar control.
 </para>
 <para>
-  xx
+  The primary purpose of the <computeroutput>DayStates</computeroutput> class is to supply the buffer of day states that
+  is used to reply to the get day state event. But, the class also has methods that allow the programmer to build a
+  cache of day state objects. Then during the get day state event, the programmer can request a buffer of some number of
+  the cached day states.
 </para>
 
 <section id="sctMethodsDayStates"><title>Method Table</title>
@@ -3833,8 +3846,8 @@ New width: 100 new height: 300
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
 <entry><link linkend="mthNewClsDayStates">new</link></entry>
+<entry>new</entry>
 </row>
 <row>
 <entry><link linkend="mthMakeDayStateBuffer">makeDayStateBuffer</link></entry>
@@ -3882,39 +3895,57 @@ New width: 100 new height: 300
 <indexterm><primary>DayStates class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new(--+-------------+--+---------+--)--------><
+          +--startYear--+  +-,-count-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>DayStates</computeroutput> object and initalizes the cache of <link
+  linkend="clsDayState">DayState</link> objects. Each day state in the is initialized with the state of every day turned
+  off.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>startYear [optional]</term>
+      <listitem>
+      <para>
+        Specifies the starting year for the cache. The default if this argument is omitted is two years prior to the
+        current year. The <emphasis role="italic">startYear</emphasis> is specified as the whole number year value,
+        e.g., 2011, 1988, 1492, etc..
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>count [optional]</term>
+      <listitem>
+      <para>
+        The number of years to initialize the cache with. The default is 3 years.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a new <computeroutput>DayStates</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The cache of day state values in a day states object is always a whole number of years in size, and is always
+    sequential. I.e., 12 day state values for each year. As indicated, initally the state of every day is turned off.
+    The <link linkend="mthAddMonth">addMonth</link> and <link linkend="mthAddYear">addYear</link> methods are used set
+    the day state values in the cache to values with the state of days turned on.
+  </para>
+  <para>
+    The <link linkend="mthMakeDayStateBuffer">makeDayStateBuffer</link> and <link
+    linkend="mthQuickDayStateBuffer">quickDayStateBuffer</link> class methods can be used to obtain a day states buffer
+    without inializing or using a cache.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3922,16 +3953,26 @@ New width: 100 new height: 300
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a new <computeroutput>DayStates</computeroutput> object and initializes the cache to 10
+    years, with the start year one year prior to the current date. It then sets the state of July 4th of every year to
+    on:
+
 <programlisting>
 <![CDATA[
+
+  yr = (.DateTime~today~year - 1)
+
+  dayStates = .DayStates~new(yr, 10)
+
+  dayState = .DayState~new(4)
+  do 10
+    dayStates~addMonth(yr, 7, dayState)
+    yr += 1
+  end
 
 ]]>
 </programlisting>
@@ -3945,24 +3986,25 @@ New width: 100 new height: 300
 <indexterm><primary>DayStates class</primary><secondary>makeDayStateBuffer</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--makeDayStateBuffer(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--makeDayStateBuffer(--dayStates--)------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns a buffer of the specified day states. This buffer can be used for the return from the event handler for a
+  <link linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link> event.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>dayStates [required]</term>
     <listitem>
     <para>
-      xx
+      An array of <link linkend="clsDayState">DayState</link> objects.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3971,22 +4013,20 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a day states buffer. The buffer is only useful as the reply to the GETDAYSTATE event of the month
+    calendar control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
+    The <emphasis role="italic">dayStates</emphasis> array can not be sparse. The day state objects are assumed to be
+    sequential by the underlying month calendar control.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

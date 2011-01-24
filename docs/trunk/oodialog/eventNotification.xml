@@ -3343,7 +3343,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 </variablelist>
 </section>
 
-<section id="evtListViewFOCUSCHANGED"><title>List View FOCUSCHANGED Event</title>
+<section id="evtListViewFOCUSCHANGED"><title>FOCUSCHANGED Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>FOCUSCHANGED</secondary></indexterm>
 <para>
   The event handler for the focus changed event is invoked when an item gains or loses focus. The method recieves three
@@ -4177,10 +4177,9 @@ trackbar position by extracting the high-oder word. Example:
         Exactly one of the following keywords. The keyword specifies the event to be connected. Case is not significant:
       </para>
       <para>
-        <simplelist type='vert' columns='2'>
-          <member>GETDAYSTATE</member>  <member>SELCHANGE</member>
-          <member>RELEASED</member>     <member>VIEWCHANGE</member>
-          <member>SELECT</member>
+        <simplelist type='vert' columns='3'>
+          <member>GETDAYSTATE</member>  <member>SELECT</member>          <member>VIEWCHANGE</member>
+          <member>RELEASED</member>     <member>SELCHANGE</member>
         </simplelist>
       </para>
       <variablelist>
@@ -4443,14 +4442,164 @@ trackbar position by extracting the high-oder word. Example:
 
 </section>  <!-- End Released Event Handler -->
 
-</section>
+
+<section id="evtMonthCalendarSELCHANGED"><title>SELCHANGED Event Handler</title>
+<indexterm><primary>MonthCalendar Event</primary><secondary>SELCHANGED</secondary></indexterm>
+<para>
+  The event handler for the selection changed event is invoked when the currently selected date or range of dates
+  changes. This notification is sent when the user explicitly changes the selection within the current month or when
+  the selection is implicitly changed by the user navigating to another month. The operating system also send this
+  notification at regular intervals so that the month calendar control can respond to date changes.
+
+</para>
+<para>
+  The notification is similar to the SELECT notification, except that the SELECT notification is only sent when the user
+  explicitly changes the date. This notification is sent when the selecte date is changed for any reason. The method
+  recieves 4 arguments and the return value from the event handler is ignored.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onSelChanged unguarded
+  use arg selStart, selEnd, id, hwnd
+
+  return 0
+]]>
+</programlisting>
+<variablelist>
+  <varlistentry><term>selStart</term>
+  <listitem>
+  <para>
+    A <computeroutput>DateTime</computeroutput> object that is the new selected date, or the first selected date in a
+    range of selected dates.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>selEnd</term>
+  <listitem>
+  <para>
+    A <computeroutput>DateTime</computeroutput> object that is the last selected date in a range of selected dates. If
+    only a single date is selected, then <emphasis role="italic">selEnd</emphasis> will be the same date as <emphasis
+    role="italic">selStart</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>id</term>
+  <listitem>
+  <para>
+    The resource ID of the month calendar sending the notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>hwnd</term>
+  <listitem>
+  <para>
+    The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End SelChanged Event Handler -->
+
+<section id="evtMonthCalendarSELECT"><title>SELECT Event Handler</title>
+<indexterm><primary>MonthCalendar Event</primary><secondary>SELECT</secondary></indexterm>
+<para>
+  The SELECT event handler is invoked when the user explicity selects a new date. Contrast this with the SELCHANGE
+  event handler which is invoked when the selected date is changed for any reason. The method recieves 4 arguments and
+  the return from the event handler is ignored.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onSelect unguarded
+  use arg selStart, selEnd, id, hwnd
+
+  return 0
+]]>
+</programlisting>
+<variablelist>
+  <varlistentry><term>selStart</term>
+  <listitem>
+  <para>
+    A <computeroutput>DateTime</computeroutput> object that is the new selected date, or the first selected date in a
+    range of selected dates.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>selEnd</term>
+  <listitem>
+  <para>
+    A <computeroutput>DateTime</computeroutput> object that is the last selected date in a range of selected dates. If
+    only a single date is selected, then <emphasis role="italic">selEnd</emphasis> will be the same date as <emphasis
+    role="italic">selStart</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>id</term>
+  <listitem>
+  <para>
+    The resource ID of the month calendar sending the notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>hwnd</term>
+  <listitem>
+  <para>
+    The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
+  </para>
+  </listitem></varlistentry>
+</section>  <!-- End Select Event Handler -->
+
+
+<section id="evtMonthCalendarVIEWCHANGE"><title>VIEWCHANGE Event Handler</title>
+<indexterm><primary>MonthCalendar Event</primary><secondary>VIEWCHANGE</secondary></indexterm>
+<para>
+  The view change notification is sent when the current view changes. The notification is only sent on Windows Vista or
+  later. A syntax exception is raised if the VIEWCHANGE event is connected when the program is not running on Vista or
+  later.
+</para>
+<para>
+  The event handler recieves 4 arguments and the return value from the event handler is ignored.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onViewChange unguarded
+  use arg oldView, newView, id, hwnd
+
+  return 0
+]]>
+</programlisting>
+<variablelist>
+  <varlistentry><term>oldView</term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">oldView</emphasis> argument is a keyword denoting what the previous view was. It will be
+    one of: month, year, decade, or centuary.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>newView</term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">newView</emphasis> argument is a keyword denoting what the view was changed to. It also
+    will be one of: month, year, decade, or centuary.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>id</term>
+  <listitem>
+  <para>
+    The resource ID of the month calendar sending the notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term>hwnd</term>
+  <listitem>
+  <para>
+    The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ViewChange Event Handler -->
+
+</section>  <!-- End EventNotification::connectionMonthCalendarEvent() -->
 
 <section id="mthConnectUpDownEvent"><title>connectUpDownEvent</title>
 <indexterm><primary>connectUpDownEvent</primary></indexterm>
-<indexterm><primary>dialog object</primary>
-<secondary>connectUpDownEvent</secondary></indexterm>
-<indexterm><primary>EventNotification class</primary>
-<secondary>connectUpDownEvent</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectUpDownEvent</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>connectUpDownEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--connectUpDownEvent(--id--,--event--+----------------+--)-------------------><
