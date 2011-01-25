@@ -2821,7 +2821,7 @@ New upper corner (55,75) new lower corner 110,125)
   <varlistentry><term><emphasis role="bold">bottom get:</emphasis></term>
   <listitem>
   <para>
-    Returns the value of <emphasis role="italic">bottom</emphasis> coordinate of the rectangle.
+    Returns the value of the <emphasis role="italic">bottom</emphasis> coordinate of the rectangle.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">bottom set:</emphasis></term>
@@ -4385,7 +4385,7 @@ New width: 100 new height: 300
     <listitem>
     <para>
       A <computeroutput>DateTime</computeroutput> object that specifies the year being added. Only the year portion of
-      the date are relevant. The day and month of the date are ignored.
+      the date is relevant. The day and month of the date are ignored.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dayStates [required]</term>
@@ -4394,7 +4394,7 @@ New width: 100 new height: 300
       An <computeroutput>array</computeroutput> of <computeroutput>DayState</computeroutput> objects that are the day
       states for the months of the year being added. Only the indexes 1 through 12 are looked at. If the index contains
       a day state object, that day state object is assigned to the corresponding month. If an index does not have a
-      value, the a day state object with a value of 0, (no days are turned on,) is assigned to the corresponding month.
+      value, then a day state object with a value of 0, (no days are turned on,) is assigned to the corresponding month.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4403,30 +4403,48 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    There is no return from this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
+    If the year specified alreayd exists in the cache then that year is replaced by the day state objects specified int
+    the <emphasis role="italic">dayStates</emphasis> array.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    If the year does not exist yet in the cache it is added. If adding the new year creates a gap in the sequential
+    order of years in the cache, then the gap is filled in using years with the state of all days turned off. In other
+    words, if the cache currently consists of the years 2008 through 2012 and the <emphasis
+    role="italic">putYear</emphasis> method is used to put the year 2016 in the cache, then the cache is also filled
+    with the years 2013 through 2015. Each year 2013 through 2015 have day state objects with the state of all days
+    turned off.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a <computeroutput>DayStates</computeroutput> object with 3 years cached. In the application
+    that uses this, all months have the 7th, 14th, 21st, and 28th days displayed in bold. After instantiating the new
+    <computeroutput>DayStates</computeroutput> object, each year in the cache is updated with a
+    <computeroutput>DayState</computeroutput> object that turns the state of the 7th, 14th, 21st, and 28th on.
+
 <programlisting>
 <![CDATA[
+
+  dayStates = .DayStates~new(2010, 3)
+  dayState = .DayState~new(7, 14, 21, 28)
+
+  do i = 2010 to 2012
+    year = .DateTime~fromStandardDate(i || 0101)
+
+    a = .array~new(12)
+    do j = 1 to 12
+      a[j] = dayState
+    end
+
+    dayStates~putYear(year, a)
+  end
 
 ]]>
 </programlisting>
@@ -4440,24 +4458,33 @@ New width: 100 new height: 300
 <indexterm><primary>DayStates class</primary><secondary>getDayStateBuffer</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getDayStateBuffer(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getDayStateBuffer(--dateTime--,--count--)----><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Creates a buffer from the cached <link linkend="clsDayState">DayState</link> objects using the specified date and
+  <emphasis role="italic">count</emphasis>. This buffer can be used for the return from the event handler for a <link
+  linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link> event.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arugments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>dateTime [required]</term>
     <listitem>
     <para>
-      xx
+      A <computeroutput>DateTime</computeroutput> object whose date is used as the starting point in the cache to fetch
+      the <computeroutput>DayState</computeroutput> objects.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>count [required]</term>
+    <listitem>
+    <para>
+      The number of <computeroutput>DayState</computeroutput> objects to use in the returned buffer.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4466,30 +4493,43 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a day states buffer. The buffer is only useful as the reply to the GETDAYSTATE event of the month
+    calendar control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    If some, or all, of the day state objects requested for the buffer are not in the cache, then a new
+    <computeroutput>DayState</computeroutput> object is create with the start of all days turned off and used. The cache
+    is not updated, it remains the same after the method returns.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets up a cache of <computeroutput>DayState</computeroutput> objects before the application dialog is
+    displayed.  It then gets buffers from this cache during the <link
+    linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link> event to return from the event handler.
 <programlisting>
 <![CDATA[
+
+::class 'PaidHolidaysDlg' subclass ResDialog
+
+::method init
+  expose dayStates
+
+  forward class (super) continue
+
+  dayStates = self~createDayStateCache
+  self~connectMonthCalendarEvent(IDC_MC_HOLIDAYS, "GETDAYSTATE", onGetDayState)
+  ...
+
+::method onGetDayState unguarded
+  expose dayStates
+  use arg startDate, count, id, hwnd
+
+  return dayStates~getDayStateBuffer(startDate, count)
 
 ]]>
 </programlisting>
@@ -4503,24 +4543,26 @@ New width: 100 new height: 300
 <indexterm><primary>DayStates class</primary><secondary>getDayState</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getDayState(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getDayState(--dateTime--)--------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the cached <link linkend="clsDayState">DayState</link> object for the date specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>dateTime</term>
     <listitem>
     <para>
-      xx
+      A <computeroutput>DateTime</computeroutput> object that specifies which <computeroutput>DayState</computeroutput>
+      object to retrieve. Only the month and the year of <emphasis role="italic">dateTime</emphasis> are relevant, the
+      day is ignored.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4529,31 +4571,55 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The value returned is the <computeroutput>DayState</computeroutput> object in the cache for the date specified, or
+    <computeroutput>.nil</computeroutput> if there is no day state in the cache for the date.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Normally there is no need to get specific day state objects from the cache, the programmer usually wants a <emphasis
+    role="italic">buffer</emphasis> of day state objects. However this method can be of use in debugging by checking
+    what values are actualy in the cache.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example expands on the example for the <link linkend="mthPutYear">putYear</link> method by checking the values
+    of the <link linkend="atrStartMonth">startMonth</link> and <link linkend="atrEndMonth">endMonth</link> day state
+    objects.
 <programlisting>
 <![CDATA[
 
+  dayStates = .DayStates~new(2010, 3)
+  dayState = .DayState~new(7, 14, 21, 28)
+
+  do i = 2010 to 2012
+    year = .DateTime~fromStandardDate(i || 0101)
+
+    a = .array~new(12)
+    do j = 1 to 12
+      a[j] = dayState
+    end
+
+    dayStates~putYear(year, a)
+  end
+
+  s = dayStates~startMonth
+  e = dayStates~endMonth
+
+  say 'Start month day state value:' dayStates~getDayState(s)~value~d2x~x2b
+  say 'End month day state value:  ' dayStates~getDayState(e)~value~d2x~x2b
+
+::requires 'ooDialog.cls'
+
+/* Output to the console would be:
+
+Start month day state value: 1000000100000010000001000000
+End month day state value:   1000000100000010000001000000
+
+ */
 ]]>
 </programlisting>
   </para>
