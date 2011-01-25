@@ -131,11 +131,11 @@
 </row>
 <row>
 <entry><link linkend="mthAddStyle">addStyle</link></entry>
-<entry>addStyle</entry>
+<entry>Adds one or more edit control styles to the edit control.</entry>
 </row>
 <row>
 <entry><link linkend="mthCanUndo">canUndo</link></entry>
-<entry>xx</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="mthClearText">clearText</link></entry>
@@ -160,6 +160,10 @@
 <row>
 <entry><link linkend="mthFirstVisibleLine">firstVisibleLine</link></entry>
 <entry>firstVisibleLine</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCue">getCue</link></entry>
+<entry>xx</entry>
 </row>
 <row>
 <entry><link linkend="mthGetLine">getLine</link></entry>
@@ -258,7 +262,7 @@
 <entry>setMargins</entry>
 </row>
 <row>
-<entry><link linkend="setmodified">setModified</link></entry>
+<entry><link linkend="mthSetModified">setModified</link></entry>
 <entry>setModified</entry>
 </row>
 <row>
@@ -293,7 +297,7 @@
   linkend="chpDialogObject">object</link>. The syntax is:
 <programlisting>
 <![CDATA[
->>--newEdit(--id--)--------------------------------------------><
+>>--newEdit(--id--)------------------------------><
 
 ]]>
 </programlisting>
@@ -306,7 +310,7 @@
   An edit control can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
   dialog through the <link linkend="mthCreateEdit">createEdit</link>() method. The basic syntax is:
 <programlisting> <![CDATA[
->>--createEdit(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)--><
+>>--createEdit(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
                                          +-,-style-+  +-,-attributeName-+
 
 ]]>
@@ -336,9 +340,9 @@
 <indexterm><primary>Edit class</primary><secondary>passwordChar</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--passwordChar-----------------------------------------------><
+>>--passwordChar---------------------------------><
 
->>--passwordChar-=-varName-------------------------------------><
+>>--passwordChar-=-varName-----------------------><
 
 ]]>
 </programlisting>
@@ -381,7 +385,7 @@
 <secondary>Edit class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selected---------------------------------------------------><
+>>--selected-------------------------------------><
 
 
 ]]>
@@ -420,7 +424,7 @@ edit~select(1,0)
 <secondary>Edit class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--select(--start--,--end--)----------------------------------><
+>>--select(--start--,--end--)--------------------><
 
 
 ]]>
@@ -455,7 +459,7 @@ set.
 <programlisting>
 <![CDATA[
                        +-UP--------+
->>--scrollCommand(--"--+-----------+--"--+----------------+--)----------------><
+>>--scrollCommand(--"--+-----------+--"--+----------------+--)-----------------><
                        +-LEFT------+     +-,--repetitions-+
                        +-DOWN------+
                        +-RIGHT-----+
@@ -515,7 +519,7 @@ edit~scrollCommand("DOWN",3)
 <indexterm><primary>lineScroll</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--lineScroll(--sChars--,--sLines--)--------------------------><
+>>--lineScroll(--sChars--,--sLines--)------------><
 
 
 ]]>
@@ -564,59 +568,33 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>canUndo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--canUndo(--+--------+--)------------------------------------><
-              +--type--+
+>>--canUndo--------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if there are any actions in the undo queue of the edit control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return value is <computeroutput>.true</computeroutput> if there are actions in the undo queue, otherwise
+    <computeroutput>.false</computeroutput>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    When the undo queue is not empty, the <link linkend="mthUndo">undo</link> method can be used to undo the most recent
+    operation.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -627,59 +605,32 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>clearText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--clearText(--+--------+--)----------------------------------><
-                +--type--+
+>>--clearText------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Deletes (clears) the current selected text, if any, from the edit control
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    When the <emphasis role="italic">clearText</emphasis> method is used to delete the selected text, the deletion can
+    be undone using the <link linkend="mthUndo">undo</link> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -690,59 +641,25 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>copyText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--copyText(--+--------+--)-----------------------------------><
-               +--type--+
+>>--copyText-------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Copies the current selected text to the clipboard in text format.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -753,59 +670,34 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>cutText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--cutText(--+--------+--)------------------------------------><
+>>--cutText(--+--------+--)----------------------><
               +--type--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+   Deletes (cuts) the currently selected text, if any, in the edit control and copies the deleted text to the clipboard
+   in text format.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The deletion performed by the <emphasis role="italic">cutText</emphasis> method can be undone by using the <link
+    linkend="mthUndo">undo</link> method.  To delete the currently selected text without placing that text on the
+    clipboard, use the <link linkend="mthClearText">clearText</link> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -816,56 +708,59 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>getMargins</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMargins(--+--------+--)---------------------------------><
-                 +--type--+
+>>--getMargins-----------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the width of the left and right margins of the edit control in a <computeroutput>Directory</computeroutput>
+  object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    The return is a <computeroutput>Directory</computeroutput> object. The directory has the width of the left margin in
+    the <emphasis role="italic">left</emphasis> index and the width of the right margin in the <emphasis
+    role="italic">right</emphasis> index. Both values are in pixels.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from a hypothetical application where the user can increass or decrease the margins in an edit
+    control by clicking on a '+' or a '-' minus button.
 <programlisting>
 <![CDATA[
+
+::method onButtonClick unguarded
+  expose editControl
+  use arg info, handle
+
+  id = .DlgUtil~loWord(info)
+  margins = editControl~getMargins
+
+  if id == self~constDir[IDC_PB_PLUS] then do
+    if margins~left < 100 then margins~left += 2
+    if margins~right < 100 then margins~right += 2
+  end
+  else if id == self~constDir[IDC_PB_MINUS] then do
+    if margins~left > 2 then margins~left -= 2
+    if margins~right > 2 then margins~right -= 2
+  end
+  else do
+    return 0
+  end
+
+  editControl~setMargins(margins~left, margins~right)
+  return 0
 
 ]]>
 </programlisting>
@@ -879,48 +774,35 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>isSingleLine</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isSingleLine(--+--------+--)-------------------------------><
-                   +--type--+
+>>--isSingleLine---------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if this edit control is a single line or a multi-line edit control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns <computeroutput>.true</computeroutput> if this edit control is a single line edit control and
+    <computeroutput>.false</computeroutput> if it is a multi-line edit control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Some methods are not applicable for single line edit controls, or behave differently between single line and
+    multi-line edit controls. For instance, the <link linkend="mthSetTabStops">setTabStops</link> method does nothing
+    for a single line edit control. The <emphasis role="italic">isSingleLine</emphasis> method allows the programmer to
+    write generic code for an edit control by checking which type of edit control the code is dealing with.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -929,6 +811,14 @@ however, be used to scroll horizontally past the last character of a line.
     This example ...
 <programlisting>
 <![CDATA[
+
+::method setAppDefaultTabs private
+  use strict arg editControl
+
+  if editControl~isSingleLine then return .false
+
+  editControl~setTabStops(.array~of(10, 20, 30, 40))
+  return .true
 
 ]]>
 </programlisting>
@@ -942,39 +832,49 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>disableInternalResize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--disableInternalResize(--+--------+--)----------------------><
-                            +--type--+
+>>--disableInternalResize(--+-----------+--)-----><
+                            +--disable--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The edit control, internally, resizes itself in response to its parent dialog being resized.  There are times when
+  this behavior may not be desired. The <emphasis role="italic">disableInternalResize</emphasis> method can be used to
+  disable that behavior.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>disable [optional]</term>
+      <listitem>
+      <para>
+        <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>. If true, disable the edit
+        control's internal resizing.  If false, renable the behavior, if it has been disabled.  The default is
+        <computeroutput>.true</computeroutput>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
     </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, false on failure.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If the programmer is resizing the edit control himself in response to the resizing of the dialog, the edit
+    control's internal resizing may get in the way. That behavior of the edit control can be suppressed by using the
+    <emphasis role="italic">disableInternalResize</emphasis> method. The programmer can disable / re-enable the internal
+    resizing of the edit control as often and whenver he wants.
+  </para>
+  <para>
+
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1005,7 +905,7 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>noContextMenu</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--noContextMenu(--+--------+--)-----------------------------><
+>>--noContextMenu(--+--------+--)----------------><
                     +--type--+
 ]]>
 </programlisting>
@@ -1068,7 +968,7 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>pasteText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--pasteText(--+--------+--)---------------------------------><
+>>--pasteText(--+--------+--)--------------------><
                 +--type--+
 ]]>
 </programlisting>
@@ -1131,7 +1031,7 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>selection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selection(--+--------+--)---------------------------------><
+>>--selection(--+--------+--)--------------------><
                 +--type--+
 ]]>
 </programlisting>
@@ -1194,7 +1094,7 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>Edit class</primary><secondary>undo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--undo(--+--------+--)--------------------------------------><
+>>--undo(--+--------+--)-------------------------><
            +--type--+
 ]]>
 </programlisting>
@@ -1257,7 +1157,7 @@ however, be used to scroll horizontally past the last character of a line.
 <indexterm><primary>ensureCaretVisibility</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--ensureCaretVisibility-------------------------------------><
+>>--ensureCaretVisibility------------------------><
 
 
 ]]>
@@ -1277,7 +1177,7 @@ control until the caret (cursor) is visible.</para>
 <indexterm><primary>Edit class</primary><secondary>firstVisibleLine</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--firstVisibleLine------------------------------------------><
+>>--firstVisibleLine-----------------------------><
 
 ]]>
 </programlisting>
@@ -1334,7 +1234,7 @@ control until the caret (cursor) is visible.</para>
 <indexterm><primary>isModified</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--isModified------------------------------------------------><
+>>--isModified-----------------------------------><
 
 
 ]]>
@@ -1366,11 +1266,12 @@ if edit~isModified = 1 then MyDialog~Save
 </variablelist>
 </section>
 
-<section id="setmodified"><title>setModified</title>
+<section id="mthSetModified"><title>setModified</title>
 <indexterm><primary>setModified</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setModified</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setModified(--bool--)-------------------------------------><
+>>--setModified(--bool--)------------------------><
 
 
 ]]>
@@ -1415,7 +1316,7 @@ contents in a file and clears the modified flag.
 <indexterm><primary>lines</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--lines-----------------------------------------------------><
+>>--lines----------------------------------------><
 
 
 ]]>
@@ -1437,7 +1338,7 @@ of a multiline edit control.</para>
 <indexterm><primary>lineIndex</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--lineIndex(--line--)---------------------------------------><
+>>--lineIndex(--line--)--------------------------><
 
 
 ]]>
@@ -1491,7 +1392,7 @@ Result: Number of lines: 3
 <indexterm><primary>lineFromIndex</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--lineFromIndex(--index--)----------------------------------><
+>>--lineFromIndex(--index--)---------------------><
 
 
 ]]>
@@ -1537,7 +1438,7 @@ Result: Character 55 is contained in line 2
 <indexterm><primary>lineLength</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--lineLength(--line--)--------------------------------------><
+>>--lineLength(--line--)-------------------------><
 
 
 ]]>
@@ -1568,7 +1469,7 @@ Line numbers are incremented by 1, starting with 1.
 <indexterm><primary>getLine</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--getLine--(--line--+--------------+--)---------------------><
+>>--getLine--(--line--+--------------+--)--------><
                       +-,--maxLength-+
 
 
@@ -1621,7 +1522,7 @@ text string.
 <indexterm><primary>replaceSelText</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--replaceSelText(--text--)----------------------------------><
+>>--replaceSelText(--text--)---------------------><
 
 
 ]]>
@@ -1660,7 +1561,7 @@ Result: Object Rexx is an interpreted language.
 <indexterm><primary>setLimit</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--setLimit(--chars--)---------------------------------------><
+>>--setLimit(--chars--)--------------------------><
 
 
 ]]>
@@ -1685,7 +1586,7 @@ characters that the associated edit control can contain.</para>
 <indexterm><primary>Edit class</primary><secondary>setReadOnly</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setReadOnly(--+------+--)---------------------------------><
+>>--setReadOnly(--+------+--)--------------------><
                   +-mode-+
 ]]>
 </programlisting>
@@ -1735,7 +1636,7 @@ characters that the associated edit control can contain.</para>
 <indexterm><primary>setMargins</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--setMargins(--left--,--right--)----------------------------><
+>>--setMargins(--left--,--right--)---------------><
 
 
 ]]>
@@ -1777,7 +1678,7 @@ edit~setMargins(10, 5)
 <indexterm><primary>margins</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--margins---------------------------------------------------><
+>>--margins--------------------------------------><
 
 
 ]]>
@@ -1795,11 +1696,74 @@ margins of the associated edit control.</para>
 </variablelist>
 </section>
 
+<section id="mthGetCue"><title>getCue</title>
+<indexterm><primary>getCue</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>getCue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCue(--+--------+--)-----------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::getCue() -->
+
 <section id="mthSetCue"><title>setCue</title>
 <indexterm><primary>setCue</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--setCue(--text--)------------------------------------------><
+>>--setCue(--text--)-----------------------------><
 
 ]]>
 </programlisting>
@@ -1882,7 +1846,7 @@ showBalloon</link> example.
 <indexterm><primary>Edit class</primary><secondary>setTabStops</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setTabStops(--tabStops--)---------------------------------><
+>>--setTabStops(--tabStops--)--------------------><
 
 ]]>
 </programlisting>
@@ -1969,7 +1933,7 @@ showBalloon</link> example.
 <indexterm><primary>showBalloon</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--showBalloon(--title,--text--+----------+--)---------------><
+>>--showBalloon(--title,--text--+----------+--)--><
                                 +-,--icon--+
 
 ]]>
@@ -2133,7 +2097,7 @@ ballon tip is hidden by the program.
 <indexterm><primary>hideBalloon</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--hideBalloon-----------------------------------------------><
+>>--hideBalloon----------------------------------><
 
 ]]>
 </programlisting>
@@ -2196,7 +2160,7 @@ showBalloon</link> example.
 <![CDATA[
                  +----------------+
                  V                |
->>--addStyle(--"---+-UPPER------+-+--"--)---------------------><
+>>--addStyle(--"---+-UPPER------+-+--"--)--------><
                    +-LOWER------+
                    +-NUMBER-----+
                    +-WANTRETURN-+
@@ -2304,7 +2268,7 @@ editControl~addStyle("NUMBER TAB GROUP")
 <![CDATA[
                     +----------------+
                     V                |
->>--removeStyle(--"---+-UPPER------+-+--"--)------------------><
+>>--removeStyle(--"---+-UPPER------+-+--"--)-----><
                       +-LOWER------+
                       +-NUMBER-----+
                       +-WANTRETURN-+
@@ -2376,7 +2340,7 @@ editControl~removeStyle("LOWER GROUP")
 <![CDATA[
                     +---------------+      +---------------+
                     V               |      V               |
->>--replaceStyle(--"--+-UPPER-----+-+-",--"--+-UPPER-----+-+-"-)--------------><
+>>--replaceStyle(--"--+-UPPER-----+-+-",--"--+-UPPER-----+-+-"-)---------------><
                       +-LOWER-----+          +-LOWER-----+
                       +-NUMBER----+          +-NUMBER----+
                       +-WANTRETURN+          +-WANTRETURN+
@@ -2454,7 +2418,7 @@ editControl~replaceStyle("NUMBER TAB", "UPPER GROUP")
 <indexterm><primary>Edit class</primary><secondary>getStyle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getStyle--------------------------------------------------><
+>>--getStyle-------------------------------------><
 
 ]]>
 </programlisting>
