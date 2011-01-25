@@ -47,12 +47,12 @@
   The ooDialog framework provides a number of utility classes that are useful when writing more complex
   programs.  These classes do not easily fit into the category of a type of dialog or a type of dialog
   control and are therefore documented separately.  In addition, ooDialog places some globally available
-  objects in the <computeroutput>.local</computeroutput> envirnoment.
+  objects in the <computeroutput>.local</computeroutput> environment.
 </para>
 <para>
   The classes and objects in the following table are described in this chapter:
 <table id="tUtilityClasses" frame="all">
-<title>ooDialog Utilitiy Classes and Objects</title>
+<title>ooDialog Utility Classes and Objects</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
 <thead>
@@ -127,7 +127,7 @@
   Win32 APIs do not set a system error code.)
 </para>
 <para>
-  When the ooDialog framework first intializes, it sets the value of .SystemErrorCode to 0.  <emphasis
+  When the ooDialog framework first initialize, it sets the value of .SystemErrorCode to 0.  <emphasis
   role="italic">Some</emphasis>, of the methods of the ooDialog classes will set the .SystemErrorCode to
   the value of the system error code when the method detects that a Win32 API has failed and has set the
   error code.  Most methods do <emphasis role="bold">not</emphasis> change the value of .SystemErrorCode.
@@ -171,7 +171,7 @@ System error code: 2
 <section id="clsDlgUtil"><title>DlgUtil Class</title>
 <indexterm><primary>DlgUtil class</primary></indexterm>
 <para>
-  All the methods of the DlgUitl class are class methods. There are no instance methods, other than inherited methods,
+  All the methods of the DlgUtil class are class methods. There are no instance methods, other than inherited methods,
   for this class.  The class methods are a collection of common utilities, mostly for converting different Windows
   values, getting version information, and the like.
 </para>
@@ -266,7 +266,7 @@ System error code: 2
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The single arguemnt is:
+    The single argument is:
     <variablelist>
     <varlistentry><term>format [optional]</term>
     <listitem>
@@ -390,7 +390,7 @@ Too bad, you are still running ooRexx 4.0.0
       <varlistentry><term>OS</term>
       <listitem>
       <para>
-        The minimum operating system that can be expected to be compatible with the libray. Earlier versions of the
+        The minimum operating system that can be expected to be compatible with the library. Earlier versions of the
         common control library were also distributed with Internet Explorer and so an OS part of say,
         <computeroutput>W98 / IE 4.01</computeroutput> would indicate that the current common control library supports
         all the features available on Windows 98 or with Internet Explorer 4.01.
@@ -578,14 +578,14 @@ return .true
 <indexterm><primary>DlgUtil class</primary><secondary>makeLParam</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--makeLParam(--numLow--,--numHigh--)-----------><
+>>--makeLParam(--numLow--,--numHigh--)-------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   When a <link linkend="ovvWindowMessages">message</link> is <link linkend="mthSendMessage">sent</link> to an <link
-  linkend="ovvUnderlying">underlying</link> window two of the arguments are the WPARAM and the LPARAM paramters. Quite
+  linkend="ovvUnderlying">underlying</link> window two of the arguments are the WPARAM and the LPARAM parameters. Quite
   often the Windows API requires that two numbers be packed into the LPARAM argument. The <emphasis
   role="italic">makeLParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
   <link linkend="mthLoWord">loWord</link> and <link linkend="mthHiWord">hiWord</link> methods, but works in the
@@ -615,7 +615,7 @@ return .true
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return is a number suitable for the LPARAM argument in a messge sent to an underlying window, when the message
+    The return is a number suitable for the LPARAM argument in a message sent to an underlying window, when the message
     requires two values in LPARAM.
   </para>
   </listitem></varlistentry>
@@ -663,14 +663,14 @@ return .true
 <indexterm><primary>DlgUtil class</primary><secondary>makeWParam</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--makeWParam(--numLow--,--numHigh--)-----------><
+>>--makeWParam(--numLow--,--numHigh--)-------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   When a <link linkend="ovvWindowMessages">message</link> is <link linkend="mthSendMessage">sent</link> to an <link
-  linkend="ovvUnderlying">underlying</link> window two of the arguments are the WPARAM and the LPARAM paramters. Quite
+  linkend="ovvUnderlying">underlying</link> window two of the arguments are the WPARAM and the LPARAM parameters. Quite
   often the Windows API requires that two numbers be packed into the WPARAM argument. The <emphasis
   role="italic">makeWParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
   <link linkend="mthLoWord">loWord</link> and <link linkend="mthHiWord">hiWord</link> methods, but works in the
@@ -700,7 +700,7 @@ return .true
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return is a number suitable for the WPARAM argument in a messge sent to an underlying window, when the message
+    The return is a number suitable for the WPARAM argument in a message sent to an underlying window, when the message
     requires two values in WPARAM.
   </para>
   </listitem></varlistentry>
@@ -749,7 +749,7 @@ return .true
   </para>
   <para>
     As a convenience, the whole numbers can also be specified as a string with the following format:
-    <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such as
+    <computeroutput>0x</computeroutput> followed by a series of hexadecimal digits with no spaces. Such as
     <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
     <computeroutput>"0x00000080"</computeroutput>. This makes it easy to look up and use the value of a flag directly.
     For instance looking up the value of <computeroutput>ILC_COLOR24</computeroutput>, one would see it is
@@ -849,7 +849,7 @@ return .true
   </para>
   <para>
     As a convenience, the whole numbers can also be specified as a string with the following format:
-    <computeroutput>0x</computeroutput> followed by a series of hexidecimal digits with no spaces. Such as
+    <computeroutput>0x</computeroutput> followed by a series of hexadecimal digits with no spaces. Such as
     <computeroutput>"0xff12abc9"</computeroutput> or <computeroutput>"0x1"</computeroutput> or
     <computeroutput>"0x00000080"</computeroutput>.
   </para>
@@ -937,7 +937,7 @@ return .true
     library&quot;
   </para>
   <para>
-    The OS will return 0 if an invalid index is used.  Hoever, the return value for some indexes is also 0.  The
+    The OS will return 0 if an invalid index is used.  However, the return value for some indexes is also 0.  The
     programmer will need to determine from the context if 0 is an error return or not.
   </para>
   </listitem></varlistentry>
@@ -1088,7 +1088,7 @@ return .true
   <para>
     If a Rexx dialog object is not supplied, it is unlikely that the <link linkend="defDialogUnit">dialog units</link>
     will be correct. Without a reference to a dialog, the method calculates the dialog units using 8 point System font.
-    Since dialog units are depenedent on the font in use for a specific dialog, It is higly unlikely that this is
+    Since dialog units are dependent on the font in use for a specific dialog, It is highly unlikely that this is
     correct for any specific dialog.
   </para>
   </listitem></varlistentry>
@@ -1294,7 +1294,7 @@ In the ok method thread ID:                 2344
 </row>
 <row>
 <entry><link linkend="wbwClientRect">clientRect</link></entry>
-<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the window's client area in pixels.</entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containing the dimensions of the window's client area in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="wbwClientToScreen">clientToScreen</link></entry>
@@ -1346,7 +1346,7 @@ In the ok method thread ID:                 2344
 </row>
 <row>
 <entry><link linkend="wbwGetRect">getRect</link></entry>
-<entry>Returns the dimesions of the window.</entry>
+<entry>Returns the dimensions of the window.</entry>
 </row>
 <row>
 <entry><link linkend="wbwGetSize">getSize</link></entry>
@@ -1454,7 +1454,7 @@ In the ok method thread ID:                 2344
 </row>
 <row>
 <entry><link linkend="wbwWindowRect">windowRect</link></entry>
-<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the window in pixels.</entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containing the dimensions of the window in pixels.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -1526,9 +1526,9 @@ In the ok method thread ID:                 2344
 WindowBase::<link linkend="atrInitCode">initCode</link>
 
 <![CDATA[
->>--initCode-----------------------------------------------------><
+>>--initCode---------------------------------------------------><
 
->>--initCode-=-code----------------------------------------------><
+>>--initCode-=-code--------------------------------------------><
 
 ]]>
 </programlisting>
@@ -1539,7 +1539,7 @@ WindowBase::<link linkend="atrInitCode">initCode</link>
 WindowBase::<link linkend="atrHwnd">hwnd</link>
 
 <![CDATA[
->>--hwnd-----------------------------------------------------><
+>>--hwnd-------------------------------------------------------><
 
 ]]>
 </programlisting>
@@ -1550,9 +1550,9 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 WindowBase::<link linkend="atrSizeX">sizeX</link>
 
 <![CDATA[
->>--sizeX-----------------------------------------------------><
+>>--sizeX------------------------------------------------------><
 
->>--sizeX-=-dialogUnits---------------------------------------><
+>>--sizeX-=-dialogUnits----------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -1562,9 +1562,9 @@ WindowBase::<link linkend="atrSizeX">sizeX</link>
 WindowBase::<link linkend="atrSizeY">sizeY</link>
 
 <![CDATA[
->>--sizeY-----------------------------------------------------><
+>>--sizeY------------------------------------------------------><
 
->>--sizeY-=-dialogUnits---------------------------------------><
+>>--sizeY-=-dialogUnits----------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -1574,9 +1574,9 @@ WindowBase::<link linkend="atrSizeY">sizeY</link>
 WindowBase::<link linkend="atrFactorX">factorX</link>
 
 <![CDATA[
->>--factorX-----------------------------------------------------><
+>>--factorX----------------------------------------------------><
 
->>--factorX-=-ratio---------------------------------------------><
+>>--factorX-=-ratio--------------------------------------------><
 ]]>
 
 </programlisting>
@@ -1587,9 +1587,9 @@ WindowBase::<link linkend="atrFactorX">factorX</link>
 WindowBase::<link linkend="atrFactorY">factorY</link>
 
 <![CDATA[
->>--factorY-----------------------------------------------------><
+>>--factorY----------------------------------------------------><
 
->>--factorY-=-ratio---------------------------------------------><
+>>--factorY-=-ratio--------------------------------------------><
 ]]>
 
 </programlisting>
@@ -1600,7 +1600,7 @@ WindowBase::<link linkend="atrFactorY">factorY</link>
 WindowBase::<link linkend="atrPixelCX">pixelCX</link>
 
 <![CDATA[
->>--pixelCX-----------------------------------------------------><
+>>--pixelCX----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -1610,7 +1610,7 @@ WindowBase::<link linkend="atrPixelCX">pixelCX</link>
 WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 
 <![CDATA[
->>--pixelCY-----------------------------------------------------><
+>>--pixelCY----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -1647,7 +1647,7 @@ WindowBase::<link linkend="mthEnable">enable</link>
 
 <section id="wbwDisable"><title>disable</title>
 <programlisting>
-WindowBass::<link linkend="mthDisable">disable</link>
+WindowBase::<link linkend="mthDisable">disable</link>
 
 <![CDATA[
 >>--disable----------------------------------------------------><
@@ -1849,7 +1849,7 @@ WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
 WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 
 <![CDATA[
->>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
+>>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)---><
                              +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
 ]]>
 </programlisting>
@@ -1862,22 +1862,22 @@ WindowBase::<link linkend="mthSetRect">setRect</link>
 <![CDATA[
 Form 1:
 
->>--setRect(--rectangle--+------------+--)-------------------------------------><
+>>--setRect(--rectangle--+------------+--)------------------------------------><
                          +-,-showOpts-+
 
 Form 2:
 
->>--setRect(--point--,--size--+------------+--)--------------------------------><
+>>--setRect(--point--,--size--+------------+--)-------------------------------><
                               +-,-showOpts-+
 
 Form 3:
 
->>--setRect(--x-,--y-,--cx-,--cy--+------------+--)----------------------------><
+>>--setRect(--x-,--y-,--cx-,--cy--+------------+--)---------------------------><
                                   +-,-showOpts-+
 
 Generic form:
 
->>--setRect(--ptSizeRectangle--+------------+--)-------------------------------><
+>>--setRect(--ptSizeRectangle--+------------+--)------------------------------><
                                +-,-showOpts-+
 ]]>
 </programlisting>
@@ -2563,7 +2563,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 <programlisting>
 <![CDATA[
 
->>--new(--+------+--+--------+--+---------+--+----------+--)-------------------><
+>>--new(--+------+--+--------+--+---------+--+----------+--)------------------><
           +-left-+  +-,-top--+  +-,-right-+  +-,-bottom-+
 
 ]]>
@@ -2612,7 +2612,7 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    All the coordinates of the rectangel are whole numbers in the range of -2147483648 to 2147483647, inclusive. Note
+    All the coordinates of the rectangle are whole numbers in the range of -2147483648 to 2147483647, inclusive. Note
     that the <emphasis role="italic">left</emphasis> argument is checked first, if it is omitted, its value is set to 0.
     All other arguments, if omitted, are set to the value of <emphasis role="italic">left</emphasis>.
   </para>
@@ -3193,7 +3193,7 @@ Changed point q to be at (150,300)
   <listitem>
   <para>
     The return value is a <computeroutput>Point</computeroutput> object whose X and Y attributes are the result of
-    subtracting the other point's X and Y attributes from the X and Y attibutes of this point.
+    subtracting the other point's X and Y attributes from the X and Y attributes of this point.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3247,7 +3247,7 @@ Changed point q to be at (150,300)
   <para>
     The arguments are:
   <variablelist>
-    <varlistentry><term>incrX [optiona]</term>
+    <varlistentry><term>incrX [optional]</term>
     <listitem>
     <para>
       The amount to increment, (to add to,) this point's x attribute. The amount must be a whole number in the range of
@@ -3259,7 +3259,7 @@ Changed point q to be at (150,300)
       ommitted, then the x and y attributes are incremented by 1.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>incrY [optiona]</term>
+    <varlistentry><term>incrY [optional]</term>
     <listitem>
     <para>
       The amount to increment, (to add to,) this point's y attribute. The amount must be a whole number in the range of
@@ -3309,13 +3309,13 @@ Changed point q to be at (150,300)
 <indexterm><primary>Point class</primary><secondary>decr</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--decr(--+--------+--+---------+--)------------><
+>>--decr(--+--------+--+---------+--)--------------------------><
            +--decrX-+  +-,-decrY-+
 ]]>
 </programlisting>
 
 <para>
-  Derements this point's x and y attributes by the specified amount.
+  Decrements this point's x and y attributes by the specified amount.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3323,7 +3323,7 @@ Changed point q to be at (150,300)
   <para>
     The arguments are:
   <variablelist>
-    <varlistentry><term>decrX [optiona]</term>
+    <varlistentry><term>decrX [optional]</term>
     <listitem>
     <para>
       The amount to decrement, (to subtract from,) this point's x attribute. The amount must be a whole number in the
@@ -3335,7 +3335,7 @@ Changed point q to be at (150,300)
       ommitted, then the x and y attributes are decremented by 1.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>decrY [optiona]</term>
+    <varlistentry><term>decrY [optional]</term>
     <listitem>
     <para>
       The amount to decrement, (to subtract from,) this point's y attribute. The amount must be a whole number in the
@@ -3949,7 +3949,7 @@ New width: 100 new height: 300
   <para>
     The <link linkend="mthMakeDayStateBuffer">makeDayStateBuffer</link> and <link
     linkend="mthQuickDayStateBuffer">quickDayStateBuffer</link> class methods can be used to obtain a day states buffer
-    without inializing or using a cache.
+    without initializing or using a cache.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4145,7 +4145,7 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Normally the month calendar control is sized to only display 1 month. With this dispaly, a week prior to the month
+    Normally the month calendar control is sized to only display 1 month. With this display, a week prior to the month
     and a week after the month are also shown. For this situation, when the underlying month calendar requests
     information on how to display individual days through the <link
     linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link> notification, it will always request 3 months. The
@@ -4216,7 +4216,7 @@ New width: 100 new height: 300
   <para>
     Since the cache always contains whole years, the date of the <emphasis role="italic">endMonth</emphasis> attribute
     is always going to be 12/01. The real information will be the year of the <emphasis
-    role="italic">endMonth</emphasis> date. I.e., if the <link linkend="atrStartMonth">startMonthe</link> attribute is
+    role="italic">endMonth</emphasis> date. I.e., if the <link linkend="atrStartMonth">startMonth</link> attribute is
     1/1/1990 and the <emphasis role="italic">endMonth</emphasis> attribute is 12/01/2010 then the cache contains 21
     complete years of <computeroutput>DayState</computeroutput> objects.
   </para>
@@ -4409,7 +4409,7 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If the year specified alreayd exists in the cache then that year is replaced by the day state objects specified int
+    If the year specified already exists in the cache then that year is replaced by the day state objects specified int
     the <emphasis role="italic">dayStates</emphasis> array.
   </para>
   <para>
@@ -4472,7 +4472,7 @@ New width: 100 new height: 300
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arugments are:
+    The arguments are:
   <variablelist>
     <varlistentry><term>dateTime [required]</term>
     <listitem>
@@ -4580,7 +4580,7 @@ New width: 100 new height: 300
   <para>
     Normally there is no need to get specific day state objects from the cache, the programmer usually wants a <emphasis
     role="italic">buffer</emphasis> of day state objects. However this method can be of use in debugging by checking
-    what values are actualy in the cache.
+    what values are actually in the cache.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4679,7 +4679,7 @@ End month day state value:   1000000100000010000001000000
 <para>
   The above example inherits the <computeroutput>VK</computeroutput> class and thus the DELETE constant and the
   <emphasis role="italic">key2name</emphasis> method become part of the  <computeroutput>SimpleDlg</computeroutput>
-  class. The same thing can be acomplished using the class methods of the <computeroutput>VK</computeroutput> class:
+  class. The same thing can be accomplished using the class methods of the <computeroutput>VK</computeroutput> class:
 </para>
 
 <programlisting>
@@ -5654,7 +5654,7 @@ else if key == .VK~INSERT then
   all coordinates are relative to the origin (0, 0) of the client area of the dialog.
 </para>
 <para>
-  The following figure shows the measuement attributes used to position a <computeroutput>DlgArea</computeroutput> on
+  The following figure shows the measurement attributes used to position a <computeroutput>DlgArea</computeroutput> on
   the client area of a <computeroutput>UserDialog</computeroutput>.
 </para>
 <figure id="dlgareafig"><title>DlgArea Measurements</title>
@@ -6031,7 +6031,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
   <listitem>
   <para>
     The return is part, or all, of the dialog area width as specified by the <emphasis role="italic">flag</emphasis>
-    arguement.
+    argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -6102,7 +6102,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
   <listitem>
   <para>
     The return is part, or all, of the dialog area height as specified by the <emphasis role="italic">flag</emphasis>
-    arguement.
+    argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -6166,7 +6166,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
   <listitem>
   <para>
     The return is part, or all, of the dialog area height as specified by the <emphasis role="italic">flag</emphasis>
-    arguement.
+    argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -6267,7 +6267,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
   <listitem>
   <para>
     The return is part, or all, of the dialog area width as specified by the <emphasis role="italic">flag</emphasis>
-    arguement.
+    argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -6328,7 +6328,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
         <computeroutput>20%</computeroutput>.
       </para>
       <para>
-        In addition, <emphasis role="italic">offset</emphasis> can be negative or positve. When positive, the offset is
+        In addition, <emphasis role="italic">offset</emphasis> can be negative or positive. When positive, the offset is
         an amount to the right of the left margin. When negative, the offset is an amount to the left of the right
         margin. Both concrete and percentage offsets can be negative.
       </para>
@@ -6378,7 +6378,7 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
         <computeroutput>20%</computeroutput>.
       </para>
       <para>
-        In addition, <emphasis role="italic">offset</emphasis> can be negative or positve. When positive, the offset is
+        In addition, <emphasis role="italic">offset</emphasis> can be negative or positive. When positive, the offset is
         an amount below the top margin. When negative, the offset is an amount above the bottom margin. Both concrete
         and percentage offsets can be negative.
       </para>
@@ -6846,7 +6846,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   The <emphasis role="italic">resize</emphasis> method causes the <computeroutput>DlgAreaU</computeroutput> object to
   resize and reposition all the dialog controls in the <emphasis role="italic">dlgObj</emphasis> dialog in relation to
   the <emphasis role="italic">sizeInfo</emphasis> argument. Normally the dialog is then told to update itself, which
-  redraws the controls. Howver, the updating is dependent on the value of the <link
+  redraws the controls. However, the updating is dependent on the value of the <link
   linkend="atrUpdateOnResize">upDateOnResize</link> attribute.
 </para>
 <variablelist>
@@ -7123,12 +7123,12 @@ u~correctionFactor=1.07
 ]]>
 </programlisting>
 <para>
-  You will have to experiment to find the apropriate setting for this attribute.
+  You will have to experiment to find the appropriate setting for this attribute.
 </para>
 <para>
-  This problem ocurrs because of the use of the <link linkend="ovvInaccurate">inaccurate</link> <emphasis
+  This problem occurs because of the use of the <link linkend="ovvInaccurate">inaccurate</link> <emphasis
   role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes to convert pixels to dialog
-  units. Fixing the problem, at this point, would most likely break exsiting programs.
+  units. Fixing the problem, at this point, would most likely break existing programs.
 </para>
 </section>
 
