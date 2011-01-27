@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -107,7 +107,7 @@
 </row>
 <row>
 <entry><link linkend="tmthNewEdit">newEdit</link></entry>
-<entry>Returns an <computeroutput>Edit</computeroutput> object for the edit control with the specified ID.</entry>
+<entry>Returns a new <computeroutput>Edit</computeroutput> object for the edit control with the specified ID.</entry>
 </row>
 <row>
 <entry><link linkend="tmthCreateEdit">createEdit</link></entry>
@@ -243,11 +243,11 @@
 </row>
 <row>
 <entry><link linkend="mthSelectedClsEdit">selected</link></entry>
-<entry>selected</entry>
+<entry>Retrieves the start and end of the text selection as a string.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelection">selection</link></entry>
-<entry>xx</entry>
+<entry>Returns a <computeroutput>Directory</computeroutput> object containing the start and end of the text selection.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetCue">setCue</link></entry>
@@ -380,79 +380,218 @@
 </section>  <!-- End Edit::passwordChar() [attribute]  -->
 
 
+<section id="mthSelection"><title>selection</title>
+<indexterm><primary>selection</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>selection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--selection------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the position of the starting and ending character of the text selected in the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A <computeroutput>Directory</computeroutput> object with the indexes <emphasis role="italic">startChar</emphasis>
+    and <emphasis role="italic">endChar</emphasis>. The <emphasis role="italic">startChar</emphasis> index is the
+    one-based character position of the first charcter in the selection. The <emphasis role="italic">endChar</emphasis>
+    index is the one-based character position of the first position past the end of the selection.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+  <para>
+    If the starting position equals the ending position, no text is selected and the position specifies the current
+    cursor position.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the ending position specifies the position of the first character
+    <emphasis role="italic">beyond</emphasis> the selection, not the last character position in the selection. All the
+    text is selected if the starting position is 1 and the ending position is 1 greater than the length of the text in
+    the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    A simple example:
+<programlisting>
+<![CDATA[
+
+  s = self~newEdit(IDC_EDIT)~selection
+
+  if s~startChar == s~endChar then do
+    say "There is no text selected"
+  end
+  else do
+    say "Starting character position of the selection is" s~startChar
+    say "Last character position of the selection is" s~endChar - 1
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::selection() -->
+
+
 <section id="mthSelectedClsEdit"><title>selected</title>
-<indexterm><primary>selected</primary>
-<secondary>Edit class</secondary></indexterm>
+<indexterm><primary>selected</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>selected</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--selected-------------------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The selected method retrieves the indexes of the
-starting and ending character of the text selected. If the starting index
-equals the ending index, no text is selected and the index specifies the current
-cursor position. If the ending index is 0 and the starting index is 1, the
-entire text is selected.</para>
+<para>
+  The <emphasis role="italic">selected</emphasis> method retrieves the position of the starting and ending character of
+  the text selected.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The one-based starting and ending index of the current selection, separated
-by a blank.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays the starting and ending index of the
-text selection of the edit control NAME. It then selects the entire text of
-the edit control.
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based character position of the start and end of the current selection, separated by a blank.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the starting position equals the ending position, no text is selected and the position specifies the current
+    cursor position.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the ending position specifies the position of the first character
+    <emphasis role="italic">beyond</emphasis> the selection, not the last character position in the selection. All the
+    text is selected if the starting position is 1 and the ending position is 1 greater than the length of the text in
+    the edit control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    A simple example:
 <programlisting>
 <![CDATA[
-edit = MyDialog~newEdit("NAME")
-if edit == .Nil then return
-parse value edit~selected with start end
-say "Starting index of selection is" start
-say "Ending index of selection is" end
-edit~select(1,0)
+
+  edit = self~newEdit(IDC_EDIT)
+
+  parse value edit~selected with start end
+  if start == end then do
+    say "There is no text selected"
+  end
+  else do
+    say "Starting character position of the selection is" start
+    say "Last character position of the selection is" end - 1
+  end
+
+  edit~select(1, 0)  -- Selects all the text.
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Edit::selected() -->
+
 
 <section id="mthSelectClsEdit"><title>select</title>
-<indexterm><primary>select</primary>
-<secondary>Edit class</secondary></indexterm>
+<indexterm><primary>select</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>select</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--select(--start--,--end--)--------------------><
-
-
+>>--select(--+---------+--+--------+--)----------><
+             +--start--+  +-,-end--+
 ]]>
 </programlisting>
 
-<para>The select method selects the text or sets the
-cursor position for the associated edit control. If the starting index equals
-the ending index, no text is selected and the cursor is set to the character
-at the specified index. If the ending index is 0 and the starting index is
-1, the entire text is selected.</para>
+<para>
+  The <emphasis role="italic">select</emphasis> method selects text, and sets the position of the cursor, within the
+  edit control. See the remarks section for more detail on how the <emphasis role="italic">start</emphasis> and
+  <emphasis role="italic">end</emphasis> values effect the behavior.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>start</term>
-<listitem><para>A one-based index where the selection begins or the cursor is to be
-set.
-</para></listitem></varlistentry>
-<varlistentry><term>end</term>
-<listitem><para>A one-based index where the selection ends.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>start [optional]</term>
+      <listitem>
+      <para>
+        Specifies a one-based character position in the selection, normally the starting position of the selection. See
+        the remarks section because the actual behavior is dependent on the value of both <emphasis
+        role="italic">start</emphasis> and <emphasis role="italic">end</emphasis>. If omitted the default is 1.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>end [optional]</term>
+      <listitem>
+      <para>
+        Specifies a one-based character position in the selection, normally the ending position of the selection. See
+        the remarks section because the actual behavior is dependent on the value of both <emphasis
+        role="italic">start</emphasis> and <emphasis role="italic">end</emphasis>. If omitted the default is 0.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns o.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">start</emphasis> value can be greater than the <emphasis role="italic">end</emphasis>
+    value. The lower of the two values specifies the character position of the first character in the selection. The
+    higher value specifies the position of the first character beyond the selection. The cursor is placed at the
+    position of the first character beyond the selection, provided one of the other special cases does not apply.
+  </para>
+  <para>
+    If the starting position equals the ending position, no text is selected and the cursor position is set to the
+    character specified by the <emphasis role="italic">start</emphasis> argument. If the ending index is 0 and the
+    starting index is 1, the entire text is selected and the cursor is placed at the position immediately following the
+    end of the text.
+  </para>
+  <para>
+    If <emphasis role="italic">start</emphasis> is 0, the <emphasis role="italic">end</emphasis>
+    argument is ignored, any selection is removed, and the cursor is not moved.
+  </para>
+  <para>
+    Notice that if both arguments are omitted, the default values for <emphasis role="italic">start</emphasis> and
+    <emphasis role="italic">end</emphasis> will result in all of the text being selected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    See the <link linkend="mthSelectedClsEdit">selected</link> method's example.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="mthSelectedClsEdit">selected</link>.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End Edit::select() -->
 
 <section id="mthScrollCommand"><title>scrollCommand</title>
 <indexterm><primary>scrollCommand</primary></indexterm>
@@ -1025,69 +1164,6 @@ however, be used to scroll horizontally past the last character of a line.
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Edit::pasteText() -->
-
-<section id="mthSelection"><title>selection</title>
-<indexterm><primary>selection</primary></indexterm>
-<indexterm><primary>Edit class</primary><secondary>selection</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--selection(--+--------+--)--------------------><
-                +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End Edit::selection() -->
 
 <section id="mthUndo"><title>undo</title>
 <indexterm><primary>undo</primary></indexterm>
@@ -1701,39 +1777,119 @@ margins of the associated edit control.</para>
 <indexterm><primary>Edit class</primary><secondary>getCue</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCue(--+--------+--)-----------------------><
-                  +--type--+
+>>--getCue---------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the cue text, or the empty string if there is no cue set. The cue text is set with the <link
+  linkend="mthSetCue">setCue</link> method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the text of the cue banner on success. The empty string is returned if the cue is not set, or on any error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Cue text provides a visual hint to the user as to the purpose of the edit control. For example the text of an edit
+    control that is used to begin a search might have the cue text: <emphasis role="italic">Enter search
+    here</emphasis>. The cue is displayed in gray text. Once some text is entered into the edit box, the cue no longer
+    displays.
+  </para>
+  <para>
+    Normally when the user clicks the on the edit control, the cue text goes away. However on Windows Vista and later
+    this behavior can be changed so that the cue text remains until the user actualy types some characters in the edit
+    control.
+  </para>
+  <para>
+    It is not possible to set a cue on a multiline edit control.
+  </para>
+  <para>
+    On Windows XP the <emphasis role="italic">getCue</emphasis> method does not work, it will always return the empty
+    string. This is the operating system behavior, it has nothing to do with ooDialog. On Windows Vista and later it
+    correctly returns the cue text.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
+    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operarting system where it is not supported.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::getCue() -->
+
+<section id="mthSetCue"><title>setCue</title>
+<indexterm><primary>setCue</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setCue</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCue(--text--+---------+--)----------------><
+                   +-,-show--+
+]]>
+</programlisting>
+
+<para>
+  Sets the text for <emphasis role="italic">cue</emphasis> banner text.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text for the cue. This string must be 255 characters or less in length.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>show [opitional]</term>
+      <listitem>
+      <para>
+        Whether the text show disappear when the edit control gains the focus, or whether it should still show. The
+        default is <computeroutput>.false</computeroutput> the text disappears when the edit control gains the focus. If
+        <emphasis role="italic">show</emphasis> is <computeroutput>.true</computeroutput>, on Windows Vista or later the
+        cue text will remain until the user enters some characters into the edit control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Zero on success, one on failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Cue text provides a visual hint to the user as to the purpose of the edit control. For example the text of an edit
+    control that is used to begin a search might have the cue text: <emphasis role="italic">Enter search
+    here</emphasis>. The cue is displayed in gray text. Once some text is entered into the edit box, the cue no longer
+    displays.
+  </para>
+  <para>
+    Normally when the user clicks the on the edit control, the cue text goes away. However on Windows Vista and later
+    this behavior can be changed so that the cue text remains until the user actualy types some characters in the edit
+    control.
+  </para>
+  <para>
+    It is not possible to set a cue on a multiline edit control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1742,103 +1898,13 @@ margins of the associated edit control.</para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
+    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operarting system where it is not supported.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End Edit::getCue() -->
-
-<section id="mthSetCue"><title>setCue</title>
-<indexterm><primary>setCue</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--setCue(--text--)-----------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  This method sets the "cue" text for an edit control.  Cue text provides a visual hint to the user as to
-  the purpose of the edit control.  When the dialog is first shown to the user the cue text will be
-  displayed, (provided there is no text in the edit control's buffer.)
-</para>
-<para>The cue text is colored a light grey to distinguish it from regular text.
-When the edit control gains the focus, Windows dismisses the cue text
-automatically.  When the control loses focus, Windows will again display the cue
-text, if the entry control is empty.  Once the user has entered text in the edit
-control, the cue is no longer displayed.  If the user deletes the text, then the
-cue is once again displayed when the edit control does not have the focus.
-</para>
-<note><title>Note</title><para>
-Only single-line edit controls will display cue text.  You can not use cue text
-with a multi-line edit control.
-</para></note>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Operating System
-Version</emphasis></term>
-<listitem><para>This method is only available on Windows XP or later operating
-systems.  If the method is used on an unsupported operating system, -4 is
-returned.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>text</term>
-<listitem><para>The text to be displayed to the user as a cue.  The maximum
-length of the text string is 255 characters.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return value will be one of the following:
-<variablelist>
-<varlistentry><term>less than -4</term>
-<listitem><para>The value is the negated Operating System Error code.
-The absolute value of the return can be used to look up the error reason in the
-Windows documentation.
-</para></listitem></varlistentry>
-<varlistentry><term>-4</term>
-<listitem><para>The operating system does not support this method.  Windows XP
-or later is required.
-</para></listitem></varlistentry>
-<varlistentry><term>-3</term>
-<listitem><para>The text argument is too long for this method, or there is an
-(internal) problem converting the text string to Unicode.
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>There is an (internal) problem with the dialog or the dialog
-handle.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>There is an (internal) problem with the resource ID or window
-handle of the edit control.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>The method succeeded.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The method failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example see the <link linkend="exampleShowBalloon">
-showBalloon</link> example.
-</para></listitem></varlistentry>
-</variablelist>
-
-</section>
+</section>  <!-- End Edit::setCue() -->
 
 
 <section id="mthSetTabStops"><title>setTabStops</title>

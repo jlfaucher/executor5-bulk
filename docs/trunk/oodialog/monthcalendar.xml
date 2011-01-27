@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2009-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2009-2011, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -78,6 +78,13 @@
     To recieve notification of month calendar events use the <link
     linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>)() method.
   </para>
+  <para>
+    One of the month calendar event notifications, the <link linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link>
+    notification, requires that a buffer of day states be returned in reply. The Rexx programmer can not construct the
+    proper buffer in Rexx code. The <link linkend="clsDayState">DayState</link> and <link
+    linkend="clsDayStates">DayStates</link> classes are provided to help manage day states and to construct the proper
+    buffer.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </para>
@@ -98,6 +105,18 @@
 </row>
 </thead>
 <tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful External Classes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="clsDayStates">DayStates</link></entry>
+<entry>Manages <computeroutput>DayState</computeroutput> objects and constructs buffers of day states.</entry>
+</row>
+<row>
+<entry><link linkend="clsDayState">DayState</link></entry>
+<entry>Represents the state of each day in a month.</entry>
+</row>
 <row>
 <entry align="center"><emphasis role="bold">Useful External Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>

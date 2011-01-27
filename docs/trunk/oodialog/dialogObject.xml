@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -788,8 +788,8 @@
 <entry><link linkend="h000606">DrawButton</link></entry>
 </row>
 <row>
-<entry>EnableItem</entry>
-<entry><link linkend="h001221">EnableItem</link></entry>
+<entry>enableControl</entry>
+<entry><link linkend="mthEnableControl">enableControl</link></entry>
 </row>
 <row>
 <entry>EndAsyncExecution</entry>
@@ -1266,8 +1266,8 @@
 <entry><link linkend="setforegroundwindow">SetForegroundWindow</link></entry>
 </row>
 <row>
-<entry>SetGroup</entry>
-<entry><link linkend="mthSetGroup">SetGroup</link></entry>
+<entry><link linkend="mthSetGroup">setGroup</link></entry>
+<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control specified.</entry>
 </row>
 <row>
 <entry>SetItemFont</entry>
@@ -6803,7 +6803,7 @@ linkend="exampleFileViewer">File Viewer</link> example.)
 <![CDATA[
 ::method cancel
   expose parent
-  parent~enableItem(IDC_PB_VIEW)
+  parent~enableControl(IDC_PB_VIEW)
   if parent~isMinimized then parent~restore
   return self~cancel:super
 
@@ -6854,7 +6854,7 @@ complete program listing that this code snippet comes from is available (see the
 <![CDATA[
 ::method cancel
   expose parent
-  parent~enableItem(IDC_PB_VIEW)
+  parent~enableControl(IDC_PB_VIEW)
   if parent~isMinimized then parent~restore
   return self~cancel:super
 
@@ -7002,65 +7002,96 @@ could not be determined.
 </variablelist>
 </section>
 
-<section id="mthSetGroup"><title>SetGroup</title>
-<indexterm><primary>SetGroup</primary></indexterm>
+<section id="mthSetGroup"><title>setGroup</title>
+<indexterm><primary>setGroup</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setGroup</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~SetGroup(--id--,--+-----------+--)---------------><
-                                 +-wantStyle-+
+>>--setGroup(--id--+-----------+--)--------------><
+                   +-wantStyle-+
 
 ]]>
 </programlisting>
 
-<para>Add or remove the <link linkend="wsgroup">group style</link> for the
-specified control.  The group style controls how the user can navigate through
-the dialog using the keyboard.  For most dialogs this does not change while the
-dialog is executing.  However, in some dialogs the programmer may want to change
-the navigation depending on the options the user selects.
+<para>
+  Adds or removes the <link linkend="wsgroup">group style</link> for the control specified.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID of the dialog control that will gain or lose the
-group style.
-</para></listitem></varlistentry>
-<varlistentry><term>wantStyle</term>
-<listitem><para>A boolean (.true or .false) to indicate whether the dialog
-control should have or not have the group style.  True (the default) indicates
-the control should have the group style and false indicates the control should
-not have the style.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>Negative values indicate the function failed, non-negative
-values indicate success.
-<variablelist>
-<varlistentry><term>-4 or less</term>
-<listitem><para>The value is the negated Operating System Error code.  The
-absolute value of the return can be used to look up the error reason in the
-Windows documentation.
-</para></listitem></varlistentry>
-<varlistentry><term>-3</term>
-<listitem><para>The second argument to the method is not a boolean.
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>There is an (internal) problem with the dialog or the dialog
-handle.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>The resource ID of the control is not correct.
-</para></listitem></varlistentry>
-<varlistentry><term>0 or greater</term>
-<listitem><para>The window style of the dialog control prior to adding or
-removing the group style.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog control that will gain or lose the group style. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link> .
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>wantStyle [optional]</term>
+      <listitem>
+      <para>
+        A boolean (.true or .false) to indicate whether the control should have or not have the group style.  True (the
+        default) indicates the dialog control should have the group style and false indicates the control should not
+        have the style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Negative values indicate the function failed, positive values indicate success.
+    <variablelist>
+      <varlistentry><term>Less than -1</term>
+      <listitem>
+      <para>
+        The value is the negated operating system error code.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The resource ID specified for the dialog control is not correct.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Greater than 0</term>
+      <listitem>
+      <para>
+        The window style of the dialog control prior to adding or removing the group style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The group style controls how the user can navigate through the dialog using the keyboard.  For most dialogs this
+    does not change while the dialog is executing. However, in some dialogs the programmer may want to change the
+    navigation depending on the options the user selects.
+  </para>
+  <para>
+    The negative return values less than -1 are a hold over from a period prior to the introduction of the <link
+    linkend="dotSystemErrorCode">.SystemErrorCode</link>. This method now sets the
+    <computeroutput>.SystemErrorCode</computeroutput>, making it easier to use the
+    <computeroutput>.SystemErrorCode</computeroutput> value to look up the actual error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments, other than the resource ID, are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
+
 
 <section id="mthSetTabStop"><title>SetTabStop</title>
 <indexterm><primary>SetTabStop</primary></indexterm>
@@ -7123,33 +7154,90 @@ removing the tabstop style.
 </variablelist>
 </section>
 
-<section id="h001221"><title>EnableItem</title>
-<indexterm><primary>EnableItem</primary></indexterm>
+<section id="mthEnableControl"><title>enableControl</title>
+<indexterm><primary>enableControl</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>enableControl</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~EnableItem(--id--)-----------------------------><
-
+>>--enableControl(--id--)------------------------><
 
 ]]>
 </programlisting>
 
-<para>The EnableItem method enables the given dialog
-item. </para>
+<para>
+  Enables the control with the specified resource id.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the item
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+      <para>
+        The resource <link linkend="defResourceId">id</link> of the control to be enabled. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possbile return values are:
+    <variablelist>
+      <varlistentry><term>true</term>
+      <listitem>
+      <para>
+        The method succeeded and the control was previously disabled.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>false</term>
+      <listitem>
+      <para>
+        The method succeeded and the control was previously enabled.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The method failed, the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> is set with an error code.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a control is enabled, it can gain the focus and will recieve all keyboard or mouse input when it has the focus.
+    The user can interact with the control.
+  </para>
+  <para>
+    When a control is disabled it receives no keyboard or mouse input. The user can not interact with it. The operating
+    system draws the control with a visual style that indicates to the user that the control is disabled.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This method can not be used before the <link linkend="ovvUnderlying">underlying</link> dialog is created.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End dialog object::enableControl() -->
 
 <section id="mthDisableControl"><title>disableControl</title>
 <indexterm><primary>disableControl</primary></indexterm>
-<indexterm><primary>dialog object class</primary><secondary>disableControl</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>disableControl</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--disableControl(--id--)-----------------------><
@@ -7158,32 +7246,56 @@ item. </para>
 </programlisting>
 
 <para>
-  Disables the control with the specified id.
+  Disables the control with the specified resource id.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The only argument is:
-  <variablelist>
-    <varlistentry><term>id</term>
-    <listitem>
-    <para>
-      The resource <link linkend="defResourceId">id</link> of the control to be disabled. May be numeric or symbolic.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+      <para>
+        The resource <link linkend="defResourceId">id</link> of the control to be disabled. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    True if the control was previously disabled, or false if the control was not previously disabled. Note that this is
-    not the same as success or failure.
+    The possbile return values are:
+    <variablelist>
+      <varlistentry><term>true</term>
+      <listitem>
+      <para>
+        The method succeeded and the control was previously disabled.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>false</term>
+      <listitem>
+      <para>
+        The method succeeded and the control was previously enabled.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The method failed, the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> is set with an error code.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
+  <para>
+    When a control is enabled, it can gain the focus and will recieve all keyboard or mouse input when it has the focus.
+    The user can interact with the control.
+  </para>
   <para>
     When a control is disabled it receives no keyboard or mouse input. The user can not interact with it. The operating
     system draws the control with a visual style that indicates to the user that the control is disabled.
@@ -7191,6 +7303,9 @@ item. </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
+  <para>
+    This method can not be used before the <link linkend="ovvUnderlying">underlying</link> dialog is created.
+  </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
@@ -7824,7 +7939,7 @@ the &quot;View File&quot; button, the button is disabled until the user is
 finished viewing the file.  When a button is disabled it can not be clicked by
 the user.
 </para></listitem>
-<listitem><para><link linkend="h001221">EnableItem</link>: When the user closes
+<listitem><para><link linkend="mthEnableControl">enableControl</link>: When the user closes
 the secondary viewer dialog, the &quot;View File&quot; button is enabled so the
 user can choose to view another file.
 </para></listitem>
@@ -8007,7 +8122,7 @@ still minimized, then this method restores it to its normal position.
 
 ::method cancel
   expose parent
-  parent~enableItem(IDC_PB_VIEW)
+  parent~enableControl(IDC_PB_VIEW)
   if parent~isMinimized then parent~restore
   return self~cancel:super
 

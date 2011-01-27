@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2008-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2008-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -334,20 +334,6 @@
   image file.  File names can be either relative or absolute.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-    <para>
-      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
-      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
-      this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <variablelist>
@@ -446,6 +432,20 @@
       to determine the error.
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
+      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <programlisting>
@@ -490,20 +490,6 @@
   than one image at a time, when all the images have the same specifications, type, size, and flags.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-    <para>
-      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
-      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
-      this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <variablelist>
@@ -575,6 +561,20 @@
       file successfully.
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
+      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
       <programlisting>
@@ -603,20 +603,6 @@
   same type and size, and use the same load flags.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-    <para>
-      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
-      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
-      this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <variablelist>
@@ -688,6 +674,20 @@
       successfully.
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
+      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <programlisting>
@@ -715,15 +715,6 @@
   <link linkend="mthAddIconResource">addIconResource</link>() method.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected. This includes an invalid sybmbolic ID.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -795,18 +786,31 @@
       first image found would be used.
     </para>
     </listitem>
-    </itemizedlist>
+    <listitem>
+    <para>
       Omit the <emphasis role="italic">size</emphasis> and include the LR_DEFAULTSIZE flag in the <emphasis
       role="italic">flags</emphasis>. This would load the using the system metric values for icons.
-    <itemizedlist>
+    </para>
+    </listitem>
     <listitem>
     <para>
       Specify the size for the loaded image and omit the <emphasis role="italic">flags</emphasis> argument.
     </para>
     </listitem>
     </itemizedlist>
+  </para>
+  <para>
     This method uses the LoadImage() Windows API to actually load the icon image. For more advanced uses of this method,
     consult the <link linkend="defWindowsDoc">MSDN library</link> documentation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected. This includes an invalid sybmbolic ID.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1150,12 +1154,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   and does not release a shared image if the programmer requests it.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
@@ -1180,6 +1178,12 @@ A fancy purple: 16734709 (0x00FF59F5)
           </para>
         </listitem></varlistentry>
       </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1496,23 +1500,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   Creates a new empty image list of the type specified.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-    <para>
-      Provides an interface to the <computeroutput>ImageList_Create()</computeroutput> API. Use the <link
-      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
-      this method.
-    </para>
-    <para>
-      The ILC_MIRROR and ILC_PERITEMMIRROR flags require <link linkend="ovvComctl32">Common Control
-      Library</link> version 6.0 or later. If necessary use the <link
-      linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of
-      the library.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
@@ -1561,6 +1548,23 @@ A fancy purple: 16734709 (0x00FF59F5)
       </para></note>
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Create()</computeroutput> API. Use the <link
+      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
+    </para>
+    <para>
+      The ILC_MIRROR and ILC_PERITEMMIRROR flags require <link linkend="ovvComctl32">Common Control
+      Library</link> version 6.0 or later. If necessary use the <link
+      linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of
+      the library.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <programlisting>
@@ -1597,16 +1601,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   be released if it is not needed anymore.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected or if the image list is null.
-    </para>
-    <para>
-      Provides an interface to the <computeroutput>ImageList_Add()</computeroutput> API. The <link
-      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
@@ -1632,6 +1626,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       On success, the index of the first image added is returned, otherwise -1 is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Add()</computeroutput> API. The <link
+      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1679,16 +1683,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   be released if it is not needed anymore.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected or if the image list is null.
-    </para>
-    <para>
-      Provides an interface to the <computeroutput>ImageList_AddMasked()</computeroutput> API. The <link
-      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
@@ -1716,6 +1710,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       On success, the index of the first added image is returned, otherwise -1 is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_AddMasked()</computeroutput> API. The <link
+      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1777,16 +1781,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   be released if it is not needed anymore.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected or if the image list is null.
-    </para>
-    <para>
-      Provides an interface to the <computeroutput>ImageList_AddIcon()</computeroutput> API. The <link
-      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The only argument is:
@@ -1810,6 +1804,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       This method returns the index of the added icon or cursor on success, otherwise -1 is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_AddIcon()</computeroutput> API. The <link
+      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1986,16 +1990,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   Determines the number of images in the image list.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises a syntax error if the image list is null.
-    </para>
-    <para>
-      Provides an interface to the <computeroutput>ImageList_ImageCount()</computeroutput> API. The <link
-      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
@@ -2006,6 +2000,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       Returns the number of images currently in the image list.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_ImageCount()</computeroutput> API. The <link
+      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2043,16 +2047,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   size.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises a syntax error if the image list is null.
-    </para>
-    <para>
-      Provides an interface to the <computeroutput>ImageList_IconSize()</computeroutput> API. The <link
-      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>There are no arguments.
@@ -2063,6 +2057,16 @@ A fancy purple: 16734709 (0x00FF59F5)
     <para>
       The size of the images in the image list is returned in a <link linkend="clsSize">.Size</link>
       object.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_IconSize()</computeroutput> API. The <link
+      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2106,16 +2110,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   has no effect on the other.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises a syntax error if the image list is null.
-    </para>
-    <para>
-      Provides an interface to the <computeroutput>ImageList_Duplcate()</computeroutput> API. The <link
-      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
@@ -2126,6 +2120,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       The return is a copy of the image list.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Duplcate()</computeroutput> API. The <link
+      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2171,16 +2175,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   at index 3 becomes index 2, the image at index 4 becomes index 3, etc..
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected or if the image list is null.
-    </para>
-    <para>
-      Provides an interface to the <computeroutput>ImageList_Remove()</computeroutput> API. The <link
-      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The single argument is:
@@ -2198,6 +2192,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       This method returns true on success, otherwise false.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected or if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_Remove()</computeroutput> API. The <link
+      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2248,16 +2252,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   Removes all images from the image list.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises a syntax error if the image list is null.
-    </para>
-    <para>
-      Provides an interface to the <computeroutput>ImageList_RemoveAll()</computeroutput> API. The <link
-      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
@@ -2268,6 +2262,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       The method returns true on success, false otherwise.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the image list is null.
+    </para>
+    <para>
+      Provides an interface to the <computeroutput>ImageList_RemoveAll()</computeroutput> API. The <link
+      linkend="defWindowsDoc">MSDN library</link> documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2578,15 +2582,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   role="italic">fileName</emphasis>.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
@@ -2630,6 +2625,15 @@ A fancy purple: 16734709 (0x00FF59F5)
       linkend="dotSystemErrorCode">.SystemErrorCode</link> or the <link
       linkend="mthSystemErrorCodeClsResourceImage">systemErrorCode()</link> method should contain an
       error code if the object is null.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2701,23 +2705,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   </para></note>
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises a syntax error if the resource image is null.
-    </para>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-    <para>
-      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
-      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
-      this method.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
@@ -2786,6 +2773,23 @@ A fancy purple: 16734709 (0x00FF59F5)
       The image may be null if an error occurred, for instance if no image resource was found.
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the resource image is null.
+    </para>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the <link
+      linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the arguments to
+      this method.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
@@ -2834,23 +2838,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   </para></note>
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises a syntax error if the resource image is null.
-    </para>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-    <para>
-      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. You can use
-      the <link linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the
-      interaction between the flags, size, and type arguments.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
@@ -2928,6 +2915,23 @@ A fancy purple: 16734709 (0x00FF59F5)
       <link linkend="mthSystemErrorCodeClsResourceImage">systemErrorCode</link> attribute of this
       resource image will be set (to the same code.)  It is conceivable that an error could occur where
       the system does not set an error code, but unlikely.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the resource image is null.
+    </para>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. You can use
+      the <link linkend="defWindowsDoc">MSDN library</link> documentation to get more information on the
+      interaction between the flags, size, and type arguments.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3027,15 +3031,6 @@ A fancy purple: 16734709 (0x00FF59F5)
   <computeroutput>release()</computeroutput> method will ignore release requests in those sitautions.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises a syntax error if the resource image is null.
-    </para>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>There are no arguments.
@@ -3047,6 +3042,15 @@ A fancy purple: 16734709 (0x00FF59F5)
       This method return the system error code, which will be zero if there is no error, and non-zero if
       there is an error. The <link linkend="dotSystemErrorCode">.SystemErrorCode</link> is also set to
       this value.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises a syntax error if the resource image is null.
+    </para>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

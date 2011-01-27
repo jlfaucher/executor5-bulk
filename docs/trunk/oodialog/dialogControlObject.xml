@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -593,8 +593,8 @@
 <entry><link linkend="mthGetRect">getRect</link></entry>
 </row>
 <row>
-<entry>Group</entry>
-<entry><link linkend="mthGroup">Group</link></entry>
+<entry><link linkend="mthGroup">group</link></entry>
+<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control.</entry>
 </row>
 <row>
 <entry>hasKeyPressConnection</entry>
@@ -862,60 +862,80 @@ dialog control. The list contains methods to get or change the size, position,
 visibility, behavior, etc., of dialog controls.
 </para>
 
-<section id="mthGroup"><title>Group</title>
-<indexterm><primary>SetGroup</primary></indexterm>
+<section id="mthGroup"><title>group</title>
+<indexterm><primary>group</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>group</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~Group(--+-----------+--)---------------------><
-                          +-wantStyle-+
+>>--group(--+-----------+--)---------------------><
+            +-wantStyle-+
 
 ]]>
 </programlisting>
 
-<para>Add or remove the <link linkend="wsgroup">group style</link> for this
-control.  The group style controls how the user can navigate through the dialog
-using the keyboard.  For most dialogs this does not change while the dialog is
-executing.  However, in some dialogs the programmer may want to change
-the navigation depending on the options the user selects.
+<para>
+  Adds or removes the <link linkend="wsgroup">group style</link> for this control.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is
-<variablelist>
-<varlistentry><term>wantStyle</term>
-<listitem><para>A boolean (.true or .false) to indicate whether the control
-should have or not have the group style.  True (the default) indicates the
-control should have the group style and false indicates the control should
-not have the style.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>Negative values indicate the function failed, non-negative
-values indicate success.
-<variablelist>
-<varlistentry><term>-4 or less</term>
-<listitem><para>The value is the negated Operating System Error code.
-The absolute value of the return can be used to look up the error reason in the
-Windows documentation.
-</para></listitem></varlistentry>
-<varlistentry><term>-3</term>
-<listitem><para>The optional argument to the method is not a boolean.
-</para></listitem></varlistentry>
-<varlistentry><term>-2</term>
-<listitem><para>There is an (internal) problem with the dialog or the dialog
-handle.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>There is an (internal) problem with the resource ID of the
-control.
-</para></listitem></varlistentry>
-<varlistentry><term>0 or greater</term>
-<listitem><para>The window style of the dialog control prior to adding or
-removing the group style.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is
+    <variablelist>
+      <varlistentry><term>wantStyle [optional]</term>
+      <listitem>
+      <para>
+        A boolean (.true or .false) to indicate whether the control should have or not have the group style.  True (the
+        default) indicates the control should have the group style and false indicates the control should not have the
+        style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Negative values indicate the function failed, positive values indicate success.
+    <variablelist>
+      <varlistentry><term>Less than 0</term>
+      <listitem>
+      <para>
+        The value is the negated operating system error code.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Greater than 0</term>
+      <listitem>
+      <para>
+        The window style of the dialog control prior to adding or removing the group style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The group style controls how the user can navigate through the dialog using the keyboard.  For most dialogs this
+    does not change while the dialog is executing. However, in some dialogs the programmer may want to change the
+    navigation depending on the options the user selects.
+  </para>
+  <para>
+    The negative return value from this method is a hold over from a period prior to the introduction of the <link
+    linkend="dotSystemErrorCode">.SystemErrorCode</link>. This method now sets the
+    <computeroutput>.SystemErrorCode</computeroutput>, making it easier to use the negative return as a failure
+    indication and use the <computeroutput>.SystemErrorCode</computeroutput> value to look up the actual error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
