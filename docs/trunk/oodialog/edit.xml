@@ -592,6 +592,87 @@
 </variablelist>
 </section>  <!-- End Edit::select() -->
 
+
+<section id="mthReplaceSelText"><title>replaceSelText</title>
+<indexterm><primary>replaceSelText</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>replaceSelText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--replaceSelText(--text--+-----------+--)------><
+                           +-,-canUndo-+
+]]>
+</programlisting>
+
+<para>
+  Replaces the text selction in an edit control with the specified text.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The text used for replacement.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>canUndo [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput> the replacement can be undone. If
+      <computeroutput>.false</computeroutput>, the replacement can not be undone. The default is
+      <computeroutput>.true</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <emphasis role="italic">replcaeSelText</emphasis> to replace only a portion of the text in an edit control.
+    To replace all of the text, use the <link linkend="mthSetText">setText</link> method.
+  </para>
+  <para>
+    If there is no selection, the replacement text is inserted at the cursor.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+  edit = self~newEdit(IDC_EDIT_INTERPRETER)
+
+  edit~setText("Object Rexx is a hybrid language.")
+  edit~select(17, 25)
+
+  edit~replaceSelText("n interpreted")
+  say edit~getText
+
+/* output would be:
+
+  Object Rexx is an interpreted language.
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::replaceSelText() -->
+
+
 <section id="mthScrollCommand"><title>scrollCommand</title>
 <indexterm><primary>scrollCommand</primary></indexterm>
 <programlisting>
@@ -1591,45 +1672,6 @@ end
 The carriage return and line-feed characters are not included in the returned
 text string.
 </para></note>
-</section>
-
-<section id="mthReplaceSelText"><title>replaceSelText</title>
-<indexterm><primary>replaceSelText</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--replaceSelText(--text--)---------------------><
-
-
-]]>
-</programlisting>
-
-<para>The replaceSelText method replaces the selected
-text in the associated edit control with a new one.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>text</term>
-<listitem><para>The text string that is to replace the currently selected text.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-edit = self~newEdit("TEXT")
-if edit == .nil then return
-edit~setText("Object Rexx is a hybrid language.")
-edit~select(17,25)
-    edit~replaceSelText("n interpreted")
-    say edit~getText
-
-Result: Object Rexx is an interpreted language.
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="mthSetLimit"><title>setLimit</title>
