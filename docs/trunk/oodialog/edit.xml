@@ -207,7 +207,7 @@
 </row>
 <row>
 <entry><link linkend="mthLineScroll">lineScroll</link></entry>
-<entry>lineScroll</entry>
+<entry>Scrolls the text hozizontally and vertically in a multiline edit control.</entry>
 </row>
 <row>
 <entry><link linkend="mthMargins">margins</link></entry>
@@ -804,51 +804,73 @@
 
 <section id="mthLineScroll"><title>lineScroll</title>
 <indexterm><primary>lineScroll</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>lineScroll</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--lineScroll(--sChars--,--sLines--)------------><
-
+>>--lineScroll(--cChars--,--cLines--)------------><
 
 ]]>
 </programlisting>
 
-<para>The lineScroll method scrolls the text in a multiline
-edit control vertically or horizontally by the specified number of characters
-and lines.</para>
+<para>
+  Scrolls the text hozizontally and vertically in a multiline edit control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>sChars</term>
-<listitem><para>The number of characters to be scrolled horizontally.
-</para></listitem></varlistentry>
-<varlistentry><term>sLines</term>
-<listitem><para>The number of lines to be scrolled vertically.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>0 if the message is sent to a multiline edit control, or a non-zero
-value if the message is sent to a single-line edit control.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example scrolls an edit control by 50 characters and 35
-lines:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>cChars</term>
+      <listitem>
+      <para>
+        The number of characters to scroll hozizontally. Positive numbers scroll the text to the left and negative
+        numbers scroll the text to the right
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cLines</term>
+      <listitem>
+      <para>
+        The number of lines to scroll vertically. Positive numbers scroll the text up and negative numbers scrol the
+        text do down.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The method always returns 0 for a multiline edit control. It returns 1 for a single-line edit control to indicate
+    that this method does not apply to single-line edit controls.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The edit control does not scroll vertically past the last line of text. If the current line, plus the number of
+    lines specified by <emphasis role="italic">cLines</emphasis>, exceeds the total number of lines in the edit control,
+    the last line of the edit control is scrolled to bottom of the edit control. The <emphasis
+    role="italic">lineScroll</emphasis> method can, however, be used to scroll horizontally past the last character of a
+    line, but it will not scroll past the width of the longest line in the edit control
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example scrolls an edit control by 50 characters and 35 lines:
 <programlisting>
 <![CDATA[
-edit~scroll(50, 35)
+
+  edit~scroll(50, 35)
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
+</section>  <!-- End Edit::lineScroll() -->
 
-<note><title>Note</title><para>
-The edit control does not scroll vertically past the last
-line of text. If the current line, plus the number of lines specified by <emphasis role="italic">sLines</emphasis>, exceeds the total number of lines in the edit control, the last
-line of the edit control is scrolled to the top. The lineScroll message can,
-however, be used to scroll horizontally past the last character of a line.
-</para></note>
-</section>
 
 <section id="mthCanUndo"><title>canUndo</title>
 <indexterm><primary>canUndo</primary></indexterm>
