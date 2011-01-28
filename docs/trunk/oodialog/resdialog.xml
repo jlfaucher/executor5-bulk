@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -69,17 +69,12 @@
   resource only DLL is the type of module that makes the most sense to use with the ResDialog class.  However, there is
   no reason why any DLL, that has the compiled resource attached to it, could not be used.
 </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Note:</emphasis></term>
-<listitem>
 <para>
-  The <computeroutput>ResDialog</computeroutput> class is a concrete subclass of the <link
-  linkend="chpDialogObject">dialog object</link> and therefore has all of the methods of the dialog object. From the
-  Rexx programmer's perspective, the only difference to be aware of is in the <link
+  <emphasis role="bold">Note:</emphasis> the <computeroutput>ResDialog</computeroutput> class is a concrete subclass of
+  the <link linkend="chpDialogObject">dialog object</link> and therefore has all of the methods of the dialog object.
+  From the Rexx programmer's perspective, the only difference to be aware of is in the <link
   linkend="mthNewClsResDialog">new</link> method.
 </para>
-</listitem></varlistentry>
-</variablelist>
 
 <section id="mthNewClsResDialog"><title>new (Class method)</title>
 <indexterm><primary>new</primary><secondary>ResDialog class</secondary></indexterm>
@@ -195,8 +190,7 @@ end
 </section>
 
 <section id="clsRcDialog"><title>RcDialog Class</title>
-<indexterm><primary>Resource file dialogs</primary>
-<secondary>RcDialog class</secondary></indexterm>
+<indexterm><primary>Resource file dialogs</primary><secondary>RcDialog class</secondary></indexterm>
 <indexterm><primary>RcDialog class</primary></indexterm>
 <para>
   The <computeroutput>RcDialog</computeroutput> class gets its dialog <link linkend="ovvDialogTemplate">template</link>
@@ -290,28 +284,28 @@ end
         <varlistentry><term>CONNECTBUTTONS</term>
         <listitem>
         <para>
-          Each push button in the underlying dialog has has the CLICKED <link linkend="ovvEvents">event</link>
-          notification connected automatically to a method in the Rexx dialog object. This is the same as using the
-          <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the CLICKED notification. The
-          name for the method is generated automatically by the ooDialog framework. The method name is the button label
-          with all spaces, ampersands, and colons removed.
+          Each push <link linkend="clsButton">button</link> in the underlying dialog has the CLICKED <link
+          linkend="ovvEvents">event</link> notification connected automatically to a method in the Rexx dialog object.
+          This is the same as using the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the
+          CLICKED notification. The name for the method is generated automatically by the ooDialog framework. The method
+          name is the button label with all spaces, ampersands, and colons removed.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CONNECTRADIOS</term>
         <listitem>
         <para>
-          Similar to CONNECTBUTTONS, this option connects the CLICKED event notification from each radio button to a
-          method in the Rexx dialog object. Again, this is the same as using the <emphasis
-          role="italic">connectButtonEvent</emphasis> method.  For radio buttons, the generated method name is the
-          button label, with all spaces, ampersands, and colons removed, prepended with the text
+          Similar to CONNECTBUTTONS, this option connects the CLICKED event notification from each <link
+          linkend="clsRadioButton">radio</link> button to a method in the Rexx dialog object. Again, this is the same as
+          using the <emphasis role="italic">connectButtonEvent</emphasis> method.  For radio buttons, the generated
+          method name is the button label, with all spaces, ampersands, and colons removed, prepended with the text
           <computeroutput>ID</computeroutput>.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CONNECTCHECKS</term>
         <listitem>
         <para>
-          Exactly the same as CONNECTRADIOS, for check box controls. The object method name is generated in the same
-          way as it is for radio buttons.
+          Exactly the same as CONNECTRADIOS, for <link linkend="clsCheckBox">check box</link> controls. The object
+          method name is generated in the same way as it is for radio buttons.
         </para>
         </listitem></varlistentry> </variablelist>
       </para> </listitem></varlistentry>
