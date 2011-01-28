@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -486,6 +486,18 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
   detection</link> on.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return anything.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
@@ -516,15 +528,29 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>noAutoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--noAutoDetection----------------------------------><
+>>--noAutoDetection------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">noAutoDetection</emphasis> method switches off <link
+  When the <emphasis role="italic">noAutoDetection</emphasis> method is invoked, it switches off <link
   linkend="paraAutomaticDataDetection">automatic</link> data detection.
 </para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return anything.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthAutoDetection"><title>autoDetection</title>
@@ -532,15 +558,29 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>autoDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--autoDetection------------------------------------><
+>>--autoDetection--------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">autoDetection</emphasis> method switches on <link
+  When the <emphasis role="italic">autoDetection</emphasis> method is invoked, it switches on <link
   linkend="paraAutomaticDataDetection">automatic</link> data detection.
 </para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return anything.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="sctConnectDataMethods"><title>Connect Data Attribute Methods</title>
@@ -558,7 +598,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>connectRadioButton</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectRadioButton(--id--+-------------------+---><
+>>--connectRadioButton(--id--+-------------------+--)-----------><
                              +-,--attributeName--+
 
 ]]>
@@ -650,7 +690,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>connectCheckBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connctChectBox(--id--+-------------------+--)----><
+>>--connctChectBox(--id--+-------------------+--)---------------><
                          +-,--attributeName--+
 
 ]]>
@@ -742,7 +782,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <indexterm><primary>dialog object</primary><secondary>connectEdit</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectEdit(--id--+------------------+--)--------><
+>>--connectEdit(--id--+------------------+--)----><
                       +-,--attributeName-+
 
 ]]>
@@ -876,7 +916,7 @@ return 0
 <indexterm><primary>dialog object</primary><secondary>connectComboBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectComboBox(--id--+------------------+-------><
+>>--connectComboBox(--id--+------------------+--)---------------><
                           +-,-attributeName--+
 
 ]]>
@@ -965,7 +1005,7 @@ return 0
 <indexterm><primary>dialog object</primary><secondary>connectListBox</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectListBox(--id--+-------------------+--)----><
+>>--connectListBox(--id--+-------------------+--)---------------><
                          +-,--attributeName--+
 
 ]]>
@@ -1353,7 +1393,7 @@ FONT 8, "Ms Shell Dlg 2"
 <indexterm><primary>connectTreeView</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectTreeView(--id--+------------------+--)----><
+>>--connectTreeView(--id--+------------------+--)---------------><
                           +-,--attributeName-+
 
 ]]>
@@ -1442,7 +1482,7 @@ FONT 8, "Ms Shell Dlg 2"
 <indexterm><primary>dialog object</primary><secondary>connectListView</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectListView(--id--+------------------+--)----><
+>>--connectListView(--id--+------------------+--)---------------><
                           +-,--attributeName-+
 
 ]]>
@@ -1478,7 +1518,7 @@ MyDialog~Customers="1 14 29"
 <indexterm><primary>dialog object</primary><secondary>connectTrackBar</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectTrackBar(--id--+------------------+--)----><
+>>--connectTrackBar(--id--+------------------+--)---------------><
                           +-,--attributeName-+
 
 ]]>
@@ -1496,7 +1536,7 @@ the numerical position of the slider. For further information, refer to
 <indexterm><primary>dialog object</primary><secondary>connectTab</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectTab(--id--+------------------+--)---------><
+>>--connectTab(--id--+------------------+--)-----><
                      +-,--attributeName-+
 
 ]]>
@@ -1514,7 +1554,7 @@ the text of the active tab. For further information, refer to
 <indexterm><primary>dialog object</primary><secondary>connectDateTimePicker</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectDateTimePicker(--id--+------------------+--)------------------------><
+>>--connectDateTimePicker(--id--+------------------+--)---------><
                                 +-,--attributeName-+
 ]]>
 </programlisting>
@@ -1574,10 +1614,10 @@ the text of the active tab. For further information, refer to
 
 <section id="mthConnectMonthCalendar"><title>connectMonthCalendar</title>
 <indexterm><primary>connectMonthCalendar</primary></indexterm>
-<indexterm><primary>dialog object class</primary><secondary>connectMonthCalendar</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectMonthCalendar</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectMonthCalendar(--id--+------------------+--)-------------------------><
+>>--connectMonthCalendar(--id--+------------------+--)----------><
                                +-,--attributeName-+
 ]]>
 </programlisting>
@@ -1637,10 +1677,10 @@ the text of the active tab. For further information, refer to
 
 <section id="mthUonnectUpDown"><title>connectUpDown</title>
 <indexterm><primary>connectUpDown</primary></indexterm>
-<indexterm><primary>dialog object class</primary><secondary>connectUpDown</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectUpDown</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectUpDown(--id--+------------------+--)------><
+>>--connectUpDown(--id--+------------------+--)--><
                         +-,--attributeName-+
 ]]>
 </programlisting>
@@ -1705,7 +1745,7 @@ the text of the active tab. For further information, refer to
 <indexterm><primary>dialog object</primary><secondary>getData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getData------------------------------------------><
+>>--getData--------------------------------------><
 
 ]]>
 </programlisting>
@@ -1768,7 +1808,7 @@ say MyDialog~LISTBOX_DAYS
 <indexterm><primary>dialog object</primary><secondary>setData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setData------------------------------------------><
+>>--setData--------------------------------------><
 
 ]]>
 </programlisting>
@@ -1843,7 +1883,7 @@ MyDialog~setData
 <indexterm><primary>dialog object</primary><secondary>getDataStem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getDataStem(--dataStem.--)---------------------------------><
+>>--getDataStem(--dataStem.--)-------------------><
 
 ]]>
 </programlisting>
@@ -1881,7 +1921,7 @@ MyDialog~setData
 <indexterm><primary>dialog object</primary><secondary>setDataStem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDataStem(--dataStem.--)-----------------------><
+>>--setDataStem(--dataStem.--)-------------------><
 
 ]]>
 </programlisting>
@@ -1939,7 +1979,7 @@ self~setDataStem(dlgStem.)
 <indexterm><primary>dialog object</primary><secondary>getControlData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getControlData(--id--)-------------------------------------><
+>>--getControlData(--id--)-----------------------><
 
 ]]>
 </programlisting>
@@ -2000,7 +2040,7 @@ self~setDataStem(dlgStem.)
 <indexterm><primary>dialog object</primary><secondary>getCheckBoxData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCheckBoxData(--id--)--------------------------><
+>>--getCheckBoxData(--id--)----------------------><
 
 ]]>
 </programlisting>
@@ -2046,7 +2086,7 @@ self~setDataStem(dlgStem.)
 <indexterm><primary>dialog object</primary><secondary>getRadioButtonData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getRadioButtonData(--id--)-----------------------><
+>>--getRadioButtonData(--id--)-------------------><
 
 ]]>
 </programlisting>
@@ -2140,7 +2180,7 @@ self~setDataStem(dlgStem.)
 <indexterm><primary>dialog object</primary><secondary>getListBoxData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getListBoxData(--id--)---------------------------><
+>>--getListBoxData(--id--)-----------------------><
 
 ]]>
 </programlisting>
@@ -2209,7 +2249,7 @@ end
 <indexterm><primary>getComboBoxData</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--getComboBoxData(--id--)--------------------------><
+>>--getComboBoxData(--id--)----------------------><
 
 ]]>
 </programlisting>
@@ -2269,7 +2309,7 @@ end
 <indexterm><primary>dialog object</primary><secondary>getDataAttribute</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getDataAttribute(--attributeName--)------------------------><
+>>--getDataAttribute(--attributeName--)----------><
 
 ]]>
 </programlisting>
@@ -2313,7 +2353,7 @@ end
 <indexterm><primary>dialog object</primary><secondary>setControlData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setControlData(--id--,--dataString--)------------><
+>>--setControlData(--id--,--dataString--)--------><
 
 ]]>
 </programlisting>
@@ -2415,7 +2455,7 @@ MyDialog~setControlData(123, "1 2 3")
 <indexterm><primary>dialog object</primary><secondary>setCheckBoxData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setCheckBoxData(--id--,--data--)-----------------><
+>>--setCheckBoxData(--id--,--data--)-------------><
 
 ]]>
 </programlisting>
@@ -2444,7 +2484,7 @@ is 0. </para>
 <indexterm><primary>dialog object</primary><secondary>setRadioButtonData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setRadioButtonData(--id--,--data--)--------------><
+>>--setRadioButtonData(--id--,--data--)----------><
 
 ]]>
 </programlisting>
@@ -2472,7 +2512,7 @@ if the given data value is 1, and removes the mark if the value is 0. </para>
 <indexterm><primary>dialog object</primary><secondary>setEditData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setEditData(--id--,--aString--)------------------><
+>>--setEditData(--id--,--aString--)--------------><
 
 ]]>
 </programlisting>
@@ -2521,7 +2561,7 @@ value. Thus it is possible to undo the changes or confirm them.
 <indexterm><primary>dialog object</primary><secondary>setListBoxData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setListBoxData(--id--,--dataString--)------------><
+>>--setListBoxData(--id--,--dataString--)--------><
 
 ]]>
 </programlisting>
@@ -2624,7 +2664,7 @@ value. Thus it is possible to undo the changes or confirm them.
 <indexterm><primary>dialog object</primary><secondary>setComboBoxData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setComboBoxData(--id--,--aString--)--------------><
+>>--setComboBoxData(--id--,--aString--)----------><
 
 ]]>
 </programlisting>
@@ -2653,7 +2693,7 @@ combo box, then the first item is selected. </para>
 <indexterm><primary>dialog object</primary><secondary>setDataAttribute</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDataAttribute(--attributeName--)--------------><
+>>--setDataAttribute(--attributeName--)----------><
 
 ]]>
 </programlisting>
