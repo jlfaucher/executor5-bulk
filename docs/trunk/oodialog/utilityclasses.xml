@@ -209,11 +209,11 @@ System error code: 2
 </row>
 <row>
 <entry><link linkend="mthHiWord">hiWord</link></entry>
-<entry>Returns the high-order word portion of a number.</entry>
+<entry>Returns the high-order word portion of a number as a number in the range of 0 through 65535.</entry>
 </row>
 <row>
 <entry><link linkend="mthLoWord">loWord</link></entry>
-<entry>Returns the low-order word portion of a number.</entry>
+<entry>Returns the low-order word portion of a number as a number in the range of 0 through 65535.</entry>
 </row>
 <row>
 <entry><link linkend="mthMakeLParam">makeLParam</link></entry>
@@ -234,6 +234,14 @@ System error code: 2
 <row>
 <entry><link linkend="mthScreenSize">screenSize</link></entry>
 <entry>Retrieves the screen size in either pixels, dialog units, or both.</entry>
+</row>
+<row>
+<entry><link linkend="mthSHiWord">sHiWord</link></entry>
+<entry>Returns the high-order word portion of a number as a number in the range of -32768 through 32767.</entry>
+</row>
+<row>
+<entry><link linkend="mthSLoWord">sLoWord</link></entry>
+<entry>Returns the low-order word portion of a number as a number in the range of -32768 through 32767.</entry>
 </row>
 <row>
 <entry><link linkend="mthThreadID">threadID</link></entry>
@@ -489,7 +497,17 @@ return .true
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return is the low-order word portion of the number.
+    The return is the low-order word portion of the number. This whole number value will be in the range of 0 through
+    65535.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unfortunately, the practice of packing two values into a single number can lead to ambiguities, especially when the
+    values can be either negative or positive, and start getting larger. The number returned from the <emphasis
+    role="italic">loWord</emphasis> method will always be non-negative. For situations where the expected returned
+    number may be negative, the <link linkend="mthSLoWord">sLoWord</link> method is provided.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -498,7 +516,8 @@ return .true
     A common place in the Windows API where two values are packed into a single number is where the API deals with
     position.  This example shows how to extract the x and y position coordinates of a dialog after it has been moved.
     The example is complete, it can be cut and pasted into a file and will execute as is.
-<programlisting id="exampleLoWordClsDlgUtil"> <![CDATA[
+<programlisting id="exampleLoWordClsDlgUtil">
+<![CDATA[
 
   dlg = .MovingDialog~new
   dlg~createCenter(100, 60, "Move Me")
@@ -560,13 +579,181 @@ return .true
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return is the high-order word portion of the number.
+    The return is the high-order word portion of the number. This whole number value will be in the range of 0 through
+    65535.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unfortunately, the practice of packing two values into a single number can lead to ambiguities, especially when the
+    values can be either negative or positive, and start getting larger. The number returned from the <emphasis
+    role="italic">hiWord</emphasis> method will always be non-negative. For situations where the expected returned
+    number may be negative, the <link linkend="mthSHiWord">sHiWord</link> method is provided.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     See the <link linkend="exampleLoWordClsDlgUtil">loWord() example</link>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSLoWord"><title>sLoWord (Class Method)</title>
+<indexterm><primary>sLoWord</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>sLoWord</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sLoWord(--param--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The Windows API often packs two values into a single number.  One value in the low-order word and the other value in
+  the high-order word. The <emphasis role="italic">sLoWord</emphasis> method is the signed version of the <link
+  linkend="mthLoWord">loWord</link> method. It is used to extract the low-order word from a number, where the value of
+  the low-order word may be positive or negative.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>param [required]</term>
+      <listitem>
+      <para>
+        The number whose low-order word is needed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the low-order word portion of the number. The returned whole number will be in the range of -32768 to
+    32767
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unfortunately, the practice of packing two values into a single number can lead to ambiguities, especially when the
+    values can be either negative or positive, and start getting larger. The number returned from the <emphasis
+    role="italic">sLoWord</emphasis> method can be either negative or positive, but the largest maximum number will only
+    be 32767. For situations where the expected returned number is always positive and may be larger than 32767, the
+    <link linkend="mthLoWord">loWord</link> method is provided.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    One place where two values are packed into one number by the operating system is the return from scrolling an edit
+    control. The operating system returns true or false in the high word, for success or failure. The lines scrolled are
+    in the low word. When the edit control is scrolled from the bottom towards the top, the number of lines is negative.
+    This example shows the result of using the <link linkend="mthScrollCommand">scrollCommand</link> repeatedly until
+    the top of the edti control is reached:
+
+<programlisting id="exampleSLoWordClsDlgUtil">
+<![CDATA[
+
+  success = .true
+  do while success
+    ret = editControl~scrollCommand("PAGEUP")
+
+    success = .DlgUtil~sHiWord(ret)
+    linesMoved = .DlgUtil~sLoWord(ret)
+
+    say "Scrolled the edit control:"
+    say "  Success?" success
+    say "  Lines:  " linesMoved
+  end
+
+/* Output might be:
+
+Scrolled the edit control:
+  Success? 1
+  Lines:   -16
+Scrolled the edit control:
+  Success? 1
+  Lines:   -16
+...
+Scrolled the edit control:
+  Success? 1
+  Lines:   -16
+Scrolled the edit control:
+  Success? 1
+  Lines:   -5
+Scrolled the edit control:
+  Success? 0
+  Lines:   0
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSHiWord"><title>sHiWord (Class Method)</title>
+<indexterm><primary>sHiWord</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>sHiWord</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sHiWord(--param--)---------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The Windows API often packs two values into a single number.  One value in the low-order word and the other value in
+  the high-order word. The <emphasis role="italic">sHiWord</emphasis> method is the signed version of the <link
+  linkend="mthHiWord">HiWord</link> method. It is used to extract the high-order word from a number, where the value of
+  the high-order word may be positive or negative.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>param [required]</term>
+      <listitem>
+      <para>
+        The number whose high-order word is needed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the high-order word portion of the number. The returned whole number will be in the range of -32768 to
+    32767.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unfortunately, the practice of packing two values into a single number can lead to ambiguities, especially when the
+    values can be either negative or positive, and start getting larger. The number returned from the <emphasis
+    role="italic">sHiWord</emphasis> method can be either negative or positive, but the largest maximum number will only
+    be 32767. For situations where the expected returned number is always positive and may be larger than 32767, the
+    <link linkend="mthHiWord">hiWord</link> method is provided.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    See the <link linkend="exampleSLoWordClsDlgUtil">sLoWord() example</link>.
   </para>
   </listitem></varlistentry>
 </variablelist>

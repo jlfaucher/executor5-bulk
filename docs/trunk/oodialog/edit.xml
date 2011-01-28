@@ -159,11 +159,11 @@
 </row>
 <row>
 <entry><link linkend="mthFirstVisibleLine">firstVisibleLine</link></entry>
-<entry>Retrieves the index of the first visible line, or the first visible character, in a edit control.</entry>
+<entry>Retrieves the index of the first visible line, or the first visible character, in an edit control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetCue">getCue</link></entry>
-<entry>Retrieves the text of the cue for an edit control.</entry>
+<entry>Retrieves the cue text, or the empty string if there is no cue set.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetLine">getLine</link></entry>
@@ -227,7 +227,7 @@
 </row>
 <row>
 <entry><link linkend="mthReplaceSelText">replaceSelText</link></entry>
-<entry>replaceSelText</entry>
+<entry>Replaces the text selction in an edit control with the specified text.</entry>
 </row>
 <row>
 <entry><link linkend="mthReplaceStyle">replaceStyle</link></entry>
@@ -235,11 +235,11 @@
 </row>
 <row>
 <entry><link linkend="mthScrollCommand">scrollCommand</link></entry>
-<entry>scrollCommand</entry>
+<entry>Scrolls the text vertically in a multiline edit control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectClsEdit">select</link></entry>
-<entry>select</entry>
+<entry>Used to change the text selection and / or the position of the cursor</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectedClsEdit">selected</link></entry>
@@ -251,7 +251,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetCue">setCue</link></entry>
-<entry>setCue</entry>
+<entry>Sets the text for <emphasis role="italic">cue</emphasis> banner text.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetLimit">setLimit</link></entry>
@@ -672,67 +672,135 @@
 </variablelist>
 </section>  <!-- End Edit::replaceSelText() -->
 
-
 <section id="mthScrollCommand"><title>scrollCommand</title>
 <indexterm><primary>scrollCommand</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>scrollCommand</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                       +-UP--------+
->>--scrollCommand(--"--+-----------+--"--+----------------+--)-----------------><
-                       +-LEFT------+     +-,--repetitions-+
-                       +-DOWN------+
-                       +-RIGHT-----+
-                       +-PAGEUP----+
-                       +-PAGELEFT--+
-                       +-PAGEDOWN--+
-                       +-PAGERIGHT-+
-
-
+>>--scrollCommand(--+-------+--+----------------+--)---------------------------><
+                    +--cmd--+  +-,-repetitions--+
 ]]>
 </programlisting>
 
-<para>The scrollCommand method scrolls the associated
-edit control in a given direction.</para>
+<para>
+  Scrolls the text vertically in a multiline edit control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>command</term>
-<listitem><para>Specifies the direction and the step size of the scroll command. Possible
-values are:
-<variablelist>
-<varlistentry><term>UP or LEFT</term>
-<listitem><para>Scrolls up one line. UP is the default.
-</para></listitem></varlistentry>
-<varlistentry><term>DOWN or RIGHT</term>
-<listitem><para>Scrolls down one line.
-</para></listitem></varlistentry>
-<varlistentry><term>PAGEUP or PAGELEFT</term>
-<listitem><para>Scrolls up one page.
-</para></listitem></varlistentry>
-<varlistentry><term>PAGEDOWN or PAGERIGHT</term>
-<listitem><para>Scrolls down one page.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>repetitions</term>
-<listitem><para>The number of times the scroll command is to be issued. If this argument
-is omitted, the scroll command is issued once.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example scrolls down 3 lines in the edit control:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>cmd [optional]</term>
+      <listitem>
+      <para>
+        Exactly one of the following keywords, case is not significant. The default if this argument is omitted is UP.
+        If an unrecognized keyword is used, then UP is substituted for the keyword.
+      </para>
+      <para>
+        <simplelist type='vert' columns='4'>
+          <member>UP      </member>
+          <member>DOWN    </member>
+          <member>PAGEUP  </member>
+          <member>PAGEDOWN</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>UP</term>
+          <listitem>
+          <para>
+            The edit control is scrolled up one line.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DOWN</term>
+          <listitem>
+          <para>
+            The edit control is scrolled down one line.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PAGEUP</term>
+          <listitem>
+          <para>
+            The edit control is scrolled up one page.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PAGEDOWN</term>
+          <listitem>
+          <para>
+            The edit control is scrolled down one page.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>repetions [optional]</term>
+      <listitem>
+      <para>
+        The number of times to perform the scroll command. The default is 1.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the value returned by the operating system.
+  </para>
+  <para>
+    The operating system packs the success indicator (<computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput>) in the high-word of the return. The low-word contains the number of lines
+    scrolled. Use the <link linkend="mthSHiWord">sHiWord</link> and <link linkend="mthSLoWord">sLoWord</link> methods to
+    extract these values
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    For the UP and PAGEUP commands, the number of lines scrolled by the operating system is negative. Be sure to use the
+    <emphasis role="italic">signed</emphasis> verison of the loWord method (<link linkend="mthSLoWord">sLoWord</link>)
+    to get the correct value.
+  </para>
+  <para>
+    When the <emphasis role="italic">repetitions</emphasis> argument is used, ooDialog issues the scroll command in a
+    loop for the number of <emphasis role="italic">repetions</emphasis> specified. The returned value is then the return
+    from issuing the last command. Because of this, the return when the <emphasis role="italic">repetions</emphasis>
+    argument is used is not meaningfull. For instance, when using this invocation: <computeroutput>ret =
+    editControl~scrollCommand("PAGEUP", 15)</computeroutput> when the edit control only has 4 pages of text will
+    indicate that the command failed and that 0 lines were scrolled.
+  </para>
+  <para>
+    The method has no effect on single-line edit controls.
+  </para>
+  <para>
+    Please <emphasis role="bold">note</emphasis>, older versions of the ooDialog documentation also listed the LEFT,
+    RIGHT, PAGELEFT, and PAGERIGHT commands for this method. These command keywords are misleading, the text can only be
+    scrolled vertically with this method. LEFT is the same as UP, RIGHT is the same as DOWN, etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a method that scrolls the text in the edit control all the way to the top. The method is
+    connected to a <emphasis role="italic">Home</emphasis> menu item in the application.
 <programlisting>
 <![CDATA[
-edit = MyDialog~newEdit("NAME")
-if edit == .Nil then return
-edit~scrollCommand("DOWN",3)
+
+::method onHomeMenuItem
+  expose editControll
+
+  success = .true
+  do while success
+    ret = editControl~scrollCommand("PAGEUP")
+    success = .DlgUtil~sHiWord(ret)
+  end
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Edit::scrollCommand() -->
+
 
 <section id="mthLineScroll"><title>lineScroll</title>
 <indexterm><primary>lineScroll</primary></indexterm>
