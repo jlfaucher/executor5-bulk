@@ -256,7 +256,7 @@
 <entry>Moves the rectangle within the associated button and redraws the uncovered area with the button background color.</entry>
 </row>
 <row>
-<entry><link linkend="mthScrolBbitmapFromTo">scrollBitmapFromTo</link></entry>
+<entry><link linkend="mthScrollBbitmapFromTo">scrollBitmapFromTo</link></entry>
 <entry>Scrolls the bitmap within the associated bitmap button from one position to another.</entry>
 </row>
 <row>
@@ -302,7 +302,7 @@
   linkend="chpDialogObject">object</link>. The syntax is:
 <programlisting>
 <![CDATA[
->>-newPushButton(--id--)-----------------------------><
+>>--newPushButton(--id--)------------------------><
 
 ]]>
 </programlisting>
@@ -332,8 +332,8 @@
   linkend="chpDialogObject">dialog</link> object. The basic syntax is:
 
 <programlisting> <![CDATA[
->>-connectButtonEvent(--id--,--event--+----------------+--)------------><
-                                      +--,-methodName--+
+>>--connectButtonEvent(--id--,--event--+----------------+--)-------------------><
+                                       +--,-methodName--+
 
 ]]>
 </programlisting>
@@ -346,7 +346,7 @@
 <indexterm><primary>Button class</primary><secondary>push</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--push---------------------------------------><
+>>--push-----------------------------------------><
 ]]>
 </programlisting>
 
@@ -437,7 +437,7 @@ self~newPushButton(IDCANCEL)~click
 
 
 <section id="mthStateClsButton"><title>state</title>
-<indexterm><primary>state</primary></indexterm>
+<indexterm><primary>state</primary><secondary>Button class</secondary></indexterm>
 <indexterm><primary>Button class</primary><secondary>state</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -858,7 +858,8 @@ button~state="FOCUS PUSHED"
 
 
 <section id="mthGetIdealSize"><title>getIdealSize</title>
-<indexterm><primary>getIdealSize</primary><secondary>Button class</secondary></indexterm>
+<indexterm><primary>getIdealSize</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getIdealSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getIdealSize---------------------------------><
@@ -926,6 +927,7 @@ button~state="FOCUS PUSHED"
 
 <section id="mthGetTextMargin"><title>getTextMargin</title>
 <indexterm><primary>getTextMargin</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getTextMargin</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getTextMargin--------------------------------><
@@ -985,8 +987,8 @@ say '  Bottom:' margins~bottom
 </section>
 
 <section id="mthSetTextMargin"><title>setTextMargin</title>
-<indexterm><primary>setTextMargin</primary>
-<secondary>Button class</secondary></indexterm>
+<indexterm><primary>setTextMargin</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>setTextMargin</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--setTextMargin(--margins--)-------------------><
@@ -1044,8 +1046,8 @@ self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 
 
 <section id="mthGetImageList"><title>getImageList</title>
-<indexterm><primary>getImageList</primary>
-<secondary>Button class</secondary></indexterm>
+<indexterm><primary>getImageList</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getImageList</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getImageList---------------------------------><
@@ -1158,6 +1160,7 @@ self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 
 <section id="mthSetImageList"><title>setImageList</title>
 <indexterm><primary>setImageList</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>setImageList</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--setImageList(--imageList--,--+--------+--,--+-------+--)-------------------><
@@ -1345,11 +1348,11 @@ return 0
 
 
 <section id="mthGetImage"><title>getImage</title>
-<indexterm><primary>getImage</primary>
-<secondary>Button class</secondary></indexterm>
+<indexterm><primary>getImage</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getImage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getImage----------------------------------------------------><
+>>--getImage-------------------------------------><
 ]]>
 </programlisting>
 
@@ -1392,11 +1395,11 @@ return 0
 
 
 <section id="mthSetImage"><title>setImage</title>
-<indexterm><primary>setImage</primary>
-<secondary>Button class</secondary></indexterm>
+<indexterm><primary>setImage</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>setImage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setImage(-newImage-)----------------------------------------><
+>>--setImage(-newImage-)-------------------------><
 
 ]]>
 </programlisting>
@@ -1451,12 +1454,13 @@ return 0
 
 <section id="mthChangeBitmap"><title>changeBitmap</title>
 <indexterm><primary>changeBitmap</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>changeBitmap</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~changeBitmap(--bmpNormal--,--+------------+--,-->
+>>--changeBitmap(--bmpNormal--,----------------+------------+--,--------------->
                                                +-bmpFocused-+
 
->--+-------------+--,--+-------------+--+-----------------+--)-><
+>--+-------------+--,--+-------------+--+-----------------+--)-----------------><
    +-bmpSelected-+     +-bmpDisabled-+  +-,--+-FRAME----+-+
                                              +-USEPAL---+
                                              +-INMEMORY-+
@@ -1546,8 +1550,8 @@ button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
 <indexterm><primary>Button class</primary><secondary>getBitmapPosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getBitmapPosition(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getBitmapPosition(--+--------+--)------------><
+                        +--type--+
 ]]>
 </programlisting>
 
@@ -1691,12 +1695,12 @@ Generic form:
 </variablelist>
 </section>  <!-- End PushButton::setBitmapPosition() -->
 
-<section id="mthGetBmpDisplacement"><title>GetBmpDisplacement</title>
-<indexterm><primary>GetBmpDisplacement</primary>
-<secondary>Button class</secondary></indexterm>
+<section id="mthGetBmpDisplacement"><title>getBmpDisplacement</title>
+<indexterm><primary>getBmpDisplacement</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getBmpDisplacement</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~GetBmpDisplacement---------------------------><
+>>--getBmpDisplacement---------------------------><
 
 
 ]]>
@@ -1790,7 +1794,7 @@ and separated by a blank.
 <indexterm><primary>Button class</primary><secondary>scroll</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~scroll(--xPos--,--yPos--,--left--,--top--,--right--,--bottom--)-><
+>>--scroll(--xPos--,--yPos--,--left--,--top--,--right--,--bottom--)------------><
 
 
 ]]>
@@ -1814,17 +1818,17 @@ color. It is used to move bitmaps within bitmap buttons.</para>
 </variablelist>
 </section>
 
-<section id="mthScrollTtextClsButton"><title>ScrollText</title>
-<indexterm><primary>ScrollText</primary>
-<secondary>Button class</secondary></indexterm>
+<section id="mthScrollTtextClsButton"><title>scrollText</title>
+<indexterm><primary>scrollText</primary><secondary>Button class</secondary></indexterm>
+<indexterm><primary>Button class</primary><secondary>scrollText</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                                         +-10-------+
->>-aButtonControl~ScrollText(--text--,--+----------+--,--+----------+--,------>
-                                        +-fontName-+     +-fontSize-+
+                                            +-10-------+
+>>--scrollText(--text--,---+----------+--,--+----------+--,-------------------->
+                           +-fontName-+     +-fontSize-+
 
                                     +-0---------+     +-4----+     +-10----+
->--+--------------------------+--,--+-----------+--,--+------+--,--+-------+-->
+>--+--------------------------+--,--+-----------+--,--+------+--,--+-------+--->
    |    +----------------+    |     +-displaceY-+     +-step-+     +-sleep-+
    |    V                |    |
    +-"----+-THIN-------+-+--"-+
@@ -1904,12 +1908,12 @@ button~ScrollText("Hello world!", "Arial", 36, "BOLD ITALIC", 2, 3, 15, 4)
 </variablelist>
 </section>
 
-<section id="mthGetBitmapSizeX"><title>GetBitmapSizeX</title>
-<indexterm><primary>GetBitmapSizeX</primary>
-<secondary>Button class</secondary></indexterm>
+<section id="mthGetBitmapSizeX"><title>getBitmapSizeX</title>
+<indexterm><primary>getBitmapSizeX</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getBitmapSizeX</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~GetBitmapSizeX-------------------------------><
+>>--getBitmapSizeX-------------------------------><
 
 
 ]]>
@@ -1924,12 +1928,12 @@ the bitmap that is set for the associated button.</para>
 </variablelist>
 </section>
 
-<section id="mthGetBitmapSizeY"><title>GetBitmapSizeY</title>
-<indexterm><primary>GetBitmapSizeY</primary>
-<secondary>Button class</secondary></indexterm>
+<section id="mthGetBitmapSizeY"><title>getBitmapSizeY</title>
+<indexterm><primary>getBitmapSizeY</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getBitmapSizeY</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~GetBitmapSizeY-------------------------------><
+>>--getBitmapSizeY-------------------------------><
 
 
 ]]>
@@ -1944,17 +1948,17 @@ of the bitmap that is set for the associated button.</para>
 </variablelist>
 </section>
 
-<section id="mthDrawBitmap"><title>DrawBitmap</title>
-<indexterm><primary>DrawBitmap</primary>
-<secondary>Button class</secondary></indexterm>
+<section id="mthDrawBitmap"><title>drawBitmap</title>
+<indexterm><primary>drawBitmap</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>drawBitmap</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                               +-0----+     +-0----+     +-0----+
->>-aButtonControl~DrawBitmap(--+------+--,--+------+--,--+------+--,-->
-                               +-tarx-+     +-tary-+     +-srcx-+
+                 +-0----+     +-0----+     +-0----+
+>>--drawBitmap(--+------+--,--+------+--,--+------+--,------------------------->
+                 +-tarx-+     +-tary-+     +-srcx-+
 
    +-0----+     +-0-----+     +-0------+
->--+------+--,--+-------+--,--+--------+--)--------------------><
+>--+------+--,--+-------+--,--+--------+--)------------------------------------><
    +-srcy-+     +-width-+     +-height-+
 
 
@@ -1966,7 +1970,7 @@ bitmap button. You can also use this method to move a bitmap or part of it.</par
 <para>Contrary to the method <link linkend="mthDisplaceBitmap">displaceBitmap</link>, which sets a permanent
 position for the bitmap, DrawBitmap immediately draws the bitmap, or part
 of it, at the specified position. If the button must be refreshed, the bitmap
-is drawn at the position set with DisplaceBitmap. DrawBitmap is used by <link linkend="mthScrolBbitmapFromTo">ScrollBitmapFromTo</link>, for example.</para>
+is drawn at the position set with DisplaceBitmap. DrawBitmap is used by <link linkend="mthScrollBbitmapFromTo">ScrollBitmapFromTo</link>, for example.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -1999,14 +2003,15 @@ to display a single image of the bitmap.
 </para></note>
 </section>
 
-<section id="mthDimBitmap"><title>DimBitmap</title>
-<indexterm><primary>DimBitmap</primary></indexterm>
+<section id="mthDimBitmap"><title>dimBitmap</title>
+<indexterm><primary>dimBitmap</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>dimBitmap</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~DimBitmap(--bmpHandle--,--width--,--height--,-->
+>>--dimBitmap(--bmpHandle--,--width--,--height--,------------------------------>
 
    +-2-----+     +-2-----+     +-10----+
->--+-------+--,--+-------+--,--+-------+--)--------------------><
+>--+-------+--,--+-------+--,--+-------+--)------------------------------------><
    +-stepx-+     +-stepy-+     +-steps-+
 
 
@@ -2041,14 +2046,14 @@ The default is 10.
 </variablelist>
 </section>
 
-<section id="mthScrolBbitmapFromTo"><title>ScrollBitmapFromTo</title>
-<indexterm><primary>ScrollBitmapFromTo</primary>
-<secondary>Button class</secondary></indexterm>
+<section id="mthScrollBbitmapFromTo"><title>scrollBitmapFromTo</title>
+<indexterm><primary>scrollBitmapFromTo</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>scrollBitmapFromTo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aButtonControl~ScrollBitmapFromTo(--fromX--,--fromY--,--toX--,--toY--,-->
+>>--scrollBitmapFromTo(--fromX--,--fromY--,--toX--,--toY--,-------------------->
 
->--stepx--,--stepy--,--delay--,--displace--)-------------------><
+>--stepx--,--stepy--,--delay--,--displace--)-----------------------------------><
 
 
 ]]>
@@ -2178,7 +2183,7 @@ within the associated bitmap button from one position to another.</para>
   linkend="chpDialogObject">object</link>. The syntax is:
 <programlisting>
 <![CDATA[
->>-newRadioButton(--id--)-----------------------------><
+>>--newRadioButton(--id--)-----------------------><
 
 ]]>
 </programlisting>
@@ -2203,6 +2208,7 @@ within the associated bitmap button from one position to another.</para>
 
 <section id="mthcheckInGroupCls"><title>checkInGroup (Class)</title>
 <indexterm><primary>checkInGroup</primary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>checkInGroup</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--checkInGroup(--dlg--,--idFirst--,--idLast--,--,--idCheck--)----------------><
@@ -2277,6 +2283,7 @@ return 0
 
 <section id="mthChecked"><title>checked</title>
 <indexterm><primary>checked</primary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>checked</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--checked--------------------------------------><
@@ -2325,11 +2332,11 @@ end
 
 
 <section id="mthGetCheckStateClsRadioButton"><title>getCheckState</title>
-<indexterm><primary>getCheckState</primary>
-<secondary>RadioButton class</secondary></indexterm>
+<indexterm><primary>getCheckState</primary><secondary>RadioButton class</secondary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>getCheckState</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCheckState----------------------------------------------------><
+>>--getCheckState--------------------------------><
 
 ]]>
 </programlisting>
@@ -2380,9 +2387,10 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <section id="mthCheck"><title>check</title>
 <indexterm><primary>check</primary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>check</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--check-----------------------------------------><
+>>--check----------------------------------------><
 
 ]]>
 </programlisting>
@@ -2395,6 +2403,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <section id="mthUncheck"><title>uncheck</title>
 <indexterm><primary>uncheck</primary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>uncheck</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--uncheck--------------------------------------><
@@ -2495,7 +2504,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </section>
 
 <section id="mthIsIndeterminate"><title>isIndeterminate</title>
-<indexterm><primary>checked</primary></indexterm>
+<indexterm><primary>isIndeterminate</primary></indexterm>
+<indexterm><primary>CheckBox class</primary><secondary>isIndeterminate</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--isIndeterminate------------------------------><
@@ -2537,11 +2547,11 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 
 <section id="mthGetCheckStateClsCheckBox"><title>getCheckState</title>
-<indexterm><primary>getCheckState</primary>
-<secondary>CheckBox class</secondary></indexterm>
+<indexterm><primary>getCheckState</primary><secondary>getCheckState class</secondary></indexterm>
+<indexterm><primary>getCheckState class</primary><secondary>getCheckState</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCheckState----------------------------------------------------><
+>>--getCheckState--------------------------------><
 
 ]]>
 </programlisting>
@@ -2602,6 +2612,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <section id="mthSetIndeterminate"><title>setIndeterminate</title>
 <indexterm><primary>setIndeterminate</primary></indexterm>
+<indexterm><primary>CheckBox class</primary><secondary>setIndeterminate</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--setIndterminate------------------------------><
@@ -2681,9 +2692,9 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </section>
 
 
-<section id="mthGBStyleEquals"><title>Style=</title>
-<indexterm><primary>Style=</primary>
-<secondary>GroupBox class</secondary></indexterm>
+<section id="mthGBStyleEquals"><title>style=</title>
+<indexterm><primary>style=</primary></indexterm>
+<indexterm><primary>GroupBox class</primary><secondary>style=</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--style=-styleKeyword--------------------------><
@@ -2693,7 +2704,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <para>
   Assigns a new text alignment to the group box.  By default the text of a group box is in the upper left
-  corner.  The alignment can also be set to the right or to the center, although this is not commonly done.
+  corner. The alignment can also be set to the right or to the center, although this is not commonly done.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
