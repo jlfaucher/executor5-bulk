@@ -251,7 +251,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetCue">setCue</link></entry>
-<entry>Sets the text for <emphasis role="italic">cue</emphasis> banner text.</entry>
+<entry>Sets the text for the <emphasis role="italic">cue</emphasis> banner.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetLimit">setLimit</link></entry>
@@ -1182,17 +1182,37 @@
     <emphasis role="italic">disableInternalResize</emphasis> method. The programmer can disable / re-enable the internal
     resizing of the edit control as often and whenver he wants.
   </para>
-  <para>
-
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
+    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
+    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operarting system where it is not supported.
+  </para>
+  <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. The following codes may be set. They
+    are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED</emphasis></term>
+      <listitem>
+      <para>
+        The request is not supported. <emphasis role="bold">Meaning:</emphasis> The method was asked to disable internal
+        resizing when it was already disabled, or asked to re-ennable the behavior when it is not disabled to begin
+        with.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_SIGNAL_REFUSED</emphasis></term>
+      <listitem>
+      <para>
+        The recipient process has refused the signal. <emphasis role="bold">Meaning:</emphasis> The method tried to
+        disable or re-enable the internal resizing, but failed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1215,20 +1235,20 @@
 <programlisting>
 <![CDATA[
 >>--noContextMenu(--+--------+--)----------------><
-                    +--type--+
+                    +--undo--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes the edit control's intenal context menu. If the context menu was removed, it can be restored.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The only argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>undo</term>
     <listitem>
     <para>
       xx
@@ -1246,16 +1266,50 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Edit controls have a built-in context menu that allows the user to move text between the edit control and the
+    clipboard. The context menu appears when the user right-clicks the control. The commands in the context menu include
+    Undo, Cut, Copy, Paste, Delete, and Select All.
+  </para>
+  <para>
+    However, if the Rexx programmer wants to use his own context menu through the <link
+    linkend="clsPopupMenu">PopupMenu</link> class, the built-in menu will prevent that. Removing the built-in menu
+    through the <emphasis role="italic">noContextMenu</emphasis> allows the programmer to replace the built-in menu with
+    their own context menu. If no context menu is supplied, there will be no context menu displayed when the user
+    right-clicks on the edit control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
+    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
+    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    syntax error is raised if this method is invoked on an operarting system where it is not supported.
+  </para>
+  <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. The following codes may be set. They
+    are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED</emphasis></term>
+      <listitem>
+      <para>
+        The request is not supported. <emphasis role="bold">Meaning:</emphasis> The method was asked to suppress the
+        edit control's context menu when it was already disabled, or asked to re-ennable the edit control's context menu
+        when it is not disabled to begin with.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_SIGNAL_REFUSED</emphasis></term>
+      <listitem>
+      <para>
+        The recipient process has refused the signal. <emphasis role="bold">Meaning:</emphasis> The method tried to
+        suppress, or re-enable, the context menu, but failed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
