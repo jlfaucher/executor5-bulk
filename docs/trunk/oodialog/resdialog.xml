@@ -106,7 +106,7 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template.  This may be numeric or <link linkend="defSymbolicId">sybmbolic</link>.
+        The resource ID of the dialog template.  This may be numeric or <link linkend="defSymbolicId">symbolic</link>.
         The resource ID is assigned to the dialog template when it was compiled.
       </para>
       </listitem></varlistentry>
@@ -139,7 +139,7 @@
   <para>
     Therefore, if the programmer over-rides the <emphasis role="italic">init</emphasis> method in the subclass of the
     <computeroutput>ResDialog</computeroutput>, care must be taken to invoke the superclass <emphasis
-    role="italic">init</emphasis>method with the correct arguments.
+    role="italic">init</emphasis> method with the correct arguments.
   </para>
   <para>
     When a <computeroutput>ResDialog</computeroutput>, or subclass, is instantiated, and the file specified in the
@@ -160,7 +160,7 @@ ctrlData.101="1"
 ctrlData.102="Please enter your password."
 ctrlData.103=""
 
-dlg = PasswordDialog~new("passwordDlg.dll", 100, ctrlData.)
+dlg = .PasswordDialog~new("passwordDlg.dll", 100, ctrlData.)
 if dlg~initCode <> 0 then do
   say 'The dialog could not be created'
   return .false
@@ -254,7 +254,7 @@ end
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template. This may be numeric or <link linkend="defSymbolicId">sybmbolic </link>.
+        The resource ID of the dialog template. This may be numeric or <link linkend="defSymbolicId">symbolic </link>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>dlgData. [optional]</term>
@@ -340,7 +340,7 @@ end
   <listitem>
   <para>
     This example creates a new dialog object using the <computeroutput>SimpleLB</computeroutput> class, which
-    subclasses the <computeroutput>RcDialog</computeroutput>. It uses the dialog defintion with symbolic ID
+    subclasses the <computeroutput>RcDialog</computeroutput>. It uses the dialog definition with symbolic ID
     <computeroutput>IDD_DIALOG1</computeroutput> in the <computeroutput>listBox.rc</computeroutput> resource script
     file.  The dialog is initialized so that the &quot;Doctor&quot; item is selected in the list box with
     symbolic ID of <computeroutput>IDC_LB</computeroutput> by using the <computeroutput>dlgData.</computeroutput> stem
