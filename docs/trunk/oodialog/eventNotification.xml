@@ -850,7 +850,8 @@ Help request:
       <varlistentry><term>methodName [required]</term>
       <listitem>
       <para>
-        The name of the method that is to be invoked when the key press event happens.
+        The name of the method that is to be invoked when the key press event happens. This argument can not be the 
+        empty string 
       </para>
       </listitem></varlistentry>
       <varlistentry><term>keys [required]</term>
@@ -858,8 +859,8 @@ Help request:
       <para>
         The key (or keys) for which the key press event is to be connected. A single key or multiple keys can be
         specified. A range of keys can be used.  Each single key or range of keys is separated by a comma.  A range of
-        keys is denoted by using the dash character &quot;-&quot;.  White space within the
-        <computeroutput>keys</computeroutput> argument is ignored.
+        keys is denoted by using the dash character &quot;-&quot;.  White space within the <emphasis 
+        role="italic">keys</emphasis> argument is ignored. This argument can not be the empty string.
       </para>
       <para>
         The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
@@ -898,10 +899,13 @@ Help request:
           </para>
           </listitem></varlistentry>
           <varlistentry><term>ALPHANUMERIC</term>
-          <listitem><para>The keys A through Z and 0 through 9.
-          </para></listitem></varlistentry>
-        </variablelist>
-      </para>
+          <listitem>
+          <para>
+            The keys A through Z and 0 through 9. 
+          </para> 
+          </listitem></varlistentry> 
+        </variablelist> 
+      </para> 
       <para>
         <emphasis role="bold">Note</emphasis> that case is insignificant for these keywords as is the order of the
         keywords. A keyword not in the list will result in a return of -9. However, if the argument contains other valid
@@ -1023,20 +1027,22 @@ Help request:
       <para>
         An incorrect format for the <computeroutput>keys</computeroutput>.  Note that it is possible to get a return of
         -9 but still have some keys connected. For instance in the following example the C and D keys would be connected
-        and the filter applied. The &quot;"dog&quot;" token would result in -1 being returned:
-  <programlisting> <![CDATA[
+        and the filter applied. The &quot;"dog&quot;" token would result in -9 being returned:
+        
+<programlisting> 
+<![CDATA[
 
-    keys = .VK~C ", dog," .VK~D
-    ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
-    say 'Got a return of:' ret
-    say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
+  keys = .VK~C ", dog," .VK~D
+  ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
+  say 'Got a return of:' ret
+  say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
 
-    -- The output would be:
-    Got a return of: -1
-    Have connection to onAltCD? 1
+  -- The output would be:
+  Got a return of: -1
+  Have connection to onAltCD? 1
 
-  ]]>
-  </programlisting>
+]]>
+</programlisting>
 
       </para>
       </listitem></varlistentry>
