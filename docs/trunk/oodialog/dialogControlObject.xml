@@ -1421,10 +1421,197 @@ MyDialog~newCheckBox(IDC_CHK_VERIFY)~unCheck
 
 <section id="eventDialogControl"><title>Connect Event Methods</title>
 <indexterm><primary>connect event methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
-<para>The following methods connect dialog control events to methods the
-programmer defines in the parent dialog class.
+<secondary>dialog control object</secondary></indexterm>
+<para>
+  The following methods connect generic dialog control <link linkend="ovvEvents">event</link> notifications to a method
+  defined by the programmer to a method in the parent Rexx dialog.
 </para>
+
+<section id="mthConnectKeyPressDialogControl"><title>connectKeyPress</title>
+<indexterm><primary>connectKeyPress</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control ojbect</primary><secondary>connectKeyPress</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectKeyPress(--msgToRaise--,--keys--+-----------+--)-----><
+                                           +-,-filter--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectKeyPress</emphasis> method connects a key press <link
+  linkend="ovvEvents">event</link> notification with a method in the Rexx dialog. A single key or multiple keys can be
+  connected to the same method.  Multiple methods can be connected for key press events, but only 1 method can be
+  connected to any single key.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>methodName [required]</term>
+      <listitem>
+      <para>
+        The name of the method that is to be invoked when the key press event happens.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>keys [required]</term>
+      <listitem>
+      <para>
+        The key (or keys) for which the key press event is to be connected. A single key or multiple keys can be
+        specified. A range of keys can be used.  Each single key or range of keys is separated by a comma.  A range of
+        keys is denoted by using the dash character &quot;-&quot;.  White space within the
+        <computeroutput>keys</computeroutput> argument is ignored.
+      </para>
+      <para>
+        The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
+        are 0 through 255. There are some integer values between 0 and 255 that do not have a vitural key assigned to
+        them. For example, 0, 7, 10, 11, and 255 are not used. The <link
+        linkend="clsVK">VK</link> class can be used to make a program more readable. The class covers every key Microsoft
+        defines.
+      </para>
+      <para>
+        In addition, there are a few keywords that can be used to specify some common key ranges. These keywords are:
+        <variablelist>
+          <varlistentry><term>ALL</term>
+          <listitem>
+          <para>
+            All keys.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FKEYS</term>
+          <listitem>
+          <para>
+            All Function keys, other than F1.  (In Windows the F1 key is the help key and the <link
+            linkend="mthConnectHelp">connectHelp</link> method should be used for F1.)
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ALPHA</term>
+          <listitem>
+          <para>
+            The keys A though Z.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NUMERIC</term>
+          <listitem>
+          <para>
+            The keys 0 through 9.  Note that these are the normal number keys, not the keypad numbers on an enhanced
+            keyboard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ALPHANUMERIC</term>
+          <listitem><para>The keys A through Z and 0 through 9.
+          </para></listitem></varlistentry>
+        </variablelist>
+      </para>
+      <para>
+        <emphasis role="bold">Note</emphasis> that case is insignificant for these keywords as is the order of the
+        keywords. A keyword not in the list will result in a return of -1. However, if the argument contains other valid
+        key tokens, those keys will be connected to the method.  If there are no other valid key tokens, then no
+        connection is made.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>filter [optional]</term>
+      <listitem>
+      <para>
+        A (simplistic) filter that is applied to the key press event for the key(s) specified.  The filter is a string of
+        keywords separated by blanks. (Case is not significant, neither is the order of the words.  Any words other than
+        the specified keywords are ignored.) The possible keywords are: <computeroutput>SHIFT, CONTROL, ALT, AND, NONE,
+        VIRTUAL.</computeroutput>
+      </para>
+      <para>
+        The VIRTUAL keyword can be abbreviated to VIRT if desired. The VIRTUAL keyword effects how the test for the
+        shift, control, and alt key is performed. By default the physical state of the keyboard is checked to see if the
+        control, alt, or shift key is depressed. However, it is common in Windows to use keystroke programs that inject
+        keystrokes into other application windows. Testing the physical state of the keyboard will not detect
+        combination keystrokes like Ctrl-S, Alt-L, etc., that are inserted by keystroke programs because the physical
+        state of the modifier keys control and alt will not be depressed. If the VIRTUAL keyword is used, the test for
+        the modifier keys being down will be altered in a way that will detect if the virtual state of the key is down.
+        This test will detect key events inserted into the Rexx application by third party keystroke programs.
+      </para>
+      <para>
+        Shift, control, and alt specify that the corresponding key must be down at the time of the key press event. These
+        keywords are combined in a boolean expression.  The default is an OR expression. If the AND keyword is present
+        then the boolean expression is an AND expression. If the NONE keyword is used, it means that none of the shift,
+        control, or alt keys can be down at the time of the key press event.  (When NONE is used, all other words,
+        except VIRTUAL, in the string are ignored.)
+      </para>
+      <para>
+        Some examples may make this more clear:
+  <programlisting>
+  <![CDATA[
+
+  ::method initDialog
+
+    editControl = self~newEdit(IDC_EDIT1)
+
+    -- Using the below, the onAltCD method would be invoked when the user types
+    -- Alt-Shift-C or Alt-Shift-D when the edit control has the focus.  But the
+    -- method would not be invoked for Alt-C or Shift-D (or any other key press
+    -- event.)
+
+    keys = .VK~C "," .VK~D
+    editControl~connectKeyPress(onAltCD, keys, "ALT AND SHIFT")
+
+    -- The below would invoke the onAltCD method any time a C or a D was typed,
+    -- in the edit control, with either the Alt or the Control key down.  This
+    -- would include Alt-C, Alt-Shift-C, Ctrl-Alt-Shift-C, etc..
+
+    editControl~connectKeyPress(onAltCD, keys, "ALT CONTROL")
+
+    -- The below would invoke the onAltCD method only when Alt-C or Alt-D was
+    -- typed.
+
+    editControl~connectKeyPress(onAltCD, keys, "ALT AND")
+
+    -- The below would invoke the onF4 method only when the F4 key was pressed,
+    -- when the edit control has the focus, by itself. Alt-F4, Ctrl-F4, etc.,
+    -- would not invoke the method.
+
+    editControl~connectKeyPress(onF4, .VK~F4, "NONE")
+  ]]>
+  </programlisting>
+
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog control ojbect::connectKeyPress() -->
 
 <section id="mthConnectKeyPressDialogControl"><title>connectKeyPress</title>
 <indexterm><primary>connectKeyPress</primary>

@@ -836,16 +836,211 @@ Help request:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectKeyPress</emphasis> method connects a key press event with a method in the Rexx
-  dialog. A single key or multiple keys can be connected to the same method.  Multiple methods can be connected
-  for key press events, but only 1 method can be connected to any single key.
+  The <emphasis role="italic">connectKeyPress</emphasis> method connects a key press <link
+  linkend="ovvEvents">event</link> notification with a method in the Rexx dialog. A single key or multiple keys can be
+  connected to the same method.  Multiple methods can be connected for key press events, but only 1 method can be
+  connected to any single key.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>methodName [required]</term>
+      <listitem>
+      <para>
+        The name of the method that is to be invoked when the key press event happens.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>keys [required]</term>
+      <listitem>
+      <para>
+        The key (or keys) for which the key press event is to be connected. A single key or multiple keys can be
+        specified. A range of keys can be used.  Each single key or range of keys is separated by a comma.  A range of
+        keys is denoted by using the dash character &quot;-&quot;.  White space within the
+        <computeroutput>keys</computeroutput> argument is ignored.
+      </para>
+      <para>
+        The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
+        are 0 through 255. There are some integer values between 0 and 255 that do not have a vitural key assigned to
+        them. For example, 0, 7, 10, 11, and 255 are not used. The <link
+        linkend="clsVK">VK</link> class can be used to make a program more readable. The class covers every key Microsoft
+        defines.
+      </para>
+      <para>
+        In addition, there are a few keywords that can be used to specify some common key ranges. These keywords are:
+        <variablelist>
+          <varlistentry><term>ALL</term>
+          <listitem>
+          <para>
+            All keys.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FKEYS</term>
+          <listitem>
+          <para>
+            All Function keys, other than F1.  (In Windows the F1 key is the help key and the <link
+            linkend="mthConnectHelp">connectHelp</link> method should be used for F1.)
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ALPHA</term>
+          <listitem>
+          <para>
+            The keys A though Z.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NUMERIC</term>
+          <listitem>
+          <para>
+            The keys 0 through 9.  Note that these are the normal number keys, not the keypad numbers on an enhanced
+            keyboard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ALPHANUMERIC</term>
+          <listitem><para>The keys A through Z and 0 through 9.
+          </para></listitem></varlistentry>
+        </variablelist>
+      </para>
+      <para>
+        <emphasis role="bold">Note</emphasis> that case is insignificant for these keywords as is the order of the
+        keywords. A keyword not in the list will result in a return of -1. However, if the argument contains other valid
+        key tokens, those keys will be connected to the method.  If there are no other valid key tokens, then no
+        connection is made.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>filter [optional]</term>
+      <listitem>
+      <para>
+        A (simplistic) filter that is applied to the key press event for the key(s) specified.  The filter is a string of
+        keywords separated by blanks. (Case is not significant, neither is the order of the words.  Any words other than
+        the specified keywords are ignored.) The possible keywords are: <computeroutput>SHIFT, CONTROL, ALT, AND, NONE,
+        VIRTUAL.</computeroutput>
+      </para>
+      <para>
+        The VIRTUAL keyword can be abbreviated to VIRT if desired. The VIRTUAL keyword effects how the test for the
+        shift, control, and alt key is performed. By default the physical state of the keyboard is checked to see if the
+        control, alt, or shift key is depressed. However, it is common in Windows to use keystroke programs that inject
+        keystrokes into other application windows. Testing the physical state of the keyboard will not detect
+        combination keystrokes like Ctrl-S, Alt-L, etc., that are inserted by keystroke programs because the physical
+        state of the modifier keys control and alt will not be depressed. If the VIRTUAL keyword is used, the test for
+        the modifier keys being down will be altered in a way that will detect if the virtual state of the key is down.
+        This test will detect key events inserted into the Rexx application by third party keystroke programs.
+      </para>
+      <para>
+        Shift, control, and alt specify that the corresponding key must be down at the time of the key press event. These
+        keywords are combined in a boolean expression.  The default is an OR expression. If the AND keyword is present
+        then the boolean expression is an AND expression. If the NONE keyword is used, it means that none of the shift,
+        control, or alt keys can be down at the time of the key press event.  (When NONE is used, all other words,
+        except VIRTUAL, in the string are ignored.)
+      </para>
+      <para>
+        Some examples may make this more clear:
+  <programlisting>
+  <![CDATA[
+
+  ::method initDialog
+
+    -- Using the below, the onAltCD method would be invoked when the user types
+    -- Alt-Shift-C or Alt-Shift-D.  But the method would not be invoked for Alt-C
+    -- or Shift-D (or any other key press event.)
+
+    keys = .VK~C "," .VK~D
+    self~connectKeyPress(onAltCD, keys, "ALT AND SHIFT")
+
+    -- The below would invoke the onAltCD method any time a C or a D was typed
+    -- with either the Alt or the Control key down.  This would include Alt-C,
+    -- Alt-Shift-C, Ctrl-Alt-Shift-C, etc..
+
+    self~connectKeyPress(onAltCD, keys, "ALT CONTROL")
+
+    -- The below would invoke the onAltCD method only when Alt-C or Alt-D was
+    -- typed.
+
+    self~connectKeyPress(onAltCD, keys, "ALT AND")
+
+    -- The below would invoke the onF4 method only when the F4 key was pressed by
+    -- itself. Alt-F4, Ctrl-F4, etc., would not invoke the method.
+
+    self~connectKeyPress(onF4, .VK~F4, "NONE")
+  ]]>
+  </programlisting>
+
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        A problem with one of the arguments, such as skipping a required argument, using an incorrect format for the
+        <computeroutput>keys </computeroutput> or the <computeroutput>filter</computeroutput> arguments, etc..  Note that
+        it is possible to get a return of -1 but still have some keys connected. For instance in the following example
+        the C and D keys would be connected and the filter applied. The &quot;"dog&quot;" token would result in -1 being
+        returned:
+  <programlisting> <![CDATA[
+
+    keys = .VK~C ", dog," .VK~D
+    ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
+    say 'Got a return of:' ret
+    say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
+
+    -- The output would be:
+    Got a return of: -1
+    Have connection to onAltCD? 1
+
+  ]]>
+  </programlisting>
+
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The underlying mechanism in the Windows API that is used to capture key events failed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-4</term>
+      <listitem>
+      <para>
+        An (internal) problem with the dialog window.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-5</term>
+      <listitem>
+      <para>
+        Memory allocation error in the underlying Windows API.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-6</term>
+      <listitem>
+      <para>
+        The maximum number of connections has been reached.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-7</term>
+      <listitem>
+      <para>
+        The <computeroutput>methodName</computeroutput> method is already connected to a key down event for this dialog.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+  <listitem>
   <para>
     Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
     method can be used. That means it can be used in <link linkend="mthInitDialog">initDialog</link> or any time
@@ -859,6 +1054,12 @@ Help request:
     method) will capture any key press event when the dialog is the active window. The method of the dialg control
     object will only capture a key press when the control has the keyboard focus.
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
   <para>
     In general error return codes are used to indicate incorrect usage rather than raised syntax conditions.
   </para>
@@ -870,307 +1071,120 @@ Help request:
     Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
     most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message sent to the underlying dialog
     for a key stroke event.
-  </para> </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>methodName [required]</term>
-    <listitem>
-    <para>
-      The name of the method that is to be invoked when the key press event happens.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>keys [required]</term>
-    <listitem>
-    <para>
-      The key (or keys) for which the key press event is to be connected. A single key or multiple keys can be
-      specified. A range of keys can be used.  Each single key or range of keys is separated by a comma.  A range of
-      keys is denoted by using the dash character &quot;-&quot;.  White space within the
-      <computeroutput>keys</computeroutput> argument is ignored.
-    </para>
-    <para>
-      The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
-      are 0 through 255. There are some integer values between 0 and 255 that do not have a vitural key assigned to
-      them. For example, 0, 7, 10, 11, and 255 are not used. The <link
-      linkend="clsVK">VK</link> class can be used to make a program more readable. The class covers every key Microsoft
-      defines.
-    </para>
-    <para>
-      <emphasis role="bold">Note</emphasis>that the programmer can use the <link linkend="defWindowsDoc">Windows
-      documentation</link> and <link linkend="defPlatformSDK">Platform SDK</link> to obtain the full list of the virtual
-      key numbers.
-    </para>
-    <para>
-      In addition, there are a few keywords that can be used to specify some common key ranges. These keywords are:
-    <variablelist>
-      <varlistentry><term>ALL</term>
-      <listitem>
-      <para>
-        All keys.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>FKEYS</term>
-      <listitem>
-      <para>
-        All Function keys, other than F1.  (In Windows the F1 key is the help key and the <link
-        linkend="mthConnectHelp">connectHelp</link> method should be used for F1.)
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>ALPHA</term>
-      <listitem>
-      <para>
-        The keys A though Z.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>NUMERIC</term>
-      <listitem>
-      <para>
-        The keys 0 through 9.  Note that these are the normal number keys, not the keypad numbers on an enhanced
-        keyboard.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>ALPHANUMERIC</term>
-      <listitem><para>The keys A through Z and 0 through 9.
-      </para></listitem></varlistentry>
-    </variablelist>
-    </para>
-    <para>
-      <emphasis role="bold">Note</emphasis> that case is insignificant for these keywords as is the order of the
-      keywords. A keyword not in the list will result in a return of -1. However, if the argument contains other valid
-      key tokens, those keys will be connected to the method.  If there are no other valid key tokens, then no
-      connection is made.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>filter [optional]</term>
-    <listitem>
-    <para>
-      A (simplistic) filter that is applied to the key press event for the key(s) specified.  The filter is a string of
-      keywords separated by blanks. (Case is not significant, neither is the order of the words.  Any words other than
-      the specified keywords are ignored.) The possible keywords are:
-      <computeroutput>SHIFT, CONTROL, ALT, AND, NONE.</computeroutput>
-    </para>
-    <para>
-      Shift, control, and alt specify that the corresponding key must be down at the time of the key press event. These
-      keywords are combined in a boolean expression.  The default is an OR expression. If the AND keyword is present
-      then the boolean expression is an AND expression. If the NONE keyword is used, it means that none of the shift,
-      control, or alt keys can be down at the time of the key press event.  (When NONE is used, all other words in the
-      string are ignored.)
-    </para>
-    <para>
-      Some examples may make this more clear:
-<programlisting>
-<![CDATA[
-
-::method initDialog
-
-  -- Using the below, the onAltCD method would be invoked when the user types
-  -- Alt-Shift-C or Alt-Shift-D.  But the method would not be invoked for Alt-C
-  -- or Shift-D (or any other key press event.)
-
-  keys = .VK~C "," .VK~D
-  self~connectKeyPress(onAltCD, keys, "ALT AND SHIFT")
-
-  -- The below would invoke the onAltCD method any time a C or a D was typed
-  -- with either the Alt or the Control key down.  This would include Alt-C,
-  -- Alt-Shift-C, Ctrl-Alt-Shift-C, etc..
-
-  self~connectKeyPress(onAltCD, keys, "ALT CONTROL")
-
-  -- The below would invoke the onAltCD method only when Alt-C or Alt-D was
-  -- typed.
-
-  self~connectKeyPress(onAltCD, keys, "ALT AND")
-
-  -- The below would invoke the onF4 method only when the F4 key was pressed by
-  -- itself. Alt-F4, Ctrl-F4, etc., would not invoke the method.
-
-  self~connectKeyPress(onF4, .VK~F4, "NONE")
-]]>
-</programlisting>
-
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      Success.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      A problem with one of the arguments, such as skipping a required argument, using an incorrect format for the
-      <computeroutput>keys </computeroutput> or the <computeroutput>filter</computeroutput> arguments, etc..  Note that
-      it is possible to get a return of -1 but still have some keys connected. For instance in the following example
-      the C and D keys would be connected and the filter applied. The &quot;"dog&quot;" token would result in -1 being
-      returned:
-<programlisting> <![CDATA[
-
-  keys = .VK~C ", dog," .VK~D
-  ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
-  say 'Got a return of:' ret
-  say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
-
-  -- The output would be:
-  Got a return of: -1
-  Have connection to onAltCD? 1
-
-]]>
-</programlisting>
-
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-2</term>
-    <listitem>
-    <para>
-      The underlying mechanism in the Windows API that is used to capture key events failed.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-4</term>
-    <listitem>
-    <para>
-      An (internal) problem with the dialog window.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-5</term>
-    <listitem>
-    <para>
-      Memory allocation error in the underlying Windows API.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-6</term>
-    <listitem>
-    <para>
-      The maximum number of connections has been reached.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-7</term>
-    <listitem>
-    <para>
-      The <computeroutput>methodName</computeroutput> method is already connected to a key down event for this dialog.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
   <listitem>
   <para>
     The ooDialog method connected to the key press event will receive the following five arguments in the order listed:
-  <variablelist>
-    <varlistentry><term>keyCode</term>
-    <listitem>
-    <para>
-      The numeric code of the key pressed.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>shift</term>
-    <listitem>
-    <para>
-      A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
-      be true if a shift key was down and false if the shift key was not down.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>control</term>
-    <listitem>
-    <para>
-      True if a control key was down at the time of the key press, false if it was not.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>alt</term>
-    <listitem>
-    <para>
-      True if an alt key was down at the time of the key press, false if it was not.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>extraInfo</term>
-    <listitem>
-    <para>
-      This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
-      time of a key press event. The string will contain some combination of these keywords
     <variablelist>
-      <varlistentry><term>numOn</term>
+      <varlistentry><term>keyCode</term>
       <listitem>
       <para>
-        Num Lock was on at the time of the key press event.
+        The numeric code of the key pressed.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>numOff</term>
+      <varlistentry><term>shift</term>
       <listitem>
       <para>
-        Num Lock was off.
+        A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
+        be true if a shift key was down and false if the shift key was not down.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>capsOn</term>
+      <varlistentry><term>control</term>
       <listitem>
       <para>
-        Caps Lock was on at the time of the key press event.
+        True if a control key was down at the time of the key press, false if it was not.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>capsOff</term>
+      <varlistentry><term>alt</term>
       <listitem>
       <para>
-        Caps Lock was off.
+        True if an alt key was down at the time of the key press, false if it was not.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>scrollOn</term>
+      <varlistentry><term>extraInfo</term>
       <listitem>
       <para>
-        Scroll Lock was on at the time of the key press event.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>scrollOff</term>
-      <listitem>
-      <para>
-        Scroll Lock was off.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>lShift</term>
-      <listitem>
-      <para>
-        The left shift key was down at the time of the key press event.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>rShift</term>
-      <listitem>
-      <para>
-        The right shift key was down.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>lControl</term>
-      <listitem>
-      <para>
-        The left control key was down at the time of the key press event.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>rControl</term>
-      <listitem>
-      <para>
-        The right control key was down.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>lAlt</term>
-      <listitem>
-      <para>
-        The left alt key was down at the time of the key press event.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>rAlt</term>
-      <listitem>
-      <para>
-        The right alt key was down.
+        This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
+        time of a key press event. The string will contain some combination of these keywords
+        <variablelist>
+          <varlistentry><term>numOn</term>
+          <listitem>
+          <para>
+            Num Lock was on at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>numOff</term>
+          <listitem>
+          <para>
+            Num Lock was off.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>capsOn</term>
+          <listitem>
+          <para>
+            Caps Lock was on at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>capsOff</term>
+          <listitem>
+          <para>
+            Caps Lock was off.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>scrollOn</term>
+          <listitem>
+          <para>
+            Scroll Lock was on at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>scrollOff</term>
+          <listitem>
+          <para>
+            Scroll Lock was off.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>lShift</term>
+          <listitem>
+          <para>
+            The left shift key was down at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rShift</term>
+          <listitem>
+          <para>
+            The right shift key was down.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>lControl</term>
+          <listitem>
+          <para>
+            The left control key was down at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rControl</term>
+          <listitem>
+          <para>
+            The right control key was down.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>lAlt</term>
+          <listitem>
+          <para>
+            The left alt key was down at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rAlt</term>
+          <listitem>
+          <para>
+            The right alt key was down.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
-    </para></listitem></varlistentry>
-  </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry id="connectKeyPressExample"><term><emphasis role="bold">Example:</emphasis></term>
@@ -1243,11 +1257,66 @@ Help request:
 </programlisting>
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+    The single arguments is;
+    <variablelist>
+      <varlistentry><term>methodName [required]</term>
+      <listitem>
+      <para>
+        The name of the method that is to be invoked when the key press event happens.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The underlying mechanism in the Windows API that is used to capture key events failed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-4</term>
+      <listitem>
+      <para>
+        An (internal) problem with the dialog window.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-5</term>
+      <listitem>
+      <para>
+        Memory allocation error in the underlying Windows API.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-6</term>
+      <listitem>
+      <para>
+        The maximum number of connections has been reached.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-7</term>
+      <listitem>
+      <para>
+        The <computeroutput>methodName</computeroutput> method is already connected to a key down event for this dialog.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+  <listitem>
   <para>
     Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
     method can be used. That means it can be used in <link linkend="mthInitDialog">initDialog</link> or any time
@@ -1262,6 +1331,18 @@ Help request:
     object will only capture a F key press when the control has the keyboard focus.
   </para>
   <para>
+    Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
+    most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message
+    sent to the underlying dialog for a key stroke event.
+  </para>
+  </listitem>
+  </varlistentry>
+  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
     In general error return codes are used to indicate incorrect usage rather than raised syntax conditions.
   </para>
   <para>
@@ -1272,66 +1353,9 @@ Help request:
     Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
     most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message
     sent to the underlying dialog for a key stroke event.
-  </para> </listitem>
+  </para>
+  </listitem>
   </varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single arguments is;
-  <variablelist>
-    <varlistentry><term>methodName [required]</term>
-    <listitem>
-    <para>
-      The name of the method that is to be invoked when the key press event happens.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      Success.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-2</term>
-    <listitem>
-    <para>
-      The underlying mechanism in the Windows API that is used to capture key events failed.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-4</term>
-    <listitem>
-    <para>
-      An (internal) problem with the dialog window.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-5</term>
-    <listitem>
-    <para>
-      Memory allocation error in the underlying Windows API.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-6</term>
-    <listitem>
-    <para>
-      The maximum number of connections has been reached.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-7</term>
-    <listitem>
-    <para>
-      The <computeroutput>methodName</computeroutput> method is already connected to a key down event for this dialog.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
