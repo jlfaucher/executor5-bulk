@@ -904,7 +904,7 @@ Help request:
       </para>
       <para>
         <emphasis role="bold">Note</emphasis> that case is insignificant for these keywords as is the order of the
-        keywords. A keyword not in the list will result in a return of -1. However, if the argument contains other valid
+        keywords. A keyword not in the list will result in a return of -9. However, if the argument contains other valid
         key tokens, those keys will be connected to the method.  If there are no other valid key tokens, then no
         connection is made.
       </para>
@@ -982,30 +982,6 @@ Help request:
         Success.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-      <para>
-        A problem with one of the arguments, such as skipping a required argument, using an incorrect format for the
-        <computeroutput>keys </computeroutput> or the <computeroutput>filter</computeroutput> arguments, etc..  Note that
-        it is possible to get a return of -1 but still have some keys connected. For instance in the following example
-        the C and D keys would be connected and the filter applied. The &quot;"dog&quot;" token would result in -1 being
-        returned:
-  <programlisting> <![CDATA[
-
-    keys = .VK~C ", dog," .VK~D
-    ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
-    say 'Got a return of:' ret
-    say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
-
-    -- The output would be:
-    Got a return of: -1
-    Have connection to onAltCD? 1
-
-  ]]>
-  </programlisting>
-
-      </para>
-      </listitem></varlistentry>
       <varlistentry><term>-2</term>
       <listitem>
       <para>
@@ -1036,6 +1012,34 @@ Help request:
         The <computeroutput>methodName</computeroutput> method is already connected to a key down event for this dialog.
       </para>
       </listitem></varlistentry>
+      <varlistentry><term>-8</term>
+      <listitem>
+      <para>
+        The <computeroutput>filter</computeroutput> argument is not correct.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-9</term>
+      <listitem>
+      <para>
+        An incorrect format for the <computeroutput>keys</computeroutput>.  Note that it is possible to get a return of
+        -9 but still have some keys connected. For instance in the following example the C and D keys would be connected
+        and the filter applied. The &quot;"dog&quot;" token would result in -1 being returned:
+  <programlisting> <![CDATA[
+
+    keys = .VK~C ", dog," .VK~D
+    ret = self~connectKeyPress('onAltCD', keys, "ALT AND SHIFT")
+    say 'Got a return of:' ret
+    say "Have connection to onAltCD?" self~hasKeyPressConnection('onAltCD')
+
+    -- The output would be:
+    Got a return of: -1
+    Have connection to onAltCD? 1
+
+  ]]>
+  </programlisting>
+
+      </para>
+      </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -1052,7 +1056,7 @@ Help request:
     The dialog control object also has a <link linkend="mthConnectKeyPressDialogcontrol">connectKeyPress</link>()
     method.  It is important to note this distinction between the two methods.  The method of the dialog object (this
     method) will capture any key press event when the dialog is the active window. The method of the dialg control
-    object will only capture a key press when the control has the keyboard focus.
+    object will only capture a key press when the specific dialog control has the keyboard focus.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
@@ -1061,7 +1065,9 @@ Help request:
     This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
   </para>
   <para>
-    In general error return codes are used to indicate incorrect usage rather than raised syntax conditions.
+    In general error return codes are used to indicate incorrect usage rather than raised syntax conditions. However,
+    syntax errors are raised for missing required arguments, using the empty string for required arguments, or invoking
+    this method before the <link linkend="ovvUnderlying">underlying</link> dialog is created.
   </para>
   <para>
     If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
@@ -1069,8 +1075,8 @@ Help request:
   </para>
   <para>
     Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
-    most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message sent to the underlying dialog
-    for a key stroke event.
+    most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message
+    sent to the underlying dialog for a key stroke event.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
