@@ -821,14 +821,14 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>cChars</term>
+      <varlistentry><term>cChars [required]</term>
       <listitem>
       <para>
         The number of characters to scroll hozizontally. Positive numbers scroll the text to the left and negative
         numbers scroll the text to the right
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>cLines</term>
+      <varlistentry><term>cLines [required]</term>
       <listitem>
       <para>
         The number of lines to scroll vertically. Positive numbers scroll the text up and negative numbers scrol the
@@ -849,7 +849,7 @@
   <listitem>
   <para>
     The edit control does not scroll vertically past the last line of text. If the current line, plus the number of
-    lines specified by <emphasis role="italic">cLines</emphasis>, exceeds the total number of lines in the edit control,
+    lines specified by <emphasis role="italic">cLines</emphasis>, exceed the total number of lines in the edit control,
     the last line of the edit control is scrolled to bottom of the edit control. The <emphasis
     role="italic">lineScroll</emphasis> method can, however, be used to scroll horizontally past the last character of a
     line, but it will not scroll past the width of the longest line in the edit control
@@ -909,6 +909,52 @@
 </variablelist>
 </section>  <!-- End Edit::canUndo() -->
 
+<section id="mthUndo"><title>undo</title>
+<indexterm><primary>undo</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>undo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--undo-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Undoes the last edit control operation in the edit control's undo queue.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arugments to the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is always <computeroutput>.true</computeroutput> from a single-line edit control. For a multiline edit
+    control, the return is <computeroutput>.true</computeroutput> if the operation succeeded, otherwise
+    <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    As long as there is no intervening edit operation, an undo operation can also be undone. For example you could
+    restore some deleted text with the first invocation of the <emphasis role="italic">undo</emphasis> method, and then
+    remove the text again with a second invocation of the <emphasis role="italic">undo</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::undo() -->
+
+
 <section id="mthClearText"><title>clearText</title>
 <indexterm><primary>clearText</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>clearText</secondary></indexterm>
@@ -956,7 +1002,7 @@
 </programlisting>
 
 <para>
-  Copies the currently selected text to the clipboard in text format.
+  Copies the currently selected text in the edit control to the clipboard, in text format.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -973,6 +1019,41 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Edit::copyText() -->
+
+<section id="mthPasteText"><title>pasteText</title>
+<indexterm><primary>pasteText</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>pasteText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--pasteText------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Copies the current content of the clipboard to the edit control at the current caret position.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arugments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The paste operation only ocurrs if the current content of the clipboard is in text format.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::pasteText() -->
 
 <section id="mthCutText"><title>cutText</title>
 <indexterm><primary>cutText</primary></indexterm>
@@ -1149,7 +1230,7 @@
 <para>
   The edit control, internally, resizes itself in response to its parent dialog being resized.  There are times when
   this behavior may not be desired. The <emphasis role="italic">disableInternalResize</emphasis> method can be used to
-  disable that behavior.
+  disable the behavior.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1218,9 +1299,17 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    The <computeroutput>samples/oodialog/dlgAreaUDemoTwo.rex</computeroutput> example program shows a resizale dialog.
+    In this example, the program waits until the user is finished sizing the dialog before it updates the size and
+    position of the dialog controls. The eliminates the flicker seen when the dialog controls are resized continually as
+    the dialog is resized. In this program, the edit control has its internal resizing disabled, since it defeats the
+    purpose of the program:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+
+  self~newEdit(IDC_EDIT)~disableInternalResize
 
 ]]>
 </programlisting>
@@ -1247,20 +1336,21 @@
   <listitem>
   <para>
     The only argument is:
-  <variablelist>
-    <varlistentry><term>undo</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    <variablelist>
+      <varlistentry><term>undo [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">undo</emphasis> is <computeroutput>.true</computeroutput> the edit control's context
+        menu is restored. If <computeroutput>.false</computeroutput> the context menu is removed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    <computeroutput>.true</computeroutput> on success, otherwise <computeroutput>.false</computeroutput>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1274,8 +1364,8 @@
     However, if the Rexx programmer wants to use his own context menu through the <link
     linkend="clsPopupMenu">PopupMenu</link> class, the built-in menu will prevent that. Removing the built-in menu
     through the <emphasis role="italic">noContextMenu</emphasis> allows the programmer to replace the built-in menu with
-    their own context menu. If no context menu is supplied, there will be no context menu displayed when the user
-    right-clicks on the edit control.
+    their own context menu. If the context menu is removed and the programmer does not supply a context menu, then no
+    context menu is displayed when the user right-clicks on the edit control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1295,180 +1385,57 @@
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED</emphasis></term>
       <listitem>
       <para>
-        The request is not supported. <emphasis role="bold">Meaning:</emphasis> The method was asked to suppress the
-        edit control's context menu when it was already disabled, or asked to re-ennable the edit control's context menu
-        when it is not disabled to begin with.
+        The request is not supported. <emphasis role="bold">Meaning:</emphasis> The method was asked to remove the edit
+        control's context menu when it was already removed, or asked to restore the edit control's context menu when it
+        was not removed to begin with.
       </para>
       </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">ERROR_SIGNAL_REFUSED</emphasis></term>
       <listitem>
       <para>
         The recipient process has refused the signal. <emphasis role="bold">Meaning:</emphasis> The method tried to
-        suppress, or re-enable, the context menu, but failed.
+        remove, or restore, the context menu, but failed.  This is unlikely.
       </para>
       </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
 </section>  <!-- End Edit::noContextMenu() -->
-
-<section id="mthPasteText"><title>pasteText</title>
-<indexterm><primary>pasteText</primary></indexterm>
-<indexterm><primary>Edit class</primary><secondary>pasteText</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--pasteText(--+--------+--)--------------------><
-                +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End Edit::pasteText() -->
-
-<section id="mthUndo"><title>undo</title>
-<indexterm><primary>undo</primary></indexterm>
-<indexterm><primary>Edit class</primary><secondary>undo</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--undo(--+--------+--)-------------------------><
-           +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End Edit::undo() -->
-
 
 <section id="mthEnsureCaretVisibility"><title>ensureCaretVisibility</title>
 <indexterm><primary>ensureCaretVisibility</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>ensureCaretVisibility</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--ensureCaretVisibility------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The ensureCaretVisibility method scrolls the edit
-control until the caret (cursor) is visible.</para>
+<para>
+  Scrolls the position of the caret so tha it is visible in the edit control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>0 if the object is associated with an existing edit control.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Edit::ensureCaretVisibility() -->
 
 <section id="mthFirstVisibleLine"><title>firstVisibleLine</title>
 <indexterm><primary>firstVisibleLine</primary></indexterm>
@@ -1482,7 +1449,7 @@ control until the caret (cursor) is visible.</para>
 
 <para>
   Retrieves the index of the first visible line in a multiline edit control or the first visible character in a
-  single-line edit contrl.
+  single-line edit control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1494,7 +1461,7 @@ control until the caret (cursor) is visible.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The index of the first visible line or first visible character depending on the top of the edit control
+    The index of the first visible line or first visible character depending on the type of the edit control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1527,88 +1494,139 @@ control until the caret (cursor) is visible.</para>
 </variablelist>
 </section>  <!-- End Edit::firstVisibleLine() -->
 
-
 <section id="mthIsModified"><title>isModified</title>
 <indexterm><primary>isModified</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>isModified</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--isModified-----------------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The isModified method retrieves information on
-whether the edit control has been modified.</para>
+<para>
+  Determines if the text in the edit control has been modified.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>1</term>
-<listitem><para>The text in the edit control has been altered.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>For all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
   <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the edit control's modified flag is set, otherwise
+    <computeroutput>.false</computeroutput> .
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system automatically sets the modification flag to false when the edit control is created. If the user
+    changes the control's text, then the operating system sets the flag to true.  The <link
+    linkend="mthSetModified">setModified</link> method can be used to set the flag to true or false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example saves the file in the edit control when the user ends the dialog by using the <emphasis
+    role="italic">Ok</emphasis> button.
 <programlisting>
 <![CDATA[
-if edit~isModified = 1 then MyDialog~Save
+
+  ::method ok unguarded
+
+  if self~newEdit(IDC_EDIT_FILE)~isModified then self~saveFile
+  return self~ok:super
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Edit::isModified() -->
 
 <section id="mthSetModified"><title>setModified</title>
 <indexterm><primary>setModified</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>setModified</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setModified(--bool--)------------------------><
-
-
+>>--setModified(--+---------+--)-----------------><
+                  +--state--+
 ]]>
 </programlisting>
 
-<para>The setModified method sets the flag to indicate
-whether the edit control has been modified.</para>
+<para>
+  Sets the modified flag of an edit control to the state specified, <computeroutput>.true</computeroutput> or
+<computeroutput>.false</computeroutput> .
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>bool</term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>1</term>
-<listitem><para>The flag indicates that the text has been altered.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>For all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>In the following example, the Save method stores the dialog
-contents in a file and clears the modified flag.
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+    <variablelist>
+      <varlistentry><term>state [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">state</emphasis> is <computeroutput>.true</computeroutput> the modified flag is
+        set to true. If <emphasis role="italic">state</emphasis> is <computeroutput>.false</computeroutput> the flag is
+        set to false.  The default is <computeroutput>.true</computeroutput>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system automatically sets the modification flag to false when the edit control is created. If the user
+    changes the control's text, then the operating system sets the flag to true.  The <link
+    linkend="mthSetModified">getModified</link> method can be used to determine the current state of the flag.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
 <programlisting>
 <![CDATA[
-::method Save
-    /* write contents to file */
-    edit = MyDialog~newEdit("TEXT")
-    ...
-    edit~setModified(.false)
+
+::method saveLicense
+
+    /* Write the license to a file for the user */
+    self~writeLicense
+
+    e = self~newEdit(IDC_EDIT_LICENSE)~setModified(.false)
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Edit::setModified() -->
+
 
 <section id="mthLines"><title>lines</title>
 <indexterm><primary>lines</primary></indexterm>

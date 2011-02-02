@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -860,24 +860,32 @@
 <indexterm><primary>menu object</primary><secondary>isPopup</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isPopup(--+--------+--)---------------------------------------------><
-              +--type--+
+>>--isPopup(--id--+---------------+--)-----------><
+                  +-,-byPosition--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if the specified menu item is a submenu (a pop up menu.)
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The <link linkend="sctMenuItemIDs">ID</link> of the menu item to be queried. This can be a position ID or a
+      resource ID, depending on the value of <emphasis role="italic">byPosition</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">id</emphasis> is a positional ID, otherwise it
+      is a resource ID. The default is <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -886,33 +894,27 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns <computeroutput>.true</computeroutput> if the menu item is a pop up menu item, otherwise
+    <computeroutput>.false</computeroutput> .
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A syntax condition is raised if <emphasis role="italic">id</emphasis> is not a valid menu item id. The <link
+    linkend="mthIsValidItemID">isValidItemID</link> method can be used to check if the item id is valid prior to
+    invoking this method, or the condition could be trapped.  If the condition is trapped or if isValidItemID() returns
+    false, <link linkend="dotSystemErrorCode">.SystemErrorCode</link> can then be examined for the reason why the item
+    ID is not valid.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>

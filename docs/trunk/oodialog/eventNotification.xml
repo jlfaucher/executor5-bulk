@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -823,7 +823,7 @@ Help request:
 </variablelist>
 </section>
 
-<section id="mthConnectKeyPressBaseDialog"><title>connectKeyPress</title>
+<section id="mthConnectKeyPressDialogObject"><title>connectKeyPress</title>
 <indexterm><primary>connectKeyPress</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectKeyPress</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectKeyPress</secondary></indexterm>
@@ -850,8 +850,8 @@ Help request:
       <varlistentry><term>methodName [required]</term>
       <listitem>
       <para>
-        The name of the method that is to be invoked when the key press event happens. This argument can not be the 
-        empty string 
+        The name of the method that is to be invoked when the key press event happens. This argument can not be the
+        empty string.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>keys [required]</term>
@@ -859,15 +859,14 @@ Help request:
       <para>
         The key (or keys) for which the key press event is to be connected. A single key or multiple keys can be
         specified. A range of keys can be used.  Each single key or range of keys is separated by a comma.  A range of
-        keys is denoted by using the dash character &quot;-&quot;.  White space within the <emphasis 
+        keys is denoted by using the dash character &quot;-&quot;.  White space within the <emphasis
         role="italic">keys</emphasis> argument is ignored. This argument can not be the empty string.
       </para>
       <para>
         The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
         are 0 through 255. There are some integer values between 0 and 255 that do not have a vitural key assigned to
-        them. For example, 0, 7, 10, 11, and 255 are not used. The <link
-        linkend="clsVK">VK</link> class can be used to make a program more readable. The class covers every key Microsoft
-        defines.
+        them. For example, 0, 7, 10, 11, and 255 are not used. The <link linkend="clsVK">VK</link> class contains
+        constants for all of the defined virtual keys.
       </para>
       <para>
         In addition, there are a few keywords that can be used to specify some common key ranges. These keywords are:
@@ -901,11 +900,11 @@ Help request:
           <varlistentry><term>ALPHANUMERIC</term>
           <listitem>
           <para>
-            The keys A through Z and 0 through 9. 
-          </para> 
-          </listitem></varlistentry> 
-        </variablelist> 
-      </para> 
+            The keys A through Z and 0 through 9.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
       <para>
         <emphasis role="bold">Note</emphasis> that case is insignificant for these keywords as is the order of the
         keywords. A keyword not in the list will result in a return of -9. However, if the argument contains other valid
@@ -992,18 +991,6 @@ Help request:
         The underlying mechanism in the Windows API that is used to capture key events failed.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>-4</term>
-      <listitem>
-      <para>
-        An (internal) problem with the dialog window.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-5</term>
-      <listitem>
-      <para>
-        Memory allocation error in the underlying Windows API.
-      </para>
-      </listitem></varlistentry>
       <varlistentry><term>-6</term>
       <listitem>
       <para>
@@ -1013,7 +1000,8 @@ Help request:
       <varlistentry><term>-7</term>
       <listitem>
       <para>
-        The <computeroutput>methodName</computeroutput> method is already connected to a key down event for this dialog.
+        The <emphasis role="italic">methodName</emphasis> method is already connected to a key down event for this
+        dialog.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>-8</term>
@@ -1028,8 +1016,8 @@ Help request:
         An incorrect format for the <computeroutput>keys</computeroutput>.  Note that it is possible to get a return of
         -9 but still have some keys connected. For instance in the following example the C and D keys would be connected
         and the filter applied. The &quot;"dog&quot;" token would result in -9 being returned:
-        
-<programlisting> 
+
+<programlisting>
 <![CDATA[
 
   keys = .VK~C ", dog," .VK~D
@@ -1055,14 +1043,20 @@ Help request:
     Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
     method can be used. That means it can be used in <link linkend="mthInitDialog">initDialog</link> or any time
     thereafter.  There is a maximum limit of 63 methods, per dialog, that can be connected to key press events.
-    Connections can be removed using the <link linkend="mthDisconnectKeyPressBaseDialog">disconnectKeyPress</link>
+    Connections can be removed using the <link linkend="mthDisconnectKeyPressDialogObject">disconnectKeyPress</link>
     method if there is no longer a need for a notification of a key press.
   </para>
   <para>
-    The dialog control object also has a <link linkend="mthConnectKeyPressDialogcontrol">connectKeyPress</link>()
-    method.  It is important to note this distinction between the two methods.  The method of the dialog object (this
-    method) will capture any key press event when the dialog is the active window. The method of the dialg control
-    object will only capture a key press when the specific dialog control has the keyboard focus.
+    The dialog control object also has a <link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link>()
+    method.  It is important to note this distinction between the two methods. The method of the dialg object (this
+    method) will capture all key press events when the dialog is the active window. This includes key presses when a
+    dialog control in the dialog has the focus.
+  </para>
+  <para>
+    The method of the dialog control object will only capture key press events when the specific dialog control has
+    the focus. This implies that if you connect the same key press event to both the dialog and to a specific dialog
+    control, if the key press event ocurrs when the dialog control has the focus, you will receive two event
+    notifications.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
@@ -1076,6 +1070,9 @@ Help request:
     this method before the <link linkend="ovvUnderlying">underlying</link> dialog is created.
   </para>
   <para>
+    Raises syntax errors when some incorrect usage is detected.
+  </para>
+  <para>
     If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
     draw events happen.
   </para>
@@ -1085,7 +1082,7 @@ Help request:
     sent to the underlying dialog for a key stroke event.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
+  <varlistentry id="connectKeyPressEventHandler"><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
   <listitem>
   <para>
     The ooDialog method connected to the key press event will receive the following five arguments in the order listed:
@@ -1206,7 +1203,9 @@ Help request:
     the customer order dialog, he has the F2 through F5 short cut keys available.  F2 brings up a customer look up
     dialog. F3 looks up info on the product number entered in an edit control.  F4 resets the form by clearing all the
     fields. F5 is used to print out the finished invoice.
-<programlisting> <![CDATA[
+
+<programlisting>
+<![CDATA[
 ::method initDialog
 
   ...
@@ -1244,7 +1243,7 @@ Help request:
 
 </section>
 
-<section id="mthConnectFKeyPressBaseDialog"><title>connectFKeyPress</title>
+<section id="mthConnectFKeyPressDialogObject"><title>connectFKeyPress</title>
 <indexterm><primary>connectFKeyPress</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectFKeyPress</secondary></indexterm>
 <programlisting>
@@ -1256,18 +1255,7 @@ Help request:
 
 <para>
   The <emphasis role="italic">connectFKeyPress</emphasis> method connects a function key press event notification to a
-  method in the Rexx dialog object. This works for function keys F2 through F24, without the shift, control, or alt
-  keys also being pressed. This is a convenience method and is exactly equivalent to:
-
-<programlisting>
-<![CDATA[
-::method initDialog
-  ...
-  keys = .VK~F2 "-" .VK~F24
-  self~connectKeyPress(methodName, keys, "NONE")
-]]>
-</programlisting>
-</para>
+  method in the Rexx dialog object. </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
@@ -1277,7 +1265,8 @@ Help request:
       <varlistentry><term>methodName [required]</term>
       <listitem>
       <para>
-        The name of the method that is to be invoked when the key press event happens.
+        The name of the method that is to be invoked when the key press event happens. The argument can not be the empty
+        string.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1300,18 +1289,6 @@ Help request:
         The underlying mechanism in the Windows API that is used to capture key events failed.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>-4</term>
-      <listitem>
-      <para>
-        An (internal) problem with the dialog window.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-5</term>
-      <listitem>
-      <para>
-        Memory allocation error in the underlying Windows API.
-      </para>
-      </listitem></varlistentry>
       <varlistentry><term>-6</term>
       <listitem>
       <para>
@@ -1321,7 +1298,8 @@ Help request:
       <varlistentry><term>-7</term>
       <listitem>
       <para>
-        The <computeroutput>methodName</computeroutput> method is already connected to a key down event for this dialog.
+        The <emphasis role="italic">methodName</emphasis> method is already connected to a key down event for this
+        dialog.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1330,17 +1308,37 @@ Help request:
   <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
   <listitem>
   <para>
+    This method works for function keys F2 through F24. In Windows the F1 key is the help key and the <link
+    linkend="mthConnectHelp">connectHelp</link> method should be used for F1. This method is a convenience method and is
+    exactly equivalent to:
+
+<programlisting>
+<![CDATA[
+::method initDialog
+  ...
+  keys = .VK~F2 "-" .VK~F24
+  self~connectKeyPress(methodName, keys)
+]]>
+</programlisting>
+
+  </para>
+  <para>
+    The event handling method recieves the same arguments as the <link
+    linkend="connectKeyPressEventHandler">event</link> handler for the <emphasis
+    role="italic">connectKeyPress</emphasis> method .
+  </para>
+  <para>
     Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
     method can be used. That means it can be used in <link linkend="mthInitDialog">initDialog</link> or any time
     thereafter.  There is a maximum limit of 63 methods, per dialog, that can be connected to key press events.
-    Connections can be removed using the <link linkend="mthDisconnectKeyPressBaseDialog">disconnectKeyPress</link>
+    Connections can be removed using the <link linkend="mthDisconnectKeyPressDialogObject">disconnectKeyPress</link>
     method if there is no longer a need for a notification of a key press.
   </para>
   <para>
-    The dialog control object also has a <link linkend="mthConnectFKeyPressDialogcontrol">connectFKeyPress</link>()
-    method.  It is important to note this distinction between the two methods.  The method of the dialog object (this
-    method) will capture any F key press event when the dialog is the active window. The method of the dialg control
-    object will only capture a F key press when the control has the keyboard focus.
+    The dialog control object also has a <link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link>()
+    method. The method of the dialog object (this method) will capture any F key press event when the dialog is the
+    active window. The method of the dialg control object will only capture a F key press when the control has the
+    keyboard focus.
   </para>
   <para>
     Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
@@ -1355,11 +1353,16 @@ Help request:
     This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
   </para>
   <para>
-    In general error return codes are used to indicate incorrect usage rather than raised syntax conditions.
+    In general error return codes are used to indicate incorrect usage rather than raised syntax conditions. However,
+    syntax errors are raised if the <emphasis role="italic">methodName</emphasis> argument is missing or the empty
+    string, or invoking this method before the <link linkend="ovvUnderlying">underlying</link> dialog is created.
   </para>
   <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    draw events happen.
+    Raises syntax errors when some incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any F
+    Key key press events happen.
   </para>
   <para>
     Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
@@ -1372,7 +1375,7 @@ Help request:
   <listitem>
   <para>
     The following example is a variation on the <link linkend="connectKeyPressExample">example</link> shown for the
-    <link linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link> method. It connects all the function keys to the
+    <link linkend="mthConnectKeyPressDialogObject">connectKeyPress</link> method. It connects all the function keys to the
     same method and then determines what action to take by examining which key was pressed.
 
   <programlisting>
@@ -1413,12 +1416,13 @@ Help request:
 </variablelist>
 </section>
 
-<section id="mthDisconnectKeyPressBaseDialog"><title>disconnectKeyPress</title>
+<section id="mthDisconnectKeyPressDialogObject"><title>disconnectKeyPress</title>
 <indexterm><primary>disconnectKeyPress</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>EventNotification</primary><secondary>connectFKeyPress</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>disconnectKeyPress</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>disConnectFKeyPress</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--disconnectKeyPress(--+--------------+--)-------------------><
+>>--disconnectKeyPress(--+--------------+--)-----><
                          +--methodName--+
 
 ]]>
@@ -1426,75 +1430,80 @@ Help request:
 
 <para>
   The <emphasis role="italic">disconnectKeyPress</emphasis> method disconnects a key press event from a method that was
-  previously connected using <link linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link>, or <link
-  linkend="mthConnectFKeyPressBaseDialog">connectFKeyPress</link>.  If no method name is specified than all key press
-  event connections are removed. Otherwise, only the key press events connected to the specific method are removed.
+  previously connected using <link linkend="mthConnectKeyPressDialogObject">connectKeyPress</link>, or <link
+  linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link>.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
-  <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    The dialog control object also has a <link linkend="mthDisconnectKeyPressDialogcontrol">disconnectKeyPress</link>()
-    method.  It is important to note this distinction between the two methods.  The method of the dialog object (this
-    method) only disconnects key press events that were set with the dialog object's versions of <emphasis
-    role="italic">connectKeyPress</emphasis> and <emphasis role="italic">connectFKeyPress</emphasis> methods.
-  </para>
-  <para>
-    In general error return codes are used to indicate incorrect usage rather than raised syntax conditions.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The single argument is:
-  <variablelist>
-    <varlistentry><term>methodName [optional]</term>
-    <listitem>
-    <para>
-      If <computeroutput>methodName</computeroutput> is specified, only the key press events connected to that method
-      are disconnected. If the argument is omitted, then all key press events for the dialog will be disconnected.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    <variablelist>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">methodName</emphasis> is specified, only the key press events connected to that
+        method are disconnected. If the argument is omitted, then all key press events for the dialog will be
+        disconnected.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-  <para>The return values are:
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      Success.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      The specified <computeroutput>methodName</computeroutput> is not connected to any key press events for this
-      dialog.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-2</term>
-    <listitem>
-    <para>
-      This return code can only occur when removing the connection for a single
-      <computeroutput>methodName</computeroutput>.  It indicates that after removing the connection, the underlying
-      mechanism in the Windows API that captures the key press events could not be re-initialized.  (It is doubtful this
-      error would ever occur.)
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        While trying to disconnect the method, the underlying mechanism in the Windows API that is used to capture key
+        events had an error. This is unlikely to happen.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-7</term>
+      <listitem>
+      <para>
+        Either the <emphasis role="italic">methodName</emphasis> method is already disconnected, or there are no methods
+        connected at all.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The dialog control object also has a <link linkend="mthDisconnectKeyPressDialogControlObject">disconnectKeyPress</link>
+    method. The method of the dialog object (this method) can only disconnect key press events that were set with the
+    dialog object's versions of <link linkend="mthConnectKeyPressDialogObject">connectKeyPress</link> and <link
+    linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link> methods. This method can not disconnect key press
+    events that were set with the dialog control object's versions of <link
+    linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link> and <link
+    linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when some incorrect usage is detected.
+  </para>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     The following example is a variation on the <link linkend="connectKeyPressExample">example</link> shown for the
-    <link linkend="mthConnectKeyPressBaseDialog">connectKeyPress</link> method. It builds on the fictitious customer
+    <link linkend="mthConnectKeyPressDialogObject">connectKeyPress</link> method. It builds on the fictitious customer
     order system.  The F7 key saves the completed invoice into the system and enters a different phase of the companies
     business process. At this point (for whatever fictitious business reason) the fields can no longer be cleared and
     the user is not allowed to look up customer or product information.  But, the user may still need to print the
@@ -1502,7 +1511,7 @@ Help request:
     disconnected.
   </para>
   <para>
-    To demonstrate how key press connections can be added and removed through out the live time of the dialog, this
+    To demonstrate how key press connections can be added and removed through out the life time of the dialog, this
     example adds the F9 hot key.  F9 starts a new order entry cycle and re-connects the hot keys used during the
     creation of a customer invoice.  When the user then saves the next completed invoice, key press connections are
     removed, when she starts a new invoice key press connections are restored.  This cycle could continue though out the
@@ -1519,7 +1528,7 @@ Help request:
   self~connectKeyPress(onF2, .VK~F2, "NONE")
 
   -- Same idea for F3, F4, F5, and F7.  This uses the actual numeric value for
-  -- the keys without bothering to use the VK class to translate.
+  -- the keys without bothering to use the .VK class to translate.
   self~connectKeyPress(onF3, 114, "NONE")
   self~connectKeyPress(onF4, 115, "NONE")
   self~connectKeyPress(onF5, 116, "NONE")
@@ -1564,9 +1573,10 @@ Help request:
 
 </section>
 
-<section id="mthHasKeyPressConnectionBaseDialog"><title>hasKeyPressConnection</title>
+<section id="mthHasKeyPressConnectionDialogObject"><title>hasKeyPressConnection</title>
 <indexterm><primary>hasKeyPressConnection</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>EventNotification</primary><secondary>connectFKeyPress</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>hasKeyPressConnection</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--hasKeyPressConnection(--+--------------+--)----------------><
@@ -1576,23 +1586,9 @@ Help request:
 </programlisting>
 
 <para>
-  This method is used to query if a connection to a key press event already exists.  It returns true or false so it can
-  always be used in a boolean expression.
+  This method is used to query if a connection to a key press event already exists.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
-  <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    The dialog control object also has a <link
-    linkend="mthHasKeyPressConnectionDialogcontrol">hasKeyPressConnection</link>() method. It is important to note this
-    distinction between the two methods.  The method of the dialog object (this method) only queries for key press
-    events that were set with the dialog object's versions of <emphasis role="italic">connectKeyPress</emphasis> and
-    <emphasis role="italic">connectFKeyPress</emphasis> methods.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>The single optional argument is:
@@ -1610,21 +1606,24 @@ Help request:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The returned value is always <computeroutput>true </computeroutput> or <computeroutput>false</computeroutput>.
-  <variablelist>
-    <varlistentry><term>true</term>
-    <listitem>
-    <para>
-      A connection exists.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>false</term>
-    <listitem>
-    <para>
-      No connection exists.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    Returns <computeroutput>.true</computeroutput> if the method is connected to a key press event or
+    <computeroutput>.false</computeroutput> otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <listitem>
+  <para>
+    The dialog contol object also has a <link
+    linkend="mthHasKeyPressConnectionDialogControlObject">hasKeyPressConnection</link> method. The method of the dialog
+    object (this method) can only check for connecttions that were set with the dialog object's versions of <link
+    linkend="mthConnectKeyPressDialogObject">connectKeyPress</link> and <link
+    linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link> methods. This method can not check for connections
+    that were set with the dialog control object's versions of <link
+    linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link> and <link
+    linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link> methods.
+  </para>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1660,7 +1659,6 @@ Help request:
   </para>
   </listitem></varlistentry>
 </variablelist>
-
 
 </section>
 
