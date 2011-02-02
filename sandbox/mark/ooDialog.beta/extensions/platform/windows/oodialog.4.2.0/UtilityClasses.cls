@@ -59,6 +59,8 @@
 ::method comctl32Version class external "LIBRARY oodialog dlgutil_comctl32Version_cls"
 ::method hiWord class external "LIBRARY oodialog dlgutil_hiWord_cls"
 ::method loWord class external "LIBRARY oodialog dlgutil_loWord_cls"
+::method sHiWord class external "LIBRARY oodialog dlgutil_shiWord_cls"
+::method sLoWord class external "LIBRARY oodialog dlgutil_sloWord_cls"
 ::method makeWParam class external "LIBRARY oodialog dlgutil_makeWPARAM_cls"
 ::method makeLParam class external "LIBRARY oodialog dlgutil_makeLPARAM_cls"
 ::method and class external "LIBRARY oodialog dlgutil_and_cls"
@@ -93,37 +95,38 @@
 
 ::class 'Rect' public
 ::method init external "LIBRARY oodialog rect_init"
-::method left external "LIBRARY oodialog rect_left"
-::method 'left=' external "LIBRARY oodialog rect_setLeft"
-::method top external "LIBRARY oodialog rect_top"
-::method 'top=' external "LIBRARY oodialog rect_setTop"
-::method right external "LIBRARY oodialog rect_right"
-::method 'right=' external "LIBRARY oodialog rect_setRight"
-::method bottom external "LIBRARY oodialog rect_bottom"
-::method 'bottom=' external "LIBRARY oodialog rect_setBottom"
+::attribute left get external "LIBRARY oodialog rect_left"
+::attribute left set external "LIBRARY oodialog rect_setLeft"
+::attribute top get external "LIBRARY oodialog rect_top"
+::attribute top set external "LIBRARY oodialog rect_setTop"
+::attribute right get external "LIBRARY oodialog rect_right"
+::attribute right set external "LIBRARY oodialog rect_setRight"
+::attribute bottom get external "LIBRARY oodialog rect_bottom"
+::attribute bottom set external "LIBRARY oodialog rect_setBottom"
 
 ::class 'Point' public
 ::method init external "LIBRARY oodialog point_init"
-::method x external "LIBRARY oodialog point_x"
-::method 'x=' external "LIBRARY oodialog point_setX"
-::method y external "LIBRARY oodialog point_y"
-::method 'y=' external "LIBRARY oodialog point_setY"
+::attribute x get external "LIBRARY oodialog point_x"
+::attribute x set external "LIBRARY oodialog point_setX"
+::attribute y get external "LIBRARY oodialog point_y"
+::attribute y set external "LIBRARY oodialog point_setY"
 ::method '+' external "LIBRARY oodialog point_add"
 ::method '-' external "LIBRARY oodialog point_subtract"
 ::method 'incr' external "LIBRARY oodialog point_incr"
+::method 'decr' external "LIBRARY oodialog point_decr"
 
 ::class 'Size' public
 ::method init class external "LIBRARY oodialog size_init_cls"
 ::method init external "LIBRARY oodialog size_init"
-::method width external "LIBRARY oodialog size_cx"
-::method 'width=' external "LIBRARY oodialog size_setCX"
-::method height external "LIBRARY oodialog point_y"
-::method 'height=' external "LIBRARY oodialog point_setY"
+::attribute width get external "LIBRARY oodialog size_cx"
+::attribute width set external "LIBRARY oodialog size_setCX"
+::attribute height get external "LIBRARY oodialog point_y"
+::attribute height set external "LIBRARY oodialog point_setY"
 
 
 ::class 'DayState' public
 ::method init external "LIBRARY oodialog ds_init"
-::method dayStateValue external "LIBRARY oodialog ds_dayStateValue"
+::method value external "LIBRARY oodialog ds_value"
 
 
 ::class 'DayStates' public
@@ -144,19 +147,30 @@
     use strict arg year = (.DateTime~today~year - 2), count = 3
 
     startMonth = .DateTime~fromStandardDate(year || '0101')
-    endMonth = .DateTime~fromStandardDate((year + count) || '0101')
+    endMonth = .DateTime~fromStandardDate((year + count - 1) || '1201')
 
     years = .table~new
-    do i = year to year + count
+    do i = year to year + count - 1
         years[i] = self~generateEmptyYear
     end
 
+::method getDayState
+    expose startMonth years
+    use strict arg dateTime
+
+    year = dateTime~year
+    month = dateTime~month
+
+    aYear = years[year]
+    if aYear == .nil then return .nil
+    else return aYear[month]
+
 ::method getDayStateBuffer
     expose startMonth years
-    use strict arg startDate, count
+    use strict arg dateTime, count
 
-    year = startDate~year
-    month = startDate~month
+    year = dateTime~year
+    month = dateTime~month
 
     resultArray = .array~new(count)
 
@@ -185,9 +199,11 @@
 
     return .DayStates~makeDayStateBuffer(resultArray)
 
-::method addYear
+::method putYear
     expose startMonth endMonth years
-    use strict arg year, values
+    use strict arg dateTime, values
+
+    year = dateTime~year
 
     newYear = .DateTime~fromStandardDate(year || '0101')
     months = .array~new(12)
@@ -204,21 +220,24 @@
         if years[year + 1] == .nil then needFill = .true
     end
     else if newYear > endMonth then do
-        endMonth = newYear
+        endMonth = .DateTime~fromStandardDate(year || '1201')
         if years[year - 1] == .nil then needFill = .true
     end
 
     if needFill then self~doFill
 
-::method addMonth
+::method putMonth
     expose startMonth endMonth years
-    use strict arg year, month, dayState
+    use strict arg dateTime, dayState
+
+    year = dateTime~year
+    month = dateTime~month
 
     yearArray = years[year]
     if yearArray == .nil then do
         yearArray = .array~new(12)
         yearArray[month] = dayState
-        self~addYear(year, yearArray)
+        self~putYear(dateTime, yearArray)
     end
     else do
         yearArray[month] = dayState
@@ -237,6 +256,240 @@
     do i = startMonth~year to endMonth~year
         if years[i] == .nil then years[i] = self~generateEmptyYear
     end
+
+
+::class 'VK' mixinclass Object public
+
+-- Virtual Keys, Standard Set.  Note that several of the integer values have
+-- duplicate names.
+::constant LBUTTON                1
+::constant RBUTTON                2
+::constant CANCEL                 3
+::constant MBUTTON                4
+::constant XBUTTON1               5
+::constant XBUTTON2               6
+                            --    7 : unassigned
+::constant BACK                   8
+::constant TAB                    9
+                            --   10 : reserved
+                            --   11 : reserved
+::constant CLEAR                 12
+::constant RETURN                13
+                            --   14 : Microsoft does not list.
+                            --   15 : Microsoft does not list.
+::constant SHIFT                 16
+::constant CONTROL               17
+::constant MENU                  18
+::constant PAUSE                 19
+::constant CAPITAL               20
+::constant KANA                  21
+::constant HANGEUL               21
+::constant HANGUL                21
+                            --   22 : Microsoft does not list.
+::constant JUNJA                 23
+::constant FINAL                 24
+::constant HANJA                 25
+::constant KANJI                 25
+                            --   26 : Microsoft does not list.
+::constant ESCAPE                27
+::constant CONVERT               28
+::constant NONCONVERT            29
+::constant ACCEPT                30
+::constant MODECHANGE            31
+::constant SPACE                 32
+::constant PRIOR                 33
+::constant NEXT                  34
+::constant END                   35
+::constant HOME                  36
+::constant LEFT                  37
+::constant UP                    38
+::constant RIGHT                 39
+::constant DOWN                  40
+::constant SELECT                41
+::constant PRINT                 42
+::constant EXECUTE               43
+::constant SNAPSHOT              44
+::constant INSERT                45
+::constant DELETE                46
+::constant HELP                  47
+::constant 0                     48
+::constant 1                     49
+::constant 2                     50
+::constant 3                     51
+::constant 4                     52
+::constant 5                     53
+::constant 6                     54
+::constant 7                     55
+::constant 8                     56
+::constant 9                     57
+                            -- 58 - 63 (0x3A -0x3F) Microsoft does not list.
+                            -- 0x40 : unassigned
+::constant A                     65
+::constant B                     66
+::constant C                     67
+::constant D                     68
+::constant E                     69
+::constant F                     70
+::constant G                     71
+::constant H                     72
+::constant I                     73
+::constant J                     74
+::constant K                     75
+::constant L                     76
+::constant M                     77
+::constant N                     78
+::constant O                     79
+::constant P                     80
+::constant Q                     81
+::constant R                     82
+::constant S                     83
+::constant T                     84
+::constant U                     85
+::constant V                     86
+::constant W                     87
+::constant X                     88
+::constant Y                     89
+::constant Z                     90
+::constant LWIN                  91
+::constant RWIN                  92
+::constant APPS                  93
+                            -- 0x5E : reserved
+::constant SLEEP                 95
+::constant NUMPAD0               96
+::constant NUMPAD1               97
+::constant NUMPAD2               98
+::constant NUMPAD3               99
+::constant NUMPAD4              100
+::constant NUMPAD5              101
+::constant NUMPAD6              102
+::constant NUMPAD7              103
+::constant NUMPAD8              104
+::constant NUMPAD9              105
+::constant MULTIPLY             106
+::constant ADD                  107
+::constant SEPARATOR            108
+::constant SUBTRACT             109
+::constant DECIMAL              110
+::constant DIVIDE               111
+::constant F1                   112
+::constant F2                   113
+::constant F3                   114
+::constant F4                   115
+::constant F5                   116
+::constant F6                   117
+::constant F7                   118
+::constant F8                   119
+::constant F9                   120
+::constant F10                  121
+::constant F11                  122
+::constant F12                  123
+::constant F13                  124
+::constant F14                  125
+::constant F15                  126
+::constant F16                  127
+::constant F17                  128
+::constant F18                  129
+::constant F19                  130
+::constant F20                  131
+::constant F21                  132
+::constant F22                  133
+::constant F23                  134
+::constant F24                  135
+                            -- 0x88 - 0x8F : unassigned
+::constant NUMLOCK              144
+::constant SCROLL               145
+
+-- NEC PC-9800 kbd definitions
+::constant OEM_NEC_EQUAL        146   -- '=' key on numpad
+
+-- Fujitsu/OASYS kbd definitions
+::constant OEM_FJ_JISHO         146   -- 'Dictionary' key
+::constant OEM_FJ_MASSHOU       147   -- 'Unregister word' key
+::constant OEM_FJ_TOUROKU       148   -- 'Register word' key
+::constant OEM_FJ_LOYA          149   -- 'Left OYAYUBI' key
+::constant OEM_FJ_ROYA          150   -- 'Right OYAYUBI' key
+                            -- 0x97 - 0x9F : unassigned
+
+::constant LSHIFT               160
+::constant RSHIFT               161
+::constant LCONTROL             162
+::constant RCONTROL             163
+::constant LMENU                164
+::constant RMENU                165
+::constant BROWSER_BACK         166
+::constant BROWSER_FORWARD      167
+::constant BROWSER_REFRESH      168
+::constant BROWSER_STOP         169
+::constant BROWSER_SEARCH       170
+::constant BROWSER_FAVORITES    171
+::constant BROWSER_HOME         172
+::constant VOLUME_MUTE          173
+::constant VOLUME_DOWN          174
+::constant VOLUME_UP            174
+::constant MEDIA_NEXT_TRACK     176
+::constant MEDIA_PREV_TRACK     177
+::constant MEDIA_STOP           178
+::constant MEDIA_PLAY_PAUSE     179
+::constant LAUNCH_MAIL          180
+::constant LAUNCH_MEDIA_SELECT  181
+::constant LAUNCH_APP1          182
+::constant LAUNCH_APP2          183
+                            -- 0xB8 - 0xB9 : reserved
+
+::constant OEM_1                186   -- ';:' for US
+::constant OEM_PLUS             187   -- '+' any country
+::constant OEM_COMMA            188   -- ',' any country
+::constant OEM_MINUS            189   -- '-' any country
+::constant OEM_PERIOD           190   -- '.' any country
+::constant OEM_2                191   -- '/?' for US
+::constant OEM_3                192   -- '`~' for US
+                            -- 0xC1 - 0xD7 : reserved
+                            -- 0xD8 - 0xDA : unassigned
+
+::constant OEM_4                219  --  '[{' for US
+::constant OEM_5                220  --  '\|' for US
+::constant OEM_6                221  --  ']}' for US
+::constant OEM_7                222  --  ''"' for US
+::constant OEM_8                223
+                            -- 0xE0 : reserved
+
+-- Various ended or enhanced keyboards
+::constant OEM_AX               225  --  'AX' key on Japanese AX kbd
+::constant OEM_102              226  --  "<>" or "\|" on RT 102-key kbd.
+::constant ICO_HELP             227  --  Help key on ICO
+::constant ICO_00               228  --  00 key on ICO
+::constant PROCESSKEY           229
+::constant ICO_CLEAR            230
+::constant PACKET               231
+                            -- 0xE8 : unassigned
+
+-- Nokia/Ericsson definitions
+::constant OEM_RESET            233
+::constant OEM_JUMP             234
+::constant OEM_PA1              235
+::constant OEM_PA2              236
+::constant OEM_PA3              237
+::constant OEM_WSCTRL           238
+::constant OEM_CUSEL            239
+::constant OEM_ATTN             240
+::constant OEM_FINISH           241
+::constant OEM_COPY             242
+::constant OEM_AUTO             243
+::constant OEM_ENLW             244
+::constant OEM_BACKTAB          245
+::constant ATTN                 246
+::constant CRSEL                247
+::constant EXSEL                248
+::constant EREOF                249
+::constant PLAY                 250
+::constant ZOOM                 251
+::constant NONAME               252
+::constant PA1                  253
+::constant OEM_CLEAR            254
+                            -- 0xFF : reserved
+
+::method key2name class external "LIBRARY oodialog vk_key2name"
+::method key2name       external "LIBRARY oodialog vk_key2name"
 
 
 
@@ -960,7 +1213,7 @@
 /*  methods                                                                  */
 /*  x & y  can take an offset argument which may be absolute or a percentage */
 /*  w & h  can take a percentage as argument                                 */
-/*         a parm of R to W or H means the remainder of the width or height  */
+/*         a parm of r to w or h means the remainder of the width or height  */
 /*                                                                           */
 /*  so to add a button 80% across your margined dialog for the remainder     */
 /*  a = .DlgArea~new(10,10,150,110,5)                                        */
@@ -995,7 +1248,7 @@
 /* ------------------------------------------------------------------------- */
 
 /* ------------------------------------------------------------------------- */
-::method Init
+::method init
 /* ------------------------------------------------------------------------- */
 arg left,top,width,height,margin
 
@@ -1020,19 +1273,19 @@ then self~height    = height~trunc
 else self~height    = 100
 
 
-self~T = self~Top  + self~margin
-self~L = self~left + self~margin
-self~B = self~top  + self~height - self~margin
-self~R = self~Left + self~Width  - self~margin
+self~t = self~top  + self~margin
+self~l = self~left + self~margin
+self~b = self~top  + self~height - self~margin
+self~r = self~left + self~width  - self~margin
 
-self~LastX = 0
-self~LastY = 0
+self~lastX = 0
+self~lastY = 0
 
 /* ------------------------------------------------------------------------- */
-::method X
+::method x
 /* ------------------------------------------------------------------------- */
 arg offset
-self~LastX='0'||Offset
+self~lastX='0'||Offset
 
 if offset~pos('%') > 0
 then do
@@ -1051,10 +1304,10 @@ else if offset~datatype('n')
 else return self~left + self~margin
 
 /* ------------------------------------------------------------------------- */
-::method Y
+::method y
 /* ------------------------------------------------------------------------- */
 arg offset
-self~LastY = '0'||offset
+self~lastY = '0'||offset
 
 if offset~pos('%') > 0
 then do
@@ -1073,7 +1326,7 @@ else if offset~datatype('n')
 else return self~top + self~margin
 
 /* ------------------------------------------------------------------------- */
-::method H
+::method h
 /* ------------------------------------------------------------------------- */
 arg pc
 
@@ -1089,12 +1342,12 @@ else return trunc(h)
 ::method HR
 /* ------------------------------------------------------------------------- */
 
-if self~LastY~pos('%') = 0                                 /* Y was absolute */
-then return self~Top + self~Height - self~margin - self~LastY
-else return self~h(100 - self~LastY~changestr('%','')||'%')       /* Y was % */
+if self~lastY~pos('%') = 0                                 /* Y was absolute */
+then return self~top + self~height - self~margin - self~lastY
+else return self~h(100 - self~lastY~changestr('%','')||'%')       /* Y was % */
 
 /* ------------------------------------------------------------------------- */
-::method W
+::method w
 /* ------------------------------------------------------------------------- */
 arg pc
 
@@ -1107,12 +1360,12 @@ then return trunc(w * (pc~changestr('%','') / 100))
 else return w
 
 /* ------------------------------------------------------------------------- */
-::method WR
+::method wr
 /* ------------------------------------------------------------------------- */
 
-if self~LastX~pos('%') = 0                                 /* X was absolute */
-then return self~Left + self~Width - self~margin - self~LastX
-else return self~w(100 - self~LastX~changestr('%','')||'%')       /* X was % */
+if self~lastX~pos('%') = 0                                 /* X was absolute */
+then return self~left + self~width - self~margin - self~lastX
+else return self~w(100 - self~lastX~changestr('%','')||'%')       /* X was % */
 
 /* ----------------------- compatibility methods --------------------------- */
 ::method cx    ; return self~w(arg(1))         -- Compatibility version of w
@@ -1120,17 +1373,17 @@ else return self~w(100 - self~LastX~changestr('%','')||'%')       /* X was % */
 ::method sizeX ; return self~width
 ::method sizeY ; return self~height
 /* ------------------------------------------------------------------------- */
-::method T              attribute
-::method L              attribute
-::method B              attribute
-::method R              attribute
-::method Top            attribute
-::method Left           attribute
-::method Width          attribute
-::method Height         attribute
-::method margin         attribute
-::method LastX          attribute private
-::method LastY          attribute private
+::attribute t
+::attribute l
+::attribute b
+::attribute r
+::attribute top
+::attribute left
+::attribute width
+::attribute height
+::attribute margin
+::attribute lastX           private
+::attribute lastY           private
 
 /* ========================================================================= */
 ::class 'DlgAreaU' subclass DlgArea public -- DlgAreaUniversal - Whole of Dialog
@@ -1168,7 +1421,7 @@ self~originalWidth  = dlgObj~sizeX
 self~originalHeight = dlgObj~sizeY
 self~lastError      = .nil
 
-CreateControlTypes = .set~of('BITMAPBUTTON', 'CHECKBOX', 'COMBOBOXEDIT', 'TAB', -
+CreateControlTypes = .set~of('BITMAPBUTTON', 'CHECKBOX', 'COMBOBOX', 'TAB', -
   'PUSHBUTTON', 'RADIOBUTTON', 'DATETIMEPICKER', 'LISTVIEW', 'PASSWORDEDIT',    -
   'PROGRESSBAR', 'SCROLLBAR', 'TRACKBAR', 'BLACKFRAME', 'BLACKRECT', 'LISTBOX', -
   'ETCHEDHORIZONTAL', 'ETCHEDVERTICAL', 'GRAYRECT', 'GRAYFRAME', 'GROUPBOX',    -

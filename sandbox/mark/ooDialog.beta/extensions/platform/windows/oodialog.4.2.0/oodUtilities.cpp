@@ -475,10 +475,14 @@ RexxMethod1(RexxStringObject, dlgutil_version_cls, OPTIONAL_CSTRING, format)
     return context->String(buf);
 }
 
+RexxMethod1(int16_t, dlgutil_shiWord_cls, uint32_t, dw) { return HIWORD(dw); }
+RexxMethod1(int16_t, dlgutil_sloWord_cls, uint32_t, dw) { return LOWORD(dw); }
+
 RexxMethod1(uint16_t, dlgutil_hiWord_cls, uint32_t, dw) { return HIWORD(dw); }
 RexxMethod1(uint16_t, dlgutil_loWord_cls, uint32_t, dw) { return LOWORD(dw); }
+
 RexxMethod2(intptr_t, dlgutil_makeLPARAM_cls, int16_t, loWord, int16_t, hiWord) { return MAKELPARAM(loWord, hiWord); }
-RexxMethod2(intptr_t, dlgutil_makeWPARAM_cls, int16_t, loWord, int16_t, hiWord) { return MAKEWPARAM(loWord, hiWord); }
+RexxMethod2(uintptr_t, dlgutil_makeWPARAM_cls, int16_t, loWord, int16_t, hiWord) { return MAKEWPARAM(loWord, hiWord); }
 
 RexxMethod2(uint64_t, dlgutil_and_cls, CSTRING, s1, CSTRING, s2)
 {
@@ -1150,6 +1154,27 @@ RexxMethod3(RexxObjectPtr, point_incr, OPTIONAL_int32_t, x, OPTIONAL_int32_t, y,
     return NULLOBJECT;
 }
 
+/** Point::decr
+ *
+ *  Decrements this point's x and y attributes by the specified amount. See the
+ *  comments above for Point::incr() for details.
+ */
+RexxMethod3(RexxObjectPtr, point_decr, OPTIONAL_int32_t, x, OPTIONAL_int32_t, y, CSELF, p)
+{
+    if ( argumentOmitted(1) && argumentOmitted(2) )
+    {
+        ((POINT *)p)->x--;
+        ((POINT *)p)->y--;
+    }
+    else
+    {
+        ((POINT *)p)->x -= x;
+        ((POINT *)p)->y -= y;
+    }
+
+    return NULLOBJECT;
+}
+
 /**
  * Methods for the ooDialog .Size class.
  */
@@ -1214,17 +1239,49 @@ RexxMethod2(RexxObjectPtr, rect_setRight, CSELF, pRect, int32_t, right) { ((RECT
 RexxMethod2(RexxObjectPtr, rect_setBottom, CSELF, pRect, int32_t, bottom) { ((RECT *)pRect)->bottom = bottom; return NULLOBJECT; }
 
 
+/**
+ * Methods for the ooDialog .VK class.
+ */
+#define VK_CLASS  "VK"
+
+/** VK::key2name()
+ *
+ * Translates a virtual key code into a string version of its symbolic name.
+ * I.e., 32 becomes "VK_SPACE".
+ *
+ * @param  key  The virtual key code.  Must be between 0 and 255.
+ *
+ * @return The virtual key name.
+ *
+ * @notes  Not all the numbers between 0 and 255 map to a virtual key.  The
+ *         empty string is returned for those numbers.
+ *
+ * @remarks  The initializers for names, and nothing else, are kept in
+ *           oodKeyNames.hpp.
+ *
+ */
+RexxMethod1(CSTRING, vk_key2name, uint8_t, key)
+{
+    static char *names[256] =
+    {
+#include "oodKeyNames.hpp"
+    };
+
+    return names[key];
+}
+
+
+
+/**
+ * Methods for the ooDialog .DayState class.
+ */
+#define DAYSTATE_CLASS  "DayState"
 
 typedef struct _dayState
 {
     uint32_t  val;
 } DAYSTATE, *PDAYSTATE;
 
-
-/**
- * Methods for the ooDialog .DayState class.
- */
-#define DAYSTATE_CLASE  "DayState"
 
 RexxMethod1(RexxObjectPtr, ds_init, ARGLIST, args)
 {
@@ -1254,7 +1311,7 @@ RexxMethod1(RexxObjectPtr, ds_init, ARGLIST, args)
     return NULLOBJECT;
 }
 
-RexxMethod1(uint32_t, ds_dayStateValue, CSELF, ds) { return ((PDAYSTATE)ds)->val; }
+RexxMethod1(uint32_t, ds_value, CSELF, ds) { return ((PDAYSTATE)ds)->val; }
 
 
 /**
@@ -1265,55 +1322,54 @@ RexxMethod1(uint32_t, ds_dayStateValue, CSELF, ds) { return ((PDAYSTATE)ds)->val
 
 RexxObjectPtr makeDayStateBuffer(RexxMethodContext *c, RexxArrayObject list, size_t count, LPMONTHDAYSTATE *ppmds)
 {
-    RexxBufferObject _mds = c->NewBuffer(count * sizeof(MONTHDAYSTATE));
-    if ( _mds == NULLOBJECT )
+    RexxBufferObject mdsBuf = c->NewBuffer(count * sizeof(MONTHDAYSTATE));
+    if ( mdsBuf != NULLOBJECT )
     {
-        return TheFalseObj;
-    }
+        MONTHDAYSTATE *pmds = (MONTHDAYSTATE *)c->BufferData(mdsBuf);
+        RexxObjectPtr  rxMDSVal;
+        PDAYSTATE      pDayState;
 
-    MONTHDAYSTATE *pmds = (MONTHDAYSTATE *)c->BufferData(_mds);
-    if ( ppmds != NULL )
-    {
-        *ppmds = pmds;
-    }
-
-    RexxObjectPtr  rxMDSVal;
-    PDAYSTATE      pDayState;
-
-    for ( size_t i = 1; i <= count; i++, pmds++ )
-    {
-        rxMDSVal = c->ArrayAt(list, i);
-        if ( rxMDSVal == NULLOBJECT || ! c->IsOfType(rxMDSVal, "DAYSTATE") )
+        for ( size_t i = 1; i <= count; i++, pmds++ )
         {
-            wrongObjInArrayException(c->threadContext, 1, i, "a DayState object");
-            return TheFalseObj;
+            rxMDSVal = c->ArrayAt(list, i);
+            if ( rxMDSVal == NULLOBJECT || ! c->IsOfType(rxMDSVal, "DAYSTATE") )
+            {
+                wrongObjInArrayException(c->threadContext, 1, i, "a DayState object");
+                mdsBuf = NULLOBJECT;
+                break;
+            }
+
+            pDayState = (PDAYSTATE)c->ObjectToCSelf(rxMDSVal);
+            *pmds = pDayState->val;
         }
 
-        pDayState = (PDAYSTATE)c->ObjectToCSelf(rxMDSVal);
-        *pmds = pDayState->val;
+        if ( mdsBuf != NULLOBJECT && ppmds != NULL )
+        {
+            *ppmds = pmds;
+        }
     }
 
-    return _mds;
+    return mdsBuf;
 }
 
 RexxObjectPtr quickDayStateBuffer(RexxMethodContext *c, uint32_t ds1, uint32_t ds2, uint32_t ds3, LPMONTHDAYSTATE *ppmds)
 {
-    RexxBufferObject _mds = c->NewBuffer(3 * sizeof(MONTHDAYSTATE));
-    if ( _mds == NULLOBJECT )
+    RexxBufferObject mdsBuf = c->NewBuffer(3 * sizeof(MONTHDAYSTATE));
+    if ( mdsBuf != NULLOBJECT )
     {
-        return TheFalseObj;  // Need to think about this.
+        MONTHDAYSTATE *pmds = (MONTHDAYSTATE *)c->BufferData(mdsBuf);
+
+        *pmds = ds1;
+        *(pmds + 1) = ds2;
+        *(pmds + 2) = ds3;
+
+        if ( ppmds != NULL )
+        {
+            *ppmds = pmds;
+        }
     }
 
-    MONTHDAYSTATE *pmds = (MONTHDAYSTATE *)c->BufferData(_mds);
-    *pmds = ds1;
-    *(pmds + 1) = ds2;
-    *(pmds + 2) = ds3;
-
-    if ( ppmds != NULL )
-    {
-        *ppmds = pmds;
-    }
-    return _mds;
+    return mdsBuf;
 }
 
 RexxMethod1(RexxObjectPtr, dss_makeDayStateBuffer, RexxArrayObject, list)
@@ -1322,9 +1378,21 @@ RexxMethod1(RexxObjectPtr, dss_makeDayStateBuffer, RexxArrayObject, list)
     return makeDayStateBuffer(context, list, count, NULL);
 }
 
-RexxMethod3(RexxObjectPtr, dss_quickDayStateBuffer, uint32_t, ds1, uint32_t, ds2, uint32_t, ds3)
+RexxMethod3(RexxObjectPtr, dss_quickDayStateBuffer, RexxObjectPtr, _ds1, RexxObjectPtr, _ds2, RexxObjectPtr, _ds3)
 {
-    return quickDayStateBuffer(context, ds1, ds2, ds3, NULL);
+    RexxObjectPtr result = NULLOBJECT;
+
+    if ( requiredClass(context->threadContext, _ds1, "DAYSTATE", 1) &&
+         requiredClass(context->threadContext, _ds2, "DAYSTATE", 2) &&
+         requiredClass(context->threadContext, _ds3, "DAYSTATE", 3) )
+    {
+        PDAYSTATE ds1 = (PDAYSTATE)context->ObjectToCSelf(_ds1);
+        PDAYSTATE ds2 = (PDAYSTATE)context->ObjectToCSelf(_ds2);
+        PDAYSTATE ds3 = (PDAYSTATE)context->ObjectToCSelf(_ds3);
+
+        result = quickDayStateBuffer(context, ds1->val, ds2->val, ds3->val, NULL);
+    }
+    return result;
 }
 
 

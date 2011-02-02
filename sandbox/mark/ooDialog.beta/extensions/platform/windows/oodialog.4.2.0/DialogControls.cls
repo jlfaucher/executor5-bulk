@@ -311,13 +311,14 @@
     else do
        flag = 0
        if arg(1, 'E') then flag = self~EC_LEFTMARGIN
-       if arg(2, 'E') then flag .DlgUtil~or(flag, self~EC_RIGHTMARGIN)
-       lParam = .DlgUtil~makeLParam(right, left)
+       if arg(2, 'E') then flag = .DlgUtil~or(flag, self~EC_RIGHTMARGIN)
+       lParam = .DlgUtil~makeLParam(left, right)
        self~sendWinIntMsg(self~EM_SETMARGINS, flag, lParam)
     end
     return 0
 
 ::method getMargins unguarded
+    use strict arg
     marg = self~sendWinIntMsg(self~EM_GETMARGINS, 0, 0)
     m = .directory~new
     m~right = .DlgUtil~hiWord(marg)

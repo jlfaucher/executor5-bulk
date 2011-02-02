@@ -134,6 +134,8 @@ REXX_METHOD_PROTOTYPE(dlgutil_comctl32Version_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_version_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_hiWord_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_loWord_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_shiWord_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_sloWord_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_makeLPARAM_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_makeWPARAM_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_and_cls);
@@ -735,7 +737,7 @@ REXX_METHOD_PROTOTYPE(dss_quickDayStateBuffer);
 
 // .DayState
 REXX_METHOD_PROTOTYPE(ds_init);
-REXX_METHOD_PROTOTYPE(ds_dayStateValue);
+REXX_METHOD_PROTOTYPE(ds_value);
 
 
 // .Rect
@@ -758,6 +760,7 @@ REXX_METHOD_PROTOTYPE(point_setY);
 REXX_METHOD_PROTOTYPE(point_add);
 REXX_METHOD_PROTOTYPE(point_subtract);
 REXX_METHOD_PROTOTYPE(point_incr);
+REXX_METHOD_PROTOTYPE(point_decr);
 
 // .Size
 REXX_METHOD_PROTOTYPE(size_init_cls);
@@ -766,6 +769,9 @@ REXX_METHOD_PROTOTYPE(size_cx);
 REXX_METHOD_PROTOTYPE(size_setCX);
 REXX_METHOD_PROTOTYPE(size_cy);
 REXX_METHOD_PROTOTYPE(size_setCY);
+
+// .VK
+REXX_METHOD_PROTOTYPE(vk_key2name);
 
 // Menu classes methods
 REXX_METHOD_PROTOTYPE(menu_menuInit_pvt);
@@ -854,6 +860,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_version_cls,            dlgutil_version_cls),
     REXX_METHOD(dlgutil_hiWord_cls,             dlgutil_hiWord_cls),
     REXX_METHOD(dlgutil_loWord_cls,             dlgutil_loWord_cls),
+    REXX_METHOD(dlgutil_sloWord_cls,            dlgutil_sloWord_cls),
+    REXX_METHOD(dlgutil_shiWord_cls,            dlgutil_shiWord_cls),
     REXX_METHOD(dlgutil_makeLPARAM_cls,         dlgutil_makeLPARAM_cls),
     REXX_METHOD(dlgutil_makeWPARAM_cls,         dlgutil_makeWPARAM_cls),
     REXX_METHOD(dlgutil_and_cls,                dlgutil_and_cls),
@@ -1436,7 +1444,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dss_makeDayStateBuffer,         dss_makeDayStateBuffer),
     REXX_METHOD(dss_quickDayStateBuffer,        dss_quickDayStateBuffer),
     REXX_METHOD(ds_init,                        ds_init),
-    REXX_METHOD(ds_dayStateValue,               ds_dayStateValue),
+    REXX_METHOD(ds_value,                       ds_value),
     REXX_METHOD(rect_init,                      rect_init),
     REXX_METHOD(rect_left,                      rect_left),
     REXX_METHOD(rect_top,                       rect_top),
@@ -1454,12 +1462,14 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(point_add,                      point_add),
     REXX_METHOD(point_subtract,                 point_subtract),
     REXX_METHOD(point_incr,                     point_incr),
+    REXX_METHOD(point_decr,                     point_decr),
     REXX_METHOD(size_init_cls,                  size_init_cls),
     REXX_METHOD(size_init,                      size_init),
     REXX_METHOD(size_cx,                        size_cx),
     REXX_METHOD(size_setCX,                     size_setCX),
     REXX_METHOD(size_cy,                        size_cy),
     REXX_METHOD(size_setCY,                     size_setCY),
+    REXX_METHOD(vk_key2name,                    vk_key2name),
 
     // Menu classes methods
     REXX_METHOD(menu_menuInit_pvt,              menu_menuInit_pvt),
