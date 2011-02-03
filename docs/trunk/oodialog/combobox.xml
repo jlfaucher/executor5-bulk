@@ -49,7 +49,7 @@
 <itemizedlist>
 <listitem><para>Simple combo boxes</para></listitem>
 <listitem><para>Drop-down combo boxes</para></listitem>
-<listitem><para>Drop-down list boxes</para></listitem>
+<listitem><para>Drop-down list combo boxes</para></listitem>
 </itemizedlist>
 <para>
   A combo box consists of a list and a selection field. The list presents options that can be selected and the selection
@@ -158,7 +158,7 @@
 <entry>Searches the combo box for a list item containing the specified text or prefix.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetHorizontalExtentClsComboBox">getHorizontal</link></entry>
+<entry><link linkend="mthGetHorizontalExtentClsComboBox">getHorizontalExtent</link></entry>
 <entry>Gets the value of the horizontal extent for the combo box.</entry>
 </row>
 <row>
@@ -190,16 +190,16 @@
 <entry>Selects the list entry that matches the specified text.</entry>
 </row>
 <row>
-<entry><link linkend="mthSelectIndexClsComboBox">selectIndex</link></entry>
-<entry>Selects and highlights the list entry at the specified position.</entry>
-</row>
-<row>
 <entry><link linkend="mthSelectedClsComboBox">selected</link></entry>
 <entry>Retrieves the text of the currently selected entry of the combo box list.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectedIndexClsComboBox">selectedIndex</link></entry>
 <entry>Retrieves the index of the currently selected entry of the combo box.</entry>
+</row>
+<row>
+<entry><link linkend="mthSelectIndexClsComboBox">selectIndex</link></entry>
+<entry>Selects and highlights the list entry at the specified position.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetHorizontalExtentClsComboBox">setHorizontalExtent</link></entry>
@@ -454,33 +454,60 @@
 <indexterm><primary>ComboBox class</primary><secondary>insert</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--insert(--+-------+--,--listEntry--)----------><
+>>--insert(--+-------+--,--item--)---------------><
              +-index-+
-
 
 ]]>
 </programlisting>
 
-<para>The insert method inserts a new item into the list
-of the combo box after the specified item.</para>
+<para>
+  Inserts a new item into the list of the combo box.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>index</term>
-<listitem><para>The index (starting with 1) of the list item after which the new item
-is to be added. If this argument is omitted, the list entry is added after
-the currently selected item.
-</para></listitem></varlistentry>
-<varlistentry><term>listEntry</term>
-<listitem><para>A text string added to the list.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A one-based index that specifies the position at which the entry has
-been added, or 0 or a value less than 0 to indicate an error.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the position to add the new item. If this <emphasis role="italic">index</emphasis> is
+        omitted, the item is added after the currently selected item. If there is no currently selected item, the new
+        item is inserted as the last item. If <emphasis role="italic">index</emphasis> is 0 the item is inserted as the
+        first item. If <emphasis role="italic">index</emphasis> is less than 0 then the new item is inserted as the last
+        item
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>item [required]</term>
+      <listitem>
+      <para>
+      	The item to add to the list.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unlike the <link linkend="mthAddClsComboBox">add</link> method, if the combo box has the SORT style, the <emphasis
+    role="italic">insert</emphasis> method does not cause the combo box to sort the list items.
+  </para>
+  <para>
+    If the combo box has a horizontal scroll bar and the width of the new item is wider than the combo box, or wider
+    than the current horizontal extent, the programmer should use the <link
+    linkend="mthSetHorizontalExtentClsComboBox">setHorizontalExtent</link> method to ensure the scroll bar is shown and
+    will scroll far enough to show the whole item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the one-based index of the position at which the item was been added. A number less than 1 indicates an
+    error.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -489,27 +516,44 @@ been added, or 0 or a value less than 0 to indicate an error.
 <indexterm><primary>ComboBox class</primary><secondary>delete</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--delete(--index--)----------------------------><
-
+>>--delete(--+---------+--)----------------------><
+             +--index--+
 
 ]]>
 </programlisting>
 
-<para>The delete method removes a list item from the
-associated combo box.</para>
+<para>
+  Removes an item from the list in the combo box.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>index</term>
-<listitem><para>The index (starting with 1) of the list item to be removed from the
-list. If this argument is omitted, the currently selected item is deleted.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of remaining list items, or 0 to indicate an error.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+    <varlistentry><term>index [optional]</term>
+    <listitem>
+    <para>
+      The one-based index of the item to delete from the list. If this argument is omitted, the currently selected item
+      is deleted.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The number of items remaining in the list. -1 is returned if <emphasis role="italic">index</emphasis> is not valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If <emphasis role="italic">index</emphasis> is omitted and there is no selected item, no item is deleted and -1 is
+    returned.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -520,25 +564,25 @@ list. If this argument is omitted, the currently selected item is deleted.
 <![CDATA[
 >>--deleteAll------------------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The deleteAll method removes all list items from
-the associated combo box.</para>
+<para>
+  Removes all items from the list in a combo box.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>index</term>
-<listitem><para>The index (starting with 1) of the list item to be removed from the
-list. If this argument is omitted, the currently selected item is deleted.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of remaining list items, or 0 to indicate an error.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns <computeroutput>.true</computeroutput>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -929,8 +973,24 @@ The return value is 0 if an error occurred, or -1 if the
 ]]>
 </programlisting>
 
-<para>The openDropDown method opens the list box of the
-associated combo box.</para>
+<para>
+  Shows the drop down list box of a drop-down combo box or a drop-down list combo box. This method has no effect on
+  simple combo boxes.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns <computeroutput>.true</computeroutput>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthCloseDropDown"><title>closeDropDown</title>
@@ -940,12 +1000,27 @@ associated combo box.</para>
 <![CDATA[
 >>--closeDropDown--------------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The closeDropDown method closes the list box of
-the associated combo box.</para>
+<para>
+  Closes the drop down list box of a drop-down combo box or a drop-down list combo box. This method has no effect on
+  simple combo boxes.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns <computeroutput>.true</computeroutput>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthIsDropDownOpen"><title>isDropDownOpen</title>
@@ -959,20 +1034,23 @@ the associated combo box.</para>
 ]]>
 </programlisting>
 
-<para>The isDropDownOpen method retrieves whether the
-list box of the associated combo box is open, that is, visible.</para>
+<para>
+  Determines whether the list box of the combo box dropped down.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>1</term>
-<listitem><para>The list box is open.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>For all other cases.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the list box is dropped down, otherwise
+    <computeroutput>.fase</computeroutput>.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
