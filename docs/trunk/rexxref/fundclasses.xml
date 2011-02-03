@@ -4651,6 +4651,50 @@ between the selected words.
 </programlisting>
 </section>
 
+<section id="mthStringSubWords"><title>subWords</title>
+<indexterm><primary>subWords method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>subWords method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>extracting words with subWords</primary></indexterm>
+<indexterm><primary>word</primary>
+<secondary>extracting from a string</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-subWords(--+---+-+---------+-)-------------------------------------><
+              +-n-+ +-,length-+
+]]>
+</programlisting>
+
+<para>Returns an array containing all words within the substring
+of the receiving string that starts at the
+<emphasis role="italic">n</emphasis>th word and is up to
+<emphasis role="italic">length</emphasis> blank-delimited words. The
+<emphasis role="italic">n</emphasis> must be a positive whole number.  If you omit
+<emphasis role="italic">n</emphasis>, it defaults to 1.
+If you omit <emphasis role="italic">length</emphasis>, it defaults
+to the number of remaining words in the receiving string. The strings
+in the returned array never have leading or trailing whitespace.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>subWords method</secondary></indexterm>
+<programlisting>
+"Now is the  time"~subWords         ->    .array~of("Now", "is", "the", "time")
+"Now is the  time"~subWords(2,2)    ->    .array~of("is", "the")
+"Now is the  time"~subWords(3)      ->    .array~of("the", "time")
+"Now is the  time"~subWords(5)      ->    .array~new(0)
+</programlisting>
+<para>The subWords method is useful for iterating over the individual words in a string.</para>
+<programlisting>
+    do word over source~subWords    -- extract all of the words to loop over
+       say word
+    end
+</programlisting>
+</section>
+
 <section id="mthStringTranslate"><title>translate</title>
 <indexterm><primary>translate method</primary>
 <secondary>of String class</secondary></indexterm>
