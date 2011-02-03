@@ -8381,17 +8381,19 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
     </para>
     <para>
       <simplelist type='vert' columns='3'>
-        <member>SIMPLE   </member>
-        <member>LIST     </member>
-        <member>SORT     </member>
-        <member>VSCROLL  </member>
-        <member>NOHSCROLL</member>
-        <member>PARTIAL  </member>
-        <member>HIDDEN   </member>
-        <member>GROUP    </member>
-        <member>DISABLED </member>
-        <member>NOBORDER </member>
-        <member>NOTAB    </member>
+        <member>SIMPLE         </member>
+        <member>LIST           </member>
+        <member>DISABLENOSCROLL</member>
+        <member>HSCROLL        </member>
+        <member>NOHSCROLL      </member>
+        <member>PARTIAL        </member>
+        <member>SORT           </member>
+        <member>VSCROLL        </member>
+        <member>HIDDEN         </member>
+        <member>GROUP          </member>
+        <member>DISABLED       </member>
+        <member>NOBORDER       </member>
+        <member>NOTAB          </member>
       </simplelist>
       <variablelist>
         <varlistentry><term>SIMPLE</term>
@@ -8408,16 +8410,37 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           combo box.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>SORT</term>
+        <varlistentry><term>DISABLENOSCROLL</term>
         <listitem>
         <para>
-          The items in the list are sorted by the combo box itself.
+          When the vertical height of the items in the list box is less than the height of the list box, the vertical
+          scroll bar is shown as disabled rather than hidden. Without this style, the scroll bar is hidden when the
+          vertical height of the items in the list box is less than the height of the list box.
+        </para>
+        <para>
+          Horizontal scroll bars are effected in a similar manner. If the width of the list box is equal to or greater
+          than the horizontal extent horizontal extent, then the horizontal scroll bar is disabled rather than hidden.
+        </para>
+        <para>
+          This style has no effect unless scroll bars have been added using the VSCROLL or HSCROLL styles.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>VSCROLL</term>
+        <varlistentry><term>HSCROLL</term>
         <listitem>
         <para>
-          Adds a vertical scroll bar to the combo box.
+          Adds a horizontal scroll bar to the combo box. If the width of the list box is smaller than the horizontal
+          extent, then the horizontal scroll bar can be used to horizontally scroll items in the list box. If the width
+          of the list box is equal to or greater than the horizontal extent, the horizontal scroll bar is hidden, unless
+          the combo box also has the DISABLENOSCROLL style.
+        </para>
+        <para>
+          When the DISABLENOSCROLL style is used, the scroll bar will be disabled rather than hidden. In addition, when
+          the DISABLENOSCROLL style is used, a horizontal scroll bar will be added without specifying the HSCROLL style.
+        </para>
+        <para>
+          <emphasis role="bold">Note</emphasis> that the horizontal extent for the combo box is 0 when the combo box is
+          created. Because of that, adding a hozizontal scroll will have no effect unless the programmer also changes
+          the extent using the <link linkend="mthSetHorizontalExtentClsComboBox">setHoizontalExtent</link>.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOHSCROLL</term>
@@ -8427,12 +8450,32 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           normally scrolls the text automatically to the right when the user types a character at the end of the line.
           When the NOHSCROLL style is set, automatic horizontal scrolling is disabled and the user can not enter more
           text than fits within the width of the selection field.
-        </para> </listitem></varlistentry>
+        </para>
+        </listitem></varlistentry>
         <varlistentry><term>PARTIAL</term>
         <listitem>
         <para>
           Specifies that the size of the combo box is exactly the size specified by the application when it created the
           combo box. Normally, the system sizes a combo box so that it does not display partial items.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SORT</term>
+        <listitem>
+        <para>
+          The items in the list are sorted by the combo box itself.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VSCROLL</term>
+        <listitem>
+        <para>
+          Adds a vertical scroll bar to the combo box. When the vertical height of the items in the combo box is greater
+          than the height of the list box of the combo box, then the scroll bar will scroll the items vertically.
+        </para>
+        <para>
+          <emphasis role="bold">Note</emphasis> that without a vertical scroll bar, the user can still use the up and
+          down arrows to scroll through all of the items in the list box. The vertical scroll bar is not necessary. When
+          the vertical height of the items in the combo box is less than the height of the list box, the scroll bar is
+          hidden, or disabled if the combo box has the DISABLENOSCROLL style.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>HIDDEN</term>

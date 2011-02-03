@@ -177,7 +177,7 @@
 </row>
 <row>
 <entry><link linkend="tmthNewPushButton">newPushButton</link></entry>
-<entry>Returns an <computeroutput>Button</computeroutput> object for the control with the specified ID.</entry>
+<entry>Returns a <computeroutput>Button</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
 <entry><link linkend="tmthCreatePushButton">createPushButton</link></entry>
@@ -638,6 +638,7 @@ button~state="FOCUS PUSHED"
 
 <section id="mthStyleEquals"><title>style=</title>
 <indexterm><primary>style=</primary></indexterm>
+<indexterm><primary>style=</primary><secondary>Button class</secondary></indexterm>
 <indexterm><primary>Button class</primary><secondary>style=</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2133,7 +2134,7 @@ within the associated bitmap button from one position to another.</para>
 </row>
 <row>
 <entry><link linkend="tmthNewRadioButton">newRadioButton</link></entry>
-<entry>Returns an <computeroutput>RadionButton</computeroutput> object for the control with the specified ID.</entry>
+<entry>Returns a <computeroutput>RadionButton</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
 <entry><link linkend="tmthCreateRadioButton">createRadiobutton</link></entry>
@@ -2197,8 +2198,11 @@ within the associated bitmap button from one position to another.</para>
   through the <link linkend="mthCreateRadioButton">createRadioButton</link>() method. The basic syntax is:
 <programlisting>
 <![CDATA[
->>--createRadioButton(-id-,-x-,-y-,-cx-,-cy-,-+-----+-+-------+-+-------+-+-----+-)-><
-                                              +-,-s-+ +-,-txt-+ +-,-mth-+ +-,-o-+
+>>--createRadioButton(-id-,-x-,-y-+------+--+------+--+---------+-------------->
+                                  +-,-cx-+  +-,-cy-+  +-,-style-+
+
+>--+--------+--+--------+--)---------------------------------------------------><
+   +-,-text-+  +-,-attr-+
 
 ]]>
 </programlisting>
@@ -2448,7 +2452,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
-      Use the <link linkend="mthNewCheckBox">newCheckBox</link>() method to retrieve an object of
+      Use the <link linkend="tmthNewCheckBox">newCheckBox</link>() method to retrieve an object of
       the check box class.
     </para>
   </listitem></varlistentry>
@@ -2458,7 +2462,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
       To dynamically define a check box in a <link linkend="clsUserDialog">UserDialog</link> class,
       use one of the create button control methods described in the <link linkend="sctCreateButtonControls">Create
       Button Controls</link> section. That section also describes methods for creating push buttons, radio buttons,
-      etc.. All the methods to create check boxes begin with: <emphasis role="italic">createCheck</emphasis>.
+      etc... All the methods to create check boxes begin with: <emphasis role="italic">createCheck</emphasis>.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -2480,6 +2484,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <table id="tblCheckBoxMethods" frame="all">
 <title>CheckBox Instance Methods</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -2487,6 +2492,26 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </row>
 </thead>
 <tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewCheckBox">newCheckBox</link></entry>
+<entry>Returns a <computeroutput>CheckBox</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateCheckBox">createCheckBox</link></entry>
+<entry>Creates a check box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectButtonEvent">connectButtonEvent</link></entry>
+<entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
 <row>
 <entry><link linkend="mthIsIndeterminate">isIndeterminate</link></entry>
 <entry>Determines if the check box is in indeterminate state, or not.</entry>
@@ -2496,12 +2521,45 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <entry>Returns a keyword indicating the check state of the check box, checked, unchecked, or indeterminate.</entry>
 </row>
 <row>
-<entry><link linkend="mthsetIndeterminate">setIndeterminate</link></entry>
+<entry><link linkend="mthSetIndeterminate">setIndeterminate</link></entry>
 <entry>Puts the check box in the indeterminate state.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </section>
+
+
+<section id="tmthNewCheckBox"><title>newCheckBox (dialog object method)</title>
+<para>
+  Check box objects can not be instantiated by the programmer from Rexx code. Rather a check box object is
+  obtained by using the <link linkend="mthNewCheckBox">newCheckBox</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>--newCheckBox(--id--)--------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End Dialog::newCheckBox() (dialog object method) -->
+
+
+<section id="tmthCreateCheckBox"><title>createCheckBox (UserDialog method)</title>
+<para>
+  A check box object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthCreateCheckBox">createCheckBox</link>() method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createCheckBox(-id-,--x-,--y--+------+--+------+--+---------+--+---------+->
+                                  +-,-cx-+  +-,-cy-+  +-,-style-+  +-,-label-+
+
+>----+-----------------+--+--------------+--)----------------------------------><
+     +-,-attributeName-+  +-,-connectOpt-+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createCheckBox() [UserDialog method] -->
+
 
 <section id="mthIsIndeterminate"><title>isIndeterminate</title>
 <indexterm><primary>isIndeterminate</primary></indexterm>
@@ -2547,8 +2605,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 
 <section id="mthGetCheckStateClsCheckBox"><title>getCheckState</title>
-<indexterm><primary>getCheckState</primary><secondary>getCheckState class</secondary></indexterm>
-<indexterm><primary>getCheckState class</primary><secondary>getCheckState</secondary></indexterm>
+<indexterm><primary>getCheckState</primary><secondary>CheckBox class</secondary></indexterm>
+<indexterm><primary>CheckBox class</primary><secondary>getCheckState</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getCheckState--------------------------------><
@@ -2624,7 +2682,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   The setIndeterminate method puts the check box in the indeterminate state. The system will redraw the
   check box to indicate the indeterminate state.
 </para>
-</section>
+</section>  <!-- End CheckBox::setIndeterminate() -->
 
 </section>
 
@@ -2647,7 +2705,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
     <para>
-      Use the <link linkend="mthNewGroupBox">newGroupBox</link>() method to retrieve an object of
+      Use the <link linkend="tmthNewGroupBox">newGroupBox</link>() method to retrieve an object of
       the group box class.
     </para>
   </listitem></varlistentry>
@@ -2676,6 +2734,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <table id="tblGroupBoxMethods" frame="all">
 <title>GroupBox Instance Methods</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -2683,6 +2742,22 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </row>
 </thead>
 <tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewGroupBox">newGroupBox</link></entry>
+<entry>Returns a <computeroutput>GroupBox</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateGroupBox">createGroupBox</link></entry>
+<entry>Creates a group box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
 <row>
 <entry><link linkend="mthGBStyleEquals">style=</link></entry>
 <entry>Assigns a new text alignment to the group box.</entry>
@@ -2692,8 +2767,39 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </section>
 
 
+<section id="tmthNewGroupBox"><title>newGroupBox (dialog object method)</title>
+<para>
+  Group box objects can not be instantiated by the programmer from Rexx code. Rather a group box object is
+  obtained by using the <link linkend="mthNewGroupBox">newGroupBox</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>--newGroupBox(--id--)--------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End Dialog::newGroupBox() (dialog object method) -->
+
+
+<section id="tmthCreateGroupBox"><title>createGroupBox (UserDialog method)</title>
+<para>
+  A group box object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthCreateGroupBox">createGroupBox</link>() method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createGroupbox(-+------+-,-x-,-y-,-cx-,-cy--+---------+-+--------+-)-------><
+                    +--id--+                    +-,-style-+ +-,-text-+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createGroupBox() [UserDialog method] -->
+
+
+
+
 <section id="mthGBStyleEquals"><title>style=</title>
-<indexterm><primary>style=</primary></indexterm>
+<indexterm><primary>style=</primary><secondary>GroupBox class</secondary></indexterm>
 <indexterm><primary>GroupBox class</primary><secondary>style=</secondary></indexterm>
 <programlisting>
 <![CDATA[
