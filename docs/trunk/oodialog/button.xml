@@ -44,16 +44,14 @@
 <chapter id="chapButtonControls"><title>Button Controls</title>
 <indexterm><primary>Button Controls</primary></indexterm>
 <para>
-  In Windows the Button control has a number of different types or kinds.  Most
-  button types have a number of different styles.  The style of a button effects
-  its behavior and appearance.  The appearance of a button is usually maintained
+  In Windows the button control has a number of different types or kinds. Most button types have a number of different
+  styles. The style of a button effects its behavior and appearance. The appearance of a button is usually maintained
   by the operating system in combination with the programmer.
 </para>
 <para>
-  In general people refer to "pushing," "clicking," or "checking" a button.  The
-  mouse is used to click a button and the enter key to push a button.  Checking
-  a button can be done with the mouse or the keyboard.  Buttons have a state,
-  the most common of which are checked, unchecked, pushed, and focused.
+  In general people refer to "pushing," "clicking," or "checking" a button.  The mouse is used to click a button and the
+  enter key to push a button.  Checking a button can be done with the mouse or the keyboard.  Buttons have a state, the
+  most common of which are checked, unchecked, pushed, and focused.
 </para>
 <para>
   The five kinds of buttons are:
@@ -66,14 +64,14 @@
   </itemizedlist>
 </para>
 <para>
-  ooDialog provides these classes to allow the programmer to interface with the
-  underlying button controls:
+  ooDialog provides these classes to allow the programmer to interface with the <link
+  linkend="ovvUnderlying">underlying</link> button controls:
 <table id="tButtonControls" frame="all">
 <title>ooDialog Button Control Classes</title>
 <tgroup cols="2">
 <thead>
 <row>
-<entry>Button Control Type</entry>
+<entry>Button Type</entry>
 <entry>ooDialog Class</entry>
 </row>
 </thead>
@@ -96,8 +94,7 @@
 </row>
 <row>
 <entry>Owner Drawn Button</entry>
-<entry><link linkend="anibut">AnimatedButton Class</link>,
-<link linkend="clsButton">Button Class</link></entry>
+<entry><link linkend="anibut">AnimatedButton Class</link>, <link linkend="clsButton">Button Class</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -312,8 +309,8 @@
 
 <section id="tmthCreatePushButton"><title>createPushButton (UserDialog method)</title>
 <para>
-  A push button object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
-  through the <link linkend="mthCreatePushButton">createPushButton</link>() method. The basic syntax is:
+  A push button object can be created in the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
+  dialog through the <link linkend="mthCreatePushButton">createPushButton</link>() method. The basic syntax is:
 <programlisting>
 <![CDATA[
 >>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+---------+-+-------+-+-------+-)-><
@@ -449,6 +446,12 @@ self~newPushButton(IDCANCEL)~click
   The <emphasis role="italic">state</emphasis> method retrieves the current state of the associated button control.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
@@ -526,7 +529,7 @@ say button~State
 </programlisting>
 
 <para>
-  The state= method sets the state for the associated button control.
+  The <emphasis role="italic">state=</emphasis> method sets the state for the associated button control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -681,7 +684,8 @@ button~state="FOCUS PUSHED"
       <listitem><para>In a dialog, the default push button is the button that is
         pushed when the Enter key is pressed.  Changing the default push button will
         change the behavior of the dialog when the user presses the enter key.
-      </para></listitem></varlistentry>
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>PUSHBOX</term>
       <listitem><para>A push button that does not display the button face or border,
         only the text appears.  This button style is not applicable when Windows
@@ -736,63 +740,110 @@ button~state="FOCUS PUSHED"
       <listitem><para>The button displays text.
       </para></listitem></varlistentry>
       <varlistentry><term>ICON</term>
-      <listitem><para>The button displays an icon image.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  The button displays an icon image.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>BITMAP</term>
-      <listitem><para>The button displays a bitmap image.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  The button displays a bitmap image.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>LEFT</term>
-      <listitem><para>The button has its text left-justified in the button rectangle.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  The button has its text left-justified in the button rectangle.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>RIGHT</term>
-      <listitem><para>The button has its text right-justified in the button rectangle.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  The button has its text right-justified in the button rectangle.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>HCENTER</term>
-      <listitem><para>The button has its text centered horizontally in the button
+      <listitem>
+      <para>
+                  The button has its text centered horizontally in the button
         rectangle.
-      </para></listitem></varlistentry>
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>TOP</term>
-      <listitem><para>The text is placed at the top of the button rectangle.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  The text is placed at the top of the button rectangle.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>BOTTOM</term>
-      <listitem><para>The text is placed at the bottom of the button rectangle.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  The text is placed at the bottom of the button rectangle.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>VCENTER</term>
-      <listitem><para>The text is vertically centered in the button rectangle.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  The text is vertically centered in the button rectangle.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>PUSHLIKE</term>
-      <listitem><para>Causes a radio button or check box button to behave like a push
+      <listitem>
+      <para
+            >Causes a radio button or check box button to behave like a push
         button.
-      </para></listitem></varlistentry>
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>MULTILINE</term>
-      <listitem><para>Causes the text for a button to wrap to multiple lines if the
+      <listitem>
+      <para>
+                  Causes the text for a button to wrap to multiple lines if the
         text is too long for the width of the button.
-      </para></listitem></varlistentry>
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>NOTIFY</term>
-      <listitem><para>Enables a button to send the kill focus and set focus messages.
-        See the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method
-        of the <link linkend="clsEventNotification">EventNotification Class</link>.  If the button
+      <listitem>
+      <para>
+        Enables a button to send the kill focus and set focus messages. See the <link
+        linkend="mthConnectButtonEvent">connectButtonEvent</link> method of the <link
+        linkend="clsEventNotification">EventNotification Class</link>.  If the button
         does not have this style, kill and set focus events will not be received, if
         the programmer does <computeroutput>connectButtonEvent()</computeroutput> to
         connect those events.
-      </para></listitem></varlistentry>
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>FLAT</term>
-      <listitem><para>Gives the button a flat appearance.  This style is not
+      <listitem>
+      <para>
+                  Gives the button a flat appearance.  This style is not
         applicable when Windows themes are in effect.
-      </para></listitem></varlistentry>
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>NOTPUSHLIKE</term>
-      <listitem><para>Removes the push like style.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  Removes the push like style.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>NOTMULTILINE</term>
-      <listitem><para>Removes the multi-line style.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  Removes the multi-line style.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>NOTNOTIFY</term>
-      <listitem><para>Removes the notify style.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+                  Removes the notify style.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>NOTFLAT</term>
-      <listitem><para>Removes the flat style.
-      </para></listitem></varlistentry>
-      </variablelist>
+      <listitem>
+      <para>
+                  Removes the flat style.
+      </para>
+      </listitem></varlistentry> </variablelist>
       </listitem></varlistentry>
     </variablelist>
   </para>
@@ -2115,7 +2166,7 @@ within the associated bitmap button from one position to another.</para>
 
 <para>
   The following table provides links to the documentation for the primary methods and attributes used in working
-  with RadioButton objects, including the pertinent methods from other classes.
+  with radio button objects, including the pertinent methods from other classes.
 </para>
 <table id="tblRadioButtonMethods" frame="all">
 <title>RadioButton Class and Instance Methods</title>
@@ -2194,8 +2245,8 @@ within the associated bitmap button from one position to another.</para>
 
 <section id="tmthCreateRadioButton"><title>createRadioButton (UserDialog method)</title>
 <para>
-  A radio button object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
-  through the <link linkend="mthCreateRadioButton">createRadioButton</link>() method. The basic syntax is:
+  A radio button object can be created in the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
+  dialog through the <link linkend="mthCreateRadioButton">createRadioButton</link>() method. The basic syntax is:
 <programlisting>
 <![CDATA[
 >>--createRadioButton(-id-,-x-,-y-+------+--+------+--+---------+-------------->
@@ -2403,6 +2454,20 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   The check method puts the button in the checked state. The system will redraw the button with the check
   mark appropriate for the button.
 </para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="mthUncheck"><title>uncheck</title>
@@ -2419,6 +2484,20 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   The uncheck method puts the button in the unchecked state. The system will redraw the button without
   the check mark.
 </para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 </section>
@@ -2443,7 +2522,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   checked, to indeterminate, and back again.
 </para>
 <para>
-  The CheckBox class provides methods to query and modify check box controls.
+  The <computeroutput>CheckBox</computeroutput> class provides methods to query and modify check box controls.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -2469,7 +2548,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <listitem>
     <para>
       A check box, is a button, and the programmer uses the same method to receive notifications of events as with the
-      ButtonControl: the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+      button control, the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2478,7 +2557,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <section id="sctMethodsCheckBox"><title>Method Table</title>
 
 <para>
-  The following table provides links to the documentation for the primary methods and attributes used in working with CheckBox objects, including the pertinent methods from other classes.
+  The following table provides links to the documentation for the primary methods and attributes used in working with
+  <computeroutput>CheckBox</computeroutput> objects, including the pertinent methods from other classes.
 </para>
 
 <table id="tblCheckBoxMethods" frame="all">
@@ -2546,7 +2626,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <section id="tmthCreateCheckBox"><title>createCheckBox (UserDialog method)</title>
 <para>
-  A check box object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
+  A check box object can be created in the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
   through the <link linkend="mthCreateCheckBox">createCheckBox</link>() method. The basic syntax is:
 <programlisting>
 <![CDATA[
@@ -2679,9 +2759,24 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </programlisting>
 
 <para>
-  The setIndeterminate method puts the check box in the indeterminate state. The system will redraw the
-  check box to indicate the indeterminate state.
+  Puts the check box in the indeterminate state. The system will redraw the check box to indicate the indeterminate
+  state.
 </para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>  <!-- End CheckBox::setIndeterminate() -->
 
 </section>
@@ -2704,23 +2799,22 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <variablelist>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
-    <para>
-      Use the <link linkend="tmthNewGroupBox">newGroupBox</link>() method to retrieve an object of
-      the group box class.
-    </para>
+  <para>
+    Use the <link linkend="tmthNewGroupBox">newGroupBox</link> method to retrieve an object of the group box class.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
-    <para>
-      To dynamically define a group box in a <link linkend="clsUserDialog">UserDialog</link> class, use
-      the <link linkend="mthCreateGroupBox">createGroupbox</link>() method.
-    </para>
+  <para>
+    To dynamically define a group box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>
+    class, use the <link linkend="mthCreateGroupBox">createGroupbox</link> method.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
-    <para>
-      Group boxes do not generate notifications.
-    </para>
+  <para>
+    Group boxes do not generate notifications.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </para>
@@ -2728,7 +2822,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <section id="sctMethodsGroupBox"><title>Method Table</title>
 
 <para>
-  The following table provides links to the documentation for the primary methods and attributes used in working with GroupBox objects, including the pertinent methods from other classes.
+  The following table provides links to the documentation for the primary methods and attributes used in working with
+  <computeroutput>GroupBox</computeroutput> objects, including the pertinent methods from other classes.
 </para>
 
 <table id="tblGroupBoxMethods" frame="all">
@@ -2784,8 +2879,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <section id="tmthCreateGroupBox"><title>createGroupBox (UserDialog method)</title>
 <para>
-  A group box object can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
-  through the <link linkend="mthCreateGroupBox">createGroupBox</link>() method. The basic syntax is:
+  A group box object can be create in the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
+  dialog through the <link linkend="mthCreateGroupBox">createGroupBox</link>() method. The basic syntax is:
 <programlisting>
 <![CDATA[
 >>--createGroupbox(-+------+-,-x-,-y-,-cx-,-cy--+---------+-+--------+-)-------><
