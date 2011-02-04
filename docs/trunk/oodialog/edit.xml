@@ -1159,6 +1159,86 @@
 </variablelist>
 </section>  <!-- End Edit::getMargins() -->
 
+
+<section id="mthSetMargins"><title>setMargins</title>
+<indexterm><primary>setMargins</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setMargins</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setMargins(--+--------+--+----------+--)-----><
+                 +--left--+  +-,-right--+
+]]>
+</programlisting>
+
+<para>
+  Sets the left and right margins of the edit control as specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>left [optional]</term>
+      <listitem>
+      <para>
+        Specifies the left margin in pixels. If this argument is omitted, the left margin is not changed. If both the
+        <emphasis role="italic">left</emphasis> and <emphasis role="italic">right</emphasis> arguments are omitted, the
+        margins are set to a narrow margin calculated from the font info of the edit control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>right [optional]</term>
+      <listitem>
+      <para>
+        Specifies the right margin in pixels. If this argument is omitted, the right margin is not changed. If both the
+        <emphasis role="italic">left</emphasis> and <emphasis role="italic">right</emphasis> arguments are omitted, the
+        margins are set to a narrow margin calculated from the font info of the edit control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">setMargins</emphasis> method will cause the edit control to redraw itself to reflect the
+    new margins. If both arguments are omitted, the method causes the edit control to calculate a narrow left and right
+    margin based on the font of the edit control. If no font is set for the edit control, this margin is set to 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+  editControl = self~newEdit(IDC_EDIT_LICENSE)
+
+  editControl~setMargins(10, 5)
+  m = editControl~getMargins
+  say "The new left margin is" m~left "and the new right margin is" m~right
+
+/* Output would be:
+
+The new left margin is 10 and the new right margin is 5
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::setMargins() -->
+
+
 <section id="mthIsSingleLine"><title>isSingleLine</title>
 <indexterm><primary>isSingleLine</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>isSingleLine</secondary></indexterm>
@@ -1568,7 +1648,7 @@
 
 <para>
   Sets the modified flag of an edit control to the state specified, <computeroutput>.true</computeroutput> or
-<computeroutput>.false</computeroutput> .
+  <computeroutput>.false</computeroutput> .
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1725,14 +1805,15 @@
   <varlistentry id="exampleLineIndex"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example sets the text for edit control with the symbolic id of IDC_EDIT and displays the number of
-    text lines (3), the starting index of the second line (carriage return, 0x0d, and line feed, 0x0a, which mark a line
-    break, are also considered to be characters), and the length of the third line:
+    The following example sets the text for edit control with the <link linkend="defSymbolicID">symbolic</link> id of
+    IDC_EDIT and displays the number of text lines (3), the starting index of the second line (carriage return, 0x0d,
+    and line feed, 0x0a, which mark a line break, are also considered to be characters), and the length of the third
+    line:
 
 <programlisting>
 <![CDATA[
 
-editControl = self~newEdit("TEXT")
+editControl = self~newEdit(IDC_EDIT)
 
 text = "It is easy to learn and easy to use." || '0d0a'x || -
        "Have fun with it!"                    || '0d0a'x || -
@@ -1757,6 +1838,69 @@ Length of 3rd line: 21
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Edit::lineIndex() -->
+
+<section id="mthLinFromIndex"><title>lineFromIndex</title>
+<indexterm><primary>lineFromIndex</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>lineFromIndex</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lineFromIndex(--+-------------+--)-----------><
+                    +--charIndex--+
+]]>
+</programlisting>
+
+<para>
+  Gets the line index of the line that contains the character at the specified character index.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>charIndex</term>
+      <listitem>
+      <para>
+        The one-based character index of the character whose line index is needed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::lineFromIndex() -->
 
 
 <section id="mthLineFromIndex"><title>lineFromIndex</title>
@@ -1804,6 +1948,7 @@ Result: Character 55 is contained in line 2
 </para>
 </listitem></varlistentry> </variablelist>
 </section>
+
 
 <section id="mthLineLength"><title>lineLength</title>
 <indexterm><primary>lineLength</primary></indexterm>
@@ -1894,26 +2039,58 @@ text string.
 <indexterm><primary>Edit class</primary><secondary>setLimit</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setLimit(--chars--)--------------------------><
-
+>>--setLimit(--count--)--------------------------><
 
 ]]>
 </programlisting>
 
 <para>
   Sets the maximum number of characters the user can type in the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>count required</term>
+      <listitem>
+      <para>
+        A non-negative number that is the limit for the number of characters a user can type into the edit control. See
+        the remarks for the meaning of 0.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>chars</term>
-<listitem><para>The number of characters that the edit control can contain.
-</para></listitem></varlistentry>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that the text limit is the number of characters the user can type in the edit control. The limit does not
+    effect any text already entered in the edit control. It also does not effect the length of the text that the <link
+    linkend="mthSetText">setText</link> method can copy into the edit control. If a program uses <emphasis
+    role="italic">setText</emphasis> to copy more text into the edit control than the text limit, the user can edit the
+    entire contents of the edit control.
+  </para>
+  <para>
+    If <emphasis role="italic">count</emphasis> is 0, then the limit for single line edit controls is set to
+    2,147,483,647 characters and for multiline edit controls it is set to 4,294,967,295 characters.
+  </para>
+  <para>
+    Before the <emphasis role="italic">setLimit</emphasis> method is used, the default for the text limit of an edit
+    control is 32,767 characters.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End Edit::setLimit() -->
+
+
 
 <section id="mthSetReadOnly"><title>setReadOnly</title>
 <indexterm><primary>setReadOnly</primary></indexterm>
@@ -1964,49 +2141,6 @@ text string.
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Edit::setReadOnly() -->
-
-
-<section id="mthSetMargins"><title>setMargins</title>
-<indexterm><primary>setMargins</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--setMargins(--left--,--right--)---------------><
-
-
-]]>
-</programlisting>
-
-<para>The setMargins method sets the left and right margins
-for the associated edit control. The margins determine the spacing to the
-left and right of the edit control.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>left</term>
-<listitem><para>The left margin, specified in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>right</term>
-<listitem><para>The right margin, specified in screen pixels.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets the margins for edit control TEXT such that
-the left indent is 10 screen pixels and on the right there is a spacing of
-5 pixels between the text and the frame of the edit control:
-<programlisting>
-<![CDATA[
-edit = MyDialog~newEdit("TEXT")
-if edit == .Nil then return
-edit~setMargins(10, 5)
-     parse value edit~margins with left right
-     say "The new left margin is" left" and the new right margin is" right
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthMargins"><title>margins</title>
 <indexterm><primary>margins</primary></indexterm>
