@@ -46,7 +46,7 @@
 <para>
   There are 3 types of combo boxes.
 </para>
-<itemizedlist>
+<itemizedlist id="listComboBoxTypes">
 <listitem><para>Simple combo boxes</para></listitem>
 <listitem><para>Drop-down combo boxes</para></listitem>
 <listitem><para>Drop-down list combo boxes</para></listitem>
@@ -57,8 +57,8 @@
 </para>
 <para>
   In simple and drop-down combo boxes the selection field is an edit control and can be used to enter
-  text not available in the list, or to edit existing text. In drop-down list combo boxes, the list is a
-  list box control and the use can only select the items.  In a drop-down combo-box the list only appears
+  text not available in the list, or to edit existing text. In a drop-down list combo box, the list is a list box
+  control and the use can only select the items.  In drop-down and drop-down list combo boxes the list only appears
   when the user opens it. In a simple combo box the list is always visible.
 </para>
 <para>
@@ -72,7 +72,7 @@
   <listitem>
   <para>
     Use the <link linkend="mthNewComboBox">newComboBox</link>() method of the <link
-    linkend="chpDialogObject">dialog</link> to retrieve a combo box object.
+    linkend="chpDialogObject">dialog</link> object to retrieve a combo box object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
@@ -135,23 +135,19 @@
 </row>
 <row>
 <entry><link linkend="mthAddDirectoryClsComboBox">addDirectory</link></entry>
-<entry>Adds all or selected file names of a given directory to the combo box.</entry>
+<entry>Adds file names in a given directory to the items of a combo box.</entry>
 </row>
 <row>
 <entry><link linkend="mthCloseDropDown">closeDropDown</link></entry>
-<entry>Closes the list box of the combo box.</entry>
+<entry>Closes the drop-down list of the combo box.</entry>
 </row>
 <row>
 <entry><link linkend="mthDeleteClsComboBox">delete</link></entry>
-<entry>Removes a list item from the combo box.</entry>
+<entry>Removes an item from the list of the combo box.</entry>
 </row>
 <row>
 <entry><link linkend="mthDeleteAllClsComboBox">deleteAll</link></entry>
 <entry>Removes all list items from the combo box.</entry>
-</row>
-<row>
-<entry><link linkend="mthEditSelection">editSelection</link></entry>
-<entry>Selects the specified text range in the edit control of the combo box.</entry>
 </row>
 <row>
 <entry><link linkend="mthFindClsComboBox">find</link></entry>
@@ -171,7 +167,7 @@
 </row>
 <row>
 <entry><link linkend="mthIsdropdownopen">isDropDownOpen</link></entry>
-<entry>Determines if the list box of the associated combo box is open.</entry>
+<entry>Determines if the list of the combo box is dropped down</entry>
 </row>
 <row>
 <entry><link linkend="mthItemsClsComboBox">items</link></entry>
@@ -183,7 +179,7 @@
 </row>
 <row>
 <entry><link linkend="mthOpenDropDown">openDropDown</link></entry>
-<entry>Opens the list box of the associated combo box.</entry>
+<entry>Drops down the list of the combo box.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectClsComboBox">select</link></entry>
@@ -191,15 +187,19 @@
 </row>
 <row>
 <entry><link linkend="mthSelectedClsComboBox">selected</link></entry>
-<entry>Retrieves the text of the currently selected entry of the combo box list.</entry>
+<entry>Retrieves the text of the currently selected item in the combo box list.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectedIndexClsComboBox">selectedIndex</link></entry>
-<entry>Retrieves the index of the currently selected entry of the combo box.</entry>
+<entry>Retrieves the index of the currently selected item in the combo box list.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectIndexClsComboBox">selectIndex</link></entry>
-<entry>Selects and highlights the list entry at the specified position.</entry>
+<entry>Selects the list item at the specified index.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetEditSelection">setEditSelection</link></entry>
+<entry>Selects the specified text range in the edit control of the combo box.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetHorizontalExtentClsComboBox">setHorizontalExtent</link></entry>
@@ -298,7 +298,157 @@
   <listitem>
   <para>
     If the combo box does not have the SORT style, the new item is added to the end of the list. If it does have the
-    SORT style, the item is inserted into the list and the combo box resorts the list.
+    SORT style, the item is inserted into the list in its correct alphabetical position.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the Microsoft documentation says that adding an item to a comb box with
+    the SORT style causes the list of items to be re-sorted. This does not appear to be correct. Rather, it looks like
+    the operating system simply picks the correct insertion point for the new item and leaves the rest of the list
+    alone.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="mthFindClsComboBox">find</link> <link linkend="exampleFindClsComboBox">example</link> uses the
+    <emphasis role="italic">add</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthInsertClsComboBox"><title>insert</title>
+<indexterm><primary>insert</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>insert</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insert(--+-------+--,--item--)---------------><
+             +-index-+
+
+]]>
+</programlisting>
+
+<para>
+  Inserts a new item into the list of the combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the position to add the new item. If this <emphasis role="italic">index</emphasis> is
+        omitted, the item is added after the currently selected item. If there is no currently selected item, the new
+        item is inserted as the last item. If <emphasis role="italic">index</emphasis> is 0 the item is inserted as the
+        first item. If <emphasis role="italic">index</emphasis> is less than 0 then the new item is inserted as the last
+        item
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>item [required]</term>
+      <listitem>
+      <para>
+      	The item to add to the list.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Unlike the <link linkend="mthAddClsComboBox">add</link> method, if the combo box has the SORT style, the <emphasis
+    role="italic">insert</emphasis> method does not cause the combo box to sort the list items.
+  </para>
+  <para>
+    If the combo box has a horizontal scroll bar and the width of the new item is wider than the combo box, or wider
+    than the current horizontal extent, the programmer should use the <link
+    linkend="mthSetHorizontalExtentClsComboBox">setHorizontalExtent</link> method to ensure the scroll bar is shown and
+    will scroll far enough to show the whole item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the one-based index of the position at which the item was been added. A number less than 1 indicates an
+    error.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDeleteClsComboBox"><title>delete</title>
+<indexterm><primary>delete</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>delete</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--delete(--+---------+--)----------------------><
+             +--index--+
+
+]]>
+</programlisting>
+
+<para>
+  Removes an item from the list in the combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+    <varlistentry><term>index [optional]</term>
+    <listitem>
+    <para>
+      The one-based index of the item to delete from the list. If this argument is omitted, the currently selected item
+      is deleted.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The number of items remaining in the list. -1 is returned if <emphasis role="italic">index</emphasis> is not valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If <emphasis role="italic">index</emphasis> is omitted and there is no selected item, no item is deleted and -1 is
+    returned.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthDeleteAllClsComboBox"><title>deleteAll</title>
+<indexterm><primary>deleteAll</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>deleteAll</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--deleteAll------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Removes all items from the list in a combo box.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns <computeroutput>.true</computeroutput>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -449,19 +599,19 @@
   </listitem></varlistentry>
 </variablelist> </section>  <!-- End ComboBox::setHorizontalExtent() -->
 
-<section id="mthInsertClsComboBox"><title>insert</title>
-<indexterm><primary>insert</primary><secondary>ComboBox class</secondary></indexterm>
-<indexterm><primary>ComboBox class</primary><secondary>insert</secondary></indexterm>
+<section id="mthFindClsComboBox"><title>find</title>
+<indexterm><primary>find</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>find</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--insert(--+-------+--,--item--)---------------><
-             +-index-+
+>>--find(--textOrPrefix--+--------------+--+---------+--)-------><
+                         +-,-startIndex-+  +-,-exact-+
 
 ]]>
 </programlisting>
 
 <para>
-  Inserts a new item into the list of the combo box.
+  Finds the index of the combo box item that matches the specified text.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -469,106 +619,115 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>index [optional]</term>
+      <varlistentry><term>textOrPrefix [required]</term>
       <listitem>
       <para>
-        The one-based index of the position to add the new item. If this <emphasis role="italic">index</emphasis> is
-        omitted, the item is added after the currently selected item. If there is no currently selected item, the new
-        item is inserted as the last item. If <emphasis role="italic">index</emphasis> is 0 the item is inserted as the
-        first item. If <emphasis role="italic">index</emphasis> is less than 0 then the new item is inserted as the last
-        item
+        The text of the item to search for.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>item [required]</term>
+      <varlistentry><term>startIndex [optional]</term>
       <listitem>
       <para>
-      	The item to add to the list.
+        The one-based index of the item preceding the item to start the search at. If the search reaches the end of the
+        items  without a match, the search continues with the first item until all items have been examined.  When this
+        argument is omitted, or 0, the search starts with the first item.
       </para>
       </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Unlike the <link linkend="mthAddClsComboBox">add</link> method, if the combo box has the SORT style, the <emphasis
-    role="italic">insert</emphasis> method does not cause the combo box to sort the list items.
-  </para>
-  <para>
-    If the combo box has a horizontal scroll bar and the width of the new item is wider than the combo box, or wider
-    than the current horizontal extent, the programmer should use the <link
-    linkend="mthSetHorizontalExtentClsComboBox">setHorizontalExtent</link> method to ensure the scroll bar is shown and
-    will scroll far enough to show the whole item.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    On success, the one-based index of the position at which the item was been added. A number less than 1 indicates an
-    error.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthDeleteClsComboBox"><title>delete</title>
-<indexterm><primary>delete</primary><secondary>ComboBox class</secondary></indexterm>
-<indexterm><primary>ComboBox class</primary><secondary>delete</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--delete(--+---------+--)----------------------><
-             +--index--+
-
-]]>
-</programlisting>
-
-<para>
-  Removes an item from the list in the combo box.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The only argument is:
-    <variablelist>
-    <varlistentry><term>index [optional]</term>
-    <listitem>
-    <para>
-      The one-based index of the item to delete from the list. If this argument is omitted, the currently selected item
-      is deleted.
-    </para>
-    </listitem></varlistentry>
+      <varlistentry><term>exact [optiona]</term>
+      <listitem>
+      <para>
+        Whether to do an exact match or not. If this argument is not omitted, and is either
+        <computeroutput>.true</computeroutput> or the keyword EXACT, then an exact search is performed. Otherwise, the
+        search is not exact. See the Remaks section for the meaning of exact and not exact.
+      </para>
+      </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The number of items remaining in the list. -1 is returned if <emphasis role="italic">index</emphasis> is not valid.
+    The one-based index of the item when found, otherwise 0 if the item is not found.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If <emphasis role="italic">index</emphasis> is omitted and there is no selected item, no item is deleted and -1 is
-    returned.
+    The search for <emphasis role="italic">textOrPrefix</emphasis> is <emphasis role="bold">always</emphasis> case
+    insensitive. If the <emphasis role="italic">exact</emphasis> argument does not specify an exact match, then the
+    search is for an item beginning with the text specified. Otherwise, the characters of the item, including blanks,
+    must match the specified text exatly.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleFindClsComboBox"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This, somewhat contrived, example demonstrates how the arguments to <emphasis role="italic">find</emphasis> control
+    the search:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose comboBox
+
+  comboBoxItems = .array~of("San Diego", "New York", "Los Angeles",  -
+                            "Detroit", "Tampa Bar", "Billings",      -
+                            "San Francisco", "new orleans", "San Antonio")
+
+
+  comboBox = self~getComboBox(IDC_CBO_ONE)
+  do i over comboBoxItems
+    comboBox~add(i)
+  end
+
+::method search private
+  expose comboBox
+
+  self~report(comboBox~find("San"),                    comboBox)
+  self~report(comboBox~find("San", 1),                 comboBox)
+  self~report(comboBox~find("San", 7),                 comboBox)
+
+  self~report(comboBox~find("New", , .true),           comboBox)
+  self~report(comboBox~find("New", , .false),          comboBox)
+  self~report(comboBox~find("New Orleans", , "exact"), comboBox)
+
+
+::method report private
+  use strict arg index, comboBox
+
+  if index = 0 then say "Not found"
+  else say comboBox~getText(index)
+
+/* Output would be:
+
+San Diego
+San Francisco
+San Antonio
+Not found
+New York
+new orleans
+
+*/
+
+]]>
+</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Edit::find() -->
 
-<section id="mthDeleteAllClsComboBox"><title>deleteAll</title>
-<indexterm><primary>deleteAll</primary><secondary>ComboBox class</secondary></indexterm>
-<indexterm><primary>ComboBox class</primary><secondary>deleteAll</secondary></indexterm>
+<section id="mthSelectedIndexClsComboBox"><title>selectedIndex</title>
+<indexterm><primary>selectedIndex</primary><secondary>ComboBox class</secondary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>selectedIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--deleteAll------------------------------------><
+>>--selectedIndex--------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Removes all items from the list in a combo box.
+  Determines the index of the currently selected item in the list of the combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -580,72 +739,9 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method always returns <computeroutput>.true</computeroutput>
+    The one-based index of the currently selected list item, or 0 if there is no selected item.
   </para>
   </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthFindClsComboBox"><title>find</title>
-<indexterm><primary>find</primary><secondary>ComboBox class</secondary></indexterm>
-<indexterm><primary>ComboBox class</primary><secondary>find</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--find(--textorPrefix--+--------------+--+---------+--)-------><
-                         +-,-startIndex-+  +-,-exact-+
-
-
-]]>
-</programlisting>
-
-<para>The find method searches the combo box for a list
-entry containing the specified text or prefix. The search is caseless.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>TextorPrefix</term>
-<listitem><para>The text or prefix for which the list is searched.
-</para></listitem></varlistentry>
-<varlistentry><term>startIndex</term>
-<listitem><para>The first list item at which the search is to be started. When the search
-reaches the bottom of the list, it is continued backward. If you
-omit this argument or specify 0, the entire list is searched.
-</para></listitem></varlistentry>
-<varlistentry><term>exact</term>
-<listitem><para>If you specify 1 or E, the text of the list item must exactly match
-the text specified for <emphasis role="italic">TextorPrefix</emphasis>.
-If you omit this argument or specify 0, the list entries are searched for a
-prefix that matches <emphasis role="italic">TextorPrefix</emphasis>.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The one-based index of the list entry that matches the search text,
-or 0 if not found.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthSelectedIndexClsComboBox"><title>selectedIndex</title>
-<indexterm><primary>selectedIndex</primary><secondary>ComboBox class</secondary></indexterm>
-<indexterm><primary>ComboBox class</primary><secondary>selectedIndex</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--selectedIndex--------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The selectedIndex method retrieves the index of
-the currently selected entry of the combo box list. This entry is highlighted
-and surrounded by a dotted border.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The one-based index of the currently selected list entry, or 0 if none
-is selected.
-</para></listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -656,50 +752,83 @@ is selected.
 <![CDATA[
 >>--selected-------------------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The selected method retrieves the text of the currently
-selected entry of the combo box list.</para>
+<para>
+  Returns the text of the currently selected item in the list of the combo box.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The text of the currently selected list entry, or an empty string if
-none is selected.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The text of the selected item, or the empty string if no item is selected.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
+
 
 <section id="mthSelectIndexClsComboBox"><title>selectIndex</title>
 <indexterm><primary>selectIndex</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>selectIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selectIndex(--index--)-----------------------><
-
+>>--selectIndex(--+---------+--)-----------------><
+                  +--index--+
 
 ]]>
 </programlisting>
 
-<para>The selectIndex method selects the list entry at
-the specified position. The currently selected list item in the combo box
-is highlighted and surrounded by a dotted border.</para>
+<para>
+  Sets the currently selected item in the list of the comboBox to the index specified.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>index</term>
-<listitem><para>The index (starting with 1) of the list item to be selected. If you
-specify 0 for this argument, the combo box must not contain any selection.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the item to be selected.
+      </para>
+      <para>
+        If this argument is omitted, or is 0, the selection is cleared. I.e., the result will be that no item is
+        selected.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the return is the one-based index of the selected item, which is 0 if the selection has been cleared. On
+    error, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a new item is selected, if necessary, the new item in the list is scrolled into view. The text in the selection
+    field will change to reflect the new selected item. Any previous selection in the list is removed.
+  </para>
+  <para>
+    If <emphasis role="italic">index</emphasis> is greater than the number of items in the list, the selection is
+    cleared and -1 is returned. If <emphasis role="italic">index</emphasis> is negative, then -1 is returned and the
+    selection remains unchanged.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>0 if an error occurred or you specified 0 for
-<emphasis role="italic">index</emphasis> to remove the selection.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End ComboBox::selectIndex() -->
 
 <section id="mthSelectClsComboBox"><title>select</title>
 <indexterm><primary>select</primary><secondary>ComboBox class</secondary></indexterm>
@@ -708,26 +837,84 @@ specify 0 for this argument, the combo box must not contain any selection.
 <![CDATA[
 >>--select(--itemText--)-------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The select method selects the list entry that matches
-the specified text.</para>
+<para>
+  Sets the selected item in the list of the combo box to the first item whose text matches <emphasis
+  role="italic">itemText</emphasis>
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>ItemText</term>
-<listitem><para>The text that the combo box is searched for.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>itemText [required]</term>
+      <listitem>
+      <para>
+        The text to use in searching for the matching item to select.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based index of the item selected, or zero if no match was found. 0 is also returned if an error ocurrs
+    within the <link linkend="ovvUnderlying">combo box</link>, but that is unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The search for <emphasis role="italic">itemText</emphasis> is always case insensitive. The search starts with the
+    first item in the list and the first item whose beginning characters match <emphasis
+    role="italic">itemText</emphasis> is selected. For example, if <emphasis role="italic">itemText</emphasis> is
+    <computeroutput>san</computeroutput> then the item <computeroutput>San Diego</computeroutput> would be a match.
+  </para>
+  <para>
+    If no match is found, or if an error ocurrs, the selection remains unchanged.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example fills a combo box with items and then selects an item.
+  </para>
+  <para>
+    Notice that the result(s) as specified in the code comments, are dependent on the combo box not having the SORT
+    style. If the combo box does have the sort style, then in both cases <emphasis role="italic">new orleans</emphasis>
+    would be selected.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose comboBox
+
+  comboBoxItems = .array~of("San Diego", "New York", "Los Angeles",  -
+                            "Detroit", "Tampa Bar", "Billings",      -
+                            "San Francisco", "new orleans", "San Antonio")
+
+
+  comboBox = self~getComboBox(IDC_CBO_ONE)
+  do i over comboBoxItems
+    comboBox~add(i)
+  end
+
+  comboBox~select("new") -- Selects New York
+
+  /* On the other hand this would select new orleans */
+  -- comboBox~select("NEW O")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>0 if an error occurred or a matching list entry was not found.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End ComboBox::select() -->
+
 
 <section id="mthItemsClsComboBox"><title>items</title>
 <indexterm><primary>items</primary><secondary>ComboBox class</secondary></indexterm>
@@ -740,14 +927,25 @@ the specified text.</para>
 ]]>
 </programlisting>
 
-<para>The items method retrieves the number of items
-in the combo box.</para>
+<para>
+  Returns the number of items in the combo box list.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of items in the combo box list.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The number of items in the combo box list, or -1 on error. An error is very unlikely.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
+
 
 <section id="mthGetTextClsComboBox"><title>getText</title>
 <indexterm><primary>getText</primary><secondary>ComboBox class</secondary></indexterm>
@@ -760,23 +958,36 @@ in the combo box.</para>
 ]]>
 </programlisting>
 
-<para>The getText method gets the text of the list item
-at the specified position in the combo box.</para>
+<para>
+  Gets the text of the item at the specified index in the combo box list.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>index</term>
-<listitem><para>The one-based index of the combo box item containing the text you are
-interested in.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The text of the combo box item at the given position, or an empty string
-if the <emphasis role="italic">index</emphasis> does not refer to an
-item or an error occurred.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The only argument is:
+    <variablelist>
+      <varlistentry><term>index</term>
+      <listitem>
+      <para>
+        The one-based index of a combo box item.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The text of the combo box item at the specified index. If <emphasis role="italic">index</emphasis> is not valid or
+    an error occurs, the empty string is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="mthFindClsComboBox">find</link> <link linkend="exampleFindClsComboBox">example</link> uses the
+    <emphasis role="italic">getText</emphasis> method.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -785,34 +996,60 @@ item or an error occurred.
 <indexterm><primary>ComboBox class</primary><secondary>modify</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--modify(--index--,--newText--)----------------><
-
+>>--modify(--+--------+--,--newText--)-----------><
+             +--index-+
 
 ]]>
 </programlisting>
 
-<para>The modify method changes the text of the list
-item at the specified position in the combo box.</para>
+<para>
+  Replaces the text for the item at the specified index with <emphasis role="italic">newText</emphasis>.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>index</term>
-<listitem><para>The one-based index of the combo box item of which the text is to be
-changed. If you omit this argument, the currently selected item is modified.
-</para></listitem></varlistentry>
-<varlistentry><term>newText</term>
-<listitem><para>The new text string to be displayed at the given position.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The index of the list item whose text is to be replaced. If this argument is omitted, then the currently
+        selected item has its text replaced. When this argument is omitted and there is no currently selected text then
+        nothing is done and -1 is returned.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>newText [required]</term>
+      <listitem>
+      <para>
+        The new text for the item at the speciifed index.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based index of the item whose text has been replaced, or less than 1 to indicate an error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Because this method uses the <link linkend="mthInsertClsComboBox">insert</link> method to change the text at the
+    specified index, if the combo box has the SORT style, the <emphasis role="italic">modify</emphasis> method will not
+    cause the combo box to insert the new text in its alphabetical order in the list items.
+  </para>
+  <para>
+    If the combo box has a horizontal scroll bar and the width of the new text is wider than the combo box, or wider
+    than the current horizontal extent, the programmer should use the <link
+    linkend="mthSetHorizontalExtentClsComboBox">setHorizontalExtent</link> method to ensure the scroll bar is shown and
+    will scroll far enough to show the whole item.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The one-based index of the modified combo box item at the given position.
-The return value is 0 if an error occurred, or -1 if the
-<emphasis role="italic">index</emphasis> does not refer to an item.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End ComboBox::modify() -->
 
 <section id="mthAddDirectoryClsComboBox"><title>addDirectory</title>
 <indexterm><primary>addDirectory</primary><secondary>ComboBox class</secondary></indexterm>
@@ -1035,7 +1272,7 @@ The return value is 0 if an error occurred, or -1 if the
 </programlisting>
 
 <para>
-  Determines whether the list box of the combo box dropped down.
+  Determines whether the list box of the combo box is dropped down.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1054,52 +1291,87 @@ The return value is 0 if an error occurred, or -1 if the
 </variablelist>
 </section>
 
-<section id="mthEditSelection"><title>editSelection</title>
-<indexterm><primary>editSelection</primary></indexterm>
-<indexterm><primary>ComboBox class</primary><secondary>editSelection</secondary></indexterm>
+<section id="mthSetEditSelection"><title>setEditSelection</title>
+<indexterm><primary>setEditSelection</primary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>setEditSelection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--editSelection(--startIndex--,--endIndex--)---><
-
-
+>>--setEditSelection(--+--------------+--+-------------+--)-----><
+                       +--startIndex--+  +-,-endIndex--+
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">editSelection</emphasis> method selects the specified text range in the
-  edit control of the associated combo box.  This method is not applicable for drop-down list combo boxes, it is
-  only for simple and drop-down combo boxes.
+  Sets the selection in the edit control portion of a <link linkend="listComboBoxTypes">simple</link> or drop-down combo box.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>startIndex</term>
-<listitem><para>
-  The one-based index of the first character in the edit control to be selected. If you omit this argument or
-  specify 0, the selection, if any, is removed.
-</para></listitem></varlistentry>
-<varlistentry><term>endIndex</term>
-<listitem><para>
-  The one-based index of the last character in the edit control to be selected. If you omit this argument or
-  specify 0, the selection is extended from the start character to the end of the text.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>startIndex [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the starting character for the selection. If <emphasis
+        role="italic">startIndex</emphasis> is 0, the selection, if any, is removed. The default value for <emphasis
+        role="italic">startIndex</emphasis> is 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>endIndex [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the last character in the selection. If <emphasis role="italic">endIndex</emphasis> is 0
+        all text in the edit control is selected. The default value if <emphasis role="italic">endIndex</emphasis> is
+        omitted is 0.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns 0 on success and 1 on error. In particular, if this method is used with a drop-down list combo
+    box, 1 is returned. Other errors could occur within the <link linkend="ovvUnderlying">underlying</link> combo box,
+    but they are unlikely.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If the value of <emphasis role="italic">startIndex</emphasis> is 0, the value of <emphasis
+    role="italic">endIndex</emphasis> is ignored. This implies that if <emphasis role="italic">startIndex</emphasis> is
+    omitted, the selection is always removed.
+  </para>
+  <para>
+    If <emphasis role="italic">endIndex</emphasis> is 0 and the value of <emphasis role="italic">startIndex</emphasis>
+    is not omitted and is not 0, then all text in the edit control is selected and the actual value of <emphasis
+    role="italic">startIndex</emphasis> is not relevant.
+  </para>
+  <para>
+    <emphasis role="italic">endIndex</emphasis> can be less than <emphasis role="italic">startIndex</emphasis>. If both
+    arguments are positive then text is selected, but the selection is exclusive of the staring and ending indexes. For
+    example this code:
+
+<programlisting>
+<![CDATA[
+
+  cb = self~newComboBox(200)
+  ret = cb~setEditSelection(8, 3)
+
+]]>
+</programlisting>
+
+    will select characters 4 through 7 inclusive.  Provided there are at least 7 characters in the edit control of
+    course.
+  </para>
+  <para>
+    The outcome of other variations of <emphasis role="italic">endIndex</emphasis> being less than <emphasis
+    role="italic">startIndex</emphasis> are deterministic, but the results are left as an exercise for the reader.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>
-  This method always returns 0, unless the combo box is a drop-down list.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>
-  The combo box is a drop-down list combo box.  This method has no effect on a drop-down list combo box because it
-  does not have an edit control.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End ComboBox::setEditSelection() -->
+
 </chapter>

@@ -1628,63 +1628,111 @@
 </variablelist>
 </section>  <!-- End Edit::setModified() -->
 
-
 <section id="mthLines"><title>lines</title>
 <indexterm><primary>lines</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>lines</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--lines----------------------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The lines method retrieves the number of text lines
-of a multiline edit control.</para>
+<para>
+  Determines the number of lines in a multiline edit control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The number of text lines.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, refer to <link linkend="mthLineIndex">lineIndex</link>.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is the number of lines in the edit control. If there is no text in the control the return is 1. The
+    return will never be less than 1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">lines</emphasis> method returns the total number of text lines, not just the number of
+    visible lines. If the dialog is resizable, the number of lines can change when the size of the edit control changes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">lineIndex</emphasis> <link linkend="exampleLineIndex">example</link> uses the <emphasis
+    role="italic">lines</emphasis> method
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Edit::lines() -->
+
 
 <section id="mthLineIndex"><title>lineIndex</title>
 <indexterm><primary>lineIndex</primary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>lineIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--lineIndex(--line--)--------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The lineIndex method retrieves the one-based character
-index of the beginning of the <emphasis role="italic">line</emphasis> in the associated edit control.</para>
+<para>
+  Determines the one-based character index of the character at the start of the line specified.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>line</term>
-<listitem><para>The number of the line of which the starting index is to be retrieved.
-Line numbers are incremented by 1, starting with 1.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The character index of the specified line. The first line starts at
-index 1.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets the text for edit control TEXT and
-displays the number of text lines (3), the starting index of the second line
-(carriage return, 0x0d, and line feed, 0x0a, which mark a line break, are also
-considered to be characters), and the length of the third line:
-<programlisting> <![CDATA[
-editControl = MyDialog~newEdit("TEXT")
-if .nil == editControl then return
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>line [required]</term>
+      <listitem>
+      <para>
+        The one-based index of the line whose charcter index needs to be determined. If <emphasis
+        role="italic">line</emphasis> is -1 then the character index of the first character in the current line is
+        returned.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the one-based character index for the first character in the line specified. -1 is returned if <emphasis
+    role="italic">line</emphasis> is not valid, greater than the number of lines in the edit control, less than -1, 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The character index is the one-based index of the character from the beginning of the edit control. This includes
+    characters like line feed and carriage return that are not displayed on the screen.
+  </para>
+  <para>
+    This method is intended for multiline edit controls, but it works for single line edit controls, returning 1 when
+    <emphasis role="italic">line</emphasis> is 1 or -1 and returning -1 for any other value of <emphasis
+    role="italic">line</emphasis>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleLineIndex"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets the text for edit control with the symbolic id of IDC_EDIT and displays the number of
+    text lines (3), the starting index of the second line (carriage return, 0x0d, and line feed, 0x0a, which mark a line
+    break, are also considered to be characters), and the length of the third line:
+
+<programlisting>
+<![CDATA[
+
+editControl = self~newEdit("TEXT")
 
 text = "It is easy to learn and easy to use." || '0d0a'x || -
        "Have fun with it!"                    || '0d0a'x || -
@@ -1696,14 +1744,20 @@ say "Number of lines:" edit~lines
 say "Line 2 begins at index" edit~lineIndex(2)
 say "Length of 3rd line:" edit~lineLength(3)
 
-Result: Number of lines: 3
-        Line 2 begins at index 39
-        Length of 3rd line: 21
+/* Output would be:
+
+Number of lines: 3
+Line 2 begins at index 39
+Length of 3rd line: 21
+*/
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Edit::lineIndex() -->
+
 
 <section id="mthLineFromIndex"><title>lineFromIndex</title>
 <indexterm><primary>lineFromIndex</primary></indexterm>
@@ -1747,8 +1801,8 @@ say "Character 55 is contained in line" edit~lineFromIndex(55)
 Result: Character 55 is contained in line 2
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-</variablelist>
+</para>
+</listitem></varlistentry> </variablelist>
 </section>
 
 <section id="mthLineLength"><title>lineLength</title>
@@ -1837,6 +1891,7 @@ text string.
 
 <section id="mthSetLimit"><title>setLimit</title>
 <indexterm><primary>setLimit</primary></indexterm>
+<index><primary>Edit class</primary><secondary>setLimit</secondary></index>
 <programlisting>
 <![CDATA[
 >>--setLimit(--chars--)--------------------------><
@@ -1845,8 +1900,9 @@ text string.
 ]]>
 </programlisting>
 
-<para>The setLimit method sets the maximum numbers of
-characters that the associated edit control can contain.</para>
+<para>
+  Sets the maximum number of characters the user can type in the edit control.
+  </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
