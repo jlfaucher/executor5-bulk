@@ -554,7 +554,7 @@
 </row>
 <row>
 <entry>ChangeBitmapButton</entry>
-<entry><link linkend="mthChangeBitmapButtonClsDialogExtension">ChangeBitmapButton</link></entry>
+<entry><link linkend="mthChangeBitmapButtonClsDialogExtensions">ChangeBitmapButton</link></entry>
 </row>
 <row>
 <entry>ChangeComboEntry</entry>
@@ -8493,7 +8493,7 @@ loaded through a DLL.
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
-<para>See also method <link linkend="mthChangeBitmapButtonClsDialogExtension">ChangeBitmapButton</link>.</para>
+<para>See also method <link linkend="mthChangeBitmapButtonClsDialogExtensions">ChangeBitmapButton</link>.</para>
 </section>
 
 
@@ -9090,18 +9090,20 @@ information.
     bitmap. <emphasis role="italic">Set position</emphasis> more accurately describes what the method does than
     <emphasis role="italic">displace</emphasis>.
   </para>
+  <para>
+    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
+    linkend="mthDisplaceBitmapClsButton">displaceBitmap</link> method are equivalent.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     The following example moves the bitmap within the associated bitmap button 4 screen pixels to the right and 3
-    pixels upward. Contrast this with the <link linkend="exampleSetBitmapPosition">setBitmapPosition</link> example:
+    pixels upward from its current position.
 <programlisting>
 <![CDATA[
 
-  button = self~newPushButton("IDC_PB_BITMAP1")
-  p = .Point~new
-  if button~getBitmapPosition(p) then button~displaceBitmap(p~x + 4, p~y - 3)
+  self~displaceBitmap(4, -3)
 
 ]]>
 </programlisting>
@@ -9110,48 +9112,6 @@ information.
 </variablelist>
 </section>
 
-
-<section id="mthDisplaceBitmapClsDialogExtensions"><title>displaceBitmap</title>
-<indexterm><primary>displaceBitmap</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~displaceBitmap(--id--,--x--,--y--)-------------><
-
-
-]]>
-</programlisting>
-
-<para>The displaceBitmap method sets the position of
-a bitmap within a button. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of a button
-</para></listitem></varlistentry>
-<varlistentry><term>x</term>
-<listitem><para>The horizontal displacement in screen pixels. A negative value can be
-used.
-</para></listitem></varlistentry>
-<varlistentry><term>y</term>
-<listitem><para>The vertical displacement (negative allowed)
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example moves the bitmap within a button
-four screen pixels to the right and three pixels upward:
-
-<programlisting>
-<![CDATA[
-MyBaseDialog~displaceBitmap(244, 4, -3)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="h000737"><title>GetBmpDisplacement</title>
 <indexterm><primary>GetBmpDisplacement</primary>
