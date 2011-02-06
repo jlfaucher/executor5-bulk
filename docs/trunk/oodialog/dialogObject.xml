@@ -833,15 +833,21 @@
 <entry><link linkend="h000086">Get</link></entry>
 </row>
 <row>
+<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry>
 <entry>Sets a data attribute of the Rexx dialog using the data from a connected Windows dialog control.</entry>
-<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry> </row>
-<row>
-<entry>GetBitmapSizeX</entry>
-<entry><link linkend="h001127">GetBitmapSizeX</link></entry>
 </row>
 <row>
-<entry>GetBitmapSizeY</entry>
-<entry><link linkend="h001135">GetBitmapSizeY</link></entry>
+<entry><link linkend=mthGetBitMapPositionClsDialogExtension>getBitmapPosition</link></entry>
+<entry>getBitmapPosition</entry>
+</row>
+<row>
+<row>
+<entry><link linkend=mthGetBitMapSizeXClsDialogExtension>getBitmapSizeX</link></entry>
+<entry>Gets the width in pixels of the bitmap assigned to a bitmap button.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetBitMapSizeYClsDialogExtension">getBitmapSizeY</link></entry>
+<entry>Gets the height in pixels of the bitmap assigned to a bitmap button.</entry>
 </row>
 <row>
 <entry>GetBmpDisplacement</entry>
@@ -8529,18 +8535,156 @@ MyDialog~ChangeBitmapButton(501, "NewBB.bmp")
 </variablelist>
 </section>
 
-<section id="h001127"><title>GetBitmapSizeX</title>
-<indexterm><primary>GetBitmapSizeX</primary>
+<section id="mthSetBitmapPositionClsDialogExtension"><title>setBitmapPosition</title>
+<indexterm><primary>setBitmapPosition</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setBitmapPosition</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+Form 1:
+
+>>--setBitmapPosition(--id--,--point--)----------><
+
+Form 2:
+
+>>--setBitmapPosition(--id--,--x--,--y--)--------><
+
+Generic form:
+
+>>--setBitmapPosition(--id--,--newPosition--)----><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the position of the upper left corner of the bitmap within the <link linkend="defClientArea">client</link> area
+  of the specified bitmap button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::setBitmapPosition() -->
+
+<section id="mthGetBitmapPositionClsDialogExtension"><title>getBitmapPosition</title>
+<indexterm><primary>getBitmapPosition</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getBitmapPosition</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getBitmapPosition(--pos--)-------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::getBitmapPosition() -->
+
+<section id="mthGetBitMapSizeXClsDialogExtension>"<title>getBitmapSizeX</title>
+<indexterm><primary>getBitmapSizeX</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~GetBitmapSizeX(--id--)-------------------------><
+>>-aBaseDialog~getBitmapSizeX(--id--)-------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetBitmapSizeX method returns the horizontal
+<para>The getBitmapSizeX method returns the horizontal
 bitmap extension. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8554,18 +8698,18 @@ bitmap extension. </para>
 </variablelist>
 </section>
 
-<section id="h001135"><title>GetBitmapSizeY</title>
-<indexterm><primary>GetBitmapSizeY</primary>
+<section id="mthGetBitMapSizeYClsDialogExtension"><title>getBitmapSizeY</title>
+<indexterm><primary>getBitmapSizeY</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~GetBitmapSizeY(--id--)-------------------------><
+>>-aBaseDialog~getBitmapSizeY(--id--)-------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetBitmapSizeY method returns the vertical
+<para>The getBitmapSizeY method returns the vertical
 bitmap extension. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>

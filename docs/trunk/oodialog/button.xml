@@ -213,15 +213,15 @@
 <entry>Draws the bitmap for a bitmap button at the specified position.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetBitmapPosition">getBitmapPosition</link></entry>
+<entry><link linkend="mthGetBitmapPositionClsButton">getBitmapPosition</link></entry>
 <entry>Retrieves the postion, as a point, of the upper left corner of a bitmap within a bitmap button.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetBitmapSizeX">getBitmapSizeX</link></entry>
+<entry><link linkend="mthGetBitMapSizeXClsButton">getBitmapSizeX</link></entry>
 <entry>Retrieves the width of the bitmap that is set for the associated button.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetBitmapSizeY">getBitmapSizeY</link></entry>
+<entry><link linkend="mthGetBitMapSizeYClsButton">getBitmapSizeY</link></entry>
 <entry>Retrieves the height of the bitmap that is set for the associated button.</entry>
 </row>
 <row>
@@ -261,7 +261,7 @@
 <entry>Scrolls text in the associated button with the given font, size, and color.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetBitmapPosition">setBitmapPosition</link></entry>
+<entry><link linkend="mthSetBitmapPositionClsButton">setBitmapPosition</link></entry>
 <entry>Sets the postion of the upper left corner of a bitmap within a bitmap button.</entry>
 </row>
 <row>
@@ -362,7 +362,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method does not return a value.
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -414,7 +414,7 @@ return .true
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method does not return any value.
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -663,7 +663,8 @@ button~state="FOCUS PUSHED"
       <listitem>
       <para>
         A text string containing one or more of the following keywords separated by blanks.  Common sense should be used
-        when constructing the newStyle string. If mutually exclusive key words are used, the outcome is undefined.
+        when constructing the new <emphasis role="italic">style</emphasis> string. If mutually exclusive key words are
+        used, the outcome is undefined.
       </para>
       <para>
         <simplelist type='vert' columns='3'>
@@ -680,170 +681,201 @@ button~state="FOCUS PUSHED"
         </simplelist>
       </para>
       <variablelist>
-      <varlistentry><term>DEFPUSHBUTTON</term>
-      <listitem><para>In a dialog, the default push button is the button that is
-        pushed when the Enter key is pressed.  Changing the default push button will
-        change the behavior of the dialog when the user presses the enter key.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>PUSHBOX</term>
-      <listitem><para>A push button that does not display the button face or border,
-        only the text appears.  This button style is not applicable when Windows
-        themes are in use.
-      </para></listitem></varlistentry>
-      <varlistentry><term>RADIO</term>
-      <listitem><para>A radio button the state of which has to be maintained by the
-        programmer.
-      </para></listitem></varlistentry>
-      <varlistentry><term>AUTO</term>
-      <listitem><para>A radio button where the operating system maintains the check
-      state for all radio buttons in the same group.  When one radio button in the
-      group is checked by the user, the operating system unchecks all other buttons in
-      the group.
-      </para></listitem></varlistentry>
-      <varlistentry><term>CHECKBOX</term>
-      <listitem><para>A check box where the state has to be maintained by the
-        programmer.  The state can only be checked or unchecked.
-      </para></listitem></varlistentry>
-      <varlistentry><term>AUTOCHECKBOX</term>
-      <listitem><para>A check box where the operating system maintains the check state
-        for the programmer.
-      </para></listitem></varlistentry>
-      <varlistentry><term>3STATE</term>
-      <listitem><para>A check box button that has a grayed state as well as checked or
-      unchecked.  The greyed state shows that the check state of the button is not
-      determined.  The programmer needs to manage the state of the button when it is
-      clicked.
-      </para></listitem></varlistentry>
-      <varlistentry><term>AUTO3STATE</term>
-      <listitem><para>A check box button that is the same as a three-state check box
-      except that the operating system maintains the check state for the programmer.
-      </para></listitem></varlistentry>
-      <varlistentry><term>GROUPBOX</term>
-      <listitem><para>This key word has no effect.
-      </para></listitem></varlistentry>
-      <varlistentry><term>OWNERDRAW</term>
-      <listitem><para>This key word has no effect.
-      </para></listitem></varlistentry>
-      <varlistentry><term>LEFTTEXT</term>
-      <listitem><para>Places the text on the left of the button for a radio button or
-        check box.  This style and RIGHTBUTTON are equivalent.
-      </para></listitem></varlistentry>
-      <varlistentry><term>RIGHTBUTTON</term>
-      <listitem><para>Places the button on the right of the text for a radio button
-        or a check box. This style is the same as LEFTTEXT.
-      </para></listitem></varlistentry>
-      <varlistentry><term>NOTLEFTTEXT</term>
-      <listitem><para>Removes the LEFTTEXT style.
-      </para></listitem></varlistentry>
-      <varlistentry><term>TEXT</term>
-      <listitem><para>The button displays text.
-      </para></listitem></varlistentry>
-      <varlistentry><term>ICON</term>
-      <listitem>
-      <para>
-                  The button displays an icon image.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>BITMAP</term>
-      <listitem>
-      <para>
-                  The button displays a bitmap image.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>LEFT</term>
-      <listitem>
-      <para>
-                  The button has its text left-justified in the button rectangle.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>RIGHT</term>
-      <listitem>
-      <para>
-                  The button has its text right-justified in the button rectangle.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>HCENTER</term>
-      <listitem>
-      <para>
-                  The button has its text centered horizontally in the button
-        rectangle.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>TOP</term>
-      <listitem>
-      <para>
-                  The text is placed at the top of the button rectangle.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>BOTTOM</term>
-      <listitem>
-      <para>
-                  The text is placed at the bottom of the button rectangle.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>VCENTER</term>
-      <listitem>
-      <para>
-                  The text is vertically centered in the button rectangle.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>PUSHLIKE</term>
-      <listitem>
-      <para
-            >Causes a radio button or check box button to behave like a push
-        button.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>MULTILINE</term>
-      <listitem>
-      <para>
-                  Causes the text for a button to wrap to multiple lines if the
-        text is too long for the width of the button.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>NOTIFY</term>
-      <listitem>
-      <para>
-        Enables a button to send the kill focus and set focus messages. See the <link
-        linkend="mthConnectButtonEvent">connectButtonEvent</link> method of the <link
-        linkend="clsEventNotification">EventNotification Class</link>.  If the button
-        does not have this style, kill and set focus events will not be received, if
-        the programmer does <computeroutput>connectButtonEvent()</computeroutput> to
-        connect those events.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>FLAT</term>
-      <listitem>
-      <para>
-                  Gives the button a flat appearance.  This style is not
-        applicable when Windows themes are in effect.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>NOTPUSHLIKE</term>
-      <listitem>
-      <para>
-                  Removes the push like style.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>NOTMULTILINE</term>
-      <listitem>
-      <para>
-                  Removes the multi-line style.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>NOTNOTIFY</term>
-      <listitem>
-      <para>
-                  Removes the notify style.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>NOTFLAT</term>
-      <listitem>
-      <para>
-                  Removes the flat style.
-      </para>
-      </listitem></varlistentry> </variablelist>
+        <varlistentry><term>DEFPUSHBUTTON</term>
+        <listitem>
+        <para>
+          In a dialog, the default push button is the button that is pushed when the Enter key is pressed.  Changing the
+          default push button will change the behavior of the dialog when the user presses the enter key.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>PUSHBOX</term>
+        <listitem>
+        <para>
+          A push button that does not display the button face or border, only the text appears.  This button style is
+          not applicable when Windows themes are in use.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RADIO</term>
+        <listitem>
+        <para>
+          A radio button the state of which has to be maintained by the programmer.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>AUTO</term>
+        <listitem>
+        <para>
+          A radio button where the operating system maintains the check state for all radio buttons in the same group.
+          When one radio button in the group is checked by the user, the operating system unchecks all other buttons in
+          the group.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CHECKBOX</term>
+        <listitem>
+        <para>
+          A check box where the state has to be maintained by the programmer.  The state can only be checked or
+          unchecked.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>AUTOCHECKBOX</term>
+        <listitem>
+        <para>
+          A check box where the operating system maintains the check state for the programmer.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>3STATE</term>
+        <listitem>
+        <para>
+          A check box button that has a grayed state as well as checked or unchecked.  The greyed state shows that the
+          check state of the button is not determined.  The programmer needs to manage the state of the button when it
+          is clicked.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>AUTO3STATE</term>
+        <listitem>
+        <para>
+          A check box button that is the same as a three-state check box except that the operating system maintains the
+          check state for the programmer.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUPBOX</term>
+        <listitem>
+        <para>
+          This key word has no effect.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>OWNERDRAW</term>
+        <listitem>
+        <para>
+          This key word has no effect.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LEFTTEXT</term>
+        <listitem>
+        <para>
+          Places the text on the left of the button for a radio button or check box.  This style and RIGHTBUTTON are
+          equivalent.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHTBUTTON</term>
+        <listitem>
+        <para>
+          Places the button on the right of the text for a radio button or a check box. This style is the same as
+          LEFTTEXT.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTLEFTTEXT</term>
+        <listitem>
+        <para>
+          Removes the LEFTTEXT style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TEXT</term>
+        <listitem>
+        <para>
+          The button displays text.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ICON</term>
+        <listitem>
+        <para>
+          The button displays an icon image.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BITMAP</term>
+        <listitem>
+        <para>
+          The button displays a bitmap image.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LEFT</term>
+        <listitem>
+        <para>
+          The button has its text left-justified in the button rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          The button has its text right-justified in the button rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HCENTER</term>
+        <listitem>
+        <para>
+          The button has its text centered horizontally in the button rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TOP</term>
+        <listitem>
+        <para>
+          The text is placed at the top of the button rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BOTTOM</term>
+        <listitem>
+        <para>
+          The text is placed at the bottom of the button rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VCENTER</term>
+        <listitem>
+        <para>
+          The text is vertically centered in the button rectangle.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>PUSHLIKE</term>
+        <listitem>
+        <para>
+          Causes a radio button or check box button to behave like a push button.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MULTILINE</term>
+        <listitem>
+        <para>
+          Causes the text for a button to wrap to multiple lines if the text is too long for the width of the button.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTIFY</term>
+        <listitem>
+        <para>
+          Enables a button to send the kill focus and set focus <link linkend="ovvEvents">event</link> notifications.
+          See the <link linkend="mthConnectButtonEvent">connectButtonEvent</link> method of the <link
+          linkend="clsEventNotification">EventNotification</link> class.  If the button does not have this style, kill
+          and set focus events will not be received, even if the programmer does use the
+          <emphasis role="italic">connectButtonEvent</emphasis> method to connect those events.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FLAT</term>
+        <listitem>
+        <para>
+          Gives the button a flat appearance. This style is not applicable when Windows themes are in effect.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTPUSHLIKE</term>
+        <listitem>
+        <para>
+          Removes the push like style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTMULTILINE</term>
+        <listitem>
+        <para>
+          Removes the multi-line style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTNOTIFY</term>
+        <listitem>
+        <para>
+          Removes the notify style.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTFLAT</term>
+        <listitem>
+        <para>
+          Removes the flat style.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
       </listitem></varlistentry>
     </variablelist>
   </para>
@@ -870,23 +902,28 @@ button~state="FOCUS PUSHED"
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example 1:</emphasis></term>
-  <listitem><para>The following example makes the OK button the default button:
-  <programlisting>
-  <![CDATA[
-  button = MyDialog~newPushButton("IDOK")
-  if button == .Nil then return
-  button~style="DEFPUSHBUTTON"
-  ]]>
-  </programlisting>
+  <listitem>
+  <para>
+    The following example makes the OK button the default button:
+
+<programlisting>
+<![CDATA[
+button = MyDialog~newPushButton("IDOK")
+if button == .Nil then return
+button~style="DEFPUSHBUTTON"
+]]>
+</programlisting>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example 2:</emphasis></term>
-  <listitem><para>This example changes the text of a check box button depending on
-    the state another check box.  When the button text is long, the multi-line
-    style is added and the placement of the text in relation to the button
-    rectangle is changed.  When the text is short, the button style is set back to
-    the default style.
-  <programlisting> <![CDATA[
+  <listitem>
+  <para>
+    This example changes the text of a check box button depending on the state another check box.  When the button text
+    is long, the multi-line style is added and the placement of the text in relation to the button rectangle is changed.
+    When the text is short, the button style is set back to the default style.
+
+<programlisting>
+<![CDATA[
   ::method idCheckOne
     use arg wParam, lParam
 
@@ -902,9 +939,10 @@ button~state="FOCUS PUSHED"
       chkButton~setTitle("Connect")
     end
 
-  ]]>
-  </programlisting>
-  </para></listitem></varlistentry>
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -923,39 +961,42 @@ button~state="FOCUS PUSHED"
   its text or image.  (If the button has an image.)
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-      If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-      determine the current version of the library.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      This method has no arguments.
-    </para>
+  <para>
+    This method has no arguments.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
-        <varlistentry><term>A <link linkend="clsSize">.Size</link> object</term>
-        <listitem>
-          <para>
-            The ideal size for the button.
-          </para>
-        </listitem></varlistentry>
-        <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
-        <listitem>
-          <para>
-            Some unanticipated error.  This is very unlikely to happen.
-          </para>
-        </listitem></varlistentry>
-      </variablelist>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>A <link linkend="clsSize">.Size</link> object</term>
+      <listitem>
+      <para>
+        The ideal size for the button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
+      <listitem>
+      <para>
+        Some unanticipated error.  This is very unlikely to happen.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
     </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.If necessary use
+    the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the
+    library.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -987,54 +1028,71 @@ button~state="FOCUS PUSHED"
 </programlisting>
 
 <para>
-  This method retrieves the margins used to draw text within the associated
-  button control.
+  This method retrieves the margins used to draw text within the button control.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not take any arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>A <link linkend="clsRect">.Rect</link> object</term>
+      <listitem>
+      <para>
+        The margin for drawing text in the button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>The <computeroutput>.nil</computeroutput> object.</term>
+      <listitem>
+      <para>
+        An unanticipated error.  This is not likely to happen.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-    <para>
-      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-      If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-      determine the current version of the library.
-    </para>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+    determine the current version of the library.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
   </listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>This method does not take any arguments.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term>A <link linkend="clsRect">.Rect</link> object</term>
-<listitem><para>The margin for drawing text in the button.
-</para></listitem></varlistentry>
-<varlistentry><term>The <computeroutput>.nil</computeroutput> object.</term>
-<listitem><para>An unanticipated error.  This is not likely to happen.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para> This example gets the text margins for the Redraw button and displays the information:
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the text margins for the Redraw button and displays the information:
+
 <programlisting>
 <![CDATA[
-margins = self~newPushButton(IDC_PB_REDRAW)~getTextMagin
-say 'The text margins for the "Redraw" button:'
-say '  Left:  ' margins~left
-say '  Top:   ' margins~top
-say '  Right: ' margins~right
-say '  Bottom:' margins~bottom
+  margins = self~newPushButton(IDC_PB_REDRAW)~getTextMagin
+  say 'The text margins for the "Redraw" button:'
+  say '  Left:  ' margins~left
+  say '  Top:   ' margins~top
+  say '  Right: ' margins~right
+  say '  Bottom:' margins~bottom
 
-/* Output might be for example:
- *   The text margins for the "Redraw" button:
- *     Left:   1
- *     Top:    1
- *     Right:  1
- *     Bottom: 1
- */
+  /* Output might be for example:
+   *   The text margins for the "Redraw" button:
+   *     Left:   1
+   *     Top:    1
+   *     Right:  1
+   *     Bottom: 1
+   */
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1052,47 +1110,64 @@ say '  Bottom:' margins~bottom
   This method sets the margins for drawing text in the associated button control.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>margins</term>
+      <listitem>
+      <para>
+        A <link linkend="clsRect">.Rect</link> object describing the new margins.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term><computeroutput>.true</computeroutput></term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><computeroutput>.false</computeroutput></term>
+      <listitem>
+      <para>
+        Failed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-    <para>
-      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-      If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-      determine the current version of the library.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+    determine the current version of the library.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>margins</term>
-<listitem>
-<para>
-  A <link linkend="clsRect">.Rect</link> object describing the new margins.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The possible return values are:
-<variablelist>
-<varlistentry><term><computeroutput>.true</computeroutput></term>
-<listitem><para>Success
-</para></listitem></varlistentry>
-<varlistentry><term><computeroutput>.false</computeroutput></term>
-<listitem><para>Failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example sets a new text margin of 5 for the button control.
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets a new text margin of 5 for the button control.
+
 <programlisting>
 <![CDATA[
-margins = .Rect~new(5, 5, 5, 5)
-self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
+
+  margins = .Rect~new(5, 5, 5, 5)
+  self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1111,61 +1186,70 @@ self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
   This method retrieves information describing the image list for the associated button, if there is one.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-      If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-      determine the current version of the library.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The are no arguments to this method.
-  </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem><para>The return value is:
-  <variablelist>
-  <varlistentry><term>A <computeroutput>.Directory</computeroutput> object.</term>
   <listitem>
   <para>
-    The image list information is returned in a Directory object. See the <link
-    linkend="mthSetImageList">setImageList</link>() method for clarification of the information returned.
-    The directory object has the following entries:
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return value is:
     <variablelist>
-    <varlistentry><term>imageList</term>
-    <listitem>
+      <varlistentry><term>A <computeroutput>.Directory</computeroutput> object.</term>
+      <listitem>
       <para>
-        The <link linkend="clsImageList">.ImageList</link> object containing the images for the button.
+        The image list information is returned in a Directory object. See the <link
+        linkend="mthSetImageList">setImageList</link>() method for clarification of the information returned. The
+        directory object has the following entries:
+        <variablelist>
+          <varlistentry><term>imageList</term>
+          <listitem>
+          <para>
+            The <link linkend="clsImageList">.ImageList</link> object containing the images for the button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rect</term>
+          <listitem>
+          <para>
+            A <link linkend="clsRect">.Rect</link> object that specifies the margin around the image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>alignment</term>
+          <listitem>
+          <para>
+            The numeric flag that specifies the alignment of the image list.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
-    </listitem></varlistentry>
-    <varlistentry><term>rect</term>
-    <listitem>
+      </listitem></varlistentry>
+      <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
+      <listitem>
       <para>
-        A <link linkend="clsRect">.Rect</link> object that specifies the margin around the image.
+        The Nil object is returned if the button does not have an image list, or for some other
+        unanticipated error.
       </para>
-    </listitem></varlistentry>
-    <varlistentry><term>alignment</term>
-    <listitem>
-      <para>
-        The numeric flag that specifies the alignment of the image list.
-      </para>
-    </listitem></varlistentry>
+      </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-    <para>
-      The Nil object is returned if the button does not have an image list, or for some other
-      unanticipated error.
-    </para>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+    determine the current version of the library.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
-  </variablelist>
-  </para></listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example gets the image list from the View push button and displays the information returned.
+  <para>
+    This example gets the image list from the View push button and displays the information returned.
 <programlisting>
 <![CDATA[
 
@@ -1205,7 +1289,8 @@ self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
  */
 ]]>
 </programlisting>
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1222,134 +1307,136 @@ self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 </programlisting>
 
 <para>
-  Sets, or removes the image list for the button. To remove an existing image list, the programmer passes
-  in .nil for the first argument.
-</para>
-<para>
-  Using an image list with a button is a new feature that requires Windows XP or later. It provides an
-  easier, more convenient way to do owner-drawn buttons. This method should be the preferred way for the
-  ooDialog programmer to do bitmap buttons, where the primary purpose is to provide an image on the
-  button. Using an image list will automatically give the button the same look and feel as other buttons
-  on the system.
-</para>
-<para>
-  A <link linkend="clsImageList">.ImageList</link> object is used to supply the images for the button. If
-  the image list only contains 1 image at the first index, then that image is used for all button states.
-  If more than 1 image is supplied, the the image at each index is used for the button state with this
-  mapping:
-</para>
-<simplelist type='vert' columns='1'>
-  <member>index 0 = Normal   </member>
-  <member>index 1 = Hot      </member>
-  <member>index 2 = Press    </member>
-  <member>index 3 = Disabled </member>
-  <member>index 4 = Defaulted</member>
-  <member>index 5 = StylusHot</member>
-</simplelist>
-<para>
-  StylusHot is only used on tablet computers. If more than 1 image is supplied, but some indexes do not
-  have an image, then the system does not draw an image for that state. The programmer retains ownership
-  of the image list. What this means in essence is the programmer decide when, or if, the image list
-  should be released. See the discussion in the .ImageList class about releasing image lists if needed.
-  If you release the image list while the dialog is still active, the images on the button disappear.
-</para>
-<para>
-  A sample program: <computeroutput>imageButton.rex</computeroutput> in the samples directory is provided
-  that shows how to use this method. It is in:
-  <computeroutput>samples\oodialog\examples</computeroutput>.
+  Sets, or removes, the image list for the button. To remove an existing image list, the programmer passes in .nil for
+  the first argument.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-      If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-      determine the current version of the library.
-    </para>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The arguments are:
-      <variablelist>
-      <varlistentry><term>imageList</term>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>imageList [required]</term>
       <listitem>
-        <para>
-          A <link linkend="clsImageList">.ImageList</link> object containing the images for the button.
-          If this argument is the Nil object, then any existing image list is removed.
-        </para>
+      <para>
+        A <link linkend="clsImageList">.ImageList</link> object containing the images for the button. If this argument
+        is the <computeroutput>.Nil</computeroutput> object, then any existing image list is removed.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>margin</term>
+      <varlistentry><term>margin [optional]</term>
       <listitem>
-        <para>
-          Optional. A <link linkend="clsRect">.Rect</link> object containing the margins around the
-          image. The default is a 0 margin.
-        </para>
+      <para>
+        A <link linkend="clsRect">.Rect</link> object containing the margins around the image. The default is a 0
+        margin.
+      </para>
       </listitem></varlistentry>
-      <varlistentry><term>alignment</term>
+      <varlistentry><term>alignment [optional]</term>
       <listitem>
-        <para>
-          Optional, Specifies the alignment of the image on the button. You can use <link
-          linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
-          following symbols,
-          <simplelist type='horiz' columns='2'>
-          <member>BUTTON_IMAGELIST_ALIGN_LEFT   </member>
-          <member>BUTTON_IMAGELIST_ALIGN_RIGHT  </member>
-          <member>BUTTON_IMAGELIST_ALIGN_TOP    </member>
-          <member>BUTTON_IMAGELIST_ALIGN_BOTTOM </member>
-          <member>BUTTON_IMAGELIST_ALIGN_CENTER </member>
-          </simplelist>
-          or use the numeric value itself.
-        </para>
-        <para>
-          The default is BUTTON_IMAGELIST_ALIGN_CENTER.
-        </para>
+      <para>
+        Specifies the alignment of the image on the button. You can use <link
+        linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
+        following symbols, or use the numeric value itself.
+      </para>
+      <para>
+        <simplelist type='horiz' columns='2'>
+        <member>BUTTON_IMAGELIST_ALIGN_LEFT   </member>
+        <member>BUTTON_IMAGELIST_ALIGN_RIGHT  </member>
+        <member>BUTTON_IMAGELIST_ALIGN_TOP    </member>
+        <member>BUTTON_IMAGELIST_ALIGN_BOTTOM </member>
+        <member>BUTTON_IMAGELIST_ALIGN_CENTER </member>
+        </simplelist>
+      </para>
+      <para>
+        The default is BUTTON_IMAGELIST_ALIGN_CENTER.
+      </para>
       </listitem></varlistentry>
-      </variablelist>
-    </para>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The possible return values are:
-      <variablelist>
+  <para>
+    The possible return values are:
+    <variablelist>
       <varlistentry><term>oldImageList</term>
       <listitem>
-        <para>
-          If there is an existing image list, it is returned in the same format specified in the <link
-          linkend="mthGetImageList"></link>() method.
-        </para>
+      <para>
+        If there is an existing image list, it is returned in the same format specified in the <link
+        linkend="mthGetImageList"></link>() method.
+      </para>
       </listitem></varlistentry>
       <varlistentry><term>.nil</term>
       <listitem>
-        <para>
-          The Nil object is returned if there was no existing image list, and also if an error is
-          encountered. In general, the .SystemErrorCode variable should be set to non-zero if an error
-          happened.
-        </para>
+      <para>
+        The <computeroutput>.Nil</computeroutput> object is returned if there was no existing image list, and also if
+        an error is encountered. In general, the <computeroutput>.SystemErrorCode</computeroutput> variable should be
+        set to non-zero if an error happened.
+      </para>
       </listitem></varlistentry>
-      </variablelist>
-    </para>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using an image list with a button is a new feature that requires Windows XP or later. It provides an easier, more
+    convenient way to do owner-drawn buttons. This method should be the preferred way for the ooDialog programmer to do
+    bitmap buttons, where the primary purpose is to provide an image on the button. Using an image list will automatically
+    give the button the same look and feel as other buttons on the system.
+  </para>
+  <para>
+    A <link linkend="clsImageList">.ImageList</link> object is used to supply the images for the button. If the image list
+    only contains 1 image at the first index, then that image is used for all button states. If more than 1 image is
+    supplied, the the image at each index is used for the button state with this mapping:
+  </para>
+  <para>
+  <simplelist type='vert' columns='1'>
+    <member>index 0 = Normal   </member>
+    <member>index 1 = Hot      </member>
+    <member>index 2 = Press    </member>
+    <member>index 3 = Disabled </member>
+    <member>index 4 = Defaulted</member>
+    <member>index 5 = StylusHot</member>
+  </simplelist>
+  </para>
+  <para>
+    StylusHot is only used on tablet computers. If more than 1 image is supplied, but some indexes do not have an image,
+    then the system does not draw an image for that state. The programmer retains ownership of the image list. What this
+    means in essence is the programmer decide when, or if, the image list should be released. See the discussion in the
+    <link linkend="clsImageList">ImageList</link> class about releasing image lists if needed. If you release the image
+    list while the dialog is still active, the images on the button disappear.
+  </para>
+  <para>
+    A sample program: <computeroutput>imageButton.rex</computeroutput> in the samples directory is provided
+    that shows how to use this method. It is in:
+    <computeroutput>samples\oodialog\examples</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+    determine the current version of the library.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
   <varlistentry id="exampleSetImageList"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example creates an image list from a set of bitmap files. Each image represents one of the
-    possible buttons states. In the program, as the button changes states, the text on the button is also
-    changed. So, the program calculates the ideal button size using the longest label, then resets the
-    button size to the ideal size.
+    This example creates an image list from a set of bitmap files. Each image represents one of the possible buttons
+    states. In the program, as the button changes states, the text on the button is also changed. So, the program
+    calculates the ideal button size using the longest label, then resets the button size to the ideal size.
   </para>
   <para>
-    Since the image list API is only available with XP or later, the program checks that the API is
-    available before proceeding. For further information on some of the methods used in the example see
-    <link linkend="mthGetIdealSize">getIdealSize</link> and <link
-    linkend="mthComCtl32Version">comCtl32Version</link>.
+    Since the image list API is only available with XP or later, the program checks that the API is available before
+    proceeding. For further information on some of the methods used in the example see <link
+    linkend="mthGetIdealSize">getIdealSize</link> and <link linkend="mthComCtl32Version">comCtl32Version</link>.
 
 <programlisting>
 <![CDATA[
@@ -1394,8 +1481,10 @@ self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 return 0
 ]]>
 </programlisting>
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
+
 </section>
 
 
@@ -1409,28 +1498,35 @@ return 0
 </programlisting>
 
 <para>
-  Retrieves a button's image if one is set, or .nil if the button does not have an image associated with
-  it.
+  Retrieves a button's image if one is set, or <computeroutput>.nil</computeroutput> if the button does not have an
+  image associated with it.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      This method does not take any arguments.
-    </para>
+  <para>
+    This method does not take any arguments.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      This method returns the <link linkend="clsImage">.Image</link> object for the button, or .nil if
-      the button does not have an image .
-    </para>
+  <para>
+    This method returns the <link linkend="clsImage">.Image</link> object for the button, or .nil if the button does not
+    have an image.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      In this example a bitmap has been set for the button on a popup dialog. When the dialog closes,
-      bitmap image is retrieved from the button and released.
+  <para>
+    In this example a bitmap has been set for the button on a popup dialog. When the dialog closes, bitmap image is
+    retrieved from the button and released.
+
 <programlisting>
 <![CDATA[
 ::method cancel
@@ -1457,38 +1553,48 @@ return 0
 </programlisting>
 
 <para>
-  Sets, or removes, the image associated with a button. The image can bet a bitmap, icon, or cursor. Note
-  that the button style has to match the type of image. For cursors and icons, the button must be an ICON
-  button. For bitmap images, the button must be a BITMAP button.
+  Sets, or removes, the image associated with a button. The image can bet a bitmap, icon, or cursor. Note that the
+  button style has to match the type of image. For cursors and icons, the button must be an ICON button. For bitmap
+  images, the button must be a BITMAP button.
 </para>
 <para>
-  To completely remove an image associated with the button use .nil for the argument.
+  To completely remove an image associated with the button use <computeroutput>.nil</computeroutput> for the argument.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>
-      The single required argument is either the <link linkend="clsImage">.Image</link> object to be
-      associated with the button or .nil. The use of .nil for the argument removes any existing image.
-    </para>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>newImage [required]</term>
+      <listitem>
+      <para>
+        The new <link linkend="clsImage">.Image</link> object to be associated with the button or
+        <computeroutput>.nil</computeroutput>. The use of <computeroutput>.nil</computeroutput> for the argument removes any
+        existing image.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      This method returns the old image, if there was one, otherwise .nil.
-    </para>
+  <para>
+    This method returns the old image, if there was one, otherwise <computeroutput>.nil</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      This example gets an image from the resource file for a ResDialog and associates it with the Push
-      Me button.
+  <para>
+    This example gets an image from the resource file for a <link linkend="clsResDialog">ResDialog</link> and associates
+    it with the Push Me button.
+
 <programlisting>
 <![CDATA[
 ::method initDialog
@@ -1498,13 +1604,219 @@ return 0
   self~connectButtonEvent(IDC_PB_PUSHME, "CLICKED", onPushMe)
 ]]>
 </programlisting>
-    </para>
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ButtonControl::setImage() -->
 
 
+<section id="mthDimBitmap"><title>dimBitmap</title>
+<indexterm><primary>dimBitmap</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>dimBitmap</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dimBitmap(--bmp--,--cx--,--cy--+---------+--+---------+--+---------+--)----><
+                                   +-,-stepX-+  +-,-stepY-+  +-,-steps-+
+
+]]>
+</programlisting>
+
+<para>
+  Draws a bitmap on the client area of the button control step by step.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>bmp [required]</term>
+      <listitem>
+      <para>
+        A handle to the bitmap loaded with <link linkend="mthLoadBitmap">loadBitmap</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cx, cy [required]</term>
+      <listitem>
+      <para>
+        The width and height of the bitmap.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>stepx, stepy [optional]</term>
+      <listitem>
+      <para>
+        The number of pixels to increment the x and y position of the bitmap at each step. The default is 2 pixels for
+        both <emphasis role="italic">cx</emphasis> and <emphasis role="italic">cy</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>steps [optional]</term>
+      <listitem>
+      <para>
+        The number of iterations used to draw the bitmap. The bitmap is redrawn at each step. The default is 10.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return a value.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthChangeBitmap"><title>changeBitmap</title>
+<indexterm><primary>changeBitmap</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>changeBitmap</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--changeBitmap(--+--------+--)---------------------------------------------><
+                  +--type--+
+
+>>--changeBitmap(-normal-+-----------+-+------------+-+------------+-+---------+-)--><
+                         +-,-focused-+ +-,-selected-+ +-,-disabled-+ +-,-style-+
+                                                                                    +-USEPAL---+
+                                                                                    +-INMEMORY-+
+                                                                                    +-STRETCH--+
+
+
+
+
+
+
+
+
+>--+-------------+--,--+-------------+--+-----------------+--)-----------------><
+   +-bmpSelected-+     +-bmpDisabled-+  +-,--+-FRAME----+-+
+                                             +-USEPAL---+
+                                             +-INMEMORY-+
+                                             +-STRETCH--+
+
+]]>
+</programlisting>
+
+<para>
+  Changes one or more of the bitmaps for an already <link linkend="mthInstallBitmapButton">installed</link> bitmap button and
+  optionally immediately redraws the button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>normal [required]</term>
+      <listitem>
+      <para>
+        The bitmap to use for the normal state ofthe button. See the remarks for information on how the bitmap may be
+        specified.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>focused [optional]</term>
+      <listitem>
+      <para>
+        The
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>selected [optional]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>disabled [optional]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>FRAME   </member>
+          <member>USEPAL  </member>
+          <member>INMEMORY</member>
+          <member>STRETCH </member>
+          <member>NODRAW  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>T1</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>T2</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>T3</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    In ooDialog a bitmap button is an owner-drawn button that uses the supplied bitmap(s) for the button. ooDialog
+    internally handles the drawing of the button.
+  </para>
+  <para>
+    Up to 4 bitmaps can be assigned to the button. These bitmaps are drawn for the different button states: normal,
+    focused, selected and disabled. The normal bitmap must be supplied and that bitmap is used for any of the other
+    states if no bitmap for the state is supplied.
+  </para>
+  <para>
+    The bitmap arguments must all be the same type. They can be a bitmap file name, a bitmap handle, or the resource
+    number of a bitmap compiled into the resource DLL of a ResDialog. If the bitmap arguments are handles the style
+    argument must contain the INMEMORY keyword.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Button::changeBitmap() -->
+
+
+<section id="mthChangeBitmapTempRemove"><title>changeBitmap</title>
 <indexterm><primary>changeBitmap</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>changeBitmap</secondary></indexterm>
 <programlisting>
@@ -1597,29 +1909,31 @@ button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
 <para>See also <link linkend="mthInstallBitmapButton">installBitmapButton</link>.</para>
 </section>
 
-<section id="mthGetBitmapPosition"><title>getBitmapPosition</title>
-<indexterm><primary>getBitmapPosition</primary></indexterm>
+<section id="mthGetBitmapPositionClsButton"><title>getBitmapPosition</title>
+<indexterm><primary>getBitmapPosition</primary><secondary>Button class</secondary></indexterm>
 <indexterm><primary>Button class</primary><secondary>getBitmapPosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getBitmapPosition(--+--------+--)------------><
-                        +--type--+
+>>--getBitmapPosition(--pos--)-------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  Retrieves the postion, (X,Y) coordinates of the upper left corner of a bitmap within a bitmap button.
+  Retrieves the postion in <link linkend="defClientArea">client</link> coordinates of the upper left corner of a bitmap
+  within a bitmap button.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The only argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>pos</term>
     <listitem>
     <para>
-      xx
+      A <link linkend="clsPoint">point</link> object. On a successful return the point object is updated with the
+      position of the bitmap. On an error return, the point object is left unchanged.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1628,13 +1942,26 @@ button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns <computeroutput>.true</computeroutput> on success and <computeroutput>.false</computeroutput> on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Recall that client area coordinates are relative to the (0, 0) point of the client area of a window. Both or either
+    of the coordinates can be negative. A negative x will place the bitmap to the left of the edge of the button. A
+    negative y will place the bitmap above the top of the bitmap.
+  </para>
+  <para>
+    This method is only for bitmaps that have been assigned to a bitmap button through the <link
+    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to the button
+    then <computeroutput>.false</computeroutput> is returned.
+  </para>
+  <para>
+    It is the <link linkend="chpDialogObject">dialog</link> object that knows the position of the bitmap. The button
+    object forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
+    linkend="mthGetBitmapPositionClsDialogExtension">getBitmapPosition</link> method of the dialog object are
+    equivalent.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1660,8 +1987,111 @@ button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
 </variablelist>
 </section>  <!-- End PushButton::getBitmapPosition() -->
 
-<section id="mthSetBitmapPosition"><title>setBitmapPosition</title>
-<indexterm><primary>setBitmapPosition</primary></indexterm>
+<section id="mthGetBitMapSizeXClsButton"><title>getBitMapSizeX</title>
+<indexterm><primary>getBitMapSizeX</primary>Button class</indexterm>
+<indexterm><primary>Button class</primary><secondary>getBitMapSizeX</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getBitMapSizeX-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the width of the bitmap assigned to a bitmap button in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not take any argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the width of the assigned bitmap in pixels, on error -1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is only for bitmaps that have been assigned to a bitmap button through the <link
+    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to the button
+    then -1 is returned.
+  </para>
+  <para>
+    It is the <link linkend="chpDialogObject">dialog</link> object that knows the width of the bitmap. The button object
+    forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
+    linkend="mthGetBitmapSizeXClsDialogExtension">getBitmapSizeX</link> method of the dialog object are equivalent.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Button::getBitMapSizeX() -->
+
+
+<section id="mthGetBitMapSizeYClsButton"><title>getBitmapSizeY</title>
+<indexterm><primary>getBitmapSizeY</primary><secondary>Button class</secondary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getBitmapSizeY</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getBitmapSizeY-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the height of the bitmap assigned to this bitmap button in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not take any argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the height of the assigned bitmap in pixels, on error -1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is only for bitmaps that have been assigned to a bitmap button through the <link
+    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to this button
+    then -1 is returned.
+  </para>
+  <para>
+    It is the <link linkend="chpDialogObject">dialog</link> object that knows the height of the bitmap. The button
+    object forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
+    linkend="mthGetBitmapSizeYClsDialogExtension">getBitmapSizeX</link> method of the dialog object are equivalent.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Button::getBitMapSizeX() -->
+
+<section id="mthSetBitmapPositionClsButton"><title>setBitmapPosition</title>
+<indexterm><primary>setBitmapPosition</primary><secondary>Button class</secondary></indexterm>
 <indexterm><primary>Button class</primary><secondary>setBitmapPosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1716,6 +2146,17 @@ Generic form:
     Recall that client area coordinates are relative to the (0, 0) point of the client area of a window. Both or either
     of the coordinates can be negative. A negative x will place the bitmap to the left of the edge of the button. A
     negative y will place the bitmap above the top of the bitmap.
+  </para>
+  <para>
+    This method is only for bitmaps that have been assigned to a bitmap button through the <link
+    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to the button
+    then 1 is returned.
+  </para>
+  <para>
+    It is the <link linkend="chpDialogObject">dialog</link> object that sets the position of the bitmap. The button
+    object forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
+    linkend="mthSetBitmapPositionClsDialogExtension">setBitmapPosition</link> method of the dialog object are
+    equivalent.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1816,7 +2257,7 @@ and separated by a blank.
     Negative values then place the bitmap outside of the client area of the bitmap
   </para>
   <para>
-    The <link linkend="mthSetBitmapPosition">setBitmapPosition</link> method is most likely a better method to use than
+    The <link linkend="mthSetBitmapPositionClsButton">setBitmapPosition</link> method is most likely a better method to use than
     the <emphasis role="italic">displaceBitmap</emphasis>.  It accepts eithe a <computeroutput>Point</computeroutput>
     object or the individual x and y coordinates to specify the position of the bitmap. Set position more accurately
     describes what the method does than displace.
@@ -1960,46 +2401,6 @@ button~ScrollText("Hello world!", "Arial", 36, "BOLD ITALIC", 2, 3, 15, 4)
 </variablelist>
 </section>
 
-<section id="mthGetBitmapSizeX"><title>getBitmapSizeX</title>
-<indexterm><primary>getBitmapSizeX</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>getBitmapSizeX</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getBitmapSizeX-------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetBitmapSizeX method retrieves the width of
-the bitmap that is set for the associated button.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The width of the bitmap, in screen pixels.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthGetBitmapSizeY"><title>getBitmapSizeY</title>
-<indexterm><primary>getBitmapSizeY</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>getBitmapSizeY</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getBitmapSizeY-------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetBitmapSizeY method retrieves the height
-of the bitmap that is set for the associated button.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The height of the bitmap, in screen pixels.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthDrawBitmap"><title>drawBitmap</title>
 <indexterm><primary>drawBitmap</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>drawBitmap</secondary></indexterm>
@@ -2053,49 +2454,6 @@ You can use the DrawBitmap method to animate a bitmap by providing
 a bitmap that contains several images and use the offset and extension arguments
 to display a single image of the bitmap.
 </para></note>
-</section>
-
-<section id="mthDimBitmap"><title>dimBitmap</title>
-<indexterm><primary>dimBitmap</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>dimBitmap</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--dimBitmap(--bmpHandle--,--width--,--height--,------------------------------>
-
-   +-2-----+     +-2-----+     +-10----+
->--+-------+--,--+-------+--,--+-------+--)------------------------------------><
-   +-stepx-+     +-stepy-+     +-steps-+
-
-
-]]>
-</programlisting>
-
-<para>The DimBitmap method draws a bitmap step by step.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>bmpHandle</term>
-<listitem><para>A handle to the bitmap loaded with
-<link linkend="mthLoadBitmap">loadBitmap</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>width, height</term>
-<listitem><para>The extensions of the bitmap.
-</para></listitem></varlistentry>
-<varlistentry><term>stepx, stepy</term>
-<listitem><para>The number of incremental pixels displayed at each step.
-The default is 2,2.
-</para></listitem></varlistentry>
-<varlistentry><term>steps</term>
-<listitem><para>The number of iterations used to display the bitmap.
-The default is 10.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="mthScrollBbitmapFromTo"><title>scrollBitmapFromTo</title>
