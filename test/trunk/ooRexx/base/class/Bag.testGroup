@@ -510,6 +510,21 @@ return testResult
 
   self~assertEquals(0, c1~items)
 
+::method test_removeall
+  c = .bag~new
+  c~~put("2")~~put("2")
+  removed = c~removeAll("2")
+  self~assertTrue(sameContent(c, .bag~new))
+  self~assertTrue(sameArrayContent(removed, .array~of("2", "2")))
+
+  c = .bag~new
+  c~~put("3")~~put("3")
+  check = c~copy
+  removed = c~removeAll("2")
+
+  self~assertTrue(sameContent(c, check))
+  self~assertTrue(sameArrayContent(removed, .array~new))
+
 
 -- TODO: determine whether INDEX part may truly be left out, otherwise change
 --       testcase to expect the appropriate error message
@@ -797,3 +812,24 @@ makeColl: procedure
   say "] <<<"
   say
 
+
+
+/* Test whether two arrays contain the same content, regardless of order.
+*/
+::routine "sameArrayContent"
+  use arg coll_1, coll_2
+
+  if coll_1~items<>coll_2~items then      -- not the same amount of objects
+     return .false
+
+   -- work on a copy
+  tmp=coll_1~copy
+  do o over coll_2
+     index = tmp~index(o)
+     if index == .nil then             -- no entry anymore ?
+        return .false
+
+     tmp~remove(index)                    -- remove object
+  end
+
+  return (tmp~items=0)                    -- if the same, then no items left
