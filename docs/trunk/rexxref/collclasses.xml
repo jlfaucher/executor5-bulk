@@ -1796,6 +1796,7 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 <member><link linkend="mthRelationPut">put</link></member>
 <member><link linkend="mthRelationPutSet">[ ]=</link></member>
 <member><link linkend="mthRelationRemove">remove</link></member>
+<member><link linkend="mthRelationRemoveAll">removeAll</link></member>
 <member><link linkend="mthRelationRemoveItem">removeItem</link></member>
 <member><link linkend="mthRelationSubset">subset</link></member>
 <member><link linkend="mthRelationSupplier">supplier</link></member>
@@ -4862,6 +4863,27 @@ the same index, without removing any existing member items.</para>
 one item associated with index <emphasis role="italic">index</emphasis>,
 the item returned and removed is unspecified. Returns the Nil object if no item has index
 <emphasis role="italic">index</emphasis>.
+Index equality is determined by
+using the == method of <emphasis role="italic">index</emphasis>.
+</para>
+</section>
+
+<section id="mthRelationRemoveAll"><title>removeAll</title>
+<indexterm><primary>removeAll method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeAll method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-removeAll(index)-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and removes from a relation all member items with index
+<emphasis role="italic">index</emphasis>.  All removed items are returned
+in an array containing each of the removed items.  The order of the returned items
+is unspecified.  If no items have the specified index, an empty array is returned.
 Index equality is determined by
 using the == method of <emphasis role="italic">index</emphasis>.
 </para>
