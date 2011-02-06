@@ -205,7 +205,7 @@
 <entry>Draws a bitmap step by step.</entry>
 </row>
 <row>
-<entry><link linkend="mthDisplaceBitmap">displaceBitmap</link></entry>
+<entry><link linkend="mthDisplaceBitmapClsButton">displaceBitmap</link></entry>
 <entry>Sets the position of the bitmap within a bitmap button.</entry>
 </row>
 <row>
@@ -1667,38 +1667,20 @@ return 0
 </variablelist>
 </section>
 
-<section id="mthChangeBitmap"><title>changeBitmap</title>
-<indexterm><primary>changeBitmap</primary></indexterm>
+<section id="mthChangeBitmapClsButton"><title>changeBitmap</title>
+<indexterm><primary>changeBitmap</primary><secondary>Button class</secondary></indexterm>
 <indexterm><primary>Button class</primary><secondary>changeBitmap</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--changeBitmap(--+--------+--)---------------------------------------------><
-                  +--type--+
 
 >>--changeBitmap(-normal-+-----------+-+------------+-+------------+-+---------+-)--><
                          +-,-focused-+ +-,-selected-+ +-,-disabled-+ +-,-style-+
-                                                                                    +-USEPAL---+
-                                                                                    +-INMEMORY-+
-                                                                                    +-STRETCH--+
-
-
-
-
-
-
-
-
->--+-------------+--,--+-------------+--+-----------------+--)-----------------><
-   +-bmpSelected-+     +-bmpDisabled-+  +-,--+-FRAME----+-+
-                                             +-USEPAL---+
-                                             +-INMEMORY-+
-                                             +-STRETCH--+
 
 ]]>
 </programlisting>
 
 <para>
-  Changes one or more of the bitmaps for an already <link linkend="mthInstallBitmapButton">installed</link> bitmap button and
+  Changes the bitmaps for an already <link linkend="mthInstallBitmapButton">installed</link> bitmap button and
   optionally immediately redraws the button.
 </para>
 <variablelist>
@@ -1717,19 +1699,22 @@ return 0
       <varlistentry><term>focused [optional]</term>
       <listitem>
       <para>
-        The
+        The bitmap to use for the focused state ofthe button. See the remarks for information on how the bitmap may be
+        specified. If this argument is omitted, the normal bitmap is used for the focused state.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>selected [optional]</term>
       <listitem>
       <para>
-        xx
+        The bitmap to use for the selected state ofthe button. See the remarks for information on how the bitmap may be
+        specified. If this argument is omitted, the normal bitmap is used for the selected state.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>disabled [optional]</term>
       <listitem>
       <para>
-        xx
+        The bitmap to use for the disabled state of the button. See the remarks for information on how the bitmap may be
+        specified. If this argument is omitted, the normal bitmap is used for the disabled state.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
@@ -1746,22 +1731,44 @@ return 0
           <member>NODRAW  </member>
         </simplelist>
         <variablelist>
-          <varlistentry><term>T1</term>
+          <varlistentry><term>FRAME</term>
           <listitem>
           <para>
-            text
+            With this option, when the ooDialog framework draws the bitmap button, it attempts to draw it with the 3D
+            effect. Note that the drawing method is outdated and will give a somewhat different appearance to the button
+            than that of buttons in modern Windows versions.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>T2</term>
+          <varlistentry><term>USEPAL</term>
           <listitem>
           <para>
-            text
+            Uses the colors of the bitmap for the normal state to create a system color palette. Use this option when
+            the bitmap was created with a palette other than the default Windows color palette. This palette is used
+            when drawing all of the bitmap states so when different bitmaps are used for the different states, they
+            should all use the same colors.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>T3</term>
+          <varlistentry><term>INMEMORY</term>
           <listitem>
           <para>
-            text
+            The bitmaps can be loaded into memory through the <link linkend="mthLoadBitmap">loadBitmap</link> method. In
+            this case, the programmer uses the bitmap handle to specify the bitmaps and <emphasis
+            role="bold">must</emphasis> use the INMEMORY keyword.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>STRETCH</term>
+          <listitem>
+          <para>
+            If the size of the bitmap is smaller than the size of the button rectangle, the bitmap is stretched to match
+            the size of the button. This option has no effect on bitmaps loaded from a dynamic-link library.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NODRAW</term>
+          <listitem>
+          <para>
+            By default, when the button bitmaps are changed, the button is immediately redrawn. If this keyword is used,
+            the button is not redrawn immediately. The next time the button needs to be redrawn, it will be redrawn
+            using the new bitmaps.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -1773,11 +1780,42 @@ return 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The resource ID could not be resolved.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        Error.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
+  <para>
+    The arguments specifying the bitmaps can be a bitmap file name, a bitmap <link linkend="defHandle">handle</link>, or
+    the resource number of a bitmap compiled into the resource DLL of a <link linkend="clsResDialog">ResDialog</link>.
+    The bitmap arguments must all be the same type. I.e. all file names, all resource IDs, or all handles. If the bitmap
+    arguments are handles the style argument must contain the INMEMORY keyword.
+  </para>
+  <para>
+    The bitmap button must have already been assigned bitmaps, if there are no assigned bitmaps this method fails. All
+    of the existing assigned bitmaps are removed, the programmer must reasign all 4 bitmaps, even if the bitmap for some
+    state is the same as the previous bitmap.
+  </para>
   <para>
     In ooDialog a bitmap button is an owner-drawn button that uses the supplied bitmap(s) for the button. ooDialog
     internally handles the drawing of the button.
@@ -1788,10 +1826,12 @@ return 0
     states if no bitmap for the state is supplied.
   </para>
   <para>
-    The bitmap arguments must all be the same type. They can be a bitmap file name, a bitmap handle, or the resource
-    number of a bitmap compiled into the resource DLL of a ResDialog. If the bitmap arguments are handles the style
-    argument must contain the INMEMORY keyword.
-  </para> </listitem></varlistentry>
+    It is the <link linkend="chpDialogObject">dialog</link> object that stores the bitmap information. The button object
+    forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
+    linkend="mthChangeBitmapButtonClsDialogExtensions">changeBitmapButton</link> method of the dialog object are
+    equivalent.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -1804,9 +1844,12 @@ return 0
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
 <programlisting>
 <![CDATA[
+
+  button = self~newPushButton("IDOK")
+  button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp",   -
+                      "AddBut_d.bmp", "FRAME")
 
 ]]>
 </programlisting>
@@ -1815,99 +1858,6 @@ return 0
 </variablelist>
 </section>  <!-- End Button::changeBitmap() -->
 
-
-<section id="mthChangeBitmapTempRemove"><title>changeBitmap</title>
-<indexterm><primary>changeBitmap</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>changeBitmap</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--changeBitmap(--bmpNormal--,----------------+------------+--,--------------->
-                                               +-bmpFocused-+
-
->--+-------------+--,--+-------------+--+-----------------+--)-----------------><
-   +-bmpSelected-+     +-bmpDisabled-+  +-,--+-FRAME----+-+
-                                             +-USEPAL---+
-                                             +-INMEMORY-+
-                                             +-STRETCH--+
-
-
-]]>
-</programlisting>
-
-<para>The changeBitmap method changes the bitmap of a
-bitmap button.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>bmpNormal</term>
-<listitem><para>The (alphanumeric) name, (numeric) resource ID, or handle of a bitmap
-that is displayed when the button is neither selected, nor focused, nor disabled.
-If you specify the bitmap handle, the INMEMORY option must be specified.</para>
-<para>This option is used if none of the other arguments is specified.</para>
-</listitem></varlistentry>
-<varlistentry><term>bmpFocused</term>
-<listitem><para>The (alphanumeric) name, (numeric) resource ID, or handle of a bitmap
-that is displayed when the button is focused. The focused button is activated
-when the Enter key is pressed. If you specify the bitmap handle, the INMEMORY
-option must be specified.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpSelected</term>
-<listitem><para>The (alphanumeric) name, (numeric) resource ID, or handle of a bitmap
-that is displayed when the button is clicked and held. If you specify the
-bitmap handle, the INMEMORY option must be specified.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpDisabled</term>
-<listitem><para>The (alphanumeric) name, (numeric) resource ID, or handle of a bitmap
-that is displayed when the button is disabled. If you specify the bitmap handle,
-the INMEMORY option must be specified.
-</para></listitem></varlistentry>
-<varlistentry><term>styleOptions</term>
-<listitem><para>The last argument can be one of the following:
-<variablelist>
-<varlistentry><term>FRAME</term>
-<listitem><para>Draws a frame around the button. When you use this option, the bitmap
-button behaves like a normal Windows button except that a bitmap is
-shown instead of text.
-</para></listitem></varlistentry>
-<varlistentry><term>USEPAL</term>
-<listitem><para>Takes the colors of the bitmap file and stores them as the system color
-palette. This option is needed when the bitmap was created with a palette
-other than the default Windows color palette. Use it for one
-button only because only one color palette can be active at a time.</para>
-<para>This
-option is not valid for a bitmap loaded from a dynamic-link library.</para>
-</listitem></varlistentry>
-<varlistentry><term>INMEMORY</term>
-<listitem><para>This option must be used if the named bitmaps are already loaded into
-memory by using the loadBitmap method (see
-<link linkend="mthLoadBitmap">loadBitmap</link>).
-In this case, you must specify a bitmap handle instead of a file name or ID.
-</para></listitem></varlistentry>
-<varlistentry><term>STRETCH</term>
-<listitem><para>If this option is specified and the extent of the bitmap is smaller
-than the extent of the button rectangle, the bitmap is adapted to match the
-extent of the button. This option has no effect on bitmaps loaded from a dynamic-link
-library.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
-<programlisting>
-<![CDATA[
-button = MyDialog~newPushButton("IDOK")
-if button == .Nil then return
-button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
-"AddBut_d.bmp", "FRAME")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-<para>See also <link linkend="mthInstallBitmapButton">installBitmapButton</link>.</para>
-</section>
 
 <section id="mthGetBitmapPositionClsButton"><title>getBitmapPosition</title>
 <indexterm><primary>getBitmapPosition</primary><secondary>Button class</secondary></indexterm>
@@ -1960,7 +1910,7 @@ button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
   <para>
     It is the <link linkend="chpDialogObject">dialog</link> object that knows the position of the bitmap. The button
     object forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
-    linkend="mthGetBitmapPositionClsDialogExtension">getBitmapPosition</link> method of the dialog object are
+    linkend="mthGetBitmapPositionClsDialogExtensions">getBitmapPosition</link> method of the dialog object are
     equivalent.
   </para>
   </listitem></varlistentry>
@@ -2023,7 +1973,7 @@ button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
   <para>
     It is the <link linkend="chpDialogObject">dialog</link> object that knows the width of the bitmap. The button object
     forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
-    linkend="mthGetBitmapSizeXClsDialogExtension">getBitmapSizeX</link> method of the dialog object are equivalent.
+    linkend="mthGetBitmapSizeXClsDialogExtensions">getBitmapSizeX</link> method of the dialog object are equivalent.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2075,7 +2025,7 @@ button~changeBitmap("AddBut_n.bmp", "AddBut_f.bmp", "AddBut_s.bmp", ,
   <para>
     It is the <link linkend="chpDialogObject">dialog</link> object that knows the height of the bitmap. The button
     object forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
-    linkend="mthGetBitmapSizeYClsDialogExtension">getBitmapSizeX</link> method of the dialog object are equivalent.
+    linkend="mthGetBitmapSizeYClsDialogExtensions">getBitmapSizeX</link> method of the dialog object are equivalent.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2155,7 +2105,7 @@ Generic form:
   <para>
     It is the <link linkend="chpDialogObject">dialog</link> object that sets the position of the bitmap. The button
     object forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
-    linkend="mthSetBitmapPositionClsDialogExtension">setBitmapPosition</link> method of the dialog object are
+    linkend="mthSetBitmapPositionClsDialogExtensions">setBitmapPosition</link> method of the dialog object are
     equivalent.
   </para>
   </listitem></varlistentry>
@@ -2209,11 +2159,11 @@ and separated by a blank.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem>
 <para>
-  See <link linkend="mthDisplaceBitmap">displaceBitmap</link>. </para></listitem></varlistentry>
+  See <link linkend="mthDisplaceBitmapClsButton">displaceBitmap</link>. </para></listitem></varlistentry>
 </variablelist> </section>
 
-<section id="mthDisplaceBitmap"><title>displaceBitmap</title>
-<indexterm><primary>displaceBitmap</primary></indexterm>
+<section id="mthDisplaceBitmapClsButton"><title>displaceBitmap</title>
+<indexterm><primary>displaceBitmap</primary><secondary>Button class</secondary></indexterm>
 <indexterm><primary>Button class</primary><secondary>displaceBitmap</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2259,8 +2209,8 @@ and separated by a blank.
   <para>
     The <link linkend="mthSetBitmapPositionClsButton">setBitmapPosition</link> method is most likely a better method to use than
     the <emphasis role="italic">displaceBitmap</emphasis>.  It accepts eithe a <computeroutput>Point</computeroutput>
-    object or the individual x and y coordinates to specify the position of the bitmap. Set position more accurately
-    describes what the method does than displace.
+    object or the individual x and y coordinates to specify the position of the bitmap. <emphasis role="italic">Set
+    position</emphasis> more accurately describes what the method does than <emphasis role="italic">displace</emphasis>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2272,9 +2222,13 @@ and separated by a blank.
 <![CDATA[
 
   button = self~newPushButton("IDC_PB_BITMAP1")
-  if button == .nil then return
   parse value button~getBmpDisplacement with dx dy
-  button~displaceBitmap(dx+4, dy-3)
+  if dx <> -1 then do
+    dx += 4
+    dy -=3
+    button~displaceBitmap(dx, dy)
+  end
+
 ]]>
 </programlisting>
   </para>
@@ -2420,7 +2374,7 @@ button~ScrollText("Hello world!", "Arial", 36, "BOLD ITALIC", 2, 3, 15, 4)
 
 <para>The DrawBitmap method draws the bitmap of the associated
 bitmap button. You can also use this method to move a bitmap or part of it.</para>
-<para>Contrary to the method <link linkend="mthDisplaceBitmap">displaceBitmap</link>, which sets a permanent
+<para>Contrary to the method <link linkend="mthDisplaceBitmapClsButton">displaceBitmap</link>, which sets a permanent
 position for the bitmap, DrawBitmap immediately draws the bitmap, or part
 of it, at the specified position. If the button must be refreshed, the bitmap
 is drawn at the position set with DisplaceBitmap. DrawBitmap is used by <link linkend="mthScrollBbitmapFromTo">ScrollBitmapFromTo</link>, for example.</para>
