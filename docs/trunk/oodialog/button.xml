@@ -225,7 +225,7 @@
 <entry>Retrieves the height of the bitmap that is set for the associated button.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetBmpDisplacement">getBmpDisplacement</link></entry>
+<entry><link linkend="mthGetBmpDisplacementClsButton">getBmpDisplacement</link></entry>
 <entry>Retrieves the position of a bitmap within a bitmap button.</entry>
 </row>
 <row>
@@ -1923,17 +1923,6 @@ return 0
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PushButton::getBitmapPosition() -->
 
@@ -2138,29 +2127,76 @@ Generic form:
 </variablelist>
 </section>  <!-- End PushButton::setBitmapPosition() -->
 
-<section id="mthGetBmpDisplacement"><title>getBmpDisplacement</title>
-<indexterm><primary>getBmpDisplacement</primary></indexterm>
+<section id="mthGetBmpDisplacementClsButton"><title>getBmpDisplacement</title>
+<indexterm><primary>getBmpDisplacement</primary><secondary>Button class</secondary></indexterm>
 <indexterm><primary>Button class</primary><secondary>getBmpDisplacement</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getBmpDisplacement---------------------------><
 
-
 ]]>
 </programlisting>
 
-<para>The GetBmpDisplacement method retrieves the position
-of a bitmap within a bitmap button.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The horizontal and vertical positions of the bitmap, in screen pixels
-and separated by a blank.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
 <para>
-  See <link linkend="mthDisplaceBitmapClsButton">displaceBitmap</link>. </para></listitem></varlistentry>
-</variablelist> </section>
+  Returns a string containing the <link linkend="defClientArea">client</link> coordinates of the bitmap in this bitmap
+  button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A string with the X position and then the Y position of the bitmap, in pixles. The X and Y coordinates are separated
+    by a blank. On error, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Recall that client area coordinates are relative to the (0, 0) point of the client area of a window. Both or either
+    of the coordinates can be negative.
+  </para>
+  <para>
+    This method is only for bitmaps that have been assigned to a bitmap button through the <link
+    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to the button
+    then -1 is returned.
+  </para>
+  <para>
+    It is the <link linkend="chpDialogObject">dialog</link> object knows the position of the bitmap. The button object
+    forwards the method invocation to its parent dialog using its own resource ID. This method and the <link
+    linkend="mthGetBmpDisplacementClsDialogExtensions">getBmpDisplacement</link> method of the dialog object are
+    equivalent.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="mthDisplaceBitmapClsButton">displaceBitmap</link> example uses <emphasis
+    role="italic">getBmpDisplacement</emphasis>.
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Button::getBmpDisplacement() -->
+
 
 <section id="mthDisplaceBitmapClsButton"><title>displaceBitmap</title>
 <indexterm><primary>displaceBitmap</primary><secondary>Button class</secondary></indexterm>
@@ -3021,7 +3057,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The return value is a keyword indicating the checked state of the check box and will exactly one of
+      The return value is a keyword indicating the checked state of the check box and will be exactly one of
       the following:
       <informaltable frame='none' colsep='0' rowsep='0' pgwide='1'>
       <tgroup cols='2'>

@@ -778,7 +778,7 @@
 </row>
 <row>
 <entry>DrawBitmap</entry>
-<entry><link linkend="h001143">DrawBitmap</link></entry>
+<entry><link linkend="mthDrawBitmapClsDialogExtensions">DrawBitmap</link></entry>
 </row>
 <row>
 <entry>DrawButton</entry>
@@ -838,7 +838,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetBitMapPositionClsDialogExtensions">getBitmapPosition</link></entry>
-<entry>getBitmapPosition</entry>
+<entry>Gets the position, as a <computeroutput>Point</computeroutput> object, of the bitmap in a bitmap button.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetBitMapSizeXClsDialogExtensions">getBitmapSizeX</link></entry>
@@ -849,8 +849,8 @@
 <entry>Gets the height in pixels of the bitmap assigned to a bitmap button.</entry>
 </row>
 <row>
-<entry>GetBmpDisplacement</entry>
-<entry><link linkend="h000737">GetBmpDisplacement</link></entry>
+<entry><link linkend="mthGetBmpDisplacementClsDialogExtensions">getBmpDisplacement</link></entry>
+<entry>Gets the position, as a <computeroutput>String</computeroutput> object, of the bitmap in a bitmap button.</entry>
 </row>
 <row>
 <entry>GetButtonDC</entry>
@@ -8833,56 +8833,279 @@ Generic form:
 </section>  <!-- End dialog object::getBitmapPosition() -->
 
 <section id="mthGetBitMapSizeXClsDialogExtensions"><title>getBitmapSizeX</title>
-<indexterm><primary>getBitmapSizeX</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<indexterm><primary>getBitmapSizeX</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getBitmapSizeX</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~getBitmapSizeX(--id--)-------------------------><
-
+>>--getBitmapSizeX(--id--)-----------------------><
 
 ]]>
 </programlisting>
 
-<para>The getBitmapSizeX method returns the horizontal
-bitmap extension. </para>
+<para>
+  Gets the width of the bitmap assigned to this bitmap button in pixels.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the bitmap button
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the width of the bitmap for the bitmap button in pixels, on error -1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is only for bitmaps that have been assigned to a bitmap button through the <link
+    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to this button
+    then -1 is returned.
+  </para>
+  <para>
+    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
+    linkend="mthGetBitmapSizeXClsButton">getBitmapSizex</link> method are equivalent.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End DialogExtensions::getBitMapSizeX() -->
+
 
 <section id="mthGetBitMapSizeYClsDialogExtensions"><title>getBitmapSizeY</title>
-<indexterm><primary>getBitmapSizeY</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<indexterm><primary>getBitmapSizeY</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getBitmapSizeY</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~getBitmapSizeY(--id--)-------------------------><
-
+>>--getBitmapSizeY(--id--)-----------------------><
 
 ]]>
 </programlisting>
 
-<para>The getBitmapSizeY method returns the vertical
-bitmap extension. </para>
+<para>
+  Gets the height of the bitmap assigned to this bitmap button in pixels.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the bitmap button
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the height of the bitmap for the bitmap button in pixels, on error -1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is only for bitmaps that have been assigned to a bitmap button through the <link
+    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to this button
+    then -1 is returned.
+  </para>
+  <para>
+    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
+    linkend="mthGetBitmapSizeYClsButton">getBitmapSizeY</link> method are equivalent.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
+</section>  <!-- End DialogExtensions::getBitMapSizeX() -->
+
+
+<section id="mthDisplaceBitmapClsDialogExtensions"><title>displaceBitmap</title>
+<indexterm><primary>displaceBitmap</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>displaceBitmap</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--displaceBitmap(--id--,--x--,--y--)-----------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">displaceBitmap</emphasis> method sets the position of a bitmap within the <link
+  linkend="defClientArea">client</link> area of a bitmap button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>x [required]</term>
+      <listitem>
+      <para>
+        The x co-ordinate of the top left corner of the bitmap within the client area of the bitmap button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>y [required]</term>
+      <listitem>
+      <para>
+        The y co-ordinate of the upper left corner of the bitmap within the client area of the bitmap button.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Both the x and y coordinates are in pixels and can have negative values.
+  </para>
+  <para>
+    Recall that client area coordinates are specified in relation to the (0, 0) point of the client area of a window.
+    Negative values then place the bitmap outside of the client area of the bitmap
+  </para>
+  <para>
+    The <link linkend="mthSetBitmapPositionClsDialogExtensions">setBitmapPosition</link> method is most likely a better
+    method to use than the <emphasis role="italic">displaceBitmap</emphasis>.  It accepts either a
+    <computeroutput>Point</computeroutput> object or the individual x and y coordinates to specify the position of the
+    bitmap. <emphasis role="italic">Set position</emphasis> more accurately describes what the method does than
+    <emphasis role="italic">displace</emphasis>.
+  </para>
+  <para>
+    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
+    linkend="mthDisplaceBitmapClsButton">displaceBitmap</link> method are equivalent.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example moves the bitmap within the associated bitmap button 4 screen pixels to the right and 3
+    pixels upward from its current position.
+<programlisting>
+<![CDATA[
+
+  self~displaceBitmap(4, -3)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="h001143"><title>DrawBitmap</title>
+
+<section id="mthGetBmpDisplacementClsDialogExtensions"><title>getBmpDisplacement</title>
+<indexterm><primary>getBmpDisplacement</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getBmpDisplacement</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getBmpDisplacement(--id--)-------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns a string containing the <link linkend="defClientArea">client</link> coordinates of the bitmap in a bitmap
+  button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A string with the X position and then the Y position of the bitmap, in pixles. The X and Y coordinates are separated
+    by a blank. On error, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Recall that client area coordinates are relative to the (0, 0) point of the client area of a window. Both or either
+    of the coordinates can be negative.
+  </para>
+  <para>
+    This method is only for bitmaps that have been assigned to a bitmap button through the <link
+    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to the button
+    then -1 is returned.
+  </para>
+  <para>
+    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
+    linkend="mthGetBmpDisplacementClsButton">getBmpDisplacement</link> method are equivalent.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This following example shows how to use the <emphasis role="italic">getBmpDisplacement</emphasis> methods:
+
+<programlisting>
+<![CDATA[
+  bmpPos = self~getBmpDisplacement(IDC_PB_TICKET)
+  parse var bmpPos x y
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogExtensions::getBmpDisplacement() -->
+
+
+<section id="mthDrawBitmapClsDialogExtensions"><title>DrawBitmap</title>
 <indexterm><primary>DrawBitmap</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
@@ -9032,123 +9255,6 @@ information.
 </variablelist>
 </section>
 
-
-<section id="mthDisplaceBitmapClsDialogExtensions"><title>displaceBitmap</title>
-<indexterm><primary>displaceBitmap</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>displaceBitmap</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--displaceBitmap(--id--,--x--,--y--)-----------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">displaceBitmap</emphasis> method sets the position of a bitmap within the <link
-  linkend="defClientArea">client</link> area of a bitmap button.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>x [required]</term>
-      <listitem>
-      <para>
-        The x co-ordinate of the top left corner of the bitmap within the client area of the bitmap button.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y [required]</term>
-      <listitem>
-      <para>
-        The y co-ordinate of the upper left corner of the bitmap within the client area of the bitmap button.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Both the x and y coordinates are in pixels and can have negative values.
-  </para>
-  <para>
-    Recall that client area coordinates are specified in relation to the (0, 0) point of the client area of a window.
-    Negative values then place the bitmap outside of the client area of the bitmap
-  </para>
-  <para>
-    The <link linkend="mthSetBitmapPositionClsDialogExtensions">setBitmapPosition</link> method is most likely a better
-    method to use than the <emphasis role="italic">displaceBitmap</emphasis>.  It accepts either a
-    <computeroutput>Point</computeroutput> object or the individual x and y coordinates to specify the position of the
-    bitmap. <emphasis role="italic">Set position</emphasis> more accurately describes what the method does than
-    <emphasis role="italic">displace</emphasis>.
-  </para>
-  <para>
-    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
-    linkend="mthDisplaceBitmapClsButton">displaceBitmap</link> method are equivalent.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example moves the bitmap within the associated bitmap button 4 screen pixels to the right and 3
-    pixels upward from its current position.
-<programlisting>
-<![CDATA[
-
-  self~displaceBitmap(4, -3)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-
-<section id="h000737"><title>GetBmpDisplacement</title>
-<indexterm><primary>GetBmpDisplacement</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetBmpDisplacement(--id--)---------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetBmpDisplacement method gets the position
-of a bitmap within a button. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example shows how to use the <link linkend="h000703">GetButtonRect</link> and <link linkend="h000737">GetBmpDisplacement</link> methods:
-
-<programlisting>
-<![CDATA[
-bRect = MyBaseDialog~GetButtonRect(244)
-parse var bRect left top right bottom
-bmpPos = MyBaseDialog~GetBmpDisplacement(244)
-parse var bmpPos x y
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthAddAutoStartMethod"><title>addAutoStartMethod</title>
 <indexterm><primary>addAutoStartMethod</primary></indexterm>
