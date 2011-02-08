@@ -243,12 +243,6 @@
   position.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
@@ -259,6 +253,12 @@
   <listitem>
     <para>
       The previous position is returned.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -279,12 +279,6 @@
   This method returns the current position of the progress bar.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
@@ -295,6 +289,12 @@
   <listitem>
     <para>
       The current position of the progress bar is retunred.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -355,12 +355,6 @@ Now at position -160
   step at all if 10 is satisfactory.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
@@ -371,6 +365,12 @@ Now at position -160
   <listitem>
     <para>
       This method returns the previous step increment.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
     </para>
   </listitem></varlistentry>
 </variablelist>
@@ -402,12 +402,6 @@ Form 2:
   -2147483648 through 2147483647 for the minimum and maximum.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <itemizedlist>
@@ -456,6 +450,12 @@ Form 2:
       use the full allowable range of the progress bar and are not restricted to 0 though 65535
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -473,12 +473,6 @@ Form 2:
   Retrives the current high and low limits of the range of the progress bar.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>
@@ -498,6 +492,12 @@ Form 2:
           MAX - The current maximum limit, as a signed number, for the progress bar.
         </para></listitem>
       </orderedlist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -564,20 +564,6 @@ Current minimum: -200 current maximum: 200
   Each time the marquee mode is turned on, the progress bar is reset to the minimum of its range.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-      If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-      determine the current version of the library.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-    <para>
-      Requires the progress bar to have the PBS_MARQUEE style.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
@@ -602,6 +588,20 @@ Current minimum: -200 current maximum: 200
   <listitem>
     <para>
       This method always returns <computeroutput>.true</computeroutput>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+      If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+      determine the current version of the library.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+    <para>
+      Requires the progress bar to have the PBS_MARQUEE style.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -633,15 +633,6 @@ Current minimum: -200 current maximum: 200
   Sets the color of the progress indicator bar in the progress bar control.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      This method is only effective in the Windows Classic theme.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The required argument is:
@@ -663,6 +654,15 @@ Current minimum: -200 current maximum: 200
     <para>
       This method returns the previous bar color, or CLR_DEFAULT if the progress bar was using the
       default color.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method is only effective in the Windows Classic theme.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -709,14 +709,6 @@ Old bar color was:        4278190080 (0xFF000000)
   Sets the background color in the progress bar.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      This method is only effective in the Windows Classic theme.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
@@ -741,6 +733,14 @@ Old bar color was:        4278190080 (0xFF000000)
       default color.
     </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+    <para>
+      This method is only effective in the Windows Classic theme.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
