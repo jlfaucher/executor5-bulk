@@ -233,8 +233,10 @@ dnl         AC_MSG_ERROR("Compiler $CXX is not supported on this platform")
       ORX_LDFLAGS_PACKAGE="-nostartfiles -shared"
       ;;
    *apple-darwin*)
-      ORX_SYS_STR="MACOSX"
+      AC_PREFIX_DEFAULT(/opt/ooRexx)
+      ORX_LDFLAGS_PACKAGE=""
       ORX_SHARED_LIBRARY_EXT=".dylib"
+      ORX_SYS_STR="MACOSX"
       ORX_LDFLAGS_PACKAGE=""
       ;;
    *hp-hpux*)
