@@ -1,0 +1,248 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.CHARS.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
+
+::class "CHARS.testGroup" subclass ooTestCase public
+
+::attribute charsTestingFile
+
+::method setup
+  self~charsTestingFile = .nil
+
+::method tearDown
+  fileName = self~charsTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = stream(fileName, 'C', "close")
+    j = deleteFile(fileName)
+  end
+
+-- Tests that chars gives correct answer for existing file, but not opened, and
+-- non-existent file
+::method "test_1"
+
+  l = "12345678901234567890"           -- 20 chars
+  len = l~length + .endOfLine~length   -- end of line character count
+
+  src = .array~of(l)
+  fileName = createFile(src, "delMe.test_chars_test1")
+  self~assertTrue(fileName \== "")
+
+  self~assertSame(len, chars(fileName))
+
+  -- See if we get the correct answer twice in a row.
+  self~assertSame(len, chars(fileName))
+
+  -- Close the file and delete it
+  ret = lineout(fileName)
+  self~assertSame(0, ret)
+  j = deleteFile(fileName)
+
+  self~assertSame(0, chars(fileName))
+
+-- Tests chars() for an existing, 0-length file.
+::method 'test_2'
+
+  -- Create an empty file.
+  fileName = 'foos.deleteMe'
+  r = stream(fileName, 'C', "open nobuffer")
+  r = stream(fileName, 'C', "close")
+  self~assertTrue(SysFileExists(fileName))
+  self~charsTestingFile = fileName
+
+  self~assertSame(0, chars(fileName))
+
+-- Tests chars() for stdin
+::method 'test_3'
+
+  -- There should not be anything in stdin while the test suite is  running,
+  -- (I don't think.)
+  self~assertSame(0, chars())
+
+-- Tests using an extra argument with stdin
+::method test_stdin_wrong_synatx
+
+  position = 20
+
+  self~expectSyntax(40.4)
+  self~assertSame(0, chars(, position))
+
+-- Tests using an extra argument with an existing file.
+::method test_file_wrong_syntax
+
+  fileName = createFile(.array~of("123456"), "delMe.test_chars_tests")
+  self~assertTrue(fileName \== "")
+  self~charsTestingFile = fileName
+
+  self~expectSyntax(40.4)
+  self~assertSame(0, chars(fileName, "cat"))
+
+-- Tests with a biggish file
+::method "test_manyChars"
+
+  l = "12345678901234567890"           -- 20 chars
+  len = l~length + .endOfLine~length   -- end of line character count
+
+  l2 = l~copies(1024 * 1024)
+  expected = (20 * 1024 * 1024) + .endOfLine~length
+
+  src = .array~of(l, l2)
+  fileName = createFile(src, "delMe.test_chars_manyChars")
+  self~assertTrue(fileName \== "")
+  self~charsTestingFile = fileName
+
+  -- Read in the first line from the file, should be equal to l
+  j = linein(fileName)
+  self~assertSame(l, j)
+
+  -- Now expected is the total length of l2
+  self~assertSame(expected, chars(fileName))
+
+
+-- Tests with a biggish file and non-buffered
+::method "test_manyChars_nb"
+
+  l = "12345678901234567890"           -- 20 chars
+  len = l~length + .endOfLine~length   -- end of line character count
+
+  l2 = l~copies(1024 * 1024)
+  expected = (20 * 1024 * 1024) + .endOfLine~length
+
+  src = .array~of(l, l2)
+  fileName = createFile(src, "delMe.test_chars_manyChars")
+  self~assertTrue(fileName \== "")
+  self~charsTestingFile = fileName
+
+  ret = stream(fileName, 'C', "open nobuffer")
+  self~assertSame("READY:", ret)
+
+  -- Read in the first line from the file, should be equal to l
+  j = linein(fileName)
+  self~assertSame(l, j)
+
+  -- Now expected is the total length of l2
+  self~assertSame(expected, chars(fileName))
+
+
+-- Tests with a biggish file and binary mode
+::method "test_manyChars_bin"
+
+  l = "12345678901234567890"           -- 20 chars
+  l_len = l~length + .endOfLine~length   -- end of line character count
+
+  l2 = l~copies(1024)
+  l2_len = (20 * 1024) + .endOfLine~length
+
+  src = .array~of(l, l2)
+  fileName = createFile(src, "delMe.test_chars_manyCharsBin")
+  self~assertTrue(fileName \== "")
+  self~charsTestingFile = fileName
+
+  recLength = 14
+  ret = stream(fileName, 'C', "open binary reclength" recLength)
+  self~assertSame("READY:", ret)
+
+  total_len = l_len + l2_len
+  read = 0
+  do while chars(fileName) > recLength
+    j = linein(fileName)
+    self~assertSame(recLength, j~length)
+    read += 14
+    expected = total_len - read
+    self~assertSame(expected, chars(fileName))
+  end
+
+::method test_chars_multiple_moves
+
+  l = "12345678901234567890"           -- 20 chars
+  len = l~length + .endOfLine~length   -- end of line character count
+  src = .array~new(30)
+  do i = 1 to 30
+    src[i] = l
+  end
+
+  fileName = createFile(src, "delMe.test_chars_multipleMoves")
+  self~assertTrue(fileName \== "")
+  self~charsTestingFile = fileName
+
+  total_len = 30 * len
+  ret = stream(fileName, 'C', "open both")
+
+  ret = chars(fileName)
+  self~assertSame(total_len, ret)
+
+  ret = charin(fileName, total_len, 0)
+  self~assertSame("", ret)
+
+  ret = chars(fileName)
+  self~assertSame(1, ret)
+
+  discard = charin(fileName)
+  ret = chars(fileName)
+  self~assertSame(0, ret)
+
+  ret = charin(fileName, 40, 0)
+  self~assertSame("", ret)
+
+  ret = chars(fileName)
+  self~assertSame(total_len - 40 + 1, ret)
+
+  discard = linein(fileName)  -- Eats the last of line 2
+  do 2
+    discard = linein(fileName)
+  end
+
+  ret = chars(fileName)
+  self~assertSame(total_len - (4 * len), ret)
+

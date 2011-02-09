@@ -1,0 +1,359 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.VALUE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "VALUE.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~sl = 's.'
+    .local~su = 'S.'
+    .local~cl = 'c.a'
+    .local~cu = 'C.A'
+    .local~vl = 'war'
+    .local~vu = 'WAR'
+    .local~zl = 'lowercase garbage'
+    .local~zu = 'UPPERCASE GARBAGE'
+
+::method 'test001'
+    self~expectSyntax(40.26)
+    xre = value('')
+
+::method 'test002'
+    self~expectSyntax(40.26)
+    xre = value('00'x)
+
+::method 'test003'
+    self~assertSame('1', value('31'x))
+
+::method 'test004'
+    self~assertSame('A', value('a'))
+
+::method 'test005'
+    self~assertSame('A', value('A'))
+
+::method 'test006'
+    self~assertSame('WAR', value(.vl))
+
+::method 'test007'
+    self~assertSame('WAR', value(.vu))
+
+::method 'test008'
+    self~expectSyntax(40.26)
+    xre = value(.zl)
+
+::method 'test009'
+    self~expectSyntax(40.26)
+    xre = value(.zu)
+
+::method 'test010'
+    sl = 's.'
+    su = 'S.'
+    s. = 'stemmy'
+    self~assertSame('stemmy', value(.sl))
+
+::method 'test011'
+    sl = 's.'
+    su = 'S.'
+    s. = 'stemmy'
+    self~assertSame('stemmy', value(.su))
+
+::method 'test012'
+    cl = 'c.a'
+    cu = 'C.A'
+    c.a = 'compoundy'
+    self~assertSame('compoundy', value(cl))
+
+::method 'test013'
+    cl = 'c.a'
+    cu = 'C.A'
+    c.a = 'compoundy'
+    self~assertSame('compoundy', value(cu))
+
+::method 'test014'
+    sl = 's.'
+    self~assertSame('S.', value(sl))
+
+::method 'test015'
+    su = 'S.'
+    self~assertSame('S.', value(su))
+
+::method 'test016'
+    cl = 'c.a'
+    self~assertSame('C.A', value(cl))
+
+::method 'test017'
+    cu = 'C.A'
+    self~assertSame('C.A', value(cu))
+
+::method 'test018'
+    self~assertSame('17', value(17))
+
+::method 'test019'
+    a = 'A'
+    self~assertSame('.A', value(.a))
+
+::method 'test020'
+    self~assertSame('12E+17', value(12e+17))
+
+::method 'test021'
+    self~assertSame('1.2E+18', value(+12e+17))
+
+::method 'test022'
+    self~expectSyntax(40.26)
+    xre = value('+12e+17')
+
+::method 'test023'
+    self~expectSyntax(40.26)
+    xre = value(-12e+17)
+
+::method 'test024'
+    self~assertSame('0', value(0))
+-- call ver value(0),'0'; R0078:
+
+::method 'test025'
+    self~assertSame('1E9999999999999', value(1E9999999999999))
+
+::method 'test026'
+    self~assertSame(copies('Y',240), value('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY'))
+
+::method 'test027'
+    ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ = 'zb'
+    self~assertSame('zb', value('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'))
+
+::method 'test028'
+    self~assertSame(copies('ZZ',120), value('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'))
+
+::method 'test029'
+    self~assertSame(copies('YY',120), value(YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY))
+
+::method 'test030'
+    self~assertSame(copies('ZZ',120), value('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'))
+
+::method 'test031'
+    self~assertSame('AB', value('a'||'b'))
+-- call ver value('a'||'b'),'AB'; R0094:
+
+::method 'test032'
+    ab = 'aabb'
+    self~assertSame('aabb', value('a'||'b'))
+
+::method 'test033'
+    a = ''
+    b = 'B'
+    c = '.'
+    self~assertSame('B', value(a||b))
+
+::method 'test034'
+    a = ''
+    b = 'B'
+    c = '.'
+    self~assertSame('.B', value(c||b))
+
+::method 'test035'
+    a = ''
+    b = 'B'
+    c = '.'
+    self~assertSame('B.', value(b||c))
+
+::method 'test036'
+    a = ''
+    b = 'B'
+    c = '.'
+    self~assertSame('B', value((A)(A)(B)))
+
+::method 'test037'
+    c. = '0'
+    t1 = copies(1,200)
+    V2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222 = ''
+    self~assertSame('0', value('c.t1.V2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222'))
+-- call ver value('c.t1.V2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222'),'0'; R0113:
+
+::method 'test038'
+    VAR = 'vvvvv'
+    self~assertSame('VVVVV', value(value('VAR')))
+-- call ver value(value('VAR')),'VVVVV'; R0118:
+
+::method 'test039'
+    self~assertSame('ABCDE', value(xrange('A','E')))
+-- call ver value(xrange('A','E')),'ABCDE'; R0120:
+
+::method 'test040'
+    self~assertSame('ABCDEFGHIJKLMNOPQRSTUVWXYZ', value(xrange('A','Z')))
+-- call ver value(xrange('A','Z')),'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; R0121:
+
+::method 'test041'
+    self~expectSyntax(43.1)
+    xre = value('ABCXYZ'(17+4))
+
+::method 'test042'
+    BAD = 'bad data'
+    LIT = 'lit data'
+    self~assertSame('21', value(value((17+4))))
+-- call ver value(value((17+4))),'21'; R0127:
+
+::method 'test043'
+    stem. = 'V1'
+    V1 = 'ABC'
+    ABCABC = +23e5
+    self~assertSame('V1V1', value((stem.v)(stem.)))
+-- call ver value((stem.v)(stem.)),'V1V1'; R0132:
+
+::method 'test044'
+    bvb = ' V '
+    V = ''
+    self~expectSyntax(40.26)
+    xre = value(bvb)
+
+::method 'test045'
+    R.Pucher = 'xxx'
+    Name = 'Pucher'
+    self~assertSame('xxx', value(R.Name))
+
+::method 'test046'
+    drop a.3
+    j = 3
+    j = 3
+    i = 'i'
+    j.i = 17
+    jj = 'j.i'
+    self~assertSame(3, value('J'))
+    self~assertSame(3, value('j'))
+    self~assertSame(17, value(jj))
+    self~assertSame(17, value(j.i))
+    self~assertSame(3, value(J))
+    self~assertSame('A.3', value('a.j'))
+
+::method 'test047'
+    self~assertSame(2, value(2))
+
+::method 'test048'
+    self~expectSyntax(40.26)
+    xre = value('*')
+
+::method 'test049'
+    drop A3
+    A33 = 7
+    K = 3
+    fred = 'K'
+
+    self~assertSame('A3', value('a'k))
+    self~assertSame(7, value('a'k||k))
+    self~assertSame('K', value('fred'))
+    self~assertSame('3', value(fred))
+
+::method 'test050'
+    .local~remove(sl)
+    .local~remove(su)
+    .local~remove(cl)
+    .local~remove(cu)
+    .local~remove(vl)
+    .local~remove(vu)
+    .local~remove(zl)
+    .local~remove(zu)
+
+::method 'test051'
+    v = 17
+    ln = copies('a',250)
+    lz = copies('A',251)
+    la = 'A b C'
+    lb = 'AA'||'00'X||'BB'
+    lc = 'AA'||'00'X||'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC'
+    n = 'v'
+    c = copies('*',100000)
+
+    self~assertSame(17, value(n))
+    self~assertSame(17, value(n,'abc'))
+    self~assertSame('abc', value(n))
+    self~assertSame('abc', value(n,'410042'x))
+    self~assertSame('410042'x, value(n))
+    self~assertSame(translate(ln), value(ln))
+    self~assertSame(translate(ln), value(ln,c))
+    self~assertSame(c, value(ln))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_VALUE"
+    /* After: Drop A3; A33=7; K=3; fred='K'; list.5='Hi' */
+    Drop A3; A33=7; K=3; fred='K'; list.5='Hi'
+
+    self~assertSame('A3', VALUE('a'k))  /* looks up A3 */
+    self~assertSame('7', VALUE('a'k||k))
+    self~assertSame('K', VALUE('fred'))  /* looks up FRED */
+    self~assertSame('3', VALUE(fred))  /* looks up K */
+    self~assertSame('3', VALUE(fred,5))  /* looks up K and then sets K=5 */
+    self~assertSame('5', VALUE(fred))  /* looks up K */
+    self~assertSame('Hi', VALUE('LIST.'k))  /* looks up LIST.5 */
+
+   --
+    /* Given that an external variable FRED has a value of 4 */
+    share = 'ENVIRONMENT'
+    call value 'FRED', 4, share  -- set FRED to 4
+    self~assertEquals(4, VALUE('FRED',7,share))/* says '4' and assigns */
+                                                             /* FRED a new value of 7 */
+    self~assertEquals(7, VALUE('FRED', ,share)) /* says '7' */
+
+    call value 'FRED', .nil, share  -- delete 'FRED' from environment
+    self~assertSame("", VALUE('FRED', ,share))
+
+   -- test set/getting .environment-entries
+    call value 'UhU', 1, ''         -- define entry 'UHU' in .environment
+    self~assertSame(1, VALUE('UhU',   , ''))
+    call value 'UhU', .nil, ''      -- set entry in .environment to .nil
+    self~assertSame(.nil, VALUE('UhU', , ''))
+    .environment~remove('UHU')      -- delete entry in .environment
+    self~assertSame('.UHU', VALUE('UhU', , ''))
+
+
+
+
+
