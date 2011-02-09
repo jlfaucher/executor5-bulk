@@ -517,6 +517,13 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
       j = self~addOption(i)
     end
 
+    when word == '-e' then do
+      value = self~getValueSegment(i)
+
+      if \ self~validateAndSetOpt(testContainerExt, value, "-e") then j = -1
+      else j+=1
+    end
+
     when word == '-f' then do
       value = self~getValueSegment(i)
 
