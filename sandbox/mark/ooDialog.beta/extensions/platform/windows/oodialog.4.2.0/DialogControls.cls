@@ -187,6 +187,8 @@
 ::method replaceSelText unguarded external "LIBRARY oodialog e_replaceSelText"
 ::method getLine unguarded external "LIBRARY oodialog e_getLine"
 ::method lineIndex unguarded external "LIBRARY oodialog e_lineIndex"
+::method lineFromIndex unguarded external "LIBRARY oodialog e_lineFromIndex"
+::method lineLength unguarded external "LIBRARY oodialog e_lineLength"
 ::method hideBalloon unguarded external "LIBRARY oodialog e_hideBallon"
 ::method showBalloon unguarded external "LIBRARY oodialog e_showBallon"
 ::method getCue unguarded external "LIBRARY oodialog e_getCue"
@@ -276,24 +278,11 @@
     use strict arg
     return self~sendWinIntMsg(self~EM_GETLINECOUNT, 0, 0)
 
-::method lineLength unguarded
-    use strict arg line = (-1)
-    if line == -1 then line = self~EM_NEGATIVEONE
-    else line -= 1
-    ndx = self~lineIndex(line)
-    if ndx == -1 then return -1
-    return self~sendWinIntMsg(self~EM_LINELENGTH, ndx - 1, 0)
-
 ::method setLimit unguarded
     use strict arg limit
-    self~sendWinIntMsg(self~EM_LIMITTEXT, limit, 0)
+    self~sendWinUintMsg(self~EM_LIMITTEXT, limit, 0)
     return 0
 
-::method lineFromIndex unguarded
-    use strict arg ndx = (-1)
-    if ndx == -1 then ndx = self~EM_NEGATIVEONE
-    else ndx -= 1
-    return self~sendWinIntMsg(self~EM_LINEFROMCHAR, ndx, 0) + 1
 
 ::method firstVisibleLine unguarded
     use strict arg
@@ -474,11 +463,12 @@
 
 ::method delete unguarded
    use strict arg index = (self~selectedIndex)
-   if index == 0 then return 0
+   if index == 0 then return -1
    return self~sendWinIntMsg(self~LB_DELETESTRING, index - 1, 0)
 
 ::method deleteAll unguarded
-   return self~sendWinIntMsg(self~LB_RESETCONTENT, 0, 0)
+   self~sendWinIntMsg(self~LB_RESETCONTENT, 0, 0)
+   return 0
 
 ::method selected unguarded
    return self~getText(self~selectedIndex)
@@ -571,6 +561,8 @@
 ::constant CB_SETCURSEL                "0x014E"
 ::constant CB_SHOWDROPDOWN             "0x014F"
 ::constant CB_GETDROPPEDSTATE          "0x0157"
+::constant CB_GETHORIZONTALEXTENT      "0x015d"
+::constant CB_SETHORIZONTALEXTENT      "0x015e"
 
 ::method getText unguarded external "LIBRARY oodialog cb_getText"
 ::method add unguarded external "LIBRARY oodialog cb_add"
@@ -586,19 +578,25 @@
    return ret
 
 ::method deleteAll unguarded
+   use strict arg
    return self~sendWinIntMsg(self~CB_RESETCONTENT, 0, 0)
 
 ::method selectedIndex unguarded
+   use strict arg
    return self~sendWinIntMsg(self~CB_GETCURSEL, 0, 0) + 1
 
 ::method selected unguarded
+   use strict arg
    return self~getText(self~selectedIndex)
 
 ::method selectIndex unguarded
    use strict arg ndx = 0
-   return self~sendWinIntMsg(self~CB_SETCURSEL, ndx - 1, 0)
+   ret = self~sendWinIntMsg(self~CB_SETCURSEL, ndx - 1, 0)
+   if ret == -1, ndx <> 0 then return -1
+   return ret + 1
 
 ::method items unguarded
+   use strict arg
    return self~sendWinIntMsg(self~CB_GETCOUNT, 0, 0)
 
 ::method modify unguarded
@@ -608,19 +606,37 @@
    return self~insert(index, newEntry)
 
 ::method openDropDown unguarded
-   self~sendWinIntMsg(self~CB_SHOWDROPDOWN, 1, 0)
+   use strict arg
+   return self~sendWinIntMsg(self~CB_SHOWDROPDOWN, 1, 0)
 
 ::method closeDropDown unguarded
-   self~sendWinIntMsg(self~CB_SHOWDROPDOWN, 0, 0)
+   use strict arg
+   return self~sendWinIntMsg(self~CB_SHOWDROPDOWN, 0, 0)
 
 ::method isDropDownOpen unguarded
+   use strict arg
    return self~sendWinIntMsg(self~CB_GETDROPPEDSTATE, 0, 0)
 
-::method editSelection unguarded
+::method setEditSelection unguarded
    use strict arg startndx = 0, endndx = 0
    if endndx == 0 then endndx = -1
    lParam = .DlgUtil~makeLParam(startndx - 1, endndx)
    return self~sendWinIntMsg(self~CB_SETEDITSEL, 0, lParam) == -1
+
+::method getHorizontalExtent unguarded
+   use strict arg
+   return self~sendWinIntMsg(self~CB_GETHORIZONTALEXTENT, 0, 0)
+
+::method setHorizontalExtent unguarded
+   use strict arg extent
+   self~sendWinIntMsg(self~CB_SETHORIZONTALEXTENT, extent, 0)
+   return 0
+
+
+-- DEPRECATED
+::method editSelection
+   forward message "setEditSelection"
+
 
 
 /*********** ScrollBar Class **************************************************/

@@ -1556,56 +1556,138 @@ RexxMethod3(RexxObjectPtr, e_replaceSelText, CSTRING, replacement, OPTIONAL_logi
 /** Edit::lineIndex()
  *
  *  Gets the character index of the first character of a specified line in a
- *  multiline edit control. A character index is the zero-based index of the
+ *  multiline edit control. A character index is the one-based index of the
  *  character from the beginning of the edit control.
  *
- *  @param  lineNumber  The one-based index of the line whose character index is
- *                      desired.  A value of –1 specifies the current line
- *                      number (the line that contains the caret).
+ *  @param  lineNumber  The non-negative, one-based index, of the line whose
+ *                      character index is desired.  A value of 0 specifies the
+ *                      current line number (the line that contains the caret).
  *
- *  @return The character index. -1 is returned if the specified line index is
- *          not within bounds of the edit control lines.  (More than the curent
- *          number of lines or 0.)
+ *  @return On success, the one-based character index.  On error, 0 is returned,
+ *          for instance if the specified line index is not valid.  (Greater
+ *          than the lines in the edit control.)
  *
  *  @note  The lineIndex() method is intended for multi-line edit controls,
  *         however, it will behave as documented for single-line edit controls.
  *         The return is always 1 for a single-line if the lineNumber argument
- *         is 1 or -1 and always -1 for any other value.
- *
- *  @remarks  The EM_LINEINDEX message is documented as returning -1 if the line
- *            number specified as being greater than the current number of lines
- *            in the edit control.  However, under 64-bit Windows, the return is
- *            0x00000000FFFFFFFF (4294967295) rather than -1.
+ *         is 1 or 0 and always 0 for any other value.
  */
-RexxMethod2(RexxObjectPtr, e_lineIndex, int32_t, lineNumber, CSELF, pCSelf)
+RexxMethod2(uint32_t, e_lineIndex, OPTIONAL_uint32_t, lineNumber, CSELF, pCSelf)
 {
-    RexxObjectPtr result = TheNegativeOneObj;
-    if ( lineNumber != 0 )
+    HWND hCtrl = getDChCtrl(pCSelf);
+    uint32_t charIndex = 0;
+
+    lineNumber--;
+
+    if ( isSingleLineEdit(hCtrl) )
     {
-        HWND hCtrl = getDChCtrl(pCSelf);
-
-        if ( isSingleLineEdit(hCtrl) )
+        if ( lineNumber == 1 || lineNumber == 0 )
         {
-            if ( lineNumber == 1 || lineNumber == -1 )
-            {
-                result = TheOneObj;
-            }
-        }
-        else
-        {
-            if ( lineNumber != -1 )
-            {
-                lineNumber--;
-            }
-
-            uint32_t charIndex = (uint32_t)SendMessage(hCtrl, EM_LINEINDEX, lineNumber, 0);
-            if ( charIndex != 0xFFFFFFFF )
-            {
-                result = context->UnsignedInt32(++charIndex);
-            }
+            charIndex = 1;
         }
     }
-    return result;
+    else
+    {
+        charIndex = (uint32_t)SendMessage(hCtrl, EM_LINEINDEX, lineNumber, 0);
+        charIndex++;
+    }
+
+    return charIndex;
+}
+
+
+/** Edit::lineFromIndex()
+ *
+ *  Retrieves the line index containing the character at the specified character
+ *  index.
+ *
+ *  @param charIndex  A non-negative number specifying the one-based character
+ *                    index of the character whose line number is needed. If
+ *                    charIndex is 0 then this method retrieves the current line
+ *                    number (the line the caret is on,) or, if there is a
+ *                    selection, then the line containging the current
+ *                    selection.
+ *
+ *  @return  The one-based line index containing the specified character.
+ *
+ *  @notes  If the character index is beyond the end of the text in the edit
+ *          control, the index of the last line is returned.
+ *
+ *  @remarks  If charIndex is omitted, its value will be 0.  0 is the default
+ *            for the argument, so we do not need to check if it is omitted or
+ *            not.
+ *
+ *            Experimentation shows that the index of the last line is returned
+ *            when char index is not valid. MSDN is not specific on this, but,
+ *            it does not say that -1 is returned
+ */
+RexxMethod2(uint32_t, e_lineFromIndex, OPTIONAL_uint32_t, charIndex, CSELF, pCSelf)
+{
+    HWND hCtrl = getDChCtrl(pCSelf);
+
+    charIndex--;
+    uint32_t lineIndex = (uint32_t)SendMessage(hCtrl, EM_LINEFROMCHAR, charIndex, 0);
+
+    return ++lineIndex;
+}
+
+
+/** Edit::lineLength()
+ *
+ *  Returns the length, in characters, of the specified line in an edit control.
+ *
+ *  @param  lineIndex  [optional] The one-based index of the line whose length
+ *                     is needed.
+ *
+ *                     This argument can be 0. The default if omitted is 0.  See
+ *                     the @notes.
+ *
+ *  @return On success, the number of charcters in the line specified, not
+ *          including the carriage return at the end of the line. On error -1.
+ *          In particular, -1 is returned if lineIndex is greate than the number
+ *          of lines in the edit control.
+ *
+ *
+ *  @notes  If lineIndex is 0 the return changes in this fashion:
+ *
+ *          If there is no selection, the number of characters in the current
+ *          line is returned.  The current line is the line with the caret in
+ *          it.
+ *
+ *          If there is a selection, this method returns the number of
+ *          unselected characters on lines containing selected characters.
+ *
+ *          For example, if the selection started at the fourth character on one
+ *          line through the next line up through the fourth character from the
+ *          end of the line, the return value would be 6 (three characters on
+ *          the first line and three on the next).
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, e_lineLength, OPTIONAL_uint32_t, lineIndex, CSELF, pCSelf)
+{
+    HWND hCtrl = getDChCtrl(pCSelf);
+
+    lineIndex--;
+    uint32_t charIndex = lineIndex;
+
+    if ( lineIndex != (uint32_t)-1 )
+    {
+        charIndex = (uint32_t)SendMessage(hCtrl, EM_LINEINDEX, lineIndex, 0);
+        if ( charIndex == (uint32_t)-1 )
+        {
+            return TheNegativeOneObj;
+        }
+    }
+
+    // Reuse lineIndex here to get the result.
+    lineIndex = (uint32_t)SendMessage(hCtrl, EM_LINELENGTH, charIndex, 0);
+    if ( lineIndex == (uint32_t)-1 )
+    {
+        return TheNegativeOneObj;
+    }
+
+    return context->UnsignedInt32(lineIndex);
 }
 
 
@@ -1614,8 +1696,9 @@ RexxMethod2(RexxObjectPtr, e_lineIndex, int32_t, lineNumber, CSELF, pCSelf)
  *  Retrieves the text of the specified line.
  *
  *  @param  lineNumber  The one-base index of the line whose text is desired.
- *                      A value of –1 specifies the current line number (the
- *                      line that contains the caret).
+ *                      This value can be 0, in which case the text of the
+ *                      current line is retrieved
+ *
  *  @param  ignored     Prior to 4.0.1, ooDialog required the user to specify
  *                      how long the line was (or how much text to retrieve) if
  *                      the line was over 255 characters.  This restriction is
@@ -1624,43 +1707,52 @@ RexxMethod2(RexxObjectPtr, e_lineIndex, int32_t, lineNumber, CSELF, pCSelf)
  *
  *  @return  The text of the specified line, or the empty string if an error
  *           occurs.  Recall that it is possible that the line specified
- *           actually contains no text.
+ *           actually contains no text. If there is an error see below:
+ *
+ *
+ *  @notes  Sets the .SystemErrorCode.  This code is set on error, by us, the OS
+ *          does not set any:
+ *
+ *          ERROR_NOT_SUPPORTED (50)   The request is not supported.
+ *
  */
-RexxMethod3(RexxStringObject, e_getLine, int32_t, lineNumber, OPTIONAL_RexxObjectPtr, ignored, CSELF, pCSelf)
+RexxMethod3(RexxStringObject, e_getLine, uint32_t, lineNumber, OPTIONAL_RexxObjectPtr, ignored, CSELF, pCSelf)
 {
+    oodResetSysErrCode(context->threadContext);
+
     HWND hwnd = getDChCtrl(pCSelf);
     char *buf = NULL;
     RexxStringObject result = context->NullString();
 
-    if ( lineNumber == 0 )
-    {
-        goto done_out;
-    }
+    RexxMethodContext *c = context;
+
+    lineNumber--;
 
     if ( isSingleLineEdit(hwnd) )
     {
-        if ( lineNumber != 1 )
+        if ( lineNumber != 0 && lineNumber != (uint32_t)-1 )
         {
+            oodSetSysErrCode(context->threadContext, ERROR_NOT_SUPPORTED);
             goto done_out;
         }
         rxGetWindowText(context, hwnd, &result);
     }
     else
     {
-        if ( lineNumber != -1 )
-        {
-            lineNumber--;
-        }
-
         uint32_t charIndex = (uint32_t)SendMessage(hwnd, EM_LINEINDEX, lineNumber, 0);
-        if ( charIndex == 0xFFFFFFFF )
+        if ( charIndex == (uint32_t)-1 )
         {
+            oodSetSysErrCode(context->threadContext, ERROR_NOT_SUPPORTED);
             goto done_out;
         }
 
         WORD count = (WORD)SendMessage(hwnd, EM_LINELENGTH, charIndex, 0);
         if ( count == 0 )
         {
+            // This could be an error, *if* charIndex is greater than the number
+            // of characters in the edit control.  But, that should have been
+            // caught above with EM_LINEINDEX, so it is not an error.  (Not
+            // likely to be an error.
             goto done_out;
         }
 
@@ -1669,6 +1761,13 @@ RexxMethod3(RexxStringObject, e_getLine, int32_t, lineNumber, OPTIONAL_RexxObjec
         {
             outOfMemoryException(context->threadContext);
             goto done_out;
+        }
+
+        // If lineNumber == -1, then we need to get the line number of the
+        // current line.  Count is the cout of the current line already.
+        if ( lineNumber == (uint32_t)-1 )
+        {
+            lineNumber = (uint32_t)SendMessage(hwnd, EM_LINEFROMCHAR, -1, 0);
         }
 
         (*(WORD *)buf) = count;
@@ -2209,6 +2308,7 @@ static int32_t cbLbInsert(RexxMethodContext *context, HWND hCtrl, int32_t index,
     }
     else
     {
+        // If index is 0 or -1, then that is the correct index already.
         if ( index > 0 )
         {
             index--;
@@ -2259,14 +2359,12 @@ static int32_t cbLbSelect(HWND hCtrl, CSTRING text, oodControl_t ctrl)
 static int32_t cbLbFind(HWND hCtrl, CSTRING text, uint32_t startIndex, CSTRING exactly, oodControl_t ctrl)
 {
     bool exact = false;
-    if ( exactly != NULL && (*exactly == '1' || toupper(*exactly) || 'E') )
+    if ( exactly != NULL && (*exactly == '1' || toupper(*exactly) == 'E') )
     {
         exact = true;
     }
-    if ( startIndex > 0 )
-    {
-        startIndex--;
-    }
+
+    int32_t index = startIndex == 0 ? -1 : --startIndex;
 
     int32_t found;
     uint32_t msg;
@@ -2279,9 +2377,9 @@ static int32_t cbLbFind(HWND hCtrl, CSTRING text, uint32_t startIndex, CSTRING e
         msg = (ctrl == winComboBox ? CB_FINDSTRING : LB_FINDSTRING);
     }
 
-    found = (int32_t)SendMessage(hCtrl, LB_FINDSTRING, startIndex, (LPARAM)text);
+    found = (int32_t)SendMessage(hCtrl, msg, index, (LPARAM)text);
 
-    return (found > 0 ? 0 : --found);
+    return (found == CB_ERR ? 0 : ++found);
 }
 
 
@@ -2661,7 +2759,7 @@ RexxMethod2(int32_t, cb_add, CSTRING, text, CSELF, pCSelf)
  *  Inserts a string entry into the cobo box at the index specified.
  *
  *  @param  index  [OPTIONAL]  The one-based index of where the entry is to be
- *                 inerted.  If index is less than -1, the entry is inserted at
+ *                 inserted.  If index is less than 0, the entry is inserted at
  *                 the end of the entries.  If index is 0, the new entry is
  *                 inserted as the first entry.
  *
