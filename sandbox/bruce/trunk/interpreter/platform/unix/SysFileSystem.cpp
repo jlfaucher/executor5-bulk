@@ -61,6 +61,11 @@
 #include "SysFileSystem.hpp"
 #include "Utilities.hpp"
 
+#if defined(__APPLE__) &&  defined(__MACH__)
+# define stat64 stat
+#endif
+
+
 const char SysFileSystem::EOF_Marker = 0x1A;
 const char *SysFileSystem::EOL_Marker = "\n";
 const char SysFileSystem::PathDelimiter = '/';

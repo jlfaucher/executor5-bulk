@@ -232,6 +232,14 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+#if defined(__APPLE__) &&  defined(__MACH__)
+# define fstat64 fstat
+# define lseek64 lseek
+# define lstat64 lstat
+# define open64  open
+# define stat64  stat
+#endif
+
 
 #if defined( HAVE_SYS_SEM_H )
 # include <sys/sem.h>
