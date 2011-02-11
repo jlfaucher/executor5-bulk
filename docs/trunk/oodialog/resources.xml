@@ -58,56 +58,60 @@
 <para>
   This chapter describes ooDialog classes that provide access to Windows resources.  The classes allow
   the oodialog programmer to use and manipulate resources in their ooDialog programs.  This is an area of
-  ooDialog that is slated for future improvements.  The classes listed in the following table are
-  documented in this chapter:
-<table id="tblResourcesClasses" frame="all">
-<title>ooDialog Resource Classes</title>
+  ooDialog that is slated for future improvements.
+</para>
+
+
+<section id="sctResourceClasses"><title>Resource Classes</title>
+<para> The classes listed in the following table are documented in this chapter:
+<table id="tblResourcesClasses" frame="all"> <title>ooDialog Resource Classes</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
 <entry>Class</entry>
-<entry>Link to Description</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>Image</entry>
 <entry><link linkend="clsImage">Image Class</link></entry>
+<entry>Objects used to work with and manipulate images.</entry>
 </row>
 <row>
-<entry>ImageList</entry>
 <entry><link linkend="clsImageList">ImageList Class</link></entry>
+<entry>Objects used to efficiently manage large sets of images.</entry>
 </row>
 <row>
-<entry>ResourceImage</entry>
 <entry><link linkend="clsResourceImage">ResourceImage Class</link></entry>
+<entry>Objects used to represent modules that contain resources.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
+</section>
 
 <section id="clsImage"><title>Image Class</title>
 <indexterm><primary>Image class</primary></indexterm>
 <para>
-  The Image class is used to work with and manipulate images.  Currently, the image types supported
-  include bitmaps, icons, cursors (cusors are a type of icon,) and enhanced metafiles.  The enhanced
-  metafile support is very limited at this time.
+  The Image class is used to work with and manipulate images.  Currently, the image types supported include bitmaps,
+  icons, cursors (cusors are a type of icon,) and enhanced metafiles.  The enhanced metafile support is very limited at
+  this time.
 </para>
 <para>
-  The class supports loading images from files, from resources contained in any executable files
-  (*.exe and *.dll,) from the files associated with the ooDialog program, and from the generally
-  available system resources.
+  The class supports loading images from files, from resources contained in any executable files (*.exe and *.dll,) from
+  the files associated with the ooDialog program, and from the generally available system resources.
 </para>
-<note><title>Note</title><para>
-  The .Image class is the future direction that ooDialog will take for working with images, including
-  bitmaps.  This is a more flexible approach than the older bitmap methods used when ooDialog was first
-  developed.  It will allow access to more of the modern features of the Windows user interface than the
-  older approach does.  The older bitmap methods were designed to work with Windows 3.1 and have a number
-  of limitations.  The ooDialog programmer is strongly encouraged to migrate her code towards the .Image
-  class.  The older bitmap methods should be considered depracated, to a degree.  Unfortunately,
-  replacement methods for all of the older bitmap methods have not as yet been implmented.  So, the older
-  methods may still be necessary for some situations.
-</para></note>
+<para>
+  <emphasis role="bold">Note:</emphasis> The <computeroutput>.Image</computeroutput> class is the future direction that
+  ooDialog will take for working with images, including bitmaps.  This is a more flexible approach than the older bitmap
+  methods used when ooDialog was first developed.  It will allow access to more of the modern features of the Windows
+  user interface than the older approach does.  The older bitmap methods were designed to work with Windows 3.1 and have
+  a number of limitations.  The ooDialog programmer is strongly encouraged to migrate her code towards the .Image
+  class.  The older bitmap methods should be considered depracated, to a degree.  Unfortunately, replacement methods for
+  all of the older bitmap methods have not as yet been implmented.  So, the older methods may still be necessary for
+  some situations.
+</para>
 <para id="paraClsImageRelease">
   A loaded image takes up some small part of the systems's resources. It is common to release an image
   when the programmer is done with it.  The .Image class has the <link
@@ -144,7 +148,8 @@
 
 <table id="tblImageMethods" frame="all">
 <title>Methods of the <computeroutput>Image</computeroutput> Class</title>
-<tgroup cols="2">
+r<tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -157,40 +162,40 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>colorRef</entry>
 <entry><link linkend="mthColorRef">colorRef</link></entry>
+<entry>Provides a way to construct a COLORREF from the red, green, and blue values of a color.</entry>
 </row>
 <row>
-<entry>fromFiles</entry>
 <entry><link linkend="mthFromFilesClsImage">fromFiles</link></entry>
+<entry>Returns an array of <computeroutput>.Image</computeroutput> objects when given an array of file names.</entry>
 </row>
 <row>
-<entry>fromIDs</entry>
 <entry><link linkend="mthFromIDsClsImage">fromIDs</link></entry>
+<entry>Uses an array of resource IDs to instantiate and return an array of <computeroutput>.Image</computeroutput> objects.</entry>
 </row>
 <row>
-<entry>getBValue</entry>
 <entry><link linkend="mthGetBValue">getBValue</link></entry>
+<entry>Returns the blue component of a RGB color.</entry>
 </row>
 <row>
-<entry>getGValue</entry>
 <entry><link linkend="mthGetGValue">getGValue</link></entry>
+<entry>Returns the green component of a RGB color.</entry>
 </row>
 <row>
-<entry>getImage</entry>
 <entry><link linkend="mthGetImageClsImage">getImage</link></entry>
+<entry>Instantiates a new <computeroutput>.Image</computeroutput> object from either an image file or from one of the system images.</entry>
 </row>
 <row>
-<entry>getRValue</entry>
 <entry><link linkend="mthGetRValue">getRValue</link></entry>
+<entry>Returns the red component of a RGB color.</entry>
 </row>
 <row>
-<entry>new</entry>
 <entry><link linkend="mthNewClsImage">new</link></entry>
+<entry>Image objects can not be instantiated from Rexx code using the <emphasis role="italic">new</emphasis>, other class methods are used.</entry>
 </row>
 <row>
-<entry>toID</entry>
 <entry><link linkend="mthToIDClsImage">toID</link></entry>
+<entry>Used to translate a symbolic name to its integer value</entry>
 </row>
 <row>
 <entry><link linkend="mthUserIcon">userIcon</link></entry>
@@ -201,20 +206,20 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>handle</entry>
 <entry><link linkend="mthHandleClsImage">handle</link></entry>
+<entry>Returns the Windows system handle to the image this object represents.</entry>
 </row>
 <row>
-<entry>isNull</entry>
 <entry><link linkend="mthIsNullClsImage">isNull</link></entry>
+<entry>Tests if the image object is valid.</entry>
 </row>
 <row>
-<entry>release</entry>
 <entry><link linkend="mthReleaseClsImage">release</link></entry>
+<entry>Releases the operating system resources used for the image.</entry>
 </row>
 <row>
-<entry>systemErrorCode</entry>
 <entry><link linkend="mthSystemErrorCodeClsImage">systemErrorCode</link></entry>
+<entry>Reflects any system error codes that are detected while working with an image object.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -1407,6 +1412,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 <table id="tblImageListMethods" frame="all">
 <title>Image Instance Methods</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -1415,60 +1421,68 @@ A fancy purple: 16734709 (0x00FF59F5)
 </thead>
 <tbody>
 <row>
-<entry>create (Class method)</entry>
-<entry><link linkend="mthCreateClsImageList">id</link></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>new (Class method)</entry>
+<entry><link linkend="mthCreateClsImageList">create</link></entry>
+<entry>Creates a new empty image list of the type specified.</entry>
+</row>
+<row>
 <entry><link linkend="mthNewClsImageList">new</link></entry>
+<entry>Currently it is not intended for the ooDialog programmer to instantiate an image list object directly using the new method.</entry>
 </row>
 <row>
-<entry>add</entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
 <entry><link linkend="mthAddClsImageList">add</link></entry>
+<entry>Adds one or more bitmap images to the image list.</entry>
 </row>
 <row>
-<entry>addMasked</entry>
 <entry><link linkend="mthAddMaskedClsImageList">addMasked</link></entry>
+<entry>Adds one or more bitmap images, along with a mask to the image list.</entry>
 </row>
 <row>
-<entry>addIcon</entry>
 <entry><link linkend="mthAddIcon">addIcon</link></entry>
+<entry>Adds an icon or cursor image to the image list.</entry>
 </row>
 <row>
-<entry>addImages</entry>
 <entry><link linkend="mthAddImagesClsImageList">addImages</link></entry>
+<entry>Adds a number of images to the image list.</entry>
 </row>
 <row>
-<entry>getCount</entry>
 <entry><link linkend="mthGetCountClsImageList">getCount</link></entry>
+<entry>Determines the number of images in the image list.</entry>
 </row>
 <row>
-<entry>getImageSize</entry>
 <entry><link linkend="mthGetImageSizeClsImageList">getImageSize</link></entry>
+<entry>Determines the size of the images in the image list.</entry>
 </row>
 <row>
-<entry>duplicate</entry>
 <entry><link linkend="mthDuplicateClsImageList">duplicate</link></entry>
+<entry>Creates a duplicate image list.</entry>
 </row>
 <row>
-<entry>remove</entry>
 <entry><link linkend="mthRemoveClsImageList">remove</link></entry>
+<entry>Removes the image at the specified index from the image list.</entry>
 </row>
 <row>
-<entry>removeAll</entry>
 <entry><link linkend="mthRemoveAllClsImageList">removeAll</link></entry>
+<entry>Removes all images from the image list.</entry>
 </row>
 <row>
-<entry>release</entry>
 <entry><link linkend="mthReleaseClsImageList">release</link></entry>
+<entry>Releases the resource module so that the operating system can reclaim the system resources used by the image list.</entry>
 </row>
 <row>
-<entry>handle</entry>
 <entry><link linkend="mthHandleClsImageList">handle</link></entry>
+<entry>Returns the Windows system handle to the image list this object represents.</entry>
 </row>
 <row>
-<entry>isNull</entry>
 <entry><link linkend="mthIsNullClsImageList">isNull</link></entry>
+<entry>Used to check if an image list is valid.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -1541,11 +1555,11 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       A new, empty, image list is returned.
-      <note><title>Note</title><para>
-      It is theoretical possible for this method to fail and the returned image list to be null.
-      However, in practice, it is virtually impossible to cause a failure.  Using a size of 0 x 0 seems
+    </para>
+    <para>
+      <emphasis role="bold">Note:</emphasis> It is theoretical possible for this method to fail and the returned image
+      list to be null. However, in practice, it is virtually impossible to cause a failure.  Using a size of 0 x 0 seems
       about the only way.
-      </para></note>
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2510,12 +2524,10 @@ A fancy purple: 16734709 (0x00FF59F5)
   interpreter process ends.  The <link linkend="paraClsImageRelease">comments</link> about why would a
   programmer want to release resources in the .Image class remarks are equally apropos here.
 </para>
-<note><title>Note</title>
 <para>
-  The ResourceImage class is new in ooDialog as of ooRexx version 4.0.0.  Its first implementation
-  supports image resources and provides the basic framework upon which to expand in the future.
+  <emphasis role="bold">Note:</emphasis> The ResourceImage class is new in ooDialog as of ooRexx version 4.0.0.  Its
+  first implementation supports image resources and provides the basic framework upon which to expand in the future.
 </para>
-</note>
 
 <section id="sctMethodsResourceImageClass"><title>Method Table</title>
 
@@ -2534,32 +2546,40 @@ A fancy purple: 16734709 (0x00FF59F5)
 </thead>
 <tbody>
 <row>
-<entry>new (Class method)</entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
 <entry><link linkend="mthNewClsResourceImage">new</link></entry>
+<entry>Instantiates a new resource image that represents the module specified by the specified file name.</entry>
 </row>
 <row>
-<entry>getImage</entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
 <entry><link linkend="mthGetImageClsResourceImage">getImage</link></entry>
+<entry>Loads the specified image resource in the module and returns a new <computeroutput>.Image</computeroutput> object.</entry>
 </row>
 <row>
-<entry>getImages</entry>
 <entry><link linkend="mthGetImagesClsResourceImage">getImages</link></entry>
+<entry>Loads a number of image resources from the module.</entry>
 </row>
 <row>
-<entry>handle</entry>
 <entry><link linkend="mthHandleClsResourceImage">handle</link></entry>
+<entry>Returns the Windows system handle for the resource module.</entry>
 </row>
 <row>
-<entry>isNull</entry>
 <entry><link linkend="mthIsNullClsResourceImage">isNull</link></entry>
+<entry>Determines if the resource image is valid.</entry>
 </row>
 <row>
-<entry>release</entry>
 <entry><link linkend="mthReleaseClsResourceImage">release</link></entry>
+<entry>Releases the resource module so that the operating system can reclaim the system resources.</entry>
 </row>
 <row>
-<entry>systemErrorCode</entry>
 <entry><link linkend="mthSystemErrorCodeClsResourceImage">systemErrorCode</link></entry>
+<entry>Reflects any system error codes that are detected while working with an image object.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2698,11 +2718,11 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   Loads the specified image resource in the module and returns a new <link
   linkend="clsImage">.Image</link> object.
-  <note><title>Note</title><para>
-    <computeroutput>LoadImage()</computeroutput> is the underlying Windows API used here. This method is
-    very similar to the <link linkend="mthGetImageClsImage">getImage()</link> method of the .Image class.
-    The documentation for that method may provide additional insight.
-  </para></note>
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> <computeroutput>LoadImage()</computeroutput> is the underlying Windows API used
+  here. This method is very similar to the <link linkend="mthGetImageClsImage">getImage()</link> method of the .Image
+  class. The documentation for that method may provide additional insight.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2713,10 +2733,10 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The resource id of the image in the module.
-          <note><title>Note</title><para>
-            At this time symbolic IDs are not supported for this argument.  That restriction may be
-            lifted in a furture version of ooDialog.
-          </para></note>
+        </para>
+        <para>
+          <emphasis role="bold">Note:</emphasis> At this time symbolic IDs are not supported for this argument.  That
+            restriction may be lifted in a furture version of ooDialog.
         </para>
       </listitem></varlistentry>
       <varlistentry><term>type</term>
@@ -2831,11 +2851,11 @@ A fancy purple: 16734709 (0x00FF59F5)
   the same type and use the same flags.  If the type is bitmap, and the flags include LR_DEFAULTSIZE, and
   the size is 0 x 0, then the size of the image will be the actual resource size.  Otherwise, all the
   images also need to be the same size.
-  <note><title>Note</title><para>
-    <computeroutput>LoadImage()</computeroutput> is the underlying Windows API used here.  This method is
-    very similar to the <link linkend="mthFromIDsClsImage">fromIDs()</link> method of the .Image class.
-    The documentation for that method can provide additional information.
-  </para></note>
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> <computeroutput>LoadImage()</computeroutput> is the underlying Windows API
+    used here.  This method is very similar to the <link linkend="mthFromIDsClsImage">fromIDs()</link> method of the
+    .Image class. The documentation for that method can provide additional information.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
