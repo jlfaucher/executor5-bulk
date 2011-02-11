@@ -51,134 +51,139 @@
   dialogs can usually be executed with only two lines of code. This does not require the programmer to do
   much set up and makes them simple to work with.
 </para>
+
+<section id="sctStandardClassesRoutines"><title>Class &amp; Routine Table</title>
+
 <para>
   The standard dialogs and public routines are listed the following table:
 </para>
 <table id="tStandardElements" frame="all">
-<title>Standard Dialogs, and Routines</title>
+<title>Standard Dialog Classes and Public Routines</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Standard dialog...</entry>
-<entry>...Description</entry>
+<entry>Class / Routine</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>CheckList</entry>
+<entry align="center"><emphasis role="bold">Dialog</emphasis></entry>
+<entry align="center"><emphasis role="bold">Classes</emphasis></entry>
+</row>
+<row>
 <entry><link linkend="clsCheckList">CheckList class</link></entry>
+<entry>A dialog with a group of one or more check boxes.</entry>
 </row>
 <row>
-<entry>InputBox</entry>
 <entry><link linkend="clsInputBox">InputBox class</link></entry>
+<entry>Provides a simple dialog with a title, a message, an edit control, and the Ok and Cancel push buttons.</entry>
 </row>
 <row>
-<entry>IntegerBox</entry>
 <entry><link linkend="clsIntegerBox">IntegerBox class</link></entry>
+<entry>An <computeroutput>InputBox</computeroutput> dialog whose edit control allows only numerical data.</entry>
 </row>
 <row>
-<entry>ListChoice</entry>
 <entry><link linkend="clsListChoice">ListChoice class</link></entry>
+<entry>Provides a dialog with a single-selection list box, and the Ok and Cancel push buttons.</entry>
 </row>
 <row>
-<entry>MultiInputBox</entry>
 <entry><link linkend="clsMultiInputBox">MultiInputBox class</link></entry>
+<entry>A dialog that provides a title, a message, and one or more edit controls.</entry>
 </row>
 <row>
-<entry>MultiListChoice</entry>
 <entry><link linkend="clsMultiListChoice">MultiListChoice class</link></entry>
+<entry>A <computeroutput>ListChoice</computeroutput> dialog that allows multi-item selection</entry>
 </row>
 <row>
-<entry>PasswordBox</entry>
 <entry><link linkend="clsPasswordBox">PasswordBox class</link></entry>
+<entry>An <computeroutput>InputBox</computeroutput> dialog with that uses a password edit control.</entry>
 </row>
 <row>
-<entry>SingleSelection</entry>
 <entry><link linkend="clsSingleSelection">SingleSelection class</link></entry>
+<entry>A dialog that has a group of radio buttons. The user can select only one item of the group.</entry>
 </row>
 <row>
-<entry>TimedMessage</entry>
 <entry><link linkend="clsTimedMessage">TimedMessage class</link></entry>
+<entry>Shows a message window for a defined duration.</entry>
 </row>
-</tbody></tgroup>
-<tgroup cols="2">
-<thead>
 <row>
-<entry>Public routine...</entry>
-<entry>...Description</entry>
+<entry align="center"><emphasis role="bold">Public</emphasis></entry>
+<entry align="center"><emphasis role="bold">Routines</emphasis></entry>
 </row>
-</thead>
-<tbody>
 <row>
-<entry>AskDialog</entry>
 <entry><link linkend="rtnAskDialog">AskDialog routine</link></entry>
+<entry>Pops up a message box containing the specified text, a Yes and a No push button.</entry>
 </row>
 <row>
-<entry>CheckList</entry>
 <entry><link linkend="rtnCheckList">CheckList routine</link></entry>
+<entry>A shortcut function to invoke the <computeroutput>CheckList</computeroutput> dialog.</entry>
 </row>
 <row>
-<entry>ErrorDialog</entry>
 <entry><link linkend="rtnErrorDialog">ErrorDialog routine</link></entry>
+<entry>Pops up a message box containing the specified text, an Ok push button and an error icon.</entry>
 </row>
 <row>
-<entry>FileNameDialog</entry>
 <entry><link linkend="rtnFileNameDialog">FileNameDialog routine</link></entry>
+<entry>Causes a file selection dialog box to appear.</entry>
 </row>
 <row>
-<entry>FindWindow</entry>
 <entry><link linkend="rtnFindWindow">FindWindow routine</link></entry>
+<entry>Searches the desktop for a specific window and returns its handle.</entry>
 </row>
 <row>
-<entry>InfoDialog</entry>
 <entry><link linkend="rtnInfoDialog">InfoDialog routine</link></entry>
+<entry>Pops up a message box containing the specified text and an Ok push button.</entry>
 </row>
 <row>
-<entry>InputBox</entry>
 <entry><link linkend="rtnInputBox">InputBox routine</link></entry>
+<entry>A shortcut function to invoke an <computeroutput>InputBox</computeroutput> dialog as a function.</entry>
 </row>
 <row>
-<entry>IntegerBox</entry>
 <entry><link linkend="rtnIntegerBox">IntegerBox routine</link></entry>
+<entry>A shortcut to invoke an <computeroutput>IntegerBox</computeroutput> dialog as a function.</entry>
 </row>
 <row>
-<entry>ListChoice</entry>
 <entry><link linkend="rtnListChoice">ListChoice routine</link></entry>
+<entry>Provides a shortcut to invoke a <computeroutput>ListChoice</computeroutput> dialog.</entry>
 </row>
 <row>
-<entry>MSSleep</entry>
 <entry><link linkend="rtnMSSleep">MSSleep routine</link></entry>
+<entry>Sleeps for the specified number of milliseconds.</entry>
 </row>
 <row>
-<entry>MultiInputBox</entry>
 <entry><link linkend="rtnMultiInputBox">MultiInputBox routine</link></entry>
+<entry>Provides a shortcut function to invoke a <computeroutput>MultiInputBox</computeroutput> dialog</entry>
 </row>
 <row>
-<entry>MultiListChoice</entry>
 <entry><link linkend="rtnMultiListChoice">MultiListChoice routine</link></entry>
+<entry>Provides a shortcut to invoke a <computeroutput>MultiListChoice</computeroutput> dialog.</entry>
 </row>
 <row>
-<entry>PasswordBox</entry>
 <entry><link linkend="rtnPasswordBox">PasswordBox routine</link></entry>
+<entry>A shortcut to invoke a <computeroutput>PasswordBox</computeroutput> dialog.</entry>
 </row>
 <row>
-<entry>Play</entry>
 <entry><link linkend="rtnPlay">Play routine</link></entry>
+<entry>Used to play audio sounds.</entry>
 </row>
 <row>
-<entry>ScreenSize</entry>
 <entry><link linkend="rtnScreenSize">ScreenSize routine</link></entry>
+<entry>Obtains the screen size in dialog units and in pixels.</entry>
 </row>
 <row>
-<entry>SingleSelection</entry>
 <entry><link linkend="rtnSingleSelection">SingleSelection routine</link></entry>
+<entry>Provides a quick way to invoke a <computeroutput>SingleSelection</computeroutput> dialog.</entry>
 </row>
 <row>
-<entry>TimedMessage</entry>
 <entry><link linkend="rtnTimedMessage">TimedMessage routine</link></entry>
+<entry>Provides a quick way to invokin a <computeroutput>TimedMessage</computeroutput> dialog.</entry>
 </row>
 </tbody></tgroup>
 </table>
+
+</section>
 
 <section id="sctStandardDialogs"><title>Standard Dialog Classes</title>
 <indexterm><primary>standard dialogs</primary></indexterm>
@@ -195,15 +200,6 @@
 <listitem><para>SingleSelection</para></listitem></itemizedlist>
 <para></para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>Use the <computeroutput>oodPlain.cls</computeroutput> file for
-the standard dialog classes.
-<programlisting>
-<![CDATA[
-::requires "oodPlain.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
 <varlistentry><term>Preparation:</term>
 <listitem><para>Standard dialogs are prepared by using the
 <computeroutput>new</computeroutput> method of the class, which in turn
@@ -234,19 +230,6 @@ Routines</link> section of this chapter.
 <secondary>TimedMessage</secondary></indexterm>
 <para>The TimeMessage class shows a message window for
 a defined duration. </para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use
-this class
-</para></listitem></varlistentry>
-<varlistentry><term>Subclass:</term>
-<listitem><para>This class is a subclass of the
-<computeroutput>PlainUserDialog</computeroutput> class
-</para></listitem></varlistentry>
-<varlistentry><term>Execute:</term>
-<listitem><para>There is no return from execute for this dialog.
-</para></listitem></varlistentry>
-</variablelist>
 <para>The methods listed below are defined by this class.</para>
 
 <section id="initTimedMessage"><title>init</title>
@@ -413,13 +396,6 @@ procedure.
 <para>The InputBox class provides a simple dialog with
 a title, a message, one entry line, an OK, and a Cancel push button. </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
-</para></listitem></varlistentry>
-<varlistentry><term>Subclass:</term>
-<listitem><para>This class is a subclass of the <computeroutput>
-PlainUserDialog</computeroutput> class
-</para></listitem></varlistentry>
 <varlistentry><term>Execute:</term>
 <listitem><para>Returns the user's input
 </para></listitem></varlistentry>
@@ -485,7 +461,7 @@ drop dlg
 </programlisting>
 
 <para>The defineDialog method is called by the create method of the parent
-class, PlainUserDialog, which in turn is called at the very beginning of
+class, which in turn is called at the very beginning of
 Execute. You do not have to call it. However, you may want to override it in
 your subclass to add more dialog controls to the window. If you override it, you
 have to forward the message to the parent class by using the keyword super.
@@ -532,10 +508,6 @@ string is returned if the user clicks on Cancel.</para>
 <para>The PasswordBox class is an InputBox dialog with an entry line that echoes the keys with asterisks
 (*) instead of characters. </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use
-this class
-</para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the <link linkend="clsInputBox">InputBox Class</link>
 </para></listitem></varlistentry>
@@ -570,9 +542,6 @@ of a simple entry line.</para>
 <para>The IntegerBox class is an <link linkend="clsInputBox">InputBox</link>
 dialog whose entry line allows only numerical data. </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
-</para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the <link linkend="clsInputBox">InputBox Class</link> class
 </para></listitem></varlistentry>
@@ -612,12 +581,6 @@ invalid, a message window is displayed.
 a title, a message, and one or more entry lines. After execution of this dialog
 you can access the values of the entry lines. </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
-</para></listitem></varlistentry>
-<varlistentry><term>Subclass:</term>
-<listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class
-</para></listitem></varlistentry>
 <varlistentry><term>Execute:</term>
 <listitem><para>Returns 1 (if OK was clicked). The values entered
 by the user are stored in attributes matching the labels of the entry lines.
@@ -706,12 +669,6 @@ box, an OK, and a Cancel button.
 The selected item is returned if the OK push button
 is used to terminate the dialog. </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
-</para></listitem></varlistentry>
-<varlistentry><term>Subclass:</term>
-<listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class
-</para></listitem></varlistentry>
 <varlistentry><term>Execute:</term>
 <listitem><para>Returns the user's choice or a null string
 </para></listitem></varlistentry>
@@ -785,9 +742,6 @@ select more than one line at a time. The execute method
 returns the selected items' indexes separated by blank spaces.  The first
 item has index 1. </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
-</para></listitem></varlistentry>
 <varlistentry><term>Subclass:</term>
 <listitem><para>This class is a subclass of the <link linkend="clsListChoice">ListChoice Class</link>
 </para></listitem></varlistentry>
@@ -833,12 +787,6 @@ if s <> "" then do while s \= ""
 <para>The CheckList class is a dialog with a group of
 one or more check boxes. </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class.
-</para></listitem></varlistentry>
-<varlistentry><term>Subclass:</term>
-<listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class.
-</para></listitem></varlistentry>
 <varlistentry><term>Execute:</term>
 <listitem><para>Returns 1 (if OK was clicked). The check boxes
 selected by the user are marked in a stem variable with the value 1.
@@ -931,12 +879,6 @@ end
 <para>The SingleSelection class shows a dialog that has
 a group of radio buttons. The user can select only one item of the group. </para>
 <variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para><computeroutput>oodPlain.cls</computeroutput> is required to use this class
-</para></listitem></varlistentry>
-<varlistentry><term>Subclass:</term>
-<listitem><para>This class is a subclass of the &quot;PlainUserDialog&quot; class
-</para></listitem></varlistentry>
 <varlistentry><term>Execute:</term>
 <listitem><para>Returns the number of the radio button selected
 </para></listitem></varlistentry>
@@ -1010,6 +952,7 @@ say  "You Selected the month: " mon.s
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
 </section>
 
 </section>
@@ -1017,23 +960,16 @@ say  "You Selected the month: " mon.s
 
 <section id="sctPublicRoutines"><title>Public Routines</title>
 <indexterm><primary>ooDialog public routines</primary></indexterm>
-<para>The routines listed in this section can be used in any Rexx
-program.  They are designed to be even easier to use than the standard dialogs
-or the external functions. They do not require that an ooDialog dialog be
-initialized prior to their use, or that any ooDialog dialog be used in the
-program at all. The programmer does not have to register any functions to use
-these routines.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Requires:</emphasis></term>
-<listitem><para>Use a requires directive for the <computeroutput>
-ooDialog.cls</computeroutput> file in an Rexx program to use any of these
-routines.
-<programlisting> <![CDATA[
-::requires ooDialog.cls ]]>
+<para>
+  The routines listed in this section can be used in any Rexx program.  They are designed to be even easier to use than
+  the standard dialogs. Simply add a requires directive for the <computeroutput>ooDialog.cls</computeroutput> file in
+  a Rexx program to use any of these routines.
+<programlisting>
+<![CDATA[
+::requires ooDialog.cls
+]]>
 </programlisting>
-</para></listitem></varlistentry>
-</variablelist>
+</para>
 
 <section id="rtnPlay"><title>Play Routine</title>
 <indexterm><primary>Play</primary></indexterm>
@@ -1375,7 +1311,7 @@ returns its handle.</para>
 <indexterm><primary>ScreenSize</primary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>ScreenSize</secondary></indexterm>
-<para>Obtains the screen size in dialog units and in pixels</para>
+<para>Obtains the screen size in dialog units and in pixels.</para>
 <programlisting>
 <![CDATA[
 >>-ScreenSize()-----------------------------------------------><
@@ -1756,7 +1692,7 @@ box was checked by the user or will contain <computeroutput>.false
     if days[i] then say "Working day =" weekdays[i]
   end
 
-::requires "oodPlain.cls"
+::requires "ooDialog.cls"
 
 ]]>
 </programlisting>
@@ -1788,7 +1724,7 @@ if m == "" then
 else
     say "Born in month" m "=" months[m]
 
-::requires "oodPlain.cls"
+::requires "ooDialog.cls"
 
 ]]>
 </programlisting>
