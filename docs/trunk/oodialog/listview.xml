@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -43,12 +43,41 @@
 -->
 <chapter id="clsListView"><title>List View Controls</title>
 <indexterm><primary>ListView class</primary></indexterm>
-<para>A list view control is a window that displays a collection of items, with
-each item consisting of an icon and a label. It provides several ways of arranging
-and displaying items. Refer to OODLIST.REX in the OODIALOG\SAMPLES directory
-for an example.</para>
-<para>Use the newListView method (see page <link linkend="mthNewListView">newListView</link>)
-to retrieve an object of the ListView class.</para>
+<para>
+  A list view control is a window that displays a collection of items, with each item consisting of an icon and a label.
+  It provides several ways of arranging and displaying items. Refer to OODLIST.REX in the OODIALOG\SAMPLES directory
+  for an example.
+</para>
+
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with combo box controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <link linkend="mthNewComboBox">newComboBox</link>() method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a combo box object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically create a combo box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link> use
+    the <link linkend="mthCreateComboBox">createComboBox</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying combo box control to a
+    method in the Rexx dialog object use the <link linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>)
+    method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+
 <variablelist>
 <varlistentry><term>Notes</term>
 <listitem><para>The ListView class is the ooDialog interface to the Windows
@@ -81,7 +110,7 @@ linkend="mthAddExtendedStyle">AddExtendedStyle</link>, the <link
 linkend="mthRemoveExtendedStyle">RemoveExtendedStyle</link>, or the <link
 linkend="mthReplaceExtendedStyle">ReplaceExtendedStyle</link> methods.
 </para>
-<note><title>Note</title><para>
+<para>
 There are a number of nuances to the behavior of the different extended styles
 on the different versions of Windows, far too many to try and detail in this
 documentation.  The behavior documented here is the general behavior on Windows
@@ -90,22 +119,19 @@ XP with service pack 2.
 <para>If there is a need for detailed information concerning the subtle
 differences in behavior on earlier versions of Windows, the programmer should
 consult the <link linkend="defWindowsDoc">Windows documentation.</link>
-</para></note></listitem></varlistentry>
-<varlistentry><term>Requires:</term>
-<listitem><para>The ListView class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodwin32.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the ListView class implement
-the methods listed in the
-<link linkend="t000028">ListView Instance Methods</link> table.
+</para>
+</listitem></varlistentry>
 
-<table id="t000028" frame="all">
+</variablelist>
+
+
+<section id="sctMethodsListView"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with ListView objects, including the pertinent methods from other classes:
+</para>
+
+<table id="tblListViewMethods" frame="all">
 <title>ListView Instance Methods</title>
 <tgroup cols="2">
 <thead>
@@ -449,8 +475,9 @@ the methods listed in the
 </row>
 </tbody></tgroup>
 </table>
-</para></listitem></varlistentry>
-</variablelist>
+
+</section>
+
 
 <section id="viewstyles"><title>View Styles</title>
 <indexterm><primary>view styles</primary></indexterm>
