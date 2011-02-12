@@ -2975,7 +2975,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 
 <para>
   The <emphasis role="italic">connectListViewEvent</emphasis> method connects a particular <link
-  linkend="ovvEvents">event</link> notification from a list view control with an event handling method in the Rexx
+  linkend="ovvEvents">event</link> notification from a list-view control with an event handling method in the Rexx
   dialog.
 </para>
 <variablelist>
@@ -2987,7 +2987,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID of the list view control for which a notification is to be connected. This can be symbolic or numeric.
+      The ID of the list-view control for which a notification is to be connected. This can be symbolic or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>event [required]</term>
@@ -3057,14 +3057,14 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
       <listitem>
       <para>
         The check box state of an item changed.  (The check box was checked or unchecked.) This event can only occur if
-        the list view has the check box <link linkend="mthAddExtendedStyle">extended</link> list view style.  Use this
+        the list-view has the check box <link linkend="mthAddExtendedStyle">extended</link> list-view style.  Use this
         keyword instead of the CHANGED keyword.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>CLICK</term>
       <listitem>
       <para>
-        This event is generated when the list view is clicked with the left mouse button. However, in report view only,
+        This event is generated when the list-view is clicked with the left mouse button. However, in report view only,
         this excludes the column headers. Connecting the CLICK event is a replacement for the <link
         linkend="mthConnectNotifyEvent">connectNotifyEvent</link> method's CLICK event.
       </para>
@@ -3180,7 +3180,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   <para>
     <emphasis role="bold">Note:</emphasis> If the same event, for the same control, is connected using two different
     connectXXX methods, only one connection will be in effect.  This will be the connection whose connectXXX method is
-    invoked first.  For example, take a dialog that has a list view control with resource ID of 109.  If the mouse click
+    invoked first.  For example, take a dialog that has a list-view control with resource ID of 109.  If the mouse click
     event is connected for that control using the <computeroutput>connectNotifyEvent</computeroutput> method and then
     the mouse click event is also connected using the <computeroutput>connectListViewEvent</computeroutput> method, only
     one connection will be active.  Which one is active is dependent on the order of invocation of the connectXXX
@@ -3195,8 +3195,8 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example connects the column-clicked event for the list view EMPLOYEES with method ColumnAction and
-    changes the style of the list view from REPORT to SMALLICON:
+    The following example connects the column-clicked event for the list-view EMPLOYEES with method ColumnAction and
+    changes the style of the list-view from REPORT to SMALLICON:
   </para>
   <programlisting>
   <![CDATA[
@@ -3219,9 +3219,9 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 <section id="evtListViewCLICK"><title>CLICK Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>CLICK</secondary></indexterm>
 <para>
-  The event handling method for the CLICK event is invoked when the user clicks on the list view with the left mouse.
-  This excludes the column headers in report view. Note that the user can click on a list view item, or on the
-  background of the list view. When the click is on the background of the list view then both the <emphasis
+  The event handling method for the CLICK event is invoked when the user clicks on the list-view with the left mouse.
+  This excludes the column headers in report view. Note that the user can click on a list-view item, or on the
+  background of the list view. When the click is on the background of the list-view then both the <emphasis
   role="italic">itemIndex</emphasis> and <emphasis role="italic">columnInex</emphasis> will be -1. The method will
   receive four arugments:
 </para>
@@ -3238,13 +3238,13 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   <varlistentry><term>id</term>
   <listitem>
   <para>
-    The resource ID of the list view control whose item was clicked.
+    The resource ID of the list-view control whose item was clicked.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>itemIndex</term>
   <listitem>
   <para>
-    The zero-based index of the item that was clicked, or -1 if the background of the list view was clicked. In report
+    The zero-based index of the item that was clicked, or -1 if the background of the list-view was clicked. In report
     view this is often thought of as the row index.
   </para>
   </listitem></varlistentry>
@@ -3261,7 +3261,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   <para>
     This argument reports the state of the shift, control, and alt keys at the time of the mouse click.  The argument is
     a string of keywords separated by blanks.  The keywords consist of: SHIFT, CONTROL, ALT, or NONE. The presence of a
-    keyword indicates the key was held down when the user clicked on the list view control.  NONE of course indicates
+    keyword indicates the key was held down when the user clicked on the list-view control.  NONE of course indicates
     that none of the keys were down.  If the user managed to hold all three of the keys down at the time of the mouse
     click, the argument would be the string: &quot;SHIFT CONTROL ALT&quot;
   </para>
@@ -3287,7 +3287,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   <varlistentry><term>id</term>
   <listitem>
   <para>
-    The resource ID of the list view control whose item had the checkbox state changed.
+    The resource ID of the list-view control whose item had the checkbox state changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>itemIndex</term>
@@ -3302,7 +3302,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   </para></listitem></varlistentry>
 </variablelist>
 <para>
-  <emphasis role="bold">Example:</emphasis> The following example is from an address book application. A list view
+  <emphasis role="bold">Example:</emphasis> The following example is from an address book application. A list-view
   control is filled with the information from the address book, one item for each entry.  The check box changed event is
   connected to the <emphasis role="italic">onCheckboxChanged</emphasis> method. The <emphasis
   role="italic">onCheckboxChanged</emphasis> method will receive 3 arguments: the resource ID of the control, the index
@@ -3358,7 +3358,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   <varlistentry><term>id</term>
   <listitem>
   <para>
-    The resource ID of the list view control whose item had the selection changed.
+    The resource ID of the list-view control whose item had the selection changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>itemIndex</term>
@@ -3395,7 +3395,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   <varlistentry><term>id</term>
   <listitem>
   <para>
-    The resource ID of the list view control whose item had the focus changed.
+    The resource ID of the list-view control whose item had the focus changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>itemIndex</term>
@@ -3433,7 +3433,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   <varlistentry><term>id</term>
   <listitem>
   <para>
-    The resource ID of the list view control whose item had the either the focus or the selection changed.
+    The resource ID of the list-view control whose item had the either the focus or the selection changed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term>itemIndex</term>
@@ -3475,7 +3475,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 <section id="evtListViewCOLUMNCLICK"><title>COLUMNCLICK Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>COLUMNCLICK</secondary></indexterm>
 <para>
-  The event-handling method connected to COLUMNCLICK receives two arguments: the control ID of the list view control and
+  The event-handling method connected to COLUMNCLICK receives two arguments: the control ID of the list-view control and
   the zero-based column number of which the header button was pressed.
 </para>
 
@@ -3491,7 +3491,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 <section id="evtListViewKEYDOWN"><title>KEYDOWN Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>KEYDOWN</secondary></indexterm>
 <para>
-  The event-handling method connected to KEYDOWN receives two arguments: the control ID of the list view control and the
+  The event-handling method connected to KEYDOWN receives two arguments: the control ID of the list-view control and the
   virtual key code pressed. Use the <link linkend="mthKey2Name">key2name</link> method of the <link
   linkend="clsVK">VK</link> class to determine which key was pressed.
 </para>
@@ -3510,7 +3510,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 <indexterm><primary>ListView Event</primary><secondary>BEGINDRAG</secondary></indexterm>
 
 <para>
-  The event-handling method connected to BEGINDRAG receives three arguments: the control ID of the list view control,
+  The event-handling method connected to BEGINDRAG receives three arguments: the control ID of the list-view control,
   the index of the list item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
   separated by a blank).
 </para>
@@ -3527,7 +3527,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 <indexterm><primary>ListView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
 
 <para>
-  The event-handling method connected to BEGINRDRAG receives three arguments: the control ID of the list view control,
+  The event-handling method connected to BEGINRDRAG receives three arguments: the control ID of the list-view control,
   the index of the list item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
   separated by a blank).
 </para>
@@ -4802,7 +4802,7 @@ self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
 </programlisting>
 
 <para>
-  A list view control does not handle a drag-and-drop operation itself. It defers that handling to the programmer by
+  A list-view control does not handle a drag-and-drop operation itself. It defers that handling to the programmer by
   sending a BEGINGDRAG, (left mouse drag,) or a BEGINRDRAG, (right mouse drag,) event notification. The programmer can
   code his own <link linkend="ovvEvents">event</link> handling method and use <link
   linkend="mthConnectListViewEvent">connectListViewEvent</link>() method to connect the method to the drag-and-drop
@@ -4816,7 +4816,7 @@ self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
   This method implementation allows the user to drag an item from one location to another within an icon view and
   a small icon view. The cursor shape is changed to a crosshair during the drag operation. The user can cancel the drag
   operation by clicking the other mouse button while holding the button that started the drag operation. Note that the
-  final icon position is not flexible when the list view control has the AUTOARRANGE style.
+  final icon position is not flexible when the list-view control has the AUTOARRANGE style.
 </para>
 <para>
   If the programmer wants to implement her own drag-and-drop event handler, she may want to examine the how the

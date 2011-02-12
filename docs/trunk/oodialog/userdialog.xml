@@ -209,7 +209,7 @@
 </row>
 <row>
 <entry><link linkend="mthCreateListView">createListView</link></entry>
-<entry>Creates a list view control in the dialog template.</entry>
+<entry>Creates a list-view control in the dialog template.</entry>
 </row>
 <row>
 <entry><link linkend="mthCreateMonthCalendar">createMonthCalendar</link></entry>
@@ -8943,7 +8943,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
 </programlisting>
 
 <para>
-  Creates a <link linkend="clsListView">list view</link> control in the dialog template and specifies the resource ID,
+  Creates a <link linkend="clsListView">list-view</link> control in the dialog template and specifies the resource ID,
   position, size, style, and attribute name for the control.
 </para>
 <variablelist>
@@ -8955,7 +8955,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource <link linkend="idArgument">ID</link> for the list view control. May be numeric or <link
+        The resource <link linkend="idArgument">ID</link> for the list-view control. May be numeric or <link
         linkend="defSymbolicID">symbolic</link>.
       </para>
       </listitem></varlistentry>
@@ -9003,14 +9003,14 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <listitem>
           <para>
             Use the icon view. Each item appears as a full-sized icon with a label below it. The user can drag the items
-            to any location in the list view control.
+            to any location in the list-view control.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>SMALLICON</term>
           <listitem>
           <para>
             Use the small-icon view. Each item appears as a small icon with a label to the right of it. The user can
-            drag the items to any location in the list view control.
+            drag the items to any location in the list-view control.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>LIST</term>
@@ -9060,7 +9060,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <varlistentry><term>EDIT</term>
           <listitem>
           <para>
-            The list view allows the user to edit the list view items. To store the edited text, you must connect a method
+            The list-view allows the user to edit the list-view items. To store the edited text, you must connect a method
             to the <link linkend="evtListViewENDEDIT">ENDEDIT</link> event <link linkend="ovvEvents">notification</link>
             using the <link linkend="mthConnectListViewEvent">connectListViewEvent</link> method. Alternatively you can
             connect the <link linkend="kwListViewDEFAULTEDIT">DEFAULTEDIT</link> event handler using <emphasis
@@ -9070,13 +9070,13 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <varlistentry><term>HSCROLL</term>
           <listitem>
           <para>
-            The list view supports a horizontal scroll bar.
+            The list-view supports a horizontal scroll bar.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>VSCROLL</term>
           <listitem>
           <para>
-            The list view supports a vertical scroll bar.
+            The list-view supports a vertical scroll bar.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOSCROLL</term>
@@ -9113,13 +9113,13 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <varlistentry><term>SHOWSELALWAYS</term>
           <listitem>
           <para>
-            Specifies that a selected item remains selected when the list view loses focus.
+            Specifies that a selected item remains selected when the list-view loses focus.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>SHAREIMAGES</term>
           <listitem>
           <para>
-            The list view does not take ownership of the image lists assigned to it. This option enables an <link
+            The list-view does not take ownership of the image lists assigned to it. This option enables an <link
             linkend="clsImageList">image</link> list to be used with several list controls.
           </para>
           </listitem></varlistentry>
@@ -9138,20 +9138,20 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            Create the list view with the <link linkend="wsgroup">group</link> style.
+            Create the list-view with the <link linkend="wsgroup">group</link> style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOBORDER</term>
           <listitem>
           <para>
-            Create the list view without <link linkend="wsborder">border</link> window style. By default list views are
+            Create the list-view without <link linkend="wsborder">border</link> window style. By default list views are
             created with a border
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            Create the list view without the <link linkend="wstabstop">tabstop</link> control style. By default the
+            Create the list-view without the <link linkend="wstabstop">tabstop</link> control style. By default the
             control is created with the tabstop style.
           </para>
           </listitem></varlistentry>
@@ -9206,10 +9206,10 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      The following example creates a list view with the resource ID of 555 at position x=100 and y=80 and with a size
-      of width=40 and height=120. The list view is a report view with items sorted in ascending order. It supports item
+      The following example creates a list-view with the resource ID of 555 at position x=100 and y=80 and with a size
+      of width=40 and height=120. The list-view is a report view with items sorted in ascending order. It supports item
       editing and column headers do not behave like buttons. The data <link
-      linkend="sctUnderstandingDataAttributes">attribute</link> for the list view is EMPLOYEES.
+      linkend="sctUnderstandingDataAttributes">attribute</link> for the list-view is EMPLOYEES.
 <programlisting>
 <![CDATA[
 
