@@ -45,8 +45,41 @@
 <indexterm><primary>ListView class</primary></indexterm>
 <para>
   A list view control is a window that displays a collection of items, with each item consisting of an icon and a label.
-  It provides several ways of arranging and displaying items. Refer to OODLIST.REX in the OODIALOG\SAMPLES directory
-  for an example.
+  It provides several ways of arranging and displaying items. Refer to the <computeroutput>oodlist.rex</computeroutput>
+  program in the <computeroutput>samples\oodialog</computeroutput> directory for an example.
+</para>
+<para>
+  The <computeroutput>ListView</computeroutput> class is the ooDialog interface to the Windows <emphasis
+  role="italic">List-View</emphasis> control.  This should not be confused with the Windows <emphasis role="italic">List
+  Box</emphasis> control. The ooDialog <link linkend="clsListBox">ListBox</link> class provides the interface to the
+  Windows List Box control.  In general, the List-View control is more powerful than the List Box control.
+</para>
+<para id="listControlExtendedStyles">
+  List-View <emphasis role="bold">Extended Styles</emphasis>: The List-View control has been updated by Microsoft to
+  include a number of <emphasis role="italic">extended</emphasis> styles. These styles are similar to the styles that
+  can be used to create a ListView, (see the <link linkend="mthCreateListView">createListView</link> method,) like the
+  <computeroutput>NOHEADER</computeroutput> or <computeroutput>SINGLESEL</computeroutput> styles.  However, the way that
+  they are added or removed from the ListView is different.  For instance, the extended styles can not be added to a
+  ListView at the time of creation.  They can only be added after the underlying Windows control has been created.  For
+  all practical purposes this means in the <link linkend="mthInitDialog">InitDialog</link> method, or at some point in
+  the life cycle of the dialog after that.
+</para>
+<para>
+  Some of the extended styles are only available on later versions of the Windows OS.  As an example, the
+  <computeroutput>LABELTIP</computeroutput> and <computeroutput>SIMPLESELECT</computeroutput> styles are only available
+  on Windows XP.  The documentation on the extended styles will note any requirements for each style.  To work with the
+  extended List-View styles, use the <link linkend="mthAddExtendedStyle">addExtendedStyle</link>, the <link
+  linkend="mthRemoveExtendedStyle">removeExtendedStyle</link>, or the <link
+  linkend="mthReplaceExtendedStyle">replaceExtendedStyle</link> methods.
+</para>
+<para>
+  There are a number of nuances to the behavior of the different extended styles on the different versions of Windows,
+  far too many to try and detail in this documentation.  The behavior documented here is the general behavior on Windows
+  XP with service pack 2.
+</para>
+<para>
+  If there is a need for detailed information concerning the subtle differences in behavior on earlier versions of
+  Windows, the programmer should consult the <link linkend="defWindowsDoc">Windows documentation.</link>
 </para>
 
 <para>
@@ -56,91 +89,69 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the <link linkend="mthNewComboBox">newComboBox</link>() method of the <link
-    linkend="chpDialogObject">dialog</link> object to retrieve a combo box object.
+    Use the <link linkend="mthNewListView">newListView</link>() method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a list view object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically create a combo box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link> use
-    the <link linkend="mthCreateComboBox">createComboBox</link> method.
+    To dynamically create a list view in the dialog template of a <link linkend="clsUserDialog">UserDialog</link> use
+    the <link linkend="mthCreateListView">createListView</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying combo box control to a
-    method in the Rexx dialog object use the <link linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>)
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying list view control to a
+    method in the Rexx dialog object use the <link linkend="mthConnectListViewEvent">connectListViewEvent</link>)
     method.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </para>
 
-<variablelist>
-<varlistentry><term>Notes</term>
-<listitem><para>The ListView class is the ooDialog interface to the Windows
-<emphasis role="italic">List-View</emphasis> control.  This should not be
-confused with the Windows <emphasis role="italic">List Box</emphasis> control.
-The ooDialog <link linkend="clsListBox">ListBox</link> class provides the
-interface to the Windows List Box control.  In general, the List-View control is
-more powerful than the List Box control.
-</para>
-<para id="listControlExtendedStyles">List-View <emphasis role="bold">Extended
-Styles</emphasis>: The List-View control has been updated by Microsoft to
-include a number of <emphasis role="italic">extended</emphasis> styles.  These
-styles are similar to the styles that can be used to create a ListView, (see
-the <link linkend="mthCreateListView">createListView</link> method,) like the
-<computeroutput>NOHEADER</computeroutput> or
-<computeroutput>SINGLESEL</computeroutput> styles.  However, the way that they
-are added or removed from the ListView is different.  For instance, the
-extended styles can not be added to a ListView at the time of creation.  They
-can only be added after the underlying Windows control has been created.  For
-all practical purposes this means in the <link
-linkend="mthInitDialog">InitDialog</link> method, or at some point in the life
-cycle of the dialog after that.
-</para>
-<para>Some of the extended styles are only available on later versions of the
-Windows OS.  As an example, the <computeroutput>LABELTIP</computeroutput> and
-<computeroutput>SIMPLESELECT</computeroutput> styles are only available on
-Windows XP.  The documentation on the extended styles will note any requirements
-for each style.  To work with the extended List-View styles, use the <link
-linkend="mthAddExtendedStyle">AddExtendedStyle</link>, the <link
-linkend="mthRemoveExtendedStyle">RemoveExtendedStyle</link>, or the <link
-linkend="mthReplaceExtendedStyle">ReplaceExtendedStyle</link> methods.
-</para>
-<para>
-There are a number of nuances to the behavior of the different extended styles
-on the different versions of Windows, far too many to try and detail in this
-documentation.  The behavior documented here is the general behavior on Windows
-XP with service pack 2.
-</para>
-<para>If there is a need for detailed information concerning the subtle
-differences in behavior on earlier versions of Windows, the programmer should
-consult the <link linkend="defWindowsDoc">Windows documentation.</link>
-</para>
-</listitem></varlistentry>
-
-</variablelist>
-
-
 <section id="sctMethodsListView"><title>Method Table</title>
 <para>
   The following table provides links to the documentation for the primary methods and attributes used in working
-  with ListView objects, including the pertinent methods from other classes:
+  with list view objects, including the pertinent methods from other classes:
 </para>
 
 <table id="tblListViewMethods" frame="all">
 <title>ListView Instance Methods</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewListView">newListView</link></entry>
+<entry>Returns a <computeroutput>ListView</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateListView">createListView</link></entry>
+<entry>Creates a list view control in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectListViewEvent">connectListViewEvent</link></entry>
+<entry>Connects list view event notifications to a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
 <row>
 <entry>Add</entry>
 <entry><link linkend="addlc">Add</link></entry>
@@ -470,14 +481,58 @@ consult the <link linkend="defWindowsDoc">Windows documentation.</link>
 <entry><link linkend="mthUncheckAll">UncheckAll</link></entry>
 </row>
 <row>
-<entry>UpdateItem</entry>
-<entry><link linkend="updateitem">UpdateItem</link></entry>
+<entry>updateItem</entry>
+<entry><link linkend="updateitem">updateItem</link></entry>
 </row>
 </tbody></tgroup>
 </table>
 
 </section>
 
+<section id="tmthNewListView"><title>newListView (dialog object method)</title>
+<para>
+  List view objects can not be instantiated by the programmer from Rexx code. Rather a list view object is obtained
+  by using the <link linkend="mthNewListView">newListView</link> method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>--newListView(--id--)--------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newListView() [PlainBaseDialog method] -->
+
+
+<section id="tmthCreateListView"><title>createListView (UserDialog method)</title>
+<para>
+  A list view object can be created in the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
+  dialog through the <link linkend="mthCreateListview">createListView</link> method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createListView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createListView() [UserDialog method] -->
+
+
+<section id="tmthConnectListViewEvent"><title>connectListViewEvent (dialog object method)</title>
+<para>
+  To connect event notifications from a list view object use the <link
+  linkend="mthConnectListViewEvent">connectListViewEvent</link> method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>-connectListViewEvent(--id--,--event--+---------------+--)-------------------><
+                                        +-,--methodName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End connectListViewEvent() [EventNotification method] -->
 
 <section id="viewstyles"><title>View Styles</title>
 <indexterm><primary>view styles</primary></indexterm>
@@ -3722,17 +3777,17 @@ to redraw a range of items.</para>
 </variablelist>
 </section>
 
-<section id="updateitem"><title>UpdateItem</title>
-<indexterm><primary>UpdateItem</primary></indexterm>
+<section id="updateitem"><title>updateItem</title>
+<indexterm><primary>updateItem</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aListControl~UpdateItem(--item--)---------------------------><
+>>-aListControl~updateItem(--item--)---------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The UpdateItem method updates a list view item.</para>
+<para>The updateItem method updates a list view item.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
