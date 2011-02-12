@@ -75,8 +75,8 @@ the methods listed in the
 </thead>
 <tbody>
 <row>
-<entry>Add</entry>
-<entry><link linkend="addtrc">Add</link></entry>
+<entry>add</entry>
+<entry><link linkend="addtrc">add</link></entry>
 </row>
 <row>
 <entry>Child</entry>
@@ -123,8 +123,8 @@ the methods listed in the
 <entry><link linkend="expand">Expand</link></entry>
 </row>
 <row>
-<entry>FirstVisible</entry>
-<entry><link linkend="firstvisibletrc">FirstVisible</link></entry>
+<entry>firstVisible</entry>
+<entry><link linkend="firstvisibletrc">firstVisible</link></entry>
 </row>
 <row>
 <entry>HitTest</entry>
@@ -167,8 +167,8 @@ the methods listed in the
 <entry><link linkend="moveitem">MoveItem</link></entry>
 </row>
 <row>
-<entry>Next</entry>
-<entry><link linkend="nexttrc">Next</link></entry>
+<entry>next</entry>
+<entry><link linkend="nexttrc">next</link></entry>
 </row>
 <row>
 <entry>NextVisible</entry>
@@ -179,16 +179,16 @@ the methods listed in the
 <entry><link linkend="parent">Parent</link></entry>
 </row>
 <row>
-<entry>Previous</entry>
-<entry><link linkend="previoustrc">Previous</link></entry>
+<entry>previous</entry>
+<entry><link linkend="previoustrc">previous</link></entry>
 </row>
 <row>
 <entry>PreviousVisible</entry>
 <entry><link linkend="previousvisible">PreviousVisible</link></entry>
 </row>
 <row>
-<entry>RestoreEditClass</entry>
-<entry><link linkend="restoreeditclasstrc">RestoreEditClass</link></entry>
+<entry>restoreEditClass</entry>
+<entry><link linkend="restoreeditclasstrc">restoreEditClass</link></entry>
 </row>
 <row>
 <entry>Root</entry>
@@ -347,14 +347,14 @@ is expanded. The text strings for the items are loaded from a file.
 </variablelist>
 </section>
 
-<section id="addtrc"><title>Add</title>
-<indexterm><primary>Add</primary>
+<section id="addtrc"><title>add</title>
+<indexterm><primary>add</primary>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
                       +-------+
                       V       |     +-""---+     +-0-----+
->>-aTreeControl~Add(----+---+-+--,--+------+--,--+-------+--,--->
+>>-aTreeControl~add(----+---+-+--,--+------+--,--+-------+--,--->
                         +-,-+       +-text-+     +-image-+
 
                                                    +-"0"-+
@@ -368,7 +368,7 @@ is expanded. The text strings for the items are loaded from a file.
 ]]>
 </programlisting>
 
-<para>The Add method adds a new item to a tree view control.</para>
+<para>The add method adds a new item to a tree view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:</para>
@@ -460,22 +460,22 @@ child items only when the user expands the item.</para>
   curTree = self~newTreeView("IDC_TREE")
   if curTree \= .Nil then
   do
-    curTree~Add("Peter", , ,"BOLD EXPANDED")
-    curTree~Add(,"Mike", , ,"EXPANDED")
-    curTree~Add(, ,"George")
-    curTree~Add(, ,"Monique")
-    curTree~Add(, , ,"John")
-    curTree~Add(, ,"Chris")
-    curTree~Add(,"Maud")
-    curTree~Add(,"Ringo")
-    curTree~Add("Paul", , ,"BOLD EXPANDED")
-    curTree~Add(,"Dave")
-    curTree~Add(,"Sam")
-    curTree~Add(,"Jeff")
-    curTree~Add("Mary", , ,"BOLD EXPANDED")
-    curTree~Add(,"Helen")
-    curTree~Add(,"Michelle")
-    curTree~Add(,"Diana")
+    curTree~add("Peter", , ,"BOLD EXPANDED")
+    curTree~add(,"Mike", , ,"EXPANDED")
+    curTree~add(, ,"George")
+    curTree~add(, ,"Monique")
+    curTree~add(, , ,"John")
+    curTree~add(, ,"Chris")
+    curTree~add(,"Maud")
+    curTree~add(,"Ringo")
+    curTree~add("Paul", , ,"BOLD EXPANDED")
+    curTree~add(,"Dave")
+    curTree~add(,"Sam")
+    curTree~add(,"Jeff")
+    curTree~add("Mary", , ,"BOLD EXPANDED")
+    curTree~add(,"Helen")
+    curTree~add(,"Michelle")
+    curTree~add(,"Diana")
 end
 
 ]]>
@@ -940,8 +940,8 @@ is the target of a drag-and-drop operation.</para>
 </variablelist>
 </section>
 
-<section id="firstvisibletrc"><title>FirstVisible</title>
-<indexterm><primary>FirstVisible</primary>
+<section id="firstvisibletrc"><title>firstVisible</title>
+<indexterm><primary>firstVisible</primary>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -951,7 +951,7 @@ is the target of a drag-and-drop operation.</para>
 ]]>
 </programlisting>
 
-<para>The FirstVisible method retrieves the first visible
+<para>The firstVisible method retrieves the first visible
 item in the client window of a tree view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -963,7 +963,7 @@ item in the client window of a tree view control.</para>
 <![CDATA[
 ::method FirstVisibleName
   curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~itemInfo(curTree~FirstVisible)
+  itemInfo. = curTree~itemInfo(curTree~firstVisible)
   say ItemInfo.!Text
 ]]>
 </programlisting>
@@ -971,18 +971,18 @@ item in the client window of a tree view control.</para>
 </variablelist>
 </section>
 
-<section id="nexttrc"><title>Next</title>
-<indexterm><primary>Next</primary>
+<section id="nexttrc"><title>next</title>
+<indexterm><primary>next</primary>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Next(--hItem--)--------------------------------><
+>>-aTreeControl~next(--hItem--)--------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Next method retrieves the sibling item next
+<para>The next method retrieves the sibling item next
 to <emphasis role="italic">hItem</emphasis>.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1008,7 +1008,7 @@ siblings:
   do while nextItem \= 0
     itemInfo. = curTree~itemInfo(nextItem)
     say ItemInfo.!Text
-    nextItem = curTree~Next(nextItem)
+    nextItem = curTree~next(nextItem)
   end
 ]]>
 </programlisting>
@@ -1045,18 +1045,18 @@ retrieved. <emphasis role="italic">hItem</emphasis> must also be visible.
 </variablelist>
 </section>
 
-<section id="previoustrc"><title>Previous</title>
-<indexterm><primary>Previous</primary>
+<section id="previoustrc"><title>previous</title>
+<indexterm><primary>previous</primary>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Previous(--hItem--)----------------------------><
+>>-aTreeControl~previous(--hItem--)----------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Previous method retrieves the sibling item
+<para>The previous method retrieves the sibling item
 preceding <emphasis role="italic">hItem</emphasis>.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1556,8 +1556,8 @@ to correct the problem occurring when Esc or the Enter key is pressed in an
 active edit item.</para>
 </section>
 
-<section id="restoreeditclasstrc"><title>RestoreEditClass</title>
-<indexterm><primary>RestoreEditClass</primary>
+<section id="restoreeditclasstrc"><title>restoreEditClass</title>
+<indexterm><primary>restoreEditClass</primary>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1567,7 +1567,7 @@ active edit item.</para>
 ]]>
 </programlisting>
 
-<para>The RestoreEditClass method is used by the DefTreeEditHandler
+<para>The restoreEditClass method is used by the DefTreeEditHandler
 to correct the problem occurring when Esc or the Enter key is pressed in an
 active edit item.</para>
 </section>
