@@ -106,9 +106,11 @@
 <section><title>PropertySheet Class</title>
 <indexterm><primary>Deprecated</primary><secondary>PropertySheet Class</secondary></indexterm>
 <para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The <computeroutput>ProppertySheet</computeroutput>
-  class was never documented well, was confusing to most users, was buggy, and was difficult to debug.  TODO need links
-  to PropertySheetDialog.
+  This class is <link linkend="ovvDeprecated">deprecated</link>. The <computeroutput>PropertySheet</computeroutput>
+  class was never documented well, was confusing to most users, was buggy, and was difficult to debug. Use the <link
+  linkend="clsPropertySheetDialog">PropertySheetDialog</link> or one of the <link
+  linkend="sctControlDialogs">Control</link> dialog classes to replace the
+  <computeroutput>PropertySheet</computeroutput> class.
 </para>
 </section>
 
@@ -1075,6 +1077,51 @@
 
 </section>  <!-- End Deprecated ComboBox Methods Section -->
 
+<section id="deprecatedListView"><title>Deprecated ListView Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>list-view methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">ListView</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>removeImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>removeSmallImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>setImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>setSmallImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+</section>  <!-- End Deprecated TreeView Methods Section -->
+
 <section id="deprecatedProgressBar"><title>Deprecated ProgressBar Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>progress bar methods</secondary></indexterm>
 
@@ -1155,7 +1202,7 @@
 <section><title>removeImages</title>
 <para>
   This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  linkend="mthSetImageListClsTreeView">setImageList()</link> method.  Do not use this method in new
   code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
   This method may not exist in future versions of ooDialog.
 </para>
@@ -1164,7 +1211,7 @@
 <section><title>removeSmallImages</title>
 <para>
   This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  linkend="mthSetImageListClsTreeView">setImageList()</link> method.  Do not use this method in new
   code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
   This method may not exist in future versions of ooDialog.
 </para>
@@ -1173,7 +1220,7 @@
 <section><title>setImages</title>
 <para>
   This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  linkend="mthSetImageListClsTreeView">setImageList()</link> method.  Do not use this method in new
   code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
   This method may not exist in future versions of ooDialog.
 </para>
@@ -1182,7 +1229,7 @@
 <section><title>setSmallImages</title>
 <para>
   This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsListControl">setImageList()</link> method.  Do not use this method in new
+  linkend="mthSetImageListClsTreeView">setImageList()</link> method.  Do not use this method in new
   code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
   This method may not exist in future versions of ooDialog.
 </para>
@@ -1224,7 +1271,8 @@
 <para>
   ooDialog has been completely converted to use this new API. <emphasis role="italic"><emphasis
   role="bold">All</emphasis> of the external functions have been removed.</emphasis> If your programs directly uses any
-  of the undocumented external functions, they will not work with the 4.2.0 release of ooDialog.
+  of the <emphasis role="bold">undocumented</emphasis> external functions, they will not work with the 4.2.0 release of
+  ooDialog.
 </para>
 <para>
   The documented external functions will be available as <emphasis role="bold">deprecated</emphasis>
