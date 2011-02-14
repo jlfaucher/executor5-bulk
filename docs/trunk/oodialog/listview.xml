@@ -306,15 +306,15 @@
 </row>
 <row>
 <entry><link linkend="mthInsertClsListControl">insert</link></entry>
-<entry>Inserts a new list-view item or a new subitem into in an existing list-view item.</entry>
+<entry>Inserts a new item into the list-view, or inserts a new subitem into in an existing list-view item.</entry>
 </row>
 <row>
-<entry><link linkend="insertcolumn">insertColumn</link></entry>
-<entry>Inserts a new column into a list-view that has the report style. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
+<entry><link linkend="mthInsertColumn">insertColumn</link></entry>
+<entry>Inserts a new column into the list-view control using dialog units for the width. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="mthInsertColumnPX">insertColumnPX</link></entry>
-<entry>Inserts a new column into a list-view that has the report style.</entry>
+<entry>Inserts a new column into a list-view control using pixels for the width</entry>
 </row>
 <row>
 <entry><link linkend="mthIsCheckedClsListControl">isChecked</link></entry>
@@ -1707,59 +1707,26 @@ that allows the user to remove the check mark from all the check boxes:
 <indexterm><primary>Listview class</primary><secondary>hasCheckBoxes</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hasCheckBoxes(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--hasCheckBoxes--------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if the list-view has the CHECKBOXES extended style.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns <computeroutput>.true</computeroutput> if the list-view has the CHECKBOXES extended style, otherwise
+    <computeroutput>.false</computeroutput> .
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1902,13 +1869,13 @@ has a check mark, then that patient is mailed a statement.
 <indexterm><primary>ListView class</primary><secondary>insertColumnPX</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--insertColumnPX(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--insertColumnPX(--+----------+--,--text--,--width--+--------+--)------------><
+                     +--colNum--+                     +-,-fmt--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Inserts a new column into the list-view.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1916,10 +1883,58 @@ has a check mark, then that patient is mailed a statement.
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>colNum [optional]</term>
       <listitem>
       <para>
-        xx
+        The zero-based index for the column being inserted. Columns are numbered from the left to the right. The default
+        if this arugment is omitted is column 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text (label) for the column.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>width [required]</term>
+      <listitem>
+      <para>
+        The width of the column being inserted, specified in pixels.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fmt [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. The keyword
+        specifies format for the column being inserted. At this time not all formats for the column are recognized.
+        Other format keywords may be added in the future.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>LEFT  </member>
+          <member>CENTER</member>
+          <member>RIGHT </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+          <para>
+            Text in the column is aligned to the left. This is the default.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CENTER</term>
+          <listitem>
+          <para>
+            The text for the column is centered.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>T3</term>
+          <listitem>
+          <para>
+            The text for the column is aligned right.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1928,30 +1943,46 @@ has a check mark, then that patient is mailed a statement.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the index of the newly inserted column on success, otherwise -1.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The text for the column must be less than 256 characters long. The inserted columns are only visible when the
+    list-view is in report view, but, columns can be inserted into the list-view control when it is in any view.
+  </para>
+  <para>
+    This method and the <link linkend="msthInsertColumn">insertColumn</link> method are virtually the same, except that
+    in this method the width of the column is specified in pixels. The <emphasis role="italic">insertColumn</emphasis>
+    method takes dialog units for the width and then converts them to pixels using <link
+    linkend="ovvInaccurate">factorX</link>. This makes the width used by the <emphasis
+    role="italic">insertColumn</emphasis> method inaccurate.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that previous versions of this documentation incorrectly stated that the
+    <emphasis role="italic">insertColumn</emphasis> used pixels to specify the width.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example inserts 3 columns into the list-view control. Each column will be 50 pixels wide and left aligned.
 <programlisting>
 <![CDATA[
+
+::method initReportView
+  lv = self~newListView(IDC_LV_STATS)
+
+  lv~insertColumnPX(0, "First Name", 50)
+  lv~insertColumnPX(1, "Last Name", 50)
+  lv~insertColumnPX(2, "Age", 50)
 
 ]]>
 </programlisting>
@@ -1961,7 +1992,7 @@ has a check mark, then that patient is mailed a statement.
 </section>  <!-- End ListView::insertColumnPX() -->
 
 
-<section id="insertcolumn"><title>insertColumn</title>
+<section id="mthInsertColumn"><title>insertColumn</title>
 <indexterm><primary>insertColumn</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1991,7 +2022,7 @@ a report list-view column.</para>
 <listitem><para>The text of the column heading.
 </para></listitem></varlistentry>
 <varlistentry><term>width</term>
-<listitem><para>The width of the column, in pixels.
+<listitem><para>The width of the column, in dialog units.
 </para></listitem></varlistentry>
 <varlistentry><term>align</term>
 <listitem><para>The alignment of the column heading and the subitem text within the
@@ -2012,21 +2043,6 @@ column. It can be one of the following values:
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The number of the new column, or 0 if this method fails.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example adds three columns to a report list:
-<programlisting>
-<![CDATA[
-::method InitReport
-  curList = self~newListView(102)
-  if curList \= .Nil then
-  do
-    curList~insertColumn(0,"First Name",50)
-    curList~insertColumn(1,"Last Name",50)
-    curList~insertColumn(2,"Age",50)
-  end
-]]>
-</programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
