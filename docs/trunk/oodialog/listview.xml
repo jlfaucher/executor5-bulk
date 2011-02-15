@@ -1905,9 +1905,9 @@ has a check mark, then that patient is mailed a statement.
       <varlistentry><term>fmt [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following keywords separated by spaces, case is not significant. The keyword
-        specifies format for the column being inserted. At this time not all formats for the column are recognized.
-        Other format keywords may be added in the future.
+        One of the following keywords, case is not significant. The keyword specifies the format for the column being
+        inserted. At this time not all formats for the column are recognized. Other format keywords may be added in the
+        future.
       </para>
       <para>
         <simplelist type='vert' columns='3'>
@@ -1919,7 +1919,7 @@ has a check mark, then that patient is mailed a statement.
           <varlistentry><term>LEFT</term>
           <listitem>
           <para>
-            Text in the column is aligned to the left. This is the default.
+            Text in the column is aligned to the left. This is the default if this argument is omitted.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CENTER</term>
@@ -2091,13 +2091,13 @@ last.
 <indexterm><primary>ListView class</primary><secondary>modifyColumnPX</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--modifyColumnPX(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--modifyColumnPX(--index--+---------+--+----------+--+--------+--)-----------><
+                            +-,-text--+  +-,-width--+  +-,-fmt--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Modifies some, or all, of the attributes of an exsiting column in a list-view control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2105,10 +2105,58 @@ last.
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The zero-based index for the column being modified. Columns are numbered from the left to the right.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [optional]</term>
+      <listitem>
+      <para>
+        If this argument is included, the text for the column is changed to the text specified.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>width [optiona]</term>
+      <listitem>
+      <para>
+        The new width of the column, in pixels. If the argument is omitted, the width is left unchanged.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fmt [optional]</term>
+      <listitem>
+      <para>
+        One of the following keywords separated by spaces, case is not significant. The keyword specifies the new format
+        for the column being modified. If the <emphasis role="italic">fmt</emphasis> argument is omitted, the alignment
+        is left unchanged. At this time not all formats for the column are recognized. Other format keywords may be
+        added in the future.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>LEFT  </member>
+          <member>CENTER</member>
+          <member>RIGHT </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+          <para>
+            Text in the column is aligned to the left.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CENTER</term>
+          <listitem>
+          <para>
+            The text for the column is centered.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>T3</term>
+          <listitem>
+          <para>
+            The text for the column is aligned right.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2117,30 +2165,28 @@ last.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    0 is returned on success, 1 on error.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example changes the title, size, and alignment of the first three columns in a list-view control.  The columns
+    are only visible when the list-view is in report view.
 <programlisting>
 <![CDATA[
+
+::method changeColumn
+  lv = self~newListView(IDC_LV_AVAILABLE_AUTOS)
+  lv~modifyColumn(0, "Make", 100, "RIGHT")
+  lv~modifyColumn(1, "Model", 150, "RIGHT")
+  lv~modifyColumn(1, "Color", 80, "CENTER")
 
 ]]>
 </programlisting>
@@ -2213,17 +2259,6 @@ column. It can be one of the following values:
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example changes the title, size, and alignment of the
-first column in a report list:
-<programlisting>
-<![CDATA[
-::method ChangeColumn
-  curList = self~newListView(102)
-  curList~modifyColumn(0,"New Title",100,"RIGHT")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -2232,13 +2267,13 @@ first column in a report list:
 <indexterm><primary>ListView class</primary><secondary>getColumnInfo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getColumnInfo(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getColumnInfo(--index--,--directory--)-------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves information for the column specified in a <computeroutput>Directory</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2246,10 +2281,45 @@ first column in a report list:
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The zero-based index of the column to retrieve information for. Columns are numbered from the left to the right.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>directory [required]</term>
+      <listitem>
+      <para>
+        A <computeroutput>Directory</computeroutput> object whose indexes will be filled with the returned column
+        information. On success, the <computeroutput>Directory</computeroutput> object will have the following indexes
+        with the corresponding information:
+
+        <variablelist>
+          <varlistentry><term><emphasis role="bold">text</emphasis></term>
+          <listitem>
+          <para>
+            The text (label) for the column.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term><emphasis role="bold">subitem</emphasis></term>
+          <listitem>
+          <para>
+            The index of the subitem associated with the column.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term><emphasis role="bold">width</emphasis></term>
+          <listitem>
+          <para>
+            The width, in pixels, of the column.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term><emphasis role="bold">fmt</emphasis></term>
+          <listitem>
+          <para>
+            A series of blank separted key words specifying the format for the column. See the remarks.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2258,13 +2328,20 @@ first column in a report list:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns <computeroutput>.true</computeroutput> on success and <computeroutput>.false</computeroutput> on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    No other indexes in the <emphasis role="italic">directory</emphasis> object will be touched other than those noted.
+    On error, the value of the noted indexes is undefined.
+  </para>
+  <para>
+    The <computeroutput>fmt</computeroutput> index, at this time, will contain exactly one keyword, either LEFT, RIGHT,
+    or CENTER denoting the alignment of the text for the column. However, the underlying list-view control has a number
+    of other format properties. These other properties are currently ignored by the ooDialog framework. Future versions
+    of ooDialog may be enhanced to include more keywords.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2272,16 +2349,31 @@ first column in a report list:
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example displays information about the column when the user clicks on it:
 <programlisting>
 <![CDATA[
+
+::method onColumnClick
+  use arg id, column
+  listView = self~newListView(IDC_LV_PROPERTIES)
+
+  d = .Directory~new
+  if listView~getClumnInfo(column, d) then do
+
+    msg = "Column Title : " d~text    || .endOfLine || -
+          "Column Number: " d~subitem || .endOfLine || -
+          "Column Width : " d~width   || .endOfLine || -
+          "Alignment    : " d~fmt
+
+    call infoDialog msg
+  end
+  else do
+    call errorDialog "Failed to get column information."
+  end
 
 ]]>
 </programlisting>
@@ -2331,27 +2423,6 @@ RetStem.!WIDTH variable will be set to 0.
 <listitem><para>The alignment of the column: &quot;LEFT&quot;, &quot;RIGHT&quot;, or &quot;CENTER&quot;.
 </para></listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays the column attributes in an information
-box when the column is clicked on:
-<programlisting>
-<![CDATA[
-
-::method onColumnClick
-  use arg id, column
-  listView = self~newListView(100)
-  info. = listView~columnInfo(column)
-
-  msg = "Column Title : " info.!Text   || .endOfLine || -
-        "Column Number: " info.!Column || .endOfLine || -
-        "Column Width : " info.!Width  || .endOfLine || -
-        "Alignment    : " info.!Align
-
-  call infoDialog msg
-
-]]>
-</programlisting>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
