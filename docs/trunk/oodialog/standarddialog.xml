@@ -1005,8 +1005,8 @@ say  "You Selected the month: " mon.s
       <para>
         The window <link linkend="defHandle">handle</link> of the owner window for the message box. The owner window is
         disabled until the user closes the message box. If this argument is omitted, the ooDialog framework will use the
-        last created, topmost, dialog as the owner window. To specify that there should be no owner window, specify
-        <computeroutput>0</computeroutput> for this argument.
+        last created, topmost, dialog as the owner window. To explicitly choose that there should be no owner window,
+        specify <computeroutput>0</computeroutput> for this argument.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>cap [optional]</term>
@@ -1019,32 +1019,152 @@ say  "You Selected the month: " mon.s
       <varlistentry><term>pb [optional]</term>
       <listitem>
       <para>
-        Specifies which push buttons the message box will have. The default if this argument is omitted is a single Ok
-        button. Otherwise, use exactly one of the following keywords, case is not significant:
+        The <emphasis role="italic">pb</emphasis> argument specifies which push buttons the message box will have. The
+        default if this argument is omitted is a single Ok button. Otherwise, use exactly one of the following keywords,
+        case is not significant:
       </para>
       <para>
         <simplelist type='vert' columns='3'>
-          <member>T1   </member>
-          <member>T2    </member>
-          <member>T3   </member>
+          <member>ABORTRETRYIGNORE </member>
+          <member>CANCELTRYCONTINUE</member>
+          <member>OK               </member>
+          <member>OKCANCEL         </member>
+          <member>RETRYCANCEL      </member>
+          <member>YESNO            </member>
+          <member>YESNOCANCEL      </member>
         </simplelist>
         <variablelist>
-          <varlistentry><term>T1</term>
+          <varlistentry><term>ABORTRETRYIGNORE</term>
           <listitem>
           <para>
-            text
+            The message box wil have three push buttons: <emphasis role="bold">Abort</emphasis>, <emphasis
+            role="italic">Retry</emphasis>, and <emphasis role="bold">Ignore</emphasis>.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>T2</term>
+          <varlistentry><term>CANCELTRYCONTINUE</term>
           <listitem>
           <para>
-            text
+            The message box wil have three push buttons: <emphasis role="bold">Cancel</emphasis>, <emphasis
+            role="italic">Try Again</emphasis>, and <emphasis role="bold">Continue</emphasis>.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>T3</term>
+          <varlistentry><term>OK</term>
           <listitem>
           <para>
-            text
+            The message box wil have on push button: <emphasis role="bold">Ok</emphasis>. This is the default if the
+            argument is omitted.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>OKCANCEL</term>
+          <listitem>
+          <para>
+            The message box wil have two push buttons: <emphasis role="bold">Ok</emphasis> and <emphasis
+            role="italic">Cancel</emphasis>.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RETRYCANCEL</term>
+          <listitem>
+          <para>
+            The message box wil have two push buttons: <emphasis role="bold">Retry</emphasis> and <emphasis
+            role="italic">Cancel</emphasis>.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>YESNO</term>
+          <listitem>
+          <para>
+            The message box wil have two push buttons: <emphasis role="bold">Yes</emphasis> and <emphasis
+            role="italic">N</emphasis>.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>YESNOCANCEL</term>
+          <listitem>
+          <para>
+            The message box wil have three push buttons: <emphasis role="bold">Yes</emphasis>, <emphasis
+            role="italic">No</emphasis>, and <emphasis role="bold">Cancel</emphasis>.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>icon [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">icon</emphasis> argument specifies the icon placed in the message box. If this
+        argument is omitted then the message box will not display an icon. Note that several keywords may specify the
+        same icon. To have an icon appear in the message box, use exactly one of the following keywords, case is not
+        significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>EXCLAMATION</member>
+          <member>WARNING    </member>
+          <member>INFORMATION</member>
+          <member>ASTERISK   </member>
+          <member>QUESTION   </member>
+          <member>STOP       </member>
+          <member>ERROR      </member>
+          <member>HAND       </member>
+          <member>QUERY      </member>
+          <member>NONE       </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>EXCLAMATION</term>
+          <listitem>
+          <para>
+            The message box will have an exclamation-point icon.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WARNING</term>
+          <listitem>
+          <para>
+            The message box will have an exclamation-point icon.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>INFORMATION</term>
+          <listitem>
+          <para>
+            The message box will have an icon consisting of a lowercase letter i in a circle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ASTERISK</term>
+          <listitem>
+          <para>
+            The message box will have an icon consisting of a lowercase letter i in a circle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>QUESTION</term>
+          <listitem>
+          <para>
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>STOP</term>
+          <listitem>
+          <para>
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ERROR</term>
+          <listitem>
+          <para>
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HAND</term>
+          <listitem>
+          <para>
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>QUERY</term>
+          <listitem>
+          <para>
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NONE</term>
+          <listitem>
+          <para>
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term></term>
+          <listitem>
+          <para>
           </para>
           </listitem></varlistentry>
         </variablelist>
