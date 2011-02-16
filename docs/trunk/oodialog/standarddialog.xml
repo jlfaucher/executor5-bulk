@@ -52,7 +52,7 @@
   much set up and makes them simple to work with.
 </para>
 
-<section id="sctStandardClassesRoutines"><title>Class &amp; Routine Table</title>
+<section id="sctStandardClassesRoutines"><title>Class and Routine Table</title>
 
 <para>
   The standard dialogs and public routines are listed the following table:
@@ -114,7 +114,7 @@
 </row>
 <row>
 <entry><link linkend="rtnAskDialog">AskDialog routine</link></entry>
-<entry>Pops up a message box containing the specified text, a Yes and a No push button.</entry>
+<entry>Pops up a message box containing the specified question, a Yes and a No push button.</entry>
 </row>
 <row>
 <entry><link linkend="rtnCheckList">CheckList routine</link></entry>
@@ -122,7 +122,7 @@
 </row>
 <row>
 <entry><link linkend="rtnErrorDialog">ErrorDialog routine</link></entry>
-<entry>Pops up a message box containing the specified text, an Ok push button and an error icon.</entry>
+<entry>Pops up a message box containing the specified error message, an Ok push button and an error icon.</entry>
 </row>
 <row>
 <entry><link linkend="rtnFileNameDialog">FileNameDialog routine</link></entry>
@@ -147,6 +147,10 @@
 <row>
 <entry><link linkend="rtnListChoice">ListChoice routine</link></entry>
 <entry>Provides a shortcut to invoke a <computeroutput>ListChoice</computeroutput> dialog.</entry>
+</row>
+<row>
+<entry><link linkend="rtnMessageDialog">MessageDialog routine</link></entry>
+<entry>Pops up a message box with the options specified.</entry>
 </row>
 <row>
 <entry><link linkend="rtnMSSleep">MSSleep routine</link></entry>
@@ -971,76 +975,116 @@ say  "You Selected the month: " mon.s
 </programlisting>
 </para>
 
-<section id="rtnPlay"><title>Play Routine</title>
-<indexterm><primary>Play</primary></indexterm>
-<indexterm><primary>public routines</primary>
-<secondary>Play</secondary></indexterm>
-<para>This routine is used to play audio sounds.</para>
+<section id="rtnMessageDialog"><title>MessageDialog</title>
+<indexterm><primary>MessageDialog</primary></indexterm>
+<indexterm><primary>public routines</primary><secondary>MessageDialog</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-Play(--+----------+--+---------+--)------------------------><
-          +-fileName-+  +-,--YES--+
-                        +-,--LOOP-+
-
-
+>>--MessageDialog(--msg-+--------+-+-------+-+------+-+--------+-+--------+-)---><
+                        +-,-hwnd-+ +-,-cap-+ +-,-pb-+ +-,-icon-+ +-,-misc-+
 ]]>
 </programlisting>
 
 <para>
-  The Play routine can be used to play an audio file using the Windows multimedia capabilities.  When the
-  arguments are omitted, the currently playing sound file is stopped.
-</para>
-<para>
-  The named file is searched for in the current directory and in the directories of the SOUNDPATH
-  environment variable.
+  Displays a message box on the screen with the options specified.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>fileName</term>
-<listitem>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
   <para>
-    The file name of an audio (.WAV) file. The file is searched for in the current directory and in the
-    directories listed in the SOUNDPATH environment variable. If this argument is omitted, the currently
-    playing sound file is stopped.
-</para>
-<note><title>Note</title><para>
-  The system can only play one audio file at a time using the <emphasis role="italic">play</emphasis>()
-  routine. If an audio file is currently playing, calling the routine with arguments will disrupt the
-  audio file already playing.
-</para></note>
-</listitem></varlistentry>
-<varlistentry><term>option</term>
-<listitem>
-  <para>
-    When this argument is omitted, the audio file is played synchronously. Otherwise, use one of the
-    following keywords:
-<variablelist>
-<varlistentry><term>YES</term>
-<listitem><para>The audio file is played asynchronously.
-</para></listitem></varlistentry>
-<varlistentry><term>LOOP</term>
-<listitem>
-  <para>
-    The audio file is played asynchronously in a loop. The loop is stopped by calling Play again with no
-    arguments.
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>msg [required]</term>
+      <listitem>
+      <para>
+        The message text to be displayed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hwnd [optional]</term>
+      <listitem>
+      <para>
+        The window <link linkend="defHandle">handle</link> of the owner window for the message box. The owner window is
+        disabled until the user closes the message box. If this argument is omitted, the ooDialog framework will use the
+        last created, topmost, dialog as the owner window. To specify that there should be no owner window, specify
+        <computeroutput>0</computeroutput> for this argument.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cap [optional]</term>
+      <listitem>
+      <para>
+        The caption, or title, of the message box. The default title when omitted is: <emphasis role="italic">ooDialog
+        Application Message</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>pb [optional]</term>
+      <listitem>
+      <para>
+        Specifies which push buttons the message box will have. The default if this argument is omitted is a single Ok
+        button. Otherwise, use exactly one of the following keywords, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>T1   </member>
+          <member>T2    </member>
+          <member>T3   </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>T1</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>T2</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>T3</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example plays a welcoming message:
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
 <programlisting>
 <![CDATA[
-rc = play("Welcome.wav")
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End public routines::messageDialog() -->
+
 
 <section id="rtnInfoDialog"><title>InfoDialog Routine</title>
 <indexterm><primary>InfoDialog</primary></indexterm>
@@ -1734,6 +1778,78 @@ SingleSelection</computeroutput>class. However, instead of an input stem an
 array is passed into the function.
 </para>
 </section>
+
+<section id="rtnPlay"><title>Play Routine</title>
+<indexterm><primary>Play</primary></indexterm>
+<indexterm><primary>public routines</primary>
+<secondary>Play</secondary></indexterm>
+<para>This routine is used to play audio sounds.</para>
+<programlisting>
+<![CDATA[
+>>-Play(--+----------+--+---------+--)------------------------><
+          +-fileName-+  +-,--YES--+
+                        +-,--LOOP-+
+
+
+]]>
+</programlisting>
+
+<para>
+  The Play routine can be used to play an audio file using the Windows multimedia capabilities.  When the
+  arguments are omitted, the currently playing sound file is stopped.
+</para>
+<para>
+  The named file is searched for in the current directory and in the directories of the SOUNDPATH
+  environment variable.
+</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>fileName</term>
+<listitem>
+  <para>
+    The file name of an audio (.WAV) file. The file is searched for in the current directory and in the
+    directories listed in the SOUNDPATH environment variable. If this argument is omitted, the currently
+    playing sound file is stopped.
+</para>
+<note><title>Note</title><para>
+  The system can only play one audio file at a time using the <emphasis role="italic">play</emphasis>()
+  routine. If an audio file is currently playing, calling the routine with arguments will disrupt the
+  audio file already playing.
+</para></note>
+</listitem></varlistentry>
+<varlistentry><term>option</term>
+<listitem>
+  <para>
+    When this argument is omitted, the audio file is played synchronously. Otherwise, use one of the
+    following keywords:
+<variablelist>
+<varlistentry><term>YES</term>
+<listitem><para>The audio file is played asynchronously.
+</para></listitem></varlistentry>
+<varlistentry><term>LOOP</term>
+<listitem>
+  <para>
+    The audio file is played asynchronously in a loop. The loop is stopped by calling Play again with no
+    arguments.
+  </para>
+</listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example plays a welcoming message:
+<programlisting>
+<![CDATA[
+rc = play("Welcome.wav")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 </section>
 
 
