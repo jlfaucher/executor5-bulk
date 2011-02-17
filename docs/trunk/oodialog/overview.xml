@@ -602,9 +602,21 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   Dialogs are executed in two basic ways. A <emphasis role="italic">modal</emphasis> dialog blocks keyboard and mouse
   input to all other windows started by the program. The user can not switch to another window in the program without
-  closing the modal dialog. In ooDialog this essentially is all other dialogs started by the program. A <emphasis
+  closing the modal dialog. In ooDialog this is often all other dialogs started by the program. A <emphasis
   role="italic">modeless</emphasis> dialog operates independently of the other dialogs in the program. The user can
   switch away from a modeless dialog and work with any of the other dialogs in the program.
+</para>
+<para>
+  Be aware that the original developers of ooDialog choose to not implement true modal dialogs. Rather, they implemented
+  a strategy where all dialogs are created as modeless dialog and the ooDialog framework keeps track of the last dialog
+  executed. This <emphasis role="italic">last executed</emphasis> dialog is then manually disabled to mimic the
+  behaviour of true modal dialogs. While this strategy is usually sufficient, it will sometimes cause the wrong dialog
+  to be disabled.
+</para>
+<para>
+  In the ooDialog framework use the <link linkend="mthExecute">execute</link> method to create modal dialogs and the
+  <link linkend="mthPopup">popup</link> or <link linkend="mthPopupAsChild">popupAsChild</link> methods to create
+  modeless dialogs.
 </para>
 </section>
 

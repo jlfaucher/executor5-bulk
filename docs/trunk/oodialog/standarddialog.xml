@@ -1038,20 +1038,20 @@ say  "You Selected the month: " mon.s
           <listitem>
           <para>
             The message box wil have three push buttons: <emphasis role="bold">Abort</emphasis>, <emphasis
-            role="italic">Retry</emphasis>, and <emphasis role="bold">Ignore</emphasis>.
+            role="bold">Retry</emphasis>, and <emphasis role="bold">Ignore</emphasis>.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>CANCELTRYCONTINUE</term>
           <listitem>
           <para>
             The message box wil have three push buttons: <emphasis role="bold">Cancel</emphasis>, <emphasis
-            role="italic">Try Again</emphasis>, and <emphasis role="bold">Continue</emphasis>.
+            role="bold">Try Again</emphasis>, and <emphasis role="bold">Continue</emphasis>.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>OK</term>
           <listitem>
           <para>
-            The message box wil have on push button: <emphasis role="bold">Ok</emphasis>. This is the default if the
+            The message box wil have one push button: <emphasis role="bold">Ok</emphasis>. This is the default if the
             argument is omitted.
           </para>
           </listitem></varlistentry>
@@ -1059,28 +1059,28 @@ say  "You Selected the month: " mon.s
           <listitem>
           <para>
             The message box wil have two push buttons: <emphasis role="bold">Ok</emphasis> and <emphasis
-            role="italic">Cancel</emphasis>.
+            role="bold">Cancel</emphasis>.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>RETRYCANCEL</term>
           <listitem>
           <para>
             The message box wil have two push buttons: <emphasis role="bold">Retry</emphasis> and <emphasis
-            role="italic">Cancel</emphasis>.
+            role="bold">Cancel</emphasis>.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>YESNO</term>
           <listitem>
           <para>
             The message box wil have two push buttons: <emphasis role="bold">Yes</emphasis> and <emphasis
-            role="italic">N</emphasis>.
+            role="bold">No</emphasis>.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>YESNOCANCEL</term>
           <listitem>
           <para>
             The message box wil have three push buttons: <emphasis role="bold">Yes</emphasis>, <emphasis
-            role="italic">No</emphasis>, and <emphasis role="bold">Cancel</emphasis>.
+            role="bold">No</emphasis>, and <emphasis role="bold">Cancel</emphasis>.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -1135,36 +1135,216 @@ say  "You Selected the month: " mon.s
           <varlistentry><term>QUESTION</term>
           <listitem>
           <para>
+            The message box will have a question-mark icon. Microsoft recommends that this icon not be used any more for
+            a number of reasons. If you want your Rexx programs to have the same look and feel of other Windows
+            programs, then you should not use the question-mark icon.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>STOP</term>
           <listitem>
           <para>
+            The message box will have a stop-sign icon.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>ERROR</term>
           <listitem>
           <para>
+            The message box will have a stop-sign icon.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>HAND</term>
           <listitem>
           <para>
+            The message box will have a stop-sign icon.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>QUERY</term>
           <listitem>
           <para>
+            The message box will have a question-mark icon, same as the QUESTION keyword. Microsoft recommends not using
+            this icon.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NONE</term>
           <listitem>
           <para>
+            Used to allow the programmer to explicitly state that the message box should not have an icon. Omitting the
+            <emphasis role="italic">icon</emphasis> argument altogether has the same effect.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term></term>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>misc [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">misc</emphasis> argument specifies a number of other attributes that can be set for
+        the message box. The argument consists of a blank separated string of keywords from the lists below. The
+        default if this argument is omitted is <computeroutput>"DEFBUTTON1 APPLMODAL"</computeroutput>.
+      </para>
+      <para>
+        The keywords are divided up into four groups. Except for the <emphasis role="italic">other
+        miscellaneous</emphasis> group, only one keyword from each groupd should be used, case is not significant. If
+        more than one keyword in a group is used, the behavior is undefined.
+      </para>
+      <para>
+        These keywords are used to select the default push button when the message box is shown. Use only one keyword
+        from this group.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFBUTTON1</member>
+          <member>DEFBUTTON2</member>
+          <member>DEFBUTTON3</member>
+          <member>DEFBUTTON4</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFBUTTON1</term>
           <listitem>
           <para>
+            The first button is the default button. This is the default value if none of the other default button
+            keywords are used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DEFBUTTON2</term>
+          <listitem>
+          <para>
+            The second button is the default button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DEFBUTTON3</term>
+          <listitem>
+          <para>
+            The third button is the default button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DEFBUTTON4</term>
+          <listitem>
+          <para>
+            The fourth button is the default button.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      <para>
+        These keywords are used to indicate the <link linkend="defModalModeless">modality</link> of the message box.
+        <emphasis role="bold">Note</emphasis> that the description of the modality behaviour here assumes that the
+        window specified by the <emphasis role="italic">hwnd</emphasis> argument belongs to the programmer's Rexx
+        application. Use only one keyword from this group.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>APPLMODAL  </member>
+          <member>SYSTEMMODAL</member>
+          <member>TASKMODAL  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>APPLMODAL</term>
+          <listitem>
+          <para>
+            Application Modal: The user must close the message box before continuing to work in the window specified by
+            the <emphasis role="italic">hwnd</emphasis> argument. However, the user can move to windows on the desktop
+            not part of the application and work in those windows.
+          </para>
+          <para>
+            Depending on the hierarchy of windows in the application, the user may be able to move to other windows
+            within the application. However, all child windows of the owner window of the message box are automatically
+            disabled.
+          </para>
+          <para>
+            APPLMODAL is the default if neither SYSTEMMODAL nor TASKMODAL are specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SYSTEMMODAL</term>
+          <listitem>
+          <para>
+            System Modal: The modality for this keyword is the same as APPLMODAL except that the message box will have
+            the topmost style. This means that the message box will stay on top of other windows not part of the
+            application, if the user moves to those windows.
+          </para>
+          <para>
+            Microsoft suggests that this type of message box be used to notify the user of serious, potentially
+            damaging errors that require immediate attention. SYSTEMMODAL has no effect on the user's ability to
+            interact with windows other than those associated with the <emphasis role="italic">hwnd</emphasis> argument.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TASKMODAL</term>
+          <listitem>
+          <para>
+            Task Modal: This is the same as APPLMODAL except that all the top-level windows belonging to the current
+            thread are disabled if the <emphasis role="italic">hwnd</emphasis> argument is 0. Use this keyword when the
+            the programmer does not have a window handle available but still needs to prevent input to other windows in
+            the application.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      <para>
+        Other miscellaneous keywords. One or more keywords from this group can be used..
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>DEFAULTDESKTOP     </member>
+          <member>RIGHT              </member>
+          <member>RTLREADING         </member>
+          <member>SETFOREGROUND      </member>
+          <member>TOPMOST            </member>
+          <member>SERVICENOTIFICATION</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>DEFAULTDESKTOP</term>
+          <listitem>
+          <para>
+            Same as the desktop of the interactive window station. The programmer should consult the Windows <link
+           linkend="defWindowsDoc">documentation</link> when considering to use this keyword.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RIGHT</term>
+          <listitem>
+          <para>
+           The message text is right-justified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RTLREADING</term>
+          <listitem>
+          <para>
+            Displays the message and caption text using right-to-left reading order on Hebrew and Arabic systems.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SETFOREGROUND</term>
+          <listitem>
+          <para>
+            The operating system, internally, sets the message box as the foreground window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOPMOST</term>
+          <listitem>
+          <para>
+            The message box will have the topmost window style. This will keep the message box above all other windows
+            on the desktop.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SERVICENOTIFICATION</term>
+          <listitem>
+          <para>
+            The application dialog calling the <emphasis role="italic">MessageDialog</emphasis> routine is a service
+            notifying the user of an event. The <emphasis role="italic">MessageDialog</emphasis> displays a message box
+            on the current active desktop, even if there is no user logged on to the computer.
+          </para>
+          <para>
+            ooDialog and Rexx programs in general are not particularly suited to implement Windows services. So it is
+            unlikely that this keyword will be used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HELP</term>
+          <listitem>
+          <para>
+            Adds a <emphasis role="bold">Help</emphasis> push button to the message box, in addition to the push buttons
+            specifed in the <emphasis role="italic">pb</emphasis> argument. When the user clicks the <emphasis
+            role="bold">Help</emphasis> button or presses F1, the operating system sends a HELP event <link
+            linkend="ovvEvents">notification</link> to the window specified by the <emphasis
+            role="italic">hwnd</emphasis> argument. If this window is an ooDialog dialog, the programmer can capture
+            this notification using the <link linkend="mthConnectHelp">connectHelp</link> method.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -1176,13 +1356,100 @@ say  "You Selected the month: " mon.s
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    <emphasis role="italic">MessageDialog</emphasis> returns the Microsoft defined resource ID of the button pushed by
+    the user, and 0 on error. The programmer can use a <link linkend="sctMethodsDlgObject">constant</link> of the <link
+    linkend="chpDialogObject">dialog object</link> to determine the return. The return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        An error ocurred. the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable will be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1 IDOK</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Ok</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>2 IDCANCEL</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Cancel</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>3 IDABORT</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Abort</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>4 IDRETRY</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Retry</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>5 IDIGNORE</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Ignore</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>6 IDYES</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Yes</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>7 IDNO</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">No</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>8 IDCLOSE</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Close</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>9 IDHELP</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Help</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>10 IDTRYAGAIN</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Try Again</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>11 IDCONTINUE</term>
+      <listitem>
+      <para>
+        The <emphasis role="bold">Continue</emphasis> button was pushed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the message box has a <emphasis role="bold">Cancel</emphasis> button, IDCANCEL is also returned if the user
+    uses the ESC key. If the message box does not have a <emphasis role="bold">Cancel</emphasis> button, then the user
+    can not close the message box by using the ESC key.
+  </para>
+  <para>
+    The <link linkend="rtnAskDialog">AskDialog</link>, <link linkend="rtnInfoDialog">InfoDialog</link>, and <link
+    linkend="rtnErrorDialog">errorDialog</link> routines are all implemented using the
+    <computeroutput>MessageDialog</computeroutput> routine. While they are simplier to use, they are not very flexible.
+    In addition because of the way <link linkend="defModalModeless">modal</link> dialogs are implemented, it is possbile
+    that those routines will not diable the correct dialog. If the programmer encounters problems with the wrong dialog
+    being disabled, the solution is to use the <computeroutput>MessageDialog</computeroutput> routine and specify the
+    proper window handle of the owner window.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1190,14 +1457,46 @@ say  "You Selected the month: " mon.s
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from a Wizard 97 program that warns the user when she is about to change the page and has not
+    completed all of the steps on the page she is on.
 <programlisting>
 <![CDATA[
 
+::method wizNext unguarded
+  expose selectedMovies movieTheaters movieCombo
+  use arg propSheet
+
+  do movie over selectedMovies
+    if movieTheaters[movie] == .nil then do
+
+      msg = "Warning.  You have not selected a movie" || .endOfLine ||           -
+            "theater for all selected movies."        || .endOfLine~copies(2) || -
+            "Are you sure you want to go to"          || .endOfLine ||           -
+            "the next page?"
+
+      title = "Theater Selection is not Complete"
+      buttons = "YESNO"
+      icon = "WARNING"
+      style = "DEFBUTTON2 TASKMODAL"
+
+      ans = MessageDialog(msg, propSheet~dlgHandle, title, buttons, icon, style)
+
+      if ans == .PlainBaseDialog~IDYES then return 0
+
+      movieCombo~select(movie)
+      self~setRadioButtons(movie)
+      return -1
+    end
+  end
+
+  return 0
 ]]>
 </programlisting>
   </para>
