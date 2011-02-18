@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -43,37 +43,79 @@
 -->
 <chapter id="clsTreeView"><title>Tree View Controls</title>
 <indexterm><primary>TreeView class</primary></indexterm>
-<para>The tree view control is a dialog that displays a hierarchical list of
-items, such as the headings in a document, the entries in an index, or the
-files and directories on a disk. Each item consists of a label and an optional
-image bitmap, and can have a list of subitems associated with it. By clicking
-on an item, the user can expand and collapse the associated list of subitems.</para>
-<para>Refer to OODTREE.REX in the OODIALOG\SAMPLES directory for an example.</para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The TreeView class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodwin32.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the TreeView class implement
-the methods listed in the
-<link linkend="t000032">TreeView Instance Methods</link> table.</para>
+<para>
+  The tree-view control is a dialog control that displays a hierarchical list of items, such as the headings in a
+  document, the entries in an index, or the files and directories on a disk. Each item consists of a label and an
+  optional image bitmap, and can have a list of subitems associated with it. By clicking on an item, the user can expand
+  and collapse the associated list of subitems.
+</para>
 
-<table id="t000032" frame="all">
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with tree-view controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <link linkend="mthNewTreeView">newTreeView</link> method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a list-view object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically create a tree-view in the dialog template of a <link linkend="clsUserDialog">UserDialog</link> use
+    the <link linkend="mthCreateTreeView">createTreeView</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying tree-view control to a
+    method in the Rexx dialog object use the <link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>
+    method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+
+<section id="sctMethodsTreeView"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with tree-view objects, including the pertinent methods from other classes:
+</para>
+
+<table id="tblTreeViewMethods" frame="all">
 <title>TreeView Instance Methods</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewTreeView">newTreeView</link></entry>
+<entry>Returns a <computeroutput>TreeView</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateTreeView">createTreeView</link></entry>
+<entry>Creates a tree-view control in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectTreeViewEvent">connectTreeViewEvent</link></entry>
+<entry>Connects tree-view event notifications to a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
 <row>
 <entry>add</entry>
 <entry><link linkend="addtrc">add</link></entry>
@@ -127,8 +169,16 @@ the methods listed in the
 <entry><link linkend="firstvisibletrc">firstVisible</link></entry>
 </row>
 <row>
+<entry><link linkend="mthGetImageListClsTreeView">getImageList</link></entry>
+<entry>Retrieves the tree-view's image list for the type specified.</entry>
+</row>
+<row>
 <entry>HitTest</entry>
 <entry><link linkend="hittest">HitTest</link></entry>
+</row>
+<row>
+<entry><link linkend="mthHitTestInfo">hitTestInfo</link></entry>
+<entry>Determines the location of a point relative to the tree-view control.</entry>
 </row>
 <row>
 <entry>Indent</entry>
@@ -203,6 +253,10 @@ the methods listed in the
 <entry><link linkend="selectedtrc">selected</link></entry>
 </row>
 <row>
+<entry><link linkend="mthSetImageListClsTreeView">setImageList</link></entry>
+<entry>Assigns, or removes, an image list for the tree-view control.</entry>
+</row>
+<row>
 <entry>SortChildren</entry>
 <entry><link linkend="sortchildren">SortChildren</link></entry>
 </row>
@@ -220,22 +274,63 @@ the methods listed in the
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
 
-<section id="treecmeth"><title>Methods of the TreeView Class</title>
-<para>The following sections describe the individual methods of the TreeView
-class.</para>
+</section>
+
+<section id="tmthNewTreeView"><title>newTreeView (dialog object method)</title>
+<para>
+  Tree-view objects can not be instantiated by the programmer from Rexx code. Rather a tree-view object is obtained by
+  using the <link linkend="mthNewTreeView">newTreeView</link> method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>--newTreeView(--id--)--------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newTreeView() [PlainBaseDialog method] -->
+
+
+<section id="tmthCreateTreeView"><title>createTreeView (UserDialog method)</title>
+<para>
+  A tree-view object can be created in the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
+  dialog through the <link linkend="mthCreateTreeview">createTreeView</link> method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createTreeView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createTreeView() [UserDialog method] -->
+
+
+<section id="tmthConnectTreeViewEvent"><title>connectTreeViewEvent (dialog object method)</title>
+<para>
+  To connect event notifications from a tree-view object use the <link
+  linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link> method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>--connectTreeViewEvent(--id--,--event--+---------------+--)------------------><
+                                         +-,--methodName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End connectTreeViewEvent() [EventNotification method] -->
 
 <section id="inserttrc"><title>insert</title>
 <indexterm><primary>insert</primary>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                    +-"LAST"--+     +-""---+     +-0-----+
->>-aTreeControl~insert(--parent--,--+-after---+--,--+------+--,--+-------+--,-->
-                                    +-"FIRST"-+     +-text-+     +-image-+
-                                    +-"SORT"--+
+                        +-"LAST"--+     +-""---+     +-0-----+
+>>--insert(--parent--,--+-after---+--,--+------+--,--+-------+--,-->
+                        +-"FIRST"-+     +-text-+     +-image-+
+                        +-"SORT"--+
 
                                                    +-"0"-+
 >--+----------+--,--+------------------------+--,--+-----+--)--><
@@ -256,7 +351,7 @@ view control.</para>
 <variablelist>
 <varlistentry><term>parent</term>
 <listitem><para>The handle to the parent item. If you specify &quot;ROOT&quot;,
-the item is inserted at the root of the tree view control.
+the item is inserted at the root of the tree-view control.
 </para></listitem></varlistentry>
 <varlistentry><term>after</term>
 <listitem><para>The handle to the item after which the new item is to be inserted or
@@ -277,12 +372,12 @@ one of the following values:</para>
 <listitem><para>The text for the item. If you omit this argument, &quot;&quot; is assumed.
 </para></listitem></varlistentry>
 <varlistentry><term>image</term>
-<listitem><para>The index of the icon image in the tree view control's bitmap file
+<listitem><para>The index of the icon image in the tree-view control's bitmap file
 to be used when the item is in the non-selected state. If you omit this argument,
 the icon with index 0 is used.
 </para></listitem></varlistentry>
 <varlistentry><term>selImage</term>
-<listitem><para>The index of the icon image in the tree view control's bitmap file
+<listitem><para>The index of the icon image in the tree-view control's bitmap file
 to be used when the item is in the selected state. If you omit this argument,
 the icon specified for <emphasis role="italic">image</emphasis> is used.
 </para></listitem></varlistentry>
@@ -352,10 +447,10 @@ is expanded. The text strings for the items are loaded from a file.
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                      +-------+
-                      V       |     +-""---+     +-0-----+
->>-aTreeControl~add(----+---+-+--,--+------+--,--+-------+--,--->
-                        +-,-+       +-text-+     +-image-+
+          +-------+
+          V       |     +-""---+     +-0-----+
+>>--add(----+---+-+--,--+------+--,--+-------+--,--->
+            +-,-+       +-text-+     +-image-+
 
                                                    +-"0"-+
 >--+----------+--,--+------------------------+--,--+-----+--)--><
@@ -368,7 +463,7 @@ is expanded. The text strings for the items are loaded from a file.
 ]]>
 </programlisting>
 
-<para>The add method adds a new item to a tree view control.</para>
+<para>The add method adds a new item to a tree-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:</para>
@@ -383,12 +478,12 @@ See the example in the following.
 <listitem><para>The text for the item. If you omit this argument, &quot;&quot; is assumed.
 </para></listitem></varlistentry>
 <varlistentry><term>image</term>
-<listitem><para>The index of the icon image in the tree view control's bitmap file
+<listitem><para>The index of the icon image in the tree-view control's bitmap file
 to be used when the item is in the non-selected state. If you omit this argument,
 the icon with index 0 is used.
 </para></listitem></varlistentry>
 <varlistentry><term>selImage</term>
-<listitem><para>The index of the icon image in the tree view control's bitmap file
+<listitem><para>The index of the icon image in the tree-view control's bitmap file
 to be used when the item is in the selected state. If you omit this argument,
 the icon specified for <emphasis role="italic">image</emphasis> is used.
 </para></listitem></varlistentry>
@@ -489,9 +584,9 @@ end
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                   +-""---+     +-0-----+
->>-aTreeControl~modify(--hItem--,--+------+--,--+-------+--,--+----------+--,-->
-                                   +-text-+     +-image-+     +-selImage-+
+                       +-""---+     +-0-----+
+>>--modify(--hItem--,--+------+--,--+-------+--,--+----------+--,-->
+                       +-text-+     +-image-+     +-selImage-+
 
                                          +-"0"-+
 >--+-------------------------------+--,--+-----+--)------------><
@@ -515,7 +610,7 @@ end
 </programlisting>
 
 <para>The modify method sets some or all attributes of
-an item of a tree view control.</para>
+an item of a tree-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:</para>
@@ -527,12 +622,12 @@ an item of a tree view control.</para>
 <listitem><para>The text for the item. If you omit this argument, &quot;&quot; is assumed.
 </para></listitem></varlistentry>
 <varlistentry><term>image</term>
-<listitem><para>The index of the icon image in the tree view control's bitmap file
+<listitem><para>The index of the icon image in the tree-view control's bitmap file
 to be used when the item is in the non-selected state. If you omit this argument,
 the icon with index 0 is used.
 </para></listitem></varlistentry>
 <varlistentry><term>selImage</term>
-<listitem><para>The index of the icon image in the tree view control's bitmap file
+<listitem><para>The index of the icon image in the tree-view control's bitmap file
 to be used when the item is in the selected state. If you omit this argument,
 the icon specified for <emphasis role="italic">image</emphasis> is used.
 </para></listitem></varlistentry>
@@ -627,14 +722,14 @@ when it is selected:</para>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~itemInfo(--hItem--)----------------------------><
+>>--itemInfo(--hItem--)--------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>The itemInfo method retrieves some or all attributes
-of an item of a tree view control.</para>
+of an item of a tree-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -663,11 +758,11 @@ in all other cases. The compound variable can be:
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term>RetStem.!IMAGE</term>
-<listitem><para>The index of the icon image in the tree view control's bitmap file
+<listitem><para>The index of the icon image in the tree-view control's bitmap file
 used when the item is in the non-selected state.
 </para></listitem></varlistentry>
 <varlistentry><term>RetStem.!SELECTEDIMAGE</term>
-<listitem><para>The index of the icon image in the tree view control's bitmap file
+<listitem><para>The index of the icon image in the tree-view control's bitmap file
 used when the item is in the selected state.
 </para></listitem></varlistentry>
 <varlistentry><term>RetStem.!STATE</term>
@@ -720,20 +815,20 @@ to parent items.
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Items------------------------------------------><
+>>--items----------------------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>The items method retrieves the number of items
-in a tree view control.</para>
+in a tree-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The number of items.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example counts all items in a tree view control:
+<listitem><para>The following example counts all items in a tree-view control:
 <programlisting>
 <![CDATA[
 ::method Count
@@ -749,14 +844,14 @@ in a tree view control.</para>
 <indexterm><primary>VisibleItems</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~VisibleItems-----------------------------------><
+>>--visibleItems---------------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>The VisibleItems method obtains the number of items
-that can be fully visible in a tree view control. This number can be greater
+that can be fully visible in a tree-view control. This number can be greater
 than the number of items in the control. The control calculates this value
 by dividing the height of the client window by the height of an item.</para>
 <variablelist>
@@ -783,14 +878,14 @@ visible:
 <indexterm><primary>Root</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Root-------------------------------------------><
+>>--root-----------------------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>The Root method retrieves the first or topmost
-item of the tree view control.</para>
+item of the tree-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The handle to the first item, or 0 in all other cases.
@@ -813,7 +908,7 @@ item of the tree view control.</para>
 <indexterm><primary>Parent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Parent(--hItem--)------------------------------><
+>>--parent(--hItem--)----------------------------><
 
 
 ]]>
@@ -853,7 +948,7 @@ specified or is 0, or 0 in all other cases.
 <indexterm><primary>Child</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Child(--hItem--)-------------------------------><
+>>--child(--hItem--)-----------------------------><
 
 
 ]]>
@@ -894,7 +989,7 @@ retrieved.
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Selected---------------------------------------><
+>>--selected-------------------------------------><
 
 
 ]]>
@@ -925,7 +1020,7 @@ item.</para>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~DropHighlighted--------------------------------><
+>>--dropHighlighted------------------------------><
 
 
 ]]>
@@ -945,14 +1040,14 @@ is the target of a drag-and-drop operation.</para>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~FirstVisible-----------------------------------><
+>>--firstVisible---------------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>The firstVisible method retrieves the first visible
-item in the client window of a tree view control.</para>
+item in the client window of a tree-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The handle to the first visible item, or 0 in all other cases.
@@ -976,7 +1071,7 @@ item in the client window of a tree view control.</para>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~next(--hItem--)--------------------------------><
+>>--next(--hItem--)------------------------------><
 
 
 ]]>
@@ -1020,7 +1115,7 @@ siblings:
 <indexterm><primary>NextVisible</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~NextVisible(--hItem--)-------------------------><
+>>--nextVisible(--hItem--)-----------------------><
 
 
 ]]>
@@ -1050,7 +1145,7 @@ retrieved. <emphasis role="italic">hItem</emphasis> must also be visible.
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~previous(--hItem--)----------------------------><
+>>--previous(--hItem--)--------------------------><
 
 
 ]]>
@@ -1079,7 +1174,7 @@ is not specified or is 0, or 0 in all other cases.
 <indexterm><primary>PreviousVisible</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~PreviousVisible(--hItem--)---------------------><
+>>--previousVisible(--hItem--)-------------------><
 
 
 ]]>
@@ -1110,13 +1205,13 @@ in all other cases.
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~delete(--hItem--)------------------------------><
+>>--delete(--hItem--)----------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The delete method removes an item from a tree view
+<para>The delete method removes an item from a tree-view
 control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1161,7 +1256,7 @@ if any:
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~DeleteAll--------------------------------------><
+>>--deleteAll------------------------------------><
 
 
 ]]>
@@ -1188,7 +1283,7 @@ view control.</para>
 <indexterm><primary>Collapse</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Collapse(--hItem--)----------------------------><
+>>--collapse(--hItem--)--------------------------><
 
 
 ]]>
@@ -1236,7 +1331,7 @@ items associated with the specified parent item.</para>
 <indexterm><primary>CollapseAndReset</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~CollapseAndReset(--hItem--)--------------------><
+>>--collapseAndReset(--hItem--)------------------><
 
 
 ]]>
@@ -1287,7 +1382,7 @@ all its child items:
 <indexterm><primary>Expand</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Expand(--hItem--)------------------------------><
+>>--expand(--hItem--)----------------------------><
 
 
 ]]>
@@ -1335,7 +1430,7 @@ associated with the specified parent item.</para>
 <indexterm><primary>Toggle</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Toggle(--hItem--)------------------------------><
+>>--toggle(--hItem--)----------------------------><
 
 
 ]]>
@@ -1386,14 +1481,14 @@ collapsing a selected item:
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~ensureVisible(--hItem--)-----------------------><
+>>--ensureVisible(--hItem--)---------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The ensureVisible method ensures that a tree view
-item is visible, expanding the parent item or scrolling the tree view control,
+<para>The ensureVisible method ensures that a tree-view
+item is visible, expanding the parent item or scrolling the tree-view control,
 if necessary.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1408,7 +1503,7 @@ if necessary.</para>
 <listitem><para>
 <variablelist>
 <varlistentry><term>0</term>
-<listitem><para>The items in the tree view control were scrolled to ensure that the
+<listitem><para>The items in the tree-view control were scrolled to ensure that the
 specified item is visible.
 </para></listitem></varlistentry>
 <varlistentry><term>-1</term>
@@ -1426,7 +1521,7 @@ specified item is visible.
 <indexterm><primary>Indent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Indent-----------------------------------------><
+>>--indent---------------------------------------><
 
 
 ]]>
@@ -1445,14 +1540,14 @@ by which the child items are indented relative to their parent item.</para>
 <indexterm><primary>Indent=</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Indent=--indent--------------------------------><
+>>--indent=--indent------------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>The Indent= method sets the width of indentation
-for a tree view control and redraws the control to reflect the new width.</para>
+for a tree-view control and redraws the control to reflect the new width.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -1475,7 +1570,7 @@ minimum.
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~Edit(--hItem--)--------------------------------><
+>>--edit(--hItem--)------------------------------><
 
 
 ]]>
@@ -1506,8 +1601,8 @@ in all other cases.
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~endEdit(--+--------+--)------------------------><
-                          +-cancel-+
+>>--endEdit(--+--------+--)----------------------><
+              +-cancel-+
 
 
 ]]>
@@ -1545,7 +1640,7 @@ the changes are saved to the label, which is the default.
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~SubclassEdit-----------------------------------><
+>>--subclassEdit---------------------------------><
 
 
 ]]>
@@ -1561,7 +1656,7 @@ active edit item.</para>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~RestoreEditClass-------------------------------><
+>>--restoreEditClass-----------------------------><
 
 
 ]]>
@@ -1577,7 +1672,7 @@ active edit item.</para>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~select(--hItem--)------------------------------><
+>>--select(--hItem--)----------------------------><
 
 
 ]]>
@@ -1615,7 +1710,7 @@ active edit item.</para>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~MakeFirstVisible(--hItem--)--------------------><
+>>--makeFirstVisible(--hItem--)------------------><
 
 
 ]]>
@@ -1657,7 +1752,7 @@ items fit in the dialog.</para>
 <indexterm><primary>DropHighlight</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~DropHighlight(--hItem--)-----------------------><
+>>--dropHighlight(--hItem--)---------------------><
 
 
 ]]>
@@ -1696,14 +1791,14 @@ was not specified or is 0.
 <indexterm><primary>SortChildren</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~SortChildren(--hItem--)------------------------><
+>>--sortChildren(--hItem--)----------------------><
 
 
 ]]>
 </programlisting>
 
 <para>The SortChildren method sorts the child items of
-the specified parent item in a tree view control.</para>
+the specified parent item in a tree-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -1737,7 +1832,7 @@ was not specified or is 0.
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setImageList(--newImageList--+----------+--)--------------------><
+>>--setImageList(--newImageList--+----------+--)----------------><
                                  +--,-type--+
 ]]>
 </programlisting>
@@ -1825,13 +1920,13 @@ was not specified or is 0.
     </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End TreeControl::setImageList() -->
+</section>  <!-- End TreeView::setImageList() -->
 
-<section id="mthGetImageListClsTreeControl"><title>getImageList</title>
+<section id="mthGetImageListClsTreeView"><title>getImageList</title>
 <indexterm><primary>getImageList</primary><secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getImageList(--+--------+--)------------------------------------><
+>>--getImageList(--+--------+--)-----------------><
                    +--type--+
 ]]>
 </programlisting>
@@ -1907,20 +2002,197 @@ was not specified or is 0.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End TreeControl::getImageList() -->
+</section>  <!-- End TreeView::getImageList() -->
+
+<section id="mthhitTestInfo"><title>hitTestInfo</title>
+<indexterm><primary>hitTestInfo</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>hitTestInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+Form 1:
+
+>>--hitTestInfo(--pt--)--------------------------><
+
+Form 2:
+
+>>--hitTestInfo(--x,--y--)-----------------------><
+
+
+Generic form:
+
+>>--hitTestInfo(--pointToTest--)-----------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines the location of a point relative to the tree-view control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The argument(s) specify the coordindates of the point to test. These coordinates can be specified using either a
+    <link linkend="clsPoint">Point</link> object, or by the x and y coordinate of the point:
+    <variablelist>
+      <varlistentry><term>pointToTest [requried]</term>
+      <listitem>
+      <para>
+        The x, y coordinates of the point to test. As noted either a <computeroutput>Point</computeroutput> object or
+        the whole number x and y coordinates can be used to specify the point. If a
+        <computeroutput>Point</computeroutput> is not used, both <emphasis role="italic">x</emphasis> and <emphasis
+        role="italic">y</emphasis> are required.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is a <computeroutput>Directory</computeroutput> object whose indexes contain the result of the hit test.
+    On return, the <computeroutput>Directory</computeroutput> object will have the following indexes with the
+    corresponding information:
+
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">hItem</emphasis></term>
+      <listitem>
+      <para>
+        The <link linkend="defHandle">handle</link> of the tree-view item under the point specified, if there is one. If
+        the point does not hit an item, the value will be 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">location</emphasis></term>
+      <listitem>
+      <para>
+        A string of blank separated keywords describing the location of the point.  For instance, the string might
+        be "ONITEM ONLABEL" if the point hits an item, on the item's label. Or it could be "ABOVE TORIGHT" if the point
+        is not on the client area of the tree-view at all. The possible descriptive words are as follows.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>ABOVE      </member>
+          <member>BELOW      </member>
+          <member>NOWHERE    </member>
+          <member>ONITEM     </member>
+          <member>ONBUTTON   </member>
+          <member>ONICON     </member>
+          <member>ONINDENT   </member>
+          <member>ONLABEL    </member>
+          <member>ONRIGHT    </member>
+          <member>ONSTATEICON</member>
+          <member>TOLEFT     </member>
+          <member>TORIGHT    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>ABOVE</term>
+          <listitem>
+          <para>
+            Above the client area.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BELOW</term>
+          <listitem>
+          <para>
+            Below the client area
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOWHERE</term>
+          <listitem>
+          <para>
+            In the client area, but below the last item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONITEM</term>
+          <listitem>
+          <para>
+            On the bitmap or label associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONBUTTON</term>
+          <listitem>
+          <para>
+            On the button associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONICON</term>
+          <listitem>
+          <para>
+            On the bitmap associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONINDENT</term>
+          <listitem>
+          <para>
+            In the indentation associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONLABEL</term>
+          <listitem>
+          <para>
+            On the label (text) associated with an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONRIGHT</term>
+          <listitem>
+          <para>
+            In the area to the right of an item.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ONSTATEICON</term>
+          <listitem>
+          <para>
+            On the state icon for a tree-view item that is in a user-defined state.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TOLEFT</term>
+          <listitem>
+          <para>
+            To the left of the client area.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TORIGHT</term>
+          <listitem>
+          <para>
+            To the right of the client area.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The tree-view will reply for any given point, even invalid points like (-7000, -6000). Points not on the tree-view
+    control itself will have the <computeroutput>hItem</computeroutput> index set to 0 and the
+    <computeroutput>location</computeroutput> string will show where the point is in relation to the control. For
+    example (-7000, -6000) will have a location string of "ABOVE TOLEFT".
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::hitTestInfo() -->
 
 <section id="hittest"><title>HitTest</title>
 <indexterm><primary>HitTest</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~HitTest(--x--,--y--)---------------------------><
+>>--hitTest(--x--,--y--)-------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>The HitTest method determines the location of the
-specified point relative to the client area of a tree view control.</para>
+specified point relative to the client area of a tree-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -1968,7 +2240,7 @@ following strings if an item occupies the specified point:
 <listitem><para>In the area to the right of an item.
 </para></listitem></varlistentry>
 <varlistentry><term>ONSTATEICON</term>
-<listitem><para>On the state icon for a tree view item that is in a user-defined state.
+<listitem><para>On the state icon for a tree-view item that is in a user-defined state.
 </para></listitem></varlistentry>
 <varlistentry><term>TOLEFT</term>
 <listitem><para>To the left of the client area.
@@ -1986,9 +2258,9 @@ following strings if an item occupies the specified point:
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~MoveItem(--hItem--,--hNewParent--,--redraw--+---------------+--)-><
-                                                            +-,--"NODELETE"-+
-                                                            +-,--"SIBLINGS"-+
+>>--moveItem(--hItem--,--hNewParent--,--redraw--+---------------+--)-----------><
+                                                +-,--"NODELETE"-+
+                                                +-,--"SIBLINGS"-+
 
 
 ]]>
@@ -2006,7 +2278,7 @@ following strings if an item occupies the specified point:
 <listitem><para>The handle to the new parent to which the item is to be moved.
 </para></listitem></varlistentry>
 <varlistentry><term>redraw</term>
-<listitem><para>The tree view control is updated.
+<listitem><para>The tree-view control is updated.
 </para></listitem></varlistentry>
 <varlistentry><term>options</term>
 <listitem><para>One of the following options:
@@ -2031,7 +2303,7 @@ following strings if an item occupies the specified point:
 <indexterm><primary>IsAncestor</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTreeControl~IsAncestor(--hParent--,--hItem--)--------------><
+>>--isAncestor(--hParent--,--hItem--)------------><
 
 
 ]]>
@@ -2057,15 +2329,14 @@ of <emphasis role="italic">hItem</emphasis>.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
-</section>
 
 <section id="notifmsgtrc"><title>Notification Messages</title>
 <indexterm><primary>notification messages</primary>
 <secondary>TreeView class</secondary></indexterm>
-<para>The tree view control sends notification messages to notify about events.
+<para>The tree-view control sends notification messages to notify about events.
 For more information on notification messages, refer to
 <link linkend="mthConnectListViewEvent">connectListViewEvent</link>.</para>
-<para>The following example shows how to connect the tree view notification messages
+<para>The following example shows how to connect the tree-view notification messages
 with the corresponding message:</para>
 <programlisting>
 <![CDATA[

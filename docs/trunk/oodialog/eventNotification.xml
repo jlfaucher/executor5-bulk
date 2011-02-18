@@ -267,7 +267,7 @@ Help request:
     size events happen.
   </para>
   <para>
-    The underlying dialog recieves the WM_SIZE message as the notification for this event.
+    The underlying dialog receives the WM_SIZE message as the notification for this event.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example 1:</emphasis></term>
@@ -371,7 +371,7 @@ Help request:
     move events happen.
   </para>
   <para>
-    The underlying dialog recieves this event notification as a WM_MOVE message.
+    The underlying dialog receives this event notification as a WM_MOVE message.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -499,8 +499,8 @@ Help request:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Unlike most event handlers, the event handling method for the size / move ended event does not recieve any
-    arguments. As noted above, the Windows operating system ignores the return value to the event notifcation.
+    Unlike most event handlers, the event handling method for the size / move ended event does not receive any
+    arguments. As noted above, the Windows operating system ignores the return value to the event notification.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -864,7 +864,7 @@ Help request:
       </para>
       <para>
         The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
-        are 0 through 255. There are some integer values between 0 and 255 that do not have a vitural key assigned to
+        are 0 through 255. There are some integer values between 0 and 255 that do not have a virtual key assigned to
         them. For example, 0, 7, 10, 11, and 255 are not used. The <link linkend="clsVK">VK</link> class contains
         constants for all of the defined virtual keys.
       </para>
@@ -1048,14 +1048,14 @@ Help request:
   </para>
   <para>
     The dialog control object also has a <link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link>()
-    method.  It is important to note this distinction between the two methods. The method of the dialg object (this
+    method.  It is important to note this distinction between the two methods. The method of the dialog object (this
     method) will capture all key press events when the dialog is the active window. This includes key presses when a
     dialog control in the dialog has the focus.
   </para>
   <para>
     The method of the dialog control object will only capture key press events when the specific dialog control has
     the focus. This implies that if you connect the same key press event to both the dialog and to a specific dialog
-    control, if the key press event ocurrs when the dialog control has the focus, you will receive two event
+    control, if the key press event occurs when the dialog control has the focus, you will receive two event
     notifications.
   </para>
   </listitem></varlistentry>

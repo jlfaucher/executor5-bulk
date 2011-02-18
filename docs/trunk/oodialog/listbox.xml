@@ -43,151 +43,261 @@
 -->
 <chapter id="clsListBox"><title>List Box Controls</title>
 <indexterm><primary>ListBox class</primary></indexterm>
-<para>The ListBox class provides methods to query and
-modify list box controls. It inherits all methods of the DialogControl class
-(see page <link linkend="chpDialogControlObject">DialogControl Class</link>).</para>
-<para>Use the newListBox method (see page <link linkend="mthNewListBox">newListBox</link>)
-to retrieve an object of the ListBox class.</para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The ListBox class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodwin32.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the ListBox class implement the
-methods listed in the
-<link linkend="t000025">ListBox Instance Methods</link> table.</para>
+<para>The <computeroutput>ListBox</computeroutput> class provides methods to query and
+modify list box controls.
+</para>
 
-<table id="t000025" frame="all">
-<title>ListBox Instance Methods</title>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with list box controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <link linkend="mthNewListBox">newListBox</link>() method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a list box object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically create a list box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link> use
+    the <link linkend="mthCreateListBox">createListBox</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying list box control to a
+    method in the Rexx dialog object use the <link linkend="mthConnectListBoxEvent">connectListBoxEvent</link>)
+    method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+
+<section id="sctMethodsListBox"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with ListBox objects, including the pertinent methods from other classes:
+</para>
+<table id="tblListBoxMethods" frame="all">
+<title>ListBox Methods and Attributes</title>
 <tgroup cols="2">
+<colspec colwidth="1.75in">
 <thead>
 <row>
 <entry>Method...</entry>
-<entry>...on page</entry>
+<entry>...Documentation</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>add</entry>
-<entry><link linkend="add">add</link></entry>
+<entry align="center"><emphasis role="bold">Useful External Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>addDirectory</entry>
-<entry><link linkend="adddirectory">addDirectory</link></entry>
+<entry><link linkend="tmthNewListBox">newListBox</link></entry>
+<entry>Obtains a ListBox object that represents a list box control in a dialog.</entry>
 </row>
 <row>
-<entry>columnWidth</entry>
-<entry><link linkend="columnwidth">columnWidth</link></entry>
+<entry><link linkend="tmthCreateListBox">createListBox</link></entry>
+<entry>Creates a list box control in an <link linkend="clsUserDialog">UserDialog</link>.</entry>
 </row>
 <row>
-<entry>delete</entry>
-<entry><link linkend="delete">delete</link></entry>
+<entry><link linkend="tmthConnectListBoxEvent">connectListBoxEvent</link></entry>
+<entry>Connects ListBox event notifications to a Rexx dialog method.</entry>
 </row>
 <row>
-<entry>deleteAll</entry>
-<entry><link linkend="deleteall">deleteAll</link></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>deSelectIndex</entry>
-<entry><link linkend="deselectindex">deSelectIndex</link></entry>
+<entry><link linkend="mthAddClsListBox">add</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>deselectRange</entry>
-<entry><link linkend="deselectrange">deselectRange</link></entry>
+<entry><link linkend="mthAddDirectoryClsListBox">addDirectory</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>find</entry>
-<entry><link linkend="find">find</link></entry>
+<entry><link linkend="mthColumnWidthEquals">columnWidth=</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>GetFirstVisible</entry>
-<entry><link linkend="getfirstvisible">GetFirstVisible</link></entry>
+<entry><link linkend="mthColumnWidthPxEquals">columnWidthPxEquals</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>GetText</entry>
-<entry><link linkend="gettext">GetText</link></entry>
+<entry><link linkend="mthDeleteClsListBox">delete</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>insert</entry>
-<entry><link linkend="insert">insert</link></entry>
+<entry><link linkend="mthDeleteAllClsListBox">deleteAll</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>ItemHeight</entry>
-<entry><link linkend="itemheight">ItemHeight</link></entry>
+<entry><link linkend="mthDeSelectIndex">deSelectIndex</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>ItemHeight=</entry>
-<entry><link linkend="itemheightnew">ItemHeight=</link></entry>
+<entry><link linkend="mthDeSelectRange">deSelectRange</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>items</entry>
-<entry><link linkend="items">items</link></entry>
+<entry><link linkend="mthFindClsListBox">find</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>MakeFirstVisible</entry>
-<entry><link linkend="makefirstvisible">MakeFirstVisible</link></entry>
+<entry><link linkend="mthGetFirstVisible">getFirstVisible</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>modify</entry>
-<entry><link linkend="modify">modify</link></entry>
+<entry><link linkend="mthGetTextClsListBox">getText</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>select</entry>
-<entry><link linkend="selectlib">select</link></entry>
+<entry><link linkend="mthInsertClsListBox">insert</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>selected</entry>
-<entry><link linkend="selectedlib">selected</link></entry>
+<entry><link linkend="mthItemHeight">itemHeight</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>selectedIndex</entry>
-<entry><link linkend="selectedindex">selectedIndex</link></entry>
+<entry><link linkend="mthItemHeightPx">itemHeightPx</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>SelectedIndexes</entry>
-<entry><link linkend="selectedindexes">SelectedIndexes</link></entry>
+<entry><link linkend="mthItemHeightEquals">itemHeight=</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>selectedItems</entry>
-<entry><link linkend="selecteditems">selectedItems</link></entry>
+<entry><link linkend="mthItemHeightPxEquals">itemHeightPx=</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>selectIndex</entry>
-<entry><link linkend="selectindex">selectIndex</link></entry>
+<entry><link linkend="mthItemsClsListBox">items</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>SelectRange</entry>
-<entry><link linkend="selectrange">SelectRange</link></entry>
+<entry><link linkend="mthMakeFirstVisibleClsListBox">makeFirstVisible</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>SetTabulators</entry>
-<entry><link linkend="settabulators">SetTabulators</link></entry>
+<entry><link linkend="mthModifyClsListBox">modify</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>SetWidth</entry>
-<entry><link linkend="setwidth">SetWidth</link></entry>
+<entry><link linkend="mthSelectClsListBox">select</link></entry>
+<entry></entry>
 </row>
 <row>
-<entry>Width</entry>
-<entry><link linkend="width">Width</link></entry>
+<entry><link linkend="mthSelectedClsListBox">selected</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthIsSingleSelection">isSingleSelection</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSelectedIndexClsListBox">selectedIndex</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSelectedIndexes">selectedIndexes</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSelectedItemsClsListBox">selectedItems</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSelectIndexClsListBox">selectIndex</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSelectRange">selectRange</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSetTabulators">setTabulators</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSetWidth">setWidth</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSetWidthPx">setWidthPx</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthWidth">width</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthWidthPx">widthPx</link></entry>
+<entry></entry>
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
+</section>
 
-<section id="add"><title>add</title>
-<indexterm><primary>add</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="tmthNewListBox"><title>newListBox (dialog object method)</title>
+<para>
+  <computeroutput>ListBox</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
+  role="italic">new</emphasis>() method. Rather, a list box object is obtained by using the <link
+  linkend="mthNewListBox">newListBox</link>() method of the <link linkend="chpDialogObject">dialog</link>
+  object. The syntax is:
 <programlisting>
 <![CDATA[
->>--add(--listEntry--)-----------------------------------------><
+>>-newListBox(--id--)---------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End Dialog::newListBox() (dialog object method) -->
+
+
+<section id="tmthCreateListBox"><title>createListBox (UserDialog method)</title>
+<para>
+  A list box control can be created in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>
+  through the <link linkend="mthCreateListBox">createListBox</link> method. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>-createListBox(-id-,--x-,--y-,--cx-,--cy-+----------+-+-------------+--)----><
+                                            +-,--style-+ +-,--attrName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createListBox() (UserDialog method) -->
+
+
+<section id="tmthConnectListBoxEvent"><title>connectListBoxEvent (dialog object method)</title>
+<para>
+  To connect event notifications from a list box  control use the <link
+  linkend="mthConnectListBoxEvent">connectListBoxEvent</link> method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>-connectListBoxEvent(--id--,--event--+----------------+--)------------------><
+                                        +--,-methodName--+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End EventNotification::connectListBoxEvent() (dialog object method) -->
+
+
+<section id="mthAddClsListBox"><title>add</title>
+<indexterm><primary>add</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>add</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--add(--listEntry--)---------------------------><
 
 
 ]]>
@@ -211,12 +321,12 @@ been added, or 0 or a value less than 0 to indicate an error.
 </variablelist>
 </section>
 
-<section id="insert"><title>insert</title>
-<indexterm><primary>insert</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthInsertClsListBox"><title>insert</title>
+<indexterm><primary>insert</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>insert</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--insert(--+-------+--,--listEntry--)------------------------><
+>>--insert(--+-------+--,--listEntry--)----------><
              +-index-+
 
 
@@ -246,12 +356,12 @@ been added, or 0 or a value less than 0 to indicate an error.
 </variablelist>
 </section>
 
-<section id="delete"><title>delete</title>
-<indexterm><primary>delete</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthDeleteClsListBox"><title>delete</title>
+<indexterm><primary>delete</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>delete</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--delete(--+-------+--)--------------------------------------><
+>>--delete(--+-------+--)------------------------><
              +-index-+
 
 
@@ -276,12 +386,12 @@ list. If this argument is omitted, the currently selected item is deleted.
 </variablelist>
 </section>
 
-<section id="deleteall"><title>deleteAll</title>
-<indexterm><primary>deleteAll</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthDeleteAllClsListBox"><title>deleteAll</title>
+<indexterm><primary>deleteAll</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>deleteAll</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--deleteAll--------------------------------------------------><
+>>--deleteAll------------------------------------><
 
 
 ]]>
@@ -291,12 +401,12 @@ list. If this argument is omitted, the currently selected item is deleted.
 the associated list box.</para>
 </section>
 
-<section id="find"><title>find</title>
-<indexterm><primary>find</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthFindClsListBox"><title>find</title>
+<indexterm><primary>find</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>find</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--find(--TextorPrefix--+---------------------------------+--)---------------><
+>>--find(--TextorPrefix--+---------------------------------+--)----------------><
                          +-,--+------------+--+----------+-+
                               +-startIndex-+  +-,--exact-+
 
@@ -332,12 +442,12 @@ or 0 if not found.
 </variablelist>
 </section>
 
-<section id="selectedindex"><title>selectedIndex</title>
-<indexterm><primary>selectedIndex</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthSelectedIndexClsListBox"><title>selectedIndex</title>
+<indexterm><primary>selectedIndex</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>selectedIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selectedIndex----------------------------------------------><
+>>--selectedIndex--------------------------------><
 
 
 ]]>
@@ -355,12 +465,12 @@ is selected.
 </variablelist>
 </section>
 
-<section id="selectedlib"><title>selected</title>
-<indexterm><primary>selected</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthSelectedClsListBox"><title>selected</title>
+<indexterm><primary>selected</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>selected</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selected---------------------------------------------------><
+>>--selected-------------------------------------><
 
 
 ]]>
@@ -376,12 +486,12 @@ none is selected.
 </variablelist>
 </section>
 
-<section id="selectindex"><title>selectIndex</title>
-<indexterm><primary>selectIndex</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthSelectIndexClsListBox"><title>selectIndex</title>
+<indexterm><primary>selectIndex</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>selectIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selectIndex(--index--)-------------------------------------><
+>>--selectIndex(--index--)-----------------------><
 
 
 ]]>
@@ -409,11 +519,12 @@ the selection.
 </variablelist>
 </section>
 
-<section id="deselectindex"><title>deSelectIndex</title>
+<section id="mthDeSelectIndex"><title>deSelectIndex</title>
 <indexterm><primary>deSelectIndex</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>deSelectIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--deSelectIndex(--+-------+--)-------------------------------><
+>>--deSelectIndex(--+-------+--)-----------------><
                     +-index-+
 
 
@@ -439,12 +550,50 @@ specify no index or 0 for this argument, all items are deselected.
 </variablelist>
 </section>
 
-<section id="selectlib"><title>select</title>
-<indexterm><primary>select</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthIsSingleSelection"><title>isSingleSelection</title>
+<indexterm><primary>isSingleSelection</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>isSingleSelection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--select(--itemText--)---------------------------------------><
+>>--isSingleSelection(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  Determine if a list box is a single-selection list box. With a single-selection list box, users select one item from a list of mutually exclusive items.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        This method has no arguments.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the list box is a single-selection list box, otherwise
+    <computeroutput>.fase</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListBox::isSingleSelection() -->
+
+<section id="mthSelectClsListBox"><title>select</title>
+<indexterm><primary>select</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>select</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--select(--itemText--)-------------------------><
 
 
 ]]>
@@ -467,11 +616,12 @@ the specified text.</para>
 </variablelist>
 </section>
 
-<section id="selectrange"><title>selectRange</title>
+<section id="mthSelectRange"><title>selectRange</title>
 <indexterm><primary>selectRange</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>selectRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selectRange(--+-----------------------------+--)-----------><
+>>--selectRange(--+-----------------------------+--)---------------------------><
                   +-startIndex--+-------------+-+
                                 +-,--endIndex-+
 
@@ -514,19 +664,20 @@ lb~selectRange(5,9)
 </variablelist>
 </section>
 
-<section id="deselectrange"><title>deselectRange</title>
-<indexterm><primary>deselectRange</primary></indexterm>
+<section id="mthDeSelectRange"><title>deSelectRange</title>
+<indexterm><primary>deSelectRange</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>deSelectRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--deselectRange(--+-----------------------------+--)---------><
-                    +-startIndex--+-------------+-+
-                                  +-,--endIndex-+
+>>--deSelectRange(--+-------------+--+-------------+--)------------------------><
+                    +-startIndex--+  +-,--endIndex-+
+
 
 
 ]]>
 </programlisting>
 
-<para>The deselectRange method removes the selection
+<para>The deSelectRange method removes the selection
 for one or more consecutive items of the associated multiselection list box.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -554,19 +705,19 @@ list box is no multiselection list box.
 <![CDATA[
 lb = self~newListBox("Offers")
 if lb == .Nil then return
-lb~deselectRange(,6)
+lb~deSelectRange(,6)
 ]]>
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="items"><title>items</title>
-<indexterm><primary>items</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthItemsClsListBox"><title>items</title>
+<indexterm><primary>items</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>items</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--items------------------------------------------------------><
+>>--items----------------------------------------><
 
 
 ]]>
@@ -581,12 +732,12 @@ in the list box.</para>
 </variablelist>
 </section>
 
-<section id="selecteditems"><title>selectedItems</title>
-<indexterm><primary>selectedItems</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthSelectedItemsClsListBox"><title>selectedItems</title>
+<indexterm><primary>selectedItems</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>selectedItems</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selectedItems----------------------------------------------><
+>>--selectedItems--------------------------------><
 
 
 ]]>
@@ -600,16 +751,17 @@ items that are currently selected in the associated multiselection list box.</pa
 example if the list box is no multiselection list box.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>For an example, refer to <link linkend="selectedindexes">SelectedIndexes</link>.
+<listitem><para>For an example, refer to <link linkend="mthSelectedIndexes">SelectedIndexes</link>.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="selectedindexes"><title>selectedIndexes</title>
+<section id="mthSelectedIndexes"><title>selectedIndexes</title>
 <indexterm><primary>selectedIndexes</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>selectedIndexes</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selectedIndexes--------------------------------------------><
+>>--selectedIndexes------------------------------><
 
 
 ]]>
@@ -645,12 +797,12 @@ end
 </variablelist>
 </section>
 
-<section id="makefirstvisible"><title>makeFirstVisible</title>
-<indexterm><primary>makeFirstVisible</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthMakeFirstVisibleClsListBox"><title>makeFirstVisible</title>
+<indexterm><primary>makeFirstVisible</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>makeFirstVisible</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--makeFirstVisible(--index--)--------------------------------><
+>>--makeFirstVisible(--index--)------------------><
 
 
 ]]>
@@ -674,11 +826,12 @@ down.</para>
 </variablelist>
 </section>
 
-<section id="getfirstvisible"><title>getFirstVisible</title>
+<section id="mthGetFirstVisible"><title>getFirstVisible</title>
 <indexterm><primary>getFirstVisible</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>getFirstVisible</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getFirstVisible--------------------------------------------><
+>>--getFirstVisible------------------------------><
 
 
 ]]>
@@ -693,12 +846,12 @@ of the first list item visible in the list box.</para>
 </variablelist>
 </section>
 
-<section id="gettext"><title>getText</title>
-<indexterm><primary>getText</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthGetTextClsListBox"><title>getText</title>
+<indexterm><primary>getText</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>getText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getText(--index--)-----------------------------------------><
+>>--getText(--index--)---------------------------><
 
 
 ]]>
@@ -723,12 +876,12 @@ if the <emphasis role="italic">index</emphasis> does not refer to an item or an 
 </variablelist>
 </section>
 
-<section id="modify"><title>modify</title>
-<indexterm><primary>modify</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthModifyClsListBox"><title>modify</title>
+<indexterm><primary>modify</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>modify</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--modify(--+-------+--,--newText--)--------------------------><
+>>--modify(--+-------+--,--newText--)------------><
              +-index-+
 
 
@@ -758,13 +911,14 @@ does not refer to an item.
 </variablelist>
 </section>
 
-<section id="settabulators"><title>setTabulators</title>
+<section id="mthSetTabulators"><title>setTabulators</title>
 <indexterm><primary>setTabulators</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>setTabulators</secondary></indexterm>
 <programlisting>
 <![CDATA[
                     +-,------+
                     V        |
->>--setTabulators(----tabPos-+--)------------------------------><
+>>--setTabulators(----tabPos-+--)----------------><
 
 
 ]]>
@@ -803,79 +957,119 @@ lb~add(textcol1 || "09"x || textcol2 || "09"x || textcol3 || "09"x ||,
 </variablelist>
 </section>
 
-<section id="adddirectory"><title>addDirectory</title>
-<indexterm><primary>addDirectory</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthAddDirectoryClsListBox"><title>addDirectory</title>
+<indexterm><primary>addDirectory</primary><secondary>ListBox class</secondary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>addDirectory</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                  +---------------+
-                                  V               |
->>--addDirectory(--drvPath--,--"----+-READWRITE-+-+--"--)------><
-                                    +-READONLY--+
-                                    +-HIDDEN----+
-                                    +-SYSTEM----+
-                                    +-DIRECTORY-+
-                                    +-ARCHIVE---+
+
+>>--addDirectory(--drvPath--+-------------------+--)---------------------------><
+                            +-,-fileAttributes--+
 
 
 ]]>
 </programlisting>
 
-<para>The addDirectory method adds all or selected file
-names of a given directory to the list box.</para>
+<para>
+  The addDirectory method adds all or selected file names of a given directory to the list box.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>drvPath</term>
-<listitem><para>The drive, path, and name pattern.
-</para></listitem></varlistentry>
-<varlistentry><term>fileAttributes</term>
-<listitem><para>The attributes that the files must have in order to be added:
-<variablelist>
-<varlistentry><term>READWRITE</term>
-<listitem><para>Normal read/write files (same as none).
-</para></listitem></varlistentry>
-<varlistentry><term>READONLY</term>
-<listitem><para>Files that have the read-only bit.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDDEN</term>
-<listitem><para>Files that have the hidden bit.
-</para></listitem></varlistentry>
-<varlistentry><term>SYSTEM</term>
-<listitem><para>Files that have the system bit.
-</para></listitem></varlistentry>
-<varlistentry><term>DIRECTORY</term>
-<listitem><para>Files that have the directory bit.
-</para></listitem></varlistentry>
-<varlistentry><term>ARCHIVE</term>
-<listitem><para>Files that have the archive bit.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The one-based index of the file added last to the list, or 0 if an error
-occurred.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example puts the names of all read/write files with extension
-.REX in the given directory of the list box:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>drvPath [required]</term>
+      <listitem>
+      <para>
+        The drive, path, and name pattern.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fileAttributes [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>READWRITE</member>
+          <member>READONLY </member>
+          <member>HIDDEN   </member>
+          <member>SYSTEM   </member>
+          <member>DIRECTORY</member>
+          <member>ARCHIVE  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>READWRITE</term>
+          <listitem>
+          <para>
+            Normal read/write files. This is the default if this argument is omitted.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>READONLY</term>
+          <listitem>
+          <para>
+            Files that have the read-only bit.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDDEN</term>
+          <listitem>
+          <para>
+            Files that have the hidden bit.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SYSTEM</term>
+          <listitem>
+          <para>
+            Files that have the system bit.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DIRECTORY</term>
+          <listitem>
+          <para>
+            Files that have the directory bit.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ARCHIVE</term>
+          <listitem>
+          <para>
+            Files that have the archive bit.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The one-based index of the file added last to the list, or 0 if an error occurred.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example puts the names of all read/write files with extension .REX in the given directory of the list
+    box:
 <programlisting>
 <![CDATA[
-MyDialog~addDirectory(203, drive":\"path"\*.rex", "READWRITE")
+
+  self~addDirectory(203, drive":\"path"\*.rex", "READWRITE")
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="setwidth"><title>setWidth</title>
+<section id="mthSetWidth"><title>setWidth</title>
 <indexterm><primary>setWidth</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>setWidth</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setWidth(--width--)----------------------------------------><
+>>--setWidth(--width--)--------------------------><
 
 
 ]]>
@@ -908,12 +1102,39 @@ lb~setWidth(lb~SizeX*2)
 </variablelist>
 </section>
 
-<section id="width"><title>width</title>
-<indexterm><primary>width</primary>
-<secondary>ListBox class</secondary></indexterm>
+<section id="mthSetWidthPx"><title>setWidthPx</title>
+<indexterm><primary>setWidthPx</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>setWidthPx</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--width------------------------------------------------------><
+>>--setWidthPx(--width--)--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The setWidthPx method sets the internal width of
+the list box, in pixels. If the internal width exceeds the width of
+the list box control and the list box has the HSCROLL style, the list box
+provides a horizontal scroll bar.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>width</term>
+<listitem><para>The width of the list box, in pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthWidth"><title>width</title>
+<indexterm><primary>width</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>width</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--width----------------------------------------><
 
 
 ]]>
@@ -929,11 +1150,33 @@ occurred.
 </variablelist>
 </section>
 
-<section id="itemheight"><title>itemHeight</title>
-<indexterm><primary>itemHeight</primary></indexterm>
+<section id="mthWidthPx"><title>width</title>
+<indexterm><primary>widthPx</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>width</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--itemHeight-------------------------------------------------><
+>>--widthPx----------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The widthPx method retrieves the internal width of
+the associated list box, in pixels.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The internal width of the list box, in pixels, or 0 if an error
+occurred.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthItemHeight"><title>itemHeight</title>
+<indexterm><primary>itemHeight</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>itemHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemHeight-----------------------------------><
 
 
 ]]>
@@ -948,11 +1191,32 @@ items in the list box, in dialog units.</para>
 </variablelist>
 </section>
 
-<section id="itemheightnew"><title>itemHeight=</title>
-<indexterm><primary>itemHeight=</primary></indexterm>
+<section id="mthItemHeightPx"><title>itemHeightPx</title>
+<indexterm><primary>itemHeightPx</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>itemHeightPx</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--itemHeight=--height----------------------------------------><
+>>--itemHeightPx-----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The itemHeightPx method retrieves the height of the
+items in the list box, in pixels.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The height of the list box items, in pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthItemHeightEquals"><title>itemHeight=</title>
+<indexterm><primary>itemHeight=</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>itemHeight=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--itemHeight=--height--------------------------><
 
 
 ]]>
@@ -972,18 +1236,44 @@ in the list box, in dialog units.</para>
 </variablelist>
 </section>
 
-<section id="columnwidthnew"><title>columnWidth=</title>
-<indexterm><primary>columnWidth=</primary></indexterm>
+<section id="mthItemHeightPxEquals"><title>itemHeight=</title>
+<indexterm><primary>itemHeightPx=</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>itemHeightPx=</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--columnWidth=--width----------------------------------------><
+>>--itemHeightPx=--height--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The itemHeightPx= method sets the height of the items
+in the list box, in pixels.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>height</term>
+<listitem><para>The height of all list box items, in pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthColumnWidthEquals"><title>columnWidth=</title>
+<indexterm><primary>columnWidth=</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>columnWidth=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnWidth=--width--------------------------><
 
 
 ]]>
 </programlisting>
 
 <para>The columnWidth= method sets the width of the list
-box columns in a multicolumn list box control.</para>
+box columns in a multicolumn list box control, in dialog units.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -995,4 +1285,33 @@ box columns in a multicolumn list box control.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="mthColumnWidthPxEquals"><title>columnWidthPx=</title>
+<indexterm><primary>columnWidthPx=</primary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>columnWidthPx=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--columnWidthPx=--width--------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The columnWidthPx= method sets the width of the list
+box columns in a multicolumn list box control, in pixels.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>width</term>
+<listitem><para>The width of all list box columns, in pixels.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+
 </chapter>

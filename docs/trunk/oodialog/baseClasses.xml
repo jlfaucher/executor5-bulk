@@ -67,7 +67,7 @@
 
 <section id="sctComponentClassesDiagram"><title>Component Classes Diagram</title>
 <para>
-  The diagram shown here shows the relation between the dialog and the dialog control objects and their respecitive
+  The diagram shown here shows the relation between the dialog and the dialog control objects and their respective
   component classes. The abstract classes are shown in red. The mixin classes in green.  And the concrete subclasses in
   blue.
 </para>
@@ -157,7 +157,7 @@
   the notification of a Windows <link linkend="ovvEvents">event</link> sent to the <link
   linkend="ovvUnderlying">underlying</link> dialog with a method in the Rexx dialog object. Except as noted below, the
   Rexx programmer adds the method to her dialog subclass. Once the event notification is connected, each time the event
-  occurs, the connected method is invoked. The programmer codes the method to take the appropiate action for the event.
+  occurs, the connected method is invoked. The programmer codes the method to take the appropriate action for the event.
 </para>
 <para>
   In the Windows user interface, as the user interacts with the system, events are generated that specify what the
@@ -186,7 +186,7 @@
 </listitem></itemizedlist>
 </para>
 <para>
-  Whenever a dialog object is instantiated, the ooDialog framwork <link
+  Whenever a dialog object is instantiated, the ooDialog framework <link
   linkend="sctStandardEventMethods">automatically</link> makes several event connections. For all other events the Rexx
   programmer, usually, needs to specifically connect the event to his dialog, through one of the event notification
   methods, to be able to respond to the event. In a <link linkend="clsUserDialog">UserDialog</link>, some of the methods
@@ -222,7 +222,7 @@
   When the operating system sends an event notification to the underlying dialog, the operating system waits for a reply
   to the notification in the message processing loop. This is significant because while the operating system is
   waiting, in general, other messages can not be processed by the window. If an application does not reply in a timely
-  manner to the notifcation messages, it can cause the application to appear hung. With today's fast processors there
+  manner to the notification messages, it can cause the application to appear hung. With today's fast processors there
   are plenty of CPU cycles for an event handler to process and reply to event notifications. But, if an application were
   to do something like sleep for 10 seconds in an event handler, the user would think the application was hung.
 </para>
@@ -315,7 +315,7 @@
 </para>
 <para>
   Best practice would be to always code event handlers as if they are expected to return a value to the operating
-  systems's event notification message. The considerations would be that the method does not block and that a value is
+  system's event notification message. The considerations would be that the method does not block and that a value is
   returned to the operating system in a reasonable amount of time. In general, the event handler should be unguarded to
   preclude the possibility that some guarded method in the dialog object is executing at the time the event notification
   is generated.
@@ -348,7 +348,7 @@
 </para>
 <para>
   Consider this snippet from a similar program, but where the push button starts a process that calculates the grains of
-  sand in the universe. Since it is not expected that the calculation will finish in a reasonable amoount of time, an
+  sand in the universe. Since it is not expected that the calculation will finish in a reasonable amount of time, an
   early reply is used to return a value in a timely manner. The handler also disables the push button so tha the user
   can not start a second calculation until the first calculation finishes.
 <programlisting>
@@ -388,7 +388,7 @@
   <para>
     Since the <emphasis role="italic">connectMonthCalendarEvent</emphasis> method did not exist in ooDialog 4.1.0 and
     the return value for this event is meaningful, the second and third rules above apply.  That is, the interpreter
-    invokes the event handler directly, waits for the reply, and the programmer can not chnage this behavior.
+    invokes the event handler directly, waits for the reply, and the programmer can not change this behavior.
   </para>
 
 <programlisting>
@@ -447,7 +447,7 @@
   <varlistentry id="exampleEventHandler2"><term><emphasis role="bold">Event Synchronization</emphasis></term>
   <listitem>
   <para>
-    The <link linkend="clsDateTimePicker">DTP</link> (date time pcker) control has the <link
+    The <link linkend="clsDateTimePicker">DTP</link> (date time picker) control has the <link
     linkend="mthConnectDateTimePickerEvent">DROPDOWN</link> event notification that is sent when the drop down calendar
     is shown. This gives the programmer a chance to customize the month calendar that is shown. Since the month calendar
     is not shown until the event handling method returns, replying directly to the notification allows the programmer to
@@ -669,7 +669,7 @@
 <entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry><link linkend="enConnectDateTimePickerEvent"></link></entry>
+<entry><link linkend="enConnectDateTimePickerEvent">connectDateTimePickerEvent</link></entry>
 <entry>Connects an event notification form a date time picker to a method in the Rexx dialog.</entry>
 </row>
 <row>
@@ -766,7 +766,7 @@
 <link linkend="mthConnectHelp">connectHelp</link>
 
 <![CDATA[
->>--connectHelp(--methodname--)--------------------------------><
+>>--connectHelp(--methodname--)------------------><
 ]]>
 </programlisting>
 </section>
@@ -776,7 +776,7 @@
 <link linkend="mthConnectResize">connectResize</link>
 
 <![CDATA[
->>--connectResize(--methodName--)------------------------------><
+>>--connectResize(--methodName--)----------------><
 ]]>
 </programlisting>
 </section>
@@ -786,7 +786,7 @@
 <link linkend="mthConnectMove">connectMove</link>
 
 <![CDATA[
->>--connectMove(--methodName--)--------------------------------><
+>>--connectMove(--methodName--)------------------><
 ]]>
 </programlisting>
 </section>
@@ -796,7 +796,7 @@
 <link linkend="mthConnectSizeMoveEnded">connectSizeMoveEnded</link>
 
 <![CDATA[
->>--connectSizeMoveEnded(--methodName--+--------------+--)-----><
+>>--connectSizeMoveEnded(--methodName--+--------------+--)---------------------><
                                        +-,-willReply--+
 
 ]]>
@@ -808,7 +808,7 @@
 <link linkend="mthConnectPosChanged">connectPosChanged</link>
 
 <![CDATA[
->>--connectPosChanged(--methodName--)--------------------------><
+>>--connectPosChanged(--methodName--)------------><
 ]]>
 </programlisting>
 </section>
@@ -818,7 +818,7 @@
 <link linkend="mthConnectDraw">connectDraw</link>
 
 <![CDATA[
->>--connectDraw--(--+-----+--+---------------+--)--------------><
+>>--connectDraw--(--+-----+--+---------------+--)------------------------------><
                     +--id-+  +-,--methodName-+
 ]]>
 </programlisting>
@@ -829,7 +829,7 @@
 <link linkend="mthConnectMouseCapture">connectMouseCapture</link>
 
 <![CDATA[
->>--connectMouseCapture(--methodName--)------------------------><
+>>--connectMouseCapture(--methodName--)----------><
 ]]>
 
 </programlisting>
@@ -851,7 +851,7 @@
 <link linkend="mthConnectCommandEvents">connectCommandEvents</link>
 
 <![CDATA[
->>--connectCommandEvents(--id--,--methodName--)----------------><
+>>--connectCommandEvents(--id--,--methodName--)--><
 ]]>
 </programlisting>
 </section>
@@ -1002,7 +1002,7 @@
 </programlisting>
 </section>
 
-<section id="enConnectUpDownEvent"><title>conectUpDownEvent</title>
+<section id="enConnectUpDownEvent"><title>connectUpDownEvent</title>
 <programlisting>
 <link linkend="mthConnectUpDownEvent">connectUpDownEvent</link>
 
@@ -1019,7 +1019,7 @@
 <link linkend="mthAddUserMsg">addUserMsg</link>
 
 <![CDATA[
->>--addUserMsg(-methodName-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-><
+>>--addUserMsg(-methodName-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-)-><
                                     +-,-f1-+ +-,-wParam-+ +-,-f2-+ +-,-lParam-+ +-,-f3-+
 
 ]]>
@@ -1033,7 +1033,7 @@
 <link linkend="mthDefListDragHandler">defListDragHandler</link>
 
 <![CDATA[
->>-defListDragHandler(--id--,--item--,--point--)---------------><
+>>--defListDragHandler(--id--,--item--,--point--)------------------------------><
 
 ]]>
 </programlisting>
@@ -1044,7 +1044,7 @@
 <link linkend="mthDefTreeDragHandler">defTreeDragHandler</link>
 
 <![CDATA[
->>-defTreeDragHandler(--id--,--item--,--point--)---------------><
+>>--defTreeDragHandler(--id--,--item--,--point--)------------------------------><
 
 ]]>
 </programlisting>
@@ -1072,9 +1072,9 @@
 <link linkend="atrConstDir">constDir</link>
 
 <![CDATA[
->>--constDir---------------------------------------------------><
+>>--constDir-------------------------------------><
 
->>--constDir[symbol]-=-numericValue----------------------------><
+>>--constDir[symbol]-=-numericValue--------------><
 ]]>
 </programlisting>
 </section>
@@ -1102,10 +1102,10 @@
 <link linkend="mthCreate">create</link>
 
 <![CDATA[
->>-create(--x--,--y--,--cx--,--cy--,--title-+-----------+--+------------+-->
-                                            +-,-options-+  +-,-dlgClass-+
+>>--create(--x--,--y--,--cx--,--cy--,--title-+-----------+--+------------+----->
+                                             +-,-options-+  +-,-dlgClass-+
 
->----+------------+--+------------+--+------------+--)---------------------><
+>----+------------+--+------------+--+------------+--)-------------------------><
      +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
 ]]>
 </programlisting>
@@ -1116,10 +1116,10 @@
 <link linkend="mthCreateCenter">createCenter</link>
 
 <![CDATA[
->>-createCenter(--cx--,--cy--,--title-+-----------+--+------------+-->
-                                      +-,-options-+  +-,-dlgClass-+
+>>--createCenter(--cx--,--cy--,--title-+-----------+--+------------+----------->
+                                       +-,-options-+  +-,-dlgClass-+
 
->----+------------+--+------------+--+------------+--)---------------><
+>----+------------+--+------------+--+------------+--)-------------------------><
      +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
 ]]>
 </programlisting>
@@ -1130,7 +1130,7 @@
 <link linkend="mthDefineDialog">defineDialog</link>
 
 <![CDATA[
->>-defineDialog------------------------------------------------------><
+>>--defineDialog---------------------------------><
 ]]>
 </programlisting>
 </section>

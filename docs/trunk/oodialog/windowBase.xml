@@ -1650,8 +1650,8 @@ self~newTreeView(IDC_TREECONTROL_FILES)~display("NORMAL FAST")
   TVS_DISABLEDRAGDROP = "0x0010"
   TVS_EDITLABELS      = "0x0008"
 
-  treeControl = self~newTreeView(IDC_TREE)
-  style = treeControl~getStyleRaw
+  treeView = self~newTreeView(IDC_TREE)
+  style = treeView~getStyleRaw
   style = "0x" || style~d2x~right(8, '0')
 
   if .DlgUtil~and( style, TVS_DISABLEDRAGDROP ) <> 0 then str1 = 'disabled'

@@ -84,7 +84,7 @@
 
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
-  needed, or are useful, when working with combo box controls:
+  needed, or are useful, when working with list-view controls:
 <variablelist>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
@@ -1928,7 +1928,7 @@ has a check mark, then that patient is mailed a statement.
             The text for the column is centered.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>T3</term>
+          <varlistentry><term>RIGHT</term>
           <listitem>
           <para>
             The text for the column is aligned right.
@@ -2150,7 +2150,7 @@ last.
             The text for the column is centered.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>T3</term>
+          <varlistentry><term>RIGHT</term>
           <listitem>
           <para>
             The text for the column is aligned right.
@@ -2565,12 +2565,6 @@ when the column is clicked on:
   <listitem>
   <para>
     Returns 0 on success and 1 on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -3297,12 +3291,6 @@ or 0 in all other cases.
     Returns <computeroutput>.true</computeroutput> on success and <computeroutput>.false</computeroutput> on error.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
@@ -3312,9 +3300,38 @@ or 0 in all other cases.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example displays information on a selected item in the list-view:
 <programlisting>
 <![CDATA[
+
+::method displayItemInfo
+
+  listView = self~newListView(IDC_LV_JOBS_PER_STATE)
+
+  title = "Selected Item Information"
+  buttons = "ok"
+  icon = "information"
+
+  item = listView~selected
+  if item == -1 then do
+    msg = "No item is selected."
+    buttons = "cancelTryContinue"
+  end
+  else do
+    d = .Directory~new
+    if listView~getItemInfo(item, d) then do
+      msg = "Item Text  : "d~text   || .endOfLine || -
+            "Image Index: "d~image  || .endOfLine || -
+            "Item State : "d~state
+    end
+    else do
+      msg = "Windows API error. No information available."
+      buttons = "abortRetryIgnore"
+      icon = "error"
+    end
+  end
+
+  return MessageDialog(msg, self~hwnd, title, buttons, icon)
 
 ]]>
 </programlisting>
@@ -3328,16 +3345,16 @@ or 0 in all other cases.
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                    +-0------+
->>-aListControl~itemInfo(--item--,--+--------+--)--------------><
-                                    +-column-+
+
+>>--itemInfo(--item--,--+--------+--)------------><
+                        +-column-+
 
 
 ]]>
 </programlisting>
 
 <para>
-  The itemInfo method retrieves the attributes of a list-view item.
+  The itemInfo method retrieves the attributes of a list-view item as a <computeroutput>Stem</computeroutput> object.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3390,97 +3407,8 @@ and on the system colors used for a selection.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays the item text, icon index, and the item
-state in a message box:
-<programlisting>
-<![CDATA[
-
-::method displayItemInfo
-
-  listView = self~newListView(100)
-  item = listView~selected
-  if item == -1 then do
-    msg = "No item selected."
-  end
-  else do
-    itemInfo. = listView~itemInfo(item)
-
-    msg = "Item Text   : " itemInfo.!Text   || .endOfLine || -
-          "Image Index : " itemInfo.!Image  || .endOfLine || -
-          "Item State  : " itemInfo.!State
-  end
-
-  call infoDialog msg
-]]>
-</programlisting>
-</para></listitem></varlistentry>
 </variablelist>
 </section>
-
-<section id="mthGetItemPos"><title>getItemPos</title>
-<indexterm><primary>getItemPos</primary></indexterm>
-<indexterm><primary>ListView class</primary><secondary>getItemPos</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getItemPos(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End ListView::getItemPos() -->
-
 
 <section id="mthSetItemText"><title>setItemText</title>
 <indexterm><primary>setItemText</primary></indexterm>
@@ -4673,7 +4601,7 @@ This is the default.
   The Image class documentation has the most detail on this subject.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
       Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
@@ -4831,12 +4759,6 @@ This is the default.
   on assigning an image list to a list-view control.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The single optional argument is:
@@ -4868,6 +4790,12 @@ This is the default.
       This method returns the current <link linkend="clsImageList">image list</link>, if there is one.
       <computeroutput>.nil</computeroutput> is returned if there is no current image list of the type
       specified.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5126,6 +5054,66 @@ window border.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthGetItemPos"><title>getItemPos</title>
+<indexterm><primary>getItemPos</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>getItemPos</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemPos(--index--)-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the <link linkend="defClientArea">client</link> area coordinates of an item in a list-view control as a
+  <computeroutput>Point</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+    <variablelist>
+      <varlistentry><term>index</term>
+      <listitem>
+      <para>
+        The zero-based index of the item whose postition is needed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, returns a <link linkend="clsPoint">point</link> object containing the position of the upper left corner
+    of the item specified, relative to the client area of the list-view.
+  </para>
+  <para>
+    On error, 0 is returned. See the remarks
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Since quite often list-view controls contain more items than can fit in the client area of the list-view, the
+    position returned by <emphasis role="italic">getItemPos</emphasis> may be outside of the client area rectangle. This
+    implies that both the x and y coordinates in the returned postion may be negative. For instance, take a list-view
+    that has 400 items and more columns than fit in the list-view. If the user has scrolled the list-view all the way
+    to the bottom right and <emphasis role="italic">getItemPos</emphasis> is used to get the position of item 5, both
+    the x and y position will be negative.
+  </para>
+  <para>
+    Experimentation has shown that if the <emphasis role="italic">index</emphasis> specified is larger than the actual
+    number items in the list-view, the list-view still returns a position. The position seems to be correct for the
+    <emphasis role="italic">index</emphasis>, if the list-view did have that item. Because of this, it seems unlikely
+    this method will ever fail.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::getItemPos() -->
+
 
 <section id="itempos"><title>itemPos</title>
 <indexterm><primary>itemPos</primary></indexterm>
