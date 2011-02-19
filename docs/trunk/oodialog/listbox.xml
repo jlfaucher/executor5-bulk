@@ -122,7 +122,7 @@ modify list box controls.
 </row>
 <row>
 <entry><link linkend="mthColumnWidthEquals">columnWidth=</link></entry>
-<entry>Sets the width, in dialog units, of the list box columns in a multicolumn list box control.</entry>
+<entry>Sets the width, in dialog units, of the list box columns in a multicolumn list box control. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="mthColumnWidthPxEquals">columnWidthPxEquals</link></entry>
@@ -162,7 +162,7 @@ modify list box controls.
 </row>
 <row>
 <entry><link linkend="mthItemHeight">itemHeight</link></entry>
-<entry>Retrieves the height, in dialog units, of the items in the list box.</entry>
+<entry>Retrieves the height, in dialog units, of the items in the list box. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="mthItemHeightPx">itemHeightPx</link></entry>
@@ -170,7 +170,7 @@ modify list box controls.
 </row>
 <row>
 <entry><link linkend="mthItemHeightEquals">itemHeight=</link></entry>
-<entry>Sets the height, in dialog units, of the items in the list box.</entry>
+<entry>Sets the height, in dialog units, of the items in the list box. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="mthItemHeightPxEquals">itemHeightPx=</link></entry>
@@ -206,12 +206,12 @@ modify list box controls.
 </row>
 <row>
 <entry><link linkend="mthSelectedIndexes">selectedIndexes</link></entry>
-<entry>Retrieves the indexes of all items that are currently selected in the 
+<entry>Retrieves the indexes of all items that are currently selected in the
 associated multiselection list box.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectedItemsClsListBox">selectedItems</link></entry>
-<entry>Retrieves the number of items that are currently selected in the 
+<entry>Retrieves the number of items that are currently selected in the
 associated multiselection list box.</entry>
 </row>
 <row>
@@ -228,7 +228,7 @@ associated multiselection list box.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetWidth">setWidth</link></entry>
-<entry>Sets the internal width, in dialog units, of the list box.</entry>
+<entry>Sets the internal width, in dialog units, of the list box. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="mthSetWidthPx">setWidthPx</link></entry>
@@ -236,7 +236,7 @@ associated multiselection list box.</entry>
 </row>
 <row>
 <entry><link linkend="mthWidth">width</link></entry>
-<entry>Retrieves the internal width, in dialog units, of the associated list box.</entry>
+<entry>Retrieves the internal width, in dialog units, of the associated list box. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="mthWidthPx">widthPx</link></entry>
@@ -558,28 +558,20 @@ specify no index or 0 for this argument, all items are deselected.
 <indexterm><primary>ListBox class</primary><secondary>isSingleSelection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isSingleSelection(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--isSingleSelection----------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  Determine if a list box is a single-selection list box. In a single-selection list box, 
+  Determine if a list box is a single-selection list box. In a single-selection list box,
   the user can select only one item at a time.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        This method has no arguments.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -598,7 +590,6 @@ specify no index or 0 for this argument, all items are deselected.
 <programlisting>
 <![CDATA[
 >>--select(--itemText--)-------------------------><
-
 
 ]]>
 </programlisting>
@@ -625,10 +616,8 @@ the specified text.</para>
 <indexterm><primary>ListBox class</primary><secondary>selectRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--selectRange(--+-----------------------------+--)---------------------------><
-                  +-startIndex--+-------------+-+
-                                +-,--endIndex-+
-
+>>--selectRange(--+-------------+--+-------------+--)--------------------------><
+                  +-startIndex--+  +-,--endIndex-+
 
 ]]>
 </programlisting>
@@ -675,8 +664,6 @@ lb~selectRange(5,9)
 <![CDATA[
 >>--deSelectRange(--+-------------+--+-------------+--)------------------------><
                     +-startIndex--+  +-,--endIndex-+
-
-
 
 ]]>
 </programlisting>
@@ -766,7 +753,6 @@ example if the list box is no multiselection list box.
 <programlisting>
 <![CDATA[
 >>--selectedIndexes------------------------------><
-
 
 ]]>
 </programlisting>
@@ -1314,7 +1300,6 @@ box columns in a multicolumn list box control, in pixels.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ListBox::columnWidthPx=() -->
-
 
 
 </chapter>
