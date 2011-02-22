@@ -50,11 +50,8 @@ liborxsql.so: $(OBJECTS)
 
 
 # Compile *.cpp to *.o inference rule
-.cpp.o:
+orxsql.o: platform/unix/orxsql.cpp
 	gcc -c $(ORXCFLAGS) $<
-
-# Dependencies
-orxsql.o: orxsql.cpp ver.mak
 
 
 
