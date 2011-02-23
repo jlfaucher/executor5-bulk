@@ -55,7 +55,10 @@
   referred to as a spinner control.
 </para>
 <para>
-  xx
+  Up-down controls can be used without a buddy window to provide a simplified type of scroll bar. Up-down controls allow
+  the programmer to change the radix base used to display the current position of the up-down control from 10 to 16. The
+  controls also support acceleration. The programmer can control the rate at which the position changes when the user
+  holds down an arrow button. The longer the user holds down the button, the faster the up-down control changes postion.
 </para>
 <para>
   The <computeroutput>UpDown</computeroutput> class provides methods to work with and manipulate the underlying Windows
@@ -225,29 +228,46 @@
 </section>  <!-- End connectUpDownEvent() [EventNotification method] -->
 
 
-<section id="mthDeltaPosReply"><title>deltaPosReply</title>
+<section id="mthDeltaPosReply"><title>deltaPosReply (Class method)</title>
 <indexterm><primary>deltaPosReply</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>deltaPosReply</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--deltaPosReply(--+--------+--)---------------------------------------------><
-                    +--type--+
+>>--deltaPosReply(--+----------+--+----------+--+-------------+--)-------------><
+                    +--change--+  +-,-cancel-+  +-,-newDelta--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Constructs the (proper) reply object for a <link linkend="mthConnectUpDownEvent">DELTAPOS</link>
+  <computeroutput>UpDown</computeroutput> <link linkend="ovvEvents">event</link> notification.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>change [optional]</term>
     <listitem>
     <para>
-      xx
+      If true, the delta position message is to be canceled or modified. If false, there is no change to the delta
+      position message, and the other arguments are always ignored. The default is false.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cancel [optional]</term>
+    <listitem>
+    <para>
+      If true, the delta position message is canceled completely. If false the message is not canceled, and the delta
+      position is set to <emphasis role="italic">newDelta</emphasis>. The default is false.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>newDelta [optional]</term>
+    <listitem>
+    <para>
+      The amount by which the current position of the up-down control is changed. The default is 1. This argument is
+      only used if <emphasis role="italic">change</emphasis> is true and <emphasis role="italic">cancel</emphasis> is
+      false.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -256,7 +276,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
