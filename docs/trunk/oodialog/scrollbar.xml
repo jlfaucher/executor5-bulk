@@ -43,75 +43,168 @@
 -->
 <chapter id="clsScrollBar"><title>Scroll Bar Controls</title>
 <indexterm><primary>ScrollBar class</primary></indexterm>
-<para>The ScrollBar class provides methods to query and
-modify scroll bars. It inherits all methods of the DialogControl class (see
-page <link linkend="chpDialogControlObject">DialogControl Class</link>).</para>
-<para>Use the <link linkend="mthNewScrollBar">newScrollBar</link>
-method to retrieve an object of the ScrollBar class.</para>
-<variablelist>
-<varlistentry><term>Requires:</term>
-<listitem><para>The ScrollBar class requires the class definition
-file <computeroutput>oodwin32.cls</computeroutput>:
-<programlisting>
-<![CDATA[
-::requires "oodwin32.cls"
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the ScrollBar class implement the
-methods listed in the
-<link linkend="t000027">ScrollBar Instance Methods</link> table.</para>
+<para>
+  A scroll bar is a dialog control that allows a user to scroll data like 
+  continuous text or images in a window in order to bring into view the portions 
+  of the data that extend beyond the borders of the window. The bar that is movable 
+  in the scroll bar is called the "scroll box".
+</para>
 
-<table id="t000027" frame="all">
-<title>ScrollBar Instance Methods</title>
+<para>The <computeroutput>ScrollBar</computeroutput> class provides methods to query and
+modify scroll bar controls.
+</para>
+
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with scroll bar controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <link linkend="mthNewScrollBar">newScrollBar</link>() method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a scroll bar object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically create a scroll bar in the dialog template of a <link linkend="clsUserDialog">UserDialog</link> use
+    the <link linkend="mthCreateScrollBar">createScrollBar</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying scroll bar control to a
+    method in the Rexx dialog object use the <link linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>)
+    method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+
+<section id="sctMethodsScrollBar"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with ScrollBar objects, including the pertinent methods from other classes:
+</para>
+<table id="tblScrollBarMethods" frame="all">
+<title>ScrollBar Methods and Attributes</title>
 <tgroup cols="2">
+<colspec colwidth="1.75in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Method</entry>
+<entry>Documentation</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>DeterminePosition</entry>
-<entry><link linkend="determineposition">DeterminePosition</link></entry>
+<entry align="center"><emphasis role="bold">Useful External Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>Position</entry>
-<entry><link linkend="position">Position</link></entry>
+<entry><link linkend="tmthNewScrollBar">newScrollBar</link></entry>
+<entry>Obtains a ScrollBar object that represents a scroll bar control in a dialog.</entry>
 </row>
 <row>
-<entry>Range</entry>
-<entry><link linkend="range">Range</link></entry>
+<entry><link linkend="tmthCreateScrollBar">createScrollBar</link></entry>
+<entry>Creates a scroll bar control in an <link linkend="clsUserDialog">UserDialog</link>.</entry>
 </row>
 <row>
-<entry>setRange</entry>
-<entry><link linkend="setrange">setRange</link></entry>
+<entry><link linkend="tmthConnectScrollBarEvent">connectScrollBarEvent</link></entry>
+<entry>Connects ScrollBar event notifications to a Rexx dialog method.</entry>
 </row>
 <row>
-<entry>setPos</entry>
-<entry><link linkend="setpos">setPos</link></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthDeterminePosition">determinePosition</link></entry>
+<entry>Determines the new position of the scroll box based on the position sent 
+with the scroll bar notification messages.</entry>
+</row>
+<row>
+<entry><link linkend="mthPosition">position</link></entry>
+<entry>Retrieves the position of the scroll box in the associated scroll bar.</entry>
+</row>
+<row>
+<entry><link linkend="mthRange">range</link></entry>
+<entry>Retrieves the minimum and maximum positions of the associated scroll bar.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetRange">setRange</link></entry>
+<entry>Sets the minimum and maximum positions for the associated scroll bar.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetPos">setPos</link></entry>
+<entry></entry>
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
+</section>
 
-<section id="setrange"><title>setRange</title>
-<indexterm><primary>setRange</primary>
-<secondary>ScrollBar class</secondary></indexterm>
+<section id="tmthNewScrollBar"><title>newScrollBar (dialog object method)</title>
+<para>
+  <computeroutput>ScrollBar</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
+  role="italic">new</emphasis>() method. Rather, a scroll bar object is obtained by using the <link
+  linkend="mthNewScrollBar">newScrollBar</link>() method of the <link linkend="chpDialogObject">dialog</link>
+  object. The syntax is:
 <programlisting>
 <![CDATA[
->>--setRange(--min--,--max--+-----------+--)-------------------><
+>>--newScrollBar(--id--)-------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End Dialog::newScrollBar() (dialog object method) -->
+
+
+<section id="tmthCreateScrollBar"><title>createScrollBar (UserDialog method)</title>
+<para>
+  A scroll bar control can be created in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>
+  through the <link linkend="mthCreateScrollBar">createScrollBar</link> method. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>--createScrollBar(-id-,--x-,--y-,--cx-,--cy-+----------+-+-------------+--)--><
+                                              +-,--style-+ +-,--attrName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createScrollBar() (UserDialog method) -->
+
+
+<section id="tmthConnectScrollBarEvent"><title>connectScrollBarEvent (dialog object method)</title>
+<para>
+  To connect event notifications from a scroll bar control use the <link
+  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link> method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+
+<programlisting> <![CDATA[
+>>--connectScrollBarEvent(--id--,--event--+----------------+--)----------------><
+                                          +--,-methodName--+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End EventNotification::connectScrollBarEvent() (dialog object method) -->
+
+
+<section id="mthSetRange"><title>setRange</title>
+<indexterm><primary>setRange</primary><secondary>ScrollBar class</secondary></indexterm>
+<indexterm><primary>ScrollBar class</primary><secondary>setRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRange(--min--,--max--+-----------+--)-----><
                             +-,--redraw-+
 
 
 ]]>
 </programlisting>
 
-<para>The setRange method sets the minimum and maximum
-positions for the associated scroll bar.</para>
+<para>The setRange method sets the minimum and maximum positions for the associated scroll bar.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -141,34 +234,33 @@ default value is 1.
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End UserDialog::setRange -->
 
-<section id="range"><title>Range</title>
-<indexterm><primary>Range</primary>
-<secondary>ScrollBar class</secondary></indexterm>
+<section id="mthRange"><title>range</title>
+<indexterm><primary>range</primary><secondary>ScrollBar class</secondary></indexterm>
+<indexterm><primary>ScrollBar class</primary><secondary>range</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--Range------------------------------------------------------><
+>>--range----------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Range method retrieves the minimum and maximum
-positions of the associated scroll bar.</para>
+<para>The range method retrieves the minimum and maximum positions of the associated scroll bar.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The minimum and maximum positions, separated by a blank.
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End UserDialog::range -->
 
-<section id="setpos"><title>setPos</title>
-<indexterm><primary>setPos</primary>
-<secondary>ScrollBar class</secondary></indexterm>
+<section id="mthSetPos"><title>setPos</title>
+<indexterm><primary>setPos</primary><secondary>ScrollBar class</secondary></indexterm>
+<indexterm><primary>ScrollBar class</primary><secondary>setPos</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setPos(--position--+-----------+--)------------------------><
+>>--setPos(--position--+-----------+--)----------><
                        +-,--redraw-+
 
 
@@ -203,49 +295,48 @@ The default value is 1.
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End UserDialog::setPos -->
 
-<section id="position"><title>Position</title>
-<indexterm><primary>Position</primary></indexterm>
+
+<section id=="mthPosition"><title>position</title>
+<indexterm><primary>position</primary></indexterm>
+<indexterm><primary>ScrollBar class</primary><secondary>position</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--Position---------------------------------------------------><
+>>--position-------------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The Position method retrieves the position of the
-scroll box in the associated scroll bar.</para>
+<para>The position method retrieves the position of the scroll box in the associated scroll bar.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The position of the scroll box.
 </para></listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End UserDialog::position -->
 
-<section id="determineposition"><title>DeterminePosition</title>
-<indexterm><primary>DeterminePosition</primary></indexterm>
+
+<section id="mthDeterminePosition"><title>determinePosition</title>
+<indexterm><primary>determinePosition</primary></indexterm>
+<indexterm><primary>ScrollBar class</primary><secondary>determinePosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--DeterminePosition(--posdata--------------------------------->
-
->--+------------------------------------+--)-------------------><
-   +-,--+------------+--+-------------+-+
-        +-singleStep-+  +-,--pageStep-+
+>>--determinePosition(--posData--,--+------------+--+-------------+------------><
+                                    +-singleStep-+  +-,--pageStep-+  
 
 
 ]]>
 </programlisting>
 
-<para>The DeterminePosition method determines the new
-position of the scroll box based on the position sent with the scroll bar
-notification messages.</para>
+<para>The determinePosition method determines the new position of the scroll box 
+based on the position sent with the scroll bar notification messages.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>posdata</term>
+<varlistentry><term>posData</term>
 <listitem><para>The position sent with the scroll bar notification messages.
 </para></listitem></varlistentry>
 <varlistentry><term>singleStep</term>
@@ -263,7 +354,7 @@ by the scroll box or the arrow buttons.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The resulting position based on
-<emphasis role="italic">posdata</emphasis> and the current position.
+<emphasis role="italic">posData</emphasis> and the current position.
 </para></listitem></varlistentry>
 </variablelist>
 
@@ -272,9 +363,10 @@ by the scroll box or the arrow buttons.
 The position of a scroll bar cannot be modified directly by
 a user. The Object Rexx program must react to the notification that is the
 result of the user interaction and set the resulting position of the scroll
-box using <link linkend="setpos">setPos</link>. Use the DeterminePosition
+box using <link linkend="mthSetPos">setPos</link>. Use the determinePosition
 method to determine the resulting position within your notification handler
 for the scroll bar notification messages.
 </para></note>
-</section>
+</section>  <!-- End UserDialog::determinePosition -->
+
 </chapter>
