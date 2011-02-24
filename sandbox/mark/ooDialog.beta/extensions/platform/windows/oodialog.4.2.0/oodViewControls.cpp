@@ -2359,11 +2359,12 @@ static int getColumnWidthArg(RexxMethodContext *context, RexxObjectPtr _width, s
         {
             width = LVSCW_AUTOSIZE_USEHEADER;
         }
-        else if ( ! context->Int32(_width, &width) )
+        else if ( ! context->Int32(_width, &width) || width < 1 )
         {
-            wrongArgValueException(context->threadContext, argPos, "AUTO, AUTOHEADER, or a numeric value", _width);
+            wrongArgValueException(context->threadContext, argPos, "AUTO, AUTOHEADER, or a positive whole number", _width);
         }
     }
+
     return width;
 }
 
@@ -3125,8 +3126,15 @@ RexxMethod3(uint32_t, lv_replaceStyle, CSTRING, removeStyle, CSTRING, additional
     return changeStyle(context, (pCDialogControl)pCSelf, removeStyle, additionalStyle, true);
 }
 
-RexxMethod3(RexxObjectPtr, lv_getItemInfo, uint32_t, index, OPTIONAL_uint32_t, subItem, CSELF, pCSelf)
+RexxMethod4(RexxObjectPtr, lv_getItemInfo, uint32_t, index, RexxObjectPtr, _d, OPTIONAL_uint32_t, subItem, CSELF, pCSelf)
 {
+    if ( ! context->IsDirectory(_d) )
+    {
+        wrongClassException(context->threadContext, 2, "Directory");
+        return TheFalseObj;
+    }
+    RexxDirectoryObject d = (RexxDirectoryObject)_d;
+
     HWND hList = getDChCtrl(pCSelf);
 
     LVITEM lvi;
@@ -3141,13 +3149,11 @@ RexxMethod3(RexxObjectPtr, lv_getItemInfo, uint32_t, index, OPTIONAL_uint32_t, s
 
     if ( ! ListView_GetItem(hList, &lvi) )
     {
-        return TheNegativeOneObj;
+        return TheFalseObj;
     }
 
-    RexxStemObject stem = context->NewStem("InternalLVItemInfo");
-
-    context->SetStemElement(stem, "!TEXT", context->String(lvi.pszText));
-    context->SetStemElement(stem, "!IMAGE", context->Int32(lvi.iImage));
+    context->DirectoryPut(d, context->String(lvi.pszText), "TEXT");
+    context->DirectoryPut(d, context->Int32(lvi.iImage), "IMAGE");
 
     *buf = '\0';
     if ( lvi.state & LVIS_CUT)         strcat(buf, "CUT ");
@@ -3159,9 +3165,9 @@ RexxMethod3(RexxObjectPtr, lv_getItemInfo, uint32_t, index, OPTIONAL_uint32_t, s
     {
         *(buf + strlen(buf) - 1) = '\0';
     }
-    context->SetStemElement(stem, "!STATE", context->String(buf));
+    context->DirectoryPut(d, context->String(buf), "STATE");
 
-    return stem;
+    return TheTrueObj;
 }
 
 RexxMethod1(int, lv_getColumnCount, CSELF, pCSelf)
@@ -3169,8 +3175,15 @@ RexxMethod1(int, lv_getColumnCount, CSELF, pCSelf)
     return getColumnCount(getDChCtrl(pCSelf));
 }
 
-RexxMethod2(RexxObjectPtr, lv_getColumnInfo, uint32_t, index, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, lv_getColumnInfo, uint32_t, index, RexxObjectPtr, _d, CSELF, pCSelf)
 {
+    if ( ! context->IsDirectory(_d) )
+    {
+        wrongClassException(context->threadContext, 1, "Directory");
+        return TheFalseObj;
+    }
+    RexxDirectoryObject d = (RexxDirectoryObject)_d;
+
     HWND hList = getDChCtrl(pCSelf);
 
     LVCOLUMN lvi;
@@ -3182,14 +3195,8 @@ RexxMethod2(RexxObjectPtr, lv_getColumnInfo, uint32_t, index, CSELF, pCSelf)
 
     if ( ! ListView_GetColumn(hList, index, &lvi) )
     {
-        return TheNegativeOneObj;
+        return TheFalseObj;
     }
-
-    RexxStemObject stem = context->NewStem("InternalLVColInfo");
-
-    context->SetStemElement(stem, "!TEXT", context->String(lvi.pszText));
-    context->SetStemElement(stem, "!COLUMN", context->Int32(lvi.iSubItem));
-    context->SetStemElement(stem, "!WIDTH", context->Int32(lvi.cx));
 
     char *align = "LEFT";
     if ( (LVCFMT_JUSTIFYMASK & lvi.fmt) == LVCFMT_CENTER )
@@ -3200,9 +3207,13 @@ RexxMethod2(RexxObjectPtr, lv_getColumnInfo, uint32_t, index, CSELF, pCSelf)
     {
         align = "RIGHT";
     }
-    context->SetStemElement(stem, "!ALIGN", context->String(align));
 
-    return stem;
+    context->DirectoryPut(d, context->String(lvi.pszText), "TEXT");
+    context->DirectoryPut(d, context->Int32(lvi.iSubItem), "SUBITEM");
+    context->DirectoryPut(d, context->Int32(lvi.cx), "WIDTH");
+    context->DirectoryPut(d, context->String(align), "FMT");
+
+    return TheTrueObj;
 }
 
 RexxMethod3(RexxObjectPtr, lv_setColumnWidthPx, uint32_t, index, OPTIONAL_RexxObjectPtr, _width, CSELF, pCSelf)
@@ -3214,10 +3225,26 @@ RexxMethod3(RexxObjectPtr, lv_setColumnWidthPx, uint32_t, index, OPTIONAL_RexxOb
     {
         return TheOneObj;
     }
+
+    if ( width == LVSCW_AUTOSIZE || width == LVSCW_AUTOSIZE_USEHEADER )
+    {
+        if ( !isInReportView(hList) )
+        {
+            userDefinedMsgException(context->threadContext, 2, "can not be AUTO or AUTOHEADER if not in report view");
+            return TheOneObj;
+        }
+    }
+
     return (ListView_SetColumnWidth(hList, index, width) ? TheZeroObj : TheOneObj);
 }
 
-RexxMethod5(RexxObjectPtr, lv_modifyColumnPx, uint32_t, index, OPTIONAL_CSTRING, label, OPTIONAL_RexxObjectPtr, _width,
+/**
+ *
+ *
+ * @remarks  LVSCW_AUTOSIZE_USEHEADER and LVSCW_AUTOSIZE are *only* accepted by
+ *           ListView_SetColumnWidth()
+ */
+RexxMethod5(RexxObjectPtr, lv_modifyColumnPx, uint32_t, index, OPTIONAL_CSTRING, label, OPTIONAL_uint16_t, _width,
             OPTIONAL_CSTRING, align, CSELF, pCSelf)
 {
     HWND hList = getDChCtrl(pCSelf);
@@ -3231,11 +3258,7 @@ RexxMethod5(RexxObjectPtr, lv_modifyColumnPx, uint32_t, index, OPTIONAL_CSTRING,
     }
     if ( argumentExists(3) )
     {
-        lvi.cx = getColumnWidthArg(context, _width, 3);
-        if ( lvi.cx == OOD_BAD_WIDTH_EXCEPTION )
-        {
-            goto err_out;
-        }
+        lvi.cx = _width;
         lvi.mask |= LVCF_WIDTH;
     }
     if ( argumentExists(4) && *align != '\0' )
@@ -3367,6 +3390,11 @@ done:
  *         being in pixels, the code actually converted it to dialog units.
  *         This method is provided to really use pixels.
  *
+ *  @remarks  Not sure why there is a restriction on the length of the column
+ *            label, or why the passed text is copied to a buffer.  The
+ *            ListView_InsertColumn() API does not impose a limit on the length,
+ *            and just asks for a pointer to a string.  Both the length
+ *            restriction and the copy are probably not needed.
  */
 RexxMethod5(int, lv_insertColumnPx, OPTIONAL_uint16_t, column, CSTRING, text, uint16_t, width,
             OPTIONAL_CSTRING, fmt, CSELF, pCSelf)
@@ -4070,6 +4098,32 @@ RexxMethod3(RexxObjectPtr, tv_expand, CSTRING, _hItem, NAME, method, CSELF, pCSe
 }
 
 
+/** TreeView::hitTestInfo()
+ *
+ *  Determine the location of a point relative to the tree-view control.
+ *
+ *  @param  pHit  The position, x and y co-ordinates of the point to test.  This
+ *                can be specified in two forms.
+ *
+ *      Form 1:  arg 1 is a .Point object.
+ *      Form 2:  arg 1 is the x co-ordinate and arg2 is the y co-ordinate.
+ *
+ *  @return  A directory object containing the result of the test in these
+ *           indexes:
+ *
+ *             hItem     The handle to the tree-view item that occupies the
+ *                       point. This will be 0, if there is no item at the
+ *                       point.
+ *
+ *             location  A string of blank separated keywords describing the
+ *                       location of the point.  For instance, the string might
+ *                       be "ONITEM ONLABEL" or it could be "ABOVE TORIGHT" if
+ *                       the point is not on the client area of the tree-view at
+ *                       all.
+ *
+ *  @note  Any x, y coordinates will work.  I.e. -6000, -7000 will work. The
+ *         hItem will be 0 and location will be "ABOVE TOLEFT"
+ */
 RexxMethod2(RexxObjectPtr, tv_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
 {
     HWND hwnd = getDChCtrl(pCSelf);
@@ -4095,7 +4149,7 @@ RexxMethod2(RexxObjectPtr, tv_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
 
     RexxDirectoryObject result = context->NewDirectory();
 
-    context->DirectoryPut(result, pointer2string(context, TreeView_HitTest(hwnd, &hti)), "HITEM");
+    context->DirectoryPut(result, pointer2string(context, hti.hItem), "HITEM");
 
     char buf[128];
     *buf = '\0';

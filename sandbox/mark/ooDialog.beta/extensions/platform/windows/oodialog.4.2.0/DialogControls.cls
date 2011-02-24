@@ -1093,21 +1093,29 @@
 ::method stringWidthPx unguarded external "LIBRARY oodialog lv_stringWidthPx"
 ::method getColumnCount unguarded external "LIBRARY oodialog lv_getColumnCount"
 ::method getColumnOrder unguarded external "LIBRARY oodialog lv_getColumnOrder"
-::method getColumnInfo unguarded  external "LIBRARY oodialog lv_getColumnInfo"
 ::method insertColumnPx unguarded external "LIBRARY oodialog lv_insertColumnPx"
 ::method modifyColumnPx unguarded external "LIBRARY oodialog lv_modifyColumnPx"
-::method setColumnOrderc external "LIBRARY oodialog lv_setColumnOrder"
+::method setColumnOrder external "LIBRARY oodialog lv_setColumnOrder"
 ::method setColumnWidthPx unguarded external "LIBRARY oodialog lv_setColumnWidthPx"
 
 ::method stringWidth unguarded  -- Dialog units, not accurate.
    use strict arg text
    return self~stringWidthPx(text) / self~factorX
 
+::method getColumnInfo unguarded  external "LIBRARY oodialog lv_getColumnInfo"
 ::method columnInfo unguarded  -- Dialog units, not accurate.
    use strict arg index
-   InternalLVColInfo. = self~getColumnInfo(index)
-   if InternalLVColInfo.!Width~Datatype('N') = 1 then InternalLVColInfo.!Width = InternalLVColInfo.!Width / self~factorX
-   return InternalLVColInfo.
+   d = .Directory~new
+   if self~getColumnInfo(index, d) then do
+     colInfo.!TEXT = d~text
+     colInfo.!WIDTH = d~width / self~factorX
+     colInfo.!COLUMN = d~subItem
+     colInfo.!ALIGN = d~alignment
+     return colInfo
+   end
+
+   colInfo.!WIDTH = 0
+   return colInfo.
 
 ::method columnWidth unguarded  -- Dialog units, not accurate.
    use strict arg colNum
@@ -1148,7 +1156,15 @@
 -- Intent is to return directory item with normal names and in itemInfo convert to old stem return
 ::method getItemInfo unguarded external "LIBRARY oodialog lv_getItemInfo"
 ::method itemInfo
-   forward message "getItemInfo"
+   use strict arg index, subItem = 0
+   d = .Directory~new
+   if getItemInfo(index, d, subItem) then do
+     itemInfo.!TEXT = d~text
+     itemInfo.!IMAGE = d~image
+     itemInfo.!STATE = d~state
+     return itemInfo.
+   end
+   return -1
 
 ::method checkAll unguarded
    return self~check(-1)
