@@ -698,7 +698,7 @@
 n = self~numResultCols()
 arr = .array~new(n)
 do i = 1 to n
-   arr[n] = self~getData(n)
+   arr[i] = self~getData(i)
    end
 return arr
 
