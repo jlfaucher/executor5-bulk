@@ -420,8 +420,11 @@ Help request:
     The event handler recieves 2 arguments. The first argument is a <computeroutput>Rect</computeroutput> object with
     the coordinates of the new size for the dialog. The programmer can change the coordinates in the
     <computeroutput>Rect</computeroutput> object and reply <computeroutput>.true</computeroutput>. This causes the
-    dialog to be resized to the coordinates in the <computeroutput>Rect</computeroutput> object. If the programmer
-    replies <computeroutput>.false</computeroutput> the any changes to the coordinates in the
+    dialog to be resized to the changed coordinates in the <computeroutput>Rect</computeroutput> object rather than the
+    coordinates originally specified.
+  </para>
+  <para>
+    If the programmer replies <computeroutput>.false</computeroutput>, then any changes to the coordinates in the
     <computeroutput>Rect</computeroutput> object are ignored and the dialog's size is changed to the size originally
     specified.
   </para>
@@ -463,49 +466,49 @@ Help request:
         <varlistentry><term>BOTTOM</term>
         <listitem>
         <para>
-          Bottom edge.
+          The bottom edge is being dragged.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BOTTOMLEFT</term>
         <listitem>
         <para>
-          Bottom-left corner.
+          The bottom-left corner is being dragged.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>BOTTOMRIGHT</term>
         <listitem>
         <para>
-          Bottom-right corner.
+          The bottom-right corner is being dragged.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>LEFT</term>
         <listitem>
         <para>
-          Left edge.
+          The left edge is being dragged.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>RIGHT</term>
         <listitem>
         <para>
-          Right edge.
+          The right edge is being dragged.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TOP</term>
         <listitem>
         <para>
-          Top edge.
+          The top edge is being dragged.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TOPLEFT</term>
         <listitem>
         <para>
-          Top-left corner.
+          The top-left corner is being dragged.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>TOPRIGHT</term>
         <listitem>
         <para>
-          Top-right corner.
+          The top-right corner is being dragged.
         </para>
         </listitem></varlistentry>
       </variablelist>

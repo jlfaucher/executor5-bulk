@@ -857,10 +857,6 @@
 <entry><link linkend="mthClientToScreen">clientToScreen</link></entry>
 </row>
 <row>
-<entry>CombineELwithSB</entry>
-<entry><link linkend="h000816">CombineELwithSB</link></entry>
-</row>
-<row>
 <entry>ComboAddDirectory</entry>
 <entry><link linkend="h000362">ComboAddDirectory</link></entry>
 </row>
@@ -5586,79 +5582,6 @@ The default is 1.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000816"><title>CombineELwithSB</title>
-<indexterm><primary>CombineELwithSB</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~CombineELwithSB(--elid--,--sbid--+-------------------------+--)-><
-                                                +-,--+------+--+--------+-+
-                                                     +-step-+  +-,--pos-+
-
-
-]]>
-</programlisting>
-
-<para>
-  The CombineELwithSB method connects an entry line with a scroll bar such that each time the slider of the scroll bar
-  is moved, the value of the entry field is changed. This method must be used in a method registered with <link
-  linkend="mthConnectEachSBEvent">connectEachSBEvent</link>.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>elid</term>
-    <listitem>
-    <para>
-      The ID of the entry line.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>sbid</term>
-    <listitem>
-    <para>
-      The ID of the scroll bar.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>step</term>
-    <listitem>
-    <para>
-      The size of one step.  If, for example, step is 3 and the current position is 4, the next position is 7.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pos</term>
-    <listitem>
-    <para>
-      If the step value is zero, this sets the position of the scroll bar and entry line. Use it in the method
-      registered for drag.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example continues the example of ConnectScrollBar. In the registered methods an entry line (251) is
-    combined with the scroll bar (255).
-
-<programlisting>
-<![CDATA[
-::method Increase
-self~CombineELwithSB(251,255,+20)
-::method Decrease
-self~CombineELwithSB(251,255,-20)
-::method Drag
-use arg wparam, lparam                  /* wparam=position */
-self~CombineELwithSB(251,255,0,wparam)
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 </section>
 
