@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -168,8 +168,9 @@
 <itemizedlist>
 <listitem>
 <para>
-  For push buttons you connect a method to one of the events the button control notifies its parent dialog of. Typically
-  the CLICKED event is connected. Then, the connected method is called each time the button is pressed (clicked.)
+  Push buttons notify their parent dialog of a number of events. The programmer connects one of these events to a method
+  in his Rexx dialog. Typically the CLICKED event is connected. Then, the connected method is called each time the
+  button is pressed (clicked.)
 </para>
 </listitem>
 <listitem>
@@ -180,8 +181,9 @@
 </listitem>
 <listitem>
 <para>
-  For a scroll bar you can specify different methods that are called depending on the user action. The user can click on
-  the arrow buttons, drag the thumb, or use the page down / page up keys.
+  For a scroll bar, the programmer can specify different methods that are called depending on the user action. The user
+  can click on the arrow buttons, drag the thumb, or use the page down / page up keys. Each of these events can be
+  connected to a method in the Rexx dialog.
 </para>
 </listitem></itemizedlist>
 </para>
@@ -721,6 +723,10 @@
 <entry>Connects the size event notification to a method in the Rexx dialog</entry>
 </row>
 <row>
+<entry><link linkend="enConnectResizing">connectResizing</link></entry>
+<entry>Connects the sizing event notification to a method in the Rexx dialog</entry>
+</row>
+<row>
 <entry><link linkend="enConnectScrollBarEvent">connectScrollBarEvent</link></entry>
 <entry>Connects an event notification from a scroll bar control to a method in the Rexx dialog.</entry>
 </row>
@@ -781,12 +787,12 @@
 </programlisting>
 </section>
 
-<section id="enConnectMove"><title>connectMove</title>
+<section id="enConnectResizing"><title>connectResizing</title>
 <programlisting>
-<link linkend="mthConnectMove">connectMove</link>
+<link linkend="mthConnectResizing">connectResizing</link>
 
 <![CDATA[
->>--connectMove(--methodName--)------------------><
+>>--connectResizing(--methodName--)--------------><
 ]]>
 </programlisting>
 </section>
@@ -799,6 +805,16 @@
 >>--connectSizeMoveEnded(--methodName--+--------------+--)---------------------><
                                        +-,-willReply--+
 
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectMove"><title>connectMove</title>
+<programlisting>
+<link linkend="mthConnectMove">connectMove</link>
+
+<![CDATA[
+>>--connectMove(--methodName--)------------------><
 ]]>
 </programlisting>
 </section>

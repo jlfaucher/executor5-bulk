@@ -367,8 +367,8 @@ Help request:
     <varlistentry><term>methodName [required]</term>
     <listitem>
     <para>
-      The name of the method that is invoked each time the size of the dialog has changed. The method name can not be the
-      empty string.
+      The name of the method that is invoked each time the size of the dialog is about to be changed. The method name
+      can not be the empty string.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -404,27 +404,29 @@ Help request:
     linkend="clsEventNotification">EventNotification</link> class.
   </para>
   <para>
-    Connecting the sizing event requires that the programmer reply to the event from the event handler.
+    The interpreter invokes the event handler directly and waits in the window <link
+    linkend="ovvWindowMessages">message</link> processing loop for the return from the event handler. Connecting the
+    sizing event requires that the programmer reply to the event from the event handler in a timely manner.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Handler:</emphasis></term>
   <listitem>
   <para>
     The event handler for the sizing event is invoked when the user is dragging the sizing border of the dialog to
-    change the size of the dialog. The programmer must reply to this notification. The interpreter waits in the window
-    <link linkend="ovvWindowMessages">message</link> processing loop for the return from the event handler.
+    change the size of the dialog. The programmer must reply <computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput> to this notification.
   </para>
   <para>
-    The first argument to the event handler is a <computeroutput>Rect</computeroutput> object with the coordinates of
-    the new size for the dialog. By changing the coordinates in the rectangle and replying
-    <computeroutput>.true</computeroutput>, the programmer can change the new size of the dialog. If the programmer
-    replies <computeroutput>.false</computeroutput> the new size is not changed.
+    The event handler recieves 2 arguments. The first argument is a <computeroutput>Rect</computeroutput> object with
+    the coordinates of the new size for the dialog. The programmer can change the coordinates in the
+    <computeroutput>Rect</computeroutput> object and reply <computeroutput>.true</computeroutput>. This causes the
+    dialog to be resized to the coordinates in the <computeroutput>Rect</computeroutput> object. If the programmer
+    replies <computeroutput>.false</computeroutput> the any changes to the coordinates in the
+    <computeroutput>Rect</computeroutput> object are ignored and the dialog's size is changed to the size originally
+    specified.
   </para>
   <para>
-    The event handler recieves 2 arguments and must reply <computeroutput>.true</computeroutput> or
-    <computeroutput>.false</computeroutput>. If the programmer replies <computeroutput>.false</computeroutput> the
-    <emphasis role="italic">rect</emphasis> argument is ignored. If the reply is <computeroutput>.true</computeroutput>
-    then the new size coordinates are changed to those specified in the rectangle.
+    A typical event handler would look like this:
   </para>
 
 <programlisting>
@@ -435,78 +437,81 @@ Help request:
   return boolean
 ]]>
 </programlisting>
-  <variablelist>
-    <varlistentry><term>rect</term>
-    <listitem>
-    <para>
-      A <computeroutput>Rect</computeroutput> object that specifies the new size for the dialog.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>direction</term>
-    <listitem>
-    <para>
-      A keyword that specifies which edge of the dialog window is being sized. The keyword will be exactly one of the
-      following:
-    </para>
-    <para>
-      <simplelist type='vert' columns='3'>
-        <member>BOTTOM</member>   <member>BOTTOMLEFT</member> <member>BOTTOMLEFT</member>
-        <member>LEFT</member>     <member>RIGHT</member>      <member>TOP</member>
-        <member>TOPLEFT</member>  <member>TOPRIGHT</member>
-      </simplelist>
-    </para>
+  <para>
+    The arguments to the event handler are:
     <variablelist>
-      <varlistentry><term>BOTTOM</term>
+      <varlistentry><term>rect</term>
       <listitem>
       <para>
-        Bottom edge.
+        A <computeroutput>Rect</computeroutput> object that specifies the size the dialog is about to be changed to.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>BOTTOMLEFT</term>
+      <varlistentry><term>direction</term>
       <listitem>
       <para>
-        Bottom-left corner.
+        A keyword that specifies which edge of the dialog window is being sized. The keyword will be exactly one of the
+        following:
       </para>
-      </listitem></varlistentry>
-      <varlistentry><term>BOTTOMRIGHT</term>
-      <listitem>
       <para>
-        Bottom-right corner.
+        <simplelist type='vert' columns='3'>
+          <member>BOTTOM</member>   <member>BOTTOMLEFT</member> <member>BOTTOMLEFT</member>
+          <member>LEFT</member>     <member>RIGHT</member>      <member>TOP</member>
+          <member>TOPLEFT</member>  <member>TOPRIGHT</member>
+        </simplelist>
       </para>
-      </listitem></varlistentry>
-      <varlistentry><term>LEFT</term>
-      <listitem>
-      <para>
-        Left edge.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>RIGHT</term>
-      <listitem>
-      <para>
-        Right edge.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>TOP</term>
-      <listitem>
-      <para>
-        Top edge.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>TOPLEFT</term>
-      <listitem>
-      <para>
-        Top-left corner.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>TOPRIGHT</term>
-      <listitem>
-      <para>
-        Top-right corner.
-      </para>
+      <variablelist>
+        <varlistentry><term>BOTTOM</term>
+        <listitem>
+        <para>
+          Bottom edge.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BOTTOMLEFT</term>
+        <listitem>
+        <para>
+          Bottom-left corner.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BOTTOMRIGHT</term>
+        <listitem>
+        <para>
+          Bottom-right corner.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LEFT</term>
+        <listitem>
+        <para>
+          Left edge.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          Right edge.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TOP</term>
+        <listitem>
+        <para>
+          Top edge.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TOPLEFT</term>
+        <listitem>
+        <para>
+          Top-left corner.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TOPRIGHT</term>
+        <listitem>
+        <para>
+          Top-right corner.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
       </listitem></varlistentry>
     </variablelist>
-    </listitem></varlistentry>
-  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
@@ -571,97 +576,6 @@ Help request:
 </variablelist>
 </section>
 
-<section id="mthConnectMove"><title>connectMove</title>
-<indexterm><primary>connectMove</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>connectMove</secondary></indexterm>
-<indexterm><primary>EventNotification</primary><secondary>connectMove</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--connectMove(--methodName--)--------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">connectMove</emphasis> method connects a dialog move event notification with a method in
-  the Rexx dialog. The notification is sent after the position of the dialog has changed.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The only argument is:
-  <variablelist>
-    <varlistentry><term>methodName [required]</term>
-    <listitem>
-    <para>
-      The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string
-      and it must be less than 256 characters in length.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      No error.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      An (internal) error prevented the message from being connected to a method.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    move events happen.
-  </para>
-  <para>
-    The underlying dialog receives this event notification as a WM_MOVE message.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-
-<programlisting>
-<![CDATA[
-::class MyDlgClass subclass UserDialog
-
-::method init
-  forward class (super) continue
-
-  self~connectMove(onMove)
-
-::method onMove
-  use arg unUsed, posInfo
-
-  -- The dialog position has changed, print out where we are.
-  x = .DlgUtil~loWord(posInfo)
-  y = .DlgUtil~hiWord(posInfo)
-  say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthConnectSizeMoveEnded"><title>connectSizeMoveEnded</title>
 <indexterm><primary>connectSizeMoveEnded</primary></indexterm>
@@ -804,6 +718,97 @@ Help request:
 </variablelist>
 </section>
 
+<section id="mthConnectMove"><title>connectMove</title>
+<indexterm><primary>connectMove</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectMove</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectMove</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectMove(--methodName--)--------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectMove</emphasis> method connects a dialog move event notification with a method in
+  the Rexx dialog. The notification is sent after the position of the dialog has changed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string
+      and it must be less than 256 characters in length.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An (internal) error prevented the message from being connected to a method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    move events happen.
+  </para>
+  <para>
+    The underlying dialog receives this event notification as a WM_MOVE message.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+
+<programlisting>
+<![CDATA[
+::class MyDlgClass subclass UserDialog
+
+::method init
+  forward class (super) continue
+
+  self~connectMove(onMove)
+
+::method onMove
+  use arg unUsed, posInfo
+
+  -- The dialog position has changed, print out where we are.
+  x = .DlgUtil~loWord(posInfo)
+  y = .DlgUtil~hiWord(posInfo)
+  say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 <section id="mthConnectPosChanged"><title>connectPosChanged</title>
 <indexterm><primary>connectPosChanged</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectPosChanged</secondary></indexterm>
