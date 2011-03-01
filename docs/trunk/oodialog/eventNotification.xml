@@ -78,8 +78,7 @@
     <varlistentry><term>methodName [required]</term>
     <listitem>
     <para>
-      The name of the method that to be invoked when the help event occurs. The name must not be the empty string and
-      must be less than 256 characters in length.
+      The name of the method that to be invoked when the help event occurs. The name can not be the empty string.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -292,8 +291,8 @@ Help request:
   use arg sizeEvent, sizeInfo
 
   -- sizeInfo contains information about the new width and height in pixels.
-  w = .DlgUtil~loWord(sizeinfo) / self~factorX
-  h = .DlgUtil~hiWord(sizeinfo) / self~factorY
+  w = .DlgUtil~loWord(sizeinfo)
+  h = .DlgUtil~hiWord(sizeinfo)
   say "New width=" w ", new height=" h
 
 ]]>
@@ -338,7 +337,237 @@ Help request:
 
 ]]>
 </programlisting>
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthConnectResizing"><title>connectResizing</title>
+<indexterm><primary>connectResizing</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectResizing</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectResizing</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectResizing(--methodName--)--------------><
+
+]]>
+</programlisting>
+
+<para>
+  Connects a <emphasis role="italic">sizing</emphasis> <link linkend="ovvEvents">event</link> notification sent to the
+  underlying dialog with a method in the Rexx dialog. The notification is sent to the dialog <emphasis
+  role="italic">before</emphasis> its size has changed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The name of the method that is invoked each time the size of the dialog has changed. The method name can not be the
+      empty string.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An (internal) error prevented the message from being connected to a method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By processing the sizing event notification, the programmer can monitor the size and position of the drag rectangle
+    of the dialog being resized and, if desired, can change its size or position.
+  </para>
+  <para>
+    Common guidelines on <link linkend="paraWhereToConnectEvents">where</link> to invoke the <emphasis
+    role="italic">connectResizing</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
+    to code event handlers are included in the documentation for the <link
+    linkend="clsEventNotification">EventNotification</link> class.
+  </para>
+  <para>
+    Connecting the sizing event requires that the programmer reply to the event from the event handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Handler:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler for the sizing event is invoked when the user is dragging the sizing border of the dialog to
+    change the size of the dialog. The programmer must reply to this notification. The interpreter waits in the window
+    <link linkend="ovvWindowMessages">message</link> processing loop for the return from the event handler.
+  </para>
+  <para>
+    The first argument to the event handler is a <computeroutput>Rect</computeroutput> object with the coordinates of
+    the new size for the dialog. By changing the coordinates in the rectangle and replying
+    <computeroutput>.true</computeroutput>, the programmer can change the new size of the dialog. If the programmer
+    replies <computeroutput>.false</computeroutput> the new size is not changed.
+  </para>
+  <para>
+    The event handler recieves 2 arguments and must reply <computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput>. If the programmer replies <computeroutput>.false</computeroutput> the
+    <emphasis role="italic">rect</emphasis> argument is ignored. If the reply is <computeroutput>.true</computeroutput>
+    then the new size coordinates are changed to those specified in the rectangle.
+  </para>
+
+<programlisting>
+<![CDATA[
+::method onResizing unguarded
+  use arg rect, direction
+  ...
+  return boolean
+]]>
+</programlisting>
+  <variablelist>
+    <varlistentry><term>rect</term>
+    <listitem>
+    <para>
+      A <computeroutput>Rect</computeroutput> object that specifies the new size for the dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>direction</term>
+    <listitem>
+    <para>
+      A keyword that specifies which edge of the dialog window is being sized. The keyword will be exactly one of the
+      following:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>BOTTOM</member>   <member>BOTTOMLEFT</member> <member>BOTTOMLEFT</member>
+        <member>LEFT</member>     <member>RIGHT</member>      <member>TOP</member>
+        <member>TOPLEFT</member>  <member>TOPRIGHT</member>
+      </simplelist>
+    </para>
+    <variablelist>
+      <varlistentry><term>BOTTOM</term>
+      <listitem>
+      <para>
+        Bottom edge.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BOTTOMLEFT</term>
+      <listitem>
+      <para>
+        Bottom-left corner.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BOTTOMRIGHT</term>
+      <listitem>
+      <para>
+        Bottom-right corner.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LEFT</term>
+      <listitem>
+      <para>
+        Left edge.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHT</term>
+      <listitem>
+      <para>
+        Right edge.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TOP</term>
+      <listitem>
+      <para>
+        Top edge.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TOPLEFT</term>
+      <listitem>
+      <para>
+        Top-left corner.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TOPRIGHT</term>
+      <listitem>
+      <para>
+        Top-right corner.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    sizing events happen.
+  </para>
+  <para>
+    The underlying dialog receives the WM_SIZING message as the notification for this event.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows, partially, how to prevent a resizable dialog from being sized smaller than 300 pixels high. A
+    complete implementation would also have to handle the TOPLEFT, TOPRIGHT, etc., directions. And, normally, an
+    implementation would also enforce a minimum width.
+  </para>
+  <para>
+    A complete implementation can be found in the <computeroutput>dlgAreaDemoThree.rex</computeroutput> example program.
+
+<programlisting>
+<![CDATA[
+::method init
+  ...
+
+  self~connectResizing("onSizing")
+
+::method onSizing
+  use arg rect, direction
+
+  select
+    when direction == 'TOP' then do
+      if rect~bottom - rect~top < 300 then do
+        rect~top = rect~bottom - 300
+        return .true
+      end
+    end
+    when direction == 'BOTTOM' then do
+      if rect~bottom - rect~top < 300 then do
+        rect~bottom = rect~top + 300
+        return .true
+      end
+    end
+    ...
+    otherwise
+      nop
+  end
+
+  return .false
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -358,22 +587,6 @@ Help request:
   the Rexx dialog. The notification is sent after the position of the dialog has changed.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    move events happen.
-  </para>
-  <para>
-    The underlying dialog receives this event notification as a WM_MOVE message.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -405,6 +618,22 @@ Help request:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    move events happen.
+  </para>
+  <para>
+    The underlying dialog receives this event notification as a WM_MOVE message.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -513,7 +742,7 @@ Help request:
   </para>
   <para>
     If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    help events happen.
+    exit size / move events happen.
   </para>
   <para>
     In Windows itself, the dialog receives this notification as a WM_EXITSIZEMOVE message.
@@ -592,22 +821,6 @@ Help request:
   place in the Z order has changed .
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    position changed events happen.
-  </para>
-  <para>
-    In Windows itself, the dialog receives this event notification as a WM_WINDOWPOSCHANGED message.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -640,6 +853,22 @@ Help request:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    position changed events happen.
+  </para>
+  <para>
+    In Windows itself, the dialog receives this event notification as a WM_WINDOWPOSCHANGED message.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -685,47 +914,28 @@ Help request:
   or menu, when a visual aspect of the control or menu has changed.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    The notification for the draw control is only sent to the above mentioned controls when they have the OWNERDRAW
-    style.
-  </para>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    draw events happen.
-  </para>
-  <para>
-    In Windows itself, the dialog receives this event notification as a WM_DRAWITEM message.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are:
-  <variablelist>
-    <varlistentry><term>id [optional]</term>
-    <listitem>
-    <para>
-      The resource ID of the dialog control whose notification is being connected. This can be symbolic or numeric. If
-      the ID is omitted, all drawing event notifications, of all owner-drawn controls in the dialog, will invoke the
-      method.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>methodName [optional]</term>
-    <listitem>
-    <para>
-      The name of the method that is to be invoked each time the draw control event occurs. The method name must not be
-      the empty string and must be less than 256 characters in length. If this argument is omitted, then the ooDialog
-      framework will connect the notification to the <computeroutput>onDraw</computeroutput> method.
-    </para></listitem></varlistentry>
-  </variablelist>
+    <variablelist>
+      <varlistentry><term>id [optional]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog control whose notification is being connected. This can be symbolic or numeric. If
+        the ID is omitted, all drawing event notifications, of all owner-drawn controls in the dialog, will invoke the
+        method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        The name of the method that is to be invoked each time the draw control event occurs. The method name must not be
+        the empty string and must be less than 256 characters in length. If this argument is omitted, then the ooDialog
+        framework will connect the notification to the <computeroutput>onDraw</computeroutput> method.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -751,7 +961,28 @@ Help request:
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
-</variablelist> </section>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    The notification for the draw control is only sent to the above mentioned controls when they have the OWNERDRAW
+    style.
+  </para>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    draw events happen.
+  </para>
+  <para>
+    In Windows itself, the dialog receives this event notification as a WM_DRAWITEM message.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="mthConnectMouseCapture"><title>connectMouseCapture</title>
 <indexterm><primary>connectMouseCapture</primary></indexterm>
@@ -771,35 +1002,19 @@ Help request:
   button.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    draw events happen.
-  </para>
-  <para>
-    The underlying dialog receives a WM_CAPTURECHANGED message as the notification for this event.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The argument is:
-  <variablelist>
-    <varlistentry><term>methodName [required]</term>
-    <listitem>
-    <para>
-      The nane of the method that will be invoked upon receiving this event notification. The name can not be the empty
-      string and must be less than 256 characters in length.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>methodName [required]</term>
+      <listitem>
+      <para>
+        The nane of the method that will be invoked upon receiving this event notification. The name can not be the empty
+        string and must be less than 256 characters in length.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -819,6 +1034,22 @@ Help request:
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    draw events happen.
+  </para>
+  <para>
+    The underlying dialog receives a WM_CAPTURECHANGED message as the notification for this event.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
@@ -1679,23 +1910,6 @@ Help request:
   linkend="ovvEvents">event</link> notifications sent by a Windows dialog control to its parent dialog.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      The <emphasis role="italic">connectCommandEvents</emphasis> method is a member of the <link
-      linkend="clsEventNotification">EventNotification</link> mixin class.
-    </para>
-    <para>
-      Syntax errors are raised when incorrect usage is detected.
-    </para>
-    <para>
-      If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-      command events happen.
-    </para>
-    <para>
-      In Windows itself, command events are sent to the parent dialog using the WM_COMMAND message.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <variablelist>
@@ -1748,6 +1962,23 @@ Help request:
     control specified. Therefore, it is more advisable to use the specific connectXXXEvent() method for the control.
     Such as the <link linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method.
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      The <emphasis role="italic">connectCommandEvents</emphasis> method is a member of the <link
+      linkend="clsEventNotification">EventNotification</link> mixin class.
+    </para>
+    <para>
+      Syntax errors are raised when incorrect usage is detected.
+    </para>
+    <para>
+      If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+      command events happen.
+    </para>
+    <para>
+      In Windows itself, command events are sent to the parent dialog using the WM_COMMAND message.
+    </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -1822,23 +2053,6 @@ lo word resource ID:       1003
   dialog control does not send one of the generic event notificaions. It sends a notification specific to itself.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      The <emphasis role="italic">connectNovityEvent</emphasis> method is a member of the <link
-      linkend="clsEventNotification">EventNotification</link> mixin class.
-    </para>
-    <para>
-      Syntax errors are raised when incorrect usage is detected.
-    </para>
-    <para>
-      If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
-      connected event happen.
-    </para>
-    <para>
-      In Windows itself, these events are sent to the parent dialog using the WM_NOTIFY message.
-    </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem><para>The arguments are:
   <variablelist>
@@ -1896,7 +2110,25 @@ lo word resource ID:       1003
     <listitem><para>The message was not connected correctly. The message was not connected
     </para></listitem></varlistentry>
   </variablelist>
-  </para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      The <emphasis role="italic">connectNovityEvent</emphasis> method is a member of the <link
+      linkend="clsEventNotification">EventNotification</link> mixin class.
+    </para>
+    <para>
+      Syntax errors are raised when incorrect usage is detected.
+    </para>
+    <para>
+      If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
+      connected event happen.
+    </para>
+    <para>
+      In Windows itself, these events are sent to the parent dialog using the WM_NOTIFY message.
+    </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -2103,145 +2335,120 @@ lo word resource ID:       1003
   used for all types of buttons (push button, radio button, or check box.)
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    In order to recieve the GOTFOCUS, LOSTFOCUS, and DBLCLK event notifications, the button control has to have the
-    NOTIFY (BS_NOTIFY) style.  For user defined dialogs use the NOTIFY style keyword in the <link
-    linkend="sctCreateMethods">create ...</link> method when the button is defined.  For dialogs created from a
-    compiled resource or a resource script file use the BS_NOTIFY style for the button resource.  The other event
-    notifications are always sent and it is not necessary to add the NOTIFY style for those events.
-  </para>
-  <para>
-    The <emphasis role="italic">connectButtonEvent</emphasis> method is a member of the <link
-    linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any of
-    the button events occur.
-  </para>
-  <para>
-    In Windows itself, some notifications are sent to the parent dialog using the WM_COMMAND message and others are
-    sent using the WM_NOTIFY message.
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the button control this connection applies. This can be a symbolic ID or the numeric value of
+        the ID.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>event [required]</term>
+      <listitem>
+      <para>
+        A keyword specifying the event to be connected with a method. This can be exactly one of the following, case is
+        not significant:
+        <variablelist>
+          <varlistentry><term>CLICKED</term>
+          <listitem>
+          <para>
+            The button has been clicked.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DBLCLK</term>
+          <listitem>
+          <para>
+            The button has been double-clicked.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLE</term>
+          <listitem>
+          <para>
+            The button has been disabled.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>GOTFOCUS</term>
+          <listitem>
+          <para>
+            The button got the input focus.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LOSTFOCUS</term>
+          <listitem>
+          <para>
+            The button lost the input focus.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HILITE</term>
+          <listitem>
+          <para>
+            The button has been selected.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>UNHILITE</term>
+          <listitem>
+          <para>
+            The highlighting is to be removed (lost selection).
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HOTITEM</term>
+          <listitem>
+          <para>
+            Notifies the dialog that the mouse has moved over the button, or that the mouse is leaving the area
+            over the button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PAINT</term>
+          <listitem>
+          <para>
+            The button is to be repainted. This notification is only sent for owner-drawn buttons.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        The name of the method to inovke whenever the specified notification is received from the button control. Provide
+        a method with a matching name. If you omit this argument, a method name is generated automatically. The name
+        consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance:
+        <computeroutput>onGotFocus</computeroutput>. The method name can not be the empty string and must be less than 256
+        characters in length.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem>
-<para>
-  The arguments are:
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The resource ID of the button control this connection applies. This can be a symbolic ID or the numeric value of
-      the ID.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>event [required]</term>
-    <listitem>
-    <para>
-      A keyword specifying the event to be connected with a method. This can be exactly one of the following, case is
-      not significant:
-      <variablelist>
-        <varlistentry><term>CLICKED</term>
-        <listitem>
-        <para>
-          The button has been clicked.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>DBLCLK</term>
-        <listitem>
-        <para>
-          The button has been double-clicked.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>DISABLE</term>
-        <listitem>
-        <para>
-          The button has been disabled.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>GOTFOCUS</term>
-        <listitem>
-        <para>
-          The button got the input focus.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>LOSTFOCUS</term>
-        <listitem>
-        <para>
-          The button lost the input focus.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>HILITE</term>
-        <listitem>
-        <para>
-          The button has been selected.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>UNHILITE</term>
-        <listitem>
-        <para>
-          The highlighting is to be removed (lost selection).
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>HOTITEM</term>
-        <listitem>
-        <para>
-          Notifies the dialog that the mouse has moved over the button, or that the mouse is leaving the area
-          over the button.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>PAINT</term>
-        <listitem>
-        <para>
-          The button is to be repainted. This notification is only sent for owner-drawn buttons.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>methodName [optional]</term>
-    <listitem>
-    <para>
-      The name of the method to inovke whenever the specified notification is received from the button control. Provide
-      a method with a matching name. If you omit this argument, a method name is generated automatically. The name
-      consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance:
-      <computeroutput>onGotFocus</computeroutput>. The method name can not be the empty string and must be less than 256
-      characters in length.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-<para>The return codes are:
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      No error detected.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      The resource ID could not be resolved or the event argument is incorrect.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      The message was not connected correctly. Most likely the message table is full.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-</para>
-</listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>The return codes are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        No error detected.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The resource ID could not be resolved or the event argument is incorrect.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
+      <para>
+        The message was not connected correctly. Most likely the message table is full.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
     <orderedlist>
@@ -2293,6 +2500,31 @@ lo word resource ID:       1003
      </para>
     </listitem>
     </orderedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    In order to recieve the GOTFOCUS, LOSTFOCUS, and DBLCLK event notifications, the button control has to have the
+    NOTIFY (BS_NOTIFY) style.  For user defined dialogs use the NOTIFY style keyword in the <link
+    linkend="sctCreateMethods">create ...</link> method when the button is defined.  For dialogs created from a
+    compiled resource or a resource script file use the BS_NOTIFY style for the button resource.  The other event
+    notifications are always sent and it is not necessary to add the NOTIFY style for those events.
+  </para>
+  <para>
+    The <emphasis role="italic">connectButtonEvent</emphasis> method is a member of the <link
+    linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any of
+    the button events occur.
+  </para>
+  <para>
+    In Windows itself, some notifications are sent to the parent dialog using the WM_COMMAND message and others are
+    sent using the WM_NOTIFY message.
+  </para>
   </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example displays a message whenever the OK button is selected:</para>
@@ -2677,6 +2909,8 @@ the window handle of the combo box. Example:
 </para></note>
 </section>
 
+<section id="sctConnectingScrollBarEvents"><title>Connecting ScrollBar Events</title>
+
 <section id="mthConnectScrollBarEvent"><title>connectScrollBarEvent</title>
 <indexterm><primary>connectScrollBarEvent</primary></indexterm>
 <programlisting>
@@ -2964,6 +3198,9 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 </variablelist>
 </listitem></varlistentry>
 </variablelist>
+</section>
+
+
 </section>
 
 <section id="mthConnectListViewEvent"><title>connectListViewEvent</title>
@@ -3560,23 +3797,6 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   tree view <link linkend="ovvEvents">event</link>.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      The <emphasis role="italic">connectTreeViewEvent</emphasis> method is a member of the <link
-      linkend="clsEventNotification">EventNotification</link> mixin class.
-    </para>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    command events happen.
-  </para>
-  <para>
-    In Windows itself, tree view event notifications are sent to the parent dialog using the WM_NOTIFY message.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem><para>The arguments are:</para>
   <variablelist>
@@ -3664,27 +3884,46 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        No error detected.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The resource ID was symbolic and it could not be resolved, or the event keyword is not correct.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
+      <para>
+        Some other error and the message was not connected correctly. This may indicate the message table is full, or the
+        interpreter is out of usable memory.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
     <para>
-      No error detected.
+      The <emphasis role="italic">connectTreeViewEvent</emphasis> method is a member of the <link
+      linkend="clsEventNotification">EventNotification</link> mixin class.
     </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      The resource ID was symbolic and it could not be resolved, or the event keyword is not correct.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      Some other error and the message was not connected correctly. This may indicate the message table is full, or the
-      interpreter is out of usable memory.
-    </para>
-    </listitem></varlistentry>
-  </variablelist> </para></listitem></varlistentry>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    command events happen.
+  </para>
+  <para>
+    In Windows itself, tree view event notifications are sent to the parent dialog using the WM_NOTIFY message.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -4258,7 +4497,8 @@ trackbar position by extracting the high-oder word. Example:
           or later. The return value from the event handler is ignored for this event.
         </para>
         </listitem></varlistentry>
-      </variablelist> </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
       <varlistentry><term>methodName [optional]</term>
       <listitem>
       <para>
@@ -4649,15 +4889,6 @@ trackbar position by extracting the high-oder word. Example:
   xx
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -4687,6 +4918,15 @@ trackbar position by extracting the high-oder word. Example:
     linkend="clsEventNotification">EventNotification</link> class.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -4705,8 +4945,8 @@ trackbar position by extracting the high-oder word. Example:
 <indexterm><primary>addUserMsg</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--addUserMsg(-methodName-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-><
-                                    +-,-f1-+ +-,-wParam-+ +-,-f2-+ +-,-lParam-+ +-,-f3-+
+>>--addUserMsg(-msg-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-)-><
+                             +-,-f1-+ +-,-wParam-+ +-,-f2-+ +-,-lParam-+ +-,-f3-+
 
 ]]>
 </programlisting>
@@ -4729,15 +4969,17 @@ the message IDs (and possibly the message parameters) can be looked up in the
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent to the Object Rexx dialog object each time
+<varlistentry><term>msg</term>
+<listitem>
+<para>
+  The message that is to be sent to the Object Rexx dialog object each time
 the specified Windows message is caught. Provide a method with the
 same name. The maximum size for a message is limited to 256 characters.
 </para></listitem></varlistentry>
-<varlistentry><term>msgWindows</term>
+<varlistentry><term>winMsg</term>
 <listitem><para>The message in the Windows environment that is to be caught.
 </para></listitem></varlistentry>
-<varlistentry><term>filt1</term>
+<varlistentry><term>f1</term>
 <listitem><para>This filter is used to binary AND the incoming Windows message.
 </para></listitem></varlistentry>
 <varlistentry><term>wParam</term>

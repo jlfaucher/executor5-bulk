@@ -547,31 +547,28 @@ child items only when the user expands the item.</para>
 <listitem><para>Michelle</para></listitem>
 <listitem><para>Diana</para></listitem></itemizedlist>
 </listitem></itemizedlist>
-<para>your example must look as follows:</para>
+<para>The program code should look similar to this:</para>
 <programlisting>
 <![CDATA[
-::method InitDialog
-  InitDlgRet = self~InitDialog:super
-  curTree = self~newTreeView("IDC_TREE")
-  if curTree \= .Nil then
-  do
-    curTree~add("Peter", , ,"BOLD EXPANDED")
-    curTree~add(,"Mike", , ,"EXPANDED")
-    curTree~add(, ,"George")
-    curTree~add(, ,"Monique")
-    curTree~add(, , ,"John")
-    curTree~add(, ,"Chris")
-    curTree~add(,"Maud")
-    curTree~add(,"Ringo")
-    curTree~add("Paul", , ,"BOLD EXPANDED")
-    curTree~add(,"Dave")
-    curTree~add(,"Sam")
-    curTree~add(,"Jeff")
-    curTree~add("Mary", , ,"BOLD EXPANDED")
-    curTree~add(,"Helen")
-    curTree~add(,"Michelle")
-    curTree~add(,"Diana")
-end
+::method initDialog
+  treeView = self~newTreeView("IDC_TREE")
+
+  treeView~add("Peter", , ,"BOLD EXPANDED")
+  treeView~add(,"Mike", , ,"EXPANDED")
+  treeView~add(, ,"George")
+  treeView~add(, ,"Monique")
+  treeView~add(, , ,"John")
+  treeView~add(, ,"Chris")
+  treeView~add(,"Maud")
+  treeView~add(,"Ringo")
+  treeView~add("Paul", , ,"BOLD EXPANDED")
+  treeView~add(,"Dave")
+  treeView~add(,"Sam")
+  treeView~add(,"Jeff")
+  treeView~add("Mary", , ,"BOLD EXPANDED")
+  treeView~add(,"Helen")
+  treeView~add(,"Michelle")
+  treeView~add(,"Diana")
 
 ]]>
 </programlisting>
