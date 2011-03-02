@@ -104,6 +104,22 @@ return testResult
    self~assertEquals(3, que~items)
    self~assertEquals('Tom', item)
 
+   item = que~remove(4)
+   self~assertEquals(3, que~items)
+   self~assertEquals(3, que~size)
+   self~assertNull(item)
+
+::method "test_delete"
+   que = .queue~of('Mike', 'David', 'Tom')
+   item = que~delete(1)
+   self~assertEquals(2, que~items)
+   self~assertEquals(2, que~size)
+   self~assertEquals('Mike', item)
+   item = que~delete(2)
+   self~assertEquals(1, que~items)
+   self~assertEquals(1, que~size)
+   self~assertEquals('Tom', item)
+
 ::method "test_4"
    que = .queue~of('Mike', 'David', 'Tom')
    self~assertEquals(3, que~items)

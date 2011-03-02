@@ -172,8 +172,22 @@ return testResult
 ::method "test_15"
    lst = .list~of(1,2,3)
    idx = lst~first()
-   lst~remove(idx)
+   self~assertEquals(1, lst~remove(idx))
    self~assertEquals(2, lst~items)
+   self~assertEquals(2, lst~size)
+   self~assertFalse(lst~hasIndex(idx))
+   self~assertNull(lst[idx])
+   idx = lst~first()
+   self~assertEquals(2, lst[idx])
+
+::method "test_delete"
+   lst = .list~of(1,2,3)
+   idx = lst~first()
+   self~assertEquals(1, lst~delete(idx))
+   self~assertEquals(2, lst~items)
+   self~assertEquals(2, lst~size)
+   self~assertFalse(lst~hasIndex(idx))
+   self~assertNull(lst[idx])
    idx = lst~first()
    self~assertEquals(2, lst[idx])
 
