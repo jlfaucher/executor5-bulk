@@ -1394,6 +1394,8 @@ makeColl: procedure
   self~assertTrue(a2~items=0)
   a2=a1~section(1)
   self~assertTrue(a2~items=1)
+  a2=a1~section(.array~of(1))
+  self~assertTrue(a2~items=1)
   a2=a1~section(1,0)
   self~assertTrue(a2~items=0)
   a2=a1~section(1,1)
