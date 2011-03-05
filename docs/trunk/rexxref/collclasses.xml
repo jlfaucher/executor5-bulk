@@ -131,12 +131,12 @@ the organization of the classes.</para>
       <link linkend="clsStem">Stem</link>
       <link linkend="clsTable">Table</link>
       <link linkend="clsIdentityTable">IdentityTable</link>
-   <link linkend="clsOrderedCollection">OrderedCollection</link>
+      <link linkend="clsOrderedCollection">OrderedCollection</link>
       <link linkend="clsArray">Array</link>
       <link linkend="clsList">List</link>
       <link linkend="clsQueue">Queue</link>
       <link linkend="clsCircularQueue">CircularQueue</link>
-   <link linkend="clsSetCollection">SetCollection</link>
+      <link linkend="clsSetCollection">SetCollection</link>
       <link linkend="clsBag">Bag</link>
       <link linkend="clsSet">Set</link>
 </programlisting>
@@ -591,7 +591,7 @@ such as an array or a list.
 
 <para>Append an item to the end of the collection ordering.
 This is an abstract method that must be implemented by a subclass
-if this class.</para>
+of this class.</para>
 </section>
 
 <section id="mthOrderedCollectionAppendAll"><title>appendAll</title>
@@ -611,6 +611,33 @@ if this class.</para>
 allItems() method.</para>
 </section>
 
+<section id="mthOrderedCollectionDelete"><title>delete</title>
+<indexterm><primary>delete method</primary>
+<secondary>of OrderedCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delete method</secondary>
+<tertiary>of OrderedCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+           +-,-----+
+           V       |
+>>-delete(---index-+-)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and deletes the member item with the specified
+<emphasis role="italic">index</emphasis> from the collection.
+If there is no
+item with the specified <emphasis role="italic">index</emphasis>,
+the Nil object is returned and
+no item is deletes.  All elements following the deleted item will be
+moved up in the collection ordering and the size of the collection will be
+reduced by 1 element.
+Depending on the nature of the collection,
+the indexes of the moved items may be modified by the deletion.
+</para>
+</section>
+
 <section id="mthOrderedCollectionDifference"><title>difference</title>
 <indexterm><primary>difference method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
@@ -628,6 +655,37 @@ only those items from the receiver that are not also contained in the
 <emphasis role="italic">argument</emphasis> collection.  The
 <emphasis role="italic">argument</emphasis> can be any collection class object.
 </para>
+</section>
+
+<section id="mthOrderedCollectionInsert"><title>insert</title>
+<indexterm><primary>insert method</primary>
+<secondary>of OrderedCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>insert method</secondary>
+<tertiary>of OrderedCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-insert(item-+--------+-)------------------------------------><
+               +-,index-+
+]]>
+</programlisting>
+
+<para>Returns a collection-supplied index for item
+<emphasis role="italic">item</emphasis>, which is added to the collection. The inserted
+item follows an existing item with index
+<emphasis role="italic">index</emphasis> in the collection ordering.
+If <emphasis role="italic">index</emphasis> is the Nil object, <emphasis role="italic">item</emphasis>
+becomes the first item in the ordered collection. If you omit
+<emphasis role="italic">index</emphasis>, the <emphasis role="italic">item</emphasis> becomes the last item in
+the collection.</para>
+<para>Inserting an item in the collection at position
+<emphasis role="italic">index</emphasis> will cause the items in the collection after
+position <emphasis role="italic">index</emphasis> to have their relative positions
+shifted by the collection object.
+Depending on the nature of the collection, the index values for any items already
+in the collection may be modified by the insertion.</para>
+<para>This is an abstract method that must be implemented by a subclass
+of this class.</para>
 </section>
 
 <section id="mthOrderedCollectionIntersection"><title>intersection</title>
@@ -1029,6 +1087,44 @@ Nil object.</para>
 <programlisting>
    a = .array~of("Mike", "Rick")
    say a~at(2)  -- says: "Rick"
+</programlisting>
+</section>
+
+<section id="mthArrayDelete"><title>delete</title>
+<indexterm><primary>delete method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delete method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+           +-,-----+
+           V       |
+>>-delete(---index-+-)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and deletes the member item with the specified
+<emphasis role="italic">index</emphasis> from the array.
+If there is no
+item with the specified <emphasis role="italic">index</emphasis>,
+the Nil object is returned and
+no item is deleted.  All elements following the deleted item will be
+moved up in the array ordering and the item indexes will adjusted for the deletion.  The size of the collection will be
+reduced by 1 element.
+</para>
+<para>
+The delete method is only valid with single-dimension arrays.  The
+The <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+indexes.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>delete method</secondary></indexterm>
+<programlisting>
+   a = .array~of("Fred", "Mike", "Rick", "David")
+   a~delete(2)  -- removes "Mike", resulting in the array
+                -- ("Fred", "Rick", "David")
 </programlisting>
 </section>
 
@@ -1458,10 +1554,14 @@ Mike
 <emphasis role="italic">index</emphasis>es from the array. If there is no
 item with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, the Nil object is returned and
-no item is removed.</para>
+no item is removed.  The index of the removed item becomes unused and
+the hasIndex method for the given index will now return false.  The size of
+the array is unchanged and no other indexes of the array are modified with the
+removal.
+</para>
 <para>
-  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
-  indexes.
+Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+indexes.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -2068,6 +2168,7 @@ stack-like LIFO (last in, first out) order.
 <member><link linkend="mthQueueAppend">append</link></member>
 <member><link linkend="mthQueueAt">at</link></member>
 <member><link linkend="mthQueueAtGet">[ ]</link></member>
+<member><link linkend="mthQueueDelete">[ ]</link></member>
 <member><link linkend="mthQueueEmpty">empty</link></member>
 <member><link linkend="mthQueueFirst">first</link></member>
 <member><link linkend="mthQueueHasIndex">hasIndex</link></member>
@@ -3237,6 +3338,31 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
+<section id="mthListDelete"><title>delete</title>
+<indexterm><primary>delete method</primary>
+<secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delete method</secondary>
+<tertiary>of List class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-delete(---index--)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and deletes the member item with the specified
+<emphasis role="italic">index</emphasis> from the list.
+If there is no
+item with the specified <emphasis role="italic">index</emphasis>,
+the Nil object is returned and
+no item is deleted.  All elements following the deleted item will be
+moved up in the list ordering, but the indexes associated with the moved items will not change.
+The size of the list will be
+reduced by 1 element.
+The delete method and the remove method produce the same result for the list class.
+</para>
+</section>
+
 <section id="mthListEmpty"><title>empty</title>
 <indexterm><primary>empty method</primary>
 <secondary>of List class</secondary></indexterm>
@@ -4082,6 +4208,38 @@ returning the index of the inserted item.</para>
 <para>Returns the item associated with index
 <emphasis role="italic">index</emphasis>. Returns the Nil object if the collection has no item associated with
 <emphasis role="italic">index</emphasis>.</para>
+</section>
+
+<section id="mthQueueDelete"><title>delete</title>
+<indexterm><primary>delete method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>delete method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-delete(---index--)-----------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns and deletes the member item with the specified
+<emphasis role="italic">index</emphasis> from the queue.
+If there is no
+item with the specified <emphasis role="italic">index</emphasis>,
+the Nil object is returned and
+no item is deleted.  All elements following the deleted item will be
+moved up in the queue ordering and the item indexes will adjusted for the deletion.  The size of the collection will be
+reduced by 1 element.
+The delete method and the remove method produce the same result for the list class.
+</para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>delete method</secondary></indexterm>
+<programlisting>
+   a = .queue~of("Fred", "Mike", "Rick", "David")
+   a~delete(2)  -- removes "Mike", resulting in the queue
+                -- ("Fred", "Rick", "David")
+</programlisting>
 </section>
 
 <section id="mthQueueEmpty"><title>empty</title>
