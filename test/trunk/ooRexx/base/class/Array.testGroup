@@ -1414,15 +1414,6 @@ makeColl: procedure
   return
 
 
-testSeq: procedure
-  use arg a1, a2, start
-
-  do i=1 to a2~items
-     if a1[i+start-1]<>a2[i] then return .false
-  end
-  return .true
-
-
 ::method "test_section_syntax1"
 
   a=.array~new
@@ -1631,16 +1622,6 @@ testSeq: procedure
 
   return
 
-
-testSeq: procedure
-  use arg a1, a2
-
-  do i=1 to a1~items
-     if a1[i]<>a2[i] then return .false
-  end
-  return a1~items=a2~items
-
-
 ::method "test_stableSort"
 
   a=.array~of
@@ -1683,17 +1664,6 @@ testSeq: procedure
   self~assertTrue(testSeq(a1, a2))
 
   return
-
-
-testSeq: procedure
-  use arg a1, a2
-
-  do i=1 to a1~items
-     if a1[i]<>a2[i] then return .false
-  end
-  return a1~items=a2~items
-
-
 
 ::method "test_sort_with"
 
@@ -1743,17 +1713,6 @@ testSeq: procedure
   return
 
 
-testSeq: procedure
-  use arg a1, a2
-
-  do i=1 to a1~items
-     if a1[i]<>a2[i] then return .false
-  end
-  return a1~items=a2~items
-
-
-
-
 ::method "test_stableSort_with"
 
   c=.DescendingComparator~new    -- sort descendingly
@@ -1800,15 +1759,6 @@ testSeq: procedure
   self~assertTrue(testSeq(a1, a2))
 
   return
-
-
-testSeq: procedure
-  use arg a1, a2
-
-  do i=1 to a1~items
-     if a1[i]<>a2[i] then return .false
-  end
-  return a1~items=a2~items
 
 
 ::method testInsert
@@ -1977,3 +1927,12 @@ testSeq: procedure
      tmpStr=tmpStr'"'o~string'"'
   end
   return tmpStr")"
+
+
+::routine testseq
+  use arg a1, a2, start=1
+
+  do i=1 to a2~items
+     if a1[i+start-1]<>a2[i] then return .false
+  end
+  return .true
