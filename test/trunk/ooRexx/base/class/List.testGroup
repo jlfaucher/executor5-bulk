@@ -620,20 +620,6 @@ return testResult
 
   return
 
-
-testSeq: procedure
-  use arg a1, a2, start
-
-  do i=0 to a2~items-1
-     if a1[i+start-1]<>a2[i] then return .false
-  end
-  return .true
-
-
-
-
-
-
 ::method "test_subset"
   expose collDir clz bUserDefinedIndex bSingleItem
 
@@ -1121,3 +1107,21 @@ makeColl: procedure
   end
   return tmpStr")"
 
+
+::routine testseq
+  use arg a1, a2, start=1
+
+  a1index = a1~first
+  loop while start > 1
+      a1index = a1~next(a1index)
+      start -= 1
+  end
+
+  a2index = a2~first
+
+  do i=1 to a2~items
+     if a1[a1index]<>a2[a2index] then return .false
+     a1index = a1~next(a1index)
+     a2index = a2~next(a2index)
+  end
+  return .true
