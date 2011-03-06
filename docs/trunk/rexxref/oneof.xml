@@ -124,7 +124,7 @@ logical and comparison operations.
 <para>The Local environment object is a directory of interpreter instance
 objects that are always accessible.  You can access objects in the Local
 environment object in the same way as objects in the Environment object.
-The Local object contains the .INPUT, .OUTPUT, and .ERROR Monitor objects used for
+The Local object contains the .INPUT, .OUTPUT, .ERROR, .DEBUGINPUT, and .TRACEOUTPUT Monitor objects used for
 Rexx console I/O, the .STDIN, .STDOUT, and .STDERR output streams that are the default
 I/O targets, and the .STDQUE RexxQueue instance used for Rexx external queue operations.
 </para>
@@ -163,6 +163,22 @@ say "This goes into a file, and not onto the screen!"
 </programlisting>
 </section>
 
+<section id="debuginputobj"><title>The Debug Input Monitor (.DEBUGINPUT)</title>
+<indexterm><primary>debug input object</primary></indexterm>
+<indexterm><primary>.DEBUGINPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.DEBUGINPUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.DEBUGINPUT object</secondary></indexterm>
+<para>This monitor object (see
+<link linkend="clsMonitor">The Monitor Class</link>) holds the default interactive debug input stream
+object (see <link linkend="iostrms">Input and Output Streams</link>).
+This input stream is the source for all input for interactive debug mode.
+</para>
+<para>The default for this object's initial source is the .INPUT
+monitor.</para>
+</section>
+
 <section id="erobj"><title>The Error Monitor (.ERROR)</title>
 <indexterm><primary>.ERROR object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
@@ -170,7 +186,7 @@ say "This goes into a file, and not onto the screen!"
 <indexterm><primary>public object</primary>
 <secondary>.ERROR object</secondary></indexterm>
 <para>This monitor object (see
-<link linkend="clsMonitor">The Monitor Class</link>) holds the trace stream
+<link linkend="clsMonitor">The Monitor Class</link>) holds the error stream
 object. You can redirect the trace output in the same way as with the output
 object in the Monitor class example.</para>
 <para>The default for this object's initial destination is the .STDERR
@@ -181,7 +197,7 @@ stream.</para>
 <indexterm><primary>input object</primary></indexterm>
 <indexterm><primary>.INPUT object</primary></indexterm>
 <indexterm><primary>built-in object</primary>
-<secondary>.INTPUT object</secondary></indexterm>
+<secondary>.INPUT object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.INPUT object</secondary></indexterm>
 <para>This monitor object (see
@@ -212,6 +228,20 @@ LINEOUT built-in function. You can replace this object in the environment
 to direct such output elsewhere (for example, to a transcript window).</para>
 <para>The default for this object's initial destination is the .STDOUT
 stream.</para>
+</section>
+
+<section id="traceoutputobj"><title>The Trace Output Monitor (.TRACEOUTPUT)</title>
+<indexterm><primary>.TRACEOUTPUT object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.TRACEOUTPUT object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.TRACEOUPUT object</secondary></indexterm>
+<para>This monitor object (see
+<link linkend="clsMonitor">The Monitor Class</link>) holds the trace output target
+object. You can redirect the trace output in the same way as with the output
+object in the Monitor class example.</para>
+<para>The default for this object's initial destination is the .OUTPUT
+monitor.</para>
 </section>
 
 <section id="errorobj"><title>The STDERR Stream (.STDERR)</title>
