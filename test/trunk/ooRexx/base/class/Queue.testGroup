@@ -1135,6 +1135,31 @@ return testResult
   return 0
   -- End printObjectArray( )
 
+
+::method "test_section"
+  a1=.queue~of(1)
+  a2=a1~section(1)
+  self~assertEquals(1, a2~items)
+  self~assertTrue(testSeq(.queue~of(1), a2))
+
+  a2=a1~section(1,1)
+  self~assertEquals(1, a2~items)
+  self~assertTrue(testSeq(.queue~of(1), a2))
+
+  a2=a1~section(1,5)
+  self~assertEquals(1, a2~items)
+  self~assertTrue(testSeq(.queue~of(1), a2))
+
+  a1=.queue~of(1,2,3,4,5)
+  a2=a1~section(2)
+  self~assertEquals(4, a2~items)
+  self~assertTrue(testSeq(.queue~of(2,3,4,5), a2))
+  a2=a1~section(2,2)
+  self~assertEquals(2, a2~items)
+  self~assertTrue(testSeq(.queue~of(2,3), a2))
+
+  return
+
 -- End of class: Queue.testGroup
 
 ::routine testseq
