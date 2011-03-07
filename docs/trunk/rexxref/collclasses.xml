@@ -707,6 +707,33 @@ role="italic">argument</emphasis> can be any collection class object.
 </para>
 </section>
 
+<section id="mthOrderedCollectionSection"><title>section</title>
+<indexterm><primary>section method</primary>
+<secondary>of OrderedCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>section method</secondary>
+<tertiary>of OrderedCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-section(start-+--------+-)----------------------------------><
+                 +-,items-+
+]]>
+</programlisting>
+
+<para>Returns a new collection (of the same class as the receiver) containing selected
+items from the receiver.  The first item in the new collection is the item
+corresponding to index <emphasis role="italic">start</emphasis>
+in the receiver. Subsequent items in the new collection correspond to those
+in the receiver, in the same sequence. If you specify the whole number
+<emphasis role="italic">items</emphasis>, the new collection contains only
+this number of items (or the number of subsequent items in the receiver,
+if this is less than <emphasis role="italic">items</emphasis>).
+If you do not specify <emphasis role="italic">items</emphasis>,
+the new collection contains all subsequent items of the receiver. The receiver
+remains unchanged.
+</para>
+</section>
+
 <section id="mthOrderedCollectionSort"><title>sort</title>
 <indexterm><primary>sort method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
@@ -4675,6 +4702,32 @@ one index, the first located item is removed.  The return value is the
 removed item.
 Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
 </para>
+</section>
+
+<section id="mthQueueSection"><title>section</title>
+<indexterm><primary>section method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>section method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-section(start-+--------+-)----------------------------------><
+                 +-,items-+
+]]>
+</programlisting>
+
+<para>Returns a new queue (of the same class as the receiver) containing selected
+items from the receiver. The first item in the new queue is the item corresponding
+to index <emphasis role="italic">start</emphasis> in the receiver.
+Subsequent items in the new queue correspond to those in the receiver
+(in the same sequence). If you specify the whole number
+<emphasis role="italic">items</emphasis>, the new queue contains only this
+number of items (or the number of subsequent items in the receiver, if this
+is less than <emphasis role="italic">items</emphasis>). If you do not specify
+<emphasis role="italic">items</emphasis>, the new
+queue contains all subsequent items from the receiver. The receiver queue
+remains unchanged.</para>
 </section>
 
 <section id="mthQueueSupplier"><title>supplier</title>
