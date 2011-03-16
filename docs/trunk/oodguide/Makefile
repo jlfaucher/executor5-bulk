@@ -45,7 +45,7 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 
 xml_FILES = oodguide.xml \
-	     overview.xml \
+	     chapter1.xml \
 	     preface.xml \
 	     ../shared/notices.xml \
 	     ../shared/legalstuff.xml \
