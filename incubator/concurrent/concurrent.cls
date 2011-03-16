@@ -42,9 +42,24 @@
  *
  **/
 
+/**
+ * A thread class. Each thread executes a piece of code in parallel to other
+ * executions. A thread can be identified with a name, which can be any object.
+ * Clients have to implement the method <code>process</code>, which is run
+ * on its own system thread. Call the <code>start</code> method to start the
+ * thread. A thread can only be started once. The status methods provide more
+ * information about the current state.
+ * To wait for thread termination, use the <code>join</code> method.
+ *
+ **/
+::class Thread PUBLIC
 
-::class THREAD PUBLIC
-
+/**
+ * Create a new thread.
+ *
+ * @param name Optional name for the thread. Defaults to <code>Unnamed
+ * Thread</code>
+ **/
 ::method init
   expose interrupt running alive name
   use strict arg name="Unnamed Thread"
@@ -52,9 +67,20 @@
   started = .false
   alive = .false
 
+/**
+ * Client provided code to run on a differen thread.
+ **/
 ::method process ABSTRACT
+
+/**
+ * Get the thread's name.
+ **/
 ::attribute name get
 
+
+/**
+ * Start the thread.
+ **/
 ::method start
   expose started
   reply
@@ -62,26 +88,50 @@
   self~process
   alive = .false
 
+/**
+ * Interrupt the thread. Clients can use method <code>isInterrupted</code> to
+ * check for interrupted state.
+ **/
 ::method interrupt
   expose interrupt
   interrupt = .true
 
+/**
+ * Check if a state is interrupted.
+ * @return <code>.true</code> if the thread has been interrupted,
+ *         <code>.false</code> otherwise.
+ **/
 ::method isInterrupted
   expose interrupt
   return interrupt
 
+/**
+ * Wait for thread termination.
+ **/
 ::method join UNGUARDED
   expose alive
   guard on when alive = .false
 
+/**
+ * Check whether this thread is alive, meaning that it has not yet terminated.
+ * @return <code>.true</code> if the thread has not ended.
+ **/
 ::method isAlive
   expose alive
   return alive
 
+/**
+ * Checks whether the thread has been started already.
+ * @returns <code>.true</code> if the thread has been started with
+ * <code>start</code>.
+ **/
 ::method isStarted
   expose started
   return started
 
+/**
+ * A thread that executes a message in a separate thread.
+ **/
 ::class MessageThread subclass Thread PUBLIC
 ::method init
   expose message
@@ -96,6 +146,12 @@
  * pooled threads.
  */
 ::class THREADPOOL PUBLIC
+
+/**
+ * Create a new thread pool.
+ * @param min The minimal number of pooled threads.
+ * @param max The maximal number of pooled threads.
+ **/
 ::method init
   expose min max threads messages running idle size
   use strict arg min=2, max=5
@@ -115,6 +171,9 @@
   size = size + 1
   return thread
 
+/**
+ * Stop the thread pool.
+ **/
 ::method shutdown
   expose shutdown idle running
   shutdown = .true
@@ -127,6 +186,9 @@
     r~join
   end
 
+/**
+ * Post a message to the pool.
+ **/
 ::method post
   expose messages
   use strict arg message
