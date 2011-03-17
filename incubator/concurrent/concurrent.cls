@@ -42,6 +42,18 @@
  *
  **/
 
+
+namespace = "org.oorexx.concurrent."
+package = .Context~package
+export(package, namespace, .Thread)
+export(package, namespace, .ThreadPool)
+
+
+::routine export
+  use strict arg package, namespace, class
+  package~addPublicClass(namespace||class~id,class)
+  return ""
+
 /**
  * A thread class. Each thread executes a piece of code in parallel to other
  * executions. A thread can be identified with a name, which can be any object.
@@ -52,7 +64,7 @@
  * To wait for thread termination, use the <code>join</code> method.
  *
  **/
-::class Thread PUBLIC
+::class Thread
 
 /**
  * Create a new thread.
@@ -61,11 +73,10 @@
  * Thread</code>
  **/
 ::method init
-  expose interrupt running alive name
-  use strict arg name="Unnamed Thread"
+  expose interrupt started name message
+  use strict arg name="Unnamed Thread", message=(.Message~new(self, "process"))
   interrupt = .false
   started = .false
-  alive = .false
 
 /**
  * Client provided code to run on a differen thread.
@@ -77,48 +88,43 @@
  **/
 ::attribute name get
 
-
 /**
  * Start the thread.
  **/
 ::method start
-  expose started
-  reply
+  expose message started
+  use strict arg
   started = .true
-  self~process
-  alive = .false
+  message~start
 
 /**
  * Interrupt the thread. Clients can use method <code>isInterrupted</code> to
  * check for interrupted state.
  **/
+::method interrupted
+  expose interrupt
+  use strict arg
+  return interrupt
+
 ::method interrupt
   expose interrupt
+  use strict arg
   interrupt = .true
 
 /**
- * Check if a state is interrupted.
- * @return <code>.true</code> if the thread has been interrupted,
- *         <code>.false</code> otherwise.
- **/
-::method isInterrupted
-  expose interrupt
-  return interrupt
-
-/**
  * Wait for thread termination.
- **/
+ */
 ::method join UNGUARDED
-  expose alive
-  guard on when alive = .false
+  expose message
+  message~result
 
 /**
- * Check whether this thread is alive, meaning that it has not yet terminated.
- * @return <code>.true</code> if the thread has not ended.
- **/
-::method isAlive
-  expose alive
-  return alive
+ * Check whether this thread has completed, meaning that it has terminated.
+ * @return <code>.true</code> if the thread has ended.
+ */
+::method completed
+  expose message
+  return message~completed
 
 /**
  * Checks whether the thread has been started already.
@@ -130,22 +136,10 @@
   return started
 
 /**
- * A thread that executes a message in a separate thread.
- **/
-::class MessageThread subclass Thread PUBLIC
-::method init
-  expose message
-  use strict arg message
-
-::method process
-  expose message
-  message~send
-
-/**
  * A thread pool. Allows to run executable objects using a number of
  * pooled threads.
  */
-::class THREADPOOL PUBLIC
+::class ThreadPool
 
 /**
  * Create a new thread pool.
@@ -166,7 +160,7 @@
 
 ::method createThread PRIVATE
   expose idle size max
-  thread = .ThreadPoolThread~new(self, size)
+  thread = .ThreadPoolThread~new(self, "Thread Pool Thread "||size)
   thread~start
   size = size + 1
   return thread
@@ -244,7 +238,7 @@
 ::method process
   expose threadpool message name interrupted
 --  trace r
-  do while \ self~isInterrupted
+  do while \ self~interrupted
     guard on when message \= .nil | interrupted
     if interrupted then return
     message~send

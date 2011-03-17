@@ -40,6 +40,8 @@
  * Sample program to demonstrate concurrent utilitites.
  * Moritz Hoffmann - 110316
  **/
+import(.org.oorexx.concurrent.ThreadPool)
+
 thread1 = .MyThread~new("1")
 thread2 = .MyThread~new("2")
 
@@ -65,7 +67,14 @@ processor~post(msg)
 processor~shutdown
 say "result:" msg~result
 
-::class MyThread subclass Thread
+
+::routine import
+  use strict arg class
+  dotPos = class~id~lastpos(".")
+  .context~package~addClass(class~id~substr(dotPos+1,class~id~length), class)
+  return ""
+
+::class MyThread subclass org.oorexx.concurrent.Thread
 ::method process
   do 10
     say "MyThread" self~name
