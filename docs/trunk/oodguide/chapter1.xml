@@ -40,22 +40,132 @@
 <chapter id="chapOne"><title>In The Beginning</title>
 <indexterm><primary>overview</primary></indexterm>
 <para>
-  More text.
+  The whole purpose of ooDialog is to enable ooRexx developers to provide users with 
+  a GUI (graphical user interface). A GUI is a collection of windows. Each window contains a 
+  number of controls, such as entry fields, push buttons, list boxes, and so forth. The user 
+  keys data into controls (e.g. types into an entry field) or manipulates controls with a mouse  
+  (e.g. selects an item in a listbox). Some of these actions invoke application code which in turn
+  makes some change to the window, causes some other action such as data access, or both.   
 </para>
 <para>
-  More words.
+  Now, there are three areas of concern in designing an ooDialog application:
 </para>
-
+<itemizedlist>
+<listitem><para>Designing the appearance of the window</para></listitem>
+<listitem><para>Designing the desired user interactions with the window</para></listitem>
+<listitem><para>Designing the code that implements both appearance and interactions</para></listitem>
+</itemizedlist>
+<para>
+  And there are three corresponding areas of implementation concern:
+</para>
+<itemizedlist>
+<listitem><para>Laying out the window</para></listitem>
+<listitem><para>Implementing the actions requested by users of a window</para></listitem>
+<listitem><para>Providing the results of those actions to the user on the window.</para></listitem>
+</itemizedlist>
+<para>
+  This document does not pretend to be a guide to best practice in the areas of design, although 
+  it tries to conform with good design principles. However, this document 
+  <emphasis role="italic">does</emphasis> aim to familiarise readers with the essentials of 
+  ooDialog application implementation.  
+</para>
+<para>  
+  So, before starting the first exercise, please make sure that you have downloaded and installed the 
+  latest versions of ooRexx and also ooDialog. Please also run one or more of the samples in 
+  ooRexx Samples --> ooDialog to ensure that your installation is properly completed.  
+</para>
 <section id="sctGettingStarted"><title>Getting Started</title>
 <para>
-  Text.
+  The first exercise creates and displays a blank window with the title "Hello World!". Try it - find "Exercise01.rex" 
+  in the "Sample Code\Exercise01" folder, and double-click it. You should see this:
+<!--
+<imagedata>
+  <figure id="fig01"><title>Exercise01 Result</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="Exercise01\Exercise01-Image1.jpg" scale="70">
+      </imageobject>
+    </mediaobject>
+  </figure>
+</imagedata>  
+-->
 </para>
 <para>
-  Text.
+  The Command Prompt window that appears with the "Hello World" window is irrelevant, and later we'll find out how to dispense with it. 
+  But now, let's look at the "Hello World" code (excluding the comments that are in the file):  
 </para>
+<itemizedlist>
+  <listitem><para>
+    First, the program that does the work : 
+    <programlisting>
+      <![CDATA[
+      dlg = .MyDialog~new
+      dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+      ]]>
+    </programlisting>
+    The first statement creates an instance of the class <emphasis role="italic">MyDialog</emphasis>, and assigns the instance to the 
+    variable <emphasis role="italic">dlg</emphasis> (the <emphasis role="italic">MyDialog</emphasis> class is defined in the third part of the code). 
+    The second statement invokes the <emphasis role="italic">execute</emphasis> method of <emphasis role="italic">MyDialog</emphasis>, and it is this 
+    that displays the window.
+    </para>
+    <para>
+    Note that the usual naming conventions are observed: upper camel case for classes (e.g. <computeroutput>MyDialog</computeroutput>and lower camel case for 
+    variables (including of course instance variables - e.g. <computeroutput>dlg</computeroutput>).    
+    </para></listitem>
+  <listitem><para>
+    Second, the directive to ooRexx to use ooDialog:    
+    <programlisting>
+      <![CDATA[
+      ::requires "ooDialog.cls"
+      ]]>
+    </programlisting>
+    This one directive allows all the classes defined by ooDialog (including <emphasis role="italic">UserDialog</emphasis>) to be accessible to our program. 
+    If this statement is absent, then the following error appears on the initiating comand prompt:  
+    <programlisting>
+      <![CDATA[
+      16 *-* ::class 'MyDialog' subclass UserDialog
+      Error 98 running ... Exercise01\Exercise01.rex line 16: Execution error 
+      Error 98.909:  Class "USERDIALOG" not found
+      ]]>
+    </programlisting>
+    Note that it's <computeroutput>UserDialog</computeroutput> (see next bullet) that's not found. 
+    This is because the <computeroutput>::requires ooDialog.cls</computeroutput> statement not only says we're using ooDialog, but also provides 
+    access to all the classes provided <emphasis role="italic">by</emphasis> ooDialog. Later, we'll see a further use  
+    for the <computeroutput>::requires</computeroutput> directive.  
+  </para></listitem>
+  <listitem><para>
+    Finally, there's the definition of the class <emphasis role="italic">MyDialog</emphasis>: 
+    <![CDATA[
+    ::class MyDialog subclass UserDialog		
+    ::method init
+      forward class (super) continue	 
+      self~create(30, 30, 257, 123, "Hello World", "CENTER")
+    ]]>
+    The first line defines a class called <computeroutput>MyDialog</computeroutput> as a subclass of 
+    the ooDialog-provided class <computeroutput>UserDialog</computeroutput>
+    <footnote><para>See Chapter 7 of the ooDialog Reference for full details.</para></footnote>
+    Among other things, <emphasis role="italic">UserDialog</emphasis> enables the programmer to define the window layout in code. 
+    This can get cumbersome in more advanced dialogs, and later we'll meet a simpler way of defining a more realistic window layout.
+    </para>
+    <para>
+    The second line defines the <emphasis role="italic">init</emphasis> method, and the third line calls the superclass which does 
+    the heavy work of creating the window.
+    <footnote><para>See Chapter 3 of the ooDialog Reference manual.</para></footnote>
+    This is supplemented by the last line, where the <computeroutput>create</computeroutput> message is sent to 
+    <computeroutput>self</computeroutput> and hence to <computeroutput>UserDialog</computeroutput>. This method defines the "template" to 
+    be used - that is, the layout of the window - in this case the position and size of the "Hello World" window, as well as the text to 
+    be dispayed in the window's title bar.<footnote><para>See Chapter 7 of the Windows ooDialog Reference.</para></footnote>
+    </para>
+    <para>Finally, this instance of the <computeroutput>MyDialog</computeroutput> class having been set up properly, the window is 
+    actually surfaced (made visible) by the <emphasis role="italic">execute</emphasis> message (handled by MyDialog's superclass)
+    sent by the second statement in the first part of the program (see above).  
+    </para>    
+   </listitem>
+</itemizedlist>
+  
 </section>
 
-<section id="someID"><title>Some Title</title>
+<section id="someID"><title>Visible Bahaviour</title>
 <para>
   Text.
 </para>
