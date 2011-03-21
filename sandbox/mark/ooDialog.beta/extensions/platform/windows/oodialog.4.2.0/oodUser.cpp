@@ -82,7 +82,8 @@ DWORD WINAPI WindowUsrLoopThread(LoopThreadArgs * args)
     bool *release = args->release;
     pCPlainBaseDialog pcpbd = args->pcpbd;
 
-    pcpbd->hDlg = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)args->dlgTemplate, NULL, (DLGPROC)RexxDlgProc, (LPARAM)pcpbd);
+    pcpbd->hDlg = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)args->dlgTemplate, pcpbd->hOwnerDlg,
+                                            (DLGPROC)RexxDlgProc, (LPARAM)pcpbd);
 
     if ( pcpbd->hDlg )
     {
@@ -496,6 +497,10 @@ bool addToDialogTemplate(RexxMethodContext *c, pCDynamicDialog pcdd, SHORT kind,
  */
 #define USERDIALOG_CLASS  "UserDialog"
 
+/** UserDialog::new()
+ *
+ *
+ */
 RexxMethod7(RexxObjectPtr, userdlg_init, OPTIONAL_RexxObjectPtr, dlgData, OPTIONAL_RexxObjectPtr, includeFile,
             OPTIONAL_RexxObjectPtr, library, OPTIONAL_RexxObjectPtr, resourceID, OPTIONAL_RexxObjectPtr, owner,
             SUPER, super, OSELF, self)
@@ -1174,11 +1179,17 @@ RexxMethod9(logical_t, dyndlg_create, uint32_t, x, int32_t, y, int32_t, cx, uint
         title = "";
     }
 
+    pCPlainBaseDialog pcpbd = pcdd->pcpbd;
+
     if ( argumentExists(6) )
     {
-        if ( StrStrI(opts, "CONTROL") != NULL )
+        if ( pcpbd->isControlDlg || StrStrI(opts, "CONTROL") != NULL )
         {
-            style = DS_SETFONT | DS_CONTROL | WS_CHILD;
+            style = DS_SETFONT | DS_CONTROL;
+            if ( StrStrI(opts, "NOTCHILD") == NULL )
+            {
+                style |= WS_CHILD;
+            }
         }
         else
         {
@@ -1201,8 +1212,6 @@ RexxMethod9(logical_t, dyndlg_create, uint32_t, x, int32_t, y, int32_t, cx, uint
             style |= WS_VISIBLE;
         }
     }
-
-    pCPlainBaseDialog pcpbd = pcdd->pcpbd;
 
     if ( ! adjustDialogFont(context, args, pcpbd) )
     {
@@ -1254,13 +1263,13 @@ err_out:
     return FALSE;
 }
 
+
 /** DyamicDialog::startParentDialog()
  *
  *  Creates the underlying Windows dialog for a user dialog (or one of its
  *  subclasses) object.  This is the counterpart to the ResDialog::startDialog()
  *  which is only used to create the underlying Windows dialog for ResDialog
  *  dialogs.
- *
  *
  */
 RexxMethod3(logical_t, dyndlg_startParentDialog, uint32_t, iconID, logical_t, modeless, CSELF, pCSelf)
@@ -1277,6 +1286,15 @@ RexxMethod3(logical_t, dyndlg_startParentDialog, uint32_t, iconID, logical_t, mo
     if ( p == NULL )
     {
         return illegalBuffer();
+    }
+
+    if ( pcpbd->isOwnedDlg )
+    {
+        modeless = TRUE;
+        if ( ! processOwnedDialog(context, pcpbd) )
+        {
+            return false;
+        }
     }
 
     ULONG thID;
@@ -2401,47 +2419,54 @@ RexxMethod3(int32_t, dyndlg_addIconResource, RexxObjectPtr, rxID, CSTRING, fileN
 
     if ( pcpbd->IconTab == NULL )
     {
-        pcpbd->IconTab = (ICONTABLEENTRY *)LocalAlloc(LPTR, sizeof(ICONTABLEENTRY) * MAX_IT_ENTRIES);
+        pcpbd->IconTab = (ICONTABLEENTRY *)LocalAlloc(LPTR, sizeof(ICONTABLEENTRY) * DEF_MAX_IT_ENTRIES);
         if ( pcpbd->IconTab == NULL )
         {
             outOfMemoryException(context->threadContext);
             goto done_out;
         }
-        pcpbd->IT_size = 0;
+        pcpbd->IT_nextIndex = 0;
+        pcpbd->IT_size = DEF_MAX_IT_ENTRIES;
     }
 
-    if ( pcpbd->IT_size < MAX_IT_ENTRIES )
+    if ( pcpbd->IT_nextIndex >= pcpbd->IT_size )
     {
-        size_t i;
-
-        // If there is already a resource with this ID, it is replaced.
-        for ( i = 0; i < pcpbd->IT_size; i++ )
+        HLOCAL temp = LocalReAlloc(pcpbd->IconTab, sizeof(ICONTABLEENTRY) * pcpbd->IT_size * 2, LMEM_ZEROINIT | LMEM_MOVEABLE);
+        if ( temp == NULL )
         {
-            if ( pcpbd->IconTab[i].iconID == iconID )
-                break;
-        }
-
-        char *buf = (char *)LocalAlloc(LPTR, strlen(fileName) + 1);
-        if ( buf == NULL )
-        {
-            outOfMemoryException(context->threadContext);
+            internalErrorMsgBox(OOD_ADDICONFILE_ERR_MSG, OOD_RESOURCE_ERR_TITLE);
             goto done_out;
         }
-        strcpy(buf, fileName);
-        StrTrim(buf, " \"'");
 
-        pcpbd->IconTab[i].fileName = buf;
-        pcpbd->IconTab[i].iconID = iconID;
-        if ( i == pcpbd->IT_size )
-        {
-            pcpbd->IT_size++;
-        }
-        rc = 0;
+        pcpbd->IT_size *= 2;
+        pcpbd->IconTab = (ICONTABLEENTRY *)temp;
     }
-    else
+
+    size_t i;
+
+    // If there is already a resource with this ID, it is replaced.
+    for ( i = 0; i < pcpbd->IT_nextIndex; i++ )
     {
-        internalErrorMsgBox(OOD_ADDICONFILE_ERR_MSG, OOD_RESOURCE_ERR_TITLE);
+        if ( pcpbd->IconTab[i].iconID == iconID )
+            break;
     }
+
+    char *buf = (char *)LocalAlloc(LPTR, strlen(fileName) + 1);
+    if ( buf == NULL )
+    {
+        outOfMemoryException(context->threadContext);
+        goto done_out;
+    }
+    strcpy(buf, fileName);
+    StrTrim(buf, " \"'");
+
+    pcpbd->IconTab[i].fileName = buf;
+    pcpbd->IconTab[i].iconID = iconID;
+    if ( i == pcpbd->IT_nextIndex )
+    {
+        pcpbd->IT_nextIndex++;
+    }
+    rc = 0;
 
 done_out:
     return rc;

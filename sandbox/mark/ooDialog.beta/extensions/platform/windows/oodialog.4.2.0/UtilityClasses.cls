@@ -65,6 +65,10 @@
 ::method makeLParam class external "LIBRARY oodialog dlgutil_makeLPARAM_cls"
 ::method and class external "LIBRARY oodialog dlgutil_and_cls"
 ::method or class external "LIBRARY oodialog dlgutil_or_cls"
+::method shiftLeft class external "LIBRARY oodialog dlgutil_shiftLeft_cls"
+::method shiftRight class external "LIBRARY oodialog dlgutil_shiftRight_cls"
+::method sShiftLeft class external "LIBRARY oodialog dlgutil_sShiftLeft_cls"
+::method sShiftRight class external "LIBRARY oodialog dlgutil_sShiftRight_cls"
 ::method screenSize class external "LIBRARY oodialog dlgutil_screenSize_cls"
 ::method screenArea class external "LIBRARY oodialog dlgutil_screenArea_cls"
 ::method getSystemMetrics class external "LIBRARY oodialog dlgutil_getSystemMetrics_cls"
@@ -94,6 +98,7 @@
 
 
 ::class 'Rect' public
+::method init class external "LIBRARY oodialog rect_init_cls"
 ::method init external "LIBRARY oodialog rect_init"
 ::attribute left get external "LIBRARY oodialog rect_left"
 ::attribute left set external "LIBRARY oodialog rect_setLeft"

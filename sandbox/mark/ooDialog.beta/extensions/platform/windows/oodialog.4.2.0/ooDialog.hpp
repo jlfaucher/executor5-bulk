@@ -51,23 +51,27 @@
 #include <CommCtrl.h>
 #include "oorexxapi.h"
 
-#define NR_BUFFER           15
-#define DATA_BUFFER       8192
-#define MAX_BT_ENTRIES     300
-#define MAX_DT_ENTRIES     750
-#define MAX_CT_ENTRIES    1000
-#define MAX_IT_ENTRIES      20
-#define MAXCHILDDIALOGS     20
-#define MAXDIALOGS          20
+#define NR_BUFFER               15
+#define DATA_BUFFER           8192
+#define MAXCHILDDIALOGS         20
+#define MAXDIALOGS              20
 
 #define DEFAULT_FONTNAME            "MS Shell Dlg"
-#define DEFAULT_FONTSIZE            8
+#define DEFAULT_FONTSIZE              8
 #define MAX_DEFAULT_FONTNAME        256
 #define MAX_LIBRARYNAME             256
 
-#define MAX_NOTIFY_MSGS    200
-#define MAX_COMMAND_MSGS   200
-#define MAX_MISC_MSGS      100
+/*
+ * The number of table entries is per dialog.  100 controls per dialog seems
+ * like more than plenty.
+ */
+#define DEF_MAX_BT_ENTRIES           50
+#define DEF_MAX_DT_ENTRIES          100
+#define DEF_MAX_CT_ENTRIES          100
+#define DEF_MAX_IT_ENTRIES           20
+#define DEF_MAX_NOTIFY_MSGS         100
+#define DEF_MAX_COMMAND_MSGS        100
+#define DEF_MAX_MISC_MSGS            50
 
 /* User defined window messages used for RexxDlgProc() */
 #define WM_USER_CREATECHILD            WM_USER + 0x0601
@@ -82,7 +86,7 @@
 #define WM_USER_CREATECONTROL_DLG      WM_USER + 0x060A
 #define WM_USER_CREATECONTROL_RESDLG   WM_USER + 0x060B
 
-#define WM_USER_CREATEPROPSHEET_DLG   WM_USER + 0x060C
+#define WM_USER_CREATEPROPSHEET_DLG    WM_USER + 0x060C
 
 #define OODDLL                      "oodialog.dll"
 #define OOD_LVL_MAJOR               4
@@ -470,9 +474,12 @@ typedef struct _enCSelf {
     MESSAGETABLEENTRY  *notifyMsgs;
     MESSAGETABLEENTRY  *commandMsgs;
     MESSAGETABLEENTRY  *miscMsgs;
-    size_t              nmSize;
+    size_t              nmSize;        // Size of  table.
+    size_t              nmNextIndex;   // Next free index in table.
     size_t              cmSize;
+    size_t              cmNextIndex;
     size_t              mmSize;
+    size_t              mmNextIndex;
     HWND                hDlg;
     RexxObjectPtr       rexxSelf;
     HHOOK               hHook;
@@ -519,18 +526,23 @@ typedef struct _pbdCSelf {
     pCWindowBase         wndBase;
     pCEventNotification  enCSelf;
     pCWindowExtensions   weCSelf;
-    RexxObjectPtr        rexxSelf;
+    RexxObjectPtr        rexxSelf;      // This dialog's Rexx dialog object
     HWND                 hDlg;
-    RexxObjectPtr        rexxOwner;
+    RexxObjectPtr        rexxOwner;     // This dialog's Rexx owner dialog object
     HWND                 hOwnerDlg;
+    RexxObjectPtr        rexxParent;    // This dialog's Rexx parent dialog object
     void                *dlgPrivate;    // Subclasses can store data unique to the subclass
     DATATABLEENTRY      *DataTab;
     ICONTABLEENTRY      *IconTab;
     COLORTABLEENTRY     *ColorTab;
     BITMAPTABLEENTRY    *BmpTab;
+    size_t               DT_nextIndex;
     size_t               DT_size;
+    size_t               IT_nextIndex;
     size_t               IT_size;
+    size_t               CT_nextIndex;
     size_t               CT_size;
+    size_t               BT_nextIndex;
     size_t               BT_size;
     HBRUSH               bkgBrush;
     HBITMAP              bkgBitmap;
@@ -542,6 +554,8 @@ typedef struct _pbdCSelf {
     bool                 onTheTop;
     bool                 isCategoryDlg;  // Need to use IsNestedDialogMessage()
     bool                 isControlDlg;   // Dialog was created as DS_CONTROL | WS_CHILD
+    bool                 isInitializing; // ControlDialog attribute
+    bool                 isOwnedDlg;     // Dialog has an owner dialog
     bool                 isPageDlg;      // Dialog is a property sheet page dialog
     bool                 isPropSheetDlg; // Dialog is a property sheet dialog
     bool                 sharedIcon;
@@ -575,7 +589,7 @@ typedef CDialogControl *pCDialogControl;
 typedef struct _ddCSelf {
     pCPlainBaseDialog  pcpbd;
     RexxObjectPtr      rexxSelf;
-    DLGTEMPLATEEX       *base;        // Base pointer to dialog template (basePtr)
+    DLGTEMPLATEEX     *base;          // Base pointer to dialog template (basePtr)
     void              *active;        // Pointer to current location in dialog template (activePtr)
     void              *endOfTemplate; // Pointer to end of allocated memory for the template
     uint32_t           expected;      // Expected dialog item count
@@ -675,6 +689,7 @@ extern RexxClassObject TheDynamicDialogClass;
 extern RexxClassObject TheDialogControlClass;
 extern RexxClassObject ThePropertySheetPageClass;
 extern RexxClassObject TheSizeClass;
+extern RexxClassObject TheRectClass;
 
 extern HBRUSH searchForBrush(pCPlainBaseDialog pcpbd, size_t *index, uint32_t id);
 

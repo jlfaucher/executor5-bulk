@@ -644,10 +644,26 @@
 
 ::class 'ScrollBar' subclass DialogControl public
 
-::method setRange unguarded external "LIBRARY oodialog sb_setRange"
+::constant LINEUP           0
+::constant LINELEFT         0
+::constant LINEDOWN         1
+::constant LINERIGHT        1
+::constant PAGEUP           2
+::constant PAGELEFT         2
+::constant PAGEDOWN         3
+::constant PAGERIGHT        3
+::constant THUMBPOSITION    4
+::constant THUMBTRACK       5
+::constant TOP              6
+::constant LEFT             6
+::constant BOTTOM           7
+::constant RIGHT            7
+::constant ENDSCROLL        8
+
 ::method getRange unguarded external "LIBRARY oodialog sb_getRange"
+::method setRange unguarded external "LIBRARY oodialog sb_setRange"
+::method getPos unguarded external "LIBRARY oodialog sb_getPosition"
 ::method setPos unguarded external "LIBRARY oodialog sb_setPosition"
-::method getPosition unguarded external "LIBRARY oodialog sb_getPosition"
 ::method position unguarded external "LIBRARY oodialog sb_getPosition"
 
 ::method range unguarded
@@ -657,27 +673,27 @@
 ::method determinePosition unguarded
    use strict arg posdata, single = 1, page = 10
    code = .DlgUtil~loWord(posdata)
-   pos = self~getPosition
+   pos = self~getPos
    r = self~getRange
    if .SystemErrorCode <> 0 then return pos -- getRange failed
 
    select
       /* Line up */
-      when code = 0 then pos = max(r~min, pos - single)
+      when code == self~LINEUP then pos = max(r~min, pos - single)
       /* Line down */
-      when code = 1 then pos = min(r~max, pos + single)
+      when code == self~LINEDOWN then pos = min(r~max, pos + single)
       /* page up */
-      when code = 2 then pos = max(r~min, pos - page)
+      when code == self~PAGEUP then pos = max(r~min, pos - page)
       /* page down */
-      when code = 3 then pos = min(r~max, pos + page)
+      when code =- self~PAGEDOWN then pos = min(r~max, pos + page)
       /* track position */
-      when code = 4 then pos = .DlgUtil~hiWord(posdata)
+      when code == self~THUMBPOSITION then pos = .DlgUtil~hiWord(posdata)
       /* tracking */
-      when code = 5 then pos = .DlgUtil~loWord(posdata)
+      when code == self~THUMBTRACK then pos = .DlgUtil~loWord(posdata)
       /* top */
-      when code = 6 then pos = r~min
+      when code == self~TOP then pos = r~min
       /* bottom */
-      when code = 7 then pos = r~max
+      when code == self~BOTTOM then pos = r~max
       otherwise nop;
    end
    self~setPos(pos)
@@ -1153,12 +1169,11 @@
 ::method hasCheckBoxes unguarded external "LIBRARY oodialog lv_hasCheckBoxes"
 ::method getCheck unguarded external "LIBRARY oodialog lv_getCheck"
 
--- Intent is to return directory item with normal names and in itemInfo convert to old stem return
 ::method getItemInfo unguarded external "LIBRARY oodialog lv_getItemInfo"
 ::method itemInfo
    use strict arg index, subItem = 0
    d = .Directory~new
-   if getItemInfo(index, d, subItem) then do
+   if self~getItemInfo(index, d, subItem) then do
      itemInfo.!TEXT = d~text
      itemInfo.!IMAGE = d~image
      itemInfo.!STATE = d~state

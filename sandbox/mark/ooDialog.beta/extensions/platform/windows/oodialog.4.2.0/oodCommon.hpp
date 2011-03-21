@@ -60,8 +60,9 @@ typedef map<string, int, less<string> > String2Int;
 #define OOD_RESOURCE_ERR_TITLE      "ooDialog - Resource Definition Error"
 
 #define OOD_ADDICONFILE_ERR_MSG     "Icon resource elements have exceeded the maximum\n" \
-                                    "number of allocated icon table entries. The icon\n" \
-                                    "resource will not be added."
+                                    "number of allocated icon table entries, and the\n" \
+                                    "table could not be expanded.\n\n" \
+                                    "The icon resource will not be added."
 
 // ooDialog return codes for special purposes, including some int32_t codes
 // where -1 and greater is valid.
@@ -127,6 +128,7 @@ extern PPOINT        rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, siz
 extern RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y);
 extern PRECT         rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos);
 extern RexxObjectPtr rxNewRect(RexxMethodContext *context, long l, long t, long r, long b);
+extern RexxObjectPtr rxNewRect(RexxThreadContext *context, PRECT r);
 extern RexxObjectPtr rxNewRect(RexxMethodContext *context, PRECT r);
 extern PSIZE         rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos);
 extern RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy);
@@ -170,6 +172,7 @@ extern void          ensureFinished(pCPlainBaseDialog pcpbd, RexxThreadContext *
 // These functions are defined in oodBaseDialog.cpp
 extern bool initWindowExtensions(RexxMethodContext *, RexxObjectPtr, HWND, pCWindowBase, pCPlainBaseDialog);
 extern bool validControlDlg(RexxMethodContext *c, pCPlainBaseDialog pcpbd);
+extern bool processOwnedDialog(RexxMethodContext *c, pCPlainBaseDialog pcpbd);
 extern void setFontAttrib(RexxThreadContext *c, pCPlainBaseDialog pcpbd);
 
 // These functions are defined in oodPropertySheet.cpp

@@ -207,7 +207,7 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             HBRUSH hbrush = NULL;
 
-            if ( pcpbd->CT_size > 0 )
+            if ( pcpbd->CT_nextIndex > 0 )
             {
                 // See of the user has set the dialog item with a different
                 // color.
@@ -215,11 +215,11 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 if ( id > 0 )
                 {
                     register size_t i = 0;
-                    while ( i < pcpbd->CT_size && pcpbd->ColorTab[i].itemID != id )
+                    while ( i < pcpbd->CT_nextIndex && pcpbd->ColorTab[i].itemID != id )
                     {
                         i++;
                     }
-                    if ( i < pcpbd->CT_size )
+                    if ( i < pcpbd->CT_nextIndex )
                     {
                         hbrush = pcpbd->ColorTab[i].ColorBrush;
                     }
@@ -511,7 +511,7 @@ LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
         {
             HBRUSH hbrush = NULL;
 
-            if ( pcpbd->CT_size > 0 )
+            if ( pcpbd->CT_nextIndex > 0 )
             {
                 // See of the user has set the dialog item with a different
                 // color.
@@ -519,11 +519,11 @@ LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
                 if ( id > 0 )
                 {
                     register size_t i = 0;
-                    while ( i < pcpbd->CT_size && pcpbd->ColorTab[i].itemID != id )
+                    while ( i < pcpbd->CT_nextIndex && pcpbd->ColorTab[i].itemID != id )
                     {
                         i++;
                     }
-                    if ( i < pcpbd->CT_size )
+                    if ( i < pcpbd->CT_nextIndex )
                     {
                         hbrush = pcpbd->ColorTab[i].ColorBrush;
                     }
@@ -646,36 +646,117 @@ LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
     return FALSE;
 }
 
+static RexxStringObject wmsz2string(RexxThreadContext *c, WPARAM wParam)
+{
+    CSTRING s;
+
+    switch ( wParam )
+    {
+        case WMSZ_BOTTOM :
+            s = "BOTTOM";
+            break;
+        case WMSZ_BOTTOMLEFT :
+            s = "BOTTOMLEFT";
+            break;
+        case WMSZ_BOTTOMRIGHT :
+            s = "BOTTOMRIGHT";
+            break;
+        case WMSZ_LEFT :
+            s = "LEFT";
+            break;
+        case WMSZ_RIGHT :
+            s = "RIGHT";
+            break;
+        case WMSZ_TOP :
+            s = "TOP";
+            break;
+        case WMSZ_TOPLEFT :
+            s = "TOPLEFT";
+            break;
+        case WMSZ_TOPRIGHT :
+            s = "TOPRIGHT";
+            break;
+        default :
+            s = "UNKNOWN";
+            break;
+    }
+    return c->String(s);
+}
+
 static RexxStringObject sc2string(RexxThreadContext *c, WPARAM wParam)
 {
     CSTRING s;
 
     switch ( wParam & 0xFFF0 )
     {
-        case SC_SIZE         : s = "SIZE";
-        case SC_MOVE         : s = "MOVE";
-        case SC_MINIMIZE     : s = "MINIMIZE";
-        case SC_MAXIMIZE     : s = "MAXIMIZE";
-        case SC_NEXTWINDOW   : s = "NEXTWINDOW";
-        case SC_PREVWINDOW   : s = "PREVWINDOW";
-        case SC_CLOSE        : s = "CLOSE";
-        case SC_VSCROLL      : s = "VSCROLL";
-        case SC_HSCROLL      : s = "HSCROLL";
-        case SC_MOUSEMENU    : s = "MOUSEMENU ";
-        case SC_KEYMENU      : s = "KEYMENU";
-        case SC_ARRANGE      : s = "ARRANGE";
-        case SC_RESTORE      : s = "RESTORE";
-        case SC_TASKLIST     : s = "TASKLIST";
-        case SC_SCREENSAVE   : s = "SCREENSAVE";
-        case SC_HOTKEY       : s = "HOTKEY";
-        case SC_DEFAULT      : s = "DEFAULT";
-        case SC_MONITORPOWER : s = "MONITORPOWER";
-        case SC_CONTEXTHELP  : s = "CONTEXTHELP";
-        case SC_SEPARATOR    : s = "SEPARATOR";
+        case SC_SIZE :
+            s = "SIZE";
+            break;
+        case SC_MOVE :
+            s = "MOVE";
+            break;
+        case SC_MINIMIZE :
+            s = "MINIMIZE";
+            break;
+        case SC_MAXIMIZE :
+            s = "MAXIMIZE";
+            break;
+        case SC_NEXTWINDOW   :
+            s = "NEXTWINDOW";
+            break;
+        case SC_PREVWINDOW   :
+            s = "PREVWINDOW";
+            break;
+        case SC_CLOSE :
+            s = "CLOSE";
+            break;
+        case SC_VSCROLL :
+            s = "VSCROLL";
+            break;
+        case SC_HSCROLL :
+            s = "HSCROLL";
+            break;
+        case SC_MOUSEMENU :
+            s = "MOUSEMENU ";
+            break;
+        case SC_KEYMENU :
+            s = "KEYMENU";
+            break;
+        case SC_ARRANGE :
+            s = "ARRANGE";
+            break;
+        case SC_RESTORE :
+            s = "RESTORE";
+            break;
+        case SC_TASKLIST :
+            s = "TASKLIST";
+            break;
+        case SC_SCREENSAVE :
+            s = "SCREENSAVE";
+            break;
+        case SC_HOTKEY :
+            s = "HOTKEY";
+            break;
+        case SC_DEFAULT :
+            s = "DEFAULT";
+            break;
+        case SC_MONITORPOWER :
+            s = "MONITORPOWER";
+            break;
+        case SC_CONTEXTHELP :
+            s = "CONTEXTHELP";
+            break;
+        case SC_SEPARATOR :
+            s = "SEPARATOR";
+            break;
 
         // SCF_ISSECURE, only defined if WINVER >= 0x0600
-        case 0x00000001      : s = "ISSECURE";
-        default              : s = "UNKNOWN";
+        case 0x00000001 :
+            s = "ISSECURE";
+            break;
+        default :
+            s = "UNKNOWN";
+            break;
     }
     return c->String(s);
 }
@@ -1046,8 +1127,6 @@ MsgReplyType genericInvokeDispatch(pCPlainBaseDialog pcpbd, char *rexxMethod, WP
 
     if ( tag & TAG_REPLYFROMREXX )
     {
-        // We only get here for messages where what the Rexx method returns is
-        // discarded / ignored.
         invokeDirect(c, pcpbd->rexxSelf, rexxMethod, args);
         return ReplyTrue;
     }
@@ -1113,7 +1192,7 @@ MsgReplyType searchCommandTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog 
         return ContinueProcessing;
     }
 
-    size_t tableSize = pcpbd->enCSelf->cmSize;
+    size_t tableSize = pcpbd->enCSelf->cmNextIndex;
     register size_t i = 0;
 
     for ( i = 0; i < tableSize; i++ )
@@ -1822,7 +1901,7 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
     }
 
     uint32_t code = ((NMHDR *)lParam)->code;
-    size_t tableSize = pcpbd->enCSelf->nmSize;
+    size_t tableSize = pcpbd->enCSelf->nmNextIndex;
     register size_t i = 0;
 
     for ( i = 0; i < tableSize; i++ )
@@ -1953,7 +2032,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
         return ContinueProcessing;
     }
 
-    size_t tableSize = pcpbd->enCSelf->mmSize;
+    size_t tableSize = pcpbd->enCSelf->mmNextIndex;
     register size_t i = 0;
 
     for ( i = 0; i < tableSize; i++ )
@@ -2104,6 +2183,34 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
             {
                 handle = (HANDLE)lParam;
             }
+            else if( msg == WM_SIZING )
+            {
+                /* Args to ooRexx: The sizing RECT, WMSZ_xx keyword.
+                 */
+                PRECT wRect = (PRECT)lParam;
+
+                RexxStringObject wmsz = wmsz2string(c, wParam);
+                RexxObjectPtr rect = rxNewRect(c, wRect);
+
+                MsgReplyType reply = ReplyFalse;
+                RexxArrayObject args = c->ArrayOfTwo(rect, wmsz);
+
+                RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, m[i].rexxMethod, args);
+
+                if ( ! checkForCondition(c, false) )
+                {
+                    if ( msgReply == TheTrueObj )
+                    {
+                        PRECT r = (PRECT)c->ObjectToCSelf(rect);
+                        wRect->top = r->top;
+                        wRect->left = r->left;
+                        wRect->bottom = r->bottom;
+                        wRect->right = r->right;
+                        reply = ReplyTrue;
+                    }
+                }
+                return reply;
+            }
 
             return genericInvokeDispatch(pcpbd, m[i].rexxMethod, wParam, lParam, np, handle, item, m[i].tag);
         }
@@ -2134,8 +2241,7 @@ MsgReplyType searchMessageTables(ULONG message, WPARAM param, LPARAM lparam, pCP
  * @param method
  * @param tag
  *
- * @return True on success, false if the message table is full, or for a memory
- *         allocation error.
+ * @return True on success, false for a memory allocation error.
  *
  * @remarks  The command message table is allocated during the plain base dialog
  *           init process, so we should not need to check that it has been
@@ -2144,10 +2250,20 @@ MsgReplyType searchMessageTables(ULONG message, WPARAM param, LPARAM lparam, pCP
  *           allocated.  Better to check and raise a condition for this
  *           situation.
  *
- *           TODO - We need a context here to raise a condition.
+ *           Caller must ensure that 'method' is not an empty string and that
+ *           winMsg, wParam, lParam are not all 0.
  *
- *           Caller must ensure that 'prog' is not an empty string and that
- *           winMsg, wParam, lParam are not all 0.  TODO need to recheck this.
+ *           If the message table is full we reallocate a table double in size
+ *           through LocalReAlloc().  Without the LMEM_MOVABLE flag, the realloc
+ *           can fail.  Note that even though the LMEM_MOVABLE flag is used, if
+ *           the memory object being reallocated is fixed, the returned memory
+ *           object is still fixed.  LocalLock() does not need to be used.
+ *
+ *           LMEM_MOVEABLE:  If uBytes is nonzero, enables the system to move
+ *           the reallocated block to a new location without changing the
+ *           movable or fixed attribute of the memory object. If the object is
+ *           fixed, the handle returned may be different from the handle
+ *           specified in the hMem parameter.
  */
 bool addCommandMessage(pCEventNotification pcen, RexxMethodContext *c, WPARAM wParam, ULONG_PTR wpFilter,
                        LPARAM lParam, ULONG_PTR lpFilter, CSTRING method, uint32_t tag)
@@ -2158,35 +2274,42 @@ bool addCommandMessage(pCEventNotification pcen, RexxMethodContext *c, WPARAM wP
         return false;
     }
 
-    size_t index = pcen->cmSize;
-    if ( index < MAX_COMMAND_MSGS )
+    size_t index = pcen->cmNextIndex;
+    if ( index >= pcen->cmSize )
     {
-        pcen->commandMsgs[index].rexxMethod = (char *)LocalAlloc(LMEM_FIXED, strlen(method) + 1);
-        if ( pcen->commandMsgs[index].rexxMethod == NULL )
+        HLOCAL temp = LocalReAlloc(pcen->commandMsgs, sizeof(MESSAGETABLEENTRY) * pcen->cmSize * 2, LMEM_ZEROINIT | LMEM_MOVEABLE);
+        if ( temp == NULL )
         {
+            MessageBox(0, "Command message connections have exceeded the maximum\n"
+                          "number of allocated table entries, and the table could\n"
+                          "not be expanded.\n\n"
+                          "No more command message connections can be added.\n",
+                       "Error", MB_OK | MB_ICONHAND);
             return false;
         }
-        strcpy(pcen->commandMsgs[index].rexxMethod, method);
 
-        pcen->commandMsgs[index].msg = WM_COMMAND;
-        pcen->commandMsgs[index].msgFilter = 0xFFFFFFFF;
-        pcen->commandMsgs[index].wParam = wParam;
-        pcen->commandMsgs[index].wpFilter = wpFilter;
-        pcen->commandMsgs[index].lParam = lParam;
-        pcen->commandMsgs[index].lpfilter = lpFilter;
-        pcen->commandMsgs[index].tag = tag;
-
-        pcen->cmSize++;
-        return true;
+        pcen->cmSize *= 2;
+        pcen->commandMsgs = (MESSAGETABLEENTRY *)temp;
     }
-    else
+
+    pcen->commandMsgs[index].rexxMethod = (char *)LocalAlloc(LMEM_FIXED, strlen(method) + 1);
+    if ( pcen->commandMsgs[index].rexxMethod == NULL )
     {
-        MessageBox(0, "Command message connections have exceeded the maximum\n"
-                      "number of allocated table entries.  No more command\n"
-                      "message connections can be added.\n",
-                   "Error", MB_OK | MB_ICONHAND);
+        outOfMemoryException(c->threadContext);
+        return false;
     }
-    return false;
+    strcpy(pcen->commandMsgs[index].rexxMethod, method);
+
+    pcen->commandMsgs[index].msg = WM_COMMAND;
+    pcen->commandMsgs[index].msgFilter = 0xFFFFFFFF;
+    pcen->commandMsgs[index].wParam = wParam;
+    pcen->commandMsgs[index].wpFilter = wpFilter;
+    pcen->commandMsgs[index].lParam = lParam;
+    pcen->commandMsgs[index].lpfilter = lpFilter;
+    pcen->commandMsgs[index].tag = tag;
+
+    pcen->cmNextIndex++;
+    return true;
 }
 
 
@@ -2195,6 +2318,7 @@ bool addCommandMessage(pCEventNotification pcen, RexxMethodContext *c, WPARAM wP
  * table.
  *
  * @param pcen
+ * @param c
  * @param wParam
  * @param wpFilter
  * @param lParam
@@ -2205,54 +2329,63 @@ bool addCommandMessage(pCEventNotification pcen, RexxMethodContext *c, WPARAM wP
  * @return True on success, false if the message table is full, or for a memory
  *         allocation error.
  *
- * @remarks  Caller must ensure that 'prog' is not an empty string and that
- *           winMsg, wParam, lParam are not all 0.  TODO need to recheck this.
+ * @remarks  Caller must ensure that 'method' is not an empty string and that
+ *           winMsg, wParam, lParam are not all 0.
+ *
+ *           See remarks in addCommandMessages() for some relevant information.
  */
-bool addNotifyMessage(pCEventNotification pcen, WPARAM wParam, ULONG_PTR wpFilter, LPARAM lParam, ULONG_PTR lpFilter,
-                      CSTRING method, uint32_t tag)
+bool addNotifyMessage(pCEventNotification pcen, RexxMethodContext *c, WPARAM wParam, ULONG_PTR wpFilter,
+                      LPARAM lParam, ULONG_PTR lpFilter, CSTRING method, uint32_t tag)
 {
     if ( pcen->notifyMsgs == NULL )
     {
-        pcen->notifyMsgs = (MESSAGETABLEENTRY *)LocalAlloc(LPTR, sizeof(MESSAGETABLEENTRY) * MAX_NOTIFY_MSGS);
+        pcen->notifyMsgs = (MESSAGETABLEENTRY *)LocalAlloc(LPTR, sizeof(MESSAGETABLEENTRY) * DEF_MAX_NOTIFY_MSGS);
         if ( pcen->notifyMsgs == NULL )
         {
-            // TODO pass in context and raise a condition instead of this.
-            MessageBox(0, "No memory available", "Error", MB_OK | MB_ICONHAND);
+            outOfMemoryException(c->threadContext);
             return false;
         }
-        pcen->nmSize = 0;
+        pcen->nmNextIndex = 0;
+        pcen->nmSize = DEF_MAX_NOTIFY_MSGS;
     }
 
-    size_t index = pcen->nmSize;
+    size_t index = pcen->nmNextIndex;
 
-    if ( index < MAX_NOTIFY_MSGS )
+    if ( index >= pcen->nmSize )
     {
-        pcen->notifyMsgs[index].rexxMethod = (char *)LocalAlloc(LMEM_FIXED, strlen(method) + 1);
-        if ( pcen->notifyMsgs[index].rexxMethod == NULL )
+        HLOCAL temp = LocalReAlloc(pcen->notifyMsgs, sizeof(MESSAGETABLEENTRY) * pcen->nmSize * 2, LMEM_ZEROINIT | LMEM_MOVEABLE);
+        if ( temp == NULL )
         {
+            MessageBox(0, "Notify message connections have exceeded the maximum\n"
+                          "number of allocated table entries, and the table could\n"
+                          "not be expanded.\n\n"
+                          "No more notify message connections can be added.\n",
+                       "Error", MB_OK | MB_ICONHAND);
             return false;
         }
-        strcpy(pcen->notifyMsgs[index].rexxMethod, method);
 
-        pcen->notifyMsgs[index].msg = WM_NOTIFY;
-        pcen->notifyMsgs[index].msgFilter = 0xFFFFFFFF;
-        pcen->notifyMsgs[index].wParam = wParam;
-        pcen->notifyMsgs[index].wpFilter = wpFilter;
-        pcen->notifyMsgs[index].lParam = lParam;
-        pcen->notifyMsgs[index].lpfilter = lpFilter;
-        pcen->notifyMsgs[index].tag = tag;
-
-        pcen->nmSize++;
-        return true;
+        pcen->nmSize *= 2;
+        pcen->notifyMsgs = (MESSAGETABLEENTRY *)temp;
     }
-    else
+
+    pcen->notifyMsgs[index].rexxMethod = (char *)LocalAlloc(LMEM_FIXED, strlen(method) + 1);
+    if ( pcen->notifyMsgs[index].rexxMethod == NULL )
     {
-        MessageBox(0, "Notify message connections have exceeded the maximum\n"
-                      "number of allocated table entries.  No more notify\n"
-                      "message connections can be added.\n",
-                   "Error", MB_OK | MB_ICONHAND);
+        outOfMemoryException(c->threadContext);
+        return false;
     }
-    return false;
+    strcpy(pcen->notifyMsgs[index].rexxMethod, method);
+
+    pcen->notifyMsgs[index].msg = WM_NOTIFY;
+    pcen->notifyMsgs[index].msgFilter = 0xFFFFFFFF;
+    pcen->notifyMsgs[index].wParam = wParam;
+    pcen->notifyMsgs[index].wpFilter = wpFilter;
+    pcen->notifyMsgs[index].lParam = lParam;
+    pcen->notifyMsgs[index].lpfilter = lpFilter;
+    pcen->notifyMsgs[index].tag = tag;
+
+    pcen->nmNextIndex++;
+    return true;
 }
 
 
@@ -2273,67 +2406,77 @@ bool addNotifyMessage(pCEventNotification pcen, WPARAM wParam, ULONG_PTR wpFilte
  * @return True on success, false if the message table is full, or for a memory
  *         allocation error.
  *
- * @remarks  Caller must ensure that 'prog' is not an empty string and that
- *           winMsg, wParam, lParam are not all 0.  TODO need to recheck this.
+ * @remarks  Caller must ensure that 'method' is not an empty string and that
+ *           winMsg, wParam, lParam are not all 0.
+ *
+ *           See remarks in addCommandMessages() for some relevant information.
  */
-bool addMiscMessage(pCEventNotification pcen, uint32_t winMsg, uint32_t wmFilter,
+bool addMiscMessage(pCEventNotification pcen, RexxMethodContext *c, uint32_t winMsg, uint32_t wmFilter,
                     WPARAM wParam, ULONG_PTR wpFilter, LPARAM lParam, ULONG_PTR lpFilter,
                     CSTRING method, uint32_t tag)
 {
     if ( pcen->miscMsgs == NULL )
     {
-        pcen->miscMsgs = (MESSAGETABLEENTRY *)LocalAlloc(LPTR, sizeof(MESSAGETABLEENTRY) * MAX_MISC_MSGS);
+        pcen->miscMsgs = (MESSAGETABLEENTRY *)LocalAlloc(LPTR, sizeof(MESSAGETABLEENTRY) * DEF_MAX_MISC_MSGS);
         if ( pcen->miscMsgs == NULL )
         {
-            // TODO pass in context and raise a condition instead of this.
-            MessageBox(0, "No memory available", "Error", MB_OK | MB_ICONHAND);
+            outOfMemoryException(c->threadContext);
             return false;
         }
-        pcen->mmSize = 0;
+        pcen->mmNextIndex = 0;
+        pcen->mmSize = DEF_MAX_MISC_MSGS;
     }
 
-    size_t index = pcen->mmSize;
+    size_t index = pcen->mmNextIndex;
 
-    if ( index < MAX_NOTIFY_MSGS )
+    if ( index >= pcen->mmSize )
     {
-        pcen->miscMsgs[index].rexxMethod = (char *)LocalAlloc(LMEM_FIXED, strlen(method) + 1);
-        if ( pcen->miscMsgs[index].rexxMethod == NULL )
+        HLOCAL temp = LocalReAlloc(pcen->miscMsgs, sizeof(MESSAGETABLEENTRY) * pcen->mmSize * 2, LMEM_ZEROINIT | LMEM_MOVEABLE);
+        if ( temp == NULL )
         {
+            MessageBox(0, "Miscellaneous message connections have exceeded the maximum\n"
+                          "number of allocated table entries, and the table could\n"
+                          "not be expanded.\n\n"
+                          "No more miscellaneous message connections can be added.\n",
+                       "Error", MB_OK | MB_ICONHAND);
             return false;
         }
-        strcpy(pcen->miscMsgs[index].rexxMethod, method);
 
-        pcen->miscMsgs[index].msg = winMsg;
-        pcen->miscMsgs[index].msgFilter = 0xFFFFFFFF;
-        pcen->miscMsgs[index].wParam = wParam;
-        pcen->miscMsgs[index].wpFilter = wpFilter;
-        pcen->miscMsgs[index].lParam = lParam;
-        pcen->miscMsgs[index].lpfilter = lpFilter;
-        pcen->miscMsgs[index].tag = tag;
-
-        pcen->mmSize++;
-        return true;
+        pcen->mmSize *= 2;
+        pcen->miscMsgs = (MESSAGETABLEENTRY *)temp;
     }
-    else
+
+    pcen->miscMsgs[index].rexxMethod = (char *)LocalAlloc(LMEM_FIXED, strlen(method) + 1);
+    if ( pcen->miscMsgs[index].rexxMethod == NULL )
     {
-        MessageBox(0, "Miscellaneous message connections have exceeded the\n"
-                      "maximum number of allocated table entries.  No more\n"
-                      "miscellaneous message connections can be added.\n",
-                   "Error", MB_OK | MB_ICONHAND);
+        outOfMemoryException(c->threadContext);
+        return false;
     }
-    return false;
+    strcpy(pcen->miscMsgs[index].rexxMethod, method);
+
+    pcen->miscMsgs[index].msg = winMsg;
+    pcen->miscMsgs[index].msgFilter = 0xFFFFFFFF;
+    pcen->miscMsgs[index].wParam = wParam;
+    pcen->miscMsgs[index].wpFilter = wpFilter;
+    pcen->miscMsgs[index].lParam = lParam;
+    pcen->miscMsgs[index].lpfilter = lpFilter;
+    pcen->miscMsgs[index].tag = tag;
+
+    pcen->mmNextIndex++;
+    return true;
 }
 
 
 bool initCommandMessagesTable(RexxMethodContext *c, pCEventNotification pcen)
 {
-    pcen->commandMsgs = (MESSAGETABLEENTRY *)LocalAlloc(LPTR, sizeof(MESSAGETABLEENTRY) * MAX_COMMAND_MSGS);
+    pcen->commandMsgs = (MESSAGETABLEENTRY *)LocalAlloc(LPTR, sizeof(MESSAGETABLEENTRY) * DEF_MAX_COMMAND_MSGS);
     if ( ! pcen->commandMsgs )
     {
         outOfMemoryException(c->threadContext);
         return false;
     }
-    pcen->cmSize = 0;
+    pcen->cmSize = DEF_MAX_COMMAND_MSGS;
+    pcen->cmNextIndex = 0;
 
     if ( ! addCommandMessage(pcen, c, IDOK, UINTPTR_MAX, 0, 0, "OK", TAG_NOTHING) )
     {
@@ -2384,6 +2527,71 @@ bool initEventNotification(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxOb
 
 #define DTPN_KEYWORDS                 "CloseUp, DateTimeChange, DropDown, FormatQuery, Format, KillFocus, SetFocus, UserString, or WmKeyDown"
 #define MCN_KEYWORDS                  "GetDayState, Released, SelChange, Select, or ViewChange"
+
+/**
+ * Convert a keyword to the proper scroll bar notification code.
+ *
+ * We know the keyword arg position is 2.  The MonthCalendar control is post
+ * ooRexx 4.0.1 so we raise an exception on error.
+ */
+static bool keyword2sbn(CSTRING keyword, uint32_t *flag)
+{
+    uint32_t sbn;
+
+    if ( StrCmpI(keyword,      "UP"       ) == 0 ) sbn = SB_LINEUP;        // Old word, confusing.
+    if ( StrCmpI(keyword,      "LINEUP"   ) == 0 ) sbn = SB_LINEUP;
+    else if ( StrCmpI(keyword, "LINELEFT" ) == 0 ) sbn = SB_LINELEFT;
+    else if ( StrCmpI(keyword, "DOWN"     ) == 0 ) sbn = SB_LINEDOWN;      // Old word, confusing.
+    else if ( StrCmpI(keyword, "LINEDOWN" ) == 0 ) sbn = SB_LINEDOWN;
+    else if ( StrCmpI(keyword, "LINERIGHT") == 0 ) sbn = SB_LINERIGHT;
+    else if ( StrCmpI(keyword, "PAGEUP"   ) == 0 ) sbn = SB_PAGEUP;
+    else if ( StrCmpI(keyword, "PAGELEFT" ) == 0 ) sbn = SB_PAGELEFT;
+    else if ( StrCmpI(keyword, "PAGEDOWN" ) == 0 ) sbn = SB_PAGEDOWN;
+    else if ( StrCmpI(keyword, "PAGERIGHT") == 0 ) sbn = SB_PAGERIGHT;
+    else if ( StrCmpI(keyword, "POSITION" ) == 0 ) sbn = SB_THUMBPOSITION;
+    else if ( StrCmpI(keyword, "DRAG"     ) == 0 ) sbn = SB_THUMBTRACK;
+    else if ( StrCmpI(keyword, "TOP"      ) == 0 ) sbn = SB_TOP;
+    else if ( StrCmpI(keyword, "LEFT"     ) == 0 ) sbn = SB_LEFT;
+    else if ( StrCmpI(keyword, "BOTTOM"   ) == 0 ) sbn = SB_BOTTOM;
+    else if ( StrCmpI(keyword, "RIGHT"    ) == 0 ) sbn = SB_RIGHT;
+    else if ( StrCmpI(keyword, "ENDSCROLL") == 0 ) sbn = SB_ENDSCROLL;
+    else
+    {
+        return false;
+    }
+
+    *flag = sbn;
+    return true;
+}
+
+
+/**
+ * Convert a scroll bar notification code to a method name.
+ *
+ * For SB_LINEUP   / SB_LINELEFT  -> onUp
+ * For SB_LINEDOWN / SB_LINERIGHT -> onDown
+ * For SB_PAGEUP   / SB_PAGELEFT  -> onPageUp
+ * For SB_PAGEDOWN / SB_PAGERIGHT -> onPageDown
+ * For SB_TOP      / SB_LEFT      -> onTop
+ * For SB_BOTTOM   / SB_RIGHT     -> onBottom
+ */
+inline CSTRING sbn2name(uint32_t sbn)
+{
+    switch ( sbn )
+    {
+        case SB_LINEUP        : return "onUp       ";
+        case SB_LINEDOWN      : return "onDown     ";
+        case SB_PAGEUP        : return "onPageUp   ";
+        case SB_PAGEDOWN      : return "onPageDown ";
+        case SB_THUMBPOSITION : return "onPosition ";
+        case SB_THUMBTRACK    : return "onDrag     ";
+        case SB_TOP           : return "onTop      ";
+        case SB_BOTTOM        : return "onBottom   ";
+        case SB_ENDSCROLL     : return "onEndScroll";
+    }
+    return "onSBN";
+}
+
 
 /**
  * Convert a keyword to the proper list view notification code.
@@ -2496,23 +2704,6 @@ inline CSTRING lvn2name(uint32_t lvn, uint32_t tag)
 
 
 /**
- * Convert a month calendar notification code to a method name.
- */
-inline CSTRING mcn2name(uint32_t mcn)
-{
-    switch ( mcn )
-    {
-        case MCN_GETDAYSTATE    : return "onGetDayState";
-        case NM_RELEASEDCAPTURE : return "onReleased";
-        case MCN_SELCHANGE      : return "onSelChange";
-        case MCN_SELECT         : return "onSelect";
-        case MCN_VIEWCHANGE     : return "onViewChange";
-    }
-    return "onMCN";
-}
-
-
-/**
  * Convert a keyword to the proper month calendar notification code.
  *
  * We know the keyword arg position is 2.  The MonthCalendar control is post
@@ -2533,6 +2724,52 @@ static bool keyword2mcn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
         return false;
     }
     *flag = mcn;
+    return true;
+}
+
+
+/**
+ * Convert a month calendar notification code to a method name.
+ */
+inline CSTRING mcn2name(uint32_t mcn)
+{
+    switch ( mcn )
+    {
+        case MCN_GETDAYSTATE    : return "onGetDayState";
+        case NM_RELEASEDCAPTURE : return "onReleased";
+        case MCN_SELCHANGE      : return "onSelChange";
+        case MCN_SELECT         : return "onSelect";
+        case MCN_VIEWCHANGE     : return "onViewChange";
+    }
+    return "onMCN";
+}
+
+
+/**
+ * Convert a keyword to the proper date time picker notification code.
+ *
+ * We know the keyword arg position is 2.  The DateTimePicker control is post
+ * ooRexx 4.0.1 so we raise an exception on error.
+ */
+static bool keyword2dtpn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
+{
+    uint32_t dtpn;
+
+    if ( StrCmpI(keyword,      "CLOSEUP")        == 0 ) dtpn = DTN_CLOSEUP;
+    else if ( StrCmpI(keyword, "DATETIMECHANGE") == 0 ) dtpn = DTN_DATETIMECHANGE;
+    else if ( StrCmpI(keyword, "DROPDOWN")       == 0 ) dtpn = DTN_DROPDOWN;
+    else if ( StrCmpI(keyword, "FORMATQUERY")    == 0 ) dtpn = DTN_FORMATQUERY;
+    else if ( StrCmpI(keyword, "FORMAT")         == 0 ) dtpn = DTN_FORMAT;
+    else if ( StrCmpI(keyword, "KILLFOCUS")      == 0 ) dtpn = NM_KILLFOCUS;
+    else if ( StrCmpI(keyword, "SETFOCUS")       == 0 ) dtpn = NM_SETFOCUS;
+    else if ( StrCmpI(keyword, "USERSTRING")     == 0 ) dtpn = DTN_USERSTRING;
+    else if ( StrCmpI(keyword, "WMKEYDOWN")      == 0 ) dtpn = DTN_WMKEYDOWN;
+    else
+    {
+        wrongArgValueException(c->threadContext, 2, DTPN_KEYWORDS, keyword);
+        return false;
+    }
+    *flag = dtpn;
     return true;
 }
 
@@ -2567,35 +2804,6 @@ inline bool dtpnReplySignificant(uint32_t dtpn)
 {
     return (dtpn == DTN_FORMAT) || (dtpn == DTN_FORMATQUERY) ||
            (dtpn == DTN_USERSTRING) || (dtpn == DTN_WMKEYDOWN);
-}
-
-
-/**
- * Convert a keyword to the proper date time picker notification code.
- *
- * We know the keyword arg position is 2.  The DateTimePicker control is post
- * ooRexx 4.0.1 so we raise an exception on error.
- */
-static bool keyword2dtpn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
-{
-    uint32_t dtpn;
-
-    if ( StrCmpI(keyword,      "CLOSEUP")        == 0 ) dtpn = DTN_CLOSEUP;
-    else if ( StrCmpI(keyword, "DATETIMECHANGE") == 0 ) dtpn = DTN_DATETIMECHANGE;
-    else if ( StrCmpI(keyword, "DROPDOWN")       == 0 ) dtpn = DTN_DROPDOWN;
-    else if ( StrCmpI(keyword, "FORMATQUERY")    == 0 ) dtpn = DTN_FORMATQUERY;
-    else if ( StrCmpI(keyword, "FORMAT")         == 0 ) dtpn = DTN_FORMAT;
-    else if ( StrCmpI(keyword, "KILLFOCUS")      == 0 ) dtpn = NM_KILLFOCUS;
-    else if ( StrCmpI(keyword, "SETFOCUS")       == 0 ) dtpn = NM_SETFOCUS;
-    else if ( StrCmpI(keyword, "USERSTRING")     == 0 ) dtpn = DTN_USERSTRING;
-    else if ( StrCmpI(keyword, "WMKEYDOWN")      == 0 ) dtpn = DTN_WMKEYDOWN;
-    else
-    {
-        wrongArgValueException(c->threadContext, 2, DTPN_KEYWORDS, keyword);
-        return false;
-    }
-    *flag = dtpn;
-    return true;
 }
 
 
@@ -3463,6 +3671,512 @@ RexxMethod3(int32_t, en_connectCommandEvents, RexxObjectPtr, rxID, CSTRING, meth
 }
 
 
+/** EventNotification::connectScrollBarEvent()
+ *
+ *  Connects a Rexx dialog method with a scroll bar event.
+ *
+ *  @param  rxID        The resource ID of the dialog control.  Can be numeric
+ *                      or symbolic.
+ *
+ *  @param  event       Keyword specifying which event to connect.  Keywords at
+ *                      this time:
+ *
+ *                      KeyWord      Windows Code    Notes
+ *                      -----------------------------------
+ *                      UP           0               Old word, confusing.
+ *                      LINEUP       0
+ *                      LINELEFT     0
+ *                      DOWN         1               Old word, confusing.
+ *                      LINEDOWN     1
+ *                      LINERIGHT    1
+ *                      PAGEUP       2
+ *                      PAGELEFT     2
+ *                      PAGEDOWN     3
+ *                      PAGERIGHT    3
+ *                      POSITION     4
+ *                      DRAG         5
+ *                      TOP          6
+ *                      LEFT         6
+ *                      BOTTOM       7
+ *                      RIGHT        7
+ *                      ENDSCROLL    8
+ *
+ *
+ *
+ *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
+ *                      Rexx dialog.  If this argument is omitted or the empty
+ *                      string then the method name is constructed by prefixing
+ *                      the event keyword with 'on'.  For instance onPageDown.
+ *
+ *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
+ *                      direct or indirect. With a direct invocation, the
+ *                      interpreter waits in the Windows message loop for the
+ *                      return from the Rexx method. With indirect, the Rexx
+ *                      method is invoked through ~startWith(), which of course
+ *                      returns immediately.
+ *
+ *                      For scroll bars, at this time, the default is false,
+ *                      i.e. the Rexx programmer needs to specify that she wants
+ *                      to reply.  This could change if new key words are added.
+ *
+ *  @return 0 for no error, -1 for a bad resource ID or incorrect event keyword,
+ *          1 if the event could not be connected, or other errors.  The event
+ *          can not be connected if there is a problem with the message table,
+ *          full or out of memory error.
+ *
+ *  @note  Because this method requires the window handle of the scroll bar
+ *         control, it can only be invoked after the underlying dialog has been
+ *         created.  This is enforced by raising a syntax condition if needed.
+ *
+ *         This method does not distiguish between vertical and horizontal
+ *         scroll bars because Windows uses the same values for the up and left
+ *         flags, and the same values for the down and right flags.  I.e., if
+ *         the event is LINEUP and the scroll bar is a vertical scroll bar, it
+ *         means the user scrolled 1 unit up, but if the scroll bar is a
+ *         horizontal scroll bar it means the user scrolled 1 unit to the left.
+ *
+ *         Therefore, UP, LINEUP, and LINELEFT all mean the same thing and can
+ *         be used with either horizontal or vertical scroll bars.  The same
+ *         thing is true for: DOWN, LINEDOWN, and LINERIGHT, for: TOP, LEFT, and
+ *         for: BOTTOM, RIGHT.
+ *
+ *         Raises syntax conditions if incorrect arguments are detected.  Sets
+ *         the .SystemErrorCode.
+ *
+ *  @remarks   For the current keywords, if a symbolic ID is  used and it can
+ *             not be resolved to a numeric number -1 has to be returned for
+ *             backwards compatibility.  Essentially, for this method, all
+ *             behaviour needs to be pre-4.2.0.  The only change is that the
+ *             user can specify to reply directly.
+ */
+RexxMethod5(RexxObjectPtr, en_connectScrollBarEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    if ( pcen->hDlg == NULL )
+    {
+        return noWindowsDialogException(context, pcen->rexxSelf);
+    }
+
+    uint32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    {
+        return TheNegativeOneObj;
+    }
+
+    uint32_t notificationCode;
+    if ( ! keyword2sbn(event, &notificationCode) )
+    {
+        return TheNegativeOneObj;
+    }
+
+    HWND hCtrl = GetDlgItem(pcen->hDlg, id);
+    if ( hCtrl == NULL )
+    {
+        oodSetSysErrCode(context->threadContext);
+        return TheNegativeOneObj;
+    }
+
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = sbn2name(notificationCode);
+    }
+
+    uint32_t tag = willReply ? TAG_REPLYFROMREXX : TAG_NOTHING;
+
+    if ( addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, notificationCode, 0x0000FFFF, (LPARAM)hCtrl,
+                        UINTPTR_MAX, methodName, tag) )
+    {
+        if ( addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, notificationCode, 0x0000FFFF, (LPARAM)hCtrl,
+                            UINTPTR_MAX, methodName, tag) )
+        {
+            return TheZeroObj;
+        }
+    }
+
+    return TheOneObj;
+}
+
+
+/** EventNotification::connectEachScrollBarEvent()
+ *
+ *  Connects the LINEUP and LINEDOWN scroll bar events to the methods specified.
+ *  In addition, for each optional method specified, will connect the specified
+ *  event.
+ *
+ *  Arguments. Only the first 3 are required:
+ *
+ *  use arg id, progUp, progDn, progPos, min, max, pos, progPgUp, progPgDn,
+ *          progTop, progBottom, progTrack, progEndSc, willReply
+ *
+ *
+ * @param rxID
+ * @param methUp
+ * @param methDown
+ * @param methPos
+ * @param min
+ * @param max
+ * @param pos
+ * @param methPgUp
+ * @param methPgDown
+ * @param methTop
+ * @param methBottom
+ * @param methTrack
+ * @param methEndScroll
+ * @param willReply
+ */
+RexxMethod10(RexxObjectPtr, en_connectEachSBEvent, RexxObjectPtr, rxID, CSTRING, methUp,
+             CSTRING, methDown, OPTIONAL_CSTRING, methPos, OPTIONAL_int32_t, min, OPTIONAL_int32_t, max,
+             OPTIONAL_int32_t, pos, OPTIONAL_CSTRING, methPgUp, ARGLIST, args, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+
+    oodResetSysErrCode(context->threadContext);
+
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    if ( pcen->hDlg == NULL )
+    {
+        return noWindowsDialogException(context, pcen->rexxSelf);
+    }
+
+    uint32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    {
+        return TheNegativeOneObj;
+    }
+
+    HWND hCtrl = GetDlgItem(pcen->hDlg, id);
+    if ( hCtrl == NULL )
+    {
+        oodSetSysErrCode(context->threadContext);
+        return TheNegativeOneObj;
+    }
+
+    if ( *methUp == '\0' )
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(2));
+        goto err_out;
+    }
+    if ( *methDown == '\0' )
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(3));
+        goto err_out;
+    }
+
+    logical_t willReply = FALSE;
+
+    RexxObjectPtr _willReply = c->ArrayAt(args, 14);
+    if ( _willReply != NULLOBJECT )
+    {
+        if ( ! c->Logical(_willReply, &willReply) )
+        {
+            wrongArgValueException(context->threadContext, 14, ".true or .false", _willReply);
+            goto err_out;
+        }
+    }
+
+    uint32_t tag = willReply ? TAG_REPLYFROMREXX : TAG_NOTHING;
+
+    if ( (argumentExists(5) && argumentExists(6)) || argumentExists(7) )
+    {
+        SCROLLINFO si = {0};
+
+        si.cbSize = sizeof(si);
+        if ( argumentExists(5) && argumentExists(6) )
+        {
+            si.fMask = SIF_RANGE;
+            si.nMin = min;
+            si.nMax = max;
+        }
+        if ( argumentExists(7) )
+        {
+            si.fMask |= SIF_POS;
+            si.nPos = pos;
+        }
+        SetScrollInfo(hCtrl, SB_CTL, &si, TRUE);
+    }
+
+    bool ok;
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_LINEUP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, methUp, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_LINEUP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, methUp, tag);
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_LINEDOWN, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, methDown, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_LINEDOWN, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, methDown, tag);
+
+    if ( ! ok )
+    {
+        goto err_out;
+    }
+
+    if ( argumentExists(4) )
+    {
+        if ( *methPos == '\0' )
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(4));
+            goto err_out;
+        }
+
+        ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_THUMBPOSITION, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, methPos, tag);
+        ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_THUMBPOSITION, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, methPos, tag);
+
+        if ( ! ok )
+        {
+            goto err_out;
+        }
+    }
+    if ( argumentExists(8) )
+    {
+        if ( *methPgUp == '\0' )
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(8));
+            goto err_out;
+        }
+
+        ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_PAGEUP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, methPgUp, tag);
+        ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_PAGEUP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, methPgUp, tag);
+
+        if ( ! ok )
+        {
+            goto err_out;
+        }
+    }
+
+    // We can not use argumentExists() for arguments in ARGLIST, only for named
+    // arguments. So for each arg, we check for its presence in the arg array.
+
+    RexxObjectPtr _methName = c->ArrayAt(args, 9);
+    if ( _methName != NULLOBJECT )
+    {
+        CSTRING meth = c->ObjectToStringValue(_methName);
+
+        if ( meth == NULLOBJECT || *meth == '\0' )
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(9));
+            goto err_out;
+        }
+
+        ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_PAGEDOWN, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+        ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_PAGEDOWN, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+
+        if ( ! ok )
+        {
+            goto err_out;
+        }
+    }
+
+    _methName = c->ArrayAt(args, 10);
+    if ( _methName != NULLOBJECT )
+    {
+        CSTRING meth = c->ObjectToStringValue(_methName);
+
+        if ( meth == NULLOBJECT || *meth == '\0' )
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(10));
+            goto err_out;
+        }
+
+        ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_TOP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+        ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_TOP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+
+        if ( ! ok )
+        {
+            goto err_out;
+        }
+    }
+
+    _methName = context->ArrayAt(args, 11);
+    if ( _methName != NULLOBJECT )
+    {
+        CSTRING meth = context->ObjectToStringValue(_methName);
+
+        if ( meth == NULLOBJECT || *meth == '\0' )
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(11));
+            goto err_out;
+        }
+
+        ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_BOTTOM, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+        ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_BOTTOM, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+
+        if ( ! ok )
+        {
+            goto err_out;
+        }
+    }
+
+    _methName = context->ArrayAt(args, 12);
+    if ( _methName != NULLOBJECT )
+    {
+        CSTRING meth = context->ObjectToStringValue(_methName);
+
+        if ( meth == NULLOBJECT || *meth == '\0' )
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(12));
+            goto err_out;
+        }
+
+        ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_THUMBTRACK, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+        ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_THUMBTRACK, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+
+        if ( ! ok )
+        {
+            goto err_out;
+        }
+    }
+
+    _methName = context->ArrayAt(args, 13);
+    if ( _methName != NULLOBJECT )
+    {
+        CSTRING meth = context->ObjectToStringValue(_methName);
+
+        if ( meth == NULLOBJECT || *meth == '\0' )
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(13));
+            goto err_out;
+        }
+
+        ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_ENDSCROLL, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+        ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_ENDSCROLL, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, meth, tag);
+
+        if ( ! ok )
+        {
+            goto err_out;
+        }
+    }
+
+    return TheZeroObj;
+
+err_out:
+    return TheOneObj;
+}
+
+
+/** EventNotification::connectAllScrollBarEvents()
+ *
+ *  Connects all scroll bar events to the method specified.
+ *
+ * @param  rxID      [required]
+ * @param  methName  [required]
+ * @param  min       [optional]
+ * @param  max       [optional]
+ * @param  pos       [optional]
+ */
+RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, msg,
+             OPTIONAL_int32_t, min, OPTIONAL_int32_t, max, OPTIONAL_int32_t, pos,
+            OPTIONAL_logical_t, willReply, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+
+    oodResetSysErrCode(context->threadContext);
+
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    if ( pcen->hDlg == NULL )
+    {
+        return noWindowsDialogException(context, pcen->rexxSelf);
+    }
+
+    uint32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    {
+        return TheNegativeOneObj;
+    }
+
+    HWND hCtrl = GetDlgItem(pcen->hDlg, id);
+    if ( hCtrl == NULL )
+    {
+        oodSetSysErrCode(context->threadContext);
+        return TheNegativeOneObj;
+    }
+
+    if ( *msg == '\0' )
+    {
+        context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(2));
+        goto err_out;
+    }
+
+    uint32_t tag = willReply ? TAG_REPLYFROMREXX : TAG_NOTHING;
+
+    if ( (argumentExists(3) && argumentExists(4)) || argumentExists(5) )
+    {
+        SCROLLINFO si = {0};
+
+        si.cbSize = sizeof(si);
+        if ( argumentExists(3) && argumentExists(4) )
+        {
+            si.fMask = SIF_RANGE;
+            si.nMin = min;
+            si.nMax = max;
+        }
+        if ( argumentExists(5) )
+        {
+            si.fMask |= SIF_POS;
+            si.nPos = pos;
+        }
+        SetScrollInfo(hCtrl, SB_CTL, &si, TRUE);
+    }
+
+    bool ok;
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_LINEUP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_LINEUP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_LINEDOWN, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_LINEDOWN, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+
+    if ( ! ok )
+    {
+        goto err_out;
+    }
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_PAGEUP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_PAGEUP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_PAGEDOWN, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_PAGEDOWN, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+
+    if ( ! ok )
+    {
+        goto err_out;
+    }
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_TOP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_TOP, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_BOTTOM, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_BOTTOM, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+
+    if ( ! ok )
+    {
+        goto err_out;
+    }
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_THUMBPOSITION, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_THUMBPOSITION, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_THUMBTRACK, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_THUMBTRACK, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+
+    ok = addMiscMessage(pcen, context, WM_HSCROLL, 0xFFFFFFFF, SB_ENDSCROLL, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+    ok = addMiscMessage(pcen, context, WM_VSCROLL, 0xFFFFFFFF, SB_ENDSCROLL, 0x0000FFFF, (LPARAM)hCtrl, UINTPTR_MAX, msg, tag);
+
+    if ( ! ok )
+    {
+        goto err_out;
+    }
+
+    return TheZeroObj;
+
+err_out:
+    return TheOneObj;
+}
+
+
 /** EventNotification::connectListViewEvent()
  *
  *  Connects a Rexx dialog method with a list view event.
@@ -3543,11 +4257,11 @@ RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING
     // Deal with DEFAULTEDIT separately.
     if ( isDefEdit )
     {
-        if ( ! addNotifyMessage(pcen, id, 0xFFFFFFFF, LVN_BEGINLABELEDIT, 0xFFFFFFFF, "DefListEditStarter", 0) )
+        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, LVN_BEGINLABELEDIT, 0xFFFFFFFF, "DefListEditStarter", 0) )
         {
             return TheNegativeOneObj;
         }
-        if ( ! addNotifyMessage(pcen, id, 0xFFFFFFFF, LVN_ENDLABELEDIT, 0xFFFFFFFF, "DefListEditHandler", 0) )
+        if ( ! addNotifyMessage(pcen, context, id, 0xFFFFFFFF, LVN_ENDLABELEDIT, 0xFFFFFFFF, "DefListEditHandler", 0) )
         {
             return TheNegativeOneObj;
         }
@@ -3559,7 +4273,7 @@ RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING
         methodName = lvn2name(notificationCode, tag);
     }
 
-    if ( addNotifyMessage(pcen, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
     {
         return TheZeroObj;
     }
@@ -3636,7 +4350,7 @@ RexxMethod4(RexxObjectPtr, en_connectUpDownEvent, RexxObjectPtr, rxID, CSTRING, 
         methodName = "onDeltaPos";
     }
 
-    if ( addNotifyMessage(pcen, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, TAG_UPDOWN) )
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, TAG_UPDOWN) )
     {
         return TheTrueObj;
     }
@@ -3723,7 +4437,7 @@ RexxMethod5(RexxObjectPtr, en_connectDateTimePickerEvent, RexxObjectPtr, rxID, C
           tag |= willReply ? TAG_REPLYFROMREXX : 0;
     }
 
-    if ( addNotifyMessage(pcen, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
     {
         return TheTrueObj;
     }
@@ -3812,7 +4526,7 @@ RexxMethod5(RexxObjectPtr, en_connectMonthCalendarEvent, RexxObjectPtr, rxID, CS
         tag |= willReply ? TAG_REPLYFROMREXX : 0;
     }
 
-    if ( addNotifyMessage(pcen, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
     {
         return TheTrueObj;
     }
@@ -3849,6 +4563,11 @@ err_out:
  *
  *  @return  0 on success, 1 on failure.  One possible source of error is the
  *           message table being full.
+ *
+ *  @note     Method name can not be the empty string. The Window message,
+ *            WPARAM, and LPARAM arguments can not all be 0.
+ *
+ *            If incorrect arguments are detected a syntax condition is raised.
  *
  *  @remarks  Although it would make more sense to return true on succes and
  *            false on failure, there is too much old code that relies on 0 for
@@ -3950,11 +4669,11 @@ RexxMethod9(uint32_t, en_addUserMessage, CSTRING, methodName, CSTRING, wm, OPTIO
         }
         else if ( (winMessage & wmFilter) == WM_NOTIFY )
         {
-            success = addNotifyMessage(pcen, wParam, wpFilter, lParam, lpFilter, methodName, tag);
+            success = addNotifyMessage(pcen, context, wParam, wpFilter, lParam, lpFilter, methodName, tag);
         }
         else
         {
-            success = addMiscMessage(pcen, winMessage, wmFilter, wParam, wpFilter, lParam, lpFilter, methodName, tag);
+            success = addMiscMessage(pcen, context, winMessage, wmFilter, wParam, wpFilter, lParam, lpFilter, methodName, tag);
         }
 
         result = (success ? 0 : 1);

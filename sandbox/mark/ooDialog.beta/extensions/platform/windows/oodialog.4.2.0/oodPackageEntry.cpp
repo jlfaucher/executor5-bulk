@@ -46,6 +46,7 @@
 
 #include "ooDialog.hpp"     // Must be first, includes windows.h, commctrl.h, and oorexxapi.h
 
+
 HINSTANCE            MyInstance = NULL;
 pCPlainBaseDialog    DialogTable[MAXDIALOGS] = {NULL};
 pCPlainBaseDialog    TopDlg = NULL;
@@ -78,8 +79,12 @@ RexxClassObject     TheDialogControlClass = NULLOBJECT;
 // Initialized in the PropertySheetPage class init method (psp_init_cls.)
 RexxClassObject     ThePropertySheetPageClass = NULLOBJECT;
 
-// Initialize in the Size class init method (size_init_cls.)
+// Initialized in the Size class init method (size_init_cls.)
 RexxClassObject     TheSizeClass = NULLOBJECT;;
+
+// Initialized in the Rect class init method (rect_init_cls.)
+RexxClassObject     TheRectClass = NULLOBJECT;
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -106,6 +111,40 @@ BOOL REXXENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 }
 #endif
 
+
+/* GdiplusStartupInput gdiplusStartupInput;
+ULONG_PTR           gdiplusToken; */
+
+/**
+ * RexxPackageLoader function.  This does nothing right now.
+ *
+ * In a future release it will be used for the GDI+ startup initialization, and
+ * some of the other startup function currently in DlgUtil init class will be
+ * moved here.  Place holder for now.
+ *
+ * @param c  Thread context pointer passed from the intepreter when this package
+ *           is loaded.
+ *
+ * @return Nothing is returned
+ */
+void RexxEntry ooDialogLoad(RexxThreadContext *c)
+{
+    /* Initialize GDI+.
+    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);*/
+}
+
+/**
+ * RexxPackageUnloader function.  Place holder for now, see comments above.
+ *
+ * @param c  Thread context pointer passed from the intepreter when this package
+ *           is loaded.
+ *
+ * @return Nothing is returned
+ */
+void RexxEntry ooDialogUnload(RexxThreadContext *c)
+{
+    /* GdiplusShutdown(gdiplusToken); */
+}
 
 REXX_TYPED_ROUTINE_PROTOTYPE(messageDialog_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(fileNameDlg_rtn);
@@ -140,6 +179,10 @@ REXX_METHOD_PROTOTYPE(dlgutil_makeLPARAM_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_makeWPARAM_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_and_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_or_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_shiftLeft_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_shiftRight_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_sShiftLeft_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_sShiftRight_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_getSystemMetrics_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_screenSize_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_screenArea_cls);
@@ -209,6 +252,9 @@ REXX_METHOD_PROTOTYPE(en_connectFKeyPress);
 REXX_METHOD_PROTOTYPE(en_disconnectKeyPress);
 REXX_METHOD_PROTOTYPE(en_hasKeyPressConnection);
 REXX_METHOD_PROTOTYPE(en_connectCommandEvents);
+REXX_METHOD_PROTOTYPE(en_connectScrollBarEvent);
+REXX_METHOD_PROTOTYPE(en_connectEachSBEvent);
+REXX_METHOD_PROTOTYPE(en_connectAllSBEvents);
 REXX_METHOD_PROTOTYPE(en_connectListViewEvent);
 REXX_METHOD_PROTOTYPE(en_connectDateTimePickerEvent);
 REXX_METHOD_PROTOTYPE(en_connectMonthCalendarEvent);
@@ -232,6 +278,10 @@ REXX_METHOD_PROTOTYPE(pbdlg_setFontName_pvt);
 REXX_METHOD_PROTOTYPE(pbdlg_setFontSize_pvt);
 REXX_METHOD_PROTOTYPE(pbdlg_getAutoDetect);
 REXX_METHOD_PROTOTYPE(pbdlg_setAutoDetect);
+REXX_METHOD_PROTOTYPE(pbdlg_getParentDlg_pvt);
+REXX_METHOD_PROTOTYPE(pbdlg_setParentDlg_pvt);
+REXX_METHOD_PROTOTYPE(pbdlg_getOwnerDialog);
+REXX_METHOD_PROTOTYPE(pbdlg_setOwnerDialog);
 REXX_METHOD_PROTOTYPE(pbdlg_getFinished);
 REXX_METHOD_PROTOTYPE(pbdlg_setFinished);
 REXX_METHOD_PROTOTYPE(pbdlg_sendMessageToControl);
@@ -357,8 +407,8 @@ REXX_METHOD_PROTOTYPE(resdlg_getDataTableIDs_pvt);
 REXX_METHOD_PROTOTYPE(resdlg_startDialog_pvt);
 
 // ControlDialog
-REXX_METHOD_PROTOTYPE(chld_getOwnerDialog);
-REXX_METHOD_PROTOTYPE(chld_setOwnerDialog);
+REXX_METHOD_PROTOTYPE(ctrlDlg_get_initializing);
+REXX_METHOD_PROTOTYPE(ctrlDlg_set_initializing);
 
 // ResourceControlDialog
 REXX_METHOD_PROTOTYPE(resCtrlDlg_startDialog_pvt);
@@ -743,6 +793,7 @@ REXX_METHOD_PROTOTYPE(ds_value);
 
 
 // .Rect
+REXX_METHOD_PROTOTYPE(rect_init_cls);
 REXX_METHOD_PROTOTYPE(rect_init);
 REXX_METHOD_PROTOTYPE(rect_left);
 REXX_METHOD_PROTOTYPE(rect_top);
@@ -868,6 +919,10 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_makeWPARAM_cls,         dlgutil_makeWPARAM_cls),
     REXX_METHOD(dlgutil_and_cls,                dlgutil_and_cls),
     REXX_METHOD(dlgutil_or_cls,                 dlgutil_or_cls),
+    REXX_METHOD(dlgutil_shiftLeft_cls,          dlgutil_shiftLeft_cls),
+    REXX_METHOD(dlgutil_shiftRight_cls,         dlgutil_shiftRight_cls),
+    REXX_METHOD(dlgutil_sShiftLeft_cls,         dlgutil_sShiftLeft_cls),
+    REXX_METHOD(dlgutil_sShiftRight_cls,        dlgutil_sShiftRight_cls),
     REXX_METHOD(dlgutil_screenSize_cls,         dlgutil_screenSize_cls),
     REXX_METHOD(dlgutil_screenArea_cls,         dlgutil_screenArea_cls),
     REXX_METHOD(dlgutil_getSystemMetrics_cls,   dlgutil_getSystemMetrics_cls),
@@ -933,6 +988,9 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(en_disconnectKeyPress,          en_disconnectKeyPress),
     REXX_METHOD(en_hasKeyPressConnection,       en_hasKeyPressConnection),
     REXX_METHOD(en_connectCommandEvents,        en_connectCommandEvents),
+    REXX_METHOD(en_connectScrollBarEvent,       en_connectScrollBarEvent),
+    REXX_METHOD(en_connectEachSBEvent,          en_connectEachSBEvent),
+    REXX_METHOD(en_connectAllSBEvents,          en_connectAllSBEvents),
     REXX_METHOD(en_connectListViewEvent,        en_connectListViewEvent),
     REXX_METHOD(en_connectDateTimePickerEvent,  en_connectDateTimePickerEvent),
     REXX_METHOD(en_connectMonthCalendarEvent,   en_connectMonthCalendarEvent),
@@ -951,6 +1009,10 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(pbdlg_setDlgFont,               pbdlg_setDlgFont),
     REXX_METHOD(pbdlg_getAutoDetect,            pbdlg_getAutoDetect),
     REXX_METHOD(pbdlg_setAutoDetect,            pbdlg_setAutoDetect),
+    REXX_METHOD(pbdlg_getParentDlg_pvt,         pbdlg_getParentDlg_pvt),
+    REXX_METHOD(pbdlg_setParentDlg_pvt,         pbdlg_setParentDlg_pvt),
+    REXX_METHOD(pbdlg_getOwnerDialog,           pbdlg_getOwnerDialog),
+    REXX_METHOD(pbdlg_setOwnerDialog,           pbdlg_setOwnerDialog),
     REXX_METHOD(pbdlg_getFinished,              pbdlg_getFinished),
     REXX_METHOD(pbdlg_setFinished,              pbdlg_setFinished),
     REXX_METHOD(pbdlg_sendMessageToControl,     pbdlg_sendMessageToControl),
@@ -1095,8 +1157,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(resdlg_startDialog_pvt,         resdlg_startDialog_pvt),
 
     // ControlDialog
-    REXX_METHOD(chld_getOwnerDialog,            chld_getOwnerDialog),
-    REXX_METHOD(chld_setOwnerDialog,            chld_setOwnerDialog),
+    REXX_METHOD(ctrlDlg_get_initializing,       ctrlDlg_get_initializing),
+    REXX_METHOD(ctrlDlg_set_initializing,       ctrlDlg_set_initializing),
 
     // ResControlDialog
     REXX_METHOD(resCtrlDlg_startDialog_pvt,     resCtrlDlg_startDialog_pvt),
@@ -1449,6 +1511,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dss_quickDayStateBuffer,        dss_quickDayStateBuffer),
     REXX_METHOD(ds_init,                        ds_init),
     REXX_METHOD(ds_value,                       ds_value),
+    REXX_METHOD(rect_init_cls,                  rect_init_cls),
     REXX_METHOD(rect_init,                      rect_init),
     REXX_METHOD(rect_left,                      rect_left),
     REXX_METHOD(rect_top,                       rect_top),
@@ -1564,8 +1627,8 @@ RexxPackageEntry oodialog_package_entry =
     REXX_INTERPRETER_4_1_0,              // needs at least the 4.1.0 interpreter
     "ooDialog",                          // name of the package
     "4.2.0",                             // package information
-    NULL,                                // no load/unload functions
-    NULL,
+    ooDialogLoad,                        // package load function
+    ooDialogUnload,                      // package unload function
     oodialog_functions,                  // the exported functions
     oodialog_methods                     // the exported methods
 };

@@ -484,6 +484,28 @@ RexxMethod1(uint16_t, dlgutil_loWord_cls, uint32_t, dw) { return LOWORD(dw); }
 RexxMethod2(intptr_t, dlgutil_makeLPARAM_cls, int16_t, loWord, int16_t, hiWord) { return MAKELPARAM(loWord, hiWord); }
 RexxMethod2(uintptr_t, dlgutil_makeWPARAM_cls, int16_t, loWord, int16_t, hiWord) { return MAKEWPARAM(loWord, hiWord); }
 
+RexxMethod2(uint64_t, dlgutil_shiftLeft_cls, uint64_t, n1, uint16_t, amount)
+{
+    return n1 << amount;
+}
+
+RexxMethod2(uint64_t, dlgutil_shiftRight_cls, uint64_t, n1, uint16_t, amount)
+{
+    return n1 >> amount;
+}
+
+RexxMethod2(wholenumber_t, dlgutil_sShiftLeft_cls, int64_t, n1, uint16_t, amount)
+{
+    uint64_t un1 = (uint64_t)n1;
+    return (wholenumber_t)(un1 << amount);
+}
+
+RexxMethod2(wholenumber_t, dlgutil_sShiftRight_cls, int64_t, n1, uint16_t, amount)
+{
+    uint64_t un1 = (uint64_t)n1;
+    return (wholenumber_t)(un1 >> amount);
+}
+
 RexxMethod2(uint64_t, dlgutil_and_cls, CSTRING, s1, CSTRING, s2)
 {
     uint64_t n1, n2;
@@ -1212,6 +1234,16 @@ RexxMethod2(RexxObjectPtr, size_setCY, CSELF, s, int32_t, cy) { ((SIZE *)s)->cy 
  * Methods for the ooDialog .Rect class.
  */
 #define RECT_CLASS  "Rect"
+
+RexxMethod1(RexxObjectPtr, rect_init_cls, OSELF, self)
+{
+    if ( isOfClassType(context, self, RECT_CLASS) )
+    {
+        TheRectClass = (RexxClassObject)self;
+        context->RequestGlobalReference(TheRectClass);
+    }
+    return NULLOBJECT;
+}
 
 RexxMethod4(RexxObjectPtr, rect_init, OPTIONAL_int32_t, left, OPTIONAL_int32_t, top,
             OPTIONAL_int32_t, right, OPTIONAL_int32_t, bottom)
