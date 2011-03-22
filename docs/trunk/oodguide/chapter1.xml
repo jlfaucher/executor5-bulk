@@ -49,20 +49,20 @@
 </para>
 <para>
   Now, there are three areas of concern in designing an ooDialog application:
-</para>
 <itemizedlist>
 <listitem><para>Designing the appearance of the window</para></listitem>
 <listitem><para>Designing the desired user interactions with the window</para></listitem>
 <listitem><para>Designing the code that implements both appearance and interactions</para></listitem>
 </itemizedlist>
+</para>
 <para>
   And there are three corresponding areas of implementation concern:
-</para>
 <itemizedlist>
 <listitem><para>Laying out the window</para></listitem>
 <listitem><para>Implementing the actions requested by users of a window</para></listitem>
 <listitem><para>Providing the results of those actions to the user on the window.</para></listitem>
 </itemizedlist>
+</para>
 <para>
   This document does not pretend to be a guide to best practice in the areas of design, although 
   it tries to conform with good design principles. However, this document 
@@ -72,13 +72,12 @@
 <para>  
   So, before starting the first exercise, please make sure that you have downloaded and installed the 
   latest versions of ooRexx and also ooDialog. Please also run one or more of the samples in 
-  ooRexx Samples --> ooDialog to ensure that your installation is properly completed.  
+  <emphasis role=italic>Open Object Rexx --> ooRexx Samples --> ooDialog </emphasis> to ensure that your installation is properly completed.  
 </para>
 <section id="sctGettingStarted"><title>Getting Started</title>
 <para>
   The first exercise creates and displays a blank window with the title "Hello World!". Try it - find "Exercise01.rex" 
-  in the "Sample Code\Exercise01" folder, and double-click it. You should see this:
-<!--
+  in the "SampleCode\Exercise01" folder, and double-click it. You should see this:
 <imagedata>
   <figure id="fig01"><title>Exercise01 Result</title>
     <mediaobject>
@@ -88,11 +87,10 @@
     </mediaobject>
   </figure>
 </imagedata>  
--->
 </para>
 <para>
   The Command Prompt window that appears with the "Hello World" window is irrelevant, and later we'll find out how to dispense with it. 
-  But now, let's look at the "Hello World" code (excluding the comments that are in the file):  
+  But for now, let's look at the "Hello World" code (excluding the comments that are in the file):  
 </para>
 <itemizedlist>
   <listitem><para>
@@ -106,7 +104,11 @@
     The first statement creates an instance of the class <emphasis role="italic">MyDialog</emphasis>, and assigns the instance to the 
     variable <emphasis role="italic">dlg</emphasis> (the <emphasis role="italic">MyDialog</emphasis> class is defined in the third part of the code). 
     The second statement invokes the <emphasis role="italic">execute</emphasis> method of <emphasis role="italic">MyDialog</emphasis>, and it is this 
-    that displays the window.
+    that displays the window. The first parameter <emphasis role="italic">SHOWTOP</emphasis> is one of several ways of defining 
+    how the window is surfaced (see section 3.10.3 of the ooDilaog reference for details). 
+    The second parameter states that the icon at the extreme top left of the window should be the 
+    normal ooRexx icon. This graphic is termed a "resource" in ooDilaog, and there are a number of such pre-defined constants 
+    (see section 2.3.3 of the ooDialog reference). 
     </para>
     <para>
     Note that the usual naming conventions are observed: upper camel case for classes (e.g. <computeroutput>MyDialog</computeroutput>and lower camel case for 
@@ -135,47 +137,176 @@
   </para></listitem>
   <listitem><para>
     Finally, there's the definition of the class <emphasis role="italic">MyDialog</emphasis>: 
+    <programlisting>
     <![CDATA[
     ::class MyDialog subclass UserDialog		
     ::method init
       forward class (super) continue	 
       self~create(30, 30, 257, 123, "Hello World", "CENTER")
     ]]>
+    </programlisting>    
     The first line defines a class called <computeroutput>MyDialog</computeroutput> as a subclass of 
     the ooDialog-provided class <computeroutput>UserDialog</computeroutput>
     <footnote><para>See Chapter 7 of the ooDialog Reference for full details.</para></footnote>
-    Among other things, <emphasis role="italic">UserDialog</emphasis> enables the programmer to define the window layout in code. 
+    Among other things, <computeroutput>UserDialog</computeroutput> enables the programmer to define the window layout in code. 
     This can get cumbersome in more advanced dialogs, and later we'll meet a simpler way of defining a more realistic window layout.
     </para>
     <para>
-    The second line defines the <emphasis role="italic">init</emphasis> method, and the third line calls the superclass which does 
-    the heavy work of creating the window.
-    <footnote><para>See Chapter 3 of the ooDialog Reference manual.</para></footnote>
-    This is supplemented by the last line, where the <computeroutput>create</computeroutput> message is sent to 
+    The second line defines the <computeroutput>init</computeroutput> method of <computeroutput>MyDialog</computeroutput>, 
+    and the third line forwards the <emphasis role="italic">init</emphasis> message to the superclass which then does the heavy 
+    work of creating the window.<footnote><para>See Chapter 3 of the ooDialog Reference manual.</para></footnote>
+    But why use <computeroutput>forward</computeroutput> instead of <computeroutput>self~init:super</computeroutput>?
+    [OS: Very short explanation to be added here.]
+    </para>
+    <para>
+    Finally, the last line sends a <computeroutput>create</computeroutput> message to 
     <computeroutput>self</computeroutput> and hence to <computeroutput>UserDialog</computeroutput>. This method defines the "template" to 
-    be used - that is, the layout of the window - in this case the position and size of the "Hello World" window, as well as the text to 
-    be dispayed in the window's title bar.<footnote><para>See Chapter 7 of the Windows ooDialog Reference.</para></footnote>
+    be used - that is, the layout of the dialog window (see Chapter 7 of the Windows ooDialog Reference). 
+    The first two parameters define, in "dialog units", the x and y position on the screen of the top left corner of the window. 
+    Dialog units (rather than pels) are used to provide device independence. The third and fourth parameters define the width and 
+    height of the dialog, again in dialog units. The fifth parameter is the window's title, and the last parameter - "CENTER" - states 
+    that regardless of the first two parameters, the dialog window will be positioned in the center of the screen. 
+    Try removing the "CENTER" parameter (and its preceding comma of course) and see what happens. Then replace the "CENTER" parameter, 
+    and (just to make sure that you've replaced it correctly) run the program again, and this time try to size the window. You can't. Then replace "CENTER" by "CENTER THICKFRAME" and re-run
+    the program. The window now has a sizeable border.     
     </para>
     <para>Finally, this instance of the <computeroutput>MyDialog</computeroutput> class having been set up properly, the window is 
     actually surfaced (made visible) by the <emphasis role="italic">execute</emphasis> message (handled by MyDialog's superclass)
-    sent by the second statement in the first part of the program (see above).  
+    sent by the second statement in the first part of the program which was:  
+    <programlisting>
+      <![CDATA[
+      dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+      ]]>
+    </programlisting>
     </para>    
-   </listitem>
+  </listitem>
 </itemizedlist>
-  
+<para>
+Now let's add some behavior to the dialog. We're going to build a "Words of Wisdom" dialog that will display
+words of wisdom when a button is pressed. 
+</para>
+
 </section>
 
-<section id="someID"><title>Visible Bahaviour</title>
+<section id="visBehavior"><title>Visible Bahaviour</title>
+<para>This section is in two parts. First we create a window that invites the user to press a button 
+for more "words of wisdom" - but the button doesn't work. Second, we make the button work. In this way, 
+we both add to the way windows are populated with controls, and also show how user input is handled.
+</para>
+<section id="vizBehavior1"> <!-- should be numbered 2.2.1 I think) -->
+ <title>Adding Controls to the Window</title>
 <para>
-  Text.
+  First, try running "Exercise02a.rex" from  the "Sample Code\Exercise02" folder. You should see a dialog entitled 
+  "Words of Wisdom" which is blank with the exception of some (alleged) words of wisdom and two push-buttons. 
+  One of these does nothing, the other (Cancel) closes the window. These buttons are examples of "controls" - things or "widgets"
+  that populate a window and enable both display of information and user interaction with the window. Now let's look at the code. 
+  The first seven lines (excluding comments and spacing lines) are identical to the first seven in Exercise01:
+      <programlisting>
+      <![CDATA[
+      dlg = .MyDialog~new
+      dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+      ::requires "ooDialog.cls"
+      ::class 'MyDialog' subclass UserDialog
+      ::method init
+        forward class (super) continue
+        self~create(30, 30, 257, 123, "Words of Wisdom", "CENTER")
+      ]]>
+    </programlisting>
+</para>
+<para>
+  However, we've added a <emphasis role="italic">defineDialog</emphasis> method to the <computeroutput>MyDialog</computeroutput> class, as follows:
+  <programlisting>
+  <![CDATA[
+  ::method defineDialog
+    self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom")
+    self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
+    self~createStaticText(902, 40, 40, 200, 20, , -
+     "Complex problems have simple solutions"||.endofline||"- which are wrong.")
+  ]]>
+  </programlisting>
+  This method is invoked automatically by the superclass. After the <emphasis role="italic">method</emphasis> statement, 
+  there are three statements forming the body of the method, each of which create a control. The first two each create a pushbutton:
+  <itemizedlist>
+    <listitem>A "More Wisdom" pushbutton, with the resource ID "901" (resource numbers 0-50 are reserved)</listitem>
+    <listitem>A "Cancel" pushbutton, whose ID <emphasis role="italic"IDCANCEL</emphasis> makes this button perform 
+    the standard window cancel action - that is, close the window without saving any changes (an OK button shuold save 
+    any changes made by the user, and then close the window - preferably with an intervening "Save changes? message box 
+    options "Yes", "NO, and "Cancel".</listitem>    
+  </itemizedlist>  
+  The third statement creates some static text (text that cannot be changed by the user), with the text itself as the last parameter.
+  This text comprises the initial (and so far only) "words of wisdom". 
+</para>
+<para>
+Now we need to make the <emphasis role=italic>More wisdom</emphasis> button work, which we now do in Exercise 02b. 
 </para>
 </section>
 
-<section id="someOtherID"><title>Some Other Title</title>
-<para>
-  Text.
+<section id="visBehavior2"><title>Making The Controls Work</title>
+<para>First, run Exercise02b. You should see that when you click the <emphasis role="italic">More wisdom</emphasis> pushbutton, 
+you see different text in the centre of the screen, replacing the previous text. So how do we create this behavior?
+(By tghe way, you'll also see debug imformation appear on the command prompt each time you click the "More wisdom" button, 
+showing how debugging information is displayed.)
 </para>
+<para>
+  When a control is actioned by a user (e.g. pressing a pushbutton), in the program we need some way of kicking off 
+  code that provides a visible response. Remember that a key princicple of UI design is that of least astonishment: 
+  if the user is astonished by what the computer is doing in response to a wholly innocent user interaction 
+  with some UI widget, then that principle is breached. Of course, astonishment can be pleasant or unpleasant; and 
+  if you can create ooDialog UIs which pleasantly astonish their users, then you probably don't need to 
+  read this Guide.  
+</para>
+<para>In ooDialog, a user action is sigalled to other code through a method. The name of the method to be invoked is provided
+  in a parameter of the actionable widget. The first lines of code in Exercise02b - down to the 
+  <emphasis role="italic">defineDialog</emphasis> method - are almost identical to those of Exercise02a, with only one
+  significant change. The method is as follows:
+  <programlisting>
+  <![CDATA[
+  ::method defineDialog		
+  self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom", OkClicked)
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
+  self~createStaticText(902, 40, 40, 200, 40, , "Click 'More wisdom'")
+  ]]>
+  </programlisting>
+</para>
+<para>
+  The significant change is in the first statement - <emphasis role="italic">self~createPushButton</emphasis> 
+  has an additional parameter <emphasis role="italic">okClicked</emphasis>. 
+  This is the name of the method that is automatically invoked by ooDialog when the user
+  clicks on the <emphasis role="italic">More wisdom</emphasis> pushbutton. Other changes are trivial -
+  the statement <emphasis role="italic">self~createStaticText</emphasis> on the last line has more space 
+  allocated to the text to be displayed, and the initial text has changed to "Click 'More wisdom'".
+</para>
+<para>
+  The major addition to the program is the new <emphasis role="italic">okClicked</emphasis> method that 
+  picks a "words of wisdom" text and displays it. Pseudocode for this method is as follows:
+  <programlisting>
+  <![CDATA[
+  Method okClicked
+    Create array 'arrWow' and add a 'words of wisdom' text strings to each of seven array elements.
+    Create a new Static Text field using the same ID as the exiasting one, so over-writing it. 
+    Pick a "words of wisdom" text randomly from 'arrWow'
+    Show that text in the static text field.
+    return
+  ]]>
+  </programlisting>
+  You can see the code that implements this pseudocode in the file <emphasis role="italic">exercise02.rexx</emphasis>. 
+  Note that the penultimate psudocode statement ("show that text in the static text field")  
+  is implemented by the statement <emphasis role="italic">newText = self~newStatic(902)</emphasis>. 
+  The resource number (902) is the same as in the <emphasis role="italic">self~createStaticText</emphasis> statement of the
+  <emphasis role="italic">defineDialog</emphasis> method. Thus the static text field is effectively re-used for the words of wisdom. 
+  After this stament is an "if-end" group to check  
+  for problems (taken from the ooDialog Reference). 
+</para>
+<para>Why isn't the code shown here? Well, I'd really rather not. 
+  Why not? Doesn't it work? Well, yes, the code per se works OK. But the design! The design is utterly apalling. Aside from performance 
+  considerations (the code creates and populates a new array each time the button is clicked), there is absolutely no 
+  separation of design concerns. And this is arguably the most important thing for any application - especially one with a GUI. 
+  There are at least three important areas of design concern - UI display and interaction, the 
+  "business" (here the business of selecting the text), and the provision of persistent data. But we'll start to fix this in the next chapter.  
+</para>
+
 </section>
 
+</section>
 
 </chapter>
