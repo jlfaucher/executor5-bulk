@@ -1,8 +1,8 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: Manage a KVM virtual domain.                                  */
+/* Description: Manage a libvirt virtual domain.                              */
 /*                                                                            */
-/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -92,6 +92,7 @@ static void orxvirt_loader(RexxThreadContext *context) {
 // build the actual method entry list
 RexxMethodEntry orxvirt_methods[] = {
     REXX_METHOD(OrxVirt_ConnectOpen, OrxVirt_ConnectOpen),
+    REXX_METHOD(OrxVirt_ConnectOpenAuth, OrxVirt_ConnectOpenAuth),
     REXX_METHOD(OrxVirt_ConnectClose, OrxVirt_ConnectClose),
     REXX_METHOD(OrxVirt_ConnectGetHostname, OrxVirt_ConnectGetHostname),
     REXX_METHOD(OrxVirt_ConnectGetLibVersion, OrxVirt_ConnectGetLibVersion),

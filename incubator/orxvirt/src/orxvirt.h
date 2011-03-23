@@ -1,8 +1,8 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: Manage a KVM virtual domain.                                  */
+/* Description: Manage a libvirt virtual domain.                              */
 /*                                                                            */
-/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -45,6 +45,7 @@
 /*----------------------------------------------------------------------------*/
 
 REXX_METHOD_PROTOTYPE(OrxVirt_ConnectOpen)
+REXX_METHOD_PROTOTYPE(OrxVirt_ConnectOpenAuth)
 REXX_METHOD_PROTOTYPE(OrxVirt_ConnectClose)
 REXX_METHOD_PROTOTYPE(OrxVirt_ConnectGetHostname)
 REXX_METHOD_PROTOTYPE(OrxVirt_ConnectGetLibVersion)

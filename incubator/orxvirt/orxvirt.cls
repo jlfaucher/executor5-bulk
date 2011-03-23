@@ -1,8 +1,8 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: Manage virtual domains vi libvirt.                            */
+/* Description: Manage a libvirt virtual domain.                              */
 /*                                                                            */
-/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -49,6 +49,7 @@
 ::attribute connected
 
 ::method priv_connect EXTERNAL "LIBRARY orxvirt OrxVirt_ConnectOpen" private
+::method priv_connectauth EXTERNAL "LIBRARY orxvirt OrxVirt_ConnectOpenAuth" private
 ::method priv_close EXTERNAL "LIBRARY orxvirt OrxVirt_ConnectClose" private
 ::method priv_getLibVersion EXTERNAL "LIBRARY orxvirt OrxVirt_ConnectGetLibVersion" private
 
@@ -70,9 +71,13 @@ if self~connected then return
 if arg() = 0 then do
    connected = self~priv_connect()
    end
-else do
+if arg() = 1 then do
    use strict arg uri
-   connected = self~priv_connect(uri)
+   connected = self~priv_connectauth(uri, 0)
+   end
+else do
+   use strict arg uri, flags
+   connected = self~priv_connectauth(uri, flags)
    end
 return
 

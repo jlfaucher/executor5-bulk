@@ -1,8 +1,8 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Description: Manage a KVM virtual domain.                                  */
+/* Description: Manage a libvirt virtual domain.                              */
 /*                                                                            */
-/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -119,21 +119,20 @@ RexxMethod1(logical_t,                 // Return type
  *
  * @return        Boolean.
  **/
-// RexxMethod1(logical_t,                 // Return type
-//             OrxVirt_ConnectOpenAuth,   // Object_method name
-//             CSTRING, uri)
-// {
-//     virConnectPtr connx;
-//     virConnectAuth connxAuth;
-//     int flags = 0;
-//
-//     connx = virConnectOpenAuth(uri, &connxAuth, flags);
-//     context->SetObjectVariable("CSELF", context->NewPointer(connx));
-//     if (connx == NULL) {
-//         return context->False();
-//     }
-//     return context->True();
-// }
+RexxMethod1(logical_t,                 // Return type
+            OrxVirt_ConnectOpenAuth,   // Object_method name
+            CSTRING, uri,
+            int, flags)
+{
+    virConnectPtr connx;
+
+    connx = virConnectOpenAuth(uri, virConnectAuthPtrDefault, flags);
+    context->SetObjectVariable("CSELF", context->NewPointer(connx));
+    if (connx == NULL) {
+        return context->False();
+    }
+    return context->True();
+}
 
 
 /**
