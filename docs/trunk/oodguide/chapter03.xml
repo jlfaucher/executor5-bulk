@@ -1,0 +1,85 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file.
+    #
+    # Copyright (c) 2011-2011, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<chapter id="chapThree"><title>Re-Structuring the Code</title>
+<indexterm><primary>code structure</primary></indexterm>
+<para>
+  Our current code is hopeless. It works - but only because it's so very simple.
+  The problem is its design - its structure. There are three quite different concerns that must be separated:
+  the UI including both presentation and user action; the data (in our case a set of text strings);
+  and the "business". What's the business of this code? It's picking out (from the data) the
+  particular text to be displayed. In the next exercise, these concerns are separated,
+  with no change as far as the user's concerned.
+</para>
+<para>
+  The three areas of concern have a close relationship with the Model-View-Controller (MVC)
+  concept (see
+  <ulink url="http://en.wikipedia.org/wiki/model-view-controller"><citetitle>Model-View-Controler</citetitle></ulink>)
+  The view is the UI, the text data is the model, and picking out which to have displayed is the controller.
+  This model works well for PC-resident applications, but, by the way, does not easily scale to distributed systems, where
+  a couple of additional architectural concepts are required (see, for example,
+  "Business Component Factory" by Peter Hurzum and Oliver Sims).
+  It does scale down, however, and can be applied within the Windows GUI infrastructure.
+</para>
+<para>
+  But why have three areas for our simple program? Surely picking out a text string at random can be part of
+  the code handling the data? Perhaps a method on a data or model class? A good question.
+  But there's a useful architectural rule that says that model objects should have a CRUDLV interface.
+  CRUDLV (pronounced "cruddlevee") stands for Create, Read, Update, Delete, List, Validate.
+  And "Pick at random" is excluded. In outr case, picking a text string at random is purely
+  a consequence of what we want our application to do. Hence (without going into
+  a perhaps esotreric architectural discussion) it's in the "business" area of concern.
+</para>
+<section id="xxx"><title>The Business Area of Concern</title>
+<para>
+  text
+</para>
+</section>
+<section id="yyy"><title>The UI Area of Concern</title>
+<para>
+  text
+</para>
+</section>
+<section id="zzz"><title>The Data Area of Concern</title>
+<para>
+  text
+</para>
+</section>
+
+</chapter>
