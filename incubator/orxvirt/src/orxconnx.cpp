@@ -119,7 +119,7 @@ RexxMethod1(logical_t,                 // Return type
  *
  * @return        Boolean.
  **/
-RexxMethod1(logical_t,                 // Return type
+RexxMethod2(logical_t,                 // Return type
             OrxVirt_ConnectOpenAuth,   // Object_method name
             CSTRING, uri,
             int, flags)
@@ -129,9 +129,9 @@ RexxMethod1(logical_t,                 // Return type
     connx = virConnectOpenAuth(uri, virConnectAuthPtrDefault, flags);
     context->SetObjectVariable("CSELF", context->NewPointer(connx));
     if (connx == NULL) {
-        return context->False();
+        return false;
     }
-    return context->True();
+    return true;
 }
 
 

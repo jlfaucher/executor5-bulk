@@ -106,10 +106,10 @@ RexxMethodEntry orxvirt_methods[] = {
     REXX_METHOD(OrxVirt_DomainShutdown, OrxVirt_DomainShutdown),
     REXX_METHOD(OrxVirt_DomainGetName, OrxVirt_DomainGetName),
     REXX_METHOD(OrxVirt_DomainGetID, OrxVirt_DomainGetID),
-    REXX_METHOD(OrxVirt_DomainGetID, OrxVirt_DomainSuspend),
-    REXX_METHOD(OrxVirt_DomainGetID, OrxVirt_DomainResume),
-    REXX_METHOD(OrxVirt_DomainGetID, OrxVirt_DomainGetXMLDesc),
-    REXX_METHOD(OrxVirt_DomainGetID, OrxVirt_DomainGetOSType),
+    REXX_METHOD(OrxVirt_DomainSuspend, OrxVirt_DomainSuspend),
+    REXX_METHOD(OrxVirt_DomainResume, OrxVirt_DomainResume),
+    REXX_METHOD(OrxVirt_DomainGetXMLDesc, OrxVirt_DomainGetXMLDesc),
+    REXX_METHOD(OrxVirt_DomainGetOSType, OrxVirt_DomainGetOSType),
     REXX_LAST_METHOD()
 };
 

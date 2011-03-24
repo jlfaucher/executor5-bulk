@@ -46,6 +46,8 @@
 
 ::class virtconnx public
 
+::constant VIR_CONNECT_RO 1
+
 ::attribute connected
 
 ::method priv_connect EXTERNAL "LIBRARY orxvirt OrxVirt_ConnectOpen" private
@@ -71,12 +73,8 @@ if self~connected then return
 if arg() = 0 then do
    connected = self~priv_connect()
    end
-if arg() = 1 then do
-   use strict arg uri
-   connected = self~priv_connectauth(uri, 0)
-   end
 else do
-   use strict arg uri, flags
+   use strict arg uri, flags = 0
    connected = self~priv_connectauth(uri, flags)
    end
 return
