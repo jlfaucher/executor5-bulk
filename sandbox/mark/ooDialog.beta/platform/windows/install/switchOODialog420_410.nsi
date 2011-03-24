@@ -83,6 +83,7 @@
 
   !define SHORTNAME      "Switch_ooDialog"                    ; Must be in sync with the switch ooDialog SHORTNAME
   !define LONGNAME       "Switch ooDialog ${VERSION} (beta)"  ; Does not have to be in sync
+  !define OOREXXLONGNAME "Open Object Rexx"                   ; Must be kept in sync with ooRexx install
 
   !Define BinDir410 "${BINDIR}\oodialog410"
   !Define BinDir420 "${BINDIR}\oodialog420"
@@ -122,6 +123,7 @@
 ; Variables
 
   Var RegVal_installedLocation   ; Our installed location, found in the registry
+  Var RegVal_startMenuFolder     ; Which start menu folder is in use for ooRexx.
   Var RegVal_installedVersion    ; Don't need this Version / level of uninstaller program.  This only exists at 410 or greater
   Var ForceVersion               ; Allows the user to force what ooDialog version is in effect.
   Var CurrentVersion             ; The current ooDialog version, read from the registry
@@ -174,6 +176,9 @@ Section  doSwitch
     SetOutPath $INSTDIR\doc
     ; Add the files ...
     File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog420.pdf"
+    File /oname=oodGuide.pdf "${SRCDIR}\doc\oodguide420.pdf"
+
+    CreateShortCut "$RegVal_startMenuFolder\Documentation\ooRexx ooDialog User Guide.lnk" "$INSTDIR\doc\oodguide.pdf" "" "$INSTDIR\doc\oodguide.pdf" 0
     DetailPrint ""
 
     DetailPrint "********** ooDialog 4.2.0 Samples **********"
@@ -285,6 +290,16 @@ Section  doSwitch
     File "${SamplesDir420}\tutorial\*.rex"
     File "${SamplesDir420}\tutorial\*.bmp"
     File "${SamplesDir420}\tutorial\*.rc"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\userGuide
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\*.txt"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\*.rex"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\wav
@@ -516,6 +531,8 @@ Function .onInit
 
   StrCpy $INSTDIR "$RegVal_installedLocation"
 
+  ReadRegStr $RegVal_startMenuFolder HKLM "Software\${SHORTNAME}\" "StartMenuFolder"
+
   /* If the user did not force a version, the new version is the opposite of
    * the current version.
    */
@@ -563,6 +580,34 @@ Function CheckForProblems
       Abort
   ${EndIf}
 
+  ${If} $CurrentVersion == 420
+    ClearErrors
+    Delete $INSTDIR\oodguide.pdf
+    ${If} ${Errors}
+      MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
+        "switchOODialog detected a problem with oodguide.pdf$\n$\n\
+        You MUST close all the ooDialog documentation and close$\n\
+        any running ooDialog programs before executing the Switch$\n\
+        ooDialog program.$\n$\n\
+        Please close the ooDialog User Guid documentation, and$\n\
+        make sure no ooDialog programs are running.$\n$\n\
+        switchOODialog is aborting."
+        Abort
+
+        ; Restore the oodialog.pdf file deleted above.
+        SetOutPath $INSTDIR\doc
+
+        ${If} $CurrentVersion == 420
+          File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog420.pdf"
+        ${Else}
+          File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog410.pdf"
+        ${EndIf}
+
+        Abort
+    ${EndIf}
+  ${EndIf}
+
+  ClearErrors
   Delete $INSTDIR\oodialog.dll
   ${If} ${Errors}
     MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
@@ -574,11 +619,12 @@ Function CheckForProblems
       the ooDialog Method Reference documentation is closed.$\n$\n\
       switchOODialog is aborting."
 
-      ; Restore the oodialog.pdf file deleted above.
+      ; Restore the ooDialog docs deleted above.
       SetOutPath $INSTDIR\doc
 
       ${If} $CurrentVersion == 420
         File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog420.pdf"
+        File /oname=oodGuide.pdf "${SRCDIR}\doc\oodguide420.pdf"
       ${Else}
         File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog410.pdf"
       ${EndIf}
@@ -661,6 +707,10 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\rc\ticket.rc
   ${Else}
     DetailPrint "Removing files not present in ooDialog 4.1.0"
+    DetailPrint ""
+    DetailPrint "Removing ooDialog User Guide and Start Menu shortcut"
+    Delete "$RegVal_startMenuFolder\Documentation\ooRexx ooDialog User Guide.lnk"
+    Delete $INSTDIR\doc\oodguide.pdf
 
     RMDir /r $INSTDIR\samples\oodialog\source
     Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoListView.bmp
@@ -671,8 +721,23 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\bmp\ticketWizardTheater.bmp
     Delete $INSTDIR\samples\oodialog\bmp\ticketWizardTicket.bmp
     RMDir /r $INSTDIR\samples\oodialog\controls
+    Delete $INSTDIR\samples\oodialog\dlgAreaUDemoThree.rex
     Delete $INSTDIR\samples\oodialog\dlgAreaUDemoTwo.rex
     Delete $INSTDIR\samples\oodialog\examples\ReadMe.txt
+    Delete $INSTDIR\samples\oodialog\examples\resources\CheckIn.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\ClosePalette.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\CodeReview.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\LinkToWeb.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\LockModule.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\LockProject.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\ProjectReview.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\SaveAll.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\SaveModule.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\SaveProject.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\SplitModule.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\Update.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\useTools.h
+    Delete $INSTDIR\samples\oodialog\examples\useTools.rex
     Delete $INSTDIR\samples\oodialog\ooDraw.h
     Delete $INSTDIR\samples\oodialog\PropertySheetDemo.rex
     Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.h
@@ -681,8 +746,10 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\rc\ticketWizard.h
     Delete $INSTDIR\samples\oodialog\rc\ticketWizard.rc
     RMDir /r $INSTDIR\samples\oodialog\simple
+    Delete $INSTDIR\samples\oodialog\sysinfo\sysInfo.h
     Delete $INSTDIR\samples\oodialog\TabDemo.rex
     Delete $INSTDIR\samples\oodialog\ticketWizard.rex
+    RMDir /r $INSTDIR\samples\oodialog\userGuide
   ${Endif}
 
   DetailPrint ""

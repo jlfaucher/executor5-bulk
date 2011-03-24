@@ -126,7 +126,8 @@
   Var IsAdminUser                   ; is the installer being run by an admin:           true / false
   Var SwitchOODialogQualifiedName   ; The fully qualified switchOODialog file name.
 
-  Var RegVal_startMenuFolder        ; location of, possible, alternate start menu folder
+  Var RegVal_startMenuFolder        ; location of start menu folder we put our links in
+  Var RegVal_newStartMenuFolder     ; if we created this folder on install (1) or not (0)
   Var RegVal_ourUninstallLocation   ; location of ooDialog beta uninstall program
   Var RegVal_ourUninstallString     ; ooDialog beta uninstall program
 
@@ -194,6 +195,7 @@ Section  doInstall
     DetailPrint "Creating Switch ooDialog short cut in ${REXXLONGNAME} Start Menu folder"
     CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk" '"$SwitchOODialogQualifiedName"'   ; Need to double quote.
     CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog Info.lnk" '"$SwitchOODialogQualifiedName"' "/I"   ; Need to double quote.
+    CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
 
     ${If} ${AtLeastWinVista}
       ShellLink::SetRunAsAdministrator "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk"
@@ -203,7 +205,8 @@ Section  doInstall
       Pop $0
     ${EndIf}
 
-    CreateShortCut "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
+    WriteRegStr HKLM "Software\${SHORTNAME}" "StartMenuFolder" "$SMPROGRAMS\${REXXLONGNAME}"
+    WriteRegStr HKLM "Software\${SHORTNAME}" "NewStartMenuFolder" "0"
   ${Else}
     DetailPrint "Creating Switch ooDialog short cut in ${LONGNAME} Start Menu folder"
     CreateDirectory "$SMPROGRAMS\${LONGNAME}"
@@ -220,6 +223,7 @@ Section  doInstall
     ${EndIf}
 
     WriteRegStr HKLM "Software\${SHORTNAME}" "StartMenuFolder" "$SMPROGRAMS\${LONGNAME}"
+    WriteRegStr HKLM "Software\${SHORTNAME}" "NewStartMenuFolder" "1"
   ${Endif}
 
   DetailPrint "Executing Switch ooDialog to set current version to 4.2.0."
@@ -292,7 +296,7 @@ Section "Uninstall"
   DeleteRegKey HKLM "SOFTWARE\${SHORTNAME}"
 
   DetailPrint "Removing Start Menu items."
-  ${If} $RegVal_startMenuFolder == ""
+  ${If} $RegVal_newStartMenuFolder == "0"
     Delete "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog.lnk"
     Delete "$SMPROGRAMS\${REXXLONGNAME}\Switch ooDialog Info.lnk"
     Delete "$SMPROGRAMS\${REXXLONGNAME}\Uninstall ${LONGNAME}.lnk"
@@ -328,6 +332,7 @@ Function un.onInit
 
   ReadRegStr $RegVal_installedLocation HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "UnInstallLocation"
   ReadRegStr $RegVal_startMenuFolder HKLM "Software\${SHORTNAME}\" "StartMenuFolder"
+  ReadRegStr $RegVal_newStartMenuFolder HKLM "Software\${SHORTNAME}\" "NewStartMenuFolder"
 
   StrCpy $SwitchOODialogQualifiedName "$RegVal_installedLocation\${InstallFile}"
 FunctionEnd

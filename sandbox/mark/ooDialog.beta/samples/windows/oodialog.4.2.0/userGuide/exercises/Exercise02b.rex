@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2011 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,45 +35,54 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  	ReadMe
+/* Exercise 02b: Making the Controls Work */
 
-  1.  ooDialog Example Programs
-  -------------------------------
+  dlg = .MyDialog~new
+  dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
-  This directory contains example ooDialog programs.  They are intended to
-  be relatively short and simple programs that demonstrate how to use some
-  feature of ooDialog.
+  ::requires "ooDialog.cls"
 
-    - publicRoutines_demo.rex
+/*---------------------------------------------------------------------------*/
+::class 'MyDialog' subclass UserDialog
 
-    ooDialog contains a number of standard dialog and public routines.  The
-    standard dialogs and public routines are designed to be easy to use.
-    They allow a programmer to added simple graphical elements to a program
-    without any detailed knowledge of the ooDialog framework.  The
-    publicRoutines_demo program demonstrates how to use these public
-    routines.
+::method init
+  forward class (super) continue
+  self~create(30, 30, 257, 123, "Words of Wisdom", "CENTER")
 
-    - fileNameDialog_demo.rex
 
-    The FileNameDialog public routine allows a programmer to present the
-    user with the standard Windows Open or Save file dialog.  The
-    fileNameDialog_demo program demonstrates how to use this routine.
+::method defineDialog		-- Invoked automatically by ooDialog.
+  self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom", OkClicked)
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
+  self~createStaticText(902, 40, 40, 200, 40, , "Click 'More wisdom'")
 
-    - imageButton.rex
 
-    This example program demonstrates some of the new features introduced
-    in ooRexx 4.0.0, including the .Image, .Imagelist classes, and the
-    setImageList() method of the button class.
+::method okClicked
+  arrWow = .array~new
 
-    - columnClickListView.rex
+  arrWow[1] = "Agnes Allen's Law:"||.endofline|| -
+	      "Almost anything is easier to get into than out of."
+  arrWow[2] = "Airplane Law:"||.endofline||"When the plane you are on is late," -
+    	      ||.endofline||"the plane you want to transfer to is on time."
+  arrWow[3] = "Fourteenth Corollary of Atwood's General Law of Dynamic Negatives:" -
+  	      ||.endofline||"No books are lost by loaning"||.endofline|| -
+  	      "except those you particularly wanted to keep."
+  arrWow[4] = "Baker's Byroad:"||.endofline||"When you're over the hill, you pick up speed."
+  arrWow[5] = "First Law of Bicycling:"||.endofline|| -
+  	      "No matter which way you ride, it's uphill and against the wind."
+  arrWow[6] = "Brooks's Law:"||.endofline|| -
+  	      "Adding manpower to a late software project makes it later."
+  arrWow[7] = "Grossman's Misquote of H. L. Mencken"||.endofline|| -
+  	      "Complex problems have simple, easy-to-understand wrong answers."
 
-    An example program that shows how to determine which row and which
-    column in a list view control the user has clicked on.
+  say "'More wisdom' button clicked"
 
-    - useTools.rex
+  newText = self~newStatic(902)
+  if newText == .nil then do
+    say "Method okClicked: newStatic bad!"
+    return
+  end
+  i = random(1,7)
+  newText~setText(arrWow[i])
+  newText~show
+  return
 
-    This example program shows how to use a dialog that is an "owned"
-    window.  Owned windows have several constraints, one of which is that
-    they always remain above their owner window.  This makes them useful to
-    create "tool palette" types of programs.  The example program does just
-    that, demonstrates a main dialog with a tool palette.
