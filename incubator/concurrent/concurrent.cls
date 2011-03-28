@@ -47,12 +47,34 @@ namespace = "org.oorexx.concurrent."
 package = .Context~package
 export(package, namespace, .Thread)
 export(package, namespace, .ThreadPool)
+export(package, namespace, .Lock)
 
+
+::options trace o
 
 ::routine export
   use strict arg package, namespace, class
   package~addPublicClass(namespace||class~id,class)
   return ""
+
+
+
+/**
+ * A simple reentrant lock. This is an abstraction of concepts offered by the
+ * rexx interpreter.
+ **/
+::class Lock
+
+/**
+ * Execute something whithin a critical section. The lock can execute nested
+ * messages from the same thread.
+ *
+ * @param message A message object or any other object that understands send.
+ **/
+::method process
+  use strict arg message
+  message~send
+
 
 /**
  * A thread class. Each thread executes a piece of code in parallel to other
