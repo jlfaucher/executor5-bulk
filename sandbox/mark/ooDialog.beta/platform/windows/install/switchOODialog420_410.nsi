@@ -218,6 +218,14 @@ Section  doSwitch
     File "${SamplesDir420}\examples\resources\*.rc"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\menus
+    ; Add the files ...
+    File "${SamplesDir420}\menus\*.rex"
+    File "${SamplesDir420}\menus\*.h"
+    File "${SamplesDir420}\menus\*.bmp"
+    File "${SamplesDir420}\menus\*.rc"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\oleinfo
     ; Add the files ...
     File "${SamplesDir420}\oleinfo\*.rex"
@@ -738,6 +746,7 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\examples\resources\Update.bmp
     Delete $INSTDIR\samples\oodialog\examples\resources\useTools.h
     Delete $INSTDIR\samples\oodialog\examples\useTools.rex
+    RMDir /r $INSTDIR\samples\oodialog\menus
     Delete $INSTDIR\samples\oodialog\ooDraw.h
     Delete $INSTDIR\samples\oodialog\PropertySheetDemo.rex
     Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.h
