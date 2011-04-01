@@ -37,6 +37,9 @@
     #
     #########################################################################
 -->
+
+<!-- Chapter02 version 00-03 -->
+
 <chapter id="chapTwo"><title>In The Beginning</title>
 <indexterm><primary>overview</primary></indexterm>
 <para>
@@ -105,7 +108,7 @@
     variable <emphasis role="italic">dlg</emphasis> (the <emphasis role="italic">MyDialog</emphasis> class is defined in the third part of the code).
     The second statement invokes the <emphasis role="italic">execute</emphasis> method of <emphasis role="italic">MyDialog</emphasis>, and it is this
     that displays the window. The first parameter <emphasis role="italic">SHOWTOP</emphasis> is one of several ways of defining
-  how the window is surfaced (see section 3.10.3 of the ooDialog reference for details).
+    how the window is surfaced (see section 3.10.3 of the ooDialog reference for details).
     The second parameter states that the icon at the extreme top left of the window should be the
     normal ooRexx icon. This graphic is termed a "resource" in ooDilaog, and there are a number of such pre-defined constants
     (see section 2.3.3 of the ooDialog reference).
@@ -131,36 +134,37 @@
       ]]>
     </programlisting>
     Note that it's <computeroutput>UserDialog</computeroutput> (see next bullet) that's not found.
-    This is because the <computeroutput>::requires ooDialog.cls</computeroutput> statement not only says we're using ooDialog, but also provides
+    This is because the <emphasis role="italic">::requires ooDialog.cls</emphasis> statement not only says we're using ooDialog, but also provides
     access to all the classes provided <emphasis role="italic">by</emphasis> ooDialog. Later, we'll see a further use
-    for the <computeroutput>::requires</computeroutput> directive.
+    for the <emphasis role="italic">::requires</emphasis> directive.
 </para>
 <para>
-    Finally, there's the definition of the class <emphasis role="italic">MyDialog</emphasis>:
-    <programlisting>
-    <![CDATA[
+  Finally, there's the definition of the class <computeroutput>MyDialog</computeroutput>:
+  <programlisting>
+  <![CDATA[
   ::class MyDialog subclass UserDialog
-    ::method init
-    forward class (super) continue
-      self~create(30, 30, 257, 123, "Hello World", "CENTER")
-    ]]>
-    </programlisting>
-    The first line defines a class called <computeroutput>MyDialog</computeroutput> as a subclass of
+  ::method init
+  forward class (super) continue
+    self~create(30, 30, 257, 123, "Hello World", "CENTER")
+  ]]>
+  </programlisting>
+  The first line defines a class called <computeroutput>MyDialog</computeroutput> as a subclass of
   the ooDialog-provided class <computeroutput>UserDialog</computeroutput> (see Chapter 7 of the ooDialog Reference for full details).
-    Among other things, <computeroutput>UserDialog</computeroutput> enables the programmer to define the window layout in code.
-    This can get cumbersome in more advanced dialogs, and later we'll meet a simpler way of defining a more realistic window layout.
-    </para>
-    <para>
-    The second line defines the <computeroutput>init</computeroutput> method of <computeroutput>MyDialog</computeroutput>,
-    and the third line forwards the <emphasis role="italic">init</emphasis> message to the superclass which then does the heavy
+  Among other things, <computeroutput>UserDialog</computeroutput> enables the programmer to define the window layout in code.
+  This can get cumbersome in more advanced dialogs, and later we'll meet a simpler way of defining a more realistic window layout.
+  </para>
+  <para>
+  The second line defines the <emphasis role="italic">init</emphasis> method of <computeroutput>MyDialog</computeroutput>,
+  and the third line forwards the <emphasis role="italic">init</emphasis> message to the superclass which then does the heavy
   work of creating the window (see Chapter 3 of the ooDialog Reference).
-    But why use <computeroutput>forward</computeroutput> instead of <computeroutput>self~init:super</computeroutput>?
-    [OS: Very short explanation to be added here.]
+  But why use <emphasis role="italic">forward</emphasis> instead of <emphasis role="italic">self~init:super</emphasis>?
+  The reason is that <emphasis role="italic">forward</emphasis> applies not only to the method but also to all its arguments,
+  whatever these may be. Which is exactly what's required here.    
     </para>
     <para>
     Finally, the last line sends a <computeroutput>create</computeroutput> message to
     <computeroutput>self</computeroutput> and hence to <computeroutput>UserDialog</computeroutput>. This method defines the "template" to
-  be used - that is, the layout of the dialog window (see Chapter 7 of the Windows ooDialog Reference). The parameters are:
+    be used - that is, the layout of the dialog window (see Chapter 7 of the Windows ooDialog Reference). The parameters are:
   <itemizedlist>
     <listitem><para>
     The first two parameters define, in "dialog units", the x and y position on the screen of the top left corner of the window.
@@ -272,7 +276,15 @@ how do we create the pushbutton's visible behavior?
 </para>
 <para>
   In ooDialog, there are a number of ways of connecting a user action on an "actioanable" widget to a method.
-  One of the simplest is by supplying the name of the method as a parameter of the actionable widget.
+  Now ooDialog depends on the underlying Windows GUI software infrastructure, so a user action is actually signalled 
+  by that infrastructure, and ooDialog connects that event to a method in the ooRexx dialog object. So the source of 
+  the event (the user action) is not ooDialog. This means that if you want to capture a user action that 
+  the Windows infrastructure doesn't capture (for example hovering the mouse over an edit control), 
+  then there's no way ooDialog can do it either.   
+</para>     
+<para>  
+  Having said that, one of the simplest ways of having a user action connected to an ooRexx method is by supplying 
+  the name of the method as a parameter of the actionable widget.
   And, since a pushbutton control provides for just such an approach, that's what we'll do here.
   The first lines of code in Exercise02b - down to the
   <emphasis role="italic">defineDialog</emphasis> method - are almost identical to those of Exercise02a, with only one
