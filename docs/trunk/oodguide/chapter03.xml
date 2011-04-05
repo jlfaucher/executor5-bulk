@@ -38,7 +38,7 @@
     #########################################################################
 -->
 
-<!-- Chapter03 version 00-02 -->
+<!-- Chapter03 version 00-03 -->
 
 <chapter id="chapThree"><title>Re-Structuring the Code</title>
 <indexterm><primary>code structure</primary></indexterm>
@@ -69,19 +69,24 @@
   knows where the data is, and makes it available.
   In our case, picking a text string at random is purely a consequence of what we
   want our <emphasis role="italic">application</emphasis> to do.
-  Hence (without going into a perhaps esoteric architectural discussion) picking a string is in the "business" area of concern.
-  Let's now look at the implementation of each of these three areas of concern. In the second part of this chapter,
+  Hence (without going into a perhaps esoteric architectural discussion) picking 
+  a string is in the "business" area of concern. Let's now look at the implementation 
+  of each of these three areas of concern. In the second part of this chapter,
   we'll further reduce coupling (the rule is: low/loose coupling, high cohesion).
 </para>
 
 <section id="chap03-struc"><title>Fixing the Structure</title><!-- section 3.1 -->
 <para>
   First, re-run Excercise02a, and then run Exercise03a. To the user, they're identical.
-  However, in Exercise03a the code has been re-structured so that there are now three
-  different classes, each implementing one of the three areas of concern.
-  We'll look at each class in turn, but first
-  here's a whiteboard-level picture of how the three classes interact to produce a
-  "words of wisdom" on the GUI.
+  However, in Exercise03a the code has been re-structured 
+  so that there are now three different classes, each implementing one of the three 
+  areas of concern. We'll look at each class in turn, the   
+  <link linkend='fig0301'>figure</link> below providing a whiteboard-level picture of how the three
+  classes interact to produce a "words of wisdom" on the GUI.   Now look at the code  
+  in Exercise03a. As illustrated in the <link linkend='fig0301'>figure</link>, 
+  it's split it into three classes: <computeroutput>MyDialog</computeroutput>, 
+  <computeroutput>WowPicker</computeroutput>, and <computeroutput>WowData</computeroutput>. 
+  "Wow" in the names is short for "words of wisdom".
   <figure id="fig0301"><title>Exercise03 Structure</title>
     <mediaobject>
       <imageobject>
@@ -90,9 +95,6 @@
       </imageobject>
     </mediaobject>
   </figure>
-  Now look at the Exercise03a code. It's split it into three classes:
-  <computeroutput>MyDialog</computeroutput>, <computeroutput>WowPicker</computeroutput>,
-  and <computeroutput>WowData</computeroutput>. "Wow" in the names is short for "words of wisdom".
 </para>
 </section>
 
@@ -101,9 +103,10 @@
   Look at the <computeroutput>MyDialog</computeroutput> class which implements the UI area of concern.
   The <emphasis role="italic">init</emphasis> method
   is identical to that of Exercise02b except that it also creates an instance of
-  <computeroutput>WowPicker</computeroutput> called (unsurprisingly) <emphasis role="italic">wowPicker</emphasis>".
-  There's also an <emphasis role="italic">expose</emphasis>
-  statement to make the <emphasis role="italic">wowPicker</emphasis> object available to other methods.
+  <computeroutput>WowPicker</computeroutput> called (unsurprisingly) 
+  <emphasis role="italic">wowPicker</emphasis>". There's also an 
+  <emphasis role="italic">expose</emphasis> statement to make the 
+  <emphasis role="italic">wowPicker</emphasis> object available to other methods.
 </para>
 <para>
   The <emphasis role="italic">defineDialog</emphasis> method has not changed. But the
@@ -125,7 +128,8 @@
   In summary, all knowledge of picking a string, and of the set from which to pick, has been
   exported elsewhere. The <computeroutput>MyDialog</computeroutput> class now addresses
   only the areas of GUI display and GUI interaction. This is crucially important. A good way
-  to make a complex task hopelessly complicated is to mix "business" and "data" concerns into the "gui" concerns.
+  to make a complex task hopelessly complicated is to mix "business" and "data" concerns into 
+  the "gui" concerns.
 </para>
 </section>
 
@@ -147,17 +151,18 @@
       return arrWowSet[i]
     ]]>
   </programlisting>
-  The <emphasis role="italic">init</emphasis>method gets a reference to an instance of the class <computeroutput>WowData</computeroutput>
-  - which handles the data area of concern - and then gets a set of Words of Wisdom into the variable
-  <emphasis role="italic">arrWowSet</emphasis> (of type array). Then in the method <emphasis role="italic">pickWow</emphasis>
-  a Words of Wisdom string is picked randomly from <emphasis role="italic">arrWowSet</emphasis> and returned.
+  The <emphasis role="italic">init</emphasis> method gets a reference to an instance of 
+  the class <computeroutput>WowData</computeroutput> - which handles the data area of concern
+  - and then gets a set of Words of Wisdom into the variable
+  <emphasis role="italic">arrWowSet</emphasis> (of type array). Then in the method 
+  <emphasis role="italic">pickWow</emphasis> a Words of Wisdom string is picked randomly from 
+  <emphasis role="italic">arrWowSet</emphasis> and returned.
 </para>
 </section>
-
 <section id="chap03-struc-dat"><title>The Data Area of Concern</title><!-- section 3.1.3 -->
 <para>
-  The last class in Exercise03a - (<computeroutput>WowData</computeroutput>) - is extremely simple.
-  In its <emphasis role="italic">init</emphasis> method, it loads up an array of seven text strings
+  The last class in Exercise03a (<computeroutput>WowData</computeroutput>) is extremely simple.
+  Its <emphasis role="italic">init</emphasis> method loads up an array of seven text strings
   into the instance variable <emphasis role="italic">arrWow</emphasis>, and returns that array to a
   caller in its <emphasis role="italic">readWowSet</emphasis> method.
   One can see how this it might be enhanced, for example by providing a method that renews
@@ -165,7 +170,6 @@
   to do with ooDialog, so we'll leave it as it is.
 </para>
 </section>
-
 <section id="chap03-cplg"><title>Reducing Coupling</title><!-- section 3.2 -->
 <para>
   The three classes in Exercise03a are reasonably decoupled: the dialog is in one class,
@@ -173,36 +177,41 @@
   Notice however that both <computeroutput>MyDialog</computeroutput> and <computeroutput>WowPicker></computeroutput>
   create a reference to another class (<computeroutput>WowPicker</computeroutput>
   and <computeroutput>WowData</computeroutput> respectively) in order to invoke them.
-  Each of these three classes can be called a "main" class, since each is the main (and only!) class implementing a separate
-  area of responsibility. In more complex situation, each area will have one main class and a number of subsidiary classes -
-  for example, a (main) SalesOrder class with subsidiary OrderLine, OrderLines, CustomerDetail, and DeliveryInstructions classes.
+  Each of these three classes can be called a "main" class, since each is the main (and only!) 
+  class implementing a separate area of responsibility. In more complex situation, each area 
+  will have one main class and a number of subsidiary classes - for example, a (main) SalesOrder 
+  class with subsidiary OrderLine, OrderLines, CustomerDetail, and DeliveryInstructions classes.
 </para>
 <para>
   Now, when considering more complex applications, it is arguable that it is not the
-  responsibility of either class to know about the creation of instances of other classes.
+  responsibility of any main classes to know about the creation of instances of other classes.
   Later we will see that each area of responsibility (GUI, business and data) will have a
-  number of classes, each area having one main class. If these three areas are to be as independant as possible,
-  then each should know as little as possible about the others. Such independence is usefully enhanced
-  if a way is found to move the knowledge of how to get references to the main classes to a fourth area.
-  And there is just such an area - the application.
+  number of classes, each area having one main class. If these three areas are to be as 
+  independant as possible, then each should know as little as possible about the others. 
+  Such independence is usefully enhanced if a way is found to move the knowledge of how to 
+  get references to the main classes to a fourth area. And there is just such an area - the application.
   </para>
-  <para>In ooDialog programs, there is often a block of code at the beginning of the program file that kicks off a
-  dialog by instantiating an ooDialog class. From there, all the behavior is in the dialog classes.
-  This "kick-off" block of code can be used to reduce coupling by pre-instantiating the main classes, and storing the
+  <para>In ooDialog programs, there is often a block of code at the beginning of the 
+  program file that kicks off a dialog by instantiating an ooDialog class. From there, 
+  all the behavior is in the dialog classes. This "kick-off" block of code can be used to 
+  reduce coupling by pre-instantiating the main classes, and storing the
   object references in <computeroutput>.local</computeroutput>. Thus no main class
   has to know the name of any other main class. But, when a main class gets the object reference
-  for another main class instance, does't the first class have to know the name used to store that reference in
-  <computeroutput>.local</computeroutput>? Well, yes, but even that could be fixed - for example by providing the instance references as parameters
-  in the <computeroutput>init</computeroutput> invocation. Indeed, one could go further, towards the goal of creating a "software component" from
-  each main class plus its subsidiary classes. There is further to say on this subject, but not here, where our focus is on ooDialog.
+  for another main class instance, does't the first class have to know the name used to store 
+  that reference in <computeroutput>.local</computeroutput>? Well, yes, but even that 
+  could be fixed - for example by providing the instance references as parameters
+  in the <computeroutput>init</computeroutput> invocation. Indeed, one could go further, 
+  towards the goal of creating a "software component" from each main class plus its subsidiary 
+  classes. There is further to say on this subject, but not here, where our focus is on ooDialog.
   For this User Guide, the degree of decoupling provided by the <computeroutput>.local</computeroutput> approach will suffice.
   </para>
   <para>
-  Exercise 03b illustrates this decoupling, and is found in the zip file <emphasis role="italic">Exercise03b.zip</emphasis>.
-  Try running it. Extract the files and run the "application" file <emphasis role="italic">Exercise03b-app.rexx</emphasis>. Although its behavior is identical to
-  <emphasis role="italic">Exercise02b.rexx</emphasis>, the code is now structured into four files.
-  The code in <emphasis role="italic">Exercise03b-app.rexx</emphasis> is as follows:
-  is very simple:
+  Exercise 03b illustrates this decoupling, and is found in the zip file 
+  <emphasis role="italic">Exercise03b.zip</emphasis>. Try running it. Extract the files and 
+  run the "application" file <emphasis role="italic">Exercise03b-app.rexx</emphasis>. 
+  Although its behavior is identical to <emphasis role="italic">Exercise02b.rexx</emphasis>, 
+  the code is now structured into four files. The code in 
+  <emphasis role="italic">Exercise03b-app.rexx</emphasis> is very simple, as follows:
   <programlisting>
     <![CDATA[
     .local~my.idWowPicker = .WowPicker~new
@@ -219,41 +228,52 @@
     ::requires "exercise03b-dat.rex"
     ]]>
   </programlisting>
-  The first three statements create the three classes, with the ids of the first two being stored in <computeroutput>.local</computeroutput>.
-  Creation of the dialog is done by the the third statement (<computeroutput>dlg = .MyDialog~new</computeroutput>).
-  The next three statements all send an <emphasis role="italic">activate</emphasis> message to each of the three classes.
-  This is because when dealing with complex applications with "main" classes, it is very useful to distinguish between two distinct
-  kinds of class setups: firstly the technical creation of a class (invoking the <emphasis role="italic">init</emphasis> method), and
-  secondly the setup of various required application-related things that the class needs
-  (invoking an <emphasis role="italic">activate</emphasis> method.
+  The first three statements create the three classes, with the ids of the first two being 
+  stored in <computeroutput>.local</computeroutput>. Creation of the dialog is done by the 
+  the third statement (<computeroutput>dlg = .MyDialog~new</computeroutput>). The next three 
+  statements all send an <emphasis role="italic">activate</emphasis> message to each of the 
+  three classes. This is because when dealing with complex applications with "main" classes, 
+  it is very useful to distinguish between two distinct kinds of class setups: firstly the 
+  technical creation of a class (done by the <emphasis role="italic">init</emphasis> method), 
+  and secondly the setup of various application-related things that the class needs
+  (done by an <emphasis role="italic">activate</emphasis> method.
   </para>
   <para>
-  Note the comment on the sixth statement which invokes the dialog's <emphasis role="italic">activate</emphasis> method.
-  It says "Must be the last statement". This is because the statement that actually surfaces the dialog -
-  <emphasis role="italic">self~execute("SHOWTOP", IDI_DLG_OOREXX)</emphasis> is the last statement in <computeroutput>MyDialog</computeroutput>'s
-  <emphasis role="italic">activate</emphasis> method. And once the dialog is surfaced, control never returns to the
-  application (that is, to <emphasis role="italic">exercise03b-app.rex</emphasis>).
+  Note the comment on the sixth statement which invokes the dialog's 
+  <emphasis role="italic">activate</emphasis> method. It says "Must be the last statement". 
+  This is because the statement that actually surfaces the dialog - 
+  <emphasis role="italic">self~execute("SHOWTOP", IDI_DLG_OOREXX)</emphasis> is the last 
+  statement in <computeroutput>MyDialog</computeroutput>'s 
+  <emphasis role="italic">activate</emphasis> method. And once the dialog is surfaced, 
+  control never returns to the application (that is, to 
+  <emphasis role="italic">exercise03b-app.rex</emphasis>).
   </para>
   <para>
-  But why move the <emphasis role="italic">self~execute("SHOWTOP"...</emphasis> statement into the
-  <emphasis role="italic">activate</emphasis> method of the <computeroutput>MyDialog</computeroutput> class?
-  After all, it would work just as well if it were the last statement in the app file. The reason is that
-  the business of surfacing the dialog window is arguably not that of the application; rather it's the business of the dialog class.
-  Thus the application is kept as a simple "kickoff" script, while the real work is done by the classes kicked off.
+  But why move the <emphasis role="italic">self~execute("SHOWTOP"...</emphasis> statement 
+  into the <emphasis role="italic">activate</emphasis> method of the 
+  <computeroutput>MyDialog</computeroutput> class? After all, it would work just as well 
+  if it were the last statement in the app file. The reason is that the business of surfacing 
+  the dialog window is arguably not that of the application; rather it's the business of the 
+  dialog class. Thus the application is kept as a simple "kickoff" script, while the real work 
+  is done by the classes kicked off.
   </para>
   <para>
   There is, however, one important consequence of this move, and that is that, since the
-  <emphasis role="italic">self~execute("SHOWTOP"...</emphasis>
-  statement does not return until the dialog is closed, the method blocks on this statement, and there is potential for a hang.
+  <emphasis role="italic">self~execute("SHOWTOP"...)</emphasis>
+  statement does not return until the dialog is closed, the method blocks on this statement, 
+  and there is potential for a hang.
   In Exercise03a, this statement was at the end of the "application" part
   of the program, and as there was nothing after it, the block didn't matter.
   But Exercise03b has moved it to <emphasis role="italic">activate</emphasis> method of
   <computeroutput>MyDialog</computeroutput>. This introduces a concurrency issue. If not dealt with,
   then when the user clicks the <emphasis role="italic">More wisdom</emphasis> button, the
-  <emphasis role="italic">okClicked</emphasis> method can not run until <emphasis role="italic">activate</emphasis> method ends.
-  When it does end (when the user closes the window), the <emphasis role="italic">onClicked</emphasis> method runs -
-  as many times as the the button was clicked. But the dialog has ended so the <emphasis role="italic">self~newStatic(902)</emphasis>
-  statement returns <computeroutput>.nil</computeroutput>. The result is error messages on the console which look like this:
+  <emphasis role="italic">okClicked</emphasis> method can not run until 
+  <emphasis role="italic">activate</emphasis> method ends. When it does end (when the user 
+  closes the window), the <emphasis role="italic">onClicked</emphasis> method runs -
+  as many times as the the button was clicked. But the dialog has ended so the 
+  <emphasis role="italic">self~newStatic(902)</emphasis> statement returns 
+  <computeroutput>.nil</computeroutput>. The result is error messages on the console 
+  which look like this:
   <programlisting>
     <![CDATA[
     D:\...Exercises>exercise03b-app
@@ -265,13 +285,14 @@
   </para>
   <para>
   The reason Exercise03b works is because the <emphasis role="italic">activate</emphasis> method
-  (in <emphasis role="italic">Exercise03b-gui.rex</emphasis>) has the <emphasis role="italic">unguarded</emphasis>
-  option specified on its method statement. Try commenting "unguarded" out and running the exercise without it. You'll experience a hang.
-  </para>
+  (in <emphasis role="italic">Exercise03b-gui.rex</emphasis>) has the 
+  <emphasis role="italic">unguarded</emphasis> option specified on its method statement. 
+  Try commenting "unguarded" out and running the exercise without it. You'll experience a hang.
   <para>
-  As a general rule, event handling methods such as <emphasis role="italic">okClicked</emphasis> should be unguarded.
-  Indeed, Exercise03b runs happily if the "unguarded" option is moved to the
-  <emphasis role="italic">okClicked</emphasis> method statement - or indeed (in this case) if it's on both method statements.
+  As a general rule, event handling methods such as <emphasis role="italic">okClicked</emphasis> 
+  should be unguarded. Indeed, Exercise03b runs happily if the "unguarded" option is moved to the
+  <emphasis role="italic">okClicked</emphasis> method statement - or indeed (in this case) 
+  if it's on both method statements.
   </para>
   <para>
   In the next chapter, we leave this particular example, and start building a more realistic application.
