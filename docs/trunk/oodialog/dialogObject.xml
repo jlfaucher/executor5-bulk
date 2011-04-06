@@ -239,91 +239,43 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="wbdoSendMessage">sendMessage</link></entry>
-<entry>Sends a Windows message to the underlying dialog and returns its response as a whole number.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoSendMessageHandle">sendMessageHandle</link></entry>
-<entry>Sends a Windows message to the underlying dialog and returns its response as a handle.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoEnable">enable</link></entry>
-<entry>Enables the dialog.</entry>
-</row>
-<row>
 <entry><link linkend="wbdoDisable">disable</link></entry>
 <entry>Disables the dialog.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoIsVisible">isVisible</link></entry>
-<entry>Tests if the dialog is visible.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoIsEnabled">isEnabled</link></entry>
-<entry>Tests if the dialog is enabled.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoHide">hide</link></entry>
-<entry>Makes the dialog invisible and repaints it.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoShowfast">showFast</link></entry>
-<entry>Marks the dialog as visible.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoHideFast">hideFast</link></entry>
-<entry>Marks the dialog as invisible</entry>
 </row>
 <row>
 <entry><link linkend="wbdoDisplay">display</link></entry>
 <entry>Shows or hides the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoUpdate">update</link></entry>
-<entry>Invalidates the entire client area of the dialog.</entry>
-</row>
-<row>
 <entry><link linkend="wbdoDraw">draw</link></entry>
 <entry>Redraws the entire client area of the dialog immediately.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoRedrawClient">redrawClient</link></entry>
-<entry>Redraws the entire client area of the dialog immediately.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoRedraw">redraw</link></entry>
-<entry>Redraws the entire dialog window and all its child windows immediately.</entry>
+<entry><link linkend="wbdoEnable">enable</link></entry>
+<entry>Enables the dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetID">getID</link></entry>
 <entry>Retrieves the identification number of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoGetStyleRaw">getStyleRaw</link></entry>
-<entry>Retrieves the numeric value of the dialog's style flags.</entry>
-</row>
-<row>
 <entry><link linkend="wbdoGetExStyleRaw">getExStyleRaw</link></entry>
 <entry>Retrieves the numeric value of the dialog's extended style flags.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoSetText">setText</link></entry>
-<entry>Sets the text of the dialog.</entry>
+<entry><link linkend="wbdoGetRealPos">getRealPos</link></entry>
+<entry>Returns the position of the dialog in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetRealSize">getRealSize</link></entry>
+<entry>Returns the size of the dialog in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoGetStyleRaw">getStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the dialog's style flags.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetText">getText</link></entry>
-<entry>Gets the text of the dialog.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoTitleEquals">title=</link></entry>
-<entry>Sets the text of the dialog.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoSetTitle">setTitle</link></entry>
-<entry>Sets the text of the dialog.</entry>
-</row>
-<row>
-<entry><link linkend="wbdoTitle">title</link></entry>
 <entry>Gets the text of the dialog.</entry>
 </row>
 <row>
@@ -335,36 +287,84 @@
 <entry>Calculates the size needed for a string in pixels.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoSetRect">setRect</link></entry>
-<entry>Moves and / or resizes the dialog.</entry>
+<entry><link linkend="wbdoHide">hide</link></entry>
+<entry>Makes the dialog invisible and repaints it.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoResizeTo">resizeTo</link></entry>
-<entry>Resizes the dialog to the size specified in pixels.</entry>
+<entry><link linkend="wbdoHideFast">hideFast</link></entry>
+<entry>Marks the dialog as invisible</entry>
+</row>
+<row>
+<entry><link linkend="wbdoIsEnabled">isEnabled</link></entry>
+<entry>Tests if the dialog is enabled.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoIsVisible">isVisible</link></entry>
+<entry>Tests if the dialog is visible.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoMoveTo">moveTo</link></entry>
 <entry>Moves the dialog to the position specified in pixels.</entry>
 </row>
 <row>
+<entry><link linkend="wbdoMoveWindow">moveWindow</link></entry>
+<entry>Changes the position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoRedraw">redraw</link></entry>
+<entry>Redraws the entire dialog window and all its child windows immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoRedrawClient">redrawClient</link></entry>
+<entry>Redraws the entire client area of the dialog immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoResizeTo">resizeTo</link></entry>
+<entry>Resizes the dialog to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying dialog and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying dialog and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSetRect">setRect</link></entry>
+<entry>Moves and / or resizes the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSetText">setText</link></entry>
+<entry>Sets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoSetTitle">setTitle</link></entry>
+<entry>Sets the text of the dialog.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoSetWindowPos">setWindowPos</link></entry>
 <entry>Changes the size, position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdoShowfast">showFast</link></entry>
+<entry>Marks the dialog as visible.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoSizeWindow">sizeWindow</link></entry>
 <entry>Changes the size, visibility, and Z order of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoMoveWindow">moveWindow</link></entry>
-<entry>Changes the position, visibility, and Z order of the dialog.</entry>
+<entry><link linkend="wbdoTitle">title</link></entry>
+<entry>Gets the text of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoGetRealSize">getRealSize</link></entry>
-<entry>Returns the size of the dialog in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+<entry><link linkend="wbdoTitleEquals">title=</link></entry>
+<entry>Sets the text of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbdoGetRealPos">getRealPos</link></entry>
-<entry>Returns the position of the dialog in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+<entry><link linkend="wbdoUpdate">update</link></entry>
+<entry>Invalidates the entire client area of the dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoWindowRect">windowRect</link></entry>
