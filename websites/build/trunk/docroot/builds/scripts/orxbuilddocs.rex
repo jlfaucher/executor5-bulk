@@ -3,7 +3,7 @@
 /*                                                                            */
 /* Description: This is the build script for the docs build machine.          */
 /*                                                                            */
-/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -60,9 +60,9 @@ call directory build~homedir
 build~build_docs()
    
 -- Cleanup   
-'scp' build~statusfile() ,
- 'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
- build~builddate() || '-' || build~osname
+-- 'scp' build~statusfile() ,
+--  'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
+--  build~builddate() || '-' || build~osname
 build~email_result()
 call SysFileDelete build~statusfile
 call SysFileDelete build~lockfile
@@ -110,10 +110,11 @@ tempdir = './builddocs'
 'mkdir' tempdir
 'svn co http://oorexx.svn.sourceforge.net/svnroot/oorexx/docs/trunk' tempdir
 call directory tempdir
--- see if we have already built this revision
 svnver = self~getsvnrevision()
-if \datatype(svnver, 'W') then do
+if svnver = 'unknown' then do
    self~log('Subversion checkout failed.')
+   'rm -rf' self~builddir()
+   'rm' self~lockfile
    return
    end
 newdir = self~targetdir'/'svnver
@@ -225,5 +226,6 @@ tmpemail~lineout('This email is from a service machine. DO NOT REPLY!')
 tmpstrm~close()
 'mailx -s "Your ooRexx Build Is Ready" -r buildmachine@build.oorexx.org' self~email() '< tmpemail.txt'
 call SysFileDelete 'tmpemail.txt'
+'sleep 120'  -- give time for the email to be sent
 return
 

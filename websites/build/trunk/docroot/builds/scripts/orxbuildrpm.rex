@@ -3,7 +3,7 @@
 /*                                                                            */
 /* Description: This is the build script for any rpm-based build machine.     */
 /*                                                                            */
-/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,8 +41,19 @@
 /*----------------------------------------------------------------------------*/
 
 
+-- This script should be invoked as follows:
+--
+-- orxbuilddeb.rex src target [email]
+--
+-- where
+--
+-- src    - the SVN source path
+-- target - the target subdirectory path on the build server for build files 
+-- email  - (optional) The email address for the build report
+
+
 -- Initialization
-build = .build~new('./orxbuild.local.properties', arg(1)~strip())
+build = .build~new('/home/'userid()'/orxbuild.local.properties', arg(1)~strip())
 
 -- Move to our home directory
 call directory build~homedir
@@ -51,9 +62,6 @@ call directory build~homedir
 build~build_rpm()
    
 -- Cleanup   
-'scp' build~statusfile() ,
- 'dashley@build.oorexx.org:/pub/www/build/docroot/builds/status/' ||,
- build~builddate() || '-' || build~osname
 build~email_result()
 call SysFileDelete build~statusfile
 call SysFileDelete build~lockfile
@@ -79,8 +87,9 @@ return
 ::attribute statusfile
 ::attribute lockfile
 ::attribute src
-::attribute location      -- the build type ie. branch4.1.0
+::attribute location      -- the build type ie. branch | trunk
 ::attribute email
+::attribute targetsys
 
 /*----------------------------------------------------------------------------*/
 /* Method: build_rpm                                                          */
@@ -113,29 +122,28 @@ self~log('Building SVN revision' svnver'.')
 './configure 2>&1 | tee -a' buildrpt
 'make rpm 2>&1 | tee -a' buildrpt
 -- copy the results to the host
-'ssh dashley@build.oorexx.org "mkdir -p' newdir'"'
-if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i386') then ,
- 'scp ~/rpmbuild/RPMS/i386/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i486') then ,
- 'scp ~/rpmbuild/RPMS/i486/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i586') then ,
- 'scp ~/rpmbuild/RPMS/i586/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/i686') then ,
- 'scp ~/rpmbuild/RPMS/i686/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/x86_64') then ,
- 'scp ~/rpmbuild/RPMS/x86_64/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/s390x') then ,
- 'scp ~/rpmbuild/RPMS/s390x/ooRexx*.rpm dashley@build.oorexx.org:'newdir
-else if SysIsFileDirectory('/home/'userid()'/rpmbuild/RPMS/s390') then ,
- 'scp ~/rpmbuild/RPMS/s390/ooRexx*.rpm dashley@build.oorexx.org:'newdir
+'ssh' self~targetsys() '"mkdir -p' newdir'"'
+if SysIsFileDirectory(self~builddir()'/rpmbuild/RPMS/i386') then ,
+ 'scp' self~builddir()'/rpmbuild/RPMS/i386/ooRexx*.rpm' self~targetsys()':'newdir
+else if SysIsFileDirectory(self~builddir()'/rpmbuild/RPMS/i486') then ,
+ 'scp' self~builddir()'/RPMS/i486/ooRexx*.rpm' self~targetsys()':'newdir
+else if SysIsFileDirectory(self~builddir()'/rpmbuild/RPMS/i586') then ,
+ 'scp' self~builddir()'/RPMS/i586/ooRexx*.rpm' self~targetsys()':'newdir
+else if SysIsFileDirectory(self~builddir()'/rpmbuild/RPMS/i686') then ,
+ 'scp' self~builddir()'/RPMS/i686/ooRexx*.rpm' self~targetsys()':'newdir
+else if SysIsFileDirectory(self~builddir()'/rpmbuild/RPMS/x86_64') then ,
+ 'scp' self~builddir()'/RPMS/x86_64/ooRexx*.rpm' self~targetsys()':'newdir
+else if SysIsFileDirectory(self~builddir()'/rpmbuild/RPMS/s390x') then ,
+ 'scp' self~builddir()'/RPMS/s390x/ooRexx*.rpm' self~targetsys()':'newdir
+else if SysIsFileDirectory(self~builddir()'/rpmbuild/RPMS/s390') then ,
+ 'scp' self~builddir()'/RPMS/s390/ooRexx*.rpm' self~targetsys()':'newdir
 else nop -- it must not be a supported rpm type
-'scp' buildrpt 'dashley@build.oorexx.org:'newdir
-'ssh dashley@build.oorexx.org "chown -R dashley:users 'self~targetdir'"'
+'scp' buildrpt self~targetsys()':'newdir
 self~log('The build is located at http://build.oorexx.org/builds/interpreter-main/'svnver'/'self~osname)
 -- remove everything
 call directory savedir
+'rm -rf' self~builddir()
 self~log('Finished build.')
-'rm' self~lockfile
 return
 
 /*----------------------------------------------------------------------------*/
@@ -190,6 +198,7 @@ tmpemail~lineout('This email is from a service machine. DO NOT REPLY!')
 tmpemail~close()
 'mailx -s "Your ooRexx Build Is Ready" -r build@build.oorexx.org' self~email() '< tmpemail.txt'
 call SysFileDelete 'tmpemail.txt'
+'sleep 120'  -- give time for the email to be sent
 return
 
 /*----------------------------------------------------------------------------*/
@@ -203,25 +212,18 @@ prop = .properties~load(propfile)
 self~osname = prop['osname']
 self~homedir = prop['homedir']
 self~builddir = prop['builddir']
-self~targetdir = prop['targetdir']
 self~lockfile = prop['lockfile']
--- get the unsaves attributes
+self~targetsys = prop['targetsys']
+-- get the unsaved attributes
 self~builddate = date('S') || '-' || changestr(':', time(), '')
 self~statusfile = self~homedir() || '/' || self~builddate() || '-' || self~osname
--- get the comman line options
-argc = cmdline~words()
-if argc > 0 then self~location = cmdline~word(1)
+-- get the command line options
+parse var cmdline src target email .
+self~src = src
+self~targetdir = target
+self~email = email
+-- determine if this is a trunk or branch build
+if target~pos('branches') > 0 then self~location = 'branch'
 else self~location = 'trunk'
-select
-   when self~location = 'branch' then do
-      self~src = prop['branchsrc']
-      self~location = 'branch4.1.0'
-      end
-   otherwise do
-      self~src = prop['trunksrc']
-      end
-   end
-if argc > 1 then self~email = cmdline~word(2)
-else self~email = ''
 return
 

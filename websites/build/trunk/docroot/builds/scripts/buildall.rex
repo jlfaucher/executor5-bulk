@@ -3,7 +3,7 @@
 /*                                                                            */
 /* Description: Build ooRexx on all build machines.                           */
 /*                                                                            */
-/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,78 +41,45 @@
 /*----------------------------------------------------------------------------*/
 
 
+-- This script should be invoked as follows:
+--
+-- buildall.rex [location [machine [email]]]
+--
+-- where
+--
+-- location - (optional) the build type - trunk or branch
+-- machine  - (optional) the target virtual machine
+-- email    - (optional) The email address for the build report
+
+
 -- initialization
-machines = 'orxbuildmachines.txt'
+cmdline = arg(1)~strip()
+parse var cmdline location specific_machine email .
+if location = 'branch' then do
+   cmdargs = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/branches/4.1.0/trunk/'
+   cmdargs = cmdargs '/pub/www/build/docroot/builds/interpreter-main'
+   cmdargs = cmdargs email
+   end
+else do  -- trunk
+   cmdargs = 'http://oorexx.svn.sourceforge.net/svnroot/oorexx/main/trunk/'
+   cmdargs = cmdargs '/pub/www/build/docroot/builds/interpreter-main'
+   cmdargs = cmdargs email
+   end
+cmdargs = cmdargs~strip()
+machines = './orxbuildmachines.txt'
 
 -- get the contentst of the input file and create the build array
-arr = file_arrayin(machines)
-buildarr = .array~new()
-do line over arr
-   if line~strip() = '' then iterate
-   if line~strip()~substr(1, 1) = '#' then iterate
-   if line~strip()~substr(1, 2) = '--' then iterate
-   parse var line osname addr userid cmd virt_flag .
-   buildarr~append(.buildmachine~new(osname, addr, userid, cmd, virt_flag))
+buildmachines = .buildmachines~new(machines)
+
+-- do the build(s)
+if specific_machine <> '' then do
+   buildmachines~build_one(specific_machine, cmdargs)
    end
-
-cmdargs = arg(1)~strip()
-
--- do all the virtual builds
-do machine over buildarr
-   machine~do_build(cmdargs)
+else do  -- do all the machines
+   buildmachines~build_all(cmdargs)
    end
 return
 
 
-::requires 'kvmdomain.cls'
-
-
-/*----------------------------------------------------------------------------*/
-/* Class: buildmachine                                                        */
-/*----------------------------------------------------------------------------*/
-
-::class buildmachine public
-
-::attribute osname
-::attribute addr
-::attribute userid
-::attribute cmd
-::attribute virt_flag
-
-::method init
-expose osname addr userid cmd virt_flag
-use strict arg osname, addr, userid, cmd, virt_flag = .true
-return
-
-::method do_build
-expose osname addr userid cmd virt_flag
-use strict arg cmdargs
-if virt_flag = .true then do
-   -- start the domain
-   domain = .kvmdomain~new(osname)
-   retc = domain~startup()
-   if retc <> 0 then return
-   call SysSleep 90  -- allow some time for the domain to fully start
-   end
-if cmdargs = '' then cmdline = cmd
-else cmdline = cmd cmdargs
-'ssh' userid'@'addr '"'cmdline'"'
-if virt_flag = .true then do
-   retc = domain~shutdown()
-   call SysSleep 90  -- allow some time for the domain to fully stop
-   end
-return
-
-
-/*----------------------------------------------------------------------------*/
-/* Routine: file_arrayin                                                      */
-/*----------------------------------------------------------------------------*/
-
-::routine file_arrayin
-use strict arg file
-strm = .stream~new(file)
-strm~open('read')
-arr = strm~arrayin()
-strm~close()
-return arr
+::requires 'buildmachines.cls'
 
