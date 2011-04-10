@@ -2775,7 +2775,7 @@ incorrect.
 
 <note><title>Notes TODO FIX THIS</title><para>
 <orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
+<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">initDialog</link> method. If both methods are defined, use init as the place for this connection - but not
 before init:super has been called.</para></listitem>
 <listitem><para>The event-handling methods receive two arguments: the ID of the list box
 (extract the low-order word) and the handle to the list box. Example:
@@ -2885,7 +2885,7 @@ directory of the MyDlgClass in another part of the program:
 <![CDATA[
 ::class MyDlgClass subclass UserDialog
 
-::method InitDialog
+::method initDialog
   self~init:super(...)
   self~connectComboBoxEvent("PROFESSIONS", "DROPDOWN", "PlaySong")
 ]]>
@@ -2896,7 +2896,7 @@ directory of the MyDlgClass in another part of the program:
 <note><title>Notes TODO FIX THIS</title><para>
 <orderedlist>
 <listitem><para>Connections are usually placed in the <link
-linkend="mthNewDialogObject">init</link>  or <link linkend="mthInitDialog">InitDialog</link>
+linkend="mthNewDialogObject">init</link>  or <link linkend="mthInitDialog">initDialog</link>
 method. If both methods are defined, use init as the place for this connection -
 but not before init:super has been called.</para></listitem>
 <listitem><para>The event-handling methods receive two arguments: the first is a
@@ -3105,7 +3105,7 @@ the window handle of the combo box. Example:
 
 <note><title>Notes</title>
 <orderedlist>
-<listitem><para>The method can only be called after the scroll bar was created by Windows. A good location for this connection is the InitDialog method.</para></listitem>
+<listitem><para>The method can only be called after the scroll bar was created by Windows. A good location for this connection is the initDialog method.</para></listitem>
 <listitem><para>The event-handling methods receive two arguments: an event-position pair
 and the handle to the scroll bar. You can retrieve the scroll bar position
 by extracting the high-order word.</para>
@@ -3143,7 +3143,7 @@ selected position.
 </programlisting>
 
 <para>The connectEachSBEvent method initializes and connects
-a scroll bar to an Object Rexx object. Use this method in the <link linkend="mthInitDialog">InitDialog</link> method. </para>
+a scroll bar to an Object Rexx object. Use this method in the <link linkend="mthInitDialog">initDialog</link> method. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
 <listitem><para>This method is protected.
@@ -4037,7 +4037,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 
 <note><title>Note TODO FIX THIS</title><para>
 <orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
+<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">initDialog</link> method. If both methods are defined, use init as the place for this connection - but not
 before init:super has been called.</para></listitem>
 <listitem><para>The event-handling method connected to ENDEDIT receives two arguments:
 the item handle of which the label has been edited and the newly entered text.
@@ -4197,7 +4197,7 @@ separated by a blank). Example:
 
 <note><title>Notes TODO FIX THIS</title><para>
 <orderedlist>
-<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">InitDialog</link> method. If both methods are defined, use init as the place for this connection - but not
+<listitem><para>Connections are usually placed in the <link linkend="mthNewDialogObject">init</link> or <link linkend="mthInitDialog">initDialog</link> method. If both methods are defined, use init as the place for this connection - but not
 before init:super has been called.</para></listitem>
 <listitem>
 <para>
@@ -4314,7 +4314,7 @@ for POSITION, which should be 4:
 <![CDATA[
 ::class MyDlgClass subclass UserDialog
 
-::method InitDialog
+::method initDialog
   self~InitDialog:super(...)
   self~connectTrackBarEvent("MYSLIDER", "POSITION", PosSet)
 
@@ -4331,7 +4331,7 @@ for POSITION, which should be 4:
 <note><title>Notes</title><para>
 <orderedlist>
 <listitem><para>The method can only be called after the trackbar was created by Windows.
-A good location for this connection is the InitDialog method.</para></listitem>
+A good location for this connection is the initDialog method.</para></listitem>
 <listitem><para>The event-handling methods receive two arguments: an event-position pair
 and the handle to the trackbar control. For some events, you can retrieve the
 trackbar position by extracting the high-oder word. Example:

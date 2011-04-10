@@ -243,6 +243,13 @@
 <entry>Connects an operating system window message with a method in the Rexx dialog object.</entry>
 </row>
 <row>
+<entry><link linkend="mthAutoDetection">autoDetection</link></entry>
+<entry>Turns automatic data field detection on</entry>
+</row>
+<row>
+<entry><link linkend="mthChangeBitmapButton">changeBitmapButton</link></entry>
+<entry>Changes the bitmaps for an already installed bitmap button and optionally immediately redraws the button.</entry>
+</row>
 <entry><link linkend="wbdoClear">clear</link></entry>
 <entry>Clears the client area of the dialog by painting it with the background brush.</entry>
 </row>
@@ -439,6 +446,10 @@
 <entry>Disconnects a method that was previously connected to key press event.</entry>
 </row>
 <row>
+<entry><link linkend="mthDisplaceBitmapClsDialogExtensions">displaceBitmap</link></entry>
+<entry>Sets the position of a bitmap within the client area of a bitmap button.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoDisplay">display</link></entry>
 <entry>Shows or hides the dialog.</entry>
 </row>
@@ -453,6 +464,10 @@
 <row>
 <entry><link linkend="wedoDrawArc">drawArc</link></entry>
 <entry>Draws a circle or ellipse withi the given device context using the active pen.</entry>
+</row>
+<row>
+<entry><link linkend="mthDrawBitmapClsDialogExtensions">drawBitmap</link></entry>
+<entry>Draws all, or part of, the bitmap for a bitmap button at the specified position.</entry>
 </row>
 <row>
 <entry><link linkend="wedoDrawLine">drawLine</link></entry>
@@ -475,6 +490,14 @@
 <entry>Fills in an outline figure within the device context using the active brush.</entry>
 </row>
 <row>
+<entry><link linkend="mthFocusControl">focusControl</link></entry>
+<entry>Sets the input focus to the specified dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedoFontColor">fontColor</link></entry>
+<entry>Sets the font color for a device context.</entry>
+</row>
+<row>
 <entry><link linkend="wedoFontToDC">fontToDC</link></entry>
 <entry>Loads a font into a device context and returns the handle of the previous font.</entry>
 </row>
@@ -491,8 +514,28 @@
 <entry>Returns the current drawing direction.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetBitMapPositionClsDialogExtensions">getBitmapPosition</link></entry>
+<entry>Gets the position, as a <computeroutput>Point</computeroutput> object, of the bitmap in a bitmap button.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetBitMapSizeXClsDialogExtensions">getBitmapSizeX</link></entry>
+<entry>Gets the width in pixels of the bitmap assigned to a bitmap button.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetBitMapSizeYClsDialogExtensions">getBitmapSizeY</link></entry>
+<entry>Gets the height in pixels of the bitmap assigned to a bitmap button.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetBmpDisplacementClsDialogExtensions">getBmpDisplacement</link></entry>
+<entry>Gets the position, as a <computeroutput>String</computeroutput> object, of the bitmap in a bitmap button.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoGetClientRect">getClientRect</link></entry>
 <entry>Returns the dimensions of the dialog's client area.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetControlText">getControlText</link></entry>
+<entry>Gets the text of the specified dialog control</entry>
 </row>
 <row>
 <entry><link linkend="wedoGetCursorPos">getCursorPos</link></entry>
@@ -535,6 +578,10 @@
 <entry>Returns the dimesions of the dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetSelf">getSelf</link></entry>
+<entry>Returns the window handle of the dialog.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoGetSize">getSize</link></entry>
 <entry>Returns the size of the dialog in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
@@ -547,6 +594,14 @@
 <entry>Gets the text of the dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link></entry>
+<entry>Calculates the size needed to display a string in dialog units.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetTextSizeDu">getTextSizeDu</link></entry>
+<entry>Calculates the size needed to display a string in dialog units <emphasis role="bold">(preferred method.)</emphasis></entry>
+</row>
+<row>
 <entry><link linkend="wbdoGetTextSizePx">getTextSizePx</link></entry>
 <entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
 </row>
@@ -555,20 +610,48 @@
 <entry>Calculates the size needed for a string in pixels.</entry>
 </row>
 <row>
+<entry><link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPressConnection</link></entry>
+<entry>Queries if a connection to a key press event already exists.</entry>
+</row>
+<row>
+<entry><link linkend="mthHelp">help</link></entry>
+<entry>A default implementation of the help event handler method provided by the ooDialog framework.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoHide">hide</link></entry>
-<entry>Makes the dialog invisible and repaints it.</entry>
+<entry>Hides the dialog by marking it invisible and immediately redrawing the area it occupies.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoHideFast">hideFast</link></entry>
-<entry>Marks the dialog as invisible</entry>
+<entry>Marks the dialog as invisible, no redrawing is done.</entry>
+</row>
+<row>
+<entry><link linkend="mthHideControl">hideControl</link></entry>
+<entry>Hides the specified control by marking it invisible and immediately redrawing the area it occupies.</entry>
+</row>
+<row>
+<entry><link linkend="mthHideControlFast">hideControlFast</link></entry>
+<entry>Marks the specified control as invisible without any redrawing.</entry>
 </row>
 <row>
 <entry><link linkend="wedoHScrollPos">hScrollPos</link></entry>
 <entry>Returns the position of the horizontal scroll bar in the dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthInitAutoDetection">initAutoDetection</link></entry>
+<entry>Switches automatic data field detection on or off.</entry>
+</row>
+<row>
+<entry><link linkend="mthInitDialog">initDialog</link></entry>
+<entry>A method automatically invoked by the ooDialog framework when the underlying dialog is first created.</entry>
+</row>
+<row>
 <entry><link linkend="mthInstallAnimatedButton">installAnimatedButton</link></entry>
 <entry>Installs an animated button and runs it concurrently with the main activity.</entry>
+</row>
+<row>
+<entry><link linkend="mthInstallBitmapButton">installBitmapButton</link></entry>
+<entry>Assigns the initial bitmaps to a bitmap button and optionally connect the button click to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoIsEnabled">isEnabled</link></entry>
@@ -577,6 +660,10 @@
 <row>
 <entry><link linkend="wbdoIsVisible">isVisible</link></entry>
 <entry>Tests if the dialog is visible.</entry>
+</row>
+<row>
+<entry><link linkend="mthLeaving">leaving</link></entry>
+<entry>A method automatically invoked by the ooDialog framework when the underlying dialog is being closed.</entry>
 </row>
 <row>
 <entry><link linkend="wedoLoadBitmap">loadBitmap</link></entry>
@@ -595,8 +682,20 @@
 <entry>Changes the position, visibility, and Z order of the dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthNoAutoDetection">noAutoDetection</link></entry>
+<entry>Turns automatic data field detection off</entry>
+</row>
+<row>
 <entry><link linkend="wedoObjectToDC">objectToDC</link></entry>
 <entry>Loads a graphic object into a device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedoOpaqueText">opaqueText</link></entry>
+<entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
+</row>
+<row>
+<entry><link linkend="wedoRectangle">rectangle</link></entry>
+<entry>Draws a rectangle within the given device context.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoRedraw">redraw</link></entry>
@@ -635,6 +734,14 @@
 <entry>Scrolls the contents of the dialog's client area by the amount specified.</entry>
 </row>
 <row>
+<entry><link linkend="mthScrollBitmapFromToClsDialogExtensions">scrollBitmapFromTo</link></entry>
+<entry>Scrolls, (moves,) a bitmap from one position to another within a bitmap button.</entry>
+</row>
+<row>
+<entry><link linkend="mthScrollTextClsDialogExtensions">scrollText</link></entry>
+<entry>Scrolls text in the specified window using the specified font.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoSendMessage">sendMessage</link></entry>
 <entry>Sends a Windows message to the underlying dialog and returns its response as a whole number.</entry>
 </row>
@@ -643,8 +750,36 @@
 <entry>Sends a Windows message to the underlying dialog and returns its response as a handle.</entry>
 </row>
 <row>
+<entry><link linkend="mthSendMessageToControl">sendMessageToControl</link></entry>
+<entry>Sends a Windows message to a dialog control and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToControlH">sendMessageToControlH</link></entry>
+<entry>Sends a Windows message to a dialog control and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToWindow">sendMessageToWindow</link></entry>
+<entry>Sends a Windows message to a window and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToWindowH">sendMessageToWindowH</link></entry>
+<entry>Sends a Windows message to a window and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="wedoSetArcDirection">setArcDirection</link></entry>
+<entry>Sets the current drawing direction.</entry>
+</row>
+<row>
 <entry><link linkend="wedoSetCursorPos">setCursorPos</link></entry>
 <entry>Moves the mouse cursor to the specified position.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetDataAttribute">setDataAttribute</link></entry>
+<entry>Sets the state of a dialog control using the value of a data attribute of the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry>
+<entry>Sets a data attribute of the Rexx dialog using the data from a connected Windows dialog control.</entry>
 </row>
 <row>
 <entry><link linkend="wedoSetFont">setFont</link></entry>
@@ -691,6 +826,10 @@
 <entry>Sets the text of the dialog.</entry>
 </row>
 <row>
+<entry><link linkend="wedoTransparentText">transparentText</link></entry>
+<entry>Sets the text drawing mode in a device context to transparent, (background is not changed.)</entry>
+</row>
+<row>
 <entry><link linkend="wbdoUpdate">update</link></entry>
 <entry>Invalidates the entire client area of the dialog.</entry>
 </row>
@@ -711,90 +850,6 @@
 <entry>Writes text in a dialog at the position specified using a device context.</entry>
 </row>
 <row>
-<entry><link linkend="wedoRectangle">rectangle</link></entry>
-<entry>Draws a rectangle within the given device context.</entry>
-</row>
-<row>
-<entry><link linkend="wedoSetArcDirection">setArcDirection</link></entry>
-<entry>Sets the current drawing direction.</entry>
-</row>
-<row>
-<entry><link linkend="wedoFontColor">fontColor</link></entry>
-<entry>Sets the font color for a device context.</entry>
-</row>
-<row>
-<entry><link linkend="wedoTransparentText">transparentText</link></entry>
-<entry>Sets the text drawing mode in a device context to transparent, (background is not changed.)</entry>
-</row>
-<row>
-<entry><link linkend="wedoOpaqueText">opaqueText</link></entry>
-<entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
-</row>
-<row>
-<entry><link linkend="mthInstallBitmapButton">installBitmapButton</link></entry>
-<entry>Assigns the initial bitmaps to a bitmap button and optionally connect the button click to a method in the Rexx dialog.</entry>
-</row>
-<row>
-<entry><link linkend="mthChangeBitmapButton">changeBitmapButton</link></entry>
-<entry>Changes the bitmaps for an already installed bitmap button and optionally immediately redraws the button.</entry>
-</row>
-<row>
-<entry><link linkend="mthDisplaceBitmapClsDialogExtensions">displaceBitmap</link></entry>
-<entry>Sets the position of a bitmap within the client area of a bitmap button.</entry>
-</row>
-<row>
-<entry><link linkend="mthDrawBitmapClsDialogExtensions">drawBitmap</link></entry>
-<entry>Draws all, or part of, the bitmap for a bitmap button at the specified position.</entry>
-</row>
-<row>
-<entry><link linkend="mthGetBitMapPositionClsDialogExtensions">getBitmapPosition</link></entry>
-<entry>Gets the position, as a <computeroutput>Point</computeroutput> object, of the bitmap in a bitmap button.</entry>
-</row>
-<row>
-<entry><link linkend="mthGetBitMapSizeXClsDialogExtensions">getBitmapSizeX</link></entry>
-<entry>Gets the width in pixels of the bitmap assigned to a bitmap button.</entry>
-</row>
-<row>
-<entry><link linkend="mthGetBitMapSizeYClsDialogExtensions">getBitmapSizeY</link></entry>
-<entry>Gets the height in pixels of the bitmap assigned to a bitmap button.</entry>
-</row>
-<row>
-<entry><link linkend="mthGetBmpDisplacementClsDialogExtensions">getBmpDisplacement</link></entry>
-<entry>Gets the position, as a <computeroutput>String</computeroutput> object, of the bitmap in a bitmap button.</entry>
-</row>
-<row>
-<entry><link linkend="mthScrollBitmapFromToClsDialogExtensions">scrollBitmapFromTo</link></entry>
-<entry>Scrolls, (moves,) a bitmap from one position to another within a bitmap button.</entry>
-</row>
-<row>
-<entry><link linkend="mthScrollTextClsDialogExtensions">scrollText</link></entry>
-<entry>Scrolls text in the specified window using the specified font.</entry>
-</row>
-<row>
-<entry><link linkend="mthSendMessageToControl">sendMessageToControl</link></entry>
-<entry>Sends a Windows message to a dialog control and returns its response as a whole number.</entry>
-</row>
-<row>
-<entry><link linkend="mthSendMessageToControlH">sendMessageToControlH</link></entry>
-<entry>Sends a Windows message to a dialog control and returns its response as a handle.</entry>
-</row>
-<row>
-<entry><link linkend="mthSendMessageToWindow">sendMessageToWindow</link></entry>
-<entry>Sends a Windows message to a window and returns its response as a whole number.</entry>
-</row>
-<row>
-<entry><link linkend="mthSendMessageToWindowH">sendMessageToWindowH</link></entry>
-<entry>Sends a Windows message to a window and returns its response as a handle.</entry>
-</row>
-<row>
-<entry><link linkend="mthSetDataAttribute">setDataAttribute</link></entry>
-<entry>Sets the state of a dialog control using the value of a data attribute of the Rexx dialog.</entry>
-</row>
-<row>
-<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry>
-<entry>Sets a data attribute of the Rexx dialog using the data from a connected Windows dialog control.</entry>
-</row>
-<row>
 <entry><link linkend="mthEnsureVisibleClsPlainBaseDialog">ensureVisible</link></entry>
 <entry>Causes the dialog to reposition itself so that it is entirely on the visible screen.</entry>
 </row>
@@ -805,68 +860,16 @@
 <entry><link linkend="mthAddAutoStartMethod">addAutoStartMethod</link></entry>
 </row>
 <row>
-<entry>AddComboEntry</entry>
-<entry><link linkend="h000307">AddComboEntry</link></entry>
-</row>
-<row>
-<entry>AddListEntry</entry>
-<entry><link linkend="h000380">AddListEntry</link></entry>
-</row>
-<row>
-<entry>BackgroundBitmap</entry>
-<entry><link linkend="h001053">BackgroundBitmap</link></entry>
-</row>
-<row>
-<entry>BackgroundColor</entry>
-<entry><link linkend="background">BackgroundColor</link></entry>
-</row>
-<row>
-<entry>Cancel</entry>
-<entry><link linkend="mthCancel">Cancel</link></entry>
-</row>
-<row>
-<entry>CaptureMouse</entry>
-<entry><link linkend="capturemouse">CaptureMouse</link></entry>
-</row>
-<row>
-<entry>Center</entry>
-<entry><link linkend="h001370">Center</link></entry>
-</row>
-<row>
-<entry>ChangeComboEntry</entry>
-<entry><link linkend="h000352">ChangeComboEntry</link></entry>
-</row>
-<row>
-<entry>ChangeListEntry</entry>
-<entry><link linkend="h000425">ChangeListEntry</link></entry>
+<entry>cancel</entry>
+<entry><link linkend="mthCancel">cancel</link></entry>
 </row>
 <row>
 <entry>clear</entry>
 <entry><link linkend="mthClear">clear</link></entry>
 </row>
 <row>
-<entry>ClearButtonRect</entry>
-<entry><link linkend="h000622">ClearButtonRect</link></entry>
-</row>
-<row>
-<entry>ClearRect</entry>
-<entry><link linkend="h000640">ClearRect</link></entry>
-</row>
-<row>
-<entry>ClearWindowRect</entry>
-<entry><link linkend="h000631">ClearWindowRect</link></entry>
-</row>
-<row>
 <entry>clientToScreen</entry>
 <entry><link linkend="mthClientToScreen">clientToScreen</link></entry>
-</row>
-<row>
-<entry>ComboAddDirectory</entry>
-<entry><link linkend="h000362">ComboAddDirectory</link></entry>
-</row>
-<row>
-<entry>ComboDrop</entry>
-<entry><link linkend="h000372">ComboDrop</link></entry>
 </row>
 <row>
 <entry>connectCheckBox</entry>
@@ -897,28 +900,8 @@
 <entry><link linkend="mthConnectTreeview">connectTreeView</link></entry>
 </row>
 <row>
-<entry>DeleteComboEntry</entry>
-<entry><link linkend="h000326">DeleteComboEntry</link></entry>
-</row>
-<row>
-<entry>DeleteListEntry</entry>
-<entry><link linkend="h000399">DeleteListEntry</link></entry>
-</row>
-<row>
-<entry>DetermineSBPosition</entry>
-<entry><link linkend="detersb">DetermineSBPosition</link></entry>
-</row>
-<row>
-<entry>DrawButton</entry>
-<entry><link linkend="h000606">DrawButton</link></entry>
-</row>
-<row>
 <entry>enableControl</entry>
 <entry><link linkend="mthEnableControl">enableControl</link></entry>
-</row>
-<row>
-<entry>EndAsyncExecution</entry>
-<entry><link linkend="h000068">EndAsyncExecution</link></entry>
 </row>
 <row>
 <entry>execute</entry>
@@ -929,72 +912,16 @@
 <entry><link linkend="mthExecuteAsync">executeAsync</link></entry>
 </row>
 <row>
-<entry>FindComboEntry</entry>
-<entry><link linkend="h000335">FindComboEntry</link></entry>
-</row>
-<row>
-<entry>FindListEntry</entry>
-<entry><link linkend="h000408">FindListEntry</link></entry>
-</row>
-<row>
-<entry>focusItem</entry>
-<entry><link linkend="mthFocusItem">focusItem</link></entry>
-</row>
-<row>
-<entry>foregroundWindow</entry>
-<entry><link linkend="mthForegroundWindow">foregroundWindow</link></entry>
-</row>
-<row>
-<entry>FreeButtonDC</entry>
-<entry><link linkend="h001105">FreeButtonDC</link></entry>
-</row>
-<row>
-<entry>FreeWindowDC</entry>
-<entry><link linkend="h001086">FreeWindowDC</link></entry>
-</row>
-<row>
-<entry>Get</entry>
-<entry><link linkend="h000086">Get</link></entry>
-</row>
-<row>
-<entry>GetButtonDC</entry>
-<entry><link linkend="h001077">GetButtonDC</link></entry>
-</row>
-<row>
-<entry>GetButtonRect</entry>
-<entry><link linkend="h000703">GetButtonRect</link></entry>
-</row>
-<row>
-<entry>getClientRect</entry>
-<entry><link linkend="mthGetClientRect">getClientRect</link></entry>
-</row>
-<row>
 <entry>getCheckBoxData</entry>
 <entry><link linkend="mthGetCheckBoxData">getCheckBoxData</link></entry>
-</row>
-<row>
-<entry>GetComboEntry</entry>
-<entry><link linkend="gcem">GetComboEntry</link></entry>
-</row>
-<row>
-<entry>GetComboItems</entry>
-<entry><link linkend="h000336">GetComboItems</link></entry>
 </row>
 <row>
 <entry>getComboBoxData</entry>
 <entry><link linkend="mthGetComboBoxData">getComboBoxData</link></entry>
 </row>
 <row>
-<entry>GetControlID</entry>
-<entry><link linkend="mthGetControlID">GetControlID</link></entry>
-</row>
-<row>
-<entry>GetCurrentComboIndex</entry>
-<entry><link linkend="h000344">GetCurrentComboIndex</link></entry>
-</row>
-<row>
-<entry>GetCurrentListIndex</entry>
-<entry><link linkend="h000417">GetCurrentListIndex</link></entry>
+<entry>getControlID</entry>
+<entry><link linkend="mthGetControlID">getControlID</link></entry>
 </row>
 <row>
 <entry>getData</entry>
@@ -1009,36 +936,12 @@
 <entry><link linkend="mthGetEditData">getEditData</link></entry>
 </row>
 <row>
-<entry>GetFocus</entry>
-<entry><link linkend="getfocus">GetFocus</link></entry>
-</row>
-<row>
 <entry>getFont</entry>
 <entry><link linkend="mthGetFont">getFont</link></entry>
 </row>
 <row>
-<entry>GetItem</entry>
-<entry><link linkend="mthGetItem">GetItem</link></entry>
-</row>
-<row>
-<entry>GetListEntry</entry>
-<entry><link linkend="glem">GetListEntry</link></entry>
-</row>
-<row>
-<entry>GetListItemHeight</entry>
-<entry><link linkend="getlistitemheight">GetListItemHeight</link></entry>
-</row>
-<row>
-<entry>GetListItems</entry>
-<entry><link linkend="h000409">GetListItems</link></entry>
-</row>
-<row>
-<entry>GetListWidth</entry>
-<entry><link linkend="getlistwidth">GetListWidth</link></entry>
-</row>
-<row>
-<entry>GetMouseCapture</entry>
-<entry><link linkend="getmousecapture">GetMouseCapture</link></entry>
+<entry>getControlHandle</entry>
+<entry><link linkend="mthGetControlHandle">getControlHandle</link></entry>
 </row>
 <row>
 <entry>getListBoxData</entry>
@@ -1057,124 +960,16 @@
 <entry><link linkend="mthGetRect">getRect</link></entry>
 </row>
 <row>
-<entry>GetSBPos</entry>
-<entry><link linkend="h000790">GetSBPos</link></entry>
-</row>
-<row>
-<entry>GetSBRange</entry>
-<entry><link linkend="h000782">GetSBRange</link></entry>
-</row>
-<row>
-<entry><link linkend="mthGetSelf">getSelf</link></entry>
-<entry>Returns the window handle of the dialog.</entry>
-</row>
-<row>
-<entry><link linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link></entry>
-<entry>Calculates the size needed to display a string in dialog units.</entry>
-</row>
-<row>
-<entry><link linkend="mthGetTextSizeDu">getTextSizeDu</link></entry>
-<entry>Calculates the size needed to display a string in dialog units <emphasis role="bold">(preferred method.)</emphasis></entry>
-</row>
-<row>
 <entry>getControlData</entry>
 <entry><link linkend="mthGetControlData">getControlData</link></entry>
 </row>
 <row>
-<entry>GetWindowDC</entry>
-<entry><link linkend="h001062">GetWindowDC</link></entry>
+<entry>isMaximized</entry>
+<entry><link linkend="mthIsMaximized">isMaximized</link></entry>
 </row>
 <row>
-<entry>GetWindowRect</entry>
-<entry><link linkend="h000712">GetWindowRect</link></entry>
-</row>
-<row>
-<entry><link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPressConnection</link></entry>
-<entry>Queries if a connection to a key press event already exists.</entry>
-</row>
-<row>
-<entry>Help</entry>
-<entry><link linkend="mthHelp">Help</link></entry>
-</row>
-<row>
-<entry>HideItem</entry>
-<entry><link linkend="mthHideItem">HideItem</link></entry>
-</row>
-<row>
-<entry>HideItemFast</entry>
-<entry><link linkend="h001285">HideItemFast</link></entry>
-</row>
-<row>
-<entry>HideWindow</entry>
-<entry><link linkend="h001253">HideWindow</link></entry>
-</row>
-<row>
-<entry>HideWindowFast</entry>
-<entry><link linkend="h001261">HideWindowFast</link></entry>
-</row>
-<row>
-<entry><link linkend="mthInitAutoDetection">initAutoDetection</link></entry>
-<entry>Switches automatic data field detection on or off.</entry>
-</row>
-<row>
-<entry>InitDialog</entry>
-<entry><link linkend="mthInitDialog">InitDialog</link></entry>
-</row>
-<row>
-<entry>IsMouseButtonDown</entry>
-<entry><link linkend="ismousebuttondown">IsMouseButtonDown</link></entry>
-</row>
-<row>
-<entry><link linkend="mthLeaving">leaving</link></entry>
-<entry>A method automatically invoked when the underlying dialog is being closed.</entry>
-</row>
-<row>
-<entry>InsertComboEntry</entry>
-<entry><link linkend="h000316">InsertComboEntry</link></entry>
-</row>
-<row>
-<entry>InsertListEntry</entry>
-<entry><link linkend="h000389">InsertListEntry</link></entry>
-</row>
-<row>
-<entry>IsDialogActive</entry>
-<entry><link linkend="h000721">IsDialogActive</link></entry>
-</row>
-<row>
-<entry>IsMaximized</entry>
-<entry><link linkend="mthIsMaximized">IsMaximized</link></entry>
-</row>
-<row>
-<entry>IsMinimized</entry>
-<entry><link linkend="mthIsMinimized">IsMinimized</link></entry>
-</row>
-<row>
-<entry><link linkend="mthGetControlText">getControlText</link></entry>
-<entry>Gets the text of the specified dialog control</entry>
-</row>
-<row>
-<entry>ListAddDirectory</entry>
-<entry><link linkend="h000448">ListAddDirectory</link></entry>
-</row>
-<row>
-<entry>ListDrop</entry>
-<entry><link linkend="h000458">ListDrop</link></entry>
-</row>
-<row>
-<entry>maximize</entry>
-<entry><link linkend="mthMaximize">maximize</link></entry>
-</row>
-<row>
-<entry>minimize</entry>
-<entry><link linkend="mthMinimize">minimize</link></entry>
-</row>
-<row>
-<entry>move</entry>
-<entry><link linkend="mthMove">move</link></entry>
-</row>
-<row>
-<entry>MoveItem</entry>
-<entry><link linkend="h001322">MoveItem</link></entry>
+<entry>isMinimized</entry>
+<entry><link linkend="mthIsMinimized">isMinimized</link></entry>
 </row>
 <row>
 <entry>newPushButton</entry>
@@ -1233,14 +1028,6 @@
 <entry><link linkend="mthNewTreeView">newTreeView</link></entry>
 </row>
 <row>
-<entry><link linkend="mthNoAutoDetection">noAutoDetection</link></entry>
-<entry>Turns automatic data field detection off</entry>
-</row>
-<row>
-<entry><link linkend="mthAutoDetection">autoDetection</link></entry>
-<entry>Turns automatic data field detection on</entry>
-</row>
-<row>
 <entry>OK</entry>
 <entry><link linkend="mthOk">OK</link></entry>
 </row>
@@ -1253,6 +1040,218 @@
 <entry><link linkend="mthPopupAsChild">popupAsChild</link></entry>
 </row>
 <row>
+<entry>maximize</entry>
+<entry><link linkend="mthMaximize">maximize</link></entry>
+</row>
+<row>
+<entry>minimize</entry>
+<entry><link linkend="mthMinimize">minimize</link></entry>
+</row>
+<row>
+<entry>tabToNext</entry>
+<entry><link linkend="mthTabToNext">tabToNext</link></entry>
+</row>
+<row>
+<entry>validate</entry>
+<entry><link linkend="mthValidate">validate</link></entry>
+</row>
+
+
+
+
+
+<row>
+<entry>AddComboEntry</entry>
+<entry><link linkend="h000307">AddComboEntry</link></entry>
+</row>
+<row>
+<entry>AddListEntry</entry>
+<entry><link linkend="h000380">AddListEntry</link></entry>
+</row>
+<row>
+<entry>BackgroundBitmap</entry>
+<entry><link linkend="h001053">BackgroundBitmap</link></entry>
+</row>
+<row>
+<entry>BackgroundColor</entry>
+<entry><link linkend="background">BackgroundColor</link></entry>
+</row>
+<row>
+<entry>CaptureMouse</entry>
+<entry><link linkend="capturemouse">CaptureMouse</link></entry>
+</row>
+<row>
+<entry>Center</entry>
+<entry><link linkend="h001370">Center</link></entry>
+</row>
+<row>
+<entry>ChangeComboEntry</entry>
+<entry><link linkend="h000352">ChangeComboEntry</link></entry>
+</row>
+<row>
+<entry>ChangeListEntry</entry>
+<entry><link linkend="h000425">ChangeListEntry</link></entry>
+</row>
+<row>
+<entry>ClearButtonRect</entry>
+<entry><link linkend="h000622">ClearButtonRect</link></entry>
+</row>
+<row>
+<entry>ClearRect</entry>
+<entry><link linkend="h000640">ClearRect</link></entry>
+</row>
+<row>
+<entry>ClearWindowRect</entry>
+<entry><link linkend="h000631">ClearWindowRect</link></entry>
+</row>
+<row>
+<entry>ComboAddDirectory</entry>
+<entry><link linkend="h000362">ComboAddDirectory</link></entry>
+</row>
+<row>
+<entry>ComboDrop</entry>
+<entry><link linkend="h000372">ComboDrop</link></entry>
+</row>
+<row>
+<entry>DeleteComboEntry</entry>
+<entry><link linkend="h000326">DeleteComboEntry</link></entry>
+</row>
+<row>
+<entry>DeleteListEntry</entry>
+<entry><link linkend="h000399">DeleteListEntry</link></entry>
+</row>
+<row>
+<entry>DetermineSBPosition</entry>
+<entry><link linkend="detersb">DetermineSBPosition</link></entry>
+</row>
+<row>
+<entry>DrawButton</entry>
+<entry><link linkend="h000606">DrawButton</link></entry>
+</row>
+<row>
+<entry>EndAsyncExecution</entry>
+<entry><link linkend="h000068">EndAsyncExecution</link></entry>
+</row>
+<row>
+<entry>FindComboEntry</entry>
+<entry><link linkend="h000335">FindComboEntry</link></entry>
+</row>
+<row>
+<entry>FindListEntry</entry>
+<entry><link linkend="h000408">FindListEntry</link></entry>
+</row>
+<row>
+<entry>FreeButtonDC</entry>
+<entry><link linkend="h001105">FreeButtonDC</link></entry>
+</row>
+<row>
+<entry>FreeWindowDC</entry>
+<entry><link linkend="h001086">FreeWindowDC</link></entry>
+</row>
+<row>
+<entry>Get</entry>
+<entry><link linkend="h000086">Get</link></entry>
+</row>
+<row>
+<entry>GetButtonDC</entry>
+<entry><link linkend="h001077">GetButtonDC</link></entry>
+</row>
+<row>
+<entry>GetButtonRect</entry>
+<entry><link linkend="h000703">GetButtonRect</link></entry>
+</row>
+<row>
+<entry>GetComboEntry</entry>
+<entry><link linkend="gcem">GetComboEntry</link></entry>
+</row>
+<row>
+<entry>GetComboItems</entry>
+<entry><link linkend="h000336">GetComboItems</link></entry>
+</row>
+<row>
+<entry>GetCurrentComboIndex</entry>
+<entry><link linkend="h000344">GetCurrentComboIndex</link></entry>
+</row>
+<row>
+<entry>GetCurrentListIndex</entry>
+<entry><link linkend="h000417">GetCurrentListIndex</link></entry>
+</row>
+<row>
+<entry>GetFocus</entry>
+<entry><link linkend="getfocus">GetFocus</link></entry>
+</row>
+<row>
+<entry>GetListEntry</entry>
+<entry><link linkend="glem">GetListEntry</link></entry>
+</row>
+<row>
+<entry>GetListItemHeight</entry>
+<entry><link linkend="getlistitemheight">GetListItemHeight</link></entry>
+</row>
+<row>
+<entry>GetListItems</entry>
+<entry><link linkend="h000409">GetListItems</link></entry>
+</row>
+<row>
+<entry>GetListWidth</entry>
+<entry><link linkend="getlistwidth">GetListWidth</link></entry>
+</row>
+<row>
+<entry>GetMouseCapture</entry>
+<entry><link linkend="getmousecapture">GetMouseCapture</link></entry>
+</row>
+<row>
+<entry>GetSBPos</entry>
+<entry><link linkend="h000790">GetSBPos</link></entry>
+</row>
+<row>
+<entry>GetSBRange</entry>
+<entry><link linkend="h000782">GetSBRange</link></entry>
+</row>
+<row>
+<entry>GetWindowDC</entry>
+<entry><link linkend="h001062">GetWindowDC</link></entry>
+</row>
+<row>
+<entry>GetWindowRect</entry>
+<entry><link linkend="h000712">GetWindowRect</link></entry>
+</row>
+<row>
+<entry>HideWindow</entry>
+<entry><link linkend="h001253">HideWindow</link></entry>
+</row>
+<row>
+<entry>HideWindowFast</entry>
+<entry><link linkend="h001261">HideWindowFast</link></entry>
+</row>
+<row>
+<entry>IsMouseButtonDown</entry>
+<entry><link linkend="ismousebuttondown">IsMouseButtonDown</link></entry>
+</row>
+<row>
+<entry>InsertComboEntry</entry>
+<entry><link linkend="h000316">InsertComboEntry</link></entry>
+</row>
+<row>
+<entry>InsertListEntry</entry>
+<entry><link linkend="h000389">InsertListEntry</link></entry>
+</row>
+<row>
+<entry>IsDialogActive</entry>
+<entry><link linkend="h000721">IsDialogActive</link></entry>
+</row>
+<row>
+<entry>ListAddDirectory</entry>
+<entry><link linkend="h000448">ListAddDirectory</link></entry>
+</row>
+<row>
+<entry>ListDrop</entry>
+<entry><link linkend="h000458">ListDrop</link></entry>
+</row>
+<row>
+<entry>MoveItem</entry>
+<entry><link linkend="h001322">MoveItem</link></entry>
+</row>
 <entry>RedrawButton</entry>
 <entry><link linkend="h000684">RedrawButton</link></entry>
 </row>
@@ -1417,10 +1416,6 @@
 <entry><link linkend="h001277">ShowWindowFast</link></entry>
 </row>
 <row>
-<entry>tabToNext</entry>
-<entry><link linkend="mthTabToNext">tabToNext</link></entry>
-</row>
-<row>
 <entry>tabToPrevious</entry>
 <entry><link linkend="tabtoprevious">tabToPrevious</link></entry>
 </row>
@@ -1431,10 +1426,6 @@
 <row>
 <entry>ToTheTop</entry>
 <entry><link linkend="h000109">ToTheTop</link></entry>
-</row>
-<row>
-<entry>validate</entry>
-<entry><link linkend="mthValidate">validate</link></entry>
 </row>
 <row>
 <entry>WriteToButton</entry>
@@ -1798,10 +1789,9 @@
 
 <section id="atrConstDir"><title>constDir (Attribute)</title>
 <indexterm><primary>constDir</primary></indexterm>
-<indexterm><primary>ResourceUtils class</primary>
-<secondary>constDir</secondary></indexterm>
-<indexterm><primary>dialog object</primary>
-<secondary>constDir</secondary></indexterm>
+<indexterm><primary>ResourceUtils class</primary><secondary>constDir</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>constDir</secondary></indexterm>
+
 <programlisting>
 <![CDATA[
 >>--constDir-----------------------------------------><
@@ -1891,10 +1881,7 @@
 
 <section id="atrAutoDetect"><title>autoDetect (Attribute)</title>
 <indexterm><primary>autoDetect</primary></indexterm>
-<indexterm><primary>PlainBaseDialog class</primary>
-<secondary>autoDetect</secondary></indexterm>
-<indexterm><primary>dialog object</primary>
-<secondary>autoDetect</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>autoDetect</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -2230,10 +2217,7 @@
 
 <section id="atrFontName"><title>fontName (Attribute)</title>
 <indexterm><primary>fontName</primary></indexterm>
-<indexterm><primary>dialog object</primary>
-<secondary>fontName</secondary></indexterm>
-<indexterm><primary>PlainBaseDialog class</primary>
-<secondary>fontName</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>fontName</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--fontName-----------------------------------------><
@@ -2716,7 +2700,7 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 
   TODO NEED TO DECIDE EXACTLY WHAT TO DOCUMENT OR NOT DOCUMENT HERE
 
-  If you do, forward the Cancel message to the parent class after processing has finished. Set the self~finished
+  If you do, forward the cancel message to the parent class after processing has finished. Set the self~finished
   attribute to 1 or 0 and return it. The dialog continues executing if you return the value 0.
 </para>
 </section>
@@ -4005,8 +3989,8 @@ controlObject = dialogObject~new[ControlName](resourceID)
 </variablelist>
 </section>  <!-- End PlainBaseDialog::setDlgFont() -->
 
-<section id="mthInitDialog"><title>InitDialog</title>
-<indexterm><primary>InitDialog</primary>
+<section id="mthInitDialog"><title>initDialog</title>
+<indexterm><primary>initDialog</primary>
 <secondary>BaseDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4016,7 +4000,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 ]]>
 </programlisting>
 
-<para>The InitDialog method is called after the Windows dialog
+<para>The initDialog method is called after the Windows dialog
 has been created. It is useful for setting data fields and initializing combo
 and list boxes. Do not use Set... methods because
 the <link linkend="mthSetData">setData</link> method is executed automatically afterwards
@@ -5833,97 +5817,147 @@ object.
 </variablelist>
 </section>
 
-<section id="mthGetItem"><title>GetItem</title>
-<indexterm><primary>GetItem</primary></indexterm>
+<section id="mthGetControlHandle"><title>getControlHandle</title>
+<indexterm><primary>getControlHandle</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getControlHandle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~GetItem(--id--+---------+--)-------------------><
-                             +-,--hDlg-+
-
+>>--getControlHandle(--id--+---------+--)--------><
+                           +-,--hDlg-+
 
 ]]>
 </programlisting>
 
-<para>The GetItem method returns the handle of a particular
-dialog item. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog element.
-</para></listitem></varlistentry>
-<varlistentry><term>hDlg</term>
-<listitem><para>The handle of the dialog. If it is omitted, the main dialog handle is
-used.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example returns the handle of a push button:
-
-<programlisting>
-<![CDATA[
-hndPushButton = MyDialog~GetItem(101)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthGetControlID"><title>GetControlID</title>
-<indexterm><primary>GetControlID</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetControlID(--hWnd--)-------------------------><
-
-
-]]>
-</programlisting>
-
-<para>Given a valid window handle to a dialog control, the
-<computeroutput>GetControlID</computeroutput> method returns the resource ID of
-the control.
+<para>
+  Retrieves the window <link linkend="defHandle">handle</link> of the specified dialog control.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hWnd</term>
-<listitem><para>The window handle of the dialog control.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource id of the dialog control whose window handle is to be retrieved. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hDlg [optional]</term>
+      <listitem>
+      <para>
+        The window handle of the dialog the control belongs to. By default, it is assumed that the dialog control
+        belongs to this dialog.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the return is the window handle of the dialog control with the specified resource ID. On error, 0 is
+    returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example get the window handle of the Ok button.
+<programlisting>
+<![CDATA[
+
+  hwndOkButton = self~getControlHandle(OK)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>Negative values indicate an error.
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The <computeroutput>hWnd</computeroutput> argument is not a
-valid window handle.
-</para></listitem></varlistentry>
-<varlistentry><term>less than -1</term>
-<listitem><para>The value is the negated Operating System Error code.  The
-absolute value of the return can be used to look up the error reason in the
-Windows documentation.
-</para></listitem></varlistentry>
-<varlistentry><term>other</term>
-<listitem><para>The resource ID of the dialog control.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following is a complete working example.  It allows the user
-to check a check box with the F2 key and uncheck it with the F3 key.  The F2 and
-F3 key press events are connected to the <computeroutput>check</computeroutput>
-and <computeroutput>uncheck</computeroutput> methods.  When the user presses the
-F2 key, the program determines which control has the focus, uses the returned
-window handle to get the control ID, and then uses the ID to check the check
-box.  And the same approach if the F3 key is pressed.
+</section>  <!-- End dialog object::getControlHandle() -->
+
+
+<section id="mthGetControlID"><title>getControlID</title>
+<indexterm><primary>getControlID</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getControlID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getControlID(--hwnd--)-----------------------><
+
+
+]]>
+</programlisting>
+
+<para>
+  Given a valid window <link linkend="defHandle">handle</link> to a dialog control, the <emphasis
+  role="italic">getControlID</emphasis> method returns the numeric resource ID of the control.
 </para>
-<para>Note that in this dialog, there are only four controls that can have the
-focus.  If the OK button has the focus, then nothing is done.  In a more complex
-application, the programmer would probably check that the resource ID matches
-one of the check boxes instead.
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>hwnd [required]</term>
+      <listitem>
+      <para>
+        The window handle of the dialog control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Negative values indicate an error.
+    <variablelist>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">hwnd</emphasis> argument is not a valid window handle.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>less than -1</term>
+      <listitem>
+      <para>
+        The value is the negated Operating System Error code.  The absolute value of the return can be used to look up
+        the error reason in the Windows documentation.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>other</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following is a complete working example. It allows the user to check a check box with the F2 key and uncheck it
+    with the F3 key.  The F2 and F3 key press events are connected to the
+    <computeroutput>check</computeroutput> and <computeroutput>uncheck</computeroutput> methods.  When the user presses
+    the F2 key, the program determines which control has the focus, uses the returned window handle to get the control
+    ID, and then uses the ID to check the check box. And the same approach if the F3 key is pressed.
+  </para>
+  <para>
+    Note that in this dialog, there are only four controls that can have the focus.  If the OK button has the focus,
+    then nothing is done.  In a more complex application, the programmer would probably check that the resource ID
+    matches one of the check boxes instead.
+
 <programlisting> <![CDATA[
 
 /* Simple Grocery List */
@@ -5941,14 +5975,14 @@ one of the check boxes instead.
   end
 
 -- End of entry point.
-::requires "oodWin32.cls"
+::requires "ooDialog.cls"
 
-::class SimpleDialog subclass UserDialog
+::class 'SimpleDialog' subclass UserDialog
 
 ::method check
 
-  hWnd = self~getFocus
-  id = self~getControlID(hWnd)
+  hwnd = self~getFocus
+  id = self~getControlID(hwnd)
   if id == self~constDir[IDOK] then return
 
   self~newCheckBox(id)~check
@@ -5963,25 +5997,24 @@ one of the check boxes instead.
 ::method defineDialog
 
   self~createGroupbox(IDC_GB_LIST, 10, 20, 130, 90, , "Check Needed Groceries");
-  self~createCheckBox(IDC_CB_MILK, , 30, 35, , , "Milk", "GROUP");
-  self~createCheckBox(IDC_CB_BREAD, , 30, 55, , , "Bread", "NOTAB");
-  self~createCheckBox(IDC_CB_FRUIT, , 30, 75, , , "Fruit", "NOTAB");
-  self~createCheckBox(IDC_CB_CEREAL, , 30, 95, , , "Cereal", "NOTAB");
+  self~createCheckBox(IDC_CB_MILK, 30, 35, , , "GROUP", "Milk");
+  self~createCheckBox(IDC_CB_BREAD, 30, 55, , , "NOTAB", "Bread");
+  self~createCheckBox(IDC_CB_FRUIT, 30, 75, , , "NOTAB", "Fruit");
+  self~createCheckBox(IDC_CB_CEREAL, 30, 95, , , "NOTAB", "Cereal");
 
   self~createPushButton(IDOK, 105, 120, 35, 15, "GROUP", "OK")
 
 ::method initDialog
 
-  -- We know that the key code for F2 is 113 so we don't need to use the
-  -- VK class.  We use the 'none' filter so that only a F2 or F3
-  -- key press is captured.  (Not Alt-F2, or Shift-F2, etc..)
-  self~connectKeyPress(check, 113, "NONE")
-  self~connectKeyPress(unCheck, 114, "NONE")
+  -- We use the 'none' filter so that only a F2 or F3 key press is
+  -- captured.  (Not Alt-F2, or Shift-F2, etc..)
+  self~connectKeyPress(check, .VK~F2, "NONE")
+  self~connectKeyPress(unCheck, .VK~F3, "NONE")
 
 ]]>
 </programlisting>
-</para>
-</listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -6200,7 +6233,7 @@ window handle of objects used in ooDialog. For instance, use the <link
 linkend="h000086">getSelf</link> method to retrieve the window handle of the
 dialog instance.  Use the  <link linkend="h000086">Get</link> method to retrieve
 the window handle of the most recently created dialog.  To get the window handle
-to a dialog control, the <link linkend="mthGetItem">GetItem</link> method can be
+to a dialog control, the <link linkend="mthGetControlHandle">getControlHandle</link> method can be
 used.
 </para></listitem></varlistentry>
 </variablelist>
@@ -6235,10 +6268,7 @@ used.
 
 <section id="mthGetTextSizeDu"><title>getTextSizeDu</title>
 <indexterm><primary>getTextSizeDu</primary></indexterm>
-<indexterm><primary>PlainBaseDialog class</primary>
-<secondary>getTextSizeDu</secondary></indexterm>
-<indexterm><primary>dialog object</primary>
-<secondary>getTextSizeDu</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getTextSizeDu</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getTextSizeDu(--text--)----------------------------------------------------><
@@ -6339,12 +6369,8 @@ used.
 
 
 <section id="mthGetTextSizeDlgClsPlainBaseDialog"><title>getTextSizeDlg</title>
-<indexterm><primary>getTextSizeDlg</primary>
-<secondary>dialog object</secondary></indexterm>
-<indexterm><primary>PlainBaseDialog class</primary>
-<secondary>getTextSizeDlg</secondary></indexterm>
-<indexterm><primary>dialog object</primary>
-<secondary>getTextSizeDlg</secondary></indexterm>
+<indexterm><primary>getTextSizeDlg</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getTextSizeDlg</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
@@ -6872,8 +6898,8 @@ linkend="exampleFileViewer">File Viewer</link> example.)
 </variablelist>
 </section>
 
-<section id="mthIsMinimized"><title>IsMinimized</title>
-<indexterm><primary>IsMinimized</primary></indexterm>
+<section id="mthIsMinimized"><title>isMinimized</title>
+<indexterm><primary>isMinimized</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~IsMinimized-------------------------------------><
@@ -6882,7 +6908,7 @@ linkend="exampleFileViewer">File Viewer</link> example.)
 ]]>
 </programlisting>
 
-<para>The <computeroutput>IsMinimized</computeroutput> method is used to check
+<para>The <computeroutput>isMinimized</computeroutput> method is used to check
 if a dialog is currently minimized.
 </para>
 <variablelist>
@@ -6923,8 +6949,8 @@ complete program listing that this code snippet comes from is available (see the
 </variablelist>
 </section>
 
-<section id="mthIsMaximized"><title>IsMaximized</title>
-<indexterm><primary>IsMaximized</primary></indexterm>
+<section id="mthIsMaximized"><title>isMaximized</title>
+<indexterm><primary>isMaximized</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~IsMaximized-------------------------------------><
@@ -6933,7 +6959,7 @@ complete program listing that this code snippet comes from is available (see the
 ]]>
 </programlisting>
 
-<para>The <computeroutput>IsMaximized</computeroutput> method is used to check
+<para>The <computeroutput>isMaximized</computeroutput> method is used to check
 if a dialog is currently maximized.
 </para>
 <variablelist>
@@ -6967,32 +6993,44 @@ being maximized.
 </variablelist>
 </section>
 
-<section id="mthFocusItem"><title>focusItem</title>
-<indexterm><primary>focusItem</primary></indexterm>
+
+<section id="mthFocusControl"><title>focusControl</title>
+<indexterm><primary>focusControl</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>focusControl</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~focusItem(--id--)------------------------------><
-
+>>--focusControl(--id--)-------------------------><
 
 ]]>
 </programlisting>
 
-<para>The focusItem method sets the input focus to a
-particular dialog item. </para>
+<para>
+  Sets the input focus to the specified dialog control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog item to set the focus to
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog control to set the focus to. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link> .
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 1.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method always returns 1.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End dialog object::focusControl() -->
 
 <section id="mthTabToNext"><title>tabToNext</title>
 <indexterm><primary>tabToNext</primary></indexterm>
@@ -7374,56 +7412,184 @@ removing the tabstop style.
 </variablelist>
 </section>  <!-- End dialog object::disableControl() -->
 
-<section id="mthHideItem"><title>HideItem</title>
-<indexterm><primary>HideItem</primary></indexterm>
+<section id="mthHideControl"><title>hideControl</title>
+<indexterm><primary>hideControl</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hideControl</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~HideItem(--id--)-------------------------------><
-
+>>--hideControl(--id--)--------------------------><
 
 ]]>
 </programlisting>
 
-<para>The HideItem method makes the given item disappear
-from the screen and thus unavailable to the user. In fact, the item is still
-in the dialog and you can transfer its data. </para>
+<para>
+  Removes the <emphasis role="italic">visible</emphasis> style from the specified dialog control and immediately redraws
+  the area occupied by the control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the item
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+      <para>
+        The resource id of the control to be hidden, may be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+      The return values are:
+    <variablelist>
+      <varlistentry><term>1</term>
+      <listitem>
+      <para>
+        The dialog control was previously visible.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        The dialog control was already hidden, was already not visible.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The resource ID is not valid.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a window does not have the visible style, (when it is hidden,) and the area of the screen that the window
+    occupies needs to be drawn, the operating system draws the window beneath the hidden window. The user can not
+    interact with a hidden window, the window can not recieve the keyboard or mouse input. However, the window still
+    exists. All the other state of a hidden window remains unchanged and the programmer can still query or change that
+    state. For instance, if an edit control is hidden, the programmer can still use the <link
+    linkend="mthGetText">getText</link> or <link linkend="mthSetText">setText</link> methods to get or set the current
+    text of the edit control.
+  </para>
+  <para>
+    The <link linkend="mthHideControlFast">hideControlFast</link> and <emphasis role="italic">hideControl</emphasis>
+    methods are related. The only difference in the methods is that <emphasis role="italic">hideControl</emphasis>
+    forces the operating system to immediately redraw the area occupied by the control while the <emphasis
+    role="italic">hideControlFast</emphasis> does not redraw the area occupied by the control.  The <emphasis
+    role="italic">hideControlFast</emphasis> method is faster because no redrawing is done. Normally the <emphasis
+    role="italic">hideControlFast</emphasis> method is used when a number of controls are hidden at one time. Then when
+    all the controls are hidden, the programmer forces the area they occupied to be redrawn.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End dialog object::hideControl() -->
 
-<section id="h001285"><title>HideItemFast</title>
-<indexterm><primary>HideItemFast</primary></indexterm>
+
+<section id="mthHideControlFast"><title>hideControlFast</title>
+<indexterm><primary>hideControl</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hideControlFast</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~HideItemFast(--id--)---------------------------><
-
+>>--hideControlFast(--id--)--------------------------><
 
 ]]>
 </programlisting>
 
-<para>The HideItemFast method hides an item without redrawing
-its area. It is similar to the <link linkend="mthHideItem">HideItem</link> method,
-but it is faster because the item's area is not redrawn. The HideItemFast method is used when more than one item state is modified.
-After the operations, you can manually redraw the dialog window, using the <link linkend="mthUpdate">update</link> method. </para>
+<para>
+  Removes the <emphasis role="italic">visible</emphasis> style from the specified dialog control with no redrawing of
+  the area occupied by the control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the item
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>id</term>
+      <listitem>
+      <para>
+        The resource id of the control to be hidden, may be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+      The return values are:
+    <variablelist>
+      <varlistentry><term>1</term>
+      <listitem>
+      <para>
+        The dialog control was previously visible.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        The dialog control was already hidden, was already not visible.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The resource ID is not valid.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a window does not have the visible style, (when it is hidden,) and the area of the screen that the window
+    occupies needs to be drawn, the operating system draws the window beneath the hidden window. The user can not
+    interact with a hidden window, the window can not recieve the keyboard or mouse input. However, the window still
+    exists. All the other state of a hidden window remains unchanged and the programmer can still query or change that
+    state. For instance, if an edit control is hidden, the programmer can still use the <link
+    linkend="mthGetText">getText</link> or <link linkend="mthSetText">setText</link> methods to get or set the current
+    text of the edit control.
+  </para>
+  <para>
+    The <link linkend="mthHideControl">hideControl</link> and <emphasis role="italic">hideControlFast</emphasis> methods
+    are related. The only difference in the methods is that <emphasis role="italic">hideControl</emphasis> forces the
+    operating system to immediately redraw the area occupied by the control while the <emphasis
+    role="italic">hideControlFast</emphasis> does not redraw the area occupied by the control.  The <emphasis
+    role="italic">hideControlFast</emphasis> method is faster because no redrawing is done. Normally the <emphasis
+    role="italic">hideControlFast</emphasis> method is used when a number of controls are hidden at one time. Then when
+    all the controls are hidden, the programmer forces the area they occupied to be redrawn.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that with the <emphasis role="italic">hideControlFast</emphasis> method, if
+    the programmer does not manually force the area of the control to be redrawn at some point, the control will remain
+    on the screen until some other event causes the operating system to redraw that portion of the screen. Also, the
+    programmer needs to remember that it is the window beneath the control that needs to be redrawn. Having the hidden
+    control redraw will not work. Since the control does not have the visible style, it does nothing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End dialog object::hideControl() -->
+
 
 <section id="mthShowItem"><title>ShowItem</title>
 <indexterm><primary>ShowItem</primary></indexterm>
@@ -7460,7 +7626,7 @@ reappear on the screen. </para>
 </programlisting>
 
 <para>The ShowItemFast method shows an item without redrawing
-its area. It is the counterpart to the <link linkend="h001285">HideItemFast</link> method.</para>
+its area. It is the counterpart to the <link linkend="mthHideControlFast">hideControlFast</link> method.</para>
 </section>
 
 <section id="h001253"><title>HideWindow</title>
@@ -7481,7 +7647,7 @@ or a dialog item. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>A handle to the window or dialog item. Use the <link
-linkend="mthGetSelf">getSelf</link> or <link linkend="mthGetItem">GetItem</link>
+linkend="mthGetSelf">getSelf</link> or <link linkend="mthGetControlHandle">getControlHandle</link>
 method to get a handle.
 </para></listitem></varlistentry>
 </variablelist>
@@ -7985,7 +8151,7 @@ view.  Then the file itself is displayed in a second dialog.  Each dialog uses a
 different application icon. The <computeroutput>execute</computeroutput> method
 documentation has more detail on the application icon.
 </para></listitem>
-<listitem><para><link linkend="mthInitDialog">InitDialog</link> This method is called
+<listitem><para><link linkend="mthInitDialog">initDialog</link> This method is called
 after the underlying Windows dialog has been created, but before it is shown on
 the screen.  In the viewer dialog the <computeroutput>init</computeroutput>
 method is overridden and the text of the read-only multi-line edit control is
@@ -8010,7 +8176,7 @@ unnecessary screen flicker.
 <listitem><para><link linkend="mthMaximize">maximize</link>: Note that there is
 a 100 millisecond sleep right before the <computeroutput>maximize method
 </computeroutput> is invoked.  This allows Windows to finish creating the
-dialog.  The <computeroutput>InitDialog</computeroutput> method will have
+dialog.  The <computeroutput>initDialog</computeroutput> method will have
 already finished executing and the contents of the file are loaded into the
 multi-line edit control.  Then, <computeroutput>maximize</computeroutput>
 resizes the dialog to take up the whole screen and shows it.  The dialog appears
@@ -8022,8 +8188,8 @@ dialog is maximized, the main dialog is minimized to the task bar.
 </para></listitem>
 <listitem><para><link linkend="mthInitAutoDetection">initAutoDetection</link>:
 Because the contents of the file are loaded into the multi-line edit control
-during <computeroutput>InitDialog</computeroutput>, auto detection must be
-turned off.  Otherwise, after <computeroutput>InitDialog</computeroutput>
+during <computeroutput>initDialog</computeroutput>, auto detection must be
+turned off.  Otherwise, after <computeroutput>initDialog</computeroutput>
 finishes executing, auto detection would set the empty string as the text for
 the control.  The program overrides this method to turn auto detection off.
 </para></listitem>
@@ -8039,10 +8205,10 @@ only child window.)  Since the dialog is not resizeable by the user (it does not
 have a sizing border) the only time the size can change is when the dialog is
 maximized, minimized, or restored.
 </para></listitem>
-<listitem><para><link linkend="mthHideItem">HideItem</link>: The edit control in
+<listitem><para><link linkend="mthHideControl">hideControl</link>: The edit control in
 the viewer dialog is created invisible.  Again, this helps reduce flicker.
 </para></listitem>
-<listitem><para><link linkend="mthGetItem">GetItem</link>: The window handle of
+<listitem><para><link linkend="mthGetControlHandle">getControlHandle</link>: The window handle of
 the edit control is obtained by this method ...
 </para></listitem>
 <listitem><para><link linkend="mthGetClientRect">getClientRect</link>: ... then
@@ -8057,7 +8223,7 @@ area.
 <computeroutput>ShowItem</computeroutput> method is used to make the edit
 control visible when the dialog is initially shown.
 </para></listitem>
-<listitem><para><link linkend="mthIsMinimized">IsMinimized</link>: When the
+<listitem><para><link linkend="mthIsMinimized">isMinimized</link>: When the
 viewer dialog is closed, this method checks to see if the main dialog is still
 minimized.  Since the dialogs run independently the user may have already
 restored this dialog.
@@ -8144,7 +8310,7 @@ still minimized, then this method restores it to its normal position.
 ::method initDialog
   expose editControl fileName isHidden
 
-  self~hideItem(IDC_MULTILINE)
+  self~hideControl(IDC_MULTILINE)
   isHidden = .true
 
   editControl = self~newEdit(IDC_MULTILINE)
@@ -8168,7 +8334,7 @@ still minimized, then this method restores it to its normal position.
 ::method resizeEditControl
   expose editControl isHidden
 
-  hWnd = self~getItem(IDC_MULTILINE)
+  hWnd = self~getControlHandle(IDC_MULTILINE)
   parse value self~getClientRect with wx wy wcx wcy
 
   self~setWindowRect(hWnd, 0, 0, wcx, wcy)
@@ -8240,7 +8406,7 @@ of the dialog is to be erased before redrawing. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle to the dialog in which parts of the client area are to be
-redrawn. See <link linkend="h000086">Get</link> or <link linkend="mthGetItem">GetItem</link> for
+redrawn. See <link linkend="h000086">Get</link> or <link linkend="mthGetControlHandle">getControlHandle</link> for
 information on how to get a window handle. If you omit this argument, the
 handle of the dialog instance is used.
 </para></listitem></varlistentry>
@@ -8320,7 +8486,7 @@ rectangle. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle to the window. See <link linkend="h000086">Get</link>
-or <link linkend="mthGetItem">GetItem</link> for information on how to get a window
+or <link linkend="mthGetControlHandle">getControlHandle</link> for information on how to get a window
 handle. If you omit this argument, the handle of the dialog instance is used.
 </para></listitem></varlistentry>
 <varlistentry><term>erasebkg</term>
@@ -8351,7 +8517,7 @@ of a window. The values are in pixels. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle of the window. See <link
-linkend="mthGetSelf">getSelf</link> or <link linkend="mthGetItem">GetItem</link>
+linkend="mthGetSelf">getSelf</link> or <link linkend="mthGetControlHandle">getControlHandle</link>
 for information on obtaining a window handle.
 </para></listitem></varlistentry>
 <varlistentry><term>left</term>
@@ -8424,7 +8590,7 @@ of the given window. </para>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle of the window. See <link
 linkend="mthGetSelf">getSelf</link>, <link linkend="h000086">Get</link>, or
-<link linkend="mthGetItem">GetItem</link> for some methods to get a window handle.
+<link linkend="mthGetControlHandle">getControlHandle</link> for some methods to get a window handle.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -8434,7 +8600,7 @@ with resource ID of 211 and then clears the dialog control window:
 
 <programlisting>
 <![CDATA[
-hwnd = MyDialog~GetItem(211)
+hwnd = MyDialog~getControlHandle(211)
 MyDialog~ClearWindowRect(hwnd)
 ]]>
 </programlisting>
@@ -10014,7 +10180,7 @@ a button. It is used to move bitmaps within buttons. </para>
   The SetItemFont method changes the font for a particular dialog item.
 </para>
 <para>
-  The best place to call this method is within <link linkend="mthInitDialog">InitDialog</link>. If the
+  The best place to call this method is within <link linkend="mthInitDialog">initDialog</link>. If the
   font is no longer needed, for instance, when the dialog is closed or another font has been assigned to
   the dialog item, you should free the font resource by calling <link
   linkend="mthDeleteFont">deleteFont</link>. A good place to do this is the <link
@@ -10046,7 +10212,7 @@ a button. It is used to move bitmaps within buttons. </para>
 <listitem><para>The following example sets a 12-point Arial font for item 101.
 <programlisting>
 <![CDATA[
-::method InitDialog
+::method initDialog
      .
      .
      .
@@ -10062,8 +10228,7 @@ a button. It is used to move bitmaps within buttons. </para>
 </section>
 
 <section id="sctMenuMethodsDlgObject"><title>Menu Methods</title>
-<indexterm><primary>dialog object</primary>
-<secondary>menu methods</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>menu methods</secondary></indexterm>
 <para>
   Prior to ooDialog level 4.2.0, menus were really only minimally supported, through a few methods of the dialog class.
   In ooDialog 4.2.0 true <link linkend="chpMenus">menu</link> objects were introduced.  Therefore the menu methods of

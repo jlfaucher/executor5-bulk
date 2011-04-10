@@ -61,7 +61,7 @@
   <computeroutput>NOHEADER</computeroutput> or <computeroutput>SINGLESEL</computeroutput> styles.  However, the way that
   they are added or removed from the ListView is different.  For instance, the extended styles can not be added to a
   ListView at the time of creation.  They can only be added after the underlying Windows control has been created.  For
-  all practical purposes this means in the <link linkend="mthInitDialog">InitDialog</link> method, or at some point in
+  all practical purposes this means in the <link linkend="mthInitDialog">initDialog</link> method, or at some point in
   the life cycle of the dialog after that.
 </para>
 <para>
@@ -849,7 +849,7 @@ different styles, refer to <link linkend="mthCreateListView">createListView</lin
 more of the <link linkend="listControlExtendedStyles">extended
 </link> List-View styles to a ListControl.  These styles can not be added until
 the underlying Windows List-View control has been created.  They can be added in
-the <computeroutput>InitDialog</computeroutput> method or any time thereafter.
+the <computeroutput>initDialog</computeroutput> method or any time thereafter.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -978,7 +978,7 @@ keywords.
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example shows how to initially add the extended
 styles to a list-view control.  This is done in the
-<computeroutput>InitDialog</computeroutput> method, which executes after the
+<computeroutput>initDialog</computeroutput> method, which executes after the
 underlying Windows dialog has been created, but before it is displayed on the
 screen.  This is the earliest point in time that the extended style methods can
 be used.  The list-view is in the report view and will have check boxes and grid
