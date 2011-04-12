@@ -522,6 +522,35 @@ SysUname("m")   -->  i686
 </section>
 
 
+<section id="utlSysUnLink"><title>SysUnLink</title>
+<indexterm><primary>SysLink</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysUnLink(srcpath)------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Removes a hard link.</para>
+<para>This function uses the <filename>unlink()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">srcpath</emphasis></term>
+<listitem><para>The path/filename of the source file to be removed.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success and -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* remove a link */
+
+call SysUnLink "/home/username/myownpublink"
+]]>
+</programlisting>
+</section>
+
+
 <section id="utlSysWordexp"><title>SysWordexp</title>
 <indexterm><primary>SysWordexp</primary></indexterm>
 <programlisting>
