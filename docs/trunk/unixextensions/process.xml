@@ -77,6 +77,38 @@ mytid = SysGettid()
 </section>
 
 
+<section id="utlSysKill"><title>SysKill</title>
+<indexterm><primary>SysKill</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysKill(pid, sig)-------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Kill the specified process using the specified signal.</para>
+<para>This function uses the <filename>kill()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">pid</emphasis></term>
+<listitem><para>The process id to kill.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">sig</emphasis></term>
+<listitem><para>The signal to use (usually 0).
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns the return code from the C kill() API.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* kill the process */
+
+mytid = SysKill(27313, 0)
+]]>
+</programlisting>
+</section>
+
+
 
 
 
