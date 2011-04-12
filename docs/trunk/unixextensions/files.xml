@@ -138,6 +138,35 @@ call SysChroot "/home/username/"
 </section>
 
 
+<section id="utlSysClose"><title>SysClose</title>
+<indexterm><primary>SysClose</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-SysClose(fh)------------------------------------------------><
+]]>
+</programlisting>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Close the specified file handle.</para>
+<para>This function uses the <filename>close()</filename>
+C API to perform the action.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">fh</emphasis></term>
+<listitem><para>The file handle to be closed.
+</para></listitem></varlistentry>
+</variablelist>
+<para>Returns zero on success and -1 on an error.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+<![CDATA[
+/* close filehandle 0 */
+
+call SysClose 0
+]]>
+</programlisting>
+</section>
+
+
 <section id="utlSysEuidaccess"><title>SysEuidaccess (not available on all systems)</title>
 <indexterm><primary>SysEuidaccess</primary></indexterm>
 <programlisting>
