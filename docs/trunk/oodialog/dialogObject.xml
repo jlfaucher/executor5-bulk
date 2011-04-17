@@ -1090,8 +1090,8 @@
 <entry><link linkend="h000622">ClearButtonRect</link></entry>
 </row>
 <row>
-<entry>ClearRect</entry>
-<entry><link linkend="h000640">ClearRect</link></entry>
+<entry>clearRect</entry>
+<entry><link linkend="mthClearRectClsPlainBaseDialog">clearRect</link></entry>
 </row>
 <row>
 <entry>ClearWindowRect</entry>
@@ -1266,20 +1266,12 @@
 <entry><link linkend="releasemousecapture">ReleaseMouseCapture</link></entry>
 </row>
 <row>
-<entry>resize</entry>
-<entry><link linkend="mthResize">resize</link></entry>
-</row>
-<row>
 <entry>ResizeItem</entry>
 <entry><link linkend="h001301">ResizeItem</link></entry>
 </row>
 <row>
 <entry>Restore</entry>
 <entry><link linkend="mthRestore">Restore</link></entry>
-</row>
-<row>
-<entry>screenToClient</entry>
-<entry><link linkend="mthScreenToClient">screenToClient</link></entry>
 </row>
 <row>
 <entry>ScrollButton</entry>
@@ -8492,18 +8484,181 @@ drawing area should be erased before redrawing. The default is 0.
 </variablelist>
 </section>
 
-<section id="h000640"><title>ClearRect</title>
-<indexterm><primary>ClearRect</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<section id="mthClearRectClsPlainBaseDialog"><title>clearRect</title>
+<indexterm><primary>clearRect</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>clearRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ClearRect(--hwnd--,--left--,--top--,--right--,--bottom--)--><
+Form 1:
+
+>>--clearRect(--hwnd--,--rectangle--)------------><
+
+
+Form 2:
+
+>>--clearRect(--hwnd--,--pt1--,--pt2--)----------><
+
+
+Form 3:
+
+>>--clearRect(--hwnd--,--x-,--y-,--cx-,--cy--)---><
+
+
+Generic form:
+
+>>--clearRect(--hwnd--,--rectCoordinates--)------><
 
 
 ]]>
 </programlisting>
 
-<para>The ClearRect method clears the given rectangle
+<para>
+  The <emphasis role="italic">clearRect</emphasis> method clears the specified rectangular area within a window. The
+  area is <emphasis role="italic">cleared</emphasis> by redrawing it with the background brush set to the typical
+  background color for dialog boxes and three dimensional elements.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>hwnd [required]</term>
+      <listitem>
+      <para>
+        The window <link linkend="defHandle">handle</link> of the window containing the rectangle to be cleared.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rectCoordinates [required]</term>
+      <listitem>
+      <para>
+        The coordinates of the rectangle to be cleared. The coordinates specify the upper left and lower right corners
+        of the rectangle. The corners can be specified using either a <link linkend="clsRect">rect</link> object, two
+        <link linkend="clsPoint">point</link> objects, or the individual x and y coordinates of each corner.
+      </para>
+      <para>
+        The cooridnates are specified as <link linkend="defClientArea">client-area</link> coordinates, in pixels.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The rectangle is not really cleared, but rather is redrawn using the normal background color for a dialog box.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is a complete program, it can be copy and pasted into a file and executed. Running the program and
+    reading the code should give a better understanding of the <emphasis role="italic">clearRect</emphasis> method than
+    a text description alone.
+
+<programlisting>
+<![CDATA[
+
+/* Shows clearRect() at work. */
+
+  dlg = .Simple~new
+  dlg~execute("SHOWTOP")
+
+  return 0
+-- End of entry point.
+
+::requires "ooDialog.cls"
+
+::class 'Simple' subclass UserDialog
+
+::method init
+
+  forward class (super) continue
+  self~createCenter(245, 132, "clearRect() Example")
+
+::method defineDialog
+
+  self~createGroupBox(100, 10, 13, 107, 70, , "Test Group Box")
+  self~createListView(200, 130, 13, 107, 70, "REPORT")
+
+  self~createPushButton(300, 115, 108, 65, 14, , "Clear Group Box", onClear)
+  self~createPushButton(IDOK, 185, 108, 50, 14, "DEFAULT", "Ok")
+
+::method initDialog
+  expose list gb pb
+
+  list = self~newListView(200)
+
+  list~insertColumn(0, "Text", 40)
+  list~insertColumn(1, "Number", 30)
+  do i = 1 to 3
+    list~addRow(i, , "Line", i)
+  end
+
+  gb = self~newGroupBox(100)
+  pb = self~newPushButton(300)
+
+::method onClear unguarded
+  expose list gb pb
+
+  text = pb~getText
+  select
+    when text == "Clear Group Box" then do
+      text = "Clear List View"
+      r = gb~clientRect
+      r~right %= 2
+      r~bottom %= 2
+      self~clearRect(gb~hwnd, r)
+    end
+    when text == "Clear List View" then do
+      text = "Refresh"
+      self~clearRect(list~hwnd, 10, 10, 55, 80)
+    end
+    otherwise do
+      text = "Clear Group Box"
+      gb~redrawClient
+      list~redrawClient
+    end
+  end
+  -- End select
+
+  pb~setText(text)
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::clearRect() -->
+
+<section id="mthClearRectClsPlainBaseDialog"><title>clearRect</title>
+<indexterm><primary>clearRect</primary>
+<secondary>BaseDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aBaseDialog~clearRect(--hwnd--,--left--,--top--,--right--,--bottom--)--><
+
+
+]]>
+</programlisting>
+
+<para>The clearRect method clears the given rectangle
 of a window. The values are in pixels. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8534,7 +8689,7 @@ for information on obtaining a window handle.
 <programlisting>
 <![CDATA[
 hwnd=MyDialog~getSelf
-MyDialog~ClearRect(hwnd, 2, 4, 22, 24)
+MyDialog~clearRect(hwnd, 2, 4, 22, 24)
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
