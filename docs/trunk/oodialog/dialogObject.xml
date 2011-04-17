@@ -239,6 +239,10 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="mthAddAutoStartMethod">addAutoStartMethod</link></entry>
+<entry>Adds a method and its arguments to be started automatically and run concurrently when the dialog is executed.</entry>
+</row>
+<row>
 <entry><link linkend="mthAddUserMsg">addUserMsg</link></entry>
 <entry>Connects an operating system window message with a method in the Rexx dialog object.</entry>
 </row>
@@ -247,12 +251,24 @@
 <entry>Turns automatic data field detection on</entry>
 </row>
 <row>
+<entry><link linkend="mthCancel">cancel</link></entry>
+<entry>A default event handler for the cancel event provided by the ooDialog framework.</entry>
+</row>
+<row>
 <entry><link linkend="mthChangeBitmapButton">changeBitmapButton</link></entry>
 <entry>Changes the bitmaps for an already installed bitmap button and optionally immediately redraws the button.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoClear">clear</link></entry>
 <entry>Clears the client area of the dialog by painting it with the background brush.</entry>
+</row>
+<row>
+<entry><link linkend="mthClearControlRect">clearControlRect</link></entry>
+<entry>Clears the client area of the specified dialog control by painting it with the background brush.</entry>
+</row>
+<row>
+<entry><link linkend="mthClearRectClsPlainBaseDialog">clearRect</link></entry>
+<entry>Clears a rectangular area of a window by painting it with the background brush.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoClient2screen">client2screen</link></entry>
@@ -275,8 +291,20 @@
 <entry>Connect an event notification from a button control to a method in the Rexx Dialog</entry>
 </row>
 <row>
+<entry><link linkend="mthConnectCheckBox">connectCheckBox</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a check box control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectComboBox">connectComboBox</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a combo box control in the underlying dialog.</entry>
+</row>
+<row>
 <entry><link linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link></entry>
 <entry>Connects an event notification from a combo box to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectCommandEvents">connectCommandEvents</link></entry>
+<entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectDateTimePickerEvent">conectDateTimePickerEvent</link></entry>
@@ -287,12 +315,12 @@
 <entry>Connects the draw item event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthConnectCommandEvents">connectCommandEvents</link></entry>
-<entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
-</row>
-<row>
 <entry><link linkend="mthConnectEachSBEvent">connectEachSBEvent</link></entry>
 <entry>Connects each specified event notification from a scroll bar to a separate method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectEdit">connectEdit</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a edit control in the underlying dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectEditEvent">connectEditEvent</link></entry>
@@ -311,8 +339,16 @@
 <entry>Connects a key press (a key is typed) with a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthConnectListBox">connectListBox</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a list box control in the underlying dialog.</entry>
+</row>
+<row>
 <entry><link linkend="mthConnectListBoxEvent">connectListBoxEvent</link></entry>
 <entry>Connects an event notification from a list box control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectListView">connectListView</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a list view control in the underlying dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectListViewEvent">connectListViewEvent</link></entry>
@@ -340,7 +376,7 @@
 </row>
 <row>
 <entry><link linkend="mthConnectRadioButton">connectRadioButton</link></entry>
-<entry>Creates and connects a data attribute to an uderlying radio button control.</entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a radio button control in the underlying dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectResize">connectResize</link></entry>
@@ -367,8 +403,16 @@
 <entry>Connects an event notification from a tab control to a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthConnectTrackBar">connectTrackBar</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a track bar control in the underlying dialog.</entry>
+</row>
+<row>
 <entry><link linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link></entry>
-<entry>Connects an event notification from a track bar control to a method in the Rexx dialog. </entry>
+<entry>Connects an event notification from a track bar control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectTreeview">connectTreeView</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a tree view control in the underlying dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link></entry>
@@ -485,6 +529,18 @@
 <row>
 <entry><link linkend="wbdoEnable">enable</link></entry>
 <entry>Enables the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthEnableControl">enableControl</link></entry>
+<entry>Enables the control with the specified resource id.</entry>
+</row>
+<row>
+<entry><link linkend="mthExecute">execute</link></entry>
+<entry>Creates the underlying dialog, shows it, starts the automatic methods, if any, and destroys the underlying dialog when the user closes it.</entry>
+</row>
+<row>
+<entry><link linkend="mthExecuteAsync">executeAsync</link></entry>
+<entry>Creates the underlying dialog, shows it, starts any automatic methods, and returns immediately.</entry>
 </row>
 <row>
 <entry><link linkend="wedoFillDrawing">fillDrawing</link></entry>
@@ -857,54 +913,6 @@
 
 
 <row>
-<entry><link linkend="mthAddAutoStartMethod">addAutoStartMethod</link></entry>
-<entry>Adds a method and its arguments to be started automatically and run concurrently when the dialog is executed.</entry>
-</row>
-<row>
-<entry><link linkend="mthCancel">cancel</link></entry>
-<entry>A default event handler for the cancel event provided by the ooDialog framework.</entry>
-</row>
-<row>
-<entry><link linkend="mthConnectCheckBox">connectCheckBox</link></entry>
-<entry>connectCheckBox</entry>
-</row>
-<row>
-<entry><link linkend="mthConnectComboBox">connectComboBox</link></entry>
-<entry>connectComboBox</entry>
-</row>
-<row>
-<entry><link linkend="mthConnectEdit">connectEdit</link></entry>
-<entry>connectEdit</entry>
-</row>
-<row>
-<entry><link linkend="mthConnectListBox">connectListBox</link></entry>
-<entry>connectListBox</entry>
-</row>
-<row>
-<entry><link linkend="mthConnectListView">connectListView</link></entry>
-<entry>connectListView</entry>
-</row>
-<row>
-<entry><link linkend="mthConnectTrackBar">connectTrackBar</link></entry>
-<entry>connectTrackBar</entry>
-</row>
-<row>
-<entry><link linkend="mthConnectTreeview">connectTreeView</link></entry>
-<entry>connectTreeView</entry>
-</row>
-<row>
-<entry><link linkend="mthEnableControl">enableControl</link></entry>
-<entry>enableControl</entry>
-</row>
-<row>
-<entry><link linkend="mthExecute">execute</link></entry>
-<entry>execute</entry>
-</row>
-<row>
-<entry><link linkend="mthExecuteAsync">executeAsync</link></entry>
-<entry>executeAsync</entry>
-</row>
-<row>
 <entry><link linkend="mthGetCheckBoxData">getCheckBoxData</link></entry>
 <entry>getCheckBoxData</entry>
 </row>
@@ -1041,12 +1049,72 @@
 <entry>minimize</entry>
 </row>
 <row>
+<entry>restore</entry>
+<entry><link linkend="mthRestore">restore</link></entry>
+</row>
+<row>
 <entry><link linkend="mthTabToNext">tabToNext</link></entry>
 <entry>tabToNext</entry>
 </row>
 <row>
 <entry><link linkend="mthValidate">validate</link></entry>
 <entry>validate</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCheckBoxData">setCheckBoxData</link></entry>
+<entry>setCheckBoxData</entry>
+</row>
+<row>
+<entry><link linkend="mthSetComboBoxData">setComboBoxData</link></entry>
+<entry>setComboBoxData</entry>
+</row>
+<row>
+<entry><link linkend="mthSetControlText">setControlText</link></entry>
+<entry>Sets the text for the specified dialog control</entry>
+</row>
+<row>
+<entry><link linkend="mthSetData">setData</link></entry>
+<entry>setData</entry>
+</row>
+<row>
+<entry><link linkend="mthSetDataStem">setDataStem</link></entry>
+<entry>setDataStem</entry>
+</row>
+<row>
+<entry><link linkend="mthSetEditData">setEditData</link></entry>
+<entry>setEditData</entry>
+</row>
+<row>
+<entry><link linkend="mthSetFocus">setFocus</link></entry>
+<entry>setFocus</entry>
+</row>
+<row>
+<entry><link linkend="mthSetGroup">setGroup</link></entry>
+<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control specified.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetListBoxData">setListBoxData</link></entry>
+<entry>setListBoxData</entry>
+</row>
+<row>
+<entry><link linkend="mthSetRadioButtonData">setRadioButtonData</link></entry>
+<entry>setRadioButtonData</entry>
+</row>
+<row>
+<entry><link linkend="mthSetTabStop">setTabStop</link></entry>
+<entry>setTabStop</entry>
+</row>
+<row>
+<entry><link linkend="mthSetControlData">setControlData</link></entry>
+<entry>setControlData</entry>
+</row>
+<row>
+<entry><link linkend="mthSetWindowRect">setWindowRect</link></entry>
+<entry>setWindowRect</entry>
+</row>
+<row>
+<entry><link linkend="mthShowClsPlainBaseDialog">show</link></entry>
+<entry>show</entry>
 </row>
 
 
@@ -1084,14 +1152,6 @@
 <row>
 <entry>ChangeListEntry</entry>
 <entry><link linkend="h000425">ChangeListEntry</link></entry>
-</row>
-<row>
-<entry>ClearButtonRect</entry>
-<entry><link linkend="h000622">ClearButtonRect</link></entry>
-</row>
-<row>
-<entry>clearRect</entry>
-<entry><link linkend="mthClearRectClsPlainBaseDialog">clearRect</link></entry>
 </row>
 <row>
 <entry>ClearWindowRect</entry>
@@ -1270,28 +1330,12 @@
 <entry><link linkend="h001301">ResizeItem</link></entry>
 </row>
 <row>
-<entry>Restore</entry>
-<entry><link linkend="mthRestore">Restore</link></entry>
-</row>
-<row>
 <entry>ScrollButton</entry>
 <entry><link linkend="h000913">ScrollButton</link></entry>
 </row>
 <row>
 <entry>ScrollInButton</entry>
 <entry><link linkend="h000896">ScrollInButton</link></entry>
-</row>
-<row>
-<entry>setCheckBoxData</entry>
-<entry><link linkend="mthSetCheckBoxData">setCheckBoxData</link></entry>
-</row>
-<row>
-<entry>setComboBoxData</entry>
-<entry><link linkend="mthSetComboBoxData">setComboBoxData</link></entry>
-</row>
-<row>
-<entry><link linkend="mthSetControlText">setControlText</link></entry>
-<entry>Sets the text for the specified dialog control</entry>
 </row>
 <row>
 <entry>SetCurrentComboIndex</entry>
@@ -1302,32 +1346,12 @@
 <entry><link linkend="h000418">SetCurrentListIndex</link></entry>
 </row>
 <row>
-<entry>setData</entry>
-<entry><link linkend="mthSetData">setData</link></entry>
-</row>
-<row>
-<entry>setDataStem</entry>
-<entry><link linkend="mthSetDataStem">setDataStem</link></entry>
-</row>
-<row>
-<entry>setEditData</entry>
-<entry><link linkend="mthSetEditData">setEditData</link></entry>
-</row>
-<row>
-<entry>setFocus</entry>
-<entry><link linkend="mthSetFocus">setFocus</link></entry>
-</row>
-<row>
 <entry>SetFocusToWindow</entry>
 <entry><link linkend="setfocustowindow">SetFocusToWindow</link></entry>
 </row>
 <row>
 <entry>SetForegroundWindow</entry>
 <entry><link linkend="setforegroundwindow">SetForegroundWindow</link></entry>
-</row>
-<row>
-<entry><link linkend="mthSetGroup">setGroup</link></entry>
-<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control specified.</entry>
 </row>
 <row>
 <entry>SetItemFont</entry>
@@ -1342,20 +1366,12 @@
 <entry><link linkend="setlistitemheight">SetListItemHeight</link></entry>
 </row>
 <row>
-<entry>setListBoxData</entry>
-<entry><link linkend="mthSetListBoxData">setListBoxData</link></entry>
-</row>
-<row>
 <entry>SetListWidth</entry>
 <entry><link linkend="setlistwidth">SetListWidth</link></entry>
 </row>
 <row>
 <entry>SetListTabulators</entry>
 <entry><link linkend="h000435">SetListTabulators</link></entry>
-</row>
-<row>
-<entry>setRadioButtonData</entry>
-<entry><link linkend="mthSetRadioButtonData">setRadioButtonData</link></entry>
 </row>
 <row>
 <entry>SetSBPos</entry>
@@ -1366,28 +1382,12 @@
 <entry><link linkend="h000770">SetSBRange</link></entry>
 </row>
 <row>
-<entry>SetTabStop</entry>
-<entry><link linkend="mthSetTabStop">SetTabStop</link></entry>
-</row>
-<row>
-<entry>setControlData</entry>
-<entry><link linkend="mthSetControlData">setControlData</link></entry>
-</row>
-<row>
-<entry>SetWindowRect</entry>
-<entry><link linkend="mthSetWindowRect">SetWindowRect</link></entry>
+<entry>ShowItem</entry>
+<entry><link linkend="mthShowItem">ShowItem</link></entry>
 </row>
 <row>
 <entry>SetWindowTitle</entry>
 <entry><link linkend="h000246">SetWindowTitle</link></entry>
-</row>
-<row>
-<entry>show</entry>
-<entry><link linkend="mthShowClsPlainBaseDialog">show</link></entry>
-</row>
-<row>
-<entry>ShowItem</entry>
-<entry><link linkend="mthShowItem">ShowItem</link></entry>
 </row>
 <row>
 <entry>ShowItemFast</entry>
@@ -6828,8 +6828,8 @@ It is used in the FileViewer example.  The complete program listing is available
 </variablelist>
 </section>
 
-<section id="mthRestore"><title>Restore</title>
-<indexterm><primary>Restore</primary></indexterm>
+<section id="mthRestore"><title>restore</title>
+<indexterm><primary>restore</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~Restore-----------------------------------------><
@@ -6838,7 +6838,7 @@ It is used in the FileViewer example.  The complete program listing is available
 ]]>
 </programlisting>
 
-<para>The <computeroutput>Restore</computeroutput> method restores a minimized
+<para>The <computeroutput>restore</computeroutput> method restores a minimized
 or maximized dialog to its original position.  This is the identical to the user
 taking action to restore the dialog window.  The programmer can use this method
 to restore a dialog window that he previously minimized or maximized.
@@ -6864,7 +6864,7 @@ to restore a dialog window that he previously minimized or maximized.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example checks if the parent dialog is minimized
-and, if it is, the <computeroutput>Restore</computeroutput> method is used to
+and, if it is, the <computeroutput>restore</computeroutput> method is used to
 show the dialog in the size and position it was prior to being minimized.  The
 complete program listing for this code snippet is available (see the <link
 linkend="exampleFileViewer">File Viewer</link> example.)
@@ -6914,7 +6914,7 @@ if a dialog is currently minimized.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example checks if the parent dialog is minimized
-and, if it is, the <computeroutput>Restore</computeroutput> method is used to
+and, if it is, the <computeroutput>restore</computeroutput> method is used to
 show the dialog in the size and position it was prior to being minimized.  The
 complete program listing that this code snippet comes from is available (see the
 <link linkend="exampleFileViewer">File Viewer
@@ -7175,11 +7175,11 @@ could not be determined.
 </section>
 
 
-<section id="mthSetTabStop"><title>SetTabStop</title>
-<indexterm><primary>SetTabStop</primary></indexterm>
+<section id="mthSetTabStop"><title>setTabStop</title>
+<indexterm><primary>setTabStop</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~SetTabStop(--id--,--+-----------+--)-------------><
+>>-aBaseDialog~setTabStop(--id--,--+-----------+--)-------------><
                                    +-wantStyle-+
 
 ]]>
@@ -7717,11 +7717,11 @@ again. </para>
 the <link linkend="h001261">HideWindowFast</link> method.</para>
 </section>
 
-<section id="mthSetWindowRect"><title>SetWindowRect</title>
-<indexterm><primary>SetWindowRect</primary></indexterm>
+<section id="mthSetWindowRect"><title>setWindowRect</title>
+<indexterm><primary>setWindowRect</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~SetWindowRect(--hwnd--,--x--,--y--,--width--,--height-->
+>>-aBaseDialog~setWindowRect(--hwnd--,--x--,--y--,--width--,--height-->
 
 >--+-----------------------------+--)--------------------------------><
    |       +----------------+    |
@@ -7736,7 +7736,7 @@ the <link linkend="h001261">HideWindowFast</link> method.</para>
 ]]>
 </programlisting>
 
-<para>The SetWindowRect method sets new coordinates for
+<para>The setWindowRect method sets new coordinates for
 a specific window. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8201,7 +8201,7 @@ the edit control is obtained by this method ...
 the size of the client area of the viewer dialog is obtained using this method.
 Then ..
 </para></listitem>
-<listitem><para><link linkend="mthSetWindowRect">SetWindowRect</link>: ... the
+<listitem><para><link linkend="mthSetWindowRect">setWindowRect</link>: ... the
 size of the edit control window is set using to the size of the dialog's client
 area.
 </para></listitem>
@@ -8214,7 +8214,7 @@ viewer dialog is closed, this method checks to see if the main dialog is still
 minimized.  Since the dialogs run independently the user may have already
 restored this dialog.
 </para></listitem>
-<listitem><para><link linkend="mthRestore">Restore</link>: If the main dialog is
+<listitem><para><link linkend="mthRestore">restore</link>: If the main dialog is
 still minimized, then this method restores it to its normal position.
 </para></listitem>
 </itemizedlist>
@@ -8513,9 +8513,9 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">clearRect</emphasis> method clears the specified rectangular area within a window. The
-  area is <emphasis role="italic">cleared</emphasis> by redrawing it with the background brush set to the typical
-  background color for dialog boxes and three dimensional elements.
+  The <emphasis role="italic">clearRect</emphasis> method clears the specified rectangular within the client area of a
+  window. The rectangle is <emphasis role="italic">cleared</emphasis> by redrawing it with the background brush set to
+  the typical background color for dialog boxes and three dimensional elements.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8526,7 +8526,7 @@ Generic form:
       <varlistentry><term>hwnd [required]</term>
       <listitem>
       <para>
-        The window <link linkend="defHandle">handle</link> of the window containing the rectangle to be cleared.
+        The <link linkend="defHandle">handle</link> of the window containing the rectangle to be cleared.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>rectCoordinates [required]</term>
@@ -8648,29 +8648,61 @@ Generic form:
 </section>  <!-- End dialog object::clearRect() -->
 
 
-<section id="h000622"><title>ClearButtonRect</title>
-<indexterm><primary>ClearButtonRect</primary></indexterm>
+<section id="mthClearControlRect"><title>clearControlRect</title>
+<indexterm><primary>clearControlRect</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>clearControlRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ClearButtonRect(--id--)------------------------><
-
+>>--clearControlRect(--id--)---------------------><
 
 ]]>
 </programlisting>
 
-<para>The ClearButtonRect method erases the draw area
-of the given button. </para>
+<para>
+  The <emphasis role="italic">clearControlRect</emphasis> clears the client area of the specified dialog control by
+  redrawing the area with the background brush set to the default background color of a dialog.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the push button
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource id of the dialog control that is to be cleared. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 on success, or 1 on any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The client area of the control is not really <emphasis role="italic">cleared</emphasis>, but rather the dialog
+    background is painted over the top of the area. Most dialog controls do not have a border, but if the control does
+    have a border, the border is not cleared because it is outside of the client area.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End dialog object::clearControlRect() -->
 
 <section id="h000631"><title>ClearWindowRect</title>
 <indexterm><primary>ClearWindowRect</primary></indexterm>
