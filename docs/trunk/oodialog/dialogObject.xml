@@ -60,6 +60,7 @@
 <section id="sctMethodsDlgObject"><title>Method Table</title>
 <para>
   The following table lists the class methods, attributes, and instance methods that all dialogs have in common:
+</para>
 <table id="tblMethodsDlgObject" frame="all"> <title>Dialog Object Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1.75in">
@@ -535,6 +536,10 @@
 <entry>Enables the control with the specified resource id.</entry>
 </row>
 <row>
+<entry><link linkend="mthEnsureVisibleClsPlainBaseDialog">ensureVisible</link></entry>
+<entry>Causes the dialog to reposition itself so that it is entirely on the visible screen.</entry>
+</row>
+<row>
 <entry><link linkend="mthExecute">execute</link></entry>
 <entry>Creates the underlying dialog, shows it, starts the automatic methods, if any, and destroys the underlying dialog when the user closes it.</entry>
 </row>
@@ -587,8 +592,28 @@
 <entry>Gets the position, as a <computeroutput>String</computeroutput> object, of the bitmap in a bitmap button.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetCheckBoxData">getCheckBoxData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed check box in the underlying dialog.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoGetClientRect">getClientRect</link></entry>
 <entry>Returns the dimensions of the dialog's client area.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetComboBoxData">getComboBoxData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed combo box in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetControlData">getControlData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed dialog control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetControlHandle">getControlHandle</link></entry>
+<entry>Retrieves the window handle of the specified dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetControlID">getControlID</link></entry>
+<entry>Returns the numeric resource ID of the control with the specified window handle.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetControlText">getControlText</link></entry>
@@ -599,8 +624,20 @@
 <entry>Retrieves the current cursor position in pixels as a <computeroutput>Point</computeroutput> object.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetData">getData</link></entry>
+<entry>Sets all the Rexx dialog data attribute values to the state of the underlying, connected, Windows dialog controls.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetDataStem">getDataStem</link></entry>
+<entry>Sets the values of the indexes of the specified stem to the state of the underlying, connected, Windows dialog controls.</entry>
+</row>
+<row>
 <entry><link linkend="wedoGetDC">getDC</link></entry>
 <entry>Returns the handle to the display device context of a dialog</entry>
+</row>
+<row>
+<entry><link linkend="mthGetEditData">getEditData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed edit control in the underlying dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetExStyleRaw">getExStyleRaw</link></entry>
@@ -615,12 +652,20 @@
 <entry>Retrieves the identification number of the dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetListBoxData">getListBoxData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed list box in the underlying dialog.</entry>
+</row>
+<row>
 <entry><link linkend="wedoGetPixel">getPixel</link></entry>
 <entry>Returns the color number of a pixel within the device context.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetPos">getPos</link></entry>
 <entry>Returns the position of the dialog in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthGetRadioButtonData">getRadioButtonData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed radio button in the underlying dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoGetRealPos">getRealPos</link></entry>
@@ -906,64 +951,8 @@
 <entry><link linkend="wedoWriteDirect">writeDirect</link></entry>
 <entry>Writes text in a dialog at the position specified using a device context.</entry>
 </row>
-<row>
-<entry><link linkend="mthEnsureVisibleClsPlainBaseDialog">ensureVisible</link></entry>
-<entry>Causes the dialog to reposition itself so that it is entirely on the visible screen.</entry>
-</row>
 
 
-<row>
-<entry><link linkend="mthGetCheckBoxData">getCheckBoxData</link></entry>
-<entry>getCheckBoxData</entry>
-</row>
-<row>
-<entry><link linkend="mthGetComboBoxData">getComboBoxData</link></entry>
-<entry>getComboBoxData</entry>
-</row>
-<row>
-<entry><link linkend="mthGetControlID">getControlID</link></entry>
-<entry>getControlID</entry>
-</row>
-<row>
-<entry><link linkend="mthGetData">getData</link></entry>
-<entry>getData</entry>
-</row>
-<row>
-<entry><link linkend="mthGetDataStem">getDataStem</link></entry>
-<entry>getDataStem</entry>
-</row>
-<row>
-<entry><link linkend="mthGetEditData">getEditData</link></entry>
-<entry>getEditData</entry>
-</row>
-<row>
-<entry><link linkend="mthGetFont">getFont</link></entry>
-<entry>getFont</entry>
-</row>
-<row>
-<entry><link linkend="mthGetControlHandle">getControlHandle</link></entry>
-<entry>getControlHandle</entry>
-</row>
-<row>
-<entry><link linkend="mthGetListBoxData">getListBoxData</link></entry>
-<entry>getListBoxData</entry>
-</row>
-<row>
-<entry>getPos</entry>
-<entry><link linkend="mthGetPos">getPos</link></entry>
-</row>
-<row>
-<entry><link linkend="mthGetRadioButtonData">getRadioButtonData</link></entry>
-<entry>getRadioButtonData</entry>
-</row>
-<row>
-<entry><link linkend="mthGetRect">getRect</link></entry>
-<entry>getRect</entry>
-</row>
-<row>
-<entry><link linkend="mthGetControlData">getControlData</link></entry>
-<entry>getControlData</entry>
-</row>
 <row>
 <entry><link linkend="mthIsMaximized">isMaximized</link></entry>
 <entry>isMaximized</entry>
@@ -1074,7 +1063,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetData">setData</link></entry>
-<entry>setData</entry>
+<entry>Sets the state of all underlying, connected, dialog controls to the values of the matching dialog object data attributes.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetDataStem">setDataStem</link></entry>
@@ -1423,7 +1412,6 @@
 </row>
 </tbody></tgroup>
 </table>
-</para>
 </section>
 
 <section id="sctDialogClassMethods"><title>Class Methods</title>
