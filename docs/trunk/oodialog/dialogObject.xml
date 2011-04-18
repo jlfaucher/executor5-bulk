@@ -253,7 +253,7 @@
 </row>
 <row>
 <entry><link linkend="mthCancel">cancel</link></entry>
-<entry>A default event handler for the cancel event provided by the ooDialog framework.</entry>
+<entry>A default event handler, provided by the ooDialog framework , for the cancel event.</entry>
 </row>
 <row>
 <entry><link linkend="mthChangeBitmapButton">changeBitmapButton</link></entry>
@@ -273,7 +273,7 @@
 </row>
 <row>
 <entry><link linkend="wbdoClient2screen">client2screen</link></entry>
-<entry>Converts a point or points in client-area coordinates of the dialog to its screen coordinates.</entry>
+<entry>Converts a point, or points, in client-area coordinates of the dialog to its screen coordinates.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoClientRect">clientRect</link></entry>
@@ -628,6 +628,10 @@
 <entry>Sets all the Rexx dialog data attribute values to the state of the underlying, connected, Windows dialog controls.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry>
+<entry>Sets a data attribute of the Rexx dialog using the data from a connected Windows dialog control.</entry>
+</row>
+<row>
 <entry><link linkend="mthGetDataStem">getDataStem</link></entry>
 <entry>Sets the values of the indexes of the specified stem to the state of the underlying, connected, Windows dialog controls.</entry>
 </row>
@@ -753,11 +757,19 @@
 </row>
 <row>
 <entry><link linkend="mthInstallBitmapButton">installBitmapButton</link></entry>
-<entry>Assigns the initial bitmaps to a bitmap button and optionally connect the button click to a method in the Rexx dialog.</entry>
+<entry>Assigns the initial bitmaps to a bitmap button and optionally connects the button click to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoIsEnabled">isEnabled</link></entry>
 <entry>Tests if the dialog is enabled.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsMaximized">isMaximized</link></entry>
+<entry>Checks if a dialog is currently maximized.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsMinimized">isMinimized</link></entry>
+<entry>Checks if a dialog is currently minimized.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoIsVisible">isVisible</link></entry>
@@ -772,6 +784,14 @@
 <entry>Loads a bitmap from a file into memory and returns the handle to the bitmap.</entry>
 </row>
 <row>
+<entry><link linkend="mthMaximize">maximize</link></entry>
+<entry>Maximizes the dialog on the screen.</entry>
+</row>
+<row>
+<entry><link linkend="mthMinimize">minimize</link></entry>
+<entry>Minimizes the dialog to the taskbar.</entry>
+</row>
+<row>
 <entry><link linkend="wbdoMove">move</link></entry>
 <entry>Moves the dialog to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
@@ -784,6 +804,62 @@
 <entry>Changes the position, visibility, and Z order of the dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthNewPushButton">newPushButton</link></entry>
+<entry>Returns an object of the <computeroutput>Button</computeroutput> class for the push button control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewCheckBox">newCheckBox</link></entry>
+<entry>Returns an object of the <computeroutput>CheckBox</computeroutput> class for the check box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewComboBox">newComboBox</link></entry>
+<entry>Returns an object of the <computeroutput>ComboBox</computeroutput> class for the combo box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewEdit">newEdit</link></entry>
+<entry>Returns an object of the <computeroutput>Edit</computeroutput> class for the edit control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewGroupBox">newGroupBox</link></entry>
+<entry>Returns an object of the <computeroutput>GroupBox</computeroutput> class for the group box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewListBox">newListBox</link></entry>
+<entry>Returns an object of the <computeroutput>ListBox</computeroutput> class for the list box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewListView">newListView</link></entry>
+<entry>Returns an object of the <computeroutput>ListView</computeroutput> class for the list-view control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewProgressBar">newProgressBar</link></entry>
+<entry>Returns an object of the <computeroutput>ProgressBar</computeroutput> class for the progress bar control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewRadioButton">newRadioButton</link></entry>
+<entry>Returns an object of the <computeroutput>RadioButton</computeroutput> class for the radio button control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewScrollBar">newScrollBar</link></entry>
+<entry>Returns an object of the <computeroutput>ScrollBar</computeroutput> class for the scroll bar control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewTrackBar">newTrackBar</link></entry>
+<entry>Returns an object of the <computeroutput>TrackBar</computeroutput> class for the track bar control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewStatic">newStatic</link></entry>
+<entry>Returns an object of the <computeroutput>Static</computeroutput> class for the static control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewTab">newTab</link></entry>
+<entry>Returns an object of the <computeroutput>Tab</computeroutput> class for the tab control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewTreeView">newTreeView</link></entry>
+<entry>Returns an object of the <computeroutput>TreeView</computeroutput> class for the tree-view control with the specified resource ID.</entry>
+</row>
+<row>
 <entry><link linkend="mthNoAutoDetection">noAutoDetection</link></entry>
 <entry>Turns automatic data field detection off</entry>
 </row>
@@ -792,8 +868,20 @@
 <entry>Loads a graphic object into a device context.</entry>
 </row>
 <row>
+<entry><link linkend="mthOk">ok</link></entry>
+<entry>A default event handler, provided by the ooDialog framework, for the cancel event.</entry>
+</row>
+<row>
 <entry><link linkend="wedoOpaqueText">opaqueText</link></entry>
 <entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
+</row>
+<row>
+<entry><link linkend="mthPopup">popup</link></entry>
+<entry>Starts a dialog executing asynchronously and returns immediately.</entry>
+</row>
+<row>
+<entry><link linkend="mthPopupAsChild">popupAsChild</link></entry>
+<entry>Starts a dialog executing asynchronously with a parent dialog, and returns immediately. The dialog is closed automatically when the parent closes.</entry>
 </row>
 <row>
 <entry><link linkend="wedoRectangle">rectangle</link></entry>
@@ -818,6 +906,10 @@
 <row>
 <entry><link linkend="wbdoResizeTo">resizeTo</link></entry>
 <entry>Resizes the dialog to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="mthRestore">restore</link></entry>
+<entry>Restores a minimized or maximized dialog to its original position.</entry>
 </row>
 <row>
 <entry><link linkend="wedoRestoreCursorShape">restoreCursorShape</link></entry>
@@ -872,20 +964,28 @@
 <entry>Sets the current drawing direction.</entry>
 </row>
 <row>
+<entry><link linkend="mthSetControlText">setControlText</link></entry>
+<entry>Sets the text for the specified dialog control</entry>
+</row>
+<row>
 <entry><link linkend="wedoSetCursorPos">setCursorPos</link></entry>
 <entry>Moves the mouse cursor to the specified position.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetData">setData</link></entry>
+<entry>Sets the state of all underlying, connected, dialog controls to the values of the matching dialog object data attributes.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetDataAttribute">setDataAttribute</link></entry>
 <entry>Sets the state of a dialog control using the value of a data attribute of the Rexx dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry>
-<entry>Sets a data attribute of the Rexx dialog using the data from a connected Windows dialog control.</entry>
-</row>
-<row>
 <entry><link linkend="wedoSetFont">setFont</link></entry>
 <entry>Sets a new font to be used by the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetGroup">setGroup</link></entry>
+<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control specified.</entry>
 </row>
 <row>
 <entry><link linkend="wedoSetHScrollPos">setHScrollPos</link></entry>
@@ -897,7 +997,7 @@
 </row>
 <row>
 <entry><link linkend="wbdoSetText">setText</link></entry>
-<entry>Sets the text of the dialog.</entry>
+<entry>Sets the text, the caption, of the dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoSetTitle">setTitle</link></entry>
@@ -954,94 +1054,6 @@
 
 
 <row>
-<entry><link linkend="mthIsMaximized">isMaximized</link></entry>
-<entry>isMaximized</entry>
-</row>
-<row>
-<entry><link linkend="mthIsMinimized">isMinimized</link></entry>
-<entry>isMinimized</entry>
-</row>
-<row>
-<entry><link linkend="mthNewPushButton">newPushButton</link></entry>
-<entry>newPushButton</entry>
-</row>
-<row>
-<entry><link linkend="mthNewCheckBox">newCheckBox</link></entry>
-<entry>newCheckBox</entry>
-</row>
-<row>
-<entry><link linkend="mthNewComboBox">newComboBox</link></entry>
-<entry>newComboBox</entry>
-</row>
-<row>
-<entry><link linkend="mthNewEdit">newEdit</link></entry>
-<entry>newEdit</entry>
-</row>
-<row>
-<entry><link linkend="mthNewGroupBox">newGroupBox</link></entry>
-<entry>newGroupBox</entry>
-</row>
-<row>
-<entry><link linkend="mthNewListBox">newListBox</link></entry>
-<entry>newListBox</entry>
-</row>
-<row>
-<entry><link linkend="mthNewListView">newListView</link></entry>
-<entry>newListView</entry>
-</row>
-<row>
-<entry><link linkend="mthNewProgressBar">newProgressBar</link></entry>
-<entry>newProgressBar</entry>
-</row>
-<row>
-<entry><link linkend="mthNewRadioButton">newRadioButton</link></entry>
-<entry>newRadioButton</entry>
-</row>
-<row>
-<entry><link linkend="mthNewScrollBar">newScrollBar</link></entry>
-<entry>newScrollBar</entry>
-</row>
-<row>
-<entry><link linkend="mthNewTrackBar">newTrackBar</link></entry>
-<entry>newTrackBar</entry>
-</row>
-<row>
-<entry><link linkend="mthNewStatic">newStatic</link></entry>
-<entry>newStatic</entry>
-</row>
-<row>
-<entry><link linkend="mthNewTab">newTab</link></entry>
-<entry>newTab</entry>
-</row>
-<row>
-<entry><link linkend="mthNewTreeView">newTreeView</link></entry>
-<entry>newTreeView</entry>
-</row>
-<row>
-<entry><link linkend="mthOk">ok</link></entry>
-<entry>ok</entry>
-</row>
-<row>
-<entry><link linkend="mthPopup">popup</link></entry>
-<entry>popup</entry>
-</row>
-<row>
-<entry><link linkend="mthPopupAsChild">popupAsChild</link></entry>
-<entry>popupAsChild</entry>
-</row>
-<row>
-<entry><link linkend="mthMaximize">maximize</link></entry>
-<entry>maximize</entry>
-</row>
-<row>
-<entry><link linkend="mthMinimize">minimize</link></entry>
-<entry>minimize</entry>
-</row>
-<row>
-<entry>restore</entry>
-<entry><link linkend="mthRestore">restore</link></entry>
-</row>
-<row>
 <entry><link linkend="mthTabToNext">tabToNext</link></entry>
 <entry>tabToNext</entry>
 </row>
@@ -1058,14 +1070,6 @@
 <entry>setComboBoxData</entry>
 </row>
 <row>
-<entry><link linkend="mthSetControlText">setControlText</link></entry>
-<entry>Sets the text for the specified dialog control</entry>
-</row>
-<row>
-<entry><link linkend="mthSetData">setData</link></entry>
-<entry>Sets the state of all underlying, connected, dialog controls to the values of the matching dialog object data attributes.</entry>
-</row>
-<row>
 <entry><link linkend="mthSetDataStem">setDataStem</link></entry>
 <entry>setDataStem</entry>
 </row>
@@ -1076,10 +1080,6 @@
 <row>
 <entry><link linkend="mthSetFocus">setFocus</link></entry>
 <entry>setFocus</entry>
-</row>
-<row>
-<entry><link linkend="mthSetGroup">setGroup</link></entry>
-<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control specified.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetListBoxData">setListBoxData</link></entry>
