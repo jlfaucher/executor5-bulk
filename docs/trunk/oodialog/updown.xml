@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2010-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2010-2011, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -51,7 +51,7 @@
   To the user, the up-down control with its buddy window often look like a single control. The programmer can specify
   that an up-down control automatically position itself next to its buddy window and that it automatically set the
   caption of the buddy window to its current position. For example, an up-down control with an edit control can be used
-  to prompt the user for numeric input. Sometimes and up-down control with its buddy window being an edit control is
+  to prompt the user for numeric input. Sometimes an up-down control with and edit control for its buddy window is
   referred to as a spinner control.
 </para>
 <para>
@@ -61,8 +61,17 @@
   holds down an arrow button. The longer the user holds down the button, the faster the up-down control changes postion.
 </para>
 <para>
+  For an up-down control with a buddy window, the current position is the number in the buddy window's text. This text
+  may have changed. The user may have manually typed in a number in an edit control for example. Therefore, the up-down
+  control retrieves the current text from the buddy control and updates its position using that text.
+</para>
+  The possible range of positions for an up-down control is -2,147,483,648 to 2,147,483,647. However, the range for any
+  specific up-down control can be set by the programmer. The maximum value of the range can be less than the minimum
+  range, in this case the up arrow will reduce the current position. In other words up means moving towards the maximum
+  and down means moving towards the minimum.
+<para>
   The <computeroutput>UpDown</computeroutput> class provides methods to work with and manipulate the underlying Windows
-  Up-down dialog control which it represents. It is a concrete subclass of the dialog control <link
+  up-down dialog control which it represents. It is a concrete subclass of the dialog control <link
   linkend="chpDialogControlObject">object</link> and therefore has all methods of the of the dialog control object.
 </para>
 <para>
@@ -132,7 +141,7 @@
 </row>
 <row>
 <entry><link linkend="mthDeltaPosReply">deltaPosReply </link></entry>
-<entry>Does a deltaPosReply ...</entry>
+<entry>Constructs the proper return object for the event handler of the up-down DELTAPOS event.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -140,23 +149,23 @@
 </row>
 <row>
 <entry><link linkend="mthGetAcceleration">getAcceleration</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the acceleration information for the up-down control in an array of <computeroutput>Directory</computeroutput> objects.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetBase">getBase</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the current base, either base 10 or 16, for the up-down control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetBuddy">getBuddy</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the up-down's buddy control object.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetPosition">getPosition</link></entry>
-<entry>xx</entry>
+<entry>Returns the position of the up-down control as a signed whole number.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetRange">getRange</link></entry>
-<entry>xx</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="mthSetAcceleration">setAcceleration</link></entry>
@@ -239,8 +248,8 @@
 </programlisting>
 
 <para>
-  Constructs the (proper) reply object for a <link linkend="mthConnectUpDownEvent">DELTAPOS</link>
-  <computeroutput>UpDown</computeroutput> <link linkend="ovvEvents">event</link> notification.
+  Constructs the (proper) reply object for a <link linkend="evtUpDownDELTAPOS">DELTAPOS</link> up-down <link
+  linkend="ovvEvents">event</link> notification.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -251,8 +260,9 @@
     <varlistentry><term>change [optional]</term>
     <listitem>
     <para>
-      If true, the delta position message is to be canceled or modified. If false, there is no change to the delta
-      position message, and the other arguments are always ignored. The default is false.
+      If true, the change in the position of the up-down control is to be canceled or modified. If false, then the
+      proposed change in position is allowed. When this argument is false, the other arguments are always ignored. The
+      default is false.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>cancel [optional]</term>
@@ -276,33 +286,21 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-
+    The return is a position change reply buffer that is suitable to use as the return from the event handler for
+    the DELTAPOS event notification from an up-down control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A position reply buffer can not be constructed by the Rexx programmer, so the return from this method must be used
+    as the return from the event handler for the DELTAPOS event.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -314,59 +312,25 @@
 <indexterm><primary>UpDown class</primary><secondary>getBase</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getBase----------------------------------------------------><
+>>--getBase--------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Return the current base (the radix base, either base 10 or 16) for the up-down control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The current base, either 10 or 16, for the up-down control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -440,56 +404,48 @@
 <indexterm><primary>UpDown class</primary><secondary>getBuddy</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getBuddy(--+--------+--)---------------------------------------------><
-               +--type--+
+>>--getBuddy-------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the current buddy control object of the up-down, or <computeroutput>.nil</computeroutput> if the up-down
+  does not have a buddy control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method does not take any arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    The return is the dialog control <link linkend="chpDialogControlObject">object</link> that is the buddy control of
+    the up-down control. Normally, or at least most often, this will be an <link linkend="clsEdit">Edit</link> object.
+    Howver, it could be some other type of dialog control object. If the up-down control does not have a buddy control,
+    then <computeroutput>.nil</computeroutput> is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    It is difficult to prevent the user from typing in numbers in the buddy edit control of an up-down control, that are
+    outside of the range of the up-down. This example shows a generic method that could be used to check that what the
+    user typed lies within the proper range of the up-down.
 <programlisting>
 <![CDATA[
+
+::method checkUpDownIntegrity private
+  use strict arg upd
+
+  buddy = upd~getBuddy
+  if buddy \== .nil then do
+    pos = upd~getPosition
+    if buddy~getText \== pos then buddy~setText(pos)
+  end
 
 ]]>
 </programlisting>
@@ -566,56 +522,75 @@
 <indexterm><primary>UpDown class</primary><secondary>getPosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getPosition(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getPosition----------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the current position of the up-down control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return value is the current position of the up-down control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the <emphasis role="italic">getPosition</emphasis> method is invoked, the up-down control updates it position
+    based on the text of its buddy window. If there is no buddy window, or if the text is outside of the range of the
+    up-down control, then the position is not changed and the <computeroutput>.SystemErrorCode</computeroutput> is set
+    to 13, the data is invalid.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. See the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example retrieves the up-down's position value during validation when the dialog is closing. If the user has
+    manually typed in a value in the buddy edit control, then that is the value that will be used. However, if that
+    vaule is out of range, the validation is failed and the user is warned:
 <programlisting>
 <![CDATA[
+
+::method validate unguarded
+
+  ...
+  upd = self~newUpDown(IDC_UPD_YEARS_EXPERIENCE)
+  years = upd~getPostion
+  if .SystemErrorCode <> 0 then do
+    eol = .endOfLine
+    edit = upd~getBuddy
+
+    msg = 'You've typed in' edit~getText 'years of' || eol || -
+          'experience.  That is outside of the'     || eol || -
+          'allowable range.'              || eol~copies(2) || -
+          'Please use a reasonable number.'
+
+    title = "Job Application: Software Engineer"
+    button = "OK"
+    icon = "INFORMATION"
+    miscStyles = "APPLMODAL TOPMOST"
+    j = messageDialog(msg, self~hwnd, title, button, icon, miscStyles)
+
+    edit~setText(years)
+    return .false
+  end
+
 
 ]]>
 </programlisting>
@@ -692,59 +667,47 @@
 <indexterm><primary>UpDown class</primary><secondary>getRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getRange(--+--------+--)---------------------------------------------><
-               +--type--+
+>>--getRange-------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the current range of the up-down control in a <computeroutput>Directory</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A <computeroutput>Directory</computeroutput> object containing the minium and maximum position for the up-down
+    control. The directory contains the following indexes:
   </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">MIN</emphasis></term>
+    <listitem>
+    <para>
+      The minimum value of the current range for the up-down control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">MAX</emphasis></term>
+    <listitem>
+    <para>
+      The maximum value of the current range for the up-down control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The maximum range value can be less than the minimum value. The up arrow moves towards the maximum and if the
+    maximum value is less than the minium, then using the up arrow will decrease the current position.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -818,59 +781,56 @@
 <indexterm><primary>UpDown class</primary><secondary>getAcceleration</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getAcceleration(--+--------+--)---------------------------------------------><
-                      +--type--+
+>>--getAcceleration------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the acceleration information for the up-down control in an array of
+  <computeroutput>Directory</computeroutput> objects.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    An array of <computeroutput>Directory</computeroutput> objects. Each directory contains the following indexes:
   </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">SECONDS</emphasis></term>
+    <listitem>
+    <para>
+      The amount of elapsed time, in seconds, before the position change increment specified by the <emphasis
+      role="italic">increment</emphasis> index is used.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">INCREMENT</emphasis></term>
+    <listitem>
+    <para>
+      The increment used to change the position after the time specified by the <emphasis
+      role="italic">seconds</emphasis> index elapses.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Accleration information allows the up-down control change its position faster the longer the user holds down the
+    control's up or down arrow, or the up or down keyboard arrow. A single acceleration specifies that after so many
+    seconds increment the position by this amount. For example, after 1 second increment the postion by 4. After 2
+    seconds increment the postion by 8.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The accelerations are always sorted by seconds in ascending order. Typically the first acelleration would be 0
+    seconds with an increment of 1. The programmer can change the acceleration information for the up-down control
+    through the <link linkend="mthSetAcceleration">setAccelleration</link> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
