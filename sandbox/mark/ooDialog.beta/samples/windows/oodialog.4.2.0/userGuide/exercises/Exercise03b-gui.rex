@@ -34,44 +34,63 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+/* ooDialog User Guide							      
+   Exercise 03b: Re-structuring the "Words of Wisdom" application             
+   Exercise03b-gui.rex 	v00-02 29Mar11
+------------------------------------------------------------------------------*/
 
-#define IDD_INSERT_DIALOG                       101
-#define IDD_SELECT_DIALOG                       103
-#define IDD_ACCEL_DIALOG                        105
-#define IDD_RANGE_DIALOG                        107
-#define IDD_POSITION_DIALOG                     109
-#define IDD_ABOUT_DIALOG                        111
-#define IDC_ST_BITMAP                           1000
-#define IDC_ST_CURRENT_TEXT                     1001
-#define IDC_ST_EXPLANATION                      1002
-#define IDC_UPD_ACCEL2                          1003
-#define IDC_UPD_POSITION                        1004
-#define IDC_EDIT_ACCEL2                         1005
-#define IDC_EDIT_POSITION                       1006
-#define IDC_UPD_ACCEL_SECONDS1                  1007
-#define IDC_UPD_LOW                             1008
-#define IDC_RB_WICKED                           1009
-#define IDC_UPD_ACCEL_SECONDS2                  1010
-#define IDC_UPD_START                           1011
-#define IDC_EDIT_ACCEL_SECONDS2                 1012
-#define IDC_UPD_HIGH                            1013
-#define IDC_EDIT_LOW                            1014
-#define IDC_UPD_ACCEL3                          1015
-#define IDC_EDIT_ACCEL3                         1016
-#define IDC_EDIT_HIGH                           1017
-#define IDC_RB_LOTUS                            1018
-#define IDC_UPD_ACCEL_SECONDS3                  1019
-#define IDC_EDIT_ACCEL_SECONDS3                 1020
-#define IDC_RB_IDES                             1021
-#define IDC_EDIT_START                          1022
-#define IDC_RB_TITANIC                          1023
-#define IDC_UPD_ACCEL_SECONDS0                  1024
-#define IDC_EDIT_END                            1025
-#define IDC_EDIT_ACCEL_SECONDS0                 1026
-#define IDC_UPD_END                             1027
-#define IDC_EDIT_ACCEL0                         1028
-#define IDC_UPD_ACCEL1                          1029
-#define IDC_EDIT_ACCEL_SECONDS1                 1030
-#define IDC_EDIT_ACCEL1                         1031
-#define IDC_UPD_ACCEL0                          1032
-#define IDC_ST_ABOUT                            1033
+/*//////////////////////////////////////////////////////////////////////////////
+  ==============================================================================
+  MyDialog							 v00-02  29Mar11
+  --------
+  A class that defines the User Interface for the Wow application.
+
+  interface{ 
+    activate( )    
+  }
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+::requires "ooDialog.cls"  
+  
+::class 'MyDialog' subclass UserDialog public
+
+  /*----------------------------------------------------------------------------
+    init - initialises the dialog
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+  ::method init
+    forward class (super) continue
+    self~create(30, 30, 257, 123, "Words of Wisdom", "CENTER")
+    return 
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*----------------------------------------------------------------------------
+    defineDialog - defines the "Words of Wisdom" controls
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+  ::method defineDialog		-- Invoked automatically by ooDialog.
+    self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom", OkClicked)
+    self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
+    self~createStaticText(902, 40, 40, 200, 40, , "Click 'More wisdom'")
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+  /*----------------------------------------------------------------------------
+    activate - gets id for wowPicker, shows the dialog.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+  ::method activate unguarded
+    expose wowPicker
+    wowPicker = .local~my.idWowPicker
+    self~execute("SHOWTOP", IDI_DLG_OOREXX)		-- MUST be last!
+    return 
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  
+  /*----------------------------------------------------------------------------
+    okClicked - Actions the "More wisdom" control
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+  ::method okClicked
+    expose wowPicker
+    newText = self~newStatic(902)
+    wow = wowPicker~pickWow
+    newText~setText(wow)
+    return
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  
+/*============================================================================*/

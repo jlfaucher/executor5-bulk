@@ -47,7 +47,7 @@
  * a menu bar example.
  */
 
-  dlg = .SimpleDialog~new
+  dlg = .SimpleDialog~new("UserMenuBar.rc", IDD_MAIN_DIALOG, , "UserMenuBar.h")
   if dlg~initCode <> 0 then do
     return 99
   end
@@ -62,7 +62,7 @@ return 0
 -- control (-2147,483,648 to 2,147,483,647)
 ::options digits 10
 
-::class 'SimpleDialog' subclass UserDialog
+::class 'SimpleDialog' subclass RcDialog
 
 ::constant DEFAULT_TEXT   "1, 2, 3, the Edit control Menu actions work better with text in the 1st edit control."
 ::constant WICKED_TEXT    "The wicked flee when none pursueth ..."
@@ -72,33 +72,14 @@ return 0
 
 
 ::method init
-  expose menuBar
 
   forward class (super) continue
-
-  self~addSymbolicIDs
 
   if \ self~createMenuBar then do
     self~initCode = 1
     return
   end
 
-  self~makeMenuItemConnections
-
-  self~create(30, 30, 225, 150, "Menu Bar Example", "CENTER")
-
-
-::method defineDialog
-
-  self~createStatic(IDC_ST_EDIT, 10, 32, 40, 12, "TEXT RIGHT", "Enter Text:")
-  self~createEdit(IDC_EDIT, 52, 30, 160, 12, "AUTOSCROLLH KEEPSELECTION")
-
-  self~createStatic(IDC_ST_UPD, 10, 63, 40, 12, "TEXT RIGHT", "Spin Me:")
-  self~createEdit(IDC_EDIT_BUDDY, 52, 60, 65, 14, "RIGHT NUMBER")
-  self~createUpDown(IDC_UPD, 257, 66, 12, 16, "WRAP ARROWKEYS AUTOBUDDY SETBUDDYINT")
-
-  self~createPushButton(IDOK, 107, 115, 50, 14, "DEFAULT", "Ok")
-  self~createPushButton(IDCANCEL, 162, 115, 50, 14, , "Cancel")
 
 ::method initDialog
   expose menuBar edit upDown
@@ -118,228 +99,15 @@ return 0
   self~setRadioChecks(ID_EDITCONTROL_UNRESTRICTED)
 
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
---  The methods below, all beginning with 'on' are the implementation for each
---  of the menu item command events.
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::method onHideEdit unguarded
-  expose menuBar edit
-
-  if menuBar~isChecked(ID_FILES_HIDE_EDIT) then do
-    menuBar~uncheck(ID_FILES_HIDE_EDIT)
-    self~newStatic(IDC_ST_EDIT)~show
-    edit~show
-  end
-  else do
-    menuBar~check(ID_FILES_HIDE_EDIT)
-    self~newStatic(IDC_ST_EDIT)~hide
-    edit~hide
-  end
-
-::method onHideUpDown unguarded
-  expose menuBar upDown
-
-  if menuBar~isChecked(ID_FILES_HIDE_UPDOWN) then do
-    menuBar~uncheck(ID_FILES_HIDE_UPDOWN)
-    self~newStatic(IDC_ST_UPD)~show
-    self~newEdit(IDC_EDIT_BUDDY)~show
-    upDown~show
-  end
-  else do
-    menuBar~check(ID_FILES_HIDE_UPDOWN)
-    self~newStatic(IDC_ST_UPD)~hide
-    self~newEdit(IDC_EDIT_BUDDY)~hide
-    upDown~hide
-  end
-
-::method onExit unguarded
-  self~cancel
-
-
-::method onLower unguarded
-  expose menuBar edit
-
-  alreadyChecked = menuBar~isChecked(ID_EDITCONTROL_LOWER)
-
-  self~setRadioChecks(ID_EDITCONTROL_LOWER)
-  edit~replaceStyle("UPPER NUMBER", "LOWER")
-
-  text = edit~getText
-  edit~setText(text~lower)
-
-  if \ alreadyChecked then do
-    edit~assignFocus
-    edit~select(1, 1)
-
-    msg = "You can only enter lower case letters in" || .endOfLine || -
-          "the edit control now.  Try it."
-    z = MessageDialog(msg, self~hwnd, 'Edit Control Style Change', "OK", "INFORMATION")
-  end
-
-
-::method onNumber unguarded
-  expose menuBar edit
-
-  alreadyChecked = menuBar~isChecked(ID_EDITCONTROL_NUMBER)
-
-  self~setRadioChecks(ID_EDITCONTROL_NUMBER)
-  edit~replaceStyle("LOWER UPPER", "NUMBER")
-
-  text = edit~getText
-  edit~setText(text~translate("", xrange("00"X, "/") || xrange(":", "FF"X))~space(0))
-
-  if \ alreadyChecked then do
-    edit~assignFocus
-    edit~select(1, 1)
-
-    msg = "You can only enter numbers in the" || .endOfLine || -
-          "edit control now.  Try it."
-    z = MessageDialog(msg, self~hwnd, 'Edit Control Style Change', "OK", "INFORMATION")
-  end
-
-
-::method onUpper unguarded
-  expose menuBar edit
-
-  alreadyChecked = menuBar~isChecked(ID_EDITCONTROL_UPPER)
-
-  self~setRadioChecks(ID_EDITCONTROL_UPPER)
-  edit~replaceStyle("LOWER NUMBER", "UPPER")
-
-  text = edit~getText
-  edit~setText(text~upper)
-
-  if \ alreadyChecked then do
-    edit~assignFocus
-    edit~select(1, 1)
-
-    msg = "You can only enter upper case letters in" || .endOfLine || -
-          "the edit control now.  Try it."
-    z = MessageDialog(msg, self~hwnd, 'Edit Control Style Change', "OK", "INFORMATION")
-  end
-
-
-::method onUnRestricted unguarded
-  expose menuBar edit
-
-  alreadyChecked = menuBar~isChecked(ID_EDITCONTROL_UNRESTRICTED)
-
-  self~setRadioChecks(ID_EDITCONTROL_UNRESTRICTED)
-  edit~removeStyle("LOWER NUMBER UPPER")
-
-  text = edit~getText
-  edit~setText(.SimpleDialog~DEFAULT_TEXT)
-
-  if \ alreadyChecked then do
-    edit~assignFocus
-    edit~select(1, 1)
-
-    msg = "You can now enter unrestricted text in" || .endOfLine || -
-          "the edit control.  Try it."
-    z = MessageDialog(msg, self~hwnd, 'Edit Control Style Change', "OK", "INFORMATION")
-  end
-
-
-::method onInsert unguarded
-  expose edit
-
-  dlg = .InsertDialog~new("simpleMenuBarDialogs.rc", IDD_INSERT_DIALOG, , "simpleMenuBarDialogs.h")
-
-  if dlg~execute("SHOWTOP", IDI_DLG_OODIALOG) == .PlainBaseDialog~IDOK then do
-    edit~setText(dlg~selectedText)
-  end
-
-
-::method onSelect unguarded
-  expose edit
-
-  dlg = .SelectDialog~new("simpleMenuBarDialogs.rc", IDD_SELECT_DIALOG, , "simpleMenuBarDialogs.h")
-  dlg~currentText = edit~getText
-  edit~select(1, 1)
-
-  if dlg~execute("SHOWTOP", IDI_DLG_APPICON) == .PlainBaseDialog~IDOK then do
-    s = dlg~selection
-    edit~select(s~x, s~y)
-  end
-
-
-::method onHexidecimal unguarded
-  expose menuBar upDown
-
-  if menuBar~isChecked(ID_UPDOWNCONTROL_HEXIDECIMAL) then do
-    menuBar~uncheck(ID_UPDOWNCONTROL_HEXIDECIMAL)
-    upDown~setBase(10)
-  end
-  else do
-    menuBar~check(ID_UPDOWNCONTROL_HEXIDECIMAL)
-    upDown~setBase(16)
-  end
-
-
-::method onSetAcceleration unguarded
-  expose upDown
-
-  dlg = .AccelDialog~new("simpleMenuBarDialogs.rc", IDD_ACCEL_DIALOG, , "simpleMenuBarDialogs.h")
-
-  if dlg~execute("SHOWTOP", IDI_DLG_APPICON2) == .PlainBaseDialog~IDOK then do
-    accel = dlg~acceleration
-    upDown~setAcceleration(accel)
-  end
-
-
-::method onSetRange unguarded
-  expose upDown
-
-  dlg = .RangeDialog~new("simpleMenuBarDialogs.rc", IDD_RANGE_DIALOG, , "simpleMenuBarDialogs.h")
-
-  if dlg~execute("SHOWTOP", IDI_DLG_OOREXX) == .PlainBaseDialog~IDOK then do
-    r = dlg~range
-    upDown~setRange(r~x, r~y)
-  end
-
-
-::method onPosition unguarded
-  expose upDown
-
-  dlg = .PositionDialog~new("simpleMenuBarDialogs.rc", IDD_POSITION_DIALOG, , "simpleMenuBarDialogs.h")
-  dlg~upDown = upDown
-
-  if dlg~execute("SHOWTOP", IDI_DLG_DEFAULT) == .PlainBaseDialog~IDOK then do
-    p = dlg~position
-    upDown~setPosition(p)
-  end
-
-
-::method onAbout unguarded
-
-  dlg = .AboutDialog~new("simpleMenuBarDialogs.rc", IDD_ABOUT_DIALOG, , "simpleMenuBarDialogs.h")
-
-  dlg~execute("SHOWTOP", IDI_DLG_DEFAULT)
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
---  End of the implementation methods for each of the menu item command events.
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-
-
--- Convenience method to set the radio button menu items.  The checkRadio()
--- method takes a start resource ID and an end resource, and the resource ID for
--- a single menu item within that range of IDs.  It removes the radio button
--- check mark from all the menu items in the range and adds the radio button
--- check mark to item specified by the third argument.
-::method setRadioChecks private
-  expose menuBar
-  use strict arg item
-
-  menuBar~checkRadio(ID_EDITCONTROL_LOWER, ID_EDITCONTROL_UNRESTRICTED, item)
-
-
 -- Creates a UserMenuBar
 ::method createMenuBar private
   expose menuBar
 
-  -- Create a menu bar whose constdir attribute is copied from this dialog's
-  -- constdir, and has a symbolic resource ID of IDM_MENUBAR.
-  menuBar = .UserMenuBar~new(IDM_MENUBAR, self)
+  -- Create a menu bar that has a symbolic resource ID of IDM_MENUBAR, whose
+  -- constDir attribute is copied from this dialog's constdir, has no help ID,
+  -- does not attach to a dialog at this point, and autoconnects all command
+  -- menu items when it is attached to a dialog.
+  menuBar = .UserMenuBar~new(IDM_MENUBAR, self, , .false, .true)
 
   -- Create the menu bar template.
   menuBar~addPopup(IDM_POP_FILES, "Files")
@@ -365,7 +133,7 @@ return 0
     menuBar~addItem(ID_UPDOWNCONTROL_SET_POSITION, "Set Position ...", "END")
 
   menuBar~addPopup( IDM_POP_HELP, "Help", "END")
-    menuBar~addItem(ID_HELP_ABOUT, "About Simple Menu", "END")
+    menuBar~addItem(ID_HELP_ABOUT, "About User Menu Bar", "END")
 
   if \ menuBar~complete then do
     say 'User menu bar completion error:' .SystemErrorCode SysGetErrortext(.SystemErrorCode)
@@ -374,64 +142,228 @@ return 0
 
   return .true
 
--- Connect each of the command menu items with a method.
-::method makeMenuItemConnections private
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+--  The methods below, up to the next dividing lines, are the implementation
+--  for each of the menu item command events.
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::method hideEditControl unguarded
+  expose menuBar edit
+
+  if menuBar~isChecked(ID_FILES_HIDE_EDIT) then do
+    menuBar~uncheck(ID_FILES_HIDE_EDIT)
+    self~newStatic(IDC_ST_EDIT)~show
+    edit~show
+  end
+  else do
+    menuBar~check(ID_FILES_HIDE_EDIT)
+    self~newStatic(IDC_ST_EDIT)~hide
+    edit~hide
+  end
+
+::method hideUpDownControl unguarded
+  expose menuBar upDown
+
+  if menuBar~isChecked(ID_FILES_HIDE_UPDOWN) then do
+    menuBar~uncheck(ID_FILES_HIDE_UPDOWN)
+    self~newStatic(IDC_ST_UPD)~show
+    self~newEdit(IDC_EDIT_BUDDY)~show
+    upDown~show
+  end
+  else do
+    menuBar~check(ID_FILES_HIDE_UPDOWN)
+    self~newStatic(IDC_ST_UPD)~hide
+    self~newEdit(IDC_EDIT_BUDDY)~hide
+    upDown~hide
+  end
+
+::method exit unguarded
+  self~cancel
+
+
+::method lowerCaseOnly unguarded
+  expose menuBar edit
+
+  alreadyChecked = menuBar~isChecked(ID_EDITCONTROL_LOWER)
+
+  self~setRadioChecks(ID_EDITCONTROL_LOWER)
+  edit~replaceStyle("UPPER NUMBER", "LOWER")
+
+  text = edit~getText
+  edit~setText(text~lower)
+
+  if \ alreadyChecked then do
+    edit~assignFocus
+    edit~select(1, 1)
+
+    msg = "You can only enter lower case letters in" || .endOfLine || -
+          "the edit control now.  Try it."
+    z = MessageDialog(msg, self~hwnd, 'Edit Control Style Change', "OK", "INFORMATION")
+  end
+
+
+::method numbersOnly unguarded
+  expose menuBar edit
+
+  alreadyChecked = menuBar~isChecked(ID_EDITCONTROL_NUMBER)
+
+  self~setRadioChecks(ID_EDITCONTROL_NUMBER)
+  edit~replaceStyle("LOWER UPPER", "NUMBER")
+
+  text = edit~getText
+  edit~setText(text~translate("", xrange("00"X, "/") || xrange(":", "FF"X))~space(0))
+
+  if \ alreadyChecked then do
+    edit~assignFocus
+    edit~select(1, 1)
+
+    msg = "You can only enter numbers in the" || .endOfLine || -
+          "edit control now.  Try it."
+    z = MessageDialog(msg, self~hwnd, 'Edit Control Style Change', "OK", "INFORMATION")
+  end
+
+
+::method upperCaseOnly unguarded
+  expose menuBar edit
+
+  alreadyChecked = menuBar~isChecked(ID_EDITCONTROL_UPPER)
+
+  self~setRadioChecks(ID_EDITCONTROL_UPPER)
+  edit~replaceStyle("LOWER NUMBER", "UPPER")
+
+  text = edit~getText
+  edit~setText(text~upper)
+
+  if \ alreadyChecked then do
+    edit~assignFocus
+    edit~select(1, 1)
+
+    msg = "You can only enter upper case letters in" || .endOfLine || -
+          "the edit control now.  Try it."
+    z = MessageDialog(msg, self~hwnd, 'Edit Control Style Change', "OK", "INFORMATION")
+  end
+
+
+::method noRestriction unguarded
+  expose menuBar edit
+
+  alreadyChecked = menuBar~isChecked(ID_EDITCONTROL_UNRESTRICTED)
+
+  self~setRadioChecks(ID_EDITCONTROL_UNRESTRICTED)
+  edit~removeStyle("LOWER NUMBER UPPER")
+
+  text = edit~getText
+  edit~setText(.SimpleDialog~DEFAULT_TEXT)
+
+  if \ alreadyChecked then do
+    edit~assignFocus
+    edit~select(1, 1)
+
+    msg = "You can now enter unrestricted text in" || .endOfLine || -
+          "the edit control.  Try it."
+    z = MessageDialog(msg, self~hwnd, 'Edit Control Style Change', "OK", "INFORMATION")
+  end
+
+
+::method insertText unguarded
+  expose edit
+
+  dlg = .InsertDialog~new("UserMenuBar.rc", IDD_INSERT_DIALOG, , "UserMenuBar.h")
+
+  if dlg~execute("SHOWTOP", IDI_DLG_OODIALOG) == .PlainBaseDialog~IDOK then do
+    edit~setText(dlg~selectedText)
+  end
+
+
+::method selectText unguarded
+  expose edit
+
+  dlg = .SelectDialog~new("UserMenuBar.rc", IDD_SELECT_DIALOG, , "UserMenuBar.h")
+  dlg~currentText = edit~getText
+  edit~select(1, 1)
+
+  if dlg~execute("SHOWTOP", IDI_DLG_APPICON) == .PlainBaseDialog~IDOK then do
+    s = dlg~selection
+    edit~select(s~x, s~y)
+  end
+
+
+::method hexidecimal unguarded
+  expose menuBar upDown
+
+  if menuBar~isChecked(ID_UPDOWNCONTROL_HEXIDECIMAL) then do
+    menuBar~uncheck(ID_UPDOWNCONTROL_HEXIDECIMAL)
+    upDown~setBase(10)
+  end
+  else do
+    menuBar~check(ID_UPDOWNCONTROL_HEXIDECIMAL)
+    upDown~setBase(16)
+  end
+
+
+::method setAcceleration unguarded
+  expose upDown
+
+  dlg = .AccelDialog~new("UserMenuBar.rc", IDD_ACCEL_DIALOG, , "UserMenuBar.h")
+
+  if dlg~execute("SHOWTOP", IDI_DLG_APPICON2) == .PlainBaseDialog~IDOK then do
+    accel = dlg~acceleration
+    upDown~setAcceleration(accel)
+  end
+
+
+::method setRange unguarded
+  expose upDown
+
+  dlg = .RangeDialog~new("UserMenuBar.rc", IDD_RANGE_DIALOG, , "UserMenuBar.h")
+
+  if dlg~execute("SHOWTOP", IDI_DLG_OOREXX) == .PlainBaseDialog~IDOK then do
+    r = dlg~range
+    upDown~setRange(r~x, r~y)
+
+    -- If the current position was no longer within the new range, the up-down
+    -- control will have internally reset its position so that it is within the
+    -- new range.  But, the value displayed will still be the old value.  This
+    -- forces the value displayed to match the current position.
+    upDown~setPosition(upDown~getPosition)
+  end
+
+
+::method setPosition unguarded
+  expose upDown
+
+  dlg = .PositionDialog~new("UserMenuBar.rc", IDD_POSITION_DIALOG, , "UserMenuBar.h")
+  dlg~upDown = upDown
+
+  if dlg~execute("SHOWTOP", IDI_DLG_DEFAULT) == .PlainBaseDialog~IDOK then do
+    p = dlg~position
+    upDown~setPosition(p)
+  end
+
+
+::method aboutUserMenuBar unguarded
+
+  dlg = .AboutDialog~new("UserMenuBar.rc", IDD_ABOUT_DIALOG, , "UserMenuBar.h")
+
+  dlg~execute("SHOWTOP", IDI_DLG_DEFAULT)
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+--  End of the implementation methods for each of the menu item command events.
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+
+
+-- Convenience method to set the radio button menu items.  The checkRadio()
+-- method takes a start resource ID and an end resource, and the resource ID for
+-- a single menu item within that range of IDs.  It removes the radio button
+-- check mark from all the menu items in the range and adds the radio button
+-- check mark to item specified by the third argument.
+::method setRadioChecks private
   expose menuBar
+  use strict arg item
 
-  menuBar~connectCommandEvent(ID_FILES_HIDE_EDIT, onHideEdit, self)
-  menuBar~connectCommandEvent(ID_FILES_HIDE_UPDOWN, onHideUpDown, self)
-  menuBar~connectCommandEvent(ID_FILES_EXIT, onExit, self)
+  menuBar~checkRadio(ID_EDITCONTROL_LOWER, ID_EDITCONTROL_UNRESTRICTED, item)
 
-  menuBar~connectCommandEvent(ID_EDITCONTROL_LOWER, onLower, self)
-  menuBar~connectCommandEvent(ID_EDITCONTROL_NUMBER, onNumber, self)
-  menuBar~connectCommandEvent(ID_EDITCONTROL_UPPER, onUpper, self)
-  menuBar~connectCommandEvent(ID_EDITCONTROL_UNRESTRICTED, onUnRestricted, self)
-  menuBar~connectCommandEvent(ID_EDITCONTROL_INSERT, onInsert, self)
-  menuBar~connectCommandEvent(ID_EDITCONTROL_SELECT, onSelect, self)
-
-  menuBar~connectCommandEvent(ID_UPDOWNCONTROL_HEXIDECIMAL, onHexiDecimal, self)
-  menuBar~connectCommandEvent(ID_UPDOWNCONTROL_SET_ACCELERATION, onSetAcceleration, self)
-  menuBar~connectCommandEvent(ID_UPDOWNCONTROL_SET_RANGE, onSetRange, self)
-  menuBar~connectCommandEvent(ID_UPDOWNCONTROL_SET_POSITION, onPosition, self)
-
-  menuBar~connectCommandEvent(ID_HELP_ABOUT, onAbout, self)
-
--- Populate the constdir with symbolic resource IDs.
---
--- This is done just to demonstrate that there is no reason why the constdir has
--- to be populated automatically through the use of a header file or #define
--- lines in a resource script.  Normally these symbolic IDs whould be in the
--- simpleMenuBarDialogs.h file.
-::method addSymbolicIDs private
-
-  self~constDir[IDC_EDIT]       = 900
-  self~constDir[IDC_ST_EDIT]    = 901
-  self~constDir[IDC_UPD]        = 902
-  self~constDir[IDC_ST_UPD]     = 903
-  self~constDir[IDC_EDIT_BUDDY] = 904
-
-  self~constDir[IDM_MENUBAR]                       = 800
-  self~constDir[IDM_POP_FILES]                     = 810
-  self~constDir[ID_FILES_HIDE_EDIT]                = 811
-  self~constDir[ID_FILES_HIDE_UPDOWN]              = 812
-  self~constDir[IDM_SEP_FILES]                     = 813
-  self~constDir[ID_FILES_EXIT]                     = 814
-  self~constDir[IDM_POP_EDITCONTROL]               = 820
-  self~constDir[ID_EDITCONTROL_LOWER]              = 821
-  self~constDir[ID_EDITCONTROL_NUMBER]             = 822
-  self~constDir[ID_EDITCONTROL_UPPER]              = 823
-  self~constDir[ID_EDITCONTROL_UNRESTRICTED]       = 824
-  self~constDir[IDM_SEP_EDITCONTROL]               = 825
-  self~constDir[ID_EDITCONTROL_INSERT]             = 826
-  self~constDir[ID_EDITCONTROL_SELECT]             = 827
-  self~constDir[IDM_POP_UPDOWNCONTROL]             = 830
-  self~constDir[ID_UPDOWNCONTROL_HEXIDECIMAL]      = 831
-  self~constDir[IDM_SEP_UPDOWNCONTROL]             = 832
-  self~constDir[ID_UPDOWNCONTROL_SET_ACCELERATION] = 833
-  self~constDir[ID_UPDOWNCONTROL_SET_RANGE]        = 834
-  self~constDir[ID_UPDOWNCONTROL_SET_POSITION]     = 835
-  self~constDir[IDM_POP_HELP]                      = 840
-  self~constDir[ID_HELP_ABOUT]                     = 841
 
 ::method initAutoDetection
   self~noAutoDetection
@@ -439,7 +371,8 @@ return 0
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 --  The following classes all implement a single dialog that is used to collect
---  information for the user needed to carry out one of the menu item commands.
+--  information, from the user, needed to carry out one of the menu item
+--  commands.
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
 ::class 'InsertDialog' subclass RcDialog
@@ -585,6 +518,8 @@ return 0
 ::method initDialog
   expose updLow updHigh
 
+  -- Set an acceleration that goes very fast if the user hold down the arrow
+  -- keys, or holds down the mouse on the up / down arrows.
   accel = .array~new(4)
   accel[1] = .directory~new~~setEntry("SECONDS", 0)~~setEntry("INCREMENT", 1)
   accel[2] = .directory~new~~setEntry("SECONDS", 1)~~setEntry("INCREMENT", 32)
@@ -639,12 +574,12 @@ return 0
 ::method initDialog
    expose font
 
-   bitmap = .Image~getImage("simpleMenuBarOORexx.bmp")
+   bitmap = .Image~getImage("UserMenuBar.bmp")
    self~newStatic(IDC_ST_BITMAP)~setImage(bitmap)
 
    font = self~createFontEx("Ariel", 14)
    self~newStatic(IDC_ST_ABOUT)~setFont(font)
 
-::method leafing
+::method leaving
    expose font
    self~deleteFont(font)

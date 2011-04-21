@@ -35,14 +35,14 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* Exercise 03: Re-structuring the "Words of Widom" application               */
+/* Exercise 03: Re-structuring the "Words of Wisdom" application               */
 
 /*******************************************************************************
-  ooDialog User Guide  
-  Exercise03							v00-01 24Mar11
-  --------
+  ooDialog User Guide
+    Exercise03a							v00-02 01Apr11
+    -----------
 
-  A re-structuring of the "Words of Wisdom" code. 
+  A re-structuring of the "Words of Wisdom" code.
 
  ******************************************************************************/
 
@@ -50,7 +50,7 @@ dlg = .MyDialog~new
 dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
 
-::requires "ooDialog.cls"  
+::requires "ooDialog.cls"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
@@ -58,69 +58,53 @@ dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
   ---------------------
   Defines the UI
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-  
+
 ::class 'MyDialog' subclass UserDialog
 
   /*----------------------------------------------------------------------------
     init - initialises the dialog
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::method init
     expose wowPicker
     forward class (super) continue
     self~create(30, 30, 257, 123, "Words of Wisdom", "CENTER")
     wowPicker = .WowPicker~new
-    return 
-
+    return
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  
   /*----------------------------------------------------------------------------
     defineDialog - defines the "Words of Wisdom" controls
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::method defineDialog		-- Invoked automatically by ooDialog.
     self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom", OkClicked)
     self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
     self~createStaticText(902, 40, 40, 200, 40, , "Click 'More wisdom'")
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  
+
   /*----------------------------------------------------------------------------
     okClicked - Actions the "More wisdom" control
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::method okClicked
     expose wowPicker
-/*    
-    arrWow = .array~new
-    arrWow[1] = "Agnes Allen's Law:"||.endofline|| -
-     	        "Almost anything is easier to get into than out of."
-    arrWow[2] = "Airplane Law:"||.endofline||"When the plane you are on is late," -
-    	        ||.endofline||"the plane you want to transfer to is on time."
-    arrWow[3] = "Fourteenth Corollary of Atwood's General Law of Dynamic Negatives:" -
-  	        ||.endofline||"No books are lost by loaning"||.endofline|| -
-  	        "except those you particularly wanted to keep."
-    arrWow[4] = "Baker's Byroad:"||.endofline||"When you're over the hill, you pick up speed."
-    arrWow[5] = "First Law of Bicycling:"||.endofline|| -
-  	        "No matter which way you ride, it's uphill and against the wind."
-    arrWow[6] = "Brooks's Law:"||.endofline|| -
-  	        "Adding manpower to a late software project makes it later."
-    arrWow[7] = "Grossman's Misquote of H. L. Mencken"||.endofline|| -
-  	        "Complex problems have simple, easy-to-understand wrong answers."
-*/
     newText = self~newStatic(902)
     wow = wowPicker~pickWow
     newText~setText(wow)
     return
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  
+
 /*============================================================================*/
+
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
   WowPicker							v00-01 24Mar11
   -------------
-  Single-method class that returns a set of Words of Wisdom, or a different
-  set than that currently returned (makes the new set the current set).
-  The size of the set is defined by configuration (but not in this version)
-  
-  interface{ 
+  Picks a "words of wisdom" string from a set of such "words of wisdom" 
+  and returns it. The set is initially retrieved from the WowData class.  
+
+  interface{
     pickWow( out string wow )
   }
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
@@ -128,32 +112,32 @@ dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 ::CLASS WowPicker
 
 /*----------------------------------------------------------------------------
-    init - gets an initial Wow set from the WowData object.		
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+    init - gets an initial Wow set from the WowData object.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     expose dataSource wowSet
     dataSource = .WowData~new
     wowSet = dataSource~readWowSet
-    return 
+    return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*----------------------------------------------------------------------------
-    pickWow - picks a Word of Wisdom from the current wowSet and returns it.		
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+    pickWow - picks a Word of Wisdom from the current wowSet and returns it.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD pickWow
     expose wowSet
     i = random(1,7)
     return wowSet[i]
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  
-  /*//////////////////////////////////////////////////////////////////////////////
+
+/*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
   WowData							v00-01 24Mar11
   -------------
-  Has access to WOW data, and returns a set to requester. The size of the set 
-  can be set via configuration (but not in this version). 
-  
+  Has access to WOW data, and returns a set to requester. The size of the set
+  can be set via configuration (but not in this version).
+
   interface{
     readWowSet    (out array wowSet)
     readNewWowSet (out array wowSet) - note: not in this version.
@@ -164,25 +148,10 @@ dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
   /*----------------------------------------------------------------------------
     init - reads initial Wow Set from disk (but not in this version)
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     expose arrWow
     arrWow = .array~new
-    arrWow[1] = "Agnes Allen's Law:"||.endofline|| -
-	      "Almost anything is easier to get into than out of."
-    arrWow[2] = "Airplane Law:"||.endofline||"When the plane you are on is late," -
-    	      ||.endofline||"the plane you want to transfer to is on time."
-    arrWow[3] = "Fourteenth Corollary of Atwood's General Law of Dynamic Negatives:" -
-  	      ||.endofline||"No books are lost by loaning"||.endofline|| -
-  	      "except those you particularly wanted to keep."
-    arrWow[4] = "Baker's Byroad:"||.endofline||"When you're over the hill, you pick up speed."
-    arrWow[5] = "First Law of Bicycling:"||.endofline|| -
-  	      "No matter which way you ride, it's uphill and against the wind."
-    arrWow[6] = "Brooks's Law:"||.endofline|| -
-  	      "Adding manpower to a late software project makes it later."
-    arrWow[7] = "Grossman's Misquote of H. L. Mencken"||.endofline|| -
-  	      "Complex problems have simple, easy-to-understand wrong answers."
-
     arrWow[1] = "Agnes Allen's Law:" -
 	      	"Almost anything is easier to get into than out of."
     arrWow[2] = "Airplane Law:" -
@@ -198,15 +167,13 @@ dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
   	      "Adding manpower to a late software project makes it later."
     arrWow[7] = "Grossman's Misquote of H. L. Mencken" -
   	      "Complex problems have simple, easy-to-understand wrong answers."
-  	      
-  	      
-    return 
+    return
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*----------------------------------------------------------------------------
     read<method name> - <description>
 		<description continued if necessary>
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD readWowSet
     expose arrWow
     return arrWow
