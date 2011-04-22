@@ -65,10 +65,12 @@
   may have changed. The user may have manually typed in a number in an edit control for example. Therefore, the up-down
   control retrieves the current text from the buddy control and updates its position using that text.
 </para>
+<para>
   The possible range of positions for an up-down control is -2,147,483,648 to 2,147,483,647. However, the range for any
   specific up-down control can be set by the programmer. The maximum value of the range can be less than the minimum
-  range, in this case the up arrow will reduce the current position. In other words up means moving towards the maximum
-  and down means moving towards the minimum.
+  range. In this case the up arrow will reduce the current position, the down arrow increases the current position. In
+  other words up means moving towards the maximum and down means moving towards the minimum.
+</para>
 <para>
   The <computeroutput>UpDown</computeroutput> class provides methods to work with and manipulate the underlying Windows
   up-down dialog control which it represents. It is a concrete subclass of the dialog control <link
