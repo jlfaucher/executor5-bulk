@@ -43,16 +43,21 @@
 <chapter id="clsMonthCalendar"><title>Month Calendar Controls</title>
 <indexterm><primary>MonthCalendar class</primary></indexterm>
 <para>
-  xx
+  A month calendar control provides an easy to use interface that allows users to select or enter dates. The control has
+  the appearence of a typical calendar. The month calendar interface allows the user to select a date from the displayed
+  days or change the control's display in various ways. The appearence of month calendar controls differ slightly
+  between different versions of Windows.
 </para>
 <para>
-  xx
+  Windows does not support dates prior to 1601, so the <computeroutput>MonthCalendar</computeroutput> object can to be
+  used for dates prior to 1601 either. The month calendar control is based on the Gregorian calendar, which was
+  introduced in 1753. It will not calculate dates that are consistent with the Julian calendar that was in use prior to
+  1753.
 </para>
 <para>
-  xx
-</para>
-<para>
-  The MonthCalendar class provides methods xxx
+  The <computeroutput>MonthCalendar</computeroutput> class provides methods that allow access to all the capabilities of
+  the underlying Windows month calendar control, including the features available only on Windows Vista and Windows 7
+  when Rexx programs are running on those operationg systems.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -62,14 +67,15 @@
   <listitem>
   <para>
     Use the <link linkend="mthNewMonthCalendar">newMonthCalendar</link>() method to retrieve an object of
-    the month calendar class.
+    the <computeroutput>MonthCalendar</computeroutput> class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define a month calendar to a <link linkend="clsUserDialog">UserDialog</link> use the <link
-    linkend="mthCreateMonthCalendar">createMonthCalendar</link> method.
+    To dynamically create a month calendar control in the temaplte of a <link linkend="clsUserDialog">UserDialog</link>
+    dialog use the <link linkend="mthCreateMonthCalendar">createMonthCalendar</link>
+    method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -92,7 +98,8 @@
 <section id="sctMethodsMonthCalendar"><title>Method Table</title>
 <para>
   The following table provides links to the documentation for the primary methods and attributes used in working
-  with <computeroutput>MonthCalendar</computeroutput> objects, including the pertinent methods from other classes:
+  with <computeroutput>MonthCalendar</computeroutput> objects, including other relevant classes and methods from other
+  classes:
 </para>
 <table id="tblMonthCalendarMethods" frame="all">
 <title>MonthCalendar Methods and Attributes</title>
@@ -101,7 +108,7 @@
 <thead>
 <row>
 <entry>Method</entry>
-<entry>Documentation</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
@@ -297,8 +304,8 @@
 
 <section id="tmthCreateMonthCalendar"><title>createMonthCalendar (UserDialog method)</title>
 <para>
-  A month calendar object can be added to the template of <link linkend="clsUserDialog">UserDialog</link> through
-  the <link linkend="mthCreateMonthCalendar"></link>. The basic syntax is:
+  A month calendar object can be added to the template of a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthCreateMonthCalendar">createMonthCalendar</link> method. The basic syntax is:
 <programlisting> <![CDATA[
 >>-createMonthCalendar(-id-,--x-,--y-,--cx-,--cy-+----------+-+-------------+--><
                                                  +-,--style-+ +-,--attrName-+

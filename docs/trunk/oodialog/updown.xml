@@ -49,10 +49,10 @@
 </para>
 <para>
   To the user, the up-down control with its buddy window often look like a single control. The programmer can specify
-  that an up-down control automatically position itself next to its buddy window and that it automatically set the
-  caption of the buddy window to its current position. For example, an up-down control with an edit control can be used
-  to prompt the user for numeric input. Sometimes an up-down control with and edit control for its buddy window is
-  referred to as a spinner control.
+  that an up-down control automatically position itself next to its buddy window and that it automatically set the text
+  of the buddy window to its current position. For example, an up-down control with an edit control can be used to
+  prompt the user for numeric input. Sometimes an up-down control with an edit control for its buddy window is referred
+  to as a spinner control.
 </para>
 <para>
   Up-down controls can be used without a buddy window to provide a simplified type of scroll bar. Up-down controls allow
@@ -61,9 +61,11 @@
   holds down an arrow button. The longer the user holds down the button, the faster the up-down control changes postion.
 </para>
 <para>
-  For an up-down control with a buddy window, the current position is the number in the buddy window's text. This text
-  may have changed. The user may have manually typed in a number in an edit control for example. Therefore, the up-down
-  control retrieves the current text from the buddy control and updates its position using that text.
+  For an up-down control with a buddy window, the current position is the number in the buddy window's text. When the
+  programmer queries the up-down control for its position, this text may have changed. For example, if the buddy window
+  is an edit control, the user may have manually typed in a number in the edit control. Therefore, when the up-down
+  control is queried for its position, it first retrieves the current text from the buddy window and updates its
+  position using that text.
 </para>
 <para>
   The possible range of positions for an up-down control is -2,147,483,648 to 2,147,483,647. However, the range for any
@@ -159,7 +161,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetBuddy">getBuddy</link></entry>
-<entry>Retrieves the up-down's buddy control object.</entry>
+<entry>Retrieves the up-down's buddy window as a dialog control object.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetPosition">getPosition</link></entry>
@@ -167,27 +169,27 @@
 </row>
 <row>
 <entry><link linkend="mthGetRange">getRange</link></entry>
-<entry></entry>
+<entry>Returns the current range of the up-down control in a <computeroutput>Directory</computeroutput> object.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetAcceleration">setAcceleration</link></entry>
-<entry>xx</entry>
+<entry>Sets the acceleration for the up-down control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetBase">setBase</link></entry>
-<entry>xx</entry>
+<entry>Sets the radix base for the up-down control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetBuddy">setBuddy</link></entry>
-<entry>xx</entry>
+<entry>Sets the buddy window for the up-down control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetPosition">setPosition</link></entry>
-<entry>xx</entry>
+<entry>Sets the current position of the up-down control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetRangeClsUpDown">setRange</link></entry>
-<entry>xx</entry>
+<entry>Sets the range of positions for the up-down control to that specified.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -343,24 +345,24 @@
 <indexterm><primary>UpDown class</primary><secondary>setBase</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setBase(--+--------+--)---------------------------------------------><
-              +--type--+
+>>--setBase(--radixBase--)-----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the radix base for an up-down control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>radixBase</term>
     <listitem>
     <para>
-      xx
+      The base for the up-down. Can be 10 or 16.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -369,30 +371,29 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous base of the up-down control, or 0 if the new base specified is not valid.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    The base value determines how the numbers are displayed in the buddy window. With base 10, the numbers displayed are
+    decimal digits, and with base 16, hexadecimal digits. Hexadecimal numbers are always non-negative, (not signed,) and
+    decimal numbers are whole numbers, (they can be signed.)
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example changes the base of the up-down control to 16:
 <programlisting>
 <![CDATA[
+
+  upDown = self~newUpDown(IDC_UPD)
+  ret = upDown~setBase(16)
+  if ret == 16 then say "The up-down base was already set to 16."
+  else if ret == 10 say "The up-down base was changed from 10 to 16."
+  else say "This else will never execute."
 
 ]]>
 </programlisting>
@@ -412,8 +413,8 @@
 </programlisting>
 
 <para>
-  Retrieves the current buddy control object of the up-down, or <computeroutput>.nil</computeroutput> if the up-down
-  does not have a buddy control.
+  Retrieves the current buddy window, as a dialog control object, of the up-down, or
+  <computeroutput>.nil</computeroutput> if the up-down does not have a buddy window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -425,18 +426,18 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return is the dialog control <link linkend="chpDialogControlObject">object</link> that is the buddy control of
+    The return is the dialog control <link linkend="chpDialogControlObject">object</link> that is the buddy window of
     the up-down control. Normally, or at least most often, this will be an <link linkend="clsEdit">Edit</link> object.
-    Howver, it could be some other type of dialog control object. If the up-down control does not have a buddy control,
+    Howver, it could be some other type of dialog control object. If the up-down control does not have a buddy window,
     then <computeroutput>.nil</computeroutput> is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    It is difficult to prevent the user from typing in numbers in the buddy edit control of an up-down control, that are
-    outside of the range of the up-down. This example shows a generic method that could be used to check that what the
-    user typed lies within the proper range of the up-down.
+    It is difficult to prevent the user from typing in numbers, that are outside of the range of the up-down, in an edit
+    control that is the buddy window. This example shows a generic method that could be used to check that what the user
+    typed lies within the proper range of the up-down.
 <programlisting>
 <![CDATA[
 
@@ -461,24 +462,24 @@
 <indexterm><primary>UpDown class</primary><secondary>setBuddy</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setBuddy(--+--------+--)---------------------------------------------><
-               +--type--+
+>>--setBuddy(--dlgControlObj--)------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the buddy window for the up-down control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>dlgControlObj [required]</term>
     <listitem>
     <para>
-      xx
+      The dialog control object that is to be the new buddy window for the up-down control.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -487,13 +488,18 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous dialog control object of the buddy window, if there was a previous buddy. Returns
+    <computeroutput>.nil</computeroutput> if there was no previous buddy window.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When an up-down control has the AUOTBUDDY style, the up-down control selects the previous window in the dialog
+    template as its buddy window. If the up-down control does not have that style, the <emphasis
+    role="italic">setBuddy</emphasis> method can be used to assign a specific dialog control as the buddy window. Of
+    course, the <emphasis role="italic">setBuddy</emphasis> method can be used to assign a specific dialog control, when
+    desired, for any other reason the programmer may have.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -501,16 +507,20 @@
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the buddy window during the <link linkend="mthInitDialog">initDialog</link> method for an up-down
+    control that does not have the AUTOBUDDY style.
 <programlisting>
 <![CDATA[
+
+::method initDialog
+
+  edit = self~newEdit(IDC_EDIT_EXPIRATION_YEAR)
+  upd = self~newUpDown(IDC_UPD_EXPIRATION)
+  upd~setBuddy(edit)
 
 ]]>
 </programlisting>
@@ -548,10 +558,10 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    When the <emphasis role="italic">getPosition</emphasis> method is invoked, the up-down control updates it position
+    When the <emphasis role="italic">getPosition</emphasis> method is invoked, the up-down control updates its position
     based on the text of its buddy window. If there is no buddy window, or if the text is outside of the range of the
-    up-down control, then the position is not changed and the <computeroutput>.SystemErrorCode</computeroutput> is set
-    to 13, the data is invalid.
+    up-down control, then the position is not changed and <computeroutput>.SystemErrorCode</computeroutput> is set to
+    13, the data is invalid.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -593,6 +603,7 @@
     return .false
   end
 
+  return .true
 
 ]]>
 </programlisting>
@@ -606,24 +617,25 @@
 <indexterm><primary>UpDown class</primary><secondary>setPosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setPosition(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setPosition(--newPosition--)-----------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the position of the up-down control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>newPosition [required]</term>
     <listitem>
     <para>
-      xx
+      A whole number in the range of -2,147,483,648 to 2,147,483,647 that specifies the new position for the up-down
+      control.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -632,13 +644,14 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The previous position of the up-down control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If <emphasis role="italic">newPosition</emphasis> is outside the control's current <link
+    linkend="mthSetRangeClsUpDown">range</link>, the position is set to the nearest valid position within the range.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -646,16 +659,20 @@
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the range for an up-down control to be the years 1900 through 2100 and then sets the current
+    position of the up-down control to the current year:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+
+  upDown = self~newUpDown(IDC_UPD_YEARS)
+  upDown~setRange(1900, 2100)
+  upDown~setPosition(.DateTime~today~year)
 
 ]]>
 </programlisting>
@@ -691,13 +708,13 @@
     control. The directory contains the following indexes:
   </para>
   <variablelist>
-    <varlistentry><term><emphasis role="bold">MIN</emphasis></term>
+    <varlistentry><term>MIN</term>
     <listitem>
     <para>
       The minimum value of the current range for the up-down control.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">MAX</emphasis></term>
+    <varlistentry><term>MAX</term>
     <listitem>
     <para>
       The maximum value of the current range for the up-down control.
@@ -708,8 +725,9 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The maximum range value can be less than the minimum value. The up arrow moves towards the maximum and if the
-    maximum value is less than the minium, then using the up arrow will decrease the current position.
+    The maximum range value can be less than the minimum value. The up arrow moves towards the maximum and the down
+    arrow moves towards the minimum. If the maximum value is less than the minium, then using the up arrow will decrease
+    the current position and the down arrow will increase the positions.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -720,39 +738,89 @@
 <indexterm><primary>UpDown class</primary><secondary>setRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setRange(--+--------+--)---------------------------------------------><
-               +--type--+
+Form 1:
+
+>>--setRange(--+----------------+--)-------------><
+               +--directoryObj--+
+
+Form 2:
+
+>>--setRange(--+-------+-+--------+--)-----------><
+               +--min--+ +-,-max--+
+
+Generic form:
+
+>>--setRange(--+---------+--)--------------------><
+               +--range--+
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the range of positions for the up-down control to that specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    The <emphasis role="italic">range</emphasis> argument(s) are optional. If omitted, the range is set to a minimum of
+    0 and a maximum of 100.
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">Form 1:</emphasis></term>
+      <listitem>
+      <para>
+        The single argument for form 1 is:
+        <variablelist>
+          <varlistentry><term>directoryObj [optional]</term>
+          <listitem>
+          <para>
+            A <computeroutput>Directory</computeroutput> object whose indexes specify the minimum and maximum range. The
+            directory can contain the following indexes:
+          </para>
+          <variablelist>
+            <varlistentry><term>MIN [optiona]</term>
+            <listitem>
+            <para>
+              The minimum value for the range. If this index is omitted, the minimum is set to 0.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>MAX [optional]</term>
+            <listitem>
+            <para>
+              The maximum value for the range. If this index is omitted, the maximum is set to 100.
+            </para>
+            </listitem></varlistentry>
+          </variablelist>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Form 2:</emphasis></term>
+      <listitem>
+      <para>
+        The arguments for form 2 are:
+        <variablelist>
+          <varlistentry><term>min [optiona]</term>
+          <listitem>
+          <para>
+            The minimum value for the range. If this argument is omitted, the minimum is set to 0.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>max [optional]</term>
+          <listitem>
+          <para>
+            The maximum value for the range. If this argument is omitted, the maximum is set to 100.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -760,16 +828,61 @@
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the range of an up-down control when the dialog first starts. Later in the life cycle of the
+    dialog the range is changed numerous times, so a generic functions is used to change the range:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose upDown staticPresident
+
+  upDown = self~newUpDown(IDC_UPD_LIFE_SPAN)
+  upDown~setRange(1732, 1799)
+
+  staticPresident = self~newStatic(IDC_ST_PRESIDENT)
+  static~President~setText("George Washington")
+
+  ...
+
+::method onComboBoxSelect
+  expose staticPresident
+
+  president = self~newComboBox(IDC_CB_PRESIDENT)~selected
+  staticPresident~setText(president)
+
+  select
+    when president == 'Abraham Lincon' then do
+      r = .directory~new
+      r~min = 1809
+      r~max = 1865
+      self~changeRange(r)
+    end
+    when president == 'Andrew Jackson' then do
+      r = .directory~new
+      r~min = 1767
+      r~max = 1845
+      self~changeRange(r)
+    end
+
+    ...
+
+    when president == 'Zachary Taylor' then do
+      r = .directory~new
+      r~min = 1784
+      r~max = 1850
+      self~changeRange(r)
+    end
+  end
+
+::method changeRange private
+  expose upDown
+  use strict arg range
+
+  upDown~setRange(range)
 
 ]]>
 </programlisting>
@@ -805,14 +918,14 @@
     An array of <computeroutput>Directory</computeroutput> objects. Each directory contains the following indexes:
   </para>
   <variablelist>
-    <varlistentry><term><emphasis role="bold">SECONDS</emphasis></term>
+    <varlistentry><term>SECONDS</term>
     <listitem>
     <para>
       The amount of elapsed time, in seconds, before the position change increment specified by the <emphasis
       role="italic">increment</emphasis> index is used.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">INCREMENT</emphasis></term>
+    <varlistentry><term>INCREMENT</term>
     <listitem>
     <para>
       The increment used to change the position after the time specified by the <emphasis
@@ -843,24 +956,45 @@
 <indexterm><primary>UpDown class</primary><secondary>setAcceleration</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setAcceleration(--+--------+--)---------------------------------------------><
-                      +--type--+
+>>--setAcceleration(--accelerations--)-----------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the acceleration for the up-down control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>accelerations</term>
     <listitem>
     <para>
-      xx
+      An array of <computeroutput>Directory</computeroutput> objects. Each directory in the array defines a single
+      acceleration and must contain the following indexes:
+    </para>
+    <variablelist>
+      <varlistentry><term>SECONDS</term>
+      <listitem>
+      <para>
+        The amount of elapsed time, in seconds, before the position change increment specified by the <emphasis
+        role="italic">increment</emphasis> index is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>INCREMENT</term>
+      <listitem>
+      <para>
+        The increment used to change the position after the time specified by the <emphasis
+        role="italic">seconds</emphasis> index elapses.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    <para>
+      The array can not be sparse, that is each index must contain a value. The value at each index must be a
+      <computeroutput>Directory</computeroutput> object and must contain the proper indexes.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -869,30 +1003,48 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    On succes, true. On failure false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Accleration information allows the up-down control change its position faster the longer the user holds down the
+    control's up or down arrow, or the up or down keyboard arrow. A single acceleration specifies that after so many
+    seconds increment the position by this amount. For example, after 1 second increment the postion by 4. After 2
+    seconds increment the postion by 8, etc..
+  </para>
+  <para>
+    The accelerations must be sorted in the array, by seconds, in ascending order. Typically the first acelleration
+    would be 0 seconds with an increment of 1.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    The following example sets the acceleration to be very fast, much faster than normal:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+
+  upd = self~newUpDown(IDC_UPD_HUGH_RANGE)
+
+  accels = .array~new(5)
+  do i = 0 to 4
+    d = .directory~new
+    d~seconds = i
+    d~increment = 8 ** i
+    accels[i + 1] = d
+  end
+
+  upd~setAcceleration(accels)
 
 ]]>
 </programlisting>
