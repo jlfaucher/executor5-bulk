@@ -4554,7 +4554,6 @@ trackbar position by extracting the high-oder word. Example:
            notification message is only sent if the month calendar control has the DAYSTATE style. The <emphasis
            role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
            <link linkend="sctCodingEventHandlers">return</link> a reply.
-           bold.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>RELEASED</term>
@@ -4581,8 +4580,8 @@ trackbar position by extracting the high-oder word. Example:
         <varlistentry><term>VIEWCHANGE</term>
         <listitem>
         <para>
-          Sent by a month calendar control when the current view changes. Connecting this event requires Windows Vista
-          or later. The return value from the event handler is ignored for this event.
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. Sent by a month calendar control when the
+          current view changes. The return value from the event handler is ignored for this event.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -4667,13 +4666,24 @@ trackbar position by extracting the high-oder word. Example:
   </listitem></varlistentry>
 </variablelist>
 
+
 <section id="evtMonthCalendarGETDAYSTATE"><title>GetDayState Event Handler</title>
-<indexterm><primary>MonthCalendar Event</primary><secondary>GETDAYSTATE</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>GETDAYSTATE</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+::method onGetDayState unguarded
+  use arg startDate, count, id, hwnd
+
+  return dayStateBuffer
+]]>
+</programlisting>
+
 <para>
   The event handler for the get day state event is invoked when the month calendar control requests information on how
   to dispaly days in the calendar. The notification is only sent when the month calendar has the DAYSTATE style. The
   programmer must reply to this notification and <emphasis role="bold">must</emphasis> use the <link
-  linkend="clsDayStates">DayStates</link> class to properly construct the reply.
+  linkend="clsDayStates">DayStates</link> class to properly construct the reply. The interpreter waits for the reply.
 </para>
 <para>
   The reply is a buffer containing a sequential collection of <link linkend="clsDayState">DayState</link> values. Each
@@ -4685,53 +4695,62 @@ trackbar position by extracting the high-oder word. Example:
 <para>
   Essentially, the programmer constructs a number of day state values and then returns a buffer containing those values.
 </para>
-<para>
-  The event handler recieves 4 arguments and must return a buffer obtained through the
-  <computeroutput>DayStates</computeroutput> class:
-</para>
-
-<programlisting>
-<![CDATA[
-::method onGetDayState unguarded
-  use arg startDate, count, id, hwnd
-
-  return dayStateBuffer
-]]>
-</programlisting>
 <variablelist>
-  <varlistentry><term>startDate</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    A <computeroutput>DateTime</computeroutput> object that specifies the start date the month calendar control needs
-    day state values for. Each day state value specifies the state for every day in a month, even if the <emphasis
-    role="italic">dayState</emphasis> arg is a date in the middle of a month. I.e., if the start date is January 11,
-    2011, the first day state value should be for the month of January.
+    The event handling method recieves three arguments:
   </para>
+  <variablelist>
+    <varlistentry><term>startDate</term>
+    <listitem>
+    <para>
+      A <computeroutput>DateTime</computeroutput> object that specifies the start date the month calendar control needs
+      day state values for. Each day state value specifies the state for every day in a month, even if the <emphasis
+      role="italic">dayState</emphasis> arg is a date in the middle of a month. I.e., if the start date is January 11,
+      2011, the first day state value should be for the month of January.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>count</term>
+    <listitem>
+    <para>
+      The number of day state values required.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID for the month calendar control requesting the information.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> for the month calendar control requesting the information.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term>count</term>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The number of day state values required.
+    The reply is a buffer containing a sequential collection of <link linkend="clsDayState">DayState</link> values. Each
+    individual day state value specifies how each day in a single month should be displayed. If a day in the day state
+    value is turned on, the day is displayed in bold. If a day is not turned on, it is displayed with no emphasis. The
+    returned buffer must be constructed by using the <link linkend="clsDayStates">DayStates</link> class.
+  </para>
+  <para>
+    The <computeroutput>DayStates</computeroutput> and <computeroutput>DayState</computeroutput> classes provide methods
+    to properly construct the day state values and the buffer containing the values. Essentially, the programmer
+    constructs a number of day state values and then returns a buffer containing those values.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term>id</term>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The resource ID for the month calendar control requesting the information.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>hwnd</term>
-  <listitem>
-  <para>
-    The window <link linkend="defHandle">handle</link> for the month calendar control requesting the information.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-<para>
-  <emphasis role="bold">Example:</emphasis> The following example is used in a application that displays the 1st and the
-  15th of each month in bold. The start date can be ignored in this case because the day state value is the same for any
-  month.
-</para>
+    The following example is used in a application that displays the 1st and the 15th of each month in bold. The start
+    date can be ignored in this case because the day state value is the same for any month.
+
 <programlisting>
 <![CDATA[
 
@@ -4753,36 +4772,56 @@ trackbar position by extracting the high-oder word. Example:
 
 ]]>
 </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 
 </section>  <!-- End GetDayState Event Handler -->
 
 
 <section id="evtMonthCalendarRELEASED"><title>Released Event Handler</title>
-<indexterm><primary>MonthCalendar Event</primary><secondary>RELEASED</secondary></indexterm>
-<para>
-  The event handler for the released event is invoked when the month calendar releases the moust capture. The method
-  recieves 2 arguments:
-</para>
+<indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>RELEASED</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
-::method onRelease unguarded
+::method onReleased unguarded
   use arg id, hwnd
 
   return 0
 ]]>
 </programlisting>
+
+<para>
+  The event handler for the released event is invoked when the month calendar releases the mouse capture. The
+  interpreter waits, or does not wait, for the reply as specified by the programmer in the <link
+  linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method. The operating system ignores the value
+  of the reply.
+</para>
 <variablelist>
-  <varlistentry><term>id</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The resource ID of the month calendar sending the notification.
+    The event handling method recieves two arguments:
   </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the month calendar sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term>hwnd</term>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
+    Since the return value is ignored by the operating system, any value can be used. Typically, 0 is returned.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4791,19 +4830,7 @@ trackbar position by extracting the high-oder word. Example:
 
 
 <section id="evtMonthCalendarSELCHANGED"><title>SelChanged Event Handler</title>
-<indexterm><primary>MonthCalendar Event</primary><secondary>SELCHANGED</secondary></indexterm>
-<para>
-  The event handler for the selection changed event is invoked when the currently selected date or range of dates
-  changes. This notification is sent when the user explicitly changes the selection within the current month or when
-  the selection is implicitly changed by the user navigating to another month. The operating system also send this
-  notification at regular intervals so that the month calendar control can respond to date changes.
-
-</para>
-<para>
-  The notification is similar to the SELECT notification, except that the SELECT notification is only sent when the user
-  explicitly changes the date. This notification is sent when the selecte date is changed for any reason. The method
-  recieves 4 arguments and the return value from the event handler is ignored.
-</para>
+<indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>SELCHANGED</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -4813,32 +4840,64 @@ trackbar position by extracting the high-oder word. Example:
   return 0
 ]]>
 </programlisting>
+
+<para>
+  The event handler for the selection changed event is invoked when the currently selected date or range of dates
+  changes. This notification is sent when the user explicitly changes the selection within the current month or when the
+  selection is implicitly changed by the user navigating to another month. The operating system also sends this
+  notification at regular intervals so that the month calendar control can respond to date changes.
+</para>
+<para>
+  The notification is similar to the <link linkend="evtMonthCalendarSELECT">SELECT</link> notification, except that the SELECT
+  notification is only sent when the user explicitly changes the date. This notification is sent when the selected date
+  is changed for any reason.
+</para>
+<para>
+  The interpreter waits, or does not wait, for the reply as specified by the programmer in the <link
+  linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method. The operating system ignores the value
+  of the reply.
+</para>
 <variablelist>
-  <varlistentry><term>selStart</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    A <computeroutput>DateTime</computeroutput> object that is the new selected date, or the first selected date in a
-    range of selected dates.
+    The event handling method recieves three arguments:
   </para>
+  <variablelist>
+    <varlistentry><term>selStart</term>
+    <listitem>
+    <para>
+      A <computeroutput>DateTime</computeroutput> object that is the new selected date, or the first selected date in a
+      range of selected dates.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>selEnd</term>
+    <listitem>
+    <para>
+      A <computeroutput>DateTime</computeroutput> object that is the last selected date in a range of selected dates. If
+      only a single date is selected, then <emphasis role="italic">selEnd</emphasis> will be the same date as <emphasis
+      role="italic">selStart</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the month calendar sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term>selEnd</term>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    A <computeroutput>DateTime</computeroutput> object that is the last selected date in a range of selected dates. If
-    only a single date is selected, then <emphasis role="italic">selEnd</emphasis> will be the same date as <emphasis
-    role="italic">selStart</emphasis>.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>id</term>
-  <listitem>
-  <para>
-    The resource ID of the month calendar sending the notification.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>hwnd</term>
-  <listitem>
-  <para>
-    The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
+    The return value is ignored by the operating system and the programmer can return any value. Typically 0 is
+    returned.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4846,12 +4905,7 @@ trackbar position by extracting the high-oder word. Example:
 </section>  <!-- End SelChanged Event Handler -->
 
 <section id="evtMonthCalendarSELECT"><title>Select Event Handler</title>
-<indexterm><primary>MonthCalendar Event</primary><secondary>SELECT</secondary></indexterm>
-<para>
-  The SELECT event handler is invoked when the user explicity selects a new date. Contrast this with the SELCHANGE
-  event handler which is invoked when the selected date is changed for any reason. The method recieves 4 arguments and
-  the return from the event handler is ignored.
-</para>
+<indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>SELECT</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -4861,48 +4915,66 @@ trackbar position by extracting the high-oder word. Example:
   return 0
 ]]>
 </programlisting>
+
+<para>
+  The SELECT event handler is invoked when the user explicity selects a new date. Contrast this with the <link
+  linkend="evtMonthCalendarSELCHANGED">SELCHANGE</link> event handler which is invoked when the selected date is changed for any
+  reason.
+</para>
+<para>
+  The interpreter waits, or does not wait, for the reply as specified by the programmer in the <link
+  linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method. The operating system ignores the value
+  of the reply.
+</para>
 <variablelist>
-  <varlistentry><term>selStart</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    A <computeroutput>DateTime</computeroutput> object that is the new selected date, or the first selected date in a
-    range of selected dates.
+    The event handling method recieves four arguments:
   </para>
+  <variablelist>
+    <varlistentry><term>selStart</term>
+    <listitem>
+    <para>
+      A <computeroutput>DateTime</computeroutput> object that is the new selected date, or the first selected date in a
+      range of selected dates.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>selEnd</term>
+    <listitem>
+    <para>
+      A <computeroutput>DateTime</computeroutput> object that is the last selected date in a range of selected dates. If
+      only a single date is selected, then <emphasis role="italic">selEnd</emphasis> will be the same date as <emphasis
+      role="italic">selStart</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the month calendar sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term>selEnd</term>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    A <computeroutput>DateTime</computeroutput> object that is the last selected date in a range of selected dates. If
-    only a single date is selected, then <emphasis role="italic">selEnd</emphasis> will be the same date as <emphasis
-    role="italic">selStart</emphasis>.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>id</term>
-  <listitem>
-  <para>
-    The resource ID of the month calendar sending the notification.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>hwnd</term>
-  <listitem>
-  <para>
-    The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
+    The programmer can return any value because the operating system ingores the returned value. Typically 0 is
+    returned.
   </para>
   </listitem></varlistentry>
 </variablelist>
+
 </section>  <!-- End Select Event Handler -->
 
-
 <section id="evtMonthCalendarVIEWCHANGE"><title>ViewChange Event Handler</title>
-<indexterm><primary>MonthCalendar Event</primary><secondary>VIEWCHANGE</secondary></indexterm>
-<para>
-  The view change notification is sent when the current view changes. The notification is only sent on Windows Vista or
-  later. A syntax exception is raised if the VIEWCHANGE event is connected when the program is not running on Vista or
-  later.
-</para>
-<para>
-  The event handler recieves 4 arguments and the return value from the event handler is ignored.
-</para>
+<indexterm><primary>MonthCalendar class</primary><secondary>events</secondary><tertiary>VIEWCHANGE</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -4912,34 +4984,54 @@ trackbar position by extracting the high-oder word. Example:
   return 0
 ]]>
 </programlisting>
+
+<para>
+  The view change notification is sent when the current view changes. The notification is only sent on Windows Vista or
+  later. A syntax exception is raised if the VIEWCHANGE event is connected when the program is not running on Vista or
+  later.
+</para>
+<para>
+  The interpreter waits, or does not wait, for the reply as specified by the programmer in the <link
+  linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method. The operating system ignores the value
+  of the reply.
+</para>
 <variablelist>
-  <varlistentry><term>oldView</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">oldView</emphasis> argument is a keyword denoting what the previous view was. It will be
-    one of: month, year, decade, or centuary.
+    The event handling method recieves four arguments:
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term>newView</term>
-  <listitem>
-  <para>
-    The <emphasis role="italic">newView</emphasis> argument is a keyword denoting what the view was changed to. It also
-    will be one of: month, year, decade, or centuary.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>id</term>
-  <listitem>
-  <para>
-    The resource ID of the month calendar sending the notification.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>hwnd</term>
-  <listitem>
-  <para>
-    The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
-  </para>
+  <variablelist>
+    <varlistentry><term>oldView</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">oldView</emphasis> argument is a keyword denoting what the previous view was. It will be
+      one of: month, year, decade, or centuary.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>newView</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">newView</emphasis> argument is a keyword denoting what the view was changed to. It also
+      will be one of: month, year, decade, or centuary.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the month calendar sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> for the month calendar control sending the notification
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
 </variablelist>
+
 </section>  <!-- End ViewChange Event Handler -->
 
 </section>  <!-- End EventNotification::connectionMonthCalendarEvent() -->
@@ -5043,7 +5135,17 @@ trackbar position by extracting the high-oder word. Example:
 
 
 <section id="evtUpDownDELTAPOS"><title>DeltaPos Event Handler</title>
-<indexterm><primary>UpDown Event</primary><secondary>DELTAPOS</secondary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>events</secondary><tertiary>DELTAPOS</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+::method onDeltaPos unguarded
+  use arg pos, delta, id, hwnd
+
+  return buffer
+]]>
+</programlisting>
+
 <para>
   The event handler for the up-down DELTAPOS event is invoked when when the position of the control is about to change.
   The arguments the event handler recieves allow the programmer to examine the proposed change in position, to modify
@@ -5054,22 +5156,12 @@ trackbar position by extracting the high-oder word. Example:
   linkend="mthDeltaPosReply">deltaPosReply</link> class method of the <link linkend="clsUpDown">UpDown</link> class is
   used to properly construct the return value from the event handler.
 </para>
-
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The event handling method recieves four arguments:
   </para>
-
-  <programlisting>
-  <![CDATA[
-  ::method onDeltaPos unguarded
-    use arg pos, delta, id, hwnd
-
-    return 0
-  ]]>
-  </programlisting>
   <variablelist>
     <varlistentry><term>pos</term>
     <listitem>
@@ -5102,16 +5194,11 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    If the proposed change in position is not going to be canceled or modified, the programmer can simply return
-    <computeroutput>.false</computeroutput>. However, to cancel or modify the change, a delta position buffer must be
-    returned.  This buffer can only be constructed properly by using the <link linkend="clsUpDown">UpDown</link>
-    class's <link linkend="mthDeltaPosReply">deltaPosReply</link> method.
-  </para>
-  <para>
-    Since the <emphasis role="italic">deltaPosReply</emphasis> method can also be used to reply when the proposed change
-    is allowed, it may be simplest to always use the method to produce the proper return from the event handler. The
-    arguments to <emphasis role="italic">deltaPosReply</emphasis> allow the programmer to return a value that makes no
-    change to the new position, cancels the change in position, or modifies the resulting new position.
+    A delta position buffer must be returned by the event handler.  This buffer can only be constructed properly by
+    using the <link linkend="clsUpDown">UpDown</link> class's <link linkend="mthDeltaPosReply">deltaPosReply</link>
+    method. The arguments to <emphasis role="italic">deltaPosReply</emphasis> allow the programmer to return a value
+    that makes no change to the new position, cancels altogether the change in position, or modifies the resulting new
+    position.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
