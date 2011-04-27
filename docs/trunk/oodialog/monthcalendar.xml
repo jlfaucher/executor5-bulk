@@ -138,7 +138,7 @@
 </row>
 <row>
 <entry><link linkend="tmthConnectMonthCalendarEvent">connectMonthCalendarEvent</link></entry>
-<entry>Connectes MonthCalendar event notifications to a Rexx dialog method.</entry>
+<entry>Connects MonthCalendar event notifications to a Rexx dialog method.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
@@ -146,7 +146,7 @@
 </row>
 <row>
 <entry><link linkend="atrDate">date</link></entry>
-<entry>The currently selected date in the calendar.</entry>
+<entry>Reflects the currently selected date in the calendar.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -154,43 +154,43 @@
 </row>
 <row>
 <entry><link linkend="mthAddStyleClsMC">addStyle</link></entry>
-<entry>xx</entry>
+<entry>Adds the specified month calendar style(s) to the control.</entry>
 </row>
 <row>
 <entry><link linkend="mthRemoveStyleClsMC">removeStyle</link></entry>
-<entry>xx</entry>
+<entry>Removes the specified month calendar style(s) from the control.</entry>
 </row>
 <row>
 <entry><link linkend="mthReplaceStyleClsMC">replaceStyle</link></entry>
-<entry>xx</entry>
+<entry>Removes some existing month calendar style(s) and adds some new style(s).</entry>
 </row>
 <row>
 <entry><link linkend="mthGetCalendarBorder">getCalendarBorder</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the month calendar's border, in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetCalendarCount">getCalendarCount</link></entry>
-<entry>xx</entry>
+<entry>Gets the number of calendars currently displayed in the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetCALID">getCALID</link></entry>
-<entry>xx</entry>
+<entry>Returns a keyword specifying the current calendar ID for the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetColor">getColor</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the color for a given portion of a month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetCurrentView">getCurrentView</link></entry>
-<entry>xx</entry>
+<entry>Returns a keyword specifying the current view for the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetFirstDayOfWeek">getFirstDayOfWeek</link></entry>
-<entry>xx</entry>
+<entry>Returns the first day of the week, as a whole number, for the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetGridInfo">getGridInfo</link></entry>
-<entry>xx</entry>
+<entry>Gets information about a calendar grid in the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMaxSelection">getMaxSelection</link></entry>
@@ -927,7 +927,7 @@
   <table id="tblCalendarIDs" frame="all">
   <title>Calendar IDs</title>
   <tgroup cols="2">
-  <colspec colwidth="1.75in">
+  <colspec colwidth="2.50in">
   <thead>
   <row>
   <entry>ID Keyword</entry>
@@ -1093,7 +1093,7 @@
   <listitem>
   <para>
     The <link linkend="clsImage">Image</link> class has a number of convenience methods for working with COLORREFs,
-    including the <link linkend="mthColorRef">ColorRef</link> method that explains what COLORREF is.
+    including the <link linkend="mthColorRef">colorRef</link> method that explains what a COLORREF is.
   </para>
   <para>
     The <emphasis role="italic">colorRef</emphasis> method can be used to test the return for error. I.e.:
@@ -1103,7 +1103,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example gets the color for the head and traing day text, and checks for an error.
+    This example gets the color for the head and trailing day text, and checks for an error.
 <programlisting>
 <![CDATA[
 
@@ -1175,7 +1175,7 @@
 </programlisting>
 
 <para>
-  Gets the view for the month calendar control.
+  Returns the first day of the week, as a whole number, for the month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1244,9 +1244,9 @@
 </programlisting>
 
 <para>
-  Gets information about a calendar grid. A <computeroutput>Directory</computeroutput> object with indexes specifying
-  the information requested is passed into the method. On return, the <computeroutput>Directory</computeroutput> object
-  contains indexes with the information requested.
+  Gets information about a calendar grid in the month calendar control. A <computeroutput>Directory</computeroutput>
+  object with indexes specifying the information requested is passed into the method. On return, the
+  <computeroutput>Directory</computeroutput> object contains indexes with the information requested.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1280,58 +1280,58 @@
             <member>CELL    </member>
           </simplelist>
           <variablelist>
-            <varlistentry><term></term>
+            <varlistentry><term>CONTROL</term>
             <listitem>
             <para>
-
+              The entire month calendar control, which may include up to 12 calendars.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>NEXT</term>
             <listitem>
             <para>
-
+              The next button.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>PREV</term>
             <listitem>
             <para>
-
+              The previous button.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>FOOTER</term>
             <listitem>
             <para>
-
+              The footer.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>CALENDAR</term>
             <listitem>
             <para>
-
+              One specific calendar. The value of the INDEX index specifies which calendar.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>HEADER</term>
             <listitem>
             <para>
-
+              The calendar header. The value of the INDEX index specifies which calendar.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>BODY</term>
             <listitem>
             <para>
-
+              The calendar body. The value of the INDEX index specifies which calendar.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>ROW</term>
             <listitem>
             <para>
-
+              A given calendar row. The value of the INDEX index specifies which calendar.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>CELL</term>
             <listitem>
             <para>
-
+              A given calendar cell. The value of the INDEX index specifies which calendar.
             </para>
             </listitem></varlistentry>
           </variablelist>
@@ -1340,8 +1340,8 @@
         <varlistentry><term>WHAT [required]</term>
         <listitem>
         <para>
-          A list of one or more of the following keywords, specifying the type of information requested for the calendar
-          part. Case is not significant:
+          A list of one or more of the following keywords, specifying what information (what indexes) will be filled in
+          for the calendar part specified in the PART index. Case is not significant:
         </para>
         <para>
           <simplelist type='vert' columns='3'>
@@ -1350,22 +1350,22 @@
             <member>NAME </member>
           </simplelist>
           <variablelist>
-            <varlistentry><term></term>
+            <varlistentry><term>DATE</term>
             <listitem>
             <para>
-
+              The STARTDATE and ENDDATE indexes will be present and contain valid values.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>RECT</term>
             <listitem>
             <para>
-
+              The RECT index will be present.
             </para>
             </listitem></varlistentry>
-            <varlistentry><term></term>
+            <varlistentry><term>NAME</term>
             <listitem>
             <para>
-
+              The NAME index will be present.
             </para>
             </listitem></varlistentry>
           </variablelist>
@@ -1374,19 +1374,21 @@
         <varlistentry><term>INDEX [optional]</term>
         <listitem>
         <para>
-
+          Specifies the one-based index of the calendar the requested information is for. Used when the PART index
+          specifies CALENDAR, HEADER, BODY, ROW, or CELL. If omitted, the default is 1.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>ROW [optional]</term>
         <listitem>
         <para>
-
+          If the PART keyword is ROW, specifies the row for which to return information.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>COL [optional]</term>
         <listitem>
         <para>
-
+          If the PART keyword is CELL, specifies the column of the cell for which to return information. The ROW index
+          provides the row of the cell for which to return information. bSelected
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -1395,22 +1397,61 @@
         dependent on the information requested:
       </para>
       <variablelist>
-        <varlistentry><term></term>
+        <varlistentry><term>SELECTED</term>
         <listitem>
         <para>
-
+          If PART is CELL, indicates if the cell described by the values in the ROW and COL is currently selected. The
+          value of the SELECTED index will be <computeroutput>.true</computeroutput> if the cell is selected and
+          <computeroutput>.false</computeroutput> if it is not.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term></term>
+        <varlistentry><term>STARTDATE</term>
         <listitem>
         <para>
-
+          Contains a <computeroutput>DateTime</computeroutput> object representing the start date of the Calendar
+          specified by INDEX index. Only valid when the WHAT index contains the DATE keyword.
         </para>
-        <varlistentry><term></term>
+        <varlistentry><term>ENDDATE</term>
         <listitem>
         <para>
-
+          Contains a <computeroutput>DateTime</computeroutput> object representing the end date of the Calendar
+          specified by INDEX index. Only set when the WHAT index contains the DATE keyword.
         </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RECT</term>
+        <listitem>
+        <para>
+          A <link linkend="clsRect">Rect</link> object containing the dimensions of the calendar part specified in the
+          PART index. Only set when the WHAT index contains the RECT keyword.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NAME</term>
+        <listitem>
+        <para>
+           Set only if the WHAT index contains the NAME keyword, and only for the following PART keywords:
+        </para>
+        <variablelist>
+          <varlistentry><term>CALENDAR:</term>
+          <listitem>
+          <para>
+            Returns the text of the selected dates. In the case of multiple selection, returns the text for the date at
+            the start of the selection.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CELL:</term>
+          <listitem>
+          <para>
+            Returns the text of the cell indicated by ROW and COL indexes, for instance <emphasis
+            role="italic">15</emphasis>, if the 15th day was specified.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HEADER:</term>
+          <listitem>
+          <para>
+            Returns the text in the calendar header, for instance <emphasis role="italic">March 1951</emphasis>.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
         </listitem></varlistentry>
       </variablelist>
       </listitem></varlistentry>
@@ -1420,30 +1461,53 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    <emphasis role="bold">Requires Windows Vista or later</emphasis>.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This contrived example determines the date of the cell at row 2, column 3 in the second displayed calendar, if there
+    is a second calendar.  It also determines if the cell is selected and its dimensions:
 <programlisting>
 <![CDATA[
+
+  if .OS~isAtLeastVista then do
+    mc = self~newMonthCalendar
+    if mc~getCalendarCount >= 2 then do
+      info = .directory~new
+      info~part = "CELL"
+      info~what = "RECT NAME"
+      info~index = 2
+      info~row  = 2
+      info~col  = 3
+
+      if mc~getGridInfo(info) then do
+        selectedWords = "is not selected,"
+        if info~selected then selectedWords = "is selected."
+
+        width  = info~rect~right - info~rect~left
+        height = info~rect~bottom - info~rect~top
+
+        say "The date of the day at row 2, column 3 in the second calendar is" info~name"."
+        say "The day" selectedWords
+        say "The day is at ("info~rect~left"," info~rect~top")" on the screen."
+        say "It is" width "pixels wide and" height "pixels high."
+      end
+      else do
+        say "Unexpected failure of getGridInfo()."
+      end
+    end
+  end
 
 ]]>
 </programlisting>
