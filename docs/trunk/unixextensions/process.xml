@@ -9,12 +9,12 @@
 >>-SysGetpid()-------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Gets the current process id.</para>
 <para>This function uses the <filename>getpid()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical process id.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -34,12 +34,12 @@ mypid = SysGetpid()
 >>-SysGetppid()------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Gets the parent process id of the current process.</para>
 <para>This function uses the <filename>getppid()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current parent process id.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -59,12 +59,12 @@ myppid = SysGetppid()
 >>-SysGettid()-------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Gets the current thread id.</para>
 <para>This function uses the <filename>pthread_self()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical thread id.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -84,7 +84,6 @@ mytid = SysGettid()
 >>-SysKill(pid, sig)-------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Kill the specified process using the specified signal.</para>
 <para>This function uses the <filename>kill()</filename>
 C API to perform the action.</para>
@@ -97,6 +96,7 @@ C API to perform the action.</para>
 <listitem><para>The signal to use (usually 0).
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the return code from the C kill() API.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -107,16 +107,6 @@ mytid = SysKill(27313, 0)
 ]]>
 </programlisting>
 </section>
-
-
-
-
-
-
-
-
-
-
 
 
 </chapter>

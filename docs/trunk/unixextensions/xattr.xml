@@ -12,7 +12,6 @@ system. They are definately not available for AIX.</para>
 >>-SysGetxattr(fname, xname)-----------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Gets an extended attribute from the specified file.</para>
 <para>This function uses the <filename>getxattr()</filename>
 C API to perform the action.</para>
@@ -25,6 +24,7 @@ C API to perform the action.</para>
 <listitem><para>The extended attribute name.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the extended attribute value on success or a zero-length string on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -44,7 +44,6 @@ mimetype = SysGetxattr('/home/dashley/example.txt', 'mimetype')
 >>-SysListxattr(fname)-----------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns an array of the extended attribut names from the specified file.</para>
 <para>This function uses the <filename>listxattr()</filename>
 C API to perform the action.</para>
@@ -54,6 +53,7 @@ C API to perform the action.</para>
 <listitem><para>The file name.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns an array of the extended attribute names on success. The array will be empty on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -76,7 +76,6 @@ end
 >>-SysRemovexattr(fname, xname)--------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Removes an extended attribute from the specified file.</para>
 <para>This function uses the <filename>removexattr()</filename>
 C API to perform the action.</para>
@@ -89,6 +88,7 @@ C API to perform the action.</para>
 <listitem><para>The extended attribute name.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns 0 on success or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -108,7 +108,6 @@ retc = SysRemovexattr('/home/dashley/example.txt', 'mimetype')
 >>-SysSetxattr(fname, xname, val)------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Sets/replaces an extended attribute on the specified file.</para>
 <para>This function uses the <filename>removexattr()</filename>
 C API to perform the action.</para>
@@ -124,6 +123,7 @@ C API to perform the action.</para>
 <listitem><para>The value to be set for the extended attribute.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the 0 on success or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>

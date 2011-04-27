@@ -9,12 +9,12 @@
 >>-SysGetegid()------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Gets the current numerical effective group id.</para>
 <para>This function uses the <filename>getegid()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical effective group id.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -34,12 +34,12 @@ myegid = SysGetegid()
 >>-SysGeteuid()------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Gets the current numerical effective user id.</para>
 <para>This function uses the <filename>geteuid()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical effective user id.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -59,12 +59,12 @@ myeuid = SysGeteuid()
 >>-SysGetgid()-------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Gets the current numerical group id.</para>
 <para>This function uses the <filename>getgid()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical group id.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -84,8 +84,6 @@ mygid = SysGetgid()
 >>-SysGetgrgid(gid, option)------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
-<para>Returns information about a group.</para>
 <para>This function uses the <filename>getgrgid()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
@@ -113,6 +111,8 @@ Allowed values are:
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns information about a group.</para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -135,7 +135,6 @@ SysGetpwgid(100, "p")      -->  ""
 >>-SysGetgrnam(grpname, option)--------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information about a group.</para>
 <para>This function uses the <filename>getgrnam()</filename>
 C API to perform the action.</para>
@@ -164,6 +163,7 @@ Allowed values are:
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -186,12 +186,12 @@ SysGetpwgrp("users", "p")      -->  ""
 >>-SysGetpgrp()------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Gets the current numerical process group id.</para>
 <para>This function uses the <filename>getpgrp()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical process group id.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -211,7 +211,6 @@ mypgrp = SysGetpgrp()
 >>-SysGetpwnam(username, option)-------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information about a user.</para>
 <para>This function uses the <filename>getpwnam()</filename>
 C API to perform the action.</para>
@@ -249,6 +248,7 @@ Allowed values are:
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -274,7 +274,6 @@ SysGetpwnam("dashley", "p")      -->  ""
 >>-SysGetpwuid(uid, option)------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information about a user.</para>
 <para>This function uses the <filename>getpwuid()</filename>
 C API to perform the action.</para>
@@ -312,6 +311,7 @@ Allowed values are:
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -337,12 +337,12 @@ SysGetpwuid(500, "p")      -->  ""
 >>-SysGetuid()-------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Gets the current numerical user id.</para>
 <para>This function uses the <filename>getuid()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the current numerical user id.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -362,7 +362,6 @@ myuid = SysGetuid()
 >>-SysSetegid(gid)---------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Set the numerical effective group id.</para>
 <para>This function uses the <filename>setegid()</filename>
 C API to perform the action.</para>
@@ -372,6 +371,7 @@ C API to perform the action.</para>
 <listitem><para>The new numerical effective group id.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -391,7 +391,6 @@ call SysSetegid 520
 >>-SysSetuid(euid)---------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Set the numerical effective user id.</para>
 <para>This function uses the <filename>seteuid()</filename>
 C API to perform the action.</para>
@@ -401,6 +400,7 @@ C API to perform the action.</para>
 <listitem><para>The new numerical effective user id.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -420,7 +420,6 @@ call SysSeteuid 520
 >>-SysSetgid(gid)----------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Set the numerical group id.</para>
 <para>This function uses the <filename>setgid()</filename>
 C API to perform the action.</para>
@@ -430,6 +429,7 @@ C API to perform the action.</para>
 <listitem><para>The new numerical group id.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -449,7 +449,6 @@ call SysSetgid 520
 >>-SysSetpgid(pid, pgid)---------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Set a numerical process id to use the specified process group id.</para>
 <para>This function uses the <filename>setpgid()</filename>
 C API to perform the action.</para>
@@ -462,6 +461,7 @@ C API to perform the action.</para>
 <listitem><para>The new process group id.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -481,12 +481,12 @@ call SysSetpgid 9321, 520
 >>-SysSetpgrp()------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Sets the current numerical process usr id to zero and the group id to zero.</para>
 <para>This function uses the <filename>setpgrp()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -506,7 +506,6 @@ call SysSetpgrp
 >>-SysSetuid(uid)----------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Set the numerical user id.</para>
 <para>This function uses the <filename>setuid()</filename>
 C API to perform the action.</para>
@@ -516,6 +515,7 @@ C API to perform the action.</para>
 <listitem><para>The new numerical user id.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>

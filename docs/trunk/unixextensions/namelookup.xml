@@ -12,12 +12,13 @@ information about that server/service.</para>
 >>-SysGethostname()--------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the hostname of the machine.</para>
 <para>This function uses the <filename>gethostname()</filename>
 C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns the hostname of the machine.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
 <![CDATA[
@@ -36,7 +37,6 @@ SysGethostname()      -->  "wda.holmes4.com"
 >>-SysGetservbyname(name, proto, option)-----------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information about a service.</para>
 <para>This function uses the <filename>getservbyname()</filename>
 C API to perform the action.</para>
@@ -65,6 +65,7 @@ Allowed values are:
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -85,7 +86,6 @@ SysGetservbyname("HTTP", "TCP", "p")      -->  80
 >>-SysGetservbyport(port, proto, option)-----------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information about a service.</para>
 <para>This function uses the <filename>getservbyport()</filename>
 C API to perform the action.</para>
@@ -114,6 +114,7 @@ Allowed values are:
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -134,13 +135,13 @@ SysGetservbyport(80, "TCP", "p")      -->  80
 >>-SysGettzname1()---------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the time zone name.</para>
 <para>This function uses the <filename>time.h</filename>
 C header file to obtain the time zone name and is sensitive
 to the environment variable TZ.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the time zone name.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -158,13 +159,13 @@ say SysGettzname1()
 >>-SysGettzname2()---------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the daylight savings time zone name.</para>
 <para>This function uses the <filename>time.h</filename>
 C header file to obtain the time zone name and is sensitive
 to the environment variable TZ.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns the daylight savings time zone name.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>

@@ -10,7 +10,6 @@
 >>-SysAccess(file, mode)---------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Checks to see if the user has access permissions on a file.</para>
 <para>This function uses the <filename>access()</filename>
 C API to perform the action.</para>
@@ -23,6 +22,7 @@ C API to perform the action.</para>
 <listitem><para>The access permissions to check on the file. Must be a decimal number.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -42,7 +42,6 @@ retc = SysAccess("/home/dashley/temp.txt", 2)
 >>-SysChmod(file, mode)----------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Sets the mode bits of a file.</para>
 <para>This function uses the <filename>chmod()</filename>
 C API to perform the action.</para>
@@ -59,6 +58,7 @@ possible to unset bits with this function except through this argument.
 This parameter must be a decimal number.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -79,7 +79,6 @@ retc = SysChmod("/home/dashley/temp.txt", "rwSrwsr-x")
 >>-SysChown(srcpath, uid, gid)---------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Change the user and group ownership attributes of a file.</para>
 <para>This function uses the <filename>chown()</filename>
 C API to perform the action.</para>
@@ -97,6 +96,7 @@ to be successful.</para>
 <listitem><para>The new numerical group id.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -116,7 +116,6 @@ call SysChown "/home/username/myfile", 501, 530
 >>-SysChroot(srcpath)------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Change the root directory of the current process.</para>
 <para>This function uses the <filename>chroot()</filename>
 C API to perform the action.</para>
@@ -126,6 +125,7 @@ C API to perform the action.</para>
 <listitem><para>The new root subdirectory base path.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -145,7 +145,6 @@ call SysChroot "/home/username/"
 >>-SysClose(fh)------------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Close the specified file handle.</para>
 <para>This function uses the <filename>close()</filename>
 C API to perform the action.</para>
@@ -155,6 +154,7 @@ C API to perform the action.</para>
 <listitem><para>The file handle to be closed.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -174,7 +174,6 @@ call SysClose 0
 >>-SysEuidaccess(file, mode)-----------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Checks to see if the effective user has access permissions on a file.</para>
 <para>This function uses the <filename>euidaccess()</filename>
 C API to perform the action.</para>
@@ -187,6 +186,7 @@ C API to perform the action.</para>
 <listitem><para>The access permissions to check on the file. Must be a decimal number.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success (all access rights available) or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -219,6 +219,7 @@ C APIs to perform the action.</para>
 <listitem><para>The subdirectory to be listed.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns an ooRexx array.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -241,7 +242,6 @@ do entry over arr
 >>-SysLchown(srcpath, uid, gid)--------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Change the user and group ownership attributes of a symbolic link.</para>
 <para>This function uses the <filename>lchown()</filename>
 C API to perform the action.</para>
@@ -257,6 +257,7 @@ C API to perform the action.</para>
 <listitem><para>The new numerical group id.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -276,7 +277,6 @@ call SysLchown "/home/username/myfile", 501, 530
 >>-SysLink(srcpath, targetpath)--------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Create a symbolic (hard) link.</para>
 <para>This function uses the <filename>link()</filename>
 C API to perform the action.</para>
@@ -289,6 +289,7 @@ C API to perform the action.</para>
 <listitem><para>The new path/filname that will become the hard link.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -308,7 +309,6 @@ call SysLink "/pub", "/home/username/myownpublink"
 >>-SysMkdir(dir, mode)-----------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Create a subdirectory.</para>
 <para>This function uses the <filename>mkdir()</filename>
 C API to perform the action.</para>
@@ -321,6 +321,7 @@ C API to perform the action.</para>
 <listitem><para>The mode (decimal number) for the new subdirectory.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -340,7 +341,6 @@ retc = SysMkdir("./pub", b2d("111111101"))
 >>-SysRmdir(dir)-----------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Remove a subdirectory.</para>
 <para>This function uses the <filename>rmdir()</filename>
 C API to perform the action.</para>
@@ -350,6 +350,7 @@ C API to perform the action.</para>
 <listitem><para>The subdirectory to remove.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -369,7 +370,6 @@ retc = SysRmdir("./pub")
 >>-SysStat(file, option)---------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information about a file.</para>
 <para>This function uses the <filename>stat64()</filename>
 C API to perform the action.</para>
@@ -420,6 +420,7 @@ shell command "ls -l".
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -443,7 +444,6 @@ SysStat("/home/dashley/temp.txt", "a")  -->  2009-12-02 13:22:16
 >>-SysSymlink(srcpath, targetpath)-----------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Create a symbolic (soft) link.</para>
 <para>This function uses the <filename>symlink()</filename>
 C API to perform the action.</para>
@@ -456,6 +456,7 @@ C API to perform the action.</para>
 <listitem><para>The new path/filname that will become the soft link.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -475,7 +476,6 @@ call SysSymlink "/pub", "/home/username/myownpublink"
 >>-SysUmask(umask)---------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Set the umask.</para>
 <para>This function uses the <filename>umask()</filename>
 C API to perform the action.</para>
@@ -485,6 +485,7 @@ C API to perform the action.</para>
 <listitem><para>The new umask. This MUST be a decimal number (not octal).
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success or -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -505,7 +506,6 @@ call SysUmask 2
               +--option--+
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns system information.</para>
 <para>This function uses the <filename>uname()</filename>
 C API to perform the action.</para>
@@ -534,6 +534,7 @@ Allowed values are:
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns information specified by the <emphasis>option</emphasis>.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -558,7 +559,6 @@ SysUname("m")   -->  i686
 >>-SysUnLink(srcpath)------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Removes a hard link.</para>
 <para>This function uses the <filename>unlink()</filename>
 C API to perform the action.</para>
@@ -568,6 +568,7 @@ C API to perform the action.</para>
 <listitem><para>The path/filename of the source file to be removed.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns zero on success and -1 on an error.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -587,7 +588,6 @@ call SysUnLink "/home/username/myownpublink"
 >>-SysWordexp(exp)---------------------------------------------><
 ]]>
 </programlisting>
-<para><emphasis role="bold">Returns</emphasis></para>
 <para>Performs a shell-like expansion of the input expression and returns the result in an
 array. This function will expand the characters "*", "?" and "~" (the tilde).
 </para>
@@ -599,6 +599,7 @@ C API to perform the action.</para>
 <listitem><para>The expression to expand.
 </para></listitem></varlistentry>
 </variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
 <para>Returns an array of the expanded results.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
