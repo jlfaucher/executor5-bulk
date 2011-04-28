@@ -220,12 +220,16 @@
   menu bar is attached to during the program.
 </para>
 <para>
-  One last point the programmer should be aware of. Both a menu item selection and a <link
-  linkend="clsButton">button</link> click generate the same event notification. Sometimes the action to take when a
-  button is clicked and the action to take when a menu item is selected are the same. In these cases, it is a common
-  practice in Windows programming to use the same resource ID for both the button and the menu item and then use the
-  same event handler for both the button push and the menu item selection. To use this method in ooDialog, the
-  programmer would need to only connect the event once.
+  One last point the programmer should be aware of. Both a regular menu item selection and a <link
+  linkend="clsButton">button</link> click generate the same event notification. <emphasis role="bold">Note</emphasis>
+  that a <emphasis role="italic">system</emphasis> menu command event uses a different type of notification than buttons
+  or regular menus. A system menu command event notification will never be the same as a button click notification.
+</para>
+<para>
+  Sometimes the action to take when a button is clicked and the action to take when a menu item is selected are the
+  same. In these cases, it is a common practice in Windows programming to use the same resource ID for both the button
+  and the menu item and then use the same event handler for both the button push and the menu item selection. To use
+  this method in ooDialog, the programmer would need to only connect the event once.
 </para>
 <para>
   E.g., take the case of an OK push button and an Exit menu item. Many times the action to take for both is exactly the
@@ -237,7 +241,23 @@
 </para>
 <para>
   Notice that, since a button click and a menu item selection generate the same notification, it is not possible to
-  connect a menu item and a button click to separate methods if the they both have the same resource ID.
+  connect a menu item and a button click to separate methods if the they both have the same resource ID. However, in the
+  event <link linkend="sctCodingEventHandlers">handling</link> method it is possible to tell whether the event
+  originated from the user clicking a button or from selecting a menu item. The first argument to the method will be the
+  resource ID of the button or menu item. The second argument will always be 0 if the user selected a menu item and
+  non-zero if the user pushed a button. For button controls, the second argument is the window <link
+  linkend="defHandle">handle</link> of the button.
+</para>
+
+</section>
+
+<section id="sctMenuCommandEventHandlers"><title>Menu Command Event Handlerss</title>
+<indexterm><primary>menu object</primary><secondary>command event handlers</secondary></indexterm>
+<para>
+  To be filled in --- .
+</para>
+<para>
+  To be filled in - need to explain SystemMenu command event handlers.
 </para>
 
 </section>
@@ -502,25 +522,37 @@
 <indexterm><primary>menu object</primary><secondary>connectCommandEvent</secondary><tertiary>class method</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectCommandEvent(--id-,--methodName-,--dlg--+--------------+--)---------><
-                                                   +-,-isHandled--+
+>>--connectCommandEvent(--id-,--methodName-,--dlg--)------------><
+
 ]]>
 </programlisting>
 
 <para>
-  Connects a menu command item event notification with a method in the specified Rexx dialog. The notification is sent
-  to the windows dialog when a command item in a menu is selected by the user.
+  Connects a menu command item <link linkend="ovvEvents">event</link> notification with a method in the specified Rexx
+  dialog. The notification is sent to the Windows dialog when a command item in a menu is selected by the user.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the menu item, may be <link linkend="defSymbolicID">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [required]</term>
+    <listitem>
+    <para>
+      The name of the method in the Rexx dialog to connect the notifcation to. This can not be the empty string.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlg [required]</term>
+    <listitem>
+    <para>
+      The Rexx dialog to connect the notification to.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -529,30 +561,71 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns <computeroutput>.true</computeroutput> on success, <computeroutput>.false</computeroutput> on error. On
+    error the <computeroutput>.SystemErrorCode</computeroutput> will be set as described in the Details section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When using the <emphasis role="italic">connectCommandEvent</emphasis> class method to connect menu command events,
+    the programmer must use a menu item <link linkend="sctMenuItemIDs">identifier</link>, not a menu item <emphasis
+    role="italic">position</emphasis> identifier.
+  </para>
+  <para>
+    The <emphasis role="italic">connectCommandEvent</emphasis> class method is used for all types of menus. However, the
+    programmer should be aware of the differences in coding event <link
+    linkend="sctMenuCommandEventHandlers">handlers</link> for <link linkend="clsSystemMenu">SystemMenus</link> and other
+    types of menus.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    xx
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> on error. The system error code is set this way
+    in addition to what the OS might set:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_INVALID_PARAMETER (87)</emphasis></term>
+      <listitem>
+      <para>
+        The parameter is incorrect. <emphasis role="bold">Meaning:</emphasis> The <emphasis
+        role="italic">methodName</emphasis> argument can not be the empty string.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_WINDOW_NOT_DIALOG (1420)</emphasis></term>
+      <listitem>
+      <para>
+        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
+        role="italic">dlg</emphasis> argument is not a <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of
+        course.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_ENOUGH_MEMORY (8)</emphasis></term>
+      <listitem>
+      <para>
+        Not enough storage is available to process this command. <emphasis role="bold">Meaning:</emphasis> The dialog
+        message table is full.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example disables the ability of the user to move the position of the dialog at certain times. It does this by
+    connecting the system menu's move command event to a method in the Rexx dialog. In the event handler, if the
+    position of the dialog is <emphasis role="italic">frozen</emphasis>, then the method returns
+    <computeroutput>.true</computeroutput> indicating that the event has been handled by the application.  The operating
+    system then takes no further action and the dialog can not be moved by the user.
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose systemMenu
+
+  systemMenu = .SystemMenu~new(self)
+  systemMenu~
 
 ]]>
 </programlisting>
@@ -3389,61 +3462,120 @@
 </programlisting>
 
 <para>
-  Connects a menu command item event notification with a method in a Rexx dialog. The notification is sent to the
-  Windows dialog when a command item in a menu is selected by the user.
+  Connects a menu command item <link linkend="ovvEvents">event</link> notification with a method in a Rexx dialog. The
+  notification is sent to the Windows dialog when a command item in a menu is selected by the user.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are:
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The resource ID of the menu item, may be symbolic or numeric.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>methodName [required]</term>
-    <listitem>
-    <para>
-      The name of the method in the Rexx dialog to connect the notifcation to.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>dlg [optional]</term>
-    <listitem>
-    <para>
-      A Rexx dialog to connect the notification to. By default, the notification is is connected to the Rexx dialog that
-      the menu is <link linkend="mthAttachTo">attached</link> or <link linkend="mthAssignTo">assinged</link> to.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the menu item, may be <link linkend="defSymbolicID">symbolic</link> or numeric.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>methodName [required]</term>
+      <listitem>
+      <para>
+        The name of the method in the Rexx dialog to connect the notifcation to. This can not be the empty string.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>dlg [optional]</term>
+      <listitem>
+      <para>
+        A Rexx dialog to connect the notification to. By default, the notification is is connected to the Rexx dialog that
+        the menu is <link linkend="mthAttachTo">attached</link> or <link linkend="mthAssignTo">assinged</link> to. If
+        omitted and there is no assigned or attached dialog, no connection is made and the <link
+        linkend="dotSystemErrorCode">.SystemErrorCode</link> is set as described in the Details section. (To connect a
+        menu item command event, there must be a dialog to connect it to.)
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns <computeroutput>.true</computeroutput> on success, otherwise <computeroutput>.false</computeroutput>. If
+    there is an error, the <computeroutput>.SystemErrorCode</computeroutput> is set as described in the Details section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When using the <emphasis role="italic">connectCommandEvent</emphasis> method to connect menu command events, the
+    programmer must use a menu item <link linkend="sctMenuItemIDs">identifier</link>, not a menu item <emphasis
+    role="italic">position</emphasis> identifier.
+  </para>
+  <para>
+    The <emphasis role="italic">connectCommandEvent</emphasis> method is used for all types of menus. However, the
+    programmer should be aware of the differences in coding event <link
+    linkend="sctMenuCommandEventHandlers">handlers</link> for <link linkend="clsSystemMenu">SystemMenus</link> and other
+    types of menus.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> on error. The system error code is set this way
+    in addition to what the OS might set:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_INVALID_FUNCTION (1)</emphasis></term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The dialog argument was omitted and the menu does
+        not have an assigned dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_INVALID_PARAMETER (87)</emphasis></term>
+      <listitem>
+      <para>
+        The parameter is incorrect. <emphasis role="bold">Meaning:</emphasis> The <emphasis
+        role="italic">methodName</emphasis> argument can not be the empty string.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_WINDOW_NOT_DIALOG (1420)</emphasis></term>
+      <listitem>
+      <para>
+        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
+        role="italic">dlg</emphasis> argument is not a <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of
+        course.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_ENOUGH_MEMORY (8)</emphasis></term>
+      <listitem>
+      <para>
+        Not enough storage is available to process this command. <emphasis role="bold">Meaning:</emphasis> The dialog
+        message table is full.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example example connects the <emphasis role="italic">Open</emphasis> menu item in the <emphasis
+    role="italic">File</emphasis> submenu of the menu bar to the <emphasis role="italic">onFileOpen</emphasis> method in
+    the dialog. Then the <emphasis role="italic">Close</emphasis>, <emphasis role="italic">Save</emphasis>, etc., menu
+    items are connected. Since the menu bar has already been attached to the dialog, the third optional argument to
+    <emphasis role="italic">connectCommandEvent</emphasis> is left out:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose menuBar
+
+  menuBar~attachTo(self)
+
+  menuBar~connectCommandEvent(IDM_OPEN, onFileOpen)
+  menuBar~connectCommandEvent(IDM_CLOSE, onFileClose)
+  menuBar~connectCommandEvent(IDM_SAVE, onFileSave)
+  menuBar~connectCommandEvent(IDM_SAVEAS, onFileSaveAs)
+  ...
 
 ]]>
 </programlisting>
@@ -4970,18 +5102,24 @@ return 0
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> on error. The system error code is set this way
     in addition to what the OS might set:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_WINDOW_NOT_DIALOG (1420)</emphasis></term>
+      <listitem>
+      <para>
+        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
+        role="italic">dlg</emphasis> argument is not a <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of
+        course.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_ENOUGH_MEMORY (8)</emphasis></term>
+      <listitem>
+      <para>
+        Not enough storage is available to process this command. <emphasis role="bold">Meaning:</emphasis> The dialog
+        message table is full.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
-  <itemizedlist>
-  <listitem>
-  <para>
-    ERROR_WINDOW_NOT_DIALOG (1420) -> The <emphasis role="italic">dlg</emphasis> argument is not a
-    <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of course.)
-  </para>
-  <para>
-    ERROR_NOT_ENOUGH_MEMORY (8) -> The dialog message table is full.
-  </para>
-  </listitem>
-  </itemizedlist>
   <para>
     If the programmer does not provide a method named <emphasis role="italic">methodName</emphasis> in the Rexx dialog,
     a syntax condition will be raised if any context menu events happen.
@@ -5334,23 +5472,31 @@ return 0
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> on error. The system error code is set this way
     in addition to what the OS might set:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_INVALID_FUNCTION (1)</emphasis></term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The dialog argument was omitted and the menu does
+        not have an assigned dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_WINDOW_NOT_DIALOG (1420)</emphasis></term>
+      <listitem>
+      <para>
+        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
+        role="italic">dlg</emphasis> argument is not a <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of
+        course.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_ENOUGH_MEMORY (8)</emphasis></term>
+      <listitem>
+      <para>
+        Not enough storage is available to process this command. <emphasis role="bold">Meaning:</emphasis> The dialog
+        message table is full.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
-  <itemizedlist>
-  <listitem>
-  <para>
-    ERROR_INVALID_FUNCTION (1) -> The dialog argument was omitted and the menu does not have an assigned dialog.
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    ERROR_WINDOW_NOT_DIALOG (1420) -> The <emphasis role="italic">dlg</emphasis> argument is not a
-    <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of course.)
-  </para>
-  <para>
-    ERROR_NOT_ENOUGH_MEMORY (8) -> The dialog message table is full.
-  </para>
-  </listitem>
-  </itemizedlist>
   <para>
     If the programmer does not provide a method named <emphasis role="italic">methodName</emphasis> in the Rexx dialog,
     a syntax condition will be raised if any context menu events happen.

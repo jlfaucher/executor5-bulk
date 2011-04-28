@@ -194,23 +194,23 @@
 </row>
 <row>
 <entry><link linkend="mthGetMaxSelection">getMaxSelection</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the maximum date range that can be selected in the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMaxTodayWidth">getMaxTodayWidth</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the maximum width of the <emphasis role="italic">today</emphasis> string in the month calendar control</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMinRect">getMinRect</link></entry>
-<entry>xx</entry>
+<entry>Fills in a <link linkend="clsRect">Rect</link> object with the minimum size required to display a full month in the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMonthDelta">getMonthDelta</link></entry>
-<entry>xx</entry>
+<entry>Returns the scroll rate for the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMonthRange">getMonthRange</link></entry>
-<entry>xx</entry>
+<entry>Retrieves date information that represents the high and low limits of a month calendar control's display.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetRangeClsMC">getRange</link></entry>
@@ -1522,59 +1522,32 @@
 <indexterm><primary>MonthCalendar class</primary><secondary>getMaxSelection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMaxSelection(--+--------+--)---------------------------------------------><
-                      +--type--+
+>>--getMaxSelection------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the maximum date range that can be selected in the month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the total number of days that can be selected for the month calendar control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The maximum date range that can be selected can be changed by using the <link
+    linkend="mthSetMaxSelection">setMaxSelection</link> .
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1586,59 +1559,26 @@
 <indexterm><primary>MonthCalendar class</primary><secondary>getMaxTodayWidth</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMaxTodayWidth(--+--------+--)---------------------------------------------><
-                       +--type--+
+>>--getMaxTodayWidth-----------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the maximum width of the <emphasis role="italic">today</emphasis> string in the month calendar control,
+  which includes the date and label text.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method does not have any arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns the width of the today string in pixels
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1650,24 +1590,25 @@
 <indexterm><primary>MonthCalendar class</primary><secondary>getMinRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMinRect(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--getMinRect(--rect--)-------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Fills in a <link linkend="clsRect">Rect</link> object with the minimum size required to display a full month in the
+  month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>rect [required]</term>
     <listitem>
     <para>
-      xx
+      A <computeroutput>Rect</computeroutput> object in which to return the minimum size.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1676,13 +1617,31 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    If the method succeeds, <computeroutput>.true</computeroutput> is returned, otherwise
+    <computeroutput>.false</computeroutput>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The minimum required size for the month calendar control depends on things like the current font, the style in
+    effect for the month calendar, etc.. If the application changes anything that will affect the minimum size, the
+    programmer should use the <emphasis role="italic">getMinRect</emphasis> method to recalculate the minimum size.
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the rectangle returned will not include the width of the <emphasis
+    role="italic">Today</emphasis> string. If the month calendar does not have the NOTODAY style set, the programmer
+    should also get the <emphasis role="italic">Today</emphasis> string width by using the <link
+    linkend="mthGetMaxTodayWidth">getMaxTodayWidth</link> method. For the width portion of the minimum required size,
+    use the larger of the value reported by <emphasis role="italic">getMaxTodayWidth</emphasis> and the value reported
+    by <emphasis role="italic">getMinRect</emphasis>. This will ensure that the <emphasis role="italic">
+    Today</emphasis> string is not clipped..
+  </para>
+  <para>
+    The <emphasis role="italic">top</emphasis> and <emphasis role="italic">left</emphasis> of the
+    <computeroutput>Rect</computeroutput> object will always be 0. The <emphasis role="italic">right</emphasis> and
+    <emphasis role="italic">bottom</emphasis> of the <computeroutput>Rect</computeroutput> object will contain the
+    minimum width and height required for the month calendar.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1690,16 +1649,20 @@
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example resizes a month calendar control to the minimum required size. The position of the control, i.e., the
+    upper left hand corner, remains unchanged.
 <programlisting>
 <![CDATA[
+
+::method sizeCalendar private
+  use strict arg calendar
+
+  r = .Rect~new
+  if calendar~getMinRect(r) then calendar~resizeTo(.Size~new(r~right, r~bottom))
 
 ]]>
 </programlisting>
@@ -1714,59 +1677,29 @@
 <indexterm><primary>MonthCalendar class</primary><secondary>getMonthDelta</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMonthDelta(--+--------+--)---------------------------------------------><
-                    +--type--+
+>>--getMonthDelta--------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the scroll rate for the month calendar control. The scroll rate is the number of months that the control moves
+  its display when the user clicks a scroll button.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method does not use any arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    When the scroll rate has been previously set through the <link linkend="mthSetMonthDelta">setMonthDelta</link>
+    method, the return is a whole number specifying the current scroll rate. If, the scroll rate has not been previously
+    set, of it it has been reset to the default, the return is a whole number specifying the number of months currently
+    being displayed by the month calendar control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1778,59 +1711,51 @@
 <indexterm><primary>MonthCalendar class</primary><secondary>getMonthRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMonthRange(--+--------+--)---------------------------------------------><
-                    +--type--+
+>>--getMonthRange(--range--+---------+--)--------><
+                           +-,-span--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves date information (using <computeroutput>DateTime</computeroutput> objects) that represents the high and low
+  limits of a month calendar control's display.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>range [required] [IN/OUT]</term>
+      <listitem>
+      <para>
+        An <computeroutput>Array</computeroutput> object in which the range is returned. The lower limit will be
+        returned at index 1 and the upper limit will be returned at index 2. Both the values at the indexes will be
+        <computeroutput>DateTime</computeroutput> objects.
+      </para>
+     </listitem></varlistentry>
+     <varlistentry><term>range [optional]</term>
+     <listitem>
+     <para>
+       A keyword specifying whether the range should include only months that are ENTIRELY displayed or to include
+       trailing and following months that are only PARTIALLY displayed.  The default if omitted is PARTIALLY.  Only the
+       first letter of ENTIRELY or PARTIALLY are required and case is insignificant.
+     </para>
     </listitem></varlistentry>
-  </variablelist>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The return is a whole number representing the span of months of the lower and upper limits returned in the <emphasis
+    role="italic">range</emphasis> argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1842,13 +1767,13 @@
 <indexterm><primary>MonthCalendar class</primary><secondary>getRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getRange(--+--------+--)---------------------------------------------><
+>>--getRange(--range--)--------------------------><
                +--type--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the current minimum and maximum allowable dates for the month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1856,10 +1781,12 @@
   <para>
     xx
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>range [required] [IN/OUT]</term>
     <listitem>
     <para>
-      xx
+      An <computeroutput>Array</computeroutput> object in which the minimum and maximum dates are returned as .DateTime
+      objects.  The minimum date will be at index 1 and the maximum at index 2.  If either index is set to zero, then no
+      corresponding limit is set for the month calendar control.
     </para>
     </listitem></varlistentry>
   </variablelist>
