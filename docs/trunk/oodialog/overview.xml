@@ -175,8 +175,8 @@
   taking some action. The programmer decides what events are of interest and uses methods provided by the ooDialog
   framework to <emphasis role="italic">connect</emphasis> a method in the dialog object to the event notification. The
   majority of the event connection methods are part of the <link linkend="clsEventNotification">EventNotification</link>
-  class. These methods are often called <emphasis role="italic">event handlers</emphasis> because the code in the method
-  handles the event.
+  class. The connected methods are often called <emphasis role="italic">event handlers</emphasis> because the code in
+  the method handles the event.
 </para>
 <para id="ovvEventsDirectReply">
   Event notification messages in Windows fall into two groups, messages where the reply is ignored and messages where
@@ -189,9 +189,9 @@
 </para>
 <para>
   Without the ability to reply directly to the notification, the ooDialog programmer could not take advantage of the
-  SELCHANGING notification. The C++ native APIs removed this restriction. Beginning in ooDialog 4.2.0, the event
-  handling methods in the Rexx dialog object are directly invoked from the Windows message processing loop. This allows
-  the Rexx dialog object to reply directly to the notification message.
+  SELCHANGING notification. The introduction of the C++ native APIs in ooRexx 4.0.0 removed this restriction. Beginning
+  in ooDialog 4.2.0, the event handling methods in the Rexx dialog object are directly invoked from the Windows message
+  processing loop. This allows the Rexx dialog object to reply directly to the notification message.
 </para>
 <para>
   The ability to directly reply to event notifications greatly extends the power of the ooDialog framework. However, it
@@ -910,7 +910,7 @@ xPixels = xDialogUnits * self~FactorX
     It is available as a separate download from SourceForge using the <emphasis role="italic">Switch ooDialog</emphasis>
     technology for users who would like to replace their installed ooDialog with a 3.2.0 level ooDialog. It requires
     that the installed ooRexx is 4.0.0 or later. Although the code is frozen, if a user can demonstrate an ooDialog
-    program behaves differently using a 3.2.0 level ooDialog that it did under an actual ooRexx 3.2.0 installation, a
+    program behaves differently using a 3.2.0 level ooDialog than it did under an actual ooRexx 3.2.0 installation, a
     fix will be considered.
   </para>
   </listitem></varlistentry>

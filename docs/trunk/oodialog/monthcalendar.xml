@@ -214,15 +214,15 @@
 </row>
 <row>
 <entry><link linkend="mthGetRangeClsMC">getRange</link></entry>
-<entry>xx</entry>
+<entry>Gets the current minimum and maximum allowable dates for the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetSelectionRange">getSelectionRange</link></entry>
-<entry>xx</entry>
+<entry>Retrieves date information for the upper and lower limits of the current range selected by the user in a multi-selection month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetToday">getToday</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the date information for the date specified as <emphasis role="italic">today</emphasis> for the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthHitTest">hitTest</link></entry>
@@ -1768,7 +1768,7 @@
 <programlisting>
 <![CDATA[
 >>--getRange(--range--)--------------------------><
-               +--type--+
+
 ]]>
 </programlisting>
 
@@ -1779,23 +1779,57 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>range [required] [IN/OUT]</term>
-    <listitem>
-    <para>
-      An <computeroutput>Array</computeroutput> object in which the minimum and maximum dates are returned as .DateTime
-      objects.  The minimum date will be at index 1 and the maximum at index 2.  If either index is set to zero, then no
-      corresponding limit is set for the month calendar control.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>range [required] [IN/OUT]</term>
+      <listitem>
+      <para>
+        An <computeroutput>Array</computeroutput> object in which the minimum and maximum dates are returned as
+        <computeroutput>DateTime</computeroutput> objects.  The minimum date will be at index 1 and the maximum
+        at index 2.  If the value at either index is set to zero, then no corresponding limit is set for the month
+        calendar control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A keyword indicating which, if any, of the limits have been set. The keyword will be exactly one of the following:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">none</emphasis></term>
+      <listitem>
+      <para>
+        The month calendar has neither a minimum nor maximum date set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">min</emphasis></term>
+      <listitem>
+      <para>
+        The month calendar has a minimum allowable date set, but no maximum date is set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">max</emphasis></term>
+      <listitem>
+      <para>
+        The month calendar has a maximum allowable date set, but no minimum date is set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">none</emphasis></term>
+      <listitem>
+      <para>
+        The month calendar has both a minimum and a maximum allowable date set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">error</emphasis></term>
+      <listitem>
+      <para>
+        An error occurred, the values at index 1 and 2 of the <emphasis role="italic">range</emphasis> argument are
+        undefined. It is unlikely that an error will occur.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1809,16 +1843,41 @@
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example checks for minimum and maximum allowable dates and displays the results:
 <programlisting>
 <![CDATA[
+
+  mc = self~newMonthCalendar(IDC_MC)
+  range = .array~new(2)
+
+  result = mc~getRange(range)
+  select
+    when result == 'none' then say "No minimum or maximum allowable dates set."
+
+    when result == 'min' then do
+      say "There is no maximum allowable date set."
+      say "The minimum allowable date is" self~formatDate(range[1])"."
+    end
+
+    when result == 'max' then do
+      say "There is no minimum allowable date set."
+      say "The maximum allowable date is" self~formatDate(range[2])"."
+    end
+
+    when result == 'both' then do
+      say "The minimum allowable date is" self~formatDate(range[1])"."
+      say "The maximum allowable date is" self~formatDate(range[2])"."
+    end
+
+    when result == 'error' then do
+      say "An error occurred."
+      say "Hang the documentation author!!!"
+    end
+  end
 
 ]]>
 </programlisting>
@@ -1833,59 +1892,57 @@
 <indexterm><primary>MonthCalendar class</primary><secondary>getSelectionRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getSelectionRange(--+--------+--)---------------------------------------------><
-                        +--type--+
+>>--getSelectionRange(--range--)-----------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves date information that represents the upper and lower limits of the date range currently selected by the
+  user in a multi-selection month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>range [required] [IN/OUT]</term>
+      <listitem>
+      <para>
+        An <computeroutput>Array</computeroutput> object in which the lower and upper limits of the selection are
+        returned as <computeroutput>DateTime</computeroutput> objects.  The lower bound of the selection will be at
+        index 1 and the upper bound at index 2.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns <computeroutput>.true</computeroutput> on success, otherwise <computeroutput>.false</computeroutput>.
+  </para>
+  <para>
+    On success index 1 of the <emphasis role="italic">range</emphasis> array argument will contain a
+    <computeroutput>DateTime</computeroutput> object whose date portion is the lower limit of the selection range.
+    Likewise, index 2 will contain a <computeroutput>DateTime</computeroutput> object whose date portion is the upper
+    limit of the selection. On error, the <emphasis role="italic">range</emphasis> argument is unchanged.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">getSelectionRange</emphasis> method is for month calendar controls that have the MULTI
+    (multi-selection) style. If the month calendar is a single-selection calendar this method returns
+    <computeroutput>.false</computeroutput>. For a single-selection month calendar the <link
+    linkend="atrDate">date</link> attribute will reflect the current selection.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1897,59 +1954,28 @@
 <indexterm><primary>MonthCalendar class</primary><secondary>getToday</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getToday(--+--------+--)---------------------------------------------><
-               +--type--+
+>>--getToday-------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the date information for the date specified as <emphasis role="italic">today</emphasis> for a month calendar
+  control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method does not have any arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    On success, the return is a <computeroutput>DateTime</computeroutput> object whose date portion is the date of the
+    <emphasis role="italic">Today</emphasis> date for the month calendar. On error the
+    <computeroutput>.nil</computeroutput> object is returned.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1961,24 +1987,24 @@
 <indexterm><primary>MonthCalendar class</primary><secondary>hitTest</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hitTest(--+--------+--)---------------------------------------------><
-              +--type--+
+>>--hitTest(--screenPoint--)---------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines which portion of a month calendar control is at a given point on the screen.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
     <varlistentry><term>TERM</term>
     <listitem>
     <para>
-      xx
+      A <link linkend="clsPoint">Point</link> object containing the point to test.
     </para>
     </listitem></varlistentry>
   </variablelist>

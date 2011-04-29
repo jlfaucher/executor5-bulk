@@ -618,14 +618,47 @@
     position of the dialog is <emphasis role="italic">frozen</emphasis>, then the method returns
     <computeroutput>.true</computeroutput> indicating that the event has been handled by the application.  The operating
     system then takes no further action and the dialog can not be moved by the user.
+  </para>
+  <para>
+    The example is complete and can be copy-pasted into a program file and executed as:
+
 <programlisting>
 <![CDATA[
 
-::method initDialog
-  expose systemMenu
+  dlg = .FreezePositionDlg~new
+  dlg~execute('ShowTop')
 
-  systemMenu = .SystemMenu~new(self)
-  systemMenu~
+::requires 'ooDialog.cls'
+
+::class 'FreezePositionDlg' subclass Userdialog
+
+::method init
+  forward class (super) continue
+  self~createCenter(180, 100, 'A Freezable Dialog')
+
+::method defineDialog
+  expose isFrozen
+
+  self~createPushButton(100,  30, 65, 55, 15, , "Take Action",   onStartAction)
+  self~createPushButton(101, 100, 65, 55, 15, , "Cancel Action", onCancelAction)
+
+  .SystemMenu~connectCommandEvent(.SystemMenu~SC_MOVE, onSCMove, self)
+  isFrozen = .false
+
+::method onSCMove unguarded
+  expose isFrozen
+  use arg id, x, y
+
+  if isFrozen then return .true
+  else return .false
+
+::method onStartAction unguarded
+  expose isFrozen
+  isFrozen = .true
+
+::method onCancelAction unguarded
+  expose isFrozen
+  isFrozen = .false
 
 ]]>
 </programlisting>
