@@ -51,26 +51,27 @@
   with no change as far as the user's concerned.
 </para>
 <para>
-  The three areas of concern have a close relationship with the Model-View-Controller (MVC)
+  The three areas of concern have a similarity with the Model-View-Controller (MVC)
   concept (see
   <ulink url="http://en.wikipedia.org/wiki/model-view-controller"><citetitle>Model-View-Controler</citetitle></ulink>)
   The view is the UI, the text data is the model, and picking out which text to display is the controller.
-  This model works well for PC-resident applications, but, by the way, does not easily scale to distributed systems, where
-  some additional architectural concepts are required (see, for example,
-  "Business Component Factory" by Peter Hurzum and Oliver Sims).
+  This approach works for PC-resident applications, but, by the way, does not easily scale to distributed 
+  systems, where some additional architectural concepts are required (see, for example, "Business Component 
+  Factory" by Peter Hurzum and Oliver Sims). 
 </para>
 <para>
   You may ask if all three areas are necessary - can't randomly selecting a text string be part of
   the code handling the data - perhaps a method on a data or model class? A good question.
-  But there's a useful architectural rule that says that model objects should have a CRUDLV interface.
+  But there's a useful architectural guideline that says that model objects should have a CRUDLV interface.
   CRUDLV (pronounced "cruddlevee") stands for Create, Read, Update, Delete, List, Validate.
-  And "Pick at random" is excluded - it's clearly different from a "get" or "read".
+  And "Pick at random" is excluded - it's clearly different from a "read" or "update".
   Essentially, a model object (at least in my world view)
   knows where the data is, and makes it available.
   In our case, picking a text string at random is purely a consequence of what we
   want our <emphasis role="italic">application</emphasis> to do.
   Hence (without going into a perhaps esoteric architectural discussion) picking
-  a string is in the "business" area of concern. Let's now look at the implementation
+  a string is in the "business" area of concern. We'll revisit this discussion in Chapter 4, where we'll 
+  need to develop some naming conventions. For the time being, however, let's  look at the implementation
   of each of these three areas of concern. In the second part of this chapter,
   we'll further reduce coupling (the rule is: low/loose coupling, high cohesion).
 </para>
