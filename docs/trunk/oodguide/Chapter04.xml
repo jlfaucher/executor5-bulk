@@ -38,15 +38,28 @@
     #########################################################################
 -->
 
-<!-- Chapter04 version 00-01 -->
+<!-- Chapter04 version 00-01 - Using Resource Dialogs
+     4.1   Naming and Coding Conventions
+     4.1.1 Naming Conventions
+     4.1.2 Coding Conventions
+     4.2   Resource Scripts and a Resource File Editors
+     4.3   Coding an RcDialog Class
+     4.3.1 Setting Up the Dialog
+     4.3.2 Handling User Events
+     4.3.3 Application Data and Function
+     4.4   Coding a ResDialog Class     
+     
+-->
 
-<chapter id="chapFour"><title>The Customer Component</title>
+<chapter id="chapFour"><title>Using Resource Dialogs</title>
 <!-- Note: Could becalled "Resource-based Dialogs" or some such...  -->
-<indexterm><primary>resource dialogs</primary></indexterm>
-<indexterm><primary>Customer component</primary></indexterm>
+<indexterm><primary>Resource Dialogs</primary></indexterm>
+<indexterm><primary>CustomerView component</primary></indexterm>
+<indexterm><primary>ProductView component</primary></indexterm>
 <para>
-  In this chapter, we start to build the sample application. The application is a highly simplistic
-  sales order processing application. It will look something like the following design mockup:
+  In this chapter, we start to build the sample application. The completed application 
+  is a rather simplistic sales order processing application. It will look something 
+  like the following design mockup:
   <figure id="fig0401"><title>The Sales Order Management Application</title>
     <mediaobject>
       <imageobject>
@@ -55,114 +68,390 @@
       </imageobject>
     </mediaobject>
   </figure>
-  The purpose of this Sales Order Management application is to provide a vehicle for 
-  exploring ooDialog concepts and facilities, and hence its application function 
-  will be minimal. However, it is just sufficiently complex for some naming conventions 
-  to be useful. 
+  The purpose of this application is to provide a vehicle for 
+  exploring ooDialog concepts and facilities, and this chapter addresses the use of 
+  "resource files". The term "resources" mean the GUI controls or widgets - edit fields, 
+  lists, buttons, menus, etc. - that populate a window. The easiest and arguably the 
+  best way to define the layout of GUI controls in a dialog window is to use a "resource editor". 
+  A resource editor is a "wysiwyg" (what you see is what you get) development tool 
+  that allows a developer to design a window layout visually. This avoids the sometimes 
+  tortuous effort of laying out the dialog programmatically.  Although using a resource editor 
+  is certainly not the be-all and end-all of ooDialog programming, it's very useful 
+  for getting started quickly, and is the recommended way to define ooDialog window layouts. 
+</para>
+<para>
+  The vehicles for exploring resource files will be the Customer 
+  and Product parts of the sample application. Although simplistic, the application is sufficiently 
+  complex for some naming and coding conventions to be useful, and the first section of this chapter 
+  describes these conventions. Then the use of human-readable 
+  resource scripts is introduced in the context of a "Customer View" dialog. 
+  Third, the three major parts of a dialog are identified. The last section
+  then introduces the use of compiled (binary) resource files in the context of a ProductView component.  
 </para>
 
-<section id="chap04-names"><title>The Naming of Names</title><!-- section 4.1 -->
+<section id="chap04-convs"><title>Naming and Coding Conventions</title><!-- section 4.1 -->
+
+<section id="chap04-convs-names"><title>Naming Conventions</title><!-- section 4.1.1 -->
+<para>
+  Readers may prefer to skip this section, at least for the tiem being, and go straight 
+  to <link linkend='chap04-resourcefile'>Resource Scripts and Resource File Editors</link>. 
+</para>
 <para>
   At the beginning of Chapter 2 there was a brief discussion about separation of concerns into 
   three areas: the UI including both presentation and user action, the "business", and accessing data. 
-  From this point on, the terms used for these three areas respectively will be: "view", "model", and "data". (The term "model" for the business class is dropped since The main application classes will use these as suffixes. 
-  Hence for example: <emphasis role='italic'>CustomerView</emphasis> will be the name of the "UI" part of the 
-  implementation of the "Customer" concept; <emphasis role='italic'>CustomerModel</emphasis> the name 
-  of the "business" part, and <emphasis role='italic'>CustomerData</emphasis> that of the data access part.
-</para>
-<para>
-  Another convention being used is to adopt a "component" approach to the application. Thus the "customer" 
+  From here onwards, this approach becomes an important convention for the structure of the sample 
+  Order Management application. Essentially we  
+  adopt a "component" approach to the application. Thus the "customer" 
   concept is implemented by three "main" classes <computeroutput>CustomerView</computeroutput>, 
   <computeroutput>CustomerModel</computeroutput>, and <computeroutput>CustomerData</computeroutput>. 
   By "main class" is meant the class that implements the business concept as opposed to subsidiary 
-  classes such as an "address" class that might be used within the Customer component (and also 
-  within a "Supplier" component if we had one). Such subsidiary classes are included in the 
-  same file as the main class.
-  (By the way, in typical real-life system there would probably be four parts to a concept such as "customer" - 
-  a view and a model suppporting the user, and supporting multiple concurrent users there would be, on a 
-  server or back-end, a business-oriented "model" (as opposed to user-oriented) plus a data part that 
-  accesses a corporate database.)
+  classes such as an "address" class that might be used within the Customer component. Such subsidiary 
+  classes are typically included in the same file as the main class. The name given to 
+  the group of main classes that contribute to a single important business concept 
+  such as "customer" is "business component". Thus in our sample application, CustomerView, 
+  CustomerModel and CustomerData are the three parts of the Customer Business Component. 
 </para>
 <para>
+  The naming convention 
+  used to distinguish between the three different kinds of main class is to provide one of the suffices 
+  "View", "Model", or "Data" to the class name. Thus for example: 
+  <computeroutput>CustomerView</computeroutput> will be the name of the "UI" part of the 
+  implementation of the "Customer" concept; <computeroutput>CustomerModel</computeroutput> the name 
+  of the "business" part, and <computeroutput>CustomerData</computeroutput> that of the data access part. 
   Normally, each main class (plus any subsidiary classes) would be in its own file. However, since the 
-  focus is on View components, the Model and Data components are in a single file, called 
+  focus is on View components, the Model and Data components are placed in a single file, called 
   <computeroutput>xxxMAD.rex</computeroutput>, where "xxx" is the business concept name, 
-  and MAD is short for "Model and Data". Other naming conventions will be introduced as they're met.  
+  and MAD is short for "Model and Data". 
+</para>
+<para>  
+  By the way, in real-life systems 
+  there would probably be four parts to a concept such as "customer" - a view and a user-oriented model 
+  both suppporting the user, and, supporting multiple concurrent users on a 
+  server or back-end system, a business-oriented "model"  
+  plus a data part that accesses the corporate database. Also by the way, in real-life supply chain 
+  management apps addresses are typically treated as separate entities rather than being lumped 
+  in with such concepts as Customer, Employee or Supplier.
+</para>
+<para>
+  Finally, variables often have a prefix that indicates what the variable is. 
+  For example, an edit control that holds a customer number would be named 
+  <emphasis role='italic'>ecCustNo</emphasis>, the <emphasis role='italic'>ec</emphasis>
+  being short for "edit control". 
+</para>
+</section><!-- End of section 4.1.1 -->
+
+<section id="chap04-convs-coding"><title>Coding Conventions</title><!-- section 4.1.2 -->
+<para>
+  The following coding conventions are used in the exercise code. First, ooRexx 
+  keywords are capitalized.
+  Second, classes, methods, and routines are separated from each other by dotted 
+  or solid lines which in some editors are displayed in a different color from the 
+  executable code. This provides useful visual separation of methods and classes 
+  which is useful in larger programs.
+  Third, camel case is used for variable names, with class names having their first 
+  letter capitalized. Fourth,  
+  when a rex program in one of the exercises is run, comments produced with 
+  an ooRexx "say" instruction may appear in the command prompt window. The format 
+  used for these comments is [classname]-[methodname]-[nn] - a little excessive for 
+  simple single-class programs, but useful for larger multi-class applications. 
+  Finally, variables in oorexx classes may often have prefixes indicating what they
+  are; for example, an instance of an edit control containing a customer number 
+  would be called <emphasis role='italic'>ecCustNo</emphasis>.
+</para>
+</section><!-- End of section 4.1.2 -->
+
+</section><!-- End of section 4.1 -->
+
+<section id="chap04-resourcefile"><title>Resource Scripts and Resource File Editors</title><!-- section 4.2 -->
+<para>
+  Our first foray into the sample Order Management application is to examine a simple 
+  Customer View component built using a resource editor. 
+</para>
+<para>
+  But which resource editor? Well, if you happen to have Microsoft's development kit, you'll find it has a 
+  resource editor. Alternatively, there are a number of fee and free resource editors available 
+  on the web. The author of this Guide happened to use a freeware product called 
+  ResEdit (see <link linkend="http://www.resedit.net/">www.resedit.net</link>), 
+  and occasional hints about ResEdit usage will appear from time to time. 
+  In addition, comments about the use of resource file editors will assume ResEdit, 
+  and may well be inapplicable to other resource editors. If you plan to use ResEdit, 
+  please be aware that a number of Microsoft header files are required. These can be 
+  obtained at no charge from 
+  <link linkend="http://www.microsoft.com/downloads/en/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en">
+  Microsoft Windows SDK</link>.  
+  They should be downloaded into a folder, and the full path name of that folder must be specified to ResEdit 
+  in "Options-Preferences-General-Include paths".  
+</para>
+<para>
+  A resource file editor outputs a window layout to a "resource file", which ooDialog can then 
+  use to lay out controls on a dialog automatically. There are two kinds of resource file:
+  a human-readable file with the extension ".rc" (and sometimes ".dlg"), and a binary (compiled) 
+  file with the extension ".res".   
+</para>  
+<para>
+  Locate the folder <computeroutput>Exercise04a</computeroutput>, and run 
+  <computeroutput>Startup.rex</computeroutput>. You see a "Customer" dialog.
+  Explore the menu and behavior of this dialog. Note the following:
+  <itemizedlist>
+  <listitem><para>A number of comments appear on the console; ignore them for the time being.</para></listitem>
+  <listitem><para>The title bar (the blue bar right at the top of the dialog window)
+    shows not the Customer's name, but the string "*CustomerName*", sugegesting that the programmer has 
+    either made an error or (as in this case) has left a marker for future modification.</para></listitem>
+  <listitem><para>Edit controls are shown grayed out or "disabled" - that is, not editable.</para></listitem>
+  <listitem><para>The "Action" menu has four items.</para></listitem>
+  <listitem><para>One button - "Record Changes" is disabled, the other is not.</para></listitem>
+  </itemizedlist>
+  Make sure you exercise the menu items and buttons to explore the dialog's behavior. 
+  You'll find that some expected behavior is not implemented, and results in a message-box - for example 
+  "PRINT is not a method of CustomerView". 
+  Note also the tab order - that is, the order <indexterm><primary>Tab order</primary></indexterm> 
+  of controls reached as you press the tab key. This is defined by the sequence in 
+  which controls appear in the .rc file. If the tab order is not as you'd like it, you 
+  can edit the .rc file and use cut-and-paste to achieve the desired tab order.    
+</para>
+<para>
+  Now double-click the file <computeroutput>CustomerView.rc</computeroutput> in the 
+  <computeroutput>Exercise04a</computeroutput> folder. The file should open in
+  ResEdit (or your own preferred resource editor). In the ResEdit "Resources" window, double-click on 
+  <computeroutput>IDD_DIALOG1</computeroutput> and the dialog layout tool opens, looking like this: 
+    <figure id="fig0402"><title>A Resource Editor</title>
+      <mediaobject>
+        <imageobject>
+          <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+          <imagedata fileref="Chapter04-Image2.jpg" scale="70">
+        </imageobject>
+      </mediaobject>
+    </figure>
+  You might move or re-size some of the controls, save the file, then re-run Exercise04a to 
+  see your changes implemented. Check the files in the <computeroutput>Exercise04a</computeroutput>
+  folder. You'll see the files needed for 
+  ooDialog to create the window that was defined in the resource editor. They are 
+  <computeroutput>CustomerView.rc</computeroutput> and <computeroutput>CustomerView.h</computeroutput>. 
+  Both of these are generated by the resource editor. (ResEdit tip: to cause the .h file 
+  to be named the same as the .rc file, on the menu bar select Options - Preferences - Code Generation - 
+  Files, then set the "Header file name" to "<emphasis role='italic'>%barefilename%.h"</emphasis>.)
+  Other header files from the downloaded Microsoft SDK are also required, and are 
+  automatically loaded by ResEdit from the folder(s) defined in its "Include paths"
+  (found in Options - Preferences - General).
+</section>  
+
+<section id="chap04-rcdialogcode"><title>Coding an RcDialog Class</title><!-- section 4.3 -->
+<para>
+  Now that we have a notion about what we want to build a Customer View component), and some 
+  inkling of how to define dialog layouts 
+  using a resource editor, let's look at the code. First, look at <computeroutput>Startup.rex</computeroutput>.
+  There's only one executable statement: <emphasis role='italic'>call startCustomerView</emphasis>. 
+  This routine is in the <computeroutput>CustomerView.rex</computeroutput> file. It's generally good 
+  practice to separate application startup concerns from the various working parts of the application 
+  - including creating new dialogs. 
+</para>
+<para>
+  Open <computeroutput>CustomerView.rex</computeroutput> with a text editor. 
+  Look for the <computeroutput>CLASS</computeroutput> statement:
+  <programlisting>
+    <![CDATA[
+    ::CLASS 'CustomerView' SUBCLASS RcDialog PUBLIC
+    ]]>
+  </programlisting>
+  The <computeroutput>CustomerView</computeroutput> class is a subclass of the ooDialog built-in 
+  class <computeroutput>RcDialog</computeroutput>, which gets its dialog layout from a 
+  resource script file (human-readable using a text editor. 
+  RcDialog is one of two important ooDialog classes that use 
+  resource scripts; the other is <computeroutput>ResDialog</computeroutput>, which uses a binary 
+  (compiled) resource file. More information can be found in chapter 6 of the ooDialog Reference.
+</para>
+<para>
+  View classes can be seen as consisting of three major parts: setting up the dialog, 
+  specifying the active controls, and handling the application data and function. Let's look at 
+  each of these in the context of <computeroutput>CustomerView.rex</computeroutput>. 
 </para>
 
-<section id="chap04-resourcefile"><title>Using a Resource File</title><!-- section 4.2 -->
+<section id="chap04-rcdialogcode-setup"><title>Setting Up the Dialog</title><!-- section 4.3.2 -->
 <para>
-Our first foray into Order Management is to build a simple Customer view component. To define the 
-visual layout of GUI controls such as customer name and customer asddress, we'll use a resource editor, 
-so avoiding sometimes tortuous effort of laying out the dialog programmatically. A "resource editor" 
-is a "wysiwyg" (what you see is what you get) development tool that allows a developer to design 
-as it is to appear on the screen. Such a tool produces a "resource file", which ooDialog can then 
-use to lay out controls on a dialog. Although using 
-a resource editor is not the be-all and end-all of ooDialog programming, it's certinly useful for 
-getting started quickly.    
+  When you ran <computeroutput>StartUp.rex</computeroutput>, there were an initial set 
+  of comments displayed in the command prompt window, as follows: 
+  <programlisting>
+    <![CDATA[
+    D:\...\Exercise04a>startup
+    StartCustomerView Routine-01: .CustomerView~new...
+    CustomerView-init-01
+    CustomerView-createMenuBar-01
+    StartCustomerView Routine-02: dlg~activate...
+    CustomerView-activate-01
+    CustomerView-initDialog-01 
+    ]]>
+  </programlisting>
+  These comments trace the process of establishing a dialog to the point of making the window visible 
+  - in other words, setting up the dialog. The process is as follows:
+  <orderedlist>
+  <listitem><para>The routine in <computeroutput>CustomerView.rex</computeroutput>
+    creates an instance of the <computeroutput>CustomerView</computeroutput> class 
+    that's a subclass of <computeroutput>RcDialog</computeroutput>.</para></listitem>
+  <listitem><para>In the <emphasis role='italic'>init</emphasis> method of the 
+    new view instance, first the superclass is invoked (this is an 
+    ooDialog requirement), and then the <emphasis role='italic'>createMenuBar</emphasis>
+    method is called.</para></listitem>
+  <listitem><para>the <emphasis role='italic'>createMenuBar</emphasis> method then 
+    creates a menubar (in this case an instance of the .ScriptMenuBar class - see 
+    section 25.6 of the ooDialog Reference), referring to the menubar's ID in the .rc file. 
+    Note that after creation, the menubar is just another object, and is not 
+    yet associated with the dialog. The code at this point boldly assumes that 
+    the menubar instance was successfully created (not really best practice) and returns
+    to the <emphasis role='italic'>init</emphasis> method and from there back 
+    to the ...</para></listitem>    
+  <listitem><para>...<computeroutput>StartCustomerView</computeroutput> routine, 
+    which invokes the dialog's <emphasis role='italic'>activate</emphasis> method. 
+    </para></listitem>
+  <listitem><para>The <emphasis role='italic'>activate</emphasis> method 
+    issues <computeroutput>ShowTop</computeroutput> to 
+    the view's superclass, which then sends itself an 
+    <emphasis role='italic'>initDialog</emphasis> message.</para></listitem>
+  <listitem><para>The <emphasis role='italic'>initDialog</emphasis> method attaches 
+    the menubar to itself (that is, to the dialog instance). It also does an 
+    additional three things that are nothing to do with establishing the dialog 
+    but which are part of managing controls and handling application data. 
+    </para></listitem>
+  </orderedlist>
+</para>
+<!-- Need link to mini-sections about control objects, event handlers, and get/show data. -->
+<para>
+  The above process requires four methods and a total of 19 oorexx statements 
+  including the <computeroutput>method</computeroutput> statements but excluding the 
+  <emphasis role='italic'>say</emphasis> instructions. And if we didn't care too much for 
+  effective program structure or error checking, it could be squished down to 
+  just nine instructions as follows:
+  <programlisting>
+    <![CDATA[
+    ::CLASS CustomerView SUBCLASS RcDialog PUBLIC
+      ::METHOD init
+        forward class (super) continue
+        self~execute("SHOWTOP")		    
+      ::METHOD initDialog			
+        menuBar = .scriptMenuBar~new("CustomerView.rc", "IDR_MENU1", self, , , .true)
+        menuBar~attachTo(self)
+    ::ROUTINE startCustomerView PUBLIC
+      dlg = .CustomerView~new("customerView.rc", IDD_DIALOG1, dlgData., "customerView.h")
+    ]]>
+  </programlisting> 
+  And if the <computeroutput>::class</computeroutput>, <computeroutput>::method</computeroutput>, 
+  <computeroutput>::routine</computeroutput> directives are excluded, only five statements 
+  are required. 
 </para>
 <para>
-But which resource editor? Well, if you happen to have Microsoft's development kit, you'll find a 
-resource editor in it. Alternatively, there are a number of fee and free resource editors available 
-on the web. The author of this Guide happened to use a freeware product called 
-<emphasis role='italic'>ResEdit</emphasis> (see http://www.resedit.net/), and occasional hints about 
-ResEdit usage will appear from time to time. In addition, comments in the text about resource files
-will assume ResEdit, and well be inapplicable to other resoruce editors. 
-</para>
-<para>
-Locate the folder <computeroutput>Exercise04a</computeroutput>, and run 
-<computeroutput>Startup.rex</computeroutput>. You see a "Customer" dialog.
-Explore the menu and behavior of this dialog. Note the following:
-<itemizedlist>
-<listitem><para>A number of comments appear on the console; ignore them for the time being.</para></listitem>
-<listitem><para>The title bar (the blue bar right at the top of the dialog window)
-shows not the Cuastomer name, but the string "*CustomerName*", sugegesting that the programmer has 
-either made an wertror or (as in this case) left a marker for future modification.</para></listitem>
-<listitem><para>Controls are shown grayed out or "disabled" - that is, not editable.</para></listitem>
-<listitem><para>The "Action" menu has four items.</para></listitem>
-<listitem><para>One button is disabled, the other, "Show Last Order", has focus. - which means that if you press
-the "enter" key on the keyboard, it will be pressed.</para></listitem>
-</itemizedlist>
-Make sure you exercise the menu items and buttons to explore the dialog's behavior.
-<para>
-Now double-click on the file <computeroutput>CustomerView.rc</computeroutput>. The file opens in
-the resource editor. In the ResEdit "Resources" window, double-click on <computeroutput>IDD_DIALOG1</computeroutput>
-and the dialog layout tool opens, looking like this: 
-  <figure id="fig0402"><title>A Resource Editor</title>
-    <mediaobject>
-      <imageobject>
-        <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-        <imagedata fileref="Chapter04-Image2.jpg" scale="70">
-      </imageobject>
-    </mediaobject>
-  </figure>
-You might move or re-size some of the controls, save the file, then re-run Exercise04a to 
-see your changes implemented. Check the files in the Exercise04 folder. You'll see the files needed for 
-ooDialog to create the window defined in the resource editor. They are: 
-<computeroutput>CustomerView.rc</computeroutput> and <computeroutput>CustomerView.h</computeroutput>. 
-Both of these are generated by the resource editor. (Resedit tip: to cause the .h file 
-to be named the same as the .rc file, in ResEdit select Options - Preferences - Code Generation - Files, then 
-set the "Header file name" to "<computeroutput>%barefilename%.h</computeroutput>".)
+  In other words, dialogs of significant complexity can be created and displayed with 
+  only five executable statements. And that, gentle reader, is the real power of resource dialogs.
+</para>  
+</section>
 
-<section id="chap04-rcdialogcode"><title>Coding a Resource File Dialog</title><!-- section 4.3 -->
-<para>Now that we have a notion about what we want to build, and some inkling of how to define dialog layouts 
-using a resource editor, we now turn to the code. First, have a look at <computeroutput>Startup.rex</computeroutput>.
-There's only one executable statement: <computeroutput>call startCustomerView</computeroutput>. 
-This routine is in the <computeroutput>CustomerView.rex</computeroutput> file. It's generally good practice to 
-separate starup application concerns from the various parts of the application.
+<section id="chap04-rcdialogcode-controls"><title>Specifying the Active Controls</title><!-- section 4.3.2 -->
+<para>
+  An "active control" is a control that requires behavior to be programmed, while 
+  a "passive" control (such as text that is never changed) appears only in  
+  the resource file, and is of no concern to the program. The behavior associated 
+  with an active control is 
+  of two kinds: outbound or program-to-window - i.e. providing the user with information, and 
+  inbound - i.e. signalling the progam about a user event.    
+  Outbound behavior means changing the state of a control - for example, 
+  disabling a pushbuton, or displaying text in an 
+  edit control. Inbound behavior is a user event that requires the program to 
+  take some action - e.g. selecting a menu item, or clicking a pushbutton.
+  For both inbound and outbound behavior, the relevant controls must be specified
+  in the ooRexx program, and a reference to them established.
 </para>
 <para>
-
-  
-  
-1. init (ooDialog method)
-2. createMenubar
-3.
-mention why activate.
+  Now controls are actually created by Windows based on information  
+  in the resource file, with each control being created and managed by  
+  facilities built into the Windows operating system. However, 
+  the ooRexx programmer accesses controls via ooDialog classes, so that each 
+  control on a window is represented in an ooRexx program by an ooRexx object.
+  Under the covers, ooDialog 
+  provides the required link between the ooRexx objects and the underlying Windows 
+  facilities - and hence with the visible controls on the screen. By the way, 
+  and rather obviously (but we'll say it anyway), this means that ooDialog 
+  cannot provide any GUI function that is not already provided by the underlying 
+  Windows facilities. 
 </para>
-<!--
+<para>
+  ooDialog provides a class for each control type (see chapters 
+  11 through 24 of the ooDialog reference), and, as mentioned, instances of 
+  these classes invisibly connect to the underlying Windows mechanisms. 
+  The connection  
+  for each control is done via the the control's symbolic ID in the .rc file. 
+  Thus in order to use active controls, and so provide the requires application 
+  function, the programmer must first specify them. This is typically done in the 
+  <emphasis role='italic'>initDialog</emphasis> method.    
+  For example, to display the Customer Number in an edit control (outbound active 
+  behavior), it's first necessary to create an instance of an ooDialog edit 
+  control; for example:
+  <programlisting>
+    <![CDATA[
+    ecCustNo = self~newEdit("IDC_EDIT_CUST_NO")
+    ]]>
+  </programlisting>
+  The variable <emphasis role='italic'>ecCustNo</emphasis> is the edit control
+  that will contain the customer number; <emphasis role='italic'>self</emphasis> is the 
+  dialog instance; <emphasis role='italic'>newEdit</emphasis> 
+  is the method of the Dialog Control object (see chapter 4 of the ooDialog Reference) 
+  that creates a new edit control, and "IDC_EDIT_CUST_NO" 
+  is the symbolic ID recorded in the .h and .rc files generated by the resource 
+  editor. After execution of this statement, 
+  <emphasis role='italic'>ecCustNo</emphasis> is an instance of the ooDialog 
+  <computeroutput>Edit</computeroutput> class, and ooDialog has made sure, in the 
+  instance's creation, that it is internally linked to the edit control on the 
+  screen identified in the .h and .rc files as 
+  <emphasis role='italic'>IDC_EDIT_CUST_NO</emphasis>.
+</para>
+<para>
+  Suppose now that the user has pressed a button, and we want to capture that 
+  event to provide some feedback to the user (inbound active behavior). 
+  This is done by an "event handler" - that is, 
+  code that handles the event. In ooDialog programs, 
+  an event handler is a method. The following statement in the 
+  <computeroutput>CustomerView</computeroutput> class defines the handler method 
+  for the event of the user clicking the "Show Last Order" button:
+  <programlisting>
+    <![CDATA[
+    self~connectButtonEvent("IDC_SHOW_LAST_ORDER","CLICKED",showLastOrder)
+    ]]>
+  </programlisting>
+  This statement connects the pushbutton event <emphasis role='italic'>Clicked</emphasis> 
+  for the button whose ID is <emphasis role='italic'>IDC_SHOW_LAST_ORDER</emphasis> 
+  with the event handler method <emphasis role='italic'>showLastOrder</emphasis>.
+</para>  
+<para>
+  In general, specification of active controls is done in the 
+  <emphasis role='italic'>initDialog</emphasis> method. In the 
+  <computeroutput>CustomerView</computeroutput> class, specification of active 
+  controls occupies most of the <emphasis role='italic'>initDialog</emphasis>
+  method. The last two statements - and indeed most of the methods in the class - belong to the 
+  Application and Data Function category.     
+</para>
+</section>
 
-Mention resedit and Options -> Preferences -> Code generation -> Files -> Header file name
-%barefilename% to get .h file same name as .rc file.
--->
+<section id="chap04-rcdialogcode-appdata"><title>Application Data and Function</title><!-- section 4.3.3 -->
+<para>Designing the application function and data handling part of a main view class 
+is more complex than is often thought. The designer has to consider 
+a number of different possible states of the dialog, and also which state 
+transitions are valid. Sometimes state and state transition charts 
+are used to plan and record UI interactions. And, in doing this design work,
+the first consideration is the user. Indeed, providing 
+what the user needs and likes is probably the most difficult aspect of GUI development.
+But who is "the user"? Well, this document would be going well outside its remit to 
+embark on such a discussion. Suffice to say that there are a number of sources for 
+information on usability, among which one of the author's favorites is 
+"The Inmates Are Running The Asylum" by Alan Cooper. But here, the main concern 
+is use of ooDialog rather than UI design, and so in this document, UI design takes
+second place. 
+</para>
+
+</section><!-- end of section 4.3.3 --->
+
+</section><!-- end of section 4.3 --->
+
+<section id="chap04-resourcefile"><title>Using Binary Resource Files</title><!-- section 4.4 -->
+<para>
+  To be completed.
+</para>
+</section>
+</chapter>
 
