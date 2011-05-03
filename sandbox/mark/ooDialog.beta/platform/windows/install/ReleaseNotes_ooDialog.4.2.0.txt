@@ -6,6 +6,50 @@ That section is the start of the real release notes for 4.2.0.  Just a stub
 for now, but starting to get filled in.
 
 
+                     switch_ooDialog420_410-4.2.0.6961
+                     =================================
+
+Changes since switch_ooDialog420_410-4.2.0.6887
+----------------------------------------------------------------------------
+
+Documentation:
+--------------
+  More of the ooDialog Method Reference documentation is complete.
+
+  The UpDown control documentation is completed.
+
+  The MonthCalendar control documentation is over 50% completed.
+
+  Some work has been done on the Menu classes documentation.
+
+  The ooDialog User Dialog has chapter 3 added, and chapter 4 started.
+
+Samples added:
+--------------
+  The simpleMenuBar.rex example was enhanced and renamed to the
+  UserMenuBar.rex.
+
+  The BinaryMenuBar.rex showing how to use the BinaryMenuBar class was
+  added.
+
+  More exercises to accompany the ooDialog User Guide were added.  There are
+  now exercises for chapter 3 an 4.
+
+Enhancements:
+-------------
+  The getBuddy() and setBuddy() methods of the UpDown control were enhanced
+  to use a Rexx UpDown control object rather than a window handle.
+
+
+
+Bugs:
+----
+  Several bugs and inconsistencies in the MonthCalendar and Menu classes,
+  found internally, were fixed.
+
+
+
+
                      switch_ooDialog420_410-4.2.0.6887
                      =================================
 
@@ -164,10 +208,48 @@ The PropertySheetDialog is a true implementation of the Windows property
 sheet.  It allows the easy creation of Windows wizards, both Wizard 97
 wizards and the new (to Windows) Aero Wizard.
 
-PropertySheetPage class:
+Property Sheet Page classes:
+  PropertySheetPage
+  ResPSPDialog
+  UserPSPDialog
+  RcPSPDialog
+
+The property sheet page classes are used to implement the pages of a
+property sheet dialog.
+
+Control Dialog classes:
+  ControlDialog
+  ResControlDialog
+  UserControlDialog
+  RcControlDialog
+
+Control dialogs are a special type of dialog that works well as a dialog
+within a top-level dialog.  The primary use of these dialogs is within Tab
+controls.
 
 New utility classes:
 --------------------
+
+DayState:
+
+The DayState class is a helper class for the DateTimePicker class and
+represents the state of each day in a month.
+
+DayStates:
+
+The DayStates class is also a helper class for the DateTimePicker class and
+provides methods for managing DayState objects.
+
+
+OS:
+
+The OS class provides methods related to operating system services.
+
+VK:
+
+The VK (virtual key) class provides a mapping between numerical key code
+values and their symbolic names.  Every virtual key defined by Microsoft is
+included in the class.
 
 Documentation
 -------------
