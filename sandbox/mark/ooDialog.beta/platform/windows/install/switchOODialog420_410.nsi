@@ -310,6 +310,13 @@ Section  doSwitch
     File "${SamplesDir420}\userGuide\exercises\*.rex"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise04a
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise04a\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise04a\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise04a\*.rex"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\wav
     ; Add the files ...
     File "${SamplesDir420}\wav\*.wav"

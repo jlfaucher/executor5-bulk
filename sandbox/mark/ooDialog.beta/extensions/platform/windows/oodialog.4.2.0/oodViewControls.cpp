@@ -428,14 +428,14 @@ static RexxStringObject mcStyle2String(RexxMethodContext *c, uint32_t style)
     char buf[256];
     buf[0] = '\0';
 
-    if ( style & MCS_DAYSTATE )         strcat(buf, "DAYSTATE"   );
-    if ( style & MCS_MULTISELECT )      strcat(buf, "MULTI"      );
-    if ( style & MCS_NOTODAY )          strcat(buf, "NOTODAY"    );
-    if ( style & MCS_NOTODAYCIRCLE )    strcat(buf, "NOCIRCLE"   );
-    if ( style & MCS_WEEKNUMBERS )      strcat(buf, "WEEKNUMBERS");
-    if ( style & MCS_NOTRAILINGDATES )  strcat(buf, "NOTRAILING" );
-    if ( style & MCS_SHORTDAYSOFWEEK )  strcat(buf, "SHORTDAYS"  );
-    if ( style & MCS_NOSELCHANGEONNAV ) strcat(buf, "NOSELCHANGE");
+    if ( style & MCS_DAYSTATE )         strcat(buf, "DAYSTATE "   );
+    if ( style & MCS_MULTISELECT )      strcat(buf, "MULTI "      );
+    if ( style & MCS_NOTODAY )          strcat(buf, "NOTODAY "    );
+    if ( style & MCS_NOTODAYCIRCLE )    strcat(buf, "NOCIRCLE "   );
+    if ( style & MCS_WEEKNUMBERS )      strcat(buf, "WEEKNUMBERS ");
+    if ( style & MCS_NOTRAILINGDATES )  strcat(buf, "NOTRAILING " );
+    if ( style & MCS_SHORTDAYSOFWEEK )  strcat(buf, "SHORTDAYS "  );
+    if ( style & MCS_NOSELCHANGEONNAV ) strcat(buf, "NOSELCHANGE ");
 
     *(buf + strlen(buf)) = '\0';
     return c->String(buf);
@@ -575,13 +575,16 @@ RexxMethod1(RexxObjectPtr, dtp_getInfo, CSELF, pCSelf)
     context->DirectoryPut(result, rxNewRect(context, &(info.rcButton)), "BUTTONRECT");
     context->DirectoryPut(result, objectStateToString(context, info.stateButton), "BUTTONSTATE");
 
-    RexxObjectPtr ctrl = createControlFromHwnd(context, (pCDialogControl)pCSelf, info.hwndDropDown, winMonthCalendar);
+    // TODO this really needs testing.  MSN docs do not specifically say this is
+    // a month calendar control, rather they call it a drop down grid??
+    // Assuming for now it is a month calendar.
+    RexxObjectPtr ctrl = createControlFromHwnd(context, (pCDialogControl)pCSelf, info.hwndDropDown, winMonthCalendar, false);
     context->DirectoryPut(result, ctrl, "DROPDOWN");
 
-    ctrl = createControlFromHwnd(context, (pCDialogControl)pCSelf, info.hwndEdit, winEdit);
+    ctrl = createControlFromHwnd(context, (pCDialogControl)pCSelf, info.hwndEdit, winEdit, true);
     context->DirectoryPut(result, ctrl, "EDIT");
 
-    ctrl = createControlFromHwnd(context, (pCDialogControl)pCSelf, info.hwndUD, winUpDown);
+    ctrl = createControlFromHwnd(context, (pCDialogControl)pCSelf, info.hwndUD, winUpDown, true);
     context->DirectoryPut(result, ctrl, "UPDOWN");
 
     return result;
@@ -645,11 +648,14 @@ RexxMethod2(RexxObjectPtr, dtp_getIdealSize, RexxObjectPtr, _size, CSELF, pCSelf
  *         month calendar control is destroyed. Once the close up event is
  *         received, the MonthCalendar object will no longer be valid.  Invoking
  *         methods on the object will raise a syntax condition.
+ *
+ *  @note  We do *not* have the new Rexx month calendar object put in the Rexx
+ *         dialog's control bag to protect it from garbage collection.
  */
 RexxMethod1(RexxObjectPtr, dtp_getMonthCal, CSELF, pCSelf)
 {
     HWND hDTP = getDChCtrl(pCSelf);
-    return createControlFromHwnd(context, (pCDialogControl)pCSelf, DateTime_GetMonthCal(hDTP), winMonthCalendar);
+    return createControlFromHwnd(context, (pCDialogControl)pCSelf, DateTime_GetMonthCal(hDTP), winMonthCalendar, false);
 }
 
 
@@ -899,7 +905,7 @@ inline bool isMultiSelectionMonthCalendar(HWND hCtrl)
 
 inline RexxObjectPtr setDayState(HWND hMC, LPMONTHDAYSTATE pmds, int count, RexxObjectPtr result)
 {
-    if ( result != TheFalseObj )
+    if ( result != NULLOBJECT )
     {
         result = (MonthCal_SetDayState(hMC, count, pmds) == 0 ? TheFalseObj : TheTrueObj);
     }
@@ -1018,7 +1024,7 @@ static void firstDay2directory(RexxMethodContext *c, uint32_t firstDay, RexxDire
 
 bool putHitInfo(RexxMethodContext *c, RexxDirectoryObject hitInfo, MCHITTESTINFO *info)
 {
-    bool done = true;
+    bool done = true;  // TODO TODO logic seems backwards here - default should be false, set to true if MCHT_NOWHERE
     bool needDate = false;
 
     switch ( info->uHit )
@@ -1334,7 +1340,7 @@ RexxMethod1(RexxObjectPtr, mc_getCurrentView, CSELF, pCSelf)
 {
     if ( ! _isAtLeastVista() )
     {
-        return wrongWindowsVersionException(context, "getBorder", "Vista");
+        return wrongWindowsVersionException(context, "getCurrentView", "Vista");
     }
 
     HWND hMC = getMonthCalendar(context, pCSelf);
@@ -1386,10 +1392,6 @@ RexxMethod2(int32_t, mc_getFirstDayOfWeek, OPTIONAL_RexxObjectPtr, result, CSELF
     }
 
     uint32_t ret = MonthCal_GetFirstDayOfWeek(hMC);
-
-    int32_t       iDay = LOWORD(ret);
-    RexxObjectPtr usesLocale = HIWORD(ret) == 0 ? TheTrueObj : TheFalseObj;
-    CSTRING       dayName = day2dayName(iDay);
 
     if ( argumentExists(1) )
     {
