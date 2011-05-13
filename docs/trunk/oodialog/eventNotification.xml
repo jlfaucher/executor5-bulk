@@ -59,8 +59,8 @@
 <indexterm><primary>EventNotification</primary><secondary>connectHelp</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectHelp(--methodname--)-----------------------><
-
+>>--connectHelp(--+--------------+--)------------><
+                  +--methodName--+
 ]]>
 </programlisting>
 
@@ -75,10 +75,11 @@
   <para>
     The only argument is:
   <variablelist>
-    <varlistentry><term>methodName [required]</term>
+    <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
-      The name of the method that to be invoked when the help event occurs. The name can not be the empty string.
+      The name of the method that to be invoked when the help event occurs. The name can not be the empty string. When
+      this argument is omitted the name defaults to <emphasis role="italic">onHelp</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -211,8 +212,8 @@ Help request:
 <indexterm><primary>EventNotification</primary><secondary>connectResize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectResize(--methodName--)------------------------------><
-
+>>--connectResize(--+--------------+--)----------><
+                    +--methodName--+
 ]]>
 </programlisting>
 
@@ -226,11 +227,12 @@ Help request:
   <para>
     The only argument is:
   <variablelist>
-    <varlistentry><term>methodName [required]</term>
+    <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the method that is invoked each time the size of the dialog has changed. The method name can not be the
-      empty string and must be less than 256 characters in length.
+      empty string and must be less than 256 characters in length. When this argument is omitted the name defaults to
+      <emphasis role="italic">onResize</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -348,8 +350,8 @@ Help request:
 <indexterm><primary>EventNotification</primary><secondary>connectResizing</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectResizing(--methodName--)--------------><
-
+>>--connectResizing(--+--------------+--)--------><
+                      +--methodName--+
 ]]>
 </programlisting>
 
@@ -364,11 +366,12 @@ Help request:
   <para>
     The only argument is:
   <variablelist>
-    <varlistentry><term>methodName [required]</term>
+    <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the method that is invoked each time the size of the dialog is about to be changed. The method name
-      can not be the empty string.
+      can not be the empty string. When this argument is omitted the name defaults to <emphasis
+      role="italic">onResizing</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -580,14 +583,241 @@ Help request:
 </section>
 
 
+<section id="mthConnectActivate"><title>connectActivate</title>
+<indexterm><primary>connectActivate</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectActivate</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectActivate</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectActivate(--+--------------+--)--------><
+                      +--methodName--+
+]]>
+</programlisting>
+
+<para>
+  Connects an <emphasis role="italic">activate</emphasis> <link linkend="ovvEvents">event</link> notification sent to
+  the underlying dialog with a method in the Rexx dialog. This event notification is sent to both the window being
+  activated and the window being deactivated
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method that is invoked each time the size of the dialog is about to be changed. The method name
+      can not be the empty string. When this argument is omitted the name defaults to <emphasis
+      role="italic">onActivate</emphasis>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An (internal) error prevented the message from being connected to a method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">active</emphasis> window is the <emphasis role="italic">top-level</emphasis> window that
+    the user is currently working with. The activate notification is only sent to top-level windows. The activate
+    notification is always sent in pairs, one notification to the window losing the activation and one to the window
+    gaining the activation. The arguments to the event handler for the notification allow the programmer to determine if
+    the window is gaining or losing the acivation.
+  </para>
+  <para>
+    Common guidelines on <link linkend="paraWhereToConnectEvents">where</link> to invoke the <emphasis
+    role="italic">connectActivate</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
+    to code event handlers are included in the documentation for the <link
+    linkend="clsEventNotification">EventNotification</link> class.
+  </para>
+  <para>
+    The interpreter invokes the event handler directly and waits in the window <link
+    linkend="ovvWindowMessages">message</link> processing loop for the return from the event handler. Connecting the
+    activate event requires that the programmer reply to the event from the event handler in a timely manner.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
+  </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    sizing events happen.
+  </para>
+  <para>
+    The underlying dialog receives the WM_ACTIVATE message as the notification for this event.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="evtACTIVATE"><title>Activate Event Handler</title>
+<indexterm><primary>dialog object</primary><secondary>events</secondary><tertiary>ACTIVATE</tertiary></indexterm>
+
+<programlisting>
+<![CDATA[
+::method onActivate unguarded
+  use arg status, hwnd, hFocus, isMinimized
+
+  return .false
+]]>
+</programlisting>
+
+<para>
+  The event handler for the ACTIVATE event is invoked when the dialog window is either losing or gaining the active
+  window status.
+</para>
+<para>
+  The programmer must return a value from the event handler and the interpreter waits for the return value from the
+  event handler.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves four arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>status</term>
+    <listitem>
+    <para>
+      A keyword that indicates if the dialog is gaining or losing the activation. The keyword will be exactly one of the
+      following:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>ACTIVE</member> <member>CLICKACTIVE</member> <member>INACTIVE</member>
+      </simplelist>
+    </para>
+    <variablelist>
+      <varlistentry><term></term>
+      <listitem>
+      <para>
+        The dialog is gaining the activation through some means other than the user clicking the mouse on the window.
+        For example the user may select the window through the ALT-Tab mechanism.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CLICKACTIVE</term>
+      <listitem>
+      <para>
+        The dialog is gaining the activation through a mouse click.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>INACTIVE</term>
+      <listitem>
+      <para>
+        The dialog is losing the activation.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> of the window being activated or deactivated, depending on the
+      <emphasis role="italic">status</emphasis> argument. If the keyword is INACTIVE, then this is the handle of the
+      window gaining the activation. If the keyword is ACTIVE or CLICKACTIVE, it is the handle of the window losing the
+      activation.
+    </para>
+    <para>
+      <emphasis role="bold">Note</emphasis> that this argument may be 0, indicating the operating system did not pass a
+      window handle with the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hFocus</term>
+    <listitem>
+    <para>
+      The window handle of the dialog control with the current focus when the dialog is being deactivated.  When the
+      dialog is being activated <emphasis role="italic">hFocus</emphasis> will be 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isMinimized</term>
+    <listitem>
+    <para>
+      Specifies the minimized state of the window being activated or deactivated. <emphasis
+      role="italic">isMinimized</emphasis> will be <computeroutput>.true</computeroutput> if the window is minimized,
+      otherwise <computeroutput>.false</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler for this notification must return <computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput>. A return of true indicates that the notification has been processed and a
+    return of false indicates that the notification has not been processed. When the notification has not been processed
+    the interpreter passes the notification on to the operating system for its default processing.
+  </para>
+  <para>
+    The default processing done by the operating system includes things like restoring the focus to the dialog control
+    that had the focus when the dialog was deactivated, highlighting the text in an edit control if that control has the
+    focus, etc.. Under most circumstances, the programmer should return <computeroutput>.false</computeroutput> to allow
+    the dialog manager to perform this default processing. If not, the programmer should take care of these details or
+    the dialog may not behave as the user expects.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example comes from code ooDialog uses internally to handle a problem with a <link
+    linkend="clsListView">ListView</link> control when it is used in a <link linkend="clsTab">Tab</link> control. When
+    the dialog is being inactivated the handle of the focused control is saved. When it is being activated, the handle
+    of the last focused control is passed on the to <link linkend="clsControlDialog">ControlDialog</link> that contains
+    the list-view for processing.
+
+<programlisting>
+<![CDATA[
+
+::method onActivate
+  expose listViewPageDialog lastFocused
+  use arg flag, hwnd, hFocused, isMinimized
+
+  reply .false
+
+  if flag == 'INACTIVE' then lastFocused = hFocused
+  else listViewPageDialog~updateListView(lastFocused)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Activate Event Handler -->
+
+</section>
+
+
 <section id="mthConnectSizeMoveEnded"><title>connectSizeMoveEnded</title>
 <indexterm><primary>connectSizeMoveEnded</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectSizeMoveEnded</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectSizeMoveEnded</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectSizeMoveEnded(--methodName--+--------------+--)-----><
-                                       +-,-willReply--+
+>>--connectSizeMoveEnded(--+--------------+--+--------------+--)---------------><
+                           +--methodName--+  +-,-willReply--+
 
 ]]>
 </programlisting>
@@ -603,11 +833,12 @@ Help request:
   <para>
     The arguments are
   <variablelist>
-    <varlistentry><term>methodName [required]</term>
+    <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the event handling method that to be invoked when the the size / move exit event occurs. The name must
-      not be the empty string and must be less than 256 characters in length.
+      not be the empty string and must be less than 256 characters in length. When this argument is omitted the name
+      defaults to <emphasis role="italic">onSizeMoveEnded</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>willReply [optional]</term>
@@ -727,8 +958,8 @@ Help request:
 <indexterm><primary>EventNotification</primary><secondary>connectMove</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectMove(--methodName--)--------------------------------><
-
+>>--connectMove(--+--------------+--)------------><
+                  +--methodName--+
 ]]>
 </programlisting>
 
@@ -742,11 +973,12 @@ Help request:
   <para>
     The only argument is:
   <variablelist>
-    <varlistentry><term>methodName [required]</term>
+    <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string
-      and it must be less than 256 characters in length.
+      and it must be less than 256 characters in length. When this argument is omitted the name defaults to <emphasis
+      role="italic">onMove</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -818,15 +1050,15 @@ Help request:
 <indexterm><primary>EventNotification</primary><secondary>connectPosChanged</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectPosChanged(--methodName--)--------------------------><
-
+>>--connectPosChanged(--+--------------+--)------><
+                        +--methodName--+
 ]]>
 </programlisting>
 
 <para>
   The <emphasis role="italic">connectPosChanged</emphasis> method connects the position changed event notification sent
   to a dialog to a method in the Rexx dialog object. This notification is sent to the dialog when its size, position, or
-  place in the Z order has changed .
+  place in the Z order has changed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -834,11 +1066,12 @@ Help request:
   <para>
     The only argument is:
   <variablelist>
-    <varlistentry><term>methodName [required]</term>
+    <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string
-      and it must be less than 256 characters in length.
+      and it must be less than 256 characters in length. When this argument is omitted the name defaults to <emphasis
+      role="italic">onPosChanged</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -910,7 +1143,7 @@ Help request:
 <indexterm><primary>EventNotification</primary><secondary>connectDraw</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectDraw--(--+-----+--+---------------+--)--------------><
+>>--connectDraw--(--+-----+--+---------------+--)---------------><
                     +--id-+  +-,--methodName-+
 
 ]]>
@@ -998,8 +1231,8 @@ Help request:
 <indexterm><primary>EventNotification</primary><secondary>connectMouseCapture</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectMouseCapture(--methodName--)------------------------><
-
+>>--connectMouseCapture(--+--------------+--)----><
+                          +--methodName--+
 ]]>
 </programlisting>
 
@@ -1015,11 +1248,12 @@ Help request:
   <para>
     The single argument is:
     <variablelist>
-      <varlistentry><term>methodName [required]</term>
+      <varlistentry><term>methodName [optional]</term>
       <listitem>
       <para>
         The nane of the method that will be invoked upon receiving this event notification. The name can not be the empty
-        string and must be less than 256 characters in length.
+        string and must be less than 256 characters in length. When this argument is omitted the name defaults to <emphasis
+        role="italic">onMouseCapture</emphasis>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1068,7 +1302,7 @@ Help request:
 <indexterm><primary>EventNotification</primary><secondary>connectKeyPress</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectKeyPress(--methodName--,--keys-+------------+--)----><
+>>--connectKeyPress(--methodName--,--keys-+------------+--)-----><
                                           +-,--filter--+
 
 ]]>
@@ -1487,7 +1721,7 @@ Help request:
 <indexterm><primary>EventNotification</primary><secondary>connectFKeyPress</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectFKeyPress(--methodName--)---------------------------><
+>>--connectFKeyPress(--methodName--)-------------><
 
 ]]>
 </programlisting>
@@ -1818,7 +2052,7 @@ Help request:
 <indexterm><primary>EventNotification</primary><secondary>hasKeyPressConnection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hasKeyPressConnection(--+--------------+--)----------------><
+>>--hasKeyPressConnection(--+--------------+--)--><
                             +--methodName--+
 
 ]]>
@@ -1908,7 +2142,7 @@ Help request:
 
 <programlisting>
 <![CDATA[
->>--connectCommandEvents(--id--,--methodName--)----------------><
+>>--connectCommandEvents(--id--,--methodName--)--><
 
 ]]>
 </programlisting>
@@ -2043,7 +2277,7 @@ lo word resource ID:       1003
 <indexterm><primary>EventNotification</primary><secondary>connectNotifyEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectNotifyEvent(--id--,--event--+---------------+--)--------------------><
+>>--connectNotifyEvent(--id--,--event--+---------------+--)-----><
                                        +-,--methodName-+
 
 ]]>
@@ -2166,7 +2400,7 @@ lo word resource ID:       1003
 <indexterm><primary>dialog object</primary><secondary>connectStaticEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectStaticNotify(--id--,--event--,-+---------------+--)-----------------><
+>>--connectStaticNotify(--id--,--event--,-+---------------+--)--><
                                           +-,--methodName-+
 
 ]]>
@@ -2331,7 +2565,7 @@ lo word resource ID:       1003
 <indexterm><primary>connectButtonEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectButtonEvent(--id--,--event--+----------------+--)-------------------><
+>>--connectButtonEvent(--id--,--event--+----------------+--)----><
                                        +-,--methodName--+
 
 ]]>
@@ -2557,7 +2791,7 @@ lo word resource ID:       1003
 <indexterm><primary>connectEditEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectEditEvent(--id--,--event--+---------------+--)----------------------><
+>>--connectEditEvent(--id--,--event--+---------------+--)-------><
                                      +-,--methodName-+
 ]]>
 </programlisting>
@@ -2692,7 +2926,7 @@ it to 0 when a nonnumeric value was entered:
 <indexterm><primary>connectListBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectListBoxEvent(--id--,--event--+---------------+--)-------------------><
+>>--connectListBoxEvent(--id--,--event--+---------------+--)----><
                                         +-,--methodName-+
 
 ]]>
@@ -2795,7 +3029,7 @@ before init:super has been called.</para></listitem>
 <indexterm><primary>connectComboBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectComboBoxEvent(--id--,--event--+---------------+--)------------------><
+>>--connectComboBoxEvent(--id--,--event--+---------------+--)---><
                                          +-,--methodName-+
 
 ]]>
@@ -2927,7 +3161,7 @@ the window handle of the combo box. Example:
 <indexterm><primary>connectScrollBarEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectScrollBarEvent(--id--,--event--+---------------+--)-----------------><
+>>--connectScrollBarEvent(--id--,--event--+---------------+--)--><
                                           +-,--methodName=+
 
 ]]>
@@ -3131,12 +3365,14 @@ selected position.
 <indexterm><primary>connectEachSBEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+-+-------+-+-------+-+-------+-->
-                                                     +-,-mthWhenDrag-+ +-,-min-+ +-,-max-+ +-,-pos-+
+>>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+--------->
+                                                     +-,-mthWhenDrag-+
 
->--+-----------+-+-----------+-+----------+-+--------------+-+-------------+-+-------------+-)--------><
-   +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+ +-,-progbuttom-+ +-,-progtrack-+ +-,-progendsc-+
+>--+-------+-+-------+-+-------+--+-----------+-+-----------+-+----------+----->
+   +-,-min-+-+-,-max-+ +-,-pos-+  +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+
 
+>--+--------------+-+-------------+-+-------------+-)--------------------------><
+   +-,-progbuttom-+ +-,-progtrack-+ +-,-progendsc-+
 
 
 ]]>
@@ -3295,7 +3531,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 <indexterm><primary>connectListViewEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-connectListViewEvent(--id--,--event--+---------------+--)-------------------><
+>>-connectListViewEvent(--id--,--event--+---------------+--)----><
                                         +-,--methodName-+
 
 ]]>
@@ -3874,7 +4110,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 <indexterm><primary>connectTreeViewEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-connectTreeViewEvent(--id--,--event--+----------------+--)------------------><
+>>-connectTreeViewEvent(--id--,--event--+----------------+--)---><
                                         +-,--methodName--+
 
 ]]>
@@ -4232,7 +4468,7 @@ Example:
 <indexterm><primary>connectTrackBarEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectTrackBarEvent(--id--,--event--+---------------+--)------------------><
+>>--connectTrackBarEvent(--id--,--event--+---------------+--)---><
                                          +-,--methodName-+
 
 ]]>
@@ -5346,7 +5582,7 @@ self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
 <indexterm><primary>defListDragHandler</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-defListDragHandler(--id--,--item--,--point--)---------------><
+>>-defListDragHandler(--id--,--item--,--point--)----------------><
 
 ]]>
 </programlisting>
@@ -5394,7 +5630,7 @@ self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
 <indexterm><primary>defTreeDragHandler</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-defTreeDragHandler(--id--,--item--,--point--)---------------><
+>>-defTreeDragHandler(--id--,--item--,--point--)----------------><
 
 ]]>
 </programlisting>
