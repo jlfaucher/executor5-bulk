@@ -49,7 +49,9 @@
  *
  */
 
-  dlg = .ListsDialog~new("rc\oodListViews.rc", IDD_LISTVIEWS, , 'rc\oodListViews.h')
+  .application~useGlobalConstDir("O", 'rc\oodListViews.h')
+
+  dlg = .ListsDialog~new("rc\oodListViews.rc", IDD_LISTVIEWS)
 
   if dlg~initCode <> 0 then do
     say "Error instantiating the ListsDialog, aborting"
@@ -106,7 +108,7 @@
   w = (displayRect~right * (7 / 12)) % 4
   tabControl~setMinTabWidth(w)
 
-  pageDialog = .PageDialog~new("rc\oodListViews.rc", IDD_PAGE, , "rc\oodListViews.h", , , self)
+  pageDialog = .PageDialog~new("rc\oodListViews.rc", IDD_PAGE, , , , , self)
   pageDialog~initialize(smallIcons, normalIcons, records)
 
   -- Use execute() to properly start a ControlDialog.
@@ -249,7 +251,7 @@
 ::method onAdd unguarded
   expose pageDialog
 
-  dlg = .AddressDialog~new('rc\oodListViews.rc', IDD_ADDRESS, , 'rc\oodListViews.h')
+  dlg = .AddressDialog~new('rc\oodListViews.rc', IDD_ADDRESS)
 
   if dlg~initCode = 0 then do
     if dlg~execute("SHOWTOP") == self~IDOK then do

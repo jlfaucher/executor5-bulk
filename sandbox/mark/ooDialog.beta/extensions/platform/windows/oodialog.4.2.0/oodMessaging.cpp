@@ -53,8 +53,6 @@
 #include "oodData.hpp"
 #include "oodPropertySheetDialog.hpp"
 
-static LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
 /**
  * The dialog procedure function for all regular ooDialog dialogs.  Handles and
  * processes all window messages for the dialog.
@@ -165,421 +163,6 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
     // Do not search message table for WM_PAINT to improve redraw.
     if ( msgEnabled && uMsg != WM_PAINT && uMsg != WM_NCPAINT )
     {
-        MsgReplyType searchReply = searchMessageTables(uMsg, wParam, lParam, pcpbd);
-        if ( searchReply != ContinueProcessing )
-        {
-            // Note pre 4.0.1, we always returned FALSE, (pass on to the system
-            // to process.) But, post 4.0.1 we sometimes reply TRUE, the message
-            // has been handled.
-            return (searchReply == ReplyTrue ? TRUE : FALSE);
-        }
-    }
-
-    switch ( uMsg )
-    {
-        case WM_PAINT:
-            if ( pcpbd->bkgBitmap != NULL )
-            {
-                drawBackgroundBmp(pcpbd, hDlg);
-            }
-            break;
-
-        case WM_DRAWITEM:
-            if ( lParam != 0 )
-            {
-                return drawBitmapButton(pcpbd, lParam, msgEnabled);
-            }
-            break;
-
-        case WM_CTLCOLORDLG:
-            if ( pcpbd->bkgBrush )
-            {
-                return(LRESULT)pcpbd->bkgBrush;
-            }
-            break;
-
-        case WM_CTLCOLORSTATIC:
-        case WM_CTLCOLORBTN:
-        case WM_CTLCOLOREDIT:
-        case WM_CTLCOLORLISTBOX:
-        case WM_CTLCOLORMSGBOX:
-        case WM_CTLCOLORSCROLLBAR:
-        {
-            HBRUSH hbrush = NULL;
-
-            if ( pcpbd->CT_nextIndex > 0 )
-            {
-                // See of the user has set the dialog item with a different
-                // color.
-                long id = GetWindowLong((HWND)lParam, GWL_ID);
-                if ( id > 0 )
-                {
-                    register size_t i = 0;
-                    while ( i < pcpbd->CT_nextIndex && pcpbd->ColorTab[i].itemID != id )
-                    {
-                        i++;
-                    }
-                    if ( i < pcpbd->CT_nextIndex )
-                    {
-                        hbrush = pcpbd->ColorTab[i].ColorBrush;
-                    }
-
-                    if ( hbrush )
-                    {
-                        if ( pcpbd->ColorTab[i].isSysBrush )
-                        {
-                            SetBkColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, GetSysColor(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                        else
-                        {
-                            SetBkColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorBk));
-                            if ( pcpbd->ColorTab[i].ColorFG != -1 )
-                            {
-                                SetTextColor((HDC)wParam, PALETTEINDEX(pcpbd->ColorTab[i].ColorFG));
-                            }
-                        }
-                    }
-                }
-            }
-            if ( hbrush )
-                return(LRESULT)hbrush;
-            else
-                return DefWindowProc(hDlg, uMsg, wParam, lParam);
-        }
-
-        case WM_COMMAND:
-            switch ( LOWORD(wParam) )
-            {
-                case IDOK:
-                case IDCANCEL:
-
-                    // For both IDOK and IDCANCEL, the notification code
-                    // (the high word value) must be 0.
-                    if ( HIWORD(wParam) == 0 )
-                    {
-                        // We should never get here because both IDOK and
-                        // IDCANCEL should have be interecepted in
-                        // searchMessageTables().  But - sometimes we do, very
-                        // rarely.  It is on some abnormal error. See the
-                        // comments above for the WM_DESTROY message.
-                        pcpbd->abnormalHalt = true;
-                        DestroyWindow(hDlg);
-
-                        return TRUE;
-                    }
-            }
-            break;
-
-        case WM_QUERYNEWPALETTE:
-        case WM_PALETTECHANGED:
-            return paletteMessage(pcpbd, hDlg, uMsg, wParam, lParam);
-
-        case WM_USER_CREATECHILD:
-        {
-            HWND hChild = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)lParam, hDlg, (DLGPROC)RexxDlgProc,
-                                                    (LPARAM)pcpbd);
-            ReplyMessage((LRESULT)hChild);
-            return TRUE;
-        }
-
-        case WM_USER_CREATECONTROL_DLG:
-        {
-            pCPlainBaseDialog p = (pCPlainBaseDialog)wParam;
-            HWND hChild = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)lParam, p->hOwnerDlg, (DLGPROC)RexxChildDlgProc,
-                                                    wParam);
-            ReplyMessage((LRESULT)hChild);
-            return TRUE;
-        }
-
-        case WM_USER_CREATECONTROL_RESDLG:
-        {
-            pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)wParam;
-
-            HWND hChild = CreateDialogParam(pcpbd->hInstance, MAKEINTRESOURCE((uint32_t)lParam), pcpbd->hOwnerDlg,
-                                            (DLGPROC)RexxChildDlgProc, (LPARAM)pcpbd);
-
-            ReplyMessage((LRESULT)hChild);
-            return TRUE;
-        }
-
-        case WM_USER_CREATEPROPSHEET_DLG:
-        {
-            pCPropertySheetDialog pcpsd = (pCPropertySheetDialog)lParam;
-
-            assignPSDThreadContext(pcpsd, pcpbd->dlgProcContext);
-
-            if ( setPropSheetHook(pcpsd) )
-            {
-                SetLastError(0);
-                INT_PTR ret = PropertySheet((PROPSHEETHEADER *)wParam);
-                ReplyMessage((LRESULT)ret);
-            }
-            else
-            {
-                ReplyMessage((LRESULT)-1);
-            }
-
-            return TRUE;
-        }
-
-        case WM_USER_INTERRUPTSCROLL:
-            pcpbd->stopScroll = wParam;
-            return TRUE;
-
-        case WM_USER_GETFOCUS:
-            ReplyMessage((LRESULT)GetFocus());
-            return TRUE;
-
-        case WM_USER_GETSETCAPTURE:
-            if ( wParam == 0 )
-            {
-                ReplyMessage((LRESULT)GetCapture());
-            }
-            else if ( wParam == 2 )
-            {
-                uint32_t rc = 0;
-                if ( ReleaseCapture() == 0 )
-                {
-                    rc = GetLastError();
-                }
-                ReplyMessage((LRESULT)rc);
-            }
-            else
-            {
-                ReplyMessage((LRESULT)SetCapture((HWND)lParam));
-            }
-            return TRUE;
-
-        case WM_USER_GETKEYSTATE:
-            ReplyMessage((LRESULT)GetAsyncKeyState((int)wParam));
-            return TRUE;
-
-        case WM_USER_SUBCLASS:
-        {
-            SUBCLASSDATA *pData = (SUBCLASSDATA *)lParam;
-
-            pData->dlgProcContext = pcpbd->dlgProcContext;
-            pData->rexxDialog = pcpbd->rexxSelf;
-
-            BOOL success = SetWindowSubclass(pData->hCtrl, (SUBCLASSPROC)wParam, pData->uID, (DWORD_PTR)pData);
-
-            ReplyMessage((LRESULT)success);
-            return TRUE;
-        }
-
-        case WM_USER_SUBCLASS_REMOVE:
-            ReplyMessage((LRESULT)RemoveWindowSubclass(GetDlgItem(hDlg, (int)lParam), (SUBCLASSPROC)wParam, (int)lParam));
-            return TRUE;
-
-        case WM_USER_HOOK:
-        {
-            SUBCLASSDATA *pData = (SUBCLASSDATA *)lParam;
-
-            pData->dlgProcContext = pcpbd->dlgProcContext;
-            pData->rexxDialog = pcpbd->rexxSelf;
-
-            ReplyMessage((LRESULT)SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)wParam, NULL, GetCurrentThreadId()));
-            return TRUE;
-        }
-
-        case WM_USER_CONTEXT_MENU:
-        {
-            PTRACKPOP ptp = (PTRACKPOP)wParam;
-            uint32_t cmd;
-
-            SetLastError(0);
-            cmd = (uint32_t)TrackPopupMenuEx(ptp->hMenu, ptp->flags, ptp->point.x, ptp->point.y,
-                                             ptp->hWnd, ptp->lptpm);
-
-            // If TPM_RETURNCMD is specified, the return is the menu item
-            // selected.  Otherwise, the return is 0 for failure and
-            // non-zero for success.
-            if ( ! (ptp->flags & TPM_RETURNCMD) )
-            {
-                cmd = (cmd == 0 ? FALSE : TRUE);
-                if ( cmd == FALSE )
-                {
-                    ptp->dwErr = GetLastError();
-                }
-            }
-            ReplyMessage((LRESULT)cmd);
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
-inline char *tcn2str(LPARAM lParam)
-{
-    switch ( ((NMHDR *)lParam)->code )
-    {
-        case TCN_FOCUSCHANGE :    return "TCN_FOCUSCHANGE";
-        case TCN_GETOBJECT :      return "TCN_GETOBJECT";
-        case TCN_KEYDOWN :        return "TCN_KEYDOWN";
-        case TCN_SELCHANGE :      return "TCN_SELCHANGE";
-        case TCN_SELCHANGING :    return "TCN_SELCHANGING";
-        case NM_CLICK :           return "NM_CLICK";
-        case NM_DBLCLK :          return "NM_DBLCLK";
-        case NM_RCLICK :          return "NM_RCLICK";
-        case NM_RDBLCLK :         return "NM_RDBLCLK";
-        case NM_RELEASEDCAPTURE : return "NM_RELEASEDCAPTURE";
-        default : return "Not a tab control notification";
-    }
-}
-
-/**
- * Filter for tab control notification messages.
- *
- * @param uMsg    The windowm message id.
- * @param lParam  The LPARAM argument for the message.
- *
- * @return Return true if the message is a tab control notification message,
- *         otherwise false.
- */
-inline bool isTCNMsg(uint32_t uMsg, LPARAM lParam)
-{
-    if ( uMsg == WM_NOTIFY )
-    {
-        uint32_t code = ((NMHDR *)lParam)->code;
-        if ( code >= TCN_LAST && code <= TCN_FIRST )
-        {
-            return true;
-        }
-
-        UINT_PTR id = ((NMHDR *)lParam)->idFrom;
-        if ( id == 200 && (code == NM_CLICK || code == NM_DBLCLK || code == NM_RCLICK ||
-                           code == NM_RDBLCLK || code == NM_RELEASEDCAPTURE) )
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-
-/**
- * The dialog procedure function for TabOwnerDialog ooDialog dialogs.  Handles
- * and processes all window messages for the dialog.
- *
- * @param hDlg
- * @param uMsg
- * @param wParam
- * @param lParam
- *
- * @return LRESULT CALLBACK
- *
- * TODO rewrite comments.
- *
- * @remarks  The WM_INITDIALOG message.
- *
- *           In CreateDialogParam() / CreateDialogIndirectParam() we pass the
- *           pointer to the PlainBaseDialog CSelf as the param.  The OS then
- *           sends us this value as the LPARAM argument in the WM_INITDIALOG
- *           message. The pointer is stored in the user data field of the window
- *           words for this dialog.  We do the same thing for the child dialogs,
- *           see the WM_USER_CREATECHILD message.
- *
- *           Note that when the child dialogs of the category dialog get
- *           created, we recieve a WM_INITDIALOG for each of them.  These child
- *           dialogs are all running on the same thread as the parent category
- *           dialog.  We don't want to do a bunch of nested AttachThreads()
- *           because we only do 1 DetachThread() for each window message loop.
- *           So, we check to see if dlgProcContext is null before doing the
- *           AttachThread().
- *
- *           The WM_USER_CREATECHILD message.
- *
- *           This user message's purpose is to create a child dialog of this
- *           dialog and return its window handle. Child dialogs are only created
- *           to implement the CategoryDialog and at this time are always created
- *           dynamically (from an in-memory template.) The dialog template
- *           pointer is passed here as the LPARAM arg from
- *           DynamicDialog::startChildDialog().
- *
- *           These child dialogs do not have a backing Rexx dialog. There is no
- *           unique CPlainBaseDialog struct for them.  Instead, at this time,
- *           all interaction with the child dialogs is done through the
- *           CPlainBaseDialog struct of the parent.  For each child dialog, we
- *           set the CPlainBaseDialog struct of the parent in the window words
- *           of the child dialog.  Prior to the conversion of ooDialog to the
- *           C++ API, when a message came in for a child dialog, a search was
- *           made through the DialogTable to try and find the parent dialog.
- *           This has been disposed of and the CPlainBaseDialog struct is just
- *           pulled out of the window words.
- */
-LRESULT CALLBACK RexxTabOwnerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    if ( uMsg == WM_INITDIALOG )
-    {
-        pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)lParam;
-        printf("In WM_INITDIALOG for RexxTabOwnerDlgProc()\n");
-        if ( pcpbd == NULL )
-        {
-            // Theoretically impossible.  But ... if it should happen, abort.
-            return endDialogPremature(pcpbd, hDlg, NoPCPBDpased);
-        }
-
-        if ( pcpbd->dlgProcContext == NULL )
-        {
-            RexxThreadContext *context;
-            if ( ! pcpbd->interpreter->AttachThread(&context) )
-            {
-                // Again, this shouldn't happen ... but
-                return endDialogPremature(pcpbd, hDlg, NoThreadAttach);
-            }
-            pcpbd->dlgProcContext = context;
-
-            RexxSetProcessMessages(FALSE);
-        }
-
-        setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)pcpbd);
-
-        return TRUE;
-    }
-
-    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)getWindowPtr(hDlg, GWLP_USERDATA);
-    if ( pcpbd == NULL )
-    {
-        // A number of messages arrive before WM_INITDIALOG, we just ignore them.
-        return FALSE;
-    }
-
-    if ( pcpbd->dlgProcContext == NULL )
-    {
-        if ( ! pcpbd->isActive )
-        {
-            return FALSE;
-        }
-
-        // Once again, theoretically impossible ...
-        return endDialogPremature(pcpbd, hDlg, NoThreadContext);
-    }
-
-    if ( uMsg == WM_DESTROY )
-    {
-        // Under all normal circumstances, WM_DESTROY never gets here.  But if
-        // it does, it is because of some unexplained / unanticpated error.
-        // PostQuitMessage() will cause the window message loop to quit and
-        // things should then (hopefully) unwind cleanly.
-        PostQuitMessage(3);
-        return TRUE;
-    }
-
-    bool msgEnabled = IsWindowEnabled(hDlg) ? true : false;
-
-    // Do not search message table for WM_PAINT to improve redraw.
-    if ( msgEnabled && uMsg != WM_PAINT && uMsg != WM_NCPAINT )
-    {
-        if ( isTCNMsg(uMsg, lParam) )
-        {
-            printf("RexxTabOwnerDlgProc() got TCN message: %s\n", tcn2str(lParam));
-        }
-
         MsgReplyType searchReply = searchMessageTables(uMsg, wParam, lParam, pcpbd);
         if ( searchReply != ContinueProcessing )
         {
@@ -4107,8 +3690,8 @@ RexxMethod3(int32_t, en_connectCommandEvents, RexxObjectPtr, rxID, CSTRING, meth
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
     {
         return -1;
     }
@@ -4211,8 +3794,8 @@ RexxMethod5(RexxObjectPtr, en_connectScrollBarEvent, RexxObjectPtr, rxID, CSTRIN
         return noWindowsDialogException(context, pcen->rexxSelf);
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
     {
         return TheNegativeOneObj;
     }
@@ -4293,8 +3876,8 @@ RexxMethod10(RexxObjectPtr, en_connectEachSBEvent, RexxObjectPtr, rxID, CSTRING,
         return noWindowsDialogException(context, pcen->rexxSelf);
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
     {
         return TheNegativeOneObj;
     }
@@ -4531,8 +4114,8 @@ RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, 
         return noWindowsDialogException(context, pcen->rexxSelf);
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
     {
         return TheNegativeOneObj;
     }
@@ -4689,8 +4272,8 @@ RexxMethod5(RexxObjectPtr, en_connectListViewEvent, RexxObjectPtr, rxID, CSTRING
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
     {
         return TheNegativeOneObj;
     }
@@ -4777,7 +4360,7 @@ RexxMethod4(RexxObjectPtr, en_connectUpDownEvent, RexxObjectPtr, rxID, CSTRING, 
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
-    uint32_t id = oodResolveSymbolicID(context, pcen->rexxSelf, rxID, -1, 1);
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
     if ( id == OOD_ID_EXCEPTION )
     {
         goto err_out;
@@ -4858,7 +4441,7 @@ RexxMethod5(RexxObjectPtr, en_connectDateTimePickerEvent, RexxObjectPtr, rxID, C
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
-    uint32_t id = oodResolveSymbolicID(context, pcen->rexxSelf, rxID, -1, 1);
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
     if ( id == OOD_ID_EXCEPTION )
     {
         goto err_out;
@@ -4944,7 +4527,7 @@ RexxMethod5(RexxObjectPtr, en_connectMonthCalendarEvent, RexxObjectPtr, rxID, CS
 {
     pCEventNotification pcen = (pCEventNotification)pCSelf;
 
-    uint32_t id = oodResolveSymbolicID(context, pcen->rexxSelf, rxID, -1, 1);
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
     if ( id == OOD_ID_EXCEPTION )
     {
         goto err_out;

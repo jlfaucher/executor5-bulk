@@ -572,6 +572,11 @@ RexxMethod7(RexxObjectPtr, userdlg_init, OPTIONAL_RexxObjectPtr, dlgData, OPTION
         {
             result = context->SendMessage1(self, "CONTROLDLGINIT", p);
         }
+
+        if ( pcpbd->isTabOwnerDlg && result == TheZeroObj )
+        {
+            result = context->SendMessage1(self, "TABOWNERDLGINIT", p);
+        }
     }
 
     return result;
@@ -582,10 +587,11 @@ RexxMethod1(RexxObjectPtr, userdlg_test, CSELF, pCSelf)
     RexxMethodContext *c = context;
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
 
-    RexxArrayObject msgName = c->ArrayOfTwo(c->String("ABNORMALHALT"), ThePlainBaseDialogClass);
-    RexxArrayObject args = c->NewArray(0);
-    c->SendMessage2(pcpbd->rexxSelf, "SENDWITH", msgName, args);
+    int32_t id1 = OOD_ID_EXCEPTION;
+    printf("int OOD_ID_EXCEPTION < 1 ? %d\n", id1 < 1);
 
+    uint32_t id2 = OOD_ID_EXCEPTION;
+    printf("uint32_t OOD_ID_EXCEPTION < 1 ? %d\n", id2 < 1);
     return TheZeroObj;
 }
 
@@ -1309,6 +1315,8 @@ err_out:
  */
 RexxMethod3(logical_t, dyndlg_startParentDialog, uint32_t, iconID, logical_t, modeless, CSELF, pCSelf)
 {
+    RexxMethodContext *c = context;
+
     pCDynamicDialog pcdd = validateDDCSelf(context, pCSelf);
     if ( pcdd == NULL )
     {
@@ -1452,7 +1460,7 @@ RexxMethod3(RexxObjectPtr, dyndlg_startChildDialog, POINTERSTRING, basePtr, uint
 
     pCPlainBaseDialog pcpbd = pcdd->pcpbd;
 
-    if ( pcpbd->isControlDlg && ! validControlDlg(context, pcpbd) )
+    if ( pcpbd->isControlDlg && ! pcpbd->isManagedDlg && ! validControlDlg(context, pcpbd) )
     {
         goto done_out;
     }
@@ -1468,6 +1476,7 @@ RexxMethod3(RexxObjectPtr, dyndlg_startChildDialog, POINTERSTRING, basePtr, uint
         {
             pcpbd->hDlg = hChild;
             pcpbd->isActive = true;
+            ((pCControlDialog)pcpbd->dlgPrivate)->activated = true;
             setDlgHandle(context->threadContext, pcpbd);
         }
     }
@@ -2620,8 +2629,8 @@ HWND getCategoryHCtrl(RexxMethodContext *context, pCPlainBaseDialog pcpbd, RexxO
         return NULL;
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1, true) )
     {
         return NULL;
     }
@@ -2747,8 +2756,8 @@ RexxMethod4(RexxObjectPtr, catdlg_getControlDataPage, RexxObjectPtr, rxID,  OPTI
         return TheNegativeOneObj;
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1, true) )
     {
         return TheNegativeOneObj;
     }
@@ -2787,8 +2796,8 @@ RexxMethod5(int32_t, catdlg_setControlDataPage, RexxObjectPtr, rxID, CSTRING, da
         return -1;
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1, true) )
     {
         return -1;
     }

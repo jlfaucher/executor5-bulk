@@ -148,7 +148,7 @@
 
 ::method connectButtonEvent
    use strict arg id, type, msgToRise = ""
-   if id~dataType("W") = 0 then id = self~resolveSymbolicId(id)
+   if \ id~dataType("W") then id = self~resolveSymbolicId(id)
    if id = -1 then return -1
    if msgToRise == "" then msgToRise = "on" || type
    type = type~translate

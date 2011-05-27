@@ -2532,8 +2532,8 @@ HWND getPBDControlWindow(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxObje
     HWND hCtrl = NULL;
     oodResetSysErrCode(c->threadContext);
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, c, pcpbd->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, c, pcpbd->rexxSelf, rxID, -1, 1, true) )
     {
         oodSetSysErrCode(c->threadContext, ERROR_INVALID_WINDOW_HANDLE);
     }
@@ -2701,20 +2701,26 @@ static bool checkDlgType(RexxMethodContext *c, RexxObjectPtr self, pCPlainBaseDi
                     goto err_out;
                 }
 
+                pcpbd->isOwnedDlg = true;
                 pcpbd->rexxOwner = ownerData;
                 pcpbd->hOwnerDlg = ownerPcpbd->hDlg;
                 pcpbd->initPrivate = TheNilObj;
             }
             else if( c->IsOfType(ownerData, "CONTROLDLGINFO") )
             {
+                pcpbd->initPrivate = ownerData;
+
                 pCControlDialogInfo pccid = (pCControlDialogInfo)c->ObjectToCSelf(ownerData);
+
+                // For a control dialog used with a tab owner dialog, it is not
+                // likely that the owner will be set yet.
                 if ( pccid->owner != NULLOBJECT )
                 {
                     pCPlainBaseDialog ownerPcpbd = dlgToCSelf(c, pccid->owner);
 
+                    pcpbd->isOwnedDlg = true;
                     pcpbd->rexxOwner = pccid->owner;
                     pcpbd->hOwnerDlg = ownerPcpbd->hDlg;
-                    pcpbd->initPrivate = ownerData;
                 }
             }
             else
@@ -2730,9 +2736,9 @@ static bool checkDlgType(RexxMethodContext *c, RexxObjectPtr self, pCPlainBaseDi
     {
         if ( arg5Exists )
         {
-            if ( ! c->IsOfType(ownerData, "DIRECTORY") )
+            if ( ! c->IsOfType(ownerData, "TABOWNERDLGINFO") )
             {
-                wrongClassException(c->threadContext, 5, "Directory");
+                wrongClassException(c->threadContext, 5, "TabOwnerDlgInfo");
                 goto err_out;
             }
             pcpbd->initPrivate = ownerData;
@@ -3000,13 +3006,6 @@ RexxMethod6(RexxObjectPtr, pbdlg_init, CSTRING, library, RexxObjectPtr, resource
     if ( argumentExists(4) )
     {
         context->SendMessage1(self, "PARSEINCLUDEFILE", hFile);
-    }
-
-    if ( pcpbd->isTabOwnerDlg )
-    {   // TODO move to subclass init
-        RexxClassObject ownerClass = rxGetContextClass(context, "TABOWNERDIALOG");
-        RexxArrayObject args = context->ArrayOfTwo(cselfBuffer, ownerData);
-        context->ForwardMessage(NULL, NULL, ownerClass, args);
     }
 
     goto done_out;
@@ -4403,8 +4402,8 @@ RexxMethod3(RexxObjectPtr, pbdlg_getControlHandle, RexxObjectPtr, rxID, OPTIONAL
     oodResetSysErrCode(context->threadContext);
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1, true) )
     {
         oodSetSysErrCode(context->threadContext, ERROR_INVALID_WINDOW_HANDLE);
         return TheZeroObj;
@@ -4491,8 +4490,8 @@ RexxMethod4(RexxObjectPtr, pbdlg_setTabGroup, RexxObjectPtr, rxID, OPTIONAL_logi
         return TheFalseObj;
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1, true) )
     {
         return TheNegativeOneObj;
     }
@@ -4642,8 +4641,8 @@ RexxMethod3(RexxObjectPtr, pbdlg_getControlData, RexxObjectPtr, rxID, NAME, msgN
         return TheNegativeOneObj;
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1, true) )
     {
         return TheNegativeOneObj;
     }
@@ -4690,8 +4689,8 @@ RexxMethod4(int32_t, pbdlg_setControlData, RexxObjectPtr, rxID, CSTRING, data, N
         return -1;
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcpbd->rexxSelf, rxID, -1, 1, true) )
     {
         return -1;
     }
@@ -4808,8 +4807,8 @@ RexxMethod5(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint3
         }
     }
 
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, c, self, rxID, -1, 1) || (int)id < 0 )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, c, self, rxID, -1, 1, true) )
     {
         goto out;
     }

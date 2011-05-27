@@ -46,6 +46,9 @@
  * Much of the code is simply copied from the PropertySheetDemo.rex program.
  */
 
+  .application~useGlobalConstDir("O", "rc\TabDemo.h")
+  .application~parseIncludeFile("rc\PropertySheetDemo.h")
+
   -- To run correctly, this program needs to be able to find its support files.
   -- But, we allow starting the program from anywhere.  To do this we:
   -- get the directory we are executing from, switch to the directory this
@@ -58,7 +61,7 @@
   mydir = directory(mydir)                    -- CD to the install direcotry.
 
   -- Create the main dialog.
-  dlg = .NewControlsDialog~new( , "rc\TabDemo.h")
+  dlg = .NewControlsDialog~new
 
   -- Show and run the dialog.
   dlg~execute('SHOWTOP', IDI_DLG_OODIALOG)
@@ -103,7 +106,8 @@
   -- dialog to be created.  We can not resize and reposition the control dialog
   -- until the underlying dialog is created, so we get it started, then do our
   -- other tasks.
-  t1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG, , "rc\PropertySheetDemo.h", , , self)
+  t1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
+  t1~ownerDialog = self
   t1~execute
 
   -- Add the tabs to the tab control.
@@ -111,10 +115,10 @@
   tabControl~addSequence("List View", "Tree View", "Progress Bar", "Track Bar", "Tab")
 
   -- Create the other 4 control dialogs.
-  t2 = .TreeViewDlg~new("rc\PropertySheetDemo.rc", IDD_TREEVIEW_DLG, , "rc\PropertySheetDemo.h")
-  t3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG, , "rc\PropertySheetDemo.h")
-  t4 = .TrackBarDlg~new("rc\PropertySheetDemo.rc", IDD_TRACKBAR_DLG, , "rc\PropertySheetDemo.h")
-  t5 = .TabDlg~new("rc\PropertySheetDemo.rc", IDD_TAB_DLG, , "rc\PropertySheetDemo.h")
+  t2 = .TreeViewDlg~new("rc\PropertySheetDemo.rc", IDD_TREEVIEW_DLG)
+  t3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG)
+  t4 = .TrackBarDlg~new("rc\PropertySheetDemo.rc", IDD_TRACKBAR_DLG)
+  t5 = .TabDlg~new("rc\PropertySheetDemo.rc", IDD_TAB_DLG)
 
   -- Save the 5 dialogs so we can access them when needed.
   tabContent = .array~of(t1, t2, t3, t4, t5)
@@ -132,8 +136,6 @@
   self~calculateDisplayArea
 
   self~positionAndShow(1)
-
-  self~startControlDialogs
 
 
 /** calculateDisplayArea()
@@ -191,9 +193,9 @@
   -- is created. If the system is heavily loaded for some reason, this may not
   -- have happened yet.  We need to wait for it.
   dlg = tabContent[index]
-  do 10
+  do i = 1 to 10
     if dlg~hwnd <> 0 then leave
-    z = SysSleep(.1)
+    z = SysSleep(.01)
   end
 
   if dlg~hwnd == 0 then do
@@ -214,23 +216,11 @@
   self~checkButtons
 
 
-::method startControlDialogs private unguarded
-  expose tabContent
-
-  reply 0
-  do i = 2 to tabContent~items
-    dlg = tabContent[i]
-    dlg~ownerDialog = self
-    dlg~execute
-  end
-
-
 ::method onNewTab
   expose tabControl tabContent havePositioned lastSelected
 
   index = tabControl~selectedIndex + 1
   dlg = tabContent[index]
-  if index == 3 then dlg~activateThreads
 
   if havePositioned[index] then do
     last = tabContent[lastSelected]
@@ -239,8 +229,11 @@
     lastSelected = index
   end
   else do
+    dlg~ownerDialog = self
+    dlg~execute
     self~positionAndShow(index)
   end
+  if index == 3 then dlg~activateThreads
 
   self~checkButtons
 

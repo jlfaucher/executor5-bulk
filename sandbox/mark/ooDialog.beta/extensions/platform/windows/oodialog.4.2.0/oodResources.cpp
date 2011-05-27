@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -921,8 +921,8 @@ RexxArrayObject rxImagesFromArrayOfIDs(RexxMethodContext *c, RexxArrayObject ids
             goto err_out;
         }
 
-        uint32_t tmp = oodGlobalID(c, id, 1);
-        if ( tmp == OOD_ID_EXCEPTION || tmp == 0 || tmp == (int32_t)-1 )
+        int32_t nID = oodGlobalID(c->threadContext, id, 1, true);
+        if ( nID == OOD_ID_EXCEPTION )
         {
             // We want to use our own exception, to be more clear.
             c->ClearCondition();
@@ -930,7 +930,7 @@ RexxArrayObject rxImagesFromArrayOfIDs(RexxMethodContext *c, RexxArrayObject ids
             goto err_out;
         }
 
-        HANDLE hImage = LoadImage(hModule, MAKEINTRESOURCE((int)tmp), type, s->cx, s->cy, flags);
+        HANDLE hImage = LoadImage(hModule, MAKEINTRESOURCE(nID), type, s->cx, s->cy, flags);
         if ( hImage == NULL )
         {
             // Set the system error code and leave this slot in the array blank.
@@ -1265,7 +1265,7 @@ RexxMethod4(RexxObjectPtr, image_userIcon_cls, RexxObjectPtr, dlg, RexxObjectPtr
         goto out;
     }
 
-    int32_t id = oodResolveSymbolicID(context, dlg, rxID, -1, 2);
+    int32_t id = oodResolveSymbolicID(context, dlg, rxID, -1, 2, true);
     if ( id == OOD_ID_EXCEPTION )
     {
         goto out;
@@ -1659,7 +1659,7 @@ RexxMethod5(RexxObjectPtr, ri_getImage, RexxObjectPtr, _id, OPTIONAL_uint8_t, ty
     RexxObjectPtr result = NULLOBJECT;
     SIZE s = {0};
 
-    uint32_t id = oodGlobalID(context, _id, 1);
+    int32_t id = oodGlobalID(context->threadContext, _id, 1, true);
     if ( id == OOD_ID_EXCEPTION )
     {
         goto out;
@@ -1679,7 +1679,7 @@ RexxMethod5(RexxObjectPtr, ri_getImage, RexxObjectPtr, _id, OPTIONAL_uint8_t, ty
         goto out;
     }
 
-    HANDLE hImage = LoadImage(ri->hMod, MAKEINTRESOURCE((int)id), type, s.cx, s.cy, flags);
+    HANDLE hImage = LoadImage(ri->hMod, MAKEINTRESOURCE(id), type, s.cx, s.cy, flags);
     if ( hImage == NULL )
     {
         ri->lastError = GetLastError();

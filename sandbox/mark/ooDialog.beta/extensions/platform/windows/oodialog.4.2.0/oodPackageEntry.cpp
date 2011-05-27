@@ -90,6 +90,9 @@ RexxClassObject     TheDialogControlClass = NULLOBJECT;
 // Initialized in the PropertySheetPage class init method (psp_init_cls.)
 RexxClassObject     ThePropertySheetPageClass = NULLOBJECT;
 
+// Initialized in the ControlDialog class init method (cd_init_cls.)
+RexxClassObject     TheControlDialogClass = NULLOBJECT;
+
 // Initialized in the Size class init method (size_init_cls.)
 RexxClassObject     TheSizeClass = NULLOBJECT;;
 
@@ -545,6 +548,7 @@ REXX_METHOD_PROTOTYPE(pbdlg_unInit);
 
 REXX_METHOD_PROTOTYPE(generic_setListTabulators);
 REXX_METHOD_PROTOTYPE(generic_subclassEdit);
+REXX_METHOD_PROTOTYPE(global_resolveSymbolicID);
 
 // DialogExtensions
 REXX_METHOD_PROTOTYPE(dlgext_setWindowRect);
@@ -622,13 +626,30 @@ REXX_METHOD_PROTOTYPE(resdlg_init);
 REXX_METHOD_PROTOTYPE(resdlg_getDataTableIDs_pvt);
 REXX_METHOD_PROTOTYPE(resdlg_startDialog_pvt);
 
+// TabOwnerDialog
+REXX_METHOD_PROTOTYPE(tod_tabOwnerDlgInit);
+REXX_METHOD_PROTOTYPE(tod_getTabPage);
+
+// TabOwnerDlgInfo
+REXX_METHOD_PROTOTYPE(todi_init);
+
+// ManagedTab
+REXX_METHOD_PROTOTYPE(mt_init);
+
 // ControlDialog
-REXX_METHOD_PROTOTYPE(ctrlDlg_controlDlgInit);
-REXX_METHOD_PROTOTYPE(ctrlDlg_get_initializing);
-REXX_METHOD_PROTOTYPE(ctrlDlg_set_initializing);
-REXX_METHOD_PROTOTYPE(ctrlDlg_getPageTitle);
-REXX_METHOD_PROTOTYPE(ctrlDlg_setPageTitle);
-REXX_METHOD_PROTOTYPE(ctrlDlg_get_isManaged);
+REXX_METHOD_PROTOTYPE(cd_init_cls);
+REXX_METHOD_PROTOTYPE(cd_controlDlgInit);
+REXX_METHOD_PROTOTYPE(cd_get_isManaged);
+REXX_METHOD_PROTOTYPE(cd_get_wasActivated);
+REXX_METHOD_PROTOTYPE(cd_get_initializing);
+REXX_METHOD_PROTOTYPE(cd_set_initializing);
+REXX_METHOD_PROTOTYPE(cd_get_pageTitle);
+REXX_METHOD_PROTOTYPE(cd_set_pageTitle);
+
+// ControlDlgInfo
+REXX_METHOD_PROTOTYPE(cdi_set_title);
+REXX_METHOD_PROTOTYPE(cdi_init);
+REXX_METHOD_PROTOTYPE(cdi_setSize);
 
 // ResourceControlDialog
 REXX_METHOD_PROTOTYPE(resCtrlDlg_startDialog_pvt);
@@ -1285,6 +1306,7 @@ RexxMethodEntry oodialog_methods[] = {
 
     REXX_METHOD(generic_setListTabulators,      generic_setListTabulators),
     REXX_METHOD(generic_subclassEdit,           generic_subclassEdit),
+    REXX_METHOD(global_resolveSymbolicID,       global_resolveSymbolicID),
 
     REXX_METHOD(dlgext_setWindowRect,           dlgext_setWindowRect),
     REXX_METHOD(dlgext_clearWindowRect,         dlgext_clearWindowRect),
@@ -1381,13 +1403,30 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(resdlg_getDataTableIDs_pvt,     resdlg_getDataTableIDs_pvt),
     REXX_METHOD(resdlg_startDialog_pvt,         resdlg_startDialog_pvt),
 
+    // TabOwnerDialog
+    REXX_METHOD(tod_tabOwnerDlgInit,            tod_tabOwnerDlgInit),
+    REXX_METHOD(tod_getTabPage,                 tod_getTabPage),
+
+    // TabOwnerDlgInfo
+    REXX_METHOD(todi_init,                      todi_init),
+
+    // ManagedTab
+    REXX_METHOD(mt_init,                        mt_init),
+
     // ControlDialog
-    REXX_METHOD(ctrlDlg_controlDlgInit,         ctrlDlg_controlDlgInit),
-    REXX_METHOD(ctrlDlg_get_initializing,       ctrlDlg_get_initializing),
-    REXX_METHOD(ctrlDlg_set_initializing,       ctrlDlg_set_initializing),
-    REXX_METHOD(ctrlDlg_getPageTitle,           ctrlDlg_getPageTitle),
-    REXX_METHOD(ctrlDlg_setPageTitle,           ctrlDlg_setPageTitle),
-    REXX_METHOD(ctrlDlg_get_isManaged,          ctrlDlg_get_isManaged),
+    REXX_METHOD(cd_init_cls,                    cd_init_cls),
+    REXX_METHOD(cd_controlDlgInit,              cd_controlDlgInit),
+    REXX_METHOD(cd_get_isManaged,               cd_get_isManaged),
+    REXX_METHOD(cd_get_wasActivated,            cd_get_wasActivated),
+    REXX_METHOD(cd_get_initializing,            cd_get_initializing),
+    REXX_METHOD(cd_set_initializing,            cd_set_initializing),
+    REXX_METHOD(cd_get_pageTitle,               cd_get_pageTitle),
+    REXX_METHOD(cd_set_pageTitle,               cd_set_pageTitle),
+
+    // ControlDlgInfo
+    REXX_METHOD(cdi_set_title,                  cdi_set_title),
+    REXX_METHOD(cdi_init,                       cdi_init),
+    REXX_METHOD(cdi_setSize,                    cdi_setSize),
 
     // ResControlDialog
     REXX_METHOD(resCtrlDlg_startDialog_pvt,     resCtrlDlg_startDialog_pvt),

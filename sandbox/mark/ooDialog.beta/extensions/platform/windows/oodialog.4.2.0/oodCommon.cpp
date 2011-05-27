@@ -239,6 +239,32 @@ RexxObjectPtr noSuchPageException(RexxMethodContext *c, RexxObjectPtr page, size
  *        The specified method, built-in function, or external routine exists,
  *        but you used it incorrectly.
  *
+ *  There is no tab control with ID (id) and a page at index (index)
+ *
+ *  There is no tab control with ID 200 and a page at index 15
+ *
+ * @param c
+ * @param tabID
+ * @param index
+ *
+ * @remarks  Sort of like the exception for a property sheet, but for a
+ *           TabOwnerDialog.
+ */
+RexxObjectPtr noSuchPageException(RexxMethodContext *c, int32_t id, uint32_t index)
+{
+    TCHAR buf[256];
+    _snprintf(buf, sizeof(buf), "There is no tab control with ID %d and a page at index %d", id, index);
+    c->RaiseException1(Rexx_Error_Incorrect_method_user_defined, c->String(buf));
+    return NULLOBJECT;
+}
+
+
+/**
+ *  93.900
+ *  Error 93 - Incorrect call to method
+ *        The specified method, built-in function, or external routine exists,
+ *        but you used it incorrectly.
+ *
  *  The Windows property sheet page, (argument position, page number,) has not
  *  been created
  *
@@ -541,33 +567,6 @@ oodClass_t oodClass(RexxMethodContext *c, RexxObjectPtr obj, oodClass_t *types, 
     return oodUnknown;
 }
 
-/**
- * Checks if a Rexx object is either -1 or IDC_STATIC.
- *
- * @param c   The method context we are operating under.
- * @param id  The object to check
- *
- * @return True if the object is -1 or IDC_STATIC, otherwise false.
- */
-static bool isStaticID(RexxMethodContext *c, RexxObjectPtr id)
-{
-    int tmp;
-    if ( c->ObjectToInt32(id, &tmp) )
-    {
-        if ( tmp == -1 )
-        {
-            return true;
-        }
-    }
-    else
-    {
-        if ( stricmp(c->ObjectToStringValue(id), "IDC_STATIC") == 0 )
-        {
-            return true;
-        }
-    }
-    return false;
-}
 
 /**
  * Puts up an error message box when a symbolic ID could not be resolved.
@@ -593,36 +592,43 @@ int32_t idError(RexxMethodContext *c, RexxObjectPtr rxID)
 
 
 /**
+ * Used to resolve a resource ID that may be numeric or symbolic to its numeric
+ * value, using the .constDir rather than a .ResourceUtils object.
  *
+ * Raises an exception if the ID can not be resolved, or is not valid for a
+ * resource ID.  'Valid' depends on the strict arg.
  *
+ * @param c         Thread context we are operating in.
+ * @param id        Resource ID to resolve.
+ * @param argPosID  Arg position used for exceptions
+ * @param strict    If true the resolved ID must be 1 or greater, if false the
+ *                  resolved ID must be -1 or greater.
  *
- * @param c
- * @param id
- * @param argPosID
- *
- * @return uint32_t
+ * @return  The resolved numeric ID, or OOD_ID_EXCEPTION on error.  If,
+ *          OOD_ID_EXCEPTION is returned an exception has been raised.
  */
-uint32_t oodGlobalID(RexxMethodContext *c, RexxObjectPtr id, size_t argPosID)
+int32_t oodGlobalID(RexxThreadContext *c, RexxObjectPtr id, size_t argPosID, bool strict)
 {
-    uint32_t result = OOD_ID_EXCEPTION;
-    int32_t  tmp    = -2;
+    int32_t result = OOD_ID_EXCEPTION;
 
-    if ( ! c->ObjectToInt32(id, &tmp) )
+    if ( ! c->ObjectToInt32(id, &result) )
     {
         RexxObjectPtr item = c->DirectoryAt(TheConstDir, c->ObjectToStringValue(id));
         if ( item != NULLOBJECT )
         {
-             c->ObjectToInt32(item, &tmp);
+             c->ObjectToInt32(item, &result);
         }
     }
 
-    if ( tmp < -1 )
+    if ( strict && result < 1 )
     {
-        wrongArgValueException(c->threadContext, argPosID, "a valid numeric ID or a valid symbolic ID" , id);
+        wrongArgValueException(c, argPosID, "a positive numeric ID or a valid symbolic ID", id);
+        result = OOD_ID_EXCEPTION;
     }
-    else
+    else if ( result < -1 )
     {
-        result = (uint32_t)tmp;
+        wrongArgValueException(c, argPosID, "a valid numeric or symbolic resource ID", id);
+        result = OOD_ID_EXCEPTION;
     }
 
     return result;
@@ -631,57 +637,60 @@ uint32_t oodGlobalID(RexxMethodContext *c, RexxObjectPtr id, size_t argPosID)
 /**
  * Resolves a resource ID used in a native API method call to its numeric value.
  * The resource ID may be numeric or symbolic.  An exception is raised if the ID
- * can not be resolved.
+ * can not be resolved, or depending on the other args if it is less than 1.
  *
- * @param c          Method context for the method call.
+ * @param c          Thread context for the method call.
  * @param oodObj     ooDialog object that has inherited .ResourceUtils.
  *                   <Assumed>
  * @param id         Resource ID.
  * @param argPosObj  Arg position of the assumed ooDialog object.  Used for
- *                   raised exceptions.
+ *                   raised exceptions.  If this is -1, then oodObj is not
+ *                   checked to ensure it is a .ResourceUtils
  * @param argPosID   Arg position of the ID, used for raised exceptions.
+ * @param strict     If 0 and -1 are considered valid resource IDs.  If true,
+ *                   then 0 and -1 can be returned without generating an
+ *                   exception.  If false, if the resource ID resolves to 0 or
+ *                   -1, than an exceptions is raised.
  *
- * @return The resolved numeric ID or -1 cast as an uint32_t on success,
- *         OOD_ID_EXCEPTION on error.
+ * @return The resolved numeric ID on success, OOD_ID_EXCEPTION or
+ *         ODD_MEMORY_ERR on error.
  *
- * @remarks  When the oodObj argument is known to be a .ResourceUtils, then use
- *           -1 for the argPosObj argument.  In this case the required class
- *           check can be / is skipped.
- *
- *           This function special cases -1 or IDC_STATIC.  When id is -1 or
- *           IDC_STATIC then the return will be: (uint32_t)-1.  Otherwise, id
- *           has to be a non-zero number or a symbol that resolves to a non-zero
- *           number.  This is slightly different than how things work on the
- *           Rexx side where the user could put anything into constDir.
- *
- *           New methods / functions added to ooDialog will raise an exception
+ * @remarks  New methods / functions added to ooDialog will raise an exception
  *           if the resource ID can not be resolved.  But, older existing
  *           ooDialog methods always returned -1, and that behavior is currently
  *           being preserved.  Use oodSafeResolveID() for those cases.
  */
-uint32_t oodResolveSymbolicID(RexxMethodContext *c, RexxObjectPtr oodObj, RexxObjectPtr id,
-                              int argPosObj, size_t argPosID)
+int32_t oodResolveSymbolicID(RexxThreadContext *c, RexxObjectPtr oodObj, RexxObjectPtr id,
+                              int argPosObj, size_t argPosID, bool strict)
 {
     if ( TheConstDirUsage == globalOnly )
     {
-        return oodGlobalID(c, id, argPosID);
+        return oodGlobalID(c, id, argPosID, strict);
     }
 
-    uint32_t result = OOD_ID_EXCEPTION;
+    int32_t result = OOD_ID_EXCEPTION;
 
-    if ( argPosObj != -1 && ! requiredClass(c->threadContext, oodObj, "ResourceUtils", argPosObj) )
+    if ( TheConstDirUsage == globalFirst )
     {
-        goto done_out;
+        result = oodGlobalID(c, id, argPosID, strict);
+        if ( result == OOD_ID_EXCEPTION )
+        {
+            c->ClearCondition();
+        }
+        else
+        {
+            goto done_out;
+        }
     }
-    if ( isStaticID(c, id) )
+
+    if ( argPosObj != -1 && ! requiredClass(c, oodObj, "ResourceUtils", argPosObj) )
     {
-        result = (uint32_t)-1;
         goto done_out;
     }
 
     char *symbol = NULL;
 
-    if ( ! c->ObjectToUnsignedInt32(id, &result) )
+    if ( ! c->ObjectToInt32(id, &result) )
     {
         RexxDirectoryObject constDir = (RexxDirectoryObject)c->SendMessage0(oodObj, "CONSTDIR");
         if ( constDir != NULLOBJECT )
@@ -695,14 +704,22 @@ uint32_t oodResolveSymbolicID(RexxMethodContext *c, RexxObjectPtr oodObj, RexxOb
             symbol = strdupupr_nospace(c->ObjectToStringValue(id));
             if ( symbol == NULL )
             {
-                outOfMemoryException(c->threadContext);
+                outOfMemoryException(c);
                 goto done_out;
             }
 
             RexxObjectPtr item = c->DirectoryAt(constDir, symbol);
             if ( item != NULLOBJECT )
             {
-                 c->ObjectToUnsignedInt32(item, &result);
+                 c->ObjectToInt32(item, &result);
+                 if ( strict && result < 1 )
+                 {
+                     result = OOD_ID_EXCEPTION;
+                 }
+                 else if ( result < -1 )
+                 {
+                     result = OOD_ID_EXCEPTION;
+                 }
             }
         }
     }
@@ -711,7 +728,11 @@ uint32_t oodResolveSymbolicID(RexxMethodContext *c, RexxObjectPtr oodObj, RexxOb
 
     if ( result == OOD_ID_EXCEPTION )
     {
-        wrongArgValueException(c->threadContext, argPosID, "a valid numeric ID or a valid symbolic ID" , id);
+        if ( TheConstDirUsage == globalLast )
+        {
+            return oodGlobalID(c, id, argPosID, strict);
+        }
+        wrongArgValueException(c, argPosID, "a valid numeric ID or a valid symbolic ID" , id);
     }
 
 done_out:
@@ -738,22 +759,25 @@ done_out:
  * @note  This function merely calls oodResolveSymbolicID() to do the work.  If
  *        an exception is raised, it is cleared and false returned.
  */
-bool oodSafeResolveID(uint32_t *pID, RexxMethodContext *context, RexxObjectPtr oodObj, RexxObjectPtr id,
-                   int argPosObj, size_t argPosID)
+bool oodSafeResolveID(int32_t *pID, RexxMethodContext *context, RexxObjectPtr oodObj, RexxObjectPtr id,
+                   int argPosObj, size_t argPosID, bool strict)
 {
     if ( TheConstDirUsage == globalOnly )
     {
-        *pID = oodGlobalID(context, id, argPosID);
+        *pID = oodGlobalID(context->threadContext, id, argPosID, strict);
         return *pID == OOD_ID_EXCEPTION ? false : true;
     }
 
-    uint32_t tmp = oodResolveSymbolicID(context, oodObj, id, argPosObj, argPosID);
-    if ( tmp == OOD_ID_EXCEPTION )
+    *pID = oodResolveSymbolicID(context->threadContext, oodObj, id, argPosObj, argPosID, strict);
+    if ( *pID == OOD_ID_EXCEPTION )
     {
-        context->ClearCondition();
+        if ( ! isOutOfMemoryException(context->threadContext) )
+        {
+            context->ClearCondition();
+        }
         return false;
     }
-    *pID = tmp;
+
     return true;
 }
 
@@ -777,19 +801,33 @@ bool oodSafeResolveID(uint32_t *pID, RexxMethodContext *context, RexxObjectPtr o
  */
 int32_t checkID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPtr self)
 {
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, c, self, rxID, -1, 1) )
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, c, self, rxID, -1, 1, false) )
     {
         return idError(c, rxID);
     }
-    return (int)id;
+    return id;
 }
 
+/**
+ * This is really the implementation for the ooDialog method
+ * resolveSymbolicID(). It needs to return -1 for error, but not raise any
+ * exceptions.  The resource ID is expected to be 1 or greater.
+ *
+ * @param c
+ * @param rxID
+ * @param self
+ *
+ * @return int32_t
+ */
 int32_t resolveResourceID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPtr self)
 {
-    uint32_t id = (uint32_t)-1;
-    oodSafeResolveID(&id, c, self, rxID, -1, 1);
-    return (int)id;
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, c, self, rxID, -1, 1, true) )
+    {
+        id = -1;
+    }
+    return id;
 }
 
 /**
@@ -798,8 +836,8 @@ int32_t resolveResourceID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPt
  *  This is the implementation for ResourceUtils::resolveIconID() which is
  *  invoked to resolve the application icon IDs.  These IDs are special cased:
  *
- *  1.) -1, (a symbolic ID did not resolve) is changed to 0.  A 0 for the ID
- *  tells the underlying code to use the default application icon.
+ *  1.) less than 0, (a symbolic ID did not resolve) is changed to 0.  A 0 for
+ *  the ID tells the underlying code to use the default application icon.
  *
  *  2.) IDs from 1 to 4 have 10 added to them.  When the ability to use an
  *  application icon was first added to ooDialog, the internal ooDialog icon
@@ -809,6 +847,11 @@ int32_t resolveResourceID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPt
  *  existing code. The actual resource IDs have been changed to 11 through 14
  *  and we need to adjust for that.
  *
+ *  No exceptions are raised, except an out of memory exception, unless
+ *  TheConstDirUsage == globalOnly.  But, we do need to accept 0.  If we get
+ *  -1, we just change it and let it slide.  (Although techinically with
+ *  globalOnly -1 should raise an exception.)
+ *
  * @param c         Method context we are operating in.
  * @param rxIconID  Resource ID, which may be symbolic
  * @param self      The self object of the method context.
@@ -817,10 +860,9 @@ int32_t resolveResourceID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPt
  */
 int32_t resolveIconID(RexxMethodContext *c, RexxObjectPtr rxIconID, RexxObjectPtr self)
 {
-    uint32_t id = (uint32_t)-1;
-    oodSafeResolveID(&id, c, self, rxIconID, -1, 1);
-
-    if ( (int)id == -1 )
+    int32_t id;
+    oodSafeResolveID(&id, c, self, rxIconID, -1, 1, false);
+    if ( id == -1 )
     {
         id = 0;
     }
@@ -829,7 +871,7 @@ int32_t resolveIconID(RexxMethodContext *c, RexxObjectPtr rxIconID, RexxObjectPt
         id += 10;
     }
 
-    return (int)id;
+    return id;
 }
 
 DWORD oodGetSysErrCode(RexxThreadContext *c)

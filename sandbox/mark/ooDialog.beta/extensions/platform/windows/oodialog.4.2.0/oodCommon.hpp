@@ -115,9 +115,9 @@ extern void         *oodObj2pointer(RexxMethodContext *c, RexxObjectPtr obj);
 
 extern int32_t    checkID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPtr self);
 extern int32_t    idError(RexxMethodContext *c, RexxObjectPtr rxID);
-extern uint32_t   oodGlobalID(RexxMethodContext *c, RexxObjectPtr id, size_t argPosID);
-extern uint32_t   oodResolveSymbolicID(RexxMethodContext *, RexxObjectPtr, RexxObjectPtr, int, size_t);
-extern bool       oodSafeResolveID(uint32_t *, RexxMethodContext *, RexxObjectPtr, RexxObjectPtr, int, size_t);
+extern int32_t    oodGlobalID(RexxThreadContext *c, RexxObjectPtr id, size_t argPosID, bool strict);
+extern int32_t    oodResolveSymbolicID(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr, int, size_t, bool);
+extern bool       oodSafeResolveID(int32_t *, RexxMethodContext *, RexxObjectPtr, RexxObjectPtr, int, size_t, bool);
 extern int32_t    resolveResourceID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPtr self);
 extern int32_t    resolveIconID(RexxMethodContext *c, RexxObjectPtr rxIconID, RexxObjectPtr self);
 
@@ -188,6 +188,18 @@ typedef enum {push, check, radio, group, owner, notButton} BUTTONTYPE, *PBUTTONT
 typedef enum {def, autoCheck, threeState, autoThreeState, noSubtype } BUTTONSUBTYPE, *PBUTTONSUBTYPE;
 
 extern BUTTONTYPE getButtonInfo(HWND, PBUTTONSUBTYPE, DWORD *);
+
+
+inline int32_t oodGlobalID(RexxMethodContext *c, RexxObjectPtr id, size_t argPosID, bool strict)
+{
+    return oodGlobalID(c->threadContext, id, argPosID, strict);
+}
+
+inline int32_t oodResolveSymbolicID(RexxMethodContext *c, RexxObjectPtr oodObj, RexxObjectPtr id,
+                                    int posObj, size_t posID, bool strict)
+{
+    return oodResolveSymbolicID(c->threadContext, oodObj, id, posObj, posID, strict);
+}
 
 inline void safeLocalFree(void *p)
 {
@@ -288,6 +300,7 @@ extern void          *baseClassIntializationException(RexxMethodContext *c);
 extern RexxObjectPtr  invalidCategoryPageException(RexxMethodContext *c, int, int);
 extern RexxObjectPtr  noSuchPageException(RexxMethodContext *c, RexxObjectPtr page, size_t pos);
 extern RexxObjectPtr  noWindowsPageException(RexxMethodContext *c, size_t pageID, size_t pos);
+extern RexxObjectPtr  noSuchPageException(RexxMethodContext *c, int32_t id, uint32_t index);
 extern void          *noWindowsPageDlgException(RexxMethodContext *c, size_t pos);
 extern void          *wrongClassReplyException(RexxThreadContext *c, const char *n);
 extern void           controlFailedException(RexxThreadContext *, CSTRING, CSTRING, CSTRING);
@@ -450,6 +463,24 @@ inline pCPlainBaseDialog dlgToCSelf(RexxMethodContext *c, RexxObjectPtr dlg)
 inline pCPropertySheetPage dlgToPSPCSelf(RexxMethodContext *c, RexxObjectPtr dlg)
 {
     return (pCPropertySheetPage)c->ObjectToCSelf(dlg, ThePropertySheetPageClass);
+}
+
+/**
+ * Retrieves the ControlDialog CSelf pointer for a dialog object when the
+ * dialog object is not the direct object the method was invoked on.  This
+ * performs a scoped CSelf lookup.
+ *
+ * @param c    The method context we are operating in.
+ * @param dlg  The dialog object whose ControlDialog CSelf pointer is needed.
+ *
+ * @return A pointer to the ControlDialog CSelf of the dlg object.
+ *
+ * @assumes  The caller has ensured dlg is in fact a ooDialog Rexx ControlDialog
+ *           dialog object.
+ */
+inline pCControlDialog dlgToCDCSelf(RexxMethodContext *c, RexxObjectPtr dlg)
+{
+    return (pCControlDialog)c->ObjectToCSelf(dlg, TheControlDialogClass);
 }
 
 /**

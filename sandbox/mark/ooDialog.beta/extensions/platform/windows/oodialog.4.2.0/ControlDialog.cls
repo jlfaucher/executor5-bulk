@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -62,28 +62,42 @@
 
 /*            Owner and Control Dialogs                                       */
 
+::class 'TabOwnerDlgInfo' subclass Object public
+
+::method init external "LIBRARY oodialog todi_init"
+
 ::class 'TabOwnerDialog' mixinclass Object public
 
-::method init
-    use strict arg cSelf, initData
-    say 'In TabOwnerDialog::init() cSelf:' cSelf 'initData:' initData
+::method tabOwnerDlginit external "LIBRARY oodialog tod_tabOwnerDlgInit"
+::method getTabPage external "LIBRARY oodialog tod_getTabPage"
+
+
+::class 'ManagedTab' subclass Object public
+
+::method init external "LIBRARY oodialog mt_init"
 
 
 ::class 'ControlDlgInfo' subclass Object public
 
-::method init
-  use strict arg owner = .nil, title = "", size = (.size~new(200, 150)), wantNotifications = .false, -
-                 tabIcon = (-1), resources = .nil, managed = .false
+::attribute title set external "LIBRARY oodialog cdi_set_title"
+::method init external "LIBRARY oodialog cdi_init"
+::method setSize external "LIBRARY oodialog cdi_setSize"
 
 ::class 'ControlDialog' mixinclass Object public
 
-::attribute isManaged get external "LIBRARY oodialog ctrlDlg_get_isManaged"
+::method init class external "LIBRARY oodialog cd_init_cls"                                     -- Not to be documented
 
-::attribute initializing get external "LIBRARY oodialog ctrlDlg_get_initializing"
-::attribute initializing set external "LIBRARY oodialog ctrlDlg_set_initializing"
+/*::attribute pageNumber get external "LIBRARY oodialog cd_get_pageNumber"
+::attribute pageNumber set external "LIBRARY oodialog cd_set_pageNumber"*/
 
-::attribute pageTitle get external "LIBRARY oodialog ctrlDlg_getPageTitle"
-::attribute pageTitle set external "LIBRARY oodialog ctrlDlg_setPageTitle"
+::attribute isManaged get external "LIBRARY oodialog cd_get_isManaged"
+::attribute wasActivated get external "LIBRARY oodialog cd_get_wasActivated"
+
+::attribute initializing get external "LIBRARY oodialog cd_get_initializing"
+::attribute initializing set external "LIBRARY oodialog cd_set_initializing"
+
+::attribute pageTitle get external "LIBRARY oodialog cd_get_pageTitle"
+::attribute pageTitle set external "LIBRARY oodialog cd_set_pageTitle"
 
 /*::attribute size get external "LIBRARY oodialog ctrlDlg_get_size"
 ::attribute size set external "LIBRARY oodialog ctrlDlg_set_size"
@@ -98,7 +112,7 @@
 ::attribute tabIcon set external "LIBRARY oodialog psp_setTabIcon_atr"*/
 
 
-::method controlDlgInit private external "LIBRARY oodialog ctrlDlg_controlDlgInit"
+::method controlDlgInit private external "LIBRARY oodialog cd_controlDlgInit"
 
 ::method beginExecution unguarded
 
@@ -128,7 +142,7 @@
 ::method endExecution unguarded
     use strict arg isOkay = .false
 
-    if isOkay then do
+    if isOkay, self~wasActivated then do
         self~initCode = 1
         if self~useStem then self~getDataStem(self~dlgData)
         self~getData

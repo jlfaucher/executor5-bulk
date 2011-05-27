@@ -39,6 +39,6 @@
 #define IDC_STATIC (-1)
 #endif
 
-#define IDC_TAB                                 1000
-#define IDC_PB_PREVIOUS                         1001
-#define IDC_PB_NEXT                             1002
+#define IDC_TAB                                 200
+#define IDC_PB_PREVIOUS                         201
+#define IDC_PB_NEXT                             202

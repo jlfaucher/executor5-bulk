@@ -49,6 +49,182 @@
 #include "oodDeviceGraphics.hpp"
 #include "oodResourceIDs.hpp"
 
+/**
+ * Generic method implementations that may be used by different classes
+ */
+#define GENERIC_METHODS        "GenericMethods"
+
+/**
+ * Resolve a resource ID using the .ConstDir.
+ */
+RexxMethod1(int32_t, global_resolveSymbolicID, RexxObjectPtr, id)
+{
+    return oodGlobalID(context, id, 1, true);
+}
+
+
+/** ListBox::setTabulators()
+ *  PlainBaseDialog::setListTabulators()
+ *  CategoryDialog::setCategoryListTabulators()
+ *
+ *  Sets the tab stop positions in a list-box.
+ *
+ *  This is generic implementation used by several different classes.  The
+ *  resourceID and categoryId arguments are not always present.
+ *
+ *  @param resourceID  The resource ID (may be symbolic) of the list-box.
+ *
+ *  @param tabstop     The tab stop position.  This argument may repeat any
+ *                     number of times.  Each argument is the next succesive tab
+ *                     stop.  See the notes below for a fuller explanation.
+ *
+ *  @param categoryID  For a CategoryDialog, the catalog page that contains the
+ *                     ListBox.
+ *
+ *  @return 0 on success, -1 for an invalid resource ID, and 1 for an API
+ *          failure.
+ *
+ *  @note  The tab stop units are dialog template units. The tab stops must be
+ *         listed in ascending order. You can't place a tab stop behind a
+ *         previous tab stop.
+ *
+ *         If no tab stop is specified, than that signals the list-box to place
+ *         tab stops equidistant at the default of 2 dialog units.  If 1 tab
+ *         stop is specified, then equidistant tab stops are placed at the
+ *         distance specified.  Othewise, a tab stop is placed at each position
+ *         specified.
+ */
+RexxMethod2(int32_t, generic_setListTabulators, ARGLIST, args, OSELF, self)
+{
+    HWND hControl = NULL;
+    int32_t  rc = -1;
+    int32_t id;
+    uint32_t *tabs = NULL;
+    oodClass_t objects[] = {oodCategoryDialog, oodPlainBaseDialog, oodListBox};
+
+    size_t count = context->ArrayItems((RexxArrayObject) args);
+    size_t tabStart = 1;
+
+    // Determine which object has invoked this method and parse the argument
+    // list.  The object class determines how to get the handle to the listbox,
+    // the count of tab stops, and at which arg position the tab stops start.
+    switch ( oodClass(context, self, objects, sizeof(objects) / sizeof(oodClass_t))  )
+    {
+        case oodListBox :
+        {
+            hControl = controlToHCtrl(context, self);
+        } break;
+
+        case oodPlainBaseDialog :
+        {
+            if ( count < 1 )
+            {
+                missingArgException(context->threadContext, 1);
+                goto done_out;
+            }
+
+            RexxObjectPtr resourceID = context->ArrayAt(args, 1);
+            if ( ! oodSafeResolveID(&id, context, self, resourceID, -1, 1, true) )
+            {
+                goto done_out;
+            }
+
+            pCPlainBaseDialog pcpbd = dlgToCSelf(context, self);
+            hControl = GetDlgItem(pcpbd->hDlg, (int)id);
+            tabStart = 2;
+            count--;
+
+        } break;
+
+        case oodCategoryDialog :
+        {
+            if ( count < 2 )
+            {
+                missingArgException(context->threadContext, (count == 1 ? 2 : 1));
+                goto done_out;
+            }
+
+            RexxObjectPtr resourceID = context->ArrayAt(args, 1);
+            if ( ! oodSafeResolveID(&id, context, self, resourceID, -1, 1, true) )
+            {
+                goto done_out;
+            }
+
+            // CatagoryDialogs have this basic construct to hold the dialog
+            // handles for each page:
+            //  catalogDialog~catalog['handles'][categoryID] == hwndDialog
+
+            RexxDirectoryObject catalog = (RexxDirectoryObject)context->SendMessage0(self, "CATALOG");
+            if ( catalog == NULLOBJECT )
+            {
+                ooDialogInternalException(context, __FUNCTION__, __LINE__, __DATE__, __FILE__);
+                goto done_out;
+            }
+
+            RexxArrayObject handles = (RexxArrayObject)context->DirectoryAt(catalog, "handles");
+            if ( handles == NULLOBJECT || ! context->IsArray(handles) )
+            {
+                ooDialogInternalException(context, __FUNCTION__, __LINE__, __DATE__, __FILE__);
+                goto done_out;
+            }
+            RexxObjectPtr categoryID = context->ArrayAt(args, count);
+            RexxObjectPtr rxHwnd = context->SendMessage1(handles, "AT", categoryID);
+            if ( context->CheckCondition() )
+            {
+                goto done_out;
+            }
+
+            // From here on out, we might get NULL for window handles.  We just
+            // ignore that and let LB_SETTABSTOPS fail;
+            HWND hwnd = (HWND)string2pointer(context->ObjectToStringValue(rxHwnd));
+
+            hControl = GetDlgItem(hwnd, (int)id);
+            tabStart = 2;
+            count -= 2;
+
+        } break;
+
+        default :
+            ooDialogInternalException(context, __FUNCTION__, __LINE__, __DATE__, __FILE__);
+            goto done_out;
+            break;
+    }
+
+    if ( count > 0 )
+    {
+        tabs = (uint32_t *)malloc(sizeof(uint32_t *) * count);
+        if ( tabs == NULL )
+        {
+            outOfMemoryException(context->threadContext);
+            goto done_out;
+        }
+
+        uint32_t *p = tabs;
+        for ( size_t i = 0; i < count; i++, p++, tabStart++ )
+        {
+            RexxObjectPtr tab = context->ArrayAt(args, tabStart);
+            if ( tab == NULLOBJECT )
+            {
+                missingArgException(context->threadContext, tabStart);
+                goto done_out;
+            }
+            if ( ! context->ObjectToUnsignedInt32(tab, p) )
+            {
+                notPositiveArgException(context->threadContext, tabStart, tab);
+                goto done_out;
+            }
+        }
+    }
+
+    // LB_SETTABSTOPS returns true on success, otherwise false.  Reverse the
+    // return so that 0 is returned for success and 1 for failure.
+    rc = (SendMessage(hControl, LB_SETTABSTOPS, (WPARAM)count, (LPARAM)tabs) == 0);
+
+done_out:
+    safeFree(tabs);
+    return rc;
+}
+
 
 /**
  *  Methods for the .ApplicationClass class.
@@ -141,7 +317,7 @@ RexxMethod3(RexxObjectPtr, app_useGlobalConstDir, CSTRING, _mode, OPTIONAL_RexxS
     TheConstDirUsage = mode;
     setConstDirUsage(context);
 
-    if ( argumentExists(4) )
+    if ( argumentExists(2) )
     {
         context->SendMessage1(self, "PARSEINCLUDEFILE", hFile);
     }
@@ -509,169 +685,6 @@ RexxMethod3(uint32_t, dlgutil_test_cls, POINTERSTRING, hwnd, POINTERSTRING, hwnd
     return 0;
 }
 
-/** ListBox::setTabulators()
- *  PlainBaseDialog::setListTabulators()
- *  CategoryDialog::setCategoryListTabulators()
- *
- *  Sets the tab stop positions in a list-box.
- *
- *  This is generic implementation used by several different classes.  The
- *  resourceID and categoryId arguments are not always present.
- *
- *  @param resourceID  The resource ID (may be symbolic) of the list-box.
- *
- *  @param tabstop     The tab stop position.  This argument may repeat any
- *                     number of times.  Each argument is the next succesive tab
- *                     stop.  See the notes below for a fuller explanation.
- *
- *  @param categoryID  For a CategoryDialog, the catalog page that contains the
- *                     ListBox.
- *
- *  @return 0 on success, -1 for an invalid resource ID, and 1 for an API
- *          failure.
- *
- *  @note  The tab stop units are dialog template units. The tab stops must be
- *         listed in ascending order. You can't place a tab stop behind a
- *         previous tab stop.
- *
- *         If no tab stop is specified, than that signals the list-box to place
- *         tab stops equidistant at the default of 2 dialog units.  If 1 tab
- *         stop is specified, then equidistant tab stops are placed at the
- *         distance specified.  Othewise, a tab stop is placed at each position
- *         specified.
- */
-RexxMethod2(int32_t, generic_setListTabulators, ARGLIST, args, OSELF, self)
-{
-    HWND hControl = NULL;
-    int  rc = -1;
-    uint32_t id;
-    uint32_t *tabs = NULL;
-    oodClass_t objects[] = {oodCategoryDialog, oodPlainBaseDialog, oodListBox};
-
-    size_t count = context->ArrayItems((RexxArrayObject) args);
-    size_t tabStart = 1;
-
-    // Determine which object has invoked this method and parse the argument
-    // list.  The object class determines how to get the handle to the listbox,
-    // the count of tab stops, and at which arg position the tab stops start.
-    switch ( oodClass(context, self, objects, sizeof(objects) / sizeof(oodClass_t))  )
-    {
-        case oodListBox :
-        {
-            hControl = controlToHCtrl(context, self);
-        } break;
-
-        case oodPlainBaseDialog :
-        {
-            if ( count < 1 )
-            {
-                missingArgException(context->threadContext, 1);
-                goto done_out;
-            }
-
-            RexxObjectPtr resourceID = context->ArrayAt(args, 1);
-            if ( ! oodSafeResolveID(&id, context, self, resourceID, -1, 1) )
-            {
-                goto done_out;
-            }
-
-            pCPlainBaseDialog pcpbd = dlgToCSelf(context, self);
-            hControl = GetDlgItem(pcpbd->hDlg, (int)id);
-            tabStart = 2;
-            count--;
-
-        } break;
-
-        case oodCategoryDialog :
-        {
-            if ( count < 2 )
-            {
-                missingArgException(context->threadContext, (count == 1 ? 2 : 1));
-                goto done_out;
-            }
-
-            RexxObjectPtr resourceID = context->ArrayAt(args, 1);
-            if ( ! oodSafeResolveID(&id, context, self, resourceID, -1, 1) )
-            {
-                goto done_out;
-            }
-
-            // CatagoryDialogs have this basic construct to hold the dialog
-            // handles for each page:
-            //  catalogDialog~catalog['handles'][categoryID] == hwndDialog
-
-            RexxDirectoryObject catalog = (RexxDirectoryObject)context->SendMessage0(self, "CATALOG");
-            if ( catalog == NULLOBJECT )
-            {
-                ooDialogInternalException(context, __FUNCTION__, __LINE__, __DATE__, __FILE__);
-                goto done_out;
-            }
-
-            RexxArrayObject handles = (RexxArrayObject)context->DirectoryAt(catalog, "handles");
-            if ( handles == NULLOBJECT || ! context->IsArray(handles) )
-            {
-                ooDialogInternalException(context, __FUNCTION__, __LINE__, __DATE__, __FILE__);
-                goto done_out;
-            }
-            RexxObjectPtr categoryID = context->ArrayAt(args, count);
-            RexxObjectPtr rxHwnd = context->SendMessage1(handles, "AT", categoryID);
-            if ( context->CheckCondition() )
-            {
-                goto done_out;
-            }
-
-            // From here on out, we might get NULL for window handles.  We just
-            // ignore that and let LB_SETTABSTOPS fail;
-            HWND hwnd = (HWND)string2pointer(context->ObjectToStringValue(rxHwnd));
-
-            hControl = GetDlgItem(hwnd, (int)id);
-            tabStart = 2;
-            count -= 2;
-
-        } break;
-
-        default :
-            ooDialogInternalException(context, __FUNCTION__, __LINE__, __DATE__, __FILE__);
-            goto done_out;
-            break;
-    }
-
-    if ( count > 0 )
-    {
-        tabs = (uint32_t *)malloc(sizeof(uint32_t *) * count);
-        if ( tabs == NULL )
-        {
-            outOfMemoryException(context->threadContext);
-            goto done_out;
-        }
-
-        uint32_t *p = tabs;
-        for ( size_t i = 0; i < count; i++, p++, tabStart++ )
-        {
-            RexxObjectPtr tab = context->ArrayAt(args, tabStart);
-            if ( tab == NULLOBJECT )
-            {
-                missingArgException(context->threadContext, tabStart);
-                goto done_out;
-            }
-            if ( ! context->ObjectToUnsignedInt32(tab, p) )
-            {
-                notPositiveArgException(context->threadContext, tabStart, tab);
-                goto done_out;
-            }
-        }
-    }
-
-    // LB_SETTABSTOPS returns true on success, otherwise false.  Reverse the
-    // return so that 0 is returned for success and 1 for failure.
-    rc = (SendMessage(hControl, LB_SETTABSTOPS, (WPARAM)count, (LPARAM)tabs) == 0);
-
-done_out:
-    safeFree(tabs);
-    return rc;
-}
-
-
 /**
  *  Methods for the .OS class.
  */
@@ -791,7 +804,6 @@ RexxMethod1(int32_t, rsrcUtils_idError, RexxObjectPtr, rxID)
 }
 
 /** ResourceUtils::resolveSymbolicID
- *  ResourceUtils::resolveResourceID
  *  ResourceUtils::getResourceID
  *
  *  Returns the numeric value of an, assumed, resource ID.
@@ -804,12 +816,15 @@ RexxMethod1(int32_t, rsrcUtils_idError, RexxObjectPtr, rxID)
  *
  *  @return  On success, the resolved interger value of the resource ID.
  *
- *  @remarks  resolveSymbolicID and resolveResourceID allow a resource ID of -1,
- *            and do not raise an exception if a symbolic ID can not be
- *            resolved.
+ *  @remarks  resolveSymbolicID() expects a positive ID returned on success and
+ *            -1 returned on error.  No exceptions can be raised, except an out
+ *             of memory exception.  This is the implementation for the original
+ *             ooDialog resolveSymbolicID().
  *
- *            getResourceID() does raises execeptions if a symbolic ID can not
- *            be resolved, or for a -1 or 0 ID.
+ *            getResourceID() raises an execeptions if a symbolic ID can not
+ *            be resolved, or resolves to a number less than 1. A return of
+ *            greater than 0 is expected for success and less than 1 for an
+ *            error.
  */
 RexxMethod3(int32_t, rsrcUtils_resolveResourceID, RexxObjectPtr, rxID, NAME, method, OSELF, self)
 {
@@ -819,18 +834,7 @@ RexxMethod3(int32_t, rsrcUtils_resolveResourceID, RexxObjectPtr, rxID, NAME, met
     }
     else
     {
-        uint32_t result = oodResolveSymbolicID(context, self, rxID, -1, 1);
-        if ( result != OOD_ID_EXCEPTION )
-        {
-            if ( result == (int32_t)-1 || result == 0 )
-            {
-                wrongArgValueException(context->threadContext, 1, "a valid positive numeric ID or a valid symbolic ID" , rxID);
-            }
-        }
-
-        // At this point if result == OOD_ID_EXCEPTION or < 1 an exception has
-        // been raised and it does not matter what the value of result is.
-        return (int32_t)result;
+        return oodResolveSymbolicID(context, self, rxID, -1, 1, true);
     }
 }
 

@@ -139,7 +139,6 @@
 ::method idError private external "LIBRARY oodialog rsrcUtils_idError"
 ::method resolveIconID private external "LIBRARY oodialog rsrcUtils_resolveIconID_pvt"
 ::method resolveSymbolicId unguarded external "LIBRARY oodialog rsrcUtils_resolveResourceID"
-::method resolveResourceID unguarded external "LIBRARY oodialog rsrcUtils_resolveResourceID"
 ::method getResourceID unguarded external "LIBRARY oodialog rsrcUtils_resolveResourceID"
 ::method checkID external "LIBRARY oodialog rsrcUtils_checkID"
 
@@ -1715,9 +1714,9 @@ do forever
       else
           ObjId = ''       -- This createXXX method is ignored
 
-      ObjId = dlgObject~resolveResourceID(ObjId~space(0))
+      ObjId = dlgObject~resolveSymbolicID(ObjId~space(0))
 
-      if ObjId \= '', ObjId > 0 then
+      if ObjId > 0 then
          interpret 'dlgObjList~Insert(ObjId"@"'ObjX'"@"'ObjY'"@"'ObjW'"@"'ObjH')'
    end
    else do
@@ -1753,9 +1752,9 @@ do forever
             ObjId = ''     -- This addXXX method is ignored
       end
 
-      ObjId = dlgObject~resolveResourceID(ObjId~space(0))
+      ObjId = dlgObject~resolveSymbolicID(ObjId~space(0))
 
-      if ObjId \= '', ObjId > 0 then
+      if ObjId > 0 then
          interpret 'dlgObjList~Insert(ObjId"@"'ObjX'"@"'ObjY'"@"'ObjW'"@"'ObjH')'
    end
    else do
@@ -1782,7 +1781,7 @@ expose dlgObject
    use strict arg id
 
    id = dlgObject~getResourceID(id)
-   if id > 0 then self~noResize~put(id)
+   self~noResize~put(id)
 
 
 /* ------------------------------------------------------------------------- */
@@ -1795,7 +1794,7 @@ expose dlgObject
    use strict arg id
 
    id = dlgObject~getResourceID(id)
-   if id > 0 then self~noMove~put(id)
+   self~noMove~put(id)
 
 
 /* ------------------------------------------------------------------------- */
@@ -1810,13 +1809,13 @@ expose dlgObject noMove noResize
    do id over noMove
      id = noMove~remove(id)
      id = dlgObject~getResourceID(id)
-     if id > 0 then noMove~put(id)
+     noMove~put(id)
    end
 
    do id over noResize
      id = noResize~remove(id)
      id = dlgObject~getResourceID(id)
-     if id > 0 then noResize~put(id)
+     noResize~put(id)
    end
 
 
