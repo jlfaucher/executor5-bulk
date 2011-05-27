@@ -82,8 +82,14 @@ DWORD WINAPI WindowUsrLoopThread(LoopThreadArgs * args)
     bool *release = args->release;
     pCPlainBaseDialog pcpbd = args->pcpbd;
 
+    DLGPROC dlgProc = (DLGPROC)RexxDlgProc;
+    if ( pcpbd->isTabOwnerDlg )
+    {
+        dlgProc = (DLGPROC)RexxTabOwnerDlgProc;
+    }
+
     pcpbd->hDlg = CreateDialogIndirectParam(MyInstance, (LPCDLGTEMPLATE)args->dlgTemplate, pcpbd->hOwnerDlg,
-                                            (DLGPROC)RexxDlgProc, (LPARAM)pcpbd);
+                                            dlgProc, (LPARAM)pcpbd);
 
     if ( pcpbd->hDlg )
     {
@@ -116,8 +122,8 @@ DWORD WINAPI WindowUsrLoopThread(LoopThreadArgs * args)
                 if ( result == -1 )
                 {
                     break;
-                }
-                if ( ! IsDialogMessage(pcpbd->hDlg, &msg) && ! IsDialogMessage(pcpbd->activeChild, &msg) )
+                }                                          // TODO why did I have this here, seems wrong
+                if ( ! IsDialogMessage(pcpbd->hDlg, &msg) /*&& ! IsDialogMessage(pcpbd->activeChild, &msg)*/ )
                 {
                     TranslateMessage(&msg);
                     DispatchMessage(&msg);
@@ -497,18 +503,32 @@ bool addToDialogTemplate(RexxMethodContext *c, pCDynamicDialog pcdd, SHORT kind,
  */
 #define USERDIALOG_CLASS  "UserDialog"
 
+/**
+ * Convenience function, checks if the object is a dialog object that is based
+ * on using a resource script (.rc) for its dialog template.
+ *
+ * @param c    Method context we are operating in.
+ * @param dlg  The Rexx object to check.
+ *
+ * @return bool
+ */
+inline bool isRCbasedDlg(RexxMethodContext *c, RexxObjectPtr dlg)
+{
+    return c->IsOfType(dlg, "RCDIALOG")         ||
+           c->IsOfType(dlg, "RCCONTROLDIALOG")  ||
+           c->IsOfType(dlg, "RCPSPDIALOG");
+}
+
 /** UserDialog::new()
  *
  *
  */
 RexxMethod7(RexxObjectPtr, userdlg_init, OPTIONAL_RexxObjectPtr, dlgData, OPTIONAL_RexxObjectPtr, includeFile,
-            OPTIONAL_RexxObjectPtr, library, OPTIONAL_RexxObjectPtr, resourceID, OPTIONAL_RexxObjectPtr, owner,
+            OPTIONAL_RexxObjectPtr, libOrOwnerData, OPTIONAL_RexxObjectPtr, resourceID, OPTIONAL_RexxObjectPtr, ownerData,
             SUPER, super, OSELF, self)
 {
-    RexxArrayObject newArgs = context->NewArray(4);
+    RexxArrayObject newArgs = context->NewArray(5);
 
-    context->ArrayPut(newArgs, argumentExists(3) ? library : context->NullString(), 1);
-    context->ArrayPut(newArgs, argumentExists(4) ? resourceID : TheZeroObj, 2);
     if ( argumentExists(1) )
     {
         context->ArrayPut(newArgs, dlgData, 3);
@@ -517,25 +537,41 @@ RexxMethod7(RexxObjectPtr, userdlg_init, OPTIONAL_RexxObjectPtr, dlgData, OPTION
     {
         context->ArrayPut(newArgs, includeFile, 4);
     }
-    RexxObjectPtr result = context->ForwardMessage(NULL, NULL, super, newArgs);
 
-    if ( isInt(0, result, context->threadContext) )
+    if ( isRCbasedDlg(context, self) )
     {
-        pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)context->GetCSelf();
+        context->ArrayPut(newArgs, libOrOwnerData, 1);
+        context->ArrayPut(newArgs, resourceID, 2);
 
         if ( argumentExists(5) )
         {
-            pCPlainBaseDialog ownerPcpbd = requiredDlgCSelf(context, owner, oodPlainBaseDialog, 5);
-            if ( ownerPcpbd == NULL )
-            {
-                return TheOneObj;
-            }
-
-            pcpbd->rexxOwner = owner;
-            pcpbd->hOwnerDlg = ownerPcpbd->hDlg;
+            context->ArrayPut(newArgs, ownerData, 5);
         }
+    }
+    else
+    {
+        context->ArrayPut(newArgs, context->NullString(), 1);
+        context->ArrayPut(newArgs, TheZeroObj, 2);
 
-        context->SendMessage1(self, "DYNAMICINIT", context->NewPointer(pcpbd));
+        if ( argumentExists(3) )
+        {
+            context->ArrayPut(newArgs, libOrOwnerData, 5);
+        }
+    }
+
+    RexxObjectPtr result = context->ForwardMessage(NULL, NULL, super, newArgs);
+
+    if ( result == TheZeroObj )
+    {
+        pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)context->GetCSelf();
+        RexxPointerObject p = context->NewPointer(pcpbd);
+
+        result = context->SendMessage1(self, "DYNAMICINIT", p);
+
+        if ( pcpbd->isControlDlg && result == TheZeroObj )
+        {
+            result = context->SendMessage1(self, "CONTROLDLGINIT", p);
+        }
     }
 
     return result;
@@ -1128,7 +1164,7 @@ RexxMethod2(RexxObjectPtr, dyndlg_dynamicInit, POINTER, arg, OSELF, self)
     RexxBufferObject pddBuffer = context->NewBuffer(sizeof(CDynamicDialog));
     if ( pddBuffer == NULLOBJECT )
     {
-        goto done_out;
+        return TheOneObj;
     }
 
     pCDynamicDialog pcdd = (pCDynamicDialog)context->BufferData(pddBuffer);
@@ -1138,7 +1174,6 @@ RexxMethod2(RexxObjectPtr, dyndlg_dynamicInit, POINTER, arg, OSELF, self)
     pcdd->rexxSelf = self;
     context->SetObjectVariable("CSELF", pddBuffer);
 
-done_out:
     return TheZeroObj;
 }
 

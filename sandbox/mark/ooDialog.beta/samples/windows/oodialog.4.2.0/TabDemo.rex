@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -54,14 +54,14 @@
 
   curdir = directory();                       -- Directory we started from.
   parse source . . me
-  mydir = me~left(me~lastpos('\')-1)          -- Directory we are installed in.
+  mydir = me~left(me~lastpos('\') - 1)        -- Directory we are installed in.
   mydir = directory(mydir)                    -- CD to the install direcotry.
 
   -- Create the main dialog.
   dlg = .NewControlsDialog~new( , "rc\TabDemo.h")
 
   -- Show and run the dialog.
-  dlg~execute(SHOWTOP, IDI_DLG_OODIALOG)
+  dlg~execute('SHOWTOP', IDI_DLG_OODIALOG)
 
   -- Switch back to the intial directory and quit.
   ret = directory(curdir)
@@ -104,7 +104,7 @@
   -- until the underlying dialog is created, so we get it started, then do our
   -- other tasks.
   t1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG, , "rc\PropertySheetDemo.h", , , self)
-  t1~popup("HIDE")
+  t1~execute
 
   -- Add the tabs to the tab control.
   tabControl = self~newTab(IDC_TAB)
@@ -134,8 +134,6 @@
   self~positionAndShow(1)
 
   self~startControlDialogs
-
-
 
 
 /** calculateDisplayArea()
@@ -194,11 +192,11 @@
   -- have happened yet.  We need to wait for it.
   dlg = tabContent[index]
   do 10
-    if \ dlg~initializing then leave
+    if dlg~hwnd <> 0 then leave
     z = SysSleep(.1)
   end
 
-  if dlg~initializing then do
+  if dlg~hwnd == 0 then do
     say "Error creating dialog for the tab with index:" index", aborting"
     return self~cancel
   end
@@ -223,7 +221,7 @@
   do i = 2 to tabContent~items
     dlg = tabContent[i]
     dlg~ownerDialog = self
-    dlg~popup("HIDE")
+    dlg~execute
   end
 
 
@@ -283,7 +281,7 @@
   expose tabContent
 
   do dlg over tabContent
-    dlg~cancel
+    dlg~endExecution(.false)
   end
 
   return self~cancel:super
@@ -292,7 +290,7 @@
   expose tabContent
 
   do dlg over tabContent
-    dlg~cancel
+    dlg~endExecution(.true)
   end
 
   return self~ok:super
@@ -303,6 +301,10 @@
 
 ::method initDialog
     expose lv
+
+    -- Initialize the internal fix for the list-view redrawing problem when a
+    -- list-view is used in a tab control.
+    self~initUpdateListView(IDC_LV_MAIN)
 
     -- Instantiate a Rexx list view object that represents the underlying
     -- Windows list-view.  The list-view style is report.
@@ -334,7 +336,6 @@
     -- Fill the list-view with random data.
     do ch = "A"~c2d to "Z"~c2d
         q = random(200)
-        call msSleep 1
         yh = random(400)
         yh = max(yh, q)
         yl = random(100)

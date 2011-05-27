@@ -570,11 +570,70 @@ static bool isStaticID(RexxMethodContext *c, RexxObjectPtr id)
 }
 
 /**
+ * Puts up an error message box when a symbolic ID could not be resolved.
+ *
+ * This should be being called only when a resource script is being parsed, but
+ * that has not been verified.
+ *
+ * @param c
+ * @param rxID
+ *
+ * @return int32_t
+ */
+int32_t idError(RexxMethodContext *c, RexxObjectPtr rxID)
+{
+    char buf[256];
+    _snprintf(buf, sizeof(buf),
+              "Error trying to add a dialog resource:\n\n%s is an undefined, non-numeric,\nidentification number.",
+              c->ObjectToStringValue(rxID));
+
+    internalErrorMsgBox(buf, OOD_RESOURCE_ERR_TITLE);
+    return -1;
+}
+
+
+/**
+ *
+ *
+ *
+ * @param c
+ * @param id
+ * @param argPosID
+ *
+ * @return uint32_t
+ */
+uint32_t oodGlobalID(RexxMethodContext *c, RexxObjectPtr id, size_t argPosID)
+{
+    uint32_t result = OOD_ID_EXCEPTION;
+    int32_t  tmp    = -2;
+
+    if ( ! c->ObjectToInt32(id, &tmp) )
+    {
+        RexxObjectPtr item = c->DirectoryAt(TheConstDir, c->ObjectToStringValue(id));
+        if ( item != NULLOBJECT )
+        {
+             c->ObjectToInt32(item, &tmp);
+        }
+    }
+
+    if ( tmp < -1 )
+    {
+        wrongArgValueException(c->threadContext, argPosID, "a valid numeric ID or a valid symbolic ID" , id);
+    }
+    else
+    {
+        result = (uint32_t)tmp;
+    }
+
+    return result;
+}
+
+/**
  * Resolves a resource ID used in a native API method call to its numeric value.
  * The resource ID may be numeric or symbolic.  An exception is raised if the ID
  * can not be resolved.
  *
- * @param context    Method context for the method call.
+ * @param c          Method context for the method call.
  * @param oodObj     ooDialog object that has inherited .ResourceUtils.
  *                   <Assumed>
  * @param id         Resource ID.
@@ -600,16 +659,21 @@ static bool isStaticID(RexxMethodContext *c, RexxObjectPtr id)
  *           ooDialog methods always returned -1, and that behavior is currently
  *           being preserved.  Use oodSafeResolveID() for those cases.
  */
-uint32_t oodResolveSymbolicID(RexxMethodContext *context, RexxObjectPtr oodObj, RexxObjectPtr id,
+uint32_t oodResolveSymbolicID(RexxMethodContext *c, RexxObjectPtr oodObj, RexxObjectPtr id,
                               int argPosObj, size_t argPosID)
 {
+    if ( TheConstDirUsage == globalOnly )
+    {
+        return oodGlobalID(c, id, argPosID);
+    }
+
     uint32_t result = OOD_ID_EXCEPTION;
 
-    if ( argPosObj != -1 && ! requiredClass(context->threadContext, oodObj, "ResourceUtils", argPosObj) )
+    if ( argPosObj != -1 && ! requiredClass(c->threadContext, oodObj, "ResourceUtils", argPosObj) )
     {
         goto done_out;
     }
-    if ( isStaticID(context, id) )
+    if ( isStaticID(c, id) )
     {
         result = (uint32_t)-1;
         goto done_out;
@@ -617,9 +681,9 @@ uint32_t oodResolveSymbolicID(RexxMethodContext *context, RexxObjectPtr oodObj, 
 
     char *symbol = NULL;
 
-    if ( ! context->ObjectToUnsignedInt32(id, &result) )
+    if ( ! c->ObjectToUnsignedInt32(id, &result) )
     {
-        RexxDirectoryObject constDir = (RexxDirectoryObject)context->SendMessage0(oodObj, "CONSTDIR");
+        RexxDirectoryObject constDir = (RexxDirectoryObject)c->SendMessage0(oodObj, "CONSTDIR");
         if ( constDir != NULLOBJECT )
         {
             /* The original ooDialog code uses:
@@ -628,17 +692,17 @@ uint32_t oodResolveSymbolicID(RexxMethodContext *context, RexxObjectPtr oodObj, 
              * But, I guess we need to preserve that.
              */
 
-            symbol = strdupupr_nospace(context->ObjectToStringValue(id));
+            symbol = strdupupr_nospace(c->ObjectToStringValue(id));
             if ( symbol == NULL )
             {
-                outOfMemoryException(context->threadContext);
+                outOfMemoryException(c->threadContext);
                 goto done_out;
             }
 
-            RexxObjectPtr item = context->DirectoryAt(constDir, symbol);
+            RexxObjectPtr item = c->DirectoryAt(constDir, symbol);
             if ( item != NULLOBJECT )
             {
-                 context->ObjectToUnsignedInt32(item, &result);
+                 c->ObjectToUnsignedInt32(item, &result);
             }
         }
     }
@@ -647,7 +711,7 @@ uint32_t oodResolveSymbolicID(RexxMethodContext *context, RexxObjectPtr oodObj, 
 
     if ( result == OOD_ID_EXCEPTION )
     {
-        wrongArgValueException(context->threadContext, argPosID, "a valid numeric ID or a valid symbolic ID" , id);
+        wrongArgValueException(c->threadContext, argPosID, "a valid numeric ID or a valid symbolic ID" , id);
     }
 
 done_out:
@@ -677,6 +741,12 @@ done_out:
 bool oodSafeResolveID(uint32_t *pID, RexxMethodContext *context, RexxObjectPtr oodObj, RexxObjectPtr id,
                    int argPosObj, size_t argPosID)
 {
+    if ( TheConstDirUsage == globalOnly )
+    {
+        *pID = oodGlobalID(context, id, argPosID);
+        return *pID == OOD_ID_EXCEPTION ? false : true;
+    }
+
     uint32_t tmp = oodResolveSymbolicID(context, oodObj, id, argPosObj, argPosID);
     if ( tmp == OOD_ID_EXCEPTION )
     {
@@ -687,6 +757,80 @@ bool oodSafeResolveID(uint32_t *pID, RexxMethodContext *context, RexxObjectPtr o
     return true;
 }
 
+
+/**
+ * Checks that a resource ID, which may be a symbolic ID, can be resolved
+ * successfully, and returns the numeric ID.  If, it can not be resolved, an
+ * error message box is put up.
+ *
+ * This is the implementation for ResourceUtils::checkID() and *must* resolve
+ * IDC_STATIC correctly.  Which it does, by returning -1 and not generating an
+ * error.
+ *
+ * @param c     Method context we are operating in.
+ * @param rxID  Rexx object to be resolved, may be, and often is, a symbolic
+ *              resource ID.
+ * @param self  The Rexx object that has inherited ResourceUtils.
+ *
+ * @return The numeric resource ID value.  -1 is a valid return for IDC_STATIC,
+ *         less than -1 means an error dialog was put up.
+ */
+int32_t checkID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPtr self)
+{
+    uint32_t id;
+    if ( ! oodSafeResolveID(&id, c, self, rxID, -1, 1) )
+    {
+        return idError(c, rxID);
+    }
+    return (int)id;
+}
+
+int32_t resolveResourceID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPtr self)
+{
+    uint32_t id = (uint32_t)-1;
+    oodSafeResolveID(&id, c, self, rxID, -1, 1);
+    return (int)id;
+}
+
+/**
+ *  Resolves a resource ID used for the application icon to its numeric value.
+ *
+ *  This is the implementation for ResourceUtils::resolveIconID() which is
+ *  invoked to resolve the application icon IDs.  These IDs are special cased:
+ *
+ *  1.) -1, (a symbolic ID did not resolve) is changed to 0.  A 0 for the ID
+ *  tells the underlying code to use the default application icon.
+ *
+ *  2.) IDs from 1 to 4 have 10 added to them.  When the ability to use an
+ *  application icon was first added to ooDialog, the internal ooDialog icon
+ *  resources, which are available for the programmer to use, were documented as
+ *  having IDs of 1 through 4.  Only the symbolic ID should have been
+ *  documented, so that actual numeric ID can be changed without breaking any
+ *  existing code. The actual resource IDs have been changed to 11 through 14
+ *  and we need to adjust for that.
+ *
+ * @param c         Method context we are operating in.
+ * @param rxIconID  Resource ID, which may be symbolic
+ * @param self      The self object of the method context.
+ *
+ * @return int32_t
+ */
+int32_t resolveIconID(RexxMethodContext *c, RexxObjectPtr rxIconID, RexxObjectPtr self)
+{
+    uint32_t id = (uint32_t)-1;
+    oodSafeResolveID(&id, c, self, rxIconID, -1, 1);
+
+    if ( (int)id == -1 )
+    {
+        id = 0;
+    }
+    else if ( id >= 1 && id <= 4 )
+    {
+        id += 10;
+    }
+
+    return (int)id;
+}
 
 DWORD oodGetSysErrCode(RexxThreadContext *c)
 {
@@ -894,91 +1038,6 @@ bool oodObj2handle(RexxMethodContext *c, RexxObjectPtr obj, void **result, size_
 raise_condition:
     userDefinedMsgException(c, argPos, "is not a handle");
     return false;
-}
-
-int32_t idError(RexxMethodContext *c, RexxObjectPtr rxID)
-{
-    char buf[256];
-    _snprintf(buf, sizeof(buf),
-              "Error trying to add a dialog resource:\n\n%s is an undefined, non-numeric,\nidentification number.",
-              c->ObjectToStringValue(rxID));
-
-    internalErrorMsgBox(buf, OOD_RESOURCE_ERR_TITLE);
-    return -1;
-}
-
-/**
- * Checks that a resource ID, which may be a symbolic ID, can be resolved
- * successfully, and returns the numeric ID.  If, it can not be resolved, an
- * error message box is put up.
- *
- * This is the implementation for ResourceUtils::checkID() and *must* resolve
- * IDC_STATIC correctly.  Which it does, by returning -1 and not generating an
- * error.
- *
- * @param c     Method context we are operating in.
- * @param rxID  Rexx object to be resolved, may be, and often is, a symbolic
- *              resource ID.
- * @param self  The Rexx object that has inherited ResourceUtils.
- *
- * @return The numeric resource ID value.  -1 is a valid return for IDC_STATIC,
- *         less than -1 means an error dialog was put up.
- */
-int32_t checkID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPtr self)
-{
-    uint32_t id;
-    if ( ! oodSafeResolveID(&id, c, self, rxID, -1, 1) )
-    {
-        return idError(c, rxID);
-    }
-    return (int)id;
-}
-
-int32_t resolveResourceID(RexxMethodContext *c, RexxObjectPtr rxID, RexxObjectPtr self)
-{
-    uint32_t id = (uint32_t)-1;
-    oodSafeResolveID(&id, c, self, rxID, -1, 1);
-    return (int)id;
-}
-
-/**
- *  Resolves a resource ID used for the application icon to its numeric value.
- *
- *  This is the implementation for ResourceUtils::resolveIconID() which is
- *  invoked to resolve the application icon IDs.  These IDs are special cased:
- *
- *  1.) -1, (a symbolic ID did not resolve) is changed to 0.  A 0 for the ID
- *  tells the underlying code to use the default application icon.
- *
- *  2.) IDs from 1 to 4 have 10 added to them.  When the ability to use an
- *  application icon was first added to ooDialog, the internal ooDialog icon
- *  resources, which are available for the programmer to use, were documented as
- *  having IDs of 1 through 4.  Only the symbolic ID should have been
- *  documented, so that actual numeric ID can be changed without breaking any
- *  existing code. The actual resource IDs have been changed to 11 through 14
- *  and we need to adjust for that.
- *
- * @param c         Method context we are operating in.
- * @param rxIconID  Resource ID, which may be symbolic
- * @param self      The self object of the method context.
- *
- * @return int32_t
- */
-int32_t resolveIconID(RexxMethodContext *c, RexxObjectPtr rxIconID, RexxObjectPtr self)
-{
-    uint32_t id = (uint32_t)-1;
-    oodSafeResolveID(&id, c, self, rxIconID, -1, 1);
-
-    if ( (int)id == -1 )
-    {
-        id = 0;
-    }
-    else if ( id >= 1 && id <= 4 )
-    {
-        id += 10;
-    }
-
-    return (int)id;
 }
 
 /**
@@ -1647,6 +1706,147 @@ int getKeywordValue(String2Int *cMap, const char * str)
         return itr->second;
     }
     return -1;
+}
+
+
+/**
+ * Returns a part of, or all of, the Common Contorls version string.
+ *
+ * @param id
+ * @param type
+ *
+ * @return const char*
+ */
+const char *comctl32VersionPart(DWORD id, DWORD type)
+{
+    const char *part;
+    switch ( id )
+    {
+        case COMCTL32_4_0 :
+            if ( type == COMCTL32_NUMBER_PART )
+            {
+                part = "4.0";
+            }
+            else if ( type == COMCTL32_OS_PART )
+            {
+                part = "W95 / NT4";
+            }
+            else
+            {
+                part = "comctl32.dll version 4.0 (W95 / NT4)";
+            }
+            break;
+
+        case COMCTL32_4_7 :
+            if ( type == COMCTL32_NUMBER_PART )
+            {
+                part = "4.7";
+            }
+            else if ( type == COMCTL32_OS_PART )
+            {
+                part = "IE 3.x";
+            }
+            else
+            {
+                part = "comctl32.dll version 4.7 (IE 3.x)";
+            }
+            break;
+
+        case COMCTL32_4_71 :
+            if ( type == COMCTL32_NUMBER_PART )
+            {
+                part = "4.71";
+            }
+            else if ( type == COMCTL32_OS_PART )
+            {
+                part = "IE 4.0";
+            }
+            else
+            {
+                part = "comctl32.dll version 4.71 (IE 4.0)";
+            }
+            break;
+
+        case COMCTL32_4_72 :
+            if ( type == COMCTL32_NUMBER_PART )
+            {
+                part = "4.72";
+            }
+            else if ( type == COMCTL32_OS_PART )
+            {
+                part = "W98 / IE 4.01";
+            }
+            else
+            {
+                part = "comctl32.dll version 4.72 (W98 / IE 4.01)";
+            }
+            break;
+
+        case COMCTL32_5_8 :
+            if ( type == COMCTL32_NUMBER_PART )
+            {
+                part = "5.8";
+            }
+            else if ( type == COMCTL32_OS_PART )
+            {
+                part = "IE 5";
+            }
+            else
+            {
+                part = "comctl32.dll version 5.8 (IE 5)";
+            }
+            break;
+
+        case COMCTL32_5_81 :
+            if ( type == COMCTL32_NUMBER_PART )
+            {
+                part = "5.81";
+            }
+            else if ( type == COMCTL32_OS_PART )
+            {
+                part = "W2K / ME";
+            }
+            else
+            {
+                part = "comctl32.dll version 5.81 (W2K / ME)";
+            }
+            break;
+
+        case COMCTL32_6_0 :
+            if ( type == COMCTL32_NUMBER_PART )
+            {
+                part = "6.0";
+            }
+            else if ( type == COMCTL32_OS_PART )
+            {
+                part = "XP";
+            }
+            else
+            {
+                part = "comctl32.dll version 6.0 (XP)";
+            }
+            break;
+
+        case COMCTL32_6_10 :
+            if ( type == COMCTL32_NUMBER_PART )
+            {
+                part = "6.10";
+            }
+            else if ( type == COMCTL32_OS_PART )
+            {
+                part = "Vista SP2 / Windows 7";
+            }
+            else
+            {
+                part = "comctl32.dll version 6.10 (Vista SP2 / Windows 7)";
+            }
+            break;
+
+        default :
+            part = "Unknown";
+            break;
+    }
+    return part;
 }
 
 

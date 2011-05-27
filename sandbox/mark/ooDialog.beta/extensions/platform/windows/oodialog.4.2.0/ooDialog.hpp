@@ -229,11 +229,14 @@ typedef enum
 // Enum for the type of an ooDialog class.  Types to be added as needed.
 typedef enum
 {
-    oodPlainBaseDialog, oodCategoryDialog, oodUserDialog,    oodRcDialog,      oodResDialog,
-    oodControlDialog,   oodUserPSPDialog,  oodRcPSPDialog,   oodResPSPDialog,  oodDialogControl,
-    oodStaticControl,   oodButtonControl,  oodEditControl,   oodListBox,       oodProgressBar,
-    oodUnknown
+    oodPlainBaseDialog, oodCategoryDialog,    oodUserDialog,      oodRcDialog,         oodResDialog,
+    oodControlDialog,   oodUserControlDialog, oodRcControlDialog, oodResControlDialog, oodUserPSPDialog,
+    oodRcPSPDialog,     oodResPSPDialog,      oodDialogControl,   oodStaticControl,    oodButtonControl,
+    oodEditControl,     oodListBox,           oodProgressBar,     oodUnknown
 } oodClass_t;
+
+// How the Global constDir is to be used
+typedef enum {globalOnly, globalFirst, globalLast, globalNever} oodConstDir_t;
 
 
 inline LONG_PTR setWindowPtr(HWND hwnd, int index, LONG_PTR newPtr)
@@ -532,6 +535,7 @@ typedef struct _pbdCSelf {
     HWND                 hOwnerDlg;
     RexxObjectPtr        rexxParent;    // This dialog's Rexx parent dialog object
     void                *dlgPrivate;    // Subclasses can store data unique to the subclass
+    void                *initPrivate;   // Subclasses can store init data unique to the subclass
     DATATABLEENTRY      *DataTab;
     ICONTABLEENTRY      *IconTab;
     COLORTABLEENTRY     *ColorTab;
@@ -554,10 +558,10 @@ typedef struct _pbdCSelf {
     bool                 onTheTop;
     bool                 isCategoryDlg;  // Need to use IsNestedDialogMessage()
     bool                 isControlDlg;   // Dialog was created as DS_CONTROL | WS_CHILD
-    bool                 isInitializing; // ControlDialog attribute
     bool                 isOwnedDlg;     // Dialog has an owner dialog
     bool                 isPageDlg;      // Dialog is a property sheet page dialog
     bool                 isPropSheetDlg; // Dialog is a property sheet dialog
+    bool                 isTabOwnerDlg;  // Dialog is a tab owner dialog
     bool                 sharedIcon;
     bool                 didChangeIcon;
     bool                 isActive;
@@ -596,6 +600,30 @@ typedef struct _ddCSelf {
     uint32_t           count;         // Dialog item count (dialogItemCount)
 } CDynamicDialog;
 typedef CDynamicDialog *pCDynamicDialog;
+
+/* Struct for the ControlDialogInfo object CSelf. */
+typedef struct _cdiCSelf {
+    SIZE              size;
+    RexxObjectPtr     owner;
+    CSTRING           title;
+    HINSTANCE         hInstance;        // resources attribute, C++ part of .ResourceImage
+    HICON             hIcon;            // tabIcon attribute, C++ part if using .Image
+    uint32_t          iconID;           // tabIcon attribute, C++ part if using resource ID
+    bool              wantNotifications;
+    bool              managed;
+} CControlDialogInfo;
+typedef CControlDialogInfo *pCControlDialogInfo;
+
+/* Struct for the ControlDialog object CSelf. */
+typedef struct _cdCSelf {
+    pCPlainBaseDialog   pcpbd;
+    RexxObjectPtr       rexxSelf;
+    char               *pageTitle;
+    oodClass_t          pageType;
+    bool                isInitializing;
+    bool                isManaged;
+} CControlDialog;
+typedef CControlDialog *pCControlDialog;
 
 /* Struct for the PropertySheetPage object CSelf. */
 typedef struct _pspCSelf {
@@ -681,6 +709,9 @@ extern RexxObjectPtr       TheZeroObj;
 extern RexxObjectPtr       TheTwoObj;
 extern RexxObjectPtr       TheOneObj;
 extern RexxObjectPtr       TheNegativeOneObj;
+extern RexxObjectPtr       TheApplicationObj;
+extern RexxDirectoryObject TheConstDir;
+extern oodConstDir_t       TheConstDirUsage;
 extern RexxDirectoryObject TheDotLocalObj;
 extern RexxPointerObject   TheNullPtrObj;
 

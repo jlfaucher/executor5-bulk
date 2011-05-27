@@ -187,9 +187,14 @@ DWORD WINAPI WindowLoopThread(void *arg)
     pCPlainBaseDialog pcpbd = args->pcpbd;
     bool *release = args->release;
 
-    // Pass the pointer to the CSelf for this dialog to WM_INITDIALOG.
+    DLGPROC dlgProc = (DLGPROC)RexxDlgProc;
+    if ( pcpbd->isTabOwnerDlg )
+    {
+        dlgProc = (DLGPROC)RexxTabOwnerDlgProc;
+    }
+
     pcpbd->hDlg = CreateDialogParam(pcpbd->hInstance, MAKEINTRESOURCE(args->resourceId), pcpbd->hOwnerDlg,
-                                    (DLGPROC)RexxDlgProc, (LPARAM)pcpbd);
+                                    dlgProc, (LPARAM)pcpbd);
 
     if ( pcpbd->hDlg == NULL )
     {
@@ -201,7 +206,7 @@ DWORD WINAPI WindowLoopThread(void *arg)
 
     if ( pcpbd->autoDetect )
     {
-        args->autoDetectResult = doDataAutoDetection(pcpbd);
+        args->autoDetectResult = doDataAutoDetection(NULL, pcpbd);
         if ( args->autoDetectResult == OOD_MEMORY_ERR )
         {
             pcpbd->hDlgProcThread = NULL;
@@ -286,10 +291,10 @@ void setFontAttrib(RexxThreadContext *c, pCPlainBaseDialog pcpbd)
 
 
 RexxMethod7(RexxObjectPtr, resdlg_init, RexxObjectPtr, library, RexxObjectPtr, resourceID, OPTIONAL_RexxObjectPtr, dlgData,
-            OPTIONAL_RexxObjectPtr, includeFile, OPTIONAL_RexxObjectPtr, owner,
+            OPTIONAL_RexxObjectPtr, includeFile, OPTIONAL_RexxObjectPtr, ownerData,
             SUPER, super, OSELF, self)
 {
-    RexxArrayObject newArgs = context->NewArray(4);
+    RexxArrayObject newArgs = context->NewArray(5);
 
     context->ArrayPut(newArgs, library, 1);
     context->ArrayPut(newArgs, resourceID, 2);
@@ -301,22 +306,32 @@ RexxMethod7(RexxObjectPtr, resdlg_init, RexxObjectPtr, library, RexxObjectPtr, r
     {
         context->ArrayPut(newArgs, includeFile, 4);
     }
+    if ( argumentExists(5) )
+    {
+        context->ArrayPut(newArgs, ownerData, 5);
+    }
+
     RexxObjectPtr result = context->ForwardMessage(NULL, NULL, super, newArgs);
 
-    if ( isInt(0, result, context->threadContext) )
+    if ( result == TheZeroObj )
     {
         pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)context->GetCSelf();
 
-        if ( argumentExists(5) )
+        if ( pcpbd->isControlDlg || pcpbd->isTabOwnerDlg)
         {
-            pCPlainBaseDialog ownerPcpbd = requiredDlgCSelf(context, owner, oodPlainBaseDialog, 5);
-            if ( ownerPcpbd == NULL )
+            RexxPointerObject p = context->NewPointer(pcpbd);
+
+            if ( pcpbd->isControlDlg )
             {
-                return TheOneObj;
+                result = context->SendMessage1(self, "CONTROLDLGINIT", p);
             }
 
-            pcpbd->rexxOwner = owner;
-            pcpbd->hOwnerDlg = ownerPcpbd->hDlg;
+            /* Going to need TabOwnerDialog also, save space
+            if ( result == TheZeroObj && pcpbd->isTabOwnerDlg )
+            {
+                result = context->SendMessage1(self, "TABOWNERDLGINIT", p);
+            }
+            */
         }
     }
 
@@ -435,35 +450,199 @@ RexxMethod2(RexxArrayObject, resdlg_getDataTableIDs_pvt, CSELF, pCSelf, OSELF, s
 
 
 /**
+ *  Methods for the .ControlDlgInfo class.
+ */
+#define CONTROLDLGINFO_CLASS        "ControlDlgInfo"
+
+
+RexxMethod8(RexxObjectPtr, cdi_init, OPTIONAL_RexxObjectPtr, owner, OPTIONAL_CSTRING, title, OPTIONAL_RexxObjectPtr, _size,
+            OPTIONAL_logical_t, wantNotifications, OPTIONAL_RexxObjectPtr, tabIcon, OPTIONAL_RexxObjectPtr, resources,
+            OPTIONAL_logical_t, managed, OSELF, self)
+{
+    RexxBufferObject obj = context->NewBuffer(sizeof(CControlDialogInfo));
+    context->SetObjectVariable("CSELF", obj);
+
+    RexxMethodContext *c = context;
+
+    pCControlDialogInfo pccdi = (pCControlDialogInfo)context->BufferData(obj);
+    memset(pccdi, 0, sizeof(CControlDialogInfo));
+
+    if ( argumentExists(1) )
+    {
+        if ( ! c->IsOfType(owner, "CONTROLDLGINFO") )
+        {
+            wrongClassException(c->threadContext, 1, "ControlDlgInfo");
+            goto done_out;
+        }
+        pccdi->owner;
+    }
+
+    if ( argumentExists(2) )
+    {
+        char *t = (char *)LocalAlloc(LPTR, strlen(title) + 1);
+        if ( t == NULL )
+        {
+            outOfMemoryException(context->threadContext);
+            goto done_out;
+        }
+
+        strcpy((char *)pccdi->title, title);
+    }
+
+    if ( argumentExists(3) )
+    {
+        SIZE *s = rxGetSize(context, _size, 3);
+        if ( s == NULL )
+        {
+            goto done_out;
+        }
+        pccdi->size.cx = s->cx;
+        pccdi->size.cy = s->cy;
+    }
+    else
+    {
+        pccdi->size.cx = 200;
+        pccdi->size.cy = 150;
+    }
+
+    pccdi->wantNotifications = wantNotifications ? true : false;
+
+
+done_out:
+    return NULLOBJECT;
+}
+
+/**
  *  Methods for the .ControlDialog class.
  */
 #define CONTROLDIALOG_CLASS        "ControlDialog"
 
-RexxMethod1(RexxObjectPtr, ctrlDlg_get_initializing, OSELF, self)
+static inline pCControlDialog validateCdCSelf(RexxMethodContext *c, void *pCSelf)
 {
-    pCPlainBaseDialog pcpbd = dlgToCSelf(context, self);
-    if ( pcpbd != NULL )
+    pCControlDialog pccd = (pCControlDialog)pCSelf;
+    if ( pccd == NULL )
     {
-        return pcpbd->isInitializing ? TheTrueObj : TheFalseObj;
+        baseClassIntializationException(c);
+    }
+    return pccd;
+}
+
+
+/** ControlDialog::controlDlgInit()  [private]
+ *
+ *  @param cpbd       Pointer to the PlainBaseDialog CSelf.
+ *  @param ownerData  Owner data.
+ */
+RexxMethod2(RexxObjectPtr, ctrlDlg_controlDlgInit, POINTER, cpbd, OSELF, self)
+{
+    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)cpbd;
+
+    RexxBufferObject pcdBuffer = context->NewBuffer(sizeof(CControlDialog));
+    if ( pcdBuffer == NULLOBJECT )
+    {
+        return TheOneObj;
     }
 
-    baseClassIntializationException(context);
+    pCControlDialog pccd = (pCControlDialog)context->BufferData(pcdBuffer);
+    memset(pccd, 0, sizeof(CControlDialog));
+
+    pccd->pcpbd = pcpbd;
+    pccd->rexxSelf = self;
+    pccd->isInitializing = true;
+    pccd->isManaged = false;
+    pccd->pcpbd->dlgPrivate = pccd;
+
+    if ( context->IsOfType(self, "USERCONTROLDIALOG") )
+    {
+        pccd->pageType = oodUserControlDialog;
+    }
+    else if( context->IsOfType(self, "RCCONTROLDIALOG") )
+    {
+        pccd->pageType = oodRcControlDialog;
+    }
+    else
+    {
+        pccd->pageType = oodResControlDialog;
+    }
+
+    context->SetObjectVariable("CSELF", pcdBuffer);
+
+    return TheZeroObj;
+}
+
+/** ControlDialog::initializing()    [Attribute get]
+ */
+RexxMethod1(RexxObjectPtr, ctrlDlg_get_initializing, CSELF, pCSelf)
+{
+    pCControlDialog pccd = validateCdCSelf(context, pCSelf);
+    if ( pccd != NULL )
+    {
+        return pccd->isInitializing ? TheTrueObj : TheFalseObj;
+    }
+    return NULLOBJECT;
+}
+
+/** ControlDialog::initializing()    [Attribute set]
+ */
+RexxMethod2(RexxObjectPtr, ctrlDlg_set_initializing, logical_t, initializing, CSELF, pCSelf)
+{
+    pCControlDialog pccd = validateCdCSelf(context, pCSelf);
+    if ( pccd != NULL )
+    {
+        pccd->isInitializing = initializing ? true : false;
+    }
+    return NULLOBJECT;
+}
+
+/** ControlDialog::isManaged()    [Attribute get]
+ */
+RexxMethod1(RexxObjectPtr, ctrlDlg_get_isManaged, CSELF, pCSelf)
+{
+    pCControlDialog pccd = validateCdCSelf(context, pCSelf);
+    if ( pccd != NULL )
+    {
+        return pccd->isManaged ? TheTrueObj : TheFalseObj;
+    }
+    return NULLOBJECT;
+}
+
+/** ControlDialog::pageTitle()       [Attribute get]
+ */
+RexxMethod1(RexxObjectPtr, ctrlDlg_getPageTitle, CSELF, pCSelf)
+{
+    pCControlDialog pccd = validateCdCSelf(context, pCSelf);
+    if ( pccd != NULL )
+    {
+        return pccd->pageTitle == NULL ? TheNilObj : context->String(pccd->pageTitle);
+    }
     return NULLOBJECT;
 }
 
 
-RexxMethod2(RexxObjectPtr, ctrlDlg_set_initializing, logical_t, initializing, OSELF, self)
+/** ControlDialog::pageTitle()       [Attribute set]
+ */
+RexxMethod2(RexxObjectPtr, ctrlDlg_setPageTitle, CSTRING, text, CSELF, pCSelf)
 {
-    pCPlainBaseDialog pcpbd = dlgToCSelf(context, self);
-    if ( pcpbd == NULL )
+    pCControlDialog pccd = validateCdCSelf(context, pCSelf);
+    if ( pccd != NULL )
     {
-        baseClassIntializationException(context);
+        goto out;
     }
-    else
+
+    char *t = (char *)LocalAlloc(LPTR, strlen(text) + 1);
+    if ( t == NULL )
     {
-        pcpbd->isInitializing = initializing ? true : false;
+        outOfMemoryException(context->threadContext);
+        goto out;
     }
-    return NULLOBJECT;
+
+    strcpy(t, text);
+
+    safeLocalFree(pccd->pageTitle);
+    pccd->pageTitle = t;
+
+out:
+    return TheZeroObj;
 }
 
 
@@ -474,13 +653,12 @@ RexxMethod2(RexxObjectPtr, ctrlDlg_set_initializing, logical_t, initializing, OS
 
 /** ResControlDialog::startDialog()
  *
- *  This method over-rides the superclass (ResDialog) startDialog().  It will be
- *  invoked from the superclass: self~startDialog(library, id, icon, modeless)
+ *  This method over-rides the superclass (ResDialog) startDialog().
  *
  *  We only need library and id, the owner dialog we pull from the CSelf
- *  struct.  So, we just take the first 2 args and ignore the rest.
+ *  struct.
  */
-RexxMethod4(RexxObjectPtr, resCtrlDlg_startDialog_pvt, CSTRING, library, RexxObjectPtr, _dlgID, ARGLIST, args, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, resCtrlDlg_startDialog_pvt, CSTRING, library, RexxObjectPtr, _dlgID, CSELF, pCSelf)
 {
     pCPlainBaseDialog pcpbd = getPBDCSelf(context, pCSelf);
     if ( pcpbd == NULL )
@@ -521,11 +699,12 @@ RexxMethod4(RexxObjectPtr, resCtrlDlg_startDialog_pvt, CSTRING, library, RexxObj
 
         if ( pcpbd->autoDetect )
         {
-            // TODO should we check result?
-            uint32_t result = doDataAutoDetection(pcpbd);
+            if ( doDataAutoDetection(context, pcpbd) != OOD_NO_ERROR )
+            {
+                goto err_out;
+            }
         }
 
-        pcpbd->isInitializing = false;
         return TheTrueObj;
     }
 

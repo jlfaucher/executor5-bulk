@@ -686,6 +686,12 @@ static void initializePropSheet(HWND hPropSheet)
  *
  * @param hPage
  * @param pcpsp
+ *
+ * @remarks  Note that we pass NULL into doDataAutoDetection() here because it
+ *           requires a method context rather than a thread context, which we
+ *           don't have.  However, the context is only used to raise an out of
+ *           memory exception, so we simply check for that condition and raise
+ *           the excepion here.
  */
 static void initializePropSheetPage(HWND hPage, pCPropertySheetPage pcpsp)
 {
@@ -708,7 +714,7 @@ static void initializePropSheetPage(HWND hPage, pCPropertySheetPage pcpsp)
 
         if ( pcpbd->autoDetect )
         {
-            if ( doDataAutoDetection(pcpbd) == OOD_MEMORY_ERR )
+            if ( doDataAutoDetection(NULL, pcpbd) == OOD_MEMORY_ERR )
             {
                 outOfMemoryException(c);
                 return;
@@ -1314,7 +1320,6 @@ LRESULT CALLBACK RexxPropertySheetDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, L
         if ( isPSMsg(uMsg, lParam) )
         {
             return doPSMessage(pcpsp, pcpbd, uMsg, wParam, lParam);
-            return TRUE;
         }
 
         MsgReplyType searchReply = searchMessageTables(uMsg, wParam, lParam, pcpbd);
@@ -4028,7 +4033,7 @@ RexxMethod2(RexxObjectPtr, psp_setResources_atr, RexxObjectPtr, resourceImage, C
     if ( ri != NULL )
     {
         pcpsp->hInstance = ri->hMod;
-        context->SetObjectVariable("RESOURCES", resourceImage);
+        context->SetObjectVariable("RESOURCES", resourceImage); // TODO this won't work, did you test it? ;-)
     }
     return NULLOBJECT;
 }
@@ -4254,7 +4259,7 @@ RexxMethod9(RexxObjectPtr, rcpspdlg_init, RexxStringObject, scriptFile, RexxObje
 
     RexxObjectPtr result = context->ForwardMessage(NULL, NULL, super, newArgs);
 
-    if ( isInt(0, result, context->threadContext) )
+    if ( result == TheZeroObj )
     {
         pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)context->GetCSelf();
         pCDynamicDialog pcdd = (pCDynamicDialog)context->ObjectToCSelf(self, TheDynamicDialogClass);

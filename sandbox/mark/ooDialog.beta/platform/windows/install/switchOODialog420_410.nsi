@@ -710,14 +710,18 @@ Function RemoveFiles
 
     RMDir /r $INSTDIR\samples\oodialog\source
     Delete $INSTDIR\samples\oodialog\bmp\movie.bmp
+    Delete $INSTDIR\samples\oodialog\bmp\oodlist1.bmp
+    Delete $INSTDIR\samples\oodialog\bmp\oodlist2.bmp
     Delete $INSTDIR\samples\oodialog\bmp\psdemolv.bmp
     Delete $INSTDIR\samples\oodialog\bmp\psdemoTab.bmp
     Delete $INSTDIR\samples\oodialog\bmp\psdemotv.bmp
     Delete $INSTDIR\samples\oodialog\bmp\ticket.bmp
     Delete $INSTDIR\samples\oodialog\examples\readme.txt
+    Delete $INSTDIR\samples\oodialog\oodlist.rex
     Delete $INSTDIR\samples\oodialog\ooticket.rex
     Delete $INSTDIR\samples\oodialog\propdemo.rex
     Delete $INSTDIR\samples\oodialog\rc\movies.rc
+    Delete $INSTDIR\samples\oodialog\rc\oodlist.rc
     Delete $INSTDIR\samples\oodialog\rc\propdemo.rc
     Delete $INSTDIR\samples\oodialog\rc\ticket.rc
   ${Else}
@@ -728,6 +732,8 @@ Function RemoveFiles
     Delete $INSTDIR\doc\oodguide.pdf
 
     RMDir /r $INSTDIR\samples\oodialog\source
+    Delete $INSTDIR\samples\oodialog\bmp\oodListViews1.bmp
+    Delete $INSTDIR\samples\oodialog\bmp\oodListViews2.bmp
     Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoListView.bmp
     Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoTab.bmp
     Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoTreeView.bmp
@@ -754,8 +760,11 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\examples\resources\useTools.h
     Delete $INSTDIR\samples\oodialog\examples\useTools.rex
     RMDir /r $INSTDIR\samples\oodialog\menus
+    Delete $INSTDIR\samples\oodialog\oodListViews.rex
     Delete $INSTDIR\samples\oodialog\ooDraw.h
     Delete $INSTDIR\samples\oodialog\PropertySheetDemo.rex
+    Delete $INSTDIR\samples\oodialog\rc\oodListViews.h
+    Delete $INSTDIR\samples\oodialog\rc\oodListViews.rc
     Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.h
     Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.rc
     Delete $INSTDIR\samples\oodialog\rc\TabDemo.h
