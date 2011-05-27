@@ -416,6 +416,131 @@
   xxx
 </para>
 
+<section id="atrInitializing"><title>initializing (Attribute)</title>
+<indexterm><primary>initializing</primary></indexterm>
+<indexterm><primary>ControlDialog class</primary><secondary>initializing</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--initializing---------------------------------><
+
+>>--initializing-=-varName-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">initializing</emphasis> attribute reflects the status of the initialization of the <link
+  linkend="ovvUnderlying">underlying</link> Windows dialog. The value of the attribute is
+  <computeroutput>.true</computeroutput> prior to the creation of the underlying dialog and up to the point that the
+  underlying dialog has finished its initialization. From that point on, its value is
+  <computeroutput>.false</computeroutput>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">initializing get:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">initializing</emphasis> attribute returns <computeroutput>.true</computeroutput> until
+    the Windows dialog has completed its initialization. Afterwards, the attribute will always return
+    <computeroutput>.false</computeroutput>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">initializing set:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog framework sets the <emphasis role="italic">initializing</emphasis> attribute internally to reflect the
+    state of the Windows dialog's initialization.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ControlDialog::initializing() [attribute]  -->
+
+<section id="mthInitUpdateListView"><title>initUpdateListView</title>
+<indexterm><primary>initUpdateListView</primary></indexterm>
+<indexterm><primary>ControlDialog class</primary><secondary>initUpdateListView</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--initUpdateListView(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ControlDialog::initUpdateListView() -->
+
 </section>
 
 <section id="clsUserControlDialog"><title>UserControlDialog Class</title>
@@ -424,6 +549,53 @@
 <para>
   xxx
 </para>
+
+
+<section id="sctMethodsUserControlDialog"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the few methods and attributes used in working
+  with <computeroutput>UserControlDialog</computeroutput> objects that differ from working with regular dialogs:
+</para>
+<table id="tblUserControlDialogMethods" frame="all">
+<title>Important UpDown Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsUserControlDialog">new</link></entry>
+<entry>Instantiates a new user control dialog.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrInitializing">initializing</link></entry>
+<entry>Reflects the status of the initialization of the underlying Windows dialog.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthInitUpdateListView">inintUpdateListView</link></entry>
+<entry>Initializes an internal work around for a problem with list-views that are used in a page of a tab control.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
 
 <section id="mthNewClsUserControlDialog"><title>new (Class method)</title>
 <indexterm><primary>new</primary><secondary>UserControlDialog class</secondary></indexterm>

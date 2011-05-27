@@ -2890,42 +2890,43 @@ button~start(scrollText, "Hello world!", "Arial", 36, "BOLD ITALIC", 2, 3, 15, 4
 <indexterm><primary>RadioButton class</primary><secondary>checkInGroup</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--checkInGroup(--dlg--,--idFirst--,--idLast--,--,--idCheck--)----------------><
-
+>>--checkInGroup(--dlg--,--idFirst--,--idLast--+------------+--)---------------><
+                                               +-,-idCheck--+
 ]]>
 </programlisting>
 
 <para>
-  Adds a check mark to (checks) the specified radio button in a group and removes a check mark from
-  (clears) all other radio buttons in the group.
+  Adds a check mark to (checks) the specified radio button in a group and removes the check mark from (clears) all other
+  radio buttons in the group.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
     <para>The arguments are:
     <variablelist>
-      <varlistentry><term>dlg</term>
+      <varlistentry><term>dlg [required]</term>
       <listitem>
         <para>
           The dialog that contains the radio button to be checked.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>idFirst</term>
+      <varlistentry><term>idFirst [required]</term>
       <listitem>
         <para>
-          The resource ID of the first radio button in the group.
+          The resource ID of the first radio button in the group. May be numeric or symbolic.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>idLast</term>
+      <varlistentry><term>idLast [required]</term>
       <listitem>
         <para>
-          The resource ID of the last radio button in the group.
+          The resource ID of the last radio button in the group. May be numeric or symbolic.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>idCheck</term>
+      <varlistentry><term>idCheck [optional]</term>
       <listitem>
         <para>
-          The resource ID of the radio button that is to be checked.
+          The resource ID of the radio button that is to be checked. May be numeric or symbolic. If this argument is
+          omitted, is 0, or -1 than all radio buttons in the group are unchecked.
         </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2934,12 +2935,25 @@ button~start(scrollText, "Hello world!", "Arial", 36, "BOLD ITALIC", 2, 3, 15, 4
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method return 0 on success and a <link linkend="defSystemErrorCode">system error</link> code if a
-      problem is detected.
+      This method return 0 on success and a <link linkend="defSystemErrorCode">system error</link> code if the operating
+      system reports one.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+    <para>
+      The use of the <emphasis role="italic">idCheck</emphasis> argument allows the programmer to uncheck all radio
+      buttons.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
     </para>

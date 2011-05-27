@@ -63,8 +63,20 @@
 </thead>
 <tbody>
 <row>
-<entry><link linkend="dotSystemErrorCode">.SystemErrorCode</link></entry>
-<entry>Reflects the <link linkend="defSystemErrorCode">system error code</link> if set.</entry>
+<entry><link linkend="dotApplication">.application object</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="dotConstDir">.constDir object</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="dotSystemErrorCode">.systemErrorCode object</link></entry>
+<entry>Reflects the <link linkend="defSystemErrorCode">system error code</link>, if set.</entry>
+</row>
+<row>
+<entry><link linkend="clsApplication">Application Class</link></entry>
+<entry>Manages application (global) settings for a single ooDialog program.</entry>
 </row>
 <row>
 <entry><link linkend="clsDayState">DayState Class</link></entry>
@@ -114,7 +126,25 @@
 </table>
 </para>
 
-<section id="dotSystemErrorCode"><title>.SystemErrorCode</title>
+
+<section id="dotApplication"><title>.application object</title>
+<indexterm><primary>.application</primary></indexterm>
+<para>
+  The <computeroutput>.application</computeroutput> object a an instance of the
+  <computeroutput>Application</computeroutput> class. XXX
+</para>
+</section>
+
+
+<section id="dotConstDir"><title>.constDir object</title>
+<indexterm><primary>.constDir</primary></indexterm>
+<para>
+  The
+</para>
+</section>
+
+
+<section id="dotSystemErrorCode"><title>.SystemErrorCode object</title>
 <indexterm><primary>.SystemErrorCode</primary></indexterm>
 <para>
   The .SystemErrorCode can be used, at times, to obtain additional information when the invocation of a
@@ -167,6 +197,7 @@ System error code: 2
 ]]>
 </programlisting>
 </section>
+
 
 <section id="clsDlgUtil"><title>DlgUtil Class</title>
 <indexterm><primary>DlgUtil class</primary></indexterm>
@@ -1399,6 +1430,128 @@ In the ok method thread ID:                 2344
 </section>  <!-- End DlgUtil::threadID() -->
 
 </section> <!-- End DlgUtil Class -->
+
+
+<section id="clsApplication"><title>Application Class</title>
+<indexterm><primary>Application class</primary></indexterm>
+<para>
+  x
+</para>
+<para>
+  x
+</para>
+
+<section id="sctMethodsApplication"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>Application</computeroutput> class:
+
+<table id="tblMethodsApplication" frame="all"> <title>Application Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Objects</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="dotConstDir"></link></entry>
+<entry>Defines how the global <link linkend="dotConstDir">.constDir</link> is used in the application.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthUseGlobalConstDir">useGlobalConstDir</link></entry>
+<entry>Defines how the global <link linkend="dotConstDir">.constDir</link> is used in the application.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthUseGlobalConstDir"><title>useGlobalConstDir</title>
+<indexterm><primary>useGlobalConstDir</primary></indexterm>
+<indexterm><primary>Application class</primary><secondary>useGlobalConstDir</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--useGlobalConstDir(--mode--+--------------+--)---------------><
+                              +--symbolFile--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>mode [required]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>symbolFile [optional]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Application::useGlobalConstDir() -->
+
+
+
+</section> <!-- End Application Class -->
 
 
 <section id="clsWindow"><title>Window Class</title>
