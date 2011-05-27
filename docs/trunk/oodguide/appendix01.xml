@@ -1,0 +1,273 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file.
+    #
+    # Copyright (c) 2011-2011, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<!-- Appendix 01 version 00-01 - Connections (??title??)
+     This is all about connections between menus and buttons with programs.
+-->
+<appendix id="apx-connections"><title id="connections.title">Connections</title>
+<indexterm><primary>Connections</primary></indexterm>
+
+<para>
+  This appendix discusses the various ways in which events published by menu items
+  and pushbuttons can be connected to the ooRexx program.
+
+<para><emphasis role='bold'>Note: This appendix is in initial note form taken
+from several sources - it has yet to be merged, completed, checked, and
+properly marked up.</emphasis></para>
+
+<section id="app01-menus"><title>Connecting Menu Command Items to Dialog Methods</title>
+<para>
+There are basically three ways to connect menu command items to a dialog:
+<itemizedlist>
+  <listitem><para>autoConnection</para></listitem>
+  <listitem><para>connection request</para></listitem>
+  <listitem><para>directly connect</para></listitem>
+</itemizedlist>
+In general the three ways should not be mixed without without using some
+forethought. Autoconnection should never be used with the other two.
+Mixing the three ways of connecting command items to methods can result in
+unpredicatable results:
+<itemizedlist>
+  <listitem><para>
+    The same command item can end up connected to different methods, which
+    method is invoked is non-deterministic.</para></listitem>
+  <listitem><para>Numerous entries for the same command item connected to the same method
+    can happen.</para></listitem>
+  <listitem><para>Both of the above can result in the message table becoming far larger than
+    necessary.</para></listitem>
+</itemizedlist>
+
+</para>
+
+<section id="app01-menus-auto"><title>Autoconnection</title>
+<para>
+  With autoconnection on, *each* time a menu bar is attached to a dialog every
+  command item in the menu is connected to a method in the dialog it is
+  attached to.  Either a method constructed from the text of the menu item or
+  all menu items are connected to a single method.
+</para>
+<para>
+  Note that if autoconnection is on, the automatic connection of menu items is
+  *always* done when a menu bar is attached to a dialog, even if the
+  connection request way of attaching menu items is also in use.
+</para>
+<para>
+  Autoconnection can be explicitly turned on by using:
+  <programlisting>
+    <![CDATA[
+      ::method setAutoConnection
+        use strict arg on, msg = ""
+    ]]>
+  </programlisting>
+  *before* a menu bar is attached to a dialog.
+</para>
+<para>
+  setAutoConnection() can also be used to turn autoconnection off at any time.
+</para>
+<variablelist><title>Font Filename Extensions</title>
+  <varlistentry>
+    <term>BinaryMenuBar</term>
+    <listitem><para>Turning autoconnection on can also be specified in the new method of a
+      .BinaryMenuBar</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>UserMenuBar:</term>
+    <listitem><para>Autoconnection can be turned on in .UserMenuBar~new().
+      Autoconnection can also be turned on explicitly using setAutoConnection()
+      after the UserMenuBar is created, but before it is attached to a dialog.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>ScriptMenuBar:</term>
+    <listitem><para>Similar to a UserMenuBar, autoconnection can be turned on after
+      the menu is created but before it is attached to a dialog.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>PopupMenu</term>
+    <listitem><para>When a popup menu is used as a submenu of a menu bar, autoconnection is
+      meaningless. A submenu can not be attached or assigned to a dialog.</para>
+      <para>When a popup menu is used as a context menu, autoconnection can be turned
+      on, either explicitly using setAutoConnection() or by using the autoConnect
+      option in the assignTo() method.</para>
+      <para>Note that setAutoConnection() has to be invoked on the top-level menu of the
+      context menu.  Invoking it on a submenu of the context menu would have no
+      effect.</para>
+      <para>When the track() or show() methods are used with a popup menu,
+      autoconnection is ignored.</para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>insertItem() method.</term>
+    <listitem>
+      <para>If autoconnection is turned on in the menu bar that the item is inserted
+      into and the menu bar is already attached to a dialog, then the item will be
+      automatically connected, using either the autoconnectionMethod name or a
+      method name constructed from the text of the item.</para>
+      <para>This will *only* be done if the item is being inserted by ID and being
+      inserted into a menu bar, not being inserted into a popup menu.</para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+
+</section>
+
+<section id="app01-menus-requ"><title>Connection Request</title>
+<para>
+  A connection request is made when a menu command item is to be connected to
+  a specific method name in a dialog, before the menu bar has been attached to
+  a dialog.  Obviously it is impossible to connect the item to a dialog
+  method, before it is known what dialog the menu bar is going to be connected
+  to.
+</para>
+<para>
+  Connection requests are made by specifying a method to invoke when adding a
+  command item to a UserMenuBar through addItem(), or by specifying the
+  connect argument in .ScriptMenu~new().
+</para>
+<para>
+  The request can also, possibly, be made by specifying a method to inovke
+  when inserting a command item through insertItem(), see below.
+</para>
+<variablelist><title>Font Filename Extensions</title>
+  <varlistentry>
+    <term>BinaryMenuBar</term>
+    <listitem><para>A connection request is not used, except possibly though the insertItem()
+    method, see below.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>UserMenuBar</term>
+    <listitem><para>In a UserMenuBar, a connection request can be made in the addItem() method
+    by specifying a method name as the last argument to addItem()</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>ScriptMenuBar</term>
+    <listitem><para>Connection requests are made by using the 'connnect' argument in the
+    ScriptMenuBar~new() method.  If 'connect' is true, then a connection request
+    is made for each command item found in the resource script, using a method
+    name constructed from the text of the command item.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>PopupMenu</term>
+    <listitem><para>Connection requests have no meaning in a popup menu,
+     there is no such thing.</para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>insertItem() method</term>
+    <listitem><para>A connection request can be made through the insertItem() method under these
+    specific conditions.  The insertItem() is invoked on a menu bar, not using
+    by position, and the menu bar is not currently attached to a dialog.  Then a
+    connection request is made by using the last arguments to the method,
+    'connect' and possiblly 'methodName.'  If the menu bar is already attached
+    to a dialog, then those last two arguments connect the item immediatley.
+    </para></listitem>
+  </varlistentry>
+</variablelist>
+
+</section>
+
+</section>
+
+<section id="app01-bams"><title>Menus and Pushbuttons Method Connection</title>
+<para>
+  This note deals with connection of Command Events from menu items and pushbuttons
+  to ooRexx methods.
+</para>
+
+<section id="app01-bams-btns"><title>Buttons</title>  <!--  1  -->
+
+<section id="app01-bams-btns-auto"><title>Auto-connection</title><!--  1.1  -->
+<para>
+For a UserDialog, the createPushButton() method takes an argument that specifies
+the method to connect for the click event. For an RcDialog, the new method allows
+you to automatically connect the buttons:
+  <programlisting>
+    <![CDATA[
+  >>--init(--script--,--id--+------------+--+---------+--+--------+--+------------+--)--><
+                            +-,-dlgData.-+  +-,-hFile-+  +-,-opts-+  +-,-expected-+
+    ]]>
+  </programlisting>
+Section 6.2.1 of the doc is correct for the opts argument; use the CONNECTBUTTONS,
+CONNECTRADIOS, or CONNECTCHECKS keyword(s).
+</para>
+</section>
+<section id="app01-bams-btns-expl"><title>Explicit Connection</title><!--  1.2  -->
+<para>
+  Use the method connectButtonEvent()
+</para>
+</section>
+</section>
+<section id="app01-bam-menus"><title>Menu Items</title><!--  2  -->
+<para>
+  When a user clicks on a menu item (that is not a separator or a sub-menu), then a menu command event is raised. [See
+  section 25.2 of the ooDialog Reference]
+  With menu objects there are 2 basic ways to connect the menu command events to
+  a method in the Rexx dialog. Either the command events can be connected automatically
+  by the ooDialog framework. Or the command events can be connected explicitly by the
+  programmer.
+</para>
+<section id="app01-bam-menus-auto"><title>Auto-connection</title><!--  2.1  -->
+<para>For the BinaryMenuBar, ScriptMenuBar, and UserMenuBar, the new() method has an optional
+  argument towards the end of the argument list for automatically connecting the
+  menu items. When set to .true, all the menu command items are automatically connected
+  when the menu bar is attached to a dialog. The programmer provides methods whose names
+  are the same as the captions (or visible text) of the menu items (excluding blanks
+  and any trailing dots). Thus for a menu item that has the caption Do this the programmer would provide a method with
+  the name dothis.
+</para>
+</section>
+<section id="app01-bam-explicit"><title>Explicit connection</title><!--  2.2  -->
+<para>
+  Use the connectCommandEvent method of the Menu class (you can invoke it on the
+  MenuBar class if you wish). See section 25.3.48 of the ooDialog Reference.
+</para>
+</section>
+</section>
+
+<section id="app01-bam-notes"><title>Notes</title><!-- 3  Notes -->
+<para>
+  1. Do not use both auto and explicit for same menu command item.
+  2. The connectMenuEvent method is actually for connecting menu events, not menu
+command events. E.g there is a menu event notification when the OS is about to
+display a menu. A menu command event is sent when a user clicks on a menu item.
+</para>
+</section>
+</section>
+
+</appendix>
