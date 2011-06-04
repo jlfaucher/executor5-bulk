@@ -403,11 +403,13 @@ file looks OK, then you might check the .rc file to see if all the resources are
         have data placed in them when the dialog opens. In addition, a "Record Changes" pushbutton
         object is created so that the button can be enabled (outbound active behavior) when a user
         chooses the menu option "Update..." (inbound active behavior). </para>
-<para>After this, the following statement appears: <programlisting>
-    <![CDATA[
-    self~connectButtonEvent("IDC_RECORD_CHANGES","CLICKED",recordChanges)
-    ]]>
-  </programlisting>This is an example of specifying an "event handler" (inbound active
+<para>After this, the following statement appears:
+<programlisting>
+<![CDATA[
+  self~connectButtonEvent("IDC_RECORD_CHANGES","CLICKED",recordChanges)
+]]>
+</programlisting>
+  This is an example of specifying an "event handler" (inbound active
         behavior). Suppose the user presses the "Record Changes" button. Windows signals the event.
         The above statement states that this event - that is, the pushbutton (identified in the
           <computeroutput>.h</computeroutput> file as
@@ -433,8 +435,8 @@ file looks OK, then you might check the .rc file to see if all the resources are
 </para>
 <para>
   Note that MenuBar actions are not specified. This is because the menu items in
-  <computeroutput>CustomerView.rex</computeroutput> are "auto-connected" (see the <link linkend="apx-connections"
-  endterm="connections.title"/> appendix). Auto-connection is specified in the last parameter of the <emphasis
+  <computeroutput>CustomerView.rex</computeroutput> are "auto-connected" (see the <link
+  linkend="apx-connections">appendix</link>). Auto-connection is specified in the last parameter of the <emphasis
   role="italic">.ScriptMenuBar~new</emphasis> statement (see section 25.6 of the ooDialog Reference) in the <emphasis
   role="italic">createMenuBar</emphasis> method:
 
