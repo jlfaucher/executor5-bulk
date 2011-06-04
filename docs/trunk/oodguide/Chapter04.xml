@@ -431,30 +431,33 @@ file looks OK, then you might check the .rc file to see if all the resources are
   <computeroutput>CustomerView</computeroutput> class, specification of active
   controls occupies most of this method.
 </para>
-<para> Note that MenuBar actions are not specified. This is because the menu items in
-          <computeroutput>CustomerView.rex</computeroutput> are "auto-connected" (see the <link
-          linkend="apx-connections" endterm="connections.title"/> appendix). Auto-connection is
-        specified in the last parameter of the <emphasis role="italic">.ScriptMenuBar~new</emphasis>
-        statement (see section 25.6 of the ooDialog Reference) in the <emphasis role="italic"
-          >createMenuBar</emphasis> method: <programlisting>    <![CDATA[
-      menuBar = .ScriptMenuBar~new("CustomerView.rc", "IDR_MENU1", self, , , .true)
-    ]]>  </programlisting>
-        <indexterm>
-          <primary>menuBar</primary>
-          <secondary>RcDialog</secondary>
-        </indexterm>
-        <indexterm>
-          <primary>RcDialog</primary>
-          <secondary>menuBar</secondary>
-        </indexterm> Setting this parameter to <computeroutput>.true</computeroutput> (the default
-        is <computeroutput>.false</computeroutput>) specifies that all menu items will be connected
-        automatically to a method with the same name as the visible caption or text. In
-          <computeroutput>CustomerView.rc</computeroutput> the "File" sub-menu is: <programlisting>    <![CDATA[
-      MENUITEM "New Customer...", IDM_NEWCUST___1
-      MENUITEM "Update...", IDM_UPDATE___1
-      MENUITEM "Print...", IDM_PRINT___1
-      MENUITEM "Last Order", IDM_XXYYZZ
-    ]]> </programlisting>Spaces and trailing dots are stripped, giving method names of
+<para>
+  Note that MenuBar actions are not specified. This is because the menu items in
+  <computeroutput>CustomerView.rex</computeroutput> are "auto-connected" (see the <link linkend="apx-connections"
+  endterm="connections.title"/> appendix). Auto-connection is specified in the last parameter of the <emphasis
+  role="italic">.ScriptMenuBar~new</emphasis> statement (see section 25.6 of the ooDialog Reference) in the <emphasis
+  role="italic">createMenuBar</emphasis> method:
+
+<programlisting>
+<![CDATA[
+    menuBar = .ScriptMenuBar~new("CustomerView.rc", "IDR_MENU1", self, , , .true)
+]]>
+</programlisting>
+  <indexterm><primary>menuBar</primary><secondary>RcDialog</secondary></indexterm>
+  <indexterm><primary>RcDialog</primary><secondary>menuBar</secondary></indexterm>
+  Setting this parameter to <computeroutput>.true</computeroutput> (the default is
+  <computeroutput>.false</computeroutput>) specifies that all menu items will be connected automatically to a method
+  with the same name as the visible caption or text. In <computeroutput>CustomerView.rc</computeroutput> the "File"
+  sub-menu is:
+<programlisting>
+<![CDATA[
+    MENUITEM "New Customer...", IDM_NEWCUST___1
+    MENUITEM "Update...", IDM_UPDATE___1
+    MENUITEM "Print...", IDM_PRINT___1
+    MENUITEM "Last Order", IDM_XXYYZZ
+]]>
+</programlisting>
+  Spaces and trailing dots are stripped, giving method names of
         "NewCustomer", "Update", "Print", and "LastOrder". In the "Menu Methods" part of the
           <computeroutput>CustomerView</computeroutput> code, a method is provided for three of
         these menu items. There is deliberately no method provided for "Print" in order to show what
@@ -462,10 +465,13 @@ file looks OK, then you might check the .rc file to see if all the resources are
         message box from ooDialog). </para>
 <para>But before the menu actions will work, the <emphasis role="italic">menuBar</emphasis> object
         must be associated with the dialog object. This is done by this statement (at the beginning
-        of the <emphasis role="italic">initDialog</emphasis> method): <programlisting>    <![CDATA[
+        of the <emphasis role="italic">initDialog</emphasis> method):
+<programlisting>
+<![CDATA[
       menuBar~attachTo(self)
-    ]]>
-</programlisting></para>
+]]>
+</programlisting>
+  </para>
 <para>At this point, the dialog is displayed complete with all its controls. But there is no data
         shown. When executed, it looks as if the data appears at the same time as the window, but it
         does not. To illustrate this, insert a <emphasis role="italic">call SysSleep 3</emphasis>
