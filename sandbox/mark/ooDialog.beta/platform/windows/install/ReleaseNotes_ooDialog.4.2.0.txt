@@ -6,6 +6,71 @@ That section is the start of the real release notes for 4.2.0.  Just a stub
 for now, but starting to get filled in.
 
 
+                     switch_ooDialog420_410-4.2.0.7000
+                     =================================
+
+Changes since switch_ooDialog420_410-4.2.0.6965
+----------------------------------------------------------------------------
+
+Documentation:
+--------------
+  Only minimal progress on the documentation has been made.
+
+
+Samples added:
+--------------
+
+  Minor enhancements were made to many of the samples to both make then
+  easier to understand and to better demonstrate the features of ooDialog.
+
+
+Enhancements:
+-------------
+
+  The ApplicationClass class and the .application object were added.  The
+  ApplicationClass allows the programmer to set application, or program,
+  wide values or defaults.  The .application object is present in every
+  ooDialog program and is used to set global values  and defaults for that
+  application.
+
+  The global .constDir was added, allowing the use of symbolic IDs for any
+  method argument, of any object, where resource IDs are used.  Previously
+  the use of symbolic IDs was restricted to methods of a dialog object.
+
+  Good progress on the OwnerDialog implementation was made.  The name of the
+  class was changed to TabOwnerDialog to better reflect its actual use.  The
+  ManagedTab, TabOwnerDlgInfo, and ControlDlgInfo classes were added as part
+  of the TabOwnerDialog implementation.
+
+  The addNewAttribute() and addNewMethod() methods were added to the dialog
+  object allowing the dynamic addition of attributes and methods to dialog
+  objects.
+
+  The connectKeyEvent() was refactored to make it easier to use.  Both the
+  connectKeyEvent() and connectKeyPress() methods were enhanced to return
+  the Rexx control object to the event handlers.
+
+  Constant defines were added for all the Windows provided OEM images.
+
+  The setMinTabWidth() method was added to the Tab control class.
+
+
+Incompatible Changes with Prior Beta Code
+-----------------------------------------
+
+  Each of the Menu classes' new() methods have had one argument removed.
+  This argument was a cumbersome way of passing in a source to create an
+  object level constDir.  The introduction of the global .constDir has
+  eliminated the need for any menu object to have a constDir.
+
+
+Bugs:
+----
+  Bugs and inconsistencies found internally, were fixed.
+
+
+
+
                      switch_ooDialog420_410-4.2.0.6965
                      =================================
 
@@ -125,7 +190,7 @@ Samples added:
 
 Enhancements:
 -------------
-  Added constants to the dialog object for Microsoft's predefined resource
+  Added constants to the dialog object for MicroSoft's predefined resource
   IDs.
 
   Added the getCue() method to the Edit class.
@@ -229,6 +294,9 @@ controls.
 
 New utility classes:
 --------------------
+
+ApplicationClass:
+
 
 DayState:
 
