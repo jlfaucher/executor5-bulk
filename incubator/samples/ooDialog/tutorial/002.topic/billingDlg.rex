@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,8 +36,7 @@
 /*----------------------------------------------------------------------------*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  File:    billingDlg.rex                           Author:      Mark Miesfeld
-                                                    Creation date:  05/02/2008
+  File:    billingDlg.rex                           Creation date:  05/02/2008
 
   Project: ooDialog Tutorial                        Last update:    05/19/2008
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,24 +57,13 @@
     perhaps in a database, or maybe a flat file.
 
     A few things are done differently than they would be in a real program to
-    faciliate running this from a command prompt as a stand alone example.
-    Those places should be relatively easy to spot.
+    faciliate running this as a stand alone example.  Those places should be
+    relatively easy to spot.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-use arg accountName
 
-  -- In a real program, this would probably be called as a function and the
-  -- account name passed in as the argument.  Here it is just faked by using a
-  -- command line argument.
-
-  if arg(1, 'O') then do
-    say "You must supply an account name for this program"
-    say "Syntax:"
-    say "  rexx billingDlg.rex <accountName>"
-    say
-    say "For example:"
-    say "  rexx billingDlg.rex Home Depot"
-    return 99
-  end
+  -- In a real program, the setBillingAddres() routine would probably be called
+  -- directly and the account name passed in as the argument.  Here we fake this
+  -- by using a simple dialog to query the account name from the user.
 
   -- Instantiate the dialog, check the init code, and return if some error
   -- happened.
@@ -83,12 +71,116 @@ use arg accountName
   -- The dialog is created from the template in the resource script,
   -- billingDlg.rc.  Symbolic IDs are used for the resource IDs throughout this
   -- example.  The IDs are defined in billingDlg.h. The symbolic ID,
-  -- IDD_DLG_COMBOBOX is the ID of the dialog in the resource script.
+  -- IDD_ACCOUNTNAME is the ID of the dialog in the resource script.
 
-  dlg = .BillingDialog~new("billingDlg.rc", IDD_DLG_COMBOBOX, , "billingDlg.h")
+  dlg = .AccountNameDialog~new("billingDlg.rc", IDD_ACCOUNTNAME, , "billingDlg.h")
   if dlg~initCode <> 0 then do
-    say "Error starting dialog.  initCode:" dlg~initCode
-    return dlg~initCode
+    msg = "Error starting account name dialog.  initCode:" dlg~initCode
+    r = MessageDialog(msg, , "Dialog Initialization Error", "OK", "WARNING")
+    return 99
+  end
+
+  -- The execute method is what actually creates the underlying Windows dialog
+  -- and runs it until the user closes the dialog.
+  --
+  -- When the execute method returns, the underlying dialog has been closed.
+  -- The method will return 1 if the user pushes the Okay button, and 2 if the
+  -- user cancels the dialog.  The account name data is only valid if the user
+  -- pushes Okay.
+  --
+  -- Note that for this simple dialog we use a feature of ooDialog called
+  -- automatic data detection.  To truly understand automatic data detection,
+  -- you should read the section on Data Attributes Methods.  This section is in
+  -- the ooDialog reference, under the Dialog Object chapter.
+  --
+  -- The essence here is that an attribute of the AccountNameDialog is auto-
+  -- matically created by the ooDialog framework.  This attribute reflects the
+  -- 'data' of the edit control in the dialog.  When the dialog is closed with
+  -- ok by the user, the data attribute is updated automatically with the text
+  -- of the edit control.  The attribute is assigned the name of IDC_EDIT, which
+  -- in this case is the symbolic name of the resource ID of the edit control.
+  -- Therefore, when the user closes the dialog with okay, when can get the text
+  -- that the edit control contains by getting the value of the data attribute.
+
+  ret = dlg~execute("SHOWTOP")
+  if ret == 1 then do
+    -- The value of the IDC_EDIT attribute is the text entered in the edit
+    -- control
+
+    accountName = dlg~IDC_EDIT
+
+    -- Call the setBillingAddress() routine with the account name.  The routine
+    -- will return .nil if the user cancels, otherwise a table is returned with
+    -- the information the user entered.
+
+    data = setBillingAddress(accountName)
+
+    -- The setBillingAddress() routine returns 99 if some unrecoverable error
+    -- happend, .nil if the user cancelled, and a .table object if the user
+    -- entered the billing information and pressed okay.
+    --
+    -- In a regular application the returned data would just be used directly.
+    -- For this example program we just display the results in a message box.
+    -- We set up a message based on the value of 'data' and then that message is
+    -- displayed before the program ends.
+
+    select
+      when data == .nil then do
+        msg = "The user cancelled."
+        ret = 0
+      end
+      when data~isA(.Table) then do
+        msg = "Account:" || '09'x || data['name'] || .endOfLine~copies(2) || -
+              "Address:" ||                          .endOfLine~copies(2) || -
+              '09'x || data['address1']           || .endOfLine
+
+        if data['address2'] \== .nil then do
+          msg ||= '09'x data['address2']          || .endOfLine
+        end
+
+        msg ||= '09'x data['city'] data['state'] data['zip']
+        ret = 0
+      end
+      otherwise do
+        msg = "An unrecoverable error occurred."
+        ret = 99
+      end
+    end
+    -- End select
+  end
+  else do
+    msg = "The user cancelled."
+    ret = 0
+  end
+
+  title = "New Account Billing Address Result"
+  r = MessageDialog(msg, , title, "OK", "INFORMATION", "SETFOREGROUND")
+
+  return ret
+
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires "ooDialog.cls"
+
+::routine setBillingAddress public
+  use strict arg accountName
+
+  -- Instantiate the dialog, check the init code, and return if some error
+  -- happened.
+  --
+  -- The dialog is created from the template in the resource script,
+  -- billingDlg.rc.  Symbolic IDs are used for the resource IDs throughout this
+  -- example.  The IDs are defined in billingDlg.h. The symbolic ID,
+  -- IDD_COMBOBOX is the ID of the dialog in the resource script.
+
+  dlg = .BillingDialog~new("billingDlg.rc", IDD_COMBOBOX, , "billingDlg.h")
+  if dlg~initCode <> 0 then do
+    msg = "Error starting billing address dialog.  initCode:" dlg~initCode
+    r = MessageDialog(msg, , "Dialog Initialization Error", "OK", "WARNING")
+    return 99
   end
 
   -- Pass the account name on to the dialog.
@@ -103,7 +195,7 @@ use arg accountName
   -- The method will return 1 if the user pushes the Okay button, and 2 if the
   -- user cancels the dialog.  The billing address data is only valid if
   -- the user pushes Okay.
-  ret = dlg~execute("NORMAL", IDI_DLG_ICON)
+  ret = dlg~execute("NORMAL", IDI_ICON)
 
   -- In a real program, the data object would be returned to the caller, maybe
   -- passing back .nil if the dialog was canceled.  Here the results are just
@@ -112,30 +204,14 @@ use arg accountName
     -- Get the billing address from the dialog.  It is returned in the form of a
     -- table object.
     data = dlg~getBillingAddress
-    say data['name']
-    say data['address1']
-    if data['address2'] \== .nil then say data['address2']
-    say data['city'] data['state'] data['zip']
   end
   else do
-    say "The user canceled"
+    data = .nil
   end
 
-  -- The deInstall method unregisters all the ooDialog external functions.
-  -- Normally that would only be done when the program is entirely finished.
-  -- Since this is just an example and it is now finished, the deInstall method
-  -- is invoked.  This is not really needed.
-  dlg~deInstall
+return data
 
-return 0
--- End of entry point.
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Directives, Classes, or Routines.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "oodwin32.cls"
-
-::class 'BillingDialog' public subclass RcDialog inherit AdvancedControls MessageExtensions
+::class 'BillingDialog' public subclass RcDialog
 
 /** init()
  * The initialization for this dialog.  The superclass init method must be
@@ -207,7 +283,7 @@ return 0
   -- The account name does not change during the display of the dialog, so a
   -- static control is used for that information. Here that static control is
   -- set with the current account name.
-  self~getStaticControl(IDC_STATIC_CUSTOMER)~setTitle(accountName)
+  self~newStatic(IDC_STATIC_CUSTOMER)~setText(accountName)
 
   -- Start with the San Diego county radio button checked.  For each county, the
   -- cities combo box is filled with the cities in that county. Each time a
@@ -223,7 +299,7 @@ return 0
   -- Diego county is fetched from the data table using the resource ID as the
   -- index.  3.) A private method is called that handles filling the combo
   -- boxes.
-  self~getRadioControl(IDC_RB_SANDIEGO)~check
+  self~newRadioButton(IDC_RB_SANDIEGO)~check
   zipData = countyData[self~constDir[IDC_RB_SANDIEGO]]
   self~setCities(zipData['cities'])
 
@@ -231,7 +307,7 @@ return 0
   -- in Southern California, so the state is unchanging.  A combo box is used
   -- anyway, in case the business decides to expand to Arizona.  Here, the combo
   -- box is filled with the single item, CA, and it is set as selected.
-  combo = self~getComboBox(IDC_COMBO_STATE)
+  combo = self~newComboBox(IDC_COMBO_STATE)
   combo~add("CA")
   combo~selectIndex(1)
 
@@ -246,9 +322,9 @@ return 0
   -- the program.
   --
   -- In ooDialog, the programmer connects the events she is interested in with a
-  -- specific method in her dialog object.  When the event occurrs, the method
-  -- in the dialog object is invoked.  Events are tied to specific controls
-  -- using the resource ID of the control
+  -- specific method in her Rexx dialog object.  When the event occurrs, the
+  -- method in the dialog object is invoked.  Events are tied to specific
+  -- controls using the resource ID of the control
   --
   -- This program has two main events that drive it.  When the user selects a
   -- different county, the city and zip code combo boxes need to be filled with
@@ -258,17 +334,19 @@ return 0
   -- For the radio buttons, connect each button clicked event to the same
   -- method.  When a radio button is clicked, it becomes the selected radio
   -- button in the group.
-  self~connectButton(IDC_RB_SANDIEGO, onClick)
-  self~connectButton(IDC_RB_ORANGE,   onClick)
-  self~connectButton(IDC_RB_IMPERIAL, onClick)
+  self~connectButtonEvent(IDC_RB_SANDIEGO, "CLICKED", onClick)
+  self~connectButtonEvent(IDC_RB_ORANGE,   "CLICKED", onClick)
+  self~connectButtonEvent(IDC_RB_IMPERIAL, "CLICKED", onClick)
 
   -- For combo boxes, there is an event generated each time the selected item in
   -- the combo box changes.  Connect that event for the city combo box only.
-  self~connectComboBoxNotify(IDC_COMBO_CITY, "SELCHANGE", onCityChange)
+  self~connectComboBoxEvent(IDC_COMBO_CITY, "SELCHANGE", onCityChange)
 
 
 /** onClick()
- * This method is invoked every time one of the county radio buttons is clicked.
+ * This is the event handler method for the radio button's CLICKED event. It is
+ * invoked every time one of the county radio buttons is clicked.
+ *
  * 2 arguments are sent to this method.  The first will always be the resource
  * ID of the button clicked.  The second will always be the window handle of the
  * button.
@@ -278,7 +356,7 @@ return 0
  * code combo boxes are populated.  The window handle is not needed so that
  * argument is simply ignored.
  */
-::method onClick
+::method onClick unguarded
   expose countyData zipData
   use arg buttonID
 
@@ -291,14 +369,14 @@ return 0
 
 
 /** onCityChange()
- * This method is invoked every time the selected item in the cities combo box
- * changes.  The arguments sent to this method are not needed and are simply
- * ignored.
+ * This is the event handler method for the combo box's selection changed event.
+ * it is invoked every time the selected item in the cities combo box changes.
+ * The arguments sent to this method are not needed and are simply ignored.
  *
  * The selected city is fetched from the combo box and the zip code combo box is
  * populated with the correct zip codes for that city.
  */
-::method onCityChange
+::method onCityChange unguarded
   expose zipData
 
   -- Create an object that represents the underlying combo box.  The method can
@@ -309,7 +387,7 @@ return 0
   -- created, or if the underlying control has been destroyed.  Using symbolic
   -- IDs mostly eliminates the first error and the control can not generate a
   -- clicked event if it has not yet been created or has already been destroyed.
-  combo = self~getComboBox(IDC_COMBO_CITY)
+  combo = self~newComboBox(IDC_COMBO_CITY)
   if combo == .nil then return
 
   -- Combo boxes can have no items selected, which is why the check for the
@@ -333,7 +411,7 @@ return 0
 
   -- Create an object that represents the underlying combo box.  See the notes
   -- in the onCityChange() method.
-  combo = self~getComboBox(IDC_COMBO_CITY)
+  combo = self~newComboBox(IDC_COMBO_CITY)
   if combo == .nil then return .false
 
   -- First, delete all the existing items in the combo box.
@@ -371,7 +449,7 @@ return 0
 
   -- Create an object that represents the underlying combo box.  See the notes
   -- in the onCityChange() method.
-  combo = self~getComboBox(IDC_COMBO_ZIP)
+  combo = self~newComboBox(IDC_COMBO_ZIP)
   if combo == .Nil then return .false
 
   -- Remove all the existing items in the combo box.
@@ -415,12 +493,14 @@ return 0
   -- line 1 and fetch the text from the control.  See the notes in
   -- onCityChange() concerning the possibility of getEditControl() returning
   -- .nil
-  text = self~getEditControl(IDC_EDIT_ADDR1)~getText~strip
+  text = self~newEdit(IDC_EDIT_ADDR1)~getText~strip
 
   -- Check that the user entered the address.  If the edit control is blank,
   -- put up a message box telling the user what they need to do, and return 0.
   if text == "" then do
-    j = infoDialog("The address line 1 field must be filled in.")
+    title = "Date Entry Error"
+    msg = "The address line 1 field must be filled in."
+    r = MessageDialog(msg, self~hwnd, title, "OK", "WARNING")
 
     -- Returning 0 causes the dialog to keep executing.
     return 0
@@ -432,13 +512,13 @@ return 0
   -- is left .nil.
   billingAddress['address1'] = text
 
-  text = self~GetEditControl(IDC_EDIT_ADDR2)~getText~strip
+  text = self~newEdit(IDC_EDIT_ADDR2)~getText~strip
   if text \== "" then
     billingAddress['address2'] = text
 
-  billingAddress['city']  = self~getComboBox(IDC_COMBO_CITY)~selected
-  billingAddress['state'] = self~getComboBox(IDC_COMBO_STATE)~selected
-  billingAddress['zip']   = self~getComboBox(IDC_COMBO_ZIP)~selected
+  billingAddress['city']  = self~newComboBox(IDC_COMBO_CITY)~selected
+  billingAddress['state'] = self~newComboBox(IDC_COMBO_STATE)~selected
+  billingAddress['zip']   = self~newComboBox(IDC_COMBO_ZIP)~selected
 
   -- Returning 1 closes the dialog.
   return 1
@@ -459,8 +539,7 @@ return 0
 
 /* The methods below are used to construct a table of tables containing the
  * county, city, and zip code data used in this example.  In a real world
- * application, this data might be read from a file, or maybe gotten from a
- * database.
+ * application, this data probably be gotten from a database.
  */
 ::method fillCountyData private
   use arg tbl
@@ -505,5 +584,28 @@ return 0
   t["Calexico"] = .array~of(92231, 92232 )
 
   return t
+
+
+-- The account name dialog is used to query the user for a new account name.
+-- The dialog is so simple that it does not need many methods.  All we do is
+-- over-ride the validate() method to be sure that when the user closes the
+-- dialog with okay, there is some text to be used for the account name.
+-- Everything else is handled automatically by the ooDialog framework.
+::class 'AccountNameDialog' public subclass RcDialog
+
+::method validate
+
+  if self~newEdit(IDC_EDIT)~getText~strip == "" then do
+    title = "Date Entry Error"
+    msg = "A new account name must be entered."
+    r = MessageDialog(msg, self~hwnd, title, "OK", "WARNING")
+
+    -- Returning 0 causes the dialog to keep executing.
+    return 0
+  end
+
+  -- Returning 1 allows the dialog to close
+  return 1
+
 
 /* - - - End Of File: billingDlg.rex- - - - - - - - - - - - - - - - - - - - - */

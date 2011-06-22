@@ -30,11 +30,18 @@ content of that directory.
 This file contains an index denoting which controls and concepts can be
 found in which subdiretories.
 
-The text of this tutorial is contained in the files within this directory
-tree, with most of the text in comments in the individual programs.  At some
-point the text of the tutorial may be extracted and incorporated into the
-ooDialog documentation, a programmer's guide, and / or added to the ooRexx
-Wiki.
+The text of this tutorial is contained in the program files within this
+directory tree, with most of the text in comments in the individual
+programs.  At some point the text of the tutorial may be extracted and
+incorporated into the ooDialog documentation, a programmer's guide, and / or
+added to the ooRexx Wiki.
+
+Sometimes heavily commented programs prevent the programmer from being able
+to easily follow the flow of the program.  Because of that, many of the
+programs in the tutorial will have an uncommented version of the program
+contained in the same directory.  The uncommented version will have "_uc" in
+the program name.  I.e., the program aaBcdeF_uc.rex is the uncommented
+version of the aaBcdeF.rex program.
 
 In ooDialog, as in most things, there are often several ways to accomplish
 the same thing.  Currently, this tutorial is written from the perspective of
@@ -47,12 +54,17 @@ that are lightly touched upon by the original author, not as yet touched
 upon at all, or that demonstrate an alternative method of doing something in
 ooDialog.
 
+NOTE that routines and methods not defined in a program file are routines or
+methods provided by the ooDialog framework.  To fully understand the
+arguments to those routines or methods, please consult the ooDialog
+Reference book.  The PDF version of this book is oodialog.pdf and is
+installed with your ooDialog installation.
 
                                    Index
                                    =====
 
 001.intro - Simple user dialog, Ok / Cancel buttons, Ok / Cancel methods,
-edit control, UserDialog
+            edit control, UserDialog
 
 002.topic -
 

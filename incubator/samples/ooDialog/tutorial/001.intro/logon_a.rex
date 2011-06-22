@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,10 +36,9 @@
 /*----------------------------------------------------------------------------*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  File:    logon_a.rex                              Author:      Mark Miesfeld
-                                                    Creation date:  05/20/2008
+  File:    logon_a.rex                              Creation date:  05/20/2008
 
-  Project: ooDialog Tutorial                        Last update:    06/01/2008
+  Project: ooDialog Tutorial                        Last update:    06/22/2011
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   Category:
@@ -65,13 +64,13 @@
     number of class objects that represent a dialog box and dialog box controls.
 
     In the graphical user interface of the Windows OS, everything is a window.
-    Most software applications consist of a main window or possibly several
+    Most software applications consist of a main window and possibly several
     document windows.  In a main window the software application usually is
     responsible for drawing everything that takes place and handling every user
     generated event.
 
     A dialog box is a specialized type of window that is constructed using any
-    number of pre-defined control windows.  Unlike with a main application
+    number of pre-defined control windows.  Unlike an application with a main
     window, with a dialog box the programmer normally does none of the drawing
     and very little of the handling of user events.  Instead the dialog box and
     dialog controls handle all the drawing and most of the user events
@@ -83,36 +82,99 @@
     apllications were written using only dialog boxes.
 
     ooDialog exposes the functionality of dialog boxes and dialog controls.  It
-    does not expose the functionality of main windows.
+    does *not* expose the functionality of main windows.
 
+    All dialogs in the Windows operating system are created by supplying a
+    dialog template to the operating system (OS).  The OS then creates the
+    dialog seen on the screen from the template.  A dialog template defines the
+    size, position, and style of the dialog, along with the size, position, and
+    style of the dialog controls within the dialog.
+
+    The ooDialog framework provides 3 basic ways for the programmer to provide
+    the dialog template to the OS in the form of 3 base dialog classes.  The
+    programmer decides which method he wants to use to provide the dialog
+    template and then creates a dialog by subclassing one of the 3 base dialog
+    classes.
+
+    The 3 base classes are: UseDialog, RcDialog, and ResDialog.
+
+    With the UserDialog, the programmer defines the dialog template dynamically
+    using methods of the UserDialog class.
+
+    With the RcDialog, the programmer provides the dialog template in the form
+    of a resource script file.  Resource script files are usually created with
+    a resource editor.
+
+    With the ResDialog, the programmer provides the dialog template in a
+    compiled binary form contained within a resource-only DLL.
+
+    This introductory program uses a UserDialog subclass to provide the dialog
+    template.  The dialog template is created by using methods supplied by the
+    UserDialog class.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+  -- NOTE that all routines and methods not defined in this file are provided
+  -- by the ooDialog framework and are documented in the oodialog.pdf reference
+  -- book.
+
+  -- Instantiate a new Rexx dialog object.  The dialog presents a simple log on
+  -- screen to the user, with a field to enter the user name and a field to
+  -- enter the password.
 
   dlg = .LogonDialog~new
 
+  -- The initCode attribute of the dialog object is used to signal any error in
+  -- the instantiation of the object.  The init code is 0 if there were no
+  -- errors detected and not 0 if there were errors.  It is very unlikely that
+  -- an error will occur, but it does no harm to check.
+
   if dlg~initCode == 0 then do
+
+    -- The create() and createCenter() methods start the definition of the
+    -- dialog template for a UserDialog subclass.  One or the other must be
+    -- called first, before the creation of the dialog controls.  The methods
+    -- defines the size and position of the dialog, the title of the dialog,
+    -- and the style of the dialog.
+    --
+    -- The create() or createCenter() methods automatically invoke the
+    -- defineDialog().  Within the defineDialog() method, the programmer then
+    -- creates the dialog controls that populate the dialog.  When the create()
+    -- or createCenter() method returns, the dialog template has been completely
+    -- finished.
+
     dlg~createCenter(110, 55, "Logon", "VISIBLE NOMENU SYSTEMMODAL")
+
+    -- Now that the dialog template is complete, we are ready to pass the
+    -- template on to the OS, show the dialog, and run the dialog.  The
+    -- execute() method does just that.  It passes the template to the OS, the
+    -- OS creates the undelying dialog, shows the dialog on the screen, and runs
+    -- the dialog.  The dialog continues running until the user closes it.
+    --
+    -- When the execute() method returns, the underlying Windows dialog has been
+    -- closed by the user.  This could be seconds, minutes, or even days after
+    -- we invoke the execute() method.
+
     dlg~execute
+
+    -- Now that the dialog has been closed, we get the results from the dialog.
 
     accessLevel = dlg~access
     user = dlg~user
 
     -- After the logon attempt, the data would usually be passed on to the main
     -- program.  Here it is just displayed to the console, using a convenience
-    -- function defined at the end of this program.
+    -- function, dislplay() defined at the end of this program.
+
     accessData = display(accessLevel, user)
   end
   else do
+    -- This is the case that the initCode was not 0, we inform the user
+
     j = infoDialog("System error.  The logon dialog could" || '0d0a'x || -
                    "not be created.  Contact your system"  || '0d0a'x || -
                    "administrator.")
     accessData = .nil
   end
-
-  -- The deInstall method unregisters all the ooDialog external functions.
-  -- Normally that would only be done when the program is entirely finished.
-  -- Since this is just an example and it is now finished, the deInstall method
-  -- is invoked.  This is not really needed.
-  dlg~deInstall
 
 return accessData
 -- End of entry point.
@@ -122,21 +184,61 @@ return accessData
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires "oodialog.cls"
 
+-- This is the basis of our log on dialog.  We subclass the UserDialog and then
+-- code the methods that will define how the dialog behavies.
 ::class 'LogonDialog' public subclass UserDialog
 
+/** defineDialog()
+ *
+ * The defineDialog() method is provided by the ooDialog framework, it is
+ * invoked at the proper time by the framework, that is, after the dialog
+ * template has been started and now needs the addition of the dialog controls.
+ *
+ * The default implementation of this method does nothing.  The method is meant
+ * to be over-ridden by the programmer.  Within the method, the programmer
+ * creates the dialog controls that will be present in the dialog.
+ */
 ::method defineDialog
 
-  self~addText(5,  5, 35, 10, "User ID:")
-  self~addText(5, 20, 35, 10, "Password:")
+  -- Create 2 static controls.  These controls are the labels for the edit
+  -- controls.
 
-  self~addEntryLine(101, , 43,  5, 62, 10, "AUTOSCROLLH")
-  self~addEntryLine(102, , 43, 20, 62, 10, "AUTOSCROLLH PASSWORD")
+  self~createStaticText( , 5,  5, 35, 10, , "User ID:")
+  self~createStaticText( , 5, 20, 35, 10, , "Password:")
 
-  self~addButton(2, 35, 35, 30, 15, "Cancel")
-  self~addButton(1,     75, 35, 30, 15, "Ok", , "DEFAULT")
+  -- Create 2 edit controls.  These edit controls are where the user enters her
+  -- user ID and password.
 
+  self~createEdit(101, 43,  5, 62, 10, "AUTOSCROLLH")
+  self~createEdit(102, 43, 20, 62, 10, "AUTOSCROLLH PASSWORD")
+
+  -- Create the Ok and Cancel push buttons.
+
+  self~createPushButton(1, 35, 35, 30, 15, "DEFAULT", "Ok")
+  self~createPushButton(2, 75, 35, 30, 15,          , "Cancel")
+
+  -- setUp() is a private method of this dialog that we use to initialize
+  -- things.
   self~setUp
 
+/** cancel()
+ *
+ * The cancel() method is provided by the ooDialog framework and is invoked
+ * by the framework automatically at the correct time.  That is, when the user
+ * has canceled the dialog.
+ *
+ * The method is meant to be over-ridden by the programmer, if needed.
+ *
+ * The programmer can prevent the dialog from closing by simply not invoking the
+ * superclass cancel() method.
+ *
+ * To allow the dialog to close, invoke the superclass cancel() method.  Always
+ * close a dialog by invoking either the superclass ok() or cancel() methods.
+ * This ensures that the dialog execution is processed correctly.
+ *
+ * We over-ride the method simply to ensure that the accessLevel and userID
+ * attributes are set to null values.
+ */
 ::method cancel
   expose accessLevel userID
 
@@ -145,11 +247,48 @@ return accessData
 
   self~cancel:super
 
+/** okd()
+ *
+ * The okd() method is provided by the ooDialog framework and is invoked by the
+ * framework automatically at the correct time.  That is, when the user has
+ * closed the dialog with okay.
+ *
+ * The method is meant to be over-ridden by the programmer, if needed.
+ *
+ * The programmer can prevent the dialog from closing by simply not invoking the
+ * superclass ok() method.
+ *
+ * To allow the dialog to close, continue by invoking the superclass ok()
+ * method.  Always close a dialog by invoking either the superclass ok() or
+ * cancel() methods.  This ensures that the dialog execution is processed
+ * correctly.
+ *
+ * Most often the ok() method is over-ridden to validate the user input.  Here
+ * we over-ride the method to be sure the user entered a user ID and password,
+ * and then to check that the ID and password are correct.
+ */
 ::method ok
   expose userID accessLevel
 
-  userID = self~getEntryLine(101)~strip
-  password = self~getEntryLine(102)~strip
+  -- We get the text in both edit controls.  This is done by getting a new edit
+  -- control object and asking it for its text.
+
+  userID = self~newEdit(101)~getText~strip
+  password = self~newEdit(102)~getText~strip
+
+  /*
+   * The above is a short hand version of the method invocations.  This is a
+   * clearer form that does the same thing:
+   *
+   * editControl = self~newEdit(101)
+   * text = editControl~getText
+   * userID = text~strip
+   */
+
+  -- The following is just standard programming to verify the user and password.
+  -- To prevent the dialog from closing, return 0.  When everything checks out,
+  -- continue with the dialog closing by invoking the superclass ok() method.
+
   if userID == "" | password == "" then do
     j = infoDialog("You must enter both a user ID and a password")
     return 0

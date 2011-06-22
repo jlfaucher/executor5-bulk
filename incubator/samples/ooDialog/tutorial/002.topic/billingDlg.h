@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,8 +35,13 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#define IDI_DLG_ICON                            15
-#define IDD_DLG_COMBOBOX                        103
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
+
+#define IDD_COMBOBOX                            103
+#define IDI_ICON                                150
+#define IDD_ACCOUNTNAME                         152
 #define IDC_STATIC_TITLE                        1001
 #define IDC_STATIC_ACCOUNT                      1002
 #define IDC_STATIC_ADDRESS1                     1007
@@ -54,3 +59,4 @@
 #define IDC_STATIC_ZIP                          1026
 #define IDC_COMBO_STATE                         1027
 #define IDC_COMBO_ZIP                           1028
+#define IDC_EDIT                                1028

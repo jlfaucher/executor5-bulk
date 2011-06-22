@@ -36,51 +36,175 @@
 /*----------------------------------------------------------------------------*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  File:    logon.rex                                Creation date:  05/20/2008
+  File:    logon_a_uc.rex                           Creation date:  06/22/2011
 
   Project: ooDialog Tutorial                        Last update:    06/22/2011
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  Category:
-    ooDialog samples
-
-  Syntax:
-    logon
-
-  Purpose:
-    Show a very simple version of a dialog to demonstrate the very basics of
-    creating and executing a dialog.  Shows the default handling of the ok and
-    cancel methods and illustrate how ooDialog can take care of most of the
-    details involved in putting up a dialog on the screen, interacting with the
-    user and returning the user input.
-
-    This program, the first in the series of tutorial programs, has very little
-    explanation.  After reviewing this program, look to the logon_a.rex program
-    for comment explaining what is going on.
+  Uncommented version of logon_a.rex
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
   dlg = .LogonDialog~new
 
-  dlg~createCenter(100, 45, "Logon", "VISIBLE NOMENU SYSTEMMODAL")
-  ret = dlg~execute
+  if dlg~initCode == 0 then do
+    dlg~createCenter(110, 55, "Logon", "VISIBLE NOMENU SYSTEMMODAL")
+    dlg~execute
 
-  if ret == 1 then say "The user is granted access to the system."
-  else if ret == 2 then say "The user canceled, does not want to log on."
-  else say "An unexpected error happened."
+    accessLevel = dlg~access
+    user = dlg~user
+    accessData = display(accessLevel, user)
+  end
+  else do
+    j = infoDialog("System error.  The logon dialog could" || '0d0a'x || -
+                   "not be created.  Contact your system"  || '0d0a'x || -
+                   "administrator.")
+    accessData = .nil
+  end
 
-return ret
+return accessData
 -- End of entry point.
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "ooDialog.cls"
+::requires "oodialog.cls"
 
 ::class 'LogonDialog' public subclass UserDialog
 
 ::method defineDialog
 
-  self~createStaticText( , 5, 5, 85, 10, , "Do you want to log on?")
-  self~createOkCancelRightBottom
+  self~createStaticText( , 5,  5, 35, 10, , "User ID:")
+  self~createStaticText( , 5, 20, 35, 10, , "Password:")
 
-/* - - - End Of File: logon.rex - - - - - - - - - - - - - - - - - - - - - - - */
+  self~createEdit(101, 43,  5, 62, 10, "AUTOSCROLLH")
+  self~createEdit(102, 43, 20, 62, 10, "AUTOSCROLLH PASSWORD")
+
+  self~createPushButton(1, 35, 35, 30, 15, "DEFAULT", "Ok")
+  self~createPushButton(2, 75, 35, 30, 15,          , "Cancel")
+
+  self~setUp
+
+::method cancel
+  expose accessLevel userID
+
+  accessLevel = 0
+  userID = ""
+
+  self~cancel:super
+
+::method ok
+  expose userID accessLevel
+
+  userID = self~newEdit(101)~getText~strip
+  password = self~newEdit(102)~getText~strip
+
+  if userID == "" | password == "" then do
+    j = infoDialog("You must enter both a user ID and a password")
+    return 0
+  end
+
+  accessLevel = self~certify(userID, password)
+
+  if accessLevel == 0 then do
+    j = infoDialog("The user ID or password is not recognized")
+    return 0
+  end
+
+  select
+    when accessLevel == -1 then do
+      j = infoDialog("Four failed log on attempts in a row." || '0d0a0d0a'x || -
+                      "This session is terminated.")
+    end
+
+    when accessLevel == -2 then do
+      j = infoDialog("Three failed log on attempts for" userID"." || -
+                     '0d0a0d0a'x || -
+                     "The" userID "account is locked.")
+    end
+
+    otherwise
+      nop
+  end
+  -- End select
+
+  self~ok:super
+
+
+::method access
+  expose accessLevel
+  return accessLevel
+
+::method user
+  expose userID
+  return userID
+
+::method setUp private
+  expose userID accessLevel attempts
+
+  userID = ""
+  accessLevel = 0
+  attempts = 0
+
+
+::method certify private
+  expose users recorder attempts
+  use strict arg id, password
+
+  attempts += 1
+  id = id~upper
+
+  if \ users~isA(.directory) then users = self~createUserDirectory
+
+  if users[id] == password then return id~length
+
+  if \ recorder~isA(.table) then recorder = .table~new
+
+  if recorder~hasIndex(id) then do
+    recorder[id] += 1
+    if recorder[id] > 2 then return -2
+  end
+  else do
+    recorder[id] = 1
+  end
+
+  if attempts > 3 then return -1
+
+  return 0
+
+
+::method createUserDirectory private
+  d = .directory~new
+
+  d~rick = 'java'
+  d~markh = 'tree'
+  d~david = 'ibm'
+  d~lee = 'safe'
+  d~miesfeld = 'ppclab'
+  d~jon = 'england'
+
+  return d
+
+::routine display
+  use strict arg level, user
+
+  select
+    when level == -2 then
+      say "Failed logon.  The" user "account is now locked out."
+
+    when level == -1 then
+      say "Failed logon.  The session was forcibly terminated."
+
+    when level == 0 & user == "" then
+      say "The user canceled the logon."
+
+    when level == 0 then
+      say "The user" user "is not authorized to access this system."
+
+    otherwise
+      say "The user" user "is granted access at level" level
+  end
+  -- End select
+
+  return level user
+
+/* - - - End Of File: logon_a.rex - - - - - - - - - - - - - - - - - - - - - - */
