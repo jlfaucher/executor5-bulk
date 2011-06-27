@@ -48,7 +48,9 @@
     logon_a
 
   Purpose:
-    Provide a simple introduction to ooDialog.
+    Provide a simple introduction to ooDialog.  The logon_a.rex example is a
+    simple extension of the logonUser.rex example.  It adds two fields to allow
+    the person logging on to enter the user ID and password.
 
     This dialog is part of a fictious accounting program.  The dialog presents
     a screen where the user would provide their user ID and password.
@@ -57,7 +59,7 @@
     faciliate running this from a command prompt as a stand alone example.
     Those places should be relatively easy to spot.
 
-  Notes:
+  Tutorial:
     In its most basic sense, ooDialog is a framework that allows the ooRexx
     programmer access to a portion of the underlying graphical user interface
     provided by the Windows operating system.  It does this through the use of a
