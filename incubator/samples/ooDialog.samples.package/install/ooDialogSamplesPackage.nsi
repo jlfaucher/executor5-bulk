@@ -52,8 +52,11 @@
 
   !define VERSION        "0.0.1"
   !define VERSIONNODOTS  "0_0_1"
-  !define SHORTNAME      "ooDialog_Samples"
+  !define SHORTNAME      "ooDialog_Samples_${VERSIONNODOTS}"
   !define LONGNAME       "ooDialog Sample Package ${VERSION}"
+  !define DISPLAYICON    "$INSTDIR\AppIcon2.ico"
+  !define SRCDIR         "C:\work.ooRexx\wc\incubator\samples\ooDialog.samples.package"
+  !define UNINSTALLER    "uninstall.exe"
 
 
 ;--------------------------------
@@ -63,13 +66,13 @@
   !include "Library.nsh"
   !include "LogicLib.nsh"
   !include "FileFunc.nsh"
-  !include "admin.nsh"
+;  !include "admin.nsh"
 
 ;--------------------------------
 ;General
 
   Name "ooDialog Sample Package"
-  OutFile "${SHORTNAME}_${VERSIONNODOTS}.exe"
+  OutFile "${SHORTNAME}.exe"
   ShowInstdetails show
   SetOverwrite on
   SetPluginUnload alwaysoff
@@ -83,6 +86,7 @@
   !define MUI_ICON "AppIcon2.ico"
   !define MUI_UNICON "uninstall.ico"
 
+  !define MUI_CUSTOMPAGECOMMANDS
   !define MUI_WELCOMEFINISHPAGE_BITMAP "orange.bmp"
   !define MUI_UNWELCOMEFINISHPAGE_BITMAP "orange-uninstall.bmp"
 
@@ -98,19 +102,15 @@
 ;--------------------------------
 ; Variables
 
-  ; Var Message                    ; example
+  Var RegVal_installedLocation                    ; example
 
 ;--------------------------------
-; Languages
-
-  !insertmacro MUI_LANGUAGE "English"
-
-;--------------------------------
-; Pages.  Even though we usually do not show any pages, the INSTFILES page is
-; usefull for debugging.  The /V option will let us see the page.
+; Pages.
+;
 
   !insertmacro MUI_PAGE_WELCOME
   !insertmacro MUI_PAGE_LICENSE "CPLv1.0.txt"
+  !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
   !insertmacro MUI_PAGE_FINISH
 
@@ -118,329 +118,51 @@
   !insertmacro MUI_UNPAGE_INSTFILES
   !insertmacro MUI_UNPAGE_FINISH
 
+;--------------------------------
+; Languages
+
+  !insertmacro MUI_LANGUAGE "English"
+
 ;===============================================================================
 ;Installer Sections
 ;===============================================================================
 
 ;Section "Dummy Section" SecDummy
-Section  doSwitch
-
-  Call PrintSwitchInfo
-
-  Call CheckForProblems
+Section  installFiles
 
   ; Set the installation directory:
   SetOutPath "$INSTDIR"
-  DetailPrint ""
 
-  Call RemoveFiles
+  DetailPrint "********** ooDialog Samples ${VERSION} ************"
 
-  ${If} $NewVersion == 420
-    DetailPrint "********** ooDialog 4.2.0 Framework **********"
-    File "${BinDir420}\oodialog.dll"
-    File "${BinDir420}\ooDialog.cls"
-    File "${BinDir420}\oodPlain.cls"
-    File "${BinDir420}\oodWin32.cls"
-    DetailPrint ""
+  File "${SRCDIR}\install\CPLv1.0.txt"
+  File "${SRCDIR}\install\AppIcon2.ico"
 
-    DetailPrint "********** ooDialog 4.2.0 ooRexxTry **********"
-    File "${SamplesDir420}\ooRexxTry\ooRexxTry.rex"
-    DetailPrint ""
+  SetOutPath "$INSTDIR\Controls\Edit\NumberOnly"
+  File "${SRCDIR}\Controls\Edit\NumberOnly\restrictedInput.h"
+  File "${SRCDIR}\Controls\Edit\NumberOnly\restrictedInput.rc"
+  File "${SRCDIR}\Controls\Edit\NumberOnly\RestrictedInput.rex"
+  File "${SRCDIR}\Controls\Edit\NumberOnly\restrictedInput32.dll"
+  File "${SRCDIR}\Controls\Edit\NumberOnly\restrictedInput64.dll"
 
-    DetailPrint "********** ooDialog 4.2.0 Documentation **********"
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\doc
-    ; Add the files ...
-    File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog420.pdf"
-    File /oname=oodGuide.pdf "${SRCDIR}\doc\oodguide420.pdf"
+  ; Write the uninstall keys.
+  DetailPrint "Writing uninstall keys."
+  WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "InstallLocation" '"$INSTDIR"'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "DisplayName" "${LONGNAME}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "DisplayIcon" "${DISPLAYICON}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "HelpLink" "http://www.rexxla.org/support.html"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "URLUpdateInfo" "http://sourceforge.net/project/showfiles.php?group_id=119701"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "URLInfoAbout" "http://www.rexxla.org/"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "DisplayVersion" "${VERSION}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "Publisher" "Rexx Language Association"
 
-    CreateShortCut "$RegVal_startMenuFolder\Documentation\ooRexx ooDialog User Guide.lnk" "$INSTDIR\doc\oodguide.pdf" "" "$INSTDIR\doc\oodguide.pdf" 0
-    DetailPrint ""
+  WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "UninstallString" '"$INSTDIR\${UNINSTALLER}"'
+  WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "UnInstallLocation" "$INSTDIR" ; dont quote it
+  WriteRegStr       HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "UninstallVersion" "${VERSION}"
+  WriteRegDWORD     HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "NoModify" 0x00000001
+  WriteRegDWORD     HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "NoRepair" 0x00000001
 
-    DetailPrint "********** ooDialog 4.2.0 Samples **********"
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog
-    ; Add the files ...
-    File "${SrcDir420}\oodialog.ico"
-    File "${SamplesDir420}\*.rex"
-    File "${SamplesDir420}\*.h"
-    File "${SamplesDir420}\*.inp"
-    File "${SamplesDir420}\*.ico"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\bmp
-    ; Add the files ...
-    File "${SamplesDir420}\bmp\*.bmp"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\controls
-    ; Add the files ...
-    File "${SamplesDir420}\controls\*.rex"
-    File "${SamplesDir420}\controls\*.rc"
-    File "${SamplesDir420}\controls\*.h"
-    File "${SamplesDir420}\controls\*.txt"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\examples
-    ; Add the files ...
-    File "${SamplesDir420}\examples\*.rex"
-    File "${SamplesDir420}\examples\*.txt"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\examples\resources
-    ; Add the files ...
-    File "${SamplesDir420}\examples\resources\*.bmp"
-    File "${SamplesDir420}\examples\resources\*.h"
-    File "${SamplesDir420}\examples\resources\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\menus
-    ; Add the files ...
-    File "${SamplesDir420}\menus\*.rex"
-    File "${SamplesDir420}\menus\*.h"
-    File "${SamplesDir420}\menus\*.bmp"
-    File "${SamplesDir420}\menus\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\oleinfo
-    ; Add the files ...
-    File "${SamplesDir420}\oleinfo\*.rex"
-    File "${SamplesDir420}\oleinfo\*.txt"
-    File "${SamplesDir420}\oleinfo\*.bmp"
-    File "${SamplesDir420}\oleinfo\*.rc"
-
-    SetOutPath $INSTDIR\samples\oodialog\ooRexxTry
-    ; Add the files ...
-    File "${SamplesDir420}\ooRexxTry\ooRexxTry.rex"
-
-    SetOutPath $INSTDIR\samples\oodialog\ooRexxTry\doc
-    ; Add the files ...
-    File "${SamplesDir420}\ooRexxTry\doc\ooRexxTry.pdf"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\rc
-    ; Add the files ...
-    File "${SamplesDir420}\rc\*.rc"
-    File "${SamplesDir420}\rc\*.h"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\res
-    ; Add the files ...
-    File "${SamplesDir420}\res\*.res"
-    File "${SamplesDir420}\res\*.dll"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\simple
-    ; Add the files ...
-    File "${SamplesDir420}\simple\*.h"
-    File "${SamplesDir420}\simple\*.rc"
-    File "${SamplesDir420}\simple\*.rex"
-    File "${SamplesDir420}\simple\*.txt"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\sysinfo
-    ; Add the files ...
-    File "${SamplesDir420}\sysinfo\*.rex"
-    File "${SamplesDir420}\sysinfo\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\source
-    ; Add the files ...
-    File "${BinDir420}\ooDialog.cls"
-    File "${BinDir420}\oodWin32.cls"
-    File "${BinDir420}\oodPlain.cls"
-    File "${SrcDir420}\0_READ_ME_FIRST.txt"
-    File "${SrcDir420}\build_ooDialog_cls.rex"
-    File "${SrcDir420}\AnimatedButton.cls"
-    File "${SrcDir420}\BaseDialog.cls"
-    File "${SrcDir420}\CategoryDialog.cls"
-    File "${SrcDir420}\ControlDialog.cls"
-    File "${SrcDir420}\DeprecatedClasses.cls"
-    File "${SrcDir420}\DialogControls.cls"
-    File "${SrcDir420}\DialogExtensions.cls"
-    File "${SrcDir420}\DynamicDialog.cls"
-    File "${SrcDir420}\EventNotification.cls"
-    File "${SrcDir420}\Menu.cls"
-    File "${SrcDir420}\PlainBaseDialog.cls"
-    File "${SrcDir420}\PropertySheet.cls"
-    File "${SrcDir420}\RcDialog.cls"
-    File "${SrcDir420}\ResDialog.cls"
-    File "${SrcDir420}\UserDialog.cls"
-    File "${SrcDir420}\UtilityClasses.cls"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\tutorial
-    ; Add the files ...
-    File "${SamplesDir420}\tutorial\*.rex"
-    File "${SamplesDir420}\tutorial\*.bmp"
-    File "${SamplesDir420}\tutorial\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\userGuide
-    ; Add the files ...
-    File "${SamplesDir420}\userGuide\*.txt"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises
-    ; Add the files ...
-    File "${SamplesDir420}\userGuide\exercises\*.rex"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise04a
-    ; Add the files ...
-    File "${SamplesDir420}\userGuide\exercises\Exercise04a\*.h"
-    File "${SamplesDir420}\userGuide\exercises\Exercise04a\*.rc"
-    File "${SamplesDir420}\userGuide\exercises\Exercise04a\*.rex"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\wav
-    ; Add the files ...
-    File "${SamplesDir420}\wav\*.wav"
-    File "${SamplesDir420}\wav\*.txt"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\winsystem
-    File "${SamplesDir420}\winsystem\*.rex"
-    File "${SamplesDir420}\winsystem\*.rc"
-    File "${SamplesDir420}\winsystem\*.h"
-    File "${SamplesDir420}\winsystem\*.frm"
-    DetailPrint ""
-
-    ; Record the ooDialog version now in effect:
-    DetailPrint "Recording ooDialog version now in effect: 4.2.0"
-    WriteRegStr HKLM "Software\${SHORTNAME}" "CurrentVersion" "420"
-  ${Else}
-    DetailPrint "********** ooDialog 4.1.0 Framework **********"
-    File "${BinDir410}\oodialog.dll"
-    File "${BinDir410}\OODIALOG.CLS"
-    File "${BinDir410}\OODPLAIN.CLS"
-    File "${BinDir410}\OODWIN32.CLS"
-    DetailPrint ""
-
-    DetailPrint "********** ooDialog 4.1.0 ooRexxTry **********"
-    File "${SamplesDir410}\ooRexxTry\ooRexxTry.rex"
-    DetailPrint ""
-
-    DetailPrint "********** ooDialog 4.1.0 Documentation **********"
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\doc
-    ; Add the files ...
-    File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog410.pdf"
-    DetailPrint ""
-
-    DetailPrint "********** ooDialog 4.1.0 Samples **********"
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog
-    ; Add the files ...
-    File "${SrcDir410}\oodialog.ico"
-    File "${SamplesDir410}\*.rex"
-    File "${SamplesDir410}\*.inp"
-    File "${SamplesDir410}\*.ico"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\bmp
-    ; Add the files ...
-    File "${SamplesDir410}\bmp\*.bmp"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\examples
-    ; Add the files ...
-    File "${SamplesDir410}\examples\*.rex"
-    File "${SamplesDir410}\examples\*.txt"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\examples\resources
-    ; Add the files ...
-    File "${SamplesDir410}\examples\resources\*.bmp"
-    File "${SamplesDir410}\examples\resources\*.h"
-    File "${SamplesDir410}\examples\resources\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\oleinfo
-    ; Add the files ...
-    File "${SamplesDir410}\oleinfo\*.rex"
-    File "${SamplesDir410}\oleinfo\*.txt"
-    File "${SamplesDir410}\oleinfo\*.bmp"
-    File "${SamplesDir410}\oleinfo\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\ooRexxTry
-    ; Add the files ...
-    File "${SamplesDir410}\ooRexxTry\ooRexxTry.rex"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\ooRexxTry\doc
-    ; Add the files ...
-    File "${SamplesDir410}\ooRexxTry\doc\ooRexxTry.pdf"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\rc
-    ; Add the files ...
-    File "${SamplesDir410}\rc\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\res
-    ; Add the files ...
-    File "${SamplesDir410}\res\*.res"
-    File "${SamplesDir410}\res\*.dll"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\sysinfo
-    ; Add the files ...
-    File "${SamplesDir410}\sysinfo\*.rex"
-    File "${SamplesDir410}\sysinfo\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\source
-    ; Add the files ...
-    File "${BinDir410}\OODIALOG.CLS"
-    File "${BinDir410}\OODWIN32.CLS"
-    File "${BinDir410}\OODPLAIN.CLS"
-    File "${SrcDir410}\advctrl.cls"
-    File "${SrcDir410}\anibuttn.cls"
-    File "${SrcDir410}\basedlg.cls"
-    File "${SrcDir410}\build.rex"
-    File "${SrcDir410}\catdlg.cls"
-    File "${SrcDir410}\dialog.cls"
-    File "${SrcDir410}\dlgext.cls"
-    File "${SrcDir410}\dyndlg.cls"
-    File "${SrcDir410}\makedll.bat"
-    File "${SrcDir410}\msgext.cls"
-    File "${SrcDir410}\oodutils.cls"
-    File "${SrcDir410}\plbdlg.cls"
-    File "${SrcDir410}\pludlg.cls"
-    File "${SrcDir410}\propsht.cls"
-    File "${SrcDir410}\resdlg.cls"
-    File "${SrcDir410}\stddlg.cls"
-    File "${SrcDir410}\stdext.cls"
-    File "${SrcDir410}\userdlg.cls"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\tutorial
-    ; Add the files ...
-    File "${SamplesDir410}\tutorial\*.rex"
-    File "${SamplesDir410}\tutorial\*.bmp"
-    File "${SamplesDir410}\tutorial\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\wav
-    ; Add the files ...
-    File "${SamplesDir410}\wav\*.wav"
-    File "${SamplesDir410}\wav\*.txt"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\winsystem
-    ; Add the files ...
-    File "${SamplesDir410}\winsystem\*.rex"
-    File "${SamplesDir410}\winsystem\*.rc"
-    File "${SamplesDir410}\winsystem\*.h"
-    File "${SamplesDir410}\winsystem\*.frm"
-    DetailPrint ""
-
-    ; Record the ooDialog version now in effect:
-    DetailPrint "Recording ooDialog version now in effect: 4.1.0"
-    WriteRegStr HKLM "Software\${SHORTNAME}" "CurrentVersion" "410"
-  ${Endif}
+  WriteUninstaller "$INSTDIR\${UNINSTALLER}"
 
 SectionEnd
 
@@ -450,309 +172,49 @@ SectionEnd
 
 /** .onInit()  Call back function
  *
- * Called by the installer before any page is shown.  We use it to ensure
- * ooRexx is installed and the correct version level.  If so, we check the
- * version of ooDialog currently in effect, (by reading the registry) and swap
- * it.
+ * Called by the installer before any page is shown.  We use it to ?
  */
 Function .onInit
 
-  /* We read the current version key first so we can do an early abort for the
-   * /I option.
-   */
-  ReadRegStr $CurrentVersion HKLM "Software\${SHORTNAME}" "CurrentVersion"
 
-  /* Check if the user just wants to know the ooDialog version in effect. */
-  ClearErrors
-  ${GetOptions} "$CMDLINE" "/I"  $R0
-  ${IfNot} ${Errors}
-    Call DisplayInfo
-  ${Endif}
+FunctionEnd
 
-  ClearErrors
-  ${GetOptions} "$CMDLINE" "/?"  $R0
-  ${IfNot} ${Errors}
-    Call DisplayInfo
-  ${Endif}
 
-  /* Check if the user is forcing the current version to something specific. */
-  ClearErrors
-  ${GetOptions} "$CMDLINE" "/F="  $R0
-  StrCpy $ForceVersion $R0
+;===============================================================================
+;  Uninstaller portion of ooDialogSamplesPackage.nsi.
+;===============================================================================
 
-  /* Check if the user is forcing us to be visible.  Usefull for debugging.
-   * This logic is a little convoluted.  We check the command line for the
-   * presence of /V.  If it is not there, the error flag is set, and we force
-   * the installer to silent mode.
-   */
-  ClearErrors
-  ${GetOptions} "$CMDLINE" "/V"  $R0
-  ${If} ${Errors}
-    SetSilent silent
-    ClearErrors
-  ${Endif}
+;===============================================================================
+;  Uninstaller Sections
+;===============================================================================
 
-  /* Be sure we are installed properly. Note that the UnInstallLocation and the
-   * InstallLocation keys in the registry contain the same directory.  But, the
-   * UnInstallLocation key has the directory unquoted and InstallLocation quotes
-   * the directory.  For some reason, copying the quoted version drops the ':'
-   * out of the path, causing things to fail.
-   */
+;-------------------------------------------------------------------------------
+; Uninstall section
+Section "Uninstall"
+
+  DetailPrint "Removing registry keys."
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}"
+  DeleteRegKey HKLM "SOFTWARE\${SHORTNAME}"
+
+  DetailPrint "Deleting switch ooDialog program"
+
+  RMDir /r $RegVal_installedLocation
+
+SectionEnd
+
+
+;===============================================================================
+;  Uninstaller Functions
+;===============================================================================
+
+/** un.onInit()  Callback function.
+ *
+ *  Called by the uninstaller program before any pages are shown.
+ *
+ */
+Function un.onInit
+
   ReadRegStr $RegVal_installedLocation HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "UnInstallLocation"
-  ${If} $RegVal_installedLocation == ""
-    MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
-      "${LONGNAME} has not been installed properly.$\n$\n\
-      Please follow the guidelines published for using$\n\
-      Switch ooDialog, especially the instructions for$\n\
-      installation.$\n$\n\
-      Aborting."
-    Abort
-  ${Endif}
-
-  /* Be sure, if passed a /F arg, it is correct. */
-  ${If} $ForceVersion != ""
-    ${If} $ForceVersion != 420
-    ${AndIf} $ForceVersion != 410
-      MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
-        "The /F argument of: '$ForceVersion' is not correct.$\n$\n\
-        Aborting."
-      Abort
-    ${Endif}
-  ${Endif}
-
-  StrCpy $INSTDIR "$RegVal_installedLocation"
-
-  ReadRegStr $RegVal_startMenuFolder HKLM "Software\${SHORTNAME}\" "StartMenuFolder"
-
-  /* If the user did not force a version, the new version is the opposite of
-   * the current version.
-   */
-  ${if} $ForceVersion == ""
-    ${If} $CurrentVersion == 410
-      StrCpy $NewVersion 420
-    ${Else}
-      StrCpy $NewVersion 410
-    ${Endif}
-  ${else}
-    ${If} $ForceVersion == 410
-      StrCpy $NewVersion 410
-      StrCpy $CurrentVersion 420
-    ${Else}
-      StrCpy $NewVersion 420
-      StrCpy $CurrentVersion 410
-    ${Endif}
-  ${endif}
 
 FunctionEnd
 
-/** CheckForProblems()
- *
- *  If the ooDialog doc is open, it can not be overwritten and the switched to
- *  version will have the wrong doc.  Or, if a Rexx ooDialog program is running
- *  oodialog.dll can not be overwritten, and the switched to version will not
- *  work.
- *
- *  We check for this possible problem by trying to delete the files.  If we
- *  can not, we abort, keeping the current version intact.
- */
-Function CheckForProblems
-
-  ClearErrors
-  Delete $INSTDIR\doc\oodialog.pdf
-  ${If} ${Errors}
-    MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
-      "switchOODialog detected a problem with oodialog.pdf$\n$\n\
-      You MUST close the ooDialog reference documentation and close$\n\
-      any running ooDialog programs before executing the Switch$\n\
-      ooDialog program.$\n$\n\
-      Please close the ooDialog Method Reference documentation, and$\n\
-      make sure no ooDialog programs are running.$\n$\n\
-      switchOODialog is aborting."
-      Abort
-  ${EndIf}
-
-  ${If} $CurrentVersion == 420
-    ClearErrors
-    Delete $INSTDIR\oodguide.pdf
-    ${If} ${Errors}
-      MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
-        "switchOODialog detected a problem with oodguide.pdf$\n$\n\
-        You MUST close all the ooDialog documentation and close$\n\
-        any running ooDialog programs before executing the Switch$\n\
-        ooDialog program.$\n$\n\
-        Please close the ooDialog User Guid documentation, and$\n\
-        make sure no ooDialog programs are running.$\n$\n\
-        switchOODialog is aborting."
-        Abort
-
-        ; Restore the oodialog.pdf file deleted above.
-        SetOutPath $INSTDIR\doc
-
-        ${If} $CurrentVersion == 420
-          File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog420.pdf"
-        ${Else}
-          File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog410.pdf"
-        ${EndIf}
-
-        Abort
-    ${EndIf}
-  ${EndIf}
-
-  ClearErrors
-  Delete $INSTDIR\oodialog.dll
-  ${If} ${Errors}
-    MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
-      "switchOODialog detected a problem with oodialog.dll$\n$\n\
-      You MUST close any running ooDialog programs and close$\n\
-      the ooDialog reference documentation before executing$\n\
-      the Switch ooDialog program.$\n$\n\
-      Please close any running ooDialog programs and make sure$\n\
-      the ooDialog Method Reference documentation is closed.$\n$\n\
-      switchOODialog is aborting."
-
-      ; Restore the ooDialog docs deleted above.
-      SetOutPath $INSTDIR\doc
-
-      ${If} $CurrentVersion == 420
-        File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog420.pdf"
-        File /oname=oodGuide.pdf "${SRCDIR}\doc\oodguide420.pdf"
-      ${Else}
-        File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog410.pdf"
-      ${EndIf}
-
-      Abort
-  ${EndIf}
-
-FunctionEnd
-
-/** DisplayInfo
- *
- * Puts up a message box to show information on the switchDialog program.
- * Called when the /I arg is used.
- */
-Function DisplayInfo
-
-  StrCpy $Message \
-       "Switches the active version of ooDialog.  Syntax:$\n$\n\
-        switchOODialog [param]$\n$\n\
-        With no argument switches the active ooDialog to the opposite.$\n\
-        Valid arguments are:$\n$\n\
-        /V		Switch ooDialog 'Visibly'.$\n$\n\
-        /F=key		Force the active version to 'key'.$\n$\n\
-        /I		Show this information.$\n$\n\
-        /?		Same as /I.$\n$\n\
-        'key' must be 420 or 410."
-
-  ${If} $CurrentVersion == 410
-    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n\
-                      Active version of ooDialog: 4.1.0$\n$\n$\n$Message"
-
-  ${Else}
-    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n\
-                      Active version of ooDialog: 4.2.0$\n$\n$\n$Message"
-  ${EndIf}
-
-  Abort
-FunctionEnd
-
-/** PrintSwitchInfo()
- *
- *  Print some info on what the switch is doing.  This is used for debugging.
- *  This is never seen, unless the /V options is used.
- */
-Function PrintSwitchInfo
-
-  ${If} $NewVersion == 420
-    DetailPrint "Current ooDialog Version is: 4.1.0"
-    DetailPrint "Switching to Version:        4.2.0"
-    DetailPrint ""
-  ${Else}
-    DetailPrint "Current ooDialog Version is: 4.2.0"
-    DetailPrint "Switching to Version:        4.1.0"
-    DetailPrint ""
-  ${Endif}
-
-FunctionEnd
-
-/** RemoveFiles()
- *
- *  Deletes all the files in the current ooDialog version that are not present
- *  in the switch to version.
- */
-Function RemoveFiles
-
-  ${If} $NewVersion == 420
-    DetailPrint "Removing files not present in ooDialog 4.2.0"
-
-    RMDir /r $INSTDIR\samples\oodialog\source
-    Delete $INSTDIR\samples\oodialog\bmp\movie.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\oodlist1.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\oodlist2.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\psdemolv.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\psdemoTab.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\psdemotv.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\ticket.bmp
-    Delete $INSTDIR\samples\oodialog\examples\readme.txt
-    Delete $INSTDIR\samples\oodialog\oodlist.rex
-    Delete $INSTDIR\samples\oodialog\ooticket.rex
-    Delete $INSTDIR\samples\oodialog\propdemo.rex
-    Delete $INSTDIR\samples\oodialog\rc\movies.rc
-    Delete $INSTDIR\samples\oodialog\rc\oodlist.rc
-    Delete $INSTDIR\samples\oodialog\rc\propdemo.rc
-    Delete $INSTDIR\samples\oodialog\rc\ticket.rc
-  ${Else}
-    DetailPrint "Removing files not present in ooDialog 4.1.0"
-    DetailPrint ""
-    DetailPrint "Removing ooDialog User Guide and Start Menu shortcut"
-    Delete "$RegVal_startMenuFolder\Documentation\ooRexx ooDialog User Guide.lnk"
-    Delete $INSTDIR\doc\oodguide.pdf
-
-    RMDir /r $INSTDIR\samples\oodialog\source
-    Delete $INSTDIR\samples\oodialog\bmp\oodListViews1.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\oodListViews2.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoListView.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoTab.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoTreeView.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\ticketWizardMovie.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\ticketWizardRexxLA.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\ticketWizardTheater.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\ticketWizardTicket.bmp
-    RMDir /r $INSTDIR\samples\oodialog\controls
-    Delete $INSTDIR\samples\oodialog\dlgAreaUDemoThree.rex
-    Delete $INSTDIR\samples\oodialog\dlgAreaUDemoTwo.rex
-    Delete $INSTDIR\samples\oodialog\examples\ReadMe.txt
-    Delete $INSTDIR\samples\oodialog\examples\resources\CheckIn.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\ClosePalette.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\CodeReview.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\LinkToWeb.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\LockModule.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\LockProject.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\ProjectReview.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\SaveAll.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\SaveModule.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\SaveProject.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\SplitModule.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\Update.bmp
-    Delete $INSTDIR\samples\oodialog\examples\resources\useTools.h
-    Delete $INSTDIR\samples\oodialog\examples\useTools.rex
-    RMDir /r $INSTDIR\samples\oodialog\menus
-    Delete $INSTDIR\samples\oodialog\oodListViews.rex
-    Delete $INSTDIR\samples\oodialog\ooDraw.h
-    Delete $INSTDIR\samples\oodialog\PropertySheetDemo.rex
-    Delete $INSTDIR\samples\oodialog\rc\oodListViews.h
-    Delete $INSTDIR\samples\oodialog\rc\oodListViews.rc
-    Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.h
-    Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.rc
-    Delete $INSTDIR\samples\oodialog\rc\TabDemo.h
-    Delete $INSTDIR\samples\oodialog\rc\ticketWizard.h
-    Delete $INSTDIR\samples\oodialog\rc\ticketWizard.rc
-    RMDir /r $INSTDIR\samples\oodialog\simple
-    Delete $INSTDIR\samples\oodialog\sysinfo\sysInfo.h
-    Delete $INSTDIR\samples\oodialog\TabDemo.rex
-    Delete $INSTDIR\samples\oodialog\ticketWizard.rex
-    RMDir /r $INSTDIR\samples\oodialog\userGuide
-  ${Endif}
-
-  DetailPrint ""
-
-FunctionEnd
