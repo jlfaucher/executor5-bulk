@@ -99,10 +99,52 @@
   !define MUI_UNINSTALLER
   !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
+  !define UninstLog "uninstall.log"
+  Var UninstLog
+
+  !define SHACF_FILESYSTEM 1  ; For SHAutoComplete()
+
+  !macro AddItem Path
+   FileWrite $UninstLog "${Path}$\r$\n"
+  !macroend
+  !define AddItem "!insertmacro AddItem"
+
+  !macro File FilePath FileName
+   FileWrite $UninstLog "$OUTDIR\${FileName}$\r$\n"
+   File "${FilePath}${FileName}"
+  !macroend
+  !define File "!insertmacro File"
+
+  !macro CreateDirectory Path
+   CreateDirectory "${Path}"
+   FileWrite $UninstLog "${Path}$\r$\n"
+  !macroend
+  !define CreateDirectory "!insertmacro CreateDirectory"
+
+  !macro SetOutPath Path
+   SetOutPath "${Path}"
+   FileWrite $UninstLog "${Path}$\r$\n"
+  !macroend
+  !define SetOutPath "!insertmacro SetOutPath"
+
+  !macro WriteUninstaller Path
+   WriteUninstaller "${Path}"
+   FileWrite $UninstLog "${Path}$\r$\n"
+  !macroend
+  !define WriteUninstaller "!insertmacro WriteUninstaller"
+
 ;--------------------------------
 ; Variables
 
-  Var RegVal_installedLocation                    ; example
+  Var RegVal_installedLocation                    ; Where we are installed
+  Var DeleteWholeTree                             ; Delete using log file or by rmdir
+  Var LogFileExists
+
+  ; Dialog variables
+  Var Dialog
+  Var Delete_ooRexx_Tree_CK
+  Var Label_One
+  Var Label_Two
 
 ;--------------------------------
 ; Pages.
@@ -115,6 +157,7 @@
   !insertmacro MUI_PAGE_FINISH
 
   !insertmacro MUI_UNPAGE_WELCOME
+  UninstPage custom un.Uninstall_By_Log_page un.Uninstall_By_Log_leave
   !insertmacro MUI_UNPAGE_INSTFILES
   !insertmacro MUI_UNPAGE_FINISH
 
@@ -127,23 +170,35 @@
 ;Installer Sections
 ;===============================================================================
 
-;Section "Dummy Section" SecDummy
+;-------------------------------------------------------------------------------
+;  Hidden section to open the log file
+
+Section -openlogfile
+  CreateDirectory "$INSTDIR"
+  IfFileExists "$INSTDIR\${UninstLog}" +3
+    FileOpen $UninstLog "$INSTDIR\${UninstLog}" w
+    Goto +4
+  SetFileAttributes "$INSTDIR\${UninstLog}" NORMAL
+  FileOpen $UninstLog "$INSTDIR\${UninstLog}" a
+  FileSeek $UninstLog 0 END
+SectionEnd
+
 Section  installFiles
 
   ; Set the installation directory:
-  SetOutPath "$INSTDIR"
+  ${SetOutPath} "$INSTDIR"
 
   DetailPrint "********** ooDialog Samples ${VERSION} ************"
 
-  File "${SRCDIR}\install\CPLv1.0.txt"
-  File "${SRCDIR}\install\AppIcon2.ico"
+  ${File} "${SRCDIR}\install\" "CPLv1.0.txt"
+  ${File} "${SRCDIR}\install\" "AppIcon2.ico"
 
-  SetOutPath "$INSTDIR\Controls\Edit\NumberOnly"
-  File "${SRCDIR}\Controls\Edit\NumberOnly\restrictedInput.h"
-  File "${SRCDIR}\Controls\Edit\NumberOnly\restrictedInput.rc"
-  File "${SRCDIR}\Controls\Edit\NumberOnly\RestrictedInput.rex"
-  File "${SRCDIR}\Controls\Edit\NumberOnly\restrictedInput32.dll"
-  File "${SRCDIR}\Controls\Edit\NumberOnly\restrictedInput64.dll"
+  ${SetOutPath} "$INSTDIR\Controls\Edit\NumberOnly"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput.h"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput.rc"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "RestrictedInput.rex"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput32.dll"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput64.dll"
 
   ; Write the uninstall keys.
   DetailPrint "Writing uninstall keys."
@@ -192,13 +247,11 @@ FunctionEnd
 ; Uninstall section
 Section "Uninstall"
 
-  DetailPrint "Removing registry keys."
+  DetailPrint "Removing registry keys set when installing ${LONGNAME}."
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}"
   DeleteRegKey HKLM "SOFTWARE\${SHORTNAME}"
 
-  DetailPrint "Deleting switch ooDialog program"
-
-  RMDir /r $RegVal_installedLocation
+  Call un.Delete_Installed_Files
 
 SectionEnd
 
@@ -215,6 +268,162 @@ SectionEnd
 Function un.onInit
 
   ReadRegStr $RegVal_installedLocation HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "UnInstallLocation"
+  StrCpy $DeleteWholeTree 'false'
+
+
+FunctionEnd
+
+/** un.Uninstall_By_Log_page()  Custom page function.
+ *
+ * This is a custom page that follows the page that checks if it is okay to
+ * stop rxapi.  Here we check for the uninstall log.  We then give the user the
+ * option of simply deleting the ooRexx directory tree (50 times faster on my
+ * system) or using the log file to individually delete only the install files.
+ *
+ * If the uninstall log is missing, the user does not have the option of
+ * deleting individual files and directories.
+ */
+Function un.Uninstall_By_Log_page
+
+  StrCpy $LogFileExists 'false'
+  IfFileExists "$INSTDIR\${UninstLog}" 0 +4
+    StrCpy $LogFileExists 'true'
+
+  ${if} $LogFileExists == 'false'
+    !insertmacro MUI_HEADER_TEXT \
+      "${UninstLog} NOT found." \
+      "The option of only removing files installed by the prior ooRexx installer is not available."
+
+    StrCpy $0 \
+      "Because the ${UninstLog} file is missing, the uninstall process must remove all \
+      files in the $INSTDIR directory tree.$\n$\n\
+      WARNING: This will remove all folders and files in the $INSTDIR folder, including \
+      any folders or files not placed there by the ooRexx installation.$\n$\n\
+      If there are any personl folders or files in the $INSTDIR directory tree that need \
+      to be saved, please cancel the uninstall, move the files, and restart the uninstall \
+      program."
+  ${else}
+    !insertmacro MUI_HEADER_TEXT \
+      "Choose the method for removing installed files." \
+      "Delete only installed files or delete entire directory tree?"
+
+    StrCpy $0 \
+      "The uninstall program can use an install log to delete only the folders and files \
+      placed in the $INSTDIR directory tree by the original installation program.$\n$\n\
+      Optionally, the entire $INSTDIR directory tree can be deleted.$\n$\n\
+      WARNING: Deleting the entire directory tree will remove all folders and files in the \
+      $INSTDIR folder.  This will include any folders or files not placed there by the ooRexx \
+      installation."
+
+  ${endif}
+
+  nsDialogs::Create /NOUNLOAD 1018
+  Pop $Dialog
+
+  ${If} $Dialog == error
+    Abort
+  ${endif}
+
+  ${if} $LogFileExists == 'false'
+    ${NSD_CreateLabel} 0 0 100% 80u $0
+    Pop $Label_One
+
+    ${NSD_CreateCheckBox} 0 84u 100% 8u "Delete entire directory tree"
+    Pop $Delete_ooRexx_Tree_CK
+    ${NSD_Check} $Delete_ooRexx_Tree_CK
+    EnableWindow $Delete_ooRexx_Tree_CK 0
+  ${else}
+    ${NSD_CreateLabel} 0 0 100% 64u $0
+    Pop $Label_One
+
+    ${NSD_CreateLabel} 0 80u 100% 16u "To DELETE the entire $INSTDIR directory tree, check the check box."
+    Pop $Label_Two
+
+    ${NSD_CreateCheckBox} 0 100u 100% 8u "Delete entire directory tree"
+    Pop $Delete_ooRexx_Tree_CK
+  ${endif}
+
+  ; Set focus to the page dialog rather than the installer dialog, set focus to
+  ; the check box, and then show the page dialog
+  SendMessage $Dialog ${WM_SETFOCUS} $HWNDPARENT 0
+  SendMessage $Dialog ${WM_NEXTDLGCTL} $Delete_ooRexx_Tree_CK 1
+
+  nsDialogs::Show
+
+FunctionEnd
+
+/** un.Uninstall_By_Log_leave()  Call back function.
+ *
+ * Invoked by the uninstaller when the user clicks Next on the uninstall using
+ * the log page.
+ */
+Function un.Uninstall_By_Log_leave
+
+  ${NSD_GetState} $Delete_ooRexx_Tree_CK $0
+
+  ${if} $0 == 1
+    StrCpy $DeleteWholeTree 'true'
+  ${else}
+    StrCpy $DeleteWholeTree 'false'
+  ${endif}
+
+FunctionEnd
+
+/** un.Delete_Installed_Files()
+ *
+ * Deletes the installed files in the manner specified by the user.  Either by
+ * using the log file to delete only files installed by the previous
+ * installaltion or by simply deleting the whole installation directory.
+ */
+Function un.Delete_Installed_Files
+
+  DetailPrint "Deleting ${LONGNAME}"
+
+  ${if} $DeleteWholeTree == 'true'
+    DetailPrint "Uninstall files by deleting the $INSTDIR directory tree"
+    RMDir /r "$INSTDIR"
+  ${else}
+    DetailPrint "Uninstall files using the install log file"
+    Push $R0
+    Push $R1
+    Push $R2
+    SetFileAttributes "$INSTDIR\${UninstLog}" NORMAL
+    FileOpen $UninstLog "$INSTDIR\${UninstLog}" r
+    StrCpy $R1 0
+
+    GetLineCount:
+      ClearErrors
+      FileRead $UninstLog $R0
+      IntOp $R1 $R1 + 1
+      IfErrors 0 GetLineCount
+
+    LoopRead:
+      FileSeek $UninstLog 0 SET
+      StrCpy $R2 0
+      FindLine:
+      FileRead $UninstLog $R0
+      IntOp $R2 $R2 + 1
+      StrCmp $R1 $R2 0 FindLine
+
+      StrCpy $R0 $R0 -2
+      IfFileExists "$R0\*.*" 0 +3
+        RMDir $R0  #is dir
+      Goto +3
+      IfFileExists $R0 0 +2
+        Delete $R0 #is file
+
+      IntOp $R1 $R1 - 1
+      StrCmp $R1 0 LoopDone
+      Goto LoopRead
+    LoopDone:
+    FileClose $UninstLog
+
+    Delete "$INSTDIR\${UninstLog}"
+    RMDir "$INSTDIR"
+    Pop $R2
+    Pop $R1
+    Pop $R0
+  ${endif}
 
 FunctionEnd
 
