@@ -38,7 +38,7 @@
 /**
  *  ooDialogSamplesPackage.nsi
  *
- *  An NSIS script to build the ooDialog Samples Package installer.
+ *  An NSIS script to build the ooDialog Samples installer.
  *
  */
 
@@ -53,7 +53,7 @@
   !define VERSION        "0.0.1"
   !define VERSIONNODOTS  "0_0_1"
   !define SHORTNAME      "ooDialog_Samples_${VERSIONNODOTS}"
-  !define LONGNAME       "ooDialog Sample Package ${VERSION}"
+  !define LONGNAME       "Extra ooDialog Samples ${VERSION}"
   !define DISPLAYICON    "$INSTDIR\AppIcon2.ico"
   !define SRCDIR         "C:\work.ooRexx\wc\incubator\samples\ooDialog.samples.package"
   !define UNINSTALLER    "uninstall.exe"
@@ -71,7 +71,7 @@
 ;--------------------------------
 ;General
 
-  Name "ooDialog Sample Package"
+  Name "Extra ooDialog Samples"
   OutFile "${SHORTNAME}.exe"
   ShowInstdetails show
   SetOverwrite on
@@ -188,7 +188,7 @@ Section  installFiles
   ; Set the installation directory:
   ${SetOutPath} "$INSTDIR"
 
-  DetailPrint "********** ooDialog Samples ${VERSION} ************"
+  DetailPrint "******** Extra ooDialog Samples ${VERSION} **********"
 
   ${File} "${SRCDIR}\install\" "CPLv1.0.txt"
   ${File} "${SRCDIR}\install\" "AppIcon2.ico"
@@ -205,7 +205,7 @@ Section  installFiles
   WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "InstallLocation" '"$INSTDIR"'
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "DisplayName" "${LONGNAME}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "DisplayIcon" "${DISPLAYICON}"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "HelpLink" "http://www.rexxla.org/support.html"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "HelpLink" "http://www.oorexx.org/support.html"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "URLUpdateInfo" "http://sourceforge.net/project/showfiles.php?group_id=119701"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "URLInfoAbout" "http://www.rexxla.org/"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "DisplayVersion" "${VERSION}"
@@ -298,7 +298,7 @@ Function un.Uninstall_By_Log_page
       "Because the ${UninstLog} file is missing, the uninstall process must remove all \
       files in the $INSTDIR directory tree.$\n$\n\
       WARNING: This will remove all folders and files in the $INSTDIR folder, including \
-      any folders or files not placed there by the ooRexx installation.$\n$\n\
+      any folders or files not placed there by the original installation.$\n$\n\
       If there are any personl folders or files in the $INSTDIR directory tree that need \
       to be saved, please cancel the uninstall, move the files, and restart the uninstall \
       program."
@@ -312,7 +312,7 @@ Function un.Uninstall_By_Log_page
       placed in the $INSTDIR directory tree by the original installation program.$\n$\n\
       Optionally, the entire $INSTDIR directory tree can be deleted.$\n$\n\
       WARNING: Deleting the entire directory tree will remove all folders and files in the \
-      $INSTDIR folder.  This will include any folders or files not placed there by the ooRexx \
+      $INSTDIR folder.  This will include any folders or files not placed there by the \
       installation."
 
   ${endif}
