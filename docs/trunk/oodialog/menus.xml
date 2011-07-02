@@ -141,7 +141,7 @@
   <para>
     Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu-item identifier.
     These numbers are essentially the same as any other resource <link linkend="defResourceID">ID</link> used in
-    ooDialog. The Rexx programmer can use numeric or <link linkend="defSymbolicID">symbolic</link> IDs for menu-item
+    ooDialog. The Rexx programmer can use numeric or <link linkend="sctMenuSymbolicID">symbolic</link> IDs for menu-item
     identifier's, in the same way as for other resource IDs.
   </para>
   <para>
@@ -180,6 +180,15 @@
   ID. Since both identifiers and positions are numbers, the programmer needs to specify which is bing used. However, by
   default, the ID is assumed to be an indetifier. Therefore, the programmer only need indicate when the ID is a position
   ID.
+</para>
+</section>
+
+<section id="sctMenuSymbolicIDs"><title>Symbolic Menu-item IDs</title>
+<para>
+  Menu-item <link linkend="entMenuItemIdentifier">identifiers</link> are essentially resource <link
+  linkend="defResourceID">IDs</link>. The programmer can use symbolic <link linkend="defSymbolicID">IDs</link> for
+  menu-item IDs rather than numeric IDs for any menu object method that requires a menu-item ID. However, to do so, the
+  programmer <emphasis role="italic">must</emphasis> use the <link linkend=""></link>
 </para>
 </section>
 
@@ -4211,21 +4220,90 @@ return 0
 <indexterm><primary>new</primary><secondary>BinaryMenuBar class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-          +--type--+
+>>--new(-+----------+-+------+-+-------+-+------------+-+--------+-+---------+-)--><
+         +--menuSrc-+ +-,-id-+ +-,-hID-+ +-,-attachTo-+ +-,-auto-+ +-,-mName-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>BinaryMenuBar</computeroutput> object. The menu template can be obtained from a
+  compiled binary resource, or an empty binary menu template is constructed in memory.  When an empty template is
+  constructed in memory, the programmer can add to the template dynamically using the menu object methods such as <link
+  linkend="mthInsertPopup">insertPopup</link>, <link linkend="mthInsertItem">insertItem</link>, etc.. Dynamically
+  constructing a menu template in this way is much less error prone than using the <link
+  linkend="clsUserMenuBar">UserMenuBar</link> class.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    All arguments are optional and are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>menuSrc [optional]</term>
+    <listitem>
+    <para>
+      The source of the menu template.  If this argument is omitted an empty menu template is constructed in memory.
+      When not omitted, the argument can be one of the following objects:
+    </para>
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">.nil:</emphasis></term>
+      <listitem>
+      <para>
+        Constructs an empty menu template is memory. This is identical to omitting the arugmen altogether.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.ResDialog:</emphasis></term>
+      <listitem>
+      <para>
+        The menu template is located in the resource only DLL of the <link linkend="clsResDialog">ResDialog</link>
+        object specified. In this case, the resource <emphasis role="italic">id</emphasis> argument is required.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.Pointer</emphasis></term>
+      <listitem>
+      <para>
+        A Rexx <computeroutput>.Pointer</computeroutput> object. If used, this argument must be a
+        <computeroutput>.Pointer</computeroutput> object that represents a valid menu handle. Currently this source of
+        the menu template is limited. The only way to get a menu handle is through the <link
+        linkend="mthGetMenuHandle">getMenuHandle</link> method. However, future enhancements to ooDialog will likey have
+        other ways to get a menu handle.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.String:</emphasis></term>
+      <listitem>
+      <para>
+        The file name of an executable module containing the menu template. When this source of the menu template is
+        used, the resource <emphasis role="italic">id</emphasis> argument is required.  An executable module is either a
+        DLL, or a .exe file, both of which can contain compiled resources.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>id [optional]</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hID [optional]</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>attachTo [optional]</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>auto [optional]</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasisbold">mName [optional]</emphasis></term>
     <listitem>
     <para>
       xx

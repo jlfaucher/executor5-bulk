@@ -75,7 +75,7 @@
 <entry>Reflects the <link linkend="defSystemErrorCode">system error code</link>, if set.</entry>
 </row>
 <row>
-<entry><link linkend="clsApplication">Application Class</link></entry>
+<entry><link linkend="clsApplicationMgr">ApplicationMgr Class</link></entry>
 <entry>Manages application (global) settings for a single ooDialog program.</entry>
 </row>
 <row>
@@ -130,8 +130,16 @@
 <section id="dotApplication"><title>.application object</title>
 <indexterm><primary>.application</primary></indexterm>
 <para>
-  The <computeroutput>.application</computeroutput> object a an instance of the
-  <computeroutput>Application</computeroutput> class. XXX
+  The <computeroutput>.application</computeroutput> object is an instance of the <link
+  linkend="clsApplicationMgr">ApplicationMgr</link> class that is present in all ooDialog programs. The object is
+  initialized and placed in the <computeroutput>.local</computeroutput> environment when the ooDialog package is loaded.
+</para>
+<para>
+  The <computeroutput>.application</computeroutput> object is used by the programmer to manage application wide settings
+  and constants. Its current use is primarily restricted to managing the global <link
+  linkend="dotConstDir">.constDir</link>. However, furture version of ooDialog will likely enhance the
+  <computeroutput>ApplicationMgr</computeroutput> class and at that time the
+  <computeroutput>.application</computeroutput> object will have increased usefulness.
 </para>
 </section>
 
@@ -139,7 +147,12 @@
 <section id="dotConstDir"><title>.constDir object</title>
 <indexterm><primary>.constDir</primary></indexterm>
 <para>
-  The
+  The <computeroutput>.constDir</computeroutput> is a Rexx <computeroutput>.directory</computeroutput> object that is
+  present in all ooDialog programs.  It is initialized and placed in the <computeroutput>.local</computeroutput>
+  environment automatically by the <link linkend="dotApplication">application</link> object. The global
+  <computeroutput>.constDir</computeroutput> is similiar in usage and function to the <link
+  linkend="atrContDir">constDir</link> attribute of the dialog <link linkend="chpDialogObject">object</link>. That is,
+  it resolves <link linkend="defSymbolic"></link>
 </para>
 </section>
 
@@ -1432,8 +1445,8 @@ In the ok method thread ID:                 2344
 </section> <!-- End DlgUtil Class -->
 
 
-<section id="clsApplication"><title>Application Class</title>
-<indexterm><primary>Application class</primary></indexterm>
+<section id="clsApplicationMgr"><title>ApplicationMgr Class</title>
+<indexterm><primary>ApplicationMgr class</primary></indexterm>
 <para>
   x
 </para>
@@ -1441,11 +1454,11 @@ In the ok method thread ID:                 2344
   x
 </para>
 
-<section id="sctMethodsApplication"><title>Method Table</title>
+<section id="sctMethodsApplicationMgr"><title>Method Table</title>
 <para>
-  The following table lists the class and instance methods of the <computeroutput>Application</computeroutput> class:
+  The following table lists the class and instance methods of the <computeroutput>ApplicationMgr</computeroutput> class:
 
-<table id="tblMethodsApplication" frame="all"> <title>Application Class Method Reference</title>
+<table id="tblMethodsApplicationMgr" frame="all"> <title>ApplicationMgr Class Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
 <thead>
@@ -1461,7 +1474,7 @@ In the ok method thread ID:                 2344
 </row>
 <row>
 <entry><link linkend="dotConstDir"></link></entry>
-<entry>Defines how the global <link linkend="dotConstDir">.constDir</link> is used in the application.</entry>
+<entry>A global (application wide) <computeroutput>.directory</computeroutput> object used to resolve symbolic IDs.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
@@ -1482,7 +1495,7 @@ In the ok method thread ID:                 2344
 
 <section id="mthUseGlobalConstDir"><title>useGlobalConstDir</title>
 <indexterm><primary>useGlobalConstDir</primary></indexterm>
-<indexterm><primary>Application class</primary><secondary>useGlobalConstDir</secondary></indexterm>
+<indexterm><primary>ApplicationMgr class</primary><secondary>useGlobalConstDir</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--useGlobalConstDir(--mode--+--------------+--)---------------><
@@ -1547,11 +1560,10 @@ In the ok method thread ID:                 2344
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End Application::useGlobalConstDir() -->
+</section>  <!-- End ApplicationMgr::useGlobalConstDir() -->
 
 
-
-</section> <!-- End Application Class -->
+</section> <!-- End ApplicationMgr Class -->
 
 
 <section id="clsWindow"><title>Window Class</title>
