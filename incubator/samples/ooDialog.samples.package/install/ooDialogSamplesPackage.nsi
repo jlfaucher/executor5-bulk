@@ -200,6 +200,11 @@ Section  installFiles
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput32.dll"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput64.dll"
 
+  ${SetOutPath} "$INSTDIR\Dialogs\dlgData"
+  ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.h"
+  ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.rc"
+  ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.rex"
+
   ; Write the uninstall keys.
   DetailPrint "Writing uninstall keys."
   WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "InstallLocation" '"$INSTDIR"'
