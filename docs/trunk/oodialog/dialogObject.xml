@@ -1537,11 +1537,11 @@
 /* BuildDlg.rex */
   DlgData.IDC_EDITFIELD_INCLUDE = "C:\sdk\include"
   DlgData.IDC_COMBOBOX_PROJECT = "Calculator"
-  DlgData.RADIO_DEBUG = 0
-  DlgData.RADIO_RELEASE = 1
-  DlgData.CHECKBOX_CLEAN = 0
+  DlgData.IDC_RADIO_DEBUG = 0
+  DlgData.IDC_RADIO_RELEASE = 1
+  DlgData.IDC_CHECKBOX_CLEAN = 0
 
-  dlg = .BuildDialog~new("dlg.dll", IDD_BUILD_DLG, DlgData, "resources.h")
+  dlg = .BuildDialog~new("dlg.dll", IDD_BUILD_DLG, DlgData., "resources.h")
   if dlg~initCode <> 0 then do
     say "Error starting dialog.  initCode:" dlg~initCode
     return dlg~initCode
@@ -1566,10 +1566,10 @@
 <![CDATA[
   ...
 
-  if DlgData.CHECKBOX_CLEAN == 1 then doClean()
+  if DlgData.IDC_CHECKBOX_CLEAN == 1 then doClean()
 
   includePath = DlgData.IDC_EDITFIELD_INCLUDE
-  if DlgData.RADIO_RELEASE == 1 then
+  if DlgData.IDC_RADIO_RELEASE == 1 then
     success = doReleaseBuild(includePath)
   else
     success = doDebugBuild(includePath)
