@@ -37,12 +37,74 @@
 
 /**
  *  The NumberOnlyEditEx class extends the .Edit class to provide an edit
- *  control which restricts entry to decimal only or signed decimal only
+ *  control which restricts entry to decimal only, or signed decimal only,
  *  numbers.
  *
  *  The NumberOnlyEditEx.cls file is meant to be included in any ooDialog
- *  program where this extension to the edit control is desired.
+ *  program where this extension to the edit control is desired.  The programmer
+ *  needs to take 4 steps to gain the functionality of a signed decimal number
+ *  only edit control:
+ *
+ *  1.) Require the NumberOnlyEditEx.cls file (this file.)
+ *
+ *      ::requires 'NumberOnlyEditEx.cls'
+ *
+ *  2.) Invoke the initDecimalOnly() method on each edit control object that is
+ *      to be a decimal number only edit control.  If initDecimalOnly() is not
+ *      invoked, the behaviour of the edit control unchanged.
+ *
+ *      editObject = self~newEdit(IDC_EDIT)
+ *      editObject~initDecimalOnly(decimalPlaces, allowSign)
+ *
+ *      arguments:
+ *
+ *      decimalPlaces  [optional] The number of decimal places allowed in the
+ *                                number.  The default is 2.  Specifying 0
+ *                                decimal places is accepted.
+ *
+ *      allowSign      [optional] If a sign character (+ or -) is allowed as the
+ *                                leading character of the number.  The default
+ *                                is .false.  Specify .true to allow a sign
+ *                                character.
+ *
+ *  3.) For each decimal only edit control, the character event must be
+ *      connected to a method in the Rexx dialog object.
+ *
+ *      editObject = self~newEdit(IDC_EDIT)
+ *      editObject~connectCharEvent(onChar)
+ *
+ *  4.) In the connected character event handler, the message and its arguments
+ *      must be forwarded on to the onChar() method of the edit control.  The
+ *      6th argument to the event handler is the dialog control object where the
+ *      character event occurred.  That is the object the event must be forwared
+ *      to.
+ *
+ *      When the programmer connects the character event to a method named
+ *      onChar, the event handler is simple:
+ *
+ *        ::method onChar unguarded
+ *          forward to (arg(6))
+ *
+ *      If the programmer chooses a different method name for the event handler,
+ *      then he must be sure to forward to the onChar() method of the edit
+ *      control:
+ *
+ *        ::method myOwnMethodName unguarded
+ *          forward  message 'onChar' to (arg(6))
+ *
+ *      And of course there is no reason why the event handler can not be coded
+ *      using the explicit arguments:
+ *
+ *        ::method myOwnMethodName unguarded
+ *          use arg char, isShift, isCtrl, isAlt, misc, control
+ *          forward  message 'onChar' to (control)
+ *
+ *  The accompanying program, CalcMPG.rex, in the ooDialog Extra Samples package
+ *  demonstrates the usage as outlined above.
+ *
  */
+
+  -- Extend the .Edit control by inheriting the .NumberOnlyEditEx mixin class.
 
   .Edit~inherit(.NumberOnlyEditEx, .EditControl)
 
@@ -51,6 +113,10 @@
 
 ::class 'NumberOnlyEditEx' public mixinclass object
 
+-- Users of the signed decimal number only edit control must invoke
+-- initDecimalOnly() first to assign decimal places and specify if the sign
+-- character is allowed.  Until this is done, there is no change to the
+-- behaviour of the Edit control object.
 ::method initDecimalOnly
   expose decimalPlaces signOk initialized clipBoard
   use strict arg decimalPlaces = 2, plusMinus = .false
@@ -61,16 +127,15 @@
   initialized = .true
   clipBoard = .WindowsClipboard~new
 
+-- The onChar() method should be inovked at every character event.  Returning
+-- true allows the character, returning false disallows the character.  When a
+-- character is not allowed, an edit ballon is set with a message explaining to
+-- the user why the character is not appearing when they type.
 ::method onChar unguarded
   expose decimalPlaces initialized signOk
   use arg char, isShift, isCtrl, isAlt, misc, control
 
-  if .debug then do
-    say "In edit control resource ID" self~ID 'decimalPlaces:' decimalPlaces 'initialized?' initialized
-    say 'Got char:' char 'virtual key:' .VK~key2name(char) 'shft?' isShift 'ctrl?' isCtrl 'alt?' isAlt 'misc:' misc 'control' control
-  end
-
-  if \ initialized then return .true
+  if \ var('initialized') then return .true
 
   if misc~pos("extended") <> 0, self~isExtendedKey(char) then return .true
 
@@ -85,7 +150,11 @@
   self~charBalloon
 
 
-::method checkDigit private
+/** checkDigit()
+ *
+ * Checks that the digit being typed, at the cursor position, is allowed.
+ */
+::method checkDigit private unguarded
   expose decimalPlaces signOk
 
   text = self~getText
@@ -121,7 +190,7 @@
  * position.  Note that this method is only invoked when the sign character is
  * allowed.
  */
-::method checkSign private
+::method checkSign private unguarded
   expose decimalPlaces
 
   text = self~getText
@@ -151,7 +220,7 @@
  * Checks that the decimal point being typed is allowed at the current cursor
  * position.
  */
-::method checkDecimal private
+::method checkDecimal private unguarded
   expose decimalPlaces signOk
 
   text = self~getText
@@ -182,11 +251,18 @@
   self~decimalPointBalloon(decimalPos, cursorPos, text)
 
 
-::method checkControlKey unguarded private
+/** checkControlKey()
+ *
+ * Invoked for a control key combination (Ctrl-?).  Anything other than Ctrl-V
+ * is automatically allowed.  Ctrl-V is of course the paste operation.  For
+ * Ctrl-V, we check that the result after pasting the text would be a valid
+ * signed decimal number, under the constraints for this object.  If not, it
+ * is disallowed and a ballon set.
+ */
+::method checkControlKey private unguarded
   expose clipBoard decimalPlaces
   use strict arg char
 
-  if char == 3 | char == 24 then return .true  -- Ctrl-X or Ctrl-C
   if char \== 22 then return .true             -- Not Ctrl-V
 
   -- If there is no text data available we don't care, pasting it will not do
@@ -213,17 +289,14 @@
   return .true
 
 
-/**
- * This method produces the proper ballon message text when a decimal point has
+/** decimalPointBalloon()
+ *
+ * This method produces the proper balloon message text when a decimal point has
  * been typed, but is not allowed at the current position.
  */
-::method decimalPointBalloon private
+::method decimalPointBalloon private unguarded
   expose decimalPlaces signOk
   use strict arg decimalPos, cursorPos, text
-
-  if .debug then do
-    say 'decimalPos:' decimalPos 'cursorPos:' cursorPos 'text:' text 'sign allowed:' signOk
-  end
 
   select
     when cursorPos == 1 then do
@@ -250,16 +323,16 @@
   self~showBalloon(.MT~DEC_TITLE, msg, "ERROR")
 
 
-::method charBalloon private
+/** charBalloon()
+ *
+ * This method produces the proper balloon message when a character is typed.
+ */
+::method charBalloon private unguarded
   expose decimalPlaces signOk
 
   text = self~getText
   decimalPos = text~pos('.')
   cursorPos = self~getCaretPos
-
-  if .debug then do
-    say 'decimalPos:' decimalPos 'cursorPos:' cursorPos 'length:' text~length
-  end
 
   msg = .MT~ONLY_NUMBER
 
@@ -294,7 +367,12 @@
   self~showBalloon(.MT~CHAR_TITLE, msg, "ERROR")
 
 
-::method pasteBalloon private
+/** pasteBalloon()
+ *
+ * This method produces the proper balloon message when text is pasted into the
+ * edit control that is not allowed.
+ */
+::method pasteBalloon private unguarded
   expose decimalPlaces signOk
   use strict arg pastedText, text, cursorPos
 
@@ -307,7 +385,7 @@
     else msg = .MT~ONLY_PASTE_A decimalPlaces .MT~ONLY_PASTE_B
   end
 
-  resultText = text~substr(1, cursorPos - 1) || pastedText || text~substr(cursorPos); say 'result:' resultText
+  resultText = text~substr(1, cursorPos - 1) || pastedText || text~substr(cursorPos)
 
   -- Balloon text has to be less than 1023 characters.  If we don't exceed that
   -- length, we will show the incorrect text to the user.  Otherwise we just
@@ -324,7 +402,12 @@
   self~showBalloon(.MT~PASTE_TITLE, msg, "ERROR")
 
 
-::method decimalPlacesUsedMsg private
+/** decimalPlacesUsedMsg()
+ *
+ * Convenience method to return the proper message for the situation where the
+ * allowable number of decimal places have been filled.
+ */
+::method decimalPlacesUsedMsg private unguarded
   expose decimalPlaces
 
   if decimalPlaces == 1 then return .MT~ONLY_1_DECIMAL
@@ -337,11 +420,11 @@
  * the current position, results in a valid number using the current
  * restrictions.  Decimal places and sign allowed or not.
  */
-::method isValidDecimal private
+::method isValidDecimal private unguarded
   expose decimalPlaces signOk
   use strict arg pasteText, text, cursorPos
 
-  resultText = text~substr(1, cursorPos - 1) || pasteText || text~substr(cursorPos); say 'resultText:' resultText
+  resultText = text~substr(1, cursorPos - 1) || pasteText || text~substr(cursorPos)
 
   -- Can't have any type of space character, tab, new line, etc..
   if resultText \== resultText~space(0) then return .false
@@ -379,6 +462,11 @@
   return .true
 
 
+/** isExtendedKey
+ *
+ * Convenience method to test if the character, char, is an extended key we want
+ * to pass on to the edit control
+ */
 ::method isExtendedKey private
   use strict arg char
 
@@ -387,6 +475,11 @@
   return .false
 
 
+/** hasSign
+ *
+ * Convenience method to test if a text string starts with a sign (+ or -)
+ * character.
+ */
 ::method hasSign private
   use strict arg text
 
@@ -395,10 +488,20 @@
   return .false
 
 
+/** getCaretPos()
+ *
+ * Returns the current caret (cursor) position of this edit control.
+ */
 ::method getCaretPos private
   return self~selection~startChar
 
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+   Class: MT
+
+   This class is used to provide constant character strings.  The strings are
+   used for the balloon messages put up by the NumberOnlyEditEx mixin class.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'MT' private
 ::constant CHAR_TITLE           "Unacceptable Character"
 ::constant DEC_TITLE            "Unacceptable Decimal Point"

@@ -192,13 +192,22 @@ Section  installFiles
 
   ${File} "${SRCDIR}\install\" "CPLv1.0.txt"
   ${File} "${SRCDIR}\install\" "AppIcon2.ico"
+  ${File} "${SRCDIR}\" "ReleaseNotes.txt"
+  ${File} "${SRCDIR}\" "Version.txt"
+
+  ${CreateDirectory} "$INSTDIR\Controls"
+  ${CreateDirectory} "$INSTDIR\Controls\Edit"
+  ${CreateDirectory} "$INSTDIR\Dialogs"
+  ${CreateDirectory} "$INSTDIR\Menus"
 
   ${SetOutPath} "$INSTDIR\Controls\Edit\NumberOnly"
-  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput.h"
-  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput.rc"
-  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "RestrictedInput.rex"
-  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput32.dll"
-  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "restrictedInput64.dll"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "ReadMeFirst.txt"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG.h"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG.rc"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG.rex"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "NumberOnlyEditEx.cls"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG32.dll"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG64.dll"
 
   ${SetOutPath} "$INSTDIR\Dialogs\dlgData"
   ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.h"
@@ -338,13 +347,13 @@ Function un.Uninstall_By_Log_page
     ${NSD_Check} $Delete_ooRexx_Tree_CK
     EnableWindow $Delete_ooRexx_Tree_CK 0
   ${else}
-    ${NSD_CreateLabel} 0 0 100% 64u $0
+    ${NSD_CreateLabel} 0 0 100% 84u $0
     Pop $Label_One
 
-    ${NSD_CreateLabel} 0 80u 100% 16u "To DELETE the entire $INSTDIR directory tree, check the check box."
+    ${NSD_CreateLabel} 0 92u 100% 16u "To DELETE the entire $INSTDIR directory tree, check the check box."
     Pop $Label_Two
 
-    ${NSD_CreateCheckBox} 0 100u 100% 8u "Delete entire directory tree"
+    ${NSD_CreateCheckBox} 0 116u 100% 8u "Delete entire directory tree"
     Pop $Delete_ooRexx_Tree_CK
   ${endif}
 
@@ -424,6 +433,7 @@ Function un.Delete_Installed_Files
     FileClose $UninstLog
 
     Delete "$INSTDIR\${UninstLog}"
+    Delete "$INSTDIR\${UNINSTALLER}"
     RMDir "$INSTDIR"
     Pop $R2
     Pop $R1
