@@ -75,7 +75,7 @@ RexxObjectPtr       TheNegativeOneObj = NULLOBJECT;
 RexxObjectPtr       TheApplicationObj = NULLOBJECT;
 RexxDirectoryObject TheConstDir = NULLOBJECT;
 
-// Initialized here, can be changes by ApplicationClass::useGlobalConstDir()
+// Initialized here, can be changed by ApplicationManager::useGlobalConstDir()
 oodConstDir_t       TheConstDirUsage = globalNever;
 
 // Initialized in the PlainBaseDialog class init method (pbdlg_init_cls.)
@@ -405,7 +405,7 @@ REXX_METHOD_PROTOTYPE(dlgutil_handleToPointer_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_threadID_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_test_cls);
 
-// ApplicationClass
+// ApplicationManager
 REXX_METHOD_PROTOTYPE(app_init);
 REXX_METHOD_PROTOTYPE(app_useGlobalConstDir);
 
@@ -803,7 +803,7 @@ REXX_METHOD_PROTOTYPE(dlgctrl_new_cls);
 REXX_METHOD_PROTOTYPE(dlgctrl_init_cls);
 REXX_METHOD_PROTOTYPE(dlgctrl_init);
 REXX_METHOD_PROTOTYPE(dlgctrl_unInit);
-REXX_METHOD_PROTOTYPE(dlgctrl_connectKeyEvent);
+REXX_METHOD_PROTOTYPE(dlgctrl_connectCharEvent);
 REXX_METHOD_PROTOTYPE(dlgctrl_connectKeyPress);
 REXX_METHOD_PROTOTYPE(dlgctrl_connectFKeyPress);
 REXX_METHOD_PROTOTYPE(dlgctrl_disconnectKeyPress);
@@ -1380,7 +1380,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgctrl_init_cls,               dlgctrl_init_cls),
     REXX_METHOD(dlgctrl_init,                   dlgctrl_init),
     REXX_METHOD(dlgctrl_unInit,                 dlgctrl_unInit),
-    REXX_METHOD(dlgctrl_connectKeyEvent,        dlgctrl_connectKeyEvent),
+    REXX_METHOD(dlgctrl_connectCharEvent,       dlgctrl_connectCharEvent),
     REXX_METHOD(dlgctrl_connectKeyPress,        dlgctrl_connectKeyPress),
     REXX_METHOD(dlgctrl_connectFKeyPress,       dlgctrl_connectFKeyPress),
     REXX_METHOD(dlgctrl_disconnectKeyPress,     dlgctrl_disconnectKeyPress),
