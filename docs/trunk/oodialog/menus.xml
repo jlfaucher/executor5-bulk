@@ -141,8 +141,8 @@
   <para>
     Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu-item identifier.
     These numbers are essentially the same as any other resource <link linkend="defResourceID">ID</link> used in
-    ooDialog. The Rexx programmer can use numeric or <link linkend="sctMenuSymbolicID">symbolic</link> IDs for menu-item
-    identifier's, in the same way as for other resource IDs.
+    ooDialog. The Rexx programmer can use numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link> IDs for
+    menu-item identifier's, in the same way as for other resource IDs.
   </para>
   <para>
     All menus assign menu-item identifiers to command items and submenus. ooDialog uses what the Windows operating
@@ -187,8 +187,10 @@
 <para>
   Menu-item <link linkend="entMenuItemIdentifier">identifiers</link> are essentially resource <link
   linkend="defResourceID">IDs</link>. The programmer can use symbolic <link linkend="defSymbolicID">IDs</link> for
-  menu-item IDs rather than numeric IDs for any menu object method that requires a menu-item ID. However, to do so, the
-  programmer <emphasis role="italic">must</emphasis> use the <link linkend=""></link>
+  menu-item IDs rather than numeric IDs for any argument in a menu object method that requires a menu-item ID. However,
+  to do so, the programmer <emphasis role="italic">must</emphasis> use the global <link
+  linkend="dotConstDir">.constDir</link>. If the global <computeroutput>.constDir</computeroutput> is not used, then all
+  menu-item ID arguments must be numeric.
 </para>
 </section>
 
@@ -549,7 +551,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the menu item, may be <link linkend="defSymbolicID">symbolic</link> or numeric.
+      The resource ID of the menu item, may be <link linkend="sctMenuSymbolicIDs">symbolic</link> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>methodName [required]</term>
@@ -3516,7 +3518,7 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the menu item, may be <link linkend="defSymbolicID">symbolic</link> or numeric.
+        The resource ID of the menu item, may be <link linkend="sctMenuSymbolicIDs">symbolic</link> or numeric.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>methodName [required]</term>
@@ -4303,7 +4305,7 @@ return 0
       xx
     </para>
     </listitem></varlistentry>
-    <varlistentry><term><emphasisbold">mName [optional]</emphasis></term>
+    <varlistentry><term><emphasis role="bold">mName [optional]</emphasis></term>
     <listitem>
     <para>
       xx
@@ -4469,8 +4471,8 @@ return 0
     Raises conditions for all failures.  If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use <link linkend="defSymbolicID">symbolic</link> IDs with menu objects the programmer must use the global <link
-    linkend="dotConstDir">.constDir</link>.
+    To use <link linkend="sctMenuSymbolicIDs">symbolic</link> IDs with menu objects the programmer must use the global
+    <link linkend="dotConstDir">.constDir</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
