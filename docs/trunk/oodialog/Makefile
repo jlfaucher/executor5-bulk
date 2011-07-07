@@ -84,7 +84,7 @@ xml_FILES = baseClasses.xml \
 	     windowExtensionsDO.xml \
 	     windowExtensionsDCO.xml \
 	     ../shared/notices.xml \
-	     ../shared/legalstuff.xml \
+	     legalstuff.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
 # The following files are not used, but the names are saved for reference. They
@@ -143,10 +143,10 @@ pdf: oodialog.pdf
 
 html: oodialog-html.zip
 
-oodialog.pdf: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+oodialog.pdf: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp datepub.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl oodialog.xml
 
-book1.htm:  $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+book1.htm:  $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp datepub.tmp
 	docbook2html -d ../shared/oorexx.html.dsl oodialog.xml
 
 oodialog-html.zip: book1.htm
@@ -155,7 +155,7 @@ oodialog-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp datepub.tmp
 	collateindex.pl -N -o genindex.xml
 	jade -t xml -d ../shared/oorexx.html.dsl -V html-index oodialog.xml
 	rm *.htm
@@ -163,6 +163,9 @@ genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
+
+datepub.tmp:
+	date "+%A, %B %d %Y" > datepub.tmp
 
 
 clean:
