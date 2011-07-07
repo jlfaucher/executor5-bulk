@@ -45,10 +45,23 @@
  * The extended number only function provided by NumberOnlyEditEx.cls does allow
  * signed decimal numbers.
  *
- * This exampl dialog allows the user to input starting and ending mileage,
+ * This example dialog allows the user to input starting and ending mileage,
  * gallons of gas used, and the price of a gallon of gas.  It then calculates
  * miles per gallon and cost per mile.
  */
+
+  if .DlgUtil~comCtl32Version < 6.0 then do
+    msg = 'This MPG calculator program uses features'      || .endOfLine ||           -
+          'only avaliable on Windows XP and later,'        || .endOfLine ||           -
+          'with Common Controls Library version 6.0'       || .endOfLine ||           -
+          'loaded.'                                        || .endOfLine~copies(2) || -
+          'The version of the Common Controls Library'     || .endOfLine           || -
+          'currently loaded is: ' .DlgUtil~comCtl32Version || .endOfLine~copies(2) || -
+          'The program will have to terminate.'
+
+    ret = MessageDialog(msg, 0, "Common Controls Library Version Error", , "WARNING", "TOPMOST")
+    return 99
+  end
 
   .application~useGlobalConstDir("O", 'CalcMPG.h')
 
