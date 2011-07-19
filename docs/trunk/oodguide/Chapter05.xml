@@ -1,0 +1,115 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file.
+    #
+    # Copyright (c) 2011-2011, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<!-- Chapter05 version 00-01 - Using Binary Resource Dialogs
+     4.1   Naming and Coding Conventions
+     4.1.1 Naming Conventions
+     4.1.2 Coding Conventions
+     4.2   Resource Scripts and a Resource File Editors
+     4.3   Coding an RcDialog Class
+     4.3.1 Setting Up the Dialog
+     4.3.2 Handling User Events
+     4.3.3 Application Data and Function
+     4.4   Coding a ResDialog Class
+
+-->
+
+<chapter id="chapFive"><title>Using Binary Resource Dialogs</title>
+<indexterm><primary>Binary Resource Dialogs</primary></indexterm>
+<indexterm><primary>ProductView component</primary></indexterm>
+<para>In this chapter ...</para>
+
+<section id="chap04-resfile"><title>Coding a ResDialog Class</title>
+<para>The ooDialog <computeroutput>ResDialog</computeroutput> class requires a resource-only
+  DLL. A resource-only DLL is a resource script (.rc) file compiled into binary format.
+  ResEdit is capable of doing this compilation, with three caveats:
+  <itemizedlist>
+     <listitem>
+            <para>It must be done from the command line:</para>
+            <para><computeroutput>resedit -convert filename.rc filename.dll</computeroutput></para>
+          </listitem>
+          <listitem>
+            <para>It only works for 32-bit DLLs - that is, you need to be on a 32-bit system.</para>
+          </listitem>
+          <listitem>
+            <para>At compile time, the *.h file and any *.bmp files must be in the same directory as
+              the .rc file. If present and referenced by the .rc file, the *.bmp files are compiled
+              into the DLL. </para>
+          </listitem>
+        </itemizedlist>
+      </para>
+      <para>At run-time, all that is needed for a ResDialog class is the DLL and the.h file.</para>
+      <para>Exercise04b contains a Product View component, the main class
+          <computeroutput>ProductView</computeroutput> being a subclass of the ooDialog
+          <computeroutput>ResDialog</computeroutput> class. Try running
+          <computeroutput>Startup.rex</computeroutput>.  Things to include:</para>
+      <para>- Update Chap 3 to explain .application - or find out how not to use it - also check on
+        code snippets that they're still OK.</para>
+      <para>- use of .Application~constdir so can use symbolic resource names in menus (???).</para>
+      <para>- Menu created after initDialog (unlike RcDialog) - diff between them.</para>
+      <para>- Autodetect - if omit, get blank fields because ... autoconnect, without dlgData, sets
+        to default value. (ref to app 2 dlgdata)</para>
+      <para>- The About Box and the things in it - an image, how get dbl-click, etc.</para>
+      <para>- Class-based initiation - no routine.</para>
+      <para>- radio buttons and style for group box to make them auto</para>
+      <para>- Disallow close</para>
+      <para>- User vs App data (like diff bewteen app and DB)</para>
+      <para>- decEdit</para>
+      <para>- How to handle cancel and also block unintended keystrokes (e.g. hitting Esc)</para>
+      <para>- About box</para>
+      <para>- Dbl-click on image (in about box)</para>
+      <para>- Menus - method is the text, not the symbolic ID (if not done in Chap 3).</para>
+      <para>- Sequence of operation - different from RcDialog (menu created at diff place)</para>
+      <programlisting>
+        <![CDATA[
+   d:\development\oodUserGuide\WorkingExercises\exercise04b>startup
+ProductView-init. 
+ProductView-initAutoDetection. 
+ProductView-activate. 
+ProductView-initDialog 
+ProductView-getInitData-01. 
+ProductView-showData-01.
+]]>
+      </programlisting>
+      <para><emphasis role="bold"><emphasis role="italic">Problems</emphasis></emphasis></para>
+      <para>Adding IDB_PROD_ICON to the execute stmt does not display the icon in top-left of window.</para>
+    </section>
+
+</chapter>

@@ -257,7 +257,7 @@ file looks OK, then you might check the .rc file to see if all the resources are
       layout from a resource script file that is human-readable (using a text editor). RcDialog is
       one of two important ooDialog classes that use resource scripts; the other is
         <computeroutput>ResDialog</computeroutput>, which uses a binary (compiled) resource file as
-      illustrated in the last section of this chapter. More information on resource files can be
+      discussed in the next chapter. More information on resource files can be
       found in chapter 6 of the ooDialog Reference. </para>
 <para>View classes can be seen as consisting of three major parts: setting up the dialog window,
       specifying the "active" controls (i.e. controls that need to be accessed programmatically),
@@ -269,32 +269,41 @@ file looks OK, then you might check the .rc file to see if all the resources are
         comments displayed in the command prompt window, as follows: <programlisting>
     <![CDATA[
     D:\...\Exercise04a>startup
-    StartCustomerView Routine-01: .CustomerView~new...
-    CustomerView-init-01
-    CustomerView-createMenuBar-01
-    StartCustomerView Routine-02: dlg~activate...
-    CustomerView-activate-01
-    CustomerView-initDialog-01
+    StartCustomerView Routine-01: Start.
+    CustomerView-init-01.
+    CustomerView-createMenuBar-01.
+    StartCustomerView Routine-02: dlg~activate.
+    CustomerView-activate-01.
+    CustomerView-initDialog-01.
     ]]>
   </programlisting>These comments trace the process of establishing a dialog to the point of
         making the window visible - in other words, setting up the dialog. One routine and four
         methods are involved, as follows: <orderedlist>
           <listitem>
-            <para>The routine in <computeroutput>CustomerView.rex</computeroutput> creates an
-              instance of the <computeroutput>CustomerView</computeroutput> class that's a subclass
-              of <computeroutput>RcDialog</computeroutput>.</para>
+            <para>The <computeroutput>StartCustomerView</computeroutput> routine
+            in <computeroutput>CustomerView.rex</computeroutput> first stores the resource header file
+            file <computeroutput>CustomerView.h</computeroutput> in the
+            <indexterm><primary>.Application object</primary></indexterm>
+            <computeroutput>.Application</computeroutput> object using the
+            <emphasis role='italic'>useGlobalConstDir</emphasis> method. The header
+            file provides the correspondance between numeric
+            and symbolic IDs, so that the numeric IDs in the resource DLL can be
+            mapped to symbolic IDs used in the program.(See sections 10.1 and 10.5 of the
+            ooDialog Reference for further information on .Application.) Then an 
+            instance of the <computeroutput>CustomerView</computeroutput> class (a subclass
+            of <computeroutput>RcDialog</computeroutput>) is created.</para>
           </listitem>
           <listitem>
             <para>In the <emphasis role="italic">init</emphasis> method of the new view instance,
               first the superclass is invoked (this is an ooDialog requirement), and then the
-                <emphasis role="italic">createMenuBar</emphasis> method is called. Note that if the
-              menubar creation fails, then <emphasis role="italic">initCode</emphasis> is an
-              attribute of a <computeroutput>.Dialog</computeroutput> instance. It represents the
-              success of initialization of a dialog object. For a dialog object, after the <emphasis
-                role="italic">init</emphasis> method has executed the <emphasis role="italic"
-                >initCode</emphasis> attribute will be zero if the dialog initialization detected no
-              errors. The attribute will be non-zero if initialization failed or an error was
-              detected. </para>
+                <emphasis role="italic">createMenuBar</emphasis> method is called. If the
+              menubar creation fails, then the dialog's <emphasis role="italic">initCode</emphasis>
+              attribute is set to 1 (initCode is an attribute of a <computeroutput>.Dialog</computeroutput>
+              instance and represents the success of initialization of a dialog object).
+              After the <emphasis role="italic">init</emphasis> method has executed the
+              <emphasis role="italic">initCode</emphasis> attribute will be zero
+              if the dialog initialization detected no errors, and non-zero if
+              initialization failed or an error was detected.</para>
           </listitem>
           <listitem>
             <para>The <emphasis role="italic">createMenuBar</emphasis> method then creates a menubar
@@ -302,8 +311,10 @@ file looks OK, then you might check the .rc file to see if all the resources are
               ooDialog Reference), referring to the menubar's ID in the .rc file. Note that after
               creation, the menubar is just another object, and is not yet associated with the
               dialog. The code at this point boldly assumes that the menubar instance was
-              successfully created (not really best practice) and returns to the <emphasis
-                role="italic">init</emphasis> method and from there back to the ...</para>
+              successfully created. This is not really best practice; however if initialization fails
+              the failure will be immediately visible - or rather invisible in that the
+              dialog will fail to appear!. Control then returns to the
+              <emphasis role="italic">init</emphasis> method and from there back to the ...</para>
           </listitem>
           <listitem>
             <para>...<computeroutput>StartCustomerView</computeroutput> routine, which invokes the
@@ -324,12 +335,10 @@ file looks OK, then you might check the .rc file to see if all the resources are
 <para>The above process requires four methods and a total of 19 ooRexx statements including the
           <computeroutput>::Method</computeroutput> statements but excluding the <emphasis
           role="italic">say</emphasis> instructions. And if we didn't care too much for effective
-        program structure or error checking, it could be squished down to just nine instructions as
+        program structure or error checking, it could be squished down to just ten instructions as
         follows:
   <programlisting>
     <![CDATA[
-    ::ROUTINE startCustomerView PUBLIC
-      dlg = .CustomerView~new("customerView.rc", IDD_DIALOG1, dlgData., "customerView.h")
     ::CLASS CustomerView SUBCLASS RcDialog PUBLIC
       ::METHOD init
         forward class (super) continue
@@ -337,17 +346,22 @@ file looks OK, then you might check the .rc file to see if all the resources are
       ::METHOD initDialog
         menuBar = .scriptMenuBar~new("CustomerView.rc", "IDR_MENU1", self, , , .true)
         menuBar~attachTo(self)
+      ::ROUTINE startCustomerView PUBLIC
+        .application~useGlobalConstDir("O", "CustomerView.h")
+        dlg = .CustomerView~new("customerView.rc", "IDD_DIALOG1")
     ]]>
   </programlisting>
   And if the <computeroutput>::class</computeroutput>,
   <computeroutput>::method</computeroutput>, and <computeroutput>::routine</computeroutput>
-  directives are excluded, only five statements are required: <emphasis role="italic">~new</emphasis>
+  directives are excluded, only six statements are required: defining
+  <computeroutput>CustomerView.h</computeroutput> as the *.h file, the 
+  <emphasis role="italic">.CustomerView~new</emphasis>
   to create a dialog instance, call super in the <emphasis role="italic">init</emphasis>
-  method, do <emphasis role="italic">execute("SHOWTOP")</emphasis>, create a menubar,
-  and attach the menubar to self.</para>
+  method, issue <emphasis role="italic">execute("SHOWTOP")</emphasis>, create a menubar,
+  and attach the menubar to the dialog.</para>
 <para>
   In other words, dialogs of significant complexity can be created and displayed with
-  only five executable statements. And that is the real power of resource dialogs.
+  only six executable statements. And that is the real power of resource dialogs.
 </para>
 </section>
 
@@ -635,30 +649,6 @@ file looks OK, then you might check the .rc file to see if all the resources are
 </section> <!-- end of section 4.3.3 -->
 
 </section> <!-- end of section 4.3 -->
-
-<section id="chap04-resfile"><title>Using Binary Resource Files</title> <!-- section 4.4 -->
-<para> Notes: </para>
-<para>
-  For a ResDialog, you use a resource-only DLL.  A resource-only DLL is a resource script
-  (.rc) file compiled into binary format. ResEdit is capable of doing this compilation, with
-  two caveats:
-  <itemizedlist>
-    <listitem>
-      <para>You have to do it from the command line:</para>
-      <para><computeroutput>resedit -convert UserMenuBar.rc UserMenuBar.dll</computeroutput></para>
-    </listitem>
-    <listitem>
-      <para>It only works for 32-bit DLLs - that is, you need to be on a 32-bit system.</para>
-    </listitem>
-    <listitem>
-      <para>To work, the *.h file and any *.bmp files must be in the same directory
-      as the .rc file. If present and referenced by the .rc file, any *.bmp files
-      are also compiled into the DLL. At run-time, all that is needed is the DLL
-      and the.h file.</para>
-    </listitem>
-  </itemizedlist>
-</para>
-</section>
 
 </chapter>
 
