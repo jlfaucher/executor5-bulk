@@ -36,70 +36,63 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- * This example program focuses on the use of the dialog data stem argument to
- * the new() method of the various dialog classes.
+ * This example program is an almost exact copy of the dlgData.rex program.  The
+ * only difference is that sybmolic IDs are used for the dialog data stem
+ * indexes instead of numeric IDs.  The two programs work exactly the same.
  *
- * The dialog data stem use is interwoven with the data autodetection and data
- * attributes mechanism in ooDialog.  Please read the "Data Attribute Methods"
- * section in the "Dialog Object" chapter from the ooDialog reference if you are
- * unfamiliar with the concepts of data autodetection and data attributes.
+ * There is one caveat however when using symbolic IDs.  Each symbolic ID must
+ * have an unique numeric ID.  If different symbolic IDs have the same numeric
+ * value, when the user closes the dialog with Ok, the ooDialog framework will
+ * not be able tell which symbolic ID is assigned to duplicate numeric ID.  This
+ * will make the outcome non-deterministic.
  *
- * The basic idea is to set the 'data' of the dialog controls using the values
- * from the dialog data stem passed as the third argument to the new() method.
- * For each dialog control, set an index in the stem to the resource ID of the
- * control.  The 'data' of the control will be set to the value at that index.
- * If there is no index in the stem for any control, the 'data' of that control
- * will be set to the empty string, or 0, depending on which type of control it
- * is.
- *
- * On return, if the user closed the dialog with 'Ok', the stem will have an
- * index for every control in the dialog with a positive resource ID.  The value
- * for those indexes with be the 'data' of the control at the time it was
- * closed.  If the user cancels, the dialog data stem has no meaning.
+ * It takes very little effort to ensure that all resource IDs are unique.  If
+ * the programmer is going to combine using a dialog data stem and symbolic IDs
+ * then she should ensure each resource ID has an unique numeric value.
  */
 
-  dlgData.1005 = 1
-  dlgData.1016 = 1
-  dlgData.1022 = 1
+  dlgData.IDC_RB_MARRIED = 1
+  dlgData.IDC_RB_RETIRED = 1
+  dlgData.IDC_RB_MALE = 1
 
   dlg = .CensusDlg~new("dlgData.rc", IDD_CENSUS, dlgData., "dlgData.h" )
 
   if dlg~execute("SHOWTOP", IDI_DLG_OOREXX) == 1 then do
-    l1 = 'Name:' dlgData.1003',' dlgData.1002':' || .endOfLine~copies(2)
+    l1 = 'Name:' dlgData.IDC_EDIT_LNAME',' dlgData.IDC_EDIT_FNAME':' || .endOfLine~copies(2)
 
     l2 = '09'x || 'Marital Status:' || '09'x
     select
-      when dlgData.1005 == 1 then l2 ||= 'married'  || .endOfLine
-      when dlgData.1009 == 1 then l2 ||= 'single'   || .endOfLine
-      when dlgData.1010 == 1 then l2 ||= 'widowed'  || .endOfLine
-      when dlgData.1011 == 1 then l2 ||= 'divorced' || .endOfLine
+      when dlgData.IDC_RB_MARRIED  == 1 then l2 ||= 'married'  || .endOfLine
+      when dlgData.IDC_RB_SINGLE   == 1 then l2 ||= 'single'   || .endOfLine
+      when dlgData.IDC_RB_WIDOWED  == 1 then l2 ||= 'widowed'  || .endOfLine
+      when dlgData.IDC_RB_DIVORCED == 1 then l2 ||= 'divorced' || .endOfLine
     end
     -- End select
 
     l3 = '09'x || 'Work Force Status:' || '09'x
     select
-      when dlgData.1016 == 1 then l3 ||= 'employed'   || .endOfLine
-      when dlgData.1017 == 1 then l3 ||= 'retired'    || .endOfLine
-      when dlgData.1018 == 1 then l3 ||= 'student'    || .endOfLine
-      when dlgData.1019 == 1 then l3 ||= 'unemployed' || .endOfLine
+      when dlgData.IDC_RB_RETIRED    == 1 then l3 ||= 'employed'   || .endOfLine
+      when dlgData.IDC_RB_RETIRED    == 1 then l3 ||= 'retired'    || .endOfLine
+      when dlgData.IDC_RB_STUDENT    == 1 then l3 ||= 'student'    || .endOfLine
+      when dlgData.IDC_RB_UNEMPLOYED == 1 then l3 ||= 'unemployed' || .endOfLine
     end
     -- End select
 
     l4 = '09'x || 'Gender:' || '09'x~copies(2)
-    if dlgData.1022 == 1 then l4 ||= 'male' || .endOfLine~copies(2)
+    if dlgData.IDC_RB_MALE == 1 then l4 ||= 'male' || .endOfLine~copies(2)
     else l4 ||= 'female' || .endOfLine~copies(2)
 
     l5 = ""
-    if dlgData.1026 == 1 then l5 ||= 'Citizen, '
+    if dlgData.IDC_CK_US_CITIZEN == 1 then l5 ||= 'Citizen, '
     else l5 ||= 'Non-citizen, '
 
-    if dlgData.1027 == 1 then l5 ||= 'elderly, '
+    if dlgData.IDC_CK_OVER65 == 1 then l5 ||= 'elderly, '
     else l5 ||= 'youthful, '
 
-    if dlgData.1030 == 1 then l5 ||= 'felon, '
+    if dlgData.IDC_CK_FELON == 1 then l5 ||= 'felon, '
     else l5 ||= 'law-abiding, '
 
-    if dlgData.1031 == 1 then l5 ||= 'disabled, '
+    if dlgData.IDC_CK_DISABLED == 1 then l5 ||= 'disabled, '
     else l5 ||= 'able-bodied, '
 
     l5 ||= 'compliant.'  -- Filled out form as required.

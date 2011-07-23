@@ -50,8 +50,8 @@
 ;--------------------------------
 ; Defines
 
-  !define VERSION        "0.0.1"
-  !define VERSIONNODOTS  "0_0_1"
+  !define VERSION        "0.0.2"
+  !define VERSIONNODOTS  "0_0_2"
   !define SHORTNAME      "ooDialog_Samples_${VERSIONNODOTS}"
   !define LONGNAME       "Extra ooDialog Samples ${VERSION}"
   !define DISPLAYICON    "$INSTDIR\AppIcon2.ico"
@@ -209,10 +209,23 @@ Section  installFiles
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG32.dll"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG64.dll"
 
+  ${SetOutPath} "$INSTDIR\Dialogs\application.icon"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "appIcon.h"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "ApplicationIcon.rc"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "ApplicationIcon32.dll"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "ApplicationIcon64.dll"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "Camera.ico"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "Question32.ico"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "RcAppIcon.rex"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "ResAppIcon.rex"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "UserRcAppIcon.rex"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "UserRcVariation.rex"
+
   ${SetOutPath} "$INSTDIR\Dialogs\dlgData"
   ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.h"
   ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.rc"
   ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.rex"
+  ${File} "${SRCDIR}\Dialogs\dlgData\" "symbolicDlgData.rex"
 
   ; Write the uninstall keys.
   DetailPrint "Writing uninstall keys."
