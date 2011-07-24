@@ -264,8 +264,9 @@ Section  doSwitch
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\sysinfo
     ; Add the files ...
-    File "${SamplesDir420}\sysinfo\*.rex"
-    File "${SamplesDir420}\sysinfo\*.rc"
+    File "${SamplesDir420}\sysinfo\sysInfo.rex"
+    File "${SamplesDir420}\sysinfo\sysInfo.rc"
+    File "${SamplesDir420}\sysinfo\sysInfo.h"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\source
@@ -458,8 +459,8 @@ Section  doSwitch
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\sysinfo
     ; Add the files ...
-    File "${SamplesDir410}\sysinfo\*.rex"
-    File "${SamplesDir410}\sysinfo\*.rc"
+    File "${SamplesDir410}\sysinfo\sysInfo.rex"
+    File "${SamplesDir410}\sysinfo\sysInfo.rc"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\source
