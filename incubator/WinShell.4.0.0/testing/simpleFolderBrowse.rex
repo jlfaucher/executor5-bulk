@@ -111,7 +111,7 @@ exit
 
 ::method InitDialog
   expose staticControl
-  staticControl = self~getEditControl(165)
+  staticControl = self~getStaticControl(165)
 
 ::method onBrowse
   expose staticControl browser counter csidls
@@ -126,7 +126,8 @@ exit
     end
   end
 
-  path = browser~getFolder(self~dlgHandle)
+  ptr = .DlgUtil~handleToPointer(self~dlgHandle)
+  path = browser~getFolder(ptr)
   if path == '' then path = "User canceled"
   else if path == .nil then path = "User picked a virtual folder"
 
