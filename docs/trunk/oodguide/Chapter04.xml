@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter04 - Using Resource Dialogs			       v00-04 07Aug11
+<!-- Chapter04 - Using Resource Dialogs			       v00-05 13Aug11
      4.1   Naming and Coding Conventions
      4.1.1 Naming Conventions
      4.1.2 Coding Conventions
@@ -48,11 +48,11 @@
      4.3.3 Application Data and Function
 
      Changes:
-     v00-02: Various, including use of .application. 
-     v00-03: Various, including changes in symbolic IDs.  
+     v00-02: Various, including use of .application.
+     v00-03: Various, including changes in symbolic IDs.
      v00-04: Added a couple of index terms
+     v00-05: Minor corrections after reading the pdf. Addition of Figure 3.
 -->
-
 <chapter id="chapFour">
   <title>Using Resource Dialogs</title>
 <indexterm><primary>Resource Dialogs</primary></indexterm>
@@ -153,7 +153,7 @@
           having their first letter capitalized. Finally, when an ooRexx program in one of the
           exercises is run, comments produced with an ooRexx "say" instruction may appear in the
           command prompt window. The format used as a prefix for such comments is
-          [classname]-[methodname]-[nn] - a little excessive for simple single-class programs, but
+  <computeroutput>class-method-nn</computeroutput> - a little excessive for simple single-class programs, but
           useful for larger multi-class applications. </para>
 </section><!-- End of section 4.1.2 -->
 
@@ -175,7 +175,7 @@
         Microsoft header files are required. These can be obtained at no charge from Microsoft
         Windows SDK under "Developer Tools" at this link: </para>
 <para>http://msdn.microsoft.com/en-us/windows/bb980924</para>
-<para>or do a web search for "microsoft windows sdk". The header files should be downloaded into a
+<para>Or do a web search for "microsoft windows sdk". The header files should be downloaded into a
         folder, and the full path name of that folder must be specified to ResEdit in "Options -
         Preferences - General - Include paths". </para>
 <para>A resource file editor outputs a window layout to a "resource file", which ooDialog can then
@@ -222,10 +222,10 @@
           <mediaobject>
             <imageobject>
               <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
-              <imagedata fileref="Chapter04-image2.jpg" scale="70">
+              <imagedata fileref="Chapter04-image2.jpg" scale="60">
             </imageobject>
           </mediaobject>
-        </figure>        
+        </figure>
       </para>
     <para>You might move or re-size some of the controls, save the file, then re-run Exercise04a to
         see your changes implemented. Check the files in the
@@ -248,13 +248,13 @@
 <para>Having discussed coding conventions and resource editors, this section now looks in detail at
         the code in the <computeroutput>Exercise04</computeroutput> folder. First, look at
           <computeroutput>Startup.rex</computeroutput> in an editor. Aside from creating and
-  activating the <computeroutput>CustomerModel</computeroutput> and <computeroutput>CustomerView</computeroutput>
-  classes in the same way as in the previous
+        activating <computeroutput>CustomerData</computeroutput> and
+          <computeroutput>CustomerModel</computeroutput> classes in the same way as in the previous
         exercise, there's only one other executable statement: <emphasis role="italic">call
           startCustomerView</emphasis>. This routine is in the
           <computeroutput>CustomerView.rex</computeroutput> file (it's generally good practice to
-        separate application startup concerns - such as (in this case) creating new dialogs - from the various
-        working parts of the application). </para>
+        separate application startup concerns - such as (in this case) creating new dialogs - from
+        the various working parts of the application). </para>
 <para>Now look at <computeroutput>CustomerView.rex</computeroutput> in an editor. Look for the
           <computeroutput>CLASS</computeroutput> statement: <programlisting>
     <![CDATA[
@@ -286,27 +286,26 @@
     CustomerView-getData-01.
     CustomerModel-query-01.
     CustomerData-getData-01.
-    CustomerView-showData-01.
     ]]>
   </programlisting> These comments trace the process of establishing the dialog to the point
           of making the dialog visible and getting the application data to display - in other words,
-          setting up the dialog. One routine and seven methods of <computeroutput>CustomerView</computeroutput>
-          are involved, as follows: <orderedlist>
+          setting up the dialog. One routine and seven methods of
+            <computeroutput>CustomerView</computeroutput> are involved, as follows: <orderedlist>
             <listitem>
               <para> The routine in <computeroutput>CustomerView.rex</computeroutput> first
-                registers the <computeroutput>CustomerView.h</computeroutput> file in "globalConstDir",
-                which is a directory
-                containing all the numeric and symbolic IDs for the application. 
-                 <indexterm><primary>globalConstDir</primary></indexterm>
-                 <indexterm><primary>.Application</primary></indexterm>
-                This is a new
-                function introduced in ooDialog 4.2 as a method on the (also new)
-                <computeroutput>.Application</computeroutput> class that provides for
-                application-wide concerns. The method is called
-                <emphasis role="italic">useGlobalConstDir</emphasis>, and takes the name of
-                a *.h file as its main parameter (see sections 10.1 and 10.5 of the
-                ooDialog Reference for further information on the <computeroutput>Application</computeroutput>
-                class).</para>
+                registers the <computeroutput>CustomerView.h</computeroutput> file in
+                "globalConstDir", which is a directory containing all the numeric and symbolic IDs
+                for the application. <indexterm>
+                  <primary>globalConstDir</primary>
+                </indexterm>
+                <indexterm>
+                  <primary>.Application</primary>
+                </indexterm> This is a new function introduced in ooDialog 4.2 as a method on the
+                (also new) <computeroutput>.Application</computeroutput> class that provides for
+                application-wide concerns. The method is called <emphasis role="italic"
+                  >useGlobalConstDir</emphasis>, and takes the name of a *.h file as its main
+                parameter (see sections 10.1 and 10.5 of the ooDialog Reference for further
+                information on the <computeroutput>Application</computeroutput> class).</para>
               <para>The routine then creates an instance of the
                   <computeroutput>CustomerView</computeroutput> class as a subclass of
                   <computeroutput>RcDialog</computeroutput>.</para>
@@ -316,37 +315,34 @@
                 first the superclass is invoked (this is an ooDialog requirement), and then the
                   <emphasis role="italic">createMenuBar</emphasis> method is called. Note that if
                 the menubar creation fails (returns <computeroutput>.false</computeroutput>, then
-                arguably the dialog should not be created. In this case,
-                <emphasis role="italic">initCode</emphasis> (an attribute of the
-                <computeroutput>.Dialog</computeroutput>
+                arguably the dialog should not be created. In this case, <emphasis role="italic"
+                  >initCode</emphasis> (an attribute of the <computeroutput>.Dialog</computeroutput>
                 class) should be set to a non-zero value. This attribute represents the success of
                 initialization of a dialog object (see ooDialog Reference section 5.4.1 for further
-                information). After the <emphasis role="italic">init</emphasis> method of the 
-                  <computeroutput>RcDialog</computeroutput> superclass has executed,
-                <emphasis role="italic">initCode</emphasis> will be zero if the dialog initialization
-                detected no errors, but will be non-zero if initialization failed or an error was detected.
-                </para>
-            </listitem>
-            <listitem><para>
-              After the <emphasis role="italic">init</emphasis> method completes, the superclass invokes the
-              <emphasis role="italic">initAutoDetection</emphasis> method. This allows the programmer to set
-              off auto detection when the default of "on" is not required, which is what is done here.
-              Try commenting out the statement <emphasis role="italic">self~noAutoDetection</emphasis>
-              to see the result of allowing the default to apply.
-              See <link linkend="apx-dlgdata" endterm="dlgdata.title"></link> for a discussion of what
-              autodetection is and where it may be useful.  
-            </para>
+                information). After the <emphasis role="italic">init</emphasis> method of the
+                  <computeroutput>RcDialog</computeroutput> superclass has executed, <emphasis
+                  role="italic">initCode</emphasis> will be zero if the dialog initialization
+                detected no errors, but will be non-zero if initialization failed or an error was
+                detected. </para>
             </listitem>
             <listitem>
-              <para>The <emphasis role="italic">createMenuBar</emphasis> method creates a
-                menubar (in this case an instance of the .ScriptMenuBar class - see section 25.6 of
-                the ooDialog Reference), specifying the name of the *.rc file and also the menubar's
-                symbolic ID in both the *.h file and the *.rc file. Note that after creation,
-                the menubar is just another object, and
-                is not yet associated with the dialog. The code at this point boldly assumes that
-                the menubar instance was successfully created (not really best practice) and returns
-                to the <emphasis role="italic">init</emphasis> method and from there back to the
-                ...</para>
+              <para> After the <emphasis role="italic">init</emphasis> method completes, the
+                superclass invokes the <emphasis role="italic">initAutoDetection</emphasis> method.
+                This allows the programmer to set off auto detection when the default of "on" is not
+                required, which is what is done here. Try commenting out the statement <emphasis
+                  role="italic">self~noAutoDetection</emphasis> to see the result of allowing the
+                default to apply. See <link linkend="apx-dlgdata" endterm="dlgdata.title"/> for a
+                discussion of what autodetection is and where it may be useful. </para>
+            </listitem>
+            <listitem>
+              <para>The <emphasis role="italic">createMenuBar</emphasis> method creates a menubar
+                (in this case an instance of the .ScriptMenuBar class - see section 25.6 of the
+                ooDialog Reference), specifying the name of the *.rc file and also the menubar's
+                symbolic ID in both the *.h file and the *.rc file. Note that after creation, the
+                menubar is just another object, and is not yet associated with the dialog. The code
+                at this point boldly assumes that the menubar instance was successfully created (not
+                really best practice) and returns to the <emphasis role="italic">init</emphasis>
+                method and from there back to the ...</para>
             </listitem>
             <listitem>
               <para>...<computeroutput>StartCustomerView</computeroutput> routine, which invokes the
@@ -360,21 +356,20 @@
             <listitem>
               <para>The <emphasis role="italic">initDialog</emphasis> method attaches the menubar to
                 itself (that is, to the dialog instance). The remainder of the method is concerned
-                with specifying the active controls, which is addressed in the next section, and finally
-                invoking the <emphasis role="italic">getData</emphasis> <emphasis role="italic">showData</emphasis>
-                methods. </para>
+                with specifying the active controls, which is addressed in the next section, and
+                finally invoking the <emphasis role="italic">getData</emphasis>
+                <emphasis role="italic">showData</emphasis> methods. </para>
             </listitem>
           </orderedlist>
         </para>
-<para>The above sequence may seems a little heavy just to show a dialog. But much of the above concerns not only
-  getting the data to show in the dialog's controls, but also providing for the user to
-  modify it. Focusing only on what is required to display the dialog with no data, then the process requires only
-  four methods and a total of 20 ooRexx statements including the
-  <computeroutput>::Method</computeroutput> statements but excluding the <emphasis
-  role="italic">say</emphasis> instructions. And if we didn't care too much for effective
-  program structure or error checking, it could be squished down to just ten instructions as
-  follows:
-  <programlisting>
+<para>The above sequence may seems a little heavy just to show a dialog. But much of the above
+          concerns not only getting the data to show in the dialog's controls, but also providing
+          for the user to modify it. Focusing only on what is required to display the dialog with no
+          data, then the process requires only four methods and a total of 20 ooRexx statements
+          including the <computeroutput>::Method</computeroutput> statements but excluding the
+            <emphasis role="italic">say</emphasis> instructions. And if we didn't care too much for
+          effective program structure or error checking, it could be squished down to just ten
+          instructions as follows: <programlisting>
     <![CDATA[
     ::ROUTINE startCustomerView PUBLIC
       .application~useGlobalConstDir("O", "CustomerView.h")
@@ -387,43 +382,58 @@
         menuBar = .scriptMenuBar~new("CustomerView.rc", "IDR_CUST_MENU", , , .true)
         menuBar~attachTo(self)
     ]]>
-  </programlisting>
-  And if the <computeroutput>::class</computeroutput>,
-  <computeroutput>::method</computeroutput>, and <computeroutput>::routine</computeroutput>
-  directives are excluded, only six statements are required:
-  defining <computeroutput>CustomerView.h</computeroutput> as the *.h file, the 
-  <emphasis role="italic">.CustomerView~new</emphasis>
-  to create a dialog instance, the call to super in the <emphasis role="italic">init</emphasis>
-  method, issuing <emphasis role="italic">execute("SHOWTOP")</emphasis>, create a menubar,
-  and attach the menubar to the dialog.</para>
-<para>
-  In other words, dialogs of significant complexity can be created and displayed with
-  only six executable statements. And that is the real power of resource dialogs.
-</para>
+  </programlisting>And if the <computeroutput>::class</computeroutput>,
+            <computeroutput>::method</computeroutput>, and
+            <computeroutput>::routine</computeroutput> directives are excluded, only six statements
+          are required: defining <computeroutput>CustomerView.h</computeroutput> as the *.h file,
+          the <emphasis role="italic">.CustomerView~new</emphasis> to create a dialog instance, the
+          call to super in the <emphasis role="italic">init</emphasis> method, issuing <emphasis
+            role="italic">execute("SHOWTOP")</emphasis>, creating a menubar, and attaching the
+          menubar to the dialog.</para>
+<para> In other words, dialogs of significant complexity can be created and displayed with only six
+          executable statements. And <emphasis role="italic">that</emphasis> is the real power of
+          resource dialogs. </para>
 </section>
 
 <section id="chap04-rcdialogcode-controls"><title>Specifying the Active Controls</title><!-- section 4.3.2 -->
 <para>An "active control" is a control that requires behavior to be programmed, while a "passive"
-        control (such as text that is never changed) appears only in the resource file, and is of no
-        concern to the program. The behavior associated with an active control is of two kinds:
-        outbound or program-to-window - i.e. providing the user with information, and inbound or
-        window-to-program - i.e. signaling the progam about a user event. Outbound behavior means
-        changing the state of a control - for example, disabling a pushbutton, or displaying text in
-        an edit control. Inbound behavior is a user event that requires the program to take some
-        action - e.g. the user selects a menu item, or clicks a pushbutton. Much inbound behavior is
-        ignored by the program (e.g. the user placing the cursor in an edit control). For both
-        inbound behavior that is relevant to the program, and also for outbound behavior, the
-        relevant controls must be made available to the programmer as ooRexx objects. </para>
+          control (such as text that is never changed) appears only in the resource file, and is of
+          no concern to the program. The behavior associated with an active control is of two kinds:
+          outbound or program-to-window - i.e. providing the user with information, and inbound or
+          window-to-program - i.e. signaling the program about a user event. Outbound behavior means
+          changing the state of a control - for example, disabling a pushbutton, or displaying text
+          in an edit control. Inbound behavior is a user event that requires the program to take
+          some action - e.g. the user selects a menu item, or clicks a pushbutton. Much inbound
+          behavior is ignored by the program (e.g. the user placing the cursor in an edit control).
+          For both inbound behavior that is relevant to the program, and also for outbound behavior,
+          the relevant controls must be made available to the programmer as ooRexx objects. </para>
 <para>Now controls are actually created by Windows, based on information in the resource file, with
-        each control being created and managed by facilities built into the Windows operating
-        system. However, the ooRexx programmer accesses controls via instances of ooDialog classes,
-        so that each control on a window is represented by an ooRexx object that is really a proxy<indexterm>
-          <primary>Proxy for controls</primary>
-        </indexterm> for the underlying Windows control. And it is ooDialog that creates the
-        required link between such ooRexx objects and the underlying Windows controls - and hence
-        between the ooRexx object and the visible controls on the screen. By the way, and rather
-        obviously (but we'll say it anyway), this means that ooDialog cannot provide any GUI
-        function that is not already provided by the underlying Windows facilities. </para>
+          each control being created and managed by facilities built into the Windows operating
+          system. However, the ooRexx programmer accesses controls via instances of ooDialog
+          classes, so that each control on a window is represented by an ooRexx object that is
+          really a proxy<indexterm>
+            <primary>Proxy for controls</primary>
+          </indexterm> for the underlying Windows control. And it is ooDialog that creates the
+          required link between such ooRexx objects and the underlying Windows controls - and hence
+          between the ooRexx object and the visible controls on the screen. This is illustrated in
+          the following diagram <figure id="fig0403">
+            <title>ooRexx Proxy Controls and Real Windows Controls</title>
+            <mediaobject>
+              <imageobject>
+                <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+                <imagedata fileref="Chapter04-image3.jpg" scale="70">
+              </imageobject>
+            </mediaobject>
+          </figure>In the diagram, A and B are the ooRexx proxy controls in an ooRexx dialog
+          instance (aDialog). When the dialog is created, ooDialog communicates with the Windows
+          runtime and directs it to create a native Windows dialog (aDialog'), complete with
+          controls A' and B'. Windows then displays this dialog on the screen (A Dialog''), where
+          the controls (A'' and B'') are visible to the user. From then, any user interaction with
+          the visible dialog goes between the screen and the Windows runtime. Of course, ooDialog
+          hooks into these interactions, and makes them available to the ooRexx dialog (e.g. by
+          invoking the ooRexx event handler methods). By the way, and rather obviously (but we'll
+          say it anyway), this means that ooDialog cannot provide any GUI function that is not
+          already provided by the underlying Windows facilities. </para>
 <para>To manage controls, ooDialog provides a class for each control type (see chapters 11 through
           24 of the ooDialog reference). The link between an ooRexx control and the underlying
           Windows control is created via the control's symbolic ID in the
@@ -435,22 +445,23 @@
           method as follows (where <emphasis role="italic">custControls</emphasis> is a directory
           object that makes the <emphasis role="italic">expose</emphasis> statements shorter): <programlisting>
     <![CDATA[
-    custControls[ecCustNo] = self~newEdit("IDC_EDIT_CUST_NO")
+    custControls[ecCustNo] = self~newEdit("IDC_CUST_EDT_CUSTNO")
     ]]>
   </programlisting> The variable <emphasis role="italic">ecCustNo</emphasis> (i.e. the
           directory entry with index 'ecCustNo') is the proxy ooRexx object for the Windows edit
           control that will contain the customer number; <emphasis role="italic">self</emphasis> is
           the dialog instance; <emphasis role="italic">newEdit</emphasis> is the method of the
           Dialog Object (see chapter 3 of the ooDialog Reference) that creates the ooRexx proxy for
-          the underlying Windows control; and <emphasis role="italic">IDC_EDIT_CUST_NO</emphasis> is
-          the controls' symbolic ID from the <computeroutput>.h</computeroutput> file. After
+          the underlying Windows control; and <emphasis role="italic">IDC_CUST_EDT_CUSTNO</emphasis>
+          is the controls' symbolic ID from the <computeroutput>.h</computeroutput> file. After
           execution of the statement, <emphasis role="italic">ecCustNo</emphasis> is an instance of
-          the ooDialog <computeroutput>Edit</computeroutput> class, and ooDialog has made sure, in
-          the instance's creation, that it is internally linked to the edit control on the screen
-          identified in the .h and .rc files as <emphasis role="italic">IDC_EDIT_CUST_NO</emphasis>. </para>
+          the ooDialog <computeroutput>Edit</computeroutput> class (that is, an instance of the
+          proxy edit control), and ooDialog has made sure, in the instance's creation, that it is
+          internally linked to the edit control on the screen identified in the .h and .rc files as
+            <emphasis role="italic">IDC_CUST_EDT_CUSTNO</emphasis>. </para>
 <para>To avoid tedious repetition, from now on this document will assume an understanding of the
-        relationship between a proxy ooRexx instance and the underlying Windows control, and will
-        mention only the ooRexx control - without using the term "proxy". </para>
+          relationship between a proxy ooRexx instance and the underlying Windows instance, and will
+          mention only the ooRexx control - without using the term "proxy". </para>
 <para>A number of other outbound active controls are created in the <emphasis role="italic"
           >initDialog</emphasis> method - as many as there are fields on the dialog that need to
         have data placed in them when the dialog opens. In addition, a "Record Changes" pushbutton
@@ -460,64 +471,60 @@
 <![CDATA[
   self~connectButtonEvent("IDC_CUST_BTN_RECORDCHANGES","CLICKED",recordChanges)
 ]]>
-</programlisting> This is an example of specifying an "event handler" (inbound active behavior).
-          Suppose the user presses the "Record Changes" button. Windows signals the event. The above
-          statement states that this event - that is, the pushbutton (identified in the
-            <computeroutput>.h</computeroutput> file as
-            <computeroutput>IDC_CUST_BTN_RECORDCHANGES</computeroutput>) is
+</programlisting>This is an example of specifying an "event handler" (inbound active behavior).
+          Suppose the user presses the "Record Changes" button. the Windows runtime signals the
+          event, which ooDialog picks up. The above statement declares that this event - that is,
+          the pushbutton (identified in the <computeroutput>.h</computeroutput> file as
+            <computeroutput>IDC_CUST_BTN_RECORDCHANGES</computeroutput>) has just been
             <computeroutput>CLICKED</computeroutput> - will invoke the <emphasis role="italic"
             >recordChanges</emphasis> method. In other words, the statement defines <emphasis
             role="italic">recordChanges</emphasis> as the event-handling method for the "Record
           Changes" pushbutton. The same is done for the "Show Last Order" pushbutton, where the
           event handler is specified to be the method <emphasis role="italic"
             >showLastOrder</emphasis>. </para>
-<para>
-  Notice that each of the event handler methods are specified as
-  <computeroutput>UNGUARDED</computeroutput>. In general, an event handler should
-  be unguarded to preclude the possibility that some guarded method in the dialog
-  object is executing at the time the event notification is generated. For further
-  information, see ooDialog Reference sections 2.2.4, the introduction to
-  section 5.7, and also section 5.7.1.
-</para>
-<para>
-  Specification of active controls is generally done in the
-  <emphasis role='italic'>initDialog</emphasis> method. Indeed, in the
-  <computeroutput>CustomerView</computeroutput> class, specification of active
-  controls occupies most of this method.
-</para>
-<para>
-  Note that MenuBar actions are not specified. This is because the menu items in
-  <computeroutput>CustomerView.rex</computeroutput> are "auto-connected" (see 
-  <link linkend="apx-connections" endterm="connections.title"></link>). 
-  Auto-connection is specified
-  in the second-last parameter of the <emphasis role="italic">.ScriptMenuBar~new</emphasis>
-  statement (see section 25.6 of the ooDialog Reference) in the
-  <emphasis role="italic">createMenuBar</emphasis> method:
-<programlisting>
+<para>Notice that each of the event handler methods are specified as
+            <computeroutput>UNGUARDED</computeroutput>. In general, an event handler should be
+          unguarded to preclude the possibility that some guarded method in the dialog object is
+          executing at the time the event notification is generated. For further information, see
+          ooDialog Reference sections 2.2.4, the introduction to section 5.7, and also section
+          5.7.1. </para>
+<para>Specification of active controls is generally done in the <emphasis role="italic"
+            >initDialog</emphasis> method. Indeed, in the
+            <computeroutput>CustomerView</computeroutput> class, specification of active controls
+          occupies most of this method. </para>
+<para> Note that menubar actions are not specified. This is because the menu items in
+            <computeroutput>CustomerView.rex</computeroutput> are "auto-connected" (see <link
+            linkend="apx-connections" endterm="connections.title"/>). Auto-connection is specified
+          in the second-last parameter of the <emphasis role="italic">.ScriptMenuBar~new</emphasis>
+          statement (see section 25.6 of the ooDialog Reference) in the <emphasis role="italic"
+            >createMenuBar</emphasis> method: <programlisting>
 <![CDATA[
     menuBar = .ScriptMenuBar~new("CustomerView.rc", "IDR_CUST_MENU", , , .true, self)
 ]]>
 </programlisting>
-  <indexterm><primary>menuBar</primary><secondary>RcDialog</secondary></indexterm>
-  <indexterm><primary>RcDialog</primary><secondary>menuBar</secondary></indexterm>
-  Setting this parameter to <computeroutput>.true</computeroutput> (the default is
-  <computeroutput>.false</computeroutput>) specifies that all menu items will be connected automatically to a method
-  with the same name as the visible caption or text. In <computeroutput>CustomerView.rc</computeroutput> the "File"
-  sub-menu is:
-<programlisting>
+          <indexterm>
+            <primary>menuBar</primary>
+            <secondary>RcDialog</secondary>
+          </indexterm>
+          <indexterm>
+            <primary>RcDialog</primary>
+            <secondary>menuBar</secondary>
+          </indexterm> Setting this parameter to <computeroutput>.true</computeroutput> (the default
+          is <computeroutput>.false</computeroutput>) specifies that all menu items will be
+          connected automatically to a method with the same name as the visible caption or text. In
+            <computeroutput>CustomerView.rc</computeroutput> the "File" sub-menu is: <programlisting>
 <![CDATA[
     MENUITEM "New Customer...", IDM_CUST_NEW
     MENUITEM "Update...", IDM_CUST_UPDATE
     MENUITEM "Print...", IDM_CUST_PRINT
     MENUITEM "Last Order", IDM_CUST_LAST_ORDER
 ]]>
-</programlisting>
-  Spaces and trailing dots are stripped, giving method names of
-        "NewCustomer", "Update", "Print", and "LastOrder". In the "MenuBar Methods" part of the
-          <computeroutput>CustomerView</computeroutput> code, a method is provided for three of
-        these menu items. There is deliberately no method provided for "Print" in order to show what
-        happens when you don't provide a method for an auto-connected menu item (you get an error
-        message box from ooDialog). </para>
+</programlisting> Spaces and trailing dots are stripped, giving method names of "NewCustomer",
+          "Update", "Print", and "LastOrder". In the "MenuBar Methods" part of the
+            <computeroutput>CustomerView</computeroutput> code, a method is provided for three of
+          these menu items. There is deliberately no method provided for "Print" in order to show
+          what happens when you don't provide a method for an auto-connected menu item (you get an
+          error message box from ooDialog). </para>
 <para>But before the menu actions will work, the <emphasis role="italic">menuBar</emphasis> object
         must be associated with the dialog object. This is done by this statement (at the beginning
         of the <emphasis role="italic">initDialog</emphasis> method):
@@ -566,7 +573,7 @@
               user can modify the data, and the "Record Changes" button is enabled. Looking at the
               code, you'll see that some methods operate directly on the control, while others
             operate on the dialog, with the control's symbolic ID being provided as a parameter.
-            Although not a hard and fast principle, the distinction, loosely, is that 
+            Although not a hard and fast principle, the distinction, loosely, is that
             operating directly is done where there is no ambiguity (e.g. changing the state
             of an edit control from read-only to read/write), whereas operating indirectly
             through the dialog is done where the action is in the context of the window
@@ -629,54 +636,48 @@
 <section>
         <title>The Update and Record Changes Methods</title>
         <!-- section 4.3.3.2 -->
-        <para> The <emphasis role="italic">update</emphasis> method "enables" the edit controls and
-          the "Record Changes" button so that the user can make changes and then make the changes
-          permanent (i.e. "record" them). Enabling edit controls is done by sending them the message
-            <emphasis role="italic">setReadOnly</emphasis> with the parameter
-            <computeroutput>.false</computeroutput>. For example: <programlisting>
+        <para>The <emphasis role="italic">update</emphasis> method "enables" the edit controls and
+            the "Record Changes" button so that the user can make changes and then make the changes
+            permanent (i.e. "record" them). Enabling edit controls is done by sending them the
+            message <emphasis role="italic">setReadOnly</emphasis> with the parameter
+              <computeroutput>.false</computeroutput>. For example: <programlisting>
     <![CDATA[
     custControls[ecCustName]~setReadOnly(.false)
     ]]>
-  </programlisting>
-        </para>
-        <para>Pushbuttons are enabled by invoking <emphasis role="italic">enableControl</emphasis>
-          on the dialog, the parameter being the control's symbolic ID as shown in the first
-          statement below. The second statement below puts focus on the push-button - in this case
-          by invoking the <emphasis role="italic">state</emphasis> method of the control object.
-          Finally, the cursor is placed in the Customer Name edit control by invoking the dialog's
-            <emphasis role="italic">focusControl</emphasis> method.
-  <programlisting>
+  </programlisting>Pushbuttons are enabled by invoking <emphasis role="italic"
+              >enableControl</emphasis> on the dialog, the parameter being the control's symbolic ID
+            as shown in the first statement below. The second statement below puts focus on the
+            push-button - in this case by invoking the <emphasis role="italic">state</emphasis>
+            method of the control object. Finally, the cursor is placed in the Customer Name edit
+            control by invoking the dialog's <emphasis role="italic">focusControl</emphasis> method. <programlisting>
   <![CDATA[
-    self~enableControl("IDC_RECORD_CHANGES")
+    self~enableControl("IDC_CUST_BTN_RECORDCHANGES")
     custControls[btnRecordChanges]~state = "FOCUS"  -- Put focus on the button
-    self~focusControl("IDC_EDIT_CUST_NAME")         -- place cursor in the CustName edit control.
+    self~focusControl("IDC_CUST_EDT_CUSTNAME")         -- place cursor in the CustName edit control.
     ]]>
-  </programlisting>
-  </para>
-<para>The dialog is now in a state whereby the user can make changes to the data. When the
-  user presses the "Record Changes" button, the
-  <emphasis role="italic">recordChanges</emphasis> method is invoked.
-  Processing from this point is almost all
-  plain ooRexx with little ooDialog involvement: 
-  <itemizedlist>
-    <listitem><para>The method <emphasis role="italic">xformView2App</emphasis>
-      (transform view format to application format)is invoked and
-      returns the data from the edit controls as a directory, with the address element
-      being an array. To read data that the user has entered, the method uses the
-      <emphasis role="italic">getText</emphasis> and 
-      <emphasis role="italic">getLine</emphasis> methods of the Edit Control. 
-    </para>
-    </listitem>
-    <listitem><para>Then the <emphasis role="italic">checkForChanges</emphasis> method 
-      is invoked with, as a parameter, the data returned from the 
-      <emphasis role="italic">xformView2App</emphasis> method.</para>
-    </listitem>
-    <listitem><para>If the data has not changed, a message box is displayed.
-      If it has changed, then the old data is replaced with the new. 
-      In either case, the edit controls are set to read-only,
-      and the "Record Changes" button is disabled.</para>
-    </listitem>
-  </itemizedlist></para>
+  </programlisting>The dialog is now in a state whereby the user can make changes to the
+            data. When the user presses the "Record Changes" button, the <emphasis role="italic"
+              >recordChanges</emphasis> method is invoked. Processing from this point is almost all
+            plain ooRexx with little ooDialog involvement: <itemizedlist>
+              <listitem>
+                <para>The method <emphasis role="italic">xformView2App</emphasis> (transform view
+                  format to application format) is invoked and returns the data from the edit
+                  controls as a directory, with the address element being an array. To read data
+                  that the user has entered, the method uses the <emphasis role="italic"
+                    >getText</emphasis> and <emphasis role="italic">getLine</emphasis> methods of
+                  the Edit Control. </para>
+              </listitem>
+              <listitem>
+                <para>Then the <emphasis role="italic">checkForChanges</emphasis> method is invoked
+                  with, as a parameter, the data returned from the <emphasis role="italic"
+                    >xformView2App</emphasis> method.</para>
+              </listitem>
+              <listitem>
+                <para>If the data has not changed, a message box is displayed. If it has changed,
+                  then the old data is replaced with the new. In either case, the edit controls are
+                  set to read-only, and the "Record Changes" button is disabled.</para>
+              </listitem>
+            </itemizedlist></para>
 <para>The next chapter discusses the use of the ooDialog class
   <computeroutput>ResDialog</computeroutput>, which uses a compiled resource file (a *dll file)
   instead of the *.rc file that <computeroutput>RcDialog</computeroutput> requires.
@@ -688,4 +689,3 @@
 </section> <!-- end of section 4.3 -->
 
 </chapter>
-
