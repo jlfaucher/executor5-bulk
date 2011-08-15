@@ -38,11 +38,23 @@
     #########################################################################
 -->
 
-<!-- Appendix 02 version 00-01 - Dialog Data
-     This is an illustration, through sample code, of the use of Dialog Data.  
+<!-- Appendix 02 - Dialog Data and AutoDetection		  v00-03 15Aug11
+     This is an illustration, through sample code, of the use of Dialog Data,
+     including AutoDetection.
+
+     Changes:
+     v00-01: First version (??0711)
+     v00-02 11Aug11: Added bit about -1 for static text.
+     v00-03 15Aug11: Changed title (added "AutoDetection").
+
+     *********  INCLUDE Res ID of -1 for Static Text - not auto-detected.
+     		Mark's email of 11Aug11  *********
+
+     13Aug11 - Decided not do do this - so no change to committed file
+               - i.e. committed file is and should be at v00-01.
 -->
 <appendix id="apx-dlgdata">
-  <title id="dlgdata.title">Dialog Attributes</title>
+  <title id="dlgdata.title">Dialog Attributes and AutoDetection</title>
   <indexterm><primary>Dialog Attributes</primary></indexterm>
   <indexterm><primary>Attributes, of a dialog</primary></indexterm>
   <indexterm><primary>dlgdata</primary></indexterm>
@@ -74,7 +86,7 @@
       </imageobject>
     </mediaobject>
   </figure>
-  </para>  
+  </para>
 <para>The program does the following:
   <itemizedlist>
   <listitem><para>Sets the value "It's a fine day today." in a dialog attribute value in an edit control.</para></listitem>
@@ -96,13 +108,13 @@ dlgData.IDC_EDIT1 = statement
 dlg = .ASimpleDialog~new("ASimpleDialog.rc", IDD_DIALOG1, dlgData., "ASimpleDialog.h" )
 
 -- (2b) Display the dialog:
-ret = dlg~execute("SHOWTOP", IDI_DLG_OOREXX) 
+ret = dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
--- (3) When the dialog is closed, and if the user pressed OK, then retrieve 
+-- (3) When the dialog is closed, and if the user pressed OK, then retrieve
 --     the data provided by the user:
-if ret == 1 then do			-- if the user pressed OK		
-  statement2 = dlgData.1002		-- get data from the edit control		
-  agree = dlgData.IDC_RADIO1		-- get the state of the radio buttons: 
+if ret == 1 then do			-- if the user pressed OK
+  statement2 = dlgData.1002		-- get data from the edit control
+  agree = dlgData.IDC_RADIO1		-- get the state of the radio buttons:
   disagree = dlgData.1004
 
 -- (4) Set up the appropriate message to display:
@@ -137,7 +149,7 @@ ret = MessageDialog(msg, 0, title, 'OK', icon, 'TOPMOST')
   <para>The class <computeroutput>ASimpleDialog</computeroutput> is defined at the end
     of the program. Note the extreme simplicity of coding a
   simple form-filling dialog class. No methods are needed; the superclass,
-  <computeroutput>RcDialog</computeroutput>, provides all the function needed. 
+  <computeroutput>RcDialog</computeroutput>, provides all the function needed.
 </para>
 <para>Section (3) of the code shows how data is retrieved from the controls via <emphasis
         role="italic">dlgData.</emphasis> after the dialog has been closed by the user. Note that a

@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-03 13Aug11
+<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-04 15Aug11
      5.1 - Dialog Initiation - using the newInstance class method.
      5.2 - Compiling a binary resource file
      5.3 - Differences between RcDialog and ResDialog
@@ -49,6 +49,7 @@
      v00-01: First version
      v00-02 08Aug11: Completed the chapter.
      v00-03 13Aug11: Minor mods after pdf printed.
+     v00-04 15Aug11: Corrected error - modal because of ~execute, not 'showtop'.
 -->
 
 <chapter id="chapFive">
@@ -95,8 +96,7 @@
     dlg = .ProductView~new("res\ProductView.dll", IDD_PRODUCT_VIEW)
     dlg~activate
 ]]>
-  </programlisting>
-  The newInstance method is invoked from
+  </programlisting>The newInstance method is invoked from
           <computeroutput>Startup.rex</computeroutput> by the statement
           <computeroutput>.ProductView~newInstance</computeroutput>. So all knowledge about
         initiating a dialog is moved inside that dialog's class, and from now on this approach will
@@ -108,9 +108,9 @@
           <primary>Class methods</primary>
           <secondary>newInstance</secondary>
         </indexterm> Note also that the first parameter of the
-          <computeroutput>.ProductView~new()</computeroutput> statement allows file paths.
-</para>
-</section>    <!-- End of section 5.1 -->
+          <computeroutput>.ProductView~new()</computeroutput> statement allows file paths. </para>
+    </section>
+    <!-- End of section 5.1 -->
     <section id="chap05-resfile">
       <title>Using a Binary Resource File</title>
       <!-- section 5.2 -->
@@ -506,13 +506,13 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
       <computeroutput>ProductView</computeroutput> class applies to the
       <computeroutput>About</computeroutput> dialog as well.
 </para>
-<para>You may notice that the About dialog is modal - that is, the Product View window cannot be
-          accessed while the About window is open. This is a consequence of using
-            <computeroutput>SHOWTOP</computeroutput> as the parameter for <emphasis role="italic"
-            >dlg~execute()</emphasis> in the <computeroutput>ProductView</computeroutput>'s
-            <emphasis role="italic">about</emphasis> method. Use of a modal dialog for an "about
-          box" seems quite reasonable. In later chapters, however, this constraint of modal dialogs
-          will need to be relaxed. </para>
+<para>You may notice that the "About" dialog launched in <computeroutput>ProductView</computeroutput>'s
+  <emphasis role="italic">about</emphasis> method is modal. That is, the Product View window cannot be
+  accessed while the About window is open. This is because "About"
+  was launched using the <emphasis role='italic'>execute(..)</emphasis> method. Making an "about
+  box" modal seems quite reasonable. But in later chapters some of ooDialog's alternatives to
+  <emphasis role='italic'>execute</emphasis> will be used in order to launch non-modal dialogs.
+</para>
 </section>  <!-- End of section 5.4.3 -->
 
 <section><title>Externalized Strings</title>  <!-- Section 5.4.4 -->
