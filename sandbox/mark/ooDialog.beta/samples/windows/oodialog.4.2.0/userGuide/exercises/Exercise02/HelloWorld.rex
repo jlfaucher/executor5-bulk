@@ -35,23 +35,34 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 05: The Product component				  v00-02 29Jly11
-   Startup.rex - the starter" for the Product component.
+   Exercise 02: Hello World					  v00-02 11Aug11
+
+   File Contents:   class "HelloWorld"
+   Pre-requisites:  None.
+   Description:     The simplest possible dialog.
+
    Changes:
-     v00-01: 15Jly11
-     v00-02  29Jly11 - Modified to take into account the added Model and Data
-                       classes.
+   v00-01: First version.
+   v00-02: Replacement when v00-01 was somehow lost(!!).
 
 ------------------------------------------------------------------------------*/
 
-.local~my.idProductData  = .ProductData~newInstance	-- create a ProductData instance
-.local~my.idProductModel = .ProductModel~newInstance	-- create a ProductModel instance
-.local~my.idProductData~activate
-.local~my.idProductModel~activate
+dlg = .HelloWorld~new
+dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
-.ProductView~newInstance
+::REQUIRES "ooDialog.cls"
 
-::requires "ProductView.rex"
-::requires "ProductModelData.rex"
 
-/******************************************************************************/
+/*---------------------------------------------------------------------------*/
+
+::CLASS 'HelloWorld' SUBCLASS UserDialog
+
+  ::METHOD init
+    forward class (super) continue
+    self~create(30, 30, 257, 123, "Hello World", "CENTER")
+
+/*---------------------------------------------------------------------------*/
+
+
+
+

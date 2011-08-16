@@ -35,35 +35,33 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 04b: The ProductModel and ProductData Classes         v00-03 08Aug11
+   Exercise 04: The CustomerModel and CustomerData Classes	  v00-01 29Jly11
 
-   Contains:  classes "ProductModel", "ProductResource", and "ProductDT".
+   Contains: 	   classes "CustomerModel" and "CustomerResource".
    Pre-requisites: None.
 
    Outstanding Problems:
    None.
 
    Changes:
-   v00-02: 21Jly11
-   v00-03: Correct "return" statement not in right place (typo in code!!)
-           Renamed the ProductDT attributes (initial "prod" deemed extraneous)
+   v00-01: 29Jly11
 ------------------------------------------------------------------------------*/
 
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ProductModel							  v00-02 12Jly11
+  CustomerModel							  v00-01 29Jly11
   ------------
-  The "model" part of the Product component.
+  The "model" part of the Customer component.
 
-  interface productModel{
-    aProductModel newInstance()  -- Class method.
+  interface customerModel{
+    cusstomerModel newInstance()  -- Class method.
     null	  activate()
-    aProductDT     query()
+    aDirectory    query()	  -- Returns Customer Data in a directory instance.
   };
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS ProductModel PUBLIC
+::CLASS CustomerModel PUBLIC
 
 /*----------------------------------------------------------------------------
     Class Methods
@@ -71,8 +69,8 @@
 
   ::METHOD newInstance CLASS PUBLIC
     -- Creates an instance and returns it.
-    aProductModel = self~new
-    return aProductModel
+    aCustomerModel = self~new
+    return aCustomerModel
 
 
 /*----------------------------------------------------------------------------
@@ -81,27 +79,29 @@
 
   ::METHOD activate PUBLIC
     -- Gets its data from ProductData.
-    expose data
-    idProductData = .local~my.idProductData
-    data = idProductData~getData
+    expose idCustomerData
+    idCustomerData = .local~my.idCustomerData
 
 
   ::METHOD query PUBLIC
     -- Returns data requested (no argument = return all)
-    expose data
+    expose idCustomerData
+    say "CustomerModel-query-01."
+    data = idCustomerData~getData
     return data
 /*============================================================================*/
 
 
+
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ProductData							  v01-00 20Jly11
+  CustomerData							  v00-01 29Jly11
   ------------
-  The "data" part of the Product component.
+  The "data" part of the Customer component.
   [interface (idl format)]
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS ProductData PUBLIC
+::CLASS CustomerData PUBLIC
 
 /*----------------------------------------------------------------------------
     Class Methods
@@ -109,8 +109,8 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD newInstance CLASS PUBLIC
-    aProductData = self~new
-    return aProductData
+    aCustomerData = self~new
+    return aCustomerData
 
 
 /*----------------------------------------------------------------------------
@@ -119,50 +119,26 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate PUBLIC
-    expose data
-    data = .ProductDT~new
-    data~number    = "CF300/X"
-    data~name  = "Widget Box"
-    data~price = "2895"
-    data~uom   = "6"
-    data~description = "A 10 litre case with flat sides capable of holding quite a lot of stuff."
-    data~size  = "M"
+    expose custData
+    custData = .directory~new
+    custData[custNo]      = "AB15784"
+    custData[custName]    = "Joe Bloggs & Co Ltd"
+    arrCustAddr = .array~new
+    arrCustAddr[1]        = "28 Frith Street"
+    arrCustAddr[2]        = "Hardington"
+    arrCustAddr[3]        = "Blockshire"
+    custData[CustAddr]    = arrCustAddr
+    custData[custZip]     = "LB7 4EJ"
+    custData[custDiscount]= "B1"
     return
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD getData PUBLIC
-    expose data
-    return data
+    expose custData
+    say "CustomerData-getData-01."
+    return custData
 
 /*============================================================================*/
 
 
-
-/*//////////////////////////////////////////////////////////////////////////////
-  ==============================================================================
-  ProductDT - A business data type for Product data.		  v00-02 07Aug11
-  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
-
-::CLASS ProductDT PUBLIC
-
-  --		dtName		XML Name	Description
-  --		---------	----------	-------------------------------
-  --		ProductDT	product
-  ::ATTRIBUTE	number		-- number	Product Number
-  ::ATTRIBUTE	name		-- name		Product Description
-  ::ATTRIBUTE	price		-- price	Product Price (rightmost two digits are 100ths of currency unit)
---::ATTRIBUTE   currency	-- currency	Three-letter currency code
-  ::ATTRIBUTE	uom		-- uom		Product Unit of Measure
-  ::ATTRIBUTE   description	-- descrip	Product Description
-  ::ATTRIBUTE   size		-- size		Produce Size Category (S/M/L)
-
-  ::METHOD list PUBLIC
-    expose number name price uom description size
-    say "---------------"
-    say "ProductDT-List:"
-    say "Number: " number   "Name:" name
-    say "Price:" price "UOM:" uom  "Size:" size
-    say "Description:" description
-    say "---------------"
-/*============================================================================*/

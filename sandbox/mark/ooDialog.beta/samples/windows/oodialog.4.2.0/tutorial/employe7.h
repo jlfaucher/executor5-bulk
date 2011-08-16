@@ -5,7 +5,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -34,24 +34,30 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide
-   Exercise 05: The Product component				  v00-02 29Jly11
-   Startup.rex - the starter" for the Product component.
-   Changes:
-     v00-01: 15Jly11
-     v00-02  29Jly11 - Modified to take into account the added Model and Data
-                       classes.
 
-------------------------------------------------------------------------------*/
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
 
-.local~my.idProductData  = .ProductData~newInstance	-- create a ProductData instance
-.local~my.idProductModel = .ProductModel~newInstance	-- create a ProductModel instance
-.local~my.idProductData~activate
-.local~my.idProductModel~activate
-
-.ProductView~newInstance
-
-::requires "ProductView.rex"
-::requires "ProductModelData.rex"
-
-/******************************************************************************/
+#define IDD_EMPLOYEES7                          206
+#define IDD_EMPLOYEE_LIST                       207
+#define IDM_MENUBAR                             208
+#define IDC_GB1                                 1000
+#define IDC_CB_CITY                             1001
+#define IDC_UPD                                 1002
+#define IDC_LB_POSITION                         1003
+#define IDC_EDIT_NAME                           1004
+#define IDC_PB_ADD                              1005
+#define IDC_RB_MALE                             1006
+#define IDC_RB_FEMALE                           1007
+#define IDC_CHK_MARRIED                         1008
+#define IDC_PB_PRINT                            1009
+#define IDC_GB2                                 1010
+#define IDC_LB_EMPLOYEES_LIST                   1010
+#define IDC_PB_LIST                             1011
+#define IDC_RB_ADD                              1014
+#define IDC_RB_BROWSE                           1015
+#define IDM_ADD                                 40000
+#define IDM_PRINT                               40001
+#define IDM_LIST                                40002
+#define IDM_ABOUT                               40003

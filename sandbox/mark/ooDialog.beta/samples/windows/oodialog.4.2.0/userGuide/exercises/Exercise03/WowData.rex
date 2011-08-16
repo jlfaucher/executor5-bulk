@@ -34,50 +34,59 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+/* ooDialog User Guide							      
+   Exercise 03b: Re-structuring the "Words of Wisdom" application             
+   Exercise03b-Data.rex 					  v00-03 29Jly11
+------------------------------------------------------------------------------*/
 
-/* Exercise 02b: Making the Controls Work */
-
-  dlg = .MyDialog~new
-  dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
-
-  ::requires "ooDialog.cls"
-
-/*---------------------------------------------------------------------------*/
-::class 'MyDialog' subclass UserDialog
-
-::method init
-  forward class (super) continue
-  self~create(30, 30, 257, 123, "Words of Wisdom", "CENTER")
-
-
-::method defineDialog		-- Invoked automatically by ooDialog.
-  self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom", OkClicked)
-  self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
-  self~createStaticText(902, 40, 40, 200, 40, , "Click 'More wisdom'")
+/*//////////////////////////////////////////////////////////////////////////////
+  ==============================================================================
+  WowData							  v00-03 29Jly11
+  -------
+  Has access to WOW data, and returns a set to requester. 
+  Potential enhancement: Define the size of a set through configuration. 
+  Changes:
+    v00-02: minor changes to comments.
+    v00-03: minor change to comment on activate method.
 
 
-::method okClicked
-  arrWow = .array~new
+  interface{
+    arrWow readWowSet( )
+  }
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-  arrWow[1] = "Agnes Allen's Law:"||.endofline|| -
-	      "Almost anything is easier to get into than out of."
-  arrWow[2] = "Airplane Law:"||.endofline||"When the plane you are on is late," -
-    	      ||.endofline||"the plane you want to transfer to is on time."
-  arrWow[3] = "Fourteenth Corollary of Atwood's General Law of Dynamic Negatives:" -
-  	      ||.endofline||"No books are lost by loaning"||.endofline|| -
+::CLASS WowData PUBLIC
+
+  /*----------------------------------------------------------------------------
+    activate - reads initial Wow Set from disk (but not in this version)
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+  ::METHOD activate
+    expose arrWow
+    arrWow = .array~new
+    arrWow[1] = "Agnes Allen's Law:" -
+	      	"Almost anything is easier to get into than out of."
+    arrWow[2] = "Airplane Law:" -
+    		"When the plane you are on is late," -
+    		"the plane you want to transfer to is on time."
+    arrWow[3] = "Fourteenth Corollary of Atwood's General Law of Dynamic Negatives:" -
+  	      "No books are lost by loaning" -
   	      "except those you particularly wanted to keep."
-  arrWow[4] = "Baker's Byroad:"||.endofline||"When you're over the hill, you pick up speed."
-  arrWow[5] = "First Law of Bicycling:"||.endofline|| -
+    arrWow[4] = "Baker's Byroad: When you're over the hill, you pick up speed."
+    arrWow[5] = "First Law of Bicycling:" -
   	      "No matter which way you ride, it's uphill and against the wind."
-  arrWow[6] = "Brooks's Law:"||.endofline|| -
+    arrWow[6] = "Brooks's Law:" -
   	      "Adding manpower to a late software project makes it later."
-  arrWow[7] = "Grossman's Misquote of H. L. Mencken"||.endofline|| -
+    arrWow[7] = "Grossman's Misquote of H. L. Mencken" -
   	      "Complex problems have simple, easy-to-understand wrong answers."
+    return 
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  say "'More wisdom' button clicked"
-
-  newText = self~newStatic(902)
-  i = random(1,7)
-  newText~setText(arrWow[i])
-  return
-
+  /*----------------------------------------------------------------------------
+    readWowSet - returns the Wow set as an array.
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */ 
+  ::METHOD readWowSet
+    expose arrWow
+    return arrWow
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  
+/*============================================================================*/  

@@ -35,23 +35,63 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 05: The Product component				  v00-02 29Jly11
-   Startup.rex - the starter" for the Product component.
+   Exercise 02: Making the Controls Work	 		  v00-02 11Aug11
+
+   File Contents:   class "WordsOfWisdom2"
+   Pre-requisites:  None.
+   Description:     Simple Words of Wisdom app - displays hard-coded 'words of
+                    wisdom' in a static text control.
+
    Changes:
-     v00-01: 15Jly11
-     v00-02  29Jly11 - Modified to take into account the added Model and Data
-                       classes.
+   v00-01: First version (was called "Exercise02b.rex").
+   v00-02: Correction since static text did not display due to chnage in
+           ooDialog, plus mods to comments.
 
 ------------------------------------------------------------------------------*/
 
-.local~my.idProductData  = .ProductData~newInstance	-- create a ProductData instance
-.local~my.idProductModel = .ProductModel~newInstance	-- create a ProductModel instance
-.local~my.idProductData~activate
-.local~my.idProductModel~activate
+dlg = .WordsOfWisdom2~new
+dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
-.ProductView~newInstance
+::REQUIRES "ooDialog.cls"
 
-::requires "ProductView.rex"
-::requires "ProductModelData.rex"
+/*---------------------------------------------------------------------------*/
+::CLASS 'WordsOfWisdom2' SUBCLASS UserDialog
 
-/******************************************************************************/
+  ::METHOD init
+    forward class (super) continue
+    self~create(30, 30, 257, 123, "Words of Wisdom 2", "CENTER")
+
+
+  ::METHOD defineDialog		-- Invoked automatically by ooDialog.
+    self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom", OkClicked)
+    self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
+    self~createStaticText(-1, 40, 40, 200, 40, , "Click 'More wisdom'")
+
+
+  ::METHOD okClicked
+    arrWow = .array~new
+
+    arrWow[1] = "Agnes Allen's Law:"||.endofline|| -
+	        "Almost anything is easier to get into than out of."
+    arrWow[2] = "Airplane Law:"||.endofline||"When the plane you are on is late," -
+                ||.endofline||"the plane you want to transfer to is on time."
+    arrWow[3] = "Fourteenth Corollary of Atwood's General Law of Dynamic Negatives:" -
+                ||.endofline||"No books are lost by loaning"||.endofline|| -
+  	        "except those you particularly wanted to keep."
+    arrWow[4] = "Baker's Byroad:"||.endofline||"When you're over the hill, you pick up speed."
+    arrWow[5] = "First Law of Bicycling:"||.endofline|| -
+                "No matter which way you ride, it's uphill and against the wind."
+    arrWow[6] = "Brooks's Law:"||.endofline|| -
+                "Adding manpower to a late software project makes it later."
+    arrWow[7] = "Grossman's Misquote of H. L. Mencken"||.endofline|| -
+                "Complex problems have simple, easy-to-understand wrong answers."
+
+    say "'More wisdom' button clicked"
+
+    newText = self~newStatic(-1)
+    i = random(1,7)
+    newText~setText(arrWow[i])
+    return
+
+/*----------------------------------------------------------------------------*/
+

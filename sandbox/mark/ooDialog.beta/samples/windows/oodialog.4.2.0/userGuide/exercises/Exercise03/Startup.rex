@@ -34,24 +34,34 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide
-   Exercise 05: The Product component				  v00-02 29Jly11
-   Startup.rex - the starter" for the Product component.
-   Changes:
-     v00-01: 15Jly11
-     v00-02  29Jly11 - Modified to take into account the added Model and Data
-                       classes.
+/* ooDialog User Guide						  v00-05 11Aug11
+   Exercise 03 Part 2: Startup.rex
 
+   Contains: Startup code only.
+   Changes:
+     v00-02:
+     v00-03: Changed file names.
+     v00-04: Changed sequence of activating;  also minor change to match text
+             in Chapter 3.
+     v00-05: Changed name of file from Exercise03b-Startup.rex to Startup.rex
 ------------------------------------------------------------------------------*/
 
-.local~my.idProductData  = .ProductData~newInstance	-- create a ProductData instance
-.local~my.idProductModel = .ProductModel~newInstance	-- create a ProductModel instance
-.local~my.idProductData~activate
-.local~my.idProductModel~activate
+/*******************************************************************************
+  This file is the "application" or "root" or "starter" part
+  of the "Words of Wisdom" application. All other files in this exercise
+  contain only classes.
+ ******************************************************************************/
 
-.ProductView~newInstance
+.local~my.idWowData = .WowData~new
+.local~my.idWowPicker = .WowPicker~new
+dlg = .WowView~new
 
-::requires "ProductView.rex"
-::requires "ProductModelData.rex"
+.local~my.idWowData~activate
+.local~my.idWowPicker~activate
+dlg~activate
+
+::REQUIRES "WowView.rex"
+::REQUIRES "WowModel.rex"
+::REQUIRES "WowData.rex"
 
 /******************************************************************************/

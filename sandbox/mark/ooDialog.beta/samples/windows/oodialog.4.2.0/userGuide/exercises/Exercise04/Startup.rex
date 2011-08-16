@@ -34,24 +34,26 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* ooDialog User Guide							      
-   Exercise 04a: The CustomerView Class             
-   
-   Contains: program "Startup";
-
-   Description:   The "application" or "root" or "starter" part for the 
-   		  sample CustomerView component.   		      
-   
+/* ooDialog User Guide
+   Exercise 04: The Customer Component
+   Startup.rex  						  v00-03 03Aug11
+                The starter" for the Customer component.
    Changes:
-   v01-00  15Jly11
+     v00-01: 15Jly11
+     v00-02  29Jly11 - Modified to take into account the added Model and Data
+                       classes.
+     v00-03  03Aug11 - Deleted ::requires ooDialog.cls (not required here).
 ------------------------------------------------------------------------------*/
 
+.local~my.idCustomerData  = .CustomerData~new	-- create Customer Data instance
+.local~my.idCustomerModel = .CustomerModel~new	-- create Customer Model instance
+.local~my.idCustomerData~activate
+.local~my.idCustomerModel~activate
 
 call startCustomerView		-- a routine in CustomerView.rex
 
-say "Startup-02: Finished."
+say "Startup-01: Finished."
 
-::requires "ooDialog.cls"  
-::requires "CustomerView.rex" 
-
+::REQUIRES "CustomerView.rex"
+::REQUIRES "CustomerModelData.rex"
 /******************************************************************************/

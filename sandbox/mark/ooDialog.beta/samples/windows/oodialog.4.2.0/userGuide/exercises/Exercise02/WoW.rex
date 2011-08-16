@@ -35,23 +35,37 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 05: The Product component				  v00-02 29Jly11
-   Startup.rex - the starter" for the Product component.
+   Exercise 02: Putting "controls" on the window. 		  v00-02 11Aug11
+
+   File Contents:   class "WordsOfWisdom"
+   Pre-requisites:  None.
+   Description:     Simple Words of Wisdom app - displays hard-coded 'words of
+                    wisdom' in a static text control.
+
    Changes:
-     v00-01: 15Jly11
-     v00-02  29Jly11 - Modified to take into account the added Model and Data
-                       classes.
+   v00-01: First version (was called "Exercise02b.rex").
+   v00-02: Correction since static text did not display due to change in
+           ooDialog, plus mods to comments.
 
 ------------------------------------------------------------------------------*/
 
-.local~my.idProductData  = .ProductData~newInstance	-- create a ProductData instance
-.local~my.idProductModel = .ProductModel~newInstance	-- create a ProductModel instance
-.local~my.idProductData~activate
-.local~my.idProductModel~activate
+dlg = .WordsOfWisdom~new
+dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
 
-.ProductView~newInstance
+::REQUIRES "ooDialog.cls"
 
-::requires "ProductView.rex"
-::requires "ProductModelData.rex"
+/*----------------------------------------------------------------------------*/
+::CLASS 'WordsOfWisdom' SUBCLASS UserDialog
 
-/******************************************************************************/
+  ::METHOD init
+    forward class (super) continue
+    self~create(30, 30, 257, 123, "Words of Wisdom", "CENTER")
+
+  ::METHOD defineDialog		-- Invoked automatically by ooDialog.
+    self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom")
+    self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
+    self~createStaticText(-1, 40, 40, 200, 20, , -
+    "Complex problems have simple solutions"||.endofline||"- which are wrong.")
+
+/*----------------------------------------------------------------------------*/
+

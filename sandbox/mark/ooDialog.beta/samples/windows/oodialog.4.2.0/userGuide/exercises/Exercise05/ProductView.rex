@@ -35,11 +35,11 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 04b: ProductView.rex - The ProductView class
+   Exercise 04b: ProductView.rex - The ProductView component      v00-03 06Aug11
 
    Contains: 	   classes "ProductView" and "AboutDialog".
    Pre-requisites: ProductView.dll, ProductView.h.
-   		   NumberOnlyEditEx.cls (from ooDialog Samples)
+   		   Support\NumberOnlyEditEx.cls (copied from ooDialog Samples)
 
    Description: A sample Product View component - part of the sample
         	Order Management application.
@@ -47,7 +47,13 @@
    Outstanding Problems: None reported.
 
    Changes:
-   v01-00: 21Jly11
+   v00-01: 21Jly11
+   v00-02: 28Jly11 - Added a constants class for user-visible messages.
+   v00-03: 04Aug11 - corrected typos in some comments.
+   		   - deleted a commented-out statement that shouldn't have been
+                     left in the file, plus another typo in a comment corrected.
+                   - use of a ProductDT rather than directory for data.
+                   - Changed class name of strings to HRS.
 ------------------------------------------------------------------------------*/
 
 ::requires "ooDialog.cls"
@@ -71,8 +77,8 @@
 
   ::METHOD newInstance CLASS PUBLIC UNGUARDED
     say ".ProductView-newInstance-01: Start."
-    -- Enable use of symbolic IDs in menu creation:
-    .application~useGlobalConstDir("O", "ProductView.h")
+    -- Enable use of symbolic IDs in menu creation and turn auto detecion off:
+    .application~setDefaults("O", "ProductView.h", .false)
     -- Create an instance of ProductView and show it:
     dlg = .ProductView~new("res\ProductView.dll", IDD_PRODUCT_VIEW)
     say ".ProductView-newInstance-02: dlg~Activate."
@@ -95,13 +101,6 @@
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::method initAutoDetection
-    -- Prevents ooDialog setting data to blank after initDialog
-    say "ProductView-initAutoDetection-01."
-    self~noAutoDetection
-
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate UNGUARDED
     say "ProductView-activate-01."
     self~execute("SHOWTOP","IDB_PROD_ICON")
@@ -110,7 +109,7 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
-    expose menuBar prodControls
+    expose menuBar prodControls prodData
     say "ProductView-initDialog-01"
 
     menuBar = .BinaryMenuBar~new(self, IDR_PRODUCT_VIEW_MENU, , self, .true)
@@ -128,13 +127,13 @@
     prodControls[pbSaveChanges]    = self~newPushButton("IDC_PROD_SAVE_CHANGES")
     self~connectButtonEvent("IDC_PROD_SAVE_CHANGES","CLICKED",saveChanges)
 
-    -- Use NumberOnlyEditEx.cls to enforce numeric only entry for Proce and UOM:
+    -- Use NumberOnlyEditEx.cls to enforce numeric only entry for Price and UOM:
     prodControls[ecProdPrice]~initDecimalOnly(2,.false)		-- 2 decimal places, no sign.
     prodControls[ecUOM]~initDecimalOnly(0,.false)		-- 0 decimal places, no sign.
     prodControls[ecProdPrice]~connectCharEvent(onChar)
     prodControls[ecUOM]~connectCharEvent(onChar)
 
-    self~getData	-- Gets data from ProductModel into prodData
+    prodData = self~getData	-- Gets data from ProductModel into prodData
     self~showData	-- Show the data
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -176,7 +175,6 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD about UNGUARDED
     say "ProductView-about-01"
-    --dlg = .AboutDialog~new("ProductView.dll", IDD_PRODUCT_VIEW_ABOUT, , "ProductView.h")
     dlg = .AboutDialog~new("ProductView.dll", IDD_PRODUCT_VIEW_ABOUT)
     dlg~execute("SHOWTOP")
 
@@ -199,9 +197,9 @@
     -- If changed, go on to validate data.
     result = self~checkForChanges(newProdData)
     if result = .false then do
-      msg = "Nothing was changed! Data not saved."
+      msg = .HRS~nilSaved
       hwnd = self~dlgHandle
-      answer = MessageDialog(msg,hwnd,"Update Product","OK","WARNING","DEFBUTTON2 APPLMODAL")
+      answer = MessageDialog(msg,hwnd,.HRS~updateProd,"OK","WARNING","DEFBUTTON2 APPLMODAL")
       return
     end
 
@@ -210,15 +208,15 @@
          					-- Better would be a set of error numbers.
     -- If no problems, then show msgbox and go on to disable controls.
     if result = "" then do
-      msg = "Changes saved."
+      msg = .HRS~saved
       hwnd = self~dlgHandle
-      answer = MessageDialog(msg,hwnd,"Update Product","OK","INFORMATION","DEFBUTTON1 APPLMODAL")
+      answer = MessageDialog(msg,hwnd,.HRS~updateProd,"OK","INFORMATION","DEFBUTTON1 APPLMODAL")
     end
     -- If problems, then show msgbox and leave user to try again or refresh or exit.
     else do
-      msg = result||.EndOfLine||"Changes Not Saved!"
+      msg = result||.EndOfLine||.HRS~notSaved
       hwnd = self~dlgHandle
-      answer = MessageDialog(msg,hwnd,"Update Product","OK","ERROR","DEFBUTTON1 APPLMODAL")
+      answer = MessageDialog(msg,hwnd,.HRS~updateProd,"OK","ERROR","DEFBUTTON1 APPLMODAL")
       return
     end
 
@@ -229,12 +227,13 @@
     prodControls[ecProdDescr]~setReadOnly(.true)
     prodControls[ecProdPrice]~setReadOnly(.true)
     prodControls[ecUom]~setReadOnly(.true)
-    if newProdData[prodSize] \= "S" then prodControls[rbSmall]~disable
-    if newProdData[prodSize] \= "M" then prodControls[rbMedium]~disable
-    if newProdData[prodSize] \= "L" then prodControls[rbLarge]~disable
+    if newProdData~size \= "S" then prodControls[rbSmall]~disable
+    if newProdData~size \= "M" then prodControls[rbMedium]~disable
+    if newProdData~size \= "L" then prodControls[rbLarge]~disable
     self~disableControl("IDC_PROD_SAVE_CHANGES")
 
     prodData = newProdData
+    prodData~list
     return
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -269,22 +268,12 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD getData
     -- Get data from the ProductModel:
-    expose prodData
+    --expose prodData
     say "ProductView-getData-01."
     idProductModel = .local~my.idProductModel
-    data = idProductModel~query
-
-    prodData = .directory~new
-    prodData[prodNo]    = data~prodNo
-    prodData[prodName]  = data~prodName
-    prodData[ProdPrice] = data~prodPrice
-    prodData[uom]       = data~prodUOM
-    prodData[prodDescr] = data~prodDescr
-    prodData[prodSize]  = data~prodSize
---trace i
-    say "ProductView-getData-02: data:"; data~list
---trace off
+    prodData = idProductModel~query		-- prodData is of type ProductDT
     return prodData
+
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD showData
@@ -292,13 +281,13 @@
     expose prodControls prodData
     say "ProductView-showData-01."
     -- Set data in controls:
-    prodControls[ecProdNo]~setText(   prodData[prodNo]       )
-    prodControls[ecProdName]~setText( prodData[prodName]     )
+    prodControls[ecProdNo]~setText(   prodData~number       )
+    prodControls[ecProdName]~setText( prodData~name         )
     -- Price in prodData has no decimal point - 2 decimal places are implied - hence /100 for display.
-    prodControls[ecProdPrice]~setText(prodData[prodPrice]/100)
-    prodControls[ecUOM]~settext(      proddata[uom]          )
-    prodControls[ecProdDescr]~setText(prodData[prodDescr]    )
-    size = prodData[prodSize]
+    prodControls[ecProdPrice]~setText(prodData~price/100    )
+    prodControls[ecUOM]~settext(      proddata~uom          )
+    prodControls[ecProdDescr]~setText(prodData~description  )
+    size = prodData~size
     -- Disable controls
     prodControls[ecProdName]~setReadOnly(.true)
     prodControls[ecProdPrice]~setReadOnly(.true)
@@ -333,11 +322,11 @@
 
     changed = .false
     select
-      when newProdData[prodName]  \= prodData[prodName]  then changed = .true
-      when newProdData[prodPrice] \= prodData[prodPrice] then changed = .true
-      when newProdData[uom]       \= prodData[uom]       then changed = .true
-      when newProdData[prodDescr] \= prodData[prodDescr] then changed = .true
-      when newProdData[prodSize]  \= ProdData[prodSize]  then changed = .true
+      when newProdData~name        \= prodData~name        then changed = .true
+      when newProdData~price       \= prodData~price       then changed = .true
+      when newProdData~uom         \= prodData~uom         then changed = .true
+      when newProdData~description \= prodData~description then changed = .true
+      when newProdData~size        \= ProdData~size        then changed = .true
       otherwise nop
     end
     return changed
@@ -357,30 +346,30 @@
     msg = ""
 
     -- Check Price (catches decimal point errors also):
-    price = prodData[prodPrice]; newPrice = newProdData[prodPrice]
-    oldUom   = prodData[uom];       newUom   = newProdData[uom] 	-- 'oldUom - avoids name conflict with 'uom' in newProddata[uom].
+    price = prodData~price; newPrice = newProdData~price
+    oldUom   = prodData~uom;       newUom   = newProdData~uom 	-- 'oldUom - avoids name conflict with 'uom' in newProddata~uom.
     if ((price/oldUom)*1.5 < newPrice/newUom) | (newPrice/newUom < (price/oldUom)/2) then do
-      msg = msg||"The new price/UOM ratio cannot be changed more than 50% up or down."
+      msg = msg||.HRS~badRatio||" "
     end
 
     -- Check Size vs UOM:
-    if prodData[size] = "L" & newProdData[size] = "S" -    -- Large to Small
-        & prodData[uom]*2 < newProdData[uom] then do
-      msg = msg||"The new UOM is too small. "
+    if prodData~size = "L" & newProdData~size = "S" -    -- Large to Small
+        & prodData~uom/2 < newProdData~uom then do
+      msg = msg||.HRS~uomTooBig||" "
     end
-      if prodData[size] = "S" & newProdData[size] = "L" -    -- Small to Large
-        & prodData[uom]/2 > newProdData[uom] then do
-      msg = msg||"The new UOM is too large. "
+      if prodData~size = "S" & newProdData~size = "L" -    -- Small to Large
+        & prodData~uom*2 > newProdData~uom then do
+      msg = msg||.HRS~uomTooSmall||" "
     end
 
     -- Check Product Description length:
-    if newProdData[prodDescr]~length > 100 then do
-      msg = msg||"The Product Description is too long. "
+    if newProdData.description~length > 80 then do
+      msg = msg||.HRS~descrTooBig||" "
     end
 
     -- Check Product Name length:
-    if newProdData[prodName]~length > 30 then do
-      msg = msg||"The Product Name is too long. "
+    if newProdData~name~length > 30 then do
+      msg = msg||.HRS~prodNameTooBig
     end
 
     return msg
@@ -391,9 +380,9 @@
     -- Transforms Product Data from View form (in the GUI controls) to
     --   App form (a directory with address as an array).
     expose prodControls
-    prodData = .directory~new
-    prodData[prodNo] = prodControls[ecProdNo]~gettext()
-    prodData[prodName] = prodControls[ecProdName]~getText()
+    prodData = .ProductDT~new
+    prodData~number = prodControls[ecProdNo]~gettext()
+    prodData~name = prodControls[ecProdName]~getText()
     price = prodControls[ecProdPrice]~getText()
     -- Data entered has or assumes a decimal point; but data in "application"
     --   is a whole number (e.g. $42.42 is recorded in the database as "4242").
@@ -403,13 +392,13 @@
     prodControls[ecProdPrice]~setText(priceTwoDecs)
     -- Now format price to "application" format:
     price = (priceTwoDecs*100)~format(,0)	-- multiply by 100 and then force whole number.
-    prodData[prodPrice] = price
-    prodData[uom]  = prodControls[ecUOM]~getText()
-    prodData[prodDescr] = prodControls[ecProdDescr]~getText()
+    prodData~price = price
+    prodData~uom  = prodControls[ecUOM]~getText()
+    prodData~description = prodControls[ecProdDescr]~getText()
     select
-      when prodControls[rbSmall]~checked then prodData[prodSize]="S"
-      when prodControls[rbMedium]~checked then prodData[prodSize]="M"
-      otherwise prodData[prodSize]="L"
+      when prodControls[rbSmall]~checked then prodData~size = "S"
+      when prodControls[rbMedium]~checked then prodData~size = "M"
+      otherwise prodData~size = "L"
     end
 
     return prodData
@@ -429,11 +418,10 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::method initDialog
-    expose font
+    expose font image
     resImage = .ResourceImage~new( "", self)			  -- Create an instance of a resource image
-    id = self~constDir[IDB_PROD_ICON]				  -- Get the numeric resource ID of the Product bitmap
-    image = resImage~getImage(id)				  -- Create an image from the Product bitmap
-    stImage = self~newStatic(IDC_PRODABT_ICON_PLACE)~setImage(image) -- Create a static text control and set the the image in it
+    image = resImage~getImage(IDB_PROD_ICON)			  -- Create an image from the Product bitmap
+    stImage = self~newStatic(IDC_PRODABT_ICON_PLACE)~setImage(image) -- Create a static text control and set the image in it
     font = self~createFontEx("Ariel", 12)			  -- Create up a largish font with which to display text and ...
     self~newStatic(IDC_PRODABT_STATIC2)~setFont(font)		  -- ... set the static text to use that font.
     -- Provide for a double-click in Product icon:
@@ -444,17 +432,35 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::method showMsgBox
     say "AboutDialog-showMsgBox-01."
-    ans = MessageDialog("You double-clicked!")
+    ans = MessageDialog(.HRS~AboutDblClick)
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::method leaving
-    expose font
+    expose font image
     self~deleteFont(font)
+    image~release()
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /*============================================================================*/
 
 
+/*//////////////////////////////////////////////////////////////////////////////
+  ==============================================================================
+  Human-Readable Strings (HRS)					  v00-02 08Aug11
+  --------
+   The HRS class provides constant character strings for user-visible messages.
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+::CLASS HRS PRIVATE		-- Human-Readable Strings
+  ::CONSTANT AboutDblClick  "You double-clicked!"
+  ::CONSTANT badRatio	    "The new price/UOM ratio cannot be changed more than 50% up or down."
+  ::CONSTANT nilSaved       "Nothing was changed! Data not saved."
+  ::CONSTANT saved	    "Changes saved."
+  ::CONSTANT uomTooSmall    "The new UOM is too small."
+  ::CONSTANT uomTooBig      "The new UOM is too large."
+  ::CONSTANT notSaved       "Changes Not Saved!"
+  ::CONSTANT descrTooBig    "The Product Description is too long."
+  ::CONSTANT prodNameTooBig "The Product Name is too long."
+  ::CONSTANT updateProd     "Update Product"
