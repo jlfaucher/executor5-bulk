@@ -136,10 +136,11 @@
 </para>
 <para>
   The <computeroutput>.application</computeroutput> object is used by the programmer to manage application wide settings
-  and constants. Its current use is primarily restricted to managing the global <link
-  linkend="dotConstDir">.constDir</link>. However, furture version of ooDialog will likely enhance the
-  <computeroutput>ApplicationManager</computeroutput> class and at that time the
-  <computeroutput>.application</computeroutput> object will have increased usefulness.
+  and constants. Its use is primarily to change global default values of ooDialog. For instance, by default, a part of
+  <link linkend="paraAutomaticDataDetection">automatic</link> data detection, part of <link
+  linkend="sctUnderstandingDataAttributes">data </link> attributes, is on. The
+  <computeroutput>.application</computeroutput> object can be used to change the default for all dialogs in a
+  application to off.
 </para>
 </section>
 
@@ -148,11 +149,17 @@
 <indexterm><primary>.constDir</primary></indexterm>
 <para>
   The <computeroutput>.constDir</computeroutput> is a Rexx <computeroutput>.directory</computeroutput> object that is
-  present in all ooDialog programs.  It is initialized and placed in the <computeroutput>.local</computeroutput>
+  present in all ooDialog programs. It is initialized and placed in the <computeroutput>.local</computeroutput>
   environment automatically by the <link linkend="dotApplication">application</link> object. The global
-  <computeroutput>.constDir</computeroutput> is similiar in usage and function to the <link
-  linkend="atrConstDir">constDir</link> attribute of the dialog <link linkend="chpDialogObject">object</link>. That is,
-  it resolves <link linkend="defSymbolicID"></link>
+  <computeroutput>.constDir</computeroutput> is part of the <link linkend="ovvSymbolicIDMechanism">mechanism</link>
+  allowing the use of <link linkend="defSymbolicID">symbolic</link> IDs in ooDialog programs.
+</para>
+<para>
+  The <computeroutput>.constDir</computeroutput> is the most efficient way to use sybmolic IDs. However, to maintain
+  backwards compatiblity with older ooDialog programs its use is turned off by default. The <link
+  linkend="dotApplication">.application</link> object, through its <link
+  linkend="mthUseGlobalConstDir">useGlobalConstDir</link> or <link linkend="mthSetDefaults">setDefaults</link> methods
+  is used to specify how the <computeroutput>.constDir</computeroutput> is used.
 </para>
 </section>
 
@@ -1488,6 +1495,26 @@ In the ok method thread ID:                 2344
 <entry><link linkend="mthUseGlobalConstDir">useGlobalConstDir</link></entry>
 <entry>Defines how the global <link linkend="dotConstDir">.constDir</link> is used in the application.</entry>
 </row>
+<row>
+<entry><link linkend="mthAddToConstDir">addToConstDir</link></entry>
+<entry>Adds symbols, symbolic IDs, to the <computeroutput>.constDir</computeroutput>.</entry>
+</row>
+<row>
+<entry><link linkend="mthAutoDetection">autoDetection</link></entry>
+<entry>Sets the application global default for <link linkend="paraAutomaticDataDetection">autoDetction</link> to off, or on.</entry>
+</row>
+<row>
+<entry><link linkend="mthDefaultFont">defaultFont</link></entry>
+<entry>Changes the <link linkend="mthClsSetDefaultFont">default</link> font for the application.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetDefaults"></link>setDefaults</entry>
+<entry>Sets one or more of the global defualts for the application.</entry>
+</row>
+<row>
+<entry><link linkend="mth"></link></entry>
+<entry></entry>
+</row>
 </tbody></tgroup>
 </table>
 </para>
@@ -1562,6 +1589,257 @@ In the ok method thread ID:                 2344
 </variablelist>
 </section>  <!-- End ApplicationMgr::useGlobalConstDir() -->
 
+<section id="mthAddToConstDir"><title>addToConstDir</title>
+<indexterm><primary>addToConstDir</primary></indexterm>
+<indexterm><primary>ApplicationManager class</primary><secondary>addToConstDir</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addToConstDir(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ApplicationManager::addToConstDir() -->
+
+<section id="mthAutoDetection"><title>auotDetection</title>
+<indexterm><primary>auotDetection</primary></indexterm>
+<indexterm><primary>ApplicationManager class</primary><secondary>auotDetection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--auotDetection(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ApplicationManager::auotDetection() -->
+
+<section id="mthDefaultFont"><title>defaultFont</title>
+<indexterm><primary>defaultFont</primary></indexterm>
+<indexterm><primary>ApplicationManager class</primary><secondary>defaultFont</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--defaultFont(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ApplicationManager::defaultFont() -->
+
+<section id="mthSetDefaults"><title>setDefaults</title>
+<indexterm><primary>setDefaults</primary></indexterm>
+<indexterm><primary>ApplicationManager class</primary><secondary>setDefaults</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDefaults(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ApplicationManager::setDefaults() -->
 
 </section> <!-- End ApplicationManager Class -->
 

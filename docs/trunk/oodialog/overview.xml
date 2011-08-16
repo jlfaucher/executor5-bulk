@@ -61,276 +61,22 @@
 
 <section id="sctGettingStarted"><title>Getting Started</title>
 <para>
-  This document should be divided into two parts - a tutorial and a reference. In the original documentation
-  accompanying IBM's Object Rexx, the documentation <emphasis role="bold">was</emphasis> in two parts. Unfortunately,
-  the tutorial portion mostly described how to use the <link linkend="ovvResourceWorkshop">IBM Resource Workshop</link>.
-  Because the tutorial section was primarily directed towards using the Resource Workshop, it does not make much sense
-  in the current context.
+  The ooDialog documentation should be divided into two parts - a tutorial and a reference. In the original
+  documentation accompanying IBM's Object Rexx, the documentation <emphasis role="bold">was</emphasis> in two parts.
+  Unfortunately, the tutorial portion mostly described how to use the <link linkend="ovvResourceWorkshop">IBM Resource
+  Workshop</link>. Because the tutorial section was primarily directed towards using the Resource Workshop, it does not
+  make much sense in the current context.
 </para>
 <para>
-  This book is primarily a reference that describes the classes and methods in detail. There is no tutorial. The
-  tutorial portion needs to be written (or re-written depending on your point of view.) There is little other
-  documentation for the newcomer on how to get started using ooDialog. Until that type of documentation can be written,
-  the sample ooDialog programs that accompany the ooRexx distribution are probably the best source of help in getting
-  started.  However, there are also numerous snippets of example code in this book.  In addition the <link
-  linkend="helpGettingHelp">getting help </link> section of this reference lists a number of resources for the
-  programmer with questions about ooDialog.
+  This book is primarily a reference that describes the classes and methods in detail. There is no tutorial contained
+  within the book. In ooDialog 4.2.0, a new document, the ooDialog User Guide has been started. However, it is currently
+  a work in progress, but does contain a tutorial section. There is little other documentation for the newcomer on how
+  to get started using ooDialog. Until the ooDialog User Guide gets fleshed, the sample ooDialog programs that accompany
+  the ooRexx distribution are probably the best source of help in getting started.  However, there are also numerous
+  snippets of example code in this book.  In addition the <link linkend="helpGettingHelp">getting help </link> section
+  of this reference lists a number of resources for the programmer with questions about ooDialog.
 </para>
 </section>
-
-<section id="sctGeneralOODialog"><title>Common Concepts</title>
-<para>
-  Many concepts and behaviors in ooDialog, and statements about ooDialog are general in nature. This section gathers up
-  this information in one place.  Rather than repeating this information in every method or class description to which
-  it applies, the author will assume that the reader understands that the information is always applicable unless
-  specifically stated otherwise.
-</para>
-
-<section id="ovvNumbers"><title>Numbers in ooDialog:</title>
-<para>
-  Numbers in ooDialog are <emphasis role="bold">always</emphasis> whole numbers, unless specifically stated otherwise.
-  Except in very rare cases, the Windows API that ooDialog provides access to, only deals with whole numbers. Pixels,
-  positions, sizes of fonts, coordinates on the screen, etc., are all expressed as whole numbers only. Numerical
-  arguments to methods in ooDialog must always be whole numbers, unless the documentation specifically notes that the
-  method accepts fractional numbers for the argument.
-</para>
-</section>
-
-<section id="ovvUnderlying"><title>Underlying Dialog Creation</title>
-<para>
-  The dialog and dialog control objects in ooDialog represent the dialogs and controls users see on their screens.
-  This documentation often refers to the underlying dialog or the underlying control.  These statements refer to the
-  dialog or control created by the operating system, the objects the user sees on the screen. The operating system
-  controls what these underlying objects can, and can not, do. One thing that it is sometimes difficult for the Rexx
-  programmer to grasp is that ooDialog can not alter the behavior or appearance of these objects in ways not allowed
-  by the operating system. The Windows API provides a broad number of ways to customize the appearance and behavior
-  of dialogs and controls.  But, ooDialog and the Rexx programmer are restricted to those customizations provided
-  by the operating system.
-</para>
-<para>
-  Another concept that is often hard to grasp is that many of the methods of the ooDialog dialog and control
-  objects can only be used after the underlying Windows dialog has been created.  In general this means in the <link
-  linkend="mthInitDialog">initDialog</link>() method or later in the life cycle of the dialog. In particular, the
-  <link linkend="mthDefineDialog">defineDialog</link>() method of the <link
-  linkend="clsUserDialog">UserDialog</link> class executes before the underlying dialog is created. Therefore, any
-  method that requires the underlying dialog to have been created can not work in the <emphasis
-  role="italic">defineDialog</emphasis> method. In earlier versions of ooDialog, in general, if the programmer
-  invoked a method requiring that the underlying dialog was created, the error was simply ignored. But, the method
-  had no effect.
-</para>
-<para>
-  From the 4.0.0 release of ooRexx and on, the goal in ooDialog is to raise a syntax condition when a method
-  requiring the underlying dialog is invoked and the underlying dialog does not exist. This goal is being
-  implemented over time and may not yet be completed.
-</para>
-</section>
-
-<section id="ovvWindowMessages"><title>Window Messages</title>
-<para>
-  In the Windows operating system, not surprisingly, most everything is a window. In a nutshell, the Windows operating
-  system works by routing and sending <emphasis role="italic">messages</emphasis> to these windows. Each window has a
-  <emphasis role="italic">message processing loop</emphasis> where the window waits for a message to arrive, processes
-  it, and then waits for the next message. Each window message has an unique whole number ID that gives meaning to the
-  message. When a message is sent to a window, it is sent with two arguments. The first argument is of a type called
-  WPARM and the second is a type called LPARAM. These types are opaque and the value of each is dependent on the
-  specific message. Either or both of the arguments may have no meaning for the specific message. The window always
-  returns a value, another opaque type called LRESULT, which again may have no meaning for the particular message.
-</para>
-<para>
-  In general, most of what ooDialog does is done by sending window messages to the operating system windows. This is
-  designed to allow the Rexx programmer to use dialogs without understanding any of the details of window messages.
-  However, the ooDialog framework provides a few generic methods that send window messages to the underlying operating
-  system windows. These methods, in contrast to most methods, can not be used by the Rexx programmer without some
-  knowledge of the window message being sent. The methods are clearly marked. The programmer would need to consult the
-  <link linkend="defWindowsDoc">Windows Documentation</link> to understand what both the WPARAM and LPARAM arguments
-  must be, and to understand what the LRESULT return, if any, means. In addition, the programmer would need to determine
-  the numeric value of the window message ID. This could be done using a <link linkend="defPlatformSDK">Windows
-  platform SDK</link>, or perhaps through a Google search.
-</para>
-<para>
-  These generic send messages methods allow Rexx programmers to send any message to any of the underlying windows in
-  their programs. The caveat is that the programmers will have to research the meaning of the messages, their arguments,
-  and their return values themselves.
-</para>
-
-</section>
-
-<section id="ovvEvents"><title>Events</title>
-<para>
-  The ooDialog framework facilitates the use of a type of programming often called <emphasis role="italic">event
-  driven programming</emphasis>. In event driven programming, the program usually does some initial set up and then
-  sits in some type of loop waiting to be signaled that an event just happened.  The Windows graphical windowing
-  system is designed to be programmed this way. The Windows operating system uses <emphasis
-  role="italic">messages</emphasis> to notify each window in the system of events specific to that window. Typically
-  events are generated by the user. For instance, clicking a button, typing a key, moving the mouse, all generate
-  events. The operating system notifies the window with the input focus of those events by sending <link
-  linkend="ovvWindowMessages">messages</link> to the window. Note that some events are generated by the
-  operating system itself. For instance, when the user moves a window that uncovers a portion of a window beneath it,
-  the operating system will send a message to the underlying window notifying it that it needs to redraw the uncovered
-  portion.
-</para>
-<para>
-  Once the basic set up for an ooDialog program is done, the dialog object basically sits there waiting for an
-  <emphasis role="italic">event</emphasis> of interest to happen. When the event happens, the program responds by
-  taking some action. The programmer decides what events are of interest and uses methods provided by the ooDialog
-  framework to <emphasis role="italic">connect</emphasis> a method in the dialog object to the event notification. The
-  majority of the event connection methods are part of the <link linkend="clsEventNotification">EventNotification</link>
-  class. The connected methods are often called <emphasis role="italic">event handlers</emphasis> because the code in
-  the method handles the event.
-</para>
-<para id="ovvEventsDirectReply">
-  Event notification messages in Windows fall into two groups, messages where the reply is ignored and messages where
-  the reply is significant. Prior to the introduction of the <link linkend="sctHistory">C++</link> native APIs, there
-  was <emphasis role="bold">no way</emphasis> in ooDialog to <emphasis role="italic">directly</emphasis> reply to the
-  nofication message. This placed a severe restriction on ooDialog programs. Many of the features of the operating
-  system could not be used with this restriction. For instance, when a user selects a new tab in a <link
-  linkend="clsTab">tab</link> control, the operating system sends a SELCHANGING event notification before the selected
-  tab is changed. The programmer can allow or prevent the change by replying true or false to the notification message.
-</para>
-<para>
-  Without the ability to reply directly to the notification, the ooDialog programmer could not take advantage of the
-  SELCHANGING notification. The introduction of the C++ native APIs in ooRexx 4.0.0 removed this restriction. Beginning
-  in ooDialog 4.2.0, the event handling methods in the Rexx dialog object are directly invoked from the Windows message
-  processing loop. This allows the Rexx dialog object to reply directly to the notification message.
-</para>
-<para>
-  The ability to directly reply to event notifications greatly extends the power of the ooDialog framework. However, it
-  also changes how the ooDialog programmer must write his event handlers. In particular, the event handler must return
-  in a timely manner. This is discussed more <link linkend="sctCodingEventHandlers">fully</link> in the
-  <computeroutput>EventNotification</computeroutput> class documentation.
-</para>
-</section>
-
-<section id="ovvComctl32"><title>Required Common Control Library (Comctl32) Version</title>
-<para>
-  The dialog control windows used in dialogs, List-Views, Edit, Tree-Views, etc., are supplied by Microsoft in the
-  common controls library. This is a DLL with the name comctl32.dll.  Every version of Windows is supplied with a common
-  controls library.  However, Microsoft has updated the library a number of times to provide enhanced functionality and
-  improved features
-</para>
-<para>
-  Each new version of the library is backwards compatible with previous versions, but, it will contain features not
-  available in older versions.  For instance, some of the List-View <link linkend="listControlExtendedStyles">
-  extended styles</link> are only available with a 6.0, or later, version of the common controls library.  ooDialog can
-  only provide the features available in the version of the common controls library on the system ooDialog is running
-  on.
-</para>
-<para>
-  Therefore, an ooDialog program running on a Windows 2000 machine will not have available some of the features that are
-  available when ooDialog is running on a XP service pack two system.  The DlgUtil class provides a method, <link
-  linkend="mthComCtl32Version">comCtl32Version</link> that allows the programmer to determine the exact version of the
-  common controls library that ooDialog is using.  In the documentation for the ooDialog dialog control classes,
-  features that are not available in all versions of the common control library are noted.  The minimum version of the
-  library that is needed is listed.  In general, at this time, all features of ooDialog are available on Windows XP
-  or later.  This may change in the future as Vista has common control features not available on XP.
-</para>
-</section>
-
-<section id="ovvRequiredWindows"><title>Required Windows Version</title>
-<para>
-  The required Windows version is similar to the <link linkend="ovvComctl32">required ComCtl32</link> library version.
-  Later versions of the Windows operating system have dialog and dialog control features not available in earlier
-  versions of the operating system.
-</para>
-<para>
-  For instance, the <link linkend="clsMonthCalendar">MonthCalendar</link> class has a number of methods that are only
-  available on Vista or later. ooDialog can only use the features available on the system on which it is executing. If
-  a method is invoked that is not available on the current operating system, a syntax conditions is raised. Any
-  method not available on all the Windows versions which ooRexx supports, have the minimum required Windows version
-  noted in their documentation.
-</para>
-<para>
-   The <link linkend="clsOS">OS</link> class supplies methods that allow the programmer to determine exactly which
-   operating system version the program is currently executing on. For programs that need to run on all versions of
-   Windows, the programmer must either avoid using methods not available on all versions, or test for the current
-   version and provide an alternative code path dependent on that version.  The <link
-   linkend="mthIsAtLeastVista">isAtLeastVista</link>() method of the <emphasis role="italic">OS</emphasis> class
-   provides an example of this.
-</para>
-</section>
-
-<section id="ovvUndocumented"><title>Undocumented Items</title>
-<para>
-  ooRexx is open source and anyone can peruse the source to see all functions, classes, and methods of the ooDialog
-  framework. Any of these items that are undocumented should not be used by the Rexx programmer. If the programmer does
-  use any undocumented features in the framework, he does so at his own risk. The framework strives to be backwards
-  compatible, but only for documented features. Undocumented features in the framework are intended for internal use
-  only and are subject to change, or even removal from the framework.
-</para>
-<para>
-  In addition, previous versions of the ooDialog documentation, documented some features, but added some form of the
-  caveat: <emphasis role="italic">for internal use</emphasis>. The prudent programmer would not use any feature
-  documented for internal use. These features are also subject to change.
-</para>
-</section>
-
-<section id="ovvInaccurate"><title>factorX / factorY</title>
-<para>
-  The <emphasis role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes of the
-  <link linkend="chpDialogObject">dialog object</link> were intended to provide a way to convert between <link
-  linkend="defPixel">pixels</link> and <link linkend="defDialogUnit">dialog units</link>, and vice versa. Although their
-  values may have been correct when ooDialog was <link linkend="sctHistory">originally designed</link>, in almost all
-  cases the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is no
-  longer correct.
-</para>
-<para>
-  Unfortunately, many of the methods in the ooDialog framework use <emphasis role="italic">factorX</emphasis> and
-  <emphasis role="italic">factorY</emphasis> to convert to between pixels and dialog units. This in turn makes all of
-  those methods inaccurate. These methods are all marked as being inaccurate. There is almost always no reason to
-  convert back to dialog units from pixels. Once the underlying dialog has been created, pixels should be used. Each
-  inaccurate method in the framework has a corresponding method that uses pixels instead of dialog units.
-</para>
-</section>
-
-<section id="ovvDialogTemplate"><title>Dialog Template</title>
-<para>
-  <indexterm><primary>Template, Dialog</primary></indexterm>
-  The <link linkend="ovvUnderlying">underlying</link> dialog seen by the user is created by the operating system from a
-  dialog template in memory. The template describes the size and position of the dialog and all of its controls. The
-  template also contains modifiers that control the style, behavior, and attributes of the dialog and its controls. To
-  make designing dialogs easier, Windows supports the concept of a textual representation of the dialog template. The
-  textual representation can then be translated by software tools to the binary form of the template needed by the
-  operating system.
-</para>
-<para>
-  ooDialog uses three basic constructs that allow the Rexx programmer to supply the dialog template. The programmer can
-  use a binary resource, a resource script, or create the template dynamically in the program code. A binary (compiled)
-  dialog template is stored in a DLL, (usually a .dll file.) The programmer subclasses a <link
-  linkend="clsResDialog">ResDialog</link> to use a binary resource. Resource scripts, (usually a .rc file) supply the
-  dialog template in a text file. The programmer subclasses a <link linkend="clsRcDialog">RcDialog</link> to create a
-  dialog from a resource script. To create a dialog template dynamically in the program code, the programmer subclasses
-  a <link linkend="clsUserDialog">UserDialog</link> and then uses the <link linkend="sctCreateMethods">create</link>
-  methods of that class to create the dialog template. The <emphasis role="italic">UserDialog</emphasis> translates the
-  program statements into the in-memory dialog template required by the operating system. The <emphasis
-  role="italic">RcDialog</emphasis> parses the resource script and converts the resource script statements into an
-  in-memory dialog template by invoking the proper methods of its superclass, the <emphasis
-  role="italic">UserDialog</emphasis>.
-</para> </section>
-
-<section id="ovvResourceWorkshop"><title>IBM Resource Workshop</title>
-<para>
-  The IBM Resource Workshop was a visual resource editor included with IBM Object Rexx. A visual resource editor
-  provides a WYSIWYG (what you see is what you get) environment to design dialogs. It manages the size and positioning
-  of a dialog and its controls. The user can drag and drop controls where they are wanted and use the mouse to size the
-  dialog and controls. The Resource Workshop could not be contributed to the open source community and is therefore
-  not a part of the Open Object Rexx project.
-</para>
-<para><emphasis role="bold">Note</emphasis>, there is <emphasis role="bold">no loss</emphasis> of functionality in
-  ooDialog because of the absence of the Resource Workshop.  The Windows resource format is well understood and there
-  are any number of free or inexpensive resource editors that do a better job of designing dialogs than the Resource
-  Workshop did.  (The Resource Workshop was a 16-bit application with limited capacity for the newer features in the
-  Windows user interface.) ooDialog works fine with dialogs designed by any modern resource editor.
-</para>
-</section>
-
-<section id="ovvDeprecated"><title>Deprecated</title>
-<para>
-  PROVIDE TEXT
-</para>
-</section>
-
-</section> <!-- End: Throughout ooDialog -->
-
 
 <section id="sctTermDefs"><title>Definition of Terms</title>
 <para>
@@ -365,87 +111,19 @@
 
 <section id="defSymbolicId"><title>Symbolic ID</title>
 <para>
-  Defining a symbolic name for each numeric resource ID is often useful in programs that work with resource IDs.  The
-  symbolic name is then used where ever a numeric resource ID is needed.  Symbolic names are easier to remember than
-  numeric IDs and can make the code easier to understand.
+  A symbolic name is a constant symbol that uniquely identifies a specific entity in a program. Defining a symbolic name
+  for each numeric resource ID is often done in programs that work with resource IDs.  The symbolic name is then used
+  where ever a numeric resource ID is needed.  Symbolic names are easier to remember than numeric IDs and can make the
+  code easier to understand.
 </para>
 <para>
-  The mechanism ooDialog provides for using symbolic IDs is the <link linkend="atrConstDir">constDir</link> attribute of
-  the dialog classes.  This is a directory object where the indexes are symbolic IDs and the item at each index is the
-  numerical value of the ID.
+  Symbolic names are most often used in compiled programs, where a preprocessor replaces each ocurrence of the symbolic
+  name in the code with its numeric value before the code is compiled. Symbolic names are less often used in interpreted
+  languages because there is no preprocessor step where substituitons can be made. However, ooDialog provides a robust
+  and useful <link linkend="ovvSymbolicIDMechanism">mechanism</link> for using symbolic IDs in ooDialog programs.
+  Programmers wishing to use symbolic resource IDs in their programs should be familar with this <link
+  linkend="ovvSymbolicIDMechanism">mechanism</link>.
 </para>
-<para id="paraReservedIDs">
-  Some generic <link linkend="chapResources">resources</link> are bound to the oodialog.dll.  They can be used in any
-  ooDialog program and are accessed using the <link linkend="clsResourceImage">.ResourceImage</link> class. Programmers
-  should always use their symbolic ID rather than their numeric ID in case the numeric value changes in future versions.
-  To allow for future expansion, the ooDialog programmer should consider the resource IDs of 1 through 50 as reserved
-  for ooDialog. Programmers can avoid conflicts by using IDs greater than 50 for resource IDs they assign
-  in their programs.
-</para>
-<para>
-  The symbolic IDs in the following table are pre-defined by ooDialog and placed in the
-  <computeroutput>constDir</computeroutput> when an instance of a dialog class is created.  All symbolic names after
-  IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog programmer.
-</para>
-<table id="oodsymbolicids" frame="all">
-<title>Symbolic IDs Used by ooDialog</title>
-<tgroup cols="3">
-<thead>
-<row>
-<entry>Numeric ID or Symbol</entry>
-<entry>Symbolic ID</entry>
-<entry>ResourceType</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry>1</entry>
-<entry>IDOK</entry>
-<entry>Button Control</entry>
-</row>
-<row>
-<entry>2</entry>
-<entry>IDCANCEL</entry>
-<entry>Button Control</entry>
-</row>
-<row>
-<entry>9</entry>
-<entry>IDHELP</entry>
-<entry>Button Control</entry>
-</row>
-<row>
-<entry>-1</entry>
-<entry>IDC_STATIC</entry>
-<entry>Static Control</entry>
-</row>
-<row>
-<entry>IDI_DLG_OODIALOG</entry>
-<entry>IDI_DLG_OODIALOG</entry>
-<entry>Icon</entry>
-</row>
-<row>
-<entry>IDI_DLG_APPICON</entry>
-<entry>IDI_DLG_APPICON</entry>
-<entry>Icon</entry>
-</row>
-<row>
-<entry>IDI_DLG_APPICON2</entry>
-<entry>IDI_DLG_APPICON2</entry>
-<entry>Icon</entry>
-</row>
-<row>
-<entry>IDI_DLG_OOREXX</entry>
-<entry>IDI_DLG_OOREXX</entry>
-<entry>Icon</entry>
-</row>
-<row>
-<entry>IDI_DLG_DEFAULT</entry>
-<entry>IDI_DLG_DEFAULT</entry>
-<entry>Icon</entry>
-</row>
-</tbody>
-</tgroup>
-</table>
 </section>
 
 <section id="defPoundDefine"><title>#define Statement</title>
@@ -793,6 +471,354 @@ xPixels = xDialogUnits * self~FactorX
 </section>
 
 </section> <!-- End: Definition of Terms -->
+
+<section id="sctGeneralOODialog"><title>Common Concepts</title>
+<para>
+  Many concepts and behaviors in ooDialog, and statements about ooDialog are general in nature. This section gathers up
+  this information in one place.  Rather than repeating this information in every method or class description to which
+  it applies, the author will assume that the reader understands that the information is always applicable unless
+  specifically stated otherwise.
+</para>
+
+<section id="ovvNumbers"><title>Numbers in ooDialog:</title>
+<para>
+  Numbers in ooDialog are <emphasis role="bold">always</emphasis> whole numbers, unless specifically stated otherwise.
+  Except in very rare cases, the Windows API that ooDialog provides access to, only deals with whole numbers. Pixels,
+  positions, sizes of fonts, coordinates on the screen, etc., are all expressed as whole numbers only. Numerical
+  arguments to methods in ooDialog must always be whole numbers, unless the documentation specifically notes that the
+  method accepts fractional numbers for the argument.
+</para>
+</section>
+
+<section id="ovvUnderlying"><title>Underlying Dialog Creation</title>
+<para>
+  The dialog and dialog control objects in ooDialog represent the dialogs and controls users see on their screens.
+  This documentation often refers to the underlying dialog or the underlying control.  These statements refer to the
+  dialog or control created by the operating system, the objects the user sees on the screen. The operating system
+  controls what these underlying objects can, and can not, do. One thing that it is sometimes difficult for the Rexx
+  programmer to grasp is that ooDialog can not alter the behavior or appearance of these objects in ways not allowed
+  by the operating system. The Windows API provides a broad number of ways to customize the appearance and behavior
+  of dialogs and controls.  But, ooDialog and the Rexx programmer are restricted to those customizations provided
+  by the operating system.
+</para>
+<para>
+  Another concept that is often hard to grasp is that many of the methods of the ooDialog dialog and control
+  objects can only be used after the underlying Windows dialog has been created.  In general this means in the <link
+  linkend="mthInitDialog">initDialog</link>() method or later in the life cycle of the dialog. In particular, the
+  <link linkend="mthDefineDialog">defineDialog</link>() method of the <link
+  linkend="clsUserDialog">UserDialog</link> class executes before the underlying dialog is created. Therefore, any
+  method that requires the underlying dialog to have been created can not work in the <emphasis
+  role="italic">defineDialog</emphasis> method. In earlier versions of ooDialog, in general, if the programmer
+  invoked a method requiring that the underlying dialog was created, the error was simply ignored. But, the method
+  had no effect.
+</para>
+<para>
+  From the 4.0.0 release of ooRexx and on, the goal in ooDialog is to raise a syntax condition when a method
+  requiring the underlying dialog is invoked and the underlying dialog does not exist. This goal is being
+  implemented over time and may not yet be completed.
+</para>
+</section>
+
+<section id="ovvWindowMessages"><title>Window Messages</title>
+<para>
+  In the Windows operating system, not surprisingly, most everything is a window. In a nutshell, the Windows operating
+  system works by routing and sending <emphasis role="italic">messages</emphasis> to these windows. Each window has a
+  <emphasis role="italic">message processing loop</emphasis> where the window waits for a message to arrive, processes
+  it, and then waits for the next message. Each window message has an unique whole number ID that gives meaning to the
+  message. When a message is sent to a window, it is sent with two arguments. The first argument is of a type called
+  WPARM and the second is a type called LPARAM. These types are opaque and the value of each is dependent on the
+  specific message. Either or both of the arguments may have no meaning for the specific message. The window always
+  returns a value, another opaque type called LRESULT, which again may have no meaning for the particular message.
+</para>
+<para>
+  In general, most of what ooDialog does is done by sending window messages to the operating system windows. This is
+  designed to allow the Rexx programmer to use dialogs without understanding any of the details of window messages.
+  However, the ooDialog framework provides a few generic methods that send window messages to the underlying operating
+  system windows. These methods, in contrast to most methods, can not be used by the Rexx programmer without some
+  knowledge of the window message being sent. The methods are clearly marked. The programmer would need to consult the
+  <link linkend="defWindowsDoc">Windows Documentation</link> to understand what both the WPARAM and LPARAM arguments
+  must be, and to understand what the LRESULT return, if any, means. In addition, the programmer would need to determine
+  the numeric value of the window message ID. This could be done using a <link linkend="defPlatformSDK">Windows
+  platform SDK</link>, or perhaps through a Google search.
+</para>
+<para>
+  These generic send messages methods allow Rexx programmers to send any message to any of the underlying windows in
+  their programs. The caveat is that the programmers will have to research the meaning of the messages, their arguments,
+  and their return values themselves.
+</para>
+
+</section>
+
+<section id="ovvEvents"><title>Events</title>
+<para>
+  The ooDialog framework facilitates the use of a type of programming often called <emphasis role="italic">event
+  driven programming</emphasis>. In event driven programming, the program usually does some initial set up and then
+  sits in some type of loop waiting to be signaled that an event just happened.  The Windows graphical windowing
+  system is designed to be programmed this way. The Windows operating system uses <emphasis
+  role="italic">messages</emphasis> to notify each window in the system of events specific to that window. Typically
+  events are generated by the user. For instance, clicking a button, typing a key, moving the mouse, all generate
+  events. The operating system notifies the window with the input focus of those events by sending <link
+  linkend="ovvWindowMessages">messages</link> to the window. Note that some events are generated by the
+  operating system itself. For instance, when the user moves a window that uncovers a portion of a window beneath it,
+  the operating system will send a message to the underlying window notifying it that it needs to redraw the uncovered
+  portion.
+</para>
+<para>
+  Once the basic set up for an ooDialog program is done, the dialog object basically sits there waiting for an
+  <emphasis role="italic">event</emphasis> of interest to happen. When the event happens, the program responds by
+  taking some action. The programmer decides what events are of interest and uses methods provided by the ooDialog
+  framework to <emphasis role="italic">connect</emphasis> a method in the dialog object to the event notification. The
+  majority of the event connection methods are part of the <link linkend="clsEventNotification">EventNotification</link>
+  class. The connected methods are often called <emphasis role="italic">event handlers</emphasis> because the code in
+  the method handles the event.
+</para>
+<para id="ovvEventsDirectReply">
+  Event notification messages in Windows fall into two groups, messages where the reply is ignored and messages where
+  the reply is significant. Prior to the introduction of the <link linkend="sctHistory">C++</link> native APIs, there
+  was <emphasis role="bold">no way</emphasis> in ooDialog to <emphasis role="italic">directly</emphasis> reply to the
+  nofication message. This placed a severe restriction on ooDialog programs. Many of the features of the operating
+  system could not be used with this restriction. For instance, when a user selects a new tab in a <link
+  linkend="clsTab">tab</link> control, the operating system sends a SELCHANGING event notification before the selected
+  tab is changed. The programmer can allow or prevent the change by replying true or false to the notification message.
+</para>
+<para>
+  Without the ability to reply directly to the notification, the ooDialog programmer could not take advantage of the
+  SELCHANGING notification. The introduction of the C++ native APIs in ooRexx 4.0.0 removed this restriction. Beginning
+  in ooDialog 4.2.0, the event handling methods in the Rexx dialog object are directly invoked from the Windows message
+  processing loop. This allows the Rexx dialog object to reply directly to the notification message.
+</para>
+<para>
+  The ability to directly reply to event notifications greatly extends the power of the ooDialog framework. However, it
+  also changes how the ooDialog programmer must write his event handlers. In particular, the event handler must return
+  in a timely manner. This is discussed more <link linkend="sctCodingEventHandlers">fully</link> in the
+  <computeroutput>EventNotification</computeroutput> class documentation.
+</para>
+</section>
+
+<section id="ovvComctl32"><title>Required Common Control Library (Comctl32) Version</title>
+<para>
+  The dialog control windows used in dialogs, List-Views, Edit, Tree-Views, etc., are supplied by Microsoft in the
+  common controls library. This is a DLL with the name comctl32.dll.  Every version of Windows is supplied with a common
+  controls library.  However, Microsoft has updated the library a number of times to provide enhanced functionality and
+  improved features
+</para>
+<para>
+  Each new version of the library is backwards compatible with previous versions, but, it will contain features not
+  available in older versions.  For instance, some of the List-View <link linkend="listControlExtendedStyles">
+  extended styles</link> are only available with a 6.0, or later, version of the common controls library.  ooDialog can
+  only provide the features available in the version of the common controls library on the system ooDialog is running
+  on.
+</para>
+<para>
+  Therefore, an ooDialog program running on a Windows 2000 machine will not have available some of the features that are
+  available when ooDialog is running on a XP service pack two system.  The DlgUtil class provides a method, <link
+  linkend="mthComCtl32Version">comCtl32Version</link> that allows the programmer to determine the exact version of the
+  common controls library that ooDialog is using.  In the documentation for the ooDialog dialog control classes,
+  features that are not available in all versions of the common control library are noted.  The minimum version of the
+  library that is needed is listed.  In general, at this time, all features of ooDialog are available on Windows XP
+  or later.  This may change in the future as Vista has common control features not available on XP.
+</para>
+</section>
+
+<section id="ovvRequiredWindows"><title>Required Windows Version</title>
+<para>
+  The required Windows version is similar to the <link linkend="ovvComctl32">required ComCtl32</link> library version.
+  Later versions of the Windows operating system have dialog and dialog control features not available in earlier
+  versions of the operating system.
+</para>
+<para>
+  For instance, the <link linkend="clsMonthCalendar">MonthCalendar</link> class has a number of methods that are only
+  available on Vista or later. ooDialog can only use the features available on the system on which it is executing. If
+  a method is invoked that is not available on the current operating system, a syntax conditions is raised. Any
+  method not available on all the Windows versions which ooRexx supports, have the minimum required Windows version
+  noted in their documentation.
+</para>
+<para>
+   The <link linkend="clsOS">OS</link> class supplies methods that allow the programmer to determine exactly which
+   operating system version the program is currently executing on. For programs that need to run on all versions of
+   Windows, the programmer must either avoid using methods not available on all versions, or test for the current
+   version and provide an alternative code path dependent on that version.  The <link
+   linkend="mthIsAtLeastVista">isAtLeastVista</link>() method of the <emphasis role="italic">OS</emphasis> class
+   provides an example of this.
+</para>
+</section>
+
+<section id="ovvUndocumented"><title>Undocumented Items</title>
+<para>
+  ooRexx is open source and anyone can peruse the source to see all functions, classes, and methods of the ooDialog
+  framework. Any of these items that are undocumented should not be used by the Rexx programmer. If the programmer does
+  use any undocumented features in the framework, he does so at his own risk. The framework strives to be backwards
+  compatible, but only for documented features. Undocumented features in the framework are intended for internal use
+  only and are subject to change, or even removal from the framework.
+</para>
+<para>
+  In addition, previous versions of the ooDialog documentation, documented some features, but added some form of the
+  caveat: <emphasis role="italic">for internal use</emphasis>. The prudent programmer would not use any feature
+  documented for internal use. These features are also subject to change.
+</para>
+</section>
+
+<section id="ovvInaccurate"><title>factorX / factorY</title>
+<para>
+  The <emphasis role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes of the
+  <link linkend="chpDialogObject">dialog object</link> were intended to provide a way to convert between <link
+  linkend="defPixel">pixels</link> and <link linkend="defDialogUnit">dialog units</link>, and vice versa. Although their
+  values may have been correct when ooDialog was <link linkend="sctHistory">originally designed</link>, in almost all
+  cases the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is no
+  longer correct.
+</para>
+<para>
+  Unfortunately, many of the methods in the ooDialog framework use <emphasis role="italic">factorX</emphasis> and
+  <emphasis role="italic">factorY</emphasis> to convert to between pixels and dialog units. This in turn makes all of
+  those methods inaccurate. These methods are all marked as being inaccurate. There is almost always no reason to
+  convert back to dialog units from pixels. Once the underlying dialog has been created, pixels should be used. Each
+  inaccurate method in the framework has a corresponding method that uses pixels instead of dialog units.
+</para>
+</section>
+
+<section id="ovvDialogTemplate"><title>Dialog Template</title>
+<para>
+  <indexterm><primary>Template, Dialog</primary></indexterm>
+  The <link linkend="ovvUnderlying">underlying</link> dialog seen by the user is created by the operating system from a
+  dialog template in memory. The template describes the size and position of the dialog and all of its controls. The
+  template also contains modifiers that control the style, behavior, and attributes of the dialog and its controls. To
+  make designing dialogs easier, Windows supports the concept of a textual representation of the dialog template. The
+  textual representation can then be translated by software tools to the binary form of the template needed by the
+  operating system.
+</para>
+<para>
+  ooDialog uses three basic constructs that allow the Rexx programmer to supply the dialog template. The programmer can
+  use a binary resource, a resource script, or create the template dynamically in the program code. A binary (compiled)
+  dialog template is stored in a DLL, (usually a .dll file.) The programmer subclasses a <link
+  linkend="clsResDialog">ResDialog</link> to use a binary resource. Resource scripts, (usually a .rc file) supply the
+  dialog template in a text file. The programmer subclasses a <link linkend="clsRcDialog">RcDialog</link> to create a
+  dialog from a resource script. To create a dialog template dynamically in the program code, the programmer subclasses
+  a <link linkend="clsUserDialog">UserDialog</link> and then uses the <link linkend="sctCreateMethods">create</link>
+  methods of that class to create the dialog template. The <emphasis role="italic">UserDialog</emphasis> translates the
+  program statements into the in-memory dialog template required by the operating system. The <emphasis
+  role="italic">RcDialog</emphasis> parses the resource script and converts the resource script statements into an
+  in-memory dialog template by invoking the proper methods of its superclass, the <emphasis
+  role="italic">UserDialog</emphasis>.
+</para> </section>
+
+<section id="ovvResourceWorkshop"><title>IBM Resource Workshop</title>
+<para>
+  The IBM Resource Workshop was a visual resource editor included with IBM Object Rexx. A visual resource editor
+  provides a WYSIWYG (what you see is what you get) environment to design dialogs. It manages the size and positioning
+  of a dialog and its controls. The user can drag and drop controls where they are wanted and use the mouse to size the
+  dialog and controls. The Resource Workshop could not be contributed to the open source community and is therefore
+  not a part of the Open Object Rexx project.
+</para>
+<para><emphasis role="bold">Note</emphasis>, there is <emphasis role="bold">no loss</emphasis> of functionality in
+  ooDialog because of the absence of the Resource Workshop.  The Windows resource format is well understood and there
+  are any number of free or inexpensive resource editors that do a better job of designing dialogs than the Resource
+  Workshop did.  (The Resource Workshop was a 16-bit application with limited capacity for the newer features in the
+  Windows user interface.) ooDialog works fine with dialogs designed by any modern resource editor.
+</para>
+</section>
+
+<section id="ovvSymbolicIDMechanism"><title>Using symbolic IDs in ooDialog:</title>
+<para>
+  ooDialog allows programmers to use <link linkend="defSymbolicId">symbolic</link> resource IDs in their programs. The
+  symbolic ID can be used for any argument in any method that requires a resource ID. Although this is mostly
+  transparent to the programmer, if the programmer is going to use symbolic IDs, he should understand the basics of the
+  mechanism allowing the use of symbolic IDs.
+</para>
+<para>
+  ooDialog uses a <computeroutput>.Directory</computeroutput> object that consists of indexes that are sybmolic names.
+  The value for each index is the numeric value of the sybmolic name. This gave rise to the object name of
+  <computeroutput>constDir</computeroutput>, which probably refers to a directory of constants (symbols.) When an
+  argument in a method is a resource ID, ooDialog first checks to see if the argument is a whole number. If so, it
+  simply uses the number. When the argument is not a number, ooDialog uses the argument to do a look up in the constDir
+  object. If the argument matches an index in the <computeroutput>.Directory</computeroutput> object, the value of the
+  index is used as the numeric value of the resource ID. When the argument does not match an index in the constDir, the
+  method fails.
+</para>
+<para>
+  Originally the constDir was implement as an <link linkend="atrConstDir">attribute</link> of the dialog object.
+</para>
+<para id="paraReservedIDs">
+  Some generic <link linkend="chapResources">resources</link> are bound to the oodialog.dll.  They can be used in any
+  ooDialog program and are accessed using the <link linkend="clsResourceImage">.ResourceImage</link> class. Programmers
+  should always use their symbolic ID rather than their numeric ID in case the numeric value changes in future versions.
+  To allow for future expansion, the ooDialog programmer should consider the resource IDs of 1 through 50 as reserved
+  for ooDialog. Programmers can avoid conflicts by using IDs greater than 50 for resource IDs they assign
+  in their programs.
+</para>
+<para>
+  The symbolic IDs in the following table are pre-defined by ooDialog and placed in the
+  <computeroutput>constDir</computeroutput> when an instance of a dialog class is created. All symbolic names after
+  IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog programmer.
+</para>
+<table id="oodsymbolicids" frame="all">
+<title>Symbolic IDs Used by ooDialog</title>
+<tgroup cols="3">
+<thead>
+<row>
+<entry>Numeric ID or Symbol</entry>
+<entry>Symbolic ID</entry>
+<entry>ResourceType</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>1</entry>
+<entry>IDOK</entry>
+<entry>Button Control</entry>
+</row>
+<row>
+<entry>2</entry>
+<entry>IDCANCEL</entry>
+<entry>Button Control</entry>
+</row>
+<row>
+<entry>9</entry>
+<entry>IDHELP</entry>
+<entry>Button Control</entry>
+</row>
+<row>
+<entry>-1</entry>
+<entry>IDC_STATIC</entry>
+<entry>Static Control</entry>
+</row>
+<row>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON</entry>
+<entry>IDI_DLG_APPICON</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>Icon</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>Icon</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+
+<section id="ovvDeprecated"><title>Deprecated</title>
+<para>
+  PROVIDE TEXT
+</para>
+</section>
+
+</section> <!-- End: Common Concepts -->
+
 
 <section id="sctHistory"><title>History</title>
 <para>
