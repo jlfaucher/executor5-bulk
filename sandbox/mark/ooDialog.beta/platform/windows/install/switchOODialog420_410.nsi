@@ -313,56 +313,56 @@ Section  doSwitch
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise02
     ; Add the files ...
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise02\*.rex"
+    File "${SamplesDir420}\userGuide\exercises\Exercise02\*.rex"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise03
     ; Add the files ...
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise03\*.rex"
+    File "${SamplesDir420}\userGuide\exercises\Exercise03\*.rex"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise04
     ; Add the files ...
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise04\*.h"
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise04\*.rc"
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise04\*.rex"
+    File "${SamplesDir420}\userGuide\exercises\Exercise04\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise04\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise04\*.rex"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise05
     ; Add the files ...
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise05\*.h"
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise05\*.rc"
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise05\*.rex"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\*.rex"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise05\res
     ; Add the files ...
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise05\res\res.mak"
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise05\res\ProductView.dll"
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Exercise05\res\ProductIcon.bmp"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\res\res.mak"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\res\ProductView.dll"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\res\ProductIcon.bmp"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples
     ; Add the files ...
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Samples\ReadMe.txt"
+    File "${SamplesDir420}\userGuide\exercises\Samples\ReadMe.txt"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\DlgData
     ; Add the files ...
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Samples\DlgData\*.h"
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Samples\DlgData\*.rc"
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Samples\DlgData\*rex"
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\*rex"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\DlgData\res
     ; Add the files ...
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Samples\DlgData\res\res.mak"
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Samples\DlgData\res\ASimpleDialog.dll"
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\res\res.mak"
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\res\ASimpleDialog.dll"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Support
     ; Add the files ...
-    File "${SamplesDir420}\oodialog\userGuide\exercises\Support\*.cls"
+    File "${SamplesDir420}\userGuide\exercises\Support\*.cls"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\wav
