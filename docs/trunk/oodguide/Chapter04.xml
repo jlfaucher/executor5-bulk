@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter04 - Using Resource Dialogs			       v00-06 15Aug11
+<!-- Chapter04 - Using Resource Dialogs			       v00-07 17Aug11
      4.1   Naming and Coding Conventions
      4.1.1 Naming Conventions
      4.1.2 Coding Conventions
@@ -53,6 +53,8 @@
      v00-04: Added a couple of index terms
      v00-05: Minor corrections after reading the pdf. Addition of Figure 3.
      v00-06 15Aug11: correceted two <link> tags.
+     v00-07 17Aug11: Updated to reflect use of new .Application~setDefaults
+                     in CustomerView code.
 -->
 <chapter id="chapFour">
   <title>Using Resource Dialogs</title>
@@ -279,7 +281,6 @@
     <![CDATA[
     StartCustomerView Routine-01: Start.
     CustomerView-init-01.
-    CustomerView-initAutoDetection-01.
     CustomerView-createMenuBar-01.
     StartCustomerView Routine-02: dlg~activate.
     CustomerView-activate-01.
@@ -291,25 +292,31 @@
   </programlisting> These comments trace the process of establishing the dialog to the point
           of making the dialog visible and getting the application data to display - in other words,
           setting up the dialog. One routine and seven methods of
-            <computeroutput>CustomerView</computeroutput> are involved, as follows: <orderedlist>
-            <listitem>
-              <para> The routine in <computeroutput>CustomerView.rex</computeroutput> first
-                registers the <computeroutput>CustomerView.h</computeroutput> file in
-                "globalConstDir", which is a directory containing all the numeric and symbolic IDs
-                for the application. <indexterm>
-                  <primary>globalConstDir</primary>
-                </indexterm>
-                <indexterm>
-                  <primary>.Application</primary>
-                </indexterm> This is a new function introduced in ooDialog 4.2 as a method on the
-                (also new) <computeroutput>.Application</computeroutput> class that provides for
-                application-wide concerns. The method is called <emphasis role="italic"
-                  >useGlobalConstDir</emphasis>, and takes the name of a *.h file as its main
-                parameter (see sections 10.1 and 10.5 of the ooDialog Reference for further
-                information on the <computeroutput>Application</computeroutput> class).</para>
-              <para>The routine then creates an instance of the
-                  <computeroutput>CustomerView</computeroutput> class as a subclass of
-                  <computeroutput>RcDialog</computeroutput>.</para>
+            <computeroutput>CustomerView</computeroutput> are involved, as follows:
+  <orderedlist>
+    <listitem><para> First, the routine (at the end of the <computeroutput>CustomerView.rex</computeroutput> file)
+      uses the <computeroutput>Application</computeroutput> class (see sections 10.1 and 10.5 of the ooDialog Reference)
+      to set application defaults in the statement <emphasis role="italic">.Application~setDefaults(...)</emphasis>.
+      <indexterm><primary>.Application</primary><secondary>setDefaults</secondary></indexterm>
+      <indexterm><primary>setDefaults</primary></indexterm>
+      The first parameter - "O" for "only" - specifies that only the *.h file provided as the second paramter is to be
+      used for symbolic IDs. The ID's in this file are added to the application's global constants directory
+      (aka "globalConstDir").
+      <indexterm><primary>globalConstDir</primary></indexterm>
+      The third (optional) parameter turns autoDetection off. Try commenting out this
+      third parameter to see the result of leaving autodetection switched on (which is the default).
+      Also, see <link linkend="apx-dlgdata" endterm="dlgdata.title"></link> for a discussion of what autodetection
+      is and where it may be useful.
+      </para>
+      <para>The routine then creates an instance of the
+      <computeroutput>CustomerView</computeroutput> class as a subclass of <computeroutput>RcDialog</computeroutput>.
+      </para>
+    </listitem>
+    <listitem>
+              <para> After the <emphasis role="italic">init</emphasis> method completes, the
+                superclass invokes the <emphasis role="italic">initAutoDetection</emphasis> method.
+                This allows the programmer to set off auto detection when the default of "on" is not
+                required, which is what is done here.  </para>
             </listitem>
             <listitem>
               <para>In the <emphasis role="italic">init</emphasis> method of the new view instance,
@@ -325,15 +332,6 @@
                   role="italic">initCode</emphasis> will be zero if the dialog initialization
                 detected no errors, but will be non-zero if initialization failed or an error was
                 detected. </para>
-            </listitem>
-            <listitem>
-              <para> After the <emphasis role="italic">init</emphasis> method completes, the
-                superclass invokes the <emphasis role="italic">initAutoDetection</emphasis> method.
-                This allows the programmer to set off auto detection when the default of "on" is not
-                required, which is what is done here. Try commenting out the statement <emphasis
-                  role="italic">self~noAutoDetection</emphasis> to see the result of allowing the
-                default to apply. See <link linkend="apx-dlgdata" endterm="dlgdata.title"></link> for a
-                discussion of what autodetection is and where it may be useful. </para>
             </listitem>
             <listitem>
               <para>The <emphasis role="italic">createMenuBar</emphasis> method creates a menubar
@@ -373,7 +371,7 @@
           instructions as follows: <programlisting>
     <![CDATA[
     ::ROUTINE startCustomerView PUBLIC
-      .application~useGlobalConstDir("O", "CustomerView.h")
+      .application~setDefaults("O", "CustomerView.h", .false)
       dlg = .CustomerView~new("customerView.rc", IDD_CUST_DIALOG)
     ::CLASS CustomerView SUBCLASS RcDialog PUBLIC
       ::METHOD init
@@ -690,3 +688,4 @@
 </section> <!-- end of section 4.3 -->
 
 </chapter>
+

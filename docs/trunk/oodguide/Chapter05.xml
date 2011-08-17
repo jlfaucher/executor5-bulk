@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-04 15Aug11
+<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-05 17Aug11
      5.1 - Dialog Initiation - using the newInstance class method.
      5.2 - Compiling a binary resource file
      5.3 - Differences between RcDialog and ResDialog
@@ -50,6 +50,7 @@
      v00-02 08Aug11: Completed the chapter.
      v00-03 13Aug11: Minor mods after pdf printed.
      v00-04 15Aug11: Corrected error - modal because of ~execute, not 'showtop'.
+     v00-05 17Aug11: Updated to reflect change to using .application~setdefaults.
 -->
 
 <chapter id="chapFive">
@@ -92,7 +93,7 @@
         instructions removed, is as follows: <programlisting>
 <![CDATA[
   ::METHOD newInstance CLASS PUBLIC UNGUARDED
-    .application~useGlobalConstDir("O", "ProductView.h")
+    .Application~setDefaults("O", "ProductView.h", .false)
     dlg = .ProductView~new("res\ProductView.dll", IDD_PRODUCT_VIEW)
     dlg~activate
 ]]>
@@ -501,7 +502,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
   Note that the resources for both dialogs are defined in the
       same ResEdit project, and hence in the same *.rc file. Hence both are compiled into the
       <computeroutput>ProductView.dll</computeroutput> file. This means that the single statement
-      <computeroutput>.application~useGlobalConstDir("O", "ProductView.h")</computeroutput> in
+      <computeroutput>.Application~setDefaults("O","ProductView.h",.false)</computeroutput> in
       the <emphasis role="italic">newInstance</emphasis> method of the
       <computeroutput>ProductView</computeroutput> class applies to the
       <computeroutput>About</computeroutput> dialog as well.
@@ -573,3 +574,4 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
 </section>   <!-- end of section 5.4 -->
 
 </chapter>
+
