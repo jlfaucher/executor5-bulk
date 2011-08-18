@@ -207,13 +207,13 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   The dialog icon for a specific dialog can be set when the dialog is run using one of the execute methods.  See the
   <link linkend="mthExecute">execute</link> or <link linkend="mthPopup">popup</link> methods for example.  ooDialog provides
-  four pre-defined icons for use in dialogs.  Custom icons can be used by including the icon in a binary (compiled)
+  four icon images for use in dialogs.  Other, custom, icons can be used by including the icon in a binary (compiled)
   resource, a resource script, or by using the <link linkend="mthAddIconResource">addIconResource</link> method of the
-  UserDialog.  The following table shows the symbolic IDs of the pre-defined icons.  The symbolic ID should always be
-  used in case the numeric value is changed in the future. In addition, the programmer should avoid using numeric IDs
-  <link linkend="paraReservedIDs">reserved</link> by ooDialog. The  IDI_DLG_DEFAULT is a fifth symbolic
-  ID that represents the default dialog icon. This ID can always be used where a dialog icon ID is
-  needed.
+  UserDialog.  The following table shows the pre-defined symbolic IDs of the icon images provided by ooDialog. The
+  symbolic ID should always be used in case the numeric value is changed in the future. In addition, the programmer
+  should avoid using any of the pre-defifned symbolic IDs <link linkend="ovvPreDefinedSymbolicIDs">reserved</link> by ooDialog. The
+  IDI_DLG_DEFAULT is a fifth symbolic ID that represents the default dialog icon. This ID can always be used where a
+  dialog icon ID is needed.
 </para>
 <table frame="all">
 <title>ooDialog Supplied Icons</title>
@@ -669,7 +669,7 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 <para>
   Unfortunately, many of the methods in the ooDialog framework use <emphasis role="italic">factorX</emphasis> and
-  <emphasis role="italic">factorY</emphasis> to convert to between pixels and dialog units. This in turn makes all of
+  <emphasis role="italic">factorY</emphasis> to convert between pixels and dialog units. This in turn makes all of
   those methods inaccurate. These methods are all marked as being inaccurate. There is almost always no reason to
   convert back to dialog units from pixels. Once the underlying dialog has been created, pixels should be used. Each
   inaccurate method in the framework has a corresponding method that uses pixels instead of dialog units.
@@ -701,6 +701,290 @@ xPixels = xDialogUnits * self~FactorX
   role="italic">UserDialog</emphasis>.
 </para> </section>
 
+<section id="ovvSymbolicIDMechanism"><title>Using Symbolic IDs in ooDialog:</title>
+<para>
+  ooDialog allows programmers to use <link linkend="defSymbolicId">symbolic</link> resource IDs in their programs. The
+  symbolic ID can be used for any argument in any method that requires a resource ID. Although this is mostly
+  transparent to the programmer, if the programmer is going to use symbolic IDs, he should understand the basics of the
+  mechanism allowing the use of symbolic IDs.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Resolving Symbolic IDs:</emphasis></term>
+  <listitem>
+  <para>
+    ooDialog uses a <computeroutput>.Directory</computeroutput> object that consists of indexes that are sybmolic names.
+    The value for each index is the numeric value of the sybmolic name. This gave rise to the object name of
+    <computeroutput>constDir</computeroutput>, which probably refers to a directory of constants (symbols.) When an
+    argument in a method is a resource ID, ooDialog first checks to see if the argument is a whole number. If so, it
+    simply uses the number. When the argument is not a number, ooDialog uses the argument to do a look up in the constDir
+    object. If the argument matches an index in the <computeroutput>.Directory</computeroutput> object, the value of the
+    index is used as the numeric value of the resource ID. When the argument does not match an index in the constDir, the
+    method fails.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">constDir Attribute:</emphasis></term>
+  <listitem>
+  <para>
+    Originally the constDir was implemented as an <link linkend="atrConstDir">attribute</link> of the dialog object. Each
+    dialog object then has its own constDir, which was used to resolve symbolic IDs where needed in the methods of the
+    dialog. Each dialog control has a reference to its owner dialog, allowing the dialog object's constDir to be used to
+    resolve symbolic IDs for the methods of the control. This mechanism exists unchanged in the current ooDialog
+    framework.
+  </para>
+  <para>
+    However, as enhancements to ooDialog started to be made in version 4.0.0 and later, it became apparent that the
+    constDir attribute was not adequate. Classes such as the <link linkend="clsMenu">Menu</link> classes and <link
+    linkend="clsResourceImage">ResourceImage</link> class also used resource IDs, but objects of these classes are
+    independent of any dialog object. Without access to a dialog object, there was no way in those classes to use symbolic
+    IDs. To fix this problem, ooDialog 4.2.0 added the global <computeroutput>.constDir</computeroutput> to the
+    mechanism for using symbolic IDs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Global .constDir object:</emphasis></term>
+  <listitem>
+  <para>
+    The global <link linkend="dotConstDir">.constDir</link> works in the same way as the dialog object's constDir attribute.
+    When a symbolic ID needs to be resolved, it can be looked up in the global <computeroutput>.constDir</computeroutput>.
+    The integration of the global <computeroutput>.constDir</computeroutput> into the ooDialog framework's mechanism for
+    resolving symbolic IDs is done by allowing the programmer to specify how, or even if, the
+    <computeroutput>.constDir</computeroutput> should be used. The four choices are to use <emphasis
+    role="italic">only</emphasis> the <computeroutput>.constDir</computeroutput>, use the
+    <computeroutput>.constDir</computeroutput> <emphasis role="italic">first</emphasis> and the constDir attribute second,
+    use the constDir attribute first and the <computeroutput>.consDir</computeroutput> <emphasis
+    role="italic">last</emphasis>, or <emphasis role="italic">never</emphasis> use the
+    <computeroutput>.constDir</computeroutput> (i.e., use on the cosntDir attribute). The programmer specifies which of
+    these strategies is to be used through the <link linkend="mthUseGlobalConstDir">useGlobalConstDir</link> method of the
+    <link linkend="dotApplication">.application</link> object. (The <computeroutput>.application</computeroutput> object
+    is an instance of the <link linkend="clsApplicationManager">ApplicationManager</link> class.)
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Usage Strategies:</emphasis></term>
+  <listitem>
+  <para>
+    The four strategies work this way.
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">Only:</emphasis></term>
+      <listitem>
+      <para>
+        With this strategy, sybmolic IDs are only placed in the <computeroutput>.constDir</computeroutput> and only looked
+        up through that object. When a new dialog object is instantiated, rather than assign a newly instantiated
+        <computeroutput>.Directory</computeroutput> object to its constDir attribute, the global
+        <computeroutput>.constDir</computeroutput> is assigned to the attribute. This is by far the most efficient way to
+        use sybmolic IDs in an ooDialog program.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">First:</emphasis></term>
+      <listitem>
+      <para>
+        When the ooDialog framework needs to resolve a symbolic ID, it will first try to resolve it using the
+        <computeroutput>.constDir</computeroutput>. If that fails, it will then try to resolve it using the constDir
+        attribute. It fails, the method will fail.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Last:</emphasis></term>
+      <listitem>
+      <para>
+        This is the reverse of the use <emphasis role="italic">first</emphasis> strategy. The ooDialog framework first
+        tries to resolve a symbolic ID in the constDir attribute. If that fails, the
+        <computeroutput>.constDir</computeroutput> is tried.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">Never:</emphasis></term>
+      <listitem>
+      <para>
+        The <computeroutput>.constDir</computeroutput> is never used in the program. To preserve backwards compatibility,
+        this is the default.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Adding Symbols:</emphasis></term>
+  <listitem>
+  <para>
+     to this directory by
+    using <link linkend="defPoundDefine">#define</link> statements in a resource script or a <link
+    linkend="defHeaderFile">header file</link>.  Of course, symbolic IDs can also be added directly in the program as
+    the following code snippet shows:
+  </para>
+
+<programlisting>
+<![CDATA[
+
+::method init
+  forward class (super) continue
+
+  self~constDir["ID_GB"] = 101
+  self~constDir["ID_CB_REGINA"] = 107
+  self~constDir["ID_CB_REGINALD"] = 111
+  self~constDir["ID_CB_OOREXX"] = 115
+
+...
+
+::method defineDialog
+
+  self~createGroupBox(ID_GB, 10, 20, 150, 90, "BORDER", "Pick an interpreter")
+  self~createCheckBox(ID_CB_REGINA, "cb1", 30, 40, , , "GROUP", "Regina")
+  self~createCheckBox(ID_CB_REGINALD, "cb2", 30, 60, , , , "Reginald")
+  self~createCheckBox(ID_CB_OOREXX, "cb3", 30, 80, , , , "ooRexx")
+
+...
+
+::method ok
+
+  oorexxCB = self~newCheckBox(ID_CB_OOREXX)
+  if oorexxCB~checked then
+    say "You picked the right interpreter."
+
+]]>
+</programlisting>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Classes Requiring the Global .constDir for Symbolic IDs:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Global .constDir Pros:</emphasis></term>
+  <listitem>
+  <para>
+     Using the global
+    <computeroutput>.constDir</computeroutput> is far more efficient
+    Note that only the methods of the dialog object and the dialog control
+        objects have access to a constDir attribute. This implies that if the programmer wants to use symbolic IDs
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Global .constDir Cons:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="ovvPreDefinedSymbolicIDs"><title>Predefined Symbolic IDs</title>
+<para>
+  The symbolic IDs in the following table are pre-defined by ooDialog and always available to the programmer. They are
+  placed in the either the <link linkend="atrConstDir">constDir</link> attribute when an instance of a dialog class is
+  created, or in the global <link linkend="dotConstDir">.constDir</link>. Where they are placed is dependent on the
+  <link linkend="mthUseGlobalConstDir">usage</link> of the <computeroutput>.constDir</computeroutput>. All symbolic
+  names after IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog
+  programmer.
+</para>
+<para>
+  To allow for future expansion, the ooDialog programmer should consider the resource IDs of 1 through 50 as reserved
+  for ooDialog. Programmers can avoid conflicts by using IDs greater than 50 for resource IDs they assign in their
+  programs.
+</para>
+<table id="oodsymbolicids" frame="all">
+<title>Symbolic IDs Predefined by ooDialog</title>
+<tgroup cols="3">
+<thead>
+<row>
+<entry>Symbolic ID</entry>
+<entry>Numeric ID or Symbol</entry>
+<entry>ResourceType</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>IDOK</entry>
+<entry>1</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDCANCEL</entry>
+<entry>2</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDABORT</entry>
+<entry>3</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDRETRY</entry>
+<entry>4</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDIGNORE</entry>
+<entry>5</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDYES</entry>
+<entry>6</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDNO</entry>
+<entry>7</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDCLOSE</entry>
+<entry>8</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDHELP</entry>
+<entry>9</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDTRYAGAIN</entry>
+<entry>10</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDCONTINUE</entry>
+<entry>11</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDC_STATIC</entry>
+<entry>-1</entry>
+<entry>ID for static controls</entry>
+</row>
+<row>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON</entry>
+<entry>IDI_DLG_APPICON</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>Icon image</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para id="paraGenericResources">
+  The symbolic IDs in the table following IDC_STATIC are the IDs of some generic <link
+  linkend="chapResources">resources</link> that are bound to the oodialog.dll file.  They can be used in any ooDialog
+  program and are accessed using the <link linkend="clsResourceImage">.ResourceImage</link> class. Programmers should
+  always use their symbolic ID rather than their numeric ID in case the numeric value changes in future versions of
+  ooDialog.
+</para>
+</section>
+
 <section id="ovvResourceWorkshop"><title>IBM Resource Workshop</title>
 <para>
   The IBM Resource Workshop was a visual resource editor included with IBM Object Rexx. A visual resource editor
@@ -715,100 +999,6 @@ xPixels = xDialogUnits * self~FactorX
   Workshop did.  (The Resource Workshop was a 16-bit application with limited capacity for the newer features in the
   Windows user interface.) ooDialog works fine with dialogs designed by any modern resource editor.
 </para>
-</section>
-
-<section id="ovvSymbolicIDMechanism"><title>Using symbolic IDs in ooDialog:</title>
-<para>
-  ooDialog allows programmers to use <link linkend="defSymbolicId">symbolic</link> resource IDs in their programs. The
-  symbolic ID can be used for any argument in any method that requires a resource ID. Although this is mostly
-  transparent to the programmer, if the programmer is going to use symbolic IDs, he should understand the basics of the
-  mechanism allowing the use of symbolic IDs.
-</para>
-<para>
-  ooDialog uses a <computeroutput>.Directory</computeroutput> object that consists of indexes that are sybmolic names.
-  The value for each index is the numeric value of the sybmolic name. This gave rise to the object name of
-  <computeroutput>constDir</computeroutput>, which probably refers to a directory of constants (symbols.) When an
-  argument in a method is a resource ID, ooDialog first checks to see if the argument is a whole number. If so, it
-  simply uses the number. When the argument is not a number, ooDialog uses the argument to do a look up in the constDir
-  object. If the argument matches an index in the <computeroutput>.Directory</computeroutput> object, the value of the
-  index is used as the numeric value of the resource ID. When the argument does not match an index in the constDir, the
-  method fails.
-</para>
-<para>
-  Originally the constDir was implement as an <link linkend="atrConstDir">attribute</link> of the dialog object.
-</para>
-<para id="paraReservedIDs">
-  Some generic <link linkend="chapResources">resources</link> are bound to the oodialog.dll.  They can be used in any
-  ooDialog program and are accessed using the <link linkend="clsResourceImage">.ResourceImage</link> class. Programmers
-  should always use their symbolic ID rather than their numeric ID in case the numeric value changes in future versions.
-  To allow for future expansion, the ooDialog programmer should consider the resource IDs of 1 through 50 as reserved
-  for ooDialog. Programmers can avoid conflicts by using IDs greater than 50 for resource IDs they assign
-  in their programs.
-</para>
-<para>
-  The symbolic IDs in the following table are pre-defined by ooDialog and placed in the
-  <computeroutput>constDir</computeroutput> when an instance of a dialog class is created. All symbolic names after
-  IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog programmer.
-</para>
-<table id="oodsymbolicids" frame="all">
-<title>Symbolic IDs Used by ooDialog</title>
-<tgroup cols="3">
-<thead>
-<row>
-<entry>Numeric ID or Symbol</entry>
-<entry>Symbolic ID</entry>
-<entry>ResourceType</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry>1</entry>
-<entry>IDOK</entry>
-<entry>Button Control</entry>
-</row>
-<row>
-<entry>2</entry>
-<entry>IDCANCEL</entry>
-<entry>Button Control</entry>
-</row>
-<row>
-<entry>9</entry>
-<entry>IDHELP</entry>
-<entry>Button Control</entry>
-</row>
-<row>
-<entry>-1</entry>
-<entry>IDC_STATIC</entry>
-<entry>Static Control</entry>
-</row>
-<row>
-<entry>IDI_DLG_OODIALOG</entry>
-<entry>IDI_DLG_OODIALOG</entry>
-<entry>Icon</entry>
-</row>
-<row>
-<entry>IDI_DLG_APPICON</entry>
-<entry>IDI_DLG_APPICON</entry>
-<entry>Icon</entry>
-</row>
-<row>
-<entry>IDI_DLG_APPICON2</entry>
-<entry>IDI_DLG_APPICON2</entry>
-<entry>Icon</entry>
-</row>
-<row>
-<entry>IDI_DLG_OOREXX</entry>
-<entry>IDI_DLG_OOREXX</entry>
-<entry>Icon</entry>
-</row>
-<row>
-<entry>IDI_DLG_DEFAULT</entry>
-<entry>IDI_DLG_DEFAULT</entry>
-<entry>Icon</entry>
-</row>
-</tbody>
-</tgroup>
-</table>
 </section>
 
 <section id="ovvDeprecated"><title>Deprecated</title>

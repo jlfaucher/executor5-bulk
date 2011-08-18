@@ -1781,72 +1781,54 @@
 </programlisting>
 
 <para>
-  A directory object whose indexes are <link linkend="defSymbolicId">symbolic resource ID</link>s. The entry for each
-  index is the numeric value of the <link linkend="defResourceId">resource ID</link>.  Once a symbolic ID is added to
-  the <emphasis role="italic">constDir</emphasis> directory, the symbolic ID can be used in place of the numeric value
-  in any method of the ooDialog classes that requires a resource ID.
+  The <emphasis role="italic">constDir</emphasis> attribute is assigned a <computeroutput>Directory</computeroutput>
+  object whose indexes are <link linkend="defSymbolicId">symbolic</link> resource IDs. It is part of the <link
+  linkend="ovvSymbolicIDMechanism">mechanism</link> provided by the ooDialog framework to allow the use of symbolic IDs
+  in ooDialog progams. Although the use of the <emphasis role="italic">constDir</emphasis> is mostly transparent to the
+  programmer, it is important to understand how the mechanism works when using symbolic IDS in ooDialog programs
 </para>
 <para>
-  The use of the <emphasis role="italic">constDir</emphasis> is mostly transparent to the programmer and handled
-  automatically by the ooDialog framework. See the remarks section for how entries are added to the <emphasis
-  role="italic">constDir</emphasis>. Internally, the framework uses the <emphasis role="italic">constDir</emphasis> to
-  resolve a symbolic ID used in an method invocation to its numeric value.  This is completely transparent to the
-  programmer.
+  The entry for each index in the <computeroutput>Directory</computeroutput> object is the numeric value of the <link
+  linkend="defResourceId">resource ID</link>.  Once a symbolic ID is added to the <emphasis
+  role="italic">constDir</emphasis> directory, the symbolic ID can be used in place of the numeric value in any method
+  of the dialog or dialog control classes that requires a resource ID.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">constDir get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Getting the <computeroutput>constDir</computeroutput> is public. In practical use, it is more common to get the
+    value of an index of the <emphasis role="italic">constDir</emphasis>:
+
+<programlisting>
+<![CDATA[
+  id = self~constDir[IDC_RB_MINIMUM]
+]]>
+</programlisting>
+
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">constDir set:</emphasis></term>
   <listitem>
   <para>
-    Setting the <emphasis role="italic">constDir</emphasis> attribute is private and in general should not be done by
-    the programmer. The ooDialog framework automatically sets the attribute to a
-    <computeroutput>Directory</computeroutput> object when a new dialog or menu object is created.
-  </para> </listitem></varlistentry>
+    Setting the <emphasis role="italic">constDir</emphasis> attribute is private and should not be done by the
+    programmer. The ooDialog framework automatically sets the attribute to a <computeroutput>Directory</computeroutput>
+    object when a new dialog or menu object is created.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    A few symbolic IDs are pre-defined by ooDialog and are present in the <computeroutput>constDir</computeroutput>
-    directory of all dialogs.  See the table, <link linkend="oodsymbolicids">Symbolic IDs Used by ooDialog</link>, for a
-    list of these IDs.  The programmer can add symbolic IDs to this directory by using <link
-    linkend="defPoundDefine">#define</link> statements in a resource script or a <link linkend="defHeaderFile">header
-    file</link>.  Of course, symbolic IDs can also be added directly in the program as the following code snippet shows:
+    How to add symbolic IDs is explained in the overview chapter, in the discussion of the <link
+    linkend="ovvSymbolicIDMechanism">mechanism</link> used by ooDialog to support symbolic IDs. In addition, ooDialog
+    4.2.0 was enhanced by adding the global <link linkend="dotConstDir">.constDir</link> to overcome limitions in the
+    <emphasis role="italic">constDir</emphasis> attribute. The global <computeroutput>.constDir</computeroutput> is more
+    efficient and more capable than the <emphasis role="italic">constDir</emphasis> attribute. The programmer should be
+    sure to review the discussion in the overview to be certain his usage of symbolic IDs  programs should be understood
+    by the programmer when using symbolic IDs.  in detail in the overview section.
   </para>
-
-<programlisting>
-<![CDATA[
-
-::method init
-  forward class (super) continue
-
-  self~constDir["ID_GB"] = 101
-  self~constDir["ID_CB_REGINA"] = 107
-  self~constDir["ID_CB_REGINALD"] = 111
-  self~constDir["ID_CB_OOREXX"] = 115
-
-...
-
-::method defineDialog
-
-  self~createGroupBox(ID_GB, 10, 20, 150, 90, "BORDER", "Pick an interpreter")
-  self~createCheckBox(ID_CB_REGINA, "cb1", 30, 40, , , "GROUP", "Regina")
-  self~createCheckBox(ID_CB_REGINALD, "cb2", 30, 60, , , , "Reginald")
-  self~createCheckBox(ID_CB_OOREXX, "cb3", 30, 80, , , , "ooRexx")
-
-...
-
-::method ok
-
-  oorexxCB = self~newCheckBox(ID_CB_OOREXX)
-  if oorexxCB~checked then
-    say "You picked the right interpreter."
-
-]]>
-</programlisting>
+  <para>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>

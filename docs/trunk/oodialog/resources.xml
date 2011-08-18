@@ -1505,8 +1505,8 @@ A fancy purple: 16734709 (0x00FF59F5)
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--create(--+--------+-+---------+-+--------+-+-------+-----------><
-             +--size--+ +-,-flags-+ +-,count-+ +-,grow-+
+>>--create(--+--------+-+---------+-+---------+-+--------+--)------------------><
+             +--size--+ +-,-flags-+ +-,-count-+ +-,-grow-+
 ]]>
 </programlisting>
 
@@ -1518,11 +1518,11 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>The arguments are:
     <variablelist>
-      <varlistentry><term>size</term>
+      <varlistentry><term>size [optional]</term>
       <listitem>
         <para>
           A <link linkend="clsSize">.Size</link> object that specifies the size of a single image in the
-          image list.  All images in an image list. have the same size.
+          image list.  All images in an image list have the same size. The size is specified in pixels.
         </para>
         <para>
           If this argument is omitted the system default size for an icon is used.  This size can vary
@@ -1530,14 +1530,16 @@ A fancy purple: 16734709 (0x00FF59F5)
           icons or not.  A typical size is 32 x 32 (in pixels.)
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>flags</term>
+      <varlistentry><term>flags [optional]</term>
       <listitem>
         <para>
           The flags that specify the type of image list to create. The flags are one or more of the following
-          symbols, but can include only one ILC_COLOR value. You can use <link
+          symbols, but can include only one ILC_COLOR* value. You can use <link
           linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for any of the
           following symbols.  The <link linkend="mthOrClsDlgUtil">or</link> method of the <link
           linkend="clsDlgUtil">.DlgUtil</link> class can be used to combine the symbols.
+        </para>
+        <para>
           <simplelist type='horiz' columns='2'>
           <member>ILC_MASK</member>     <member>ILC_COLOR24</member>
           <member>ILC_COLOR</member>    <member>ILC_COLOR32</member>
@@ -1546,6 +1548,95 @@ A fancy purple: 16734709 (0x00FF59F5)
           <member>ILC_COLOR8</member>   <member>ILC_PERITEMMIRROR</member>
           <member>ILC_COLOR16</member>
           </simplelist>
+          <variablelist>
+            <varlistentry><term>ILC_MASK</term>
+            <listitem>
+            <para>
+              The image list contains two bitmaps, one of which is used as a mask. The mask is a monochrome bitmap. If
+              this value is omitted, the image list contains only one bitmap.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR</term>
+            <listitem>
+            <para>
+              Indicates to use the default image list type when none of the other ILC_COLOR* flags are used. Usually the
+              default is ILC_COLOR4. However, with older display drivers the default may be ILC_COLORDDB.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLORDDB</term>
+            <listitem>
+            <para>
+              The image list uses a device-dependent bitmap.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR4</term>
+            <listitem>
+            <para>
+              The image list uses a 4-bit, 16-color, device-independent bitmap, DIB, section for the bitmap
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR8</term>
+            <listitem>
+            <para>
+              The image list uses an 8-bit DIB section. The color table use the same colors as the halftone palette.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR16</term>
+            <listitem>
+            <para>
+              Use a 16-bit (32/64k-color) DIB section.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR24</term>
+            <listitem>
+            <para>
+              Use a 24-bit DIB section.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_COLOR32</term>
+            <listitem>
+            <para>
+              Use a 32-bit DIB section.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_PALETTE</term>
+            <listitem>
+            <para>
+              Microsoft has this flag but it is not implemented. ooDialog accepts the flag in case it is implemented in
+              future versions of Windows.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_MIRROR</term>
+            <listitem>
+            <para>
+              Languages such as Hebrew or Arabic that read right-to-left can be mirrored by Windows. When an image list
+              is created on a mirrored version of Windows, the images are mirrored. I.e.,, they are flipped to display
+              from right to left. This flag on mirrored versions of Windows instructs to OS to not automatically mirror
+              the images.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ILC_PERITEMMIRROR</term>
+            <listitem>
+            <para>
+              This flag is ignored unless ILC_MIRROR is also used. It should be used when the image list contains a
+              strip of images.
+            </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>count [optional]</term>
+      <listitem>
+        <para>
+          The initial size for the image list. The size is the number of images the image list contains. When this
+          argument is omitted the default is 6.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>grow [optional]</term>
+      <listitem>
+        <para>
+          The amount by which the image list can grow if the operating system needs to resize the image list to make
+          room for more images. The default value when omitted is 0.
         </para>
       </listitem></varlistentry>
     </variablelist>
