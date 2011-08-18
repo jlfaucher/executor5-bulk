@@ -12,7 +12,7 @@
   dlg = .SimpleDialog~new("ApplicationIcon.rc", IDD_DIALOG1, , "appIcon.h")
   dlg~addIcon(IDI_CUSTOM_ICON, "Question32.ico")
 
-  dlg~Execute("SHOWTOP", IDI_CUSTOM_ICON)
+  dlg~execute("SHOWTOP", IDI_CUSTOM_ICON)
 
 ::requires "OODWin32.cls"
 

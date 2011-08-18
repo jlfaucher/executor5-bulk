@@ -61,6 +61,17 @@
     relatively easy to spot.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
+
+  -- The .application object is an instance of the ApplicationManager class.  It
+  -- is used to manage global settings for an application.
+  --
+  -- Symbolic IDs are used for the resource IDs throughout this example.  The
+  -- IDs are defined in billingDlg.h.  Here we set the application to use only
+  -- the global .constDir for symbolic IDs (the 'O' argument.)  Then we load the
+  -- symbols into the .consDir from billingDlg.h.
+  .application~setDefaults('O', "billingDlg.h")
+
+
   -- In a real program, the setBillingAddres() routine would probably be called
   -- directly and the account name passed in as the argument.  Here we fake this
   -- by using a simple dialog to query the account name from the user.
@@ -69,11 +80,10 @@
   -- happened.
   --
   -- The dialog is created from the template in the resource script,
-  -- billingDlg.rc.  Symbolic IDs are used for the resource IDs throughout this
-  -- example.  The IDs are defined in billingDlg.h. The symbolic ID,
+  -- billingDlg.rc. The symbolic ID,
   -- IDD_ACCOUNTNAME is the ID of the dialog in the resource script.
 
-  dlg = .AccountNameDialog~new("billingDlg.rc", IDD_ACCOUNTNAME, , "billingDlg.h")
+  dlg = .AccountNameDialog~new("billingDlg.rc", IDD_ACCOUNTNAME)
   if dlg~initCode <> 0 then do
     msg = "Error starting account name dialog.  initCode:" dlg~initCode
     r = MessageDialog(msg, , "Dialog Initialization Error", "OK", "WARNING")
@@ -176,7 +186,7 @@
   -- example.  The IDs are defined in billingDlg.h. The symbolic ID,
   -- IDD_COMBOBOX is the ID of the dialog in the resource script.
 
-  dlg = .BillingDialog~new("billingDlg.rc", IDD_COMBOBOX, , "billingDlg.h")
+  dlg = .BillingDialog~new("billingDlg.rc", IDD_COMBOBOX)
   if dlg~initCode <> 0 then do
     msg = "Error starting billing address dialog.  initCode:" dlg~initCode
     r = MessageDialog(msg, , "Dialog Initialization Error", "OK", "WARNING")
