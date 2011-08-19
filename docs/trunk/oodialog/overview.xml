@@ -717,11 +717,9 @@ xPixels = xDialogUnits * self~FactorX
     <computeroutput>constDir</computeroutput>, which probably refers to a directory of constants (symbols.) When an
     argument in a method is a resource ID, ooDialog first checks to see if the argument is a whole number. If so, it
     simply uses the number. When the argument is not a number, ooDialog uses the argument to do a look up in the constDir
-    object. If the argument matches an index in the <computeroutput>.Directory</computeroutput> object, the value of the
-    index is used as the numeric value of the resource ID. When the argument does not match an index in the constDir, the
-    method fails.
-  </para>
-  </listitem></varlistentry>
+    object. If the argument matches an index in the object, the value of the index is used as the numeric value of the
+    resource ID. When the argument does not match an index in the constDir, the method fails.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">constDir Attribute:</emphasis></term>
   <listitem>
   <para>
@@ -745,20 +743,17 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     The global <link linkend="dotConstDir">.constDir</link> works in the same way as the dialog object's constDir attribute.
     When a symbolic ID needs to be resolved, it can be looked up in the global <computeroutput>.constDir</computeroutput>.
-    The integration of the global <computeroutput>.constDir</computeroutput> into the ooDialog framework's mechanism for
-    resolving symbolic IDs is done by allowing the programmer to specify how, or even if, the
-    <computeroutput>.constDir</computeroutput> should be used. The four choices are to use <emphasis
-    role="italic">only</emphasis> the <computeroutput>.constDir</computeroutput>, use the
-    <computeroutput>.constDir</computeroutput> <emphasis role="italic">first</emphasis> and the constDir attribute second,
-    use the constDir attribute first and the <computeroutput>.consDir</computeroutput> <emphasis
-    role="italic">last</emphasis>, or <emphasis role="italic">never</emphasis> use the
-    <computeroutput>.constDir</computeroutput> (i.e., use on the cosntDir attribute). The programmer specifies which of
-    these strategies is to be used through the <link linkend="mthUseGlobalConstDir">useGlobalConstDir</link> method of the
-    <link linkend="dotApplication">.application</link> object. (The <computeroutput>.application</computeroutput> object
-    is an instance of the <link linkend="clsApplicationManager">ApplicationManager</link> class.)
+    The integration of the global <computeroutput>.constDir</computeroutput> into the mechanism for resolving symbolic
+    IDs is done by allowing the programmer to specify how, or even if, the <computeroutput>.constDir</computeroutput>
+    should be used. The four choices are <emphasis role="italic">only</emphasis>, <emphasis
+    role="italic">first</emphasis>, <emphasis role="italic">last</emphasis>, or <emphasis
+    role="italic">never</emphasis>. The programmer specifies which of these strategies is to be used through one of the
+    methods of the <link linkend="dotApplication">.application</link> object. (The
+    <computeroutput>.application</computeroutput> object is an instance of the <link
+    linkend="clsApplicationManager">ApplicationManager</link> class.)
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Usage Strategies:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Global .constDir Usage Strategies:</emphasis></term>
   <listitem>
   <para>
     The four strategies work this way.

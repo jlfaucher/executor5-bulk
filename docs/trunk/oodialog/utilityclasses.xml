@@ -136,12 +136,30 @@
 </para>
 <para>
   The <computeroutput>.application</computeroutput> object is used by the programmer to manage application wide settings
-  and constants. Its use is primarily to change global default values of ooDialog. For instance, by default, a part of
-  <link linkend="paraAutomaticDataDetection">automatic</link> data detection, part of <link
-  linkend="sctUnderstandingDataAttributes">data </link> attributes, is on. The
-  <computeroutput>.application</computeroutput> object can be used to change the default for all dialogs in a
-  application to off.
+  and constants. Its use is primarily to change global default values of ooDialog. For instance, by default, <link
+  linkend="paraAutomaticDataDetection">automatic</link> data detection is on. (Automatic data detection is part of <link
+  linkend="sctUnderstandingDataAttributes">data </link> attributes.) The <computeroutput>.application</computeroutput>
+  object can be used to change the default for all dialogs in a application to off.
 </para>
+<para>
+  It would be most common to use the <computeroutput>.application</computeroutput> object at the start of a program.
+  This example shows a typical way of changing the default for automatic data detection off for the entire application:
+</para>
+<programlisting>
+<![CDATA[
+
+  .application~autoDetection(.false)
+
+  dlg = .SimpleDialog~new("UserMenuBar.rc", IDD_MAIN_DIALOG)
+  if dlg~initCode <> 0 then do
+    return 99
+  end
+
+  dlg~execute("SHOWTOP")
+  ...
+
+]]>
+</programlisting>
 </section>
 
 
@@ -158,9 +176,37 @@
   The <computeroutput>.constDir</computeroutput> is the most efficient way to use sybmolic IDs. However, to maintain
   backwards compatiblity with older ooDialog programs its use is turned off by default. The <link
   linkend="dotApplication">.application</link> object, through its <link
-  linkend="mthUseGlobalConstDir">useGlobalConstDir</link> or <link linkend="mthSetDefaults">setDefaults</link> methods
-  is used to specify how the <computeroutput>.constDir</computeroutput> is used.
+  linkend="mthUseGlobalConstDir">useGlobalConstDir</link> method or <link linkend="mthSetDefaults">setDefaults</link>
+  method is used to specify how the <computeroutput>.constDir</computeroutput> is used.
 </para>
+<para>
+  Other than specifying <emphasis role="italic">how</emphasis> the <computeroutput>.constDir</computeroutput> is to be
+  used, the <computeroutput>.constDir</computeroutput> is mostly transparent to the programmer. To take best advantage
+  of the <computeroutput>.constDir</computeroutput> the programmer should read the section in the Brief Overview chapter
+  that discusses the symbolic ID <link linkend="ovvSymbolicIDMechanism">mechanism</link> in ooDialog.
+</para>
+<para>
+  This example shows a typical use of the <computeroutput>.constDir</computeroutput> in a program. The example sets the
+  program to use <emphasis role="bold">only</emphasis> the <computeroutput>.constDir</computeroutput> and populates the
+  <computeroutput>.constDir</computeroutput> with the symbolic IDs contained in the file:
+  <computeroutput>accountingApp.h</computeroutput>. Notice that the <computeroutput>.constDir</computeroutput> is not
+  even directly referenced. Typically, the programmer never needs to directly access the
+  <computeroutput>.constDir</computeroutput>. Again, the details are explained in the discussion on the symbolic ID
+  <link linkend="ovvSymbolicIDMechanism">mechanism</link>.
+</para>
+<programlisting>
+<![CDATA[
+
+  .application~useGlobalConstDir('O', 'accountingApp.h')
+
+  dlg = .MainMenuDlg~new("QuickBooks.dll", IDD_MAIN_MENU_DIALOG)
+  if dlg~initCode == 0 then do
+      dlg~execute("SHOWTOP", IDI_BOOKS)
+  end
+  ...
+
+]]>
+</programlisting>
 </section>
 
 
