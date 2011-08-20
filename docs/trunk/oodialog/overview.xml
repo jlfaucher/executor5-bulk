@@ -773,7 +773,7 @@ xPixels = xDialogUnits * self~FactorX
       <para>
         When the ooDialog framework needs to resolve a symbolic ID, it will first try to resolve it using the
         <computeroutput>.constDir</computeroutput>. If that fails, it will then try to resolve it using the constDir
-        attribute. It fails, the method will fail.
+        attribute. It that then fails, the method will fail.
       </para>
       </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">Last:</emphasis></term>
@@ -796,6 +796,11 @@ xPixels = xDialogUnits * self~FactorX
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Adding Symbols:</emphasis></term>
   <listitem>
+  <para>
+    A few symbolic IDs are <link linkend="ovvPreDefinedSymbolicIDs">pre-defined</link> by ooDialog and are always
+    present in the <computeroutput>constDir</computeroutput>. These symbolic IDs can be used in any ooDialog program.
+    Other than the pre-defined IDs, the programmer must add symbolic IDs in order to use them in a program.
+  </para>
   <para>
      to this directory by
     using <link linkend="defPoundDefine">#define</link> statements in a resource script or a <link
