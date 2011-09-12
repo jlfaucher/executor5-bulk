@@ -159,7 +159,7 @@
 </section>
 
 
-<section id="sctPropertySheetPages"><title>Property Sheet Pages Class</title>
+<section id="sctPropertySheetPages"><title>Property Sheet Pages</title>
 <indexterm><primary>Property Sheet Pages</primary></indexterm>
 <para>
   Text here
@@ -776,20 +776,578 @@
   </listitem></varlistentry>
 </variablelist>
 
-</section><!-- End RcControlDialog::new() -->
+</section><!-- End ResControlDialog::new() -->
+
+</section><!-- End ResControlDialog Class -->
+
+</section><!-- End Control Dialogs -->
 
 
-</section>
-
-<section id="clsOwnerDialog"><title>OwnerDialog Class</title>
-<indexterm><primary>Control Dialogs</primary><secondary>OwnerDialog class</secondary></indexterm>
-<indexterm><primary>OwnerDialog Class</primary></indexterm>
+<section id="sctTabOwner"><title>Tab Owner and Helper Classes</title>
+<indexterm><primary>Control Dialogs</primary><secondary>TabOwnerDialog</secondary></indexterm>
+<indexterm><primary>Control Dialogs</primary><secondary>Helper Classes</secondary></indexterm>
 <para>
-  xxx
+  Need text for TabOwnerDialog and other helper classes
 </para>
 
+<section id="clsTabOwnerDialog"><title>TabOwnerDialog Class</title>
+<indexterm><primary>TabOwnerDialog class</primary></indexterm>
+<para>
+  A tab owner dialog is a convenience dialog used to manage <link linkend="clsTab">tab</link> controls that use <link
+  linkend="sctControlDialogs">control</link> dialogs as the pages of the tab. It relieves the Rexx programmer of most of
+  the burden of sizing, positioning, showing, hiding, and notifying the page dialogs used for the tab control(s) in the
+  top-level dialog. It is a <emphasis role="bold">mixin</emphasis> class that can be inherited by any type of top-level
+  ooDialog dialog class.
+</para>
+<para>
+  A dialog subclass that inherits the <computeroutput>TabOwnerDialog</computeroutput> class is very similar to a <link
+  linkend="clsPropertySheetDialog">PropertySheetDialog</link>. However, unlike the
+  <computeroutput>PropertySheetDialog</computeroutput>, a tab owner dialog is controled by the ooDialog framework. This
+  makes it somewhat more flexible than a property sheet dialog, which is controled by the operating system
+</para>
+
+<section id="sctMethodsTabOwnerDialog"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>TabOwnerDialog</computeroutput> class:
+
+<table id="tblMethodsTabOwnerDialog" frame="all"> <title>TabOwnerDialog Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsTabOwnerDialog">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
 </section>
 
+<section id="mthNewClsTabOwnerDialog"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>TabOwnerDialog class</secondary></indexterm>
+<indexterm><primary>TabOwnerDialog class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TabOwnerDialog::new() -->
+
+<section id="mthTabOwnerSetActive"><title>tabOwnerSetActive</title>
+<indexterm><primary>tabOwnerSetActive</primary></indexterm>
+<indexterm><primary>TabOwnerDialog class</primary><secondary>tabOwnerSetActive</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--tabOwnerSetActive(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  The SETACTIVE event notification informs a dialog that the page dialog of a tab is about to be activated. By default,
+  the notification is sent to the page dialog itself. However, the Rexx programmer can specify that the notification be
+  sent to the tab owner dialog instead.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TabOwnerDialog::tabOwnerSetActive() -->
+
+<section id="mthTabOwnerKillActive"><title>tabOwnerKillActive</title>
+<indexterm><primary>tabOwnerKillActive</primary></indexterm>
+<indexterm><primary>TabOwnerDialog class</primary><secondary>tabOwnerKillActive</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--tabOwnerKillActive(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TabOwnerDialog::tabOwnerKillActive() -->
+
+
+</section> <!-- End TabOwnerDialog Class -->
+
+
+<section id="clsTabOwnerDialogInfo"><title>TabOwnerDialogInfo Class</title>
+<indexterm><primary>TabOwnerDialogInfo class</primary></indexterm>
+<para>
+  A TabOwnerDialogInfo object ...
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsTabOwnerDialogInfo"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>TabOwnerDialogInfo</computeroutput> class:
+
+<table id="tblMethodsTabOwnerDialogInfo" frame="all"> <title>TabOwnerDialogInfo Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsTabOwnerDialogInfo">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
 </section>
+
+<section id="mthNewClsTabOwnerDialogInfo"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>TabOwnerDialogInfo class</secondary></indexterm>
+<indexterm><primary>TabOwnerDialogInfo class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TabOwnerDialogInfo::new() -->
+
+</section> <!-- End TabOwnerDialogInfo Class -->
+
+<section id="clsManagedTab"><title>ManagedTab Class</title>
+<indexterm><primary>ManagedTab class</primary></indexterm>
+<para>
+  A ManagedTab object ...
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsManagedTab"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>ManagedTab</computeroutput> class:
+
+<table id="tblMethodsManagedTab" frame="all"> <title>ManagedTab Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsManagedTab">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsManagedTab"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>ManagedTab class</secondary></indexterm>
+<indexterm><primary>ManagedTab class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ManagedTab::new() -->
+
+</section> <!-- End ManagedTab Class -->
+
+<section id="clsControlDialogInfo"><title>ControlDialogInfo Class</title>
+<indexterm><primary>ControlDialogInfo class</primary></indexterm>
+<para>
+  A ControlDialogInfo object ...
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsControlDialogInfo"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>ControlDialogInfo</computeroutput> class:
+
+<table id="tblMethodsControlDialogInfo" frame="all"> <title>ControlDialogInfo Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsControlDialogInfo">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsControlDialogInfo"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>ControlDialogInfo class</secondary></indexterm>
+<indexterm><primary>ControlDialogInfo class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ControlDialogInfo::new() -->
+
+</section> <!-- End ControlDialogInfo Class -->
+
+
+</section><!-- End Tab Owner and Helper Classes -->
 
 </chapter>

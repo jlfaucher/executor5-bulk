@@ -46,7 +46,7 @@
 <para>
   The <computeroutput>UserDialog</computeroutput> class is a concrete subclass of the  <link
   linkend="chpDialogObject">dialog</link> object. This class allows the programmer to dynamically define the dialog
-  <link linkend="ovvDialogTemplate">template</link> in memory. 
+  <link linkend="ovvDialogTemplate">template</link> in memory.
   <indexterm><primary>Template, Dialog</primary></indexterm>
   The class provides methods to begin the dialog template,
   to create the dialog controls within the dialog dialog template, and to read and parse a resource <link
@@ -658,15 +658,15 @@ if success then dlg~execute
 </para>
 </section>
 
-<section id="mthDefineDialog"><title>defineDialog</title>
-<indexterm><primary>defineDialog</primary></indexterm>
-<indexterm><primary>UserDialog class</primary><secondary>defineDialog</secondary></indexterm>
-<programlisting>
-<![CDATA[
+ <section id="mthDefineDialog"><title>defineDialog</title>
+ <indexterm><primary>defineDialog</primary></indexterm>
+ <indexterm><primary>UserDialog class</primary><secondary>defineDialog</secondary></indexterm>
+ <programlisting>
+ <![CDATA[
 >>--defineDialog---------------------------------><
 
-]]>
-</programlisting>
+ ]]>
+ </programlisting>
 
 <para>
   The <emphasis role="italic">defineDialog</emphasis> method is invoked automatically by the ooDialog framework. It is
@@ -676,11 +676,30 @@ if success then dlg~execute
   <computeroutput>UserDialog</computeroutput> should be created in this method.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Private:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This is a private method. There is no need for the programmer to invoke this method explicitly as the ooDialog
-    framework invokes the method at the correct moment in the life cycle of the dialog.
+    No arguments are passed to this method when the ooDialog framework invokes the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    No return valued is expected. The ooDialog framework ignores any return.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer should <emphasis role="bold">not</emphasis> invoke this method, the ooDialog framework invokes it at
+    the proper time. Rather, the programmer must over-ride the method in his
+    <computeroutput>UserDialog</computeroutput> subclass in order to add dialog controls to the dialog.
+  </para>
+  <para>
+    It is important to note that the <emphasis role="italic">defineDialog</emphasis> method is invoked <emphasis
+    role="bold">before</emphasis> the <link linkend="ovvUnderlying">underlying</link> Windows dialog is create.
+    Therefore, all methods requiring the underlying dialog to exist can not be used in the <emphasis
+    role="italic">defineDialog</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -706,7 +725,8 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End UserDialog::defineDialog() -->
+
 
 <section id="mthLoad"><title>load</title>
 <indexterm><primary>load</primary></indexterm>
@@ -1122,14 +1142,15 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
   <listitem>
   <para>
     The following example creates a very simple dialog that has an OK button and a static text box. The <emphasis
-    role="italic">addIconResource</emphasis> method is used to load an icon resource using the ID of 15.  That icon is then used
-    in the <emphasis role="italic">execute</emphasis> method for the <link linkend="defDialogIcon">dialog icon</link>.
+    role="italic">addIconResource</emphasis> method is used to load an icon resource using the ID of 105.  That icon is
+    then used in the <emphasis role="italic">execute</emphasis> method for the <link linkend="defDialogIcon">dialog
+    icon</link>.
   </para>
 <programlisting>
 <![CDATA[
   dlg = .SimpleDialog~new
   if dlg~initCode = 0 then do
-    self~addIconResource(105, "MyAppIcon.ico")
+    dlg~addIconResource(105, "MyAppIcon.ico")
     dlg~create(30, 30, 150, 100, "The Simple Dialog", "VISIBLE")
     dlg~execute("SHOWTOP", 105)
   end

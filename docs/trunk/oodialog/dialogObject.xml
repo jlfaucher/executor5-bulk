@@ -1175,8 +1175,8 @@
 <entry><link linkend="h000606">DrawButton</link></entry>
 </row>
 <row>
-<entry>EndAsyncExecution</entry>
-<entry><link linkend="h000068">EndAsyncExecution</link></entry>
+<entry>endAsyncExecution</entry>
+<entry><link linkend="mthEndAsyncExecution">endAsyncExecution</link></entry>
 </row>
 <row>
 <entry>FindComboEntry</entry>
@@ -3951,34 +3951,48 @@ controlObject = dialogObject~new[ControlName](resourceID)
 </section>  <!-- End PlainBaseDialog::setDlgFont() -->
 
 <section id="mthInitDialog"><title>initDialog</title>
-<indexterm><primary>initDialog</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<indexterm><primary>initDialog</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>initDialog</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~InitDialog--------------------------------------><
-
+>>--initDialog-----------------------------------><
 
 ]]>
 </programlisting>
 
-<para>The initDialog method is called after the Windows dialog
-has been created. It is useful for setting data fields and initializing combo
-and list boxes. Do not use Set... methods because
-the <link linkend="mthSetData">setData</link> method is executed automatically afterwards
-and sets the values of all dialog items from the attributes. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>The method is designed to be overwritten in subclasses; it cannot be
-called from outside the class.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
 <para>
-  The following example shows how to use <emphasis role="italic">initDialog</emphasis> to initialize dialog controls,
-  in this case a list box:
-
+  The <emphasis role="italic">initDialog</emphasis> method is invoked automatically by the ooDialog framework. It is
+  intended to be over-ridden by the programmer in her dialog subclasses. The method is used to initialize the
+  dialog controls, if needed, after the <link linkend="ovvUnderlying">underlying</link> Windows dialog is created.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog framework does not pass any arguments when invoking this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Any return from this method is ignored by the ooDialog framework.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog framework invokes the <emphasis role="italic">initDialog</emphasis> at the proper point in time,
+    immediately after the underlying Windows dialog is created. The programmer should never invoke the method himself.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example show how the <emphasis role="italic">initDialog</emphasis> method is used to initialize a <link
+    linkend="clsListBox">list box</link> by adding items to it.
 <programlisting>
 <![CDATA[
+
 ::class 'MyDialog' subclass RcDialog
 ::method initDialog
 
@@ -3986,11 +4000,13 @@ called from outside the class.
 
   lb~add("this is the first line")
   lb~add("and this one the second")
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End dialog object::initDialog() -->
 
 <section id="mthExecute"><title>execute</title>
 <indexterm><primary>execute</primary></indexterm>
@@ -4090,13 +4106,6 @@ called from outside the class.
   </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Although any of the show keywords can be used, for the <emphasis role="italic">execute</emphasis> method the
-    SHOWTOP, HIDE, and MAX keywords make the most sense. SHOWTOP is the usual keyword.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
@@ -4125,6 +4134,11 @@ called from outside the class.
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
+  <para>
+    Although any of the show keywords can be used, for the <emphasis role="italic">execute</emphasis> method the
+    SHOWTOP, HIDE, and MAX keywords make the most sense. SHOWTOP is the usual keyword. Rather than use the HIDE keyword,
+    it is more practical to simply create the dialog <emphasis role="bold">without</emphasis> the VISIBLE style.
+  </para>
   <para>
     If another ooDialog dialog has been started by the Rexx program, it is disabled when <emphasis
     role="italic">execute</emphasis> is invoked. This in effect makes the dialog a <link
@@ -4181,113 +4195,240 @@ end
 
 <section id="mthExecuteAsync"><title>executeAsync</title>
 <indexterm><primary>executeAsync</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>executeAsync</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~ExecuteAsync--+--------------+------------------->
-                             +-(--sleeptime-+
+>>--executeAsync(--+-----------+--+---------------+--+---------+--)------------><
+                   +--ignored--+  +-,--showOption-+  +-,--icon-+
+]]>
+</programlisting>
 
->--+-----------------------------------------------+-----------><
-   +-+----------------------------------------+--)-+
-     +-,--+--------------------+--+---------+-+
-          |    +-DEFAULT--+    |  +-,--icon-+
-          +-"--+-NORMAL---+--"-+
-               +-SHOWTOP--+
-               +-HIDE-----+
-               +-MIN------+
-               +-MAX------+
-               +-INACTIVE-+
+<para>
+  The <emphasis role="italic">executeAsync</emphasis> method creates the <link linkend="ovvUnderlying">underlying</link>
+  Windows dialog, starts it executing, and shows it in the same way as the <link linkend="mthExecute">execute</link>
+  method does. However, <emphasis role="italic">executeAsync</emphasis> does not wait for the dialog to be closed,
+  rather it returns immediately. This allows the programmer to execute other Rexx statements asynchronously with the
+  dialog execution. The <link linkend="mthEndAsyncExecution">endAsyncExecution</link> method is used to halt the
+  asynchronously execution and wait for the dialog to be closed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>ignored [optional]</term>
+      <listitem>
+      <para>
+        This argument is completely ignored. It is a hold over from older versions of ooDialog, versions prior to 4.0.0.
+        However, for backwards program compatibility the argument must be returned. The programmer should omitt the
+        argument altogether, or could put in any value as a place holder.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>showOption [optional]</term>
+      <listitem>
+      <para>
+        Zero or one of the following keywords to specify how the dialog is shown. This keyword is used in the automatic
+        invocation of the <link linkend="mthShowClsPlainBaseDialog">show</link> method. Case is not significant. If this
+        argument is omitted, the NORMAL keyword is used:
+        <variablelist>
+          <varlistentry><term>NORMAL</term>
+          <listitem>
+          <para>
+            Makes the dialog visible in its default position and window size. This has the effect of restoring the dialog size
+            and position if it is minimized or maximized. This is the default if the argument is omitted.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+          <para>
+            DEFAULT is an alias for NORMAL. The two keywords are functionally identical.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SHOWTOP</term>
+          <listitem>
+          <para>
+            Makes the dialog visible and the topmost window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDE</term>
+          <listitem>
+          <para>
+            Makes the dialog invisible.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MIN</term>
+          <listitem>
+          <para>
+            Minimizes the dialog and activates the next window in the window order.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MAX</term>
+          <listitem>
+          <para>
+            Maximizes, and makes visible if necessary, the dialog.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>INACTIVE</term>
+          <listitem>
+          <para>
+            Makes the dialog visible without changing the active window.  When the NORMAL keyword is used, the dialog is shown
+            and becomes the active window. The INACTIVE keyword makes the dialog visible without changing the focuse from the
+            current active window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RESTORE</term>
+          <listitem>
+          <para>
+            Makes the dialog visible and restores it to its original size and position if it was minimized or maximized. An
+            application should specify this flag when restoring a minimized window.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>icon [optional]</term>
+      <listitem>
+      <para>
+        The resource ID of the <link linkend="defDialogIcon">dialog's icon</link>. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link>.  If an icon ID is not supplied, the default ooDialog icon will be used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        The dialog was created and shown without problems. The dialog is currently executing.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
+      <para>
+        An error occurred, the dialog was not created and is not executing. Do not invoke <link
+        linkend="mthEndAsyncExecution">endAsyncExecution</link> in this case.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Although any of the show keywords can be used, for the <emphasis role="italic">executeAsync</emphasis> method the
+    SHOWTOP, HIDE, and MAX keywords make the most sense. SHOWTOP is the usual keyword. Rather than use the HIDE keyword,
+    it is more practical to simply create the dialog <emphasis role="bold">without</emphasis> the VISIBLE style.
+  </para>
+  <para>
+    If another ooDialog dialog has been started by the Rexx program, it is disabled when <emphasis
+    role="italic">executeAsync</emphasis> is invoked. This in effect makes the dialog a <link
+    linkend="defModalModeless">modal</link> dialog. To start a <emphasis role="italic">modeless</emphasis> dialog use
+    the <link linkend="mthPopup">popup</link> or <link linkend="mthPopupAsChild">popupAsChild</link> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleExecuteAsync"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows an application that creates a <emphasis role="italic">tool pallette</emphasis> dialog. The tool
+    pallette dialog can not be executed until its underlying owner dialog has been created. So the main dialog is
+    started using <emphasis role="italic">executeAsync</emphasis>, then the pallette dialog is executed, and finally
+    <link linkend="mthEndAsyncExecution">endAsyncExecution</link> is used to wait for the main dialog to close:
+<programlisting>
+<![CDATA[
 
+  .application~useGlobalConstDir("O", "useTools.h")
+
+  dlg = .MainDialog~new
+
+  dlgTool = .ToolPaletteDlg~new
+  dlgTool~ownerDialog = dlg
+
+  dlg~executeAsync("SHOWTOP", IDI_DLG_OOREXX)
+
+  dlgTool~popup("SHOWTOP")
+
+  dlg~endAsyncExecution
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::executeAsync() -->
+
+
+<section id="mthEndAsyncExecution"><title>endAsyncExecution</title>
+<indexterm><primary>endAsyncExecution</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>endAsyncExecution</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--endAsyncExecution----------------------------><
 
 ]]>
 </programlisting>
 
-<para>The executeAsync method does the same as execute,
-except that it dispatches messages asynchronously. Therefore the executeAsync
-method returns immediately after the dialog has been started. </para>
+<para>
+  The <emphasis role="italic">endAsyncExecution</emphasis> method is used to end the asynchronous execution of a dialog
+  started using the <link linkend="mthExecuteAsync">executedAsync</link> method. The <emphasis
+  role="italic">endAsyncExecution</emphasis> method does not return until the user closes the dialog.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>sleeptime</term>
-<listitem><para>The time slice, in milliseconds, until the next message is processed.
-</para></listitem></varlistentry>
-<varlistentry><term>show</term>
-<listitem><para>See <link linkend="mthShowClsPlainBaseDialog">Show</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>icon</term>
-<listitem><para>The resource ID of the <link linkend="defDialogIcon">dialog's
-icon</link>.  If an icon ID is not supplied, the default ooDialog icon will be
-used.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method does not take any arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are the same as for the <link linkend="mthExecute">execute</link> method and are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Some error ocurred, the dialog was not executed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
+      <para>
+        The user terminated the dialog using an ok command.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>2</term>
+      <listitem>
+      <para>
+        The user terminated the dialog using a cancel comamnd.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Every dialog that is started using the <link linkend="mthExecuteAsync">executeAsync</link> method must have a
+    matching <emphasis role="italic">endAsyncExecution</emphasis> invocation. This is the only way to ensure the proper
+    termination of the dialog. This does not apply of course if the invocation of <emphasis
+    role="italic">executeAsync</emphasis> failed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleExecuteAsync">executeAsync</link> example shows the proper use of the <emphasis
+  role="italic">endAsyncExecution</emphasis> method.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The dialog was started.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>An error occurred. Do not call the EndAsyncExecution method in this
-case.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example starts a dialog and runs the statements between
-executeAsync and EndAsyncExecution asynchronously to the dialog:
-
-<programlisting>
-<![CDATA[
-ret = MyDialog~executeAsync(1000, "SHOWTOP")
-if ret = 0 then do
-   ...
-   /* Object Rexx statements to run while the dialog is executing */
-   ...
-   MyDialog~EndAsyncExecution
-end
-else do
-   call errorDialog "Could not start dialog"
-end
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000068"><title>EndAsyncExecution</title>
-<indexterm><primary>EndAsyncExecution</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~EndAsyncExecution-------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The EndAsyncExecution method is used to complete
-the asynchronous execution of a dialog. It does not terminate the dialog but
-waits until the user terminates it. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The dialog was not executed.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The dialog was terminated using the OK button.
-</para></listitem></varlistentry>
-<varlistentry><term>2</term>
-<listitem><para>The dialog was terminated using the Cancel button.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See the example in <link linkend="mthExecuteAsync">executeAsync</link>.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End dialog object::endAsyncExecution() -->
 
 <section id="mthPopup"><title>popup</title>
 <indexterm><primary>popup</primary></indexterm>
