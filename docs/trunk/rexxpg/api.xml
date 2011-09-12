@@ -4158,10 +4158,10 @@ CSTRING str;
 <programlisting>
 <![CDATA[
 RexxDirectoryObject dirobj;
-RexxObjectPtr index;
-CSTRING str;
+RexxObjectPtr item;
+CSTRING index;
 
->>--context->DirectoryPut(dirobj, index, str);---------------------------><
+>>--context->DirectoryPut(dirobj, item, index);--------------------------><
 ]]>
 </programlisting>
 <para>Replace/add an Object at the specified Directory index.
@@ -4171,11 +4171,11 @@ CSTRING str;
     <row><entry><emphasis role="italic">dirobj</emphasis></entry>
     <entry><para>The source Directory object.</para></entry>
     </row>
+    <row><entry><emphasis role="italic">item</emphasis></entry>
+    <entry><para>The object instance to be stored at the index.</para></entry>
+    </row>
     <row><entry><emphasis role="italic">index</emphasis></entry>
     <entry><para>The ASCII-Z string index into the Directory object.</para></entry>
-    </row>
-    <row><entry><emphasis role="italic">str</emphasis></entry>
-    <entry><para>The object instance to be stored at the index.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
