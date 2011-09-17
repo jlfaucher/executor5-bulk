@@ -50,8 +50,8 @@
 ;--------------------------------
 ; Defines
 
-  !define VERSION        "0.0.2"
-  !define VERSIONNODOTS  "0_0_2"
+  !define VERSION        "0.0.3"
+  !define VERSIONNODOTS  "0_0_3"
   !define SHORTNAME      "ooDialog_Samples_${VERSIONNODOTS}"
   !define LONGNAME       "Extra ooDialog Samples ${VERSION}"
   !define DISPLAYICON    "$INSTDIR\AppIcon2.ico"
@@ -197,6 +197,7 @@ Section  installFiles
 
   ${CreateDirectory} "$INSTDIR\Controls"
   ${CreateDirectory} "$INSTDIR\Controls\Edit"
+  ${CreateDirectory} "$INSTDIR\Controls\List-view"
   ${CreateDirectory} "$INSTDIR\Dialogs"
   ${CreateDirectory} "$INSTDIR\Menus"
 
@@ -208,6 +209,11 @@ Section  installFiles
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "NumberOnlyEditEx.cls"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG32.dll"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG64.dll"
+
+  ${SetOutPath} "$INSTDIR\Controls\List-view\edit.items"
+  ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.bmp"
+  ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.h"
+  ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.rex"
 
   ${SetOutPath} "$INSTDIR\Dialogs\application.icon"
   ${File} "${SRCDIR}\Dialogs\application.icon\" "appIcon.h"
