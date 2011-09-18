@@ -1249,15 +1249,15 @@ contains nothing but zero values in the fields.  The REXX_LAST_METHOD() macro
 will generate a suitable table terminator entry.
 </para>
 <para>The remainder of the table will be entries generated via
-the REXX_MEHTOD() macro.
-Routine table entries defined using REXX_MEHTOD() use the
+the REXX_METHOD() macro.
+Routine table entries defined using REXX_METHOD() use the
 object-oriented interfaces for creating methods that can be defined on Rexx classes.
 These methods can use
 the interpreter runtime to convert call arguments from Rexx objects into primitive
 types and return values from primitive types back into Rexx objects.  Native
 methods are also given access to a rich set of services via the RexxMethodContext
 interface vector.</para>
-<para>The REXX_MEHTOD() macro take two arguments.  The
+<para>The REXX_METHOD() macro take two arguments.  The
 first entry is the package table name for this method.  The second argument is the
 entry point name of the real native code method that implements the function.
 These names are frequently the same, but need not be.</para>
@@ -1268,18 +1268,18 @@ larger packages, it may be desirable to place the methods in more than
 one source file.  For libraries packaged as multiple source files, it is necessary
 to create a prototype declarations so the method entry table can be generated.
 The oorexxapi.h header file includes
-a REXX_MEHTOD_PROTOTYPE() macro to generate the appropriate declarations.
+a REXX_METHOD_PROTOTYPE() macro to generate the appropriate declarations.
 For example,</para>
 <programlisting>
 // create function declarations for the linker
-REXX_MEHTOD_PROTOTYPE(point_init);
-REXX_MEHTOD_PROTOTYPE(point_add);
+REXX_METHOD_PROTOTYPE(point_init);
+REXX_METHOD_PROTOTYPE(point_add);
 
 // now build the actual entry list
 RexxMethodEntry point_methods[] =
 {
-    REXX_MEHTOD(point_init, point_init),
-    REXX_MEHTOD(point_add,  point_add),
+    REXX_METHOD(point_init, point_init),
+    REXX_METHOD(point_add,  point_add),
     REXX_LAST_METHOD()
 };
 </programlisting>
