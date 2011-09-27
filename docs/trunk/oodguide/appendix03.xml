@@ -60,13 +60,12 @@
   <para>
   When testing the application, there is often a need to test an individual dialog
   which, in the application, is invoked by some other "parent" dialog and so issues
-  <emphasis role="italic">self~popUpAsChild(…)</emphasis>
-  rather than <emphasis role="italic">self~execute(…)</emphasis>. In addition, popping-up
-  requires the parent dialog to be specified: <emphasis role="italic">self~popUpAsChild(parent,…)</emphasis>.
-  In the Order Management application, the <computeroutput>OrderMgmtView</computeroutput> class
-  is the parent for all child dialogs. The reason for using popupAsChild is so that, for example,
-  a CustomerList can be closed without automatically closing any Customer dialogs that
-  might have been opened from it.
+  <emphasis role="italic">self~popUpAsChild(...)</emphasis> rather than <emphasis
+  role="italic">self~execute(...)</emphasis>. In addition, popping-up requires the parent dialog to be specified:
+  <emphasis role="italic">self~popUpAsChild(parent,...)</emphasis>. In the Order Management application, the
+  <computeroutput>OrderMgmtView</computeroutput> class is the parent for all child dialogs. The reason for using
+  popupAsChild is so that, for example, a CustomerList can be closed without automatically closing any Customer dialogs
+  that might have been opened from it.
   </para>
   <para>
   Now, using the parent dialog (Order Management in our case) as some sort of test-harness
@@ -82,8 +81,9 @@
   that the child must pass its own id to the grandchild instead of passing the parent's.
   </para>
   <para>One approach to resolving this problem is to have two versions of each child dialog - one
-  using <emphasis role="italic">~execute(…)</emphasis> and one using <emphasis role="italic">~popupAsChild(…)</emphasis>.
-  This results in two code bases for each dialog - which can quickly get out of sync. Not the best idea.
+  using <emphasis role="italic">~execute(...)</emphasis> and one using <emphasis
+  role="italic">~popupAsChild(...)</emphasis>. This results in two code bases for each dialog - which can quickly get
+  out of sync. Not the best idea.
   </para>
   <para>
   An arguably better solution is to build each dialog so it can be run either individually
