@@ -1,0 +1,267 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog User Guide XML file.
+    #
+    # Copyright (c) 2011-2011, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+
+<!-- Chapter06 - List Views, Re-Sizing, and PopUps 		  v00-01 01Oct11
+
+     Changes:
+     v00-01 01Oct11: First version
+
+     This chapter discusses the Order Manager component.
+
+Questions:
+  1. How get pop-up to pop up away from parent?
+  4. How do diff font for list items in (e.g) CustList?
+  5. How get dlg icon to show? Answer: rc file must be produced in the parent folder
+     so that file path is right for invocation from the parent folder.
+     Ditto for ResDialog - compile the dll in the parent folder (check this!)
+
+
+Items to add in somewhere:
+  1. Folder per component - for resources such as bitmaps/icons for RcDialogs, need to run resedit
+  from parent folder so that path to resource is correct when run the component from the parent folder.
+  2. Bad design - custmodel & custdata created for each showmodel. Fix in next exercise.
+  3. Reference to standalone code and the sample. Also must start from the Exercise06
+     folder - Customer\StartupCustomer - 'cos all paths in the code are relative to the Exercise06 folder.
+  4. Why no Model/Data components for list views?
+  5. Looking at the two list views, almost begs for a supercalss.
+  6. Generally, in real life, creating something (Customer, Product, Order) requires a process different from merely updating something.
+     This means a different GUI. But for this Guide, we'll assume Customer and Product get new records from a different place,
+     so new records can(in this sample app) be got by adding to the relevant data files. However, OrderForm and Order
+     are different - so have a component each.
+  7. The lists create a new instance for each list item - which is silly.
+  8. Have to change .rc file manually to get icon showing properly - ResEdit makes it .\bmp\icon.ico
+     instead of .\order\bmp\icon.ico - even if you start resedit from Exercise06 and specify
+     "resedit order\orderlistview.rc".
+  9. Paths - esepc for ResEdit.
+
+Code TodDos:
+  1. Change older code to use externalised strings.
+
+Topics:
+	- List Views - normal icon view - a "workplace" for Order Management..
+	- Auto-resizing when window sized by user
+	- Icons - making them, getting 'em into the program. - GIMP (GNU Image Manipulation Program) from
+	http://www.gimp.org
+	- Modality
+
+- the OrderManagerView
+     is the "home" window. It'll have a sign-on and password field in a sub-dialog
+     (also programmer-designed) which comes modally  when the OrderManagemwent
+     window is established. Thus we demonstrate/discuss:
+     - programmatic layout (can only use userDialog)
+     - modal sub-window
+     - Handling icons and showing them.
+     - password dialog (shows asterisks when you type into it) - but can avoid
+       with startup param "skipPW" (but the dialog in the startup prog to show
+       use of ooDialog in normal rexx progs).
+     - Icons that when dbl-clicked startup other views
+
+     ICONS:
+
+     I want to assign my own icon as the dialog icon (that is, the icon at the extreme top left of a dialog). This is done (I understand) in the ~execute(..., <icon_ID> ) method (ooDialog Reference section 3.10.3).
+
+(1) Does the icon have to be a certain size, or will it get automatically shrunk?
+(2) If it has to be a certain size, what's the size, and are there any restrictions as to the palette (I'm no expert, but using GIMP I'm given the option of saving as 16-bit, 24-bit or 32-bit color (or I think it's color!)).
+(3) In the ~execute statement, I need to provide an ID. Does this mean I must have a *.rc file? Or can I invent an ID programmatically somehow - perhaps along the same lines as creating an ImageList?
+
+
+
+-->
+
+<chapter id="chapSix"><title>An Application Workplace</title>
+<indexterm><primary>OrderManager component</primary></indexterm>
+<para> *** THIS CHAPTER IS VERY INCOMPLETE ***</para>
+<para>
+This chapter introduces the Order Management application, which has a dialog designed to be
+  a "workplace" for a user handling sales orders. As such, it provides access to the required components
+  - customers, products, orders, and order forms.
+  A common approach for a "workplace" dialog is to provide an icon for each component that the user may wish
+  to use. In the <computeroutput>Exercise06</computeroutput> folder,
+  run <computeroutput>startup.rex</computeroutput>. The Order Management dialog opens, and consists mainly
+  of a List View containing four icons. Move the icons around; double-click them
+  and if a Customer, Product, or Order List appears then double-click a list item; re-size the Order Management window;
+  check out the menu items and the pushbuttons. As you see, while much of the application
+  function is absent, the essential parts of the
+  Order Management application mentioned in <xref linkend="chapFour">
+  are visible. This chapter addresses the following topics in the context of the Order Management application:
+  <itemizedlist>
+    <listitem><para>Program Structure</para></listitem>
+    <listitem><para>Non-modal "pop-up" dialogs</para></listitem>
+    <listitem><para>The ListView control</para></listitem>
+    <listitem><para>Re-sizable dialogs</para></listitem>
+    <listitem><para>Creating and using icons</para></listitem>
+    <listitem><para></para></listitem>
+  </itemizedlist>
+</para>
+
+<section id="chap06-struc"><title>Program Structure</title>  <!-- Section 6.1 -->
+  <para>In Exercise06, each business component has its own folder:
+    Customer, Order, OrderMgmt, and Product. Customer and Product are identical to the same components
+    in Exercises 04 and 05 except for trivial changes identified in the code by the comment
+    <emphasis role="italic">Exercise06 ...</emphasis>. Separation into a folder for each business component
+    helps promote high cohesion and low coupling in the software,
+    since the internals of each business component are opaque to other business components.
+    Thus another application (e.g. Customer Relationship
+    Management) might be able to make use of the Customer business component without change.
+    The Order Management business component is unlikely to be re-used in other applications as it is
+    a kind of "process" business component that "choreographs" the other business components.
+    To the user, creating a new sales order consists of "choreographing" the various business aspects
+    required - creating an Order Form (used to assemble the customer order), searching for and selecting a
+    specific Customer, searching for and selecting one or more Products, recording the quantities ordered,
+    and producing a Sales Order that is the "contract" between supplier and customer. Of course, the OrderManagement
+    component could be used by "higher-level" components such as business processes or workflows. In systems
+    organized according to these principles, invocation of components takes the form of an directed acyclic graph.
+  </para>
+  <para>
+    Within each business component are one or more component groups and components. For example, the Customer
+    business component contains two component groups: CustomerList and Customer. In turn,
+    each of these consists of one View component and one Model components. Both share a single Data component that
+    services both Model components. . and each shares a single Model and a Data component. The Customer and Product
+    component groups are identical to those introduced in Exercises 4 and 5 respectively.
+  </para>
+  <para>
+    The Order Management business component is, in this Exercise, implemented by a view class only. In fact,
+    there are two view classes, each in its own .rex file: <computeroutput>OrderMgmtBaseView</computeroutput>
+    and its subclass <computeroutput>OrderMgmtView</computeroutput>.
+    The former contains the code for handling a re-sizeable
+    dialog (discussed below), with the latter containing the code specific to the Order Management application.
+    The only reason for splitting the code like this is that it seems to fall happily into these two parts. This reduces
+    the amount of code in any one class or file, and so makes for better readability.
+  </para>
+  <para>
+    Note that the "data" of the OrderManagement business component is the set of icons and their associated data.
+    In Exercise06, this data is effectively embedded in the View classes. However, the code in the
+    <computeroutput>OrderMgmtView</computeroutput> class uses an <emphasis role="italic">interpret</emphasis>
+    instruction to launch views of the components represented by icons. Thus in principle, additional components
+    can be added without changing the code in the <computeroutput>OrdermgmtView</computeroutput> class. To support this,
+    a separate file - <computeroutput>RequiresList.rex</computeroutput> - contains the set of
+    <emphasis role="italic">::requires</emphasis> statements corresponding to the components that might be surfaced.
+    This is why the first executable statement in the file <computeroutput>OrderMgmtView.rex</computeroutput> is
+    <emphasis role="italic">call "OrderMgmt\RequiresList.rex"</emphasis>. Examples of possible additional components
+    could be a "commodities" component which shows
+    the commodities required to produce a given product; or a credit-check component that links to an external
+    credit-check agency.
+  </para>
+</section>  <!-- End of section 6.1 -->
+
+  <section id="chap06-popups"><title>Non-Modal Dialogs</title>  <!-- Section 6.2 -->
+    <para>
+    </para>
+  </section>  <!-- End of section 6.2 -->
+
+  <section id="chap06-listviews"><title>Using ListViews</title>  <!-- Section 6.3 -->
+  <indexterm><primary>ListView</primary></indexterm>
+  <indexterm><primary>Controls</primary><secondary>ListView</secondary></indexterm>
+  <para>The <computeroutput>ListView</computeroutput> should not be confused with <computeroutput>ListBox</computeroutput>;
+  a ListView (see ooDialog Reference chapter 20) is a souped-up ListBox with lots of additional features. In particular:
+  <itemizedlist>
+    <listitem><para>An item in a ListView can be a complex structure or "record" containing
+      multiple fields. One of these fields is termed the "label" of the item.</para></listitem>
+    <listitem><para>ListView items can be displayed in four different modes:
+      <itemizedlist>
+        <listitem><para>Icon view - each item appears as a full-sized icon with a label below it.
+          Items can be dragged around the ListView.</para></listitem>
+        <listitem><para>Small-icon view - each item appears as a small icon with a label to its right.
+          Items can be dragged around the ListView.</para></listitem>
+        <listitem><para>List view - each item appears as a label with an optional small icon to its left.</para></listitem>
+        <listitem><para>Report view - each item appears as a row in a table with an optional small icon to its left.
+          </para></listitem>
+      </itemizedlist>
+      The four different modes are well illustrated by the sample program <computeroutput>oodListViews.rex</computeroutput>
+      located in the <computeroutput>ooRexx\samples\oodialog</computeroutput> folder.</para></listitem>
+  </itemizedlist>
+</para>
+<para>In the Order Management application, the ListView control provides the tabular lists (report views) in the Customer and Product List dialogs.
+    It also provides the main area of the Order Management dialog where draggable icons (icon view) represent the various components
+    of the application.
+</para>
+<section id="chap06-listview-report"><title>The Report View</title>  <!-- Section 6.3.1 -->
+<para>
+
+</para>
+
+</section>  <!-- End of section 6.3.1 -->
+
+  <section id="chap06-listview-icon"><title>The Icon View</title>  <!-- Section 6.3.2 -->
+<para>
+  The process for displaying icons in a listview is as follows:
+</para>
+</section>  <!-- End of section 6.3.2 -->
+
+</section>  <!-- End of section 6.3 -->
+
+<section id="chap06-resize"><title>Re-sizing Dialogs</title>  <!-- Section 6.4 -->
+<para>If you haven't already done so, try re-sizing the Order Management dialog.
+  The ListView containing the icons
+  expands to match the new window size, and one of the two pushbuttons moves as well, although their size
+  - unlike the size of the List View - does not change. This re-sizing function is only available
+  for a <computeroutput>UserDialog</computeroutput>, and requires a number of methods and lines of code.
+  ooDialog provides three samples of the resizing function in the folder
+  <computeroutput>ooRexx\samples\oodialog</computeroutput> folder -
+  the relevant programs being <computeroutput>dlgAreaUDemo.rex</computeroutput>,
+  <computeroutput>dlgAreaUDemoTwo.rex</computeroutput>, and
+  <computeroutput>dlgAreaUDemoThree.rex</computeroutput>.
+  <computeroutput>OrderManagementBaseView.rex</computeroutput> includes much of the code from the last
+  of these three samples.
+</para>
+<para>
+  The re-sizing function is provided by two ooDialog classes: <computeroutput>dlgAreaU</computeroutput>
+  and <computeroutput>dlgArea</computeroutput> (see ooDialog Reference sections 10.14 and 10.15).
+  An important constraint is that, because <computeroutput>dlgAreaU</computeroutput> parses
+  the source code of the <emphasis role="italic">defineDialog</emphasis> method in order to handle re-sizing,
+  it will only work with <computeroutput>UserDialog</computeroutput>, where the dialog template is created
+  through explicit control creation statements. In addition, since the source code is required at run-time,
+  it will not work if the source code is tokenized using <emphasis role="italic">rexxc</emphasis>.
+</para>
+<para>
+  Essentially, the dialog is first split into a number of areas - two areas for the
+  OrderManagement dialog. ears for . dilaog defines the A re-sizeable dialog - an excellent sample dialog -
+    </para>
+</section>  <!-- End of section 6.4 -->
+
+
+<section id="chap06-icons"><title>Creating and Using Icons</title>  <!-- Section 6.5 -->
+  <para>- Icons - making them, getting 'em into the program. - GIMP (GNU Image Manipulation Program) from
+      http://www.gimp.org
+</para>
+</section>  <!-- End of section 6.5 -->
+
+</chapter>
+
