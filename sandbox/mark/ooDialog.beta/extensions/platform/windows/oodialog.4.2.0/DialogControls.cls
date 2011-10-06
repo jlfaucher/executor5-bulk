@@ -199,6 +199,7 @@
 ::method getStyle unguarded external "LIBRARY oodialog e_style"
 ::method noContextMenu unguarded external "LIBRARY oodialog e_noContextMenu"
 ::method disableInternalResize unguarded external "LIBRARY oodialog e_disableInternalResize"
+::method ignoreMouseWheel unguarded external "LIBRARY oodialog e_ignoreMouseWheel"
 
 ::method canUndo unguarded
     use strict arg
@@ -940,11 +941,11 @@
 
 ::method focused unguarded
    use strict arg
-   return self~sendWinIntMsg(self~TCM_GETCURSEL, 0, 0)
+   return self~sendWinIntMsg(self~TCM_GETCURFOCUS, 0, 0)
 
 ::method focus unguarded
    use strict arg item
-   self~sendWinIntMsg(self~TCM_SETCURSEL, item, 0)
+   self~sendWinIntMsg(self~TCM_SETCURFOCUS, item, 0)
    return 0
 
 ::method delete unguarded

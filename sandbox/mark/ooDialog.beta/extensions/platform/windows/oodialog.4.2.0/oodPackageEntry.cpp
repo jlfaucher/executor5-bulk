@@ -93,6 +93,9 @@ RexxClassObject     ThePropertySheetPageClass = NULLOBJECT;
 // Initialized in the ControlDialog class init method (cd_init_cls.)
 RexxClassObject     TheControlDialogClass = NULLOBJECT;
 
+// Initialized in the Point class init method (point_init_cls.)
+RexxClassObject     ThePointClass = NULLOBJECT;;
+
 // Initialized in the Size class init method (size_init_cls.)
 RexxClassObject     TheSizeClass = NULLOBJECT;;
 
@@ -392,6 +395,8 @@ REXX_METHOD_PROTOTYPE(dlgutil_shiWord_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_sloWord_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_makeLPARAM_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_makeWPARAM_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_unsigned_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_signed_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_and_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_or_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_shiftLeft_cls);
@@ -637,6 +642,9 @@ REXX_METHOD_PROTOTYPE(tod_getTabPage);
 
 // TabOwnerDlgInfo
 REXX_METHOD_PROTOTYPE(todi_init);
+REXX_METHOD_PROTOTYPE(todi_add);
+REXX_METHOD_PROTOTYPE(tod_tabOwnerOk);
+REXX_METHOD_PROTOTYPE(tod_tabOwnerCancel);
 
 // ManagedTab
 REXX_METHOD_PROTOTYPE(mt_init);
@@ -646,6 +654,8 @@ REXX_METHOD_PROTOTYPE(cd_init_cls);
 REXX_METHOD_PROTOTYPE(cd_controlDlgInit);
 REXX_METHOD_PROTOTYPE(cd_get_isManaged);
 REXX_METHOD_PROTOTYPE(cd_get_wasActivated);
+REXX_METHOD_PROTOTYPE(cd_get_extraOptions);
+REXX_METHOD_PROTOTYPE(cd_set_extraOptions);
 REXX_METHOD_PROTOTYPE(cd_get_initializing);
 REXX_METHOD_PROTOTYPE(cd_set_initializing);
 REXX_METHOD_PROTOTYPE(cd_get_pageTitle);
@@ -657,8 +667,11 @@ REXX_METHOD_PROTOTYPE(cdi_set_title);
 REXX_METHOD_PROTOTYPE(cdi_set_size);
 REXX_METHOD_PROTOTYPE(cdi_init);
 
-// ResourceControlDialog
+// ResControlDialog
 REXX_METHOD_PROTOTYPE(resCtrlDlg_startDialog_pvt);
+
+// RcControlDialog
+REXX_METHOD_PROTOTYPE(rcCtrlDlg_startTemplate);
 
 // PropertySheetDialog
 REXX_METHOD_PROTOTYPE(psdlg_getPages_atr);
@@ -858,6 +871,7 @@ REXX_METHOD_PROTOTYPE(bc_test_cls);
 
 // Edit
 REXX_METHOD_PROTOTYPE(e_noContextMenu);
+REXX_METHOD_PROTOTYPE(e_ignoreMouseWheel);
 REXX_METHOD_PROTOTYPE(e_isSingleLine);
 REXX_METHOD_PROTOTYPE(e_selection);
 REXX_METHOD_PROTOTYPE(e_replaceSelText);
@@ -1054,6 +1068,7 @@ REXX_METHOD_PROTOTYPE(rect_setRight);
 REXX_METHOD_PROTOTYPE(rect_setBottom);
 
 // .Point
+REXX_METHOD_PROTOTYPE(point_init_cls);
 REXX_METHOD_PROTOTYPE(point_init);
 REXX_METHOD_PROTOTYPE(point_x);
 REXX_METHOD_PROTOTYPE(point_setX);
@@ -1063,6 +1078,7 @@ REXX_METHOD_PROTOTYPE(point_add);
 REXX_METHOD_PROTOTYPE(point_subtract);
 REXX_METHOD_PROTOTYPE(point_incr);
 REXX_METHOD_PROTOTYPE(point_decr);
+REXX_METHOD_PROTOTYPE(point_inRect);
 
 // .Size
 REXX_METHOD_PROTOTYPE(size_init_cls);
@@ -1166,6 +1182,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_shiWord_cls,            dlgutil_shiWord_cls),
     REXX_METHOD(dlgutil_makeLPARAM_cls,         dlgutil_makeLPARAM_cls),
     REXX_METHOD(dlgutil_makeWPARAM_cls,         dlgutil_makeWPARAM_cls),
+    REXX_METHOD(dlgutil_unsigned_cls,           dlgutil_unsigned_cls),
+    REXX_METHOD(dlgutil_signed_cls,             dlgutil_signed_cls),
     REXX_METHOD(dlgutil_and_cls,                dlgutil_and_cls),
     REXX_METHOD(dlgutil_or_cls,                 dlgutil_or_cls),
     REXX_METHOD(dlgutil_shiftLeft_cls,          dlgutil_shiftLeft_cls),
@@ -1417,9 +1435,12 @@ RexxMethodEntry oodialog_methods[] = {
     // TabOwnerDialog
     REXX_METHOD(tod_tabOwnerDlgInit,            tod_tabOwnerDlgInit),
     REXX_METHOD(tod_getTabPage,                 tod_getTabPage),
+    REXX_METHOD(tod_tabOwnerOk,                 tod_tabOwnerOk),
+    REXX_METHOD(tod_tabOwnerCancel,             tod_tabOwnerCancel),
 
     // TabOwnerDlgInfo
     REXX_METHOD(todi_init,                      todi_init),
+    REXX_METHOD(todi_add,                       todi_add),
 
     // ManagedTab
     REXX_METHOD(mt_init,                        mt_init),
@@ -1429,6 +1450,8 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cd_controlDlgInit,              cd_controlDlgInit),
     REXX_METHOD(cd_get_isManaged,               cd_get_isManaged),
     REXX_METHOD(cd_get_wasActivated,            cd_get_wasActivated),
+    REXX_METHOD(cd_get_extraOptions,            cd_get_extraOptions),
+    REXX_METHOD(cd_set_extraOptions,            cd_set_extraOptions),
     REXX_METHOD(cd_get_initializing,            cd_get_initializing),
     REXX_METHOD(cd_set_initializing,            cd_set_initializing),
     REXX_METHOD(cd_get_pageTitle,               cd_get_pageTitle),
@@ -1442,6 +1465,9 @@ RexxMethodEntry oodialog_methods[] = {
 
     // ResControlDialog
     REXX_METHOD(resCtrlDlg_startDialog_pvt,     resCtrlDlg_startDialog_pvt),
+
+    // RcControlDialog
+    REXX_METHOD(rcCtrlDlg_startTemplate,       rcCtrlDlg_startTemplate),
 
     // PropertySheetDialog
     REXX_METHOD(psdlg_getPages_atr,             psdlg_getPages_atr),
@@ -1616,6 +1642,7 @@ RexxMethodEntry oodialog_methods[] = {
 
     // Edit
     REXX_METHOD(e_noContextMenu,                e_noContextMenu),
+    REXX_METHOD(e_ignoreMouseWheel,             e_ignoreMouseWheel),
     REXX_METHOD(e_isSingleLine,                 e_isSingleLine),
     REXX_METHOD(e_selection,                    e_selection),
     REXX_METHOD(e_replaceSelText,               e_replaceSelText),
@@ -1803,6 +1830,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(rect_setTop,                    rect_setTop),
     REXX_METHOD(rect_setRight,                  rect_setRight),
     REXX_METHOD(rect_setBottom,                 rect_setBottom),
+    REXX_METHOD(point_init_cls,                 point_init_cls),
     REXX_METHOD(point_init,                     point_init),
     REXX_METHOD(point_x,                        point_x),
     REXX_METHOD(point_setX,                     point_setX),
@@ -1812,6 +1840,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(point_subtract,                 point_subtract),
     REXX_METHOD(point_incr,                     point_incr),
     REXX_METHOD(point_decr,                     point_decr),
+    REXX_METHOD(point_inRect,                   point_inRect),
     REXX_METHOD(size_init_cls,                  size_init_cls),
     REXX_METHOD(size_init,                      size_init),
     REXX_METHOD(size_cx,                        size_cx),

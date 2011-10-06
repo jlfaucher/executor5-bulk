@@ -192,6 +192,8 @@
 ::method sLoWord class external "LIBRARY oodialog dlgutil_sloWord_cls"
 ::method makeWParam class external "LIBRARY oodialog dlgutil_makeWPARAM_cls"
 ::method makeLParam class external "LIBRARY oodialog dlgutil_makeLPARAM_cls"
+::method unsigned class external "LIBRARY oodialog dlgutil_unsigned_cls"
+::method signed class external "LIBRARY oodialog dlgutil_signed_cls"
 ::method and class external "LIBRARY oodialog dlgutil_and_cls"
 ::method or class external "LIBRARY oodialog dlgutil_or_cls"
 ::method shiftLeft class external "LIBRARY oodialog dlgutil_shiftLeft_cls"
@@ -238,6 +240,7 @@
 ::attribute bottom set external "LIBRARY oodialog rect_setBottom"
 
 ::class 'Point' public
+::method init class external "LIBRARY oodialog point_init_cls"
 ::method init external "LIBRARY oodialog point_init"
 ::attribute x get external "LIBRARY oodialog point_x"
 ::attribute x set external "LIBRARY oodialog point_setX"
@@ -245,8 +248,9 @@
 ::attribute y set external "LIBRARY oodialog point_setY"
 ::method '+' external "LIBRARY oodialog point_add"
 ::method '-' external "LIBRARY oodialog point_subtract"
-::method 'incr' external "LIBRARY oodialog point_incr"
-::method 'decr' external "LIBRARY oodialog point_decr"
+::method incr external "LIBRARY oodialog point_incr"
+::method decr external "LIBRARY oodialog point_decr"
+::method inRect external "LIBRARY oodialog point_inRect"
 
 ::class 'Size' public
 ::method init class external "LIBRARY oodialog size_init_cls"
@@ -1707,7 +1711,8 @@ do forever
       else
           ObjId = ''       -- This createXXX method is ignored
 
-      ObjId = dlgObject~resolveSymbolicID(ObjId~space(0))
+      ObjId = ObjId~space(0)~strip( , "'")~strip( , '"')
+      ObjId = dlgObject~resolveSymbolicID(ObjId)
 
       if ObjId > 0 then
          interpret 'dlgObjList~Insert(ObjId"@"'ObjX'"@"'ObjY'"@"'ObjW'"@"'ObjH')'
@@ -1745,7 +1750,8 @@ do forever
             ObjId = ''     -- This addXXX method is ignored
       end
 
-      ObjId = dlgObject~resolveSymbolicID(ObjId~space(0))
+      ObjId = ObjId~space(0)~strip( , "'")~strip( , '"')
+      ObjId = dlgObject~resolveSymbolicID(ObjId)
 
       if ObjId > 0 then
          interpret 'dlgObjList~Insert(ObjId"@"'ObjX'"@"'ObjY'"@"'ObjW'"@"'ObjH')'

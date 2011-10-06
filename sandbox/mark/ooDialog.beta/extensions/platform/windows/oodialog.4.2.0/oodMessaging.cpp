@@ -438,7 +438,6 @@ LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
         }
 
         setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)pcpbd);
-
         return TRUE;
     }
 
@@ -874,7 +873,7 @@ BOOL endDialogPremature(pCPlainBaseDialog pcpbd, HWND hDlg, DlgProcErrType t)
     {
         pcpbd->abnormalHalt = true;
 
-        if ( pcpbd->isPropSheetDlg && ! ((pCPropertySheetDialog)(pcpbd->dlgPrivate))->modeless  )
+        if ( pcpbd->isPropSheetDlg && ! ((pCPropertySheetDialog)(pcpbd->dlgPrivate))->modeless )
         {
             abortPropertySheet((pCPropertySheetDialog)pcpbd->dlgPrivate, hDlg, t);
             return FALSE;
@@ -965,7 +964,7 @@ LRESULT paletteMessage(pCPlainBaseDialog pcpbd, HWND hDlg, UINT msg, WPARAM wPar
  *           connections, so that the Rexx programmer does not inadvertently
  *           block the message loop.
  */
-static MsgReplyType invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, RexxStringObject method, RexxArrayObject args)
+MsgReplyType invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, RexxStringObject method, RexxArrayObject args)
 {
     c->SendMessage2(obj, "STARTWITH", method, args);
     return ReplyTrue;
@@ -987,7 +986,7 @@ static MsgReplyType invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, Rexx
  * @remarks  Earlier versions of ooDialog, on the C++ side, constructed a method
  *           invocation string, placed it on a queue, and returned immediately
  *           to the message processing loop.  On the Rexx side, the string was
- *           pulled from the queue and the event hanler method invoked through
+ *           pulled from the queue and the event handler method invoked through
  *           interpret.  This meant that the Rexx programmer could never block
  *           the window loop, but also could never reply to any window message.
  *
@@ -1248,6 +1247,63 @@ static void getItemIndexFromHitPoint(LPNMITEMACTIVATE pIA, HWND hwnd)
         }
     }
 }
+
+/**
+ * Generic function to send a WM_MOUSEWHEEL notification to the Rexx dialog
+ * object.
+ *
+ * It is used for Edit::ignoreMouseWheel() and also
+ * EventNotification::connectMouseWheel().
+ *
+ *
+ * @param mwd
+ * @param wParam
+ * @param lParam
+ *
+ * @return bool
+ */
+bool mouseWheelNotify(PMOUSEWHEELDATA mwd, WPARAM wParam, LPARAM lParam)
+{
+    RexxThreadContext *c = mwd->dlgProcContext;
+
+    int   state    = GET_KEYSTATE_WPARAM(wParam);
+    short delta    = GET_WHEEL_DELTA_WPARAM(wParam);
+    char  buf[256] = {0};
+
+    if ( state == 0 )
+    {
+        strcpy(buf, "None");
+    }
+    else
+    {
+        if ( state & MK_CONTROL  ) strcat(buf, "Control ");
+        if ( state & MK_LBUTTON  ) strcat(buf, "lButton ");
+        if ( state & MK_MBUTTON  ) strcat(buf, "mButton ");
+        if ( state & MK_RBUTTON  ) strcat(buf, "rButton ");
+        if ( state & MK_SHIFT    ) strcat(buf, "Shift ");
+        if ( state & MK_XBUTTON1 ) strcat(buf, "xButton1 ");
+        if ( state & MK_XBUTTON1 ) strcat(buf, "xButton2 ");
+
+        buf[strlen(buf)] = '\0';
+    }
+
+    RexxObjectPtr    rxDelta = c->WholeNumber(delta);
+    RexxStringObject rxState = c->String(buf);
+    RexxObjectPtr    rxPoint = rxNewPoint(c, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+
+    RexxArrayObject args = c->ArrayOfThree(rxDelta, rxState, rxPoint);
+
+    if ( mwd->willReply )
+    {
+        return invokeDirect(c, mwd->ownerDlg, mwd->method, args);
+    }
+    else
+    {
+        invokeDispatch(c, mwd->ownerDlg, c->String(mwd->method), args);
+    }
+    return true;
+}
+
 
 MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
@@ -2170,6 +2226,30 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
 
                         default :
                             break;
+                    }
+                    break;
+
+                case TAG_MOUSE :
+                    switch ( msg )
+                    {
+                        case WM_MOUSEWHEEL :
+                        {
+                            MOUSEWHEELDATA mwd;
+
+                            mwd.dlgProcContext = c;
+                            mwd.ownerDlg       = pcpbd->rexxSelf;
+                            mwd.method         = m[i].rexxMethod;
+                            mwd.willReply      = (m[i].tag & TAG_EXTRAMASK) == TAG_REPLYFROMREXX;
+
+                            mouseWheelNotify(&mwd, wParam, lParam);
+
+                            return ReplyTrue;
+                        }
+                        break;
+
+                        default :
+                            break;
+
                     }
                     break;
 

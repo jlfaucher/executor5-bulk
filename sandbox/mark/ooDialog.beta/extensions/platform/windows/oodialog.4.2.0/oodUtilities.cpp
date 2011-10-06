@@ -789,6 +789,11 @@ RexxMethod1(RexxStringObject, dlgutil_version_cls, OPTIONAL_CSTRING, format)
 {
     char buf[64];
 
+    if ( argumentOmitted(1) )
+    {
+        format = "F";
+    }
+
     switch ( toupper(*format) )
     {
         case 'L' :
@@ -799,7 +804,7 @@ RexxMethod1(RexxStringObject, dlgutil_version_cls, OPTIONAL_CSTRING, format)
             _snprintf(buf, sizeof(buf), "%u.%u.%u.%u", ORX_VER, ORX_REL, ORX_MOD, OOREXX_BLD);
             break;
 
-        case '\0' :
+        case 'F' :
         default :
             _snprintf(buf, sizeof(buf), "ooDialog Version %u.%u.%u.%u (an ooRexx Windows Extension)",
                       ORX_VER, ORX_REL, ORX_MOD, OOREXX_BLD);
@@ -817,6 +822,16 @@ RexxMethod1(uint16_t, dlgutil_loWord_cls, uint32_t, dw) { return LOWORD(dw); }
 
 RexxMethod2(intptr_t, dlgutil_makeLPARAM_cls, int16_t, loWord, int16_t, hiWord) { return MAKELPARAM(loWord, hiWord); }
 RexxMethod2(uintptr_t, dlgutil_makeWPARAM_cls, int16_t, loWord, int16_t, hiWord) { return MAKEWPARAM(loWord, hiWord); }
+
+RexxMethod1(uintptr_t, dlgutil_unsigned_cls, intptr_t, n1)
+{
+    return (uintptr_t)n1;
+}
+
+RexxMethod1(intptr_t, dlgutil_signed_cls, uintptr_t, n1)
+{
+    return (intptr_t)n1;
+}
 
 RexxMethod2(uint64_t, dlgutil_shiftLeft_cls, uint64_t, n1, uint16_t, amount)
 {
@@ -1249,6 +1264,16 @@ RexxMethod1(RexxObjectPtr, window_unInit, CSELF, pCSelf)
 #define POINT_CLASS  "Point"
 
 
+RexxMethod1(RexxObjectPtr, point_init_cls, OSELF, self)
+{
+    if ( isOfClassType(context, self, POINT_CLASS) )
+    {
+        ThePointClass = (RexxClassObject)self;
+        context->RequestGlobalReference(ThePointClass);
+    }
+    return NULLOBJECT;
+}
+
 RexxMethod2(RexxObjectPtr, point_init, OPTIONAL_int32_t,  x, OPTIONAL_int32_t, y)
 {
     RexxBufferObject obj = context->NewBuffer(sizeof(POINT));
@@ -1357,6 +1382,25 @@ RexxMethod3(RexxObjectPtr, point_decr, OPTIONAL_int32_t, x, OPTIONAL_int32_t, y,
     }
 
     return NULLOBJECT;
+}
+
+/** Point::inRect
+ *
+ *  Determines if this point is in the specified rectangle.  The rectangle must
+ *  be normalized, that is, rect.right must be greater than rect.left and
+ *  rect.bottom must be greater than rect.top. If the rectangle is not
+ *  normalized, a point is never considered inside of the rectangle.
+ */
+RexxMethod2(logical_t, point_inRect, RexxObjectPtr, rect, CSELF, p)
+{
+    PRECT r = rxGetRect(context, rect, 1);
+    if ( r != NULL )
+    {
+        POINT pt = {((POINT *)p)->x, ((POINT *)p)->y};
+        return PtInRect(r, pt);
+    }
+
+    return FALSE;
 }
 
 /**
