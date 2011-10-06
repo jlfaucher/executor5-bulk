@@ -231,8 +231,7 @@ Help request:
     <listitem>
     <para>
       The name of the method that is invoked each time the size of the dialog has changed. The method name can not be the
-      empty string and must be less than 256 characters in length. When this argument is omitted the name defaults to
-      <emphasis role="italic">onResize</emphasis>.
+      empty string. When this argument is omitted the name defaults to <emphasis role="italic">onResize</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -837,8 +836,8 @@ Help request:
     <listitem>
     <para>
       The name of the event handling method that to be invoked when the the size / move exit event occurs. The name must
-      not be the empty string and must be less than 256 characters in length. When this argument is omitted the name
-      defaults to <emphasis role="italic">onSizeMoveEnded</emphasis>.
+      not be the empty string. When this argument is omitted the name defaults to <emphasis
+      role="italic">onSizeMoveEnded</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>willReply [optional]</term>
@@ -976,9 +975,8 @@ Help request:
     <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
-      The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string
-      and it must be less than 256 characters in length. When this argument is omitted the name defaults to <emphasis
-      role="italic">onMove</emphasis>.
+      The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string.
+      When this argument is omitted the name defaults to <emphasis role="italic">onMove</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1069,9 +1067,8 @@ Help request:
     <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
-      The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string
-      and it must be less than 256 characters in length. When this argument is omitted the name defaults to <emphasis
-      role="italic">onPosChanged</emphasis>.
+      The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string.
+      When this argument is omitted the name defaults to <emphasis role="italic">onPosChanged</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1172,8 +1169,8 @@ Help request:
       <listitem>
       <para>
         The name of the method that is to be invoked each time the draw control event occurs. The method name must not be
-        the empty string and must be less than 256 characters in length. If this argument is omitted, then the ooDialog
-        framework will connect the notification to the <computeroutput>onDraw</computeroutput> method.
+        the empty string. If this argument is omitted, then the ooDialog framework will connect the notification to the
+        <computeroutput>onDraw</computeroutput> method.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1252,8 +1249,7 @@ Help request:
       <listitem>
       <para>
         The nane of the method that will be invoked upon receiving this event notification. The name can not be the empty
-        string and must be less than 256 characters in length. When this argument is omitted the name defaults to <emphasis
-        role="italic">onMouseCapture</emphasis>.
+        string. When this argument is omitted the name defaults to <emphasis role="italic">onMouseCapture</emphasis>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2165,7 +2161,7 @@ Help request:
     <listitem>
     <para>
       The name of the method to be invoked in the Rexx dialog object each time a command event occurs in the dialog
-      control. The method name can not be the empty string and must be shorter than 256 characters in length.
+      control. The method name can not be the empty string.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2465,9 +2461,9 @@ lo word resource ID:       1003
     <listitem>
     <para>
       The method that is to be invoked whenever the specified notification is received from the static control. The
-      programmer defines this method. The method name can not be the empty string and must be less than 256 characters
-      in length. If this argument is omitted, a method name is automatically generated that consists of the event
-      keyword preceded by <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
+      programmer defines this method. The method name can not be the empty string. If this argument is omitted, a
+      method name is automatically generated that consists of the event keyword preceded by
+      <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
     </para>
     </listitem></varlistentry>
     </variablelist>
@@ -2659,8 +2655,7 @@ lo word resource ID:       1003
         The name of the method to inovke whenever the specified notification is received from the button control. Provide
         a method with a matching name. If you omit this argument, a method name is generated automatically. The name
         consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance:
-        <computeroutput>onGotFocus</computeroutput>. The method name can not be the empty string and must be less than 256
-        characters in length.
+        <computeroutput>onGotFocus</computeroutput>. The method name can not be the empty string.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3524,7 +3519,6 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
 </variablelist>
 </section>
 
-
 </section>
 
 <section id="mthConnectListViewEvent"><title>connectListViewEvent</title>
@@ -3693,9 +3687,9 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
     <listitem>
     <para>
       The name of the event handling method. This method is invoked each time the specified event occurs for the list
-      view control. The method name can not be the empty string and must be less than 256 characters in length. If you
-      omit this argument, the event handler method name is generated for you. This name will be the event keyword,
-      preceded by <computeroutput>On</computeroutput>. For example: <emphasis role="italic">onColumnClick</emphasis>.
+      view control. The method name can not be the empty string. If you omit this argument, the event handler method
+      name is generated for you. This name will be the event keyword, preceded by <computeroutput>On</computeroutput>.
+      For example: <emphasis role="italic">onColumnClick</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4200,8 +4194,7 @@ self~connectEachSBEvent(255,"Increase","Decrease","Drag",1,20,6)
       The name of the event handling method. This method is invoked each time the specified event occurs for the tree
       view control. If you omit this argument, the method name is generated for you. This name will be the event
       keyword, preceded by <computeroutput>on</computeroutput>. For example: <emphasis
-      role="italic">onExpanded</emphasis>. The method name can not be the empty string and must be less than 256
-      characters in length
+      role="italic">onExpanded</emphasis>. The method name can not be the empty string.
     </para>
     </listitem></varlistentry>
   </variablelist> </listitem></varlistentry>
@@ -4645,9 +4638,9 @@ trackbar position by extracting the high-oder word. Example:
     <listitem>
       <para>
         The method that is to be invoked whenever the specified notification is received from the static control. The
-        programmer defines this method. The method name can not be the empty string and must be less than 256 characters
-        in length. If this argument is omitted, a method name is automatically generated that consists of the event
-        keyword preceded by <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
+        programmer defines this method. The method name can not be the empty string. If this argument is omitted, a
+        method name is automatically generated that consists of the event keyword preceded by
+        <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
       </para>
     </listitem></varlistentry>
     </variablelist>
@@ -4828,8 +4821,7 @@ trackbar position by extracting the high-oder word. Example:
         The name of the method that is to be invoked whenever the specified notification is received from the month
         calendar control. The programmer defines this method. If this argument is omitted, a method name is
         automatically generated that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For
-        instance, <computeroutput>onGetDayState</computeroutput>. The method name can not be the empty string and must
-        be less than 256 characters in length.
+        instance, <computeroutput>onGetDayState</computeroutput>. The method name can not be the empty string.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>willReply [optional]</term>
@@ -5327,8 +5319,7 @@ trackbar position by extracting the high-oder word. Example:
         The name of the method that is to be invoked whenever the specified notification is received from the up-down
         control. The programmer defines this method. If this argument is omitted, a method name is automatically
         generated that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
-        <computeroutput>onDeltaPos</computeroutput>. The method name can not be the empty string and must be less
-        than 256 characters in length.
+        <computeroutput>onDeltaPos</computeroutput>. The method name can not be the empty string.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5480,103 +5471,326 @@ trackbar position by extracting the high-oder word. Example:
 
 <section id="mthAddUserMsg"><title>addUserMsg</title>
 <indexterm><primary>addUserMsg</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>addUserMsg</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>addUserMsg</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addUserMsg(-msg-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-)-><
-                             +-,-f1-+ +-,-wParam-+ +-,-f2-+ +-,-lParam-+ +-,-f3-+
+>>--addUserMsg(-rxMsg-,-winMsg-+------+-+------+-+------+-+------+-+------+-)--><
+                               +-,-f1-+ +-,-wP-+ +-,-f2-+ +-,-lP-+ +-,-f3-+
 
 ]]>
 </programlisting>
 
-<para>The addUserMsg method connects a Windows message with an Object Rexx
-method. This method is designed to be used by ooDialog programmers who are
-familiar with the Windows API.
+<para>
+  The <emphasis role="italic">addUserMsg</emphasis> method connects a Windows window <link
+  linkend="ovvWindowMessages">message</link> sent to the <link linkend="ovvUnderlying">underlying</link> dialog with a
+  method in the Rexx dialog. This method is designed to be used by ooDialog programmers who are familiar with the
+  Windows API. It's use will require access to the <link linkend="defWindowsDoc">Windows documentation</link> at a
+  minimum, and will likely also require access to the Windows header files in the <link linkend="defPlatformSDK">Windows
+  platform SDK</link>.
 </para>
-<para>You have to pass the Windows message ID and the two message parameters
-(wParam and lParam) to specify the exact event you want to catch. In addition,
-you can specify filters for each parameter. Filters are useful for catching more
-than one message or one parameter with one method.
-</para>
-<para>Details for all Windows messages and their parameters are available in the
-<link linkend="defWindowsDoc">Windows documentation</link>.  The numeric value of
-the message IDs (and possibly the message parameters) can be looked up in the
-<link linkend="defPlatformSDK">Windows platform SDK</link>.
+<para>
+  Internally, ooDialog examines every window message the Windows dialog receives. If the window message matches the
+  arguments specified to <emphasis role="italic">addUserMsg</emphasis>, ooDialog invokes the method specified by
+  <emphasis role="italic">rxMsg</emphasis>.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>msg</term>
-<listitem>
-<para>
-  The message that is to be sent to the Object Rexx dialog object each time
-the specified Windows message is caught. Provide a method with the
-same name. The maximum size for a message is limited to 256 characters.
-</para></listitem></varlistentry>
-<varlistentry><term>winMsg</term>
-<listitem><para>The message in the Windows environment that is to be caught.
-</para></listitem></varlistentry>
-<varlistentry><term>f1</term>
-<listitem><para>This filter is used to binary AND the incoming Windows message.
-</para></listitem></varlistentry>
-<varlistentry><term>wParam</term>
-<listitem><para>This is the first parameter that must be passed with the Windows message.
-</para></listitem></varlistentry>
-<varlistentry><term>filt2</term>
-<listitem><para>This filter is used to binary AND the <emphasis role="italic">wParam</emphasis> argument.
-</para></listitem></varlistentry>
-<varlistentry><term>lParam</term>
-<listitem><para>This is the second message parameter.
-</para></listitem></varlistentry>
-<varlistentry><term>filt3</term>
-<listitem><para>This is the filter for <emphasis role="italic">lParam</emphasis>.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    All arguments, except for <emphasis role="italic">rxMsg</emphasis>, represent non-negative whole numbers. For
+    convenience, the programmer can either use the numeric value for these argument, or the numbers can be expressed in
+    conventional <link linkend="defConventionalHex">hexadecimal</link> format.
+  </para>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>rxMsg [required]</term>
+      <listitem>
+      <para>
+        The method in the Rexx dialog to invoke when, or if, the window message, <emphasis
+        role="italic">winMsg</emphasis> is sent to the underlying dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>winMsg [required]</term>
+      <listitem>
+      <para>
+        The numeric value of the window message to match.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>f1 [optional]</term>
+      <listitem>
+      <para>
+        A filter to apply to the <emphasis role="italic">winMsg</emphasis>. The filter is bitwise <emphasis
+        role="italic">anded</emphasis> with <emphasis role="italic">winMsg</emphasis> and if the result equals <emphasis
+        role="italic">winMsg</emphasis>, it is considered a match. If omitted a filter of 0xFFFFFFFF is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>wP [optional]</term>
+      <listitem>
+      <para>
+        The numeric value of the <link linkend="ovvWindowMessages">WPARAM</link> parameter in the window message to
+        match. This defaults to 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>f2 [optional]</term>
+      <listitem>
+      <para>
+        A filter to apply to the <emphasis role="italic">wP</emphasis> argument. The filter is bitwise <emphasis
+        role="italic">anded</emphasis> with <emphasis role="italic">wP</emphasis> and if the result equals <emphasis
+        role="italic">wP</emphasis>, it is considered a match. If omitted a filter of 0 is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>lP [optional]</term>
+      <listitem>
+      <para>
+        The numeric value of the <link linkend="ovvWindowMessages">LPARAM</link> parameter in the window message to
+        match. This defaults to 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>f3 [optional]</term>
+      <listitem>
+      <para>
+        A filter to apply to the <emphasis role="italic">lP</emphasis> argument. The filter is bitwise <emphasis
+        role="italic">anded</emphasis> with <emphasis role="italic">lP</emphasis> and if the result equals <emphasis
+        role="italic">lP</emphasis>, it is considered a match. If omitted a filter of 0 is used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return value is 0 for success and 1 for failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method is not intended for every ooDialog programmer. In particular, it requires some understanding of window
+    messages, the message parameters, and bitwise and. If the ooDialog programmer does not know what a bitwise and is,
+    that is a good indication that this method is not for them.
+  </para>
+  <para>
+    Details for all window messages and their parameters are available in the Windows <link
+    linkend="defWindowsDoc">documentation</link>. The numeric value of the message IDs (and possibly the message
+    parameters) can be looked up in the <link linkend="defPlatformSDK">Windows platform SDK</link>.
+  </para>
+  <para>
+    In all cases, it is preferable to use specific connect event methods provided by ooDialog.  Such as <link
+    linkend="mthConnectEditEvent">connectEditEvent</link>, <link linkend="mthConnectResize">connectResize</link>, etc..
+    <emphasis role="italic">addUserMsg</emphasis> is provided for those cases where the specific connect event method
+    the programmer needs is not present in ooDialog.
+  </para>
+  <para>
+    Note that the arguments the event handling method receives will be the numeric value of the WPARAM and LPARAM
+    parameters for the window message. If either WPARAM or LPARAM are pointers, the numeric value will not do the
+    ooDialog programmer any good. There is no way in ooDialog Rexx code to access whatever the pointer points to. (The
+    exception to this would be if ooDialog already had a connect event method for the specific window message. In which
+    case there is no need to use <emphasis role="italic">addUserMsg</emphasis>.)
+  </para>
+  <para>
+    Filters can be used to ensure that only the specific message desired is connected to the Rexx method, or to match
+    several messages and connect them to the same Rexx method.
+  </para>
+  <para>
+    Take the window messages WM_KEYDOWN (0x0100) and WM_KEYUP (0x0101.) When
+<programlisting>
+<![CDATA[
+
+  winMsg == '0x0100'
+  f1     == '0xFFFF'
+  addUserMsg('onKeyDown', winMsg, f1, 0, 0, 0, 0)
+
+]]>
+</programlisting>
+    only the WM_KEYDWN message will match and <emphasis role="italic">onKeyDown</emphasis> is only invoked for that
+    message.
+  </para>
+  <para>
+    However, when
+<programlisting>
+<![CDATA[
+
+  winMsg == '0x0100'
+  f1     == '0xFFFE'
+  addUserMsg('onKey', winMsg, f1, 0, 0, 0, 0)
+
+]]>
+</programlisting>
+    both the WM_KEYDOWN and WM_KEYUP messages will match and the <emphasis role="italic">onKey</emphasis> method will be
+    invoked for either window message.
+  </para>
+  <para>
+    In a similar fashion, both the LBN_SETFOCUS (0x4) and the LBN_KILLFOCUS (0x5) notifications are sent to a list box
+    using the WM_COMMAND (0x0111) message.  For the WM_COMMAND message, the WPARAM parameter contains the control ID in
+    the low word of the parameter and the notfication code in the high word of the parameter.
+  </para>
+  <para>
+    Say the list box control has an ID of 256 (0xFF,) when
+<programlisting>
+<![CDATA[
+
+  winMsg == '0x0111'
+  f1     == '0xFFFF'
+
+  wP     == '0x000400FF'
+  f2     == '0xFFFFFFFF'
+  addUserMsg('onSetFocus', winMsg, f1, wP, f2, 0, 0)
+
+]]>
+</programlisting>
+   only the LBN_SETFOCUS notification sent to the list box with ID of 256 will invoke the <emphasis
+   role="italic">onSetFocus</emphasis> method.
+  </para>
+  <para>
+   However, in this case
+<programlisting>
+<![CDATA[
+
+  winMsg == '0x0111'
+  f1     == '0xFFFF'
+
+  wP     == '0x000400FF'
+  f2     == '0xFFFEFFFF'
+  addUserMsg('onFocus', winMsg, f1, wP, f2, 0, 0)
+
+]]>
+</programlisting>
+    both the LBN_SETFOCUS and LBN_KILLFOCUS notifications to the listbox will invole the <emphasis
+  role="italic">onFocus</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleAddUserMsg"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The WM_CANCELMODE message is sent to cancel certain modes, such as mouse capture. This example shows how an ooDialog
+    program that captures the mouse for some reason could add an event handler for the WM_CANCELMODE message and release
+    the mouse if the program had currently captured it. This is a hypothetical situation intended to show how to use the
+    <emphasis role="italic">addUserMsg</emphasis> method and not necessarily of any practical value.
+<programlisting>
+<![CDATA[
+
+::method init
+    expose mouseIsCaptured
+    ...
+
+    WM_CANCELMODE = '0x001F'
+    ret = self~addUserMsg('onCancelMode', WM_CANCELMODE, '0xFFFF', 0, 0, 0, 0)
+    if ret == 1 then do
+        -- Do some error handling stuff.
+        -- But, really this is unlikely to happen.
+    end
+
+    mouseIsCaptured = .false
+
+
+::method doCaptureMouse private
+    expose mouseIsCaptured
+
+    self~captureMouse
+    mouseIsCaptured = .true
+
+    ...  -- more code
+
+
+::method onCancelMode unguarded
+    expose mouseIsCaptured
+    use arg wParam, lParam
+
+    -- For WM_CANCELMODE wParam and lParam have no meaning.
+
+    if mouseIsCaptured then do
+        self~releaseMouseCapture
+        mouseIsCaptured = .false
+
+        ...  -- maybe some more code
+    end
+
+    return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem>
-<para>
-  TODO REWRITE THIS EXAMPLE TO CREATE A NEW METHOD, connectButtonClick. The following example shows an implementation of
-  the ConnectList method:
-</para>
+
+
+<section id="evtAddUserMsg"><title>addUserMsg Event Handler</title>
+<indexterm><primary>addUserMsg</primary><secondary>events</secondary><tertiary>generic</tertiary></indexterm>
 
 <programlisting>
 <![CDATA[
-::class BaseDialog
-      .
-      .
-      .
-::method ConnectList
-  use arg msgToRaise, id
-  self~addUserMsg(msgToRaise, "0x00000111", "0xFFFFFFFF", ,
-                 "0x0001"||id~d2x(4), "0xFFFFFFFF", 0, 0)
+::method onEvent unguarded
+  use arg wParam, lParam
+
+  return 0
 ]]>
 </programlisting>
-<para>Assume that this method is called with ID=254 and msgToRaise=&quot;ListChanged&quot;.
-After the ConnectList is executed, the ListChanged message is sent to the Object Rexx dialog object if the following
-conditions are true: </para>
-<itemizedlist>
-<listitem><para>Message &quot;0x00000111&quot; (WM_COMMAND) is generated by Windows in
-answer to an event (for example, a button is clicked or a list has changed).
-The filter &quot;0xFFFFFFFF&quot; ensures that only that message is caught;
-if the filter were &quot;0xFFFFEFFF&quot;, the message &quot;0x00001111&quot;
-would be caught as well.</para></listitem>
-<listitem><para>The first message parameter is &quot;0x000100FF&quot;. The first part, &quot;0x0001&quot;,
-specifies the event, and the second part, &quot;0x00FE&quot; (equals decimal
-254), specifies the dialog control where the event occurred. By using another
-filter it is possible to make more than one event a trigger for the ListChanged method; for example, filter &quot;0xFFFFFFFE&quot; would ignore
-the last bit of the ID, and this the same event for dialog item 255 would
-call ListChanged as well.</para></listitem>
-<listitem><para>The second message parameter and its filter are ignored.</para></listitem></itemizedlist>
-<para>The following example invokes a user-defined method <computeroutput>DoubleClick</computeroutput> each time the left mouse button is double-clicked: </para>
-<programlisting>
-<![CDATA[
-self~addUserMsg("DoubleCick","0x00000203","0xFFFFFFFF",0,0,0,0)
-]]>
-</programlisting>
-</listitem></varlistentry>
+
+<para>
+  The event handler connected through the <link linkend="mthAddUserMsg">addUserMsg</link> is invoked when ooDialog
+  internally matches a message sent to the <link linkend="ovvUnderlying">underlying</link> Windows dialog using the
+  arguments specified by the programmer in the invocation of the <emphasis role="italic">addUserMsg</emphasis> method.
+</para>
+<para>
+  The default behavior is for ooDialog to ignore the return value from the event handler and the interpreter does not
+  wait for the return in the message processing loop. Currently, this behavior can not be changed. It is possible
+  that a future enhancement may allow the programmer to change the behavior.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves two arguments. However, as noted in the remarks for the <link
+    linkend="mthAddUserMsg">addUserMessage</link> this does not hold if ooDialog already has a connect event method for
+    the window message. In which case, the programmer should use the existing method, rather than <emphasis
+    role="italic">addUserMsg</emphasis>.
+  </para>
+  <variablelist>
+    <varlistentry><term>wParam</term>
+    <listitem>
+    <para>
+      The <link linkend="ovvWindowMessages">WPARAM</link> parameter to the window message that was connected through
+      <emphasis role="italic">addUserMsg</emphasis>. This will be the numeric value of WPARAM and may or may not be of
+      use to the programmer depending on the specific window message.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam</term>
+    <listitem>
+    <para>
+      The <link linkend="ovvWindowMessages">LPARAM</link> parameter to the window message that was connected through
+      <emphasis role="italic">addUserMsg</emphasis>. Again, this will be the numeric value of LPARAM and may or may not
+      be of use to the programmer depending on the specific window message.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    Currently the return value from the event handler is ignored. A possible future enhancement to <emphasis
+   role="italic">addUserMsg</emphasis> may make it possible to return a meaningful value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleAddUserMsg">example</link> for <emphasis role="italic">addUserMsg</emphasis> shows how a
+    typical event handler might be coded.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End Generic Event Handler -->
+
+</section>  <!-- End EventNotification::addUserMsg() -->
 
 <section id="mthDefListDragHandler"><title>defListDragHandler</title>
 <indexterm><primary>defListDragHandler</primary></indexterm>
