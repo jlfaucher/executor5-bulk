@@ -226,6 +226,13 @@ Section  doSwitch
     File "${SamplesDir420}\menus\*.rc"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\mouse
+    ; Add the files ...
+    File "${SamplesDir420}\mouse\*.rex"
+    File "${SamplesDir420}\mouse\*.h"
+    File "${SamplesDir420}\mouse\*.rc"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\oleinfo
     ; Add the files ...
     File "${SamplesDir420}\oleinfo\*.rex"
@@ -250,7 +257,6 @@ Section  doSwitch
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\res
     ; Add the files ...
-    File "${SamplesDir420}\res\*.res"
     File "${SamplesDir420}\res\*.dll"
 
     ; Set the installation directory:
@@ -340,6 +346,58 @@ Section  doSwitch
     File "${SamplesDir420}\userGuide\exercises\Exercise05\res\res.mak"
     File "${SamplesDir420}\userGuide\exercises\Exercise05\res\ProductView.dll"
     File "${SamplesDir420}\userGuide\exercises\Exercise05\res\ProductIcon.bmp"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Customer
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Customer\bmp
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\bmp\*.ico"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\bmp\*.bmp"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Order
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Order\bmp
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\bmp\*.ico"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\bmp\*.bmp"
+
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\OrderMgmt
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgmt\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgmt\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgmt\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Product
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Product\res
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\res\*.ico"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\res\*.bmp"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\res\*.dll"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\res\res.mak"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples
@@ -785,6 +843,9 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoListView.bmp
     Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoTab.bmp
     Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoTreeView.bmp
+    Delete $INSTDIR\samples\oodialog\bmp\TabOwnerDemoListView.bmp
+    Delete $INSTDIR\samples\oodialog\bmp\TabOwnerDemoTab.bmp
+    Delete $INSTDIR\samples\oodialog\bmp\TabOwnerDemoTreeView.bmp
     Delete $INSTDIR\samples\oodialog\bmp\ticketWizardMovie.bmp
     Delete $INSTDIR\samples\oodialog\bmp\ticketWizardRexxLA.bmp
     Delete $INSTDIR\samples\oodialog\bmp\ticketWizardTheater.bmp
@@ -809,6 +870,7 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\examples\resources\useTools.h
     Delete $INSTDIR\samples\oodialog\examples\useTools.rex
     RMDir /r $INSTDIR\samples\oodialog\menus
+    RMDir /r $INSTDIR\samples\oodialog\mouse
     Delete $INSTDIR\samples\oodialog\oodListViews.rex
     Delete $INSTDIR\samples\oodialog\ooDraw.h
     Delete $INSTDIR\samples\oodialog\PropertySheetDemo.rex
@@ -817,11 +879,14 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.h
     Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.rc
     Delete $INSTDIR\samples\oodialog\rc\TabDemo.h
+    Delete $INSTDIR\samples\oodialog\rc\TabOwnerDemo.h
+    Delete $INSTDIR\samples\oodialog\rc\TabOwnerDemo.rc
     Delete $INSTDIR\samples\oodialog\rc\ticketWizard.h
     Delete $INSTDIR\samples\oodialog\rc\ticketWizard.rc
     RMDir /r $INSTDIR\samples\oodialog\simple
     Delete $INSTDIR\samples\oodialog\sysinfo\sysInfo.h
     Delete $INSTDIR\samples\oodialog\TabDemo.rex
+    Delete $INSTDIR\samples\oodialog\TabOwnerDemo.rex
     Delete $INSTDIR\samples\oodialog\ticketWizard.rex
     Delete $INSTDIR\samples\oodialog\tutorial\employe7.h
     RMDir /r $INSTDIR\samples\oodialog\userGuide
