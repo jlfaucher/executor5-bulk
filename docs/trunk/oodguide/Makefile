@@ -52,6 +52,7 @@ xml_FILES = oodguide.xml \
 	     Chapter03.xml \
 	     Chapter04.xml \
 	     Chapter05.xml \
+	     Chapter06.xml \
 	     preface.xml \
 	     ../shared/notices.xml \
 	     ../shared/legalstuff.xml \
