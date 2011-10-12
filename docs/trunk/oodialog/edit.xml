@@ -2294,7 +2294,7 @@ The new left margin is 10 and the new right margin is 5
     window rectangle is the client area of the window containing the edit control. The formatting rectangle is an
     artificial construct maintained by the operating system and used to format the text. The formatting rectangle can be
     set to be larger than the window rectangle, which will limit what can be seen of the text. Or the formatting
-    rectangel can be made smaller than the window rectangle, which will create more white space around the text.
+    rectangle can be made smaller than the window rectangle, which will create more white space around the text.
   </para>
   <para>
     The coordinates of an edit control's formatting rectangle can be set through the <link
@@ -2338,7 +2338,7 @@ The new left margin is 10 and the new right margin is 5
 </programlisting>
 
 <para>
-  xx
+  Sets the formatting rectangle for the edit control, or resets it to the default.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2346,10 +2346,19 @@ The new left margin is 10 and the new right margin is 5
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>rect [required.]</term>
       <listitem>
       <para>
-        xx
+        A <link linkend="clsRect">.Rect</link> object that contains the new co-ordinates for the formatting rectangle,
+        or 0. If <emphasis role="italic">rect</emphasis> is 0, the formatting rectangle is reset to its default.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>redraw [opitional]</term>
+      <listitem>
+      <para>
+        True or false, indicating if the edit control should redraw itself or not. The default is true. When <emphasis
+        role="italic">redraw</emphasis> is true, the edit control immediately redraws itself after changing the
+        formatting rectangle. When false, the redrawing is not done.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2358,13 +2367,17 @@ The new left margin is 10 and the new right margin is 5
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The visibility of the text in an edit control is dependent on its window rectangle and its formatting rectangle. The
+    window rectangle is the client area of the window containing the edit control. The formatting rectangle is an
+    artificial construct maintained by the operating system and used to format the text. The formatting rectangle can be
+    set to be larger than the window rectangle, which will limit what can be seen of the text. Or the formatting
+    rectangle can be made smaller than the window rectangle, which will create more white space around the text.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2372,16 +2385,26 @@ The new left margin is 10 and the new right margin is 5
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the current formatting rectangle, then decreases its size by 4 pixels.  The edit control is
+    signaled to redraw itself.
 <programlisting>
 <![CDATA[
+
+::method addMoreBorder private
+  use strict arg editCtrl
+
+  fRect = editCtrl~getRect
+  fRect~left    -= 4
+  fRect~top     -= 4
+  fRect~right   -= 4
+  fRect~bottom -= 4
+
+  -- Second argument is not needed, .true is the default.
+  editCtrl~setRect(fRect, .true)
 
 ]]>
 </programlisting>

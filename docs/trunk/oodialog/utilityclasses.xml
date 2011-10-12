@@ -64,11 +64,11 @@
 <tbody>
 <row>
 <entry><link linkend="dotApplication">.application object</link></entry>
-<entry>.</entry>
+<entry>An instance of the <computeroutput>ApplicationManager</computeroutput> class that is present in all ooDialog programs.</entry>
 </row>
 <row>
 <entry><link linkend="dotConstDir">.constDir object</link></entry>
-<entry>.</entry>
+<entry>an ooRexx <computeroutput>.Directory</computeroutput> object used to resolove <link linkend="ovvSymbolicIDMechanism">symbolic</link> IDs.</entry>
 </row>
 <row>
 <entry><link linkend="dotSystemErrorCode">.systemErrorCode object</link></entry>
@@ -113,6 +113,14 @@
 <row>
 <entry><link linkend="clsSize">Size Class</link></entry>
 <entry>An object encapsulating a width and height dimension in a 2-D coordinate system.</entry>
+</row>
+<row>
+<entry><link linkend="clsSM">SM Class</link></entry>
+<entry>A class whose attributes reflect the system metrics or configuration setting of the computer.</entry>
+</row>
+<row>
+<entry><link linkend="clsSPI">SPI Class</link></entry>
+<entry>A class whose attributes reflect the system-wide parameters of the computer.</entry>
 </row>
 <row>
 <entry><link linkend="clsVK">VK Class</link></entry>
@@ -1763,13 +1771,13 @@ In the ok method thread ID:                 2344
 <indexterm><primary>ApplicationManager class</primary><secondary>defaultFont</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultFont(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--defaultFont(--+------------+--+-------------+--)------------><
+                  +--fontName--+  +-,-fontSize--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the application-wide default dialog font.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1777,10 +1785,18 @@ In the ok method thread ID:                 2344
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>fontName [optional]</term>
       <listitem>
       <para>
-        xx
+        The new font, the name of the font. If omitted the global font name is not changed. However, if both name and
+        size are omitted the font is set back to the default font and size. (See remarks.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontSize [optional]</term>
+      <listitem>
+      <para>
+        The new size for the default font. If omitted the global font name is not changed. However, if both name and
+        size are omitted the font is set back to the default font and size. (See remarks.)
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1789,33 +1805,24 @@ In the ok method thread ID:                 2344
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The programmer can change the global font back to the default font and font size by omitting both arguments.
+  </para>
+  <para>
+    The length of the font name must be less than 256 characters, otherwise a syntax condition is raised. This is the
+    only possible cause of failure. Note that since a syntax condition is raised on error, false will never actually be
+    returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3176,44 +3183,432 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 </section> <!-- End OS Class -->
 
 
+<section id="clsSM"><title>SM Class</title>
+<indexterm><primary>SM
+<para>
+  The <computeroutput>SM</computeroutput> class (System Metrics) reflects the system metrics or configuration setting of
+  the computer the Rexx program is running on. The class consists entirely of class attributes. For each attribute, the
+  value of the attribute is the value of a system metric or configuration setting.
+</para>
+<para>
+  System metric values and configuration settings can not be changed. The Rexx programmer can not assign a value to any
+  attribute of the <computeroutput>SM</computeroutput> class.  A syntax condition is raised if the programmer attemps to
+  change the value of an attribute.
+</para>
+<para>
+  In the <computeroutput>SM</computeroutput> class, all attributes that reflect dimensions are in pixels.  All
+  attributes whose attribute name starts with <emphasis role="italic">cx</emphasis> reflect widths. Likewise, attribute
+  names that start with <emphasis role="italic">cy</emphasis> reflect heights. System metrics can vary from display to
+  display.
+</para>
+
+<section id="sctMethodsSM"><title>Method Table</title>
+<para>
+  The following table lists the class attributes of the <computeroutput>SM</computeroutput> class:
+
+<table id="tblMethodsSM" frame="all"> <title>SM Class Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrCMouseButtons"></link>cMouseButtons</entry>
+<entry>The number of buttons on a mouse.</entry>
+</row>
+<row>
+<entry><link linkend="atrCxCursor"></link>cxCursor</entry>
+<entry>The width of a cursor, in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="atrCxVscroll"></link>cxVscroll</entry>
+<entry>The width of a vertical scroll bar, in pixels</entry>
+</row>
+<row>
+<entry><link linkend="atrCyCaption"></link>cyCaption</entry>
+<entry>The height of a caption area.</entry>
+</row>
+<row>
+<entry><link linkend="atrCyCursor"></link>cyCursor</entry>
+<entry>The height of a cursor.</entry>
+</row>
+<row>
+<entry><link linkend="atrCyHscroll"></link>cyHscroll</entry>
+<entry>The height of a horizontal scroll bar</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="atrCMouseButtons"><title>cMouseButtons (Attribute)</title>
+<indexterm><primary>cMouseButtons</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cMouseButtons</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cMouseButtons--------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the number of buttons on a mouse.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cMouseButtons get:</emphasis></term>
+  <listitem>
+  <para>
+    The number of buttons on a mouse, or zero if no mouse is installed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cMouseButtons set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cMouseButtons</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cMouseButtons() [attribute]  -->
+
+<section id="atrCxCursor"><title>cxCursor (Attribute)</title>
+<indexterm><primary>cxCursor</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cxCursor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cxCursor-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the width of a cursor, in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cxCursor get:</emphasis></term>
+  <listitem>
+  <para>
+    The width of a cursor, in pixels. The system cannot create cursors of other sizes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxCursor set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cxCursor</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cxCursor() [attribute]  -->
+
+<section id="atrCyCursor"><title>cyCursor (Attribute)</title>
+<indexterm><primary>cyCursor</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cyCursor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cyCursor-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the height of a cursor, in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cyCursor get:</emphasis></term>
+  <listitem>
+  <para>
+    The height of a cursor, in pixels. The system cannot create cursors of other sizes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cyCursor set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cyCursor</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cyCursor() [attribute]  -->
+
+<section id="atrCxVscroll"><title>cxVscroll (Attribute)</title>
+<indexterm><primary>cxVscroll</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cxVscroll</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cxVscroll------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the width of a vertical scroll bar.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cxVscroll get:</emphasis></term>
+  <listitem>
+  <para>
+    The width of a vertical scroll bar, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxVscroll set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cxVscroll</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cxVscroll() [attribute]  -->
+
+<section id="atrCyHscroll"><title>cyHscroll (Attribute)</title>
+<indexterm><primary>cyHscroll</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cyHscroll</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cyHscroll------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the height of a horizontal scroll bar.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cyHscroll get:</emphasis></term>
+  <listitem>
+  <para>
+    The height of a horizontal scroll bar, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cyHscroll set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cyHscroll</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cyHscroll() [attribute]  -->
+
+<section id="atrCyCaption"><title>cyCaption (Attribute)</title>
+<indexterm><primary>cyCaption</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cyCaption</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cyCaption------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The height of a caption area.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cyCaption get:</emphasis></term>
+  <listitem>
+  <para>
+    The height of a caption area, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cyCaption set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cyCaption</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cyCaption() [attribute]  -->
+
+
+</section> <!-- End SM Class -->
+
 <section id="clsSPI"><title>SPI Class</title>
 <indexterm><primary>SPI class</primary></indexterm>
 <para>
   The <computeroutput>SPI</computeroutput> class (System Parameters Information) reflects the system-wide parameters
-  of the computer the Rexx program is running on. The class consists entirely of class attributes. For each attribute,
+  of the computer the Rexx program is running on. The class mostly consists of class attributes. For each attribute,
   the value of the attribute is the value of a system parameter. Changing the value of the attribute changes the value
   of the system parameter.
 </para>
 <para>
-  xx
+  When a system-wide parameter is set, the operating system will optionally update the user profile and additionally
+  broadcast the WM_SETTINGCHANGE message to all top-level windows to notify them of the change. The programmer can
+  specify to do neither, update the profile only, or update the profile and broadcast the message. Specifying the action
+  to take is done through the <link linkend="atrUpdateFlag">upDateFlag</link> attribute.
 </para>
 
 <section id="sctMethodsSPI"><title>Method Table</title>
 <para>
   The following table lists the class attributes of the <computeroutput>SPI</computeroutput> class:
 
-<table id="tblMethodsSPI" frame="all"> <title>SPI Class Attribute Reference</title>
+<table id="tblMethodsSPI" frame="all"> <title>SPI Class Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Attribute</entry>
+<entry>Method</entry>
 <entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
+<row>
+<entry align="center"><emphasis role="bold">Constants</emphasis></entry>
+<entry align="center"><emphasis role="bold">Constants</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="cnstWHEEL_PAGESCROLL">WHEEL_PAGESCROLL</link></entry>
+<entry>Indicates a turn of the mouse wheel should scroll 1 page rather than some number of lines.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrUpdateFlag">updateFlag</link></entry>
+<entry>Defines additional actions to take when a system-wide parameter is set.</entry>
+</row>
+<row>
 <entry><link linkend="atrWheelScrollLines">wheelScrollLines</link></entry>
 <entry>Reflects the number of lines to scroll when the vertical mouse wheel is moved.</entry>
 </row>
 <row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry><link linkend="atrWorkArea">workArea</link></entry>
+<entry>Reflects the size of the work area of the screen.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </para>
 </section>
+
+<section id="cnstWHEEL_PAGESCROLL"><title>WHEEL_PAGESCROLL (Constant)</title>
+<indexterm><primary>WHEEL_PAGESCROLL</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>WHEEL_PAGESCROLL</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--val-=-.SPI~WHEEL_PAGESCROLL------------------><
+
+]]>
+</programlisting>
+
+<para>
+  <emphasis role="italic">WHEEL_PAGESCROLL</emphasis> is a value defined by the Windows <link
+  linkend="defPlatformSDk">SDK</link> that indicates a turn of one notch in the mouse wheel should scroll one page
+  rather than some number of lines. See the <link linkend="atrWheelScrollLines">wheelScrollLines</link> attribute more
+  more information on the mouse wheel.
+</para>
+</section>  <!-- End SPI::WHEEL_PAGESCROLL [constant]  -->
+
+<section id="atrUpDateFlag"><title>updateFlag (Attribute)</title>
+<indexterm><primary>updateFlag</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>updateFlag</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--updateFlag-----------------------------------><
+
+>>--updateFlag-=-newFlag-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">updateFlag</emphasis> attribute allows the programmer to direct the operating system to
+  update the user profile and to broadcast the WM_SETTINGCHANGE message when a system parameter value is changed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">updateFlag get:</emphasis></term>
+  <listitem>
+  <para>
+    Retrives the current value of the <emphasis role="italic">updateFlag</emphasis> attribute. The value is returned as
+    a key word and will be exactly one of these words: UpdateProfile SendChange None. The meaning of the key words is
+    explained below.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">updateFlag set:</emphasis></term>
+  <listitem>
+  <para>
+    Assign a key word to the <emphasis role="italic">updateFlag</emphasis> attribute to specify additional actions for
+    the operating system to take when changing a system parameter.
+  </para>
+  <para>
+    The key word must be exactly one of the following key words, case is not significant and only the first letter of
+    the word needs to be specified:
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>None         </member>
+      <member>UpdateProfile</member>
+      <member>SendChange   </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>None</term>
+      <listitem>
+      <para>
+        The operating system takes no additional action when the value of one of the system parameter attributes is
+        changed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>UpdateProfile</term>
+      <listitem>
+      <para>
+        When a system parameter attribute's value is changed, the operating system will also update the user profile.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SendChange</term>
+      <listitem>
+      <para>
+        When a system parameter attribute's value is changed, the operating system updates the user profile and
+        broadcasts the WM_SETTINGCHANGE message to all top-level windows to notify them of the change.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The value of the <emphasis role="italic">updateFlag</emphasis> attribute only comes into play when a new value is
+    assigned to a system parameter attribute.  <emphasis role="italic">updateFlag</emphasis> is ignored when the value
+    of a system parameter is retrieved. By default, <emphasis role="italic">updateFlag</emphasis> is set to None.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the WheelScrollLines system parameter to 5. It has the operating system update the user profile
+    and broadcasts the the setting changed message to all top-level windows so the applications currently running can
+    update their settings if needed. It then changes the <emphasis role="italic">updateFlag</emphasis> back to the
+    default.
+<programlisting>
+<![CDATA[
+
+  .SPI~updateFlag = 'SendChange'
+  .SPI~wheelScrollLines = 5
+  .SPI~updateFlag = 'N'
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::updateFlag() [attribute]  -->
 
 <section id="atrWheelScrollLines"><title>wheelScrollLines (Attribute)</title>
 <indexterm><primary>wheelScrollLines</primary></indexterm>
@@ -3256,6 +3651,9 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
@@ -3264,10 +3662,17 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
   <listitem>
   <para>
     This example retrieves the current setting for the wheel scroll lines and then scrolls the text in an edit control
-    the appropriate amount:
+    the appropriate amount. Note that this is a simplistic example. The code should really check if <emphasis
+    role="italic">scrollLines</emphasis> is 0, or .SPI~WHEEL_PAGESCROLL, or greater than the number of visible lines in
+    the edit control.
 <programlisting>
 <![CDATA[
 
+::method scrollUp private
+  use strict arg editCtrl
+
+  scrollLines = .SPI~wheelScrollLines
+  editCtrl~scrollCommand("UP", scrollLines)
 
 ]]>
 </programlisting>
@@ -3275,6 +3680,57 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End SPI::wheelScrollLines() [attribute]  -->
+
+<section id="atrWorkArea"><title>workArea (Attribute)</title>
+<indexterm><primary>workArea</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>workArea</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--workArea-------------------------------------><
+
+>>--workArea-=-rArea-----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the size of the work area on the screen as a <computeroutput>.Rect</computeroutput> object.  The work area is
+  the portion of the screen not hidden by the system taskbar or by application desktop toolbars.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">workArea get:</emphasis></term>
+  <listitem>
+  <para>
+    The value of the <emphasis role="italic">workArea</emphasis> attribute is a <link linkend="clsRect">Rect</link>
+    object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">workArea set:</emphasis></term>
+  <listitem>
+  <para>
+    Assign a <computeroutput>.Rect</computeroutput> object as the value of this attribute to change the current work
+    area.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When setting a new work area, the <computeroutput>.Rect</computeroutput> object specifies the new work area in
+    virtual screen coordinates. If the system has multiple display monitors, the operating system sets the work
+    area of the monitor that contains the specified rectangle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::workArea() [attribute]  -->
 
 
 </section> <!-- End SPI Class -->
