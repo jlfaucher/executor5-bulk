@@ -174,6 +174,10 @@
 <entry>Returns the width of the left and right margins of the edit control in a <computeroutput>Directory</computeroutput> object.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetRectClsEdit">getRect</link></entry>
+<entry>Returns the edit control's current formatting rectangle as a <computeroutput>.Rect</computeroutput> object</entry>
+</row>
+<row>
 <entry><link linkend="mthGetStyle">getStyle</link></entry>
 <entry>Returns the edit control's current style as a blank delimited list of style keywords.</entry>
 </row>
@@ -268,6 +272,10 @@
 <row>
 <entry><link linkend="mthSetReadOnly">setReadOnly</link></entry>
 <entry>Adds or removes the read only style for the edit control.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetRectClsEdit">setRect</link></entry>
+<entry>Sets the edit control's current formatting rectangle using a <computeroutput>.Rect</computeroutput> object</entry>
 </row>
 <row>
 <entry><link linkend="mthSetTabStops">setTabStops</link></entry>
@@ -2251,6 +2259,136 @@ The new left margin is 10 and the new right margin is 5
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Edit::margins() -->
+
+<section id="mthGetRectClsEdit"><title>GetRect</title>
+<indexterm><primary>getRect</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>getRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRect--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the current formatting rectangle of the edit control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    These method uses no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return from the <emphasis role="italic">getRect</emphasis> method is a <computeroutput>.Rect</computeroutput>
+    object containing the co-ordinates for the formatting rectangle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The visibility of the text in an edit control is dependent on its window rectangle and its formatting rectangle. The
+    window rectangle is the client area of the window containing the edit control. The formatting rectangle is an
+    artificial construct maintained by the operating system and used to format the text. The formatting rectangle can be
+    set to be larger than the window rectangle, which will limit what can be seen of the text. Or the formatting
+    rectangel can be made smaller than the window rectangle, which will create more white space around the text.
+  </para>
+  <para>
+    The coordinates of an edit control's formatting rectangle can be set through the <link
+    linkend="mthSetRectClsEdit">setRect</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example prints the formatting rectangle of an edit control:
+<programlisting>
+<![CDATA[
+
+::method showFormattingRect private
+  use strict arg editCtrl
+
+  fRect = editCtrl~getRect
+  say "Formatting rectangle: ("fRect~left',' fRect~top',' fRect~right',' fRect~bottom')'
+
+/* Output might be for instance:
+
+   Formatting rectangle: (2, 1, 562, 421)
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::getRect() -->
+
+
+<section id="mthSetRectClsEdit"><title>setRect</title>
+<indexterm><primary>setRect</primary><secondary>Edit class</secondary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>setRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRect(--rect--+-----------+--)-------------><
+                    +-,-redraw--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Edit::setRect() -->
 
 
 <section id="mthGetCue"><title>getCue</title>

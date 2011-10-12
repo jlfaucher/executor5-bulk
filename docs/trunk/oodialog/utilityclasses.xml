@@ -3173,9 +3173,111 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 </para>
 </section>  <!-- End OS::isAtLeastWindows7() [class method] -->
 
-
 </section> <!-- End OS Class -->
 
+
+<section id="clsSPI"><title>SPI Class</title>
+<indexterm><primary>SPI class</primary></indexterm>
+<para>
+  The <computeroutput>SPI</computeroutput> class (System Parameters Information) reflects the system-wide parameters
+  of the computer the Rexx program is running on. The class consists entirely of class attributes. For each attribute,
+  the value of the attribute is the value of a system parameter. Changing the value of the attribute changes the value
+  of the system parameter.
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsSPI"><title>Method Table</title>
+<para>
+  The following table lists the class attributes of the <computeroutput>SPI</computeroutput> class:
+
+<table id="tblMethodsSPI" frame="all"> <title>SPI Class Attribute Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Attribute</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="atrWheelScrollLines">wheelScrollLines</link></entry>
+<entry>Reflects the number of lines to scroll when the vertical mouse wheel is moved.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="atrWheelScrollLines"><title>wheelScrollLines (Attribute)</title>
+<indexterm><primary>wheelScrollLines</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>wheelScrollLines</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wheelScrollLines-----------------------------------------------------><
+
+>>--wheelScrollLines-=-count---------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the number of lines to scroll when the vertical mouse wheel is moved. The number is a non-negative whole
+  number. The system default is 3.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">wheelScrollLines get:</emphasis></term>
+  <listitem>
+  <para>
+    Retrieves the number of lines to scroll when the vertical mouse wheel is moved.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">wheelScrollLines set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the number of lines to scroll when the vertical mouse wheel is moved.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The wheel scroll lines is the suggested number of lines to scroll when the mouse wheel is rolled without using
+    modifier keys. If the number is 0, then no scrolling should occur. If the number of lines to scroll is larger than
+    the number of viewable lines, and especially if it is the <computeroutput>SPI</computeroutput> constant
+    WHEEL_PAGESCROLL (<computeroutput>.SPI~WHEEL_PAGESCROLL</computeroutput>), the scroll operation should be
+    interpreted as clicking once in the page down or page up regions of the scroll bar.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example retrieves the current setting for the wheel scroll lines and then scrolls the text in an edit control
+    the appropriate amount:
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::wheelScrollLines() [attribute]  -->
+
+
+</section> <!-- End SPI Class -->
 
 <section id="clsRect"><title>Rect Class</title>
 <indexterm><primary>Rect class</primary></indexterm>
