@@ -126,6 +126,17 @@
 </para>
 </section>
 
+<section id="defResourceEditor">><title>Resource Editor</title>
+<para>
+  Resource editors are a visual tools used to create a dialog <link linkend="ovvDialogTemplate">template</link> in a
+  text file. Visual resource editors provide a WYSIWYG (what you see is what you get) environment to design dialogs. The
+  editor manages the size and positioning of a dialog and its controls. The user can drag and drop controls where they
+  are wanted and use the mouse to size the dialog and controls. Resource editors simplify the process of designing the
+  look of a dialog and reduce the amount of trial and error design inherent in using the <link
+  linkend="clsUserDialog">UserDialog</link> class.
+</para>
+</section>
+
 <section id="defPoundDefine"><title>#define Statement</title>
 <para>
   Define statements are often used in the C and C++ languages to define symbolic names for numerical values.  Because of
@@ -143,16 +154,6 @@
 
 ]]>
 </programlisting>
-<para>
-  When ooDialog parses a resource script or a header file and finds a define statement, it will add the symbolic ID to
-  the <link linkend="atrConstDir">constDir</link> directory object of the dialog.  Resource scripts are used by subclasses
-  of the <computeroutput>UserDialog</computeroutput> (see the <link linkend="mthLoad">load</link> method.)  All the
-  ooDialog dialog classes accept a header file as an optional parameter when a new instance of a dialog object is
-  created.  (See for example the <computeroutput>new</computeroutput> method in the <link
-  linkend="mthNewDialogObject">dialog object</link> or the <link linkend="mthNewClsUserDialog">UserDialog</link>.) Symbolic IDs
-  added to the <computeroutput>constDir</computeroutput> can be used in any method of the ooDialog classes where a
-  resource ID is needed.
-</para>
 </section>
 
 <section id="defHeaderFile"><title>Header File</title>
@@ -773,7 +774,7 @@ xPixels = xDialogUnits * self~FactorX
       <para>
         When the ooDialog framework needs to resolve a symbolic ID, it will first try to resolve it using the
         <computeroutput>.constDir</computeroutput>. If that fails, it will then try to resolve it using the constDir
-        attribute. It that then fails, the method will fail.
+        attribute. If that then fails, the method will fail.
       </para>
       </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">Last:</emphasis></term>
@@ -802,10 +803,22 @@ xPixels = xDialogUnits * self~FactorX
     Other than the pre-defined IDs, the programmer must add symbolic IDs in order to use them in a program.
   </para>
   <para>
-     to this directory by
-    using <link linkend="defPoundDefine">#define</link> statements in a resource script or a <link
-    linkend="defHeaderFile">header file</link>.  Of course, symbolic IDs can also be added directly in the program as
-    the following code snippet shows:
+    The easiest way to add symbols is to have the ooDialog framework add the symbols itself from a file. Whenever
+    ooDialog parses a <link linkend="defResourceScript">resource</link> script or a <link
+    linkend="defHeaderFile">header file</link>, it automatically adds any symbol <link
+    linkend="defPoundDefine">definitions</link> it finds to a constant directory. Which constant directory is dependent
+    on the global <computeroutput>.constDir</computeroutput> usage strategy in effect.
+  </para>
+  <para>
+    Resource scripts are parsed whenever a <link linkend="RcDialogCls">RcDialog</link>, or subclass, is instantiated. In
+    addition, all the ooDialog dialog classes accept a header file as an optional parameter when a new instance of a
+    dialog object is created.  (See for example the <computeroutput>new</computeroutput> method in the <link
+    linkend="mthNewDialogObject">dialog</link> object or the <link linkend="mthNewClsUserDialog">UserDialog</link>
+    class.) In practice, most resource scripts are written by resource <link linkend="defResourceEditor">editors</link>
+    and place the symbol definitions in a separate file.
+  </para>
+  <para>
+    Of course, symbolic IDs can also be added directly in the program as the following code snippet shows:
   </para>
 
 <programlisting>
@@ -814,19 +827,19 @@ xPixels = xDialogUnits * self~FactorX
 ::method init
   forward class (super) continue
 
-  self~constDir["ID_GB"] = 101
-  self~constDir["ID_CB_REGINA"] = 107
-  self~constDir["ID_CB_REGINALD"] = 111
-  self~constDir["ID_CB_OOREXX"] = 115
+  self~constDir[IDC_GB] = 101
+  self~constDir[IDC_CB_REGINA] = 107
+  self~constDir[IDC_CB_REGINALD] = 111
+  self~constDir[IDC_CB_OOREXX] = 115
 
 ...
 
 ::method defineDialog
 
-  self~createGroupBox(ID_GB, 10, 20, 150, 90, "BORDER", "Pick an interpreter")
-  self~createCheckBox(ID_CB_REGINA, "cb1", 30, 40, , , "GROUP", "Regina")
-  self~createCheckBox(ID_CB_REGINALD, "cb2", 30, 60, , , , "Reginald")
-  self~createCheckBox(ID_CB_OOREXX, "cb3", 30, 80, , , , "ooRexx")
+  self~createGroupBox(IDC_GB, 10, 20, 150, 90, "BORDER", "Pick an interpreter")
+  self~createCheckBox(IDC_CB_REGINA, 30, 40, , , "GROUP", "Regina")
+  self~createCheckBox(IDC_CB_REGINALD, 30, 60, , , , "Reginald")
+  self~createCheckBox(IDC_CB_OOREXX, 30, 80, , , , "ooRexx")
 
 ...
 
@@ -987,16 +1000,14 @@ xPixels = xDialogUnits * self~FactorX
 
 <section id="ovvResourceWorkshop"><title>IBM Resource Workshop</title>
 <para>
-  The IBM Resource Workshop was a visual resource editor included with IBM Object Rexx. A visual resource editor
-  provides a WYSIWYG (what you see is what you get) environment to design dialogs. It manages the size and positioning
-  of a dialog and its controls. The user can drag and drop controls where they are wanted and use the mouse to size the
-  dialog and controls. The Resource Workshop could not be contributed to the open source community and is therefore
-  not a part of the Open Object Rexx project.
+  The IBM Resource Workshop was a visual resource <link linkend="defResourceEditor">editor</link> included with IBM Object
+  Rexx. The Resource Workshop could not be contributed to the open source community and is therefore not a part of the
+  Open Object Rexx project.
 </para>
 <para><emphasis role="bold">Note</emphasis>, there is <emphasis role="bold">no loss</emphasis> of functionality in
   ooDialog because of the absence of the Resource Workshop.  The Windows resource format is well understood and there
   are any number of free or inexpensive resource editors that do a better job of designing dialogs than the Resource
-  Workshop did.  (The Resource Workshop was a 16-bit application with limited capacity for the newer features in the
+  Workshop did. (The Resource Workshop was a 16-bit application with limited capacity for the newer features in the
   Windows user interface.) ooDialog works fine with dialogs designed by any modern resource editor.
 </para>
 </section>
