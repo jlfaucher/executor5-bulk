@@ -850,7 +850,8 @@ Help request:
       default behavior so that the interpreter does not wait for the return from the event handling method.
     </para>
     </listitem></varlistentry>
-  </variablelist> </para>
+  </variablelist>
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -1042,6 +1043,7 @@ Help request:
   </listitem></varlistentry>
 </variablelist>
 </section>
+
 <section id="mthConnectPosChanged"><title>connectPosChanged</title>
 <indexterm><primary>connectPosChanged</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectPosChanged</secondary></indexterm>
@@ -1221,6 +1223,219 @@ Help request:
   </listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthConnectMouseWheel"><title>connectMouseWheel</title>
+<indexterm><primary>connectMouseWheel</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectMouseWheel</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>connectMouseWheel</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectMouseWheel(--+--------------+  +--------------+--)---><
+                        +--methodName--+  +-,-willReply--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        The name of the event handling method that to be invoked when the the mouse wheel event occurs. The name must
+        not be the empty string. When this argument is omitted the name defaults to <emphasis
+        role="italic">onMouseWheel</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>willReply [optional]</term>
+      <listitem>
+      <para>
+        The default behavior is for the interpreter to wait in the window <link linkend="ovvWindowMessages">message</link>
+        processing loop for the return from the event handler, (the default for <emphasis
+        role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>). However, the operating system
+        ignores the return from this event notification. Specifying <computeroutput>.false</computeroutput> changes the
+        default behavior so that the interpreter does not wait for the return from the event handling method.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="evtMOUSEWHEEL"><title>MouseWheel Event Handler</title>
+<indexterm><primary>dialog object</primary><secondary>events</secondary><tertiary>MOUSEWHEEL</tertiary></indexterm>
+<para>
+  The event handler for the mouse wheel event is invoked each time the user scrolls the mouse wheel one notch.
+</para>
+<para>
+  The programmer decides whether to have the interpreter wait, or not wait, in the message processing loop for the reply
+ from the event handler. This is done in <link linkend="mthConnectMouseWheel">connectMouseWheel</link> method, or in
+ the <link linkend="mthIgnoreMouseWheel">ignoreMouseWheel</link> method of the <link linkend="clsEdit">Edit</link>
+ class. (The <emphasis role="italic">ignoreMouseWheel</emphasis> method can optionally connect a mouse wheel event
+ handler.) The actual reply is ignored by the operating system. A common value to return would be 0.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onMouseWheel unguarded
+  use arg delta, state, pos
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>delta</term>
+    <listitem>
+    <para>
+      A whole number that represents the amount the scroll wheel was turned. The operating system alway sends a multiple
+      of 120. Microsoft says this is to allow for future expansion with hardare that has a finer grain of control. If
+      the number is positive, the user turned the wheel away from herself and indicates to scroll up. When negative
+      the user turned the wheel towards himself, and indicates to scroll down.
+    </para>
+    <para>
+      At this point in time (c. 2011) the OS sends the event notification for each notch of the scroll wheel. Therefore
+      delta is always 120 or -120.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state</term>
+    <listitem>
+    <para>
+      A list of keywords that indicate the keyboard and mouse button modifiers. The list will contain 1 or more of the
+      following keywords separated by spaces. It will never be the empty string:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>None    </member>
+        <member>Control </member>
+        <member>lButton </member>
+        <member>mButton </member>
+        <member>rButton </member>
+        <member>Shift   </member>
+        <member>xButton1</member>
+        <member>xButton2</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>None</term>
+        <listitem>
+        <para>
+          There are no modifiers. <emphasis role="italic">None</emphasis> will always be the only keyword if it is
+          present.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>Control</term>
+        <listitem>
+        <para>
+          The control key is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lButton</term>
+        <listitem>
+        <para>
+          The left mouse button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>mButton</term>
+        <listitem>
+        <para>
+          The middle mouse button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rButton</term>
+        <listitem>
+        <para>
+          The right mouse button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>xButton1</term>
+        <listitem>
+        <para>
+          The first X button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>xButton2</term>
+        <listitem>
+        <para>
+          The second X button is down.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pos</term>
+    <listitem>
+      A <link linkend="clsPoint">Point</link> object that contains the x and y co-ordinates of the pointer, relative to
+      the upper-left corner of the screen.
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The return is ignored by Windows, so any value is sufficient.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End MouseWheel Event Handler -->
+
+</section>  <!-- End dialog object::connectMouseWheel() -->
 
 <section id="mthConnectMouseCapture"><title>connectMouseCapture</title>
 <indexterm><primary>connectMouseCapture</primary></indexterm>
@@ -3015,7 +3230,8 @@ before init:super has been called.</para></listitem>
   id = .DlgUtil~loWord(ev_id)
   ...
 ]]>
-</programlisting></para></listitem>
+</programlisting>
+  </para></listitem>
 </orderedlist>
 </para></note>
 </section>

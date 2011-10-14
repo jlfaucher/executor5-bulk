@@ -89,23 +89,23 @@
   Resource script files are plain text files usually produced by a resource editor.  The files generally have a file
   extension of &quot;.rc&quot;, but an extension of &quot;.dlg&quot; is used by some resource editors. The text of a
   resource script defines a dialog <link linkend="ovvDialogTemplate">template</link>. The format of the text is defined
-  by Microsoft and public knowledge. The format is easily parsable by computer and is used by resource compilers to
-  produce a compiled (binary) file containing the dialog template(s) defined in the script file. The ooDialog framework
-  can parse a resource script file and dynamically produce a dialog template in memory. This is the basis of how a <link
-  linkend="clsRcDialog">RcDialog</link> works.
+  by Microsoft and public knowledge. The format is easily parsable by computer software and is used by resource
+  compilers to produce a compiled (binary) file containing the dialog template(s) defined in the script file. The
+  ooDialog framework can parse a resource script file and dynamically produce a dialog template in memory. This is the
+  basis of how a <link linkend="clsRcDialog">RcDialog</link> works.
 </para>
 </section>
 
 <section id="defResourceId"><title>Resource ID</title>
 <para>
-  The identification number of a dialog resource. There ares several different types of dialog resources, menus, dialog
-  controls, and bitmaps, to name a few. You assign IDs when you create the resource definition for your dialog.  An ID
-  can be either numerical (for example, 1) or symbolic (for example, "IDOK").
+  A resouce ID is the identification number of a dialog resource. There are several different types of dialog
+  resources, menus, dialog controls, and bitmaps, to name a few. You assign IDs when you create the resource definition
+  for your dialog.  An ID can be either numerical (for example, 1) or symbolic (for example, "IDOK").
 </para>
 <para>
   IDs must be unique for each resource of the same type.  Although two resources of different types may have the same
-  ID, when using symbolic IDs with ooDialog, when using the ooDialog framework it is advisable to give all resources
-  unique numerical IDs.
+  ID, when <link linkend="ovvSymbolicIDMechanism">using</link> symbolic IDs within the ooDialog framework it is
+  advisable to give all resources unique numerical IDs.
 </para>
 </section>
 
@@ -128,8 +128,8 @@
 
 <section id="defResourceEditor"><title>Resource Editor</title>
 <para>
-  Resource editors are a visual tools used to create a dialog <link linkend="ovvDialogTemplate">template</link> in a
-  text file. Visual resource editors provide a WYSIWYG (what you see is what you get) environment to design dialogs. The
+  Resource editors are visual tools used to create a dialog <link linkend="ovvDialogTemplate">template</link> in a text
+  file. Visual resource editors provide a WYSIWYG (what you see is what you get) environment to design dialogs. The
   editor manages the size and positioning of a dialog and its controls. The user can drag and drop controls where they
   are wanted and use the mouse to size the dialog and controls. Resource editors simplify the process of designing the
   look of a dialog and reduce the amount of trial and error design inherent in using the <link
@@ -695,12 +695,13 @@ xPixels = xDialogUnits * self~FactorX
   dialog template in a text file. The programmer subclasses a <link linkend="clsRcDialog">RcDialog</link> to create a
   dialog from a resource script. To create a dialog template dynamically in the program code, the programmer subclasses
   a <link linkend="clsUserDialog">UserDialog</link> and then uses the <link linkend="sctCreateMethods">create</link>
-  methods of that class to create the dialog template. The <emphasis role="italic">UserDialog</emphasis> translates the
-  program statements into the in-memory dialog template required by the operating system. The <emphasis
-  role="italic">RcDialog</emphasis> parses the resource script and converts the resource script statements into an
-  in-memory dialog template by invoking the proper methods of its superclass, the <emphasis
-  role="italic">UserDialog</emphasis>.
-</para> </section>
+  methods of that class to create the dialog template. The <computeroutput>UserDialog</computeroutput> object translates
+  the program statements into the in-memory dialog template required by the operating system. The
+  <computeroutput>RcDialog</computeroutput> object parses the resource script and converts the resource script
+  statements into an in-memory dialog template by invoking the proper methods of its superclass, the
+<computeroutput>UserDialog</computeroutput>.
+</para>
+</section>
 
 <section id="ovvSymbolicIDMechanism"><title>Using Symbolic IDs in ooDialog:</title>
 <para>
@@ -754,7 +755,8 @@ xPixels = xDialogUnits * self~FactorX
     linkend="clsApplicationManager">ApplicationManager</link> class.)
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Global .constDir Usage Strategies:</emphasis></term>
+  <varlistentry id="entConstDirStrategy"><term><emphasis role="bold">Global .constDir Usage
+  Strategies:</emphasis></term>
   <listitem>
   <para>
     The four strategies work this way.
@@ -812,10 +814,25 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     Resource scripts are parsed whenever a <link linkend="clsRcDialog">RcDialog</link>, or subclass, is instantiated.
     In addition, all the ooDialog dialog classes accept a header file as an optional parameter when a new instance of a
-    dialog object is created.  (See for example the <computeroutput>new</computeroutput> method in the <link
+    dialog object is created. (See for example the <computeroutput>new</computeroutput> method in the <link
     linkend="mthNewDialogObject">dialog</link> object or the <link linkend="mthNewClsUserDialog">UserDialog</link>
-    class.) In practice, most resource scripts are written by resource <link linkend="defResourceEditor">editors</link>
-    and place the symbol definitions in a separate file.
+    class.) If the programmer supplies the optional header file argument, the ooDialog framework automatically parses
+    the file and adds all defined symbols it finds in the file to a constant directory. Again, to be clear, which
+    constant directory the symbol is placed in is depenedent on which <computeroutput>.constDir</computeroutput> <link
+    linkend="entConstDirStrategy">strategy</link> the programmer has elected to use.
+  </para>
+  <para>
+    In practice, most resource scripts are written by resource <link linkend="defResourceEditor">editors</link> and
+    place the symbol definitions in a separate header file. Therefore having the ooDialog framework read and parse a
+    header file is the most practical way to add symbols to a constant directory. In addition to using the optional
+    header file argument in the <link linkend="mthNewDialogObject">new</link> method of a dialog, the ooDialog framework
+    provides some addtional methods for reading a file and adding the symbol definitions to a constant directory. The
+    dialog object has the <link linkend="mthParseIncludeFile">parseIncludeFile</link> method. The <link
+    linkend="clsApplicationManager">ApplicationManger</link> class has serveral methods, which are accessed through the
+    <link linkend="dotApplication">.application</link> object. These are: the <link
+    linkend="mthUseGlobalConstDir">useGlobalConstDir</link>, <link linkend="mthAddToConstDir">addToConstDir</link>,
+    <link linkend="mthSetDefaults">setDefaults</link>, and <link linkend="mthParseIncludeFile">parseIncludeFile</link>
+    methods.
   </para>
   <para>
     Of course, symbolic IDs can also be added directly in the program as the following code snippet shows:
@@ -855,22 +872,64 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Classes Requiring the Global .constDir for Symbolic IDs:</emphasis></term>
   <listitem>
   <para>
-    xx
+    As explained previously, the dialog ojbect's <link linkend="atrConstDir">constDir</link> attribute allows
+    programmers to use symbolic IDs for arguments requiring resource IDs in the methods of the <link
+    linkend="chpDialogObject">dialog</link> object and the <link linkend="chpDialogControlObject">dialog</link> contol
+    object. However, the ooDialog framework contains other classes with methods requiring resource IDs. The <link
+    linkend="clsMenu">Menu</link> classes and the <link linkend="clsResourceImage">ResourceImage</link> class are
+    examples of these classes. If the programmer wishes to use symbolic IDs in classes other than the dialog and
+    dialog control classes, then the global <computeroutput>.constDir</computeroutput> <emphasis
+    role="bold">must</emphasis> be used.
+  </para>
+  <para>
+    Programmers that do not want to use the <computeroutput>.constDir</computeroutput>, <emphasis
+    role="bold">must</emphasis> use numeric resource IDs for any argument requiring a resource ID in any of the classes
+    other than the dialog and dialog control classes.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Global .constDir Pros:</emphasis></term>
   <listitem>
   <para>
-     Using the global
-    <computeroutput>.constDir</computeroutput> is far more efficient
-    Note that only the methods of the dialog object and the dialog control
-        objects have access to a constDir attribute. This implies that if the programmer wants to use symbolic IDs
+    Using the global <computeroutput>.constDir</computeroutput> is by far the most efficient way to use symbolic IDs in
+    ooDialog programs.
+  </para>
+  <para>
+    Using the global <computeroutput>.constDir</computeroutput> allows large applications with many dialogs to read the
+    symbol file one time only.  When using the dialog object's <computeroutput>constDir</computeroutput> attribute, the
+    symbol file would need to be constantly re-read, once for each dialog.
+  </para>
+  <para>
+    Using the global <computeroutput>.constDir</computeroutput> allows the programmer to use symbolic IDs for any method
+    in any object that requires a resource ID.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Global .constDir Cons:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The <computeroutput>.constDir</computeroutput> does have some restrictions. These restrictions may be a reason for
+    some programmers to prefer to not use the <computeroutput>.constDir</computeroutput>. Depending on one's point of
+    view, many of the cons could be viewed as pluses.
+  </para>
+  <para>
+    The indexes in the <computeroutput>.constDir</computeroutput> are case sensitive. However, this allows symbol
+    resolution to be more efficient and faster. Case sesitivity is not a problem if a distinctive naming scheme is used
+    for symbolic IDs where the symbol names would never be used for variable names, and the symbol names are never
+    quoted.
+  </para>
+  <para>
+    If a symbolic name can not be resolved, a syntax condition is raised. However, the only reason a symbol would not be
+    resolved is if the programmer used an incorrect symbol. The raised syntax condition would alert the programmer to an
+    error in the program early in the development cycle.
+  </para>
+  <para>
+    Since all symbolic IDs are in one constant directory, duplicate symbol names can not be used in different dialogs,
+    unless the duplicate symbol names are assigned a single numeric value. (In which case they are not actually
+    duplicates.) For example, take a program that has two different dialogs in it, each with an edit control in the
+    dialog. If the programmer's habit is to use a symbol of IDC_EDIT for edit controls, there could be a conflict if the
+    edit control in the first dialog, had a define like this: <computeroutput>#define IDC_EDIT  100</computeroutput> and
+    the edit control in the second dialog had a define like this: <computeroutput>#define IDC_EDIT
+    200</computeroutput>. The solution to this is too either use two different symbols for the two edit controls, or use
+    the same resource ID number for both edit contols.
   </para>
   </listitem></varlistentry>
 </variablelist>

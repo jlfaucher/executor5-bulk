@@ -184,7 +184,7 @@
 <entry>The handle to a bitmap brush that is used to draw the dialog's background.</entry>
 </row>
 <row>
-<entry><link linkend="atrConstDir">constDir</link></entry>
+<entry><link linkend="rudoConstDir">constDir</link></entry>
 <entry>A directory object that maps symbolic resource IDS to their numeric IDs</entry>
 </row>
 <row>
@@ -880,6 +880,10 @@
 <entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
 </row>
 <row>
+<entry><link linkend="rudoParseIncludeFile">parseIncludeFile</link></entry>
+<entry>Reads a file and adds any symbol definitions found to the proper constant diretory.</entry>
+</row>
+<row>
 <entry><link linkend="mthPopup">popup</link></entry>
 <entry>Starts a dialog executing asynchronously and returns immediately.</entry>
 </row>
@@ -910,6 +914,14 @@
 <row>
 <entry><link linkend="wbdoResizeTo">resizeTo</link></entry>
 <entry>Resizes the dialog to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="rudoResolveNumericID">resolveNumericID</link></entry>
+<entry>Resolves a numeric ID to a symbolic ID, if the symbol exists.</entry>
+</row>
+<row>
+<entry><link linkend="rudoResolveSymbolicID">resolveSymbolicID</link></entry>
+<entry>Resolves a, possibly, symbolic ID to its numeric value.</entry>
 </row>
 <row>
 <entry><link linkend="mthRestore">restore</link></entry>
@@ -1766,80 +1778,17 @@
   This section describes the attributes of the dialog object.
 </para>
 
-<section id="atrConstDir"><title>constDir (Attribute)</title>
-<indexterm><primary>constDir</primary></indexterm>
-<indexterm><primary>ResourceUtils class</primary><secondary>constDir</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>constDir</secondary></indexterm>
-
+<section id="rudoConstDir"><title>constDir (Attribute)</title>
 <programlisting>
+ResourceUtils::<link linkend="atrConstDir">constDir</link>
+
 <![CDATA[
->>--constDir-----------------------------------------><
+>>--constDir-------------------------------------><
 
->>--constDir[symbol]-=-numericValue------------------><
-
+>>--constDir[symbol]-=-numericValue--------------><
 ]]>
 </programlisting>
-
-<para>
-  The <emphasis role="italic">constDir</emphasis> attribute is assigned a <computeroutput>Directory</computeroutput>
-  object whose indexes are <link linkend="defSymbolicId">symbolic</link> resource IDs. It is part of the <link
-  linkend="ovvSymbolicIDMechanism">mechanism</link> provided by the ooDialog framework to allow the use of symbolic IDs
-  in ooDialog progams. Although the use of the <emphasis role="italic">constDir</emphasis> is mostly transparent to the
-  programmer, it is important to understand how the mechanism works when using symbolic IDS in ooDialog programs
-</para>
-<para>
-  The entry for each index in the <computeroutput>Directory</computeroutput> object is the numeric value of the <link
-  linkend="defResourceId">resource ID</link>.  Once a symbolic ID is added to the <emphasis
-  role="italic">constDir</emphasis> directory, the symbolic ID can be used in place of the numeric value in any method
-  of the dialog or dialog control classes that requires a resource ID.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">constDir get:</emphasis></term>
-  <listitem>
-  <para>
-    Getting the <computeroutput>constDir</computeroutput> is public. In practical use, it is more common to get the
-    value of an index of the <emphasis role="italic">constDir</emphasis>:
-
-<programlisting>
-<![CDATA[
-  id = self~constDir[IDC_RB_MINIMUM]
-]]>
-</programlisting>
-
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">constDir set:</emphasis></term>
-  <listitem>
-  <para>
-    Setting the <emphasis role="italic">constDir</emphasis> attribute is private and should not be done by the
-    programmer. The ooDialog framework automatically sets the attribute to a <computeroutput>Directory</computeroutput>
-    object when a new dialog or menu object is created.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    How to add symbolic IDs is explained in the overview chapter, in the discussion of the <link
-    linkend="ovvSymbolicIDMechanism">mechanism</link> used by ooDialog to support symbolic IDs.
-  </para>
-  <para>
-    In addition, ooDialog 4.2.0 was enhanced by adding the global <link linkend="dotConstDir">.constDir</link> to
-    overcome limitions ineherent in using the <emphasis role="italic">constDir</emphasis> attribute. The global
-    <computeroutput>.constDir</computeroutput> is more efficient and capable than the <emphasis
-    role="italic">constDir</emphasis> attribute. The programmer should be sure to review the <link
-    linkend="ovvSymbolicIDMechanism">discussion</link> in the overview to determine how to take the best advantage of
-    the mechanism ooDialog is providing for the use of symbolic IDs.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    The <emphasis role="italic">constDir</emphasis> attribute is inherited from the <link
-    linkend="clsResourceUtils">ResourceUtils</link> class.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End ResourceUtils::constDir() [attribute]  -->
+</section>
 
 <section id="atrAutoDetect"><title>autoDetect (Attribute)</title>
 <indexterm><primary>autoDetect</primary></indexterm>
@@ -4597,6 +4546,39 @@ if MyDialog~IsDialogActive then ...
 </programlisting>
 </para></listitem></varlistentry>
 </variablelist>
+</section>
+
+<section id="rudoParseIncludeFile"><title>parseIncludefile</title>
+<programlisting>
+ResourceUtils::<link linkend="atrParseIncludeFile">parseIncludeFile</link>
+
+<![CDATA[
+>>--parseIncludeFile(--fileName--)---------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="rudoResolveNumericID"><title>resolveNumericID</title>
+<programlisting>
+ResourceUtils::<link linkend="atrResolveNumericID">resolveNumericID</link>
+
+<![CDATA[
+>>--resolveNumericID(--id--)---------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="rudoResolveSymbolicID"><title>resolveSymbolicID</title>
+<programlisting>
+ResourceUtils::<link linkend="atrResolveSymbolicID">resolveSymbolicID</link>
+
+<![CDATA[
+>>--resolveSymbolicID(--id--)--------------------><
+
+]]>
+</programlisting>
 </section>
 
 </section>

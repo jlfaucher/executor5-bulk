@@ -1073,28 +1073,343 @@
 <para>
   The <computeroutput>ResourceUtils</computeroutput> class provides utility methods for dealing with resource <link
   linkend="defResourceID">IDs</link> and parsing resource <link linkend="defResourceScript">script</link> files. The
-  class is inherited by the <link linkend="chpDialogObject">dialog</link> object.
+  class is inherited by the <link linkend="chpDialogObject">dialog</link> object and the <link
+  linkend="clsApplicationManager">ApplicationManager</link> class. Most of the methods of the
+  <computeroutput>ResourceUtils</computeroutput> class are used <link linkend="ovvUndocumented">internally</link> and
+  not documented.
 </para>
+
+<section id="sctMethodsResourceUtils"><title>Method Table</title>
 <para>
-  Most of the methods of the <computeroutput>ResourceUtils</computeroutput> class are used <link
-  linkend="ovvUndocumented">internally</link> and not documented. However, the most important member of the class is the
-  <emphasis role="italic">constDir</emphasis>. The use of this attribute should be understood by the progammer and is
-  documented in the <link linkend="chpDialogObject">dialog</link> object chapter.
+  The following table list the methods of the <computeroutput>ResourceUtils</computeroutput> class for use by the
+  programer:
 </para>
+<table id="tblResourceUtilsMethods" frame="all">
+<title>ResourcUtils Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrConstDir">constDir</link></entry>
+<entry>A directory object that maps symbolic resource IDS to their numeric IDs.</entry>
+</row>
+<row>
+<entry><link linkend="mthParseIncludeFile">parseIncludeFile</link></entry>
+<entry>Reads a file and adds any symbol definitions found to the proper constant diretory.</entry>
+</row>
+<row>
+<entry><link linkend="mthResolveNumericID">resolveNumericID</link></entry>
+<entry>Resolves a numeric ID to a symbolic ID, if the symbol exists.</entry>
+</row>
+<row>
+<entry><link linkend="mthResolveSymbolicID">resolveSymbolicID</link></entry>
+<entry>Resolves a, possibly, symbolic ID to its numeric value.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
 
-<section id="ruConstDir"><title>constDir</title>
+<section id="atrConstDir"><title>constDir (Attribute)</title>
+<indexterm><primary>constDir</primary></indexterm>
+<indexterm><primary>ResourceUtils class</primary><secondary>constDir</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>constDir</secondary></indexterm>
+
 <programlisting>
-<link linkend="atrConstDir">constDir</link>
-
 <![CDATA[
->>--constDir-------------------------------------><
+>>--constDir-----------------------------------------><
 
->>--constDir[symbol]-=-numericValue--------------><
+>>--constDir[symbol]-=-numericValue------------------><
+
 ]]>
 </programlisting>
-</section>
+
+<para>
+  The <emphasis role="italic">constDir</emphasis> attribute is assigned a <computeroutput>Directory</computeroutput>
+  object whose indexes are <link linkend="defSymbolicId">symbolic</link> resource IDs. It is part of the <link
+  linkend="ovvSymbolicIDMechanism">mechanism</link> provided by the ooDialog framework to allow the use of symbolic IDs
+  in ooDialog progams. Although the use of the <emphasis role="italic">constDir</emphasis> is mostly transparent to the
+  programmer, it is important to understand how the mechanism works when using symbolic IDs in ooDialog programs
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">constDir get:</emphasis></term>
+  <listitem>
+  <para>
+    Getting the <computeroutput>constDir</computeroutput> is public. In practical use, it is more common to get the
+    value of an index of the <emphasis role="italic">constDir</emphasis>:
+<programlisting>
+<![CDATA[
+  id = self~constDir[IDC_RB_MINIMUM]
+]]>
+</programlisting>
+
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">constDir set:</emphasis></term>
+  <listitem>
+  <para>
+    Setting the <emphasis role="italic">constDir</emphasis> attribute is private and should not be done by the
+    programmer. The ooDialog framework automatically sets the attribute to a <computeroutput>Directory</computeroutput>
+    object when a new dialog or menu object is created.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Both <link linkend="chpDialogObject">dialog</link> objects and the <link
+    linkend="clsApplicationManger">ApplicationManger</link> class inherit the <link
+    linkend="clsResourceUtils">ResourceUtils</link> mixin class. <emphasis role="bold">Note</emphasis> that the
+    <emphasis role="italic">constDir</emphasis> attrbiute of the <link linkend="dotApplication">.application</link>
+    object <emphasis role="bold">is</emphasis> the global <computeroutput>.constDir</computeroutput>.
+  </para>
+  <para>
+    Each index in the the <computeroutput>Directory</computeroutput> object assigned to the <emphasis
+    role="italic">constDir</emphasis> attribute is the symbolic name of a resource ID. The item at that index is the
+    numeric value of the <link linkend="defResourceId">resource ID</link>. Once a symbolic ID is added to the <emphasis
+    role="italic">constDir</emphasis> directory as an index, that symbolic ID can be used in place of the numeric
+    resource ID.
+  </para>
+  <para>
+    This is dependent, however, on the global <computeroutput>.constDir</computeroutput> usage <link
+    linkend="entConstDirStrategy">strategy</link> the programmer has choosen. If the programmer has elected to not use
+    the global <computeroutput>.constDir</computeroutput> at all, then symbolic IDs can only be used in the methods of
+    the dialog or dialog control classes. If the programmer has elected to use the
+    <computeroutput>.constdir</computeroutput> then symbolic IDs can be used in any class the ooDialog framework
+    provides.
+  </para>
+  <para>
+    How to add symbolic IDs is explained in the overview chapter, in the discussion of the <link
+    linkend="ovvSymbolicIDMechanism">mechanism</link> used by ooDialog to support symbolic IDs.
+  </para>
+  <para>
+    The global <link linkend="dotConstDir">.constDir</link> was introduced in ooDialog 4.2.0 to overcome limitions
+    ineherent in using the <emphasis role="italic">constDir</emphasis> attribute of the dialog object. The global
+    <computeroutput>.constDir</computeroutput> is more efficient and capable than the <emphasis
+    role="italic">constDir</emphasis> attribute. The programmer should be sure to review
+    the <link linkend="ovvSymbolicIDMechanism">discussion</link> in the overview to determine how to take the best
+    advantage of the mechanism ooDialog is providing for the use of symbolic IDs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">constDir</emphasis> attribute is inherited from the <link
+    linkend="clsResourceUtils">ResourceUtils</link> class.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceUtils::constDir() [attribute]  -->
+
+<section id="mthParseIncludeFile"><title>parseIncludeFile</title>
+<indexterm><primary>parseIncludeFile</primary></indexterm>
+<indexterm><primary>ApplicationManager class</primary><secondary>parseIncludeFile</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>parseIncludeFile</secondary></indexterm>
+<indexterm><primary>ResourceUtils class</primary><secondary>parseIncludeFile</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--parseIncludeFile(--fileName--)---------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reads a file and adds any symbol <link linkend="defPoundDefine">definitions</link> found to the <link
+  linkend="atrConstDir">constDir</link> attribute of this <computeroutput>ResourceUtils</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>fileName [required]</term>
+      <listitem>
+      <para>
+        The name of the file to read and parse.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if no errors were detected, otherwsie false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog framework provides a <link linkend="ovvSymbolicIDMechanism">mechanism</link> allowing programmers to
+    use <link linkend="defSymbolicId">symbolic</link> IDs in their program. The <emphasis
+    role="italic">parseIncludeFile</emphasis> method adds symbols to a constant directory, which is part of that
+    mechanism. Which constant directory the symbol is added to is determined by the global
+    <computeroutput>.constDir</computeroutput> usage <link linkend="entConstDirStrategy">strategy</link> the programmer
+    has choosen.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example the programmer has several different files with symbol definitions in them. When the first dialog
+    object is instantiated, one of the symbol files is passed to the <emphasis role="italic">new</emphasis> method and
+    is parsed automatically by the ooDialog framework. The other symbol files are then read and added to the constant
+    directory:
+<programlisting>
+<![CDATA[
+
+  dlg = .CueDialog~new("cueEdit.rc", IDD_CUE_DLG, , 'cueEdit.h')
+
+  dlg~parseIncludeFile('productionDialogs.h')
+  dlg~parseIncludeFile('debugDialogs.h')
+  dlg~parseIncludeFile('databaseDialogs.h')
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceUtils::parseIncludeFile() -->
+
+<section id="mthResolveNumericID"><title>resolveNumericID</title>
+<indexterm><primary>resolveNumericID</primary></indexterm>
+<indexterm><primary>ApplicationManager class</primary><secondary>parseIncludeFile</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>parseIncludeFile</secondary></indexterm>
+<indexterm><primary>ResourceUtils class</primary><secondary>resolveNumericID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--resolveNumericID(--id--)---------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Attempts to resolve a number with an index in the <link linkend="atrConstDir">constDir</link> attribute of this
+  <computeroutput>ResourceUtils</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The number to resolve. If id is not a number this method fails immediately.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the index, the <link linkend="defSymbolicId">symbolic</link> ID, for the number, if the number can be
+    matched to an item in the constant directory. -1 is returned on failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog framework provides a <link linkend="ovvSymbolicIDMechanism">mechanism</link> allowing programmers to
+    use <link linkend="defSymbolicId">symbolic</link> IDs in their program. This method is intended to look up a
+    numerice resource ID and return its symbolic ID. The lookup is done in the
+    <computeroutput>.Directory</computeroutput> object assigned to the <link linkend="atrConstDir">constDir</link>
+    attribute of this resource utils object. If an item in the <computeroutput>constDir</computeroutput> matches the
+    numeric <emphasis role="italic">id</emphasis> then that item's index is returned.
+  </para>
+  <para>
+    The assumption in the description of this method, is that the programmer has only put items in the constant
+    directory that are numeric IDs and whose indexes are symbol IDs. However, the lookup and return work the same no
+    matter what is in the constant directory.
+  </para>
+  <para>
+    Although the operating system allows duplicate numeric resource IDs, as long as the IDs are for different types of
+    resources, programmers must use unique ID numbers if they intend to use this method. If the constant directory
+    contains duplicate numeric items, the return is non-deterministic.
+  </para>
+  <para>
+    Exactly which constant directory the lookup is done in is determined by the global
+    <computeroutput>.constDir</computeroutput> usage <link linkend="entConstDirStrategy">strategy</link> the programmer
+    has choosen
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceUtils::resolveNumericID() -->
+
+<section id="mthResolveSymbolicID"><title>resolveSymbolicID</title>
+<indexterm><primary>resolveSymbolicID</primary></indexterm>
+<indexterm><primary>ApplicationManager class</primary><secondary>parseIncludeFile</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>parseIncludeFile</secondary></indexterm>
+<indexterm><primary>ResourceUtils class</primary><secondary>resolveSymbolicID</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--resolveSymbolicID(--id--)--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Resolves <emphasis role="italic">id</emphasis> to its numeric value using the <link
+  linkend="atrConstDir">constDir</link> attribute of this <computeroutput>ResourceUtils</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The id to resolve.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The numeric resource ID on success, -1 on failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog framework provides a <link linkend="ovvSymbolicIDMechanism">mechanism</link> allowing programmers to
+    use <link linkend="defSymbolicId">symbolic</link> IDs in their program. The <emphasis
+    role="italic">resolveSymbolicID</emphasis> is the foundation of this mechanism. The framework relies on it heavily,
+    however it is not expected that the programmer would have much need for the method.
+  </para>
+  <para>
+    The method first checks if <emphasis role="italic">id</emphasis> is a whole number greater than 0. If so the number
+    is simply returned. If <emphasis role="italic">id</emphasis> is a whole number, but less than 1, then the method
+    fails. If <emphasis role="italic">id</emphasis> is not whole number, then the constant directory of this resource
+    utils object is checked to see if <emphasis role="italic">id</emphasis> is one of its indexes.  If it is not the
+    method fails. If it is an index, then the index's item is checked to see if it is a whole number greater than 0. If
+    not the method fails. If the item is a whole number greater than 0, then the item is returned.
+  </para>
+  <para>
+    Exactly which constant directory is checked is determined by the global <computeroutput>.constDir</computeroutput>
+    usage <link linkend="entConstDirStrategy">strategy</link> the programmer has choosen
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ResourceUtils::resolveSymbolicID() -->
 
 </section>
+
 
 <section id="clsDynamicDialog"><title>DynamicDialog Mixin Class</title>
 <indexterm><primary>DynamicDialog Class</primary></indexterm>
