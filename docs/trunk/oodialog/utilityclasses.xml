@@ -1701,13 +1701,15 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
   <para>
     If <emphasis role="italic">symbols</emphasis> is a string it is taken to be the name of a file containing symbol
     definitons. The result in this case is the same as using the <link
-    linkend="ruapParseIncludeFile">parseIncludeFile</link>.
+    linkend="ruapParseIncludeFile">parseIncludeFile</link>. The file is parsed and any symbol definitions are added to
+    the <computeroutput>.constDir</computeroutput>.
   </para>
   <para>
     When <emphasis role="italic">symbols</emphasis> is not a string, it must be an object with a <emphasis
-    role="italic">supplier</emphasis> method, where the indexes the supplier provides are strings. The items the
+    role="italic">supplier</emphasis> method where the indexes the supplier provides are strings. The items the
     supplier provides are added to the <computeroutput>.constDir</computeroutput> using the supplied indexes.
-  </para> </listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -1766,24 +1768,28 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 <indexterm><primary>ApplicationManager class</primary><secondary>auotDetection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--auotDetection(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--auotDetection(--+------+--)------------------><
+                    +--on--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">autoDetection</emphasis> method is used to turn the application-wide default for <link
+  linkend="mthInitAutoDetection">automatic</link> data field detection on or off. When an ooDialog program starts, the
+  default for automatic data field detection is on.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>on [optional]</term>
       <listitem>
       <para>
-        xx
+        If <emphasis role="italic">on</emphasis> is true, the default for automatic data detection is set to on, if
+        false it is set to off. If <emphasis role="italic">on</emphasis> is omitted automatic data detection is turned
+        off.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1792,33 +1798,19 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Automatic data detection can also be turned off using the <link linkend="mthSetDefaults">setDefaults</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1853,7 +1845,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
       <varlistentry><term>fontSize [optional]</term>
       <listitem>
       <para>
-        The new size for the default font. If omitted the global font name is not changed. However, if both name and
+        The new size for the default font. If omitted the global font size is not changed. However, if both name and
         size are omitted the font is set back to the default font and size. (See remarks.)
       </para>
       </listitem></varlistentry>
@@ -1891,13 +1883,14 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 <indexterm><primary>ApplicationManager class</primary><secondary>setDefaults</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDefaults(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setDefaults(-+-------+-+-----------+-+--------+-+---------+-+---------+-)--><
+                 +-usage-+ +-,-symbols-+ +-,-auto-+ +-,-fName-+ +-,-fSize-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">setDefaults</emphasis> method sets a number of default values for the application and / or
+  performs tasks that effect the entire application, in a single method call.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1905,10 +1898,159 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>usage [optional]</term>
       <listitem>
       <para>
-        xx
+        The <emphasis role="italic">usage</emphasis> argument can either be a string specifying the global <link
+        linkend="dotConstDir">.constDir</link> <link linkend="entConstDirStrategy">strategy</link> to use for the
+        application, or it can be a <computeroutput>directory</computeroutput> object specifying any number of defaults
+        to set, and / or any number of application tasks to perform.
+        <variablelist>
+          <varlistentry><term><emphasis role="bold"><emphasis role="italic">usage</emphasis> is a string:</emphasis></term>
+          <listitem>
+          <para>
+            Specifies the usage <link linkend="entConstDirStrategy">strategy</link> for the
+           <computeroutput>.constDir</computeroutput>. <emphasis role="italic">usage</emphasis>must be exactly one of
+           the following keywords. Only the first letter is required, and case is not significant:
+          </para>
+          <para>
+            <simplelist type='vert' columns='4'>
+              <member>Only </member>
+              <member>First</member>
+              <member>Last </member>
+              <member>Never</member>
+            </simplelist>
+            <variablelist>
+              <varlistentry><term>Only</term>
+              <listitem>
+              <para>
+                Only the <computeroutput>.constDir</computeroutput> is used to resolve symbolic IDs.
+              </para>
+              </listitem></varlistentry>
+              <varlistentry><term>First</term>
+              <listitem>
+              <para>
+                When a symbolic ID needs to be resolved, the ooDialog framework first tries to resolve the ID through the
+                <computeroutput>.constDir</computeroutput>. If that fails, the framework then tries the <link
+                linkend="atrConstDir">constDir</link> attribute of the <link linkend="chpDialogObject">dialog</link> object.
+              </para>
+              </listitem></varlistentry>
+              <varlistentry><term>Last</term>
+              <listitem>
+              <para>
+                This is the opposite of the <emphasis role="italic">First</emphasis> strategy. When a symbolic ID needs to
+                be resolved, the ooDialog framework tries to resolve the ID through the <link
+                linkend="atrConstDir">constDir</link> attribute of the <link linkend="chpDialogObject">dialog</link>
+                object. If that fails, the framework then tries the global <computeroutput>.constDir</computeroutput>
+                object.
+              </para>
+              </listitem></varlistentry>
+              <varlistentry><term>Never</term>
+              <listitem>
+              <para>
+                The <computeroutput>.constDir</computeroutput> is never used to resolve symbolic IDs. This is the default
+                when an ooDialog application starts up.
+              </para>
+          </listitem></varlistentry>
+          <varlistentry><term><emphasis role="bold"><emphasis role="italic">usage</emphasis> is a directory</emphasis></term>
+          <listitem>
+          <para>
+            A <computeroutput>directory</computeroutput> object can be used to set some or all of the defaults and
+            perform some or all of the tasks that the individual methods of the
+            <computeroutput>ApplicationManager</computeroutput> do. The following indexes of the
+            <computeroutput>directory</computeroutput> object are recognized. Indexes not in the list are ignored. For
+            each index, the corresponding documentation for the method of the
+            <computeroutput>ApplicationManger</computeroutput> may contain additional insight. E.g. restrictions on the
+            value for the item at the index are identical to restrictions listed in the method documentation.
+            <variablelist>
+              <varlistentry><term><emphasis role="bold">CONSTDIRUSAGE:</emphasis></term>
+              <listitem>
+              <para>
+                Specifies the <computeroutput>.constDir</computeroutput> usage <link
+                linkend="entConstDirStrategy">strategy</link>. This is equivalent to the <emphasis
+                role="italic">mode</emphasis> argument in the <link
+                linkend="mthUseGlobalConstDir">useGlobalConstDir</link> method.
+              </para>
+              </listitem></varlistentry>
+              <varlistentry><term><emphasis role="bold">SYMBOLSRC</emphasis></term>
+              <listitem>
+              <para>
+                Adds symbols to the <computeroutput>.constDir</computeroutput>. This is equivalent to the <emphasis
+                role="italic">symbolSrc</emphasis> argument in the <link
+                linkend="mthUseGlobalConstDir">useGlobalConstDir</link> method.
+              </para>
+              </listitem></varlistentry>
+              <varlistentry><term><emphasis role="bold">AUTODETECTION</emphasis></term>
+              <listitem>
+              <para>
+                Sets the default for <link linkend="mthInitAutoDetection">automatic</link> data detection. This is
+                equivalent to the <emphasis role="italic">on</emphasis> argument in the <link
+                linkend="mthAutoDetectionClsApplicationManger">autoDetecion</link> method.
+              </para>
+              </listitem></varlistentry>
+              <varlistentry><term><emphasis role="bold">FONTNAME</emphasis></term>
+              <listitem>
+              <para>
+                Sets the default font name for dialogs. This is equivalent to the <emphasis
+                role="italic">fontName</emphasis> argument in the <link
+                linkend="mthDefaultFont">defaultFont</link> method. With this exception, if both the FONTNAME and
+                FONTSIZE indexes are missing from the <computeroutput>directory</computeroutput> object, the default is
+                not set back to the default when an ooDialog application starts.
+              </para>
+              </listitem></varlistentry>
+              <varlistentry><term><emphasis role="bold">FONTSIZE</emphasis></term>
+              <listitem>
+              <para>
+                Sets the default font size for dialogs. This is equivalent to the <emphasis
+                role="italic">fontSize</emphasis> argument in the <link
+                linkend="mthDefaultFont">defaultFont</link> method. With this exception, if both the FONTNAME and
+                FONTSIZE indexes are missing from the <computeroutput>directory</computeroutput> object, the default is
+                not set back to the default when an ooDialog application starts.
+              </para>
+              </listitem></varlistentry>
+            </variablelist>
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>symbols [optional]</term>
+      <listitem>
+      <para>
+        <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol <link
+        linkend="defPoundDefine">definitions</link>, or a collection object that maps <link
+        linkend="defSymbolicID">symbolic</link> IDs to their numeric value.
+      </para>
+      <para>
+        This argument is ignored if a <computeroutput>directory</computeroutput> object is used for argument one.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>auto [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">auto</emphasis> is true, the default for <link linkend="mthInitAutoDetection">automatic</link>
+        data detection is set to on, if false it is set to off.
+      </para>
+      <para>
+        This argument is ignored if a <computeroutput>directory</computeroutput> object is used for argument one.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fName [optional]</term>
+      <listitem>
+      <para>
+        The new font, the name of the font. If omitted the global font name is not changed.
+      </para>
+      <para>
+        This argument is ignored if a <computeroutput>directory</computeroutput> object is used for argument one.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fSize [optional]</term>
+      <listitem>
+      <para>
+        The new size for the default font. If omitted the global font size is not changed.
+      </para>
+      <para>
+        This argument is ignored if a <computeroutput>directory</computeroutput> object is used for argument one.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1920,27 +2062,30 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
     xx
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example specifies that only the <computeroutput>.constDir</computeroutput> should be used to resolve symbolic
+    IDs, loads symbols into the <computeroutput>.constDir</computeroutput> from the file:
+    <computeroutput>rc\PropertySheetDemo.h</computeroutput> and sets the default for automatic data detection to off:
 <programlisting>
 <![CDATA[
+
+  .application~setDefaults("O", "rc\PropertySheetDemo.h", .false)
+
+  t1 = .ListViewDlg~new("res\PropertySheetDemo.dll", IDD_LISTVIEW_DLG)
+  t2 = .TreeViewDlg~new("res\PropertySheetDemo.dll", IDD_TREEVIEW_DLG)
+  t3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG)
+  t4 = .TrackBarDlg~new("res\PropertySheetDemo.dll", IDD_TRACKBAR_DLG)
+  t5 = .TabDlg~new("res\PropertySheetDemo.dll", IDD_TAB_DLG)
+
+  tabContent = .array~of(t1, t2, t3, t4, t5)
 
 ]]>
 </programlisting>
@@ -1987,13 +2132,24 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
 <indexterm><primary>ApplicationManager class</primary><secondary>useGlobalConstDir</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--useGlobalConstDir(--mode--+--------------+--)---------------><
-                              +--symbolFile--+
+>>--useGlobalConstDir(--mode--+-------------+--)----------------><
+                              +--symbolSrc--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The ooDialog framework <link linkend="ovvSymbolicIDMechanism">supports</link> using <link
+  linkend="defSymbolicID">symbolic</link> resource IDs for method aruments that required a resource ID. The global <link
+  linkend="dotConstDir">.constDir</link> is part of that support. The <computeroutput>.constDir</computeroutput> is the
+  most efficient and capable way to use symbolic IDs. However, to support backwards program compatibility, the
+  programmer must specify a usage <link linkend="entConstDirStrategy">strategy</link> that includes the use of the
+  <computeroutput>.constDir</computeroutput>.
+</para>
+<para>
+  By default the <computeroutput>.constDir</computeroutput> is not used. The programmer specifies the usage strategy for
+  the <computeroutput>.constDir</computeroutput> through the <emphasis role="italic">useGlobalConstDir</emphasis>
+  method. Optionaly, the programmer can load symbols into the <computeroutput>.constDir</computeroutput> at the same
+  time the <computeroutput>.constDir</computeroutput> usage is specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2004,13 +2160,62 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
       <varlistentry><term>mode [required]</term>
       <listitem>
       <para>
-        xx
+        Specifies the usage <link linkend="entConstDirStrategy">strategy</link> for the
+       <computeroutput>.constDir</computeroutput>. <emphasis role="italic">mode</emphasis>must be exactly one of the
+       following keywords. Only the first letter is required, and case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='4'>
+          <member>Only </member>
+          <member>First</member>
+          <member>Last </member>
+          <member>Never</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>Only</term>
+          <listitem>
+          <para>
+            Only the <computeroutput>.constDir</computeroutput> is used to resolve symbolic IDs.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>First</term>
+          <listitem>
+          <para>
+            When a symbolic ID needs to be resolved, the ooDialog framework first tries to resolve the ID through the
+            <computeroutput>.constDir</computeroutput>. If that fails, the framework then tries the <link
+            linkend="atrConstDir">constDir</link> attribute of the <link linkend="chpDialogObject">dialog</link> object.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>Last</term>
+          <listitem>
+            <para>
+              This is the opposite of the <emphasis role="italic">First</emphasis> strategy. When a symbolic ID needs to
+              be resolved, the ooDialog framework tries to resolve the ID through the <link
+              linkend="atrConstDir">constDir</link> attribute of the <link linkend="chpDialogObject">dialog</link>
+              object. If that fails, the framework then tries the global <computeroutput>.constDir</computeroutput>
+              object.
+            </para>
+          </listitem></varlistentry>
+          <varlistentry><term>Never</term>
+          <listitem>
+          <para>
+            The <computeroutput>.constDir</computeroutput> is never used to resolve symbolic IDs. This is the default
+            when an ooDialog application starts up.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>symbolFile [optional]</term>
+      <varlistentry><term>symbolSrc [optional]</term>
       <listitem>
       <para>
-        xx
+        As a convenience the programmer can load symbols into the <computeroutput>.constDir</computeroutput> through the
+        <emphasis role="italic">symbolSrc</emphasis> arguemnt.
+      </para>
+      <para>
+        <emphasis role="italic">symbolSrc</emphasis> can either be the name of a file containing symbol <link
+        linkend="defPoundDefine">definitions</link>, or a collection object that maps <link
+        linkend="defSymbolicID">symbolic</link> IDs to their numeric value.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2019,13 +2224,31 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, false on failure.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If <emphasis role="italic">symbolSrc</emphasis> is a string it is taken to be the name of a file containing symbol
+    definitons. The result in this case is the same as using the <link
+    linkend="ruapParseIncludeFile">parseIncludeFile</link>. The file is parsed and any symbol definitions are added to
+    the <computeroutput>.constDir</computeroutput>.
+  </para>
+  <para>
+    When <emphasis role="italic">symbolSrc</emphasis> is not a string, it must be an object with a <emphasis
+    role="italic">supplier</emphasis> method where the indexes the supplier provides are strings. The items the
+    supplier provides are added to the <computeroutput>.constDir</computeroutput> using the supplied indexes.
+  </para>
+  <para>
+    Either the <link linkend="mthAddToConstDir">addToConstDir</link> or the <link
+    linkend="ruapParseIncludeFile">parseIncludeFile</link> can be used to add additional symbols to the
+    <computeroutput>.constDir</computeroutput>. <emphasis role="bold">Note</emphasis> that if the usage strategy is
+    specified as <emphasis role="italic">None</emphasis> and the <emphasis role="italic">symbolSrc</emphasis> argument
+    is used, the symbols will be loaded into the <computeroutput>.constDir</computeroutput>, (because the
+    <computeroutput>.constDir</computeroutput> object is always present in an ooDialog.) However the symbols won't be
+    available in the program, (because the programmer specified to not use the
+    <computeroutput>.constDir</computeroutput>.)
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2033,16 +2256,24 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example the programmer specifies to only use the <computeroutput>.constDir</computeroutput> to resolve
+    symbolic IDs, and at the same time loads symbols into the <computeroutput>.constDir</computeroutput> from the
+    <computeroutput>ticketWizard.h</computeroutput> file:
 <programlisting>
 <![CDATA[
+
+  .application~useGlobalConstDir('O', "rc\ticketWizard.h")
+
+  msg = "The upcoming dialog demonstrates a Wizard 97 style dialog."
+  title = "Wizard 97 Dialog"
+  dlg = .TimedMessage~new(msg, title, 2000)
+  dlg~execute
+
+  ...
 
 ]]>
 </programlisting>
