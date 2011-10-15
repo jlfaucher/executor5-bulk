@@ -714,13 +714,13 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Resolving Symbolic IDs:</emphasis></term>
   <listitem>
   <para>
-    ooDialog uses a <computeroutput>.Directory</computeroutput> object that consists of indexes that are sybmolic names.
-    The value for each index is the numeric value of the sybmolic name. This gave rise to the object name of
+    ooDialog uses a <computeroutput>.Directory</computeroutput> object that consists of indexes that are symbolic names.
+    The value for the item at each index is the numeric value of the sybmolic name. This gave rise to the object name of
     <computeroutput>constDir</computeroutput>, which probably refers to a directory of constants (symbols.) When an
     argument in a method is a resource ID, ooDialog first checks to see if the argument is a whole number. If so, it
-    simply uses the number. When the argument is not a number, ooDialog uses the argument to do a look up in the constDir
-    object. If the argument matches an index in the object, the value of the index is used as the numeric value of the
-    resource ID. When the argument does not match an index in the constDir, the method fails.
+    simply uses the number. When the argument is not a number, ooDialog uses the argument to do a look up in the
+    constant directory object. If the argument matches an index in the object, the value of the index is used as the
+    numeric value of the resource ID. When the argument does not match an index in the constDir, the method fails.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">constDir Attribute:</emphasis></term>
   <listitem>
@@ -801,8 +801,8 @@ xPixels = xDialogUnits * self~FactorX
   <listitem>
   <para>
     A few symbolic IDs are <link linkend="ovvPreDefinedSymbolicIDs">pre-defined</link> by ooDialog and are always
-    present in the <computeroutput>constDir</computeroutput>. These symbolic IDs can be used in any ooDialog program.
-    Other than the pre-defined IDs, the programmer must add symbolic IDs in order to use them in a program.
+    present in the constant directory. These symbolic IDs can be used in any ooDialog program. Other than the
+    pre-defined IDs, the programmer must add symbolic IDs in order to use them in a program.
   </para>
   <para>
     The easiest way to add symbols is to have the ooDialog framework add the symbols itself from a file. Whenever

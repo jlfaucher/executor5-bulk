@@ -100,8 +100,11 @@
   Automatic data detection is implemented in all three main classes of dialogs, the <link
   linkend="clsUserDialog">UserDialog</link>, <link linkend="clsResDialog">ResDialog</link>, and <link
   linkend="clsRcDialog">RcDialog</link>, and of course their subclasses. Automatic data detection can be turned on or
-  off. By default it is <emphasis role="bold">on</emphasis>. The best way to turn automatic data field detection off is
-  to over-ride the <link linkend="mthInitAutoDetection">initAutoDetection</link>() method in your class.
+  off. By default it is <emphasis role="bold">on</emphasis>. The best way to turn automatic data field detection off for
+  a single dialog is to over-ride the <link linkend="mthInitAutoDetection">initAutoDetection</link>() method in your
+  subclass. The <link linkend="dotApplication">.application</link> object, an instance of the <link
+  linkend="clsApplicationManager">ApplicationManager</link> class, can be used to change the default to <emphasis
+  role="bold">off</emphasis> for the entire program.
 </para>
 <para>
   Some dialog controls are not considered to be <emphasis role="italic">data</emphasis> and therefore data attributes
@@ -482,8 +485,8 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 <para>
   The <emphasis role="italic">initAutoDetection</emphasis> method is invoked automatically by the ooDialog framework
   when any dialog is first instantiated. The default implementation of <emphasis
-  role="italic">initAutoDetection</emphasis> turns <link linkend="paraAutomaticDataDetection">automatic data field
-  detection</link> on.
+  role="italic">initAutoDetection</emphasis> turns <link linkend="paraAutomaticDataDetection">automatic</link> data field
+  detection on.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>

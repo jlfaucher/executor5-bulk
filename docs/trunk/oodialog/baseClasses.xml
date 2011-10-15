@@ -1109,11 +1109,11 @@
 </row>
 <row>
 <entry><link linkend="mthResolveNumericID">resolveNumericID</link></entry>
-<entry>Resolves a numeric ID to a symbolic ID, if the symbol exists.</entry>
+<entry>Uses the constant directory to resolve a numeric ID to its symbolic ID.</entry>
 </row>
 <row>
 <entry><link linkend="mthResolveSymbolicID">resolveSymbolicID</link></entry>
-<entry>Resolves a, possibly, symbolic ID to its numeric value.</entry>
+<entry>Uses the constant directory to resolve a symbolic ID to its numeric value.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -1158,8 +1158,8 @@
   <listitem>
   <para>
     Setting the <emphasis role="italic">constDir</emphasis> attribute is private and should not be done by the
-    programmer. The ooDialog framework automatically sets the attribute to a <computeroutput>Directory</computeroutput>
-    object when a new dialog or menu object is created.
+    programmer. The ooDialog framework internally manages the attribute, setting it to a
+    <computeroutput>Directory</computeroutput> object at the proper point in program execution.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1169,7 +1169,7 @@
     linkend="clsApplicationManager">ApplicationManger</link> class inherit the <link
     linkend="clsResourceUtils">ResourceUtils</link> mixin class. <emphasis role="bold">Note</emphasis> that the
     <emphasis role="italic">constDir</emphasis> attrbiute of the <link linkend="dotApplication">.application</link>
-    object <emphasis role="bold">is</emphasis> the global <computeroutput>.constDir</computeroutput>.
+    object <emphasis role="bold">is</emphasis> the global <link linkend="dotConstDir">.constDir</link>.
   </para>
   <para>
     Each index in the the <computeroutput>Directory</computeroutput> object assigned to the <emphasis
