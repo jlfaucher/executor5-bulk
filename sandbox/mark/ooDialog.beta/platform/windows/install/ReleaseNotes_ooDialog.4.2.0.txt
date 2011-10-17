@@ -6,6 +6,65 @@ That section is the start of the real release notes for 4.2.0.  Just a stub
 for now, but starting to get filled in.
 
 
+                     switch_ooDialog420_410-4.2.0.7231
+                     =================================
+
+Changes since switch_ooDialog420_410-4.2.0.7123
+----------------------------------------------------------------------------
+
+Documentation:
+--------------
+  Some improvement on the documentation.  The ApplicatitonManager, Edit, SM,
+  SPI classes are fully documented. The .application and .constDir are fully
+  documented.  Using symbolic IDs in ooDialog is fully documented.
+
+  Excellent progress is being made on the ooDialog User Guide.
+
+
+Samples added:
+--------------
+
+  The ooDialog User Guide has a number of samples added to accompany the
+  text of the guide.
+
+  samples\oodialog\mouse\mouseWheel.rex
+  samples\oodialog\menus\contextMenu.rex
+
+  samples\oodialog\TabOwnerDemo.rex  -- working, not complete
+
+
+Enhancements:
+-------------
+
+  The SM (SystemMetrics) class has been added.
+
+  The SPI (SystemParametersInfo) class has been added.
+
+  Methods have been added to the EventNotification and Edit control classes
+  to work with the mouse wheel event notification.
+
+  The major work for the TabOwnerDialog and helper classes is finished.
+  This is the last major enhancement to be finished for this release.  The
+  class and helper classes are now functional, although not complete.
+
+
+Bugs:
+----
+  Some bugs and inconsistencies found internally, were fixed.
+
+
+
+Incompatible Changes with Prior Beta Code
+-----------------------------------------
+
+  There are no incompatibilities with the prior 4.2.0.7321 release.
+
+  However, the incompatibility introduced in the 4.2.0.7000 release with
+  prior releases is of course still present.  See the cumulative release
+  notes below, the 4.2.0.7000 section for details.
+
+
+
                      switch_ooDialog420_410-4.2.0.7123
                      =================================
 
@@ -379,6 +438,21 @@ Control dialogs are a special type of dialog that works well as a dialog
 within a top-level dialog.  The primary use of these dialogs is within Tab
 controls.
 
+TabOwnerDialog:
+
+A TabOwnerDialog will manage the tab control and the Control dialogs used as
+the pages of the tab control.  It is a sort of hybrid Windows property
+sheet, removing the tedium of managing the pages from the programmer and
+removing the restrictions of the Windows property sheet.
+
+Tab Owner helper classes:
+  ControlDlgInfo
+  ManagedTab
+  TabOwnerDlgInfo
+
+The helper classes play various roles in the management of Tab Owner dialogs.
+
+
 New utility classes:
 --------------------
 
@@ -386,7 +460,6 @@ ApplicationManager:
 
 The ApplicationManager class is used to manage application-wide (global)
 defaults.
-
 
 DayState:
 
@@ -398,10 +471,19 @@ DayStates:
 The DayStates class is also a helper class for the DateTimePicker class and
 provides methods for managing DayState objects.
 
-
 OS:
 
 The OS class provides methods related to operating system services.
+
+SM:
+
+This class consists of attributes that reflect the system metrics of the
+computer the ooRexx program is executing on.
+
+SPI:
+
+This class consists of attributes that reflect the system parameters
+information of the computer the ooRexx program is executing on.
 
 VK:
 
@@ -412,7 +494,7 @@ included in the class.
 New samples:
 ------------
 
-Many new samples have beed addedd to the distribution.  In addition, many
+Many new samples have been added to the distribution.  In addition, many
 of the existing samples have been reworked to better demonstrate how
 ooDialog works.
 
