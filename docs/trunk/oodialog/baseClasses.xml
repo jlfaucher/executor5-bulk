@@ -646,7 +646,7 @@
 <table id="tblEventNotificationMethods" frame="all">
 <title>EventNotification Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in">
+<colspec colwidth="2.0in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -657,6 +657,14 @@
 <row>
 <entry><link linkend="enAddUserMsg">addUserMsg</link></entry>
 <entry>Connects an operating system window message with a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectActivate">connectActivate</link></entry>
+<entry>Connects the window activation event to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectAllSBEvents">connectAllSBEvents</link></entry>
+<entry>Connects all event notifications from a scroll bar control to a single method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="enConnectButtonEvent">connectButtonEvent</link></entry>
@@ -687,8 +695,16 @@
 <entry>Connects an event notification from an edit control to a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><link linkend="enConnectFKeyPress">connectFKeyPress</link></entry>
+<entry>Connects a F Key key press (a F key is typed) with a method in the Rexx dialog.</entry>
+</row>
+<row>
 <entry><link linkend="enConnectHelp">connectHelp</link></entry>
 <entry>Connects the Windows Help event to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectKeyPress">connectKeyPress</link></entry>
+<entry>Connects a key press (a key is typed) with a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="enConnectListBoxEvent">connectListBoxEvent</link></entry>
@@ -703,12 +719,16 @@
 <entry>Connects an event notification from a month calendar to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry><link linkend="enConnectMove">connectMove</link></entry>
-<entry>Connects the move event notification to a method in the Rexx dialog.</entry>
-</row>
-<row>
 <entry><link linkend="enConnectMouseCapture">connectMouseCapture</link></entry>
 <entry>Connects the losing the mouse capture event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectMouseWheel">connectMouseWheel</link></entry>
+<entry>Connects the mouse wheel event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="enConnectMove">connectMove</link></entry>
+<entry>Connects the move event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="enConnectNotifyEvent">connectNotifyEvent</link></entry>
@@ -762,92 +782,50 @@
 <entry><link linkend="enDefTreeDragHandler">defTreeDragHandler</link></entry>
 <entry>Default implementation of a drag and drop handler for a tree view control.</entry>
 </row>
+<row>
+<entry><link linkend="enDisconnectKeyPress">disconnectKeyPress</link></entry>
+<entry>Disconnects a method that was previously connected to key press event.</entry>
+</row>
+<row>
+<entry><link linkend="enHasKeyPressConnection">hasKeyPressConnection</link></entry>
+<entry>Queries if a connection to a key press event already exists.</entry>
+</row>
 </tbody></tgroup>
 </table>
 </section>
 
 
-<section id="enConnectHelp"><title>connectHelp</title>
+<section id="enAddUserMsg"><title>addUserMsg</title>
 <programlisting>
-<link linkend="mthConnectHelp">connectHelp</link>
+<link linkend="mthAddUserMsg">addUserMsg</link>
 
 <![CDATA[
->>--connectHelp(--methodname--)------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="enConnectResize"><title>connectResize</title>
-<programlisting>
-<link linkend="mthConnectResize">connectResize</link>
-
-<![CDATA[
->>--connectResize(--methodName--)----------------><
-]]>
-</programlisting>
-</section>
-
-<section id="enConnectResizing"><title>connectResizing</title>
-<programlisting>
-<link linkend="mthConnectResizing">connectResizing</link>
-
-<![CDATA[
->>--connectResizing(--methodName--)--------------><
-]]>
-</programlisting>
-</section>
-
-<section id="enConnectSizeMoveEnded"><title>connectSizeMoveEnded</title>
-<programlisting>
-<link linkend="mthConnectSizeMoveEnded">connectSizeMoveEnded</link>
-
-<![CDATA[
->>--connectSizeMoveEnded(--methodName--+--------------+--)---------------------><
-                                       +-,-willReply--+
+>>--addUserMsg(-methodName-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-)-><
+                                    +-,-f1-+ +-,-wParam-+ +-,-f2-+ +-,-lParam-+ +-,-f3-+
 
 ]]>
 </programlisting>
 </section>
 
-<section id="enConnectMove"><title>connectMove</title>
+<section id="enConnectActivate"><title>connectActivate</title>
 <programlisting>
-<link linkend="mthConnectMove">connectMove</link>
+<link linkend="mthConnectActivate">connectActivate</link>
 
 <![CDATA[
->>--connectMove(--methodName--)------------------><
+>>--connectActivate(--+--------------+--)--------><
+                      +--methodName--+
 ]]>
 </programlisting>
 </section>
 
-<section id="enConnectPosChanged"><title>connectPosChanged</title>
+<section id="enConnectAllSBEvents"><title>connectAllSBEvents</title>
 <programlisting>
-<link linkend="mthConnectPosChanged">connectPosChanged</link>
+<link linkend="mthConnectAllSBEvents">connectAllSBEvents</link>
 
 <![CDATA[
->>--connectPosChanged(--methodName--)------------><
+>>--connectAllSBEvents(--id--,--methodName--+-------+-+-------+-+-------+--)---><
+                                            +-,-min-+ +-,-max-+ +-,-pos-+
 ]]>
-</programlisting>
-</section>
-
-<section id="enConnectDraw"><title>connectDraw</title>
-<programlisting>
-<link linkend="mthConnectDraw">connectDraw</link>
-
-<![CDATA[
->>--connectDraw--(--+-----+--+---------------+--)------------------------------><
-                    +--id-+  +-,--methodName-+
-]]>
-</programlisting>
-</section>
-
-<section id="enConnectMouseCapture"><title>connectMouseCapture</title>
-<programlisting>
-<link linkend="mthConnectMouseCapture">connectMouseCapture</link>
-
-<![CDATA[
->>--connectMouseCapture(--methodName--)----------><
-]]>
-
 </programlisting>
 </section>
 
@@ -858,16 +836,6 @@
 <![CDATA[
 >>--connectButtonEvent(--id--,--event--+---------------+--)--------------------><
                                        +-,--methodName=+
-]]>
-</programlisting>
-</section>
-
-<section id="enConnectCommandEvents"><title>connectCommandEvents</title>
-<programlisting>
-<link linkend="mthConnectCommandEvents">connectCommandEvents</link>
-
-<![CDATA[
->>--connectCommandEvents(--id--,--methodName--)--><
 ]]>
 </programlisting>
 </section>
@@ -883,13 +851,48 @@
 </programlisting>
 </section>
 
-<section id="enConnectNotifyEvent"><title>connectNotifyEvent</title>
+<section id="enConnectCommandEvents"><title>connectCommandEvents</title>
 <programlisting>
-<link linkend="mthConnectNotifyEvent">connectNotifyEvent</link>
+<link linkend="mthConnectCommandEvents">connectCommandEvents</link>
 
 <![CDATA[
->>--connectNotifyEvent(--id--,--event--+---------------+--)--------------------><
-                                       +-,--methodName=+
+>>--connectCommandEvents(--id--,--methodName--)--><
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectDateTimePickerEvent"><title>connectDateTimePickerEvent</title>
+<programlisting>
+<link linkend="mthConnectDateTimePickerEvent">connectDateTimePickedEvent</link>
+
+<![CDATA[
+>>--connectDateTimePickerEvent(--id--,--event--+---------+--+-------------+-)--><
+                                               +-,-mName-+  +-,-willReply-+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectDraw"><title>connectDraw</title>
+<programlisting>
+<link linkend="mthConnectDraw">connectDraw</link>
+
+<![CDATA[
+>>--connectDraw--(--+-----+--+---------------+--)------------------------------><
+                    +--id-+  +-,--methodName-+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectEachSBEvent"><title>connectEachSBEvent</title>
+<programlisting>
+<link linkend="mthConnectEachSBEvent">connectEachSBEvent</link>
+
+<![CDATA[
+>>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+-+-------+-+-------+-+-------+-->
+                                                     +-,-mthWhenDrag-+ +-,-min-+ +-,-max-+ +-,-pos-+
+
+>--+-----------+-+-----------+-+----------+-+--------------+-+-------------+-+-------------+-)--------><
+   +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+ +-,-progbuttom-+ +-,-progtrack-+ +-,-progendsc-+
 ]]>
 </programlisting>
 </section>
@@ -901,6 +904,38 @@
 <![CDATA[
 >>--connectEditEvent(--id--,--event--+---------------+--)----------------------><
                                      +-,--methodName=+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectFKeyPress"><title>connectFKeyPress</title>
+<programlisting>
+<link linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link>
+
+<![CDATA[
+>>--connectFKeyPress(--methodName--)-------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectHelp"><title>connectHelp</title>
+<programlisting>
+<link linkend="mthConnectHelp">connectHelp</link>
+
+<![CDATA[
+>>--connectHelp(--methodname--)------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectKeyPress"><title>connectKeyPress</title>
+<programlisting>
+<link linkend="mthConnectKeyPressDialogObject">connectKeyPress</link>
+
+<![CDATA[
+>>--connectKeyPress(--methodName--,--keys-+------------+--)-----><
+                                          +-,--filter--+
 ]]>
 </programlisting>
 </section>
@@ -927,6 +962,90 @@
 </programlisting>
 </section>
 
+<section id="enConnectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
+<programlisting>
+<link linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>
+
+<![CDATA[
+>>--connectMonthCalendarEvent(--id--,--event--+---------+--+-------------+-)---><
+                                              +-,-mName-+  +-,-willReply-+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectMouseCapture"><title>connectMouseCapture</title>
+<programlisting>
+<link linkend="mthConnectMouseCapture">connectMouseCapture</link>
+
+<![CDATA[
+>>--connectMouseCapture(--methodName--)----------><
+]]>
+
+</programlisting>
+</section>
+
+<section id="enConnectMouseWheel"><title>connectMouseWheel</title>
+<programlisting>
+<link linkend="mthConnectMouseWheel">connectMouseWheel</link>
+
+<![CDATA[
+>>--connectMouseWheel(--+--------------+--+--------------+--)---><
+                        +--methodName--+  +-,-willReply--+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectMove"><title>connectMove</title>
+<programlisting>
+<link linkend="mthConnectMove">connectMove</link>
+
+<![CDATA[
+>>--connectMove(--methodName--)------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectNotifyEvent"><title>connectNotifyEvent</title>
+<programlisting>
+<link linkend="mthConnectNotifyEvent">connectNotifyEvent</link>
+
+<![CDATA[
+>>--connectNotifyEvent(--id--,--event--+---------------+--)--------------------><
+                                       +-,--methodName=+
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectPosChanged"><title>connectPosChanged</title>
+<programlisting>
+<link linkend="mthConnectPosChanged">connectPosChanged</link>
+
+<![CDATA[
+>>--connectPosChanged(--methodName--)------------><
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectResize"><title>connectResize</title>
+<programlisting>
+<link linkend="mthConnectResize">connectResize</link>
+
+<![CDATA[
+>>--connectResize(--methodName--)----------------><
+]]>
+</programlisting>
+</section>
+
+<section id="enConnectResizing"><title>connectResizing</title>
+<programlisting>
+<link linkend="mthConnectResizing">connectResizing</link>
+
+<![CDATA[
+>>--connectResizing(--methodName--)--------------><
+]]>
+</programlisting>
+</section>
+
 <section id="enConnectScrollBarEvent"><title>connectScrollBarEvent</title>
 <programlisting>
 <link linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>
@@ -938,27 +1057,14 @@
 </programlisting>
 </section>
 
-<section id="enConnectEachSBEvent"><title>connectEachSBEvent</title>
+<section id="enConnectSizeMoveEnded"><title>connectSizeMoveEnded</title>
 <programlisting>
-<link linkend="mthConnectEachSBEvent">connectEachSBEvent</link>
+<link linkend="mthConnectSizeMoveEnded">connectSizeMoveEnded</link>
 
 <![CDATA[
->>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+-+-------+-+-------+-+-------+-->
-                                                     +-,-mthWhenDrag-+ +-,-min-+ +-,-max-+ +-,-pos-+
+>>--connectSizeMoveEnded(--methodName--+--------------+--)---------------------><
+                                       +-,-willReply--+
 
->--+-----------+-+-----------+-+----------+-+--------------+-+-------------+-+-------------+-)--------><
-   +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+ +-,-progbuttom-+ +-,-progtrack-+ +-,-progendsc-+
-]]>
-</programlisting>
-</section>
-
-<section id="enConnectTrackBarEvent"><title>connectTrackBarEvent</title>
-<programlisting>
-<link linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>
-
-<![CDATA[
->>--connectTrackBarEvent(--id--,--event--+---------------+--)------------------><
-                                         +-,--methodName-+
 ]]>
 </programlisting>
 </section>
@@ -985,6 +1091,17 @@
 </programlisting>
 </section>
 
+<section id="enConnectTrackBarEvent"><title>connectTrackBarEvent</title>
+<programlisting>
+<link linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>
+
+<![CDATA[
+>>--connectTrackBarEvent(--id--,--event--+---------------+--)------------------><
+                                         +-,--methodName-+
+]]>
+</programlisting>
+</section>
+
 <section id="enConnectTreeViewEvent"><title>connectTreeViewEvent</title>
 <programlisting>
 <link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>
@@ -996,28 +1113,6 @@
 </programlisting>
 </section>
 
-<section id="enConnectDateTimePickerEvent"><title>connectDateTimePickerEvent</title>
-<programlisting>
-<link linkend="mthConnectDateTimePickerEvent">connectDateTimePickedEvent</link>
-
-<![CDATA[
->>--connectDateTimePickerEvent(--id--,--event--+---------+--+-------------+-)--><
-                                               +-,-mName-+  +-,-willReply-+
-]]>
-</programlisting>
-</section>
-
-<section id="enConnectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
-<programlisting>
-<link linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>
-
-<![CDATA[
->>--connectMonthCalendarEvent(--id--,--event--+---------+--+-------------+-)---><
-                                              +-,-mName-+  +-,-willReply-+
-]]>
-</programlisting>
-</section>
-
 <section id="enConnectUpDownEvent"><title>connectUpDownEvent</title>
 <programlisting>
 <link linkend="mthConnectUpDownEvent">connectUpDownEvent</link>
@@ -1025,19 +1120,6 @@
 <![CDATA[
 >>--connectUpDownEvent(--id--,--event--+--------------+--+-------------+-)-----><
                                        +-,-methodName-+  +-,-willReply-+
-]]>
-</programlisting>
-
-</section>
-
-<section id="enAddUserMsg"><title>addUserMsg</title>
-<programlisting>
-<link linkend="mthAddUserMsg">addUserMsg</link>
-
-<![CDATA[
->>--addUserMsg(-methodName-,-winMsg-+------+-+----------+-+------+-+----------+-+------+-)-><
-                                    +-,-f1-+ +-,-wParam-+ +-,-f2-+ +-,-lParam-+ +-,-f3-+
-
 ]]>
 </programlisting>
 
@@ -1061,6 +1143,30 @@
 
 <![CDATA[
 >>--defTreeDragHandler(--id--,--item--,--point--)------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="enDisconnectKeyPress"><title>disconnectKeyPress</title>
+<programlisting>
+<link linkend="mthDisconnectKeyPressDialogObject">disconnectKeyPress</link>
+
+<![CDATA[
+>>--disconnectKeyPress(--+--------------+--)-----><
+                         +--methodName--+
+
+]]>
+</programlisting>
+</section>
+
+<section id="enHasKeyPressConnection"><title>hasKeyPressConnection</title>
+<programlisting>
+<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPressConnection</link>
+
+<![CDATA[
+>>--hasKeyPressConnection(--+--------------+--)--><
+                            +--methodName--+
 
 ]]>
 </programlisting>

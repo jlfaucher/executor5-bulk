@@ -2002,7 +2002,7 @@
   <para>
     The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>screenPoint [required]</term>
     <listitem>
     <para>
       A <link linkend="clsPoint">Point</link> object containing the point to test.
@@ -2014,13 +2014,168 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a <computeroutput>directory</computeroutput> object containing information on the point hit tested.
+    The <computeroutput>directory</computeroutput> will contain some or all of the following indexes, depending on the
+    results of the hit test:
+    <variablelist>
+      <varlistentry><term>HIT:</term>
+      <listitem>
+      <para>
+        This index will always be present. Its value will be exactly one of the following keywords:
+        <variablelist>
+          <varlistentry><term>CalendarBackground:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was in the calendar's background.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CalendarControl:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, is outside of any calendar but within the
+            calendar controls rectangle
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CalendarDate:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was on a particular date within the calendar. The
+            DATE index of the <computeroutput>directory</computeroutput> object is set to the date at the given point.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CalendarDateMin:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was over the minimum date(s) in the calendar.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CalendarDateMax:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was over the maximum date(s) in the calendar.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CalendarDateNext:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was over a date from the next month (partially
+            displayed at the end of the currently displayed month). If the user clicks here, the month calendar will
+            scroll its display to the next month or set of months.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CalendarDatePrev:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was over a date from the previous month
+            (partially displayed at the end of the currently displayed month). If the user clicks here, the month
+            calendar will scroll its display to the previous month or set of months.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CalendarDay:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was over a day abbreviation, like <emphasis
+            role="italic">Fri</emphasis>, for example. The DATE index of the <computeroutput>directory</computeroutput>
+            object is set to the corresponding date in the top row.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CalendarWeekNum:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was over a week number. This only applies when
+            the month calendar has the WEEKNUMBERS style. The DATE index of the
+            <computeroutput>directory</computeroutput> object is set to the  the corresponding date in the leftmost
+            column.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NoWhere:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was not on the month calendar control, or it was
+            in an inactive portion of the control.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TitleBackground:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was over the background of a month's title.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TitleButtonNext:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was over the button at the top right corner of
+            the control. If the user clicks here, the month calendar will scroll its display to the next month or set of
+            months.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TitleButtonPrev:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was over the button at the top left corner of the
+            control. If the user clicks here, the month calendar will scroll its display to the previous month or set of
+            months.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TitleMonth:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was in a month's title bar, over a month name.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TitleYear:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was in a month's title bar, over the year value.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>TodayLink:</term>
+          <listitem>
+          <para>
+            The point, <emphasis role="italic">screenPoint</emphasis>, was on the <emphasis
+            role="italic">today</emphasis> link at the bottom of the month calendar control.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DATE:</term>
+      <listitem>
+      <para>
+        When set, the DATE index will contain a <computeroutput>DateTime</computeroutput> object that reflects the date
+        as specified by the HIT index above. That is, for CalendarDate, CalendarDay, and CalendarWeekNum. The index is
+        not set for any other hit.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RECT:</term>
+      <listitem>
+      <para>
+        This index is <emphasis role="bold">only</emphasis> set if the operating system is Vista or later. The index
+        will be a <link linkend="clsRect">Rect</link> that specifies the rectangle of the hit-tested location.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ROW:</term>
+      <listitem>
+      <para>
+        This index is <emphasis role="bold">only</emphasis> set if the operating system is Vista or later. The one-base
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>COLUMN:</term>
+      <listitem>
+      <para>
+        This index is <emphasis role="bold">only</emphasis> set if the operating system is Vista or later.
+        xxx and xxx sss.
+      </para>
+      </listitem></varlistentry>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Although the Microsoft documentation calls the point to be tested the point on the screen, experimentation shows
+    that the point must be in <link linkend="defScreenCoordinates">client</link> coordinates of the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2028,17 +2183,47 @@
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the current cursor position, hit tests that point, and then prints out the hit test information:
 <programlisting>
 <![CDATA[
 
+::method onF7
+  expose calendar
+
+  pt = self~getCursorPos
+
+  calendar~screen2client(pt)
+  d = calendar~hitTest(pt)
+  say 'Hit:   ' d~hit
+  say 'Date:  ' d~date
+  if d~rect \== .nil then say 'Rect:  ' '('d~rect~left',' d~rect~top',' d~rect~right',' d~rect~bottom')'
+  else say 'Rect:  ' d~rect
+  say 'Offset:' d~offset
+  say 'Row:   ' d~row
+  say 'Column:' d~column
+  say
+
+/*  Output for 2 hit tests might for instance be:
+
+Hit:    CalendarDate
+Date:   2011-10-12T00:00:00.000000
+Rect:   (116, 79, 147, 94)
+Offset: 1
+Row:    3
+Column: 4
+
+Hit:    TodayLink
+Date:   The NIL object
+Rect:   (63, 139, 184, 156)
+Offset: 1
+Row:    The NIL object
+Column: The NIL object
+
+ */
 ]]>
 </programlisting>
   </para>
