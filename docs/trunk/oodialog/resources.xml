@@ -1896,12 +1896,6 @@ A fancy purple: 16734709 (0x00FF59F5)
           The .Image object that represents the image to add.  This must be an icon or cursor image.
         </para>
       </listitem></varlistentry>
-      <varlistentry><term>y</term>
-      <listitem>
-        <para>
-          yyy,
-        </para>
-      </listitem></varlistentry>
     </variablelist>
     </para>
   </listitem></varlistentry>
@@ -1927,28 +1921,34 @@ A fancy purple: 16734709 (0x00FF59F5)
       Here the system icon images are loaded and then displayed in a list-view. Each icon will show in
       the list-view with the text for the icon being its numeric resource ID. Since the system icons are
       shared, the icon images are not released after they are added to the image list.
-      <programlisting> <![CDATA[
-      ids = .array~new() ids[ 1] = .Image~toID(IDI_APPLICATION)
-      ids[ 2] = .Image~toID(IDI_HAND) ids[ 3] = .Image~toID(IDI_QUESTION)
-      ids[ 4] = .Image~toID(IDI_EXCLAMATION) ids[ 5] = .Image~toID(IDI_ASTERISK)
-      ids[ 6] = .Image~toID(IDI_WINLOGO)
 
-      flags = .DlgUtil~or(.Image~toID(ILC_COLOR8), .Image~toID(ILC_MASK))
+<programlisting>
+<![CDATA[
+  ids = .array~new()
+  ids[ 1] = .Image~toID(IDI_APPLICATION)
+  ids[ 2] = .Image~toID(IDI_HAND)
+  ids[ 3] = .Image~toID(IDI_QUESTION)
+  ids[ 4] = .Image~toID(IDI_EXCLAMATION)
+  ids[ 5] = .Image~toID(IDI_ASTERISK)
+  ids[ 6] = .Image~toID(IDI_WINLOGO)
 
-      imageList = .ImageList~create(.Size~new(32, 32), flags, 20, 10)
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR8), .Image~toID(ILC_MASK))
 
-      do i = 1 to ids~items
-        image = .Image~getImage(ids[i], .Image~toID(IMAGE_ICON))
-        imageList~addIcon(image)
-      end
+  imageList = .ImageList~create(.Size~new(32, 32), flags, 20, 10)
 
-      list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
+  do i = 1 to ids~items
+    image = .Image~getImage(ids[i], .Image~toID(IMAGE_ICON))
+    imageList~addIcon(image)
+  end
 
-      do i = 1 to ids~items
-        list~add(ids[i], i - 1)
-      end
-      ]]>
-      </programlisting>
+  list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
+
+  do i = 1 to ids~items
+    list~add(ids[i], i - 1)
+  end
+
+]]>
+</programlisting>
     </para>
   </listitem></varlistentry>
 </variablelist>
