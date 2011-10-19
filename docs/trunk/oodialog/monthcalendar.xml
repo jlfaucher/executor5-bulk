@@ -2724,11 +2724,13 @@ Column: The NIL object
     Normally in a program using day states with a month calendar, the programmer will not have to continually invoke the
     <emphasis role="italic">setDayState</emphasis> method as the user scrolls through the calendar. Rather he will
     connect the <link linkend="mthConnectMonthCalendar">GETDAYSTATE</link> event of the month calendar and return an
-    array of day state objects. The month calendar then sets the day states internally using the array. However, the
-    programmer will need to use the <emphasis role="italic">setDayState</emphasis> method to properly display the dates
-    when the dialog with a month caldendar is first shown.
+    array of day state objects from the <link linkend="evtMonthCalendarGETDAYSTATE">event</link> handler. The month
+    calendar then sets the day states internally using the array.
   </para>
-  </listitem></varlistentry>
+  <para>
+    However, the programmer will need to use the <emphasis role="italic">setDayState</emphasis> method to properly
+    display the dates when the dialog with a month caldendar is first shown.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
@@ -2738,7 +2740,7 @@ Column: The NIL object
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example sets the 15th and 30th of each month to be bolded in the month calenday when the dialog is first shown.
+    This example sets the 15th and 30th of each month to be bolded in the month calendar when the dialog is first shown.
     Notice that the day state for each month is the same (15th and 30th) so the code does not determine exactly which
     months are showing, it only needs to determine how many months are showing.
 <programlisting>
@@ -2748,6 +2750,18 @@ Column: The NIL object
   expose calendar
 
   calendar = self~newMonthCalendar(IDC_MC_PAYDAYS)
+
+  monthsShowing = .array~new
+  count = calendar~getMonthRange(monthsShowing, 'P')
+
+  dayStates = .array~new(count)
+  dayStates = .DayState~new(15, 30)
+  do i = 1 to count
+    dayStates[i] = dayState
+  end
+
+  calendar~setDayState(dayStates)
+  ...
 
 ]]>
 </programlisting>
