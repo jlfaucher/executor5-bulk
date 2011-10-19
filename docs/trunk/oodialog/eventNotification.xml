@@ -43,15 +43,649 @@
 -->
 
 
-<section id="sctConnectingEvents"><title>Connecting Events</title>
-<indexterm><primary>connecting events</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>connect event methods</secondary></indexterm>
-<indexterm><primary>connect event methods</primary><secondary>dialog object</secondary></indexterm>
+<section id="clsEventNotification"><title>EventNotification Mixin Class</title>
+<indexterm><primary>EventNotification class</primary></indexterm>
 <para>
-  The dialog object methods that create a connection between a Windows <link linkend="ovvEvents">event</link>
-  notification and a method of the Rexx dialog object are all implemented in the <link
-  linkend="clsEventNotification">EventNotification</link> class. These methods are documented here.
+  The event notification class is a <emphasis role="italic">Mixin</emphasis> class that contains methods that connect
+  the notification of a Windows <link linkend="ovvEvents">event</link> sent to the <link
+  linkend="ovvUnderlying">underlying</link> dialog with a method in the Rexx dialog object. Except as noted below, the
+  Rexx programmer adds the method to her dialog subclass. Once the event notification is connected, each time the event
+  occurs, the connected method is invoked. The programmer codes the method to take the appropriate action for the event.
 </para>
+<para>
+  In the Windows user interface, as the user interacts with the system, events are generated that specify what the
+  action of the user was. Mouse clicks, keyboard presses, moving or sizing windows, all generate events.
+</para>
+<para>
+  Some simple examples of how this works:
+<itemizedlist>
+<listitem>
+<para>
+  Push buttons notify their parent dialog of a number of events. The programmer connects one of these events to a method
+  in his Rexx dialog. Typically the CLICKED event is connected. Then, the connected method is called each time the
+  button is pressed (clicked.)
+</para>
+</listitem>
+<listitem>
+<para>
+  List boxes, multiple-select list boxes, and combo boxes can be connected to a method that is called each time a line
+  in the list box or combo box is selected.
+</para>
+</listitem>
+<listitem>
+<para>
+  For a scroll bar, the programmer can specify different methods that are called depending on the user action. The user
+  can click on the arrow buttons, drag the thumb, or use the page down / page up keys. Each of these events can be
+  connected to a method in the Rexx dialog.
+</para>
+</listitem></itemizedlist>
+</para>
+<para>
+  Whenever a dialog object is instantiated, the ooDialog framework <link
+  linkend="sctStandardEventMethods">automatically</link> makes several event connections. For all other events the Rexx
+  programmer, usually, needs to specifically connect the event to his dialog, through one of the event notification
+  methods, to be able to respond to the event. In a <link linkend="clsUserDialog">UserDialog</link>, some of the methods
+  that create dialog controls have an option that automatically connects an event to a dialog method. But, for most
+  events, say the resize or move events, the connection needs to be made explicitly.  Indeed, except for trivial
+  dialogs, most of the programming is deciding which events to be notified of and taking action upon receiving the
+  notification.
+</para>
+<para id="paraWhereToConnectEvents">
+  In general, events should be connected before the dialog is shown on the screen, or immediately after the dialog is
+  created. There is no reason why the programmer can not place the invocation where ever it makes the most sense.
+  Connecting the events in the <link linkend="mthInitDialog">initDialog</link>() method is usually sufficient. In a
+  <computeroutput>UserDialog</computeroutput>, the <link linkend="mthDefineDialog">defineDialog</link>() method also
+  makes a good place for the connect event methods. If the programmer is overriding the <emphasis
+  role="italic">init</emphasis>() method, the connect event methods can be placed there.  In this case, do not invoke
+  the connect event method until <emphasis role="bold">after</emphasis> the <link
+  linkend="mthNewDialogObject">superclass</link> has been initialized.
+</para>
+
+<section id="sctCodingEventHandlers"><title>Coding Event Handlers</title>
+<indexterm><primary>coding event handlers</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>coding event handlers</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>coding event handlers</secondary></indexterm>
+
+<para>
+  The methods in a Rexx dialog object connected to Windows event notifications are commonly called event handlers
+  because the method handles the event. In order to properly code an event handler, the Rexx programmer needs to
+  understand somewhat the underlying mechanism of event notification. This is particularly important in ooDialog 4.2.0
+  and later with its ability to <link linkend="ovvEventsDirectReply">directly</link> invoke the event handling method
+  from the window <link linkend="ovvWindowMessages">message</link> processing loop.
+</para>
+<para>
+  When the operating system sends an event notification to the underlying dialog, the operating system waits for a reply
+  to the notification in the message processing loop. This is significant because while the operating system is
+  waiting, in general, other messages can not be processed by the window. If an application does not reply in a timely
+  manner to the notification messages, it can cause the application to appear hung. With today's fast processors there
+  are plenty of CPU cycles for an event handler to process and reply to event notifications. But, if an application were
+  to do something like sleep for 10 seconds in an event handler, the user would think the application was hung.
+</para>
+<para>
+  Prior to ooDialog 4.2.0, the ooDialog framework could not directly invoke the event handling method in the Rexx dialog
+  object. To invoke the method, the framework used a cumbersome process involving queues and interpret. In the message
+  processing loop, the framework essentially queued up the method to be invoked <emphasis role="italic">at some later
+  time</emphasis> and replied immediately to the notification. Because of this, the event handling method could not
+  reply to the event notification, and in fact any return was simply lost. This meant much of the capability of a
+  Windows dialog was unavailable. It also meant it did not matter if the method returned in a timely manner.
+</para>
+<para>
+  With ooDialog 4.2.0 and later, the event handling method in the Rexx dialog object is invoked by the interpreter
+  directly from the message processing loop in the underlying Windows dialog. This allows the Rexx programmer
+  to <link linkend="exampleEventHandler1">return</link> a value to the notification, to <link
+  linkend="exampleEventHandler1">synchronize</link> the handling of notifications, or to <link
+  linkend="exampleEventHandler3">veto</link> an event. Remember, with this direct invocation of the event handling
+  methods, the interpreter is waiting in the message processing loop for the return from the method. Therefore, the
+  programmer needs to return from the method in a reasonable amount of time. Do not be overly worried about this, the
+  interpreter processes a large number of statements in a very short time. There is adequate time to process and return
+  a value in the event handler.
+</para>
+<para>
+  However, having the interpreter waiting for the return of an event handling method could conceivably be a problem for
+  some few existing programs. Since, in older ooDialog versions, the return from an event handler method was
+  meaningless, some programmers may not have returned from the method in a timely manner, and never realized this was a
+  mistake. In addition, there are a large number of event notifications in Windows where the operating system ignores
+  the reply. Therefore, the ooDialog framework uses two different ways to invoke the event handling method. The first,
+  preferred, method is for the interpreter to invoke the method directly, wait for the return, and then use the return
+  to reply to the Windows event notification. The second is to invoke the event handling method using the <emphasis
+  role="italic">startWith</emphasis>() method of the <computeroutput>Object</computeroutput> class. This starts the
+  event handling method concurrently, and the ooDialog framework replies to the Windows event notification immediately.
+</para>
+<para>
+  In general, whether the ooDialog framework invokes the event handling method and waits for the return, or uses
+  <emphasis role="italic">startWith</emphasis>() and replies to the Windows event notification immediately is determined
+  using these rules:
+</para>
+<orderedlist>
+<listitem>
+<para>
+  Event connections made using the event connection methods that existed prior to ooDialog 4.2.0, using the existing
+  event keywords, and existing arguments, use <emphasis role="italic">startWith</emphasis> to invoke the event handlers.
+  The programmer can not change this. For the purpose of this discussion, these methods will be called existing
+  connection methods.
+</para>
+</listitem>
+<listitem>
+<para>
+  All event connections made using event connection methods introduced after ooDialog 4.1.0 assume the programmer wants
+  the event handler invoked directly and for the ooDialog framework to wait for the return. These methods will be called
+  new connection methods. For instance, the <link linkend="clsDateTimePicker">date time</link> picker control did not
+  exist in ooDialog 4.1.0, so its event connection method, <link
+  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> falls into this category.
+</para>
+</listitem>
+<listitem>
+<para>
+  For new connection methods, when the reply to an event notification has a meaning for the notification, the framework
+  always invokes the event handler directly and waits for the return. The programmer can not change this. If the
+  programmer does not want to reply to the event, then he should simply not connect the event.
+</para>
+</listitem>
+<listitem>
+<para>
+  All new connection methods have an optional argument that allows the programmer to specify whether she wants the
+  framework to wait for the return, or use <emphasis role="italic">startWith</emphasis> and reply immediately. When the
+  reply to an event is ignored by the operating system, the optional argument will be used to direct the framework to
+  invoke the event handler directly or use <emphasis role="italic">startWith</emphasis>. By default, the framework
+  invokes the connected method directly.
+</para>
+</listitem>
+<listitem>
+<para>
+  Over time, the existing connections will be enhanced to also take a fourth optional argument. This will allow the
+  programmer to specify that the framework invoke the event handler directly and wait for the return. This enhancement
+  has started, but is far from complete.
+</para>
+</listitem>
+<listitem>
+<para>
+  The documentation for each event connection method, for each event, will specify how the event handler will be
+  invoked.
+</para>
+</listitem>
+</orderedlist>
+
+<para>
+  The following code snippets and examples expand on these details.
+</para>
+<para>
+  Best practice would be to always code event handlers as if they are expected to return a value to the operating
+  system's event notification message. The considerations would be that the method does not block and that a value is
+  returned to the operating system in a reasonable amount of time. In general, the event handler should be unguarded to
+  preclude the possibility that some guarded method in the dialog object is executing at the time the event notification
+  is generated.
+</para>
+<para>
+  Below is a code snippet for an application that displays the current date and time, with a push button that refreshes
+  the display. Note these points about the code snippet. Since the <emphasis role="italic">connectButtonEvent</emphasis>
+  method is the replacement for the <link linkend="ovvDeprecated">deprecated</link> <emphasis
+  role="italic">connectButtonNotify</emphasis> it is in essence an existing connection method, using the original
+  arguments. Therefore, the method is invoked from the message processing loop using <emphasis
+  role="italic">startWith</emphasis>. Because of this, technically, it does not have to be unguarded and does not have
+  to return a value. Nevertheless, it is the <emphasis role="italic">correct</emphasis> way to code the event handler.
+<programlisting>
+<![CDATA[
+::method initDialog
+  ...
+  self~connectButtonEvent(IDC_PB_REFRESH, "CLICKED", updateTime)
+  ...
+
+::method updateTime unguarded
+  use arg info, hwnd
+
+  now = .DateTime~new
+  self~refreshDisplay(now)
+  return 0
+
+]]>
+</programlisting>
+
+</para>
+<para>
+  Consider this snippet from a similar program, but where the push button starts a process that calculates the grains of
+  sand in the universe. Since it is not expected that the calculation will finish in a reasonable amount of time, an
+  early reply is used to return a value in a timely manner. The handler also disables the push button so tha the user
+  can not start a second calculation until the first calculation finishes.
+<programlisting>
+<![CDATA[
+::method initDialog
+  ...
+  self~connectButtonEvent(IDC_PB_CALC_SAND, "CLICKED", onCalculateGrains)
+  ...
+
+::method onCalculateGrains unguarded
+  use arg info, hwnd
+
+  self~newPushButton(IDC_PB_CALC_SAND)~disable
+  reply 0
+
+  number = self~calculateSandInUniverse
+  self~refreshDisplay(number)
+  self~newPushButton(IDC_PB_CALC_SAND)~enable
+  return
+
+]]>
+</programlisting>
+
+</para>
+<para>
+  The following examples are all for events where the event handler must return a value.
+</para>
+<variablelist>
+  <varlistentry id="exampleEventHandler1"><term><emphasis role="bold">Returning Values</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="clsMonthCalendar">month calendar</link> control has the <link
+    linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link> event that is sent to request information on how certain
+    days are to be shown. The programmer can customize the calendar by returning a set of days that should be displayed
+    in bold. For instance, in a business application paid holidays could be displayed in bold.
+  </para>
+  <para>
+    Since the <emphasis role="italic">connectMonthCalendarEvent</emphasis> method did not exist in ooDialog 4.1.0 and
+    the return value for this event is meaningful, the second and third rules above apply.  That is, the interpreter
+    invokes the event handler directly, waits for the reply, and the programmer can not change this behavior.
+  </para>
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose calendar
+
+  calendar = self~newMonthCalendar(IDC_MC_HOLIDAYS)
+
+  -- Connect the GETDAYSTATE event.
+  self~connectMonthCalendarEvent(IDC_MC_HOLIDAYS, "GETDAYSTATE", onGetDayState)
+
+  -- Restrict the calendar so that it only displays the year 2011.
+  start = .DateTime~fromStandardDate("20110101")
+  end = .DateTime~fromStandardDate("20111231")
+
+  ...
+
+::method onGetDayState unguarded
+  expose calendar
+  use arg startDate, count
+
+  -- Create the array to hold the .DayState objects.
+  dayStates = .array~new(count)
+
+  month = startDate~month
+  if month == 12 then month = 0
+
+  do i = 1 to count
+    j = month + i - 1
+
+    select
+      when j ==  1 then dayStates[i] = .DayState~new(17)
+      when j ==  2 then dayStates[i] = .DayState~new(21)
+      when j ==  3 then dayStates[i] = .DayState~new
+      when j ==  4 then dayStates[i] = .DayState~new
+      when j ==  5 then dayStates[i] = .DayState~new(30)
+      when j ==  6 then dayStates[i] = .DayState~new
+      when j ==  7 then dayStates[i] = .DayState~new(4)
+      when j ==  8 then dayStates[i] = .DayState~new
+      when j ==  9 then dayStates[i] = .DayState~new(5)
+      when j == 10 then dayStates[i] = .DayState~new
+      when j == 11 then dayStates[i] = .DayState~new(24, 25)
+      when j == 12 then dayStates[i] = .DayState~new(23, 30)
+      otherwise dayStates[i] = .DayState~new()
+    end
+  end
+
+  buffer = .DayStates~makeDayStateBuffer(dayStates)
+  return buffer
+
+]]>
+</programlisting>
+  </listitem></varlistentry>
+  <varlistentry id="exampleEventHandler2"><term><emphasis role="bold">Event Synchronization</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="clsDateTimePicker">DTP</link> (date time picker) control has the <link
+    linkend="mthConnectDateTimePickerEvent">DROPDOWN</link> event notification that is sent when the drop down calendar
+    is shown. This gives the programmer a chance to customize the month calendar that is shown. Since the month calendar
+    is not shown until the event handling method returns, replying directly to the notification allows the programmer to
+    completely finish the customizations before the month calendar appears on the screen.
+  </para>
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DROPDOWN", onDropDown)
+  ...
+
+
+::method onDropDown unguarded
+  use arg idFrom, hwndFrom
+
+  dt = self~newDateTimePicker(IDC_DTP);
+  monthCal = dt~getMonthCal
+  monthCal~setFirstDayOfWeek(3)
+  monthCal~addStyle("NOTODAY")
+
+  return 0
+
+]]>
+</programlisting>
+  <para>
+    In the above example, the <emphasis role="italic">connectDateTimePickerEvent</emphasis> method did not exist in
+    ooDialog 4.1.0, but the return value for this event is ignored by the OS. Therefore, the second and fourth rules
+    above apply. That is, by default the interpreter invokes the event handler directly and waits for a reply. However
+    the programmer can change this behavior if he wants. If there is no reason to have the interpreter wait until the
+    event handler finishes, then the programmer could use the fourth optional argument. The
+    <computeroutput>.false</computeroutput> value tells the ooDialog framework to use the <emphasis
+    role="italic">startWith</emphasis> method to invoke the event handler.
+  </para>
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DROPDOWN", onDropDown, .false)
+  ...
+
+
+::method onDropDown unguarded
+  expose userDidSeeCalendar
+  use arg idFrom, hwndFrom
+
+  userDidSeeCalendar = .true
+
+]]>
+</programlisting>
+  </listitem></varlistentry>
+  <varlistentry id="exampleEventHandler3"><term><emphasis role="bold">Veto Events</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="clsTab">tab</link> control has the <link linkend="mthConnectTabEvent">SELCHANGING</link> event.
+    It is sent when the user selects a different tab, and is sent <emphasis role="bold">before</emphasis> the selected
+    tab is changed. The programmer can <emphasis role="italic">veto</emphasis> the change to a new tab by returning
+    <computeroutput>.false</computeroutput> to the event notification, or allow the change by returning
+    <computeroutput>.true</computeroutput>. One reason for preventing the change might be that the user had entered
+    invalid data in the current tab page.
+  </para>
+  <para>
+    <emphasis role="bold">Note:</emphasis> Since the <emphasis role="italic">connectTabEvent</emphasis> method is the
+    replacement for the <emphasis role="italic">ovvDeprecated</emphasis> <emphasis
+    role="italic">connectTabNotify</emphasis> method, it essentially is a method that existed in ooDialog 4.1.0. The
+    above rules one and five apply. That is, when the same arguments are used as existed in 4.1.0, the event handler is
+    invoked using <emphasis role="italic">startWith</emphasis> and the interpreter does not wait for a return value.
+    With this behavior, it is impossible for the programmer to veto the change to a new tab. Therefore the programmer
+    has to use the fourth optional argument to change the default behavior. Specifying
+    <computeroutput>.true</computeroutput> causes the ooDialog framework to invoke the <emphasis
+    role="italic">onTabChanging</emphasis> method directly and wait for the return value.
+  </para>
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  self~connectTabEvent(IDC_TAB, SELCHANGING, onTabChanging, .true)
+
+::method onTabChanging unguarded
+  expose tabContent
+  use arg idFrom, hwndFrom
+
+  index = self~newTab(idFrom)~selectedIndex + 1
+  dlg = tabContent[index]
+
+  if dlg~validate then return .true
+  else return .false
+
+]]>
+</programlisting>
+  <para>
+    In the above example, since the <emphasis role="italic">validate</emphasis> method is returning
+    <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> the event handler could have been
+    coded this way:
+  </para>
+<programlisting>
+<![CDATA[
+::method onTabChanging unguarded
+
+  ...
+
+  return dlg~validate
+]]>
+</programlisting>
+  <para>
+    The example used:
+<programlisting>
+<![CDATA[
+  if dlg~validate then return .true
+  else return .false
+]]>
+</programlisting>
+    to emphasize that the event handler needs to return <computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleEventHandler4"><term><emphasis role="bold">Lengthy Processing</emphasis></term>
+  <listitem>
+  <para>
+    As previously noted, the Rexx programmer does not need to be overly worried about taking to much time to return a
+    value from an event handler. In most very case there is plenty of time to process the event and return a value.
+    However, sometimes the programmer may want to, or need to, do some lengthy processing in the event handler. For
+    these cases, the programmer needs to figure out how to return a value from the event handler and also do the needed
+    processing. This is really a <emphasis role="italic">concurrency</emphasis> problem, not an event handling problem.
+  </para>
+  <para>
+    The two common ways to solve this problem would be to use an <emphasis role="italic">early reply</emphasis> or to
+    start a <emphasis role="italic">second activity</emphasis> running to do the processing. Using the <link
+    linkend="exampleEventHandler3">onTabChanging</link> event handler above, here are two typical ways to handle the
+    event when some lengthy processing is involved. As a hypothetical, say that when the user changes to a new tab, the
+    program needs to gather up all the data on the validated page and write it to disk, or send it somewhere. One
+    approach would be to validate the page, do an early reply, and then finish up the processing:
+  </para>
+<programlisting>
+<![CDATA[
+
+::method defineDialog
+
+  self~connectTabEvent(IDC_TAB, SELCHANGING, onTabChanging, .true)
+
+::method onTabChanging unguarded
+  expose tabContent
+  use arg idFrom, hwndFrom
+
+  index = self~newTab(idFrom)~selectedIndex + 1
+  dlg = tabContent[index]
+
+  if \ dlg~validate then return .false  -- Tab will not be changed
+
+  reply .true  -- Tab is changed for the user.
+
+  -- Now gather up the data entered on the page we just switched from.
+  data = dlg~getUserDataDirectory
+  self~writeDataToFile(data)
+
+]]>
+</programlisting>
+  <para>
+    Another approach could be to start a new activity which will run concurrently. It might be coded this way:
+  </para>
+<programlisting>
+<![CDATA[
+::method onTabChanging unguarded
+  expose tabContent
+  use arg idFrom, hwndFrom
+
+  index = self~newTab(idFrom)~selectedIndex + 1
+  dlg = tabContent[index]
+
+  if dlg~validate then do
+    dp = .DataProcesser~new
+    dp~start("processDlgData", dlg)
+    return .true
+  end
+  else do
+    return .false
+  end
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="sctMethodsEventNotification"><title>Method Table</title>
+<para>
+  The following table list the methods of the <computeroutput>EventNotification</computeroutput> class:
+</para>
+<table id="tblEventNotificationMethods" frame="all">
+<title>EventNotification Methods</title>
+<tgroup cols="2">
+<colspec colwidth="2.0in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="mthAddUserMsg">addUserMsg</link></entry>
+<entry>Connects an operating system window message with a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectActivate">connectActivate</link></entry>
+<entry>Connects the window activation event to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectAllSBEvents">connectAllSBEvents</link></entry>
+<entry>Connects all event notifications from a scroll bar control to a single method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectButtonEvent">connectButtonEvent</link></entry>
+<entry>Connect an event notification from a button control to a method in the Rexx Dialog</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link></entry>
+<entry>Connects an event notification from a combo box to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectCommandEvents">connectCommandEvents</link></entry>
+<entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectDateTimePickerEvent">conectDateTimePickerEvent</link></entry>
+<entry>Connects an event notification form a date time picker to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectDraw">connectDraw</link></entry>
+<entry>Connects the draw item event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectEachSBEvent">connectEachSBEvent</link></entry>
+<entry>Connects each specified event notification from a scroll bar to a separate method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectEditEvent">connectEditEvent</link></entry>
+<entry>Connects an event notification from an edit control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link></entry>
+<entry>Connects a F Key key press (a F key is typed) with a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectHelp">connectHelp</link></entry>
+<entry>Connects the Windows Help event to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectKeyPressDialogObject">connectKeyPress</link></entry>
+<entry>Connects a key press (a key is typed) with a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectListBoxEvent">connectListBoxEvent</link></entry>
+<entry>Connects an event notification from a list box control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectListViewEvent">connectListViewEvent</link></entry>
+<entry>Connects an event notification from a list-view control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link></entry>
+<entry>Connects an event notification from a month calendar to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectMove">connectMove</link></entry>
+<entry>Connects the move event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectMouseCapture">connectMouseCapture</link></entry>
+<entry>Connects the losing the mouse capture event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectMouseWheel">connectMouseWheel</link></entry>
+<entry>Connects the mouse wheel event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectNotifyEvent">connectNotifyEvent</link></entry>
+<entry>Connects a generic event notification from a dialog control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectPosChanged">connectPosChanged</link></entry>
+<entry>Connects the position has changed event notification to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectResize">connectResize</link></entry>
+<entry>Connects the size event notification to a method in the Rexx dialog</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectResizing">connectResizing</link></entry>
+<entry>Connects the sizing event notification to a method in the Rexx dialog</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link></entry>
+<entry>Connects an event notification from a scroll bar control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectSizeMoveEnded">connectSizeMoveEnded</link></entry>
+<entry>Connects the size / move ended event notification to a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectStaticEvent">connectStaticEvent</link></entry>
+<entry>Connects an event notification from a static control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectTabEvent">connectTabEvent</link></entry>
+<entry>Connects an event notification from a tab control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link></entry>
+<entry>Connects an event notification from a track bar control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link></entry>
+<entry>Connects an event notification from a tree view control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectUpDownEvent">connectUpDownEvent</link></entry>
+<entry>Connects an event notification from an UpDown control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthDefListDragHandler">defListDragHandler</link></entry>
+<entry>Default implementation of a drag and drop handler for a list-view control.</entry>
+</row>
+<row>
+<entry><link linkend="mthDefTreeDragHandler">defTreeDragHandler</link></entry>
+<entry>Default implementation of a drag and drop handler for a tree view control.</entry>
+</row>
+<row>
+<entry><link linkend="mthDisconnectKeyPressDialogObject">disconnectKeyPress</link></entry>
+<entry>Disconnects a method that was previously connected to key press event.</entry>
+</row>
+<row>
+<entry><link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPressConnection</link></entry>
+<entry>Queries if a connection to a key press event already exists.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
 
 <section id="mthAddUserMsg"><title>addUserMsg</title>
 <indexterm><primary>addUserMsg</primary></indexterm>
@@ -449,9 +1083,6 @@
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
   </para>
@@ -1139,14 +1770,16 @@ lo word resource ID:       1003
 <indexterm><primary>connectDateTimePickerEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectDateTimePickerEvent(--id--,--event--+---------------+--)------------><
-                                               +-,--methodName-+
+>>--connectDateTimePickerEvent(--id-,-evt--+----------+-+------------+-)------><
+                                           +-,--mName-+ +-,-wilReply-+
 
 ]]>
 </programlisting>
 
 <para>
-  PLEASE FIXE ME TODO
+  The <emphasis role="italic">connectDateTimePickerEvent</emphasis> method connects an <link
+  linkend="ovvEvents">event</link> notification message from a <link linkend="clsDateTimePicker">date time picker</link>
+  control to a method in the Rexx dialog.
 </para>
 <para>
 </para>
@@ -1158,142 +1791,445 @@ lo word resource ID:       1003
     <variablelist>
     <varlistentry><term>id</term>
     <listitem>
-      <para>
-        The resource ID of the static control.
+    <para>
+      The resource ID of the date time picker control. May be numeric or <link linkend="defSymbolicId">symbolic</link>.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>event</term>
+    <varlistentry><term>evt [required]</term>
     <listitem>
-      <para>
-        A keyword specifying the event to be connected with a method:
-        <variablelist>
-          <varlistentry><term>CLICK</term>
-          <listitem>
-            <para>
-              The static control has been clicked with the mouse.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DBLCLK</term>
-          <listitem>
-            <para>
-              The static control has been double-clicked with the mouse.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DISABLE</term>
-          <listitem>
-            <para>
-              The static control has been disabled.
-            </para>
-          </listitem></varlistentry>
-          <varlistentry><term>ENABLE</term>
-          <listitem>
-            <para>
-              The static control has been enabled.
-            </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
+    <para>
+      Exactly one of the following keywords. The keyword specifies the event to be connected. For each event, the
+      documentation for the event handler, (<link linkend="evtDateTimePickerCLOSEUP">CloseUp</link>, <link
+      linkend="evtDateTimePickerDATETIMECHANGE">DateTimeChange</link>, etc.,) will contain additional infomation about
+      the event. Case is not significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>CLOSEUP       </member>
+        <member>DATETIMECHANGE</member>
+        <member>DROPDOWN      </member>
+        <member>FORMAT        </member>
+        <member>FORMATQUERY   </member>
+        <member>USERSTRING    </member>
+        <member>WMKEYDOWN     </member>
+        <member>KILLFOCUS     </member>
+        <member>SETFOCUS      </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>CLOSEUP</term>
+        <listitem>
+        <para>
+          Sent by a date and time picker (DTP) control when the user closes the drop-down month calendar. The month
+          calendar is closed when the user chooses a date from the month calendar or clicks the drop-down arrow while
+          the calendar is open. The return value from the event handler is ignored for this event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DATETIMECHANGE</term>
+        <listitem>
+        <para>
+          Sent by a date and time picker (DTP) control whenever a change occurs. The return value to this notification
+          must be 0. Because of this, the interpreter ignores the actual value of the return from the event handler and
+          always uses 0.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DROPDOWN</term>
+        <listitem>
+        <para>
+          Sent by a date and time picker (DTP) control when the user activates the drop-down month calendar. The return
+          value from the event handler is ignored for this event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FORMAT</term>
+        <listitem>
+        <para>
+          Sent by a date and time picker (DTP) control to request text to be displayed in a callback field. The <emphasis
+          role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
+          <link linkend="sctCodingEventHandlers">return</link> a reply.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>FORMATQUERY</term>
+        <listitem>
+        <para>
+          Sent by a date and time picker (DTP) control to retrieve the maximum allowable size of the string that will be
+          displayed in a callback field.  The <emphasis role="italic">willReply</emphasis> argument is ignored for this
+          event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a reply.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>USERSTRING</term>
+        <listitem>
+        <para>
+          Sent by a date and time picker (DTP) control when a user finishes editing a string in the control. This
+          notification message is only sent by DTP controls that have the PARSE style. The <emphasis
+          role="italic">willReply</emphasis> argument is ignored for this event, the event handler must <link
+          linkend="sctCodingEventHandlers">return</link> a reply.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>WMKEYDOWN</term>
+        <listitem>
+        <para>
+           The <emphasis
+          role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
+          <link linkend="sctCodingEventHandlers">return</link> a reply.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>KILLFOCUS</term>
+        <listitem>
+        <para>
+          text
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SETFOCUS</term>
+        <listitem>
+        <para>
+          text
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
     </listitem></varlistentry>
-    <varlistentry><term>methodName [optional]</term>
+    <varlistentry><term>mName [optional]</term>
     <listitem>
-      <para>
-        The method that is to be invoked whenever the specified notification is received from the static control. The
-        programmer defines this method. The method name can not be the empty string. If this argument is omitted, a
-        method name is automatically generated that consists of the event keyword preceded by
-        <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
-      </para>
+    <para>
+      The name of the method that is to be invoked whenever the specified notification is received from the date time
+      picker control. The programmer defines this method. If this argument is omitted, a method name is automatically
+      generated that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
+      <computeroutput>onCloseUp</computeroutput>. If the method name is supplied, it can not be the empty string.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreters waits for the reply
+      from the event handler. The default is <computeroutput>.true</computeroutput>, that is, the interpreter waits
+      until the event handling method returns a value. If <emphasis role="italic">willReply</emphasis> is
+      <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. However, this argument is
+      ignored for the USERSTRING, WMKEYDOWN, FORMAT, and FORMATQUERY events. If the programmer connects any of these
+      events, the interpreter waits for the return from the connected method. This can not be changed.
+    </para>
     </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
-    <para>
-      The return codes are:
-      <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-        <para>
-          No error detected.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-        <para>
-          The resource ID could not be resolved or the event argument is incorrect.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>1</term>
-      <listitem>
-        <para>
-          The message was not connected correctly. The message was not connected
-        </para>
-      </listitem></varlistentry>
-      </variablelist>
-    </para>
+  <para>
+    This method returns <computeroutput>.true</computeroutput> if the event notification was connected correctly,
+    otherwise <computeroutput>.false</computeroutput> .
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
-  <orderedlist>
+  <para>
+    Common guidelines on <link linkend="paraWhereToConnectEvents">where</link> to invoke the <emphasis
+    role="italic">connectDateTimePickerEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
+    to code event handlers are included in the documentation for the <link
+    linkend="clsEventNotification">EventNotification</link> class.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    There are some <link linkend="paraWhereToConnectEvents">common</link> guidelines for the invocation of the event
-    connection methods.
-  </para>
-  </listitem>
-  <listitem>
-  <para>
-    The defined event-handling method will receive two arguments. The first arg contains information about the
-    specific control and its event. The second arg is the window handle of the static control.
+    Syntax errors are raised when incorrect usage is detected, including the use of an invalid symbolic ID or an
+    unrecognized event keyword.
   </para>
   <para>
-    The low word of the first arg is the control ID and the high word is the event ID.
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
+    connected event happens.
   </para>
-  </listitem>
-  </orderedlist>
+  <para>
+    The underlying dialog recieves the DTN_* messages as the notifications for the date time picker events.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-    <para>
-      The following example comes from an application that displays employee statistics.  A single click
-      on the employee number field advances the display to the next employee.  A double click on either
-      the employee name or employee job duties alllows those fields to be edited.
-    </para>
+  <para>
+    The following example:
+  </para>
 <programlisting>
 <![CDATA[
-::method initDialog
 
-  self~connectStaticEvent(IDC_ST_EMPNO, "CLICK", empLookup)
 
-  self~connectStaticEvent(IDC_ST_EMPJOB, "DBLCLK", editStats)
-  self~connectStaticEvent(IDC_ST_EMPNAME, "DBLCLK", editStats)
-
-  first = self~initDatabase
-  self~setStats(first)
-]]>
-</programlisting>
-      <para>
-        In this example, (a continuation of the above example,) the control ID determines if the user has
-        double clicked on the employee job duties field, or the employee name field.  The event ID is not
-        used, or needed. Its purpose in the code snippet is simply an example. The same thing applies to
-        the window handle.
-      </para>
-<programlisting>
-<![CDATA[
-::method editStats
-  use arg ctrlInfo, ctrlHwnd
-
-  ctrlID = .DlgUtil~loWord(ctrlInfo)
-  eventID = .DlgUtil~hiWord(ctrlInfo)
-
-  rec = self~getCurrentRecord
-
-  if self~userUpdate(ctrlID, rec) then self~setStats(rec)
 ]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
-</section>
+
+
+<section id="evtDateTimePickerCLOSEUP"><title>CloseUp Event Handler</title>
+<indexterm><primary>DateTimePicker Event</primary><secondary>CLOSEUP</secondary></indexterm>
+<para>
+  The event handler for the xx xx event is invoked when ...
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onCloseUp unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End CloseUp Event Handler -->
+
+
+<section id="evtDateTimePickerDATETIMECHANGE"><title>DateTimeChange Event Handler</title>
+<indexterm><primary>DateTimePicker Event</primary><secondary>DATETIMECHANGE</secondary></indexterm>
+<para>
+  The event handler for the xx xx event is invoked when ...
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onDateTimeChange unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End DateTimeChange Event Handler -->
+
+
+<section id="evtDateTimePickerDROPDOWN"><title>DropDown Event Handler</title>
+<indexterm><primary>DateTimePicker Event</primary><secondary>DROPDOWN</secondary></indexterm>
+<para>
+  The event handler for the xx xx event is invoked when ...
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onDropDown unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End DropDown Event Handler -->
+
+<section id="evtDateTimePickerFORMAT"><title>Format Event Handler</title>
+<indexterm><primary>DateTimePicker Event</primary><secondary>FORMAT</secondary></indexterm>
+<para>
+  The event handler for the xx xx event is invoked when ...
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onFormat unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Format Event Handler -->
+
+</section>  <!-- End EventNotification::connectDateTimePickerEvent() -->
 
 <section id="mthConnectDraw"><title>connectDraw</title>
 <indexterm><primary>connectDraw</primary></indexterm>
@@ -1365,9 +2301,6 @@ lo word resource ID:       1003
   <para>
     The notification for the draw control is only sent to the above mentioned controls when they have the OWNERDRAW
     style.
-  </para>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
   </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
@@ -1740,9 +2673,6 @@ it to 0 when a nonnumeric value was entered:
   <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
   <listitem>
   <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
     In general error return codes are used to indicate incorrect usage rather than raised syntax conditions. However,
     syntax errors are raised if the <emphasis role="italic">methodName</emphasis> argument is missing or the empty
     string, or invoking this method before the <link linkend="ovvUnderlying">underlying</link> dialog is created.
@@ -1898,9 +2828,6 @@ it to 0 when a nonnumeric value was entered:
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-    <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
   </para>
@@ -2197,9 +3124,6 @@ Help request:
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
   <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
   <para>
     In general error return codes are used to indicate incorrect usage rather than raised syntax conditions. However,
     syntax errors are raised for missing required arguments, using the empty string for required arguments, or invoking
@@ -3068,8 +3992,8 @@ before init:super has been called.</para></listitem>
 <indexterm><primary>EventNotification</primary><secondary>connectMonthCalendarEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectMonthCalendarEvent(--id-,-event-+-----------+-+---------------+-)---><
-                                           +-,-methodName-+ +-,-wilReply-+
+>>--connectMonthCalendarEvent(--id-,-event-+---------+-+------------+--)-------><
+                                           +-,-mName-+ +-,-wilReply-+
 
 ]]>
 </programlisting>
@@ -3142,22 +4066,25 @@ before init:super has been called.</para></listitem>
         </listitem></varlistentry>
       </variablelist>
       </listitem></varlistentry>
-      <varlistentry><term>methodName [optional]</term>
+      <varlistentry><term>mName [optional]</term>
       <listitem>
       <para>
         The name of the method that is to be invoked whenever the specified notification is received from the month
         calendar control. The programmer defines this method. If this argument is omitted, a method name is
         automatically generated that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For
-        instance, <computeroutput>onGetDayState</computeroutput>. The method name can not be the empty string.
+        instance, <computeroutput>onGetDayState</computeroutput>. If the method name is supplied, it can not be the
+        empty string.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>willReply [optional]</term>
       <listitem>
       <para>
         The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreters waits for the reply
-        from the event handler. The default is <computeroutput>.true</computeroutput>. If <emphasis
-        role="italic">willReply</emphasis> is <computeroutput>.false</computeroutput>, the interpreter will not wait
-        for the reply. However, this argument is ignored for the GETDAYSTATE event.
+        from the event handler. The default is <computeroutput>.true</computeroutput>, the interpreter waits until the
+        event handling method returns a value. If <emphasis role="italic">willReply</emphasis> is
+        <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. However, this argument is
+        ignored for the GETDAYSTATE event. If the programmer connects the GETDAYSTATE, the interpreter waits for the
+        return from the connected method. This can not be changed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3166,7 +4093,7 @@ before init:super has been called.</para></listitem>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method returns <computeroutput>.true</computeroutput> if the event notifications was connected correctly,
+    This method returns <computeroutput>.true</computeroutput> if the event notification was connected correctly,
     otherwise <computeroutput>.false</computeroutput> .
   </para>
   </listitem></varlistentry>
@@ -3181,9 +4108,6 @@ before init:super has been called.</para></listitem>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
   <para>
     Syntax errors are raised when incorrect usage is detected, including the use of an invalid symbolic ID or an
     unrecognized event keyword. A syntax error is raised if the programmer tries to connect the VIEWCHANGED event when
@@ -3645,9 +4569,6 @@ before init:super has been called.</para></listitem>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
     Syntax errors are raised when incorrect usage is detected.
   </para>
   <para>
@@ -3732,9 +4653,6 @@ before init:super has been called.</para></listitem>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-    <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
   <para>
     Syntax errors are raised when incorrect usage is detected. If the programmer does not provide a matching method in
     the Rexx dialog, a syntax condition will be raised if mouse wheel events happens.
@@ -4011,9 +4929,6 @@ before init:super has been called.</para></listitem>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
     Syntax errors are raised when incorrect usage is detected.
   </para>
   <para>
@@ -4228,9 +5143,6 @@ before init:super has been called.</para></listitem>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
     Syntax errors are raised when incorrect usage is detected.
   </para>
   <para>
@@ -4317,9 +5229,6 @@ before init:super has been called.</para></listitem>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
   </para>
@@ -4581,9 +5490,6 @@ before init:super has been called.</para></listitem>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
   </para>
@@ -4918,9 +5824,6 @@ selected position.
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-    <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
   </para>
@@ -5710,9 +6613,6 @@ separated by a blank). Example:
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
-  <para>
     Syntax errors are raised when incorrect usage is detected, including the use of an invalid symbolic ID or an
     unrecognized event keyword.
   </para>
@@ -6011,9 +6911,6 @@ separated by a blank). Example:
   <para>
     Raises syntax errors when some incorrect usage is detected.
   </para>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -6137,9 +7034,6 @@ separated by a blank). Example:
     that were set with the dialog control object's versions of <link
     linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link> and <link
     linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link> methods.
-  </para>
-  <para>
-    This method is a member of the <link linkend="clsEventNotification">EventNotification</link> mixin class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

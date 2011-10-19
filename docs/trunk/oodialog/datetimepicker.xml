@@ -59,12 +59,9 @@
   The client area of a date and time picker (DTP) control displays date or time information, or both, and acts as the
   interface through which users modify the information. The date can be selected from a calendar, or by using an up-down
   control. The time can be changed by typing in fields that are defined by the control's <link
-  linkend="paraDTPFormatStrings">Format Strings</link>. The control can optionally display a check box. When it is
+  linkend="sctDTPFormatStrings">Format Strings</link>. The control can optionally display a check box. When it is
   checked, the value in the control is considered valid and can be retrieved.  When not checked, the control's date and
   time is not valid.
-</para>
-<para id="paraDTPFormatStrings">
-  xx
 </para>
 <para>
   The <computeroutput>DateTimePicker</computeroutput> class provides methods to get and set the date and time in the
@@ -98,6 +95,189 @@
   </listitem></varlistentry>
 </variablelist>
 </para>
+
+
+<section id="sctDTPFormatStrings"><title>Format Strings</title>
+<para>
+  Date and time picker controls rely on a <emphasis role="italic">format</emphasis> string to display the date and time.
+  The format string defines how the date and time is displayed. There are 4 preset format strings that are assigned with
+  4 of the date and time styles. If the preset format strings are not adequate, the programmer can define his own format
+  string and assign it to the date and time picker through the <link linkend="mthSetFormat">setFormat</link> method.
+</para>
+<para>
+  The 4 preset format strings and their assoicated styles are in the following table:
+<table id="tblDTPPresetFormats" frame="all"> <title>DTP Preset Formats</title>
+<tgroup cols="2">
+<colspec colwidth="1.25in">
+<thead>
+<row>
+<entry>Style</entry>
+<entry>Format</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>LONG</entry>
+<entry>The format displays like: Wednesday, June 22, 2011.</entry>
+</row>
+<row>
+<entry>SHORT</entry>
+<entry>The format displays like: 6/22/11.</entry>
+</row>
+<row>
+<entry>CENTURY</entry>
+<entry>The format displays like: 6/22/2011.</entry>
+</row>
+<row>
+<entry>TIME</entry>
+<entry>The format displays like: 5:31:42 PM.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+<para>
+  DTP format strings consist of a series of elements that represent a particular piece of information and define its
+  display format. The elements are displayed in the order they appear in the format string. Custom formats give the
+  programmer greater flexibility within a program. They allow the programmer to specify the order in which the control
+  will display fields of information. The format string can include body text as well as callback fields for requesting
+  information from the user.
+</para>
+<para>
+  Date and time format elements are replaced by the actual date and time. The following table shows the date and time
+  elements and a description of what they produce:
+<table id="tblDTPPFormatElementss" frame="all"> <title>DTP Format Elements</title>
+<tgroup cols="2">
+<colspec colwidth="1.25in">
+<thead>
+<row>
+<entry>Element</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>d</entry>
+<entry>The one- or two-digit day</entry>
+</row>
+<row>
+<entry>dd</entry>
+<entry>The two-digit day. Single-digit day values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>ddd</entry>
+<entry>The three-character weekday abbreviation.</entry>
+</row>
+<row>
+<entry>dddd</entry>
+<entry>The full weekday name.</entry>
+</row>
+<row>
+<entry>h</entry>
+<entry>The one- or two-digit hour in 12-hour format.</entry>
+</row>
+<row>
+<entry>hh</entry>
+<entry>The two-digit hour in 12-hour format. Single-digit values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>H</entry>
+<entry>The one- or two-digit hour in 24-hour format.</entry>
+</row>
+<row>
+<entry>HH</entry>
+<entry>The two-digit hour in 24-hour format. Single-digit values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>m</entry>
+<entry>The one- or two-digit minute. </entry>
+</row>
+<row>
+<entry>mm</entry>
+<entry>The two-digit minute. Single-digit values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>M</entry>
+<entry>The one- or two-digit month number.</entry>
+</row>
+<row>
+<entry>MM</entry>
+<entry>The two-digit month number. Single-digit values are preceded by a zero.</entry>
+</row>
+<row>
+<entry>MMM</entry>
+<entry>The three-character month abbreviation.</entry>
+</row>
+<row>
+<entry>MMMM</entry>
+<entry>The full month name.</entry>
+</row>
+<row>
+<entry>t</entry>
+<entry>The one-letter AM/PM abbreviation (that is, AM is displayed as <emphasis role="italic">A</emphasis>.)</entry>
+</row>
+<row>
+<entry>tt</entry>
+<entry>The two-letter AM/PM abbreviation (that is, AM is displayed as <emphasis role="italic">AM</emphasis>.)</entry>
+</row>
+<row>
+<entry>yy</entry>
+<entry>The last two digits of the year (that is, 2011 would be displayed as <emphasis role="italic">11</emphasis>.)</entry>
+</row>
+<row>
+<entry>yyyy</entry>
+<entry>The full year (that is, 2011 would be displayed as <emphasis role="italic">2011</emphasis>.)</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+<para>
+  Body text can be added to the format string by enclosing it in single quotes. Spaces and punctuation marks do not need
+  to be quoted. <emphasis role="bold">Note:</emphasis> <emphasis role="italic">Nonformat characters that are not
+  delimited by single quotes will result in unpredictable display by the DTP control.</emphasis> To include a single
+  quote in the body text, use two consecutive single quotes.
+</para>
+<para>
+  <emphasis role="bold">Examples:</emphasis>
+
+<programlisting>
+<![CDATA[
+
+  dtp = self~newDateTimePicker(IDC_DTP)
+
+  formatStr = "'Today is: 'hh':'m':'s dddd MMM dd', 'yyyy"
+
+  dtp~setFormat(formatStr)
+
+  /* The display would look like, depending on the actual date:
+
+     Today is: 04:22:31 Wednesday Mar 2, 2011
+  */
+
+  formatStr = "'Don''t forget' MMM dd',' yyyy"
+
+  dtp~setFormat(formatStr)
+
+  /* The display would look like, depending on the actual date:
+
+     Don't forget Mar 02, 2011
+  */
+
+  -- Quotes for the comma are not needed so this
+  -- is also valid and produces the same output:
+  formatStr = "'Don''t forget' MMM dd, yyyy"
+
+  dtp~setFormat(formatStr)
+
+  /* The display would look like, depending on the actual date:
+
+     Don't forget Mar 02, 2011
+  */
+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End section Format Strings -->
 
 <section id="sctMethodsDateTimePicker"><title>Method Table</title>
 <para>
