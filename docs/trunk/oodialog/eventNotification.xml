@@ -1703,10 +1703,6 @@ the window handle of the combo box. Example:
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      The <emphasis role="italic">connectCommandEvents</emphasis> method is a member of the <link
-      linkend="clsEventNotification">EventNotification</link> mixin class.
-    </para>
-    <para>
       Syntax errors are raised when incorrect usage is detected.
     </para>
     <para>
@@ -1789,7 +1785,7 @@ lo word resource ID:       1003
   <para>
     The arguments are:
     <variablelist>
-    <varlistentry><term>id</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
       The resource ID of the date time picker control. May be numeric or <link linkend="defSymbolicId">symbolic</link>.
@@ -1842,17 +1838,19 @@ lo word resource ID:       1003
         <varlistentry><term>FORMAT</term>
         <listitem>
         <para>
-          Sent by a date and time picker (DTP) control to request text to be displayed in a callback field. The <emphasis
-          role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
-          <link linkend="sctCodingEventHandlers">return</link> a reply.
+          Sent by a date and time picker (DTP) control to request text to be displayed in a <link
+          linkend="sctDTPCallback">callback</link> field. The <emphasis role="italic">willReply</emphasis> argument
+          is ignored for this event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a
+          reply.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>FORMATQUERY</term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control to retrieve the maximum allowable size of the string that will be
-          displayed in a callback field.  The <emphasis role="italic">willReply</emphasis> argument is ignored for this
-          event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a reply.
+          displayed in a <link linkend="sctDTPCallback">callback</link> field. The <emphasis
+          role="italic">willReply</emphasis> argument is ignored for this event, the event handler must <link
+          linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>USERSTRING</term>
@@ -1867,21 +1865,23 @@ lo word resource ID:       1003
         <varlistentry><term>WMKEYDOWN</term>
         <listitem>
         <para>
-           The <emphasis
-          role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
-          <link linkend="sctCodingEventHandlers">return</link> a reply.
+          Sent by a date and time picker (DTP) control when the user types in a <link
+          linkend="sctDTPCallback">callback</link> field. The <emphasis role="italic">willReply</emphasis> argument is
+          ignored for this event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>KILLFOCUS</term>
         <listitem>
         <para>
-          text
+          Notifies a date and time picker control's parent window, (which is the dialog window,) that the control has
+          lost the input focus. The return value from the event handler is ignored for this event.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>SETFOCUS</term>
         <listitem>
         <para>
-          text
+          Notifies a date and time picker control's parent window, (which is the dialog window,) that the control has
+          received the input focus. The return value from the event handler is ignored for this event.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -1958,10 +1958,21 @@ lo word resource ID:       1003
 <section id="evtDateTimePickerCLOSEUP"><title>CloseUp Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>CLOSEUP</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the close up event is invoked when the user closes the drop-down month calendar. The month
+  calendar is closed when the user chooses a date from the month calendar or clicks the drop-down arrow while the
+  calendar is open.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The programmer can specify for the interpreter to wait, or not wait, for return from the the event handler by using
+  the <emphasis role="italic">willReply</emphasis> argument in the <link
+  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> method. The return value from the event
+  handler is ignored.
+</para>
+<para>
+  This event notification signals that the DTP control has destroyed the child month calendar control. The DTP control
+  creates a new month calendar each time the month calendar needs to be shown and destroys it before sending the close
+  up notification. The Rexx month calendar object sent as an argument to the <link
+  linkend="evtDateTimePickerDROPDOWN"></link>
 </para>
 
 <programlisting>
@@ -2164,7 +2175,8 @@ lo word resource ID:       1003
 <section id="evtDateTimePickerFORMAT"><title>Format Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>FORMAT</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the xx xx event is invoked when the (DTP) control requests the text to be displayed in a
+  callback field.
 </para>
 <para>
   The programmer must return xx and the interpreter waits (does not wait) for this return.

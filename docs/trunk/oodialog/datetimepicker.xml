@@ -250,7 +250,7 @@
 
   /* The display would look like, depending on the actual date:
 
-     Today is: 04:22:31 Wednesday Mar 2, 2011
+     Today is: 04:22:31 Wednesday Mar 02, 2011
   */
 
   formatStr = "'Don''t forget' MMM dd',' yyyy"
@@ -278,6 +278,33 @@
 
 </para>
 </section>  <!-- End section Format Strings -->
+
+<section id="sctDTPCallback"><title>Callback Fields</title>
+<para>
+  The date and time picker control supports <emphasis role="italic">call back fields</emphasis> within the <link
+  linkend="sctDTPFormatStrings">format</link> strings. The call back fields allow the programmer to dislplay custom
+  information at the point of the call back field by allowing the control to query the application for information. For
+  instance, the control can query the application for what text to display in the call back field or the maximum length
+  the display text in a field will be.
+</para>
+<para>
+  The queries are done through <link linkend="ovvEvents">event</link> notification messages from the control.
+  Specifically, the FORMAT and FORMATQUERY events connected using the <link
+  linkend="mthConnectDateTimePickerEvent">ConnectDateTimePickerEvent</link>. The programmer must respond to the event
+  notification to ensure that the custiom information is displayed properly. The response comes from the <link
+  linkend="evtDateTimePickerFORMAT">FORMAT</link> and <link linkend="evtDateTimePickerFORMATQUERY">FORMATQUERY</link>
+  event handlers.
+</para>
+<para>
+  Call back fields are declared using one or more capital <emphasis role="bold">X</emphasis> characters (ASCII Code 88)
+  in the format string. Unique callback fields are created by repeating the <emphasis role="bold">X</emphasis>
+  character. Thus, the format string: <computeroutput>"XX dddd MMM dd', 'yyy XXX"</computeroutput> contains two call
+  back fields. <emphasis role="bold">XX</emphasis> and <emphasis role="bold">XXX</emphasis>. When the FORMAT and
+  FORMATQUERY notifications are sent, they include the format string element that defined the call back field so that
+  the programmer can tell which call back field the notification is for.
+</para>
+
+</section>  <!-- End section Callback Fields -->
 
 <section id="sctMethodsDateTimePicker"><title>Method Table</title>
 <para>
@@ -388,8 +415,7 @@
   object. The syntax is:
 <programlisting>
 <![CDATA[
->>-newDateTimePicker(--id--+-------------+--)---------------------><
-                           +-,--category-+
+>>-newDateTimePicker(--id--)---------------------><
 
 ]]>
 </programlisting>
