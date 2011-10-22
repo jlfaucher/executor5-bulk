@@ -468,13 +468,6 @@
   Closes the drop down month calendar control of the date time picker.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later. Raises syntax errors when incorrect
-    arguments are detected.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
@@ -490,8 +483,15 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method causes the date time picker to destroy the month calendar control and to send a DTN_CLOSEUP notification
-    (the CLOSEUP event notification) that the control is closing.
+    This method causes the date time picker to destroy the month calendar control and to send the DTN_CLOSEUP
+    notification (the <link linkend="evtDateTimePickerCLOSEUP">CLOSEUP</link> event notification) that the drop-down has
+    been closed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -502,46 +502,40 @@
 <indexterm><primary>DateTimePicker class</primary><secondary>getDateTime</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getDateTime(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getDateTime----------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the currently selected date and time for the DTP and returns it as a <computeroutput>DateTime</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method has not arguements.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+     Returns a <computeroutput>DateTime</computeroutput> object representing the current selected date and time of the
+     DTP control. May return the .nil object if the DTP control has the SHOWNONE style and is in the <emphasis
+     role="italic">no date</emphasis> state. It is possible that an error may occur within the underlying DTP control
+     itself. If this is detected, 0 is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the DTP has the SHOWNONE style, the control includes a check box allowing the user to indicate that <emphasis
+    role="italic">no</emphasis> date is selected. In this case the <computeroutput>.nil</computeroutput> object is
+    returned to indicate that no date is selected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
@@ -691,56 +685,66 @@
 <indexterm><primary>DateTimePicker class</primary><secondary>getMonthCal</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMonthCal(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getMonthCal----------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the <link linkend="clsMonthCalendar">MonthCalendar</link> object for a date and time picker's (DTP) child
+  month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A <computeroutput>MonthCalendar</computeroutput> object for the underlying child month calendar, if the child
+    control exists, otherwise the <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Obtaining the month calendar control allows the programmer to change its style or appearance. For instance the
+    <link linkend="mthSetFirstDayOfWeek">first</link> day of the week could be changed or the <emphasis
+    role="italic">Go To Today</emphasis> could be removed by setting the NOTODAY style.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    DTP controls do not create a static month calendar control. Rather, they create the month calendar when needed and
+    destroy the month calendar as soon as it is not needed. The <link
+    linkend="evtDateTimePickerDROPDOWN">DROPDOWN</link> notification is sent after the DTP creates the month calendar
+    and the <link linkend="evtDateTimePickerCLOSEUP">CLOSEUP</link> notification is sent when the month calendar is
+    destroyed.
+  </para>
+  <para>
+    After the underlying month calendar control is destroyed, Rexx month calendar object is no longer valid.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the month calendar for the DTP control and changes the first day of the week to Firday. The
+    <emphasis role="italic">Today</emphasis> selection is also removed. This is an example of a <link
+    linkend="evtDateTimePickerDROPDOWN">DROPDOWN</link> event handler. Note that no reference is kept for the month
+    calendar. The object will be invalid as soon as the user closes the drop down:
 <programlisting>
 <![CDATA[
+
+::method onDropDown unguarded
+  use arg idFrom, hwndFrom
+
+  dt = self~newDateTimePicker(IDC_DTP);
+  monthCal = dt~getMonthCal
+  monthCal~setFirstDayOfWeek('Friday')
+  monthCal~addStyle("NOTODAY")
+
+  return 0
 
 ]]>
 </programlisting>

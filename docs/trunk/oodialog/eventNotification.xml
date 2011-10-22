@@ -1823,9 +1823,8 @@ lo word resource ID:       1003
         <varlistentry><term>DATETIMECHANGE</term>
         <listitem>
         <para>
-          Sent by a date and time picker (DTP) control whenever a change occurs. The return value to this notification
-          must be 0. Because of this, the interpreter ignores the actual value of the return from the event handler and
-          always uses 0.
+          Sent by a date and time picker (DTP) control whenever a change occurs. The return value from the event
+          handler is ignored for this event.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DROPDOWN</term>
@@ -1954,7 +1953,6 @@ lo word resource ID:       1003
   </listitem></varlistentry>
 </variablelist>
 
-
 <section id="evtDateTimePickerCLOSEUP"><title>CloseUp Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>CLOSEUP</secondary></indexterm>
 <para>
@@ -1963,24 +1961,28 @@ lo word resource ID:       1003
   calendar is open.
 </para>
 <para>
-  The programmer can specify for the interpreter to wait, or not wait, for return from the the event handler by using
-  the <emphasis role="italic">willReply</emphasis> argument in the <link
-  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> method. The return value from the event
-  handler is ignored.
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  using the <emphasis role="italic">willReply</emphasis> argument in the <link
+  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> method. The actual value returned from the
+  event handler is ignored.
 </para>
 <para>
   This event notification signals that the DTP control has destroyed the child month calendar control. The DTP control
-  creates a new month calendar each time the month calendar needs to be shown and destroys it before sending the close
-  up notification. The Rexx month calendar object sent as an argument to the <link
-  linkend="evtDateTimePickerDROPDOWN"></link>
+  creates a new month calendar each time the month calendar needs to be shown and destroys it each time the drop-down is
+  closed. The close up notification is sent when the month calendar is destroyed.
+</para>
+<para>
+  The programmer may have instantiated a Rexx month calendar object during the <link
+  linkend="evtDateTimePickerDROPDOWN">DROPDOWN</link> event notification. Once the underlying Windows month calendar is
+  destroyed, the Rexx <computeroutput>MonthCalendar</computeroutput> is no longer valid.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onCloseUp unguarded
-  use arg x, y, z
+  use arg idFrom, hwndFrom
 
-  return zz
+  return 0
 ]]>
 </programlisting>
 
@@ -1988,25 +1990,20 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 2 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>idFrom</term>
     <listitem>
     <para>
-      xx
+      The <emphasis role="italic">idFrom</emphasis> argument is the resource ID of the date time picker that generated
+      the notification.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>hwndFrom</term>
     <listitem>
     <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
-    <listitem>
-    <para>
-      xx
+      The window handle of the date and time picker.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2014,17 +2011,30 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return value from the event handler is ignored by the operating system.  0 makes a good return value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following is an example event handler for the close up event. When the close up happens, the user may or may not
+    have changed the selected date.  The example checks if a new data has been selected and does something if it has
+    been changed:
 
 <programlisting>
 <![CDATA[
 
+::method onCloseUp unguarded
+  expose dtp lastChange
+  use arg id, hwnd
+
+  newDate = dtp~getDateTime
+  if newDate \= lastChange then do
+    lastChange = newDate
+    self~updateDateInfo(newDate)
+  end
+
+  return 0
 
 ]]>
 </programlisting>
@@ -2038,7 +2048,8 @@ lo word resource ID:       1003
 <section id="evtDateTimePickerDATETIMECHANGE"><title>DateTimeChange Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>DATETIMECHANGE</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the date time change event is invoked whenever a change in the underlying DTP control takes
+  place
 </para>
 <para>
   The programmer must return xx and the interpreter waits (does not wait) for this return.
