@@ -514,7 +514,7 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This method has not arguements.
+    This method has no arguements.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -537,7 +537,17 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> if an error occurs within the underlying DTP
+    control. The system error code is set this way by the ooDialog framework:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_INVALID_MESSAGE (1002)</emphasis></term>
+      <listitem>
+      <para>
+        The window cannot act on the sent message. <emphasis role="bold">Meaning:</emphasis> The underlying DTP control
+        returned an error rather than the selected data and time.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -711,6 +721,13 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    <emphasis role="bold">Note:</emphasis> The following information mostly applies to Windows XP and earlier. For
+    Windows Vista and later the date and time picker control has the <link
+    linkend="mthSetMonthCalStyle">setMonthCalStyle</link> and <link
+    linkend="mthGetMonthCalStyle">getMonthCalStyle</link> methods to directly manipulate the month calendar control's
+    styles.
+  </para>
+  <para>
     Obtaining the month calendar control allows the programmer to change its style or appearance. For instance the
     <link linkend="mthSetFirstDayOfWeek">first</link> day of the week could be changed or the <emphasis
     role="italic">Go To Today</emphasis> could be removed by setting the NOTODAY style.
@@ -729,10 +746,11 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example gets the month calendar for the DTP control and changes the first day of the week to Firday. The
-    <emphasis role="italic">Today</emphasis> selection is also removed. This is an example of a <link
-    linkend="evtDateTimePickerDROPDOWN">DROPDOWN</link> event handler. Note that no reference is kept for the month
-    calendar. The object will be invalid as soon as the user closes the drop down:
+    This example will work on any version of Windows that ooDialog supports. It gets the month calendar for the DTP
+    control and changes the first day of the week to Firday. The <emphasis role="italic">Today</emphasis> selection is
+    also removed. This is an example of a <link linkend="evtDateTimePickerDROPDOWN">DROPDOWN</link> event handler. Note
+    that no reference is kept for the month calendar. The object will be invalid as soon as the user closes the drop
+    down:
 <programlisting>
 <![CDATA[
 
@@ -758,24 +776,75 @@
 <indexterm><primary>DateTimePicker class</primary><secondary>getMonthCalColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMonthCalColor(--+--------+--)---------------------------------------------><
-                       +--type--+
+>>--getMonthCalColor(--calendarPart--)-----------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the color for the given portion of DTP control's child month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>calendarPart [required]</term>
     <listitem>
     <para>
-      xx
+      A single keyword specifying which part of the calendar to get the color for, case is not significant. The valid
+      keywords are:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>BACKGROUND  </member>
+        <member>MONTHBK     </member>
+        <member>TEXT        </member>
+        <member>TITLEBK     </member>
+        <member>TITLETEXT   </member>
+        <member>TRAILINGTEXT</member>
+        <member></member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>BACKGROUND</term>
+        <listitem>
+        <para>
+          Retrieves the background color displayed between months.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MONTHBK</term>
+        <listitem>
+        <para>
+          Retrieves the background color displayed within the month.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TEXT</term>
+        <listitem>
+        <para>
+          Retrieves the color used to display text within a month.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TITLEBK</term>
+        <listitem>
+        <para>
+          Retrieves the background color displayed in the calendar's title.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TITLETEXT</term>
+        <listitem>
+        <para>
+          Retrieves the color used to display text within the calendar's title.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TRAILINGTEXT</term>
+        <listitem>
+        <para>
+          Retrieves the color used to display header day and trailing day text. Header and trailing days are the days
+          from the previous and following months that appear on the current month calendar.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -784,33 +853,34 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    On success, returns a COLORREF representing the color setting for the part of the month calendar control specified.
+    returns CLR_INVALID on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method is essentially the same as the <link linkend="mthGetColor">getColor</link> method of the <link
+    linkend="clsMonthCalendar">MonthCalendar</link> class, except that DTP control is asked to get the color from its
+    child month calendar.
+  </para>
+  <para>
+    The <link linkend="clsImage">Image</link> class has a number of convenience methods for working with COLORREFs,
+    including the <link linkend="mthColorRef">colorRef</link> method that explains what a COLORREF is.
+  </para>
+  <para>
+    The <emphasis role="italic">colorRef</emphasis> method can be used to test the return for error. I.e.:
+    <computeroutput>.Image~colorRef(CLR_INVALID)</computeroutput>. (An error is not very likely.)
+  </para>
+  <para>
+    Note that many of the underlying dialog controls ignore their color settings when visual themes are enabled, unless
+    the theme is Windows Clasic. This is the case for the month calendar control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -822,58 +892,34 @@
 <indexterm><primary>DateTimePicker</primary><secondary>getMonthCalFont</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMonthCalFont(--+--------+--)-------------------------------------------------><
-                      +--type--+
+>>--getMonthCalFont------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the font that the DTP control's child month calendar control is currently using.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a <link linkend="defHandle">handle</link> to the font, the same return as the <link
+    linkend="mthGetFont">getFont</link> or <link linkend="mthCreateFontEx">createFontEx</link> methods of the <link
+    linkend="chpDialogObject">dialog</link> object would return.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Note that many of the underlying dialog controls ignore their font and color settings when visual themes are
+    enabled, unless the theme is Windows Clasic. This is the case for the month calendar control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -884,33 +930,102 @@
 <indexterm><primary>DateTimePicker class</primary><secondary>getMonthCalStyle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMonthCalStyle(--+--------+--)---------------------------------------------><
-                       +--type--+
+>>--getMonthCalStyle-----------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the style keywords of the date and time picker's child month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method does not have any arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    A list of <link linkend="clsMonthCalendar">MonthCalendar</link>style keywords separated by spaces. The list may be
+    empty, otherwise it will contain one or more of the following keywords.
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>DAYSTATE   </member>
+      <member>MULTI      </member>
+      <member>NOTODAY    </member>
+      <member>NOCIRCLE   </member>
+      <member>WEEKNUMBERS</member>
+      <member>NOTRAILING </member>
+      <member>SHORTDAYS  </member>
+      <member>NOSELCHANGE</member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>DAYSTATE</term>
+      <listitem>
+      <para>
+        The month calendar will send the GETDAYSTATE <link linkend="ovvEvents">event</link> notification to request
+        information about which days should be displayed in bold. For the DTP control's child month calendar, this style
+        is not of much interest, and not of much use, to the ooDialog programmer. The ooDialog can not connect an event
+        handler to the child month calendar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MULTI</term>
+      <listitem>
+      <para>
+        This style allows the user to select a range of dates within the control. By default, the maximum range is one
+        week. The programmer changes the maximum range that can be selected by using the <link
+        linkend="mthSetMaxSelection">setMaxSelection</link> method. Again, this style is not relevant for the DTP
+        control's child month calendar control. The DTP control only supports a specific date, a range of dates is not
+        supported.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTODAY</term>
+      <listitem>
+      <para>
+        The month calendar control will not display the <emphasis role="italic">today</emphasis> date at the bottom of the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOCIRCLE</term>
+      <listitem>
+      <para>
+        The month calendar control will not circle the <emphasis role="italic">today</emphasis> date at the bottom of
+        the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>WEEKNUMBERS</term>
+      <listitem>
+      <para>
+        The month calendar displays week numbers (1-52) to the left of each row of days. Week 1 is defined by
+        Microsoft as the first week that contains at least four days.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTRAILING</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Requires Windows Vista or later</emphasis>. This style disables displaying the dates
+        from the previous / next month in the current calendar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SHORTDAYS</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style, the month calendar uses the
+        shortest day name for the label of the day of the week column header.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOSELCHANGE</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
+        change when the user navigates to he next or previous month in the calendar. This style is needed for the
+        user to be able to select a range greater than what is currently displayed. This style is also not relevant for
+        the same reasons as given for the MULTI style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -922,18 +1037,65 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <varlistentry id="exampleGetMonthCalStyle"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a simple exploratory program that could be written to see what the default style for the DTP
+    control's child month calendar is. Note that, in the author's experience, the child month calendar does not have any
+    styles set.
+  </para>
+  <para>
+    For an expanded version of this example, see the <link linkend="exampleSetMonthCalStyle">example</link> for the
+    <link linkend="mthSetMonthCalStyle">setMonthCalStyle</link> method.
+
 <programlisting>
 <![CDATA[
+
+/*
+ * Simple test program to display the DTP control's month calendar's initial
+ * style.
+ */
+
+  if \ .OS~isAtLeastVista then do
+    say "Sorry this example program is for Windows Vista or later."
+    return 99
+  end
+
+  .application~useGlobalConstDir('O')
+  .constDir[IDC_DTP] = 200
+
+  dlg = .TestDialog~new
+  dlg~execute("SHOWTOP")
+
+return 0
+
+::requires "ooDialog.cls"
+
+::class 'TestDialog' subclass UserDialog
+
+::method init
+
+  forward class (super) continue
+  self~createCenter(200, 100, 'Dialog', , , 'MS Shell Dlg 2', 8)
+
+::method defineDialog
+
+  self~createDateTimePicker(IDC_DTP,  10, 7, 180, 15, "SHORT")
+  self~createPushButton(IDOK, 140, 74, 50, 14, "DEFAULT", "Ok")
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DROPDOWN", onDropDown)
+
+::method onDropDown unguarded
+  use arg idFrom, hwndFrom
+
+  dtp = self~newDateTimePicker(IDC_DTP)
+  say "Style:" dtp~getMonthCalStyle
+  return 0
+
+/* Ouptut will be:
 
 ]]>
 </programlisting>
@@ -1170,6 +1332,10 @@
   <para>
     Additional comments.
   </para>
+  <para>
+    Note that many of the underlying dialog controls ignore their font and color settings when visual themes are
+    enabled, unless the theme is Windows Clasic. This is the case for the month calendar control.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -1206,7 +1372,7 @@
 </programlisting>
 
 <para>
-  xx
+  Sets the font to be used by the date and time picker control's child month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1233,6 +1399,10 @@
   <listitem>
   <para>
     Additional comments.
+  </para>
+  <para>
+    Note that many of the underlying dialog controls ignore their font and color settings when visual themes are
+    enabled, unless the theme is Windows Clasic. This is the case for the month calendar control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1263,24 +1433,102 @@
 <indexterm><primary>DateTimePicker class</primary><secondary>setMonthCalStyle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setMonthCalStyle(--+--------+--)---------------------------------------------><
-                       +--type--+
+>>--setMonthCalStyle(--style--)------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the style for the DTP control's child month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single required argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>style [required]</term>
     <listitem>
     <para>
-      xx
+      A list of <link linkend="clsMonthCalendar">MonthCalendar</link>style keywords separated by spaces. The list may be
+      empty, will leave the month calendar with the default style. Otherwise, it can contain one or more of the
+      following keywords.
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>DAYSTATE   </member>
+        <member>MULTI      </member>
+        <member>NOTODAY    </member>
+        <member>NOCIRCLE   </member>
+        <member>WEEKNUMBERS</member>
+        <member>NOTRAILING </member>
+        <member>SHORTDAYS  </member>
+        <member>NOSELCHANGE</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>DAYSTATE</term>
+        <listitem>
+        <para>
+          The month calendar will send the GETDAYSTATE <link linkend="ovvEvents">event</link> notification to request
+          information about which days should be displayed in bold. For the DTP control's child month calendar, this style
+          is not of much interest, and not of much use, to the ooDialog programmer. The ooDialog can not connect an event
+          handler to the child month calendar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MULTI</term>
+        <listitem>
+        <para>
+          This style allows the user to select a range of dates within the control. By default, the maximum range is one
+          week. The programmer changes the maximum range that can be selected by using the <link
+          linkend="mthSetMaxSelection">setMaxSelection</link> method. Again, this style is not relevant for the DTP
+          control's child month calendar control. The DTP control only supports a specific date, a range of dates is not
+          supported.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTODAY</term>
+        <listitem>
+        <para>
+          The month calendar control will not display the <emphasis role="italic">today</emphasis> date at the bottom of the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOCIRCLE</term>
+        <listitem>
+        <para>
+          The month calendar control will not circle the <emphasis role="italic">today</emphasis> date at the bottom of
+          the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>WEEKNUMBERS</term>
+        <listitem>
+        <para>
+          The month calendar displays week numbers (1-52) to the left of each row of days. Week 1 is defined by
+          Microsoft as the first week that contains at least four days.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTRAILING</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. This style disables displaying the dates
+          from the previous / next month in the current calendar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SHORTDAYS</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style, the month calendar uses the
+          shortest day name for the label of the day of the week column header.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOSELCHANGE</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
+          change when the user navigates to he next or previous month in the calendar. This style is needed for the
+          user to be able to select a range greater than what is currently displayed. This style is also not relevant for
+          the same reasons as given for the MULTI style.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1289,30 +1537,83 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return value is a list of style keywords, (see the <emphasis role="italic">style</emphasis> argument above,)
+    defining the style the child month calendar had previously.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <varlistentry id="exampleSetMonthCalStyle"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
+    This example is a stand-alone program. It is a slightly expanded verison of the <emphasis
+    role="italic">getMonthCalStyle</emphasis> <link linkend="exampleGetMonthCalStyle">example</link>.
 <programlisting>
 <![CDATA[
+
+/*
+ * Simple test program to set and show the DTP control's month calendar's
+ * initial style.
+ */
+
+  .application~useGlobalConstDir('O')
+  .constDir[IDC_DTP] = 200
+
+  dlg = .TestDialog~new
+  dlg~execute("SHOWTOP")
+
+return 0
+
+::requires "ooDialog.cls"
+
+::class 'TestDialog' subclass UserDialog
+
+::method init
+
+  forward class (super) continue
+  self~createCenter(200, 100, 'Dialog', , , 'MS Shell Dlg 2', 8)
+
+::method defineDialog
+
+  self~createDateTimePicker(IDC_DTP,  10, 7, 180, 15, "SHORT")
+  self~createPushButton(IDOK, 140, 74, 50, 14, "DEFAULT", "Ok")
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DROPDOWN", onDropDown)
+  self~connectDateTimePickerEvent(IDC_DTP, "CLOSEUP", onDropDown)
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(200);
+
+  if .OS~isAtLeastVista then do
+    dtp~setMonthCalStyle("NOCIRCLE NOTRAILING")
+  end
+
+::method onDropDown unguarded
+  expose dtp
+  use arg idFrom, hwndFrom
+
+  if \ .OS~isAtLeastVista then do
+    mc = dtp~getMonthCal
+    mc~replaceStyle('DAYSTATE MULTI WEEKNUMBERS', "NOCIRCLE NOTODAY")
+  end
+
+  if .OS~isAtLeastVista then do
+    say "Style:" dtp~getMonthCalStyle
+  end
+  else do
+    say "Style (Windows 2000 or XP):" mc~getStyle
+  end
+  return 0
+
+/* Ouptut on Vista or later will be:
+
+Style: NOCIRCLE NOTRAILING
+
+Output on Windows 2000 or XP:
+
+Style (Windows 2000 or XP): NOCIRCLE NOTODAY
+
+*/
 
 ]]>
 </programlisting>
