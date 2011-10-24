@@ -157,14 +157,6 @@
 <entry>Adds the specified month calendar style(s) to the control.</entry>
 </row>
 <row>
-<entry><link linkend="mthRemoveStyleClsMC">removeStyle</link></entry>
-<entry>Removes the specified month calendar style(s) from the control.</entry>
-</row>
-<row>
-<entry><link linkend="mthReplaceStyleClsMC">replaceStyle</link></entry>
-<entry>Removes some existing month calendar style(s) and adds some new style(s).</entry>
-</row>
-<row>
 <entry><link linkend="mthGetCalendarBorder">getCalendarBorder</link></entry>
 <entry>Retrieves the month calendar's border, in pixels.</entry>
 </row>
@@ -221,12 +213,24 @@
 <entry>Retrieves date information for the upper and lower limits of the current range selected by the user in a multi-selection month calendar control.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetStyleClsMC">getStyle</link></entry>
+<entry>Returns the current style of the specified month calendar control as list of style keywords.</entry>
+</row>
+<row>
 <entry><link linkend="mthGetToday">getToday</link></entry>
 <entry>Retrieves the date information for the date specified as <emphasis role="italic">today</emphasis> for the month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthHitTest">hitTest</link></entry>
 <entry>Determines which portion of a month calendar control is at a given point on the screen.</entry>
+</row>
+<row>
+<entry><link linkend="mthRemoveStyleClsMC">removeStyle</link></entry>
+<entry>Removes the specified month calendar style(s) from the control.</entry>
+</row>
+<row>
+<entry><link linkend="mthReplaceStyleClsMC">replaceStyle</link></entry>
+<entry>Removes some existing month calendar style(s) and adds some new style(s).</entry>
 </row>
 <row>
 <entry><link linkend="mthSetCalendarBorder">setCalendarBorder</link></entry>
@@ -497,7 +501,7 @@
         <listitem>
         <para>
           <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
-          change when the user navigates to he next or previous month in the calendar. This style is needed for the
+          change when the user navigates to the next or previous month in the calendar. This style is needed for the
           user to be able to select a range greater than what is currently displayed.
         </para>
         </listitem></varlistentry>
@@ -510,7 +514,9 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    A non-negative whole number that is the numeric value of the previous style of the month calendar control.
+    A list of month calendar style keywords, separated by spaces, that was the style of the month calendar control
+    before the <emphasis role="italic">replaceStyle</emphasis> method was invoked. The list could be empty if the
+    previous style was the default month calendar style.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -541,279 +547,6 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End MonthCalendar::addStyle() -->
-
-<section id="mthRemoveStyleClsMC"><title>removeStyle</title>
-<indexterm><primary>removeStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
-<indexterm><primary>MonthCalendar class</primary><secondary>removeStyle</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--removeStyle(--styles-)-----------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Removes the specified month calendar style(s) from the control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-  <variablelist>
-    <varlistentry><term>style [required]</term>
-    <listitem>
-    <para>
-      A list of 1 or more of the following month calendar style keywords, separated by spaces, case is not significant:
-    </para>
-    <para>
-      <simplelist type='vert' columns='3'>
-        <member>DAYSTATE   </member>
-        <member>MULTI      </member>
-        <member>NOTODAY    </member>
-        <member>NOCIRCLE   </member>
-        <member>WEEKNUMBERS</member>
-        <member>NOTRAILING </member>
-        <member>SHORTDAYS  </member>
-        <member>NOSELCHANGE</member>
-      </simplelist>
-      <variablelist>
-        <varlistentry><term>DAYSTATE</term>
-        <listitem>
-        <para>
-          The month calendar will send the GETDAYSTATE <link linkend="ovvEvents">event</link> notification to request
-          information about which days should be displayed in bold. Use the <link
-          linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method to connect this notification
-          with a method in the Rexx dialog object.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>MULTI</term>
-        <listitem>
-        <para>
-          This style allows the user to select a range of dates within the control. By default, the maximum range is one
-          week. The programmer changes the maximum range that can be selected by using the <link
-          linkend="mthSetRangeClsDTP">setMaxSelection</link> method.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOTODAY</term>
-        <listitem>
-        <para>
-          The month calendar control will not display the <emphasis role="italic">today</emphasis> date at the bottom of the control.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOCIRCLE</term>
-        <listitem>
-        <para>
-          The month calendar control will not circle the <emphasis role="italic">today</emphasis> date at the bottom of
-          the control.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>WEEKNUMBERS</term>
-        <listitem>
-        <para>
-          The month calendar displays week numbers (1-52) to the left of each row of days. Week 1 is defined by
-          Microsoft as the first week that contains at least four days.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOTRAILING</term>
-        <listitem>
-        <para>
-          <emphasis role="bold">Requires Windows Vista or later</emphasis>. This style disables displaying the dates
-          from the previous / next month in the current calendar.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>SHORTDAYS</term>
-        <listitem>
-        <para>
-          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style, the month calendar uses the
-          shortest day name for the label of the day of the week column header.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOSELCHANGE</term>
-        <listitem>
-        <para>
-          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
-          change when the user navigates to he next or previous month in the calendar. This style is needed for the
-          user to be able to select a range greater than what is currently displayed.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    A non-negative whole number that is the numeric value of the combined styles of the month calendar control before
-    the specified style(s) were removed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End MonthCalendar::removeStyle() -->
-
-<section id="mthReplaceStyleClsMC"><title>replaceStyle</title>
-<indexterm><primary>replaceStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
-<indexterm><primary>MonthCalendar class</primary><secondary>replaceStyle</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--replaceStyle(--oldStyles--,--newStyles--)----><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">replaceStyle</emphasis> method removes some existing month calendar styles and adds some
-  new styles.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>oldStyles [required]</term>
-    <listitem>
-    <para>
-      A list of 1 or more of the following month calendar style keywords, separated by spaces, case is not significant.
-      The styles specified will be removed from the month calendar.
-    </para>
-    <para>
-      <simplelist type='vert' columns='3'>
-        <member>DAYSTATE   </member>
-        <member>MULTI      </member>
-        <member>NOTODAY    </member>
-        <member>NOCIRCLE   </member>
-        <member>WEEKNUMBERS</member>
-        <member>NOTRAILING </member>
-        <member>SHORTDAYS  </member>
-        <member>NOSELCHANGE</member>
-      </simplelist>
-      <variablelist>
-        <varlistentry><term>DAYSTATE</term>
-        <listitem>
-        <para>
-          The month calendar will send the GETDAYSTATE <link linkend="ovvEvents">event</link> notification to request
-          information about which days should be displayed in bold. Use the <link
-          linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method to connect this notification
-          with a method in the Rexx dialog object.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>MULTI</term>
-        <listitem>
-        <para>
-          This style allows the user to select a range of dates within the control. By default, the maximum range is one
-          week. The programmer changes the maximum range that can be selected by using the <link
-          linkend="mthSetRangeClsDTP">setMaxSelection</link> method.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOTODAY</term>
-        <listitem>
-        <para>
-          The month calendar control will not display the <emphasis role="italic">today</emphasis> date at the bottom of the control.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOCIRCLE</term>
-        <listitem>
-        <para>
-          The month calendar control will not circle the <emphasis role="italic">today</emphasis> date at the bottom of
-          the control.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>WEEKNUMBERS</term>
-        <listitem>
-        <para>
-          The month calendar displays week numbers (1-52) to the left of each row of days. Week 1 is defined by
-          Microsoft as the first week that contains at least four days.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOTRAILING</term>
-        <listitem>
-        <para>
-          <emphasis role="bold">Requires Windows Vista or later</emphasis>. This style disables displaying the dates
-          from the previous / next month in the current calendar.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>SHORTDAYS</term>
-        <listitem>
-        <para>
-          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style, the month calendar uses the
-          shortest day name for the label of the day of the week column header.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOSELCHANGE</term>
-        <listitem>
-        <para>
-          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
-          change when the user navigates to he next or previous month in the calendar. This style is needed for the
-          user to be able to select a range greater than what is currently displayed.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>newStyles [required]</term>
-    <listitem>
-    <para>
-      A list of 1 or more month calendar style keywords, separated by spaces, case is not significant. The styles
-      specified will be added to the month calendar. The acceptable keywords are the same as those for the <emphasis
-      role="italic">oldStyles</emphasis> argument above.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    A non-negative whole number that is the numeric value of the combined styles of the month calendar control before
-    the <emphasis role="italic">replaceStyle</emphasis> method was invoked.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The <emphasis role="italic">replaceStyle</emphasis> method is essentially a combination of the <link
-    linkend="mthRemoveStyleClsMC">removeStyle</link> and <link linkend="mthAddStyleClsMC">addStyle</link> methods into
-    one convenience method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example checks if the Rexx program is running on a Vista or later system. If it is, it removes the NOTODAY and
-    NOCIRCLE styles and adds the Vista specific, NOSELCHANGE, SHORTDAYS, and NOTRAILING styles.
-<programlisting>
-<![CDATA[
-
-::method initDialog
-
-  ...
-
-  if .OS~isAtLeastVista then do
-    mc = self~newMonthCalendar(IDC_MC)
-    mc~replaceStyle("NOTODAY NOCIRCLE", "NOSELCHANGE SHORTDAYS NOTRAILING")
-  end
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End MonthCalendar::replaceStyle() -->
 
 <section id="mthGetCalendarBorder"><title>getCalendarBorder</title>
 <indexterm><primary>getCalendarBorder</primary></indexterm>
@@ -1960,6 +1693,125 @@
 </section>  <!-- End MonthCalendar::getSelectionRange() -->
 
 
+<section id="mthGetStyleClsMC"><title>getStyle</title>
+<indexterm><primary>getStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>getStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getStyle-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the current style of the specified month calendar control as list of style keywords.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A list of month calendar style keywords, separated by spaces. The list could be empty if the previous style was the
+    default month calendar style. Otherwise, the list will contain one or more of the following keywords:
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>DAYSTATE   </member>
+      <member>MULTI      </member>
+      <member>NOTODAY    </member>
+      <member>NOCIRCLE   </member>
+      <member>WEEKNUMBERS</member>
+      <member>NOTRAILING </member>
+      <member>SHORTDAYS  </member>
+      <member>NOSELCHANGE</member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>DAYSTATE</term>
+      <listitem>
+      <para>
+        The month calendar will send the GETDAYSTATE <link linkend="ovvEvents">event</link> notification to request
+        information about which days should be displayed in bold. Use the <link
+        linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method to connect this notification
+        with a method in the Rexx dialog object.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MULTI</term>
+      <listitem>
+      <para>
+        This style allows the user to select a range of dates within the control. By default, the maximum range is one
+        week. The programmer changes the maximum range that can be selected by using the <link
+        linkend="mthSetRangeClsDTP">setMaxSelection</link> method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTODAY</term>
+      <listitem>
+      <para>
+        The month calendar control will not display the <emphasis role="italic">today</emphasis> date at the bottom of the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOCIRCLE</term>
+      <listitem>
+      <para>
+        The month calendar control will not circle the <emphasis role="italic">today</emphasis> date at the bottom of
+        the control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>WEEKNUMBERS</term>
+      <listitem>
+      <para>
+        The month calendar displays week numbers (1-52) to the left of each row of days. Week 1 is defined by
+        Microsoft as the first week that contains at least four days.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTRAILING</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Requires Windows Vista or later</emphasis>. This style disables displaying the dates
+        from the previous / next month in the current calendar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SHORTDAYS</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style, the month calendar uses the
+        shortest day name for the label of the day of the week column header.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOSELCHANGE</term>
+      <listitem>
+      <para>
+        <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
+        change when the user navigates to the next or previous month in the calendar. This style is needed for the
+        user to be able to select a range greater than what is currently displayed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example displays the current style of a month calendar control:
+<programlisting>
+<![CDATA[
+
+::method printStyle private
+
+  mc = self~newMonthCalendar(IDC_MC_HOLIDAYS
+  say 'The holidays month calendar has this style:' mc~getStyle
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::addStyle() -->
+
 <section id="mthGetToday"><title>getToday</title>
 <indexterm><primary>getToday</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getToday</secondary></indexterm>
@@ -2254,6 +2106,281 @@ Column: The NIL object
 </variablelist>
 </section>  <!-- End MonthCalendar::hitTest() -->
 
+
+<section id="mthRemoveStyleClsMC"><title>removeStyle</title>
+<indexterm><primary>removeStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>removeStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--removeStyle(--styles-)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Removes the specified month calendar style(s) from the control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>style [required]</term>
+    <listitem>
+    <para>
+      A list of 1 or more of the following month calendar style keywords, separated by spaces, case is not significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>DAYSTATE   </member>
+        <member>MULTI      </member>
+        <member>NOTODAY    </member>
+        <member>NOCIRCLE   </member>
+        <member>WEEKNUMBERS</member>
+        <member>NOTRAILING </member>
+        <member>SHORTDAYS  </member>
+        <member>NOSELCHANGE</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>DAYSTATE</term>
+        <listitem>
+        <para>
+          The month calendar will send the GETDAYSTATE <link linkend="ovvEvents">event</link> notification to request
+          information about which days should be displayed in bold. Use the <link
+          linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method to connect this notification
+          with a method in the Rexx dialog object.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MULTI</term>
+        <listitem>
+        <para>
+          This style allows the user to select a range of dates within the control. By default, the maximum range is one
+          week. The programmer changes the maximum range that can be selected by using the <link
+          linkend="mthSetRangeClsDTP">setMaxSelection</link> method.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTODAY</term>
+        <listitem>
+        <para>
+          The month calendar control will not display the <emphasis role="italic">today</emphasis> date at the bottom of the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOCIRCLE</term>
+        <listitem>
+        <para>
+          The month calendar control will not circle the <emphasis role="italic">today</emphasis> date at the bottom of
+          the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>WEEKNUMBERS</term>
+        <listitem>
+        <para>
+          The month calendar displays week numbers (1-52) to the left of each row of days. Week 1 is defined by
+          Microsoft as the first week that contains at least four days.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTRAILING</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. This style disables displaying the dates
+          from the previous / next month in the current calendar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SHORTDAYS</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style, the month calendar uses the
+          shortest day name for the label of the day of the week column header.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOSELCHANGE</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
+          change when the user navigates to the next or previous month in the calendar. This style is needed for the
+          user to be able to select a range greater than what is currently displayed.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A list of month calendar style keywords, separated by spaces, that was the style of the month calendar control
+    before the <emphasis role="italic">removeStyle</emphasis> method was invoked. The list could be empty if the
+    previous style was the default month calendar style.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::removeStyle() -->
+
+<section id="mthReplaceStyleClsMC"><title>replaceStyle</title>
+<indexterm><primary>replaceStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
+<indexterm><primary>MonthCalendar class</primary><secondary>replaceStyle</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--replaceStyle(--oldStyles--,--newStyles--)----><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">replaceStyle</emphasis> method removes some existing month calendar styles and adds some
+  new styles.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>oldStyles [required]</term>
+    <listitem>
+    <para>
+      A list of 1 or more of the following month calendar style keywords, separated by spaces, case is not significant.
+      The styles specified will be removed from the month calendar.
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>DAYSTATE   </member>
+        <member>MULTI      </member>
+        <member>NOTODAY    </member>
+        <member>NOCIRCLE   </member>
+        <member>WEEKNUMBERS</member>
+        <member>NOTRAILING </member>
+        <member>SHORTDAYS  </member>
+        <member>NOSELCHANGE</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>DAYSTATE</term>
+        <listitem>
+        <para>
+          The month calendar will send the GETDAYSTATE <link linkend="ovvEvents">event</link> notification to request
+          information about which days should be displayed in bold. Use the <link
+          linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method to connect this notification
+          with a method in the Rexx dialog object.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MULTI</term>
+        <listitem>
+        <para>
+          This style allows the user to select a range of dates within the control. By default, the maximum range is one
+          week. The programmer changes the maximum range that can be selected by using the <link
+          linkend="mthSetRangeClsDTP">setMaxSelection</link> method.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTODAY</term>
+        <listitem>
+        <para>
+          The month calendar control will not display the <emphasis role="italic">today</emphasis> date at the bottom of the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOCIRCLE</term>
+        <listitem>
+        <para>
+          The month calendar control will not circle the <emphasis role="italic">today</emphasis> date at the bottom of
+          the control.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>WEEKNUMBERS</term>
+        <listitem>
+        <para>
+          The month calendar displays week numbers (1-52) to the left of each row of days. Week 1 is defined by
+          Microsoft as the first week that contains at least four days.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTRAILING</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. This style disables displaying the dates
+          from the previous / next month in the current calendar.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SHORTDAYS</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style, the month calendar uses the
+          shortest day name for the label of the day of the week column header.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOSELCHANGE</term>
+        <listitem>
+        <para>
+          <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
+          change when the user navigates to the next or previous month in the calendar. This style is needed for the
+          user to be able to select a range greater than what is currently displayed.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>newStyles [required]</term>
+    <listitem>
+    <para>
+      A list of 1 or more month calendar style keywords, separated by spaces, case is not significant. The styles
+      specified will be added to the month calendar. The acceptable keywords are the same as those for the <emphasis
+      role="italic">oldStyles</emphasis> argument above.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A list of month calendar style keywords, separated by spaces, that was the style of the month calendar control
+    before the <emphasis role="italic">replaceStyle</emphasis> method was invoked. The list could be empty if the
+    previous style was the default month calendar style.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">replaceStyle</emphasis> method is essentially a combination of the <link
+    linkend="mthRemoveStyleClsMC">removeStyle</link> and <link linkend="mthAddStyleClsMC">addStyle</link> methods into
+    one convenience method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example checks if the Rexx program is running on a Vista or later system. If it is, it removes the NOTODAY and
+    NOCIRCLE styles and adds the Vista specific, NOSELCHANGE, SHORTDAYS, and NOTRAILING styles.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  ...
+
+  if .OS~isAtLeastVista then do
+    mc = self~newMonthCalendar(IDC_MC)
+    mc~replaceStyle("NOTODAY NOCIRCLE", "NOSELCHANGE SHORTDAYS NOTRAILING")
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End MonthCalendar::replaceStyle() -->
 
 <section id="mthSetCalendarBorder"><title>setCalendarBorder</title>
 <indexterm><primary>setCalendarBorder</primary></indexterm>

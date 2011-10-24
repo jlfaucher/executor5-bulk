@@ -348,7 +348,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetDateTime">getDateTime</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the currently selected date and time for the DTP and returns it as a <computeroutput>DateTime</computeroutput> object.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetIdealSizeClsDTP">getIdealSize</link></entry>
@@ -360,19 +360,19 @@
 </row>
 <row>
 <entry><link linkend="mthGetMonthCal">getMonthCal</link></entry>
-<entry>xx</entry>
+<entry>Returns the <link linkend="clsMonthCalendar">MonthCalendar</link> object for a date and time picker's (DTP) child month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMonthCalColor">getMonthCalColor</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the color for the given portion of DTP control's child month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMonthCalFont">getMonthCalFont</link></entry>
-<entry>xx</entry>
+<entry>Gets the font that the DTP control's child month calendar control is currently using.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMonthCalStyle">getMonthCalStyle</link></entry>
-<entry>xx</entry>
+<entry>Retrieves the style keywords of the date and time picker's child month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetRangeClsDTP">getRange</link></entry>
@@ -388,7 +388,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetMonthCalColor">setMonthCalColor</link></entry>
-<entry>xx</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="mthSetMonthCalFont">setMonthCalFont</link></entry>
@@ -396,7 +396,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetMonthCalStyle">setMonthCalStyle</link></entry>
-<entry>xx</entry>
+<entry>Sets the style for the DTP control's child month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetRangeClsDTP">setRange</link></entry>
@@ -548,17 +548,6 @@
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1020,7 +1009,7 @@
       <listitem>
       <para>
         <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
-        change when the user navigates to he next or previous month in the calendar. This style is needed for the
+        change when the user navigates to the next or previous month in the calendar. This style is needed for the
         user to be able to select a range greater than what is currently displayed. This style is also not relevant for
         the same reasons as given for the MULTI style.
       </para>
@@ -1450,8 +1439,8 @@ return 0
     <varlistentry><term>style [required]</term>
     <listitem>
     <para>
-      A list of <link linkend="clsMonthCalendar">MonthCalendar</link>style keywords separated by spaces. The list may be
-      empty, will leave the month calendar with the default style. Otherwise, it can contain one or more of the
+      A list of <link linkend="clsMonthCalendar">MonthCalendar</link> style keywords separated by spaces. The list may
+      be empty. This will revert the month calendar to its default style. Otherwise, it can contain one or more of the
       following keywords.
     </para>
     <para>
@@ -1523,7 +1512,7 @@ return 0
         <listitem>
         <para>
           <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
-          change when the user navigates to he next or previous month in the calendar. This style is needed for the
+          change when the user navigates to the next or previous month in the calendar. This style is needed for the
           user to be able to select a range greater than what is currently displayed. This style is also not relevant for
           the same reasons as given for the MULTI style.
         </para>
