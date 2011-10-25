@@ -352,7 +352,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetIdealSizeClsDTP">getIdealSize</link></entry>
-<entry>xx</entry>
+<entry>Gets the size needed to display the date time picker control without clipping.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetInfo">getInfo</link></entry>
@@ -376,23 +376,23 @@
 </row>
 <row>
 <entry><link linkend="mthGetRangeClsDTP">getRange</link></entry>
-<entry>xx</entry>
+<entry>Gets the current minimum and maximum allowable times for a date and time picker (DTP) control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetDateTime">setDateTime</link></entry>
-<entry>xx</entry>
+<entry>Sets the date and time for the DTP control to that specified.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetFormat">setFormat</link></entry>
-<entry>xx</entry>
+<entry>Sets the display of a date and time picker (DTP) control based the specified format string.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetMonthCalColor">setMonthCalColor</link></entry>
-<entry></entry>
+<entry>Sets the color for the specified portion of the DTP control's child month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetMonthCalFont">setMonthCalFont</link></entry>
-<entry>xx</entry>
+<entry>Sets the font to be used by the date and time picker control's child month calendar control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetMonthCalStyle">setMonthCalStyle</link></entry>
@@ -400,7 +400,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetRangeClsDTP">setRange</link></entry>
-<entry>xx</entry>
+<entry>Sets the minimum and maximum allowable dates / times for the date time picker control.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -621,24 +621,24 @@
 <indexterm><primary>DateTimePicker class</primary><secondary>getIdealSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getIdealSize(--+--------+--)---------------------------------------------><
-                   +--type--+
+>>--getIdealSize(--size--)-----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the size needed to display the date time picker control without clipping.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single required argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>size [required] [in / out]</term>
     <listitem>
     <para>
-      xx
+      A <link linkend="clsSize">Size</link> object in which the ideal size is returned.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -647,30 +647,41 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns true always because the method always succeeds.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets a longish format for a DTP control and then resizes the control to its ideal size:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+
+  format = 'dddd MMMM d, yyyy - h:mm tt'
+  dtp~setFormat(format)
+
+  time = .DateTime~fromISODate('2011-03-01T10:00:00.000000')
+  dtp~setDateTime(time)
+
+  ideal = .Size~new
+  dtp~getIdealSize(ideal)
+
+  dtp~resizeTo(ideal)
+  ...
 
 ]]>
 </programlisting>
@@ -1098,48 +1109,48 @@ return 0
 <indexterm><primary>DateTimePicker class</primary><secondary>getRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getRange(--+--------+--)---------------------------------------------><
-               +--type--+
+>>--getRange(--range--)--------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the current minimum and maximum allowable times for a date and time picker (DTP) control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single required argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>range [required] [in / out]</term>
     <listitem>
     <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
+      An <computeroutput>Array</computeroutput> object in which the minimum and maximum times are returned as
+      <computeroutput>DateTime</computeroutput> objects.  The minimum time will be at index 1 and the maximum at index
+      2. If either index is set to zero, then no corresponding limit is set for the date time picker control.
+    </para> </listitem></varlistentry>
+  </variablelist> </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return will be a keyword indicating the result.  See the Remarks section for possible keywords.
+
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The returned keyword will be exactly one of: <computeroutput>none, min, max, both, error</computeroutput> describing
+    which limit(s) are set. The <emphasis role="italic">error</emphasis> keyword would indicate an error occurred with
+    the DTP control, but that is very unlikely.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1148,6 +1159,50 @@ return 0
     This example ...
 <programlisting>
 <![CDATA[
+
+::method showRange
+  expose dtp
+
+  min_max = .array~new(2)
+  keyword = dtp~getRange(min_max)
+
+  select
+    when keyword == 'none' then do
+      say "There are no minimum or maximum times set for the DTP control."
+    end
+
+    when keyword == 'min' then do
+      say "The minimum time for the DTP control is:" min_max[1]'.'
+      say 'There is no maximum time set.'
+    end
+
+    when keyword == 'max' then do
+      say "The maximum time for the DTP control is:" min_max[2]'.'
+      say 'There is no minimum time set.'
+    end
+
+    when keyword == 'both' then do
+      say "The minimum time for the DTP control is:" min_max[1]'.'
+      say "The maximum time for the DTP control is:" min_max[2]'.'
+    end
+
+    when keyword == 'error' then do
+      say 'An unexplained error occurred.'
+    end
+
+    otherwise do
+      -- This is not possible
+      nop
+    end
+  end
+  -- End select
+
+/*  Output might for instance be:
+
+The minimum time for the DTP control is: 2011-01-01T00:00:00.000000.
+The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
+
+*/
 
 ]]>
 </programlisting>
@@ -1161,24 +1216,27 @@ return 0
 <indexterm><primary>DateTimePicker class</primary><secondary>setDateTime</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDateTime(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setDateTime(--dateTime--)--------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the date and time for the DTP control to that specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single required argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>dateTime [required]</term>
     <listitem>
     <para>
-      xx
+      A <computeroutput>DateTime</computeroutput> object that specifies the date and time to set the DTP to. However, if
+      the DTP control has the SHOWNONE style, the <emphasis role="italic">dateTime</emphasis> argument can be the
+      <computeroutput>.nil</computeroutput> object to set the DTP control to the <emphasis role="italic">no
+      date</emphasis> state.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1187,30 +1245,40 @@ return 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the DTP control has the SHOWNONE style, it is possible to have no date currently selected. The control displays
+    a check box that is automatically selected whenever a date is picked or entered. If the check box is subsequently
+    deselected, the application cannot retrieve the date from the control because, in essence, the control has no date.
+    The <emphasis role="italic">no date</emphasis> state can be set with the <emphasis
+    role="italic">setDateTime</emphasis> method and queried by using the <link
+    linkend="mthGetDateTime">getDateTime</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the date and time of the DTP control to March 1st, 2011 at 10:00 am:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+
+  time = .DateTime~fromISODate('2011-03-01T10:00:00.000000')
+  dtp~setDateTime(time)
 
 ]]>
 </programlisting>
@@ -1224,24 +1292,26 @@ return 0
 <indexterm><primary>DateTimePicker class</primary><secondary>setFormat</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setFormat(--+--------+--)---------------------------------------------><
-                +--type--+
+>>--setFormat(--format--)------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the display of a date and time picker (DTP) control based the specified <link
+  linkend="sctDTPFormatStrings">format</link> string.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single required argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>format [required]</term>
     <listitem>
     <para>
-      xx
+      A <link linkend="sctDTPFormatStrings">format</link> string that dictates how the DTP control formats the data and
+      time in its dispaly.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1250,7 +1320,7 @@ return 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1264,16 +1334,28 @@ return 0
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a format string and then sets the DTP to use it:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+
+  format = 'dddd MMMM d, yyyy - h:mm tt'
+  dtp~setFormat(format)
+
+/* Display will look like this, for example, depending on exact
+   date and time:
+
+Monday October 24, 2011 - 11:52 AM
+
+*/
 
 ]]>
 </programlisting>
@@ -1287,24 +1369,80 @@ return 0
 <indexterm><primary>DateTimePicker class</primary><secondary>setMonthCalColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setMonthCalColor(--+--------+--)---------------------------------------------><
-                       +--type--+
+>>--setMonthCalColor(--which--,--color--)--------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the color for the specified portion of the DTP control's child month calendar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>which [required]</term>
     <listitem>
     <para>
-      xx
+      Specifies which part of the calendar will have its coler set. Exactly one of the following keywords must be used,
+      case is not significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>BACKGROUND  </member>
+        <member>MONTHBK     </member>
+        <member>TEXT        </member>
+        <member>TITLEBK     </member>
+        <member>TITLETEXT   </member>
+        <member>TRAILINGTEXT</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>BACKGROUND</term>
+        <listitem>
+        <para>
+          Set the background color displayed between months.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MONTHBK</term>
+        <listitem>
+        <para>
+          Set the background color displayed within the month.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TEXT</term>
+        <listitem>
+        <para>
+          Set the color used to display text within a month.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TITLEBK</term>
+        <listitem>
+        <para>
+          Set the background color displayed in the calendar's title.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TITLETEXT</term>
+        <listitem>
+        <para>
+          Set the color used to display text within the calendar's title.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TRAILINGTEXT</term>
+        <listitem>
+        <para>
+          Set the color used to display header day and trailing day text. Header and trailing days are the days
+          from the previous and following months that appear on the current month calendar.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>color [required]</term>
+    <listitem>
+    <para>
+      The color, specified as a COLORREF, to set the specified calendar part.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1313,13 +1451,19 @@ return 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    On success, returns the previouse color, as a COLORREF, for the part of the month calendar control specified.
+    Returns CLR_INVALID on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="clsImage">Image</link> class has a number of convenience methods for working with COLORREFs,
+    including the <link linkend="mthColorRef">colorRef</link> method that explains what a COLORREF is.
+  </para>
+  <para>
+    The <emphasis role="italic">colorRef</emphasis> method can be used to test the return for error. I.e.:
+    <computeroutput>.Image~colorRef(CLR_INVALID)</computeroutput>. (An error is not very likely.)
   </para>
   <para>
     Note that many of the underlying dialog controls ignore their font and color settings when visual themes are
@@ -1330,20 +1474,6 @@ return 0
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1355,8 +1485,8 @@ return 0
 <indexterm><primary>DateTimePicker</primary><secondary>setMonthCalFont</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setMonthCalFont(--+--------+--)-------------------------------------------------><
-                      +--type--+
+>>--setMonthCalFont(--newFont--+-----------+--)--><
+                               +-,-redraw--+
 ]]>
 </programlisting>
 
@@ -1367,12 +1497,20 @@ return 0
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>newFont [required]</term>
     <listitem>
     <para>
-      xx
+      The new font for the child month calenedar. One way to obtain a font is though the <link
+      linkend="mtCreateFontEx">createFontEx</link> method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>redraw [optional]</term>
+    <listitem>
+    <para>
+      Specifies whether the month calendar control should redraw itself immediately upon setting the font. The defualt
+      is true, which causes the control to redraw itself immediately.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1387,31 +1525,8 @@ return 0
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  <para>
     Note that many of the underlying dialog controls ignore their font and color settings when visual themes are
     enabled, unless the theme is Windows Clasic. This is the case for the month calendar control.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1616,24 +1731,26 @@ Style (Windows 2000 or XP): NOCIRCLE NOTODAY
 <indexterm><primary>DateTimePicker class</primary><secondary>setRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setRange(--+--------+--)---------------------------------------------><
-               +--type--+
+>>--setRange(--dateTimes--)----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the minimum and maximum allowable dates / times for the date time picker control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single required argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>dateTimes [required]</term>
     <listitem>
     <para>
-      xx
+      An array of <computeroutput>DateTime</computeroutput> objects used to set the minimum and maximum dates. The
+      <computeroutput>DateTime</computeroutput> object at index 1 sets the minimum date and the
+      <computeroutput>DateTime</computeroutput> object at index 2 sets the maximum date.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1648,7 +1765,8 @@ Style (Windows 2000 or XP): NOCIRCLE NOTODAY
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The array must contain at least one of the indexes.  If it contains neither, an exception is raised. If one of the
+    array indexes is empty, then the corresponding date is not set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1656,16 +1774,23 @@ Style (Windows 2000 or XP): NOCIRCLE NOTODAY
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example restricts the range of the DTP control to the year 2011:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(200);
+
+  min = .DateTime~fromUsaDate('01/01/11')
+  max = .DateTime~fromISODate('2011-12-31T11:59:59.999999')
+
+  dtp~setRange(.array~of(min, max))
 
 ]]>
 </programlisting>
