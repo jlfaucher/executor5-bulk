@@ -2052,15 +2052,18 @@ lo word resource ID:       1003
   place
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  using the <emphasis role="italic">willReply</emphasis> argument in the <link
+  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> method. The actual value returned from the
+  date time change event handler is ignored.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onDateTimeChange unguarded
-  use arg x, y, z
+  use arg dateTime, valid, idFrom, hwndFrom
 
-  return zz
+  return 0
 ]]>
 </programlisting>
 
@@ -2068,25 +2071,38 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 4 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>dateTime</term>
     <listitem>
     <para>
-      xx
+      The <emphasis role="italic">dateTime</emphasis> argument is a<computeroutput>DateTime</computeroutput> object.
+      When the <emphasis role="italic">valid</emphasis> argument is true, <emphasis role="italic">dateTime</emphasis>
+      specifies the new selected date and time in the DTP control. When <emphasis role="italic">valid</emphasis> is
+      false, <emphasis role="italic">dateTime</emphasis> will be the exact date and time that the notifcation was
+      recieved.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>valid</term>
     <listitem>
     <para>
-      xx
+      True or false indicating whether the date time change is valid or not. <emphasis role="italic">valid</emphasis>
+      can only be false when the DTP control has the SHOWNONE style and the user has unchecked the check box to indicate
+      that no date and time is currently selected.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
+    <varlistentry><term>idFrom</term>
     <listitem>
     <para>
-      xx
+      The <emphasis role="italic">idFrom</emphasis> argument is the resource ID of the date time picker that generated
+      the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwndFrom</term>
+    <listitem>
+    <para>
+      The window handle of the date and time picker.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2094,17 +2110,60 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return from the event handler is ignored. Returning 0 is sensible.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following example updates a static control with the currently selected date and time whenever the user changes
+    the date and time:
 
 <programlisting>
 <![CDATA[
 
+::method initDialog
+  expose dtp staticMsg
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DATETIMECHANGE", onChange)
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+  dtp~setFormat("hh':'mm':'ss dddd MMM dd', 'yyyy")
+
+  staticMsg = self~newStatic(IDC_ST1)
+  ...
+
+::method onChange
+  expose staticMsg
+  use arg dateTime, valid, idFrom, hwndFrom
+
+  if valid then do
+    sf = .SimpleFormatter~new(dateTime)
+    staticMsg~setText(sf~time 'on' sf~date)
+  end
+  else do
+    staticMsg~setText("No valid date selected.")
+  end
+
+
+::class 'SimpleFormatter' public
+
+::method init
+  expose dateTime
+  use strict arg dateTime
+
+::method date
+  expose dateTime
+
+  dayNum = dateTime~usaDate~substr(4, 2)~strip('L', '0')
+  year = dateTime~standardDate~left(4)
+
+  return dateTime~dayName || ',' dateTime~monthName dayNum || ',' year
+
+::method time
+  expose dateTime
+
+  return dateTime~civilTime
 
 ]]>
 </programlisting>
@@ -2118,18 +2177,22 @@ lo word resource ID:       1003
 <section id="evtDateTimePickerDROPDOWN"><title>DropDown Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>DROPDOWN</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the drop down event is invoked when the user activates the drop down month calendar. The DTP
+  control sends the notification for the event after it has created the child month calendar control.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  using the <emphasis role="italic">willReply</emphasis> argument in the <link
+  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> method. The actual value returned from the
+  event handler for the drop down event is ignored.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onDropDown unguarded
-  use arg x, y, z
+  use arg idFrom, hwndFrom
 
-  return zz
+  return 0
 ]]>
 </programlisting>
 
@@ -2137,25 +2200,20 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The drop down event handler recieves 2 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>idFrom</term>
     <listitem>
     <para>
-      xx
+      The <emphasis role="italic">idFrom</emphasis> argument is the resource ID of the date time picker that generated
+      the notification.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>hwndFrom</term>
     <listitem>
     <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
-    <listitem>
-    <para>
-      xx
+      The window handle of the date and time picker.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2163,17 +2221,59 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return from the event handler is ignored. Returning 0 is sensible.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    One reason for handling the drop down event is to adjust the style of the month calendar control when it is
+    displayed. Note that the DTP control creates the child month calendar control when it is needed and destroys the
+    month calendar when the drop down is closed up. Therefore you can not save a reference to the month calendar object
+    and use it later. When the <link linkend="ovvUnderlying">underlying</link> month calendar control is destroyed the
+    Rexx month calendar object is no longer valid.
+  </para>
+  <para>
+    In Windows Vista and later versions of Windows, the DTP control has the <link
+    linkend="mthsetMonthCalStyle">setMonthCalStyle</link> method which can be used to set the month calendar's style
+    once and the DTP control will then use that style each time it creates the month calendar. Therefore, the technique
+    of setting the month calendar style during the drop down event handler is really only needed for Windows XP and
+    earlier.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following example demonstrates how to change the month calendar style in the drop down event handler. If the
+    operating system the program is running on is Vista or later, the whole process is bypassed:
 
 <programlisting>
 <![CDATA[
 
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP_APPOINTMENT_TIME);
+
+  if .OS~isAtLeastVista then do
+    dtp~setMonthCalStyle("NOCIRCLE NOTRAILING")
+  end
+  else
+    self~connectDateTimePickerEvent(IDC_DTP_APPOINTMENT_TIME, "DROPDOWN", onDropDown)
+  do
+  ...
+
+::method onDropDown unguarded
+  expose dtp
+  use arg idFrom, hwndFrom
+
+  -- We know this is not Vista or later, othewise we would not
+  -- have gotten the event notification.
+
+  mc = dtp~getMonthCal
+  mc~replaceStyle('DAYSTATE MULTI WEEKNUMBERS', "NOCIRCLE NOTODAY")
+
+  return 0
 
 ]]>
 </programlisting>
@@ -2186,19 +2286,20 @@ lo word resource ID:       1003
 <section id="evtDateTimePickerFORMAT"><title>Format Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>FORMAT</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when the (DTP) control requests the text to be displayed in a
-  callback field.
+  The event handler for the format event is invoked when the DTP control requests the text to be displayed in a
+  <link linkend="sctDTPCallback">callback</link> field.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The programmer must return the text to display for the callback field and the interpreter waits for this return. This
+  behaviour can not be changed.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onFormat unguarded
-  use arg x, y, z
+  use arg field, dateTime, idFrom, hwndFrom
 
-  return zz
+  return text
 ]]>
 </programlisting>
 
@@ -2206,25 +2307,33 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 4 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>field</term>
     <listitem>
     <para>
-      xx
+      The text of the callback field identifier.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>dateTime</term>
     <listitem>
     <para>
-      xx
+      A <computeroutput>DateTime</computeroutput> object that is the currently selected date and time in the DTP
+      control.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
+    <varlistentry><term>idFrom</term>
     <listitem>
     <para>
-      xx
+      The <emphasis role="italic">idFrom</emphasis> argument is the resource ID of the date time picker that generated
+      the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwndFrom</term>
+    <listitem>
+    <para>
+      The window handle of the date and time picker.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2232,13 +2341,14 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The text to display for the specified callback field. The text must be no longer than 63 characters or a syntax
+    condition is raised.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following example shows a DTP control that is used to set the date for the start of some imaginary report.
 
 <programlisting>
 <![CDATA[
@@ -2463,18 +2573,21 @@ lo word resource ID:       1003
 <section id="evtDateTimePickerKILLFOCUS"><title>KillFocus Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>KILLFOCUS</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the kill focus event is invoked when the DTP control loses the input focus.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  using the <emphasis role="italic">willReply</emphasis> argument in the <link
+  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> method. The actual value returned from the
+  event handler for the kill focus event is ignored.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onKillFocus unguarded
-  use arg x, y, z
+  use arg idFrom, hwndFrom
 
-  return zz
+  return 0
 ]]>
 </programlisting>
 
@@ -2482,25 +2595,20 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The kill focus event handler recieves 2 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>idFrom</term>
     <listitem>
     <para>
-      xx
+      The <emphasis role="italic">idFrom</emphasis> argument is the resource ID of the date time picker that generated
+      the notification.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>hwndFrom</term>
     <listitem>
     <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
-    <listitem>
-    <para>
-      xx
+      The window handle of the date and time picker.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2508,20 +2616,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
-  <listitem>
-  <para>
-    The following example ...
-
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    The return from the event handler is ignored. Returning 0 is sensible.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2532,18 +2627,21 @@ lo word resource ID:       1003
 <section id="evtDateTimePickerSETFOCUS"><title>SetFocus Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>SETFOCUS</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the set focus event is invoked when the DTP control gains the input focus.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
+  using the <emphasis role="italic">willReply</emphasis> argument in the <link
+  linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> method. The actual value returned from the
+  event handler for the set focus event is ignored.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onSetFocus unguarded
-  use arg x, y, z
+  use arg idFrom, hwndFrom
 
-  return zz
+  return 0
 ]]>
 </programlisting>
 
@@ -2551,25 +2649,20 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The set focus event handler recieves 2 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>idFrom</term>
     <listitem>
     <para>
-      xx
+      The <emphasis role="italic">idFrom</emphasis> argument is the resource ID of the date time picker that generated
+      the notification.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>hwndFrom</term>
     <listitem>
     <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
-    <listitem>
-    <para>
-      xx
+      The window handle of the date and time picker.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2577,20 +2670,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
-  <listitem>
-  <para>
-    The following example ...
-
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    The return from the event handler is ignored. Returning 0 is sensible.
   </para>
   </listitem></varlistentry>
 </variablelist>

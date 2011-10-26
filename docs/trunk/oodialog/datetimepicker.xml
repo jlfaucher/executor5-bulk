@@ -356,7 +356,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetInfo">getInfo</link></entry>
-<entry>xx</entry>
+<entry>Returns a <computeroutput>Directory</computeroutput> object with information about the date time picker.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMonthCal">getMonthCal</link></entry>
@@ -459,7 +459,7 @@
 <indexterm><primary>DateTimePicker class</primary><secondary>closeMonthCal</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--closeMonthCal----------------------------------------------><
+>>--closeMonthCal--------------------------------><
 
 ]]>
 </programlisting>
@@ -558,56 +558,169 @@
 <indexterm><primary>DateTimePicker class</primary><secondary>getInfo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getInfo(--+--------+--)---------------------------------------------><
-              +--type--+
+>>--getInfo--------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns a <computeroutput>Directory</computeroutput> object with information about the date time picker.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <computeroutput>Directory</computeroutput> object whose indexes contain information concerning the DTP
+    control. The indexes of the <computeroutput>Directory</computeroutput> object will be:
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
+  <variablelist>
+    <varlistentry><term>CHECKRECT</term>
+    <listitem>
+    <para>
+      This index is a <link linkend="clsRect">Rect</link> object that contains the location of the check box allowing
+      the user to have no date selected. This check box is only present when the DTP control has the SHOWNONE style.
+      When the check box is not present, the co-ordinates of the rectangle will be all zeros.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CHECKSTATE</term>
+    <listitem>
+    <para>
+      A localized string describing the state of the check box allowing the user to have no date selected. This check
+      box is only present when the DTP control has the SHOWNONE style. The operating system associates one or more
+      states with any object at any given time.
+    </para>
+    <para>
+      The string at index CHECKSTATE is the string the operating system returns to describe an object's state.
+      Microsoft's documentation is a little vague on exactly what the string will be. However, from testing it appears
+      the string will be <emphasis role="italic">invisible</emphasis> when the check box is not present. When the check
+      box is present, it appears the string will be <emphasis role="italic">checked</emphasis> or <emphasis
+      role="italic">normal</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>BUTTONRECT</term>
+    <listitem>
+    <para>
+      A <link linkend="clsRect">Rect</link> object that contains the location of the button that shows the drop down
+      calendar when the user clicks on it. (Or closes the month calendar if the user clicks on it when the month
+      calendar is already open.) This button is not present if the DTP control has the UPDOWN style, in which case the
+      co-ordinates of the rectangle will be all zeros.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>BUTTONSTATE</term>
+    <listitem>
+    <para>
+      The BUTTONSTATE index is similar to the CHECKSTATE index. Its value is a localized string describing the state of
+      the button for the drop down month calendar. When the DTP control has the UPDOWN style and the button is not
+      present, the string is <emphasis role="italic">invisible</emphasis>. When the month calendar is showing the state
+      of the button is <emphasis role="italic">pressed</emphasis>, when it is not showing the state will be either
+      <emphasis role="italic">normal</emphasis> or <emphasis role="italic">unavailable</emphasis>. The state is
+      <emphasis role="italic">unavailable</emphasis> if the DTP control has the SHOWNONE style and no date is currently
+      selected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>EDIT</term>
+    <listitem>
+    <para>
+      This index will either be an <link linkend="clsEdit">Edit</link> object, or <computeroutput>.nil</computeroutput>,
+      depending on whether the DTP control currently has a child edit control or not. The DTP control will only have an
+      edit control when the DTP control has the PARSE style. The PARSE style allows the user to edit within the client
+      area of the control when they press the F2 key, or single click on the client area of the DTP control when the
+      control already has the focus. The child edit control is only present when the user is actively editing.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>DROPDOWN</term>
+    <listitem>
+    <para>
+      This index will either be a <link linkend="clsMonthCalendar">MonthCalendar</link> object, or
+      <computeroutput>.nil</computeroutput>, depending on whether the DTP control currently has a child month calendar
+      control or not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>UPDOWN</term>
+    <listitem>
+    <para>
+      This index will either be an <link linkend="clsUpDown">UpDown</link> object, or
+      <computeroutput>.nil</computeroutput>, depending on whether the DTP control currently has a child updown control
+      or not. The up down control will only exist when the DTP control has the UPDOWN style. With the UPDOWN style, the
+      normal drop down month calendar is replaced by an up down control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example connects the <computeroutput>F3</computeroutput> key to the dialog. When the user presses the
+    <computeroutput>F3</computeroutput> key, the current DTP control information is displayed:
 <programlisting>
 <![CDATA[
+
+::method defineDialog
+
+  self~createDateTimePicker(200,  10, 7, 280, 15, "BORDER SHORT SHOWNONE")
+  ...
+
+::method initDialog
+  expose dateTime
+
+  dateTime = self~newDateTimePicker(IDC_DTP_BIRTHDAY);
+  dateTime~setFormat("XX 'is on: 'hh':'mm':'ss dddd MMM dd', 'yyyy XXX")
+
+  self~connectKeyPress(onF3, .VK~f3)
+  ...
+
+::method onF3 unguarded
+  expose dateTime
+
+  info = dateTime~getInfo
+  say 'CheckRect:  ' info~checkRect
+  say 'CheckState: ' info~checkState
+  say 'ButtonRect: ' info~buttonRect
+  say 'ButtonState:' info~buttonState
+  say 'DropDown:   ' info~dropDown
+  say 'Edit:       ' info~edit
+  say 'UpDown:     ' info~upDown
+  say
+
+/* As the user presses F3 at various times the output could be:
+
+CheckRect:   a Rect (2, 2, 22, 22)
+CheckState:  checked
+ButtonRect:  a Rect (386, 0, 420, 24)
+ButtonState: normal
+DropDown:    The NIL object
+Edit:        The NIL object
+UpDown:      The NIL object
+
+CheckRect:   a Rect (2, 2, 22, 22)
+CheckState:  checked
+ButtonRect:  a Rect (386, 0, 420, 24)
+ButtonState: pressed
+DropDown:    a MonthCalendar
+Edit:        The NIL object
+UpDown:      The NIL object
+
+CheckRect:   a Rect (2, 2, 22, 22)
+CheckState:  normal
+ButtonRect:  a Rect (386, 0, 420, 24)
+ButtonState: unavailable
+DropDown:    The NIL object
+Edit:        The NIL object
+UpDown:      The NIL object
+
+*/
 
 ]]>
 </programlisting>
