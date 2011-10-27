@@ -1807,7 +1807,7 @@ lo word resource ID:       1003
         <member>FORMAT        </member>
         <member>FORMATQUERY   </member>
         <member>USERSTRING    </member>
-        <member>WMKEYDOWN     </member>
+        <member>KEYDOWN       </member>
         <member>KILLFOCUS     </member>
         <member>SETFOCUS      </member>
       </simplelist>
@@ -1856,12 +1856,12 @@ lo word resource ID:       1003
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control when a user finishes editing a string in the control. This
-          notification message is only sent by DTP controls that have the PARSE style. The <emphasis
+          notification message is only sent by DTP controls that have the CANPARSE style. The <emphasis
           role="italic">willReply</emphasis> argument is ignored for this event, the event handler must <link
           linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>WMKEYDOWN</term>
+        <varlistentry><term>KEYDOWN</term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control when the user types in a <link
@@ -1902,7 +1902,7 @@ lo word resource ID:       1003
       from the event handler. The default is <computeroutput>.true</computeroutput>, that is, the interpreter waits
       until the event handling method returns a value. If <emphasis role="italic">willReply</emphasis> is
       <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. However, this argument is
-      ignored for the USERSTRING, WMKEYDOWN, FORMAT, and FORMATQUERY events. If the programmer connects any of these
+      ignored for the USERSTRING, KEYDOWN, FORMAT, and FORMATQUERY events. If the programmer connects any of these
       events, the interpreter waits for the return from the connected method. This can not be changed.
     </para>
     </listitem></varlistentry>
@@ -1942,11 +1942,21 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example:
+    The following example creates a DTP control in the dialog template of a <computeroutput>UserDialog</computeroutput>
+    and then connects the drop down and close up events:
   </para>
 <programlisting>
 <![CDATA[
 
+::method defineDialog
+
+  self~createDateTimePicker(IDC_DTP_REPORT_DATE,  10, 7, 280, 15, "BORDER SHORT SHOWNONE")
+
+  self~createPushButton(IDOK, 85, 74, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 140, 74, 50, 14, , "Cancel")
+
+  self~connectDateTimePickerEvent(200, "CLOSEUP", onCloseUp)
+  self~connectDateTimePickerEvent(200, "DROPDOWN", onDropDown)
 
 ]]>
 </programlisting>
@@ -2077,7 +2087,7 @@ lo word resource ID:       1003
     <varlistentry><term>dateTime</term>
     <listitem>
     <para>
-      The <emphasis role="italic">dateTime</emphasis> argument is a<computeroutput>DateTime</computeroutput> object.
+      The <emphasis role="italic">dateTime</emphasis> argument is a <computeroutput>DateTime</computeroutput> object.
       When the <emphasis role="italic">valid</emphasis> argument is true, <emphasis role="italic">dateTime</emphasis>
       specifies the new selected date and time in the DTP control. When <emphasis role="italic">valid</emphasis> is
       false, <emphasis role="italic">dateTime</emphasis> will be the exact date and time that the notifcation was
@@ -2501,8 +2511,8 @@ lo word resource ID:       1003
 </section>  <!-- End UserString Event Handler -->
 
 
-<section id="evtDateTimePickerWMKEYDOWN"><title>WmKeyDown Event Handler</title>
-<indexterm><primary>DateTimePicker Event</primary><secondary>WMKEYDOWN</secondary></indexterm>
+<section id="evtDateTimePickerKEYDOWN"><title>KEYDOWN Event Handler</title>
+<indexterm><primary>DateTimePicker Event</primary><secondary>KEYDOWN</secondary></indexterm>
 <para>
   The event handler for the xx xx event is invoked when ...
 </para>
@@ -2567,7 +2577,7 @@ lo word resource ID:       1003
   </listitem></varlistentry>
 </variablelist>
 
-</section>  <!-- End WmKeyDown Event Handler -->
+</section>  <!-- End KEYDOWN Event Handler -->
 
 
 <section id="evtDateTimePickerKILLFOCUS"><title>KillFocus Event Handler</title>
