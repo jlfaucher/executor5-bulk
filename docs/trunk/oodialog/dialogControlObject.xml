@@ -2477,6 +2477,33 @@ the device context of the entire dialog.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem>
+<para>
+  Returns 0 on success and 1 on error.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+<listitem>
+<para>
+  This method sets <computeroutput>.SystemErrorCode</computeroutput> to the error code set by the operating system
+  when a failure in one of the Win32 APIs is detected. However, there is one Win32 API,
+  <computeroutput>SelectObject()</computeroutput>, that does not set the system error code on failure. It is unlikely
+  that it will fail, but if it does, the ooDialog framework sets <computeroutput>.SystemErrorCode</computeroutput> to
+  <computeroutput>156</computeroutput>, ERROR_SIGNAL_REFUSED.
+</para>
+<para>
+  The text message for error code <computeroutput>156</computeroutput> is: <emphasis role="italic">The recipient
+  process has refused the signal.</emphasis> In this case, the text message is not really related to the failure, it
+  is just used to indicate that the <computeroutput>SelectObject()</computeroutput> API failed.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+<listitem>
+<para>
+  Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.  See the remarks above.
+</para>
+</listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>This example writes the string "Hello world!" to the dialog window using
 a 24pt Arial font in bold and italic style:

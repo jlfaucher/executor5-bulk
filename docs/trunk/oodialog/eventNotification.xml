@@ -2089,7 +2089,7 @@ lo word resource ID:       1003
     <para>
       The <emphasis role="italic">dateTime</emphasis> argument is a <computeroutput>DateTime</computeroutput> object.
       When the <emphasis role="italic">valid</emphasis> argument is true, <emphasis role="italic">dateTime</emphasis>
-      specifies the new selected date and time in the DTP control. When <emphasis role="italic">valid</emphasis> is
+      specifies the new displayed date and time in the DTP control. When <emphasis role="italic">valid</emphasis> is
       false, <emphasis role="italic">dateTime</emphasis> will be the exact date and time that the notifcation was
       recieved.
     </para>
@@ -2329,7 +2329,7 @@ lo word resource ID:       1003
     <varlistentry><term>dateTime</term>
     <listitem>
     <para>
-      A <computeroutput>DateTime</computeroutput> object that is the currently selected date and time in the DTP
+      A <computeroutput>DateTime</computeroutput> object that is the currently displayed date and time in the DTP
       control.
     </para>
     </listitem></varlistentry>
@@ -2358,11 +2358,39 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example shows a DTP control that is used to set the date for the start of some imaginary report.
+    The <computeroutput>FORMAT</computeroutput>, <link linkend="evtDateTimePickerFORMATQUERY">FORMATQUERY</link>, and
+    <link linkend="evtDateTimePickerKEYDOWN">KEYDOWN</link> event notifications all work together to provide the
+    functionality for call back fields. It is a little difficult to grasp the concepts from small snippets of code, so a
+    complete example program is included in the ooDialog samples:
+    <computeroutput>samples\oodialog\controls\fiscalReports.rex</computeroutput>.
+  </para>
+  <para>
+    This is an example FORMAT event handler. It comes from the complete
+    <computeroutput>fiscalReports.rex</computeroutput> program:
 
 <programlisting>
 <![CDATA[
 
+::method onFormat unguarded
+  expose periods types currentType currentPeriod
+  use arg field, dt, id, hwnd
+
+  select
+    when field == 'XX' then do
+      ret = self~getPeriodNumber(dt)
+    end
+
+    when field == 'XXX' then do
+      ret = periods[currentPeriod]
+    end
+
+    otherwise do
+      ret = types[currentType]
+    end
+  end
+  -- End select
+
+  return ret
 
 ]]>
 </programlisting>
@@ -2376,18 +2404,20 @@ lo word resource ID:       1003
 <section id="evtDateTimePickerFORMATQUERY"><title>FormatQuery Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>FORMATQUERY</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the format query event is invoked when the DTP control requests the maximum size needed to
+  display a string in a call back <link linkend="sctDTPCallback">field</link>.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The programmer must fill in a <link linkend="clsSize">Size</link> object with the maximum size needed and return a
+  value from the event handler. The interpreter waits for this return. This behavior can not be changed.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onFormatQuery unguarded
-  use arg x, y, z
+  use arg field, size, id, hwnd
 
-  return zz
+  return 0
 ]]>
 </programlisting>
 
@@ -2395,25 +2425,33 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 4 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>field</term>
     <listitem>
     <para>
-      xx
+      The text of the callback field identifier.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>size</term>
     <listitem>
     <para>
-      xx
+      A <computeroutput>Size</computeroutput> object that is set to the maximum size requried to display the
+      string in the call back field.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
+    <varlistentry><term>idFrom</term>
     <listitem>
     <para>
-      xx
+      The <emphasis role="italic">idFrom</emphasis> argument is the resource ID of the date time picker that generated
+      the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwndFrom</term>
+    <listitem>
+    <para>
+      The window handle of the date and time picker.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2421,16 +2459,47 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The actual value returned from the event handler is ignored by the operating system. Rather the return signals the
+    operating system that the <emphasis role="italic">size</emphasis> argument is now valid to access, and the OS can
+    use its values. Returning zero is sensible.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The <computeroutput>FORMATQUERY</computeroutput>, <link linkend="evtDateTimePickerFORMAT">FORMAT</link>, and <link
+    linkend="evtDateTimePickerKEYDOWN">KEYDOWN</link> event notifications all work together to provide the
+    functionality for call back fields. It is a little difficult to grasp the concepts from small snippets of code, so a
+    complete example program is included in the ooDialog samples:
+    <computeroutput>samples\oodialog\controls\fiscalReports.rex</computeroutput>.
+  </para>
+  <para>
+    The following example FORMATQUERY event handler comes from that example program:
 
 <programlisting>
 <![CDATA[
+
+::method onFormatQuery unguarded
+  expose dtp haveSizes xxSize xxxSize xxxxSize
+  use arg field, size, id, hwnd
+
+  if \ haveSizes then do
+    xxSize  = self~calcSize('XX')
+    xxxSize = self~calcSize('XXX')
+    xxxxSize = self~calcSize('XXXX')
+    haveSizes = .true
+  end
+
+  -- The equateTo() method sets the cx and cy attributes of the receiver .Size
+  -- object to the cx and cy attributes of the argument .Size object.
+  select
+    when field == 'XX' then size~equateTo(xxSize)
+    when field == 'XXX' then size~equateTo(xxxSize)
+    otherwise size~equateTo(xxxxSize)
+  end
+  -- End select
+
+  return 0
 
 
 ]]>
@@ -2442,90 +2511,23 @@ lo word resource ID:       1003
 </section>  <!-- End FormatQuery Event Handler -->
 
 
-<section id="evtDateTimePickerUSERSTRING"><title>UserString Event Handler</title>
-<indexterm><primary>DateTimePicker Event</primary><secondary>USERSTRING</secondary></indexterm>
-<para>
-  The event handler for the xx xx event is invoked when ...
-</para>
-<para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
-</para>
-
-<programlisting>
-<![CDATA[
-::method onUserString unguarded
-  use arg x, y, z
-
-  return zz
-]]>
-</programlisting>
-
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The event handling method recieves xx arguments:
-  </para>
-  <variablelist>
-    <varlistentry><term>arg</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
-  <listitem>
-  <para>
-    The following example ...
-
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-
-</section>  <!-- End UserString Event Handler -->
-
-
 <section id="evtDateTimePickerKEYDOWN"><title>KEYDOWN Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>KEYDOWN</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the key down event is invoked when the user types a key in a <link
+  linkend="sctDTPCallback">call</link> back field.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The programmer must return a <computeroutput>DateTime</computeroutput> object and the interpreter waits for this
+  return. This behavior can not be changed.
 </para>
 
 <programlisting>
 <![CDATA[
-::method onWmKeyDown unguarded
-  use arg x, y, z
+::method onKeyDown unguarded
+  use arg field, dateTiem, vKey, idFrom, hwndFrom
 
-  return zz
+  return dateTime
 ]]>
 </programlisting>
 
@@ -2536,19 +2538,40 @@ lo word resource ID:       1003
     The event handling method recieves xx arguments:
   </para>
   <variablelist>
+    <varlistentry><term>field</term>
+    <listitem>
+    <para>
+      The text of the callback field identifier.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dateTime</term>
+    <listitem>
+    <para>
+      A <computeroutput>DateTime</computeroutput> object that is the currently displayed date and time in the DTP
+      control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>vKey</term>
+    <listitem>
+    <para>
+      The virtual key code of the key the user typed in the call back field. The <link linkend="clsVK">VK</link> class
+      can be used to map the numeric key code to a symbol, making it easier to work with the codes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>idFrom</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">idFrom</emphasis> argument is the resource ID of the date time picker that generated
+      the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwndFrom</term>
+    <listitem>
+    <para>
+      The window handle of the date and time picker.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>arg</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
     <listitem>
     <para>
       xx
@@ -2559,17 +2582,59 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The programmer returns a <computeroutput>DateTime</computeroutput> object. If the return is a date / time different
+    than the <emphasis role="italic">dateTime</emphasis> argument, the DTP control's date / time is updated. If it is he
+    same, then no action is taken by the DTP control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    By examining the <emphasis role="italic">dateTime</emphasis> and <emphasis role="italic">vKey</emphasis> arguments
+    the programmer can produce custom responses to the user's typed keys. The custom response is achieved by returning a
+    <computeroutput>DateTime</computeroutput> object that specifies a different date than the currently displayed date.
+    For instance, if the currently displayed date is 8:00 am July 4th 1998 and the user types the <emphasis
+    role="italic">home</emphasis> key, the programmer could return a date of 12:00 am January 1st 1998 to set the DTP
+    control's display to the first of Janaury in 1998. Likewise, if the user typed the <emphasis
+    role="italic">end</emphasis> key the programmer could return December 31 1998 at 11:59 pm to set the display to the
+    end of the current year.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The <computeroutput>KEYDOWN</computeroutput>, <link linkend="evtDateTimePickerFORMAT">FORMAT</link>, and <link
+    linkend="evtDateTimePickerFORMATQUEYR">FORMATQUERY</link> event notifications all work together to provide the
+    functionality for call back fields. It is a little difficult to grasp the concepts from small snippets of code, so a
+    complete example program is included in the ooDialog samples:
+    <computeroutput>samples\oodialog\controls\fiscalReports.rex</computeroutput>.
+  </para>
+  <para>
+    The following example shows the KEYDOWN event handler from the <computeroutput>fiscalReports.rex</computeroutput>
+    example program:
 
 <programlisting>
 <![CDATA[
 
+::method onKeyDown
+  use arg field, dt, vKey, idFrom, hwndFrom
+
+  select
+    when field == 'XX' then do
+      newDT = self~updatePeriodNumber(dt, vKey)
+    end
+
+    when field == 'XXX' then do
+      newDT = self~updatePeriod(dt, vKey)
+    end
+
+    otherwise do
+      newDT = self~updateReport(dt, vKey)
+    end
+  end
+  -- End select
+
+  return newDT
 
 ]]>
 </programlisting>
@@ -2686,6 +2751,75 @@ lo word resource ID:       1003
 </variablelist>
 
 </section>  <!-- End SetFocus Event Handler -->
+
+<section id="evtDateTimePickerUSERSTRING"><title>UserString Event Handler</title>
+<indexterm><primary>DateTimePicker Event</primary><secondary>USERSTRING</secondary></indexterm>
+<para>
+  The event handler for the xx xx event is invoked when ...
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onUserString unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End UserString Event Handler -->
+
 
 </section>  <!-- End EventNotification::connectDateTimePickerEvent() -->
 

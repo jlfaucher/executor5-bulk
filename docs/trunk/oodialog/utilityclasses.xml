@@ -276,8 +276,10 @@
 </para>
 <para>
   The <link linkend="mthGetImageClsImage">getImage()</link> method of the <link
-  linkend="clsImage">.Image</link> class is one method that does change .SystemErrorCode.  This is an
-  example of a possible usage:
+  linkend="clsImage">.Image</link> class is one method that does change .SystemErrorCode. <emphasis
+  role="bold">Note</emphasis> in the example the use of the RexxUtil function,
+  <computeroutput>SysGetErrorText</computeroutput>. This function is useful to get an explanatory message for the error
+  code. The message is provided by Windows, not by ooRexx or ooDialog. This is an example of a possible usage:
 </para>
 <programlisting>
 <![CDATA[
