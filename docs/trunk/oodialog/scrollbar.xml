@@ -121,8 +121,7 @@ modify scroll bar controls.
 </row>
 <row>
 <entry><link linkend="mthDeterminePosition">determinePosition</link></entry>
-<entry>Determines the new position of the scroll box based on the position sent
-with the scroll bar notification messages.</entry>
+<entry>Determines the new position of the scroll box based on the position sent with the scroll bar notification messages.</entry>
 </row>
 <row>
 <entry><link linkend="mthPosition">position</link></entry>
@@ -138,7 +137,7 @@ with the scroll bar notification messages.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetPos">setPos</link></entry>
-<entry></entry>
+<entry>Sets the position of the scroll box for the associated scroll bar.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -192,49 +191,75 @@ with the scroll bar notification messages.</entry>
 </section>  <!-- End EventNotification::connectScrollBarEvent() (dialog object method) -->
 
 
-<section id="mthSetRange"><title>setRange</title>
-<indexterm><primary>setRange</primary><secondary>ScrollBar class</secondary></indexterm>
-<indexterm><primary>ScrollBar class</primary><secondary>setRange</secondary></indexterm>
+<section id="mthDeterminePosition"><title>determinePosition</title>
+<indexterm><primary>determinePosition</primary></indexterm>
+<indexterm><primary>ScrollBar class</primary><secondary>determinePosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setRange(--min--,--max--+-----------+--)-----><
-                            +-,--redraw-+
+>>--determinePosition(--posData--,--+------------+--+-------------+------------><
+                                    +-singleStep-+  +-,--pageStep-+
 
 
 ]]>
 </programlisting>
 
-<para>The setRange method sets the minimum and maximum positions for the associated scroll bar.</para>
+<para>The determinePosition method determines the new position of the scroll box
+based on the position sent with the scroll bar notification messages.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>min</term>
-<listitem><para>The minimum position to which the scroll bar can be moved.
+<varlistentry><term>posData</term>
+<listitem><para>The position sent with the scroll bar notification messages.
 </para></listitem></varlistentry>
-<varlistentry><term>max</term>
-<listitem><para>The maximum position to which the scroll bar can be moved.
+<varlistentry><term>singleStep</term>
+<listitem><para>The value by which the scroll box position is increased or decreased
+when the user performs a single-step event like using the Down or Up arrow
+keys or clicking on the arrow buttons of the scroll bar.
 </para></listitem></varlistentry>
-<varlistentry><term>redraw</term>
-<listitem><para>If you specify 1 or Y, the scroll bar is redrawn using the new range.
-Otherwise, the range is set but the scroll bar display is not updated. The
-default value is 1.
+<varlistentry><term>pageStep</term>
+<listitem><para>The value by which the scroll box position is increased or decreased
+when the user performs a page-step event like using the PgDn or
+PgUp arrow keys or clicking on an area in the scroll bar that is not occupied
+by the scroll box or the arrow buttons.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
+<listitem><para>The resulting position based on
+<emphasis role="italic">posData</emphasis> and the current position.
+</para></listitem></varlistentry>
+</variablelist>
+
+
+<note><title>Note</title><para>
+The position of a scroll bar cannot be modified directly by
+a user. The Object Rexx program must react to the notification that is the
+result of the user interaction and set the resulting position of the scroll
+box using <link linkend="mthSetPos">setPos</link>. Use the determinePosition
+method to determine the resulting position within your notification handler
+for the scroll bar notification messages.
+</para></note>
+</section>  <!-- End UserDialog::determinePosition -->
+
+<section id="mthPosition"><title>position</title>
+<indexterm><primary>position</primary></indexterm>
+<indexterm><primary>ScrollBar class</primary><secondary>position</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--position-------------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The position method retrieves the position of the scroll box in the associated scroll bar.</para>
 <variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Setting the range was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>For all other cases.
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The position of the scroll box.
 </para></listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>  <!-- End UserDialog::setRange -->
+</section>  <!-- End UserDialog::position -->
 
 <section id="mthRange"><title>range</title>
 <indexterm><primary>range</primary><secondary>ScrollBar class</secondary></indexterm>
@@ -297,76 +322,50 @@ The default value is 1.
 </variablelist>
 </section>  <!-- End UserDialog::setPos -->
 
-
-<section id="mthPosition"><title>position</title>
-<indexterm><primary>position</primary></indexterm>
-<indexterm><primary>ScrollBar class</primary><secondary>position</secondary></indexterm>
+<section id="mthSetRange"><title>setRange</title>
+<indexterm><primary>setRange</primary><secondary>ScrollBar class</secondary></indexterm>
+<indexterm><primary>ScrollBar class</primary><secondary>setRange</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--position-------------------------------------><
+>>--setRange(--min--,--max--+-----------+--)-----><
+                            +-,--redraw-+
 
 
 ]]>
 </programlisting>
 
-<para>The position method retrieves the position of the scroll box in the associated scroll bar.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The position of the scroll box.
-</para></listitem></varlistentry>
-</variablelist>
-</section>  <!-- End UserDialog::position -->
-
-
-<section id="mthDeterminePosition"><title>determinePosition</title>
-<indexterm><primary>determinePosition</primary></indexterm>
-<indexterm><primary>ScrollBar class</primary><secondary>determinePosition</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--determinePosition(--posData--,--+------------+--+-------------+------------><
-                                    +-singleStep-+  +-,--pageStep-+
-
-
-]]>
-</programlisting>
-
-<para>The determinePosition method determines the new position of the scroll box
-based on the position sent with the scroll bar notification messages.</para>
+<para>The setRange method sets the minimum and maximum positions for the associated scroll bar.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
-<varlistentry><term>posData</term>
-<listitem><para>The position sent with the scroll bar notification messages.
+<varlistentry><term>min</term>
+<listitem><para>The minimum position to which the scroll bar can be moved.
 </para></listitem></varlistentry>
-<varlistentry><term>singleStep</term>
-<listitem><para>The value by which the scroll box position is increased or decreased
-when the user performs a single-step event like using the Down or Up arrow
-keys or clicking on the arrow buttons of the scroll bar.
+<varlistentry><term>max</term>
+<listitem><para>The maximum position to which the scroll bar can be moved.
 </para></listitem></varlistentry>
-<varlistentry><term>pageStep</term>
-<listitem><para>The value by which the scroll box position is increased or decreased
-when the user performs a page-step event like using the PgDn or
-PgUp arrow keys or clicking on an area in the scroll bar that is not occupied
-by the scroll box or the arrow buttons.
+<varlistentry><term>redraw</term>
+<listitem><para>If you specify 1 or Y, the scroll bar is redrawn using the new range.
+Otherwise, the range is set but the scroll bar display is not updated. The
+default value is 1.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The resulting position based on
-<emphasis role="italic">posData</emphasis> and the current position.
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>Setting the range was successful.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>For all other cases.
 </para></listitem></varlistentry>
 </variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserDialog::setRange -->
 
 
-<note><title>Note</title><para>
-The position of a scroll bar cannot be modified directly by
-a user. The Object Rexx program must react to the notification that is the
-result of the user interaction and set the resulting position of the scroll
-box using <link linkend="mthSetPos">setPos</link>. Use the determinePosition
-method to determine the resulting position within your notification handler
-for the scroll bar notification messages.
-</para></note>
-</section>  <!-- End UserDialog::determinePosition -->
 
 </chapter>

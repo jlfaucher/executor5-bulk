@@ -445,8 +445,8 @@
   linkend="chpDialogObject">dialog</link> object. The basic syntax is:
 
 <programlisting> <![CDATA[
->>-connectDateTimePickerEvent(--id--,--event--+----------------+--)------------><
-                                              +--,-methodName--+
+>>--connectDateTimePickerEvent(--id-,-evt--+----------+-+------------+-)------><
+                                           +-,--mName-+ +-,-wilReply-+
 
 ]]>
 </programlisting>
@@ -1061,7 +1061,7 @@ UpDown:      The NIL object
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    A list of <link linkend="clsMonthCalendar">MonthCalendar</link>style keywords separated by spaces. The list may be
+    A list of <link linkend="clsMonthCalendar">MonthCalendar</link> style keywords separated by spaces. The list may be
     empty, otherwise it will contain one or more of the following keywords.
   </para>
   <para>
@@ -1118,39 +1118,33 @@ UpDown:      The NIL object
       <varlistentry><term>NOTRAILING</term>
       <listitem>
       <para>
-        <emphasis role="bold">Requires Windows Vista or later</emphasis>. This style disables displaying the dates
-        from the previous / next month in the current calendar.
+        <emphasis role="bold">Windows Vista or later only</emphasis>. This style disables displaying the dates from the
+        previous / next month in the current calendar.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>SHORTDAYS</term>
       <listitem>
       <para>
-        <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style, the month calendar uses the
+        <emphasis role="bold">Windows Vista or later only</emphasis>. With this style, the month calendar uses the
         shortest day name for the label of the day of the week column header.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>NOSELCHANGE</term>
       <listitem>
       <para>
-        <emphasis role="bold">Requires Windows Vista or later</emphasis>. With this style the selection does not
-        change when the user navigates to the next or previous month in the calendar. This style is needed for the
-        user to be able to select a range greater than what is currently displayed. This style is also not relevant for
+        <emphasis role="bold">Windows Vista or later only</emphasis>. With this style the selection does not change when
+        the user navigates to the next or previous month in the calendar. This style is needed for the user to be able
+        to select a range greater than what is currently displayed. This style is also not relevant for
         the same reasons as given for the MULTI style.
       </para>
       </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later.
+    This method requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later.
   </para>
   </listitem></varlistentry>
   <varlistentry id="exampleGetMonthCalStyle"><term><emphasis role="bold">Example:</emphasis></term>
@@ -1249,7 +1243,6 @@ return 0
   <listitem>
   <para>
     The return will be a keyword indicating the result.  See the Remarks section for possible keywords.
-
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1269,7 +1262,7 @@ return 0
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a method designed to display the current range of the DTP control:
 <programlisting>
 <![CDATA[
 
@@ -1434,12 +1427,6 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
   <listitem>
   <para>
     Returns true on success, false on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1799,7 +1786,7 @@ return 0
 ::method initDialog
   expose dtp
 
-  dtp = self~newDateTimePicker(200);
+  dtp = self~newDateTimePicker(IDC_DTP);
 
   if .OS~isAtLeastVista then do
     dtp~setMonthCalStyle("NOCIRCLE NOTRAILING")
@@ -1872,13 +1859,13 @@ Style (Windows 2000 or XP): NOCIRCLE NOTODAY
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The array must contain at least one of the indexes.  If it contains neither, an exception is raised. If one of the
+    The array must contain at least one of the indexes. If it contains neither, an exception is raised. If one of the
     array indexes is empty, then the corresponding date is not set.
   </para>
   </listitem></varlistentry>
@@ -1898,10 +1885,10 @@ Style (Windows 2000 or XP): NOCIRCLE NOTODAY
 ::method initDialog
   expose dtp
 
-  dtp = self~newDateTimePicker(200);
+  dtp = self~newDateTimePicker(IDC_DTP);
 
   min = .DateTime~fromUsaDate('01/01/11')
-  max = .DateTime~fromISODate('2011-12-31T11:59:59.999999')
+  max = .DateTime~fromISODate('2011-12-31T23:59:59.999999')
 
   dtp~setRange(.array~of(min, max))
 

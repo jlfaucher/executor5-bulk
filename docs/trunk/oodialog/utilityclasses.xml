@@ -4501,19 +4501,27 @@ WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
 </row>
 <row>
 <entry><link linkend="atrBottomClsRect">bottom</link></entry>
-<entry>xx</entry>
+<entry>The <emphasis role="italic">bottom</emphasis> co-ordinate of the rectangle.</entry>
 </row>
 <row>
 <entry><link linkend="atrLeftClsRect">left</link></entry>
-<entry>xx</entry>
+<entry>The <emphasis role="italic">left</emphasis> co-ordinate of the rectangle.</entry>
 </row>
 <row>
 <entry><link linkend="atrRightClsRect">right</link></entry>
-<entry>xx</entry>
+<entry>The <emphasis role="italic">right</emphasis> co-ordinate of the rectangle.</entry>
 </row>
 <row>
 <entry><link linkend="atrTopClsRect">top</link></entry>
-<entry>xx</entry>
+<entry>The <emphasis role="italic">top</emphasis> co-ordinate of the rectangle.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthStringRect">string</link></entry>
+<entry>Provides an informative string representation of the <computeroutput>Rect</computeroutput> object.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -4808,6 +4816,61 @@ New upper corner (55,75) new lower corner 110,125)
 </variablelist>
 </section>  <!-- End Rect::bottom() [attribute]  -->
 
+<section id="mthStringRect"><title>string</title>
+<indexterm><primary>string</primary><secondary>Rect class</secondary></indexterm>
+<indexterm><primary>Rect class</primary><secondary>string</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--string---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">string</emphasis> method over-rides the <computeroutput>.Object</computeroutput> classes
+  <emphasis role="italic">string</emphasis> method to provide more informative string representation of a
+  <computeroutput>Rect</computeroutput> object. The returned string include the value of the co-ordinates of the
+  rectangle. I.e., the left, top, right, and bottom attributes.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a string in the form: <emphasis role="italic">a Rect (l, t, r, b)</emphasis> where <emphasis
+    role="italic">l</emphasis> is the value of the left attribute, <emphasis role="italic">t</emphasis> is the value of
+    the top attribute, <emphasis role="italic">r</emphasis> is the value of the right attribute, and <emphasis
+    role="italic">b</emphasis> is the value of the bottom attribute of the object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    A trival example.
+<programlisting>
+<![CDATA[
+
+  r = .Rect~new(5, 5, 120, 40)
+  say 4
+
+  /* Output would be:
+
+  a Rect (5, 5, 120, 40)
+
+  */
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Size::string() -->
+
 </section> <!-- End Rect Class -->
 
 
@@ -4871,6 +4934,10 @@ New upper corner (55,75) new lower corner 110,125)
 <row>
 <entry><link linkend="mthIncr">incr</link></entry>
 <entry>Increments the x and y attributes by the amount specified</entry>
+</row>
+<row>
+<entry><link linkend="mthStringPoint">string</link></entry>
+<entry>Provides an informative string representation of the <computeroutput>Point</computeroutput> object.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -5342,6 +5409,59 @@ Changed point q to be at (150,300)
 </variablelist>
 </section>  <!-- End Point::decr() -->
 
+<section id="mthStringPoint"><title>string</title>
+<indexterm><primary>string</primary><secondary>Point class</secondary></indexterm>
+<indexterm><primary>Point class</primary><secondary>string</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--string---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">string</emphasis> method over-rides the <computeroutput>.Object</computeroutput> classes
+  <emphasis role="italic">string</emphasis> method to provide more informative string representation of a
+  <computeroutput>Point</computeroutput> object. The returned string include the value of the x and y attributes.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a string in the form: <emphasis role="italic">a Point (x, y)</emphasis> where <emphasis
+    role="italic">x</emphasis> is the value of the x attribute of the object and <emphasis role="italic">y</emphasis> is
+    the value of the y attribute.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    A trival example.
+<programlisting>
+<![CDATA[
+
+  p = .Point~new(5, 120)
+  say s
+
+  /* Output would be:
+
+  a Point (5, 120)
+
+  */
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Point::string() -->
+
 </section> <!-- End Point Class -->
 
 
@@ -5379,12 +5499,28 @@ Changed point q to be at (150,300)
 <entry align="center"><emphasis role="bold">Attributes </emphasis></entry>
 </row>
 <row>
-<entry><link linkend="atrHeightClsPoint">height</link></entry>
+<entry><link linkend="atrHeightClsSize">height</link></entry>
 <entry>Reflects the height of the <computeroutput>Size</computeroutput> object.</entry>
 </row>
 <row>
-<entry><link linkend="atrWidthClsPoint">width</link></entry>
+<entry><link linkend="atrWidthClsSize">width</link></entry>
 <entry>Reflects the width of the <computeroutput>Size</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthComparsion">comparison operators</link></entry>
+<entry>Operators that compare one <computeroutput>Size</computeroutput> object to another.</entry>
+</row>
+<row>
+<entry><link linkend="mthEquateTo">equateTo</link></entry>
+<entry>Sets the width and height of the <computeroutput>Size</computeroutput> object to that of another <computeroutput>Size</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="mthStringSize">string</link></entry>
+<entry>Provides an informative string representation of the <computeroutput>Size</computeroutput> object.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -5486,7 +5622,7 @@ New width: 100 new height: 300
 </variablelist>
 </section>
 
-<section id="atrWidthClsPoint"><title>width (Attribute)</title>
+<section id="atrWidthClsSize"><title>width (Attribute)</title>
 <indexterm><primary>width</primary><secondary>Size class</secondary></indexterm>
 <indexterm><primary>Size class</primary><secondary>width</secondary></indexterm>
 <programlisting>
@@ -5530,7 +5666,7 @@ New width: 100 new height: 300
 </variablelist>
 </section>  <!-- End Size::width() [attribute]  -->
 
-<section id="atrHeightClsPoint"><title>height (Attribute)</title>
+<section id="atrHeightClsSize"><title>height (Attribute)</title>
 <indexterm><primary>height</primary><secondary>Size class</secondary></indexterm>
 <indexterm><primary>Size class</primary><secondary>height</secondary></indexterm>
 <programlisting>
@@ -5579,6 +5715,268 @@ New width: 100 new height: 300
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Size::height() [attribute]  -->
+
+<section id="mthComparsion"><title>Comparison Operators</title>
+<indexterm><primary>Size class</primary><secondary>comparison operators</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sizeObj1 =   sizeObj2------------------------><
+>>--sizeObj1 ==  sizeObj2------------------------><
+>>--sizeObj1 \=  sizeObj2------------------------><
+>>--sizeObj1 \== sizeObj2------------------------><
+>>--sizeObj1 <   sizeObj2------------------------><
+>>--sizeObj1 <<  sizeObj2------------------------><
+>>--sizeObj1 <=  sizeObj2------------------------><
+>>--sizeObj1 <<= sizeObj2------------------------><
+>>--sizeObj1 >   sizeObj2------------------------><
+>>--sizeObj1 >>  sizeObj2------------------------><
+>>--sizeObj1 >=  sizeObj2------------------------><
+>>--sizeObj1 >>= sizeObj2------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The comparsion operators allow one <computeroutput>Size</computeroutput> object to be compared to another
+  <computeroutput>Size</computeroutput> object.
+</para>
+<para>
+  Not every possible comparsion operation is implemented, only the operators listed are supported. All the comparisons
+  follow these two principles. When a comparison operator is doubled, it is a strict comparison. The <link
+  linkend="atrWidthClsSize">width</link> attribute of each <computeroutput>Size</computeroutput> object is compared and
+  the <link linkend="atrHeightClsSize">height</link> attribute of each <computeroutput>Size</computeroutput> object is
+  compared. Both comparsions must be true.
+</para>
+<para>
+  When there is not a doubled operator, then the <emphasis role="italic">area</emphasis> of the size objects is
+  compared. For example:
+
+<programlisting>
+<![CDATA[
+
+  s1 = .Size~new(4, 4)
+  s2 = .Size~new(2, 8)
+  s3 = .Size~new(8, 2)
+  s4 = .Size~new(2, 8)
+
+  s1 = s2    -- True
+  s1 == s2   -- False
+  s2 == s4   -- True
+  s2 == s3   -- False
+
+  s5 = .Size~new(3, 4)
+  s6 = .Size~new(4, 4)
+
+  s5 < s6    -- True
+  s5 << s6   -- False
+  s5 <= s6   -- True
+  s5 <<= s6  -- True
+
+]]>
+</programlisting>
+
+</para>
+<para>
+  The following table lists the comparsion operators. Given two <computeroutput>Size</computeroutput> objects, <emphasis
+  role="italic">s1</emphasis> and <emphasis role="italic">s2</emphasis>:
+
+<table id="tblComparisonsSize" frame="all"> <title>Size Comparison Operator Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Operator</entry>
+<entry>True When</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>=</entry>
+<entry>(s1~width * s1~height) is equal to (s2~width * s2~height)</entry>
+</row>
+<row>
+<entry>==</entry>
+<entry>s1~width is equal to s2~width and s1~height is equal to s2~height.</entry>
+</row>
+<row>
+<entry>\=</entry>
+<entry>(s1~width * s1~height) is not equal to (s2~width * s2~height)</entry>
+</row>
+<row>
+<entry>\==</entry>
+<entry>s1~width is not equal to s2~width and s1~height is not equal to s2~height.</entry>
+</row>
+<row>
+<entry>&lt;</entry>
+<entry>(s1~width * s1~height) is less than (s2~width * s2~height)</entry>
+</row>
+<row>
+<entry>&lt;&lt;</entry>
+<entry>s1~width is less than s2~width and s1~height is less than s2~height.</entry>
+</row>
+<row>
+<entry>&lt;=</entry>
+<entry>(s1~width * s1~height) is less than or equal to (s2~width * s2~height)</entry>
+</row>
+<row>
+<entry>&lt;&lt;=</entry>
+<entry>s1~width is less than or equal to s2~width and s1~height is less than or equal to s2~height.</entry>
+</row>
+<row>
+<entry>&gt;</entry>
+<entry>(s1~width * s1~height) is greater than (s2~width * s2~height)</entry>
+</row>
+<row>
+<entry>&gt;&gt;</entry>
+<entry>s1~width is greater than s2~width and s1~height is greater than s2~height.</entry>
+</row>
+<row>
+<entry>&gt;=</entry>
+<entry>(s1~width * s1~height) is greater than or equal to (s2~width * s2~height)</entry>
+</row>
+<row>
+<entry>&gt;&gt;=</entry>
+<entry>s1~width is greater than or equal to s2~width and s1~height is greater than or equal to s2~height.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>  <!-- End Size::comparisonOperators -->
+
+<section id="mthEquateTo"><title>equateTo</title>
+<indexterm><primary>equateTo</primary></indexterm>
+<indexterm><primary>Size class</primary><secondary>equateTo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--equateTo(--otherSize--)----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">equateTo</emphasis> method sets the width and height attributes of this
+  <computeroutput>Size</computeroutput> object to the width and height attributes of <emphasis
+  role="italic">otherSize</emphasis>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>otherSize</term>
+      <listitem>
+      <para>
+        The <computeroutput>Size</computeroutput> object that is used to set the <link
+        linkend="atrWidthClsSize">width</link> and <link linkend="atrHeightClsSize">height</link> attributes of this
+        object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns <computeroutput>.true</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This is a simple method as the example shows:
+<programlisting>
+<![CDATA[
+
+  s1 = .Size~new(14, 57)
+  s2 = .Size~new(2, 3)
+
+  say 's1:' s1
+  say 's2:' s2
+  say
+
+  s1~equateTo(s2)
+
+  say 's1:' s1
+  say 's2:' s2
+  say
+
+  /* Output will be:
+
+s1: a Size (14, 57)
+s2: a Size (2, 3)
+
+s1: a Size (2, 3)
+s2: a Size (2, 3)
+
+ */
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Size::equateTo() -->
+
+<section id="mthStringSize"><title>string</title>
+<indexterm><primary>string</primary><secondary>Size class</secondary></indexterm>
+<indexterm><primary>Size class</primary><secondary>string</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--string---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">string</emphasis> method over-rides the <computeroutput>.Object</computeroutput> classes
+  <emphasis role="italic">string</emphasis> method to provide more informative string representation of a
+  <computeroutput>Size</computeroutput> object. The returned string include the value of the width and height
+  attributes.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a string in the form: <emphasis role="italic">a Size (w, h)</emphasis> where <emphasis
+    role="italic">w</emphasis> is the value of the width attribute of the object and <emphasis
+    role="italic">h</emphasis> is the value of the height attribute.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    A trival example.
+<programlisting>
+<![CDATA[
+
+  s = .Size~new(4, 17)
+  say s
+
+  /* Output would be:
+
+  a Size (4, 17)
+
+  */
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Size::string() -->
 
 </section> <!-- End Size Class -->
 
