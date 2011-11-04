@@ -113,7 +113,79 @@ modify scroll bar controls.
 </row>
 <row>
 <entry><link linkend="tmthConnectScrollBarEvent">connectScrollBarEvent</link></entry>
-<entry>Connects ScrollBar event notifications to a Rexx dialog method.</entry>
+<entry>Connects a single scroll bar event notification to a Rexx dialog method.</entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectAllSBEvents">connectAllSBEvents</link></entry>
+<entry>Connects all scroll bar event notifications to a single Rexx dialog method.</entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectEachSBEvent">connectEachSBEvent</link></entry>
+<entry>Connects a number of scroll bar event notifications, each to its own Rexx dialog method, in a single method invocation.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Constants</emphasis></entry>
+<entry align="center"><emphasis role="bold">Constants</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">LINEUP</link></entry>
+<entry>The scroll bar was scrolled up by one unit.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">LINELEFT</link></entry>
+<entry>The scroll bar was scrolled to the left by one unit.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">LINEDOWN</link></entry>
+<entry>The scroll bar was scrolled down by one unit.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">LINERIGHT</link></entry>
+<entry>The scroll bar was scrolled to the right by one unit.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">PAGEUP</link></entry>
+<entry>The scroll bar was scrolled up by one page size.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">PAGELEFT</link></entry>
+<entry>The scroll bar was scrolled to the left by one page size.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">PAGEDOWN</link></entry>
+<entry>The scroll bar was scrolled down by one page size.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">PAGERIGHT</link></entry>
+<entry>The scroll bar was scrolled to the right by one page size.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">THUMBPOSITION</link></entry>
+<entry>The scroll box (thumb) of the scroll bar was dragged and the user has released the mouse button.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">THUMBTRACK</link></entry>
+<entry>The user is dragging the scroll box. This message is sent repeatedly until the user releases the mouse button.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">TOP</link></entry>
+<entry>The scroll bar was scrolled completely to the top.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">LEFT</link></entry>
+<entry>The scroll bar was scrolled completely to the left.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">BOTTOM</link></entry>
+<entry>The scroll bar was scrolled completely to the bottom.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">RIGHT</link></entry>
+<entry>The scroll bar was scrolled completely to the right.</entry>
+</row>
+<row>
+<entry><link linkend="sctSBEventCode">ENDSCROLL</link></entry>
+<entry>Scrolling has been ended, that is, the appropriate key or mouse button has been released.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -121,7 +193,7 @@ modify scroll bar controls.
 </row>
 <row>
 <entry><link linkend="mthDeterminePosition">determinePosition</link></entry>
-<entry>Determines the new position of the scroll box based on the position sent with the scroll bar notification messages.</entry>
+<entry>Determines the new position of the scroll box based on the position sent with the scroll bar event notification message.</entry>
 </row>
 <row>
 <entry><link linkend="mthPosition">position</link></entry>
@@ -177,7 +249,7 @@ modify scroll bar controls.
 
 <section id="tmthConnectScrollBarEvent"><title>connectScrollBarEvent (dialog object method)</title>
 <para>
-  To connect event notifications from a scroll bar control use the <link
+  To connect an individual event notification from a scroll bar control use the <link
   linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link> method of the <link
   linkend="chpDialogObject">dialog</link> object. The basic syntax is:
 
@@ -190,6 +262,161 @@ modify scroll bar controls.
 </para>
 </section>  <!-- End EventNotification::connectScrollBarEvent() (dialog object method) -->
 
+
+<section id="tmthConnectAllSBEvents"><title>connectAllSBEvents (dialog object method)</title>
+<para>
+  To connect all event notifications from a scroll bar control to a single method use the <link
+  linkend="mthConnectAllSBEvents">connectAllSBEvents</link> method of the <link linkend="chpDialogObject">dialog</link>
+  object. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>--connectAllSBEvents(-id-,-mName-+------+-+------+-+-----+-+--------------+-)--><
+                                   +-,-mn-+ +-,-mx-+ +-,-p-+ +-,-willReply--+
+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End EventNotification::connectAllSBEvents() (dialog object method) -->
+
+
+<section id="tmthConnectEachSBEvent"><title>connectEachSBEvent (dialog object method)</title>
+<para>
+  To connect a number of event notifications from a scroll bar control, and specify an individual method for each event,
+  in one method invocation use the <link linkend="mthConnectEachSBEvent">connectEachSBEvent</link> method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+--------->
+                                                     +-,-mthWhenDrag-+
+
+>--+-------+-+-------+-+-------+--+-----------+-+-----------+-+----------+----->
+   +-,-min-+-+-,-max-+ +-,-pos-+  +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+
+
+>--+-------------+-+------------+-+------------+-+-------------+--)------------><
+   +-,-mthButtom-+ +-,-mthTrack-+ +-,-mthEndSc-+ +-,-willReply-+
+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End EventNotification::connectEachSBEvent() (dialog object method) -->
+
+
+<section id="sctSBEventCode"><title>Event Constants</title>
+<indexterm><primary>scroll bar event constants</primary></indexterm>
+<indexterm><primary>ScrollBar class</primary><secondary>scroll bar event constants</secondary></indexterm>
+
+<para>
+  When a scroll bar sends an <link linkend="ovvEvents">event</link> notification <link
+  linkend="ovvWindowMessages">rmessage</link>, one of the pararmeters contains the numeric code, (defined by Windows,)
+  for the event. The <computeroutput>ScrollBar</computeroutput> class provides
+  <computeroutput>::constant</computeroutput> values for each of the event codes. This allows the programmer to
+  determine which event is represented by the event code without having to know what the individual numeric value is for
+  each code.
+</para>
+<para>
+  Connecting the scroll bar event notifications to a method in the Rexx dialog object is done through the <link
+  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link> method. The second argument to that method is the
+  event <emphasis role="italic">keyword</emphasis> that is to be connected. Do not confuse the keyword and the constant.
+  The event <emphasis role="italic">keyword</emphasis> is a string that identifies the event to be connected to the
+  ooDialog framework.  The event <emphasis role="italic">constant</emphasis> is a numeric value that Windows sends in
+  the notification message to indentify the event. The following table lists the constant name, its matching keyword in
+  the <emphasis role="italic">connectScrollBarEvent</emphasis> method, and a description of the event referred to:
+</para>
+<table id="tblScrollBarConstants" frame="all">
+<title>ScrollBar Event Constants</title>
+<tgroup cols="3">
+<colspec colwidth="1.75in">
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>KeyWord</entry>
+<entry>Event</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>LINEUP</entry>
+<entry>LINEUP</entry>
+<entry>The scroll bar was scrolled up by one unit.</entry>
+</row>
+<row>
+<entry>LINELEFT</entry>
+<entry>LINELEFT</entry>
+<entry>The scroll bar was scrolled to the left by one unit.</entry>
+</row>
+<row>
+<entry>LINEDOWN</entry>
+<entry>LINEDOWN</entry>
+<entry>The scroll bar was scrolled down by one unit.</entry>
+</row>
+<row>
+<entry>LINERIGHT</entry>
+<entry>LINERIGHT</entry>
+<entry>The scroll bar was scrolled to the right by one unit.</entry>
+</row>
+<row>
+<entry>PAGEUP</entry>
+<entry>PAGEUP</entry>
+<entry>The scroll bar was scrolled up by one page size.</entry>
+</row>
+<row>
+<entry>PAGELEFT</entry>
+<entry>PAGELEFT</entry>
+<entry>The scroll bar was scrolled to the left by one page size.</entry>
+</row>
+<row>
+<entry>PAGEDOWN</entry>
+<entry>PAGEDOWN</entry>
+<entry>The scroll bar was scrolled down by one page size.</entry>
+</row>
+<row>
+<entry>PAGERIGHT</entry>
+<entry>PAGERIGHT</entry>
+<entry>The scroll bar was scrolled to the right by one page size.</entry>
+</row>
+<row>
+<entry>THUMBPOSITION</entry>
+<entry>POSITION</entry>
+<entry>The scroll box (thumb) of the scroll bar was dragged and the user has released the mouse button.</entry>
+</row>
+<row>
+<entry>THUMBTRACK</entry>
+<entry>DRAG</entry>
+<entry>The user is dragging the scroll box. This message is sent repeatedly until the user releases the mouse button.</entry>
+</row>
+<row>
+<entry>TOP</entry>
+<entry>TOP</entry>
+<entry>The scroll bar was scrolled completely to the top.</entry>
+</row>
+<row>
+<entry>LEFT</entry>
+<entry>LEFT</entry>
+<entry>The scroll bar was scrolled completely to the left.</entry>
+</row>
+<row>
+<entry>BOTTOM</entry>
+<entry>BOTTOM</entry>
+<entry>The scroll bar was scrolled completely to the bottom.</entry>
+</row>
+<row>
+<entry>RIGHT</entry>
+<entry>RIGHT</entry>
+<entry>The scroll bar was scrolled completely to the right.</entry>
+</row>
+<row>
+<entry>ENDSCROLL</entry>
+<entry>ENDSCROLL</entry>
+<entry>Scrolling has been ended, that is, the appropriate key or mouse button has been released.</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+</section>
 
 <section id="mthDeterminePosition"><title>determinePosition</title>
 <indexterm><primary>determinePosition</primary></indexterm>

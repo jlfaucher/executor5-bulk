@@ -1243,7 +1243,13 @@
 ]]>
 </programlisting>
 
-<para>Connects all scroll bar events to one method. </para>
+<para>
+  Connects all scroll bar events to one method.
+</para>
+<para>
+  This method requires that the <link linkend="ovvUnderlying">underlying</link> scroll bar exists. Therefore, the method
+  is best invoked in the <link linkend="mthInitDialog">initDialog</link> method.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:</para>
@@ -1255,10 +1261,10 @@
 <listitem><para>The method that is invoked for all events sent by the scroll bar.
 </para></listitem></varlistentry>
 <varlistentry><term>mn, mx [optional]</term>
-<listitem><para> The minimum and maximum values for the scroll bar.
+<listitem><para> Sets the minimum and maximum values for the range of the scroll bar.
 </para></listitem></varlistentry>
 <varlistentry><term>p [optional]</term>
-<listitem><para>The current position or preselected position value.
+<listitem><para>Sets the current position of the scroll bar.
 </para></listitem></varlistentry>
 <varlistentry><term>willReply [optional]</term>
 <listitem>
@@ -1431,8 +1437,10 @@
     <orderedlist>
     <listitem>
     <para>
-      The documentation for the <computeroutput>EventNotification</computeroutput> class provides some <link
-      linkend="paraWhereToConnectEvents">common</link> guidelines for using the event connection methods.
+      Common guidelines on <link linkend="paraWhereToConnectEvents">where</link> to invoke the <emphasis
+      role="italic">connectComboBoxEvent</emphasis> method and on <link linkend="sctCodingEventHandlers">how</link>
+      to code event handlers are included in the documentation for the <link
+      linkend="clsEventNotification">EventNotification</link> class.
     </para>
     </listitem>
     <listitem>
@@ -2998,12 +3006,16 @@ lo word resource ID:       1003
 ]]>
 </programlisting>
 
-<para>The connectEachSBEvent method initializes and connects
-a scroll bar to an Object Rexx object. Use this method in the <link linkend="mthInitDialog">initDialog</link> method. </para>
+<para>
+  The <emphasis role="italic">connectEachSBEvent</emphasis> method connects an <link
+  linkend="ovvEvents">event</link> notification message from a scroll bar to a method in the Rexx dialog object.
+  Optionally, the method can also initialize the scroll bar, (set the range and current position.)
+</para>
+<para>
+  This method requires that the <link linkend="ovvUnderlying">underlying</link> scroll bar exists. Therefore, the method
+  is best invoked in the <link linkend="mthInitDialog">initDialog</link> method.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected.
-</para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
@@ -3073,9 +3085,10 @@ the dragging.
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>In the following example, scroll bar with symbolic ID IDC_SB is connected to three methods
-and initialized with 1 as the minimum, 20 as the maximum, and 6 as the current
-value:
+<listitem>
+<para>
+  In the following example, scroll bar with symbolic ID IDC_SB is connected to three methods. The range is initialized
+  to 1 as the minimum and 20 as the maximum. The current position is set to 6:
 
 <programlisting>
 <![CDATA[
@@ -3083,23 +3096,10 @@ value:
      .
      .
      .
-::method defineDialog
-self~connectEachSBEvent(IDC_SB,"Increase","Decrease","Drag",1,20,6)
-     .
-     .
-     .
-::method Increase
-     .
-     .
-     .
-::method Decrease
-     .
-     .
-     .
-::method Drag
-     .
-     .
-     .
+::method initDialog
+
+  self~connectEachSBEvent(IDC_SB,"Increase","Decrease","Drag",1,20,6)
+
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -6259,16 +6259,24 @@ incorrect.
   <varlistentry><term>event [required]</term>
   <listitem>
   <para>
-    A keyword specifying which scroll bar event should be connected. A number of keywords have the same meaning, the
-    programmer can use whichever keyword makes the most sense. The keyword must be on of the following, case is not
-    significant:
+    A keyword specifying which scroll bar event should be connected. This methods connects either a vertical or a
+    horizontal scroll bar. The symbolic keyword names are orientated towards which type the scroll bar is. But the
+    values that the scroll bar sends are the same for similiar events.
+  </para>
+  <para>
+    I.e., one event is to move 1 unit towards the upper left. For a vertical scroll bar this is one line up (LINEUP,)
+    for a horizontal scroll bar this is one unit to the left, (LINELEFT.) But, the numeric value that a scroll bar sends
+    for the event is the same. Therefore, the LINEUP and LINELEFT keywords produce the identical effect. If the scroll
+    bar is a vertical scroll bar, using the LINELEFT keyword produces the same effect as using the LINEUP keyword. The
+    programmer can use whichever keyword makes the most sense.
+  </para>
+  <para>
+    The keyword must be one of the following, case is not significant:
   </para>
   <para>
     <simplelist type='vert' columns='3'>
-      <member>UP       </member>
       <member>LINEUP   </member>
       <member>LINELEFT </member>
-      <member>DOWN     </member>
       <member>LINEDOWN </member>
       <member>LINERIGHT</member>
       <member>PAGEUP   </member>
@@ -6284,47 +6292,70 @@ incorrect.
       <member>ENDSCROLL</member>
     </simplelist>
     <variablelist>
-      <varlistentry><term>LINEUP LINELEFT UP</term>
-      <listitem><para>The scroll bar was scrolled to the left or up by one unit.
-      </para></listitem></varlistentry>
-      <varlistentry><term>LINEDOWN LINERIGHT DOWN</term>
-      <listitem><para>The scroll bar was scrolled to the right or down by one unit.
-      </para></listitem></varlistentry>
+      <varlistentry><term>LINEUP LINELEFT</term>
+      <listitem>
+      <para>
+        The scroll bar was scrolled to the left or up by one unit.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LINEDOWN LINERIGHT</term>
+      <listitem>
+      <para>
+        The scroll bar was scrolled to the right or down by one unit.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>PAGELEFT PAGEUP</term>
-      <listitem><para>The scroll bar was scrolled to the left or up by one page size.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The scroll bar was scrolled to the left or up by one page size.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>PAGERIGHT PAGEDOWN</term>
-      <listitem><para>The scroll bar was scrolled to the right or down by one page size.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The scroll bar was scrolled to the right or down by one page size.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>DRAG</term>
-      <listitem><para>The scroll bar has been dragged.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The user is dragging the scroll box. This message is sent repeatedly until the user releases the mouse button.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>TOP LEFT</term>
-      <listitem><para>The scroll bar was scrolled to the upper left.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The scroll bar was scrolled completely to the top or to the left.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>BOTTOM RIGHT</term>
-      <listitem><para>The scroll bar was scrolled to the lower right.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The scroll bar was scrolled completely to the bottom or to the right.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>ENDSCROLL</term>
-      <listitem><para>Scrolling has been ended, that is, the appropriate key or mouse button
-      has been released.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        Scrolling has been ended, that is, the appropriate key or mouse button has been released.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>POSITION</term>
-      <listitem><para>The scroll bar was scrolled to an absolute position (the left mouse
-      button has been released).
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The scroll box (thumb) of the scroll bar was dragged and the user has released the mouse button.
+      </para>
+      </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term>mName [opitonal]</term>
   <listitem>
   <para>
-    The name of the method that is to be invoked whenever the specified notification is received from the scroll bar.
-    Provide a method with a matching name. If you omit this argument, the method name is automatically generated by
-    concatenating <emphasis role="italic">on</emphasis> with the event keyword. For example, <emphasis
-    role="italic">onLineUp</emphasis>.
-  </para>
-  </listitem></varlistentry>
+    The name of the method that is to be invoked whenever the specified notification is received from the scroll bar. If
+    this argument is omitted, the method name is automatically generated by concatenating <emphasis
+    role="italic">on</emphasis> with the event keyword. For example, <emphasis role="italic">onLineUp</emphasis>.
+  </para> </listitem></varlistentry>
   <varlistentry><term>willReply [optional]</term>
   <listitem>
   <para>
@@ -6352,8 +6383,7 @@ incorrect.
       <varlistentry><term>-1</term>
       <listitem>
       <para>
-        The resource ID could not be resolved or the event argument is
-      incorrect.
+        The resource ID could not be resolved or the event argument is incorrect.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>1</term>
@@ -6365,14 +6395,52 @@ incorrect.
     </variablelist>
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+  <listitem>
+  <para>
+    This method requires that the <link linkend="ovvUnderlying">underlying</link> scroll bar exists. Therefore, the method
+    is best invoked in the <link linkend="mthInitDialog">initDialog</link> method. At some later point in the life cycle
+    of the dialog is fine. If the method is invoked before the underlying dialog has been created a syntax condition is
+    raised.
+  </para>
+  <para>
+    Common guidelines on <link linkend="sctCodingEventHandlers">how</link> to code event handlers are included in the
+    documentation for the <link linkend="clsEventNotification">EventNotification</link> class.
+  </para>
+  <para>
+    When the user interacts with a scroll bar, the operating system does not reposition the scroll box (thumb.) Rather,
+    the operating system relies on the application, (in essence the programmer,) to update the scroll bar position
+    during the scroll bar event notification. Therefore, if the scroll bar event is not connected, or the programmer
+    does not reposition the scroll box in the event handler, it will appear to the user that the scroll box can not be
+    moved.
+  </para>
+  <para>
+    The event handler recieves two arguments as shown:
+
+<programlisting>
+<![CDATA[
+::method onScrollBarEvent
+  use arg posInfo, hwnd
+
+]]>
+</programlisting>
+
+    The <emphasis role="italic">posInfo</emphasis> argument contains the scroll bar event code in the low word of the
+    argument. For the POSITION and the DRAG events, the high word contains the postion of the scroll box. For the other
+    events, the high word is not used. When the notification comes from a <link linkend="clsScrollBar">scroll</link> bar
+    control, the <emphasis role="italic">hwnd</emphasis> argument is the window handle of the scroll bar. When the
+    notification does not come from a scroll bar control, <emphasis role="italic">hwnd</emphasis> is 0.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example connects the POSITION event with method onPosition automatically. Since the third argument is
-    omitted,t he ooDialog framword automatically connects the event to onPosition. The event handler extracts the new
-    position from the notification arguments and sets the postion for the scroll bar. It also displays the new position
-    and the event type. The <computeroutput>ScrollBar</computeroutput> class provides the THUMBPOSITION constant, whose
-    value is the value of the POSITION event code.
+    The following example connects the POSITION event with a method in the Rexx dialog. Since the third argument is
+    omitted, the ooDialog framwork automatically connects the event to the <emphasis
+    role="italic">onPosition</emphasis> method. The event handler extracts the new position from the notification
+    arguments and sets the postion for the scroll bar. It also displays the new position and the event type. The
+    <computeroutput>ScrollBar</computeroutput> class provides the <link linkend="sctSBEventCode">THUMBPOSITION</link>
+    constant, whose value is the value of the POSITION event code.
 
 <programlisting>
 <![CDATA[
@@ -6383,8 +6451,10 @@ incorrect.
   self~connectScrollBarEvent(IDC_SB_FILE, "POSITION")
 
 ::method onPosition
-  use arg posData, hwnd
-  pos = .DlgUtil~hiWord(posData)
+  use arg posInfo, hwnd
+
+  pos       = .DlgUtil~hiWord(posData)
+  eventCode = .DlgUtil~loWord(posData)
 
   -- Set the scroll bar to the new position and have it redraw itself.
   self~newScrollBar(IDC_SB_FILE)~setPos(pos, .true)
@@ -6392,35 +6462,13 @@ incorrect.
   say "Pos:" pos
   say "Verify event code:
   say "  THUMBPOSITION:" .ScrollBar~THUMBPOSITION
-  say "  This event:   " .DlgUtil~loWord(posData)
+  say "  This event:   " eventCode
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
 
-<note><title>Notes</title>
-<orderedlist>
-<listitem><para>The method can only be called after the scroll bar was created by Windows. A good location for this connection is the initDialog method.</para></listitem>
-<listitem><para>The event-handling methods receive two arguments: an event-position pair
-and the handle to the scroll bar. You can retrieve the scroll bar position
-by extracting the high-order word.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
-<![CDATA[
-::method Handler
-  use arg ev_pos, handle
-  position = .DlgUtil~hiWord(ev_pos)
-]]>
-</programlisting>
-<para>
-  If the user changed the
-scroll bar position, you must set the scroll bar position with <link linkend="mthSetPos">setPos</link> to keep the
-selected position.
-</para>
-</listitem>
-</orderedlist>
-</note>
 </section>
 
 <section id="mthConnectSizeMoveEnded"><title>connectSizeMoveEnded</title>
