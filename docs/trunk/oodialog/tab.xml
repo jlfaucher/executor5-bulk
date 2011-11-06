@@ -135,111 +135,111 @@
 </row>
 <row>
 <entry><link linkend="mthAddFullSeq">addFullSeq</link></entry>
-<entry>addFullSeq</entry>
+<entry>Inserts a sequence of 1 through N tabs into a tab control. The index for an icon in the imagelist for the tab can be included.</entry>
 </row>
 <row>
 <entry><link linkend="mthAddSequence">addSequence</link></entry>
-<entry>addSequence</entry>
+<entry>Inserts a sequence of 1 through N tabs into a tab control. The index for an icon can not be included.</entry>
 </row>
 <row>
 <entry><link linkend="mthAdjustToRectangle">adjustToRectangle</link></entry>
-<entry>adjustToRectangle</entry>
+<entry>Calculates the window rectangle of a tab control that corresponds to the specified display rectangle.</entry>
 </row>
 <row>
 <entry><link linkend="mthCalcDisplayArea">calcDisplayArea</link></entry>
-<entry>xx</entry>
+<entry>Takes the window rectangle of the tab control, and adjusts the rectangle to that needed for the display rectangle</entry>
 </row>
 <row>
 <entry><link linkend="mthCalcWindowRect">calcWindowRect</link></entry>
-<entry>xx</entry>
+<entry>Takes a display rectangle and adjusts the rectangle to be that needed for tab control to contain the display rectangle.</entry>
 </row>
 <row>
 <entry><link linkend="mthDeleteTab">delete</link></entry>
-<entry>delete</entry>
+<entry>Removes a tab from a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthDeleteAllTab">deleteAll</link></entry>
-<entry>deleteAll</entry>
+<entry>Removes all tabs from a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthFocusTab">focus</link></entry>
-<entry>focus</entry>
+<entry>Sets the focus to the specified tab in a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthFocusedTab">focused</link></entry>
-<entry>focused</entry>
+<entry>Returns the index of the tab that has the focus.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetImageListTab">getImageList</link></entry>
-<entry>getImageList</entry>
+<entry>Retrieves the current image list from the tab control, if there is one.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetItemRect">getItemRect</link></entry>
-<entry>xx</entry>
+<entry>Gets the bounding rectangle for a tab in a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthInsertTab">insert</link></entry>
-<entry>insert</entry>
+<entry>Inserts a new tab in a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthIteminfoTab">itemInfo</link></entry>
-<entry>itemInfo</entry>
+<entry>Retrieves information about a tab in a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthItemsTab">items</link></entry>
-<entry>items</entry>
+<entry>Retrieves the number of tabs in a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthLastTab">last</link></entry>
-<entry>last</entry>
+<entry>Retrieves the index of the last tab in a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthModifyTab">modify</link></entry>
-<entry>modify</entry>
+<entry>Sets some, or all, of the attributes of a tab.</entry>
 </row>
 <row>
 <entry><link linkend="mthPosRectangle">posRectangle</link></entry>
-<entry>posRectangle</entry>
+<entry>Retrieves the rectangle around a tab in a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthRequiredWindowSize">requiredWindowSize</link></entry>
-<entry>requiredWindowSize</entry>
+<entry>Calculates the display rectangle of a tab control that corresponds to the specified window rectangle.</entry>
 </row>
 <row>
 <entry><link linkend="mthRows">rows</link></entry>
-<entry>rows</entry>
+<entry>Retrieves the current number of rows of tabs in a tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectTab">select</link></entry>
-<entry>select</entry>
+<entry>Selects the tab with the specified label text.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectedTab">selected</link></entry>
-<entry>selected</entry>
+<entry>Retrieves the label text of the currently selected tab.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectedIndexTab">selectedIndex</link></entry>
-<entry>selectedIndex</entry>
+<entry>Retrieves the index of the currently selected tab.</entry>
 </row>
 <row>
 <entry><link linkend="mthSelectIndexTab">selectIndex</link></entry>
-<entry>selectIndex</entry>
+<entry>Selects a tab in the tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetImageListClsTabControl">setImageList</link></entry>
-<entry>setImageList</entry>
+<entry>Assigns, or removes, an image list for the tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetItemSize">setItemSize</link></entry>
-<entry>xx</entry>
+<entry>Sets the width and height of the tabs in a fixed-width tab control.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetPadding">setPadding</link></entry>
-<entry>setPadding</entry>
+<entry>Sets the amount of space (padding) around the icon and the label of a tab.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetSize">setSize</link></entry>
-<entry>setSize</entry>
+<entry>Sets the width and height of tabs in a fixed-width tab control.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -305,7 +305,6 @@
 <para>
   The <emphasis role="italic">addFullSeq</emphasis> method inserts a sequence of 1 through N tabs into a tab control.
   For each inserted tab, an optional icon index and user object can be specified.
-value.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -585,7 +584,7 @@ string. The coordinates are separated by blanks and are in the following order:
 </programlisting>
 
 <para>
-  xx
+  Takes a display rectangle and adjusts the rectangle to be the window rect of the tab control needed for that display.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -805,8 +804,8 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 <indexterm><primary>Tab class</primary><secondary>getItemRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getItemRect(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getItemRect(--index--,--rect--)--------------><
+
 ]]>
 </programlisting>
 
@@ -817,12 +816,18 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>index [required]</term>
     <listitem>
     <para>
-      xx
+      The index of the tab to get the bounding rectangle for.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rect [required] [in/out]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsRect">Rect</link> object in which the co-ordinates of tab are returned.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -831,33 +836,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns true on success, otherwise false.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1468,24 +1447,38 @@ the currently selected tab.</para>
 <indexterm><primary>Tab class</primary><secondary>setItemSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setItemSize(--+--------+--)---------------------------------------------><
-                  +--type--+
+Form 1:
+
+>>--setItemSize(--sizeObj--)---------------------><
+
+
+Form 2:
+
+>>--setItemSize(--cx--,--cy--)-------------------><
+
+
+Generic form:
+
+>>--setItemSize(--newSize--)---------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the width and height of the tabs in a fixed-width tab control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>newSize [required]</term>
     <listitem>
     <para>
-      xx
+      The new size (height and width) in pixels. The <emphasis role="italic">newSize</emphasis> argument(s) can be
+      specified either as a single <link linkend="clsSize">Size</link> object, or as two separate arguments, width first
+      and height second.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1494,33 +1487,23 @@ the currently selected tab.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a <computeroutput>Size</computeroutput> object specifying the old widthd and height of the tabs in the
+    control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <link linkend="mthSetSize">setSize</link> and <emphasis role="italic">setItemSize</emphasis> methods are
+    identical except that the <emphasis role="italic">setSize</emphasis> method returns the old size a string and the
+    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a <link linkend="clsSize">size</link>
+    object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1531,28 +1514,51 @@ the currently selected tab.</para>
 <indexterm><primary>Tab class</primary><secondary>setPadding</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setPadding(--padX--,--padY--)----------------><
+Form 1:
+
+>>--setPadding(--sizeObj--)----------------------><
+
+
+Form 2:
+
+>>--setPadding(--cx--,--cy--)--------------------><
+
+
+Generic form:
+
+>>--setPadding(--padding--)----------------------><
+
 
 ]]>
 </programlisting>
 
-<para>The setPadding method sets the amount of space
-(padding) around the icon and the label of a tab.</para>
+<para>
+  The <emphasis role="italic">setPadding</emphasis> method sets the amount of space (padding) around the icon and the
+ label of a tab in the tab control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>padX</term>
-<listitem><para>The amount of horizontal padding, in pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>padY</term>
-<listitem><para>The amount of vertical padding, in pixels.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>0.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>padding [required]</term>
+    <listitem>
+    <para>
+      The new padding (horizontal and vertical padding) in pixels. The <emphasis role="italic">padding</emphasis>
+      argument(s) can be specified either as a single <link linkend="clsSize">Size</link> object, or as two separate
+      arguments, horizontal padding first and vertical padding second.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0, always.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -1561,28 +1567,65 @@ the currently selected tab.</para>
 <indexterm><primary>Tab class</primary><secondary>setSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setSize(--width--,--height--)----------------><
+Form 1:
+
+>>--setSize(--sizeObj--)-------------------------><
+
+
+Form 2:
+
+>>--setSize(--cx--,--cy--)-----------------------><
+
+
+Generic form:
+
+>>--setSize(--newSize--)-------------------------><
 
 ]]>
 </programlisting>
 
-<para>The setSize method sets the width and height of
-tabs in a fixed-width or owner-drawn tab control.</para>
+<para>
+  The <emphasis role="italic">setSize</emphasis> method sets the width and height of tabs in a fixed-width tab control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>width</term>
-<listitem><para>The new width, in pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem><para>The new height, in pixels.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The old width and height as a string, in pixels.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>newSize [required]</term>
+    <listitem>
+    <para>
+      The new size (height and width) in pixels. The <emphasis role="italic">newSize</emphasis> argument(s) can be
+      specified either as a single <link linkend="clsSize">Size</link> object, or as two separate arguments, width first
+      and height second.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The old width and height, in pixels, as a string of two blank-delimited words. The width is the first word and the
+    height is the second word.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="mthSetSize">setSize</link> and <emphasis role="italic">setItemSize</emphasis> methods are
+    identical except that the <emphasis role="italic">setSize</emphasis> method returns the old size a string and the
+    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a <link linkend="clsSize">size</link>
+    object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
