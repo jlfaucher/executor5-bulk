@@ -160,6 +160,7 @@ extern uint32_t getCategoryNumber(RexxMethodContext *, RexxObjectPtr);
 
 // These functions are defined in oodUtilities.cpp
 extern RexxObjectPtr makeDayStateBuffer(RexxMethodContext *c, RexxArrayObject list, size_t count, LPMONTHDAYSTATE *ppmds);
+extern RexxObjectPtr makeQuickDayStateBuffer(RexxMethodContext *c, RexxObjectPtr _ds1, RexxObjectPtr _ds2, RexxObjectPtr _ds3, LPMONTHDAYSTATE *ppmds);
 extern RexxObjectPtr quickDayStateBuffer(RexxMethodContext *c, uint32_t ds1, uint32_t ds2, uint32_t ds3, LPMONTHDAYSTATE *ppmds);
 extern void          putDefaultSymbols(RexxMethodContext *c, RexxDirectoryObject constDir);
 
@@ -303,10 +304,11 @@ extern RexxObjectPtr  noSuchPageException(RexxMethodContext *c, RexxObjectPtr pa
 extern RexxObjectPtr  noWindowsPageException(RexxMethodContext *c, size_t pageID, size_t pos);
 extern RexxObjectPtr  noSuchPageException(RexxMethodContext *c, int32_t id, uint32_t index);
 extern void          *noWindowsPageDlgException(RexxMethodContext *c, size_t pos);
-extern void          *wrongClassReplyException(RexxThreadContext *c, const char *n);
+extern void          *wrongClassReplyException(RexxThreadContext *c, const char *mName, const char *n);
+extern void          *wrongReplyListException(RexxThreadContext *c, const char *mName, const char *list, RexxObjectPtr actual);
+extern void          *wrongReplyMsgException(RexxThreadContext *c, const char *mName, const char *msg);
 extern void           controlFailedException(RexxThreadContext *, CSTRING, CSTRING, CSTRING);
 extern void           wrongWindowStyleException(RexxMethodContext *c, CSTRING, CSTRING);
-extern RexxObjectPtr  wrongWindowsVersionException(RexxMethodContext *, const char *, const char *);
 extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, CSTRING methodName, RexxObjectPtr rxDlg, CSTRING msg);
 extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, RexxObjectPtr rxDlg, CSTRING msg);
 extern RexxObjectPtr  invalidAttributeException(RexxMethodContext *c, RexxObjectPtr rxDlg);
@@ -434,7 +436,7 @@ inline pCPlainBaseDialogClass dlgToClassCSelf(RexxMethodContext *c)
  * the direct object the method was invoked on.  This performs a scoped CSelf
  * lookup.
  *
- * @param c    The method context we are operating in.
+ * @param c    The method (or thread) context we are operating in.
  * @param dlg  The dialog object whose CSelf pointer is needed.
  *
  * @return A pointer to the CSelf of the dlg object.
@@ -443,6 +445,10 @@ inline pCPlainBaseDialogClass dlgToClassCSelf(RexxMethodContext *c)
  *           object.
  */
 inline pCPlainBaseDialog dlgToCSelf(RexxMethodContext *c, RexxObjectPtr dlg)
+{
+    return (pCPlainBaseDialog)c->ObjectToCSelf(dlg, ThePlainBaseDialogClass);
+}
+inline pCPlainBaseDialog dlgToCSelf(RexxThreadContext *c, RexxObjectPtr dlg)
 {
     return (pCPlainBaseDialog)c->ObjectToCSelf(dlg, ThePlainBaseDialogClass);
 }

@@ -221,10 +221,12 @@
 ::class 'SM' public
 ::attribute cMouseButtons get class external "LIBRARY oodialog sm_cMouseButtons_cls"
 ::attribute cxCursor get class external      "LIBRARY oodialog sm_cxCursor_cls"
+::attribute cxFixedFrame get class external      "LIBRARY oodialog sm_cxFixedFrame_cls"
 ::attribute cxScreen get class external      "LIBRARY oodialog sm_cxScreen_cls"
 ::attribute cxVscroll get class external     "LIBRARY oodialog sm_cxVScroll_cls"
 ::attribute cyCaption get class external     "LIBRARY oodialog sm_cyCaption_cls"
 ::attribute cyCursor get class external      "LIBRARY oodialog sm_cyCursor_cls"
+::attribute cyFixedFrame get class external      "LIBRARY oodialog sm_cyFixedFrame_cls"
 ::attribute cyHscroll get class external     "LIBRARY oodialog sm_cyHScroll_cls"
 ::attribute cyScreen get class external      "LIBRARY oodialog sm_cyScreen_cls"
 
@@ -259,6 +261,7 @@
 ::attribute right set external "LIBRARY oodialog rect_setRight"
 ::attribute bottom get external "LIBRARY oodialog rect_bottom"
 ::attribute bottom set external "LIBRARY oodialog rect_setBottom"
+::method string external "LIBRARY oodialog rect_string"
 
 ::class 'Point' public
 ::method init class external "LIBRARY oodialog point_init_cls"
@@ -272,14 +275,30 @@
 ::method incr external "LIBRARY oodialog point_incr"
 ::method decr external "LIBRARY oodialog point_decr"
 ::method inRect external "LIBRARY oodialog point_inRect"
+::method string external "LIBRARY oodialog point_string"
 
 ::class 'Size' public
 ::method init class external "LIBRARY oodialog size_init_cls"
 ::method init external "LIBRARY oodialog size_init"
 ::attribute width get external "LIBRARY oodialog size_cx"
 ::attribute width set external "LIBRARY oodialog size_setCX"
-::attribute height get external "LIBRARY oodialog point_y"
-::attribute height set external "LIBRARY oodialog point_setY"
+::attribute height get external "LIBRARY oodialog size_cy"
+::attribute height set external "LIBRARY oodialog size_setCY"
+::method string external "LIBRARY oodialog size_string"
+
+::method '=' external "LIBRARY oodialog size_compare"
+::method '==' external "LIBRARY oodialog size_compare"
+::method '\=' external "LIBRARY oodialog size_compare"
+::method '\==' external "LIBRARY oodialog size_compare"
+::method '<' external "LIBRARY oodialog size_compare"
+::method '<<' external "LIBRARY oodialog size_compare"
+::method '<=' external "LIBRARY oodialog size_compare"
+::method '<<=' external "LIBRARY oodialog size_compare"
+::method '>' external "LIBRARY oodialog size_compare"
+::method '>>' external "LIBRARY oodialog size_compare"
+::method '>=' external "LIBRARY oodialog size_compare"
+::method '>>=' external "LIBRARY oodialog size_compare"
+::method equateTo external "LIBRARY oodialog size_equateTo"
 
 
 ::class 'DayState' public

@@ -1264,13 +1264,13 @@ RexxMethod0(int32_t, sm_cxCursor_cls)
 {
     return GetSystemMetrics(SM_CXCURSOR);
 }
+RexxMethod0(int32_t, sm_cxFixedFrame_cls)
+{
+    return GetSystemMetrics(SM_CXFIXEDFRAME);
+}
 RexxMethod0(int32_t, sm_cxScreen_cls)
 {
     return GetSystemMetrics(SM_CXSCREEN);
-}
-RexxMethod0(int32_t, sm_cyScreen_cls)
-{
-    return GetSystemMetrics(SM_CYSCREEN);
 }
 RexxMethod0(int32_t, sm_cxVScroll_cls)
 {
@@ -1280,13 +1280,21 @@ RexxMethod0(int32_t, sm_cyCaption_cls)
 {
     return GetSystemMetrics(SM_CYCAPTION);
 }
+RexxMethod0(int32_t, sm_cyCursor_cls)
+{
+    return GetSystemMetrics(SM_CYCURSOR);
+}
+RexxMethod0(int32_t, sm_cyFixedFrame_cls)
+{
+    return GetSystemMetrics(SM_CYFIXEDFRAME);
+}
 RexxMethod0(int32_t, sm_cyHScroll_cls)
 {
     return GetSystemMetrics(SM_CYHSCROLL);
 }
-RexxMethod0(int32_t, sm_cyCursor_cls)
+RexxMethod0(int32_t, sm_cyScreen_cls)
 {
-    return GetSystemMetrics(SM_CYCURSOR);
+    return GetSystemMetrics(SM_CYSCREEN);
 }
 
 /**
@@ -1630,6 +1638,18 @@ RexxMethod2(logical_t, point_inRect, RexxObjectPtr, rect, CSELF, p)
     return FALSE;
 }
 
+RexxMethod1(RexxStringObject, point_string, CSELF, p)
+{
+    PPOINT pt = (PPOINT)p;
+
+    TCHAR buf[128];
+    _snprintf(buf, sizeof(buf), "a Point (%d, %d)", pt->x, pt->y);
+
+    return context->String(buf);
+}
+
+
+
 /**
  * Methods for the ooDialog .Size class.
  */
@@ -1662,6 +1682,92 @@ RexxMethod1(int32_t, size_cx, CSELF, s) { return ((SIZE *)s)->cx; }
 RexxMethod1(int32_t, size_cy, CSELF, s) { return ((SIZE *)s)->cy; }
 RexxMethod2(RexxObjectPtr, size_setCX, CSELF, s, int32_t, cx) { ((SIZE *)s)->cx = cx; return NULLOBJECT; }
 RexxMethod2(RexxObjectPtr, size_setCY, CSELF, s, int32_t, cy) { ((SIZE *)s)->cy = cy; return NULLOBJECT; }
+
+RexxMethod1(RexxStringObject, size_string, CSELF, s)
+{
+    PSIZE size = (PSIZE)s;
+
+    TCHAR buf[128];
+    _snprintf(buf, sizeof(buf), "a Size (%d, %d)", size->cx, size->cy);
+
+    return context->String(buf);
+}
+
+RexxMethod2(logical_t, size_equateTo, RexxObjectPtr, other, CSELF, s)
+{
+    PSIZE size = (PSIZE)s;
+    PSIZE pOther = rxGetSize(context, other, 1);
+    if ( pOther == NULL )
+    {
+        return FALSE;
+    }
+
+    size->cx = pOther->cx;
+    size->cy = pOther->cy;
+
+    return TRUE;
+}
+
+RexxMethod3(logical_t, size_compare, RexxObjectPtr, other, NAME, method, CSELF, s)
+{
+    PSIZE size = (PSIZE)s;
+    PSIZE pOther = rxGetSize(context, other, 1);
+    if ( pOther == NULL )
+    {
+        return 0;
+    }
+
+    if ( strcmp(method, "=") == 0 )
+    {
+        return (size->cx * size->cy) == (pOther->cx * pOther->cy);
+    }
+    else if ( strcmp(method, "==") == 0 )
+    {
+        return (size->cx == pOther->cx) && (size->cy == pOther->cy);
+    }
+    else if ( strcmp(method, "\\=") == 0 )
+    {
+        return (size->cx * size->cy) != (pOther->cx * pOther->cy);
+    }
+    else if ( strcmp(method, "\\==") == 0 )
+    {
+        return (size->cx != pOther->cx) && (size->cy != pOther->cy);
+    }
+    else if ( strcmp(method, "<") == 0 )
+    {
+        return (size->cx * size->cy) < (pOther->cx * pOther->cy);
+    }
+    else if ( strcmp(method, "<<") == 0 )
+    {
+        return (size->cx < pOther->cx) && (size->cy < pOther->cy);
+    }
+    else if ( strcmp(method, "<=") == 0 )
+    {
+        return (size->cx * size->cy) <= (pOther->cx * pOther->cy);
+    }
+    else if ( strcmp(method, "<<=") == 0 )
+    {
+        return (size->cx <= pOther->cx) && (size->cy <= pOther->cy);
+    }
+    else if ( strcmp(method, ">") == 0 )
+    {
+        return (size->cx * size->cy) > (pOther->cx * pOther->cy);
+    }
+    else if ( strcmp(method, ">>") == 0 )
+    {
+        return (size->cx > pOther->cx) && (size->cy > pOther->cy);
+    }
+    else if ( strcmp(method, ">=") == 0 )
+    {
+        return (size->cx * size->cy) >= (pOther->cx * pOther->cy);
+    }
+    else if ( strcmp(method, ">>=") == 0 )
+    {
+        return (size->cx >= pOther->cx) && (size->cy >= pOther->cy);
+    }
+
+    return FALSE;
+}
 
 /**
  * Methods for the ooDialog .Rect class.
@@ -1703,6 +1809,15 @@ RexxMethod2(RexxObjectPtr, rect_setTop, CSELF, pRect, int32_t, top) { ((RECT *)p
 RexxMethod2(RexxObjectPtr, rect_setRight, CSELF, pRect, int32_t, right) { ((RECT *)pRect)->right = right; return NULLOBJECT; }
 RexxMethod2(RexxObjectPtr, rect_setBottom, CSELF, pRect, int32_t, bottom) { ((RECT *)pRect)->bottom = bottom; return NULLOBJECT; }
 
+RexxMethod1(RexxStringObject, rect_string, CSELF, pRect)
+{
+    PRECT pR = (PRECT)pRect;
+
+    TCHAR buf[128];
+    _snprintf(buf, sizeof(buf), "a Rect (%d, %d, %d, %d)", pR->left, pR->top, pR->right, pR->bottom);
+
+    return context->String(buf);
+}
 
 /**
  * Methods for the ooDialog .VK class.
@@ -1838,6 +1953,24 @@ RexxObjectPtr quickDayStateBuffer(RexxMethodContext *c, uint32_t ds1, uint32_t d
     return mdsBuf;
 }
 
+RexxObjectPtr makeQuickDayStateBuffer(RexxMethodContext *c, RexxObjectPtr _ds1, RexxObjectPtr _ds2,
+                                      RexxObjectPtr _ds3, LPMONTHDAYSTATE *ppmds)
+{
+    RexxObjectPtr result = NULLOBJECT;
+
+    if ( requiredClass(c->threadContext, _ds1, "DAYSTATE", 1) &&
+         requiredClass(c->threadContext, _ds2, "DAYSTATE", 2) &&
+         requiredClass(c->threadContext, _ds3, "DAYSTATE", 3) )
+    {
+        PDAYSTATE ds1 = (PDAYSTATE)c->ObjectToCSelf(_ds1);
+        PDAYSTATE ds2 = (PDAYSTATE)c->ObjectToCSelf(_ds2);
+        PDAYSTATE ds3 = (PDAYSTATE)c->ObjectToCSelf(_ds3);
+
+        result = quickDayStateBuffer(c, ds1->val, ds2->val, ds3->val, ppmds);
+    }
+    return result;
+}
+
 RexxMethod1(RexxObjectPtr, dss_makeDayStateBuffer, RexxArrayObject, list)
 {
     size_t count = context->ArrayItems(list);
@@ -1846,19 +1979,7 @@ RexxMethod1(RexxObjectPtr, dss_makeDayStateBuffer, RexxArrayObject, list)
 
 RexxMethod3(RexxObjectPtr, dss_quickDayStateBuffer, RexxObjectPtr, _ds1, RexxObjectPtr, _ds2, RexxObjectPtr, _ds3)
 {
-    RexxObjectPtr result = NULLOBJECT;
-
-    if ( requiredClass(context->threadContext, _ds1, "DAYSTATE", 1) &&
-         requiredClass(context->threadContext, _ds2, "DAYSTATE", 2) &&
-         requiredClass(context->threadContext, _ds3, "DAYSTATE", 3) )
-    {
-        PDAYSTATE ds1 = (PDAYSTATE)context->ObjectToCSelf(_ds1);
-        PDAYSTATE ds2 = (PDAYSTATE)context->ObjectToCSelf(_ds2);
-        PDAYSTATE ds3 = (PDAYSTATE)context->ObjectToCSelf(_ds3);
-
-        result = quickDayStateBuffer(context, ds1->val, ds2->val, ds3->val, NULL);
-    }
-    return result;
+    return makeQuickDayStateBuffer(context, _ds1, _ds2, _ds3, NULL);
 }
 
 

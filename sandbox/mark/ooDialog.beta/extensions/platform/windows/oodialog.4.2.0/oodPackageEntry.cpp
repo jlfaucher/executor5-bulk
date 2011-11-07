@@ -436,10 +436,12 @@ REXX_METHOD_PROTOTYPE(spi_setWheelScrollLines_cls);
 // SM
 REXX_METHOD_PROTOTYPE(sm_cMouseButtons_cls);
 REXX_METHOD_PROTOTYPE(sm_cxCursor_cls);
+REXX_METHOD_PROTOTYPE(sm_cxFixedFrame_cls);
 REXX_METHOD_PROTOTYPE(sm_cxScreen_cls);
 REXX_METHOD_PROTOTYPE(sm_cxVScroll_cls);
 REXX_METHOD_PROTOTYPE(sm_cyCaption_cls);
 REXX_METHOD_PROTOTYPE(sm_cyCursor_cls);
+REXX_METHOD_PROTOTYPE(sm_cyFixedFrame_cls);
 REXX_METHOD_PROTOTYPE(sm_cyHScroll_cls);
 REXX_METHOD_PROTOTYPE(sm_cyScreen_cls);
 
@@ -1042,6 +1044,7 @@ REXX_METHOD_PROTOTYPE(get_mc_date);
 REXX_METHOD_PROTOTYPE(set_mc_date);
 REXX_METHOD_PROTOTYPE(mc_addRemoveStyle);
 REXX_METHOD_PROTOTYPE(mc_replaceStyle);
+REXX_METHOD_PROTOTYPE(mc_getStyle);
 REXX_METHOD_PROTOTYPE(mc_getCalendarBorder);
 REXX_METHOD_PROTOTYPE(mc_getCalendarCount);
 REXX_METHOD_PROTOTYPE(mc_getCALID);
@@ -1087,6 +1090,7 @@ REXX_METHOD_PROTOTYPE(rect_setLeft);
 REXX_METHOD_PROTOTYPE(rect_setTop);
 REXX_METHOD_PROTOTYPE(rect_setRight);
 REXX_METHOD_PROTOTYPE(rect_setBottom);
+REXX_METHOD_PROTOTYPE(rect_string);
 
 // .Point
 REXX_METHOD_PROTOTYPE(point_init_cls);
@@ -1100,6 +1104,7 @@ REXX_METHOD_PROTOTYPE(point_subtract);
 REXX_METHOD_PROTOTYPE(point_incr);
 REXX_METHOD_PROTOTYPE(point_decr);
 REXX_METHOD_PROTOTYPE(point_inRect);
+REXX_METHOD_PROTOTYPE(point_string);
 
 // .Size
 REXX_METHOD_PROTOTYPE(size_init_cls);
@@ -1108,6 +1113,9 @@ REXX_METHOD_PROTOTYPE(size_cx);
 REXX_METHOD_PROTOTYPE(size_setCX);
 REXX_METHOD_PROTOTYPE(size_cy);
 REXX_METHOD_PROTOTYPE(size_setCY);
+REXX_METHOD_PROTOTYPE(size_compare);
+REXX_METHOD_PROTOTYPE(size_equateTo);
+REXX_METHOD_PROTOTYPE(size_string);
 
 // .VK
 REXX_METHOD_PROTOTYPE(vk_key2name);
@@ -1243,10 +1251,12 @@ RexxMethodEntry oodialog_methods[] = {
     // SM
     REXX_METHOD(sm_cMouseButtons_cls,           sm_cMouseButtons_cls),
     REXX_METHOD(sm_cxCursor_cls,                sm_cxCursor_cls),
+    REXX_METHOD(sm_cxFixedFrame_cls,            sm_cxFixedFrame_cls),
     REXX_METHOD(sm_cxScreen_cls,                sm_cxScreen_cls),
     REXX_METHOD(sm_cxVScroll_cls,               sm_cxVScroll_cls),
     REXX_METHOD(sm_cyCaption_cls,               sm_cyCaption_cls),
     REXX_METHOD(sm_cyCursor_cls,                sm_cyCursor_cls),
+    REXX_METHOD(sm_cyFixedFrame_cls,            sm_cyFixedFrame_cls),
     REXX_METHOD(sm_cyHScroll_cls,               sm_cyHScroll_cls),
     REXX_METHOD(sm_cyScreen_cls,                sm_cyScreen_cls),
 
@@ -1809,6 +1819,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(set_mc_date,                    set_mc_date),
     REXX_METHOD(mc_addRemoveStyle,              mc_addRemoveStyle),
     REXX_METHOD(mc_replaceStyle,                mc_replaceStyle),
+    REXX_METHOD(mc_getStyle,                    mc_getStyle),
     REXX_METHOD(mc_getCalendarBorder,           mc_getCalendarBorder),
     REXX_METHOD(mc_getCalendarCount,            mc_getCalendarCount),
     REXX_METHOD(mc_getCALID,                    mc_getCALID),
@@ -1873,6 +1884,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(rect_setTop,                    rect_setTop),
     REXX_METHOD(rect_setRight,                  rect_setRight),
     REXX_METHOD(rect_setBottom,                 rect_setBottom),
+    REXX_METHOD(rect_string,                    rect_string),
     REXX_METHOD(point_init_cls,                 point_init_cls),
     REXX_METHOD(point_init,                     point_init),
     REXX_METHOD(point_x,                        point_x),
@@ -1884,12 +1896,16 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(point_incr,                     point_incr),
     REXX_METHOD(point_decr,                     point_decr),
     REXX_METHOD(point_inRect,                   point_inRect),
+    REXX_METHOD(point_string,                   point_string),
     REXX_METHOD(size_init_cls,                  size_init_cls),
     REXX_METHOD(size_init,                      size_init),
     REXX_METHOD(size_cx,                        size_cx),
     REXX_METHOD(size_setCX,                     size_setCX),
     REXX_METHOD(size_cy,                        size_cy),
     REXX_METHOD(size_setCY,                     size_setCY),
+    REXX_METHOD(size_compare,                   size_compare),
+    REXX_METHOD(size_equateTo,                  size_equateTo),
+    REXX_METHOD(size_string,                    size_string),
     REXX_METHOD(vk_key2name,                    vk_key2name),
 
     // Menu classes methods

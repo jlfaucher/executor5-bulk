@@ -122,8 +122,8 @@ DWORD WINAPI WindowUsrLoopThread(LoopThreadArgs * args)
                 if ( result == -1 )
                 {
                     break;
-                }                                          // TODO why did I have this here, seems wrong
-                if ( ! IsDialogMessage(pcpbd->hDlg, &msg) /*&& ! IsDialogMessage(pcpbd->activeChild, &msg)*/ )
+                }
+                if ( ! IsDialogMessage(pcpbd->hDlg, &msg)  )
                 {
                     TranslateMessage(&msg);
                     DispatchMessage(&msg);
@@ -661,18 +661,18 @@ uint32_t getCommonButtonStyles(uint32_t style, CSTRING opts, oodControl_t button
     if ( StrStrI(opts, "OWNER")     != NULL ) style |= BS_OWNERDRAW;
     if ( StrStrI(opts, "BITMAP")    != NULL ) style |= BS_BITMAP;
     if ( StrStrI(opts, "ICON")      != NULL ) style |= BS_ICON;
+    if ( StrStrI(opts, "LEFT")      != NULL ) style |= BS_LEFT;
+    if ( StrStrI(opts, "RIGHT")     != NULL ) style |= BS_RIGHT;
     if ( StrStrI(opts, "HCENTER")   != NULL ) style |= BS_CENTER;
     if ( StrStrI(opts, "TOP")       != NULL ) style |= BS_TOP;
     if ( StrStrI(opts, "BOTTOM")    != NULL ) style |= BS_BOTTOM;
     if ( StrStrI(opts, "VCENTER")   != NULL ) style |= BS_VCENTER;
-    if ( StrStrI(opts, "PUSHLIKE")  != NULL ) style |= BS_PUSHLIKE;
     if ( StrStrI(opts, "MULTILINE") != NULL ) style |= BS_MULTILINE;
     if ( StrStrI(opts, "NOTIFY")    != NULL ) style |= BS_NOTIFY;
+    if ( StrStrI(opts, "PUSHLIKE")  != NULL ) style |= BS_PUSHLIKE;
     if ( StrStrI(opts, "FLAT")      != NULL ) style |= BS_FLAT;
     if ( StrStrI(opts, "LTEXT")     != NULL ) style |= BS_LEFTTEXT;
-    if ( StrStrI(opts, "LEFT")      != NULL ) style |= BS_LEFT;
     if ( StrStrI(opts, "RBUTTON")   != NULL ) style |= BS_RIGHTBUTTON;
-    if ( StrStrI(opts, "RIGHT")     != NULL ) style |= BS_RIGHT;
 
     return style;
 }
@@ -789,7 +789,7 @@ uint32_t dateTimePickerStyle(CSTRING opts, uint32_t style)
         style |= DTS_TIMEFORMAT;
     }
 
-    if ( StrStrI(opts, "PARSE"   ) != NULL ) style |= DTS_APPCANPARSE;
+    if ( StrStrI(opts, "CANPARSE") != NULL ) style |= DTS_APPCANPARSE;
     if ( StrStrI(opts, "RIGHT"   ) != NULL ) style |= DTS_RIGHTALIGN;
     if ( StrStrI(opts, "SHOWNONE") != NULL ) style |= DTS_SHOWNONE;
     if ( StrStrI(opts, "UPDOWN"  ) != NULL ) style |= DTS_UPDOWN;
@@ -3019,13 +3019,18 @@ extern BOOL SHIFTkey = FALSE;
  * @param lpmsg
  *
  * @return BOOL
+ *
+ * @remarks  This function is *only* called if the dialog is a CategoryDialog.
+ *           CategoryDialogs are deprecated and the intent is to not fix bugs in
+ *           deprecated classes or methods.  This function is unchanged from the
+ *           original.  If there is a bug in it, then that's the way it is.
  */
 BOOL IsNestedDialogMessage(pCPlainBaseDialog pcpbd, PMSG  lpmsg)
 {
     HWND hW, hParent, hW2;
     bool prev = false;
 
-    if ( ! pcpbd->childDlg || ! pcpbd->activeChild )   // childDlg[] Is this expression correct?  TODO
+    if ( ! pcpbd->childDlg || ! pcpbd->activeChild )
     {
         return IsDialogMessage(pcpbd->hDlg, lpmsg);
     }

@@ -971,6 +971,31 @@ MsgReplyType invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, RexxStringO
 }
 
 /**
+ * Checks that reply is not null and that the context doe not a pending
+ * condition.
+ *
+ * @param c
+ * @param pcpbd
+ * @param reply
+ * @param methodName
+ * @param clear
+ *
+ * @return True if reply is not null and there is no pending condition.
+ */
+bool msgReplyIsGood(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING methodName, bool clear)
+{
+    bool haveCondition = checkForCondition(c, clear);
+
+    if ( ! haveCondition && reply == NULLOBJECT )
+    {
+        noMsgReturnException(c, methodName);
+        haveCondition = true;
+        checkForCondition(c, clear);
+        endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+    }
+    return ! haveCondition;
+}
+/**
  * Invokes the Rexx dialog's event handling method for a Windows message.
  *
  * The method invocation is done directly by sending a message to the method.
@@ -981,7 +1006,8 @@ MsgReplyType invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, RexxStringO
  * @param args    The argument array for the method being invoked
  *
  * @return True for no problems, false if a condition was raised during the
- *         execution of the Rexx method.
+ *         execution of the Rexx method or if no value was returned from the
+ *         method.
  *
  * @remarks  Earlier versions of ooDialog, on the C++ side, constructed a method
  *           invocation string, placed it on a queue, and returned immediately
@@ -996,10 +1022,10 @@ MsgReplyType invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, RexxStringO
  *           default behaviour is to wait for the reply, or the Rexx programmer
  *           has specified to wait for a reply.
  */
-static bool invokeDirect(RexxThreadContext *c, RexxObjectPtr obj, CSTRING methodName, RexxArrayObject args)
+static bool invokeDirect(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args)
 {
-    RexxObjectPtr rexxReply = c->SendMessage(obj, methodName, args);
-    return checkForCondition(c, false) ? false : true;
+    RexxObjectPtr rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+    return msgReplyIsGood(c, pcpbd, rexxReply, methodName, false);
 }
 
 /**
@@ -1034,7 +1060,7 @@ inline MsgReplyType genericNotifyInvoke(RexxThreadContext *c, pCPlainBaseDialog 
  * LPARAM paramters of the WM_COMMAND message.
  *
  * Note that for WM_COMMAND messages, lParam is always the window handle of the
- * dialog control, if a control iniated the message.  For menu items and
+ * dialog control, if a control initiated the message.  For menu items and
  * accelerators, it is always 0. So, converting to a pseudo pointer is always
  * the correct thing to do.
  */
@@ -1046,8 +1072,9 @@ static MsgReplyType genericCommandInvoke(RexxThreadContext *c, pCPlainBaseDialog
     if ( tag & TAG_REPLYFROMREXX )
     {
         // We only get here for messages where what the Rexx method returns is
-        // discarded / ignored. TODO, this needs to be double checked.
-        invokeDirect(c, pcpbd->rexxSelf, methodName, args);
+        // discarded / ignored.  This is true now, but we need to be careful
+        // when adding new event connections to ooDialog.
+        invokeDirect(c, pcpbd, methodName, args);
         return ReplyTrue;
     }
     else
@@ -1124,7 +1151,7 @@ MsgReplyType genericInvokeDispatch(pCPlainBaseDialog pcpbd, char *rexxMethod, WP
 
     if ( tag & TAG_REPLYFROMREXX )
     {
-        invokeDirect(c, pcpbd->rexxSelf, rexxMethod, args);
+        invokeDirect(c, pcpbd, rexxMethod, args);
         return ReplyTrue;
     }
     else
@@ -1295,7 +1322,7 @@ bool mouseWheelNotify(PMOUSEWHEELDATA mwd, WPARAM wParam, LPARAM lParam)
 
     if ( mwd->willReply )
     {
-        return invokeDirect(c, mwd->ownerDlg, mwd->method, args);
+        return invokeDirect(c, mwd->pcpbd, mwd->method, args);
     }
     else
     {
@@ -1366,7 +1393,7 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             if ( expectReply )
             {
-                invokeDirect(c, pcpbd->rexxSelf, methodName, args);
+                invokeDirect(c, pcpbd, methodName, args);
             }
             else
             {
@@ -1399,7 +1426,7 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
                     if ( expectReply )
                     {
-                        invokeDirect(c, pcpbd->rexxSelf, methodName, args);
+                        invokeDirect(c, pcpbd, methodName, args);
                     }
                     else
                     {
@@ -1438,7 +1465,7 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
                     if ( expectReply )
                     {
-                        invokeDirect(c, pcpbd->rexxSelf, methodName, args);
+                        invokeDirect(c, pcpbd, methodName, args);
                     }
                     else
                     {
@@ -1453,7 +1480,7 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
                     if ( expectReply )
                     {
-                        if ( invokeDirect(c, pcpbd->rexxSelf, methodName, args) )
+                        if ( invokeDirect(c, pcpbd, methodName, args) )
                         {
                             // No condition was raised, it is safe to continue searching.
                             msgReply = ContinueSearching;  // Not sure if this is wise with the C++ API
@@ -1473,7 +1500,7 @@ MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
                     if ( expectReply )
                     {
-                        if ( invokeDirect(c, pcpbd->rexxSelf, methodName, args) )
+                        if ( invokeDirect(c, pcpbd, methodName, args) )
                         {
                             // No condition was raised, it is safe to continue searching.
                             msgReply = ContinueSearching;  // Not sure if this is wise with the C++ API
@@ -1549,7 +1576,7 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             if ( expectReply )
             {
-                invokeDirect(c, pcpbd->rexxSelf, methodName, args);
+                invokeDirect(c, pcpbd, methodName, args);
             }
             else
             {
@@ -1570,7 +1597,7 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
-            if ( ! checkForCondition(c, false) )
+            if ( msgReplyIsGood(c, pcpbd, rexxReply, methodName, false) )
             {
                 CSTRING display = c->ObjectToStringValue(rexxReply);
                 if ( strlen(display) < 64 )
@@ -1597,14 +1624,7 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
-            if ( checkForCondition(c, false) )
-            {
-                // TODO note this is a special case test of ending the dialog on
-                // a condition raised.  Need to always do the same thing, end
-                // the dialog or not end the dialog.
-                endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
-            }
-            else
+            if ( msgReplyIsGood(c, pcpbd, rexxReply, methodName, false) )
             {
                 PSIZE size = (PSIZE)c->ObjectToCSelf(_size);
 
@@ -1619,49 +1639,35 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         {
             LPNMDATETIMESTRING pdts = (LPNMDATETIMESTRING)lParam;
 
-            RexxDirectoryObject d = (RexxDirectoryObject)rxNewBuiltinObject(c, "DIRECTORY");
-            c->DirectoryPut(d, c->String(pdts->pszUserString), "USERSTRING");
-            c->DirectoryPut(d, TheNilObj, "DATETIME");
-            c->DirectoryPut(d, TheFalseObj, "VALID");
+            RexxObjectPtr dt;
+            sysTime2dt(c, &(pdts->st), &dt, dtFull);
 
-            // Fill in the date time string struct with error values.
-            dt2sysTime(c, NULLOBJECT, &(pdts->st), dtNow);
-            pdts->dwFlags = GDT_ERROR;
+            RexxStringObject userString = c->String(pdts->pszUserString);
 
-            rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, c->ArrayOfThree(d, idFrom, hwndFrom));
+            RexxArrayObject args = c->ArrayOfFour(dt, userString, idFrom, hwndFrom);
 
-            if ( ! checkForCondition(c, false) )
+            rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+            if ( msgReplyIsGood(c, pcpbd, rexxReply, methodName, false) )
             {
-                RexxObjectPtr dt = c->DirectoryAt(d, "DATETIME");
-                if ( ! c->IsOfType(dt, "DATETIME") )
+                if ( c->IsOfType(rexxReply, "DATETIME") )
                 {
-                    wrongObjInDirectoryException(c, 1, "DATETIME", "a DateTime object", dt);
-                    checkForCondition(c, false);
-                    goto done_out;
-                }
-
-                if ( ! dt2sysTime(c, dt, &(pdts->st), dtFull) )
-                {
-                    checkForCondition(c, false);
-                    goto done_out;
-                }
-
-                if ( isShowNoneDTP(pdts->nmhdr.hwndFrom) )
-                {
-                    RexxObjectPtr _valid = c->DirectoryAt(d, "VALID");
-                    int32_t val = getLogical(c, _valid);
-
-                    if ( val == -1 )
+                    if ( ! dt2sysTime(c, rexxReply, &(pdts->st), dtFull) )
                     {
-                        wrongObjInDirectoryException(c, 1, "VALID", "Logical", _valid);
                         checkForCondition(c, false);
                         goto done_out;
                     }
-                    pdts->dwFlags = (val == 1 ? GDT_VALID : GDT_NONE);
-                }
-                else
-                {
                     pdts->dwFlags = GDT_VALID;
+                }
+                else if ( rexxReply == TheNilObj )
+                {
+                    if ( ! isShowNoneDTP(pdts->nmhdr.hwndFrom) )
+                    {
+                        wrongReplyMsgException(c, methodName, "can only be .nil if the DTP control has the SHOWNONE style");
+                        checkForCondition(c, false);
+                        goto done_out;
+                    }
+                    pdts->dwFlags = GDT_NONE;
                 }
             }
 
@@ -1685,7 +1691,7 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
-            if ( ! checkForCondition(c, false) )
+            if ( msgReplyIsGood(c, pcpbd, rexxReply, methodName, false) )
             {
                 if ( rexxReply != dt )
                 {
@@ -1695,7 +1701,7 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                     }
                     else
                     {
-                        wrongClassReplyException(c, "DateTime");
+                        wrongClassReplyException(c, methodName, "DateTime");
                     }
                     checkForCondition(c, false);
                 }
@@ -1713,7 +1719,7 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             if ( expectReply )
             {
-                invokeDirect(c, pcpbd->rexxSelf, methodName, args);
+                invokeDirect(c, pcpbd, methodName, args);
             }
             else
             {
@@ -1767,10 +1773,17 @@ MsgReplyType processTCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                 // The Rexx programmer returns .true, changing the tab is okay, or .false do not change tabs.
                 rexxReply = c->SendMessage2(pcpbd->rexxSelf, methodName, idFrom, hwndFrom);
 
-                if ( ! checkForCondition(c, false) )
+                if ( msgReplyIsGood(c, pcpbd, rexxReply, methodName, false) )
                 {
-                    // Return true to prevent the change.
-                    setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT,  rexxReply == TheTrueObj ? FALSE : TRUE);
+                    if ( rexxReply == TheTrueObj || rexxReply == TheFalseObj  )
+                    {
+                        // Return true to prevent the change.
+                        setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT,  rexxReply == TheTrueObj ? FALSE : TRUE);
+                    }
+                    else
+                    {
+                        wrongReplyListException(c, methodName, ".true or .false", rexxReply);
+                    }
                 }
                 return ReplyTrue;
             }
@@ -1802,11 +1815,17 @@ MsgReplyType processMCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             RexxArrayObject args = c->ArrayOfFour(dt, c->Int32(pDayState->cDayState), idFrom, hwndFrom);
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
-            checkForCondition(c, false);
 
-            if ( rexxReply != NULLOBJECT && c->IsOfType(rexxReply, "BUFFER") )
+            if ( msgReplyIsGood(c, pcpbd, rexxReply, methodName, false) )
             {
-                pDayState->prgDayState = (MONTHDAYSTATE *)c->BufferData((RexxBufferObject)rexxReply);
+                if ( c->IsOfType(rexxReply, "BUFFER") )
+                {
+                    pDayState->prgDayState = (MONTHDAYSTATE *)c->BufferData((RexxBufferObject)rexxReply);
+                }
+                else
+                {
+                    wrongClassReplyException(c, methodName, "DayStateBuffer");
+                }
             }
 
             break;
@@ -1834,7 +1853,7 @@ MsgReplyType processMCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             if ( expectReply )
             {
-                invokeDirect(c, pcpbd->rexxSelf, methodName, args);
+                invokeDirect(c, pcpbd, methodName, args);
             }
             else
             {
@@ -1855,7 +1874,7 @@ MsgReplyType processMCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
             if ( expectReply )
             {
-                invokeDirect(c, pcpbd->rexxSelf, methodName, args);
+                invokeDirect(c, pcpbd, methodName, args);
             }
             else
             {
@@ -1869,7 +1888,7 @@ MsgReplyType processMCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         {
             if ( expectReply )
             {
-                invokeDirect(c, pcpbd->rexxSelf, methodName, c->ArrayOfTwo(idFrom, hwndFrom));
+                invokeDirect(c, pcpbd, methodName, c->ArrayOfTwo(idFrom, hwndFrom));
             }
             else
             {
@@ -1912,19 +1931,25 @@ MsgReplyType processUDN(RexxThreadContext *c, CSTRING methodName, LPARAM lParam,
 
     RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
-    if ( ! checkForCondition(c, false) )
+    if ( msgReplyIsGood(c, pcpbd, msgReply, methodName, false) )
     {
-        if ( msgReply != NULLOBJECT && msgReply != TheFalseObj && c->IsOfType(msgReply, "BUFFER") )
+        if ( msgReply != TheFalseObj )
         {
-            PDELTAPOSREPLY pdpr = (PDELTAPOSREPLY)c->BufferData((RexxBufferObject)msgReply);
-            if ( pdpr->cancel )
+            if ( c->IsOfType(msgReply, "BUFFER") )
             {
-                setWindowPtr(GetParent(pUPD->hdr.hwndFrom), DWLP_MSGRESULT, 1);
+                PDELTAPOSREPLY pdpr = (PDELTAPOSREPLY)c->BufferData((RexxBufferObject)msgReply);
+                if ( pdpr->cancel )
+                {
+                    setWindowPtr(GetParent(pUPD->hdr.hwndFrom), DWLP_MSGRESULT, 1);
+                }
+                else
+                {
+                    pUPD->iDelta = pdpr->newDelta;
+                }
             }
             else
             {
-                pUPD->iDelta = pdpr->newDelta;
-
+                wrongClassReplyException(c, methodName, "PositionChangeReplyBuffer");
             }
         }
     }
@@ -1985,6 +2010,8 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
                 }
 
                 // TODO should we terminate the interpreter if checkForCondition() returns true??
+                // We could let the user decide through use of the .application
+                // object.
 
                 case TAG_TAB :
                     return processTCN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
@@ -2057,10 +2084,7 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
         }
     }
 
-    // TODO - this doesn't seem right, we are only invoked if it is a WM_NOTIFY
-    // message. We searched the whole notify table and didn't match.  Shouldn't
-    // we be done?  I.e., ReplyFalse or ReplyTrue.
-    return ContinueProcessing;
+    return ReplyFalse;
 }
 
 /**
@@ -2179,16 +2203,20 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
 
                             RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, m[i].rexxMethod, args);
 
-                            if ( ! checkForCondition(c, false) )
+                            if ( msgReplyIsGood(c, pcpbd, msgReply, m[i].rexxMethod, false) )
                             {
                                 if ( msgReply == TheTrueObj )
                                 {
                                     setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, 0);
                                     reply = ReplyTrue;
                                 }
-                                else
+                                else if ( msgReply== TheFalseObj )
                                 {
                                     setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, 1);
+                                }
+                                else
+                                {
+                                    wrongReplyListException(c, m[i].rexxMethod, ".true or .false", msgReply);
                                 }
                             }
                             return reply;
@@ -2197,10 +2225,12 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
 
                         case TAG_MENUMESSAGE :
                         {
-                            // Right now there is only WM_INITMENU and WM_INITMENUPOPUP,
-                            // but in the future there could be more.  Both
-                            // of these messages are handled the exact same
-                            // way as far as what is sent to ooRexx.
+                            // Right now there is only WM_INITMENU and
+                            // WM_INITMENUPOPUP, but in the future there could
+                            // be more.  Both of these messages are handled the
+                            // exact same way as far as what is sent to ooRexx.
+                            // TODO would really be nice to send the Rexx menu
+                            // object itself.
 
                             // Args to ooRexx: hMenu as a pointer.
                             MsgReplyType reply = ReplyFalse;
@@ -2208,16 +2238,20 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
 
                             RexxObjectPtr msgReply = c->SendMessage1(pcpbd->rexxSelf, m[i].rexxMethod, rxHMenu);
 
-                            if ( ! checkForCondition(c, false) )
+                            if ( msgReplyIsGood(c, pcpbd, msgReply, m[i].rexxMethod, false) )
                             {
                                 if ( msgReply == TheTrueObj )
                                 {
                                     setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, 0);
                                     reply = ReplyTrue;
                                 }
-                                else
+                                else if ( msgReply == TheFalseObj )
                                 {
                                     setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, 1);
+                                }
+                                else
+                                {
+                                    wrongReplyListException(c, m[i].rexxMethod, ".true or .false", msgReply);
                                 }
                             }
                             return reply;
@@ -2237,6 +2271,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                             MOUSEWHEELDATA mwd;
 
                             mwd.dlgProcContext = c;
+                            mwd.pcpbd          = pcpbd;
                             mwd.ownerDlg       = pcpbd->rexxSelf;
                             mwd.method         = m[i].rexxMethod;
                             mwd.willReply      = (m[i].tag & TAG_EXTRAMASK) == TAG_REPLYFROMREXX;
@@ -2287,11 +2322,15 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
 
                 RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, m[i].rexxMethod, args);
 
-                if ( ! checkForCondition(c, false) )
+                if ( msgReplyIsGood(c, pcpbd, msgReply, m[i].rexxMethod, false) )
                 {
                     if ( msgReply == TheTrueObj )
                     {
                         reply = ReplyTrue;
+                    }
+                    else if ( msgReply != TheFalseObj )
+                    {
+                        wrongReplyListException(c, m[i].rexxMethod, ".true or .false", msgReply);
                     }
                 }
                 return reply;
@@ -2310,7 +2349,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
 
                 RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, m[i].rexxMethod, args);
 
-                if ( ! checkForCondition(c, false) )
+                if ( msgReplyIsGood(c, pcpbd, msgReply, m[i].rexxMethod, false) )
                 {
                     if ( msgReply == TheTrueObj )
                     {
@@ -2320,6 +2359,10 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                         wRect->bottom = r->bottom;
                         wRect->right = r->right;
                         reply = ReplyTrue;
+                    }
+                    else if ( msgReply != TheFalseObj )
+                    {
+                        wrongReplyListException(c, m[i].rexxMethod, ".true or .false", msgReply);
                     }
                 }
                 return reply;
@@ -2638,7 +2681,7 @@ bool initEventNotification(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxOb
 #define EVENTNOTIFICATION_CLASS       "EventNotification"
 
 
-#define DTPN_KEYWORDS                 "CloseUp, DateTimeChange, DropDown, FormatQuery, Format, KillFocus, SetFocus, UserString, or WmKeyDown"
+#define DTPN_KEYWORDS                 "CloseUp, DateTimeChange, DropDown, FormatQuery, Format, KillFocus, SetFocus, UserString, or KeyDown"
 #define MCN_KEYWORDS                  "GetDayState, Released, SelChange, Select, or ViewChange"
 
 /**
@@ -2652,7 +2695,7 @@ static bool keyword2sbn(CSTRING keyword, uint32_t *flag)
     uint32_t sbn;
 
     if ( StrCmpI(keyword,      "UP"       ) == 0 ) sbn = SB_LINEUP;        // Old word, confusing.
-    if ( StrCmpI(keyword,      "LINEUP"   ) == 0 ) sbn = SB_LINEUP;
+    else if ( StrCmpI(keyword, "LINEUP"   ) == 0 ) sbn = SB_LINEUP;
     else if ( StrCmpI(keyword, "LINELEFT" ) == 0 ) sbn = SB_LINELEFT;
     else if ( StrCmpI(keyword, "DOWN"     ) == 0 ) sbn = SB_LINEDOWN;      // Old word, confusing.
     else if ( StrCmpI(keyword, "LINEDOWN" ) == 0 ) sbn = SB_LINEDOWN;
@@ -2876,7 +2919,7 @@ static bool keyword2dtpn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
     else if ( StrCmpI(keyword, "KILLFOCUS")      == 0 ) dtpn = NM_KILLFOCUS;
     else if ( StrCmpI(keyword, "SETFOCUS")       == 0 ) dtpn = NM_SETFOCUS;
     else if ( StrCmpI(keyword, "USERSTRING")     == 0 ) dtpn = DTN_USERSTRING;
-    else if ( StrCmpI(keyword, "WMKEYDOWN")      == 0 ) dtpn = DTN_WMKEYDOWN;
+    else if ( StrCmpI(keyword, "KEYDOWN")        == 0 ) dtpn = DTN_WMKEYDOWN;
     else
     {
         wrongArgValueException(c->threadContext, 2, DTPN_KEYWORDS, keyword);
@@ -3866,6 +3909,14 @@ RexxMethod3(int32_t, en_connectCommandEvents, RexxObjectPtr, rxID, CSTRING, meth
  *         Raises syntax conditions if incorrect arguments are detected.  Sets
  *         the .SystemErrorCode.
  *
+ *         In addition to scroll bar controls, scroll bars can be added to any
+ *         window by simply using the WS_VSCROLL or WS_HSCROLL styles to the
+ *         window. In this case there is no resource ID for the scroll bar, or
+ *         window handle.  We've added support here to connect the event by
+ *         using 0 for rxID, but there is still no support in ooDialog for using
+ *         the scroll bar methods in this case.  To be added later after 4.2.0
+ *         is released.
+ *
  *  @remarks   For the current keywords, if a symbolic ID is  used and it can
  *             not be resolved to a numeric number -1 has to be returned for
  *             backwards compatibility.  Essentially, for this method, all
@@ -3885,9 +3936,12 @@ RexxMethod5(RexxObjectPtr, en_connectScrollBarEvent, RexxObjectPtr, rxID, CSTRIN
     }
 
     int32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
+    if ( ! context->ObjectToInt32(rxID, &id) )
     {
-        return TheNegativeOneObj;
+        if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
+        {
+            return TheNegativeOneObj;
+        }
     }
 
     uint32_t notificationCode;
@@ -3897,7 +3951,7 @@ RexxMethod5(RexxObjectPtr, en_connectScrollBarEvent, RexxObjectPtr, rxID, CSTRIN
     }
 
     HWND hCtrl = GetDlgItem(pcen->hDlg, id);
-    if ( hCtrl == NULL )
+    if ( id != 0 && hCtrl == NULL )
     {
         oodSetSysErrCode(context->threadContext);
         return TheNegativeOneObj;
@@ -3967,13 +4021,16 @@ RexxMethod10(RexxObjectPtr, en_connectEachSBEvent, RexxObjectPtr, rxID, CSTRING,
     }
 
     int32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
+    if ( ! context->ObjectToInt32(rxID, &id) )
     {
-        return TheNegativeOneObj;
+        if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
+        {
+            return TheNegativeOneObj;
+        }
     }
 
     HWND hCtrl = GetDlgItem(pcen->hDlg, id);
-    if ( hCtrl == NULL )
+    if ( id != 0 && hCtrl == NULL )
     {
         oodSetSysErrCode(context->threadContext);
         return TheNegativeOneObj;
@@ -4190,7 +4247,7 @@ err_out:
  * @param  pos       [optional]
  */
 RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, msg,
-             OPTIONAL_int32_t, min, OPTIONAL_int32_t, max, OPTIONAL_int32_t, pos,
+            OPTIONAL_int32_t, min, OPTIONAL_int32_t, max, OPTIONAL_int32_t, pos,
             OPTIONAL_logical_t, willReply, CSELF, pCSelf)
 {
     RexxMethodContext *c = context;
@@ -4205,13 +4262,16 @@ RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, 
     }
 
     int32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
+    if ( ! context->ObjectToInt32(rxID, &id) )
     {
-        return TheNegativeOneObj;
+        if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
+        {
+            return TheNegativeOneObj;
+        }
     }
 
     HWND hCtrl = GetDlgItem(pcen->hDlg, id);
-    if ( hCtrl == NULL )
+    if ( id != 0 && hCtrl == NULL )
     {
         oodSetSysErrCode(context->threadContext);
         return TheNegativeOneObj;
@@ -4499,7 +4559,7 @@ err_out:
  *                      FORMAT
  *                      FORMATQUERY
  *                      USERSTRING
- *                      WMKEYDOWN
+ *                      KEYDOWN
  *                      KILLFOCUS
  *                      SETFOCUS
  *
@@ -4519,7 +4579,7 @@ err_out:
  *  @note   If a symbolic ID is  used and it can not be resolved to a numeric
  *          number an exception is raised.
  *
- *          willReply is ignored for USERSTRING, WMKEYDOWN, FORMAT, and
+ *          willReply is ignored for USERSTRING, KEYDOWN, FORMAT, and
  *          FORMATQUERY, the programmer must always reply in the event handler
  *          for those events.
  *
@@ -4628,9 +4688,8 @@ RexxMethod5(RexxObjectPtr, en_connectMonthCalendarEvent, RexxObjectPtr, rxID, CS
     {
         goto err_out;
     }
-    if ( notificationCode == MCN_VIEWCHANGE && ! _isAtLeastVista() )
+    if ( notificationCode == MCN_VIEWCHANGE && ! requiredOS(context, Vista_OS, "ViewChange notification", "Vista") )
     {
-        wrongWindowsVersionException(context, "connectMonthCalendarEvent", "Vista");
         goto err_out;
     }
 
@@ -4686,8 +4745,7 @@ err_out:
  *                       between messages.  This is an internal mechanism not to
  *                       be documented publicly.
  *
- *  @return  0 on success, 1 on failure.  One possible source of error is the
- *           message table being full.
+ *  @return  0 on success, 1 on failure.
  *
  *  @note     Method name can not be the empty string. The Window message,
  *            WPARAM, and LPARAM arguments can not all be 0.

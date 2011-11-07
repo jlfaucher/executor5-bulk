@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -126,10 +126,14 @@ RexxMethod2(RexxObjectPtr, generic_subclassEdit, NAME, method, CSELF, pCSelf)
 #define DATETIMEPICKER_CLASS     "DateTimePicker"
 #define DATETIMEPICKER_WINNAME   "Date and Time Picker"
 
-// This is used for MonthCalendar also
+// The following are used for DateTimePicker and MonthCalendar.
 #define SYSTEMTIME_MIN_YEAR               1601
 #define SYSTEMTIME_RANGE_EXCEPTION_MSG    "indexes 1 and 2 of argument 1, the array object, can not both be missing"
 
+#define MC_PART_NAMES                     "BACKGROUND, MONTHBK, TEXT, TITLEBK, TITLETEXT, or TRAILINGTEXT"
+#define MC_VIEW_NAMES                     "MONTHLY ANNUAL DECADE CENTURY"
+#define MC_GRIDINFO_PART_NAMES            "control, next, prev, footer, calendard, header, body, row, cell"
+#define MC_GRIDINFO_WHAT_FLAG_ERR_MSG     "must contain at least one of the keywords: date, rect, or name"
 
 /**
  * Converts a DateTime object to a SYSTEMTIME structure.  The fields of the
@@ -404,18 +408,30 @@ void sysTime2dt(RexxThreadContext *c, SYSTEMTIME *sysTime, RexxObjectPtr *dateTi
 }
 
 
-static uint32_t calPart2flag(CSTRING part)
+/**
+ * Converts the string part to the month calendar part flage
+ *
+ * @param part   Keyword for the calendar part.
+ *
+ * @return The calendar part flag, or -1 on error.
+ */
+static uint32_t calPart2flag(RexxMethodContext *c, CSTRING part, size_t argPos)
 {
     // This is an invalid flag.  When used in the DateTime_xx or MonthCalenddar_XX
     // macros, the macros then return the error code.
     uint32_t flag = (uint32_t)-1;
 
-    if (      StrStrI(part, "BACKGROUND"  ) != NULL ) flag = MCSC_BACKGROUND;
-    else if ( StrStrI(part, "MONTHBK"     ) != NULL ) flag = MCSC_MONTHBK;
-    else if ( StrStrI(part, "TEXT"        ) != NULL ) flag = MCSC_TEXT;
-    else if ( StrStrI(part, "TITLEBK"     ) != NULL ) flag = MCSC_TITLEBK;
-    else if ( StrStrI(part, "TITLETEXT"   ) != NULL ) flag = MCSC_TITLETEXT;
-    else if ( StrStrI(part, "TRAILINGTEXT") != NULL ) flag = MCSC_TRAILINGTEXT;
+    if (      stricmp(part, "BACKGROUND"  ) == 0 ) flag = MCSC_BACKGROUND;
+    else if ( stricmp(part, "MONTHBK"     ) == 0 ) flag = MCSC_MONTHBK;
+    else if ( stricmp(part, "TEXT"        ) == 0 ) flag = MCSC_TEXT;
+    else if ( stricmp(part, "TITLEBK"     ) == 0 ) flag = MCSC_TITLEBK;
+    else if ( stricmp(part, "TITLETEXT"   ) == 0 ) flag = MCSC_TITLETEXT;
+    else if ( stricmp(part, "TRAILINGTEXT") == 0 ) flag = MCSC_TRAILINGTEXT;
+    else
+    {
+        wrongArgValueException(c->threadContext, argPos, MC_PART_NAMES, part);
+    }
+
     return flag;
 }
 
@@ -442,26 +458,6 @@ static RexxStringObject mcStyle2String(RexxMethodContext *c, uint32_t style)
 }
 
 
-/**
- * Produce a Month Calendar's style from a string of keywords.
- */
-static uint32_t string2mcStyle(CSTRING style)
-{
-    uint32_t flags = 0;
-
-    if ( StrStrI(style, "DAYSTATE"   ) != NULL ) flags |= MCS_DAYSTATE;
-    if ( StrStrI(style, "MULTI"      ) != NULL ) flags |= MCS_MULTISELECT;
-    if ( StrStrI(style, "NOTODAY"    ) != NULL ) flags |= MCS_NOTODAY;
-    if ( StrStrI(style, "NOCIRCLE"   ) != NULL ) flags |= MCS_NOTODAYCIRCLE;
-    if ( StrStrI(style, "WEEKNUMBERS") != NULL ) flags |= MCS_WEEKNUMBERS;
-    if ( StrStrI(style, "NOTRAILING" ) != NULL ) flags |= MCS_NOTRAILINGDATES;
-    if ( StrStrI(style, "SHORTDAYS"  ) != NULL ) flags |= MCS_SHORTDAYSOFWEEK;
-    if ( StrStrI(style, "NOSELCHANGE") != NULL ) flags |= MCS_NOSELCHANGEONNAV;
-
-    return flags;
-}
-
-
 /** DateTimePicker::closeMonthCal()
  *
  *  Closes the drop down month calendar control of the date time picker.
@@ -475,9 +471,8 @@ static uint32_t string2mcStyle(CSTRING style)
  */
 RexxMethod2(RexxObjectPtr, dtp_closeMonthCal, RexxObjectPtr, _size, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "closeMonthCal", "Vista", Vista_OS) )
     {
-        wrongWindowsVersionException(context, "getIdelaSize", "Vista");
         return TheZeroObj;
     }
 
@@ -498,9 +493,18 @@ RexxMethod2(RexxObjectPtr, dtp_closeMonthCal, RexxObjectPtr, _size, CSELF, pCSel
  *  @returns  A DateTime object representing the current selected system time of
  *            the control, or the .nil object if the control is in the
  *            'no date' state.
+ *
+ *  @note    The ooDialog framework will set this .systemErrorCode if GDT_ERROR
+ *           is returned from  DateTime_GetSystemtime()
+ *
+ *           1002  ERROR_INVALID_MESSAGE
+ *
+ *           The window cannot act on the sent message.
  */
 RexxMethod1(RexxObjectPtr, dtp_getDateTime, CSELF, pCSelf)
 {
+    oodResetSysErrCode(context->threadContext);
+
     SYSTEMTIME sysTime = {0};
     RexxObjectPtr dateTime = TheNilObj;
 
@@ -518,8 +522,9 @@ RexxMethod1(RexxObjectPtr, dtp_getDateTime, CSELF, pCSelf)
 
         case GDT_ERROR:
         default :
-            // Some error with the DTP, raise an exception.
-            controlFailedException(context->threadContext, FUNC_WINCTRL_FAILED_MSG, "DateTime_GetSystemtime", DATETIMEPICKER_WINNAME);
+            // Some error with the DTP, set .systemErrorCode.
+            oodSetSysErrCode(context->threadContext, 1002);
+            dateTime = TheZeroObj;
             break;
     }
     return dateTime;
@@ -553,9 +558,9 @@ RexxMethod1(RexxObjectPtr, dtp_getDateTime, CSELF, pCSelf)
  */
 RexxMethod1(RexxObjectPtr, dtp_getInfo, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "getInfo", "Vista", Vista_OS) )
     {
-        return wrongWindowsVersionException(context, "getInfo", "Vista");
+        return NULLOBJECT;
     }
 
     HWND hDTP = getDChCtrl(pCSelf);
@@ -566,18 +571,12 @@ RexxMethod1(RexxObjectPtr, dtp_getInfo, CSELF, pCSelf)
 
     DateTime_GetDateTimePickerInfo(hDTP, &info);
 
-    // TODO need to test this on Vista and see what the actual values are
-    // depending on the style of the DTP.
-
     context->DirectoryPut(result, rxNewRect(context, &(info.rcCheck)), "CHECKRECT");
     context->DirectoryPut(result, objectStateToString(context, info.stateCheck), "CHECKSTATE");
 
     context->DirectoryPut(result, rxNewRect(context, &(info.rcButton)), "BUTTONRECT");
     context->DirectoryPut(result, objectStateToString(context, info.stateButton), "BUTTONSTATE");
 
-    // TODO this really needs testing.  MSN docs do not specifically say this is
-    // a month calendar control, rather they call it a drop down grid??
-    // Assuming for now it is a month calendar.
     RexxObjectPtr ctrl = createControlFromHwnd(context, (pCDialogControl)pCSelf, info.hwndDropDown, winMonthCalendar, false);
     context->DirectoryPut(result, ctrl, "DROPDOWN");
 
@@ -606,9 +605,8 @@ RexxMethod1(RexxObjectPtr, dtp_getInfo, CSELF, pCSelf)
  */
 RexxMethod2(RexxObjectPtr, dtp_getIdealSize, RexxObjectPtr, _size, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "getIdealSize", "Vista", Vista_OS) )
     {
-        wrongWindowsVersionException(context, "getIdelaSize", "Vista");
         return TheZeroObj;
     }
 
@@ -675,7 +673,12 @@ RexxMethod1(RexxObjectPtr, dtp_getMonthCal, CSELF, pCSelf)
  */
 RexxMethod2(uint32_t, dtp_getMonthCalColor, CSTRING, calPart, CSELF, pCSelf)
 {
-    return (COLORREF)DateTime_GetMonthCalColor(getDChCtrl(pCSelf), calPart2flag(calPart));
+    int32_t flag = calPart2flag(context, calPart, 1);
+    if ( flag == -1 )
+    {
+        return CLR_INVALID;
+    }
+    return (COLORREF)DateTime_GetMonthCalColor(getDChCtrl(pCSelf), flag);
 }
 
 
@@ -693,9 +696,8 @@ RexxMethod2(uint32_t, dtp_getMonthCalColor, CSTRING, calPart, CSELF, pCSelf)
  */
 RexxMethod1(RexxObjectPtr, dtp_getMonthCalStyle, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "getMonthCalStyle", "Vista", Vista_OS) )
     {
-        wrongWindowsVersionException(context, "getMonthCalStyle", "Vista");
         return TheZeroObj;
     }
 
@@ -808,11 +810,16 @@ RexxMethod2(logical_t, dtp_setFormat, CSTRING, format, CSELF, pCSelf)
  *                   the month calendar.
  *
  *  @return  The previous color for the part specified as a COLORREF, or
- *           CLR_NONE on error.
+ *           CLR_INVALID on error.
  */
 RexxMethod3(uint32_t, dtp_setMonthCalColor, CSTRING, calPart, uint32_t, color, CSELF, pCSelf)
 {
-    return (COLORREF)DateTime_SetMonthCalColor(getDChCtrl(pCSelf), calPart2flag(calPart), color);
+    int32_t flag = calPart2flag(context, calPart, 1);
+    if ( flag == -1 )
+    {
+        return CLR_INVALID;
+    }
+    return (COLORREF)DateTime_SetMonthCalColor(getDChCtrl(pCSelf), flag, color);
 }
 
 
@@ -830,13 +837,12 @@ RexxMethod3(uint32_t, dtp_setMonthCalColor, CSTRING, calPart, uint32_t, color, C
  */
 RexxMethod2(RexxObjectPtr, dtp_setMonthCalStyle, CSTRING, newStyle, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "setMonthCalStyle", "Vista", Vista_OS) )
     {
-        wrongWindowsVersionException(context, "setMonthCalStyle", "Vista");
         return TheZeroObj;
     }
 
-    uint32_t style = (uint32_t)DateTime_SetMonthCalStyle(getDChCtrl(pCSelf), string2mcStyle(newStyle));
+    uint32_t style = (uint32_t)DateTime_SetMonthCalStyle(getDChCtrl(pCSelf), monthCalendarStyle(newStyle, 0));
     return mcStyle2String(context, style);
 }
 
@@ -894,8 +900,6 @@ inline HWND getMonthCalendar(RexxMethodContext *c, void *pCSelf)
     return hMC;
 }
 
-#define MC_GRIDINFO_PART_NAMES             "control, next, prev, footer, calendard, header, body, row, cell"
-#define MC_GRIDINFO_WHAT_FLAG_ERR_MSG      "must contain at least one of the keywords: date, rect, or name"
 
 /* Determine if a month calendar is a multi-selection month calendar. */
 inline bool isMultiSelectionMonthCalendar(HWND hCtrl)
@@ -936,6 +940,21 @@ inline CSTRING day2dayName(int32_t iDay)
     }
 }
 
+/*
+ * Hit test flags for areas that are part of the calendar grid, and thus have
+ * valid row and column info.
+ */
+inline bool isGridPart(LRESULT hit)
+{
+    if ( hit == MCHT_CALENDARDATE     || hit == MCHT_CALENDARDATENEXT ||
+         hit == MCHT_CALENDARDATEPREV || hit == MCHT_CALENDARDATEMAX  ||
+         hit == MCHT_CALENDARDATEMIN )
+    {
+        return true;
+    }
+    return false;
+}
+
 
 static int32_t dayName2day(CSTRING day)
 {
@@ -964,7 +983,8 @@ static int32_t dayName2day(CSTRING day)
  *  @remarks  MSDN suggests setting last error to 0 before calling
  *            GetWindowLong() as the correct way to determine error.
  */
-static uint32_t mcChangeStyle(RexxMethodContext *c, pCDialogControl pCSelf, CSTRING _style, CSTRING _additionalStyle, bool remove)
+static RexxStringObject mcChangeStyle(RexxMethodContext *c, pCDialogControl pCSelf, CSTRING _style,
+                                      CSTRING _additionalStyle, bool remove)
 {
     oodResetSysErrCode(c->threadContext);
     SetLastError(0);
@@ -985,7 +1005,8 @@ static uint32_t mcChangeStyle(RexxMethodContext *c, pCDialogControl pCSelf, CSTR
 
     if ( remove )
     {
-        newStyle &= ~monthCalendarStyle(_style, 0);
+        newStyle = oldStyle & ~monthCalendarStyle(_style, 0);
+
         if ( _additionalStyle != NULL )
         {
             newStyle = monthCalendarStyle(_additionalStyle, newStyle);
@@ -1000,7 +1021,7 @@ static uint32_t mcChangeStyle(RexxMethodContext *c, pCDialogControl pCSelf, CSTR
     {
         goto err_out;
     }
-    return oldStyle;
+    return mcStyle2String(c, oldStyle);
 
 err_out:
     oodSetSysErrCode(c->threadContext);
@@ -1024,7 +1045,7 @@ static void firstDay2directory(RexxMethodContext *c, uint32_t firstDay, RexxDire
 
 bool putHitInfo(RexxMethodContext *c, RexxDirectoryObject hitInfo, MCHITTESTINFO *info)
 {
-    bool done = true;  // TODO TODO logic seems backwards here - default should be false, set to true if MCHT_NOWHERE
+    bool done = false;
     bool needDate = false;
 
     switch ( info->uHit )
@@ -1070,7 +1091,7 @@ bool putHitInfo(RexxMethodContext *c, RexxDirectoryObject hitInfo, MCHITTESTINFO
 
         case MCHT_NOWHERE :
             c->DirectoryPut(hitInfo, c->String("NoWhere"), "HIT");
-            done = false;
+            done = true;
             break;
 
         case MCHT_TITLEBK :
@@ -1094,7 +1115,6 @@ bool putHitInfo(RexxMethodContext *c, RexxDirectoryObject hitInfo, MCHITTESTINFO
             break;
 
         case MCHT_TODAYLINK :
-            // Not documented, so not sure if this is ever returned.
             c->DirectoryPut(hitInfo, c->String("TodayLink"), "HIT");
             break;
 
@@ -1219,7 +1239,7 @@ RexxMethod2(RexxObjectPtr, set_mc_date, RexxObjectPtr, dateTime, CSELF, pCSelf)
  *
  *  @note  Sets the .SystemErrorCode.
  */
-RexxMethod3(uint32_t, mc_addRemoveStyle, CSTRING, style, NAME, method, CSELF, pCSelf)
+RexxMethod3(RexxStringObject, mc_addRemoveStyle, CSTRING, style, NAME, method, CSELF, pCSelf)
 {
     return mcChangeStyle(context, (pCDialogControl)pCSelf, style, NULL, (*method == 'R'));
 }
@@ -1229,17 +1249,32 @@ RexxMethod3(uint32_t, mc_addRemoveStyle, CSTRING, style, NAME, method, CSELF, pC
  *
  *  @note  Sets the .SystemErrorCode.
  */
-RexxMethod3(uint32_t, mc_replaceStyle, CSTRING, removeStyle, CSTRING, additionalStyle, CSELF, pCSelf)
+RexxMethod3(RexxStringObject, mc_replaceStyle, CSTRING, removeStyle, CSTRING, additionalStyle, CSELF, pCSelf)
 {
     return mcChangeStyle(context, (pCDialogControl)pCSelf, removeStyle, additionalStyle, true);
 }
 
 
+/** MonthCalendar::getStyle()
+ *
+ */
+RexxMethod1(RexxStringObject, mc_getStyle, CSELF, pCSelf)
+{
+    HWND hMC = getMonthCalendar(context, pCSelf);
+    if ( hMC == NULL )
+    {
+        return 0;
+    }
+
+    uint32_t _style = GetWindowLong(hMC, GWL_STYLE);
+    return mcStyle2String(context, _style);
+}
+
+
 RexxMethod1(uint32_t, mc_getCalendarBorder, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "getBorder", "Vista", Vista_OS) )
     {
-        wrongWindowsVersionException(context, "getBorder", "Vista");
         return 0;
     }
 
@@ -1255,9 +1290,8 @@ RexxMethod1(uint32_t, mc_getCalendarBorder, CSELF, pCSelf)
 
 RexxMethod1(uint32_t, mc_getCalendarCount, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "getCount", "Vista", Vista_OS) )
     {
-        wrongWindowsVersionException(context, "getCount", "Vista");
         return 0;
     }
 
@@ -1273,9 +1307,9 @@ RexxMethod1(uint32_t, mc_getCalendarCount, CSELF, pCSelf)
 
 RexxMethod1(RexxObjectPtr, mc_getCALID, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "getCALID", "Vista", Vista_OS) )
     {
-        return wrongWindowsVersionException(context, "getCALID", "Vista");
+        return NULLOBJECT;
     }
 
     HWND hMC = getMonthCalendar(context, pCSelf);
@@ -1332,15 +1366,19 @@ RexxMethod2(uint32_t, mc_getColor, CSTRING, calPart, CSELF, pCSelf)
         return 0;
     }
 
-    uint32_t part = calPart2flag(calPart);
-    return (COLORREF)MonthCal_GetColor(hMC, part);
+    int32_t flag = calPart2flag(context, calPart, 1);
+    if ( flag == -1 )
+    {
+        return CLR_INVALID;
+    }
+    return (COLORREF)MonthCal_GetColor(hMC, flag);
 }
 
 RexxMethod1(RexxObjectPtr, mc_getCurrentView, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "getCurrentView", "Vista", Vista_OS) )
     {
-        return wrongWindowsVersionException(context, "getCurrentView", "Vista");
+        return NULLOBJECT;
     }
 
     HWND hMC = getMonthCalendar(context, pCSelf);
@@ -1416,9 +1454,9 @@ RexxMethod2(int32_t, mc_getFirstDayOfWeek, OPTIONAL_RexxObjectPtr, result, CSELF
  */
 RexxMethod2(RexxObjectPtr, mc_getGridInfo, RexxObjectPtr, _gridInfo, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "getGridInfo", "Vista", Vista_OS) )
     {
-        return wrongWindowsVersionException(context, "getGridInfo", "Vista");
+        return NULLOBJECT;
     }
 
     HWND hMC = getMonthCalendar(context, pCSelf);
@@ -1455,7 +1493,6 @@ RexxMethod2(RexxObjectPtr, mc_getGridInfo, RexxObjectPtr, _gridInfo, CSELF, pCSe
 
     if ( _calIndex == NULLOBJECT )
     {
-        // TODO MSDN doc does not say if this is 0-based or 1-based. ???
         info.iCalendar = 0;
         context->DirectoryPut(gridInfo, TheOneObj, "INDEX");
     }
@@ -1735,11 +1772,14 @@ RexxMethod1(RexxObjectPtr, mc_getToday, CSELF, pCSelf)
     return result;
 }
 
-
 /** MonthCalendar::hitTest()
  *
  *
  *  @note  Indexes for row, column, and calendar offset are 1-based.
+ *
+ *  @remarks  If we are not on Vista or later, we need to be sure to set cbSize
+ *            for MCHITTESTINFO to exclude the Vista only fields.  Otherwise
+ *            MonthCal_HitTest fails completely.
  *
  */
 RexxMethod2(RexxObjectPtr, mc_hitTest, RexxObjectPtr, _pt, CSELF, pCSelf)
@@ -1753,7 +1793,14 @@ RexxMethod2(RexxObjectPtr, mc_hitTest, RexxObjectPtr, _pt, CSELF, pCSelf)
     RexxDirectoryObject hitInfo = context->NewDirectory();
 
     MCHITTESTINFO info = {0};
-    info.cbSize = sizeof(MCHITTESTINFO);
+    if ( ComCtl32Version <=  COMCTL32_6_0 )
+    {
+        info.cbSize = MCHITTESTINFO_V1_SIZE;
+    }
+    else
+    {
+        info.cbSize = sizeof(MCHITTESTINFO);
+    }
 
     PPOINT pt = rxGetPoint(context, _pt, 1);
     if ( pt == NULL )
@@ -1765,7 +1812,7 @@ RexxMethod2(RexxObjectPtr, mc_hitTest, RexxObjectPtr, _pt, CSELF, pCSelf)
     info.pt.x = pt->x;
     info.pt.y = pt->y;
 
-    MonthCal_HitTest(hMC, &info);
+    LRESULT hit = MonthCal_HitTest(hMC, &info);
 
     bool done = putHitInfo(context, hitInfo, &info);
 
@@ -1774,8 +1821,20 @@ RexxMethod2(RexxObjectPtr, mc_hitTest, RexxObjectPtr, _pt, CSELF, pCSelf)
         context->DirectoryPut(hitInfo, rxNewRect(context, &info.rc), "RECT");
 
         context->DirectoryPut(hitInfo, context->WholeNumber(info.iOffset + 1), "OFFSET");
-        context->DirectoryPut(hitInfo, context->WholeNumber(info.iRow + 1), "ROW");
-        context->DirectoryPut(hitInfo, context->WholeNumber(info.iCol + 1), "COLUMN");
+
+        if ( isGridPart(info.uHit)  )
+        {
+            context->DirectoryPut(hitInfo, context->WholeNumber(info.iRow + 1), "ROW");
+            context->DirectoryPut(hitInfo, context->WholeNumber(info.iCol + 1), "COLUMN");
+        }
+        else if ( info.uHit == MCHT_CALENDARDAY)
+        {
+            context->DirectoryPut(hitInfo, context->WholeNumber(info.iCol + 1), "COLUMN");
+        }
+        else if ( info.uHit == MCHT_CALENDARWEEKNUM )
+        {
+            context->DirectoryPut(hitInfo, context->WholeNumber(info.iRow + 1), "ROW");
+        }
     }
 
 done_out:
@@ -1785,9 +1844,9 @@ done_out:
 
 RexxMethod2(RexxObjectPtr, mc_setCalendarBorder, OPTIONAL_uint32_t, border, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "setBorder", "Vista", Vista_OS) )
     {
-        return wrongWindowsVersionException(context, "setBorder", "Vista");
+        return NULLOBJECT;
     }
 
     HWND hMC = getMonthCalendar(context, pCSelf);
@@ -1818,9 +1877,9 @@ RexxMethod2(RexxObjectPtr, mc_setCalendarBorder, OPTIONAL_uint32_t, border, CSEL
  */
 RexxMethod2(RexxObjectPtr, mc_setCALID, CSTRING, id, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "setCALID", "Vista", Vista_OS) )
     {
-        return wrongWindowsVersionException(context, "setCALID", "Vista");
+        return NULLOBJECT;
     }
 
     HWND hMC = getMonthCalendar(context, pCSelf);
@@ -1831,21 +1890,22 @@ RexxMethod2(RexxObjectPtr, mc_setCALID, CSTRING, id, CSELF, pCSelf)
 
     uint32_t calID = CAL_GREGORIAN;
 
-    if (      StrStrI(id, "GREGORIAN"                 ) != NULL ) calID = CAL_GREGORIAN ;
-    else if ( StrStrI(id, "GREGORIAN_US"              ) != NULL ) calID = CAL_GREGORIAN_US;
-    else if ( StrStrI(id, "JAPAN"                     ) != NULL ) calID = CAL_JAPAN;
-    else if ( StrStrI(id, "TAIWAN"                    ) != NULL ) calID = CAL_TAIWAN;
-    else if ( StrStrI(id, "KOREA"                     ) != NULL ) calID = CAL_KOREA;
-    else if ( StrStrI(id, "HIJRI"                     ) != NULL ) calID = CAL_HIJRI;
-    else if ( StrStrI(id, "THAI"                      ) != NULL ) calID = CAL_THAI;
-    else if ( StrStrI(id, "HEBREW"                    ) != NULL ) calID = CAL_HEBREW;
-    else if ( StrStrI(id, "GREGORIAN_ME_FRENCH"       ) != NULL ) calID = CAL_GREGORIAN_ME_FRENCH;
-    else if ( StrStrI(id, "GREGORIAN_ARABIC"          ) != NULL ) calID = CAL_GREGORIAN_ARABIC;
-    else if ( StrStrI(id, "CAL_GREGORIAN_XLIT_ENGLISH") != NULL ) calID = CAL_GREGORIAN_XLIT_ENGLISH;
-    else if ( StrStrI(id, "CAL_GREGORIAN_XLIT_FRENCH" ) != NULL ) calID = CAL_GREGORIAN_XLIT_FRENCH;
-    else if ( StrStrI(id, "UMALQURA"                  ) != NULL ) calID = CAL_UMALQURA;
+    if (      stricmp(id, "GREGORIAN"                 ) == 0 ) calID = CAL_GREGORIAN;
+    else if ( stricmp(id, "GREGORIAN_US"              ) == 0 ) calID = CAL_GREGORIAN_US;
+    else if ( stricmp(id, "JAPAN"                     ) == 0 ) calID = CAL_JAPAN;
+    else if ( stricmp(id, "TAIWAN"                    ) == 0 ) calID = CAL_TAIWAN;
+    else if ( stricmp(id, "KOREA"                     ) == 0 ) calID = CAL_KOREA;
+    else if ( stricmp(id, "HIJRI"                     ) == 0 ) calID = CAL_HIJRI;
+    else if ( stricmp(id, "THAI"                      ) == 0 ) calID = CAL_THAI;
+    else if ( stricmp(id, "HEBREW"                    ) == 0 ) calID = CAL_HEBREW;
+    else if ( stricmp(id, "GREGORIAN_ME_FRENCH"       ) == 0 ) calID = CAL_GREGORIAN_ME_FRENCH;
+    else if ( stricmp(id, "GREGORIAN_ARABIC"          ) == 0 ) calID = CAL_GREGORIAN_ARABIC;
+    else if ( stricmp(id, "CAL_GREGORIAN_XLIT_ENGLISH") == 0 ) calID = CAL_GREGORIAN_XLIT_ENGLISH;
+    else if ( stricmp(id, "CAL_GREGORIAN_XLIT_FRENCH" ) == 0 ) calID = CAL_GREGORIAN_XLIT_FRENCH;
+    else if ( stricmp(id, "UMALQURA"                  ) == 0 ) calID = CAL_UMALQURA;
 
     MonthCal_SetCALID(hMC, calID);
+
     return TheZeroObj;
 }
 
@@ -1854,8 +1914,8 @@ RexxMethod2(RexxObjectPtr, mc_setCALID, CSTRING, id, CSELF, pCSelf)
  *
  *  Sets the color for a given part of a month calendar control.
  *
- *  @param  which  Specifies which portion will have its color set.
- *  @param  color  A COLORREF specifying the color for the calendar part.
+ *  @param  calPart  Specifies which portion will have its color set.
+ *  @param  color    A COLORREF specifying the color for the calendar part.
  *
  *  @return  The previous color for the part of the month calendar specified,
  *           or CLR_INVALID on error.
@@ -1868,8 +1928,12 @@ RexxMethod2(RexxObjectPtr, mc_setCALID, CSTRING, id, CSELF, pCSelf)
  *            -- some error routine
  *          end
  *
+ *          A syntax condition is raised if calPart is not valid.
+ *
+ *          setColor() only seems to work if the theme is Windows Classic.
+ *
  */
-RexxMethod3(uint32_t, mc_setColor, CSTRING, which, uint32_t, color, CSELF, pCSelf)
+RexxMethod3(uint32_t, mc_setColor, CSTRING, calPart, uint32_t, color, CSELF, pCSelf)
 {
     HWND hMC = getMonthCalendar(context, pCSelf);
     if ( hMC == NULL )
@@ -1877,16 +1941,19 @@ RexxMethod3(uint32_t, mc_setColor, CSTRING, which, uint32_t, color, CSELF, pCSel
         return 0;
     }
 
-    uint32_t flag = calPart2flag(which);
+    int32_t flag = calPart2flag(context, calPart, 1);
+    if ( flag == -1 )
+    {
+        return CLR_INVALID;
+    }
     return (COLORREF)MonthCal_SetColor(hMC, flag, color);
 }
 
-
 RexxMethod2(RexxObjectPtr, mc_setCurrentView, CSTRING, view, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "setCurrentView", "Vista", Vista_OS) )
     {
-        return wrongWindowsVersionException(context, "getBorder", "Vista");
+        return NULLOBJECT;
     }
 
     HWND hMC = getMonthCalendar(context, pCSelf);
@@ -1897,10 +1964,14 @@ RexxMethod2(RexxObjectPtr, mc_setCurrentView, CSTRING, view, CSELF, pCSelf)
 
     uint32_t mcmv = MCMV_MONTH;
 
-    if (      StrStrI(view, "MONTHLY") != NULL ) mcmv = MCMV_MONTH;
-    else if ( StrStrI(view, "ANNUAL")  != NULL ) mcmv = MCMV_YEAR;
-    else if ( StrStrI(view, "DECADE")  != NULL ) mcmv = MCMV_DECADE;
-    else if ( StrStrI(view, "CENTURY") != NULL ) mcmv = MCMV_CENTURY;
+    if (      stricmp(view, "MONTHLY") == 0 ) mcmv = MCMV_MONTH;
+    else if ( stricmp(view, "ANNUAL")  == 0 ) mcmv = MCMV_YEAR;
+    else if ( stricmp(view, "DECADE")  == 0 ) mcmv = MCMV_DECADE;
+    else if ( stricmp(view, "CENTURY") == 0 ) mcmv = MCMV_CENTURY;
+    else
+    {
+        return wrongArgValueException(context->threadContext, 1, MC_VIEW_NAMES, view);
+    }
 
     return (MonthCal_SetCurrentView(hMC, mcmv) ? TheTrueObj : TheFalseObj);
 }
@@ -1920,7 +1991,7 @@ RexxMethod2(RexxObjectPtr, mc_setDayState, RexxArrayObject, list, CSELF, pCSelf)
     return setDayState(hMC, pmds, (int)count, result);
 }
 
-RexxMethod4(RexxObjectPtr, mc_setDayStateQuick, uint32_t, ds1, uint32_t, ds2, uint32_t, ds3, CSELF, pCSelf)
+RexxMethod4(RexxObjectPtr, mc_setDayStateQuick, RexxObjectPtr, _ds1, RexxObjectPtr, _ds2, RexxObjectPtr, _ds3, CSELF, pCSelf)
 {
     HWND hMC = getMonthCalendar(context, pCSelf);
     if ( hMC == NULL )
@@ -1929,7 +2000,7 @@ RexxMethod4(RexxObjectPtr, mc_setDayStateQuick, uint32_t, ds1, uint32_t, ds2, ui
     }
 
     LPMONTHDAYSTATE pmds;
-    RexxObjectPtr result = quickDayStateBuffer(context, ds1, ds2, ds3, &pmds);
+    RexxObjectPtr result = makeQuickDayStateBuffer(context, _ds1, _ds2, _ds3, &pmds);
     return setDayState(hMC, pmds, 3, result);
 }
 
@@ -2107,9 +2178,8 @@ done_out:
  */
 RexxMethod2(RexxObjectPtr, mc_sizeRectToMin, RexxObjectPtr, _rect, CSELF, pCSelf)
 {
-    if ( ! _isAtLeastVista() )
+    if ( ! requiredOS(context, "sizeRectToMin", "Vista", Vista_OS) )
     {
-        wrongWindowsVersionException(context, "sizeRectToMin", "Vista");
         goto done_out;
     }
 
