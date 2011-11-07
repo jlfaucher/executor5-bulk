@@ -126,6 +126,7 @@ $(OR_OUTDIR_OOD420)\oodialog.dll:     $(SOURCEF)
     COMDLG32.LIB \
     COMCTL32.LIB \
     shlwapi.lib \
+    Oleacc.lib \
     -def:$(OR_OODIALOGSRC_420)\ooDialog.def \
     -out:$(OR_OUTDIR_OOD420)\$(@B).dll
 
