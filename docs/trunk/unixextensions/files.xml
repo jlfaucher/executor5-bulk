@@ -206,9 +206,10 @@ retc = SysEuidaccess("/home/dashley/temp.txt", 2)
 >>-SysGetdirlist(dir)------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns an ooRexx array of the file name(s) contained in a subdirectory.</para>
-<para>The returned array will contain ALL file names including files usually not
-not displayed (hidden files). The ooRexx array list of files is NOT sorted.
+<para>Returns an ooRexx array of the file/directory name(s) contained in a subdirectory.</para>
+<para>The returned array will contain ALL file and subdirectory
+names including files usually not
+displayed (hidden files/directories). The ooRexx array list of files is NOT sorted.
 The array will be empty if an error occurs opening the subdirectory.</para>
 <para>This function uses the <filename>opendir()</filename>,
 <filename>closedir()</filename> and <filename>readdir()</filename>
