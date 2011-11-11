@@ -1626,6 +1626,35 @@ return testResult
 notready:
   self~assertSame("NOTREADY:EOF", f~description)
 
+
+-- Regression test for bug  3274050
+-- The function call : stream(file, "c", "open write append")
+-- fails when file has write-only permissions.
+-- On Linux / Unix this test case will fail if run by root.
+-- So, we check for root and if so fail the test case.
+::method test_open_write_only_3274050
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+
+    src = .array~of("line1", "line2")
+    fileName = "delMe.stream.test_open_write_only"
+    fileName = createFile(src, fileName)
+    self~assertTrue(fileName \== "")
+    fsObj = .stream~new(fileName)
+    self~streamTestingFile = fsObj
+
+    'chmod a+w,a-r' fileName
+    ret = fsObj~command("open write append")
+    self~assertSame("READY:", ret)
+  end
+
+
 -- End of class: Stream.testGroup
 
 
@@ -1818,4 +1847,3 @@ notready:
 
   j = deleteFile(f)
   self~assertSame("", fsObj~query("exists"))
-
