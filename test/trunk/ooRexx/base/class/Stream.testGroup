@@ -1642,15 +1642,104 @@ notready:
     userID = output[1]
     self~assertNotSame(0, userID, 'This test case must not be run as root')
 
-    src = .array~of("line1", "line2")
     fileName = "delMe.stream.test_open_write_only"
-    fileName = createFile(src, fileName)
+
+    -- Implicit opening of an empty file
+    call deleteFile fileName
+    fileName = createFile(.array~new, fileName)
     self~assertTrue(fileName \== "")
+    'chmod a+w,a-r' fileName
     fsObj = .stream~new(fileName)
     self~streamTestingFile = fsObj
+    line = "line1"
+    ret = fsObj~charout(line)
+    self~assertSame(0, ret)
+    ret = fsObj~lineout(line)
+    self~assertSame(0, ret)
+    ret = fsObj~close
+    self~assertSame("READY:", ret)
 
+    -- Implicit opening of a non empty file
+    call deleteFile fileName
+    fileName = createFile(.array~of("line1"), fileName)
+    self~assertTrue(fileName \== "")
     'chmod a+w,a-r' fileName
+    fsObj = .stream~new(fileName)
+    self~streamTestingFile = fsObj
+    line = "line2"
+    ret = fsObj~charout(line)
+    self~assertSame(0, ret) -- ko before fix
+    ret = fsObj~lineout(line)
+    self~assertSame(0, ret)
+    ret = fsObj~close
+    self~assertSame("READY:", ret)
+
+    -- Explicit opening of an empty file, using ~open
+    call deleteFile fileName
+    fileName = createFile(.array~new, fileName)
+    self~assertTrue(fileName \== "")
+    'chmod a+w,a-r' fileName
+    fsObj = .stream~new(fileName)
+    self~streamTestingFile = fsObj
+    ret = fsObj~open("write append")
+    self~assertSame("READY:", ret) -- ko before fix
+    line = "line1"
+    ret = fsObj~charout(line)
+    self~assertSame(0, ret)
+    ret = fsObj~lineout(line)
+    self~assertSame(0, ret)
+    ret = fsObj~close
+    self~assertSame("READY:", ret)
+
+    -- Explicit opening of a non empty file, using ~open
+    call deleteFile fileName
+    fileName = createFile(.array~of("line1"), fileName)
+    self~assertTrue(fileName \== "")
+    'chmod a+w,a-r' fileName
+    fsObj = .stream~new(fileName)
+    self~streamTestingFile = fsObj
+    ret = fsObj~open("write append")
+    self~assertSame("READY:", ret) -- ko before fix
+    line = "line2"
+    ret = fsObj~charout(line)
+    self~assertSame(0, ret) -- ko before fix
+    ret = fsObj~lineout(line)
+    self~assertSame(0, ret)
+    ret = fsObj~close
+    self~assertSame("READY:", ret)
+
+    -- Explicit opening of an empty file, using ~command
+    call deleteFile fileName
+    fileName = createFile(.array~new, fileName)
+    self~assertTrue(fileName \== "")
+    'chmod a+w,a-r' fileName
+    fsObj = .stream~new(fileName)
+    self~streamTestingFile = fsObj
     ret = fsObj~command("open write append")
+    self~assertSame("READY:", ret) -- ko before fix
+    line = "line1"
+    ret = fsObj~charout(line)
+    self~assertSame(0, ret)
+    ret = fsObj~lineout(line)
+    self~assertSame(0, ret)
+    ret = fsObj~close
+    self~assertSame("READY:", ret)
+    
+    -- Explicit opening of a non empty file, using ~command
+    call deleteFile fileName
+    fileName = createFile(.array~of("line1"), fileName)
+    self~assertTrue(fileName \== "")
+    'chmod a+w,a-r' fileName
+    fsObj = .stream~new(fileName)
+    self~streamTestingFile = fsObj
+    ret = fsObj~command("open write append")
+    self~assertSame("READY:", ret) -- ko before fix
+    line = "line2"
+    ret = fsObj~charout(line)
+    self~assertSame(0, ret) -- ko before fix
+    ret = fsObj~lineout(line)
+    self~assertSame(0, ret)
+    ret = fsObj~close
     self~assertSame("READY:", ret)
   end
 

@@ -606,6 +606,10 @@ return fileName
       'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
       ret = RC
     end
+    when .ooRexxUnit.OSName == "MACOSX" then do
+      'rm -f' .TestUtil~enQuote(fileName) '>/dev/null 2>&1'
+      ret = RC
+    end
     otherwise ret = SysFileDelete(fileName)
   end
 

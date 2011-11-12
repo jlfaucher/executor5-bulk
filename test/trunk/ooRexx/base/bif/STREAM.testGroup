@@ -387,15 +387,67 @@ return testResult
     userID = output[1]
     self~assertNotSame(0, userID, 'This test case must not be run as root')
 
-    src = .array~of("line1", "line2")
     fileName = "delMe.stream.test_open_write_only"
-    fileName = createFile(src, fileName)
+
+    -- Implicit opening of an empty file
+    call deleteFile fileName
+    fileName = createFile(.array~new, fileName)
     self~assertTrue(fileName \== "")
-    self~streamTestingFile = fileName
-    
     'chmod a+w,a-r' fileName
+    self~streamTestingFile = fileName
+    line = "line1"
+    ret = charout(fileName, line)
+    self~assertSame(0, ret)
+    ret = lineout(fileName, line)
+    self~assertSame(0, ret)
+    ret = lineout(fileName) -- close
+    self~assertSame(0, ret)
+
+    -- Implicit opening of a non empty file
+    call deleteFile fileName
+    fileName = createFile(.array~of("line1"), fileName)
+    self~assertTrue(fileName \== "")
+    'chmod a+w,a-r' fileName
+    self~streamTestingFile = fileName
+    line = "line2"
+    ret = charout(fileName, line)
+    self~assertSame(0, ret) -- ko before fix
+    ret = lineout(fileName, line)
+    self~assertSame(0, ret)
+    ret = lineout(fileName) -- close
+    self~assertSame(0, ret)
+
+    -- Explicit opening of an empty file, using a command
+    call deleteFile fileName
+    fileName = createFile(.array~new, fileName)
+    self~assertTrue(fileName \== "")
+    'chmod a+w,a-r' fileName
+    self~streamTestingFile = fileName
     ret = stream(fileName, "c", "open write append")
-    self~assertSame("READY:", ret)
+    self~assertSame("READY:", ret) -- ko before fix
+    line = "line1"
+    ret = charout(fileName, line)
+    self~assertSame(0, ret)
+    ret = lineout(fileName, line)
+    self~assertSame(0, ret)
+    ret = lineout(fileName) -- close
+    self~assertSame(0, ret)
+    
+    -- Explicit opening of a non empty file, using command
+    call deleteFile fileName
+    fileName = createFile(.array~of("line1"), fileName)
+    self~assertTrue(fileName \== "")
+    'chmod a+w,a-r' fileName
+    self~streamTestingFile = fileName
+    ret = stream(fileName, "c", "open write append")
+    self~assertSame("READY:", ret) -- ko before fix
+    line = "line2"
+    ret = charout(fileName, line)
+    self~assertSame(0, ret) -- ko before fix
+    ret = lineout(fileName, line)
+    self~assertSame(0, ret)
+    ret = lineout(fileName) -- close
+    self~assertSame(0, ret)
   end
 
 
