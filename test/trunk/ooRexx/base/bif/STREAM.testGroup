@@ -377,7 +377,7 @@ return testResult
 -- fails when file has write-only permissions.
 -- On Linux / Unix this test case will fail if run by root.
 -- So, we check for root and if so fail the test case.
-::method test_open_write_only_3274050
+::method test_open_write_only_3274050_a
 
   if .ooRexxUnit.OSName \== "WINDOWS" then do
     cmd = 'id -u > /dev/null 2>&1'
@@ -386,69 +386,124 @@ return testResult
     self~assertSame(0, ret, 'Check for root must succeed')
     userID = output[1]
     self~assertNotSame(0, userID, 'This test case must not be run as root')
-
-    fileName = "delMe.stream.test_open_write_only"
-
-    -- Implicit opening of an empty file
-    call deleteFile fileName
-    fileName = createFile(.array~new, fileName)
-    self~assertTrue(fileName \== "")
-    'chmod a+w,a-r' fileName
-    self~streamTestingFile = fileName
-    line = "line1"
-    ret = charout(fileName, line)
-    self~assertSame(0, ret)
-    ret = lineout(fileName, line)
-    self~assertSame(0, ret)
-    ret = lineout(fileName) -- close
-    self~assertSame(0, ret)
-
-    -- Implicit opening of a non empty file
-    call deleteFile fileName
-    fileName = createFile(.array~of("line1"), fileName)
-    self~assertTrue(fileName \== "")
-    'chmod a+w,a-r' fileName
-    self~streamTestingFile = fileName
-    line = "line2"
-    ret = charout(fileName, line)
-    self~assertSame(0, ret) -- ko before fix
-    ret = lineout(fileName, line)
-    self~assertSame(0, ret)
-    ret = lineout(fileName) -- close
-    self~assertSame(0, ret)
-
-    -- Explicit opening of an empty file, using a command
-    call deleteFile fileName
-    fileName = createFile(.array~new, fileName)
-    self~assertTrue(fileName \== "")
-    'chmod a+w,a-r' fileName
-    self~streamTestingFile = fileName
-    ret = stream(fileName, "c", "open write append")
-    self~assertSame("READY:", ret) -- ko before fix
-    line = "line1"
-    ret = charout(fileName, line)
-    self~assertSame(0, ret)
-    ret = lineout(fileName, line)
-    self~assertSame(0, ret)
-    ret = lineout(fileName) -- close
-    self~assertSame(0, ret)
-    
-    -- Explicit opening of a non empty file, using command
-    call deleteFile fileName
-    fileName = createFile(.array~of("line1"), fileName)
-    self~assertTrue(fileName \== "")
-    'chmod a+w,a-r' fileName
-    self~streamTestingFile = fileName
-    ret = stream(fileName, "c", "open write append")
-    self~assertSame("READY:", ret) -- ko before fix
-    line = "line2"
-    ret = charout(fileName, line)
-    self~assertSame(0, ret) -- ko before fix
-    ret = lineout(fileName, line)
-    self~assertSame(0, ret)
-    ret = lineout(fileName) -- close
-    self~assertSame(0, ret)
+    setWriteOnly = 'chmod a+w,a-r'
   end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Implicit opening of an empty file
+  call deleteFile fileName
+  fileName = createFile(.array~new, fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly fileName
+  self~streamTestingFile = fileName
+  line = "line1"
+  ret = charout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName) -- close
+  self~assertSame(0, ret)
+
+::method test_open_write_only_3274050_b
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Implicit opening of a non empty file
+  call deleteFile fileName
+  fileName = createFile(.array~of("line1"), fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly fileName
+  self~streamTestingFile = fileName
+  line = "line2"
+  ret = charout(fileName, line)
+  self~assertSame(0, ret) -- ko before fix
+  ret = lineout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName) -- close
+  self~assertSame(0, ret)
+
+::method test_open_write_only_3274050_c
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Explicit opening of an empty file, using a command
+  call deleteFile fileName
+  fileName = createFile(.array~new, fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly fileName
+  self~streamTestingFile = fileName
+  ret = stream(fileName, "c", "open write append")
+  self~assertSame("READY:", ret) -- ko before fix
+  line = "line1"
+  ret = charout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName) -- close
+  self~assertSame(0, ret)
+    
+::method test_open_write_only_3274050_d
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+    cmd = 'id -u > /dev/null 2>&1'
+    output = .array~new
+    ret = issueCmd(cmd, output)
+    self~assertSame(0, ret, 'Check for root must succeed')
+    userID = output[1]
+    self~assertNotSame(0, userID, 'This test case must not be run as root')
+    setWriteOnly = 'chmod a+w,a-r'
+  end
+  else do
+    setWriteOnly = 'rem' -- no command available to set write-only
+  end
+
+  fileName = "delMe.stream.test_open_write_only"
+
+  -- Explicit opening of a non empty file, using command
+  call deleteFile fileName
+  fileName = createFile(.array~of("line1"), fileName)
+  self~assertTrue(fileName \== "")
+  setWriteOnly fileName
+  self~streamTestingFile = fileName
+  ret = stream(fileName, "c", "open write append")
+  self~assertSame("READY:", ret) -- ko before fix
+  line = "line2"
+  ret = charout(fileName, line)
+  self~assertSame(0, ret) -- ko before fix
+  ret = lineout(fileName, line)
+  self~assertSame(0, ret)
+  ret = lineout(fileName) -- close
+  self~assertSame(0, ret)
 
 
 /*----------------------------------------------------------------------------*\
