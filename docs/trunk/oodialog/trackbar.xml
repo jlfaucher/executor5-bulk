@@ -70,32 +70,56 @@
   <computeroutput>samples</computeroutput> subdirectory for some help in getting started using a track bar.
 </para>
 <para>
-  The Trackbar class sends notification messages to notify about the event. For information about notification
-  messages, refer to <link linkend="mthConnectListViewEvent">connectListViewEvent</link>.
-</para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with track bar controls:
 <variablelist>
-<varlistentry><term>Methods:</term>
-<listitem><para>Instances of the Trackbar class implement
-the methods listed in the
-<link linkend="t000030">Trackbar Instance Methods</link> table.</para>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <link linkend="tmthNewTrackeBar">newTrackBar</link>() method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a new Tab object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically define a track bar in the dialog template of a <link linkend="clsUserDialog">UserDialog</link> class,
+    use the <link linkend="tmthCreateTrackBar">createTrackBar</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying track bar control to a
+    method in the Rexx dialog object use the <link linkend="tmthConnectTrackBarEvent">connectTrackBarEvent</link>()
+    method.
+  </para> </listitem></varlistentry>
+</variablelist> </para>
 
-<table id="t000030" frame="all">
+<section id="sctMethodsTrackBar"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with <computeroutput>TrackBar</computeroutput> objects, including the pertinent methods from other classes:
+</para>
+
+<table id="tblTrackBarMethods" frame="all">
 <title>Trackbar Instance Methods</title>
 <tgroup cols="2">
+<colspec colwidth="1.5in">
 <thead>
 <row>
-<entry>Method...</entry>
-<entry>...on page</entry>
+<entry>Method</entry>
+<entry>Description</entry>
 </row>
 </thead>
 <tbody>
 <row>
-<entry>ClearSelRange</entry>
-<entry><link linkend="clearselrange">ClearSelRange</link></entry>
+<entry><link linkend="mthClearSelRange">clearSelRange</link></entry>
+<entry>clearSelRange</entry>
 </row>
 <row>
-<entry>ClearTicks</entry>
-<entry><link linkend="clearticks">ClearTicks</link></entry>
+<entry><link linkend="mthClearTicks">clearTicks</link></entry>
+<entry>clearTicks</entry>
 </row>
 <row>
 <entry>CountTicks</entry>
@@ -175,8 +199,54 @@ the methods listed in the
 </row>
 </tbody></tgroup>
 </table>
-</listitem></varlistentry>
-</variablelist>
+</section>
+
+<section id="tmthNewTrackBar"><title>newTrackBar (dialog object method)</title>
+<para>
+  Track bar objects can not be instantiated by the programmer from Rexx code. Rather a track bar object is obtained by
+  using the <link linkend="mthNewTrackBar">newTrackBar</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>-newTrackBar(--id--)---------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newTrackBar() [PlainBaseDialog method] -->
+
+
+<section id="tmthCreateTrackBar"><title>createTrackBar (UserDialog method)</title>
+<para>
+  A track bar control can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthCreateTrackBar">createTrackBar</link>() method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createTrackBar(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createTrackBar() [UserDialog method] -->
+
+
+<section id="tmthConnectTrackBarEvent"><title>connectTrackBarEvent (dialog object method)</title>
+<para>
+  To connect event notifications from an track bar control use the <link
+  linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>() method of the <link
+  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+
+<programlisting>
+<![CDATA[
+>>--connectTrackBarEvent(--id--,--event--+---------------+--)---><
+                                         +-,--methodName-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End connectTrackBarEvent() [EventNotification method] -->
+
 
 <section id="posnew"><title>pos=</title>
 <indexterm><primary>pos=</primary></indexterm>
@@ -458,7 +528,7 @@ positions of the slider.</para>
 </variablelist>
 </section>
 
-<section id="clearticks"><title>clearTicks</title>
+<section id="mthClearTicks"><title>clearTicks</title>
 <indexterm><primary>clearTicks</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -908,7 +978,7 @@ the ending position is set but the trackbar is not redrawn.
 </variablelist>
 </section>
 
-<section id="clearselrange"><title>clearSelRange</title>
+<section id="mthClearSelRange"><title>clearSelRange</title>
 <indexterm><primary>clearSelRange</primary></indexterm>
 <programlisting>
 <![CDATA[
