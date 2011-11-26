@@ -910,7 +910,7 @@ returnNil:
 
 ::method setDateSubject
   expose mailTime mailSubject
-  use strict arg time subject
+  use strict arg time, subject
   mailTime = time
   mailSubject = subject
 
