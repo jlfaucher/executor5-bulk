@@ -43,6 +43,7 @@
  * The documentation for each routine is in the comments preceding each routine.
  */
 
+::requires '..\..\OleUtils.frm'
 
 /** getDefaultContacts()
  *

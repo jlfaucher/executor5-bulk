@@ -44,7 +44,15 @@
  * contained in each store.
  */
 
-  outLook = .oleObject~new("Outlook.Application")
-  z = printFolders(outLook)
+ if \ isOORexx4OrLater() then do
+   say "The OLE sample programs require ooRexx 4.0.0 or later.  Aborting"
+   return 99
+ end
 
-::requires 'outlook.frm'
+ outLook = createOleObject("Outlook.Application", .true)
+ if outLook == .nil then return 99
+
+ z = printFolders(outLook)
+ return z
+
+::requires '..\outlook.frm'
