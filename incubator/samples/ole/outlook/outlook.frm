@@ -102,7 +102,6 @@
  *
  * @note    enumerateFolders() is not public by design.
  */
-
 ::routine enumerateFolders
   use strict arg rFolder, pad
 
@@ -177,6 +176,28 @@
 
   return .nil
 
+
+/** getStoreByIndex(outLook, index)
+ *
+ * Returns the store at the given index, or .nil if there is no such index.
+ *
+ * @param  outLook    An OutLook application object.
+ *
+ * @param  index      The index of the Store in the Stores collection for the
+ *                    current session.
+ *
+ * @return  The Store at the specified index on success, otherwise .nil.
+ */
+::routine getStoreByIndex public
+  use strict arg outLook, index
+
+  stores = outLook~session~stores
+  count = stores~count
+
+  if count >= index then return stores[index]
+  else return .nil
+
+
 /** getStoreIndex()
  *
  * Given the file path name of a Store, returns its
@@ -243,7 +264,7 @@
   return .true
 
 
-/** getFolderFromStore()
+/** getFolderFromStore(store, name)
  *
  * Finds and returns a folder within a store.
  *
@@ -256,10 +277,48 @@
   use strict arg store, name
 
   root = store~getRootFolder
-  folders = root~folders
+  return searchFolders(root, name)
+
+
+/** getFolderFromFolder(folder, name)
+ *
+ * Returns the named folder located within the specified folder tree, if found.
+ *
+ * @param  folder  The root folder in the folder tree to search.
+ * @param  name    The name of the folder being searched for.
+ *
+ * @return On success the named folder, otherwise the .nil ojbect.
+ */
+::routine getFolderFromFolder public
+  use strict arg folder, name
+
+  return searchFolders(folder, name)
+
+
+/** searchFolder(rFolder, name)
+ *
+ * Recusively searchs the given folder for a folder with the given name and
+ * returns the folder if found.
+ *
+ * @param  rFolder  The folder to search.
+ * @param  name     The name of the folder being searched for.
+ *
+ * @return On success the named folder, otherwise the .nil ojbect.
+ *
+ * @note  This is a private method by design.  Use getFolderFromStore() or
+ *        getFolderFromFolder() in a program that uses this framework.
+ */
+::routine searchFolders
+  use strict arg rFolder, name
+
+  folders = rFolder~folders
+  if folders~count == 0 then return .nil
 
   do folder over folders
     if folder~name == name then return folder
+
+    obj = searchFolders(folder, name)
+    if obj~isA(.oleObject) then return obj -- This is our folder.
   end
 
   return .nil

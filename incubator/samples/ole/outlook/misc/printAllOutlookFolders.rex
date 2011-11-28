@@ -37,11 +37,9 @@
 
 /** printAllOutlookFolders.rex
  *
- * Prints out information on the Outlook 'stores'
- * for the current session.  A 'store' is used by
- * Outlook to store e-mails and other items.  The
- * information printed includes all the folders
- * contained in each store.
+ * Prints out information on the Outlook 'stores' for the current session.  A
+ * 'store' is used by Outlook to store e-mails and other items.  The information
+ * printed includes all the folders contained in each store.
  */
 
  if \ isOORexx4OrLater() then do
@@ -49,8 +47,12 @@
    return 99
  end
 
- outLook = createOleObject("Outlook.Application", .true)
- if outLook == .nil then return 99
+  outLook = createOleObject("Outlook.Application", .true)
+  if outLook == .nil then do
+    say 'OutLook does not appear to be installed on this computer.'
+    say 'The printAllOutlookFolders.rex example program requires Outlook.'
+    return 9
+  end
 
  z = printFolders(outLook)
  return z

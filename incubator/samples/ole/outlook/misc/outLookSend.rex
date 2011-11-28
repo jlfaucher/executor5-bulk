@@ -37,11 +37,32 @@
 
 /**
  * A very simple example of sending an e-mail through OutLook.
+ *
+ * To run the program you will first need to edit the recipient variable below
+ * and set it to a valid e-mail address.  Presumably your e-mail address.
+ *
+ * The program can be run any number of times.
+ *
+ * This program may cause an OutLook warning message box to appear.  Pleas read
+ * the outlook read me first file in the same directory as the outlook.frm file,
+ * the ReadMe.first file.
+ *
+ * There is an interesting error that arises from this line:
+ *
+ *   emailItem~recipients~add(recipient)
+ *
+ * which will show:
+ *
+ *   Error 92.901:  An unknown OLE error occurred (HRESULT=80004004).
+ *
+ * I struggled to find a solution to the error and finally came up with the
+ * solution here.  That is to get the In Box folder.  The In Box folder itself
+ * is not needed in this program.
  */
 
   -- Change EDIT to a valid e-mail address.  Like tom@gmail.com
   recipient = 'EDIT'
-  recipient = 'miesfeld@gmail.com'
+  recipient = 'bmiesfeld@san.rr.com'
 
   if recipient == 'EDIT' then do
     say 'You must edit the outLookSend.rex file so it has a valid'
@@ -49,35 +70,32 @@
     return 99
   end
 
-  outLook = .oleObject~new("Outlook.Application")
-
-  didActivate = .false
-
-  explorer = outLook~activeExplorer
-  if explorer == .nil then do
-    nameSpace = outLook~getNamespace("MAPI")
-  	inBox = nameSpace~getDefaultFolder(outLook~getConstant(olFolderInbox))
-    explorer = inBox~getExplorer
-    explorer~activate
-    explorer~windowState = explorer~getConstant(olMinimized)
-    didActivate = .true
+  if \ isOORexx4OrLater() then do
+   say "The OLE sample programs require ooRexx 4.0.0 or later.  Aborting"
+   return 99
   end
 
-  id = outLook~getConstant(olMailItem)
+  outLook = createOleObject("Outlook.Application", .true)
+  if outLook == .nil then do
+    say 'OutLook does not appear to be installed on this computer.'
+    say 'The saveDraftOutlook.rex example program requires Outlook.'
+    return 9
+  end
 
-  emailItem = outLook~createItem(id)
+  -- This is the simplest solution to the OLE error: Get the In Box folder.
+  -- Note that the In Box folder is not needed for this program.  You can
+  -- comment out the next 2 lines to see the  error.
+  nameSpace = outLook~getNamespace("MAPI")
+	inBox = nameSpace~getDefaultFolder(outLook~getConstant(olFolderInbox))
 
-  emailItem~body = "This is only a test.  A Rexx Test"
+  -- Create an e-mail item, save it, and then send it.
+  emailItem = outLook~createItem(outLook~getConstant(olMailItem))
   emailItem~subject = "NEW Test of ooRexx OLEObject outlook send mail"
-  emailItem~Recipients~add(recipient)
+  emailItem~recipients~add(recipient)
+  emailItem~body = "This is only a test.  A Rexx Test"
 
   emailItem~save
   emailItem~send
 
-  if didActivate then do
-    z = SysSleep(3)
-    explorer~close
-  end
 
-  outLook~quit
-
+::requires '..\outlook.frm'

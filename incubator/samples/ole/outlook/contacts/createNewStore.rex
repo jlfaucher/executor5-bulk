@@ -64,10 +64,16 @@ use arg fileName
     fileName = CN~STORE_PATH
   end
 
-  outLook = .oleObject~new("Outlook.Application")
+  outLook = createOleObject("Outlook.Application", .true)
+  if outLook == .nil then do
+    say 'OutLook does not appear to be installed on this computer.'
+    say 'The createNewStore.rex example program requires Outlook.'
+    return 9
+  end
+
   ret = createNewStore(outLook, fileName)
 
   if ret == 0 then say 'Created new OutLook store in:' fileName
   else say 'Failed to create new store ('fileName').'
 
-::requires 'outlook.frm'
+::requires '..\outlook.frm'

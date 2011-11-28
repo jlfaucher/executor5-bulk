@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,17 +36,12 @@
 /*----------------------------------------------------------------------------*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  File:    outlookEvents.rex                        Author:      Mark Miesfeld
-                                                    Creation date:  09/22/2006
-  Organization: RexxLA
-  Project:      ooRexx Examples                     Last update:    06/15/2008
+  File:    outlookEvents.rex                        Creation date:  09/22/2006
+                                                    Last update:    06/15/2008
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  Category:
-    OLE Object, ooDialog
-
   Syntax:
-    rexx outlookEvents.rex arg1 [string2]
+    rexx outlookEvents.rex searchString1 [searchString2]
 
   Purpose:
     Demonstrates some techniques for working with events when using .OLEObject.
@@ -63,12 +58,12 @@
     Nothing, but the example is of little use if Outlook is not installed.
 
   Input:
-    arg1     REQUIRED
-      If arg1 is /p then the user is prompted for the two search strings.
-      Otherwise, this is the first string (substring) to search for in the
-      subject field of e-mails in the user's Outlook Inbox.
+    searchString1     REQUIRED
+      If searchString1 is /p then the user is prompted for the two search
+      strings.  Otherwise, this is the first string (substring) to search for in
+      the subject field of e-mails in the user's Outlook Inbox.
 
-    string2  OPTIONAL
+    searchString2  OPTIONAL
       Second string (substring) to search for in the subject field of e-mails
       in the user's Outlook Inbox.  If not given the string 're' is used.
 
@@ -94,6 +89,18 @@
     actually does something.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 use arg cmdLine
+
+  -- Comment out this code and the return if you want to try the program.
+  say
+  say 'This example program currently has some problems.'
+  say 'By default it will not execute.  You can change'
+  say 'the initial code to let it run by commenting out'
+  say 'the return to try it.'
+  say ''
+  say 'Running it will not hurt anything, it is just likey'
+  say 'to hang.  Use Ctrl-C to kill it.'
+  say 'Aborting.'
+  return 99
 
   if arg(1, 'O') then return displaySyntax()
 
@@ -919,8 +926,10 @@ returnNil:
 
   iconControl = self~getStaticControl(IDC_ICON_QUESTION)
   if iconControl <> .nil then do
-    hIcon = iconControl~loadSysIcon("QUESTION")
-    ret = iconControl~setIcon(hIcon)
+    id = .Image~toID(IDI_QUESTION)
+    type = .Image~toID(IMAGE_ICON)
+    image = .Image~getImage(id, type)
+    ret = iconControl~setIcon(image)
   end
 
   self~getStaticControl(IDC_ST_RECEIVED_TEXT)~setText(mailTime)

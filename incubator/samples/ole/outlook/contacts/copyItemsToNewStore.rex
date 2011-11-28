@@ -37,11 +37,9 @@
 
 /** copyItemsToNewStore.rex
  *
- * Demonstration of using the oleObject
- * to work with Outlook.
+ * Demonstration of using the oleObject to work with Outlook.
  *
- * Requires 'outlook.frm' which contains
- * useful routines.
+ * Requires 'outlook.frm' which contains  useful routines.
  *
  * What this program does is create a new Store, add a Contacts folder to the
  * new Store, and then populate the Contacts folder with copies of the contact
@@ -65,7 +63,12 @@
  */
 
 
-  outLook = .oleObject~new("Outlook.Application")
+  outLook = createOleObject("Outlook.Application", .true)
+  if outLook == .nil then do
+    say 'OutLook does not appear to be installed on this computer.'
+    say 'The copyItemsToNewStore.rex example program requires Outlook.'
+    return 9
+  end
 
   -- Unique names for the added store and the
   -- added contacts folder.  This allows you
@@ -113,4 +116,4 @@
     dup~move(contactsFolder)
   end
 
-::requires 'outlook.frm'
+::requires '..\outlook.frm'

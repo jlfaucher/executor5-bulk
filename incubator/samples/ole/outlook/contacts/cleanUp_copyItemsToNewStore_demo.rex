@@ -63,7 +63,13 @@ use arg what
   validArgs = .set~of('all', 'folder', 'items')
   if \ validArgs~hasIndex(what) then return printHelp()
 
-  outLook = .oleObject~new("Outlook.Application")
+  outLook = createOleObject("Outlook.Application", .true)
+  if outLook == .nil then do
+    say 'OutLook does not appear to be installed on this computer.'
+    say 'The cleanUp_copyItemsToNewStore_demo.rex example program'
+    say 'requires Outlook.'
+    return 9
+  end
 
   storePath =  .CN~STORE_PATH
   folderName = .CN~CONTACTS_FOLDER
@@ -93,7 +99,7 @@ use arg what
 
   return 0
 
-::requires 'outlook.frm'
+::requires '..\outlook.frm'
 
 ::routine printHelp
 

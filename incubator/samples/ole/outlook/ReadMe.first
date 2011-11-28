@@ -1,0 +1,88 @@
+
+
+                       OLE Samples - Outlook Samples
+                       =============================
+
+
+   This directory and its subdirectories contain example programs
+   showing how to use the .oleObject class to work with Microsoft
+   OutLook.  Please note the following:
+
+   1.) The programs have been tested with OutLook 2007 and OutLook
+   2010.  Some of the programs were originally tested with OutLook
+   2003, however, most if not all programs have been updated.
+
+   At this point it is not practical to test with OutLook 2003 and so
+   it is unknown if any of the programs work with OutLook 2003.  On the
+   other hand, it is not known that any program does not work with
+   OutLook 2003.
+
+
+   2.) The programs have been designed to not interfere with your
+   regular OutLook stuff.  Folder names, mail item subjects, etc., when
+   created are given unique names that it is unlikely will exist in your
+   OutLook.  Nothing is deleted that might possibly be one your
+   important e-mails or folders.
+
+   The programs have been run dozens, if not hundreds, of times by the
+   author(s) with no damage or harm to OutLook or its data.
+
+   Nevertheless, the prudent person would probably be wise to review a
+   program's code before executing the program the first time.  In
+   addition, the comments preceding the code in each program file should
+   be read to gain an understanding of what the program does.
+
+   3.) The programs are intended to be well-documented to give some
+   insight into using the .oleObject class with OutLook.
+
+   4.) Most, if not all, the programs ::require 'outlook.frm', which in
+   turn has a ::require directive for 'OleUtils.frm'.  'outlook.frm' is
+   in the same directory as this read me file.  'OleUtils.frm' is in the
+   parent directory of the directory this read me file is in.
+
+   If you download individual programs, you will almost surely need to
+   download the framework (*.frm) files also.  In addition, you will
+   either need to maintain the same relative directory structure for the
+   framework files, or edit the ::requires directive(s) in the example
+   programs.  I.e., the .\contacts\createNewStore.rex program has this
+   ::require directive:
+
+     ::requires '..\outlook.frm'
+
+   so outlook.frm needs to be placed in the parent directory of the
+   directory you place the createNewStore.rex program in, or the
+   ::requires directive needs to be edited to point to 'outlook.frm'
+   correctly.
+
+
+                   Programmatic Access in OutLook
+                   =============================
+
+   MicroSoft has made it difficult for external programs to gain access
+   to e-mail addresses in your OutLook data, or to send e-mails from
+   your OutLook account.  Rexx programs are of course external programs.
+
+   When you execute some of the example programs, OutLook will display a
+   message box informing you that an external program is attempting to
+   gain access or send mail.  The message box will give you the option
+   of allowing or denying this access.  If you deny the access, the
+   example program will fail.  If you allow the access, the example
+   program will execute as intended.
+
+   These message boxes can be annoying when you are experimenting with
+   ooRexx control of OutLook.  You can disable this feature of OutLook
+   temporarily, or permanently, by changing a setting in OutLook:
+
+   OutLook 2010 -> File -> Options -> Trust Center ->
+                "Microsoft OutLook Trust Center" ->
+                Trust Center Settings ... -> Programmatic Access ->
+
+   Check the "Never warn me about suspicious activity (not recommended)"
+   radion button.
+
+   OutLook 2007 -> Tools -> Trust Center ... -> Programmatic Access ->
+
+   Check the "Never warn me about suspicious activity (not recommended)"
+   radion button.
+
+
