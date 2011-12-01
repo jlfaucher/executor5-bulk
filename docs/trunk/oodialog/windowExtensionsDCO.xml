@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -59,34 +59,13 @@
   linkend="chpDialogObject">dialog object</link> rather than a dialog control object.
 </para>
 
-<section id="wedcoGetFont"><title>getFont</title>
+<section id="wedcoCreateBrush"><title>createBrush</title>
 <programlisting>
-WindowExtensions::<link linkend="mthGetFont">getFont</link>
+WindowExtensions::<link linkend="mthCreateBrush">createBrush</link>
 
 <![CDATA[
->>--getFont----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoSetFont"><title>setFont</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetFont">setFont</link>
-
-<![CDATA[
->>--setFont(--fontHandle--+---------+--)-------------------------><
-                          +-,redraw-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoCreateFontEx"><title>createFontEx</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
-
-<![CDATA[
->>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
-                            +-,-pointSize--+  +-,-additional--+
+>>--createBrush(--+---------+--+------------------+--)-------------------------><
+                  +--color--+  +-,-brushSpecifier-+
 ]]>
 </programlisting>
 </section>
@@ -102,6 +81,88 @@ WindowExtensions::<link linkend="mthCreateFont">createFont</link>
 </programlisting>
 </section>
 
+<section id="wedcoCreateFontEx"><title>createFontEx</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
+
+<![CDATA[
+>>--createFontEx(--fontName-+--------------+--+---------------+--)-------------><
+                            +-,-pointSize--+  +-,-additional--+
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoCreatePen"><title>createPen</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCreatePen">createPen</link>
+
+<![CDATA[
+>>--createPen(--+-------+--+----------+--+----------+--)-----------------------><
+                +-width-+  +-,-style--+  +-,-color--+
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoCursorAppStarting"><title>cursor_appstarting</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCursorAppStarting">cursor_appstarting</link>
+
+<![CDATA[
+>>--cursor_appstarting-------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoCursorArrow"><title>cursorArrow</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCursorArrow">cursor_arrow</link>
+
+<![CDATA[
+>>--cursor_arrow-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoCursorCross"><title>cursor_cross</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCursorCross">cursor_cross</link>
+
+<![CDATA[
+>>--cursor_cross-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoCursorNo"><title>cursor_no</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCursorNo">cursor_no</link>
+
+<![CDATA[
+>>--cursor_no----------------------------------------><
+]]>
+</programlisting>
+</section>
+r
+<section id="wedcoCursorPos"><title>cursorPos</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCursorPos">cursorPos</link>
+
+<![CDATA[
+>>--cursorPos----------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoCursorWait"><title>cursor_wait</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCursorWait">cursor_wait</link>
+
+<![CDATA[
+>>--cursor_wait--------------------------------------><
+]]>
+</programlisting>
+</section>
+
 <section id="wedcoDeleteFont"><title>deleteFont </title>
 <programlisting>
 WindowExtensions::<link linkend="mthDeleteFont">deleteFont </link>
@@ -112,12 +173,155 @@ WindowExtensions::<link linkend="mthDeleteFont">deleteFont </link>
 </programlisting>
 </section>
 
-<section id="wedcoScrollClsWE"><title>scroll</title>
+<section id="wedcoDeleteObject"><title>deleteObject</title>
 <programlisting>
-WindowExtensions::<link linkend="mthScrollClsWE">scroll</link>
+WindowExtensions::<link linkend="mthDeleteObject">deleteObject</link>
 
 <![CDATA[
->>--scroll(--cx--,--cy--)----------------------------><
+>>--deleteObject(--obj--)----------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoDrawAngleArc"><title>drawAngleArc</title>
+<programlisting>
+WindowExtensions::<link linkend="mthDrawAngleArc">drawAngleArc</link>
+
+<![CDATA[
+>>--drawAngleArc(-dc-,-xs-,-ys-,-x-,-y-,-radius-,-startangle-,-sweepangle-)----><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoDrawArc"><title>drawArc</title>
+<programlisting>
+WindowExtensions::<link linkend="mthDrawArc">drawArc</link>
+
+<![CDATA[
+>>--drawArc(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
+                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoDrawLine"><title>drawLine</title>
+<programlisting>
+WindowExtensions::<link linkend="mthDrawLine">drawLine</link>
+
+<![CDATA[
+>>--drawLine(--dc--,--+-------+--,--+-------+--,--toX--,--toY--)-><
+                      +-fromX-+     +-fromY-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoDrawPie"><title>drawPie</title>
+<programlisting>
+WindowExtensions::<link linkend="mthDrawPie">drawPie</link>
+
+<![CDATA[
+>>--drawPie(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
+                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoDrawPixel"><title>drawPixel</title>
+<programlisting>
+WindowExtensions::<link linkend="mthDrawPixel">drawPixel</link>
+
+<![CDATA[
+>>--drawPixel(--dc--,--x--,--y--,--color--)----------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoFillDrawing"><title>fillDrawing</title>
+<programlisting>
+WindowExtensions::<link linkend="mthFillDrawing">fillDrawing</link>
+
+<![CDATA[
+>>--fillDrawing(--dc--,--x--,--y--,--color--)----><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoFreeDC"><title>freeDC</title>
+<programlisting>
+WindowExtensions::<link linkend="mthFreeDC">freeDC</link>
+
+<![CDATA[
+>>--freeDC(--dc--)-----------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoFontColor"><title>fontColor</title>
+<programlisting>
+WindowExtensions::<link linkend="mthFontColor">fontColor</link>
+
+<![CDATA[
+>>--fontColor(--color--,--dc--)----------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoFontToDC"><title>fontToDC</title>
+<programlisting>
+WindowExtensions::<link linkend="mthFontToDC">fontToDC</link>
+
+<![CDATA[
+>>--fontToDC(--dc--,--hFont--)-----------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoGetArcDirection"><title>getArcDirection</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetArcDirection">getArcDirection</link>
+
+<![CDATA[
+>>--getArcDirection(--dc--)--------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoGetCursorPos"><title>getCursorPos</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetCursorPos">getCursorPos</link>
+
+<![CDATA[
+>>--getCursorPos-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoGetDC"><title>getDC</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetDC">getDC</link>
+
+<![CDATA[
+>>--getDC--------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoGetFont"><title>getFont</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetFont">getFont</link>
+
+<![CDATA[
+>>--getFont----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoGetPixel"><title>getPixel</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetPixel">getPixel</link>
+
+<![CDATA[
+>>--getPixel(--dc--,--x--,--y--)---------------------><
 ]]>
 </programlisting>
 </section>
@@ -128,38 +332,6 @@ WindowExtensions::<link linkend="mthHScrollPos">hScrollPos</link>
 
 <![CDATA[
 >>--hScrollPos---------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoSetHScrollPos"><title>setHScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetHScrollPos">setHScrollPos</link>
-
-<![CDATA[
->>--setHScrollPos(--position--+-----------+--)-------><
-                              +-,-redraw--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoVScrollPos"><title>vScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthVScrollPos">vScrollPos</link>
-
-<![CDATA[
->>--vScrollPos---------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoSetVScrollPos"><title>setVScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetVScrollPos">setVScrollPos</link>
-
-<![CDATA[
->>--setVScrollPos(--position--+-----------+--)-------><
-                              +-,-redraw--+
 ]]>
 </programlisting>
 </section>
@@ -175,12 +347,75 @@ WindowExtensions::<link linkend="mthLoadBitmap">loadBitmap</link>
 </programlisting>
 </section>
 
+<section id="wedcoObjectToDC"><title>objectToDC</title>
+<programlisting>
+WindowExtensions::<link linkend="mthObjectToDC">objectToDC</link>
+
+<![CDATA[
+>>--objectToDC(--dc--,--obj--)-----------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoOpaqueText"><title>opaqueText</title>
+<programlisting>
+WindowExtensions::<link linkend="mthOpaqueText">opaqueText</link>
+
+<![CDATA[
+>>--opaqueText(--dc--)-------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoRectangle"><title>rectangle</title>
+<programlisting>
+WindowExtensions::<link linkend="mthRectangle">rectangle</link>
+
+<![CDATA[
+>>--rectangle(--dc--,--x--,--y--,--x2--,--y2--+-----------+--)-----------------><
+                                              +-,-keyWord-+
+]]>
+</programlisting>
+</section>
+
 <section id="wedcoRemoveBitmap"><title>removeBitmap</title>
 <programlisting>
 WindowExtensions::<link linkend="mthRemoveBitmap">removeBitmap</link>
 
 <![CDATA[
 >>--removeBitmap(--hBitmap--)------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoRestoreCursorShape"><title>restoreCursorShape</title>
+<programlisting>
+WindowExtensions::<link linkend="mthRestoreCursorShape">restoreCursorShape</link>
+
+<![CDATA[
+>>--restoreCursorShape(--+--------------+--)---------><
+                         +-cursorHandle-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoScrollClsWE"><title>scroll</title>
+<programlisting>
+WindowExtensions::<link linkend="mthScrollClsWE">scroll</link>
+
+<![CDATA[
+>>--scroll(--cx--,--cy--)----------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoSetArcDirection"><title>setArcDirection</title>
+<programlisting>
+WindowExtensions::<link linkend="mthSetArcDirection">setArcDirection</link>
+
+<![CDATA[
+>>--setArcDirection(--dc--+--------------+--)--------><
+                          +-,-direction--+
 ]]>
 </programlisting>
 </section>
@@ -206,83 +441,55 @@ Generic form:
 </programlisting>
 </section>
 
-<section id="wedcoGetCursorPos"><title>getCursorPos</title>
+<section id="wedcoSetFont"><title>setFont</title>
 <programlisting>
-WindowExtensions::<link linkend="mthGetCursorPos">getCursorPos</link>
+WindowExtensions::<link linkend="mthSetFont">setFont</link>
 
 <![CDATA[
->>--getCursorPos-------------------------------------><
+>>--setFont(--fontHandle--+---------+--)-------------------------><
+                          +-,redraw-+
 ]]>
 </programlisting>
 </section>
 
-<section id="wedcoRestoreCursorShape"><title>restoreCursorShape</title>
+<section id="wedcoSetHScrollPos"><title>setHScrollPos</title>
 <programlisting>
-WindowExtensions::<link linkend="mthRestoreCursorShape">restoreCursorShape</link>
+WindowExtensions::<link linkend="mthSetHScrollPos">setHScrollPos</link>
 
 <![CDATA[
->>--restoreCursorShape(--+--------------+--)---------><
-                         +-cursorHandle-+
+>>--setHScrollPos(--position--+-----------+--)-------><
+                              +-,-redraw--+
 ]]>
 </programlisting>
 </section>
 
-<section id="wedcoCursorArrow"><title>cursorArrow</title>
+<section id="wedcoSetVScrollPos"><title>setVScrollPos</title>
 <programlisting>
-WindowExtensions::<link linkend="mthCursorArrow">cursor_arrow</link>
+WindowExtensions::<link linkend="mthSetVScrollPos">setVScrollPos</link>
 
 <![CDATA[
->>--cursor_arrow-------------------------------------><
+>>--setVScrollPos(--position--+-----------+--)-------><
+                              +-,-redraw--+
 ]]>
 </programlisting>
 </section>
 
-<section id="wedcoCursorAppStarting"><title>cursor_appstarting</title>
+<section id="wedcoTransparentText"><title>transparentText</title>
 <programlisting>
-WindowExtensions::<link linkend="mthCursorAppStarting">cursor_appstarting</link>
+WindowExtensions::<link linkend="mthTransparentText">transparentText</link>
 
 <![CDATA[
->>--cursor_appstarting-------------------------------><
+>>--transparentText(--dc--)--------------------------><
 ]]>
 </programlisting>
 </section>
 
-<section id="wedcoCursorCross"><title>cursor_cross</title>
+<section id="wedcoVScrollPos"><title>vScrollPos</title>
 <programlisting>
-WindowExtensions::<link linkend="mthCursorCross">cursor_cross</link>
+WindowExtensions::<link linkend="mthVScrollPos">vScrollPos</link>
 
 <![CDATA[
->>--cursor_cross-------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoCursorNo"><title>cursor_no</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorNo">cursor_no</link>
-
-<![CDATA[
->>--cursor_no----------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoCursorWait"><title>cursor_wait</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorWait">cursor_wait</link>
-
-<![CDATA[
->>--cursor_wait--------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoCursorPos"><title>cursorPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorPos">cursorPos</link>
-
-<![CDATA[
->>--cursorPos----------------------------------------><
+>>--vScrollPos---------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -304,213 +511,6 @@ WindowExtensions::<link linkend="mthWriteDirect">writeDirect</link>
 
 <![CDATA[
 >>--writeDirect(--dc--,--xPos--,--yPos--,--text--)---><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoCreateBrush"><title>createBrush</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreateBrush">createBrush</link>
-
-<![CDATA[
->>--createBrush(--+---------+--+------------------+--)-------------------------><
-                  +--color--+  +-,-brushSpecifier-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoCreatePen"><title>createPen</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreatePen">createPen</link>
-
-<![CDATA[
->>--createPen(--+-------+--+----------+--+----------+--)-----------------------><
-                +-width-+  +-,-style--+  +-,-color--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoDeleteObject"><title>deleteObject</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDeleteObject">deleteObject</link>
-
-<![CDATA[
->>--deleteObject(--obj--)----------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoGetDC"><title>getDC</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetDC">getDC</link>
-
-<![CDATA[
->>--getDC--------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoFreeDC"><title>freeDC</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFreeDC">freeDC</link>
-
-<![CDATA[
->>--freeDC(--dc--)-----------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoObjectToDC"><title>objectToDC</title>
-<programlisting>
-WindowExtensions::<link linkend="mthObjectToDC">objectToDC</link>
-
-<![CDATA[
->>--objectToDC(--dc--,--obj--)-----------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoFontToDC"><title>fontToDC</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFontToDC">fontToDC</link>
-
-<![CDATA[
->>--fontToDC(--dc--,--hFont--)-----------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoRectangle"><title>rectangle</title>
-<programlisting>
-WindowExtensions::<link linkend="mthRectangle">rectangle</link>
-
-<![CDATA[
->>--rectangle(--dc--,--x--,--y--,--x2--,--y2--+-----------+--)-----------------><
-                                              +-,-keyWord-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoDrawLine"><title>drawLine</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawLine">drawLine</link>
-
-<![CDATA[
->>--drawLine(--dc--,--+-------+--,--+-------+--,--toX--,--toY--)-><
-                      +-fromX-+     +-fromY-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoDrawPixel"><title>drawPixel</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawPixel">drawPixel</link>
-
-<![CDATA[
->>--drawPixel(--dc--,--x--,--y--,--color--)----------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoGetPixel"><title>getPixel</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetPixel">getPixel</link>
-
-<![CDATA[
->>--getPixel(--dc--,--x--,--y--)---------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoFillDrawing"><title>fillDrawing</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFillDrawing">fillDrawing</link>
-
-<![CDATA[
->>--fillDrawing(--dc--,--x--,--y--,--color--)----><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoDrawArc"><title>drawArc</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawArc">drawArc</link>
-
-<![CDATA[
->>--drawArc(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
-                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoDrawPie"><title>drawPie</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawPie">drawPie</link>
-
-<![CDATA[
->>--drawPie(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
-                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoDrawAngleArc"><title>drawAngleArc</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawAngleArc">drawAngleArc</link>
-
-<![CDATA[
->>--drawAngleArc(-dc-,-xs-,-ys-,-x-,-y-,-radius-,-startangle-,-sweepangle-)----><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoGetArcDirection"><title>getArcDirection</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetArcDirection">getArcDirection</link>
-
-<![CDATA[
->>--getArcDirection(--dc--)--------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoSetArcDirection"><title>setArcDirection</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetArcDirection">setArcDirection</link>
-
-<![CDATA[
->>--setArcDirection(--dc--+--------------+--)--------><
-                          +-,-direction--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoFontColor"><title>fontColor</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFontColor">fontColor</link>
-
-<![CDATA[
->>--fontColor(--color--,--dc--)----------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoTransparentText"><title>transparentText</title>
-<programlisting>
-WindowExtensions::<link linkend="mthTransparentText">transparentText</link>
-
-<![CDATA[
->>--transparentText(--dc--)--------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedcoOpaqueText"><title>opaqueText</title>
-<programlisting>
-WindowExtensions::<link linkend="mthOpaqueText">opaqueText</link>
-
-<![CDATA[
->>--opaqueText(--dc--)-------------------------------><
 ]]>
 </programlisting>
 </section>
