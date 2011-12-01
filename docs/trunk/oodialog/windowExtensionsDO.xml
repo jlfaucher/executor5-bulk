@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -52,23 +52,13 @@
   framework, and many of the methods are not window specific methods.
 </para>
 
-<section id="wedoGetFont"><title>getFont</title>
+<section id="wedoCreateFont"><title>createFont</title>
 <programlisting>
-WindowExtensions::<link linkend="mthGetFont">getFont</link>
+WindowExtensions::<link linkend="mthCreateFont">createFont</link>
 
 <![CDATA[
->>--getFont----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetFont"><title>setFont</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetFont">setFont</link>
-
-<![CDATA[
->>--setFont(--fontHandle--+---------+--)-------------------------><
-                          +-,redraw-+
+>>--createFont(--+----------+-+------------+-+---------+-+-------------+--)----><
+                 +-fontName-+ +-,-fontSize-+ +-,-style-+ +-,-fontWidth-+
 ]]>
 </programlisting>
 </section>
@@ -84,17 +74,6 @@ WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
 </programlisting>
 </section>
 
-<section id="wedoCreateFont"><title>createFont</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreateFont">createFont</link>
-
-<![CDATA[
->>--createFont(--+----------+-+------------+-+---------+-+-------------+--)----><
-                 +-fontName-+ +-,-fontSize-+ +-,-style-+ +-,-fontWidth-+
-]]>
-</programlisting>
-</section>
-
 <section id="wedoDeleteFont"><title>deleteFont </title>
 <programlisting>
 WindowExtensions::<link linkend="mthDeleteFont">deleteFont </link>
@@ -105,12 +84,22 @@ WindowExtensions::<link linkend="mthDeleteFont">deleteFont </link>
 </programlisting>
 </section>
 
-<section id="wedoScrollClsWE"><title>scroll</title>
+<section id="wedoFontToDC"><title>fontToDC</title>
 <programlisting>
-WindowExtensions::<link linkend="mthScrollClsWE">scroll</link>
+WindowExtensions::<link linkend="mthFontToDC">fontToDC</link>
 
 <![CDATA[
->>--scroll(--cx--,--cy--)----------------------------><
+>>--fontToDC(--dc--,--hFont--)-----------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoGetFont"><title>getFont</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetFont">getFont</link>
+
+<![CDATA[
+>>--getFont----------------------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -136,12 +125,23 @@ WindowExtensions::<link linkend="mthSetHScrollPos">setHScrollPos</link>
 </programlisting>
 </section>
 
-<section id="wedoVScrollPos"><title>vScrollPos</title>
+<section id="wedoScrollClsWE"><title>scroll</title>
 <programlisting>
-WindowExtensions::<link linkend="mthVScrollPos">vScrollPos</link>
+WindowExtensions::<link linkend="mthScrollClsWE">scroll</link>
 
 <![CDATA[
->>--vScrollPos---------------------------------------><
+>>--scroll(--cx--,--cy--)----------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoSetFont"><title>setFont</title>
+<programlisting>
+WindowExtensions::<link linkend="mthSetFont">setFont</link>
+
+<![CDATA[
+>>--setFont(--fontHandle--+---------+--)-------------------------><
+                          +-,redraw-+
 ]]>
 </programlisting>
 </section>
@@ -363,12 +363,12 @@ WindowExtensions::<link linkend="mthObjectToDC">objectToDC</link>
 </programlisting>
 </section>
 
-<section id="wedoFontToDC"><title>fontToDC</title>
+<section id="wedoOpaqueText"><title>opaqueText</title>
 <programlisting>
-WindowExtensions::<link linkend="mthFontToDC">fontToDC</link>
+WindowExtensions::<link linkend="mthOpaqueText">opaqueText</link>
 
 <![CDATA[
->>--fontToDC(--dc--,--hFont--)-----------------------><
+>>--opaqueText(--dc--)-------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -498,12 +498,12 @@ WindowExtensions::<link linkend="mthTransparentText">transparentText</link>
 </programlisting>
 </section>
 
-<section id="wedoOpaqueText"><title>opaqueText</title>
+<section id="wedoVScrollPos"><title>vScrollPos</title>
 <programlisting>
-WindowExtensions::<link linkend="mthOpaqueText">opaqueText</link>
+WindowExtensions::<link linkend="mthVScrollPos">vScrollPos</link>
 
 <![CDATA[
->>--opaqueText(--dc--)-------------------------------><
+>>--vScrollPos---------------------------------------><
 ]]>
 </programlisting>
 </section>
