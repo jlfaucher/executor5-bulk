@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-05 17Aug11
+<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-06 29Nov11
      5.1 - Dialog Initiation - using the newInstance class method.
      5.2 - Compiling a binary resource file
      5.3 - Differences between RcDialog and ResDialog
@@ -51,8 +51,9 @@
      v00-03 13Aug11: Minor mods after pdf printed.
      v00-04 15Aug11: Corrected error - modal because of ~execute, not 'showtop'.
      v00-05 17Aug11: Updated to reflect change to using .application~setdefaults.
+     v00-06 29Nov11: Updated to discuss disabling close (or doing something to
+                     over-ride normal Windows behaviour).
 -->
-
 <chapter id="chapFive">
     <title>Using Binary Resource Dialogs</title>
     <indexterm>
@@ -75,7 +76,7 @@
         <computeroutput>CustomerView</computeroutput>. In particular, aside from controls not used
       in previous exercises, the behavior includes more realistic application-level edit checks -
       that is, implementation of some (fairly trivial) "business rules". </para>
-    <section id="chap05-initdialog">
+  <section id="chap05-initdialog">
       <title>Dialog Initiation</title>
       <!-- section 5.1 -->
       <para>Previous exercise have used either the "application" or "startup" program, or a separate
@@ -112,7 +113,7 @@
           <computeroutput>.ProductView~new()</computeroutput> statement allows file paths. </para>
     </section>
     <!-- End of section 5.1 -->
-    <section id="chap05-resfile">
+  <section id="chap05-resfile">
       <title>Using a Binary Resource File</title>
       <!-- section 5.2 -->
       <indexterm>
@@ -422,7 +423,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           <!-- Section 5.3.4.2 -->
           <para>Making the image respond to mouse clicks is merely a matter of defining the
             image-static control in the *.rc file as having the style "SS_NOTIFY" which, using
-            ResEdit (and as mentioned in <xref linkend="chap05-defimage"/>), merely requires the
+            ResEdit (and as mentioned in <xref linkend="chap05-defimage">), merely requires the
             "Notify" attribute to be set to "True". When the image is double-clicked, the dialog is
             sent an event. This event is connected to the
             <emphasis role="italic">showMsgBox</emphasis> method by the statement
@@ -450,8 +451,8 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
 <section><title>Code Structure</title>  <!-- section 5.4 -->
 <para>Although broadly similar to the code structure in Exercise04, Exercise05
   introduces several new structural concepts (at least new in this Guide). These are: the use of "data
-  types", differentiation between view data and application data, more than one dialog in a file, externalized strings, a more complex
-  strings, dialog design, and control of dialog close.</para>
+  types", differentiation between view data and application data, more than one dialog in a file,
+  externalized strings, and a more complex dialog design. Finally, there is a brief discussion on closing dialogs.</para>
 
 <section><title>Data Types</title>  <!-- Section 5.4.1 -->
 <para>Most non-trivial software systems consist of a number of components.
@@ -460,7 +461,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
   classes, and these interact privately. Between components, which often interact with "data-heavy" invocations,
   it is usual to define specific "data-only" classes, so that everyone can be sure of using the same data structures.
   Examples are: a Customer data class, an Address data class, and a SalesOrder data class.
-  Such classes are referred to as "types" (which in some quarters is a synonym for class).
+  Such classes are often referred to as "types" (which in some quarters is a synonym for class).
 </para>
 <para>Our sample Sales Order application conforms with this idea, and so a number of "data types"
       will be introduced. In Exercise05, the Product Datatype (the class <computeroutput>ProductDT</computeroutput>
@@ -484,15 +485,16 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           user input purposes</para>
 <para>The principle for where to do the transformation is simple: do it as close to the screen as
           possible (just as, at the other end, transformation to database formats are done as close
-          to the DB programming interface - e.g. SQL - as possible). Thus the first thing the event
-          handler method <emphasis role="italic">saveChanges</emphasis> does is to invoke the
-          dialog's method <emphasis role="italics">xformView2App</emphasis> (transform view to app
-          format). For example, price data may have been entered with one or no decimal digits.
-          Conversely, reformatting for display is handled in the <emphasis>showData</emphasis>
-          method. The end result is that all other methods in
-            <computeroutput>ProductView</computeroutput> can assume that data is in the format
-          defined by the data type. And this simplifies things a great deal - especially given that
-          one never wants to confuse 10000 for ten thousand dollars when it's really 100! </para>
+          to the DB programming interface (e.g. SQL) as possible, meaning that most of the
+          application code across the system can use the same normative data formats.) Following
+          this principle, the first thing the event handler method <emphasis role="italic"
+            >saveChanges</emphasis> does is to invoke the dialog's method <emphasis role="italics"
+            >xformView2App</emphasis> (transform view to app format). For example, price data may
+          have been entered with one or no decimal digits. Conversely, reformatting for display is
+          handled in the <emphasis>showData</emphasis> method. The end result is that all other
+          methods in <computeroutput>ProductView</computeroutput> can assume that data is in the
+          format defined by the data type. And this simplifies things a great deal - especially
+          given that one never wants to confuse 10000 for ten thousand dollars when it's really 100! </para>
 </section>  <!-- End of section 5.4.2 -->
 
 <section><title>Multiple Dialogs per File</title>  <!-- Section 5.4.3 -->
@@ -537,9 +539,9 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           do? These are two questions that sometimes seem to intertwine in an irresolvable mess. In
             <computeroutput>ProductView</computeroutput>, the most complex piece of behavior is when
           the user chooses the <emphasis role="italic">update</emphasis> menu item. A useful way to
-          plot the possible interactions is to draw a diagram, with user actions on one side and the
-          corresponding program actions on the other. The following figure shows one such diagram
-          (drawn using a UML tool). </para>
+          plot the possible interactions is to use a UML Activity Diagram, with user actions on one
+          side and the corresponding program actions on the other. The following figure shows one
+          such diagram. </para>
   <figure id="fig0501"><title>ProductView Behavior Diagram</title>
     <mediaobject>
       <imageobject>
@@ -550,28 +552,63 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
   </figure>
         <para>The main thing this diagram illustrates is how the user can go in circles without
           affecting what the code needs to do. This is helped a great deal by providing a "refresh"
-          function for the user, so that if the user gets mixed up in entering data, s/he can go
-          back to the beginning and start again.  </para>
+          function, so that if the user gets mixed up in entering data, s/he can go back to the
+          beginning and start again. </para>
 </section>  <!-- End of section 5.4.5 -->
 
-<section><title>Controlling Dialog Close</title>  <!-- Section 5.4.6 -->
-<para>In previous exercises, the dialogs could be closed by pressing the Esc key or by
-      clicking on the "close" icon at the extreme top right of the dialog. Both of these are
-      "cancel" actions, and the default is to close the dialog. The Product View, however, can
-      only be closed through the "Close" menu option (on the "Actions" menu). This is because the
-      cancel action is intercepted in its <emphasis role="italic">cancel</emphasis> method (see
-      also ooDialog Reference 3.8.2). All this method does is to return - so preventing the
-      default action in the superclass from being invoked.
-</para>
-<para>Of course, within a single application, it's not good practice to have different windows
-          behaving in different ways. The principle of least astonishment would certainly be
-          breached were the user to be forced to understand several different ways of closing
-          windows within a single application. In subsequent exercises, the system defaults will be
-          adhered to. </para>
+<section><title>Controlling Dialog Cancel</title>  <!-- Section 5.4.6 -->
+<para>Windows provides for three ways for the user to cancel a dialog: by pressing the Esc key,
+      by clicking on the "close" icon at the extreme top right of the dialog, or by clicking
+      the "close" action on the system menu (click the icon at the extreme top left of the window).
+      All three of these actions result in a "cancel" message being sent to the dialog code, and
+      the default superclass behavior is silently to close the dialog (see ooDialog Reference 3.8.2).
+      In general, since these default
+      actions are standard for all Windows dialogs, they should not be over-ridden except perhaps
+      to display an "are you sure?" message if, for example, the user is half-way through some unit
+      of work.
+      </para>
+      <para>The Product View code provides a simple illustration of this in that, depending on the
+          state of the dialog, a modal "are you sure you want to exit" message is displayed.
+          ProductView can be said to have three states, as illustrated by the UML state diagram
+          below. In the diagram, ovals are states, and the lines between them are state transitions.
+          A solid circle is the start, and a smaller solid circle with a ring around it is the end.  </para>
+  <figure id="fig0502">
+    <title>ProductView State Diagram</title>
+    <mediaobject>
+      <imageobject>
+        <!-- Note! - if we include a /imagedata tag we get an error for DSSSL! -->
+        <imagedata fileref="Chapter05-image2.jpg" scale="70">
+      </imageobject>
+    </mediaobject>
+  </figure>
+        <para>The three states are as follows:           
+          <orderedlist>
+            <listitem>
+              <para>The first state is called "closable" - that is, not in the process of being
+                updated. This state is in being when the value of the attribute
+                <emphasis role="italic">dialogState</emphasis> (defined in the 
+                <computeroutput>::attribute</computeroutput> directive immediately after the
+                <computeroutput>::class</computeroutput> directive) is "closable". </para>
+            </listitem>
+            <listitem>
+              <para>The second state is called "in update" and is in being when the value of the
+                <emphasis role="italic">dialogState</emphasis> attribute is "inUpdate". If the user
+                selects any of the close actions in this state, then the third
+                state is entered. The "InUpdate" state is terminated by the user selecting
+                "refresh" or "save changes", either of which causes the dialog to return to the
+                "Closable" state. </para>
+            </listitem>
+            <listitem>
+              <para>The third state is the modal "exit messagebox" state which, depending on the user's
+                choice, either closes the dialog or returns to the "inUpdate" state. 
+                If the user selects any of the close actions, then the dialog closes
+                immediately. </para>
+            </listitem>
+          </orderedlist> 
+        </para>
 
 </section>  <!-- End of section 5.4.6 -->
 
 </section>   <!-- end of section 5.4 -->
 
 </chapter>
-
