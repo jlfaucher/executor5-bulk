@@ -241,7 +241,7 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthAddAutoStartMethod">addAutoStartMethod</link></entry>
+<entry><link linkend="deAddAutoStartMethod">addAutoStartMethod</link></entry>
 <entry>Adds a method and its arguments to be started automatically and run concurrently when the dialog is executed.</entry>
 </row>
 <row>
@@ -433,7 +433,7 @@
 <entry>Connects an event notification from an UpDown control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wedoCreateBrush">createBrush</link></entry>
+<entry><link linkend="deCreateBrush">createBrush</link></entry>
 <entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
 </row>
 <row>
@@ -501,7 +501,7 @@
 <entry>Disconnects a method that was previously connected to key press event.</entry>
 </row>
 <row>
-<entry><link linkend="mthDisplaceBitmapClsDialogExtensions">displaceBitmap</link></entry>
+<entry><link linkend="mthDisplaceBitmap">displaceBitmap TODO need de</link></entry>
 <entry>Sets the position of a bitmap within the client area of a bitmap button.</entry>
 </row>
 <row>
@@ -521,7 +521,7 @@
 <entry>Draws a circle or ellipse withi the given device context using the active pen.</entry>
 </row>
 <row>
-<entry><link linkend="mthDrawBitmapClsDialogExtensions">drawBitmap</link></entry>
+<entry><link linkend="mthDrawBitmap">drawBitmap TODO need de</link></entry>
 <entry>Draws all, or part of, the bitmap for a bitmap button at the specified position.</entry>
 </row>
 <row>
@@ -585,19 +585,19 @@
 <entry>Returns the current drawing direction.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetBitMapPositionClsDialogExtensions">getBitmapPosition</link></entry>
+<entry><link linkend="mthGetBitMapPosition">getBitmapPosition TODO need de</link></entry>
 <entry>Gets the position, as a <computeroutput>Point</computeroutput> object, of the bitmap in a bitmap button.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetBitMapSizeXClsDialogExtensions">getBitmapSizeX</link></entry>
+<entry><link linkend="mthGetBitMapSizeX">getBitmapSizeX TODO need de</link></entry>
 <entry>Gets the width in pixels of the bitmap assigned to a bitmap button.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetBitMapSizeYClsDialogExtensions">getBitmapSizeY</link></entry>
+<entry><link linkend="mthGetBitMapSizeY">getBitmapSizeY TODO need de</link></entry>
 <entry>Gets the height in pixels of the bitmap assigned to a bitmap button.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetBmpDisplacementClsDialogExtensions">getBmpDisplacement</link></entry>
+<entry><link linkend="mthGetBmpDisplacement">getBmpDisplacement TODO need de</link></entry>
 <entry>Gets the position, as a <computeroutput>String</computeroutput> object, of the bitmap in a bitmap button.</entry>
 </row>
 <row>
@@ -1140,16 +1140,16 @@
 <entry><link linkend="h000380">AddListEntry</link></entry>
 </row>
 <row>
-<entry>BackgroundBitmap</entry>
-<entry><link linkend="h001053">BackgroundBitmap</link></entry>
+<entry>backgroundBitmap</entry>
+<entry><link linkend="mthBackgroundBitmap">backgroundBitmap</link></entry>
 </row>
 <row>
 <entry>BackgroundColor</entry>
 <entry><link linkend="background">BackgroundColor</link></entry>
 </row>
 <row>
-<entry>CaptureMouse</entry>
-<entry><link linkend="capturemouse">CaptureMouse</link></entry>
+<entry>captureMouse</entry>
+<entry><link linkend="deCaptureMouse">captureMouse</link></entry>
 </row>
 <row>
 <entry>Center</entry>
@@ -1184,8 +1184,8 @@
 <entry><link linkend="h000399">DeleteListEntry</link></entry>
 </row>
 <row>
-<entry>DetermineSBPosition</entry>
-<entry><link linkend="detersb">DetermineSBPosition</link></entry>
+<entry>determineSBPosition</entry>
+<entry><link linkend="mthDetermineSBPosition">determineSBPosition</link></entry>
 </row>
 <row>
 <entry>DrawButton</entry>
@@ -1340,8 +1340,8 @@
 <entry><link linkend="h001301">ResizeItem</link></entry>
 </row>
 <row>
-<entry>ScrollButton</entry>
-<entry><link linkend="h000913">ScrollButton</link></entry>
+<entry>scrollButton</entry>
+<entry><link linkend="mthScrollButton">scrollButton</link></entry>
 </row>
 <row>
 <entry>ScrollInButton</entry>
@@ -1416,8 +1416,8 @@
 <entry><link linkend="tabtoprevious">tabToPrevious</link></entry>
 </row>
 <row>
-<entry>TiledBackgroundBitmap</entry>
-<entry><link linkend="h001045">TiledBackgroundBitmap</link></entry>
+<entry>tiledBackgroundBitmap</entry>
+<entry><link linkend="mthTiledBackgroundBitmap">tiledBackgroundBitmap</link></entry>
 </row>
 <row>
 <entry>ToTheTop</entry>
@@ -1692,7 +1692,7 @@
 
 <section id="mthClsGetFontName"><title>getFontName (Class method)</title>
 <indexterm><primary>getFontName</primary>
-<secondary>PlainBaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getFontName--------------------------------------><
@@ -1742,7 +1742,7 @@
 
 <section id="mthClsGetFontSize"><title>getFontSize (Class method)</title>
 <indexterm><primary>getFontSize</primary>
-<secondary>PlainBaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getFontSize--------------------------------------><
@@ -1853,7 +1853,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 
 <section id="atrAutomaticMethods"><title>automaticMethods (Attribute)</title>
 <indexterm><primary>automaticMethods</primary></indexterm>
-<indexterm><primary>PlainBaseDialog class</primary>
+<indexterm><primary>dialog object</primary>
 <secondary>automaticMethods</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1909,7 +1909,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 
 <section id="atrBkgBitmap"><title>bkgBitmap (Attribute)</title>
 <indexterm><primary>bkgBitmap</primary></indexterm>
-<indexterm><primary>PlainBaseDialog class</primary>
+<indexterm><primary>dialog object</primary>
 <secondary>bkgBitmap</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1965,7 +1965,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 
 <section id="atrBkgBrushBmp"><title>bkgBrushBmp (Attribute)</title>
 <indexterm><primary>bkgBrushBmp</primary></indexterm>
-<indexterm><primary>PlainBaseDialog class</primary>
+<indexterm><primary>dialog object</primary>
 <secondary>bkgBrushBmp</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2021,7 +2021,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 
 <section id="atrDlgHandle"><title>dlgHandle (Attribute)</title>
 <indexterm><primary>dlgHandle</primary></indexterm>
-<indexterm><primary>PlainBaseDialog class</primary>
+<indexterm><primary>dialog object</primary>
 <secondary>dlgHandle</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2078,7 +2078,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 <section id="atrOwnerDialog"><title>ownerDialog (Attribute)</title>
 <indexterm><primary>ownerDialog</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>ownerDialog</secondary></indexterm>
-<indexterm><primary>PlainBaseDialog class</primary><secondary>ownerDialog</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>ownerDialog</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--ownerDialog-----------------------------------------------------><
@@ -2255,7 +2255,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 
 <section id="atrFontSize"><title>fontSize (Attribute)</title>
 <indexterm><primary>fontSize</primary>
-<secondary>PlainBaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--fontSize-----------------------------------------><
@@ -4972,7 +4972,7 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
 </section>
 
 
-<section id="comboboxmeth"><title>Combo Box Methods</title>
+<section id="sctComboBoxMethods"><title>Combo Box Methods</title>
 <indexterm><primary>combo box methods</primary></indexterm>
 <para>The following methods belong to combo boxes.</para>
 
@@ -5415,7 +5415,7 @@ list of the given combo box.</para>
 </section>
 </section>
 
-<section id="listboxmeth"><title>List Box Methods</title>
+<section id="sctListBoxMethods"><title>List Box Methods</title>
 <indexterm><primary>list box methods</primary></indexterm>
 <para>The following methods deal with list boxes.</para>
 
@@ -5941,11 +5941,11 @@ list box. </para>
 </section>
 </section>
 
-<section id="man0020"><title>Scroll Bar Methods</title>
-<indexterm><primary>scroll bar methods</primary></indexterm>
-<para>The following methods are used to set or get the behavior of a scroll bar.
-You can connect scroll bars with numerical entry fields to edit the value
-with the mouse.</para>
+<section id="sctScrollBarMethods"><title>Scroll Bar Methods</title>
+<indexterm><primary>scroll bar methods</primary><secondary>dialog object</secondary></indexterm>
+<para>
+  The methods in this section are used to set or get the behavior of a scroll bar using the dialog object.
+</para>
 
 <section id="h000782"><title>GetSBRange</title>
 <indexterm><primary>GetSBRange</primary></indexterm>
@@ -6101,11 +6101,11 @@ The default is 1.
 </variablelist>
 </section>
 
-<section id="detersb"><title>DetermineSBPosition</title>
-<indexterm><primary>DetermineSBPosition</primary></indexterm>
+<section id="mthDetermineSBPosition"><title>determineSBPosition</title>
+<indexterm><primary>determineSBPosition</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~DetermineSBPosition(--id--,--posdata--+----------------------------+--)-><
+>>-aBaseDialog~determineSBPosition(--id--,--posdata--+----------------------------+--)-><
                                                      +-,--+--------+--+---------+-+
                                                           +-single-+  +-,--page-+
 
@@ -6113,7 +6113,7 @@ The default is 1.
 ]]>
 </programlisting>
 
-<para>The DetermineSBPosition method calculates and sets
+<para>The determineSBPosition method calculates and sets
 the new scroll bar position based on the position data retrieved from the
 scroll bar and the step information.</para>
 <variablelist>
@@ -6153,7 +6153,7 @@ sent along with the scroll bar event.
    /* Method ScrollBarEventHandler is connected to item SB_SIZE */
 ::method ScrollBarEventHandler
     use arg posdata, sbwnd
-    pos = self~DetermineSBPosition("SB_SIZE",posdata,1,25)
+    pos = self~determineSBPosition("SB_SIZE",posdata,1,25)
     return pos
 
 ]]>
@@ -6163,7 +6163,7 @@ sent along with the scroll bar event.
 </section>
 </section>
 
-<section id="man0024"><title>Methods to Query Operating System Values</title>
+<section id="sctQueryOSMethods"><title>Methods to Query Operating System Values</title>
 <indexterm><primary>methods for handles, sizes, and positions</primary></indexterm>
 <indexterm><primary>methods to query OS values</primary></indexterm>
 <para>The methods in this section return information known to, or used by, the
@@ -6715,28 +6715,25 @@ used.
 
 </section>
 
-<section id="man0027"><title>Appearance and Behavior Methods</title>
-<indexterm><primary>appearance methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<indexterm><primary>enable methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<indexterm><primary>disable methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<indexterm><primary>hide methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
-<indexterm><primary>show methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<section id="sctAppearanceBehaviorMethods"><title>Appearance and Behavior Methods</title>
+<indexterm><primary>appearance methods</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>behavior methods</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>disable methods</primary></indexterm>
 <para>
   The methods listed in this section are related to the appearance or the behavior of the dialog or its
   controls. The section contains methods related to size, position, visibility, and title.
 </para>
-<para>
-  Some of the methods come in two flavors, normal (for example, ShowWindow and fast (for example,
-  ShowWindowFast). The fast extension indicates that the method does not redraw the control or window
-  immediately. After modifying several items, invoke the update method (see page <link
-  linkend="mthUpdate">update</link>) to redraw the dialog.
-</para>
 
+<section id="deCaptureMouse"><title>captureMouse</title>
+<programlisting>
+DialogExtensions::<link linkend="mthCaptureMouseClsDialogExtensions">captureMouse</link>
+
+<![CDATA[
+>>--captureMouse---------------------------------><
+
+]]>
+</programlisting>
+</section>
 
 <section id="mthGetTextSizeDu"><title>getTextSizeDu</title>
 <indexterm><primary>getTextSizeDu</primary></indexterm>
@@ -7122,7 +7119,7 @@ See the <citetitle>Open Object Rexx: Reference</citetitle> for further informati
 
 <section id="mthEnsureVisibleClsPlainBaseDialog"><title>ensureVisible</title>
 <indexterm><primary>ensureVisible</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 
 <programlisting>
 <![CDATA[
@@ -8366,7 +8363,7 @@ MyDialog~ResizeItem(123, 40, 30, "SHOWWINDOW")
 
 <section id="h001322"><title>MoveItem</title>
 <indexterm><primary>MoveItem</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aBaseDialog~MoveItem(--id--,--xPos--,--yPos--+-------------------------+--)-><
@@ -8828,9 +8825,9 @@ still minimized, then this method restores it to its normal position.
 
 </section>
 
-<section id="man0016"><title>Window draw Methods</title>
+<section id="sctWindowDrawMethods"><title>Window draw Methods</title>
 <indexterm><primary>draw methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <para>The methods listed below are used to draw, redraw, and clear window areas.</para>
 
 <section id="h000606"><title>DrawButton</title>
@@ -8858,7 +8855,7 @@ still minimized, then this method restores it to its normal position.
 
 <section id="h000653"><title>RedrawRect</title>
 <indexterm><primary>RedrawRect</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
                                                                                +-0--------+
@@ -9232,1164 +9229,40 @@ MyDialog~ClearWindowRect(hwnd)
 <indexterm><primary>bitmap methods</primary></indexterm>
 <para>The methods listed in this section deal with using bitmaps.</para>
 
-<section id="mthInstallBitmapButton"><title>installBitmapButton</title>
-<indexterm><primary>installBitmapButton</primary></indexterm>
+<section id="deAddAutoStartMethod"><title>addAutoStartMethod</title>
 <programlisting>
+DialogExtensions::<link linkend="mthAddAutoStartMethod">addAutoStartMethod</link>
+
 <![CDATA[
->>-aBaseDialog~installBitmapButton(--id--,--+------------+--,--bmpNormal-->
-                                            +-msgToRaise-+
-
->--+----------------------------------------------------------------------------+--)-><
-   +-,--bmpFocused--+---------------------------------------------------------+-+
-                    +-,--bmpSelected--+-------------------------------------+-+
-                                      +-,--bmpDisabled--+-----------------+-+
-                                                        +-,--styleOptions-+
-
-
-]]>
-</programlisting>
-
-<para>The installBitmapButton method connects a bitmap
-and a method with a push button. The given bitmaps are displayed instead of
-a Windows push button.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button.
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent to this object when the button is clicked.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpNormal</term>
-<listitem><para>The name (alphanumeric), resource ID (numeric), or handle (<emphasis role="italic">INMEMORY</emphasis> option) of a bitmap file. This bitmap is displayed when the button is
-not selected, not focused, and not disabled. It is used for the other button
-states in case the other arguments are omitted.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpFocused</term>
-<listitem><para>This bitmap is displayed when the button is focused. The focused button
-is activated when the Enter key is pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpSelected</term>
-<listitem><para>This bitmap is displayed while the button is clicked and held.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpDisabled</term>
-<listitem><para>This bitmap is displayed when the button is disabled.
-</para></listitem></varlistentry>
-<varlistentry><term>styleOptions</term>
-<listitem><para>One of the following keywords:
-<variablelist>
-<varlistentry><term>FRAME</term>
-<listitem><para>Draws a frame around the button.  When using this option, the bitmap
-button behaves like a normal Windows button, except that a bitmap is
-shown instead of a text.
-</para></listitem></varlistentry>
-<varlistentry><term>USEPAL</term>
-<listitem><para>Stores the colors of the bitmap file as the system color palette.  This
-option is needed when the bitmap was created with a palette other than the
-default Windows color palette. Use it for one button only,
-because only one color palette can be active at any time. <emphasis role="italic">USEPAL</emphasis> is
-invalid for a bitmap loaded from a DLL.
-</para></listitem></varlistentry>
-<varlistentry><term>INMEMORY</term>
-<listitem><para>This option must be used if the named bitmaps are already loaded into
-memory by using the <link linkend="mthLoadBitmap">loadBitmap</link> method. In this case, bmpNormal, bmpFocused, bmpSelected, and bmpDisabled specify a bitmap handle instead of a file.
-</para></listitem></varlistentry>
-<varlistentry><term>STRETCH</term>
-<listitem><para>If this option is specified and the extent of the bitmap is smaller
-than the extent of the button rectangle, the bitmap is adapted to match the
-extent of the button. STRETCH has no effect for bitmaps
-loaded through a DLL.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>-1</term>
-<listitem><para>The specified symbolic ID could not be resolved.
-</para></listitem></varlistentry>
-<varlistentry><term>0</term>
-<listitem><para>No error.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example connects a button with four bitmaps and a method:
-
-<programlisting>
-<![CDATA[
-      .
-      .
-      .
-::method initDialog
-  self~installBitmapButton(204, "BmpButtonClicked", ,
-                           "AddBut_n.bmp", "AddBut_f.bmp", ,
-                           "AddBut_s.bmp", "AddBut_d.bmp", "FRAME")
-::method BmpButtonClicked
-      .
-      .
-      .
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-<para>See also method <link linkend="mthChangeBitmapButton">changeBitmapButton</link>.</para>
-</section>
-
-
-<section id="mthChangeBitmapButton"><title>changeBitmapButton</title>
-<indexterm><primary>changeBitmapButton</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>changeBitmapButton</secondary></indexterm>
-<programlisting>
-<![CDATA[
-
->>--changeBitmapButton(--id--,--normal--+-----------+--+------------+---------->
-                                       -+-,-focused-+  +-,-selected-+
-
->--+------------+--+---------+--)----------------------------------------------><
-   +-,-disabled-+  +-,-style-+
-]]>
-</programlisting>
-
-<para>
-  Changes the bitmaps for an already <link linkend="mthInstallBitmapButton">installed</link> bitmap button and
-  optionally immediately redraws the button.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource ID for the bitmap button whose bitmaps are being changed. May be numeric or <link
-      linkend="defSymbolicID">symbolic</link> .
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>normal [required]</term>
-      <listitem>
-      <para>
-        The bitmap to use for the normal state ofthe button. See the remarks for information on how the bitmap may be
-        specified.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>focused [optional]</term>
-      <listitem>
-      <para>
-        The bitmap to use for the focused state ofthe button. See the remarks for information on how the bitmap may be
-        specified. If this argument is omitted, the normal bitmap is used for the focused state.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>selected [optional]</term>
-      <listitem>
-      <para>
-        The bitmap to use for the selected state ofthe button. See the remarks for information on how the bitmap may be
-        specified. If this argument is omitted, the normal bitmap is used for the selected state.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>disabled [optional]</term>
-      <listitem>
-      <para>
-        The bitmap to use for the disabled state of the button. See the remarks for information on how the bitmap may be
-        specified. If this argument is omitted, the normal bitmap is used for the disabled state.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>style [optional]</term>
-      <listitem>
-      <para>
-        A list of 0 or more of the following keywords separated by spaces, case is not significant:
-      </para>
-      <para>
-        <simplelist type='vert' columns='3'>
-          <member>FRAME   </member>
-          <member>USEPAL  </member>
-          <member>INMEMORY</member>
-          <member>STRETCH </member>
-          <member>NODRAW  </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>FRAME</term>
-          <listitem>
-          <para>
-            With this option, when the ooDialog framework draws the bitmap button, it attempts to draw it with the 3D
-            effect. Note that the drawing method is outdated and will give a somewhat different appearance to the button
-            than that of buttons in modern Windows versions.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>USEPAL</term>
-          <listitem>
-          <para>
-            Uses the colors of the bitmap for the normal state to create a system color palette. Use this option when
-            the bitmap was created with a palette other than the default Windows color palette. This palette is used
-            when drawing all of the bitmap states so when different bitmaps are used for the different states, they
-            should all use the same colors.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>INMEMORY</term>
-          <listitem>
-          <para>
-            The bitmaps can be loaded into memory through the <link linkend="mthLoadBitmap">loadBitmap</link> method. In
-            this case, the programmer uses the bitmap handle to specify the bitmaps and <emphasis
-            role="bold">must</emphasis> use the INMEMORY keyword.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>STRETCH</term>
-          <listitem>
-          <para>
-            If the size of the bitmap is smaller than the size of the button rectangle, the bitmap is stretched to match
-            the size of the button. This option has no effect on bitmaps loaded from a dynamic-link library.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>NODRAW</term>
-          <listitem>
-          <para>
-            By default, when the button bitmaps are changed, the button is immediately redrawn. If this keyword is used,
-            the button is not redrawn immediately. The next time the button needs to be redrawn, it will be redrawn
-            using the new bitmaps.
-          </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The return values are:
-    <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-      <para>
-        Success.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-      <para>
-        The resource ID could not be resolved.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-      <para>
-        Error.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments specifying the bitmaps can be a bitmap file name, a bitmap <link linkend="defHandle">handle</link>, or
-    the resource number of a bitmap compiled into the resource DLL of a <link linkend="clsResDialog">ResDialog</link>.
-    The bitmap arguments must all be the same type. I.e. all file names, all resource IDs, or all handles. If the bitmap
-    arguments are handles the style argument must contain the INMEMORY keyword.
-  </para>
-  <para>
-    The bitmap button must have already been assigned bitmaps, if there are no assigned bitmaps this method fails. All
-    of the existing assigned bitmaps are removed, the programmer must reasign all 4 bitmaps, even if the bitmap for some
-    state is the same as the previous bitmap.
-  </para>
-  <para>
-    In ooDialog a bitmap button is an owner-drawn button that uses the supplied bitmap(s) for the button. ooDialog
-    internally handles the drawing of the button.
-  </para>
-  <para>
-    Up to 4 bitmaps can be assigned to the button. These bitmaps are drawn for the different button states: normal,
-    focused, selected and disabled. The normal bitmap must be supplied and that bitmap is used for any of the other
-    states if no bitmap for the state is supplied.
-  </para>
-  <para>
-    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
-    linkend="mthChangeBitmap">changeBitmap</link> method are equivalent.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-<programlisting>
-<![CDATA[
-
-  self~changeBitmap("IDOK", "AddBut_n.bmp", "AddBut_f.bmp", -
-                    "AddBut_s.bmp", "AddBut_d.bmp", "FRAME")
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End Button::changeBitmapButton() -->
-
-<section id="mthSetBitmapPositionClsDialogExtensions"><title>setBitmapPosition</title>
-<indexterm><primary>setBitmapPosition</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>setBitmapPosition</secondary></indexterm>
-<programlisting>
-<![CDATA[
-
-Form 1:
-
->>--setBitmapPosition(--id--,--point--)----------><
-
-Form 2:
-
->>--setBitmapPosition(--id--,--x--,--y--)--------><
-
-Generic form:
-
->>--setBitmapPosition(--id--,--newPosition--)----><
-
-]]>
-</programlisting>
-
-<para>
-  Sets the position of the upper left corner of the bitmap within the <link linkend="defClientArea">client</link> area
-  of the specified bitmap button.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog object::setBitmapPosition() -->
-
-<section id="mthGetBitmapPositionClsDialogExtensions"><title>getBitmapPosition</title>
-<indexterm><primary>getBitmapPosition</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>getBitmapPosition</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getBitmapPosition(--pos--)-------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog object::getBitmapPosition() -->
-
-<section id="mthGetBitMapSizeXClsDialogExtensions"><title>getBitmapSizeX</title>
-<indexterm><primary>getBitmapSizeX</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>getBitmapSizeX</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getBitmapSizeX(--id--)-----------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Gets the width of the bitmap assigned to this bitmap button in pixels.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    On success, the width of the bitmap for the bitmap button in pixels, on error -1.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method is only for bitmaps that have been assigned to a bitmap button through the <link
-    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to this button
-    then -1 is returned.
-  </para>
-  <para>
-    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
-    linkend="mthGetBitmapSizeXClsButton">getBitmapSizex</link> method are equivalent.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogExtensions::getBitMapSizeX() -->
-
-
-<section id="mthGetBitMapSizeYClsDialogExtensions"><title>getBitmapSizeY</title>
-<indexterm><primary>getBitmapSizeY</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>getBitmapSizeY</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getBitmapSizeY(--id--)-----------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Gets the height of the bitmap assigned to this bitmap button in pixels.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    On success, the height of the bitmap for the bitmap button in pixels, on error -1.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method is only for bitmaps that have been assigned to a bitmap button through the <link
-    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to this button
-    then -1 is returned.
-  </para>
-  <para>
-    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
-    linkend="mthGetBitmapSizeYClsButton">getBitmapSizeY</link> method are equivalent.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogExtensions::getBitMapSizeX() -->
-
-
-<section id="mthDisplaceBitmapClsDialogExtensions"><title>displaceBitmap</title>
-<indexterm><primary>displaceBitmap</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>displaceBitmap</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--displaceBitmap(--id--,--x--,--y--)-----------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">displaceBitmap</emphasis> method sets the position of a bitmap within the <link
-  linkend="defClientArea">client</link> area of a bitmap button.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>x [required]</term>
-      <listitem>
-      <para>
-        The x co-ordinate of the top left corner of the bitmap within the client area of the bitmap button.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>y [required]</term>
-      <listitem>
-      <para>
-        The y co-ordinate of the upper left corner of the bitmap within the client area of the bitmap button.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Both the x and y coordinates are in pixels and can have negative values.
-  </para>
-  <para>
-    Recall that client area coordinates are specified in relation to the (0, 0) point of the client area of a window.
-    Negative values then place the bitmap outside of the client area of the bitmap
-  </para>
-  <para>
-    The <link linkend="mthSetBitmapPositionClsDialogExtensions">setBitmapPosition</link> method is most likely a better
-    method to use than the <emphasis role="italic">displaceBitmap</emphasis>.  It accepts either a
-    <computeroutput>Point</computeroutput> object or the individual x and y coordinates to specify the position of the
-    bitmap. <emphasis role="italic">Set position</emphasis> more accurately describes what the method does than
-    <emphasis role="italic">displace</emphasis>.
-  </para>
-  <para>
-    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
-    linkend="mthDisplaceBitmapClsButton">displaceBitmap</link> method are equivalent.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example moves the bitmap within the associated bitmap button 4 screen pixels to the right and 3
-    pixels upward from its current position.
-<programlisting>
-<![CDATA[
-
-  self~displaceBitmap(4, -3)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-
-<section id="mthGetBmpDisplacementClsDialogExtensions"><title>getBmpDisplacement</title>
-<indexterm><primary>getBmpDisplacement</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>getBmpDisplacement</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getBmpDisplacement(--id--)-------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Returns a string containing the <link linkend="defClientArea">client</link> coordinates of the bitmap in a bitmap
-  button.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    A string with the X position and then the Y position of the bitmap, in pixles. The X and Y coordinates are separated
-    by a blank. On error, -1 is returned.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Recall that client area coordinates are relative to the (0, 0) point of the client area of a window. Both or either
-    of the coordinates can be negative.
-  </para>
-  <para>
-    This method is only for bitmaps that have been assigned to a bitmap button through the <link
-    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to the button
-    then -1 is returned.
-  </para>
-  <para>
-    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
-    linkend="mthGetBmpDisplacementClsButton">getBmpDisplacement</link> method are equivalent.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This following example shows how to use the <emphasis role="italic">getBmpDisplacement</emphasis> methods:
-
-<programlisting>
-<![CDATA[
-  bmpPos = self~getBmpDisplacement(IDC_PB_TICKET)
-  parse var bmpPos x y
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogExtensions::getBmpDisplacement() -->
-
-
-<section id="mthDrawBitmapClsDialogExtensions"><title>drawBitmap</title>
-<indexterm><primary>drawBitmap</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>drawBitmap</secondary></indexterm>
-<programlisting>
-<![CDATA[
-
->>--drawBitmap(--+-------+--,--id--+-----+--+-----+--+--------+--+--------+---->
-                 +--hwnd-+         +-,-x-+ -+-,-y-+ -+-,-bmpX-+  +-,-bmpY-+
-
->--+---------+--+----------+--)------------------------------------------------><
-   +-,-width-+  +-,-height-+
-
-]]>
-</programlisting>
-
-<para>
-  Draws all, or part of, the bitmap for a bitmap button at the specified position.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>hwnd [optional]</term>
-      <listitem>
-      <para>
-        The window <link linkend="defHandle">handle</link> of the bitmap button. This argument is, and has always been,
-        ignored. It is simply retained for backwards compatibility.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>x, y [optional]</term>
-      <listitem>
-      <para>
-        The client area <link linkend="defScreenCoordinates">coordinates</link> where the upper left corner of the
-        bitmap is to be drawn, in pixels. The default is (0, 0).
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>bmpX, bmpY [optional]</term>
-      <listitem>
-      <para>
-        The coordinates in the bitmap for the upper left corner of the portion that is to be drawn. The default is (0,
-        0). This, along with the <emphasis role="italic">width</emphasis> and <emphasis role="italic">height</emphasis>
-        arguments, can be used to draw only a portion of the bitmap. For instance, to draw only the lower right quadrant
-        of the bitmap, this argument could be set to the mid point of the bitmap.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>width [optional]</term>
-      <listitem>
-      <para>
-        The width, starting from ()<emphasis role="italic">bmpX</emphasis>, <emphasis role="italic">bmpY</emphasis>) of
-        the bitmap of the portion for the bitmap being drawn. If omitted or 0, the remaining width of the bitmap is
-        drawn.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>height [optional]</term>
-      <listitem>
-      <para>
-        The height, starting from ()<emphasis role="italic">bmpX</emphasis>, <emphasis role="italic">bmpY</emphasis>) of
-        the bitmap for the portion of the bitmap being drawn. If omitted or 0, the remaining height of the bitmap is
-        drawn.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns 0 on success or 1 for error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method is only for bitmaps that have been assigned to a bitmap button through the <link
-    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to the button
-    then 1 is returned.
-  </para>
-  <para>
-    Unlike the <link linkend="mthSetBitmapPositionClsDialogExtensions">setBitmapPosition</link> method, which
-    permanently sets the position for the bitmap, the <emphasis role="italic">drawBitmap</emphasis> immediately draws
-    the bitmap, or part of it, at the specified position. If the button needs to be redrawn, maybe because the window
-    was covered and then uncovered, the bitmap is drawn at the position set with <emphasis
-    role="italic">setBitmapPosition</emphasis>. <emphasis role="italic">drawBitmap</emphasis> is used by <link
-    linkend="mthScrollBitmapFromToClsDialogExtensions">scrollBitmapFromTo</link>, for example.
-  </para>
-  <para>
-    You can use the <emphasis role="italic">drawBitmap</emphasis> method to animate a bitmap by providing a bitmap that
-    contains several images and use the offset and extension arguments to display a single image of the bitmap.
-  </para>
-  <para>
-    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
-    linkend="mthDrawBitmapClsButton">drawBitmap</link> method are equivalent.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogExtensions::drawBitmap() -->
-
-<section id="mthScrollBitmapFromToClsDialogExtensions"><title>scrollBitmapFromTo</title>
-<indexterm><primary>scrollBitmapFromTo</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>scrollBitmapFromTo</secondary></indexterm>
-<programlisting>
-<![CDATA[
-
->>--scrollBitmapFromTo(--id--,--fromX--,--fromY--,--toX--,--toY---------------->
-
-
->--+---------+--+---------+--+---------+--+------------+--)--------------------><
-   +-,-stepX-+  +-,-stepY-+  +-,-delay-+  +-,-displace-+
-]]>
-</programlisting>
-
-<para>
-  Scrolls, (moves,) a bitmap from one position to another within a bitmap button.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource ID of the bitmap button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>fromX, fromY [required]</term>
-      <listitem>
-      <para>
-        The starting position, in client <link linkend="defScreenCoordinates">coordinates</link>, where the upper
-        left corner of the bitmap is first drawn. This is specified in pixels.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>toX, toY [required]</term>
-      <listitem>
-      <para>
-        The ending position, in client <link linkend="defScreenCoordinates">coordinates</link>, where the upper
-        left corner of the bitmap is drawn last. This is specified in pixels.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>stepX, stepY [optional]</term>
-      <listitem>
-      <para>
-        The amount, in pixels, that the bitmap is moved for each step. For each move, <emphasis
-        role="italic">stepX</emphasis> is the amount the bitmap is moved horizontally and <emphasis
-        role="italic">stepY</emphasis> is the amount the bitmap is vertically. Either or both can be negative. The
-        default for both is 0. However, they can not both be 0, or both omitted.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>delay [optional]</term>
-      <listitem>
-      <para>
-        The time in milliseconds this method waits after each move before doing the next move. This determines the speed
-        at which the bitmap moves. The default is 0, which means there is no delay between each move of the bitmap.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>displace [optional]</term>
-      <listitem>
-      <para>
-        If <computeroutput>.true</computeroutput> the internal position of the bitmap is updated after each incremental
-        move. <link linkend="mthSetBitmapPositionClsDialogExtensions">setBitmapPosition</link> is called after each step
-        to adjust the bitmap position. If the dialog is redrawn, the bitmap is shown at the correct position. The
-        default is <computeroutput>.true</computeroutput>.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns 0 on success and 1 on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method is only for bitmaps that have been assigned to a bitmap button through the <link
-    linkend="mthInstallBitmapButton">installBitmapButton</link> method. If there is no bitmap assigned to the button
-    then 1 is returned.
-  </para>
-  <para>
-    Scrolling is done by positioning the bitmap and then drawing it. After the bitmap is drawn, it is repositioned
-    using the <emphasis role="italic">stepX</emphasis> and <emphasis role="italic">stepY</emphasis> arguments and drawn
-    again. This is repeated until the bitmap reaches the (<emphasis role="italic">toX</emphasis>, <emphasis
-    role="italic">toY</emphasis>) ending position.
-  </para>
-  <para>
-    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
-    linkend="mthScrollBitmapFromtoClsButton">drawBitmap</link> method are equivalent.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogExtensions::scrollBitmapFromTo() -->
-
-
-<section id="h001045"><title>TiledBackgroundBitmap</title>
-<indexterm><primary>TiledBackgroundBitmap</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~TiledBackgroundBitmap(--bmpFilename--)---------><
-
-
-]]>
-</programlisting>
-
-<para>The TiledBackgroundBitmap method sets a bitmap
-as the background brush (<trademark class="registered">Windows NT</trademark> only). If the bitmap size is
-less than the size of the background, the bitmap is drawn repetitively. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>bmpFilename</term>
-<listitem><para>The name of a bitmap file
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h001053"><title>BackgroundBitmap</title>
-<indexterm><primary>BackgroundBitmap</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~BackgroundBitmap(--bmpFilename------------------->
-
->--+-------------+--)------------------------------------------><
-   +-,--"USEPAL"-+
-
-
-]]>
-</programlisting>
-
-<para>The BackgroundBitmap method sets a bitmap as the
-dialog's background picture. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>bmpFilename</term>
-<listitem><para>The name of a bitmap file
-</para></listitem></varlistentry>
-<varlistentry><term>option</term>
-<listitem><para>Set the last argument to USEPAL if you want
-to use the color palette of the bitmap. See <link linkend="mthInstallBitmapButton">installBitmapButton</link> for more
-information.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-
-<section id="mthAddAutoStartMethod"><title>addAutoStartMethod</title>
-<indexterm><primary>addAutoStartMethod</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~addAutoStartMethod(--+---------+--,--MethodName--+---------------+--)-><
-                                    +-InClass-+                 +-,--Parameters-+
-
-
-]]>
-</programlisting>
-
-<para>The addAutoStartMethod method adds a method name
-and parameters to a special internal queue. All methods in this queue will
-be started automatically and run concurrently when the dialog is executed.
-The given method (MethodName) in the given class (InClass) is started concurrently with the dialog when
-the dialog is activated using the <link linkend="mthExecute">execute</link> or <link linkend="mthExecuteAsync">executeAsync</link> method. This is useful for processing animated
-buttons. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>InClass</term>
-<listitem><para>The class where the method is defined. If this argument is omitted,
-the method is assumed to be defined in the dialog class.
-</para></listitem></varlistentry>
-<varlistentry><term>MethodName</term>
-<listitem><para>The name of the method
-</para></listitem></varlistentry>
-<varlistentry><term>Parameters</term>
-<listitem><para>All parameters that are passed to this method
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example installs the ExecuteB method
-of the MyAnimatedButton class so that it is processed
-concurrently with the dialog execution:
-
-<programlisting>
-<![CDATA[
-MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
-
-::class MyAnimatedButton
-::method ExecuteB
-     .
-     .
-     .
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthInstallAnimatedButton"><title>installAnimatedButton</title>
-<indexterm><primary>installAnimatedButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~installAnimatedButton(--id,--+------------+--,--->
-                                            +-msgToRaise-+
-
->--+-----------+--,--bmpFrom--,--+-------+--,--moveX--,--moveY--,-->
-   +-AutoClass-+                 +-bmpTo-+
-
->--+-------+--,--+-------+--,--delay--,--+------+--,--+------+--)-><
-   +-sizeX-+     +-sizeY-+               +-xNow-+     +-yNow-+
-
-
-]]>
-</programlisting>
-
-<para>The installAnimatedButton method installs an animated
-button and runs it concurrently with the main activity. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The name of a method within the same class. This method is called each
-time the button is clicked.
-</para></listitem></varlistentry>
-<varlistentry><term>AutoClass</term>
-<listitem><para>The class that controls the animation (default is <link linkend="anibut">AnimatedButton Class</link>)
-</para></listitem></varlistentry>
-<varlistentry><term>bmpFrom</term>
-<listitem><para>The ID of the first bitmap in the animation sequence within a binary
-resource. It can also be the name of an array stored in the .local directory
-containing handles of bitmaps to be animated and bmpTo is omitted. See <link linkend="mthLoadBitmap">loadBitmap</link> for how to get bitmap
-handles. The array starts at index 1.
-</para></listitem></varlistentry>
-<varlistentry><term>bmpTo</term>
-<listitem><para>The ID of the last bitmap in the animation sequence within a binary
-resource. If omitted, bmpFrom is expected to be the
-name of an array stored in .local that holds the bitmap handles of the bitmaps
-that are to be animated.
-</para></listitem></varlistentry>
-<varlistentry><term>moveX, moveY</term>
-<listitem><para>Size of one move (in pixels)
-</para></listitem></varlistentry>
-<varlistentry><term>sizeX, sizeY</term>
-<listitem><para>Size of the bitmaps (if omitted, the size of the bitmaps is retrieved)
-</para></listitem></varlistentry>
-<varlistentry><term>delay</term>
-<listitem><para>The time in milliseconds the method waits after each move
-</para></listitem></varlistentry>
-<varlistentry><term>xnow, ynow</term>
-<listitem><para>The starting position of the bitmap
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example defines and runs an animated button. The example
-loads ten bitmaps (&quot;anibmp1.bmp&quot; to &quot;anibmp10.bmp&quot;) into memory
-and stores them into the array "My.Bitmaps" that is stored in the .local directory.
-The name "My.Bitmaps" is specified as the <computeroutput>bmpfrom</computeroutput> and <computeroutput>bmpto</computeroutput> is omitted. After the dialog execution the bitmaps are removed from
-memory again. The sample also uses a different animation class (".MyAnimation")
-which subclasses from .AnimatedButton and overrides method HitRight which
-plays a tune each time the animated bitmap hits the right border.
-</para></listitem></varlistentry>
-</variablelist>
-
-<programlisting>
-<![CDATA[
-/* store array in .local */
-.Local["My.Bitmaps"] = .array~new(10)
-/* load 10 bitmaps into .local array */
-do i= 1 to 10
-  .Local["My.Bitmaps"][i] = Dialog~loadBitmap("anibmp"i".bmp")
-  /* you could also use .My.Bitmaps[i] =  ... */
-end
-
-/* connect bitmap sequence and .MyAnimated class with button IDANI */
-Dialog~installAnimatedButton("IDANI", ,.MyAnimation,"My.Bitmaps", ,1,1, , ,100)
-
-...
-Dialog~execute
-...
-
-/* Free the bitmap previously loaded */
-do bmp over .Local["My.Bitmaps"] /* You could also use do bmp over .My.Bitmaps */
-   Dialog~removeBitmap(bmp)
-end
-
-
-::class MyAnimation subclass AnimatedButton
-
-/* play sound.wav whenever the bitmap hits the right border */
-
-::method HitRight
-   ret = Play("sound.wav", yes)
-   return self~super:hitright
+>>--addAutoStartMethod(--+---------+--,--methodName--+---------------+--)------><
+                         +-inClass-+                 +-,--parameters-+
 ]]>
 </programlisting>
 </section>
 
+
 </section>
 
-<section id="man0021"><title>Device Context Methods</title>
+<section id="sctDCMethods"><title>Device Context Methods</title>
 <indexterm><primary>device context methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <para>The methods listed below are used to retrieve and release a device context.</para>
 <para>A device context is associated with a window, a dialog, or a push button,
 and is a drawing area managed by a window. A device context stores information
 about the graphic objects (bitmaps, lines, pixels, ...) that are displayed
 and the tools (pen, brush, font, ...) that are used to display them.</para>
+
+<section id="deCreateBrush"><title>createBrush</title>
+<programlisting>
+DialogExtensions::<link linkend="mthCreateBrushClsDialogExtensions">createBrush</link>
+
+<![CDATA[
+>>--createBrush(--+---------+--+------------------+--)-------------------------><
+                  +--color--+  +-,-brushSpecifier-+
+]]>
+</programlisting>
+</section>
+
 
 <section id="h001062"><title>GetWindowDC</title>
 <indexterm><primary>GetWindowDC</primary></indexterm>
@@ -10496,228 +9369,13 @@ of a button. </para>
 </section>
 </section>
 
-<section id="man0022"><title>Text Methods</title>
-<indexterm><primary>text methods</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<section id="sctTextMethods"><title>Text Methods</title>
+<indexterm><primary>text methods</primary><secondary>dialog object</secondary></indexterm>
 <para>
   The following methods are used to display text dynamically in a window area and to modify the state of
   a device context. See <link linkend="h001062">GetWindowDC</link>, <link linkend="mthGetDC">getDC</link>,
   and <link linkend="h001077">GetButtonDC</link> for information on how to retrieve a device context.
 </para>
-
-<section id="mthScrollTextClsDialogExtensions"><title>scrollText</title>
-<indexterm><primary>scrollText</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>scrollText</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--scrollText(--hwnd-,-text--+--------+--+--------+--+--------+--+-----+------>
-                              +-,-font-+  +-,-size-+  +-,-opts-+  +-,-y-+
-
->--+--------+--+---------+--+---------+----------------------------------------><
-   +-,-step-+  +-,-sleep-+  +-,-color-+
-
-]]>
-</programlisting>
-
-<para>
-  Scrolls text in the windows using the specified font.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>hwnd [required]</term>
-      <listitem>
-      <para>
-        The window <link linkend="defHandle">handle</link> where the text will be scrolled.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>text [required]</term>
-      <listitem>
-      <para>
-        A text string that is displayed and scrolled.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>font [optional]</term>
-      <listitem>
-      <para>
-        The name of the font used to write the text. If omitted, the System font is used.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>size [optional]</term>
-      <listitem>
-      <para>
-        The size of the font used to write the text. If omitted, the default is 10.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>opts [optional]</term>
-      <listitem>
-      <para>
-        A list of 0 or more of the following keywords separated by spaces, case is not significant. These options control
-        aspects of the font and how the font is written. If this argument is omitted a normal font is used, i.e., not
-        bolded, underlined, italicized, or striked out.
-      </para>
-      <para>
-        <simplelist type='vert' columns='3'>
-          <member>THIN       </member>
-          <member>EXTRALIGHT </member>
-          <member>LIGHT      </member>
-          <member>MEDIUM     </member>
-          <member>SEMIBOLD   </member>
-          <member>EXTRABOLD  </member>
-          <member>HEAVY      </member>
-          <member>BOLD       </member>
-          <member>UNDERLINE  </member>
-          <member>ITALIC     </member>
-          <member>STRIKEOUT  </member>
-        </simplelist>
-        <variablelist>
-          <varlistentry><term>THIN</term>
-          <listitem>
-          <para>
-            The weight of the font in a range of 0 through 1000 will be 100.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>EXTRALIGHT</term>
-          <listitem>
-          <para>
-            The weight of the font in a range of 0 through 1000 will be 200.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LIGHT</term>
-          <listitem>
-          <para>
-            The weight of the font in a range of 0 through 1000 will be 300.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MEDIUM</term>
-          <listitem>
-          <para>
-            The weight of the font in a range of 0 through 1000 will be 500.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>SEMIBOLD</term>
-          <listitem>
-          <para>
-            The weight of the font in a range of 0 through 1000 will be 600.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>BOLD</term>
-          <listitem>
-          <para>
-            The weight of the font in a range of 0 through 1000 will be 700.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>EXTRABOLD</term>
-          <listitem>
-          <para>
-            The weight of the font in a range of 0 through 1000 will be 800.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HEAVY</term>
-          <listitem>
-          <para>
-            The weight of the font in a range of 0 through 1000 will be 900.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>UNDERLINE</term>
-          <listitem>
-          <para>
-            An underline font is used.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>ITALIC</term>
-          <listitem>
-          <para>
-            An italic font is used.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>STRIKEOUT</term>
-          <listitem>
-          <para>
-            A strike out font is used.
-          </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>displaceY</term>
-      <listitem>
-      <para>
-        The Y client area <link linkend="defScreenCoordinates">coordinate</link> of the text. The default is 0. This
-        argument is used to shift the text down from the top edge of the window, if needed.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>step</term>
-      <listitem>
-      <para>
-        The amount of screen pixels that the text is moved in each iteration. The default is 4.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>sleep</term>
-      <listitem>
-      <para>
-        The time, in milliseconds, that the program waits after each iteration. This determines the scrolling speed. The
-        default is 10 milliseconds.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>color</term>
-      <listitem>
-      <para>
-        The color index used for the text. The default is 0, which is black.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns 0 on success and 1 on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The text is scrolled from right to left. Scrolling is done by repeatedly rewriting the text at <emphasis
-    role="italic">step</emphasis> pixels to the left in the client area of the window, starting at the right edge of
-    the window. When the writing postion reaches the left edge of the window, the rewriting ends.
-  </para>
-  <para>
-    The <emphasis role="italic">font</emphasis>, <emphasis role="italic">size</emphasis>, <emphasis
-    role="italic">style</emphasis>, and <emphasis role="italic">color</emphasis> arguments specify a font for the text
-    being scrolled. The ooDialog framework requests a font to match this description from the font manager.
-  </para>
-  <para>
-    If the method is started concurrently, call it a second time with no arguments to stop the scrolling.
-  </para>
-  <para>
-    The <link linkend="clsButton">button</link> class has a matching method. This method and the <link
-    linkend="mthScrollTextClsButton">scrollText</link> method are equivalent.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example scrolls the string "Hello world!" from left to right within the control window with the
-    symbolic resource id of IDC_PB_SCROLLER. The text is located 2 pixels below the top of the client area, one move is
-    3 screen pixels, and the delay time after each movement is 15 ms.
-
-<programlisting>
-<![CDATA[
-
-self~start(scrollText, IDC_PB_SCROLLER, "Hello world!", "Arial", 36,   -
-                       "BOLD ITALIC", 2, 3, 15, 4)
-
-]]>
-</programlisting>
-
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogExtensions:scrollText() -->
 
 <section id="h000896"><title>ScrollInButton</title>
 <indexterm><primary>ScrollInButton</primary></indexterm>
@@ -10750,38 +9408,6 @@ self~start(scrollText, IDC_PB_SCROLLER, "Hello world!", "Arial", 36,   -
 <para>The ScrollInButton method scrolls text within a
 button. It is similar to the <link linkend="mthScrollTextClsDialogExtensions">scrollText</link> method, except that you
 have to pass an ID instead of a window handle.</para> </section>
-
-<section id="h000913"><title>ScrollButton</title>
-<indexterm><primary>ScrollButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ScrollButton(--id--,--xPos--,--yPos--,--left--,--top-->
-
->--,--right--,--bottom--)-------------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ScrollButton method moves the rectangle within
-a button. It is used to move bitmaps within buttons. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button
-</para></listitem></varlistentry>
-<varlistentry><term>xPos, yPos</term>
-<listitem><para>The new position of the rectangle (in pixels)
-</para></listitem></varlistentry>
-<varlistentry><term>left, top, right, bottom</term>
-<listitem><para>The extension of the rectangle
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="sifm"><title>SetItemFont</title>
 <indexterm><primary>SetItemFont</primary></indexterm>
@@ -10859,7 +9485,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section id="mthGetMenuBar"><title>getMenuBar</title>
 <indexterm><primary>getMenuBar</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getMenuBar----------------------------------------------><
@@ -10905,7 +9531,7 @@ a button. It is used to move bitmaps within buttons. </para>
 
 <section id="mthHasMenuBar"><title>hasMenuBar</title>
 <indexterm><primary>hasMenuBar</primary>
-<secondary>BaseDialog class</secondary></indexterm>
+<secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--hasMenuBar----------------------------------------------><

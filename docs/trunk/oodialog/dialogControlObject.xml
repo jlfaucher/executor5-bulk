@@ -43,7 +43,7 @@
 -->
 <chapter id="chpDialogControlObject"><title>The Dialog Control Object</title>
 <indexterm><primary>dialog control object</primary></indexterm>
-<indexterm><primary>DialogControl class</primary></indexterm>
+<indexterm><primary>dialog control object</primary></indexterm>
 <para>
   This chapter discussses the <emphasis role="italic">dialog control object</emphasis> in a fashion similar to the <link
   linkend="chpDialogObject">dialog object</link>. It lists the methods that are common to all dialog controls. In the
@@ -494,8 +494,8 @@
 <entry><link linkend="assignfocus">AssignFocus</link></entry>
 </row>
 <row>
-<entry>CaptureMouse</entry>
-<entry><link linkend="capturemouse">CaptureMouse</link></entry>
+<entry>captureMouse</entry>
+<entry><link linkend="mthCaptureMouse">captureMouse</link></entry>
 </row>
 <row>
 <entry>clear</entry>
@@ -843,13 +843,13 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 
 <section id="appmodmeth"><title>Appearance and Behavior Methods</title>
 <indexterm><primary>enable methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>disable methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>hide methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>show methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control pbkect</secondary></indexterm>
 <para>The following methods deal with the appearance or the behavior of the
 dialog control. The list contains methods to get or change the size, position,
 visibility, behavior, etc., of dialog controls.
@@ -1313,7 +1313,7 @@ MyDialog~newCheckBox(IDC_CHK_VERIFY)~unCheck
 <secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>dialog control object</primary>
 <secondary>getTextSizeDlg</secondary></indexterm>
-<indexterm><primary>DialogControl class</primary>
+<indexterm><primary>dialog control object</primary>
 <secondary>getTextSizeDlg</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2163,13 +2163,13 @@ method onDisable
 
 <section id="drawmeth"><title>Draw Methods</title>
 <indexterm><primary>draw methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control object</secondary></indexterm>
 <para>The following methods are used to draw, redraw, and clear a dialog or dialog
 control.</para>
 
 <section id="mthClearRectClsDialogControl"><title>clearRect</title>
 <indexterm><primary>clearRect</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control object</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aDialogControl~clearRect(--left--,--top--,--right--,--bottom--)-><
@@ -2208,7 +2208,7 @@ control using the background brush.</para>
 
 <section id="redrawrect"><title>RedrawRect</title>
 <indexterm><primary>RedrawRect</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control object</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>-aDialogControl~RedrawRect(--left--,--top--,--right--,--bottom-->
@@ -2285,23 +2285,23 @@ or 0 if the mouse is not captured.
 </variablelist>
 </section>
 
-<section id="capturemouse"><title>CaptureMouse</title>
-<indexterm><primary>CaptureMouse</primary></indexterm>
+<section id="mthCaptureMouse"><title>captureMouse</title>
+<indexterm><primary>captureMouse</primary><secondary>dialog control object</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~CaptureMouse---------------------------------><
+>>--captureMouse---------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The CaptureMouse method captures the mouse. This
-means that the associated dialog or dialog control receives the entire mouse
-input regardless of whether the mouse cursor is within the borders of the
-dialog or dialog control.</para>
+<para>The captureMouse method captures the mouse. This
+means that the associated dialog control receives the entire mouse input regardless of whether the mouse cursor is
+within the borders of the dialog control.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog or dialog control that previously captured
+<listitem><para>The handle to the window that previously captured
 the mouse, or 0 if the mouse was not captured before.
 </para></listitem></varlistentry>
 </variablelist>
@@ -2381,7 +2381,7 @@ on whether a mouse button is pressed.</para>
 
 <section id="dcmeth"><title>Device Context Methods</title>
 <indexterm><primary>device context methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control object</secondary></indexterm>
 <para>The following methods are used to retrieve and release a device context
 (DC).</para>
 <para>A device context (DC) is associated with a dialog or dialog control, and
@@ -2394,7 +2394,7 @@ them.</para>
 
 <section id="textmeth"><title>Text Methods</title>
 <indexterm><primary>text methods</primary>
-<secondary>DialogControl class</secondary></indexterm>
+<secondary>dialog control object</secondary></indexterm>
 <para>The following methods are used to display text dynamically in a window
 area and to modify the state of a device context. See <link linkend="h001062">GetWindowDC</link>, <link linkend="mthGetDC">getDC</link>, and <link linkend="h001077">GetButtonDC</link> for information on how to retrieve
 a device context.</para>

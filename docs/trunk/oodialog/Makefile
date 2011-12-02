@@ -55,6 +55,7 @@ xml_FILES = baseClasses.xml \
 	     deprecated.xml \
 	     dialogControlObject.xml \
 	     dialogObject.xml \
+	     dialogExtensions.xml \
 	     edit.xml \
 	     eventNotification.xml \
 	     listbox.xml \

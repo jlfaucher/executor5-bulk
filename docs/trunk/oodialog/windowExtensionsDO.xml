@@ -74,158 +74,13 @@ WindowExtensions::<link linkend="mthCreateFontEx">createFontEx</link>
 </programlisting>
 </section>
 
-<section id="wedoDeleteFont"><title>deleteFont </title>
+<section id="wedoCreatePen"><title>createPen</title>
 <programlisting>
-WindowExtensions::<link linkend="mthDeleteFont">deleteFont </link>
+WindowExtensions::<link linkend="mthCreatePen">createPen</link>
 
 <![CDATA[
->>--deleteFont(--hFont--)----------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoFontToDC"><title>fontToDC</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFontToDC">fontToDC</link>
-
-<![CDATA[
->>--fontToDC(--dc--,--hFont--)-----------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoGetFont"><title>getFont</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetFont">getFont</link>
-
-<![CDATA[
->>--getFont----------------------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoHScrollPos"><title>hScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthHScrollPos">hScrollPos</link>
-
-<![CDATA[
->>--hScrollPos---------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetHScrollPos"><title>setHScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetHScrollPos">setHScrollPos</link>
-
-<![CDATA[
->>--setHScrollPos(--position--+-----------+--)-------><
-                              +-,-redraw--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoScrollClsWE"><title>scroll</title>
-<programlisting>
-WindowExtensions::<link linkend="mthScrollClsWE">scroll</link>
-
-<![CDATA[
->>--scroll(--cx--,--cy--)----------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetFont"><title>setFont</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetFont">setFont</link>
-
-<![CDATA[
->>--setFont(--fontHandle--+---------+--)-------------------------><
-                          +-,redraw-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetVScrollPos"><title>setVScrollPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetVScrollPos">setVScrollPos</link>
-
-<![CDATA[
->>--setVScrollPos(--position--+-----------+--)-------><
-                              +-,-redraw--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoLoadBitmap"><title>loadBitmap</title>
-<programlisting>
-WindowExtensions::<link linkend="mthLoadBitmap">loadBitmap</link>
-
-<![CDATA[
->>--loadBitmap(--bmpFilename--+------------+--)------><
-                              +-,-loadOpt--+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoRemoveBitmap"><title>removeBitmap</title>
-<programlisting>
-WindowExtensions::<link linkend="mthRemoveBitmap">removeBitmap</link>
-
-<![CDATA[
->>--removeBitmap(--hBitmap--)------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoSetCursorPos"><title>setCursorPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthSetCursorPos">setCursorPos</link>
-
-<![CDATA[
-Form 1:
-
->>--setCursorPos(--point--)----------------------><
-
-Form 2:
-
->>--setCursorPos(--x--,--y--)--------------------><
-
-Generic form:
-
->>--setCursorPos(--newPosition--)----------------><
-
-]]>
-</programlisting>
-</section>
-
-<section id="wedoGetCursorPos"><title>getCursorPos</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetCursorPos">getCursorPos</link>
-
-<![CDATA[
->>--getCursorPos-------------------------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoRestoreCursorShape"><title>restoreCursorShape</title>
-<programlisting>
-WindowExtensions::<link linkend="mthRestoreCursorShape">restoreCursorShape</link>
-
-<![CDATA[
->>--restoreCursorShape(--+--------------+--)---------><
-                         +-cursorHandle-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCursorArrow"><title>cursorArrow</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorArrow">cursor_arrow</link>
-
-<![CDATA[
->>--cursor_arrow-------------------------------------><
+>>--createPen(--+-------+--+----------+--+----------+--)-----------------------><
+                +-width-+  +-,-style--+  +-,-color--+
 ]]>
 </programlisting>
 </section>
@@ -236,6 +91,16 @@ WindowExtensions::<link linkend="mthCursorAppStarting">cursor_appstarting</link>
 
 <![CDATA[
 >>--cursor_appstarting-------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoCursorArrow"><title>cursorArrow</title>
+<programlisting>
+WindowExtensions::<link linkend="mthCursorArrow">cursor_arrow</link>
+
+<![CDATA[
+>>--cursor_arrow-------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -260,16 +125,6 @@ WindowExtensions::<link linkend="mthCursorNo">cursor_no</link>
 </programlisting>
 </section>
 
-<section id="wedoCursorWait"><title>cursor_wait</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCursorWait">cursor_wait</link>
-
-<![CDATA[
->>--cursor_wait--------------------------------------><
-]]>
-</programlisting>
-</section>
-
 <section id="wedoCursorPos"><title>cursorPos</title>
 <programlisting>
 WindowExtensions::<link linkend="mthCursorPos">cursorPos</link>
@@ -280,45 +135,22 @@ WindowExtensions::<link linkend="mthCursorPos">cursorPos</link>
 </programlisting>
 </section>
 
-<section id="wedoWrite"><title>write</title>
+<section id="wedoCursorWait"><title>cursor_wait</title>
 <programlisting>
-WindowExtensions::<link linkend="mthWrite">write</link>
+WindowExtensions::<link linkend="mthCursorWait">cursor_wait</link>
 
 <![CDATA[
->>--write(-x-,-y-,-text-+---------+-+---------+-+--------+-+------+-+------+-)---><
-                        +-,-fName-+ +-,-fSize-+ +-,-opts-+ +-,-fg-+ +-,-bk-+
+>>--cursor_wait--------------------------------------><
 ]]>
 </programlisting>
 </section>
 
-<section id="wedoWriteDirect"><title>writeDirect</title>
+<section id="wedoDeleteFont"><title>deleteFont </title>
 <programlisting>
-WindowExtensions::<link linkend="mthWriteDirect">writeDirect</link>
+WindowExtensions::<link linkend="mthDeleteFont">deleteFont </link>
 
 <![CDATA[
->>--writeDirect(--dc--,--xPos--,--yPos--,--text--)---><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCreateBrush"><title>createBrush</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreateBrush">createBrush</link>
-
-<![CDATA[
->>--createBrush(--+---------+--+------------------+--)-------------------------><
-                  +--color--+  +-,-brushSpecifier-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoCreatePen"><title>createPen</title>
-<programlisting>
-WindowExtensions::<link linkend="mthCreatePen">createPen</link>
-
-<![CDATA[
->>--createPen(--+-------+--+----------+--+----------+--)-----------------------><
-                +-width-+  +-,-style--+  +-,-color--+
+>>--deleteFont(--hFont--)----------------------------><
 ]]>
 </programlisting>
 </section>
@@ -333,12 +165,85 @@ WindowExtensions::<link linkend="mthDeleteObject">deleteObject</link>
 </programlisting>
 </section>
 
-<section id="wedoGetDC"><title>getDC</title>
+<section id="wedoDrawAngleArc"><title>drawAngleArc</title>
 <programlisting>
-WindowExtensions::<link linkend="mthGetDC">getDC</link>
+WindowExtensions::<link linkend="mthDrawAngleArc">drawAngleArc</link>
 
 <![CDATA[
->>--getDC--------------------------------------------><
+>>--drawAngleArc(-dc-,-xs-,-ys-,-x-,-y-,-radius-,-startangle-,-sweepangle-)----><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoDrawArc"><title>drawArc</title>
+<programlisting>
+WindowExtensions::<link linkend="mthDrawArc">drawArc</link>
+
+<![CDATA[
+>>--drawArc(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
+                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedoDrawLine"><title>drawLine</title>
+<programlisting>
+WindowExtensions::<link linkend="mthDrawLine">drawLine</link>
+
+<![CDATA[
+>>--drawLine(--dc--,--+-------+--,--+-------+--,--toX--,--toY--)-><
+                      +-fromX-+     +-fromY-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedoDrawPie"><title>drawPie</title>
+<programlisting>
+WindowExtensions::<link linkend="mthDrawPie">drawPie</link>
+
+<![CDATA[
+>>--drawPie(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
+                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedoDrawPixel"><title>drawPixel</title>
+<programlisting>
+WindowExtensions::<link linkend="mthDrawPixel">drawPixel</link>
+
+<![CDATA[
+>>--drawPixel(--dc--,--x--,--y--,--color--)----------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoFillDrawing"><title>fillDrawing</title>
+<programlisting>
+WindowExtensions::<link linkend="mthFillDrawing">fillDrawing</link>
+
+<![CDATA[
+>>--fillDrawing(--dc--,--x--,--y--,--color--)----><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoFontColor"><title>fontColor</title>
+<programlisting>
+WindowExtensions::<link linkend="mthFontColor">fontColor</link>
+
+<![CDATA[
+>>--fontColor(--color--,--dc--)----------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoFontToDC"><title>fontToDC</title>
+<programlisting>
+WindowExtensions::<link linkend="mthFontToDC">fontToDC</link>
+
+<![CDATA[
+>>--fontToDC(--dc--,--hFont--)-----------------------><
 ]]>
 </programlisting>
 </section>
@@ -349,6 +254,77 @@ WindowExtensions::<link linkend="mthFreeDC">freeDC</link>
 
 <![CDATA[
 >>--freeDC(--dc--)-----------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoGetArcDirection"><title>getArcDirection</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetArcDirection">getArcDirection</link>
+
+<![CDATA[
+>>--getArcDirection(--dc--)--------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoGetCursorPos"><title>getCursorPos</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetCursorPos">getCursorPos</link>
+
+<![CDATA[
+>>--getCursorPos-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoGetDC"><title>getDC</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetDC">getDC</link>
+
+<![CDATA[
+>>--getDC--------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoGetFont"><title>getFont</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetFont">getFont</link>
+
+<![CDATA[
+>>--getFont----------------------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoGetPixel"><title>getPixel</title>
+<programlisting>
+WindowExtensions::<link linkend="mthGetPixel">getPixel</link>
+
+<![CDATA[
+>>--getPixel(--dc--,--x--,--y--)---------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoHScrollPos"><title>hScrollPos</title>
+<programlisting>
+WindowExtensions::<link linkend="mthHScrollPos">hScrollPos</link>
+
+<![CDATA[
+>>--hScrollPos---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoLoadBitmap"><title>loadBitmap</title>
+<programlisting>
+WindowExtensions::<link linkend="mthLoadBitmap">loadBitmap</link>
+
+<![CDATA[
+>>--loadBitmap(--bmpFilename--+------------+--)------><
+                              +-,-loadOpt--+
 ]]>
 </programlisting>
 </section>
@@ -384,85 +360,33 @@ WindowExtensions::<link linkend="mthRectangle">rectangle</link>
 </programlisting>
 </section>
 
-<section id="wedoDrawLine"><title>drawLine</title>
+<section id="wedoRemoveBitmap"><title>removeBitmap</title>
 <programlisting>
-WindowExtensions::<link linkend="mthDrawLine">drawLine</link>
+WindowExtensions::<link linkend="mthRemoveBitmap">removeBitmap</link>
 
 <![CDATA[
->>--drawLine(--dc--,--+-------+--,--+-------+--,--toX--,--toY--)-><
-                      +-fromX-+     +-fromY-+
+>>--removeBitmap(--hBitmap--)------------------------><
 ]]>
 </programlisting>
 </section>
 
-<section id="wedoDrawPixel"><title>drawPixel</title>
+<section id="wedoRestoreCursorShape"><title>restoreCursorShape</title>
 <programlisting>
-WindowExtensions::<link linkend="mthDrawPixel">drawPixel</link>
+WindowExtensions::<link linkend="mthRestoreCursorShape">restoreCursorShape</link>
 
 <![CDATA[
->>--drawPixel(--dc--,--x--,--y--,--color--)----------><
+>>--restoreCursorShape(--+--------------+--)---------><
+                         +-cursorHandle-+
 ]]>
 </programlisting>
 </section>
 
-<section id="wedoGetPixel"><title>getPixel</title>
+<section id="wedoScrollClsWE"><title>scroll</title>
 <programlisting>
-WindowExtensions::<link linkend="mthGetPixel">getPixel</link>
+WindowExtensions::<link linkend="mthScrollClsWE">scroll</link>
 
 <![CDATA[
->>--getPixel(--dc--,--x--,--y--)---------------------><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoFillDrawing"><title>fillDrawing</title>
-<programlisting>
-WindowExtensions::<link linkend="mthFillDrawing">fillDrawing</link>
-
-<![CDATA[
->>--fillDrawing(--dc--,--x--,--y--,--color--)----><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDrawArc"><title>drawArc</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawArc">drawArc</link>
-
-<![CDATA[
->>--drawArc(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
-                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDrawPie"><title>drawPie</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawPie">drawPie</link>
-
-<![CDATA[
->>--drawPie(--dc-,-x-,-y-,-x2-,-y2--+-------+--+-------+--+-------+--+-------+--)---><
-                                    +-,-r1x-+  +-,-r1y-+  +-,-r2x-+  +-,-r2y-+
-]]>
-</programlisting>
-</section>
-
-<section id="wedoDrawAngleArc"><title>drawAngleArc</title>
-<programlisting>
-WindowExtensions::<link linkend="mthDrawAngleArc">drawAngleArc</link>
-
-<![CDATA[
->>--drawAngleArc(-dc-,-xs-,-ys-,-x-,-y-,-radius-,-startangle-,-sweepangle-)----><
-]]>
-</programlisting>
-</section>
-
-<section id="wedoGetArcDirection"><title>getArcDirection</title>
-<programlisting>
-WindowExtensions::<link linkend="mthGetArcDirection">getArcDirection</link>
-
-<![CDATA[
->>--getArcDirection(--dc--)--------------------------><
+>>--scroll(--cx--,--cy--)----------------------------><
 ]]>
 </programlisting>
 </section>
@@ -478,12 +402,56 @@ WindowExtensions::<link linkend="mthSetArcDirection">setArcDirection</link>
 </programlisting>
 </section>
 
-<section id="wedoFontColor"><title>fontColor</title>
+<section id="wedoSetCursorPos"><title>setCursorPos</title>
 <programlisting>
-WindowExtensions::<link linkend="mthFontColor">fontColor</link>
+WindowExtensions::<link linkend="mthSetCursorPos">setCursorPos</link>
 
 <![CDATA[
->>--fontColor(--color--,--dc--)----------------------><
+Form 1:
+
+>>--setCursorPos(--point--)----------------------><
+
+Form 2:
+
+>>--setCursorPos(--x--,--y--)--------------------><
+
+Generic form:
+
+>>--setCursorPos(--newPosition--)----------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wedoSetFont"><title>setFont</title>
+<programlisting>
+WindowExtensions::<link linkend="mthSetFont">setFont</link>
+
+<![CDATA[
+>>--setFont(--fontHandle--+---------+--)-------------------------><
+                          +-,redraw-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedoSetHScrollPos"><title>setHScrollPos</title>
+<programlisting>
+WindowExtensions::<link linkend="mthSetHScrollPos">setHScrollPos</link>
+
+<![CDATA[
+>>--setHScrollPos(--position--+-----------+--)-------><
+                              +-,-redraw--+
+]]>
+</programlisting>
+</section>
+
+<section id="wedoSetVScrollPos"><title>setVScrollPos</title>
+<programlisting>
+WindowExtensions::<link linkend="mthSetVScrollPos">setVScrollPos</link>
+
+<![CDATA[
+>>--setVScrollPos(--position--+-----------+--)-------><
+                              +-,-redraw--+
 ]]>
 </programlisting>
 </section>
@@ -504,6 +472,27 @@ WindowExtensions::<link linkend="mthVScrollPos">vScrollPos</link>
 
 <![CDATA[
 >>--vScrollPos---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedoWrite"><title>write</title>
+<programlisting>
+WindowExtensions::<link linkend="mthWrite">write</link>
+
+<![CDATA[
+>>--write(-x-,-y-,-text-+---------+-+---------+-+--------+-+------+-+------+-)---><
+                        +-,-fName-+ +-,-fSize-+ +-,-opts-+ +-,-fg-+ +-,-bk-+
+]]>
+</programlisting>
+</section>
+
+<section id="wedoWriteDirect"><title>writeDirect</title>
+<programlisting>
+WindowExtensions::<link linkend="mthWriteDirect">writeDirect</link>
+
+<![CDATA[
+>>--writeDirect(--dc--,--xPos--,--yPos--,--text--)---><
 ]]>
 </programlisting>
 </section>
