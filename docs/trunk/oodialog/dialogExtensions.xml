@@ -218,6 +218,12 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
   the window even when the mouse is moved outside the boundaries of the window.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
@@ -416,7 +422,7 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
     states if no bitmap for the state is supplied.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -487,7 +493,7 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
     have a border, the border is not cleared because it is outside of the client area.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -572,7 +578,7 @@ Generic form:
     The rectangle is not really cleared, but rather is redrawn using the normal background color for a dialog box.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -967,7 +973,7 @@ sent along with the scroll bar event.
     The <link linkend="ovvUnderlying">underlying</link> Windows dialog must exist to use this method.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -1154,7 +1160,7 @@ sent along with the scroll bar event.
     contains several images and use the offset and extension arguments to display a single image of the bitmap.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -1598,7 +1604,7 @@ of a window. </para>
     can not be located, the negative one is returned.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -1673,7 +1679,7 @@ of a window. </para>
     then -1 is returned.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -1729,7 +1735,7 @@ of a window. </para>
     then -1 is returned.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -1791,7 +1797,7 @@ of a window. </para>
     then -1 is returned.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -2022,29 +2028,40 @@ in one string separated by blanks. </para>
 <![CDATA[
 >>--getMouseCapture------------------------------><
 
-
 ]]>
 </programlisting>
 
 <para>
-  The getMouseCapture method retrieves the window handle of the dialog
-  or dialog control that currently has captured the mouse. The window that has captured the mouse recieves all mouse
-  input regardless of whether the mouse cursor is within the borders of the window.
+  The <emphasis role="italic">getMouseCapture</emphasis> method retrieves the window handle of this dialog, or dialog
+  control that belongs to this dialog, that currently has captured the mouse. The window that has captured the mouse
+  recieves all mouse input regardless of whether the mouse cursor is within the borders of the window.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-<para>
-  The window handle to the dialog or dialog control that has captured the mouse, or 0 if the mouse is not captured.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-<listitem>
-<para>
-  The dialog control <link linkend="chpDialogControlObject">object</link> also has its own <link
-  linkend="mthGetMouseCaptureClsDialogControl">getMouseCapture</link> method.
-</para>
-</listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The window handle to the dialog or dialog control that has captured the mouse, or 0 if the mouse is not captured.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The mouse capture functions work with the windows of the same thread. For dialogs, this is the dialog window and the
+    dialog control windows that belong to the dialog. Getting the mouse capture, only gets the window handle of this
+    dialog, or one of its controls. If 0 is returned, it means that no window in this dialog's thread has the mouse
+    capture. However, some window in another thread could have the the mouse capture.
+  </para>
+  <para>
+    The dialog control <link linkend="chpDialogControlObject">object</link> also has its own <link
+    linkend="mthGetMouseCaptureClsDialogControl">getMouseCapture</link> method.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
@@ -2251,6 +2268,68 @@ loaded through a DLL.
 </section>
 
 
+<section id="mthReleaseMouseCaptureClsDialogExtensions"><title>releaseMouseCapture</title>
+<indexterm><primary>releaseMouseCapture</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>releaseMouseCapture</secondary></indexterm>
+<indexterm><primary>DialogExtensions</primary><secondary>releaseMouseCapture</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--releaseMouseCapture--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">releaseMouseCapture</emphasis> method releases the mouse capture from this dialog, or the
+  dialog control belonging to the dialog. Normal mouse input processing is then resotred.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem><para>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      The mouse capture was released.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Releasing the mouse capture failed, the <computeroutput>.SystemErrorCode</computeroutput> will be set.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The mouse capture functions work with the windows of the same thread. For dialogs, this is the dialog window and the
+    dialog control windows that belong to the dialog. Releasing the mouse capture, releases the capture from any dialog
+    control window within the dialog, or the dialog window itself.
+  </para>
+  <para>
+    The dialog control <link linkend="chpDialogContoleObject">object</link> also has its own <link
+    linkend="mthReleaseMouseCaptureClsDialogControl">releaseMouseCapture</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogExtensions::releaseMouseCapture() -->
+
+
 <section id="mthScrollBitmapFromTo"><title>scrollBitmapFromTo</title>
 <indexterm><primary>scrollBitmapFromTo</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>scrollBitmapFromTo</secondary></indexterm>
@@ -2407,7 +2486,7 @@ loaded through a DLL.
     The <link linkend="ovvUnderlying">underlying</link> Windows dialog must exist to use this method.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
