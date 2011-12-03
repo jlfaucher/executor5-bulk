@@ -495,7 +495,7 @@
 </row>
 <row>
 <entry>captureMouse</entry>
-<entry><link linkend="mthCaptureMouse">captureMouse</link></entry>
+<entry><link linkend="mthCaptureMouseClsDialogControl">captureMouse</link></entry>
 </row>
 <row>
 <entry>clear</entry>
@@ -570,8 +570,8 @@
 <entry><link linkend="getfocus">GetFocus</link></entry>
 </row>
 <row>
-<entry>GetMouseCapture</entry>
-<entry><link linkend="getmousecapture">GetMouseCapture</link></entry>
+<entry>getMouseCapture</entry>
+<entry><link linkend="getMouseCaptureClsDialogControl">getMouseCapture</link></entry>
 </row>
 <row>
 <entry>getPixel</entry>
@@ -2290,53 +2290,77 @@ erased before repainting.
 <para>The following methods are used to position and shape the mouse cursor and
 to capture the mouse.</para>
 
-<section id="getmousecapture"><title>GetMouseCapture</title>
-<indexterm><primary>GetMouseCapture</primary></indexterm>
+<section id="getMouseCaptureClsDialogControl"><title>getMouseCapture</title>
+<indexterm><primary>getMouseCapture</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getMouseCapture</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~GetMouseCapture------------------------------><
+>>--getMouseCapture------------------------------><
 
 
 ]]>
 </programlisting>
 
-<para>The GetMouseCapture method retrieves the dialog
-or dialog control that captured the mouse. This dialog or dialog control receives
+<para>The getMouseCapture method retrieves the window handle of the dialog
+or dialog control that currently has captured the mouse. This dialog or dialog control receives
 the entire mouse input regardless of whether the mouse cursor is within the
 borders of the dialog or dialog control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the dialog or dialog control that captures the mouse,
+<listitem><para>The window handle to the dialog or dialog control that captures the mouse,
 or 0 if the mouse is not captured.
 </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+<listitem>
+<para>
+  The dialog <link linkend="chpDialogObject">object</link> also has its own <link
+  linkend="mthGetMouseCaptureClsDialogExtensions">getMouseCapture</link> method.
+</para>
+</listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthCaptureMouse"><title>captureMouse</title>
+<section id="mthCaptureMouseClsDialogControl"><title>captureMouse</title>
 <indexterm><primary>captureMouse</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>captureMouse</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--captureMouse---------------------------------><
-
-
 ]]>
 </programlisting>
 
-<para>The captureMouse method captures the mouse. This
-means that the associated dialog control receives the entire mouse input regardless of whether the mouse cursor is
-within the borders of the dialog control.
+<para>
+  Sets the mouse capture to this dialog control. Once a window has captured the mouse, all mouse input is directed to
+  the window even when the mouse is moved outside the boundaries of the window.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the window that previously captured
-the mouse, or 0 if the mouse was not captured before.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The handle to the window that previously captured the mouse, or 0 if the mouse was not captured before.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    <emphasis role="italic">captureMouse</emphasis> can capture mouse input either when the mouse is over the control,
+    or when the mouse button was pressed while the mouse was over the control and the button is still down. Only one
+    window at a time can capture the mouse.
+  </para>
+  <para>
+    If the mouse cursor is over a window created by another thread, the system will direct mouse input to the specified
+    window only if a mouse button is down.
+  </para>
+  <para>
+    Only the foreground window can capture the mouse. Also, even if the foreground window has captured the mouse, the
+    user can still click another window, bringing it to the foreground.
+  </para>
+  <para>
+    The dialog <link linkend="chpDialogObject">object</link> also has its own <link
+    linkend="mthCaptureMouseClsDialogExtensions">captureMouse</link> method.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-
-<note><title>Note</title><para>
-If you change the cursor shape while the mouse is being captured,
-this change is ignored.
-</para></note>
 </section>
 
 <section id="releasemousecapture"><title>ReleaseMouseCapture</title>
