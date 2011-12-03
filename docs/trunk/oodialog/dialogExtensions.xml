@@ -240,38 +240,12 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
     user can still click another window, bringing it to the foreground.
   </para>
   <para>
-    The dialog control <link linkend="chpDialogContolObject">object</link> also has its own <link
+    The dialog control <link linkend="chpDialogControlObject">object</link> also has its own <link
     linkend="mthCaptureMouseClsDialogControl">captureMouse</link> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
-
-<section id="mthCaptureMouseClsDialogExtensions"><title>captureMouse</title>
-<indexterm><primary>captureMouse</primary><secondary>dialog object</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--captureMouse---------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The captureMouse method captures the mouse. This means that the associated dialog  receives the entire mouse input
-  regardless of whether the mouse cursor is within the borders of the dialog.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the window that previously captured
-the mouse, or 0 if the mouse was not captured before.
-</para></listitem></varlistentry>
-</variablelist>
-
-<note><title>Note</title><para>
-If you change the cursor shape while the mouse is being captured,
-this change is ignored.
-</para></note>
-</section>
+</section>  <!-- End DialogExtensions::captureMouse() -->
 
 
 <section id="mthChangeBitmapButton"><title>changeBitmapButton</title>
@@ -1594,7 +1568,7 @@ of a window. </para>
 </programlisting>
 
 <para>
-  Retrieves the size of the bitmap for a bitmap button as a <link linkend="clsSie">size</link> object.
+  Retrieves the size of the bitmap for a bitmap button as a <link linkend="clsSize">size</link> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2040,7 +2014,7 @@ in one string separated by blanks. </para>
 </section>  <!-- End DialogExtensions::getListWidthPx() -->
 
 
-<section id="getMouseCaptureClsDialogExtensions"><title>getMouseCapture</title>
+<section id="mthGetMouseCaptureClsDialogExtensions"><title>getMouseCapture</title>
 <indexterm><primary>getMouseCapture</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>getMouseCapture</secondary></indexterm>
 <indexterm><primary>DialogExtenstions</primary><secondary>getMouseCapture</secondary></indexterm>
