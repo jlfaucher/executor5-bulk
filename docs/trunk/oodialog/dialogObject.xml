@@ -269,7 +269,7 @@
 <entry>Clears the client area of the specified dialog control by painting it with the background brush.</entry>
 </row>
 <row>
-<entry><link linkend="mthClearRectClsPlainBaseDialog">clearRect</link></entry>
+<entry><link linkend="mthClearRect">clearRect</link></entry>
 <entry>Clears a rectangular area of a window by painting it with the background brush.</entry>
 </row>
 <row>
@@ -949,11 +949,11 @@
 <entry>Scrolls the contents of the dialog's client area by the amount specified.</entry>
 </row>
 <row>
-<entry><link linkend="mthScrollBitmapFromToClsDialogExtensions">scrollBitmapFromTo</link></entry>
+<entry><link linkend="mthScrollBitmapFromTo">scrollBitmapFromTo</link></entry>
 <entry>Scrolls, (moves,) a bitmap from one position to another within a bitmap button.</entry>
 </row>
 <row>
-<entry><link linkend="mthScrollTextClsDialogExtensions">scrollText</link></entry>
+<entry><link linkend="mthScrollText">scrollText</link></entry>
 <entry>Scrolls text in the specified window using the specified font.</entry>
 </row>
 <row>
@@ -1164,8 +1164,8 @@
 <entry><link linkend="h000425">ChangeListEntry</link></entry>
 </row>
 <row>
-<entry>ClearWindowRect</entry>
-<entry><link linkend="h000631">ClearWindowRect</link></entry>
+<entry>clearWindowRect</entry>
+<entry><link linkend="mthClearWindowRect">clearWindowRect</link></entry>
 </row>
 <row>
 <entry>ComboAddDirectory</entry>
@@ -1188,8 +1188,8 @@
 <entry><link linkend="mthDetermineSBPosition">determineSBPosition</link></entry>
 </row>
 <row>
-<entry>DrawButton</entry>
-<entry><link linkend="h000606">DrawButton</link></entry>
+<entry>drawButton</entry>
+<entry><link linkend="mthDrawButton">drawButton</link></entry>
 </row>
 <row>
 <entry>endAsyncExecution</entry>
@@ -1204,24 +1204,24 @@
 <entry><link linkend="h000408">FindListEntry</link></entry>
 </row>
 <row>
-<entry>FreeButtonDC</entry>
-<entry><link linkend="h001105">FreeButtonDC</link></entry>
+<entry>freeControlDC</entry>
+<entry><link linkend="mthFreeControlDC">freeControlDC"</link></entry>
 </row>
 <row>
-<entry>FreeWindowDC</entry>
-<entry><link linkend="h001086">FreeWindowDC</link></entry>
+<entry>freeWindowDC</entry>
+<entry><link linkend="mthFreeWindowDC">freeWindowDC</link></entry>
 </row>
 <row>
 <entry>Get</entry>
 <entry><link linkend="h000086">Get</link></entry>
 </row>
 <row>
-<entry>GetButtonDC</entry>
-<entry><link linkend="h001077">GetButtonDC</link></entry>
+<entry>getControlDC</entry>
+<entry><link linkend="mthGetControlDC">getControlDC</link></entry>
 </row>
 <row>
-<entry>GetButtonRect</entry>
-<entry><link linkend="h000703">GetButtonRect</link></entry>
+<entry>getControlRect</entry>
+<entry><link linkend="getControlRect">getControlRect</link></entry>
 </row>
 <row>
 <entry>GetComboEntry</entry>
@@ -1248,16 +1248,16 @@
 <entry><link linkend="glem">GetListEntry</link></entry>
 </row>
 <row>
-<entry>GetListItemHeight</entry>
-<entry><link linkend="getlistitemheight">GetListItemHeight</link></entry>
+<entry>getListItemHeight</entry>
+<entry><link linkend="mthGetListItemHeight">getListItemHeight</link></entry>
 </row>
 <row>
 <entry>GetListItems</entry>
 <entry><link linkend="h000409">GetListItems</link></entry>
 </row>
 <row>
-<entry>GetListWidth</entry>
-<entry><link linkend="getlistwidth">GetListWidth</link></entry>
+<entry>getListWidth</entry>
+<entry><link linkend="mthGetListWidth">getListWidth</link></entry>
 </row>
 <row>
 <entry>GetMouseCapture</entry>
@@ -1344,8 +1344,8 @@
 <entry><link linkend="mthScrollButton">scrollButton</link></entry>
 </row>
 <row>
-<entry>ScrollInButton</entry>
-<entry><link linkend="h000896">ScrollInButton</link></entry>
+<entry>scrollInControl</entry>
+<entry><link linkend="mthScrollInControl">scrollInControl</link></entry>
 </row>
 <row>
 <entry>SetCurrentComboIndex</entry>
@@ -1424,12 +1424,12 @@
 <entry><link linkend="h000109">ToTheTop</link></entry>
 </row>
 <row>
-<entry>WriteToButton</entry>
-<entry><link linkend="h000852">WriteToButton</link></entry>
+<entry>writeToControl</entry>
+<entry><link linkend="mthWriteToControl">writeToControl</link></entry>
 </row>
 <row>
-<entry>WriteToWindow</entry>
-<entry><link linkend="h000826">WriteToWindow</link></entry>
+<entry>writeToWindow</entry>
+<entry><link linkend="mthWriteToWindow">writeToWindow</link></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -4530,243 +4530,6 @@ end
 </variablelist>
 </section>
 
-<section id="mthExecuteAsync"><title>executeAsync</title>
-<indexterm><primary>executeAsync</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>executeAsync</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--executeAsync(--+-----------+--+---------------+--+---------+--)------------><
-                   +--ignored--+  +-,--showOption-+  +-,--icon-+
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">executeAsync</emphasis> method creates the <link linkend="ovvUnderlying">underlying</link>
-  Windows dialog, starts it executing, and shows it in the same way as the <link linkend="mthExecute">execute</link>
-  method does. However, <emphasis role="italic">executeAsync</emphasis> does not wait for the dialog to be closed,
-  rather it returns immediately. This allows the programmer to execute other Rexx statements asynchronously with the
-  dialog execution. The <link linkend="mthEndAsyncExecution">endAsyncExecution</link> method is used to halt the
-  asynchronously execution and wait for the dialog to be closed.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>ignored [optional]</term>
-      <listitem>
-      <para>
-        This argument is completely ignored. It is a hold over from older versions of ooDialog, versions prior to 4.0.0.
-        However, for backwards program compatibility the argument must be returned. The programmer should omitt the
-        argument altogether, or could put in any value as a place holder.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>showOption [optional]</term>
-      <listitem>
-      <para>
-        Zero or one of the following keywords to specify how the dialog is shown. This keyword is used in the automatic
-        invocation of the <link linkend="mthShowClsPlainBaseDialog">show</link> method. Case is not significant. If this
-        argument is omitted, the NORMAL keyword is used:
-        <variablelist>
-          <varlistentry><term>NORMAL</term>
-          <listitem>
-          <para>
-            Makes the dialog visible in its default position and window size. This has the effect of restoring the dialog size
-            and position if it is minimized or maximized. This is the default if the argument is omitted.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>DEFAULT</term>
-          <listitem>
-          <para>
-            DEFAULT is an alias for NORMAL. The two keywords are functionally identical.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>SHOWTOP</term>
-          <listitem>
-          <para>
-            Makes the dialog visible and the topmost window.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDE</term>
-          <listitem>
-          <para>
-            Makes the dialog invisible.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MIN</term>
-          <listitem>
-          <para>
-            Minimizes the dialog and activates the next window in the window order.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MAX</term>
-          <listitem>
-          <para>
-            Maximizes, and makes visible if necessary, the dialog.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>INACTIVE</term>
-          <listitem>
-          <para>
-            Makes the dialog visible without changing the active window.  When the NORMAL keyword is used, the dialog is shown
-            and becomes the active window. The INACTIVE keyword makes the dialog visible without changing the focuse from the
-            current active window.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RESTORE</term>
-          <listitem>
-          <para>
-            Makes the dialog visible and restores it to its original size and position if it was minimized or maximized. An
-            application should specify this flag when restoring a minimized window.
-          </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>icon [optional]</term>
-      <listitem>
-      <para>
-        The resource ID of the <link linkend="defDialogIcon">dialog's icon</link>. May be numeric or <link
-        linkend="defSymbolicID">symbolic</link>.  If an icon ID is not supplied, the default ooDialog icon will be used.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The return values are:
-    <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-      <para>
-        The dialog was created and shown without problems. The dialog is currently executing.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>1</term>
-      <listitem>
-      <para>
-        An error occurred, the dialog was not created and is not executing. Do not invoke <link
-        linkend="mthEndAsyncExecution">endAsyncExecution</link> in this case.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Although any of the show keywords can be used, for the <emphasis role="italic">executeAsync</emphasis> method the
-    SHOWTOP, HIDE, and MAX keywords make the most sense. SHOWTOP is the usual keyword. Rather than use the HIDE keyword,
-    it is more practical to simply create the dialog <emphasis role="bold">without</emphasis> the VISIBLE style.
-  </para>
-  <para>
-    If another ooDialog dialog has been started by the Rexx program, it is disabled when <emphasis
-    role="italic">executeAsync</emphasis> is invoked. This in effect makes the dialog a <link
-    linkend="defModalModeless">modal</link> dialog. To start a <emphasis role="italic">modeless</emphasis> dialog use
-    the <link linkend="mthPopup">popup</link> or <link linkend="mthPopupAsChild">popupAsChild</link> methods.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="exampleExecuteAsync"><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example shows an application that creates a <emphasis role="italic">tool pallette</emphasis> dialog. The tool
-    pallette dialog can not be executed until its underlying owner dialog has been created. So the main dialog is
-    started using <emphasis role="italic">executeAsync</emphasis>, then the pallette dialog is executed, and finally
-    <link linkend="mthEndAsyncExecution">endAsyncExecution</link> is used to wait for the main dialog to close:
-<programlisting>
-<![CDATA[
-
-  .application~useGlobalConstDir("O", "useTools.h")
-
-  dlg = .MainDialog~new
-
-  dlgTool = .ToolPaletteDlg~new
-  dlgTool~ownerDialog = dlg
-
-  dlg~executeAsync("SHOWTOP", IDI_DLG_OOREXX)
-
-  dlgTool~popup("SHOWTOP")
-
-  dlg~endAsyncExecution
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog object::executeAsync() -->
-
-
-<section id="mthEndAsyncExecution"><title>endAsyncExecution</title>
-<indexterm><primary>endAsyncExecution</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>endAsyncExecution</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--endAsyncExecution----------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">endAsyncExecution</emphasis> method is used to end the asynchronous execution of a dialog
-  started using the <link linkend="mthExecuteAsync">executedAsync</link> method. The <emphasis
-  role="italic">endAsyncExecution</emphasis> method does not return until the user closes the dialog.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The method does not take any arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The return values are the same as for the <link linkend="mthExecute">execute</link> method and are:
-    <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-      <para>
-        Some error ocurred, the dialog was not executed.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>1</term>
-      <listitem>
-      <para>
-        The user terminated the dialog using an ok command.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>2</term>
-      <listitem>
-      <para>
-        The user terminated the dialog using a cancel comamnd.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Every dialog that is started using the <link linkend="mthExecuteAsync">executeAsync</link> method must have a
-    matching <emphasis role="italic">endAsyncExecution</emphasis> invocation. This is the only way to ensure the proper
-    termination of the dialog. This does not apply of course if the invocation of <emphasis
-    role="italic">executeAsync</emphasis> failed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The <link linkend="exampleExecuteAsync">executeAsync</link> example shows the proper use of the <emphasis
-  role="italic">endAsyncExecution</emphasis> method.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog object::endAsyncExecution() -->
-
 <section id="mthPopup"><title>popup</title>
 <indexterm><primary>popup</primary></indexterm>
 <programlisting>
@@ -5419,33 +5182,6 @@ list of the given combo box.</para>
 <indexterm><primary>list box methods</primary></indexterm>
 <para>The following methods deal with list boxes.</para>
 
-<section id="getlistwidth"><title>GetListWidth</title>
-<indexterm><primary>GetListWidth</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetListWidth(--id--)----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetListWidth method returns the scrollable
-width of a list box, in dialog units. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box of which you want to know the scrollable width.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The width of the scrollable area of the list box, in dialog units.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="setlistwidth"><title>SetListWidth</title>
 <indexterm><primary>SetListWidth</primary></indexterm>
 <programlisting>
@@ -5700,33 +5436,6 @@ in the list box. </para>
 <listitem><para>The ID of the list box.
 </para></listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="getlistitemheight"><title>GetListItemHeight</title>
-<indexterm><primary>GetListItemHeight</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetListItemHeight(--id--)-----------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetListItemHeight method returns the height
-of the items in a list box, in dialog units. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box of which you want to know the item height.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The height of the list box items, in dialog units.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -6101,66 +5810,6 @@ The default is 1.
 </variablelist>
 </section>
 
-<section id="mthDetermineSBPosition"><title>determineSBPosition</title>
-<indexterm><primary>determineSBPosition</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~determineSBPosition(--id--,--posdata--+----------------------------+--)-><
-                                                     +-,--+--------+--+---------+-+
-                                                          +-single-+  +-,--page-+
-
-
-]]>
-</programlisting>
-
-<para>The determineSBPosition method calculates and sets
-the new scroll bar position based on the position data retrieved from the
-scroll bar and the step information.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
-<listitem><para>This method is protected.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>posdata</term>
-<listitem><para>The position information sent with the connected scroll bar event.
-</para></listitem></varlistentry>
-<varlistentry><term>single</term>
-<listitem><para>This number is added (or subtracted if negative) to the current position
-for a single step. If omitted, the single step size is 1.
-</para></listitem></varlistentry>
-<varlistentry><term>page</term>
-<listitem><para>This number is added (or subtracted if negative) to the current position
-for a page step. If omitted, the page step size is 10.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The new scroll bar position.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example demonstrates how to update the scroll bar position.
-Each time the ScrollBarEventHandler is called by an event for scroll bar SB_SIZE,
-the position of the scroll bar is calculated and updated. <computeroutput>posdata</computeroutput> is
-sent along with the scroll bar event.
-
-<programlisting>
-<![CDATA[
-   /* Method ScrollBarEventHandler is connected to item SB_SIZE */
-::method ScrollBarEventHandler
-    use arg posdata, sbwnd
-    pos = self~determineSBPosition("SB_SIZE",posdata,1,25)
-    return pos
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 </section>
 
 <section id="sctQueryOSMethods"><title>Methods to Query Operating System Values</title>
@@ -6656,31 +6305,6 @@ object.
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End dialog object::pixel2dlgUnit() -->
-
-<section id="h000703"><title>GetButtonRect</title>
-<indexterm><primary>GetButtonRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetButtonRect(--id--)--------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetButtonRect method returns the size and position
-of the given button. The four values (left, top, right, bottom) are returned
-in one string separated by blanks. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="h000712"><title>GetWindowRect</title>
 <indexterm><primary>GetWindowRect</primary></indexterm>
@@ -8830,29 +8454,6 @@ still minimized, then this method restores it to its normal position.
 <secondary>dialog object</secondary></indexterm>
 <para>The methods listed below are used to draw, redraw, and clear window areas.</para>
 
-<section id="h000606"><title>DrawButton</title>
-<indexterm><primary>DrawButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~DrawButton(--id--)-----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The DrawButton method draws the given button. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="h000653"><title>RedrawRect</title>
 <indexterm><primary>RedrawRect</primary>
 <secondary>dialog object</secondary></indexterm>
@@ -8967,262 +8568,6 @@ drawing area should be erased before redrawing. The default is 0.
 </variablelist>
 </section>
 
-<section id="mthClearRectClsPlainBaseDialog"><title>clearRect</title>
-<indexterm><primary>clearRect</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>clearRect</secondary></indexterm>
-<programlisting>
-<![CDATA[
-Form 1:
-
->>--clearRect(--hwnd--,--rectangle--)------------><
-
-
-Form 2:
-
->>--clearRect(--hwnd--,--pt1--,--pt2--)----------><
-
-
-Form 3:
-
->>--clearRect(--hwnd--,--x-,--y-,--cx-,--cy--)---><
-
-
-Generic form:
-
->>--clearRect(--hwnd--,--rectCoordinates--)------><
-
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">clearRect</emphasis> method clears the specified rectangular within the client area of a
-  window. The rectangle is <emphasis role="italic">cleared</emphasis> by redrawing it with the background brush set to
-  the typical background color for dialog boxes and three dimensional elements.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>hwnd [required]</term>
-      <listitem>
-      <para>
-        The <link linkend="defHandle">handle</link> of the window containing the rectangle to be cleared.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>rectCoordinates [required]</term>
-      <listitem>
-      <para>
-        The coordinates of the rectangle to be cleared. The coordinates specify the upper left and lower right corners
-        of the rectangle. The corners can be specified using either a <link linkend="clsRect">rect</link> object, two
-        <link linkend="clsPoint">point</link> objects, or the individual x and y coordinates of each corner.
-      </para>
-      <para>
-        The cooridnates are specified as <link linkend="defClientArea">client-area</link> coordinates, in pixels.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    0 on success, 1 on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The rectangle is not really cleared, but rather is redrawn using the normal background color for a dialog box.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example is a complete program, it can be copy and pasted into a file and executed. Running the program and
-    reading the code should give a better understanding of the <emphasis role="italic">clearRect</emphasis> method than
-    a text description alone.
-
-<programlisting>
-<![CDATA[
-
-/* Shows clearRect() at work. */
-
-  dlg = .Simple~new
-  dlg~execute("SHOWTOP")
-
-  return 0
--- End of entry point.
-
-::requires "ooDialog.cls"
-
-::class 'Simple' subclass UserDialog
-
-::method init
-
-  forward class (super) continue
-  self~createCenter(245, 132, "clearRect() Example")
-
-::method defineDialog
-
-  self~createGroupBox(100, 10, 13, 107, 70, , "Test Group Box")
-  self~createListView(200, 130, 13, 107, 70, "REPORT")
-
-  self~createPushButton(300, 115, 108, 65, 14, , "Clear Group Box", onClear)
-  self~createPushButton(IDOK, 185, 108, 50, 14, "DEFAULT", "Ok")
-
-::method initDialog
-  expose list gb pb
-
-  list = self~newListView(200)
-
-  list~insertColumn(0, "Text", 40)
-  list~insertColumn(1, "Number", 30)
-  do i = 1 to 3
-    list~addRow(i, , "Line", i)
-  end
-
-  gb = self~newGroupBox(100)
-  pb = self~newPushButton(300)
-
-::method onClear unguarded
-  expose list gb pb
-
-  text = pb~getText
-  select
-    when text == "Clear Group Box" then do
-      text = "Clear List View"
-      r = gb~clientRect
-      r~right %= 2
-      r~bottom %= 2
-      self~clearRect(gb~hwnd, r)
-    end
-    when text == "Clear List View" then do
-      text = "Refresh"
-      self~clearRect(list~hwnd, 10, 10, 55, 80)
-    end
-    otherwise do
-      text = "Clear Group Box"
-      gb~redrawClient
-      list~redrawClient
-    end
-  end
-  -- End select
-
-  pb~setText(text)
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog object::clearRect() -->
-
-
-<section id="mthClearControlRect"><title>clearControlRect</title>
-<indexterm><primary>clearControlRect</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>clearControlRect</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--clearControlRect(--id--)---------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">clearControlRect</emphasis> clears the client area of the specified dialog control by
-  redrawing the area with the background brush set to the default background color of a dialog.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource id of the dialog control that is to be cleared. May be numeric or <link
-        linkend="defSymbolicID">symbolic</link>.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    0 on success, or 1 on any error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The client area of the control is not really <emphasis role="italic">cleared</emphasis>, but rather the dialog
-    background is painted over the top of the area. Most dialog controls do not have a border, but if the control does
-    have a border, the border is not cleared because it is outside of the client area.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog object::clearControlRect() -->
-
-<section id="h000631"><title>ClearWindowRect</title>
-<indexterm><primary>ClearWindowRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ClearWindowRect(--hwnd--)----------------------><
-
-
-]]>
-</programlisting>
-
-<para>The ClearWindowRect method erases the draw area
-of the given window. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle of the window. See <link
-linkend="mthGetSelf">getSelf</link>, <link linkend="h000086">Get</link>, or
-<link linkend="mthGetControlHandle">getControlHandle</link> for some methods to get a window handle.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example gets the window handle of a dialog control
-with resource ID of 211 and then clears the dialog control window:
-
-<programlisting>
-<![CDATA[
-hwnd = MyDialog~getControlHandle(211)
-MyDialog~ClearWindowRect(hwnd)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 </section>
 
 <section id="sctBitmapMethods"><title>Bitmap Methods</title>
@@ -9238,6 +8583,62 @@ DialogExtensions::<link linkend="mthAddAutoStartMethod">addAutoStartMethod</link
                          +-inClass-+                 +-,--parameters-+
 ]]>
 </programlisting>
+</section>
+
+
+<section id="mthBackgroundBitmap"><title>backgroundBitmap</title>
+<indexterm><primary>backgroundBitmap</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--backgroundBitmap(--bmpFilename--+-------------+--)----------><
+                                    +-,--"USEPAL"-+
+
+]]>
+</programlisting>
+
+<para>The backgroundBitmap method sets a bitmap as the
+dialog's background picture. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>bmpFilename</term>
+<listitem><para>The name of a bitmap file
+</para></listitem></varlistentry>
+<varlistentry><term>option</term>
+<listitem><para>Set the last argument to USEPAL if you want
+to use the color palette of the bitmap. See <link linkend="mthInstallBitmapButton">installBitmapButton</link> for more
+information.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthTiledBackgroundBitmap"><title>tiledBackgroundBitmap</title>
+<indexterm><primary>tiledBackgroundBitmap</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--tiledBackgroundBitmap(--bmpFilename--)-------><
+
+
+]]>
+</programlisting>
+
+<para>The tiledBackgroundBitmap method sets a bitmap
+as the background brush (<trademark class="registered">Windows NT</trademark> only). If the bitmap size is
+less than the size of the background, the bitmap is drawn repetitively. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>bmpFilename</term>
+<listitem><para>The name of a bitmap file
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
 </section>
 
 
@@ -9276,7 +8677,7 @@ DialogExtensions::<link linkend="mthCreateBrushClsDialogExtensions">createBrush<
 
 <para>The GetWindowDC method returns the device context
 of a window. Do not forget to free the device context after you have completed
-the operations (see <link linkend="h001086">FreeWindowDC</link>). </para>
+the operations (see <link linkend="mthFreeWindowDC">freeWindowDC</link>). </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -9289,84 +8690,6 @@ the operations (see <link linkend="h001086">FreeWindowDC</link>). </para>
 </variablelist>
 </section>
 
-<section id="h001077"><title>GetButtonDC</title>
-<indexterm><primary>GetButtonDC</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~GetButtonDC(--id--)----------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The GetButtonDC method returns the device context
-of a button. Do not forget to free the device context after you have completed
-the operations (see <link linkend="h001105">FreeButtonDC</link>). </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h001086"><title>FreeWindowDC</title>
-<indexterm><primary>FreeWindowDC</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~FreeWindowDC(--hwnd--,--dc--)------------------><
-
-
-]]>
-</programlisting>
-
-<para>The FreeWindowDC method frees the device context
-of a window. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The window handle
-</para></listitem></varlistentry>
-<varlistentry><term>dc</term>
-<listitem><para>The device context previously received by the <link linkend="h001062">GetWindowDC</link> method
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h001105"><title>FreeButtonDC</title>
-<indexterm><primary>FreeButtonDC</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~FreeButtonDC(--id--,--dc--)--------------------><
-
-
-]]>
-</programlisting>
-
-<para>The FreeButtonDC method releases the device context
-of a button. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button
-</para></listitem></varlistentry>
-<varlistentry><term>dc</term>
-<listitem><para>The device context previously received by the <link linkend="h001077">GetButtonDC</link> method
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 </section>
 
 <section id="sctTextMethods"><title>Text Methods</title>
@@ -9374,40 +8697,8 @@ of a button. </para>
 <para>
   The following methods are used to display text dynamically in a window area and to modify the state of
   a device context. See <link linkend="h001062">GetWindowDC</link>, <link linkend="mthGetDC">getDC</link>,
-  and <link linkend="h001077">GetButtonDC</link> for information on how to retrieve a device context.
+  and <link linkend="mthGetControlDC">getControlDC</link> for information on how to retrieve a device context.
 </para>
-
-<section id="h000896"><title>ScrollInButton</title>
-<indexterm><primary>ScrollInButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ScrollInButton(--id--,--text--,--+----------+--,-->
-                                                +-fontName-+
-
->--+----------+--,--+--------------------------+---------------->
-   +-fontSize-+     |    +----------------+    |
-                    |    V                |    |
-                    +-"----+-THIN-------+-+--"-+
-                           +-EXTRALIGHT-+
-                           +-LIGHT------+
-                           +-MEDIUM-----+
-                           +-SEMIBOLD---+
-                           +-EXTRABOLD--+
-                           +-BOLD-------+
-                           +-HEAVY------+
-                           +-UNDERLINE--+
-                           +-ITALIC-----+
-                           +-STRIKEOUT--+
-
->--,--displaceY--,--step--,--sleep--,--color--)---------------><
-
-
-]]>
-</programlisting>
-
-<para>The ScrollInButton method scrolls text within a
-button. It is similar to the <link linkend="mthScrollTextClsDialogExtensions">scrollText</link> method, except that you
-have to pass an ID instead of a window handle.</para> </section>
 
 <section id="sifm"><title>SetItemFont</title>
 <indexterm><primary>SetItemFont</primary></indexterm>

@@ -1146,31 +1146,6 @@ the slashed-circle cursor shape was set.
 </variablelist>
 </section>
 
-<section id="mthCursorPos"><title>cursorPos</title>
-<indexterm><primary>cursorPos</primary></indexterm>
-<indexterm><primary>WindowExtensions</primary><secondary>cursorPos</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>cursorPos</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>cursorPos</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--cursorPos----------------------------------------><
-
-]]>
-</programlisting>
-
-<para>The cursorPos method returns the current position
-of the mouse cursor.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The horizontal and vertical position of the mouse, separated by a blank.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See <link linkend="mthSetCursorPos">setCursorPos</link> for an example on how to use this method.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-
 <section id="mthCursorWait"><title>cursor_wait</title>
 <indexterm><primary>cursor_wait</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>cursor_wait</secondary></indexterm>
@@ -1190,6 +1165,31 @@ is within the rectangle of the associated dialog or dialog control.</para>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The handle to the current shape, that is, the shape that was used before
 the hourglass shape was set.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>See <link linkend="mthSetCursorPos">setCursorPos</link> for an example on how to use this method.
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthCursorPos"><title>cursorPos</title>
+<indexterm><primary>cursorPos</primary></indexterm>
+<indexterm><primary>WindowExtensions</primary><secondary>cursorPos</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>cursorPos</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>cursorPos</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cursorPos----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>The cursorPos method returns the current position
+of the mouse cursor.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>The horizontal and vertical position of the mouse, separated by a blank.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>See <link linkend="mthSetCursorPos">setCursorPos</link> for an example on how to use this method.
@@ -1345,7 +1345,7 @@ of these lines with the full circle or ellipse.
 
 <programlisting>
 <![CDATA[
-dc = self~getButtonDC(100)
+dc = self~getControlDC(100)
 pen = self~createPen(4,"solid",13)
 oldp = self~objectToDC(dc,pen)
 self~drawArc(dc,50,50,200,150)                 /* full ellipse */
@@ -1590,11 +1590,11 @@ device context. </para>
 </programlisting>
 
 <para>The fontToDC method loads a font into a device
-context and returns the handle of the previous font. Use the <link linkend="h001062">GetWindowDC</link>, <link linkend="mthGetDC">getDC</link>, or <link linkend="h001077">GetButtonDC</link> method
+context and returns the handle of the previous font. Use the <link linkend="h001062">GetWindowDC</link>, <link linkend="mthGetDC">getDC</link>, or <link linkend="mthGetControlDC">getControlDC</link> method
 to retrieve a device context, and the <link linkend="mthCreatefontEx">createFontEx</link>() method to get
 a font handle. To reset the font to the original state, use another fontToDC call with the handle of the
-previous font. To release the device context, use the <link linkend="h001086">FreeWindowDC</link>, <link
-linkend="mthFreeDC">freeDC</link>, or <link linkend="h001105">FreeButtonDC</link> method.</para>
+previous font. To release the device context, use the <link linkend="mthFreeWindowDC">freeWindowDC</link>, <link
+linkend="mthFreeDC">freeDC</link>, or <link linkend="mthFreeControlDC>freeControlDC"</link> method.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -2052,7 +2052,7 @@ by a black rectangle:
 
 <programlisting>
 <![CDATA[
-dc = self~getButtonDC(100)
+dc = self~getControlDC(100)
 brush = self~createBrush(15)        /* yellow */
 pen = self~createPen(10,"solid",13) /* thick red */
 oldb = self~objectToDC(dc,brush)
