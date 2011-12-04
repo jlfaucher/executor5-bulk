@@ -3315,21 +3315,21 @@ self~writeToWindow(hwnd, 3, 3, "Hello world!", "Arial", 24, "BOLD ITALIC CLIENT"
 </section>
 
 
-<section id="mthWriteToWindow"><title>writeToWindow</title>
+<section id="mthWriteToControl"><title>writeToControl</title>
 <indexterm><primary>writeToControl</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>writeToControl</secondary></indexterm>
 <indexterm><primary>DialogExtensions</primary><secondary>writeToControl</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--writeToWindow(-id-,-x-,-y-,-text-+---------+-+---------+-+--------+-+------+-+------+-)--><
-                                     +-,-fName-+ +-,-fSize-+ +-,-opts-+ +-,-fg-+ +-,-bk-+
+>>--writeToControl(-id-,-x-,-y-,-txt-+-------+-+------+-+--------+-+------+-+------+-)-><
+                                     +-,-fnt-+ +-,-fs-+ +-,-opts-+ +-,-fg-+ +-,-bk-+
 
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">writeToWindow</emphasis> method writes text to the specified dialog or dialog control
-  in the given font, style, and color, at the specified position.
+  The <emphasis role="italic">writeToControl</emphasis> method writes text to the specified dialog control in the given
+  font, style, and color, at the specified position.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3337,10 +3337,11 @@ self~writeToWindow(hwnd, 3, 3, "Hello world!", "Arial", 24, "BOLD ITALIC CLIENT"
   <para>
     The arguments are:
   <variablelist>
-    <varlistentry><term>h [required]</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The window <link linkend="defHandle">handle</link> of the dialog or dialog control to write the text to.
+      The resource ID of the dialog control to write the text to. May be numeric or <link
+      linkend="defSymbolicID">symbolic</link>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y [required]</term>
