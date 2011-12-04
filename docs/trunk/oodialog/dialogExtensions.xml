@@ -73,7 +73,7 @@
 <entry>xx</entry>
 </row>
 <row>
-<entry><link linkend="mthCaptureMouseClsDialogExtensions">captureMouse</link></entry>
+<entry><link linkend="mthCaptureMouse">captureMouse</link></entry>
 <entry>xx</entry>
 </row>
 <row>
@@ -203,25 +203,35 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
 </section>
 
 
-<section id="mthCaptureMouseClsDialogExtensions"><title>captureMouse</title>
+<section id="mthCaptureMouse"><title>captureMouse</title>
 <indexterm><primary>captureMouse</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>captureMouse</secondary></indexterm>
 <indexterm><primary>DialogExtensions</primary><secondary>captureMouse</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--captureMouse---------------------------------><
+>>--captureMouse(--+------+--)-------------------><
+                   +--id--+
 ]]>
 </programlisting>
 
 <para>
-  Sets the mouse capture to this dialog.  Once a window has captured the mouse, all mouse input is directed to
-  the window even when the mouse is moved outside the boundaries of the window.
+  Sets the mouse capture to this dialog window, or optionally a dialog control window belonging to this dialog.  Once a
+  window has captured the mouse, all mouse input is directed to the window even when the mouse is moved outside the
+  boundaries of the window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This method takes no arguments.
+    The single optional argument is:
+    <variablelist>
+      <varlistentry><term>id [optional]</term>
+      <listitem>
+      <para>
+        Sets the mouse capture to the dialog control with this resource ID. The control must belong to this dialog. See
+        the remarks section. The ID may be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para> </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -246,8 +256,8 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
     user can still click another window, bringing it to the foreground.
   </para>
   <para>
-    The dialog control <link linkend="chpDialogControlObject">object</link> also has its own <link
-    linkend="mthCaptureMouseClsDialogControl">captureMouse</link> method.
+    ooDialog has always had the functionality to set the mouse capture to a dialog control window. However, it is
+    difficult to imagine any scenario, in ooDialog, where this could be of any use.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -261,7 +271,7 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
 <![CDATA[
 
 >>--changeBitmapButton(--id--,--normal--+-----------+--+------------+---------->
-                                       -+-,-focused-+  +-,-selected-+
+                                        +-,-focused-+  +-,-selected-+
 
 >--+------------+--+---------+--)----------------------------------------------><
    +-,-disabled-+  +-,-style-+
@@ -689,7 +699,7 @@ of the given window. </para>
 <variablelist>
 <varlistentry><term>hwnd</term>
 <listitem><para>The handle of the window. See <link
-linkend="mthGetSelf">getSelf</link>, <link linkend="h000086">Get</link>, or
+linkend="mthGetSelf">getSelf</link>, <link linkend="mthGet">get</link>, or
 <link linkend="mthGetControlHandle">getControlHandle</link> for some methods to get a window handle.
 </para></listitem></varlistentry>
 </variablelist>
@@ -1448,13 +1458,13 @@ sent along with the scroll bar event.
 </programlisting>
 
 <para>The freeControlDC method releases the device context
-of a button. </para>
+of a control. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
 <variablelist>
 <varlistentry><term>id</term>
-<listitem><para>The ID of the button
+<listitem><para>The resource ID of the control.
 </para></listitem></varlistentry>
 <varlistentry><term>dc</term>
 <listitem><para>The device context previously received by the <link linkend="mthGetControlDC">getControlDC</link> method
@@ -2020,10 +2030,10 @@ in one string separated by blanks. </para>
 </section>  <!-- End DialogExtensions::getListWidthPx() -->
 
 
-<section id="mthGetMouseCaptureClsDialogExtensions"><title>getMouseCapture</title>
+<section id="mthGetMouseCapture"><title>getMouseCapture</title>
 <indexterm><primary>getMouseCapture</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>getMouseCapture</secondary></indexterm>
-<indexterm><primary>DialogExtenstions</primary><secondary>getMouseCapture</secondary></indexterm>
+<indexterm><primary>DialogExtensions</primary><secondary>getMouseCapture</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--getMouseCapture------------------------------><
@@ -2032,9 +2042,9 @@ in one string separated by blanks. </para>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getMouseCapture</emphasis> method retrieves the window handle of this dialog, or dialog
-  control that belongs to this dialog, that currently has captured the mouse. The window that has captured the mouse
-  recieves all mouse input regardless of whether the mouse cursor is within the borders of the window.
+  The <emphasis role="italic">getMouseCapture</emphasis> method retrieves the window handle, if any, that currently has
+  captured the mouse. The window that has captured the mouse recieves all mouse input regardless of whether the mouse
+  cursor is within the borders of the window or not.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2052,14 +2062,14 @@ in one string separated by blanks. </para>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The mouse capture functions work with the windows of the same thread. For dialogs, this is the dialog window and the
-    dialog control windows that belong to the dialog. Getting the mouse capture, only gets the window handle of this
+    The mouse capture functions work with windows of the same thread. For ooDialog, this means the dialog window and the
+    dialog control windows that belong to this dialog. Getting the mouse capture, only gets the window handle of this
     dialog, or one of its controls. If 0 is returned, it means that no window in this dialog's thread has the mouse
     capture. However, some window in another thread could have the the mouse capture.
   </para>
   <para>
-    The dialog control <link linkend="chpDialogControlObject">object</link> also has its own <link
-    linkend="mthGetMouseCaptureClsDialogControl">getMouseCapture</link> method.
+    ooDialog has always had the functionality to set the mouse capture to a dialog control window. However, it is
+    difficult to imagine any scenario, in ooDialog, where this could be of any use.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2268,7 +2278,45 @@ loaded through a DLL.
 </section>
 
 
-<section id="mthReleaseMouseCaptureClsDialogExtensions"><title>releaseMouseCapture</title>
+<section id="ismousebuttondown"><title>IsMouseButtonDown</title>
+<indexterm><primary>IsMouseButtonDown</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-aDialogControl~IsMouseButtonDown(--"--+-LEFT---+--"--)------><
+                                         +-MIDDLE-+
+                                         +-RIGHT--+
+
+
+]]>
+</programlisting>
+
+<para>The IsMouseButtonDown method retrieves information
+on whether a mouse button is pressed.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>button</term>
+<listitem><para>The location of the mouse button you are interested in.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+<listitem><para>
+<variablelist>
+<varlistentry><term>0</term>
+<listitem><para>The button is not being pressed.
+</para></listitem></varlistentry>
+<varlistentry><term>1</term>
+<listitem><para>The button is being pressed.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthReleaseMouseCapture"><title>releaseMouseCapture</title>
 <indexterm><primary>releaseMouseCapture</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>releaseMouseCapture</secondary></indexterm>
 <indexterm><primary>DialogExtensions</primary><secondary>releaseMouseCapture</secondary></indexterm>
@@ -2281,7 +2329,8 @@ loaded through a DLL.
 
 <para>
   The <emphasis role="italic">releaseMouseCapture</emphasis> method releases the mouse capture from this dialog, or the
-  dialog control belonging to the dialog. Normal mouse input processing is then resotred.
+  dialog control belonging to the dialog, which had previously had <link linkend="mthCaptureMouse">captured</link> the
+  mouse. Normal mouse input processing is then resotred.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2311,13 +2360,13 @@ loaded through a DLL.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The mouse capture functions work with the windows of the same thread. For dialogs, this is the dialog window and the
-    dialog control windows that belong to the dialog. Releasing the mouse capture, releases the capture from any dialog
+    The mouse capture functions work with windows of the same thread. For ooDialog, this is the dialog window and the
+    dialog control windows that belong to this dialog. Releasing the mouse capture, releases the capture from any dialog
     control window within the dialog, or the dialog window itself.
   </para>
   <para>
-    The dialog control <link linkend="chpDialogControlObject">object</link> also has its own <link
-    linkend="mthReleaseMouseCaptureClsDialogControl">releaseMouseCapture</link> method.
+    ooDialog has always had the functionality to set the mouse capture to a dialog control window. However, it is
+    difficult to imagine any scenario, in ooDialog, where this could be of any use.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -3032,173 +3081,471 @@ Generic form:
 
 <section id="mthWriteToWindow"><title>writeToWindow</title>
 <indexterm><primary>writeToWindow</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>writeToWindow</secondary></indexterm>
+<indexterm><primary>DialogExtensions</primary><secondary>writeToWindow</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~writeToWindow(--hwnd--,--xPos--,--yPos--,--text-->
-
->--+--------------------------------------+--------------------->
-   |    +-"SYSTEM"-+                      |
-   +-,--+----------+--+-----------------+-+
-        +-fontName-+  |    +-10-------+ |
-                      +-,--+----------+-+
-                           +-fontSize-+
-
->--+--------------------------------------------------------------------------+--)-><
-   +-+----------------------------------------------------------------------+-+
-     +-+------------------------------------------------------------------+-+
-       |       +-----------------+                                        |
-       |       V +-OPAQUE------+ |                                        |
-       +-,--"----+-THIN--------+-+--"--+--------------------------------+-+
-                 +-EXTRALIGHT--+       +-,--+---------+--+------------+-+
-                 +-LIGHT-------+            +-fgColor-+  +-,--bkColor-+
-                 +-MEDIUM------+
-                 +-SEMIBOLD----+
-                 +-EXTRABOLD---+
-                 +-BOLD--------+
-                 +-HEAVY-------+
-                 +-UNDERLINE---+
-                 +-ITALIC------+
-                 +-STRIKEOUT---+
-                 +-TRANSPARENT-+
-                 +-CLIENT------+
-
+>>--writeToWindow(-h-,-x-,-y-,-txt-+-------+-+------+-+--------+-+------+-+------+-)--><
+                                   +-,-fnt-+ +-,-fs-+ +-,-opts-+ +-,-fg-+ +-,-bk-+
 
 ]]>
 </programlisting>
 
-<para>The writeToWindow method enables you to write text
-to a dialog or dialog control in the given font and size to the given position. </para>
+<para>
+  The <emphasis role="italic">writeToWindow</emphasis> method writes text to the specified dialog or dialog control
+  in the given font, style, and color, at the specified position.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle of the dialog or dialog control. See <link linkend="h000086">Get</link> for
-how to get a valid handle.
-</para></listitem></varlistentry>
-<varlistentry><term>xPos, yPos</term>
-<listitem><para>The starting position of the text, in pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>text</term>
-<listitem><para>The string you want to write to the dialog or dialog control.
-</para></listitem></varlistentry>
-<varlistentry><term>fontName</term>
-<listitem><para>The name of a font. If omitted, the SYSTEM font is used.
-</para></listitem></varlistentry>
-<varlistentry><term>fontSize</term>
-<listitem><para>The size of the font. If omitted, the standard size (10) is used.
-</para></listitem></varlistentry>
-<varlistentry><term>fontStyle</term>
-<listitem><para>One or more of the keywords listed in the syntax diagram, separated
-by blanks:
-<variablelist>
-<varlistentry><term>TRANSPARENT</term>
-<listitem><para>This style writes the text without clearing the background.
-</para></listitem></varlistentry>
-<varlistentry><term>OPAQUE</term>
-<listitem><para>This style, which is the default, clears the background with the given
-background color, or with white if the background color is omitted, before
-writing the text.
-</para></listitem></varlistentry>
-<varlistentry><term>CLIENT</term>
-<listitem><para>The device context of the dialog's client area is used instead of
-the device context of the entire dialog.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-<para>
-  Returns 0 on success and 1 on error.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-<listitem>
-<para>
-  This method sets <computeroutput>.SystemErrorCode</computeroutput> to the error code set by the operating system
-  when a failure in one of the Win32 APIs is detected. However, there is one Win32 API,
-  <computeroutput>SelectObject()</computeroutput>, that does not set the system error code on failure. It is unlikely
-  that it will fail, but if it does, the ooDialog framework sets <computeroutput>.SystemErrorCode</computeroutput> to
-  <computeroutput>156</computeroutput>, ERROR_SIGNAL_REFUSED.
-</para>
-<para>
-  The text message for error code <computeroutput>156</computeroutput> is: <emphasis role="italic">The recipient
-  process has refused the signal.</emphasis> In this case, the text message is not really related to the failure, it
-  is just used to indicate that the <computeroutput>SelectObject()</computeroutput> API failed.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-<listitem>
-<para>
-  Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.  See the remarks above.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example writes the string "Hello world!" to the dialog window using
-a 24pt Arial font in bold and italic style:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>h [required]</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> of the dialog or dialog control to write the text to.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y [required]</term>
+    <listitem>
+    <para>
+      The starting position of the text, in pixels. The position coordinates are relative to the window, by default, or
+      the client area of the window, not relative to the screen. Use the CLIENT keyword in the <emphasis
+      role="italic">opts</emphasis> argument to indicate the starting position is relative to the client area of the
+      window.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>txt [required]</term>
+    <listitem>
+    <para>
+      The text string to be written.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fnt [optional]</term>
+    <listitem>
+    <para>
+      The font name. The default if omitted is SYSTEM.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fs [optional]</term>
+    <listitem>
+    <para>
+      The point size of the font. If omitted, the standard size (10) is used.
+    </para>
+    </listitem></varlistentry>
+
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant. These options control
+      aspects of the font and how the font is written.
+    </para>
+    <para>
+    <simplelist type='vert' columns='3'>
+      <member>OPAQUE     </member>
+      <member>TRANSPARENT</member>
+      <member>CLIENT     </member>
+      <member>THIN       </member>
+      <member>EXTRALIGHT </member>
+      <member>LIGHT      </member>
+      <member>MEDIUM     </member>
+      <member>SEMIBOLD   </member>
+      <member>EXTRABOLD  </member>
+      <member>HEAVY      </member>
+      <member>BOLD       </member>
+      <member>UNDERLINE  </member>
+      <member>ITALIC     </member>
+      <member>STRIKEOUT  </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>OPAQUE</term>
+      <listitem>
+      <para>
+        The background of the area the text will occupy is painted with the specified background color, or with white if
+        the background color is omitted, before writing the text.  This has the effect of &quot;erasing&quot; whatever
+        is currently drawn in that area. Contrast this with the TRANSPARENT option. OPAQUE is the default.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TRANSPARENT</term>
+      <listitem>
+      <para>
+        The background area of the text is left unchanged. (The background color option is ignored if it is used.) This
+        has the effect of writing the text over the top of whatever is currently drawn in the area the text will occupy.
+        Contrast this with the OPAQUE option.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CLIENT</term>
+      <listitem>
+      <para>
+        The position for the text will be relative to the <link linkend="defClientArea">client</link> area of the
+        specified window, rather than relative to the window itself.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>THIN</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 100.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>EXTRALIGHT</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 200.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LIGHT</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 300.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MEDIUM</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 500.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SEMIBOLD</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 600.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BOLD</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 700.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>EXTRABOLD</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 800.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HEAVY</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 900.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>UNDERLINE</term>
+      <listitem>
+      <para>
+        An underline font is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ITALIC</term>
+      <listitem>
+      <para>
+        An italic font is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>STRIKEOUT</term>
+      <listitem>
+      <para>
+        A strike out font is used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fg [optional]</term>
+    <listitem>
+    <para>
+      The color index for the text foreground color. If omitted, the text color is left unchanged.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bk [optional]</term>
+    <listitem>
+    <para>
+      The color index of the background color. If omitted, the background color is left unchanged. The background color
+      is not used in transparent mode.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success and 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method sets <computeroutput>.SystemErrorCode</computeroutput> to the error code set by the operating system
+    when a failure in one of the Win32 APIs is detected. However, there is one Win32 API,
+    <computeroutput>SelectObject()</computeroutput>, that does not set the system error code on failure. It is unlikely
+    that it will fail, but if it does, the ooDialog framework sets <computeroutput>.SystemErrorCode</computeroutput> to
+    <computeroutput>156</computeroutput>, ERROR_SIGNAL_REFUSED.
+  </para>
+  <para>
+    The text message for error code <computeroutput>156</computeroutput> is: <emphasis role="italic">The recipient
+    process has refused the signal.</emphasis> In this case, the text message is not really related to the failure, it
+    is just used to indicate that the <computeroutput>SelectObject()</computeroutput> API failed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.  See the remarks above.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example writes the string <emphasis role="italic">Hello world!</emphasis> on the surface of a button
+    using a blue 24pt Arial font in bold, italic style. The starting position of the text is at the point (3, 3)
+    relative to the client area of the button:
 
 <programlisting>
 <![CDATA[
-hwnd = self~get
-self~writeToWindow(hwnd, 23, 15, "Hello world!", ,
-                       "Arial", 24, "BOLD ITALIC")
+
+hwnd = self~NewPushButton(IDC_PB_CANVAS)
+self~writeToWindow(hwnd, 3, 3, "Hello world!", "Arial", 24, "BOLD ITALIC CLIENT", 4)
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthWriteToControl"><title>writeToControl</title>
+
+<section id="mthWriteToWindow"><title>writeToWindow</title>
 <indexterm><primary>writeToControl</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>writeToControl</secondary></indexterm>
+<indexterm><primary>DialogExtensions</primary><secondary>writeToControl</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~writeToControl(--id--,--xPos--,--yPos--,--text-->
-
->--+--------------------------------------+--------------------->
-   |    +-"SYSTEM"-+                      |
-   +-,--+----------+--+-----------------+-+
-        +-fontName-+  |    +-10-------+ |
-                      +-,--+----------+-+
-                           +-fontSize-+
-
->--+--------------------------------------------------------------------------+--)-><
-   +-+----------------------------------------------------------------------+-+
-     +-+------------------------------------------------------------------+-+
-       |       +-----------------+                                        |
-       |       V +-OPAQUE------+ |                                        |
-       +-,--"----+-THIN--------+-+--"--+--------------------------------+-+
-                 +-EXTRALIGHT--+       +-,--+---------+--+------------+-+
-                 +-LIGHT-------+            +-fgColor-+  +-,--bkColor-+
-                 +-MEDIUM------+
-                 +-SEMIBOLD----+
-                 +-EXTRABOLD---+
-                 +-BOLD--------+
-                 +-HEAVY-------+
-                 +-UNDERLINE---+
-                 +-ITALIC------+
-                 +-STRIKEOUT---+
-                 +-TRANSPARENT-+
-                 +-CLIENT------+
-
+>>--writeToWindow(-id-,-x-,-y-,-text-+---------+-+---------+-+--------+-+------+-+------+-)--><
+                                     +-,-fName-+ +-,-fSize-+ +-,-opts-+ +-,-fg-+ +-,-bk-+
 
 ]]>
 </programlisting>
 
-<para>The writeToControl method enables you to write text
-to a dialog control in the given font and size to the given position. </para>
+<para>
+  The <emphasis role="italic">writeToWindow</emphasis> method writes text to the specified dialog or dialog control
+  in the given font, style, and color, at the specified position.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:</para>
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The resource ID of the control. May be numeric or symbolic.
-</para></listitem></varlistentry>
-</variablelist>
-<para>See <link linkend="mthWriteToWindow">writeToWindow</link> for a description
-of the other arguments.</para>
-</listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>h [required]</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> of the dialog or dialog control to write the text to.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x, y [required]</term>
+    <listitem>
+    <para>
+      The starting position of the text, in pixels. The position coordinates are relative to the window, by default, or
+      the client area of the window, not relative to the screen. Use the CLIENT keyword in the <emphasis
+      role="italic">opts</emphasis> argument to indicate the starting position is relative to the client area of the
+      window.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The string to be written.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fName [optional]</term>
+    <listitem>
+    <para>
+      The font name. The default if omitted is SYSTEM.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fSize [optional]</term>
+    <listitem>
+    <para>
+      The point size of the font. If omitted, the standard size (10) is used.
+    </para>
+    </listitem></varlistentry>
+
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant. These options control
+      aspects of the font and how the font is written.
+    </para>
+    <para>
+    <simplelist type='vert' columns='3'>
+      <member>OPAQUE     </member>
+      <member>TRANSPARENT</member>
+      <member>CLIENT     </member>
+      <member>THIN       </member>
+      <member>EXTRALIGHT </member>
+      <member>LIGHT      </member>
+      <member>MEDIUM     </member>
+      <member>SEMIBOLD   </member>
+      <member>EXTRABOLD  </member>
+      <member>HEAVY      </member>
+      <member>BOLD       </member>
+      <member>UNDERLINE  </member>
+      <member>ITALIC     </member>
+      <member>STRIKEOUT  </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>OPAQUE</term>
+      <listitem>
+      <para>
+        The background of the area the text will occupy is painted with the specified background color, or with white if
+        the background color is omitted, before writing the text.  This has the effect of &quot;erasing&quot; whatever
+        is currently drawn in that area. Contrast this with the TRANSPARENT option. OPAQUE is the default.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TRANSPARENT</term>
+      <listitem>
+      <para>
+        The background area of the text is left unchanged. (The background color option is ignored if it is used.) This
+        has the effect of writing the text over the top of whatever is currently drawn in the area the text will occupy.
+        Contrast this with the OPAQUE option.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CLIENT</term>
+      <listitem>
+      <para>
+        The position for the text will be relative to the <link linkend="defClientArea">client</link> area of the
+        specified window, rather than relative to the window itself.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>THIN</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 100.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>EXTRALIGHT</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 200.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LIGHT</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 300.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MEDIUM</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 500.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SEMIBOLD</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 600.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BOLD</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 700.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>EXTRABOLD</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 800.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HEAVY</term>
+      <listitem>
+      <para>
+        The weight of the font in a range of 0 through 1000 will be 900.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>UNDERLINE</term>
+      <listitem>
+      <para>
+        An underline font is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ITALIC</term>
+      <listitem>
+      <para>
+        An italic font is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>STRIKEOUT</term>
+      <listitem>
+      <para>
+        A strike out font is used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fg [optional]</term>
+    <listitem>
+    <para>
+      The color index for the text foreground color. If omitted, the text color is left unchanged.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bk [optional]</term>
+    <listitem>
+    <para>
+      The color index of the background color. If omitted, the background color is left unchanged. The background color
+      is not used in transparent mode.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success and 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method sets <computeroutput>.SystemErrorCode</computeroutput> to the error code set by the operating system
+    when a failure in one of the Win32 APIs is detected. However, there is one Win32 API,
+    <computeroutput>SelectObject()</computeroutput>, that does not set the system error code on failure. It is unlikely
+    that it will fail, but if it does, the ooDialog framework sets <computeroutput>.SystemErrorCode</computeroutput> to
+    <computeroutput>156</computeroutput>, ERROR_SIGNAL_REFUSED.
+  </para>
+  <para>
+    The text message for error code <computeroutput>156</computeroutput> is: <emphasis role="italic">The recipient
+    process has refused the signal.</emphasis> In this case, the text message is not really related to the failure, it
+    is just used to indicate that the <computeroutput>SelectObject()</computeroutput> API failed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.  See the remarks above.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example writes the string <emphasis role="italic">I am done!</emphasis> to the client area of a static
+    control. The font of the thxt will be a blue 18pt Arial font in bold, italic style. The starting position of the
+    text is at the point (5, 5) relative to the client area of the static control.
+
+<programlisting>
+<![CDATA[
+
+self~writeToControl(IDC_ST_BLANK, 5, 5, "Hello world!", "Arial", 18, "BOLD ITALIC CLIENT", 4)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 

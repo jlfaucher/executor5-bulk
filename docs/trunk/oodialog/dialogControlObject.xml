@@ -495,10 +495,6 @@
 <entry><link linkend="assignfocus">AssignFocus</link></entry>
 </row>
 <row>
-<entry>captureMouse</entry>
-<entry><link linkend="mthCaptureMouseClsDialogControl">captureMouse</link></entry>
-</row>
-<row>
 <entry>clear</entry>
 <entry><link linkend="mthClear">clear</link></entry>
 </row>
@@ -571,10 +567,6 @@
 <entry><link linkend="getfocus">GetFocus</link></entry>
 </row>
 <row>
-<entry>getMouseCapture</entry>
-<entry><link linkend="mthGetMouseCaptureClsDialogControl">getMouseCapture</link></entry>
-</row>
-<row>
 <entry>getPixel</entry>
 <entry><link linkend="mthGetPixel">getPixel</link></entry>
 </row>
@@ -599,10 +591,6 @@
 <entry><link linkend="mthHScrollPos">hScrollPos</link></entry>
 </row>
 <row>
-<entry>isMouseButtonDown</entry>
-<entry><link linkend="ismousebuttondown">isMouseButtonDown</link></entry>
-</row>
-<row>
 <entry>loadBitmap</entry>
 <entry><link linkend="mthLoadBitmap">loadBitmap</link></entry>
 </row>
@@ -625,10 +613,6 @@
 <row>
 <entry>RedrawRect</entry>
 <entry><link linkend="redrawrect">RedrawRect</link></entry>
-</row>
-<row>
-<entry>releaseMouseCapture</entry>
-<entry><link linkend="mthReleaseMouseCaptureClsDialogControl">releaseMouseCapture</link></entry>
 </row>
 <row>
 <entry>removeBitmap</entry>
@@ -2291,195 +2275,7 @@ erased before repainting.
 <para>The following methods are used to position and shape the mouse cursor and
 to capture the mouse.</para>
 
-<section id="mthGetMouseCaptureClsDialogControl"><title>getMouseCapture</title>
-<indexterm><primary>getMouseCapture</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>getMouseCapture</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getMouseCapture------------------------------><
 
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">getMouseCapture</emphasis> method retrieves the window handle of the dialog or dialog
-  control that currently has captured the mouse. The window that has captured the mouse receives the entire mouse input
-  regardless of whether the mouse cursor is within the borders window.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method takes no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The window handle of the dialog or dialog control that has the mouse capture, or 0 if the mouse is not captured.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The mouse capture functions work with the windows of the same thread. For dialogs, this is the dialog window and the
-    dialog control windows that belong to the dialog. Getting the mouse capture, only gets the window handle of the
-    dialog, or one of its controls, of the dialog that this dialog control belongs to.  If 0 is returned, it means that
-    no window in the dialog's thread has the mouse capture. However, some window in another thread could have the the
-    mouse capture.
-  </para>
-  <para>
-    The dialog <link linkend="chpDialogObject">object</link> also has its own <link
-    linkend="mthGetMouseCaptureClsDialogExtensions">getMouseCapture</link> method.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthCaptureMouseClsDialogControl"><title>captureMouse</title>
-<indexterm><primary>captureMouse</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>captureMouse</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--captureMouse---------------------------------><
-]]>
-</programlisting>
-
-<para>
-  Sets the mouse capture to this dialog control. Once a window has captured the mouse, all mouse input is directed to
-  the window even when the mouse is moved outside the boundaries of the window.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method takes no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The handle to the window that previously captured the mouse, or 0 if the mouse was not captured before.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    <emphasis role="italic">captureMouse</emphasis> can capture mouse input either when the mouse is over the control,
-    or when the mouse button was pressed while the mouse was over the control and the button is still down. Only one
-    window at a time can capture the mouse.
-  </para>
-  <para>
-    If the mouse cursor is over a window created by another thread, the system will direct mouse input to this dialog
-    control window only if a mouse button is down.
-  </para>
-  <para>
-    Only the foreground window can capture the mouse. Also, even if the foreground window has captured the mouse, the
-    user can still click another window, bringing it to the foreground.
-  </para>
-  <para>
-    The dialog <link linkend="chpDialogObject">object</link> also has its own <link
-    linkend="mthCaptureMouseClsDialogExtensions">captureMouse</link> method.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthReleaseMouseCaptureClsDialogControl"><title>releaseMouseCapture</title>
-<indexterm><primary>releaseMouseCapture</primary><secondary>dialog control object</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--releaseMouseCapture--------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">releaseMouseCapture</emphasis> method releases the mouse capture from the window in the
-  dialog this dialog control belongs. Normal mouse input processing is then resotred.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method takes no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem><para>
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      The mouse capture was released.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      Releasing the mouse capture failed, the <computeroutput>.SystemErrorCode</computeroutput> will be set.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The mouse capture functions work with the windows of the same thread. For dialogs, this is the dialog window and the
-    dialog control windows tha belong to the dialog. Releasing the mouse capture, releases the capture from any window
-    within the dialog, or the dialog window itself.
-  </para>
-  <para>
-    The dialog <link linkend="chpDialogObject">object</link> also has its own <link
-    linkend="mthReleaseMouseCaptureClsDialogExtensions">releaseMouseCapture</link> method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="ismousebuttondown"><title>IsMouseButtonDown</title>
-<indexterm><primary>IsMouseButtonDown</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~IsMouseButtonDown(--"--+-LEFT---+--"--)------><
-                                         +-MIDDLE-+
-                                         +-RIGHT--+
-
-
-]]>
-</programlisting>
-
-<para>The IsMouseButtonDown method retrieves information
-on whether a mouse button is pressed.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>button</term>
-<listitem><para>The location of the mouse button you are interested in.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The button is not being pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The button is being pressed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 </section>
 
 <section id="dcmeth"><title>Device Context Methods</title>
