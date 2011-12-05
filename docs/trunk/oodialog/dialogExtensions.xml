@@ -45,7 +45,11 @@
 <section id="clsDialogExtensions"><title>DialogExtensions Mixin Class</title>
 <indexterm><primary>DialogExtensions Class</primary></indexterm>
 <para>
-  x
+  The <computeroutput>DialogExtensions</computeroutput> class is a <emphasis role="italic">mixin</emphasis> class
+  inherited by <link linkend="clsPlainBaseDialog">PlainBaseDialog</link> class. Therefore the methods of this class are
+  methods of every dialog. The methods of the <computeroutput>DialogExtensions</computeroutput> class are probably
+  methods added after the original release of the ooDialog framework, thus the <emphasis
+  role="italic">extensions</emphasis> part of the class name.
 </para>
 
 <section id="sctMethodsDialogExtensions"><title>Method Table</title>
@@ -1495,7 +1499,7 @@ of a window. </para>
 <listitem><para>The window handle
 </para></listitem></varlistentry>
 <varlistentry><term>dc</term>
-<listitem><para>The device context previously received by the <link linkend="h001062">GetWindowDC</link> method
+<listitem><para>The device context previously received by the <link linkend="mthGetWindowDC">getWindowDC</link> method
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -2075,6 +2079,102 @@ in one string separated by blanks. </para>
 </variablelist>
 </section>
 
+<section id="mthGetSBPos"><title>getSBPos</title>
+<indexterm><primary>getSBPos</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getSBPos(--id--)-----------------------------><
+
+]]>
+</programlisting>
+
+<para>The getSBPos method returns the current value of
+a scroll bar control. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the scroll bar.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id=mthGetSBRange><title>getSBRange</title>
+<indexterm><primary>getSBRange</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getSBRange(--id--)---------------------------><
+
+]]>
+</programlisting>
+
+<para>The getSBRange method returns the range of a scroll
+bar control. It returns the two values (minimum and maximum) in one string,
+separated by a blank. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Protected:</emphasis></term>
+<listitem><para>This method is protected.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the scroll bar.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>The following example demonstrates how to get the minimum and the maximum
+values of the scroll bar:
+
+<programlisting>
+<![CDATA[
+     .
+     .
+     .
+::method dumpSBRange
+
+  sbRange = self~getSBRange(IDC_SB)
+  parse var sbRange sbMin sbMax
+  say sbMin " - " sbMax
+
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetWindowDC"><title>getWindowDC</title>
+<indexterm><primary>getWindowDC</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getWindowDC(--hwnd--)------------------------><
+
+
+]]>
+</programlisting>
+
+<para>The getWindowDC method returns the device context
+of a window. Do not forget to free the device context after you have completed
+the operations (see <link linkend="mthFreeWindowDC">freeWindowDC</link>). </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>hwnd</term>
+<listitem><para>The handle of the window
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+
 <section id="mthInstallAnimatedButton"><title>installAnimatedButton</title>
 <indexterm><primary>installAnimatedButton</primary></indexterm>
 <programlisting>
@@ -2278,19 +2378,18 @@ loaded through a DLL.
 </section>
 
 
-<section id="ismousebuttondown"><title>IsMouseButtonDown</title>
-<indexterm><primary>IsMouseButtonDown</primary></indexterm>
+<section id="mthIsMouseButtonDown"><title>isMouseButtonDown</title>
+<indexterm><primary>isMouseButtonDown</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~IsMouseButtonDown(--"--+-LEFT---+--"--)------><
-                                         +-MIDDLE-+
-                                         +-RIGHT--+
-
+>>--isMouseButtonDown(--"--+-LEFT---+--"--)------><
+                           +-MIDDLE-+
+                           +-RIGHT--+
 
 ]]>
 </programlisting>
 
-<para>The IsMouseButtonDown method retrieves information
+<para>The isMouseButtonDown method retrieves information
 on whether a mouse button is pressed.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2314,6 +2413,429 @@ on whether a mouse button is pressed.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="mthMoveControl"><title>moveControl</title>
+<indexterm><primary>moveControl</primary>
+<secondary>dialog object</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--moveItem(--id--,--xPos--,--yPos--+-------------------------+--)-><
+                                     +-,--"--+-HIDEWINDOW-+--"-+
+                                              +-SHOWWINDOW-+
+                                              +-NOREDRAW---+
+
+]]>
+</programlisting>
+
+<para>The moveControl method moves a dialog control to another
+position within the dialog window. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the dialog control you want to move
+</para></listitem></varlistentry>
+<varlistentry><term>xPos, yPos</term>
+<listitem><para>The new position in dialog units relative to the dialog window
+</para></listitem></varlistentry>
+<varlistentry><term>showOptions</term>
+<listitem><para>This argument can be one of the following keywords:
+<variablelist>
+<varlistentry><term>HIDEWINDOW</term>
+<listitem><para>Hides the dialog
+</para></listitem></varlistentry>
+<varlistentry><term>SHOWWINDOW</term>
+<listitem><para>Shows the dialog
+</para></listitem></varlistentry>
+<varlistentry><term>NOREDRAW</term>
+<listitem><para>Moves the dialog control without updating the display. Use the <link linkend="mthUpdate">update</link>
+method to manually update the display.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthPopup"><title>popup</title>
+<indexterm><primary>popup</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>popup</secondary></indexterm>
+<indexterm><primary>DialogExtensions class</primary><secondary>popup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-popup(--+-------------+--+------------+--+--------+--)-------><
+           +--showOption-+  +-,-ignored--+  +-,-icon-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">popup</emphasis> method starts a <link linkend="defModalModless">modeless</link> dialog
+  executing and returns immediately.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>showOption [optional]</term>
+      <listitem>
+      <para>
+        Zero or one of the following keywords to specify how the dialog is shown. This keyword is used in the automatic
+        invocation of the <link linkend="mthShowClsPlainBaseDialog">show</link> method. Case is not significant. If this
+        argument is omitted, the NORMAL keyword is used:
+        <variablelist>
+          <varlistentry><term>NORMAL</term>
+          <listitem>
+          <para>
+            Makes the dialog visible in its default position and window size. This has the effect of restoring the dialog size
+            and position if it is minimized or maximized. This is the default if the argument is omitted.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+          <para>
+            DEFAULT is an alias for NORMAL. The two keywords are functionally identical.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SHOWTOP</term>
+          <listitem>
+          <para>
+            Makes the dialog visible and the topmost window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDE</term>
+          <listitem>
+          <para>
+            Makes the dialog invisible.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MIN</term>
+          <listitem>
+          <para>
+            Minimizes the dialog and activates the next window in the window order.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MAX</term>
+          <listitem>
+          <para>
+            Maximizes, and makes visible if necessary, the dialog.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>INACTIVE</term>
+          <listitem>
+          <para>
+            Makes the dialog visible without changing the active window.  When the NORMAL keyword is used, the dialog is shown
+            and becomes the active window. The INACTIVE keyword makes the dialog visible without changing the focuse from the
+            current active window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RESTORE</term>
+          <listitem>
+          <para>
+            Makes the dialog visible and restores it to its original size and position if it was minimized or maximized. An
+            application should specify this flag when restoring a minimized window.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ignored [optional]</term>
+      <listitem>
+      <para>
+        This argument is completely ignored. It is a hold over from the original ooDialog implementation. However, since
+        the <emphasis role="italic">icon</emphasis> argument follows it, the <emphasis role="italic">ignored</emphasis>
+        must be retained. It serves as a place holder argument to prevserve backwards compatibility. The programmer
+        should simply omit it, or use a value such as <computeroutput>1</computeroutput> to serve as the place holder.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>icon [optional]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog's <link linkend="defDialogIcon">icon</link>. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link>.  If an icon ID is not supplied, the default ooDialog icon will be used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is a Rexx <computeroutput>Message</computeroutput> object, (see the Open Object Rexx reference manual to
+    learn more about the <computeroutput>Message</computeroutput> class.) The message object can be used, for instance,
+    to check if the dialog has been closed by the user, to obtain the result value from the execution of the dialog,
+    etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example demonstrates how a dialog started with <emphasis role="italic">popup</emphasis> executes asynchronously
+    to the code in the main portion of the program. The example code below is complete. I can be cut and pasted into a
+    file and will run as is.
+<programlisting>
+<![CDATA[
+
+  dlg = .ExampleDlg~new( , "simple.h")
+  msgObj = dlg~popup("SHOWTOP", IDI_DLG_OOREXX)
+
+  do i = 1 to 1000
+    say "Iteration" i
+    j = msSleep(1000)
+
+    if msgObj~completed then do
+      val = msgObj~result
+      select
+        when val == 1 then say 'The user closed the dialog with Ok.'
+        when val == 2 then say 'The user closed the dialog with Cancel.'
+        otherwise say 'The dialog has closed with an error'
+      end
+      leave
+    end
+  end
+
+  if \ msgObj~completed then say 'Iteration loop ended, dialog is still running.'
+
+::requires "ooDialog.cls"
+
+::class 'ExampleDlg' subclass UserDialog
+
+::method init
+  forward class (super) continue
+  self~create(30, 30, 257, 123, "Simple Dialog", "CENTER")
+
+::method defineDialog
+
+  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogExtensions::popup() -->
+
+
+<section id="mthPopupAsChild"><title>popupAsChild</title>
+<indexterm><primary>popupAsChild</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>popupAsChild</secondary></indexterm>
+<indexterm><primary>DialogExtensions class</primary><secondary>popupAsChild</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+>>-popupAsChild(--+-parent-+--------------+--+------------+--+--------+--)-----><
+                           +-,-showOption-+  +-,-ignored--+  +-,-icon-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">popupAsChild</emphasis> method starts a <link linkend="defModalModless">modeless</link>
+  dialog executing and returns immediately. It is very similar to the <link linkend="mthPopup">popup</link> method, but
+  has the additional functionality that it is closed automaticaly when the <emphasis role="italic">parent</emphasis>
+  dialog is closed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>parent [required]</term>
+      <listitem>
+      <para>
+        Some other Rexx dialog object. A relationship is established with the <emphasis role="italic">parent</emphasis>
+        dialog such that when the <emphasis role="italic">parent</emphasis> dialog is closed, this dialog is
+        automatically closed also.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>showOption [optional]</term>
+      <listitem>
+      <para>
+        Zero or one of the following keywords to specify how the dialog is shown. This keyword is used in the automatic
+        invocation of the <link linkend="mthShowClsPlainBaseDialog">show</link> method. Case is not significant. If this
+        argument is omitted, the NORMAL keyword is used:
+        <variablelist>
+          <varlistentry><term>NORMAL</term>
+          <listitem>
+          <para>
+            Makes the dialog visible in its default position and window size. This has the effect of restoring the dialog size
+            and position if it is minimized or maximized. This is the default if the argument is omitted.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DEFAULT</term>
+          <listitem>
+          <para>
+            DEFAULT is an alias for NORMAL. The two keywords are functionally identical.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SHOWTOP</term>
+          <listitem>
+          <para>
+            Makes the dialog visible and the topmost window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDE</term>
+          <listitem>
+          <para>
+            Makes the dialog invisible.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MIN</term>
+          <listitem>
+          <para>
+            Minimizes the dialog and activates the next window in the window order.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MAX</term>
+          <listitem>
+          <para>
+            Maximizes, and makes visible if necessary, the dialog.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>INACTIVE</term>
+          <listitem>
+          <para>
+            Makes the dialog visible without changing the active window.  When the NORMAL keyword is used, the dialog is shown
+            and becomes the active window. The INACTIVE keyword makes the dialog visible without changing the focuse from the
+            current active window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RESTORE</term>
+          <listitem>
+          <para>
+            Makes the dialog visible and restores it to its original size and position if it was minimized or maximized. An
+            application should specify this flag when restoring a minimized window.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ignored [optional]</term>
+      <listitem>
+      <para>
+        This argument is completely ignored. It is a hold over from the original ooDialog implementation. However, since
+        the <emphasis role="italic">icon</emphasis> argument follows it, the <emphasis role="italic">ignored</emphasis>
+        argument must be retained. It serves as a place holder argument to prevserve backwards compatibility. The
+        programmer should simply omit it, or use a value such as <computeroutput>1</computeroutput> to serve as the
+        place holder.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>icon [optional]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog's <link linkend="defDialogIcon">icon</link>. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link>.  If an icon ID is not supplied, the default ooDialog icon will be used.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return is a Rexx <computeroutput>Message</computeroutput> object, (see the Open Object Rexx reference manual to
+    learn more about the <computeroutput>Message</computeroutput> class.) The message object can be used, for instance,
+    to check if the dialog has been closed by the user, to obtain the result value from the execution of the dialog,
+    etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that the relationship between the dialog started with <emphasis role="italic">popupAsChild</emphasis> and the
+    <emphasis role="italic">parent</emphasis> dialog is one-way. When the <emphasis role="italic">parent</emphasis>
+    dialog is closed, the dialog started with the <emphasis role="italic">popupAsChild</emphasis> method is closed. But,
+    when the dialog started with <emphasis role="italic">popupAsChild</emphasis> is closed, the <emphasis
+    role="italic">parent</emphasis> dialog continues to execute as normal. It is not effected by the closing of the
+    <emphasis role="italic">child</emphasis> dialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example creates and executes a <emphasis role="italic">parent</emphasis> dialog. It then executes a second
+    dialog, using <emphasis role="italic">popuAsChild</emphasis> to start the second dialog. The main program path then
+    runs a loop to demonstrate that both dialogs are executing asynchronously. When the loop counter reaches 20, the
+    program closes the parent dialog. This will also close the child dialog.
+  </para>
+  <para>
+    This example program is complete. It can be copy and pasted into a file and will execute as is:
+
+<programlisting>
+<![CDATA[
+
+  parentDlg = .SimpleParentDlg~new
+
+  msgObj = parentDlg~popup("SHOWTOP", , IDI_DLG_OOREXX)
+
+  childDlg = .ExampleChildDlg~new
+
+  childDlg~popupAsChild(parentDlg, 'SHOWTOP', IDI_DLG_OODIALOG)
+
+  do i = 1 to 1000
+    say "Iteration" i
+    j = msSleep(1000)
+
+    -- Check if the user closed the parent dialog.  We do
+    -- not care if the user closed the child dialog, the
+    -- parent will keep executing.
+    if msgObj~completed then leave
+
+    -- After 20 seconds, close the parent dialog.  This
+    -- will also close the child dialog.
+    if i == 20 then do
+      parentDlg~ok
+      leave
+    end
+  end
+
+::requires "ooDialog.cls"
+
+::class 'ExampleChildDlg' subclass UserDialog
+
+::method init
+  forward class (super) continue
+  self~create(60, 70, 257, 123, "Example - I am the Child Dialog")
+
+::method defineDialog
+
+  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
+
+
+::class 'SimpleParentDlg' subclass UserDialog
+
+::method init
+  forward class (super) continue
+
+  self~create(30, 30, 257, 123, "Simple Parent Dialog", "CENTER")
+
+::method defineDialog
+
+  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
+
+]]>
+</programlisting>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogExtensions::popupAsChild() -->
 
 
 <section id="mthReleaseMouseCapture"><title>releaseMouseCapture</title>

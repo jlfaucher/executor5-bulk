@@ -84,173 +84,6 @@
   familiar to the average Rexx programmer.
 </para>
 
-<section id="defResourceScript"><title>Resource Script</title>
-<para>
-  Resource script files are plain text files usually produced by a resource editor.  The files generally have a file
-  extension of &quot;.rc&quot;, but an extension of &quot;.dlg&quot; is used by some resource editors. The text of a
-  resource script defines a dialog <link linkend="ovvDialogTemplate">template</link>. The format of the text is defined
-  by Microsoft and public knowledge. The format is easily parsable by computer software and is used by resource
-  compilers to produce a compiled (binary) file containing the dialog template(s) defined in the script file. The
-  ooDialog framework can parse a resource script file and dynamically produce a dialog template in memory. This is the
-  basis of how a <link linkend="clsRcDialog">RcDialog</link> works.
-</para>
-</section>
-
-<section id="defResourceId"><title>Resource ID</title>
-<para>
-  A resouce ID is the identification number of a dialog resource. There are several different types of dialog
-  resources, menus, dialog controls, and bitmaps, to name a few. You assign IDs when you create the resource definition
-  for your dialog.  An ID can be either numerical (for example, 1) or symbolic (for example, "IDOK").
-</para>
-<para>
-  IDs must be unique for each resource of the same type.  Although two resources of different types may have the same
-  ID, when <link linkend="ovvSymbolicIDMechanism">using</link> symbolic IDs within the ooDialog framework it is
-  advisable to give all resources unique numerical IDs.
-</para>
-</section>
-
-<section id="defSymbolicId"><title>Symbolic ID</title>
-<para>
-  A symbolic name is a constant symbol that uniquely identifies a specific entity in a program. Defining a symbolic name
-  for each numeric resource ID is often done in programs that work with resource IDs.  The symbolic name is then used
-  where ever a numeric resource ID is needed.  Symbolic names are easier to remember than numeric IDs and can make the
-  code easier to understand.
-</para>
-<para>
-  Symbolic names are most often used in compiled programs, where a preprocessor replaces each ocurrence of the symbolic
-  name in the code with its numeric value before the code is compiled. Symbolic names are less often used in interpreted
-  languages because there is no preprocessor step where substituitons can be made. However, ooDialog provides a robust
-  and useful <link linkend="ovvSymbolicIDMechanism">mechanism</link> for using symbolic IDs in ooDialog programs.
-  Programmers wishing to use symbolic resource IDs in their programs should be familar with this <link
-  linkend="ovvSymbolicIDMechanism">mechanism</link>.
-</para>
-</section>
-
-<section id="defResourceEditor"><title>Resource Editor</title>
-<para>
-  Resource editors are visual tools used to create a dialog <link linkend="ovvDialogTemplate">template</link> in a text
-  file. Visual resource editors provide a WYSIWYG (what you see is what you get) environment to design dialogs. The
-  editor manages the size and positioning of a dialog and its controls. The user can drag and drop controls where they
-  are wanted and use the mouse to size the dialog and controls. Resource editors simplify the process of designing the
-  look of a dialog and reduce the amount of trial and error design inherent in using the <link
-  linkend="clsUserDialog">UserDialog</link> class.
-</para>
-</section>
-
-<section id="defPoundDefine"><title>#define Statement</title>
-<para>
-  Define statements are often used in the C and C++ languages to define symbolic names for numerical values.  Because of
-  this, it is common in Windows programs with dialogs to define symbolic names for resource IDs.  Most Windows resource
-  editors use symbolic IDs, (some to a limited degree, others exclusively.)  Often the define statements are put in a
-  header file so they are available both to the resource compiler and to the program code.  The defines take the form
-  of: <computeroutput>#define symbolicName numericValue </computeroutput> as in this example:
-</para>
-<programlisting>
-<![CDATA[
-
-#define   ID_PUSHBUTTON1  413
-#define   ID_EDIT1        511
-#define   ID_LISTBOX1     602
-
-]]>
-</programlisting>
-</section>
-
-<section id="defHeaderFile"><title>Header File</title>
-<para>
-  A common practice when programming applications in Windows that use dialogs and dialog resources is to place symbolic
-  defines in a separate file.  These files often have a .h extension and are usually called header files.  Windows
-  resource editors often manage a header file for the symbolic IDs automatically. (For instance Microsoft's dialog
-  editor creates, writes, and reads the resource ID header file completely on its own. The user does not need to take
-  any action other than including the file in her program.)
-</para>
-</section>
-
-<section id="defDialogUnit"><title>Dialog Unit</title>
-<para>
-  Dialog box templates contain measurements that define the size and position of the dialog box and its controls. These
-  measurements are device independent. This allows a single template to be used to create the same dialog box for all
-  types of display devices. Using device independent measurements allows a dialog box to have the same proportions and
-  appearance on all screens despite differing resolutions and aspect ratios between screens.
-</para>
-<para>
-  These measurements are called dialog template units, often shortened to just dialog units in this documentation.
-</para>
-<para>
-  The following paragraph in italics, which has been the sole documentation of dialog units in the ooDialog
-  documentation prior to version 4.0.0, is unfortunately incorrect.  The value of a dialog unit is dependent on the font
-  actually used in the dialog, not on the system font. The statements below were probably true in very early versions of
-  Windows when every dialog used system 8 pt font. Today it is highly unusual for a dialog to use system 8 pt font. The
-  factorX and factorY values are calculated incorrectly. These values are only correct if the dialog is using system 8
-  pt font and are incorrect for a dialog using any other font.
-</para>
-<para>
-  <emphasis role="italic">There is a horizontal and a vertical dialog base unit to convert width and height of dialog
-  boxes and controls from dialog units to pixels and vice versa. The value of these base units depend on the screen
-  resolution and the active system font; they are stored in attributes of the UserDialog class.</emphasis>
-<programlisting>
-<![CDATA[
-xPixels = xDialogUnits * self~FactorX
-]]>
-</programlisting>
-  <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixels</computeroutput> will not
-  be <link linkend="ovvInaccurate">accurate</link>.
-</para>
-</section>
-
-<section id="defDialogIcon"><title>Dialog Icon</title>
-<para>
-  The term <emphasis role="italic">dialog icon</emphasis> is used in this documentation to refer to the icon that is
-  displayed in the left hand corner of the title bar of a dialog. In Windows this is often called the <emphasis
-  role="italic">application</emphasis> icon.  The dialog icon is also used for the Task Bar display and in the AltTab
-  task switcher application.
-</para>
-<para>
-  The dialog icon for a specific dialog can be set when the dialog is run using one of the execute methods.  See the
-  <link linkend="mthExecute">execute</link> or <link linkend="mthPopup">popup</link> methods for example.  ooDialog provides
-  four icon images for use in dialogs.  Other, custom, icons can be used by including the icon in a binary (compiled)
-  resource, a resource script, or by using the <link linkend="mthAddIconResource">addIconResource</link> method of the
-  UserDialog.  The following table shows the pre-defined symbolic IDs of the icon images provided by ooDialog. The
-  symbolic ID should always be used in case the numeric value is changed in the future. In addition, the programmer
-  should avoid using any of the pre-defifned symbolic IDs <link linkend="ovvPreDefinedSymbolicIDs">reserved</link> by ooDialog. The
-  IDI_DLG_DEFAULT is a fifth symbolic ID that represents the default dialog icon. This ID can always be used where a
-  dialog icon ID is needed.
-</para>
-<table frame="all">
-<title>ooDialog Supplied Icons</title>
-<tgroup cols="2">
-<thead>
-<row>
-<entry>Description</entry>
-<entry>Symbolic ID</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry>The default, the letters OOD</entry>
-<entry>IDI_DLG_OODIALOG</entry>
-</row>
-<row>
-<entry>Dialog box image</entry>
-<entry>IDI_DLG_APPICON</entry>
-</row>
-<row>
-<entry>Fancier dialog box image</entry>
-<entry>IDI_DLG_APPICON2</entry>
-</row>
-<row>
-<entry>The ooRexx image</entry>
-<entry>IDI_DLG_OOREXX</entry>
-</row>
-<row>
-<entry>IDI_DLG_DEFAULT</entry>
-<entry>IDI_DLG_DEFAULT</entry>
-</row>
-</tbody>
-</tgroup>
-</table>
-</section>
-
 <section id="defClientArea"><title>Client / Nonclient Area</title>
 <para>
   The <emphasis role="italic">client area</emphasis> of a window is the part of a window where, normally, the window
@@ -263,72 +96,6 @@ xPixels = xDialogUnits * self~FactorX
   Dialogs are top-level windows, and the client area is the area where the dialog draws its controls. The nonclient
   area is the border, title bar, etc.. For dialog controls, the client area is where the control draws itself. The
   nonclient area would be the border of the control, if it has one.
-</para>
-</section>
-
-<section id="defScreenCoordinates"><title>Screen / Client Coordinates</title>
-<para>
-  Points on the screen are described as x and y coordinate pairs (x,y). The x coordinates increase to the right, y
-  coordinates increase towards the bottom. <emphasis role="italic">Screen</emphasis> and <emphasis
-  role="italic">client</emphasis> coordinates are used to distinguish the origin (0,0) of the coordinate. For a screen
-  coordinate, the origin is the upper left corner of the primary display device, typically a monitor, and usually called
-  the screen. Client coordinates on the other hand have an origin of the upper left corner of the <link
-  linkend="defClientArea">client</link> area of the window.  Both screen and client coordinates are always given in the
-  device unit of the display, which for all practical purposes is a <link linkend="defPixel">pixel</link>.
-</para>
-</section>
-
-<section id="defModalModeless"><title>Modal and Modeless Dialogs</title>
-<para>
-  <indexterm><primary>Modal dialog</primary></indexterm>
-  <indexterm><primary>Modeless dialog</primary></indexterm>
-  Dialogs are executed in two basic ways. A <emphasis role="italic">modal</emphasis> dialog blocks keyboard and mouse
-  input to all other windows started by the program. The user can not switch to another window in the program without
-  closing the modal dialog. In ooDialog this is often all other dialogs started by the program. A <emphasis
-  role="italic">modeless</emphasis> dialog operates independently of the other dialogs in the program. The user can
-  switch away from a modeless dialog and work with any of the other dialogs in the program.
-</para>
-<para>
-  Be aware that the original developers of ooDialog choose to not implement true modal dialogs. Rather, they implemented
-  a strategy where all dialogs are created as modeless dialog and the ooDialog framework keeps track of the last dialog
-  executed. This <emphasis role="italic">last executed</emphasis> dialog is then manually disabled to mimic the
-  behaviour of true modal dialogs. While this strategy is usually sufficient, it will sometimes cause the wrong dialog
-  to be disabled.
-</para>
-<para>
-  In the ooDialog framework use the <link linkend="mthExecute">execute</link> method to create modal dialogs and the
-  <link linkend="mthPopup">popup</link> or <link linkend="mthPopupAsChild">popupAsChild</link> methods to create
-  modeless dialogs.
-</para>
-</section>
-
-<section id="defHandle"><title>handle</title>
-<para>
-  A unique reference to a Windows object assigned by the system. It can be a reference to a dialog, a particular dialog
-  control, a window, or a graphic object (pen, brush, font). Handles are required for certain methods. A handle is an
-  opaque type, the Rexx programmer need not be aware of the specific format of a handle. The ooDialog framework provides
-  methods that return handles and methods for retrieving handles from the operating system. When a method requires a
-  handle as an argument, the Rexx programmer needs to obtain the handle from one of those provided methods.
-</para>
-</section>
-
-<section id="defDeviceContext"><title>Device Context</title>
-<para>
-  Stores information about the graphic objects that are displayed, such as bitmaps, lines, and pixels, and the tools
-  used to display them, such as pens, brushes, and fonts. A device context can be acquired for a dialog or a dialog
-  control. It must be explicitly freed when the text or graphic operations are completed.
-</para>
-</section>
-
-<section id="defPixel"><title>Pixel</title>
-<para>
-  Individual addressable point on the monitor (screen or display.) Pixels are whole numbers. Ancient VGA screens
-  supported 640 by 480 pixels, SVGA screens supported higher resolutions, such as 800 by 600, 1024 by 768, and up.
-  Modern displays support much higher resolutions. 1600 by 1200 is common and displays with 2560x1600 are available.
-  Pixel values start at the top left corner of the main display, with that corner being (0,0). Prior to dual monitor
-  capabilities, pixel values were always non-negative. On a dual monitor system that is no longer true, depending on the
-  virtual position of the secondary monitor. If it is to the left or above the primary monitor negative pixel values are
-  possible.
 </para>
 </section>
 
@@ -391,6 +158,239 @@ xPixels = xDialogUnits * self~FactorX
 
 ]]>
 </programlisting>
+</section>
+
+<section id="defPoundDefine"><title>#define Statement</title>
+<para>
+  Define statements are often used in the C and C++ languages to define symbolic names for numerical values.  Because of
+  this, it is common in Windows programs with dialogs to define symbolic names for resource IDs.  Most Windows resource
+  editors use symbolic IDs, (some to a limited degree, others exclusively.)  Often the define statements are put in a
+  header file so they are available both to the resource compiler and to the program code.  The defines take the form
+  of: <computeroutput>#define symbolicName numericValue </computeroutput> as in this example:
+</para>
+<programlisting>
+<![CDATA[
+
+#define   ID_PUSHBUTTON1  413
+#define   ID_EDIT1        511
+#define   ID_LISTBOX1     602
+
+]]>
+</programlisting>
+</section>
+
+<section id="defDeviceContext"><title>Device Context</title>
+<para>
+  Stores information about the graphic objects that are displayed, such as bitmaps, lines, and pixels, and the tools
+  used to display them, such as pens, brushes, and fonts. A device context can be acquired for a dialog or a dialog
+  control. It must be explicitly freed when the text or graphic operations are completed.
+</para>
+</section>
+
+<section id="defDialogIcon"><title>Dialog Icon</title>
+<para>
+  The term <emphasis role="italic">dialog icon</emphasis> is used in this documentation to refer to the icon that is
+  displayed in the left hand corner of the title bar of a dialog. In Windows this is often called the <emphasis
+  role="italic">application</emphasis> icon.  The dialog icon is also used for the Task Bar display and in the AltTab
+  task switcher application.
+</para>
+<para>
+  The dialog icon for a specific dialog can be set when the dialog is run using one of the execute methods.  See the
+  <link linkend="mthExecute">execute</link> or <link linkend="mthPopup">popup</link> methods for example.  ooDialog provides
+  four icon images for use in dialogs.  Other, custom, icons can be used by including the icon in a binary (compiled)
+  resource, a resource script, or by using the <link linkend="mthAddIconResource">addIconResource</link> method of the
+  UserDialog.  The following table shows the pre-defined symbolic IDs of the icon images provided by ooDialog. The
+  symbolic ID should always be used in case the numeric value is changed in the future. In addition, the programmer
+  should avoid using any of the pre-defifned symbolic IDs <link linkend="ovvPreDefinedSymbolicIDs">reserved</link> by ooDialog. The
+  IDI_DLG_DEFAULT is a fifth symbolic ID that represents the default dialog icon. This ID can always be used where a
+  dialog icon ID is needed.
+</para>
+<table frame="all">
+<title>ooDialog Supplied Icons</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Description</entry>
+<entry>Symbolic ID</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>The default, the letters OOD</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+</row>
+<row>
+<entry>Dialog box image</entry>
+<entry>IDI_DLG_APPICON</entry>
+</row>
+<row>
+<entry>Fancier dialog box image</entry>
+<entry>IDI_DLG_APPICON2</entry>
+</row>
+<row>
+<entry>The ooRexx image</entry>
+<entry>IDI_DLG_OOREXX</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+
+<section id="defDialogUnit"><title>Dialog Unit</title>
+<para>
+  Dialog box templates contain measurements that define the size and position of the dialog box and its controls. These
+  measurements are device independent. This allows a single template to be used to create the same dialog box for all
+  types of display devices. Using device independent measurements allows a dialog box to have the same proportions and
+  appearance on all screens despite differing resolutions and aspect ratios between screens.
+</para>
+<para>
+  These measurements are called dialog template units, often shortened to just dialog units in this documentation.
+</para>
+<para>
+  The following paragraph in italics, which has been the sole documentation of dialog units in the ooDialog
+  documentation prior to version 4.0.0, is unfortunately incorrect.  The value of a dialog unit is dependent on the font
+  actually used in the dialog, not on the system font. The statements below were probably true in very early versions of
+  Windows when every dialog used system 8 pt font. Today it is highly unusual for a dialog to use system 8 pt font. The
+  factorX and factorY values are calculated incorrectly. These values are only correct if the dialog is using system 8
+  pt font and are incorrect for a dialog using any other font.
+</para>
+<para>
+  <emphasis role="italic">There is a horizontal and a vertical dialog base unit to convert width and height of dialog
+  boxes and controls from dialog units to pixels and vice versa. The value of these base units depend on the screen
+  resolution and the active system font; they are stored in attributes of the UserDialog class.</emphasis>
+<programlisting>
+<![CDATA[
+xPixels = xDialogUnits * self~FactorX
+]]>
+</programlisting>
+  <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixels</computeroutput> will not
+  be <link linkend="ovvInaccurate">accurate</link>.
+</para>
+</section>
+
+<section id="defHandle"><title>Handle</title>
+<para>
+  A unique reference to a Windows object assigned by the system. It can be a reference to a dialog, a particular dialog
+  control, a window, or a graphic object (pen, brush, font). Handles are required for certain methods. A handle is an
+  opaque type, the Rexx programmer need not be aware of the specific format of a handle. The ooDialog framework provides
+  methods that return handles and methods for retrieving handles from the operating system. When a method requires a
+  handle as an argument, the Rexx programmer needs to obtain the handle from one of those provided methods.
+</para>
+</section>
+
+<section id="defHeaderFile"><title>Header File</title>
+<para>
+  A common practice when programming applications in Windows that use dialogs and dialog resources is to place symbolic
+  defines in a separate file.  These files often have a .h extension and are usually called header files.  Windows
+  resource editors often manage a header file for the symbolic IDs automatically. (For instance Microsoft's dialog
+  editor creates, writes, and reads the resource ID header file completely on its own. The user does not need to take
+  any action other than including the file in her program.)
+</para>
+</section>
+
+<section id="defModalModeless"><title>Modal and Modeless Dialogs</title>
+<para>
+  <indexterm><primary>Modal dialog</primary></indexterm>
+  <indexterm><primary>Modeless dialog</primary></indexterm>
+  Dialogs are executed in two basic ways. A <emphasis role="italic">modal</emphasis> dialog blocks keyboard and mouse
+  input to all other windows started by the program. The user can not switch to another window in the program without
+  closing the modal dialog. In ooDialog this is often all other dialogs started by the program. A <emphasis
+  role="italic">modeless</emphasis> dialog operates independently of the other dialogs in the program. The user can
+  switch away from a modeless dialog and work with any of the other dialogs in the program.
+</para>
+<para>
+  Be aware that the original developers of ooDialog choose to not implement true modal dialogs. Rather, they implemented
+  a strategy where all dialogs are created as modeless dialog and the ooDialog framework keeps track of the last dialog
+  executed. This <emphasis role="italic">last executed</emphasis> dialog is then manually disabled to mimic the
+  behaviour of true modal dialogs. While this strategy is usually sufficient, it will sometimes cause the wrong dialog
+  to be disabled.
+</para>
+<para>
+  In the ooDialog framework use the <link linkend="mthExecute">execute</link> method to create modal dialogs and the
+  <link linkend="mthPopup">popup</link> or <link linkend="mthPopupAsChild">popupAsChild</link> methods to create
+  modeless dialogs.
+</para>
+</section>
+
+<section id="defPixel"><title>Pixel</title>
+<para>
+  Individual addressable point on the monitor (screen or display.) Pixels are whole numbers. Ancient VGA screens
+  supported 640 by 480 pixels, SVGA screens supported higher resolutions, such as 800 by 600, 1024 by 768, and up.
+  Modern displays support much higher resolutions. 1600 by 1200 is common and displays with 2560x1600 are available.
+  Pixel values start at the top left corner of the main display, with that corner being (0,0). Prior to dual monitor
+  capabilities, pixel values were always non-negative. On a dual monitor system that is no longer true, depending on the
+  virtual position of the secondary monitor. If it is to the left or above the primary monitor negative pixel values are
+  possible.
+</para>
+</section>
+
+<section id="defResourceEditor"><title>Resource Editor</title>
+<para>
+  Resource editors are visual tools used to create a dialog <link linkend="ovvDialogTemplate">template</link> in a text
+  file. Visual resource editors provide a WYSIWYG (what you see is what you get) environment to design dialogs. The
+  editor manages the size and positioning of a dialog and its controls. The user can drag and drop controls where they
+  are wanted and use the mouse to size the dialog and controls. Resource editors simplify the process of designing the
+  look of a dialog and reduce the amount of trial and error design inherent in using the <link
+  linkend="clsUserDialog">UserDialog</link> class.
+</para>
+</section>
+
+<section id="defResourceId"><title>Resource ID</title>
+<para>
+  A resouce ID is the identification number of a dialog resource. There are several different types of dialog
+  resources, menus, dialog controls, and bitmaps, to name a few. You assign IDs when you create the resource definition
+  for your dialog.  An ID can be either numerical (for example, 1) or symbolic (for example, "IDOK").
+</para>
+<para>
+  IDs must be unique for each resource of the same type.  Although two resources of different types may have the same
+  ID, when <link linkend="ovvSymbolicIDMechanism">using</link> symbolic IDs within the ooDialog framework it is
+  advisable to give all resources unique numerical IDs.
+</para>
+</section>
+
+<section id="defResourceScript"><title>Resource Script</title>
+<para>
+  Resource script files are plain text files usually produced by a resource editor.  The files generally have a file
+  extension of &quot;.rc&quot;, but an extension of &quot;.dlg&quot; is used by some resource editors. The text of a
+  resource script defines a dialog <link linkend="ovvDialogTemplate">template</link>. The format of the text is defined
+  by Microsoft and public knowledge. The format is easily parsable by computer software and is used by resource
+  compilers to produce a compiled (binary) file containing the dialog template(s) defined in the script file. The
+  ooDialog framework can parse a resource script file and dynamically produce a dialog template in memory. This is the
+  basis of how a <link linkend="clsRcDialog">RcDialog</link> works.
+</para>
+</section>
+
+<section id="defScreenCoordinates"><title>Screen / Client Coordinates</title>
+<para>
+  Points on the screen are described as x and y coordinate pairs (x,y). The x coordinates increase to the right, y
+  coordinates increase towards the bottom. <emphasis role="italic">Screen</emphasis> and <emphasis
+  role="italic">client</emphasis> coordinates are used to distinguish the origin (0,0) of the coordinate. For a screen
+  coordinate, the origin is the upper left corner of the primary display device, typically a monitor, and usually called
+  the screen. Client coordinates on the other hand have an origin of the upper left corner of the <link
+  linkend="defClientArea">client</link> area of the window.  Both screen and client coordinates are always given in the
+  device unit of the display, which for all practical purposes is a <link linkend="defPixel">pixel</link>.
+</para>
+</section>
+
+<section id="defSymbolicId"><title>Symbolic ID</title>
+<para>
+  A symbolic name is a constant symbol that uniquely identifies a specific entity in a program. Defining a symbolic name
+  for each numeric resource ID is often done in programs that work with resource IDs.  The symbolic name is then used
+  where ever a numeric resource ID is needed.  Symbolic names are easier to remember than numeric IDs and can make the
+  code easier to understand.
+</para>
+<para>
+  Symbolic names are most often used in compiled programs, where a preprocessor replaces each ocurrence of the symbolic
+  name in the code with its numeric value before the code is compiled. Symbolic names are less often used in interpreted
+  languages because there is no preprocessor step where substituitons can be made. However, ooDialog provides a robust
+  and useful <link linkend="ovvSymbolicIDMechanism">mechanism</link> for using symbolic IDs in ooDialog programs.
+  Programmers wishing to use symbolic resource IDs in their programs should be familar with this <link
+  linkend="ovvSymbolicIDMechanism">mechanism</link>.
+</para>
 </section>
 
 <section id="defSystemErrorCode"><title>System Error Code</title>
@@ -481,73 +481,36 @@ xPixels = xDialogUnits * self~FactorX
   specifically stated otherwise.
 </para>
 
-<section id="ovvNumbers"><title>Numbers in ooDialog:</title>
+<section id="ovvDeprecated"><title>Deprecated</title>
 <para>
-  Numbers in ooDialog are <emphasis role="bold">always</emphasis> whole numbers, unless specifically stated otherwise.
-  Except in very rare cases, the Windows API that ooDialog provides access to, only deals with whole numbers. Pixels,
-  positions, sizes of fonts, coordinates on the screen, etc., are all expressed as whole numbers only. Numerical
-  arguments to methods in ooDialog must always be whole numbers, unless the documentation specifically notes that the
-  method accepts fractional numbers for the argument.
+  PROVIDE TEXT
 </para>
 </section>
 
-<section id="ovvUnderlying"><title>Underlying Dialog Creation</title>
+<section id="ovvDialogTemplate"><title>Dialog Template</title>
 <para>
-  The dialog and dialog control objects in ooDialog represent the dialogs and controls users see on their screens.
-  This documentation often refers to the underlying dialog or the underlying control.  These statements refer to the
-  dialog or control created by the operating system, the objects the user sees on the screen. The operating system
-  controls what these underlying objects can, and can not, do. One thing that it is sometimes difficult for the Rexx
-  programmer to grasp is that ooDialog can not alter the behavior or appearance of these objects in ways not allowed
-  by the operating system. The Windows API provides a broad number of ways to customize the appearance and behavior
-  of dialogs and controls.  But, ooDialog and the Rexx programmer are restricted to those customizations provided
-  by the operating system.
+  <indexterm><primary>Template, Dialog</primary></indexterm>
+  The <link linkend="ovvUnderlying">underlying</link> dialog seen by the user is created by the operating system from a
+  dialog template in memory. The template describes the size and position of the dialog and all of its controls. The
+  template also contains modifiers that control the style, behavior, and attributes of the dialog and its controls. To
+  make designing dialogs easier, Windows supports the concept of a textual representation of the dialog template. The
+  textual representation can then be translated by software tools to the binary form of the template needed by the
+  operating system.
 </para>
 <para>
-  Another concept that is often hard to grasp is that many of the methods of the ooDialog dialog and control
-  objects can only be used after the underlying Windows dialog has been created.  In general this means in the <link
-  linkend="mthInitDialog">initDialog</link>() method or later in the life cycle of the dialog. In particular, the
-  <link linkend="mthDefineDialog">defineDialog</link>() method of the <link
-  linkend="clsUserDialog">UserDialog</link> class executes before the underlying dialog is created. Therefore, any
-  method that requires the underlying dialog to have been created can not work in the <emphasis
-  role="italic">defineDialog</emphasis> method. In earlier versions of ooDialog, in general, if the programmer
-  invoked a method requiring that the underlying dialog was created, the error was simply ignored. But, the method
-  had no effect.
+  ooDialog uses three basic constructs that allow the Rexx programmer to supply the dialog template. The programmer can
+  use a binary resource, a resource script, or create the template dynamically in the program code. A binary (compiled)
+  dialog template is stored in a DLL, (usually a .dll file.) The programmer subclasses a <link
+  linkend="clsResDialog">ResDialog</link> to use a binary resource. Resource scripts, (usually a .rc file) supply the
+  dialog template in a text file. The programmer subclasses a <link linkend="clsRcDialog">RcDialog</link> to create a
+  dialog from a resource script. To create a dialog template dynamically in the program code, the programmer subclasses
+  a <link linkend="clsUserDialog">UserDialog</link> and then uses the <link linkend="sctCreateMethods">create</link>
+  methods of that class to create the dialog template. The <computeroutput>UserDialog</computeroutput> object translates
+  the program statements into the in-memory dialog template required by the operating system. The
+  <computeroutput>RcDialog</computeroutput> object parses the resource script and converts the resource script
+  statements into an in-memory dialog template by invoking the proper methods of its superclass, the
+<computeroutput>UserDialog</computeroutput>.
 </para>
-<para>
-  From the 4.0.0 release of ooRexx and on, the goal in ooDialog is to raise a syntax condition when a method
-  requiring the underlying dialog is invoked and the underlying dialog does not exist. This goal is being
-  implemented over time and may not yet be completed.
-</para>
-</section>
-
-<section id="ovvWindowMessages"><title>Window Messages</title>
-<para>
-  In the Windows operating system, not surprisingly, most everything is a window. In a nutshell, the Windows operating
-  system works by routing and sending <emphasis role="italic">messages</emphasis> to these windows. Each window has a
-  <emphasis role="italic">message processing loop</emphasis> where the window waits for a message to arrive, processes
-  it, and then waits for the next message. Each window message has an unique whole number ID that gives meaning to the
-  message. When a message is sent to a window, it is sent with two arguments. The first argument is of a type called
-  WPARM and the second is a type called LPARAM. These types are opaque and the value of each is dependent on the
-  specific message. Either or both of the arguments may have no meaning for the specific message. The window always
-  returns a value, another opaque type called LRESULT, which again may have no meaning for the particular message.
-</para>
-<para>
-  In general, most of what ooDialog does is done by sending window messages to the operating system windows. This is
-  designed to allow the Rexx programmer to use dialogs without understanding any of the details of window messages.
-  However, the ooDialog framework provides a few generic methods that send window messages to the underlying operating
-  system windows. These methods, in contrast to most methods, can not be used by the Rexx programmer without some
-  knowledge of the window message being sent. The methods are clearly marked. The programmer would need to consult the
-  <link linkend="defWindowsDoc">Windows Documentation</link> to understand what both the WPARAM and LPARAM arguments
-  must be, and to understand what the LRESULT return, if any, means. In addition, the programmer would need to determine
-  the numeric value of the window message ID. This could be done using a <link linkend="defPlatformSDK">Windows
-  platform SDK</link>, or perhaps through a Google search.
-</para>
-<para>
-  These generic send messages methods allow Rexx programmers to send any message to any of the underlying windows in
-  their programs. The caveat is that the programmers will have to research the meaning of the messages, their arguments,
-  and their return values themselves.
-</para>
-
 </section>
 
 <section id="ovvEvents"><title>Events</title>
@@ -593,6 +556,170 @@ xPixels = xDialogUnits * self~FactorX
   also changes how the ooDialog programmer must write his event handlers. In particular, the event handler must return
   in a timely manner. This is discussed more <link linkend="sctCodingEventHandlers">fully</link> in the
   <computeroutput>EventNotification</computeroutput> class documentation.
+</para>
+</section>
+
+<section id="ovvInaccurate"><title>factorX / factorY</title>
+<para>
+  The <emphasis role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes of the
+  <link linkend="chpDialogObject">dialog object</link> were intended to provide a way to convert between <link
+  linkend="defPixel">pixels</link> and <link linkend="defDialogUnit">dialog units</link>, and vice versa. Although their
+  values may have been correct when ooDialog was <link linkend="sctHistory">originally designed</link>, in almost all
+  cases the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is no
+  longer correct.
+</para>
+<para>
+  Unfortunately, many of the methods in the ooDialog framework use <emphasis role="italic">factorX</emphasis> and
+  <emphasis role="italic">factorY</emphasis> to convert between pixels and dialog units. This in turn makes all of
+  those methods inaccurate. These methods are all marked as being inaccurate. There is almost always no reason to
+  convert back to dialog units from pixels. Once the underlying dialog has been created, pixels should be used. Each
+  inaccurate method in the framework has a corresponding method that uses pixels instead of dialog units.
+</para>
+</section>
+
+<section id="ovvResourceWorkshop"><title>IBM Resource Workshop</title>
+<para>
+  The IBM Resource Workshop was a visual resource <link linkend="defResourceEditor">editor</link> included with IBM Object
+  Rexx. The Resource Workshop could not be contributed to the open source community and is therefore not a part of the
+  Open Object Rexx project.
+</para>
+<para><emphasis role="bold">Note</emphasis>, there is <emphasis role="bold">no loss</emphasis> of functionality in
+  ooDialog because of the absence of the Resource Workshop.  The Windows resource format is well understood and there
+  are any number of free or inexpensive resource editors that do a better job of designing dialogs than the Resource
+  Workshop did. (The Resource Workshop was a 16-bit application with limited capacity for the newer features in the
+  Windows user interface.) ooDialog works fine with dialogs designed by any modern resource editor.
+</para>
+</section>
+
+<section id="ovvNumbers"><title>Numbers in ooDialog:</title>
+<para>
+  Numbers in ooDialog are <emphasis role="bold">always</emphasis> whole numbers, unless specifically stated otherwise.
+  Except in very rare cases, the Windows API that ooDialog provides access to, only deals with whole numbers. Pixels,
+  positions, sizes of fonts, coordinates on the screen, etc., are all expressed as whole numbers only. Numerical
+  arguments to methods in ooDialog must always be whole numbers, unless the documentation specifically notes that the
+  method accepts fractional numbers for the argument.
+</para>
+</section>
+
+<section id="ovvPreDefinedSymbolicIDs"><title>Predefined Symbolic IDs</title>
+<para>
+  The symbolic IDs in the following table are pre-defined by ooDialog and always available to the programmer. They are
+  placed in the either the <link linkend="atrConstDir">constDir</link> attribute when an instance of a dialog class is
+  created, or in the global <link linkend="dotConstDir">.constDir</link>. Where they are placed is dependent on the
+  <link linkend="mthUseGlobalConstDir">usage</link> of the <computeroutput>.constDir</computeroutput>. All symbolic
+  names after IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog
+  programmer.
+</para>
+<para>
+  To allow for future expansion, the ooDialog programmer should consider the resource IDs of 1 through 50 as reserved
+  for ooDialog. Programmers can avoid conflicts by using IDs greater than 50 for resource IDs they assign in their
+  programs.
+</para>
+<table id="oodsymbolicids" frame="all">
+<title>Symbolic IDs Predefined by ooDialog</title>
+<tgroup cols="3">
+<thead>
+<row>
+<entry>Symbolic ID</entry>
+<entry>Numeric ID or Symbol</entry>
+<entry>ResourceType</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>IDOK</entry>
+<entry>1</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDCANCEL</entry>
+<entry>2</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDABORT</entry>
+<entry>3</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDRETRY</entry>
+<entry>4</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDIGNORE</entry>
+<entry>5</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDYES</entry>
+<entry>6</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDNO</entry>
+<entry>7</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDCLOSE</entry>
+<entry>8</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDHELP</entry>
+<entry>9</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDTRYAGAIN</entry>
+<entry>10</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDCONTINUE</entry>
+<entry>11</entry>
+<entry>ID for button controls</entry>
+</row>
+<row>
+<entry>IDC_STATIC</entry>
+<entry>-1</entry>
+<entry>ID for static controls</entry>
+</row>
+<row>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>IDI_DLG_OODIALOG</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON</entry>
+<entry>IDI_DLG_APPICON</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>IDI_DLG_APPICON2</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>IDI_DLG_OOREXX</entry>
+<entry>Icon image</entry>
+</row>
+<row>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>IDI_DLG_DEFAULT</entry>
+<entry>Icon image</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para id="paraGenericResources">
+  The symbolic IDs in the table following IDC_STATIC are the IDs of some generic <link
+  linkend="chapResources">resources</link> that are bound to the oodialog.dll file.  They can be used in any ooDialog
+  program and are accessed using the <link linkend="clsResourceImage">.ResourceImage</link> class. Programmers should
+  always use their symbolic ID rather than their numeric ID in case the numeric value changes in future versions of
+  ooDialog.
 </para>
 </section>
 
@@ -644,6 +771,35 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 </section>
 
+<section id="ovvUnderlying"><title>Underlying Dialog Creation</title>
+<para>
+  The dialog and dialog control objects in ooDialog represent the dialogs and controls users see on their screens.
+  This documentation often refers to the underlying dialog or the underlying control.  These statements refer to the
+  dialog or control created by the operating system, the objects the user sees on the screen. The operating system
+  controls what these underlying objects can, and can not, do. One thing that it is sometimes difficult for the Rexx
+  programmer to grasp is that ooDialog can not alter the behavior or appearance of these objects in ways not allowed
+  by the operating system. The Windows API provides a broad number of ways to customize the appearance and behavior
+  of dialogs and controls.  But, ooDialog and the Rexx programmer are restricted to those customizations provided
+  by the operating system.
+</para>
+<para>
+  Another concept that is often hard to grasp is that many of the methods of the ooDialog dialog and control
+  objects can only be used after the underlying Windows dialog has been created.  In general this means in the <link
+  linkend="mthInitDialog">initDialog</link>() method or later in the life cycle of the dialog. In particular, the
+  <link linkend="mthDefineDialog">defineDialog</link>() method of the <link
+  linkend="clsUserDialog">UserDialog</link> class executes before the underlying dialog is created. Therefore, any
+  method that requires the underlying dialog to have been created can not work in the <emphasis
+  role="italic">defineDialog</emphasis> method. In earlier versions of ooDialog, in general, if the programmer
+  invoked a method requiring that the underlying dialog was created, the error was simply ignored. But, the method
+  had no effect.
+</para>
+<para>
+  From the 4.0.0 release of ooRexx and on, the goal in ooDialog is to raise a syntax condition when a method
+  requiring the underlying dialog is invoked and the underlying dialog does not exist. This goal is being
+  implemented over time and may not yet be completed.
+</para>
+</section>
+
 <section id="ovvUndocumented"><title>Undocumented Items</title>
 <para>
   ooRexx is open source and anyone can peruse the source to see all functions, classes, and methods of the ooDialog
@@ -656,50 +812,6 @@ xPixels = xDialogUnits * self~FactorX
   In addition, previous versions of the ooDialog documentation, documented some features, but added some form of the
   caveat: <emphasis role="italic">for internal use</emphasis>. The prudent programmer would not use any feature
   documented for internal use. These features are also subject to change.
-</para>
-</section>
-
-<section id="ovvInaccurate"><title>factorX / factorY</title>
-<para>
-  The <emphasis role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes of the
-  <link linkend="chpDialogObject">dialog object</link> were intended to provide a way to convert between <link
-  linkend="defPixel">pixels</link> and <link linkend="defDialogUnit">dialog units</link>, and vice versa. Although their
-  values may have been correct when ooDialog was <link linkend="sctHistory">originally designed</link>, in almost all
-  cases the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is no
-  longer correct.
-</para>
-<para>
-  Unfortunately, many of the methods in the ooDialog framework use <emphasis role="italic">factorX</emphasis> and
-  <emphasis role="italic">factorY</emphasis> to convert between pixels and dialog units. This in turn makes all of
-  those methods inaccurate. These methods are all marked as being inaccurate. There is almost always no reason to
-  convert back to dialog units from pixels. Once the underlying dialog has been created, pixels should be used. Each
-  inaccurate method in the framework has a corresponding method that uses pixels instead of dialog units.
-</para>
-</section>
-
-<section id="ovvDialogTemplate"><title>Dialog Template</title>
-<para>
-  <indexterm><primary>Template, Dialog</primary></indexterm>
-  The <link linkend="ovvUnderlying">underlying</link> dialog seen by the user is created by the operating system from a
-  dialog template in memory. The template describes the size and position of the dialog and all of its controls. The
-  template also contains modifiers that control the style, behavior, and attributes of the dialog and its controls. To
-  make designing dialogs easier, Windows supports the concept of a textual representation of the dialog template. The
-  textual representation can then be translated by software tools to the binary form of the template needed by the
-  operating system.
-</para>
-<para>
-  ooDialog uses three basic constructs that allow the Rexx programmer to supply the dialog template. The programmer can
-  use a binary resource, a resource script, or create the template dynamically in the program code. A binary (compiled)
-  dialog template is stored in a DLL, (usually a .dll file.) The programmer subclasses a <link
-  linkend="clsResDialog">ResDialog</link> to use a binary resource. Resource scripts, (usually a .rc file) supply the
-  dialog template in a text file. The programmer subclasses a <link linkend="clsRcDialog">RcDialog</link> to create a
-  dialog from a resource script. To create a dialog template dynamically in the program code, the programmer subclasses
-  a <link linkend="clsUserDialog">UserDialog</link> and then uses the <link linkend="sctCreateMethods">create</link>
-  methods of that class to create the dialog template. The <computeroutput>UserDialog</computeroutput> object translates
-  the program statements into the in-memory dialog template required by the operating system. The
-  <computeroutput>RcDialog</computeroutput> object parses the resource script and converts the resource script
-  statements into an in-memory dialog template by invoking the proper methods of its superclass, the
-<computeroutput>UserDialog</computeroutput>.
 </para>
 </section>
 
@@ -935,145 +1047,32 @@ xPixels = xDialogUnits * self~FactorX
 </variablelist>
 </section>
 
-<section id="ovvPreDefinedSymbolicIDs"><title>Predefined Symbolic IDs</title>
+<section id="ovvWindowMessages"><title>Window Messages</title>
 <para>
-  The symbolic IDs in the following table are pre-defined by ooDialog and always available to the programmer. They are
-  placed in the either the <link linkend="atrConstDir">constDir</link> attribute when an instance of a dialog class is
-  created, or in the global <link linkend="dotConstDir">.constDir</link>. Where they are placed is dependent on the
-  <link linkend="mthUseGlobalConstDir">usage</link> of the <computeroutput>.constDir</computeroutput>. All symbolic
-  names after IDC_STATIC in the table refer to resources bound to oodialog.dll for general use by the ooDialog
-  programmer.
+  In the Windows operating system, not surprisingly, most everything is a window. In a nutshell, the Windows operating
+  system works by routing and sending <emphasis role="italic">messages</emphasis> to these windows. Each window has a
+  <emphasis role="italic">message processing loop</emphasis> where the window waits for a message to arrive, processes
+  it, and then waits for the next message. Each window message has an unique whole number ID that gives meaning to the
+  message. When a message is sent to a window, it is sent with two arguments. The first argument is of a type called
+  WPARM and the second is a type called LPARAM. These types are opaque and the value of each is dependent on the
+  specific message. Either or both of the arguments may have no meaning for the specific message. The window always
+  returns a value, another opaque type called LRESULT, which again may have no meaning for the particular message.
 </para>
 <para>
-  To allow for future expansion, the ooDialog programmer should consider the resource IDs of 1 through 50 as reserved
-  for ooDialog. Programmers can avoid conflicts by using IDs greater than 50 for resource IDs they assign in their
-  programs.
+  In general, most of what ooDialog does is done by sending window messages to the operating system windows. This is
+  designed to allow the Rexx programmer to use dialogs without understanding any of the details of window messages.
+  However, the ooDialog framework provides a few generic methods that send window messages to the underlying operating
+  system windows. These methods, in contrast to most methods, can not be used by the Rexx programmer without some
+  knowledge of the window message being sent. The methods are clearly marked. The programmer would need to consult the
+  <link linkend="defWindowsDoc">Windows Documentation</link> to understand what both the WPARAM and LPARAM arguments
+  must be, and to understand what the LRESULT return, if any, means. In addition, the programmer would need to determine
+  the numeric value of the window message ID. This could be done using a <link linkend="defPlatformSDK">Windows
+  platform SDK</link>, or perhaps through a Google search.
 </para>
-<table id="oodsymbolicids" frame="all">
-<title>Symbolic IDs Predefined by ooDialog</title>
-<tgroup cols="3">
-<thead>
-<row>
-<entry>Symbolic ID</entry>
-<entry>Numeric ID or Symbol</entry>
-<entry>ResourceType</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry>IDOK</entry>
-<entry>1</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDCANCEL</entry>
-<entry>2</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDABORT</entry>
-<entry>3</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDRETRY</entry>
-<entry>4</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDIGNORE</entry>
-<entry>5</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDYES</entry>
-<entry>6</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDNO</entry>
-<entry>7</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDCLOSE</entry>
-<entry>8</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDHELP</entry>
-<entry>9</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDTRYAGAIN</entry>
-<entry>10</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDCONTINUE</entry>
-<entry>11</entry>
-<entry>ID for button controls</entry>
-</row>
-<row>
-<entry>IDC_STATIC</entry>
-<entry>-1</entry>
-<entry>ID for static controls</entry>
-</row>
-<row>
-<entry>IDI_DLG_OODIALOG</entry>
-<entry>IDI_DLG_OODIALOG</entry>
-<entry>Icon image</entry>
-</row>
-<row>
-<entry>IDI_DLG_APPICON</entry>
-<entry>IDI_DLG_APPICON</entry>
-<entry>Icon image</entry>
-</row>
-<row>
-<entry>IDI_DLG_APPICON2</entry>
-<entry>IDI_DLG_APPICON2</entry>
-<entry>Icon image</entry>
-</row>
-<row>
-<entry>IDI_DLG_OOREXX</entry>
-<entry>IDI_DLG_OOREXX</entry>
-<entry>Icon image</entry>
-</row>
-<row>
-<entry>IDI_DLG_DEFAULT</entry>
-<entry>IDI_DLG_DEFAULT</entry>
-<entry>Icon image</entry>
-</row>
-</tbody>
-</tgroup>
-</table>
-<para id="paraGenericResources">
-  The symbolic IDs in the table following IDC_STATIC are the IDs of some generic <link
-  linkend="chapResources">resources</link> that are bound to the oodialog.dll file.  They can be used in any ooDialog
-  program and are accessed using the <link linkend="clsResourceImage">.ResourceImage</link> class. Programmers should
-  always use their symbolic ID rather than their numeric ID in case the numeric value changes in future versions of
-  ooDialog.
-</para>
-</section>
-
-<section id="ovvResourceWorkshop"><title>IBM Resource Workshop</title>
 <para>
-  The IBM Resource Workshop was a visual resource <link linkend="defResourceEditor">editor</link> included with IBM Object
-  Rexx. The Resource Workshop could not be contributed to the open source community and is therefore not a part of the
-  Open Object Rexx project.
-</para>
-<para><emphasis role="bold">Note</emphasis>, there is <emphasis role="bold">no loss</emphasis> of functionality in
-  ooDialog because of the absence of the Resource Workshop.  The Windows resource format is well understood and there
-  are any number of free or inexpensive resource editors that do a better job of designing dialogs than the Resource
-  Workshop did. (The Resource Workshop was a 16-bit application with limited capacity for the newer features in the
-  Windows user interface.) ooDialog works fine with dialogs designed by any modern resource editor.
-</para>
-</section>
-
-<section id="ovvDeprecated"><title>Deprecated</title>
-<para>
-  PROVIDE TEXT
+  These generic send messages methods allow Rexx programmers to send any message to any of the underlying windows in
+  their programs. The caveat is that the programmers will have to research the meaning of the messages, their arguments,
+  and their return values themselves.
 </para>
 </section>
 

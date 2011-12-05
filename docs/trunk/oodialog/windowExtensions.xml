@@ -1590,11 +1590,13 @@ device context. </para>
 </programlisting>
 
 <para>The fontToDC method loads a font into a device
-context and returns the handle of the previous font. Use the <link linkend="h001062">GetWindowDC</link>, <link linkend="mthGetDC">getDC</link>, or <link linkend="mthGetControlDC">getControlDC</link> method
-to retrieve a device context, and the <link linkend="mthCreatefontEx">createFontEx</link>() method to get
-a font handle. To reset the font to the original state, use another fontToDC call with the handle of the
-previous font. To release the device context, use the <link linkend="mthFreeWindowDC">freeWindowDC</link>, <link
-linkend="mthFreeDC">freeDC</link>, or <link linkend="mthFreeControlDC">freeControlDC</link> method.</para>
+context and returns the handle of the previous font. Use the <link linkend="mthGetWindowDC">getWindowDC</link>, <link
+linkend="mthGetDC">getDC</link>, or <link linkend="mthGetControlDC">getControlDC</link> method to retrieve a device
+context, and the <link linkend="mthCreatefontEx">createFontEx</link>() method to get a font handle. To reset the font to
+the original state, use another fontToDC call with the handle of the previous font. To release the device context, use
+the <link linkend="mthFreeWindowDC">freeWindowDC</link>, <link linkend="mthFreeDC">freeDC</link>, or <link
+linkend="mthFreeControlDC">freeControlDC</link> method.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
