@@ -1316,28 +1316,28 @@
 <entry><link linkend="mthMoveControl">moveControl</link></entry>
 </row>
 <row>
-<entry>RedrawButton</entry>
-<entry><link linkend="h000684">RedrawButton</link></entry>
+<entry>redrawControl</entry>
+<entry><link linkend="mthRedrawControl">redrawControl</link></entry>
 </row>
 <row>
-<entry>RedrawRect</entry>
-<entry><link linkend="h000653">RedrawRect</link></entry>
+<entry>redrawRect</entry>
+<entry><link linkend="mthRedrawRectClsDialogExtensions">redrawRect</link></entry>
 </row>
 <row>
-<entry>RedrawWindow</entry>
-<entry><link linkend="redrawwindow">RedrawWindow</link></entry>
+<entry>redrawWindow</entry>
+<entry><link linkend="mthRedrawWindow">redrawWindow</link></entry>
 </row>
 <row>
-<entry>RedrawWindowRect</entry>
-<entry><link linkend="h000693">RedrawWindowRect</link></entry>
+<entry>redrawWindowRect</entry>
+<entry><link linkend="mthRedrawWindowRect">redrawWindowRect</link></entry>
 </row>
 <row>
 <entry>releaseMouseCapture</entry>
 <entry><link linkend="mthReleaseMouseCapture">releaseMouseCapture</link></entry>
 </row>
 <row>
-<entry>ResizeItem</entry>
-<entry><link linkend="h001301">ResizeItem</link></entry>
+<entry>resizeControl</entry>
+<entry><link linkend="mthResizeControl">resizeControl</link></entry>
 </row>
 <row>
 <entry>scrollButton</entry>
@@ -1360,24 +1360,24 @@
 <entry><link linkend="setfocustowindow">SetFocusToWindow</link></entry>
 </row>
 <row>
-<entry>SetForegroundWindow</entry>
-<entry><link linkend="setforegroundwindow">SetForegroundWindow</link></entry>
+<entry>setForegroundWindow</entry>
+<entry><link linkend="mthSetForegroundWindow">setForegroundWindow</link></entry>
 </row>
 <row>
-<entry>SetItemFont</entry>
-<entry><link linkend="sifm">SetItemFont</link></entry>
+<entry>setItemFont</entry>
+<entry><link linkend="mthSetControlFont">setItemFont</link></entry>
 </row>
 <row>
-<entry>SetListColumnWidth</entry>
-<entry><link linkend="setlistcolumnwidth">SetListColumnWidth</link></entry>
+<entry>setListColumnWidth</entry>
+<entry><link linkend="mthSetListColumnWidth">setListColumnWidth</link></entry>
 </row>
 <row>
-<entry>SetListItemHeight</entry>
-<entry><link linkend="setlistitemheight">SetListItemHeight</link></entry>
+<entry>setListItemHeight</entry>
+<entry><link linkend="mthSetListItemHeight">setListItemHeight</link></entry>
 </row>
 <row>
-<entry>SetListWidth</entry>
-<entry><link linkend="setlistwidth">SetListWidth</link></entry>
+<entry>setListWidth</entry>
+<entry><link linkend="mthSetListWidth">setListWidth</link></entry>
 </row>
 <row>
 <entry>SetListTabulators</entry>
@@ -5061,69 +5061,6 @@ list of the given combo box.</para>
 <indexterm><primary>list box methods</primary></indexterm>
 <para>The following methods deal with list boxes.</para>
 
-<section id="setlistwidth"><title>SetListWidth</title>
-<indexterm><primary>SetListWidth</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetListWidth(--id--,--scrollwidth--)------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetListWidth method sets the scrollable width
-of a list box, in dialog units. If the scrollable width is greater than the
-width of the list box and the &quot;HSCROLL&quot; (WS_HSCROLL in the resource
-script) style is defined for the list box (see <link linkend="mthCreateListbox">createListBox</link>), a
-horizontal scroll bar is displayed. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box for which you want to set the scrollable width.
-</para></listitem></varlistentry>
-<varlistentry><term>scrollwidth</term>
-<listitem><para>The width of the scrollable area of the list box, in dialog units.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="setlistcolumnwidth"><title>SetListColumnWidth</title>
-<indexterm><primary>SetListColumnWidth</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetListColumnWidth(--id--,--columnwidth--)------><
-
-
-]]>
-</programlisting>
-
-<para>The SetListColumnWidth method sets the width of
-all columns in a list box, in dialog units.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box for which you want to set the column width.
-</para></listitem></varlistentry>
-<varlistentry><term>columnwidth</term>
-<listitem><para>The width of the columns in the list box, in dialog units.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This method does not return a value.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="h000380"><title>AddListEntry</title>
 <indexterm><primary>AddListEntry</primary></indexterm>
 <programlisting>
@@ -5315,37 +5252,6 @@ in the list box. </para>
 <listitem><para>The ID of the list box.
 </para></listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="setlistitemheight"><title>SetListItemHeight</title>
-<indexterm><primary>SetListItemHeight</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~SetListItemHeight(--id--,--itemheight--)--------><
-
-
-]]>
-</programlisting>
-
-<para>The SetListItemHeight method sets the height for
-all items in a list box, in dialog units. It determines the space between
-the individual list box items.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box for which you want to set the item height.
-</para></listitem></varlistentry>
-<varlistentry><term>itemheight</term>
-<listitem><para>The height of the items in the list box, in dialog units.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>A number smaller than 0 if the height that you specify is not valid.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -7757,93 +7663,6 @@ by blanks:
 </variablelist>
 </section>
 
-<section id="redrawwindow"><title>RedrawWindow</title>
-<indexterm><primary>RedrawWindow</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~RedrawWindow(--hwnd--)-------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The RedrawWindow method redraws a specific dialog. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the dialog that is to be redrawn.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Redrawing was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Redrawing failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h001301"><title>ResizeItem</title>
-<indexterm><primary>ResizeItem</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~ResizeItem(--id--,--width--,--height--+-------------------------+--)-><
-                                                     +-,--"--+-HIDEWINDOW-+--"-+
-                                                             +-SHOWWINDOW-+
-                                                             +-NOREDRAW---+
-
-
-]]>
-</programlisting>
-
-<para>The ResizeItem method changes the size of a dialog
-item. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog item you want to resize
-</para></listitem></varlistentry>
-<varlistentry><term>width, height</term>
-<listitem><para>The new size in dialog units
-</para></listitem></varlistentry>
-<varlistentry><term>showOptions</term>
-<listitem><para>This argument can be one of the following keywords:
-<variablelist>
-<varlistentry><term>HIDEWINDOW</term>
-<listitem><para>Hides the item
-</para></listitem></varlistentry>
-<varlistentry><term>SHOWWINDOW</term>
-<listitem><para>Shows the item
-</para></listitem></varlistentry>
-<varlistentry><term>NOREDRAW</term>
-<listitem><para>Resizes the item without updating the display. Use the <link linkend="mthUpdate">update</link> method to manually update the display.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example resizes a dialog item:
-
-<programlisting>
-<![CDATA[
-MyDialog~ResizeItem(123, 40, 30, "SHOWWINDOW")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="h001370"><title>Center</title>
 <indexterm><primary>Center</primary></indexterm>
 <programlisting>
@@ -8267,120 +8086,6 @@ still minimized, then this method restores it to its normal position.
 <secondary>dialog object</secondary></indexterm>
 <para>The methods listed below are used to draw, redraw, and clear window areas.</para>
 
-<section id="h000653"><title>RedrawRect</title>
-<indexterm><primary>RedrawRect</primary>
-<secondary>dialog object</secondary></indexterm>
-<programlisting>
-<![CDATA[
-                                                                               +-0--------+
->>-aBaseDialog~RedrawRect(--+------+--,--left--,--top--,--right--,--bottom--,--+----------+--)-><
-                            +-hwnd-+                                           +-erasebkg-+
-
-
-]]>
-</programlisting>
-
-<para>The RedrawRect method immediately redraws a rectangle
-within the client area of a dialog. You can specify whether the background
-of the dialog is to be erased before redrawing. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the dialog in which parts of the client area are to be
-redrawn. See <link linkend="mthGet">get</link> or <link linkend="mthGetControlHandle">getControlHandle</link> for
-information on how to get a window handle. If you omit this argument, the
-handle of the dialog instance is used.
-</para></listitem></varlistentry>
-<varlistentry><term>left, top</term>
-<listitem><para>The upper left corner of the rectangle relative to the client area,
-in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>right, bottom</term>
-<listitem><para>The lower right corner of the rectangle relative to the client area,
-in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>erasebkg</term>
-<listitem><para>If this argument is 1 or 0, the background of the dialog is erased before
-redrawing. The default is 0.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Redrawing was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Redrawing failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000684"><title>RedrawButton</title>
-<indexterm><primary>RedrawButton</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~RedrawButton(--id--+-------------+--)----------><
-                                  +-,--erasebkg-+
-
-
-]]>
-</programlisting>
-
-<para>The RedrawButton method redraws the given button. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the button
-</para></listitem></varlistentry>
-<varlistentry><term>erasebkg</term>
-<listitem><para>Determines whether (1) or not (0) the background of the drawing area
-should be erased before redrawing. The default is 0.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="h000693"><title>RedrawWindowRect</title>
-<indexterm><primary>RedrawWindowRect</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~RedrawWindowRect--+-----------------------------+--><
-                                 +-(--hwnd--+-------------+--)-+
-                                            +-,--erasebkg-+
-
-
-]]>
-</programlisting>
-
-<para>The RedrawWindowRect method redraws the given window
-rectangle. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the window. See <link linkend="mthGet">get</link>
-or <link linkend="mthGetControlHandle">getControlHandle</link> for information on how to get a window
-handle. If you omit this argument, the handle of the dialog instance is used.
-</para></listitem></varlistentry>
-<varlistentry><term>erasebkg</term>
-<listitem><para>Determines whether (1) or not (0) the background of the
-drawing area should be erased before redrawing. The default is 0.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 </section>
 
 <section id="sctBitmapMethods"><title>Bitmap Methods</title>
@@ -8487,67 +8192,6 @@ DialogExtensions::<link linkend="mthCreateBrushClsDialogExtensions">createBrush<
   a device context. See <link linkend="mthGetWindowDC">getWindowDC</link>, <link linkend="mthGetDC">getDC</link>,
   and <link linkend="mthGetControlDC">getControlDC</link> for information on how to retrieve a device context.
 </para>
-
-<section id="sifm"><title>SetItemFont</title>
-<indexterm><primary>SetItemFont</primary></indexterm>
-<programlisting>
-<![CDATA[
-                                                    +-1--------+
->>--aBaseDialog~SetItemFont(--id--,--fonthandle--,--+----------+--)--><
-                                                    +--redraw--+
-
-
-]]>
-</programlisting>
-
-<para>
-  The SetItemFont method changes the font for a particular dialog item.
-</para>
-<para>
-  The best place to call this method is within <link linkend="mthInitDialog">initDialog</link>. If the
-  font is no longer needed, for instance, when the dialog is closed or another font has been assigned to
-  the dialog item, you should free the font resource by calling <link
-  linkend="mthDeleteFont">deleteFont</link>. A good place to do this is the <link
-  linkend="mthLeaving">leaving</link> method.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the dialog item.
-</para></listitem></varlistentry>
-<varlistentry><term>fonthandle</term>
-<listitem><para>The handle returned by <link linkend="mthCreateFontEx">createFontEx</link>.
-</para></listitem></varlistentry>
-<varlistentry><term>redraw</term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Do not redraw the item.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Redraw the item, which is the default.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets a 12-point Arial font for item 101.
-<programlisting>
-<![CDATA[
-::method initDialog
-     .
-     .
-     .
-   hFont=self~createFontEx("Arial",12)
-   self~SetItemFont(101,hFont,0)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-<para></para>
-</section>
 
 </section>
 

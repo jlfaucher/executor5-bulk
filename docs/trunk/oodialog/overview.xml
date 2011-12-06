@@ -393,6 +393,219 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 </section>
 
+<section id="defSysColor"><title>SystemColor</title>
+<para>
+  The Windows operating system maintains a table of system colors for each display element. Display elements are the
+  parts of a window and the display that appear on the system display screen. The user can customize the color of each
+  display element, so each element is assigned a unique numeric and symbolic ID. Referring to one of the system colors
+  by its ID allows the programmer to use the correct color of a display element without having to know if the user has
+  customized the color for that element or not.
+</para>
+<para>
+  The following table lists the numeric and symbolic keyword for each display element. In the ooDialog framework, for
+  methods that work with the system colors, like <link linkend="mthSetSysColor">setSysColor</link> or <link
+  linkend="mthSetControlSysColor">setControlSysColor</link>, the system color can be specified using either its numeric
+  ID or its keyword. Note that the operating system symbol for each keyword actually is prefaced by COLOR_. I.e., the
+  actual symbol for 3DDKSHADOW is COLOR_3DDKSHADOW, for 3DFACE the symbol is COLOR_3DFACE, etc.. This table lists the
+  ooDialog keyword.
+</para>
+<table id="tblSysColors" frame="all">
+<title>System Color Elements</title>
+<tgroup cols="3">
+<colspec colwidth=".5in">
+<thead>
+<row>
+  <entry>ID</entry>
+  <entry>Symbol</entry>
+  <entry>Element</entry>
+</row>
+</thead>
+<tbody>
+<row>
+  <entry>21</entry>
+  <entry>3DDKSHADOW</entry>
+  <entry>Dark shadow for three-dimensional display elements.</entry>
+</row>
+<row>
+  <entry>15</entry>
+  <entry>3DFACE</entry>
+  <entry>Face color for three-dimensional display elements and for dialog box backgrounds.</entry>
+</row>
+<row>
+  <entry>20</entry>
+  <entry>3DHIGHLIGHT</entry>
+  <entry>Highlight color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>20</entry>
+  <entry>3DHILIGHT</entry>
+  <entry>Highlight color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>22</entry>
+  <entry>3DLIGHT</entry>
+  <entry>Light color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>16</entry>
+  <entry>3DSHADOW</entry>
+  <entry>Shadow color for three-dimensional display elements (for edges facing away from the light source).</entry>
+</row>
+<row>
+  <entry>10</entry>
+  <entry>ACTIVEBORDER</entry>
+  <entry>Active window border.</entry>
+</row>
+<row>
+  <entry> 2</entry>
+  <entry>ACTIVECAPTION</entry>
+  <entry>Active window title bar. Specifies the left side color in the color gradient of an active window's title bar if the gradient effect is enabled.</entry>
+</row>
+<row>
+  <entry>12</entry>
+  <entry>APPWORKSPACE</entry>
+  <entry>Background color of multiple document interface (MDI) applications.</entry>
+</row>
+<row>
+  <entry> 1</entry>
+  <entry>BACKGROUND</entry>
+  <entry>Desktop.</entry>
+</row>
+<row>
+  <entry>15</entry>
+  <entry>BTNFACE</entry>
+  <entry>Face color for three-dimensional display elements and for dialog box backgrounds.</entry>
+</row>
+<row>
+  <entry>20</entry>
+  <entry>BTNHIGHLIGHT</entry>
+  <entry>Highlight color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>20</entry>
+  <entry>BTNHILIGHT</entry>
+  <entry>Highlight color for three-dimensional display elements (for edges facing the light source.)</entry>
+</row>
+<row>
+  <entry>16</entry>
+  <entry>BTNSHADOW</entry>
+  <entry>Shadow color for three-dimensional display elements (for edges facing away from the light source).</entry>
+</row>
+<row>
+  <entry>18</entry>
+  <entry>BTNTEXT</entry>
+  <entry>Text on push buttons.</entry>
+</row>
+<row>
+  <entry> 9</entry>
+  <entry>CAPTIONTEXT</entry>
+  <entry>Text in caption, size box, and scroll bar arrow box.</entry>
+</row>
+<row>
+  <entry> 1</entry>
+  <entry>DESKTOP</entry>
+  <entry>Desktop.</entry>
+</row>
+<row>
+  <entry>27</entry>
+  <entry>GRADIENTACTIVECAPTION</entry>
+  <entry>Right side color in the color gradient of an active window's title bar if the gradient effect is enabled. ACTIVECAPTION specifies the left side color.</entry>
+</row>
+<row>
+  <entry>28</entry>
+  <entry>GRADIENTINACTIVECAPTION</entry>
+  <entry>Right side color in the color gradient of an inactive window's title bar. INACTIVECAPTION specifies the left side color.</entry>
+</row>
+<row>
+  <entry>17</entry>
+  <entry>GRAYTEXT</entry>
+  <entry>Grayed (disabled) text. This color is set to 0 if the current display driver does not support a solid gray color.</entry>
+</row>
+<row>
+  <entry>13</entry>
+  <entry>HIGHLIGHT</entry>
+  <entry>Item(s) selected in a control.</entry>
+</row>
+<row>
+  <entry>14</entry>
+  <entry>HIGHLIGHTTEXT</entry>
+  <entry>Text of item(s) selected in a control.</entry>
+</row>
+<row>
+  <entry>26</entry>
+  <entry>HOTLIGHT</entry>
+  <entry>Color for a hyperlink or hot-tracked item.</entry>
+</row>
+<row>
+  <entry>11</entry>
+  <entry>INACTIVEBORDER</entry>
+  <entry>Inactive window border.</entry>
+</row>
+<row>
+  <entry> 3</entry>
+  <entry>INACTIVECAPTION</entry>
+  <entry>Inactive window caption. Specifies the left side color in the color gradient of an inactive window's title bar if the gradient effect is enabled.</entry>
+</row>
+<row>
+  <entry>19</entry>
+  <entry>INACTIVECAPTIONTEXT</entry>
+  <entry>Color of text in an inactive caption.</entry>
+</row>
+<row>
+  <entry>24</entry>
+  <entry>INFOBK</entry>
+  <entry>Background color for tooltip controls.</entry>
+</row>
+<row>
+  <entry>23</entry>
+  <entry>INFOTEXT</entry>
+  <entry>Text color for tooltip controls.</entry>
+</row>
+<row>
+  <entry> 4</entry>
+  <entry>MENU</entry>
+  <entry>Menu background.</entry>
+</row>
+<row>
+  <entry>29</entry>
+  <entry>MENUHILIGHT</entry>
+  <entry>The color used to highlight menu items when the menu appears as a flat menu. The highlighted menu item is outlined with HIGHLIGHT.</entry>
+</row>
+<row>
+  <entry>30</entry>
+  <entry>MENUBAR</entry>
+  <entry>The background color for the menu bar when menus appear as flat menus. However, MENU continues to specify the background color of the menu popup.</entry>
+</row>
+<row>
+  <entry> 7</entry>
+  <entry>MENUTEXT</entry>
+  <entry>Text in menus.</entry>
+</row>
+<row>
+  <entry> 0</entry>
+  <entry>SCROLLBAR</entry>
+  <entry>Scroll bar gray area.</entry>
+</row>
+<row>
+  <entry> 5</entry>
+  <entry>WINDOW</entry>
+  <entry>Window background.</entry>
+</row>
+<row>
+  <entry> 6</entry>
+  <entry>WINDOWFRAME</entry>
+  <entry>Window frame.</entry>
+</row>
+<row>
+  <entry> 8</entry>
+  <entry>WINDOWTEXT</entry>
+  <entry>Text in windows.</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+</section>
+
 <section id="defSystemErrorCode"><title>System Error Code</title>
 <para>
   The term <emphasis role="italic">system error code</emphasis> refers to an error code set by the Windows operating

@@ -611,8 +611,8 @@
 <entry><link linkend="mthRectangle">rectangle</link></entry>
 </row>
 <row>
-<entry>RedrawRect</entry>
-<entry><link linkend="redrawrect">RedrawRect</link></entry>
+<entry>redrawRect</entry>
+<entry><link linkend="mthRedrawRectClsDialogControl">redrawRect</link></entry>
 </row>
 <row>
 <entry>removeBitmap</entry>
@@ -639,8 +639,8 @@
 <entry><link linkend="mthSetArcDirection">setArcDirection</link></entry>
 </row>
 <row>
-<entry>SetColor</entry>
-<entry><link linkend="setcolor">SetColor</link></entry>
+<entry>setColor</entry>
+<entry><link linkend="mthsetcolor">setColor</link></entry>
 </row>
 <row>
 <entry>setCursorPos</entry>
@@ -653,10 +653,6 @@
 <row>
 <entry>SetFocusToWindow</entry>
 <entry><link linkend="setfocustowindow">SetFocusToWindow</link></entry>
-</row>
-<row>
-<entry>SetForegroundWindow</entry>
-<entry><link linkend="setforegroundwindow">SetForegroundWindow</link></entry>
 </row>
 <row>
 <entry>setHScrollPos</entry>
@@ -963,50 +959,6 @@ removing the tabstop style.
 </variablelist>
 </section>
 
-<section id="setforegroundwindow"><title>SetForegroundWindow</title>
-<indexterm><primary>SetForegroundWindow</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~SetForegroundWindow(--hwnd--)---------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The SetForegroundWindow method changes the foreground window to the window
-specified.  The new window must be a top-level window or a dialog window.  You
-can not make a dialog control window the foreground window.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the window that is to become the foreground window.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the previous foreground window, or 0 if this method
-failed.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This example makes another dialog the foreground window and
-returns the window handle of the current foreground window to the caller, or
-returns -1 if there was an error:
-<programlisting>
-<![CDATA[
-::method switchToReportDlg
-  expose reportDlg
-  currentHwnd = self~setForeGroundwindow(reportDlg~dlgHandle)
-  if currentHwnd == 0 then return -1  -- Report an error
-  return currentHwnd
-
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="assignfocus"><title>AssignFocus</title>
 <indexterm><primary>AssignFocus</primary></indexterm>
 <programlisting>
@@ -1124,52 +1076,148 @@ could not be determined.
 </variablelist>
 </section>
 
-<section id="setcolor"><title>SetColor</title>
-<indexterm><primary>SetColor</primary></indexterm>
+<section id="mthsetColor"><title>setColor</title>
+<indexterm><primary>setColor</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setColor</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>setColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~SetColor(--background--,--foreground--)------><
-
-
+>>--setColor(--bk--+-------+--)----><
+                   +-,-fg--+
 ]]>
 </programlisting>
 
-<para>The SetColor method sets the background and foreground
-colors of the dialog control.</para>
+<para>
+  Sets the background color, and optionally the text color, for this dialog control.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>background</term>
-<listitem><para>The color number of the background color.
-</para></listitem></varlistentry>
-<varlistentry><term>foreground</term>
-<listitem><para>The color number of the foreground color.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The color has been assigned.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The selected color was already assigned.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example sets the background color of list box FILES to
-blue:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>bk [required]</term>
+      <listitem>
+      <para>
+        The color <link linkend="defColor">number</link> for the background color of the dialog control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fg [optional]</term>
+      <listitem>
+      <para>
+        The color <link linkend="defColor">number</link> for the foreground color of the dialog control. The foreground
+        color is the color that text is written in.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success or 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
+    control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
+    limit to the number of controls having their color set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the background color of a push button in the dialog to red and the text color to yellow:
 <programlisting>
 <![CDATA[
-MyDialog~newListBox("FILES")~SetColor(4, 15)
+
+::method changeColor
+  expose pushButton
+
+  pushButton~setColor(2, 4)
+
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End DialogControl::setColor() -->
+
+
+<section id="mthSetSysColor"><title>setSysColor</title>
+<indexterm><primary>setSysColor</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setSysColor</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>setSysColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setSysColor(--bk--+-------+--)---------------><
+                      +-,-fg--+
+]]>
+</programlisting>
+
+<para>
+  Sets the background color, and optionally the text color, for this dialog control using the system <link
+  linkend="defSysColor">colors</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>bk [required]</term>
+      <listitem>
+      <para>
+        The system color ID for the background color of the dialog control. This can be either the whole number ID or
+        the keyword ID. IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fg [optional]</term>
+      <listitem>
+      <para>
+        The system color for the foreground color of the dialog control. The foreground color is the color that text is
+        written in. This can be either the whole number ID or the keyword ID. IDs can be looked up in the System Color
+        Elements <link linkend="tblSysColors">table</link>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success or 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
+    control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
+    limit to the number of controls having their color set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the background color of the push button in the dialog to the system background color for a
+    menu:
+<programlisting>
+<![CDATA[
+
+::method changeColor
+  expose pushButton
+
+  pushButton~setSysColor('MENU')
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::setSysColor() -->
 
 </section>
 
@@ -2218,21 +2266,17 @@ Generic form:
 </section>  <!-- End dialog control object::clearRect() -->
 
 
-<section id="redrawrect"><title>RedrawRect</title>
-<indexterm><primary>RedrawRect</primary>
-<secondary>dialog control object</secondary></indexterm>
+<section id="mthRedrawRectClsDialogControl"><title>redrawRect</title>
+<indexterm><primary>redrawRect</primary><secondary>dialog control object</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aDialogControl~RedrawRect(--left--,--top--,--right--,--bottom-->
-
->--+-----------+--)----------------------------------------------><
-   +-,erasebkg-+
-
+>>--redrawRect(--left--,--top--,--right--,--bottom--+------------+--)----------><
+                                                    +-,-erasebkg-+
 
 ]]>
 </programlisting>
 
-<para>The RedrawRect method immediately redraws the rectangle
+<para>The redrawRect method immediately redraws the rectangle
 of the client area of the associated dialog. You can specify whether the background
 of the dialog is to be erased before redrawing.</para>
 <variablelist>
