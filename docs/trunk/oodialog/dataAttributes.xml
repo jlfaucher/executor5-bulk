@@ -473,90 +473,6 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 
 </section>
 
-<section id="mthInitAutoDetection"><title>initAutoDetection</title>
-<indexterm><primary>initAutoDetection</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>initAutoDetection</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-initAutoDetection---------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">initAutoDetection</emphasis> method is invoked automatically by the ooDialog framework
-  when any dialog is first instantiated. The default implementation of <emphasis
-  role="italic">initAutoDetection</emphasis> turns <link linkend="paraAutomaticDataDetection">automatic</link> data field
-  detection on.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method has no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method does not return anything.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method is private. It is meant to be over-ridden by the programmer in her subclass to change the default
-    behavior of turning automatic data field detection on.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example overrides <emphasis role="italic">initAutoDetection</emphasis> method to switch off auto
-    detection:
-
-<programlisting>
-<![CDATA[
-::class 'AddressBookDialog' subclass ResDialog
-::method initAutoDetection
-   self~noAutoDetection
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthNoAutoDetection"><title>noAutoDetection</title>
-<indexterm><primary>noAutoDetection</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>noAutoDetection</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--noAutoDetection------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  When the <emphasis role="italic">noAutoDetection</emphasis> method is invoked, it switches off <link
-  linkend="paraAutomaticDataDetection">automatic</link> data detection.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method has no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method does not return anything.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthAutoDetection"><title>autoDetection</title>
 <indexterm><primary>autoDetection</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>autoDetection</secondary></indexterm>
@@ -2625,6 +2541,92 @@ end
 </section>
 
 
+<section id="mthInitAutoDetection"><title>initAutoDetection</title>
+<indexterm><primary>initAutoDetection</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>initAutoDetection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>-initAutoDetection---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">initAutoDetection</emphasis> method is invoked automatically by the ooDialog framework
+  when any dialog is first instantiated. The default implementation of <emphasis
+  role="italic">initAutoDetection</emphasis> turns <link linkend="paraAutomaticDataDetection">automatic</link> data field
+  detection on.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return anything.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method is private. It is meant to be over-ridden by the programmer in her subclass to change the default
+    behavior of turning automatic data field detection on.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example overrides <emphasis role="italic">initAutoDetection</emphasis> method to switch off auto
+    detection:
+
+<programlisting>
+<![CDATA[
+::class 'AddressBookDialog' subclass ResDialog
+::method initAutoDetection
+   self~noAutoDetection
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthNoAutoDetection"><title>noAutoDetection</title>
+<indexterm><primary>noAutoDetection</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>noAutoDetection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--noAutoDetection------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  When the <emphasis role="italic">noAutoDetection</emphasis> method is invoked, it switches off <link
+  linkend="paraAutomaticDataDetection">automatic</link> data detection.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not return anything.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
 <section id="mthSetCheckBoxData"><title>setCheckBoxData</title>
 <indexterm><primary>setCheckBoxData</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>setCheckBoxData</secondary></indexterm>
@@ -3150,89 +3152,6 @@ self~setDataStem(dlgStem.)
 </section>
 
 
-<section id="mthSetRadioButtonData"><title>setRadioButtonData</title>
-<indexterm><primary>setRadioButtonData</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>setRadioButtonData</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setRadioButtonData(--id--,--data--)----------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">setRadioData</emphasis> method sets the <link
-  linkend="sctUnderstandingDataAttributes">data</link> of a radio button contol.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The resource ID of the radio button. May be numeric or symbolic.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>data [required]</term>
-    <listitem>
-    <para>
-      The <emphasis role="italic">data</emphasis> to be assigned to the underlying radio button. The <emphasis
-      role="italic">data</emphasis> of a <link linkend="clsRadioButton">radio button</link> is defined to be the its
-      check state. This is 0 for not checked and 1 for checked.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The return values are:
-  <variablelist>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      A symbolic ID was used and it could not be resolved.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      No error.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      An error occurred.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method will work for any radio button control, the underlying control does not <emphasis
-    role="italic">have</emphasis> to be connected to a data attribute. However, the <emphasis
-    role="italic">id</emphasis> argument must be the resource ID of a radio button control. If it is not, say it is the
-    resource ID of a list view control, the results are unpredictable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
-    the underlying dialog does not exist.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-
 <section id="mthSetEditData"><title>setEditData</title>
 <indexterm><primary>setEditData</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>setEditData</secondary></indexterm>
@@ -3451,6 +3370,89 @@ self~setDataStem(dlgStem.)
   MyDialog~setListBoxData(345, "2 5 6")
 ]]>
 </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthSetRadioButtonData"><title>setRadioButtonData</title>
+<indexterm><primary>setRadioButtonData</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setRadioButtonData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setRadioButtonData(--id--,--data--)----------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setRadioData</emphasis> method sets the <link
+  linkend="sctUnderstandingDataAttributes">data</link> of a radio button contol.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the radio button. May be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>data [required]</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">data</emphasis> to be assigned to the underlying radio button. The <emphasis
+      role="italic">data</emphasis> of a <link linkend="clsRadioButton">radio button</link> is defined to be the its
+      check state. This is 0 for not checked and 1 for checked.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return values are:
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      A symbolic ID was used and it could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An error occurred.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method will work for any radio button control, the underlying control does not <emphasis
+    role="italic">have</emphasis> to be connected to a data attribute. However, the <emphasis
+    role="italic">id</emphasis> argument must be the resource ID of a radio button control. If it is not, say it is the
+    resource ID of a list view control, the results are unpredictable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    the underlying dialog does not exist.
   </para>
   </listitem></varlistentry>
 </variablelist>

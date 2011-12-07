@@ -109,6 +109,540 @@
   <listitem><para><link linkend="clsResourceutils">ResourceUtils</link></para></listitem>
   </itemizedlist>
 </para>
+
+
+<section id="sctMethodsPlainBaseDialog"><title>Method Table</title>
+<para>
+  The following table lists the constant methods, class methods, attribute methods, and instance methods of the
+<computeroutput>PlainBaseDialog</computeroutput> class:
+</para>
+<table id="tblMethodsPlainBaseDialog" frame="all"> <title>PlainBaseDialog Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.75in">
+<thead>
+<row>
+<entry>Dialog Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="sctDialogConstantMethods">Constant Methods</link></entry>
+<entry>The <computeroutput>PlainBaseDialog</computeroutput> provides a number of <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput>directive.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewDialogObject">new</link></entry>
+<entry>Instantiates a new dialog object.</entry>
+</row>
+<row>
+<entry><link linkend="mthClsGetFontName">getFontName</link></entry>
+<entry>Returns the default font for all dialogs.</entry>
+</row>
+<row>
+<entry><link linkend="mthClsGetFontSize">getFontSize</link></entry>
+<entry>Returns the default font size for all dialogs.</entry>
+</row>
+<row>
+<entry><link linkend="mthClsSetDefaultFont">setDefaultFont</link></entry>
+<entry>Sets the default font name and size for all dialogs.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrAutoDetect">autoDetect</link></entry>
+<entry>If automatic data field detection is on or off.</entry>
+</row>
+<row>
+<entry><link linkend="atrDlgHandle">dlgHandle</link></entry>
+<entry>The window handle of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="atrFontName">fontName</link></entry>
+<entry>Name of the dialog's font.</entry>
+</row>
+<row>
+<entry><link linkend="atrFontSize">fontSize</link></entry>
+<entry>Point size of the dialog's font.</entry>
+</row>
+<row>
+<entry><link linkend="atrOwnerDialog">ownerDialog</link></entry>
+<entry>The owner dialog of the dialog, if there is one.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAddComboEntry">addComboEntry</link></entry>
+<entry>Adds a string to the list of a combo box.</entry>
+</row>
+<row>
+<entry><link linkend="mthAddListEntry">addListEntry</link></entry>
+<entry>Adds a string to the specified list box.</entry>
+</row>
+<row>
+<entry><link linkend="mthAutoDetection">autoDetection</link></entry>
+<entry>Turns automatic data field detection on</entry>
+</row>
+<row>
+<entry><link linkend="mthBackgroundBitmap">backgroundBitmap</link></entry>
+<entry>Sets a bitmap as the dialog'x background picture.</entry>
+</row>
+<row>
+<entry><link linkend="mthBackgroundColor">backgroundColor</link></entry>
+<entry>Sets the background color of a dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthCancel">cancel</link></entry>
+<entry>A default event handler, provided by the ooDialog framework , for the cancel event.</entry>
+</row>
+<row>
+<entry><link linkend="mthCenter">center</link></entry>
+<entry>Moves the dialog to the screen center.</entry>
+</row>
+<row>
+<entry><link linkend="mthChangeComboEntry">changeComboEntry</link></entry>
+<entry>changeComboEntry</entry>
+</row>
+<row>
+<entry><link linkend="mthChangeListEntry">changeListEntry</link></entry>
+<entry>changeListEntry</entry>
+</row>
+<row>
+<entry><link linkend="mthComboAddDirectory">comboAddDirectory</link></entry>
+<entry>Adds all or selected file names in the given directory to the combo box.</entry>
+</row>
+<row>
+<entry><link linkend="mthComboDrop">comboDrop</link></entry>
+<entry>Deletes all items from the list of the given combo box.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectCheckBox">connectCheckBox</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a check box control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectComboBox">connectComboBox</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a combo box control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectEdit">connectEdit</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a edit control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectListBox">connectListBox</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a list box control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectListView">connectListView</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a list view control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectTrackBar">connectTrackBar</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a track bar control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectTreeview">connectTreeView</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a tree view control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthDeleteComboEntry">deleteComboEntry</link></entry>
+<entry>Deletes a string from the combo box.</entry>
+</row>
+<row>
+<entry><link linkend="mthDeleteListEntry">deleteListEntry</link></entry>
+<entry>Deletes an item from a list box.</entry>
+</row>
+<row>
+<entry><link linkend="mthDisableControl">disableControl</link></entry>
+<entry>Disables the dialog control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthEnableControl">enableControl</link></entry>
+<entry>Enables the control with the specified resource id.</entry>
+</row>
+<row>
+<entry><link linkend="mthEnsureVisibleClsPlainBaseDialog">ensureVisible</link></entry>
+<entry>Causes the dialog to reposition itself so that it is entirely on the visible screen.</entry>
+</row>
+<row>
+<entry><link linkend="mthExecute">execute</link></entry>
+<entry>Creates the underlying dialog, shows it, starts the automatic methods, if any, and destroys the underlying dialog when the user closes it.</entry>
+</row>
+<row>
+<entry><link linkend="mthFindComboEntry">findComboEntry</link></entry>
+<entry>Returns the index corresponding to a given text string in the combo box.</entry>
+</row>
+<row>
+<entry><link linkend="mthFindListEntry">findListEntry</link></entry>
+<entry>Returns the index of the specified string within the list box with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthFocusControl">focusControl</link></entry>
+<entry>Sets the input focus to the specified dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="mthGet">get</link></entry>
+<entry>Returns the window handle of the Windows dialog associated with the top Rexx dialog instance.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCheckBoxData">getCheckBoxData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed check box in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetComboBoxData">getComboBoxData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed combo box in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetComboEntry">getComboEntry</link></entry>
+<entry>Returns the string at the specified index of the combo box.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetComboItems">getComboItems</link></entry>
+<entry>Returns the number of items in the combo box.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetControlData">getControlData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed dialog control in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetControlHandle">getControlHandle</link></entry>
+<entry>Retrieves the window handle of the specified dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetControlID">getControlID</link></entry>
+<entry>Returns the numeric resource ID of the control with the specified window handle.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetControlText">getControlText</link></entry>
+<entry>Gets the text of the specified dialog control</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCurrentComboIndex">getCurrentComboIndex</link></entry>
+<entry>Returns the index of the currently selected item in the comb box.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCurrentListIndex">getCurrentListIndex</link></entry>
+<entry>Returns the index of the currently selected list box item, or 0 if no item is selected.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetData">getData</link></entry>
+<entry>Sets all the Rexx dialog data attribute values to the state of the underlying, connected, Windows dialog controls.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetDataAttribute">getDataAttribute</link></entry>
+<entry>Sets a data attribute of the Rexx dialog using the data from a connected Windows dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetDataStem">getDataStem</link></entry>
+<entry>Sets the values of the indexes of the specified stem to the state of the underlying, connected, Windows dialog controls.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetFocus">getFocus</link></entry>
+<entry>Returns the window handle of the dialog control that currently has the input focus.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetListBoxData">getListBoxData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed list box in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetListEntry">getListEntry</link></entry>
+<entry>Returns the string at the specified index of the list box.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetListItems">getListItems</link></entry>
+<entry>Returns the number of items in the list box.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetRadioButtonData">getRadioButtonData</link></entry>
+<entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specifed radio button in the underlying dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetSelf">getSelf</link></entry>
+<entry>Returns the window handle of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link></entry>
+<entry>Calculates the size needed to display a string in dialog units.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetTextSizeDu">getTextSizeDu</link></entry>
+<entry>Calculates the size needed to display a string in dialog units <emphasis role="bold">(preferred method.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthHelp">help</link></entry>
+<entry>A default implementation of the help event handler method provided by the ooDialog framework.</entry>
+</row>
+<row>
+<entry><link linkend="mthHideControl">hideControl</link></entry>
+<entry>Hides the specified control by marking it invisible and immediately redrawing the area it occupies.</entry>
+</row>
+<row>
+<entry><link linkend="mthHideControlFast">hideControlFast</link></entry>
+<entry>Marks the specified control as invisible without any redrawing.</entry>
+</row>
+<row>
+<entry><link linkend="mthHideWindow">hideWindow</link></entry>
+<entry>Hides a whole dialog window or a dialog control window and forces the window to repaint.</entry>
+</row>
+<row>
+<entry><link linkend="mthHideWindowFast">hideWindowFast</link></entry>
+<entry>Hides a whole dialog window or a dialog control window, but does not force the window to redraw.</entry>
+</row>
+<row>
+<entry><link linkend="mthInitAutoDetection">initAutoDetection</link></entry>
+<entry>Switches automatic data field detection on or off.</entry>
+</row>
+<row>
+<entry><link linkend="mthInitDialog">initDialog</link></entry>
+<entry>A method automatically invoked by the ooDialog framework when the underlying dialog is first created.</entry>
+</row>
+<row>
+<entry><link linkend="mthInsertComboEntry">insertComboEntry</link></entry>
+<entry>Inserts a string into the list of a combo box.</entry>
+</row>
+<row>
+<entry><link linkend="mthInsertListEntry">insertListEntry</link></entry>
+<entry>Inserts a string into the specified list box.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsDialogActive">isDialogActive</link></entry>
+<entry>Returns true if the underlying Windows dialog still exists.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsMaximized">isMaximized</link></entry>
+<entry>Checks if a dialog is currently maximized.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsMinimized">isMinimized</link></entry>
+<entry>Checks if a dialog is currently minimized.</entry>
+</row>
+<row>
+<entry><link linkend="mthLeaving">leaving</link></entry>
+<entry>A method automatically invoked by the ooDialog framework when the underlying dialog is being closed.</entry>
+</row>
+<row>
+<entry><link linkend="mthListAddDirectory">listAddDirectory</link></entry>
+<entry>Adds all or selected file names of a given directory to the list box.</entry>
+</row>
+<row>
+<entry><link linkend="mthListDrop">listDrop</link></entry>
+<entry>Removes all items from the list box.</entry>
+</row>
+<row>
+<entry><link linkend="mthMaximize">maximize</link></entry>
+<entry>Maximizes the dialog on the screen.</entry>
+</row>
+<row>
+<entry><link linkend="mthMinimize">minimize</link></entry>
+<entry>Minimizes the dialog to the taskbar.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewPushButton">newPushButton</link></entry>
+<entry>Returns an object of the <computeroutput>Button</computeroutput> class for the push button control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewCheckBox">newCheckBox</link></entry>
+<entry>Returns an object of the <computeroutput>CheckBox</computeroutput> class for the check box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewComboBox">newComboBox</link></entry>
+<entry>Returns an object of the <computeroutput>ComboBox</computeroutput> class for the combo box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewEdit">newEdit</link></entry>
+<entry>Returns an object of the <computeroutput>Edit</computeroutput> class for the edit control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewGroupBox">newGroupBox</link></entry>
+<entry>Returns an object of the <computeroutput>GroupBox</computeroutput> class for the group box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewListBox">newListBox</link></entry>
+<entry>Returns an object of the <computeroutput>ListBox</computeroutput> class for the list box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewListView">newListView</link></entry>
+<entry>Returns an object of the <computeroutput>ListView</computeroutput> class for the list-view control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewProgressBar">newProgressBar</link></entry>
+<entry>Returns an object of the <computeroutput>ProgressBar</computeroutput> class for the progress bar control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewRadioButton">newRadioButton</link></entry>
+<entry>Returns an object of the <computeroutput>RadioButton</computeroutput> class for the radio button control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewScrollBar">newScrollBar</link></entry>
+<entry>Returns an object of the <computeroutput>ScrollBar</computeroutput> class for the scroll bar control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewTrackBar">newTrackBar</link></entry>
+<entry>Returns an object of the <computeroutput>TrackBar</computeroutput> class for the track bar control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewStatic">newStatic</link></entry>
+<entry>Returns an object of the <computeroutput>Static</computeroutput> class for the static control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewTab">newTab</link></entry>
+<entry>Returns an object of the <computeroutput>Tab</computeroutput> class for the tab control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewTreeView">newTreeView</link></entry>
+<entry>Returns an object of the <computeroutput>TreeView</computeroutput> class for the tree-view control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNoAutoDetection">noAutoDetection</link></entry>
+<entry>Turns automatic data field detection off</entry>
+</row>
+<row>
+<entry><link linkend="mthOk">ok</link></entry>
+<entry>A default event handler, provided by the ooDialog framework, for the cancel event.</entry>
+</row>
+<row>
+<entry><link linkend="mthRestore">restore</link></entry>
+<entry>Restores a minimized or maximized dialog to its original position.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToControl">sendMessageToControl</link></entry>
+<entry>Sends a Windows message to a dialog control and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToControlH">sendMessageToControlH</link></entry>
+<entry>Sends a Windows message to a dialog control and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToWindow">sendMessageToWindow</link></entry>
+<entry>Sends a Windows message to a window and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageToWindowH">sendMessageToWindowH</link></entry>
+<entry>Sends a Windows message to a window and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCheckBoxData">setCheckBoxData</link></entry>
+<entry>Sets the <emphasis role="italic">data</emphasis> of a check box contol.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetComboBoxData">setComboBoxData</link></entry>
+<entry>Sets the <emphasis role="italic">data</emphasis> of a combo box contol.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetControlData">setControlData</link></entry>
+<entry>Sets the <emphasis role="italic">data</emphasis> of a dialog contol.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetControlText">setControlText</link></entry>
+<entry>Sets the text for the specified dialog control</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCurrentComboIndex">setCurrentComboIndex</link></entry>
+<entry>Selects the item with the specified index within the combo box list. If called without an index, all items in the combo box list are deselected.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCurrentListIndex">setCurrentListIndex</link></entry>
+<entry>Selects the item with the specified index in the list box. If called without an index, all items in the list box are deselected.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetData">setData</link></entry>
+<entry>Sets the state of all underlying, connected, dialog controls to the values of the matching dialog object data attributes.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetDataAttribute">setDataAttribute</link></entry>
+<entry>Sets the state of a dialog control using the value of a data attribute of the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetDataStem">setDataStem</link></entry>
+<entry>Sets the <emphasis role="italic">data</emphasis>, (the state,) of a number of Windows dialog controls to the values specified by a stem.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetEditData">setEditData</link></entry>
+<entry>Sets the <emphasis role="italic">data</emphasis> of an edit contol.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetFocusToWindow">setFocusToWindow</link></entry>
+<entry>Moves the input focus to another top-level window or dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetGroup">setGroup</link></entry>
+<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control specified.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetListBoxData">setListBoxData</link></entry>
+<entry>Sets the <emphasis role="italic">data</emphasis> of the underlying list box to the value specified.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetListTabulators">setListTabulators</link></entry>
+<entry>Sets the tabulators for a list box.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetRadioButtonData">setRadioButtonData</link></entry>
+<entry>Sets the <emphasis role="italic">data</emphasis> of a radio button contol.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetTabStop">setTabStop</link></entry>
+<entry>Add or remove the tab stop style for the specified control.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetWindowRect">setWindowRect</link></entry>
+<entry>Sets new coordinates for the specified window.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetWindowTitle">setWindowTitle</link></entry>
+<entry>Changes the title of a window.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowClsPlainBaseDialog">show</link></entry>
+<entry>Sets the dialog window's show state.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowControl">showControl</link></entry>
+<entry>Makes the specified dialog control reappear on the screen.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowControlFast">showControlFast</link></entry>
+<entry>Shows a dialog control without redrawing its area.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowWindow">showWindow</link></entry>
+<entry>Shows the window or dialog control again.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowWindowFast">showWindowFast</link></entry>
+<entry>Marks the specified window as visible but does not force it to redraw.</entry>
+</row>
+<row>
+<entry><link linkend="mthTabToNext">tabToNext</link></entry>
+<entry>Sets the focus to the next tab stop dialog control in the dialog and returns the window handle of the dialog control that currently has the focus.</entry>
+</row>
+<row>
+<entry><link linkend="mthTabToPrevious">tabToPrevious</link></entry>
+<entry>Sets the focus to the previous tab stop dialog control in the dialog and returns the window handle of the dialog control that currently has the focus.</entry>
+</row>
+<row>
+<entry><link linkend="mthTiledBackgroundBitmap">tiledBackgroundBitmap</link></entry>
+<entry>Sets a bitmap as the dialog's background brush.</entry>
+</row>
+<row>
+<entry><link linkend="mthToTheTop">toTheTop</link></entry>
+<entry>Makes the dialog the topmost dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthValidate">validate</link></entry>
+<entry>A method meant to be over-ridden. Its purpose is to validate the user's input and decide whether or not to allow the dialog to close.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
 </section>
 
 <section id="clsDialogControl"><title>DialogControl</title>
@@ -511,9 +1045,258 @@
   here as a reference with a link to the full documentation in the <computeroutput>UserDialog</computeroutput> chapter.
 </para>
 
+
+<section id="sctMethodsDynamicDialog"><title>Method Table</title>
+<para>
+  The following table lists the methods of the <computeroutput>DynamicDialog</computeroutput> class. The links in the
+  table lead to the full documentation for each method, which is in the <emphasis role="italic">UserDialog
+  Class</emphasis> chapter.
+
+<table id="tDynamicDialogClass" frame="all">
+<title>DynamicDialog Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.75in">
+<thead>
+<row>
+<entry>Dialog Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAddIconResource">addIconResource</link></entry>
+<entry>Adds the file name for an icon resource to the dialog's icon table.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreate">create</link></entry>
+<entry>Begins the creation of the in-memory Windows dialog template by specifying the general details for the dialog itself.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateBitmapButton">createBitmapButton</link></entry>
+<entry>Creates a bitmap push button in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateBlackFrame">createBlackFrame</link></entry>
+<entry>Creates a static black frame control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateBlackRect">createBlackRect</link></entry>
+<entry>Creates a static black rectangle control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateCenter">createCenter</link></entry>
+<entry>Begins the creation of an in-memory dialog template for a dialog that will be centered in the user's screen.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateCheckBox">createCheckBox</link></entry>
+<entry>Creates a check box control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateCheckBoxGroup">createCheckBoxGroup</link></entry>
+<entry>Creates a group of check box controls in the dialog template using a single string to specify the check box labels.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateCheckBoxStem">createCheckBoxStem</link></entry>
+<entry>Creates a group of check box controls in the dialog template using a stem to specify the check box labels.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateComboBox">createComboBox</link></entry>
+<entry>Creates a combobox control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateComboBoxInput">createComboBoxInput</link></entry>
+<entry>Creates a combobox with a static text control (for the label) in the dilaog template. </entry>
+</row>
+<row>
+<entry><link linkend="mthCreateDateTimePicker">createDateTimePicker</link></entry>
+<entry>Creates a date time picker control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEdit">createEdit</link></entry>
+<entry>Creates an edit control in the dialog template</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEditInput">createEditInput</link></entry>
+<entry>Creates an edit control and a static text control (for the label) in the dialog template, in one step.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEditInputGroup">createEditInputGroup</link></entry>
+<entry>Creates one or more edit controls with labels in the dialog template using a single string to specify the labels.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEditInputStem">createEditInputStem</link></entry>
+<entry>Creates one or more edit controls with labels in the dialog template using a stem to specify the labels.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEtchedFrame">createEtchedFrame</link></entry>
+<entry>Creates a static etched frame control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEtchedHorizontal">createEtchedHorizontal</link></entry>
+<entry>Creates a static control in the dialog template that is an etched hoizontal line.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateEtchedVertical">createEtchedVertical</link></entry>
+<entry>Creates a static frame control in the dialog template that is a single etched vertical line.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateGrayFrame">createGrayFrame</link></entry>
+<entry>Creates a static gray frame control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateGrayRect">createGrayRect</link></entry>
+<entry>Creates a static gray rectangle control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateGroupBox">createGroupbox</link></entry>
+<entry>Creates a group box in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateListbox">createListBox</link></entry>
+<entry>Creats a list box control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateListView">createListView</link></entry>
+<entry>Creates a list-view control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateMonthCalendar">createMonthCalendar</link></entry>
+<entry>Creates a month calendar control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateOkCancelRightBottom">createOkCancelRightBottom</link></entry>
+<entry>Creates an Ok and Cancel push buttons in the right bottom corner of the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateOkCancelRightTop">createOkCancelRightTop</link></entry>
+<entry>Creates an Ok and Cancel push buttons in the right top corner of the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateOkCancelLeftBottom">createOkCancelLeftBottom</link></entry>
+<entry>Creates an Ok and Cancel push buttons in the left bottom corner of the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateOkCancelLeftTop">createOkCancelLeftTop</link></entry>
+<entry>Creates an Ok and Cancel push buttons in the left top corner of the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreatePasswordEdit">createPasswordEdit</link></entry>
+<entry>Creates an edit control with the PASSWORD style set in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateProgressBar">createProgressBar</link></entry>
+<entry>Creates a progress bar control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreatePushButton">createPushButton</link></entry>
+<entry>Creates a push button in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreatePushButtonGroup">createPushButtonGroup</link></entry>
+<entry>Creates any number of push buttons in the dialog template at one time.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateRadioButton">createRadioButton</link></entry>
+<entry>Creates a radio button control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link></entry>
+<entry>Creates a group of radio buttons with labels in the dialog template using a single string to specify the labels.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateRadioButtonStem">createRadioButtonStem</link></entry>
+<entry>Creates a group of radio buttons with labels in the dialog template using a stem to specify the labels.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateScrollBar">createScrollBar</link></entry>
+<entry>Creates a scroll bar control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateStatic">createStatic</link></entry>
+<entry>Creates a static control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateStaticFrame">createStaticFrame</link></entry>
+<entry>Creates one of the static frame controls in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateStaticImage">createStaticImage</link></entry>
+<entry>Creates a static image control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateStaticText">createStaticText</link></entry>
+<entry>Creates a static text control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateTab">createTab</link></entry>
+<entry>Creates a tab control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateTrackbar">createTrackbar</link></entry>
+<entry>Creates a trackbar control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateTreeView">createTreeView</link></entry>
+<entry>Creates a tree view control in the dialog template</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateUpDown">createUpDown</link></entry>
+<entry>Creates an up-down control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateWhiteFrame">createWhiteFrame</link></entry>
+<entry>Creates a white static frame control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateWhiteRect">createWhiteRect</link></entry>
+<entry>Creates a white static rectangle control in the dialog template.</entry>
+</row>
+<row>
+<entry><link linkend="mthDefineDialog">defineDialog</link></entry>
+<entry>
+  The programmer uses this method to dynamically create the dialog controls in the dialog template by using the appropriate
+  create ... methods.
+</entry>
+</row>
+<row>
+<entry><link linkend="mthLoad">load</link></entry>
+<entry>Creates the in-memory dialog template by reading the dialog template from a resource script file.</entry>
+</row>
+<row>
+<entry><link linkend="mthLoadFrame">loadFrame</link></entry>
+<entry>Starts the in-memory Windows dialog template by reading a dialog template from a resource script file.</entry>
+</row>
+<row>
+<entry><link linkend="mthLoadItems">loadItems</link></entry>
+<entry>
+  Creates the dialog controls in the dialog template, and finishes the dialog template, by reading a dialog template
+  from a resource script file.
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</para>
+
+</section>
+
+<section id="ddAddIconResource"><title>addIconResource</title>
+<programlisting>
+DynamicDialog::<link linkend="mthAddIconResource">addIconResource</link>
+
+<![CDATA[
+>>--addIconResource(--id--,--fileName--)---------><
+]]>
+</programlisting>
+</section>
+
 <section id="ddCreate"><title>create</title>
 <programlisting>
-<link linkend="mthCreate">create</link>
+DynamicDialog::<link linkend="mthCreate">create</link>
 
 <![CDATA[
 >>--create(--x--,--y--,--cx--,--cy--,--title-+-----------+--+------------+----->
@@ -525,9 +1308,45 @@
 </programlisting>
 </section>
 
+<section id="ddCreateBitmapButton"><title>createBitmapButton</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateBitmapButton">createBitmapButton</link>
+
+<![CDATA[
+>>--createBitmapButton(-id-,-x-,-y-+------+-+------+-+----------+-+--------+--->
+                                   +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
+
+>--+------------+-,-normal-+------------+--+-------------+--+-------------+--)--><
+   +-,-methName-+          +-,-focused--+  +-,-selected--+  +-,-disabled--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateBlackFrame"><title>createBlackFrame</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateBlackFrame">createBlackFrame</link>
+
+<![CDATA[
+>>--createBlackFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)--------------><
+                       +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateBlackRect"><title>createBlackRect</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateBlackRect">createBlackRect</link>
+
+<![CDATA[
+>>--createBlackRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
+                      +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
 <section id="ddCreateCenter"><title>createCenter</title>
 <programlisting>
-<link linkend="mthCreateCenter">createCenter</link>
+DynamicDialog::<link linkend="mthCreateCenter">createCenter</link>
 
 <![CDATA[
 >>--createCenter(--cx--,--cy--,--title-+-----------+--+------------+----------->
@@ -539,12 +1358,522 @@
 </programlisting>
 </section>
 
+<section id="ddCreateCheckBox"><title>createCheckBox</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateCheckBox">createCheckBox</link>
+
+<![CDATA[
+>>--createCheckBox(-id-,--x-,--y--+------+--+------+--+---------+--+---------+->
+                                  +-,-cx-+  +-,-cy-+  +-,-style-+  +-,-label-+
+
+>----+-----------------+--+--------------+--)----------------------------------><
+     +-,-attributeName-+  +-,-connectOpt-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateCheckBoxGroup"><title>createCheckBoxGroup</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateCheckBoxGroup">createCheckBoxGroup</link>
+
+<![CDATA[
+                                             +-----+
+                                             V     |
+>>--createCheckBoxGroup(id,-x-,-y-+------+-,---txt-+--+---------+-+----------+-)--><
+                                  +-,-cx-+            +-,-style-+ +-,-idStat-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateCheckBoxStem"><title>createCheckBoxStem</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateCheckBoxStem">createCheckBoxStem</link>
+
+<![CDATA[
+>>--createCheckBoxStem(id,-x-,-y-+------+-,-txt.-+-------+-+---------+-+----------+-)-><
+                                 +-,-cx-+        +-,-max-+ +-,-style-+ +-,-idStat-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateComboBox"><title>createComboBox</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateComboBox">createComboBox</link>
+
+<![CDATA[
+>>--createComboBox(--id--,--x--,--y--,--cx--,--cy--+---------+--+------------+--)-><
+                                                   +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateComboBoxInput"><title>createComboBoxInput</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateComboBoxInput">createComboBoxInput</link>
+
+<![CDATA[
+>>--createComboBoxInput(-id-,-x-,-y-+-------+-,-cx2-+---------+-,--text------->
+                                 +-,-cx1-+       +-,-count-+
+
+>---+---------+---+----------+--+-----------+--)-------------------------------><
+    +-,-style-+   +-,-idStat-+  +-,-attName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateDateTimePicker"><title>createDateTimePicker</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateDateTimePicker">createDateTimePicker</link>
+
+<![CDATA[
+>>--createDateTimePicker(-id--x-,--y-,--cx-,--cy-+---------+--+------------+--)-><
+                                                 +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+
+<section id="ddCreateEdit"><title>createEdit</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateEdit">createEdit</link>
+
+<![CDATA[
+>>--createEdit(-id-,-x-,-y-,-cx--+------+--+---------+--+------------+--)------><
+                                 +-,-cy-+  +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEditInput"><title>createEditInput</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateEditInput">createEditInput</link>
+
+<![CDATA[
+>>--createEditInput(-id-,-x-,-y-+-------+-,-cx2-,-+------+-,-text-+----------+->
+                                +-,-cx1-+         +-,-cy-+         +-,-style-+
+
+>--+------------+-+--------+-)-------------------------------------------------><
+   +-,-idStatic-+ +-,-attr-+
+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEditInputGroup"><title>createEditInputGroup</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateEditInputGroup">createEditInputGroup</link>
+
+<![CDATA[
+                                                        +---+
+                                                        V   |
+>>--createEditInputGroup(-id-,-x-,-y-+-------+-,-cx2-,--txt-+-+------+-+-------+-)-><
+                                     +-,-cx1-+                 +-,-s-+ +-,-id2-+
+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEditInputStem"><title>createEditInputStem</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateEditInputStem">createEditInputStem</link>
+
+<![CDATA[
+>>--createEditInputStem(-id-,-x-,-y-+-------+-,-cx2-,-text.-------------------->
+                                    +-,-cx1-+
+
+>--+---------+-+----------+-)--------------------------------------------------><
+   +-,-style-+ +-,-idStat-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEtchedFrame"><title>createEtchedFrame</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateEtchedFrame">createEtchedFrame</link>
+
+<![CDATA[
+>>--createEtchedFrame(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)------------><
+                        +--id-,-+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEtchedHorizontal"><title>createEtchedHorizontal</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateEtchedHorizontal">createEtchedHorizontal</link>
+
+<![CDATA[
+>>--createEtchedHorizontal(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)-------><
+                             +--id-,-+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateEtchedVertical"><title>createEtchedVertical</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateEtchedVertical">createEtchedVertical</link>
+
+<![CDATA[
+>>--createEtchedVertical(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)---------><
+                           +--id-,-+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateGrayFrame"><title>createGrayFrame</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateGrayFrame">createGrayFrame</link>
+
+<![CDATA[
+>>--createGrayFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
+                      +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateGrayRect"><title>createGrayRect</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateGrayRect">createGrayRect</link>
+
+<![CDATA[
+>>--createGrayRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)----------------><
+                     +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateGroupbox"><title>createGroupbox</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateGroupbox">createGroupbox</link>
+
+<![CDATA[
+>>--createGroupbox(-+------+-,-x-,-y-,-cx-,-cy--+---------+-+--------+-)-------><
+                    +--id--+                    +-,-style-+ +-,-text-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateListBox"><title>createListBox</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateListBox">createListBox</link>
+
+<![CDATA[
+>>--createListBox(--id-,-x-,-y-,-cx-,-cy--+---------+-+------------+-)---------><
+                                          +-,-style-+ +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateListView"><title>createListView</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateListView">createListView</link>
+
+<![CDATA[
+>>--createListView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateMonthCalendar"><title>createMonthCalendar</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateMonthCalendar">createMonthCalendar</link>
+
+<![CDATA[
+>>--createMonthCalendar(-id--x-,--y-,--cx-,--cy-+---------+--+------------+--)-><
+                                                +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateOkCancelLeftBottom"><title>createOkCancelLeftBottom</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateOkCancelLeftBottom">createOkCancelLeftBottom</link>
+
+<![CDATA[
+>>--createOkCancelLeftBottom---------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateOkCancelLeftTop"><title>createOkCancelLeftTop</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateOkCancelLeftTop">createOkCancelLeftTop</link>
+
+<![CDATA[
+>>--createOkCancelLeftTop------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateOkCancelRightBottom"><title>createOkCancelRightBottom</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateOkCancelRightBottom">createOkCancelRightBottom</link>
+
+<![CDATA[
+>>--createOkCancelRightBottom--------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateOkCancelRightTop"><title>createOkCancelRightTop</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateOkCancelRightTop">createOkCancelRightTop</link>
+
+<![CDATA[
+>>--createOkCancelRightTop-----------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreatePasswordEdit"><title>createPasswordEdit</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreatePasswordEdit">createPasswordEdit</link>
+
+<![CDATA[
+>>--createPasswordEdit(-id-,-x-,-y-,-cx--+------+--+---------+-+--------+--)---><
+                                         +-,-cy-+  +-,-style-+ +-,-attr-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateProgressBar"><title>createProgressBar</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateProgressBar">createProgressBar</link>
+
+<![CDATA[
+>>--createProgressBar(--id--,--x--,--y--,--cx--,--cy-+-----------+--)----------><
+                                                     +--,-style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreatePushButton"><title>createPushButton</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreatePushButton">createPushButton</link>
+
+<![CDATA[
+>>--createPushButton(-id-,-x-,-y-,-cx-,-cy-,-+---------+-+-------+-+-------+-)-><
+                                             +-,-style-+ +-,-txt-+ +-,-mth-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddcreatePushButtonGroup"><title>createPushButtonGroup</title>
+<programlisting>
+DynamicDialog::<link linkend="mthcreatePushButtonGroup">createPushButtonGroup</link>
+
+<![CDATA[
+                                                 +----------------+
+                                                 V                |
+>>--createPushButtonGroup(-x-,-y-+------+-+------+-,-txt- -id- -m-+--+-----+-+-----+-)-><
+                                 +-,-cx-+ +-,-cy-+                   +-,-r-+ +-,-o-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateRadioButton"><title>createRadioButton</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateRadioButton">createRadioButton</link>
+
+<![CDATA[
+>>--createRadioButton(-id-,-x-,-y-+------+--+------+--+---------+-------------->
+                                  +-,-cx-+  +-,-cy-+  +-,-style-+
+
+>--+--------+--+--------+--)---------------------------------------------------><
+   +-,-text-+  +-,-attr-+
+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateRadioButtonGroup"><title>createRadioButtonGroup</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link>
+
+<![CDATA[
+                                                 +-----+
+                                                 V     |
+>>--createRadioButtonGroup(id1,-x-,-y-+------+-,---txt-+--+---------+-+----------+-)--><
+                                      +-,-cx-+            +-,-style-+ +-,-idSt-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateRadioButtonStem"><title>createRadioButtonStem</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateRadioButtonStem">createRadioButtonStem</link>
+
+<![CDATA[
+>>--createRadioButtonStem(-id-,-x-,-y--+------+-,-text.--+-------+------------->
+                                       +-,-cx-+          +-,-max-+
+
+>--+---------+--+----------+-)-------------------------------------------------><
+   +-,-style-+  +-,-idStat-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateScrollBar"><title>createScrollBar</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateScrollBar">createScrollBar</link>
+
+<![CDATA[
+>>--createScrollBar(--id--,--x--,--y--,--cx--,--cy--+----------+--)------------><
+                                                    +-,-style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateStatic"><title>createStatic</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateStatic">createStatic</link>
+
+<![CDATA[
+>>--createStatic(--+----+--,-x-,-y-,-cx-,-cy--+----------+--+---------+--)-----><
+                   +-id-+                     +-,-style--+  +-,-text--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateStaticFrame"><title>createStaticFrame</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateStaticFrame">createStaticFrame</link>
+
+<![CDATA[
+>>--createStaticFrame(--id--,-x--,-y--,-cx--,-cy--+----------+--)--------------><
+                                                  +-,-style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateStaticImage"><title>createStaticImage</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateStaticImage">createStaticImage</link>
+
+<![CDATA[
+>>--createStaticImage(--id--,-x--,-y--,-cx--,-cy--+----------+--)--------------><
+                                                  +-,-style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateStaticText"><title>createStaticText</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateStaticText">createStaticText</link>
+
+<![CDATA[
+>>--createStaticText(-+------+--x-,--y-+------+-+------+-+----------+-+--------+-)-><
+                      +-id-,-+         +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateWhiteFrame"><title>createWhiteFrame</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateWhiteFrame">createWhiteFrame</link>
+
+<![CDATA[
+>>--createWhiteFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)--------------><
+                       +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateWhiteRect"><title>createWhiteRect</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateWhiteRect">createWhiteRect</link>
+
+<![CDATA[
+>>--createWhiteRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
+                      +--id--+                   +-,--style--+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateTab"><title>createTab</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateTab">createTab</link>
+
+<![CDATA[
+>>--createTab(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)----><
+                                        +-,-style-+  +-,-attributeName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateTrackBar"><title>createTrackBar</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateTrackBar">createTrackBar</link>
+
+<![CDATA[
+>>--createTrackBar(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateTreeView"><title>createTreeView</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateTreeView">createTreeView</link>
+
+<![CDATA[
+>>--createTreeView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
+                                             +-,-style-+  +-,-attrName-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddCreateUpDown"><title>createUpDown</title>
+<programlisting>
+DynamicDialog::<link linkend="mthCreateUpDown">createUpDown</link>
+
+<![CDATA[
+>>--createUpDown(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)-><
+                                           +-,-style-+  +-,-attributeName-+
+]]>
+</programlisting>
+</section>
+
 <section id="ddDefineDialog"><title>defineDialog</title>
 <programlisting>
-<link linkend="mthDefineDialog">defineDialog</link>
+DynamicDialog::<link linkend="mthDefineDialog">defineDialog</link>
 
 <![CDATA[
 >>--defineDialog---------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="ddLoad"><title>load</title>
+<programlisting>
+DynamicDialog::<link linkend="mthLoad">load</link>
+
+<![CDATA[
+>>--load(--rcFile--+-------+--+----------+--+-------------+--)-----------------><
+                   +-,-id--+  +--,-opts--+  +-,--expected-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddLoadFrame"><title>loadFrame</title>
+<programlisting>
+DynamicDialog::<link linkend="mthLoadFrame">loadFrame</link>
+
+<![CDATA[
+>>--loadFrame(--rcFile--+-------+--+----------+--+-------------+--)------------><
+                        +-,-id--+  +--,-opts--+  +-,--expected-+
+]]>
+</programlisting>
+</section>
+
+<section id="ddLoadItems"><title>loadItems</title>
+<programlisting>
+DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
+
+<![CDATA[
+>>--loadItems(--rcFile--+-------+--+----------+--)-----------------------------><
+                        +-,-id--+  +--,-opts--+
 ]]>
 </programlisting>
 </section>
