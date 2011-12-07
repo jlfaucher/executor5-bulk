@@ -1230,7 +1230,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetListBoxData">setListBoxData</link></entry>
-<entry></entry>
+<entry>Sets the <emphasis role="italic">data</emphasis> of the underlying list box to the value specified.</entry>
 </row>
 <row>
 <entry><link linkend="deSetListColumnWidth">setListColumnWidth</link></entry>
@@ -1249,20 +1249,20 @@
 <entry>Sets the height for all items in a list box in dialog units.</entry>
 </row>
 <row>
-<entry><link linkend="deSetListWidth"></link>setListWidth</entry>
+<entry><link linkend="deSetListWidth">setListWidth</link></entry>
 <entry>Sets the scrollable width of a list box in dialog units. <emphasis role="bold">(Inaccurate)</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="deSetListWidthPx"></link>setListWidthPx</entry>
+<entry><link linkend="deSetListWidthPx">setListWidthPx</link></entry>
 <entry>Sets the scrollable width of a list box in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetListTabulators">setListTabulators</link></entry>
-<entry>setListTabulators</entry>
+<entry>Sets the tabulators for a list box.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetRadioButtonData">setRadioButtonData</link></entry>
-<entry></entry>
+<entry>Sets the <emphasis role="italic">data</emphasis> of a radio button contol.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoSetRect">setRect</link></entry>
@@ -1278,7 +1278,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetTabStop">setTabStop</link></entry>
-<entry></entry>
+<entry>Add or remove the tab stop style for the specified control.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoSetText">setText</link></entry>
@@ -1298,23 +1298,23 @@
 </row>
 <row>
 <entry><link linkend="mthSetWindowRect">setWindowRect</link></entry>
-<entry></entry>
+<entry>Sets new coordinates for the specified window.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetWindowTitle">setWindowTitle</link></entry>
-<entry></entry>
+<entry>Changes the title of a window.</entry>
 </row>
 <row>
 <entry><link linkend="mthShowClsPlainBaseDialog">show</link></entry>
-<entry></entry>
+<entry>Sets the dialog window's show state.</entry>
 </row>
 <row>
 <entry><link linkend="mthShowControl">showControl</link></entry>
-<entry></entry>
+<entry>Makes the specified dialog control reappear on the screen.</entry>
 </row>
 <row>
 <entry><link linkend="mthShowControlFast">showControlFast</link></entry>
-<entry></entry>
+<entry>Shows a dialog control without redrawing its area.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoShowfast">showFast</link></entry>
@@ -1322,11 +1322,11 @@
 </row>
 <row>
 <entry><link linkend="mthShowWindow">showWindow</link></entry>
-<entry></entry>
+<entry>Shows the window or dialog control again.</entry>
 </row>
 <row>
 <entry><link linkend="mthShowWindowFast">showWindowFast</link></entry>
-<entry></entry>
+<entry>Marks the specified window as visible but does not force it to redraw.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoSizeWindow">sizeWindow</link></entry>
@@ -1334,15 +1334,15 @@
 </row>
 <row>
 <entry><link linkend="mthTabToNext">tabToNext</link></entry>
-<entry></entry>
+<entry>Sets the focus to the next tab stop dialog control in the dialog and returns the window handle of the dialog control that currently has the focus.</entry>
 </row>
 <row>
 <entry><link linkend="mthTabToPrevious">tabToPrevious</link></entry>
-<entry></entry>
+<entry>Sets the focus to the previous tab stop dialog control in the dialog and returns the window handle of the dialog control that currently has the focus.</entry>
 </row>
 <row>
 <entry><link linkend="mthTiledBackgroundBitmap">tiledBackgroundBitmap</link></entry>
-<entry></entry>
+<entry>Sets a bitmap as the dialog's background brush.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoTitle">title</link></entry>
@@ -1354,7 +1354,7 @@
 </row>
 <row>
 <entry><link linkend="mthToTheTop">toTheTop</link></entry>
-<entry>toTheTop</entry>
+<entry>Makes the dialog the topmost dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wedoTransparentText">transparentText</link></entry>
@@ -1366,7 +1366,7 @@
 </row>
 <row>
 <entry><link linkend="mthValidate">validate</link></entry>
-<entry>validate</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="wedoVScrollPos">vScrollPos</link></entry>
@@ -3029,16 +3029,28 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
 </para>
 <para>
   The method is invoked in response to the <computeroutput>cancel</computeroutput> command event. The default
-  implementation sets the <link linkend="atrInitCode">initCode</link> attribute to 2 and causes the dialog to be closed.
+  implementation does the proper clean up to close the dialog and end its execution.
 </para>
 <para>
-  The programmer might want to override the <emphasis role="italic">cancel</emphasis> method in her subclass. If the
-  method is overridden, it should be an UNGUARDED method.
-
-  TODO NEED TO DECIDE EXACTLY WHAT TO DOCUMENT OR NOT DOCUMENT HERE
-
-  If you do, forward the cancel message to the parent class after processing has finished. Set the self~finished
-  attribute to 1 or 0 and return it. The dialog continues executing if you return the value 0.
+  The programmer might want to over-ride the <emphasis role="italic">cancel</emphasis> method in her subclass. Perhaps
+  to warn the user that there are unsaved changes for example.
+</para>
+<para>
+  If the programmer is going to end or close the dialog programmatically, it is <emphasis
+  role="italic">important</emphasis> to always do so by invoking either the base class <link linkend="mthOk">ok</link>
+  method or the base class <link linkend="mthCancel">cancel</link> method. This ensures that the proper clean up is
+  done. Failure to do so may produce unpredictable results.
+</para>
+<para>
+  If the <emphasis role="italic">cancel</emphasis> method is over-ridden in a subclass, invoke the super class's
+  <emphasis role="italic">cancel</emphasis> method to close the dialog. Or return 0 to prevent the dialog from closing.
+  The dialog continues executing if you return 0 without invoking of the super class's <emphasis
+  role="italic">cancel</emphasis> method.
+</para>
+<para>
+  The <link linkend="exampleOk">example</link> given for the <emphasis role="italic">ok</emphasis> method shows the
+  proper way to over-ride the <emphasis role="italic">ok</emphasis> method. The general principle could be used to
+  over-ride the <emphasis role="italic">cancel</emphasis> method as well.
 </para>
 </section>
 
@@ -3086,19 +3098,26 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
   The programmer might want to override the <emphasis role="italic">ok</emphasis> method in his subclass. In general,
   there is probaly no need to. Anything done in the overridden <emphasis role="italic">ok</emphasis> method, could just
   as easily be done by overriding the <link linkend="mthValidate">validate</link>() and / or the <link
-  linkend="mthLeaving"></link>() methods.
-
-  TODO NEED TO DECIDE EXACTLY WHAT TO DOCUMENT OR NOT DOCUMENT HERE
-
-  If you do, forward the OK message to the parent class after processing has finished. Set the self~finished attribute
-  to 1 or 0 and return it. The dialog continues executing if you return the value 0. See also <link
-  linkend="mthValidate">validate</link>.
+  linkend="mthLeaving">leaving</link>() methods.
 </para>
 <para>
+  If the programmer is going to end or close the dialog programmatically, it is <emphasis
+  role="italic">important</emphasis> to always do so by invoking either the base class <link linkend="mthOk">ok</link>
+  method or the base class <link linkend="mthCancel">cancel</link> method. This ensures that the proper clean up is
+  done. Failure to do so may produce unpredictable results.
+</para>
+<para>
+  If the <emphasis role="italic">ok</emphasis> method is over-ridden in a subclass, invoke the super class's <emphasis
+  role="italic">ok</emphasis> or <emphasis role="italic">cancel</emphasis> method (depending on circumstantce) to close
+  the dialog. Or return 0 to prevent the dialog from closing. The dialog continues executing if you return the value 0
+  with invoking one of the super class methods
+</para>
+<para id="exampleOk">
   <emphasis role="bold">Example:</emphasis>
 </para>
 <para>
-  The following example shows how to override the OK method.  It checks that the user really wants to quite.
+  The following example shows how to override the <emphasis role="italic">ok</emphasis> method.  It checks that the user
+  really wants to quite.
 <programlisting>
 <![CDATA[
 
@@ -3118,7 +3137,7 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
 
     icon = "WARNING"
     defButton = "DEFBUTTON2"
-    chide = "It is NOT 4:00 pm." break "Are you SURE you should quite!"
+    chide = "It is NOT 4:00 pm." break "Are you SURE you should quit!"
 
     msg ||= break || chide
   end
