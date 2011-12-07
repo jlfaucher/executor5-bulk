@@ -913,6 +913,14 @@
 <entry>A method automatically invoked by the ooDialog framework when the underlying dialog is being closed.</entry>
 </row>
 <row>
+<entry><link linkend="mthListAddDirectory">listAddDirectory</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthListDrop">listDrop</link></entry>
+<entry></entry>
+</row>
+<row>
 <entry><link linkend="wedoLoadBitmap">loadBitmap</link></entry>
 <entry>Loads a bitmap from a file into memory and returns the handle to the bitmap.</entry>
 </row>
@@ -927,6 +935,10 @@
 <row>
 <entry><link linkend="wbdoMove">move</link></entry>
 <entry>Moves the dialog to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="deMoveControl">moveControl</link></entry>
+<entry>Moves a dialog control to another position within the dialog window.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoMoveTo">moveTo</link></entry>
@@ -1013,12 +1025,16 @@
 <entry>Reads a file and adds any symbol definitions found to the proper constant diretory.</entry>
 </row>
 <row>
-<entry><link linkend="mthPopup">popup</link></entry>
-<entry>Starts a dialog executing asynchronously and returns immediately.</entry>
+<entry><link linkend="dePopup">popup</link></entry>
+<entry>Starts a modeless dialog executing and returns immediately.</entry>
 </row>
 <row>
-<entry><link linkend="mthPopupAsChild">popupAsChild</link></entry>
-<entry>Starts a dialog executing asynchronously with a parent dialog, and returns immediately. The dialog is closed automatically when the parent closes.</entry>
+<entry><link linkend="dePopupAsChild">popupAsChild</link></entry>
+<entry>Assigns a parent dialog, starts a modeless dialog executing, and returns immediately. The dialog is closed automatically when the parent dialog ends.</entry>
+</row>
+<row>
+<entry><link linkend="deResizeControl">resizeControl</link></entry>
+<entry>Changes the size of a dialog control.</entry>
 </row>
 <row>
 <entry><link linkend="wedoRectangle">rectangle</link></entry>
@@ -1031,6 +1047,26 @@
 <row>
 <entry><link linkend="wbdoRedrawClient">redrawClient</link></entry>
 <entry>Redraws the entire client area of the dialog immediately.</entry>
+</row>
+<row>
+<entry><link linkend="deRedrawControl">redrawControl</link></entry>
+<entry>Redraws the specified dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="deRedrawRectClsDialogExtensions">redrawRect</link></entry>
+<entry>Redraws a rectangle within the client area of this dialog, or optionally the client area of a specified window.</entry>
+</row>
+<row>
+<entry><link linkend="deRedrawWindow">redrawWindow</link></entry>
+<entry>Redraws the specified window.</entry>
+</row>
+<row>
+<entry><link linkend="deRedrawWindowRect">redrawWindowRect</link></entry>
+<entry>Forces this dialog to completely redraw its client area, or optionally the client area of a specified window.</entry>
+</row>
+<row>
+<entry><link linkend="deReleaseMouseCapture"></link></entry>
+<entry>Releases the mouse capture from this dialog, or the dialog control belonging to this dialog, which had previously captured the mouse.</entry>
 </row>
 <row>
 <entry><link linkend="wedoRemoveBitmap">removeBitmap</link></entry>
@@ -1073,11 +1109,19 @@
 <entry>Scrolls the contents of the dialog's client area by the amount specified.</entry>
 </row>
 <row>
-<entry><link linkend="mthScrollBitmapFromTo">scrollBitmapFromTo</link></entry>
-<entry>Scrolls, (moves,) a bitmap from one position to another within a bitmap button.</entry>
+<entry><link linkend="deScrollBitmapFromTo">scrollBitmapFromTo</link></entry>
+<entry>Scrolls the bitmap within the bitmap button from one position to another.</entry>
 </row>
 <row>
-<entry><link linkend="mthScrollText">scrollText</link></entry>
+<entry><link linkend="deScrollButton">scrollButton</link></entry>
+<entry>Moves a rectangle within the button and redraws the uncovered area with the button background color.</entry>
+</row>
+<row>
+<entry><link linkend="deScrollInControl">scrollInControl</link></entry>
+<entry>Scrolls text in a dialog control using the specified font.</entry>
+</row>
+<row>
+<entry><link linkend="deScrollText">scrollText</link></entry>
 <entry>Scrolls text in the specified window using the specified font.</entry>
 </row>
 <row>
@@ -1109,6 +1153,10 @@
 <entry>Sets the current drawing direction.</entry>
 </row>
 <row>
+<entry><link linkend="deSetBitmapPosition">setBitmapPosition</link></entry>
+<entry>Sets the postion of the upper left corner of a bitmap within the bitmap button.</entry>
+</row>
+<row>
 <entry><link linkend="mthSetCheckBoxData">setCheckBoxData</link></entry>
 <entry>setCheckBoxData</entry>
 </row>
@@ -1117,12 +1165,32 @@
 <entry>setComboBoxData</entry>
 </row>
 <row>
+<entry><link linkend="deSetControlColor"></link>setControlColor</entry>
+<entry>Sets the background color, and optionally the text color, for the specified dialog control.</entry>
+</row>
+<row>
 <entry><link linkend="mthSetControlData">setControlData</link></entry>
 <entry>setControlData</entry>
 </row>
 <row>
+<entry><link linkend="deSetControlFont">setControlFont</link></entry>
+<entry>Changes the font for specified dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="deSetControlSysColor">setControlSysColor</link></entry>
+<entry>Sets the background color, and optionally the text color, for the specified dialog control using the system colors.</entry>
+</row>
+<row>
 <entry><link linkend="mthSetControlText">setControlText</link></entry>
 <entry>Sets the text for the specified dialog control</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCurrentComboIndex">setCurrentComboIndex</link></entry>
+<entry>setCurrentComboIndex</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCurrentListIndex">setCurrentListIndex</link></entry>
+<entry>setCurrentListIndex</entry>
 </row>
 <row>
 <entry><link linkend="wedoSetCursorPos">setCursorPos</link></entry>
@@ -1138,15 +1206,23 @@
 </row>
 <row>
 <entry><link linkend="mthSetDataStem">setDataStem</link></entry>
-<entry>setDataStem</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="mthSetEditData">setEditData</link></entry>
-<entry>setEditData</entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSetFocusToWindow">setFocusToWindow</link></entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="wedoSetFont">setFont</link></entry>
 <entry>Sets a new font to be used by the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="deSetForegroundWindow">setForegroundWindow</link></entry>
+<entry>Brings the specified window to the foregrouond.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetGroup">setGroup</link></entry>
@@ -1158,19 +1234,55 @@
 </row>
 <row>
 <entry><link linkend="mthSetListBoxData">setListBoxData</link></entry>
-<entry>setListBoxData</entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="deSetListColumnWidth">setListColumnWidth</link></entry>
+<entry>Sets the width of all columns in a list box in dialog units. <emphasis role="bold">(Inaccurate)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="deSetListColumnWidthPx">setListColumnWidthPx</link></entry>
+<entry>Sets the width of all columns in a list box in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="deSetListItemHeight">setListItemHeight</link></entry>
+<entry>Sets the height for all items in a list box in dialog units. <emphasis role="bold">(Inaccurate)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="deSetListItemHeightPx">setListItemHeightPx</link></entry>
+<entry>Sets the height for all items in a list box in dialog units.</entry>
+</row>
+<row>
+<entry><link linkend="deSetListWidth"></link>setListWidth</entry>
+<entry>Sets the scrollable width of a list box in dialog units. <emphasis role="bold">(Inaccurate)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="deSetListWidthPx"></link>setListWidthPx</entry>
+<entry>Sets the scrollable width of a list box in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetListTabulators">setListTabulators</link></entry>
+<entry>setListTabulators</entry>
 </row>
 <row>
 <entry><link linkend="mthSetRadioButtonData">setRadioButtonData</link></entry>
-<entry>setRadioButtonData</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="wbdoSetRect">setRect</link></entry>
 <entry>Moves and / or resizes the dialog.</entry>
 </row>
 <row>
+<entry><link linkend="deSetSBPos">setSBPos</link></entry>
+<entry>Sets the current position of a scroll bar control.</entry>
+</row>
+<row>
+<entry><link linkend="deSetSBRange">setSBRange</link></entry>
+<entry>Sets the range of a scroll bar control.</entry>
+</row>
+<row>
 <entry><link linkend="mthSetTabStop">setTabStop</link></entry>
-<entry>setTabStop</entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="wbdoSetText">setText</link></entry>
@@ -1190,15 +1302,35 @@
 </row>
 <row>
 <entry><link linkend="mthSetWindowRect">setWindowRect</link></entry>
-<entry>setWindowRect</entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthSetWindowTitle">setWindowTitle</link></entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="mthShowClsPlainBaseDialog">show</link></entry>
-<entry>show</entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthShowControl">showControl</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthShowControlFast">showControlFast</link></entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="wbdoShowfast">showFast</link></entry>
 <entry>Marks the dialog as visible.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowWindow">showWindow</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthShowWindowFast">showWindowFast</link></entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="wbdoSizeWindow">sizeWindow</link></entry>
@@ -1206,7 +1338,15 @@
 </row>
 <row>
 <entry><link linkend="mthTabToNext">tabToNext</link></entry>
-<entry>tabToNext</entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthTabToPrevious">tabToPrevious</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthTiledBackgroundBitmap">tiledBackgroundBitmap</link></entry>
+<entry></entry>
 </row>
 <row>
 <entry><link linkend="wbdoTitle">title</link></entry>
@@ -1215,6 +1355,10 @@
 <row>
 <entry><link linkend="wbdoTitleEquals">title=</link></entry>
 <entry>Sets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthToTheTop">toTheTop</link></entry>
+<entry>toTheTop</entry>
 </row>
 <row>
 <entry><link linkend="wedoTransparentText">transparentText</link></entry>
@@ -1244,137 +1388,6 @@
 <entry><link linkend="wedoWriteDirect">writeDirect</link></entry>
 <entry>Writes text in a dialog at the position specified using a device context.</entry>
 </row>
-
-
-
-
-
-
-
-<row>
-<entry><link linkend="mthListAddDirectory">listAddDirectory</link></entry>
-<entry>listAddDirectory</entry>
-</row>
-<row>
-<entry><link linkend="mthListDrop">listDrop</link></entry>
-<entry>listDrop</entry>
-</row>
-<row>
-<entry><link linkend="deMoveControl">moveControl</link></entry>
-<entry>Moves a dialog control to another position within the dialog window.</entry>
-</row>
-<row>
-<entry><link linkend="dePopup">popup</link></entry>
-<entry>Starts a modeless dialog executing and returns immediately.</entry>
-</row>
-<row>
-<entry><link linkend="dePopupAsChild">popupAsChild</link></entry>
-<entry>Assigns a parent dialog, starts a modeless dialog executing, and returns immediately. The dialog is closed automatically when the parent dialog ends.</entry>
-</row>
-<row>
-<entry><link linkend="mthRedrawControl">redrawControl</link></entry>
-<entry>redrawControl</entry>
-</row>
-<row>
-<entry><link linkend="mthRedrawWindow">redrawWindow</link></entry>
-<entry>redrawWindow</entry>
-</row>
-<row>
-<entry><link linkend="mthRedrawWindowRect">redrawWindowRect</link></entry>
-<entry>redrawWindowRect</entry>
-</row>
-<row>
-<entry><link linkend="mthReleaseMouseCapture">releaseMouseCapture</link></entry>
-<entry>releaseMouseCapture</entry>
-</row>
-<row>
-<entry><link linkend="mthResizeControl">resizeControl</link></entry>
-<entry>resizeControl</entry>
-</row>
-<row>
-<entry><link linkend="mthScrollButton">scrollButton</link></entry>
-<entry>scrollButton</entry>
-</row>
-<row>
-<entry><link linkend="mthScrollInControl">scrollInControl</link></entry>
-<entry>scrollInControl</entry>
-</row>
-<row>
-<entry><link linkend="mthSetCurrentComboIndex">setCurrentComboIndex</link></entry>
-<entry>setCurrentComboIndex</entry>
-</row>
-<row>
-<entry><link linkend="mthSetCurrentListIndex">setCurrentListIndex</link></entry>
-<entry>setCurrentListIndex</entry>
-</row>
-<row>
-<entry><link linkend="mthSetFocusToWindow">setFocusToWindow</link></entry>
-<entry>setFocusToWindow</entry>
-</row>
-<row>
-<entry><link linkend="mthSetForegroundWindow">setForegroundWindow</link></entry>
-<entry>setForegroundWindow</entry>
-</row>
-<row>
-<entry><link linkend="mthSetControlFont">setControlFont</link></entry>
-<entry>setControlFont</entry>
-</row>
-<row>
-<entry><link linkend="mthSetListColumnWidth">setListColumnWidth</link></entry>
-<entry>setListColumnWidth</entry>
-</row>
-<row>
-<entry><link linkend="mthSetListItemHeight">setListItemHeight</link></entry>
-<entry>setListItemHeight</entry>
-</row>
-<row>
-<entry><link linkend="mthSetListWidth">setListWidth</link></entry>
-<entry>setListWidth</entry>
-</row>
-<row>
-<entry><link linkend="mthSetListTabulators">setListTabulators</link></entry>
-<entry>setListTabulators</entry>
-</row>
-<row>
-<entry><link linkend="mthSetSBPos">setSBPos</link></entry>
-<entry>setSBPos</entry>
-</row>
-<row>
-<entry><link linkend="mthSetSBRange">setSBRange</link></entry>
-<entry>setSBRange</entry>
-</row>
-<row>
-<entry><link linkend="mthShowControl">showControl</link></entry>
-<entry>showControl</entry>
-</row>
-<row>
-<entry><link linkend="mthSetWindowTitle">setWindowTitle</link></entry>
-<entry>setWindowTitle</entry>
-</row>
-<row>
-<entry><link linkend="mthShowControlFast">showControlFast</link></entry>
-<entry>showControlFast</entry>
-</row>
-<row>
-<entry><link linkend="mthShowWindow">showWindow</link></entry>
-<entry>showWindow</entry>
-</row>
-<row>
-<entry><link linkend="mthShowWindowFast">showWindowFast</link></entry>
-<entry>showWindowFast</entry>
-</row>
-<row>
-<entry><link linkend="mthTabToPrevious">tabToPrevious</link></entry>
-<entry>tabToPrevious</entry>
-</row>
-<row>
-<entry><link linkend="mthTiledBackgroundBitmap">tiledBackgroundBitmap</link></entry>
-<entry>xx</entry>
-</row>
-<row>
-<entry><link linkend="mthToTheTop">toTheTop</link></entry>
-<entry>toTheTop</entry>
-</row>
 <row>
 <entry><link linkend="deWriteToWindow">writeToWindow</link></entry>
 <entry>Writes text to the dialog or dialog control, specified by its window handle, in the given font at the specified position.</entry>
@@ -1385,98 +1398,13 @@
 </row>
 
 
-<row>
-<entry><link linkend="deRedrawControl">redrawControl</link></entry>
-<entry>Redraws the specified dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="deRedrawRectClsDialogExtensions">redrawRect</link></entry>
-<entry>Redraws a rectangle within the client area of this dialog, or optionally the client area of a specified window.</entry>
-</row>
-<row>
-<entry><link linkend="deRedrawWindow">redrawWindow</link></entry>
-<entry>Redraws the specified window.</entry>
-</row>
-<row>
-<entry><link linkend="deRedrawWindowRect">redrawWindowRect</link></entry>
-<entry>Forces this dialog to completely redraw its client area, or optionally the client area of a specified window.</entry>
-</row>
-<row>
-<entry><link linkend="deReleaseMouseCapture"></link></entry>
-<entry>Releases the mouse capture from this dialog, or the dialog control belonging to this dialog, which had previously captured the mouse.</entry>
-</row>
-<row>
-<entry><link linkend="deResizeControl">resizeControl</link></entry>
-<entry>Changes the size of a dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="deScrollBitmapFromTo">scrollBitmapFromTo</link></entry>
-<entry>Scrolls the bitmap within the bitmap button from one position to another.</entry>
-</row>
-<row>
-<entry><link linkend="deScrollButton">scrollButton</link></entry>
-<entry>Moves a rectangle within the button and redraws the uncovered area with the button background color.</entry>
-</row>
-<row>
-<entry><link linkend="deScrollInControl">scrollInControl</link></entry>
-<entry>Scrolls text in a dialog control using the specified font.</entry>
-</row>
-<row>
-<entry><link linkend="deScrollText">scrollText</link></entry>
-<entry>Scrolls text in the specified window using the specified font.</entry>
-</row>
-<row>
-<entry><link linkend="deSetBitmapPosition">setBitmapPosition</link></entry>
-<entry>Sets the postion of the upper left corner of a bitmap within the bitmap button.</entry>
-</row>
-<row>
-<entry><link linkend="deSetControlFont">setControlFont</link></entry>
-<entry>Changes the font for specified dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="deSetControlColor"></link>setControlColor</entry>
-<entry>Sets the background color, and optionally the text color, for the specified dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="deSetControlSysColor">setControlSysColor</link></entry>
-<entry>Sets the background color, and optionally the text color, for the specified dialog control using the system colors.</entry>
-</row>
-<row>
-<entry><link linkend="deSetForegroundWindow">setForegroundWindow</link></entry>
-<entry>Brings the specified window to the foregrouond.</entry>
-</row>
-<row>
-<entry><link linkend="deSetListColumnWidth">setListColumnWidth</link></entry>
-<entry>Sets the width of all columns in a list box in dialog units. <emphasis role="bold">(Inaccurate)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="deSetListColumnWidthPx">setListColumnWidthPx</link></entry>
-<entry>Sets the width of all columns in a list box in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="deSetListItemHeight">setListItemHeight</link></entry>
-<entry>Sets the height for all items in a list box in dialog units. <emphasis role="bold">(Inaccurate)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="deSetListItemHeightPx">setListItemHeightPx</link></entry>
-<entry>Sets the height for all items in a list box in dialog units.</entry>
-</row>
-<row>
-<entry><link linkend="deSetListWidth"></link>setListWidth</entry>
-<entry>Sets the scrollable width of a list box in dialog units. <emphasis role="bold">(Inaccurate)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="deSetListWidthPx"></link>setListWidthPx</entry>
-<entry>Sets the scrollable width of a list box in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="deSetSBPos">setSBPos</link></entry>
-<entry>Sets the current position of a scroll bar control.</entry>
-</row>
-<row>
-<entry><link linkend="deSetSBRange">setSBRange</link></entry>
-<entry>Sets the range of a scroll bar control.</entry>
-</row>
+
+
+
+
+
+
+
 
 
 </tbody></tgroup>
