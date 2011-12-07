@@ -1061,7 +1061,7 @@
 <entry>Forces this dialog to completely redraw its client area, or optionally the client area of a specified window.</entry>
 </row>
 <row>
-<entry><link linkend="deReleaseMouseCapture"></link></entry>
+<entry><link linkend="deReleaseMouseCapture">releaseMouseCapture</link></entry>
 <entry>Releases the mouse capture from this dialog, or the dialog control belonging to this dialog, which had previously captured the mouse.</entry>
 </row>
 <row>
@@ -1366,7 +1366,7 @@
 </row>
 <row>
 <entry><link linkend="mthValidate">validate</link></entry>
-<entry></entry>
+<entry>A method meant to be over-ridden. Its purpose is to validate the user's input and decide whether or not to allow the dialog to close.</entry>
 </row>
 <row>
 <entry><link linkend="wedoVScrollPos">vScrollPos</link></entry>
@@ -1392,17 +1392,6 @@
 <entry><link linkend="deWriteToControl">writeToControl</link></entry>
 <entry>Writes text to the dialog control, specified by its resource ID, in the given font at the specified position.</entry>
 </row>
-
-
-
-
-
-
-
-
-
-
-
 </tbody></tgroup>
 </table>
 </section>
@@ -3024,7 +3013,7 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
 <para>
   A default <emphasis role="italic">cancel</emphasis> method is provided by the ooDialog framework. The
   <computeroutput>cancel</computeroutput> event notification is <link
-  linkend="sctStandardEventMethods">automatically</link> connected to this method. This method is meant to be overridden
+  linkend="sctStandardEventMethods">automatically</link> connected to this method. This method is meant to be over-ridden
   by the programmer if the default implementation is not sufficient for the needs of the program.
 </para>
 <para>
@@ -3066,8 +3055,8 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
 <para>
   A default <emphasis role="italic">help</emphasis> method is provided by the ooDialog framework. The
   <computeroutput>help</computeroutput> event notification is <link
-  linkend="sctStandardEventMethods">automatically</link> connected to this method. This method is meant to be overridden
-  by the programmer. The default implementation does nothing and returns 0. The programmer could override this method to
+  linkend="sctStandardEventMethods">automatically</link> connected to this method. This method is meant to be over-ridden
+  by the programmer. The default implementation does nothing and returns 0. The programmer could over-ride this method to
   display some form of help to the user.
 </para>
 </section>
@@ -3085,7 +3074,7 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
 <para>
   A default <emphasis role="italic">ok</emphasis> method is provided by the ooDialog framework. The
   <computeroutput>ok</computeroutput> event notification is <link linkend="sctStandardEventMethods">automatically</link>
-  connected to this method. This method is meant to be overridden by the programmer if the default implementation is not
+  connected to this method. This method is meant to be over-ridden by the programmer if the default implementation is not
   sufficient for the needs of the program.
 </para>
 <para>
@@ -3095,8 +3084,8 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
   continues to execute. The default implementation of <emphasis role="italic">validate</emphasis> always returns true.
 </para>
 <para>
-  The programmer might want to override the <emphasis role="italic">ok</emphasis> method in his subclass. In general,
-  there is probaly no need to. Anything done in the overridden <emphasis role="italic">ok</emphasis> method, could just
+  The programmer might want to over-ride the <emphasis role="italic">ok</emphasis> method in his subclass. In general,
+  there is probaly no need to. Anything done in the over-ridden <emphasis role="italic">ok</emphasis> method, could just
   as easily be done by overriding the <link linkend="mthValidate">validate</link>() and / or the <link
   linkend="mthLeaving">leaving</link>() methods.
 </para>
@@ -3116,7 +3105,7 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
   <emphasis role="bold">Example:</emphasis>
 </para>
 <para>
-  The following example shows how to override the <emphasis role="italic">ok</emphasis> method.  It checks that the user
+  The following example shows how to over-ride the <emphasis role="italic">ok</emphasis> method.  It checks that the user
   really wants to quite.
 <programlisting>
 <![CDATA[
@@ -3149,7 +3138,7 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
 
 ]]>
 </programlisting>
-  As noted above, rather than override the <emphasis role="italic">ok</emphasis> method the same code could have been
+  As noted above, rather than over-ride the <emphasis role="italic">ok</emphasis> method the same code could have been
   put into the <emphasis role="italic">validate</emphasis> method.
 
 <programlisting>
@@ -3216,7 +3205,7 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
 </programlisting>
 
 <para>
-  The <emphasis role="italic">validate</emphasis> method is a method that is intended to be overridden by the
+  The <emphasis role="italic">validate</emphasis> method is a method that is intended to be over-ridden by the
   programmer. Its purpose would be to validate the user's input and decide whether or not to close the dialog. The
   default <link linkend="mthOk">ok</link> method implementation calls <emphasis role="italic">validate</emphasis>. If
   the return is true, the <emphasis role="italic">ok</emphasis> method will close the dialog. If the return is false,
@@ -3230,7 +3219,7 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    In the following example of an override of <emphasis role="italic">validate</emphasis>, a check is done to determine
+    In the following example of an over-ride of <emphasis role="italic">validate</emphasis>, a check is done to determine
     if the edit control with resource ID 203 is empty. If it is empty, validate returns false, which indicates that the
     dialog cannot be closed.
 
@@ -5899,17 +5888,6 @@ DialogExtensions::<link linkend="mthCaptureMouse">captureMouse</link>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    TODO NEED EXAMPLE
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End dialog object::dlgUnit2pixel() -->
 
@@ -8457,7 +8435,7 @@ a = .Alarm~new("17:30:00", msg)
 <para>
   <link linkend="mthInitDialog">initDialog</link> This method is called after the underlying Windows dialog has been
   created, but before it is shown on the screen.  In the viewer dialog the <computeroutput>init</computeroutput> method
-  is overridden and the text of the read-only multi-line edit control is set to the contents of the file.  In both
+  is over-ridden and the text of the read-only multi-line edit control is set to the contents of the file.  In both
   dialogs, this method is used to get and save a reference to the edit control of the dialog.
 </para>
 </listitem>
