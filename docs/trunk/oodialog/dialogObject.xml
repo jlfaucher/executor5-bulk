@@ -173,6 +173,14 @@
 <entry>Adds a string to the specified list box.</entry>
 </row>
 <row>
+<entry><link linkend="mthAddNewAttribute">addNewAttribute</link></entry>
+<entry>Adds a new attribute (a method) to this dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthAddNewMethod">addNewMethod</link></entry>
+<entry>Adds a new method to this dialog.</entry>
+</row>
+<row>
 <entry><link linkend="enAddUserMsg">addUserMsg</link></entry>
 <entry>Connects an operating system window message with a method in the Rexx dialog object.</entry>
 </row>
@@ -4283,24 +4291,31 @@ controlObject = dialogObject~new[ControlName](resourceID)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    This is a convenience method. It uses the <computeroutput>Object</computeroutput> class's <emphasis
+    role="italic">setMethod</emphasis> to add the attribute to the dialog object. <emphasis
+    role="italic">setMethod</emphasis> is private, but <emphasis role="italic">addNewAttribute</emphasis> is public.
+    This allows <emphasis role="italic">addNewAttribute</emphasis> to be used to dynamically add an attribute to a
+    dialog where only a referenece to the dialog object is available. In addition, it is a convenience to already have
+    the code to add the attribute written.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows how it is useful to be able to dynamically add an attribute to a dialog object at run time. The
+    owner dialog could be any generic dialog:
 <programlisting>
 <![CDATA[
+
+::method initUpdateListView private
+  use strict arg lvID, pause = .005
+
+  self~addNewAttribute('updateListViewID', lvID, .true)
+
+  owner = self~ownerDialog
+
+  owner~addNewAttribute(updateListViewPageDialog, self, .true, .true)
+  owner~addNewAttribute(updateListViewLastFocused, 0, .true, .true)
 
 ]]>
 </programlisting>
@@ -4308,6 +4323,102 @@ controlObject = dialogObject~new[ControlName](resourceID)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End dialog object::addNewAttribute() -->
+
+
+<section id="mthAddNewMethod"><title>addNewMethod</title>
+<indexterm><primary>addNewMethod</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>addNewMethod</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addNewMethod(--mthName--+--------------+--+------------+--)----------------><
+                            +-,-unguarded--+  +-,-private--+
+]]>
+</programlisting>
+
+<para>
+  Adds a new method to this dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>mthName [required]</term>
+      <listitem>
+      <para>
+        The name of the new method. Must be a valid Rexx method name.
+      </para>
+      </listitem></varlistentry>
+      </listitem></varlistentry>
+      <varlistentry><term>unguarded [optional]</term>
+      <listitem>
+      <para>
+        True or false, should the method be unguarded. The default is false.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>private [optional]</term>
+      <listitem>
+      <para>
+        True or false, should the method be private. The default is false.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This is a convenience method. It uses the <computeroutput>Object</computeroutput> class's <emphasis
+    role="italic">setMethod</emphasis> to add the new method to the dialog object. <emphasis
+    role="italic">setMethod</emphasis> is private, but <emphasis role="italic">addNewMethod</emphasis> is public. This
+    allows <emphasis role="italic">addNewMethod</emphasis> to be used to dynamically add a method to a dialog where only
+    a referenece to the dialog object is available. In addition, it is a convenience to already have much of the code to
+    add the method written.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example connects an event handler to a dialog and adds the event handling method to the dialog dynamically.
+    Note that only a reference to the dialog object is available, so it is not possible to add the method directly using
+    the <computeroutput>Object</computeroutput> class's <emphasis role="italic">setMethod</emphasis> method.
+<programlisting>
+<![CDATA[
+
+::method initUpdateListView private
+  use strict arg lvID, pause = .005
+
+  ...
+
+  owner = self~ownerDialog
+
+  src = .array~new
+  src[1]  = "expose updateListViewPageDialog updateListViewLastFocused"
+  src[2]  = "use arg flag, hwnd, hFocused, isMinimized"
+  src[3]  = ""
+  src[4]  = "reply .false"
+  src[5]  = ""
+  src[6]  = "if flag == INACTIVE then updateListViewLastFocused = hFocused"
+  src[7]  = "else updateListViewPageDialog~updateListView(updateListViewLastFocused)"
+
+  owner~addNewMethod('onUpdateListViewActivate', src, .true)
+
+  owner~connectActivate('onUpdateListViewActivate')
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::addNewAttribute() -->
+
 
 <section id="deAddAutoStartMethod"><title>addAutoStartMethod</title>
 <programlisting>
