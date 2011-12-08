@@ -289,6 +289,10 @@
 <entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthConnectDateTimePicker">connectDateTimePicker</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a date time picker control in the underlying dialog.</entry>
+</row>
+<row>
 <entry><link linkend="enConnectDateTimePickerEvent">connectDateTimePickerEvent</link></entry>
 <entry>Connects an event notification form a date time picker to a method in the Rexx dialog.</entry>
 </row>
@@ -335,6 +339,10 @@
 <row>
 <entry><link linkend="enConnectListViewEvent">connectListViewEvent</link></entry>
 <entry>Connects an event notification from a list-view control to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectMonthCalendar">connectMonthCalendar</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a month calendar control in the underlying dialog.</entry>
 </row>
 <row>
 <entry><link linkend="enConnectMonthCalendarEvent">connectMonthCalendarEvent</link></entry>
@@ -385,6 +393,10 @@
 <entry>Connects an event notification from a static control to a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthConnectTab">connectTab</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a tab control in the underlying dialog.</entry>
+</row>
+<row>
 <entry><link linkend="enConnectTabEvent">connectTabEvent</link></entry>
 <entry>Connects an event notification from a tab control to a method in the Rexx dialog.</entry>
 </row>
@@ -405,8 +417,12 @@
 <entry>Connects an event notification from a tree view control to a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthConnectUpDown">connectUpDown</link></entry>
+<entry>Creates a data attribute in the Rexx dialog object and connects it to a up-down control in the underlying dialog.</entry>
+</row>
+<row>
 <entry><link linkend="enConnectUpDownEvent">connectUpDownEvent</link></entry>
-<entry>Connects an event notification from an UpDown control to a method in the Rexx dialog.</entry>
+<entry>Connects an event notification from an up-down control to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="wedoCreateFont">createFont</link></entry>
@@ -495,6 +511,10 @@
 <row>
 <entry><link linkend="wbdoDisplay">display</link></entry>
 <entry>Shows or hides the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthDlgUnit2pixel">dlgUnit2pixel</link></entry>
+<entry>Takes a dimension expressed in dialog units of this dialog and tranforms it to a dimension expressed in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoDraw">draw</link></entry>
@@ -737,6 +757,10 @@
 <entry>Returns the scrollable width of a list box in pixels.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetMenuBar">getMenuBar</link></entry>
+<entry>Returns the menu object attached to the dialog, or .nil if there is no menu attached.</entry>
+</row>
+<row>
 <entry><link linkend="deGetMouseCapture">getMouseCapture</link></entry>
 <entry>Retrieves the window handle, if any, that currently has captured the mouse.</entry>
 </row>
@@ -809,8 +833,16 @@
 <entry>Returns the device context of a window.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetWindowText">getWindowText</link></entry>
+<entry>Gets the text of the specified window.</entry>
+</row>
+<row>
 <entry><link linkend="enHasKeyPressConnection">hasKeyPressConnection</link></entry>
 <entry>Queries if a connection to a key press event already exists.</entry>
+</row>
+<row>
+<entry><link linkend="mthHasMenuBar">hasMenuBar</link></entry>
+<entry>Tests if the dialog has a menu bar attached.</entry>
 </row>
 <row>
 <entry><link linkend="mthHelp">help</link></entry>
@@ -1289,8 +1321,8 @@
 <entry>Sets new coordinates for the specified window.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetWindowTitle">setWindowTitle</link></entry>
-<entry>Changes the title of a window.</entry>
+<entry><link linkend="mthSetWindowText">setWindowText</link></entry>
+<entry>Sets the text for the specified window.</entry>
 </row>
 <row>
 <entry><link linkend="mthShowClsPlainBaseDialog">show</link></entry>
@@ -7018,7 +7050,7 @@ DialogExtensions::<link linkend="mthGetControlRect">getControlRect</link>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The text of the dialog control, which may be the empty string.
+    The text of the dialog control, which may be the empty string, or the empty string on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -7030,7 +7062,7 @@ DialogExtensions::<link linkend="mthGetControlRect">getControlRect</link>
   </para>
   <para>
     If the empty string is returned, the programmer can check the <emphasis role="italic">.SystemErrorCode</emphasis>
-    for error.
+    to determine if the text for the control is really the empty string, or if an error ocurred.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -7080,6 +7112,88 @@ DialogExtensions::<link linkend="mthGetControlRect">getControlRect</link>
   </listitem></varlistentry>
 </variablelist>
 </section>
+
+
+<section id="mthGetWindowText"><title>getWindowText</title>
+<indexterm><primary>getWindowText</primary></indexterm>
+<indexterm><primary>dialog object class</primary><secondary>getWindowText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getWindowText(--hwnd--)----------------------><
+]]>
+</programlisting>
+
+<para>
+  Gets the text of the specified window.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>hwnd [required]</term>
+      <listitem>
+      <para>
+        The window <link linkend="defHandle">handle</link> whose text is to be gotton.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success returns the text of the window, which could be the empty string. On error returns the empty string.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The meaning of the <emphasis role="italic">text</emphasis> of a window varies with the type of window. For a dialog
+    or other top-level window the text is the text of the title bar. For a button the text is the label, for an edit
+    control the text is the contents of the control.
+  </para>
+  <para>
+    All windows can have text associated with them, although some times it is simply the empty string. If the empty
+    string is returned, the programmer can check the <emphasis role="italic">.SystemErrorCode</emphasis> to determine if
+    the text for the window is really the empty string, or if an error ocurred.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is from a dialog that displays the full path name of the file being edited in the title bar of the
+    dialog. The method checks the current tile of the dialog and if it does not match the file path name passed in to
+    it, it resets the title.
+<programlisting>
+<![CDATA[
+
+::method updateCaption private
+  use strict arg filePathName
+
+  hwnd = self~hwnd
+  titleBarText = self~getWindowText(hwnd)
+
+  if titleBarText~caselessCompare(filePathName) <> 0 then do
+    self~setWindowText(hwnd, filePathName)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::getWindowText() -->
 
 
 <section id="mthHideControl"><title>hideControl</title>
@@ -8081,32 +8195,87 @@ by blanks:
 </variablelist>
 </section>
 
-
-<section id="mthSetWindowTitle"><title>setWindowTitle</title>
-<indexterm><primary>setWindowTitle</primary></indexterm>
+<section id="mthSetWindowText"><title>setWindowText</title>
+<indexterm><primary>setWindowText</primary></indexterm>
+<indexterm><primary>dialog object class</primary><secondary>setWindowText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setWindowTitle(--hwnd--,--aString--)---------><
-
+>>--setWindowText(--hwnd--,--text--)-------------><
 ]]>
 </programlisting>
 
-<para>The setWindowTitle method changes the title of
-a window. </para>
+<para>
+  Sets the text for the specified window.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle of the window whose title you want to change
-</para></listitem></varlistentry>
-<varlistentry><term>aString</term>
-<listitem><para>The new title text
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>hwnd [required]</term>
+      <listitem>
+      <para>
+        The window <link linkend="defHandle">handle</link> whose text is to be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text to set for the window.  May be the empty string.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success, 1 on error
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The meaning of the <emphasis role="italic">text</emphasis> of a window varies with the type of window. For a dialog
+    or other top-level window the text is the text of the title bar. For a button the text is the label, for an edit
+    control the text is the contents of the control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is from a dialog that displays the full path name of the file being edited in the title bar of the
+    dialog. The method checks the current tile of the dialog and if it does not match the file path name passed in to
+    it, it resets the title.
+<programlisting>
+<![CDATA[
+
+::method updateCaption private
+  use strict arg filePathName
+
+  hwnd = self~hwnd
+  titleBarText = self~getWindowText(hwnd)
+
+  if titleBarText~caselessCompare(filePathName) <> 0 then do
+    self~setWindowText(hwnd, filePathName)
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End dialog object::setWindowText() -->
 
 
 <section id="mthShowClsPlainBaseDialog"><title>show</title>
