@@ -965,16 +965,16 @@
 <entry>Changes the position, visibility, and Z order of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthNewPushButton">newPushButton</link></entry>
-<entry>Returns an object of the <computeroutput>Button</computeroutput> class for the push button control with the specified resource ID.</entry>
-</row>
-<row>
 <entry><link linkend="mthNewCheckBox">newCheckBox</link></entry>
 <entry>Returns an object of the <computeroutput>CheckBox</computeroutput> class for the check box control with the specified resource ID.</entry>
 </row>
 <row>
 <entry><link linkend="mthNewComboBox">newComboBox</link></entry>
 <entry>Returns an object of the <computeroutput>ComboBox</computeroutput> class for the combo box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewDateTimePicker">newDateTimePicker</link></entry>
+<entry>Returns an object of the <computeroutput>DateTimePicker</computeroutput> class for the date time picker control with the specified resource ID.</entry>
 </row>
 <row>
 <entry><link linkend="mthNewEdit">newEdit</link></entry>
@@ -993,8 +993,16 @@
 <entry>Returns an object of the <computeroutput>ListView</computeroutput> class for the list-view control with the specified resource ID.</entry>
 </row>
 <row>
+<entry><link linkend="mthNewMonthCalendar">newMonthCalendar</link></entry>
+<entry>Returns an object of the <computeroutput>MonthCalendar</computeroutput> class for the month calendar control with the specified resource ID.</entry>
+</row>
+<row>
 <entry><link linkend="mthNewProgressBar">newProgressBar</link></entry>
 <entry>Returns an object of the <computeroutput>ProgressBar</computeroutput> class for the progress bar control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewPushButton">newPushButton</link></entry>
+<entry>Returns an object of the <computeroutput>Button</computeroutput> class for the push button control with the specified resource ID.</entry>
 </row>
 <row>
 <entry><link linkend="mthNewRadioButton">newRadioButton</link></entry>
@@ -1005,10 +1013,6 @@
 <entry>Returns an object of the <computeroutput>ScrollBar</computeroutput> class for the scroll bar control with the specified resource ID.</entry>
 </row>
 <row>
-<entry><link linkend="mthNewTrackBar">newTrackBar</link></entry>
-<entry>Returns an object of the <computeroutput>TrackBar</computeroutput> class for the track bar control with the specified resource ID.</entry>
-</row>
-<row>
 <entry><link linkend="mthNewStatic">newStatic</link></entry>
 <entry>Returns an object of the <computeroutput>Static</computeroutput> class for the static control with the specified resource ID.</entry>
 </row>
@@ -1017,8 +1021,16 @@
 <entry>Returns an object of the <computeroutput>Tab</computeroutput> class for the tab control with the specified resource ID.</entry>
 </row>
 <row>
+<entry><link linkend="mthNewTrackBar">newTrackBar</link></entry>
+<entry>Returns an object of the <computeroutput>TrackBar</computeroutput> class for the track bar control with the specified resource ID.</entry>
+</row>
+<row>
 <entry><link linkend="mthNewTreeView">newTreeView</link></entry>
 <entry>Returns an object of the <computeroutput>TreeView</computeroutput> class for the tree-view control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewUpDown">newUpDown</link></entry>
+<entry>Returns an object of the <computeroutput>UpDown</computeroutput> class for the up-down control with the specified resource ID.</entry>
 </row>
 <row>
 <entry><link linkend="mthNoAutoDetection">noAutoDetection</link></entry>
@@ -1039,6 +1051,10 @@
 <row>
 <entry><link linkend="rudoParseIncludeFile">parseIncludeFile</link></entry>
 <entry>Reads a file and adds any symbol definitions found to the proper constant diretory.</entry>
+</row>
+<row>
+<entry><link linkend="mthPixel2dlgUnit">pixel2dlgUnit</link></entry>
+<entry>Takes a dimension expressed in pixels and tranforms it to a dimension expressed in dialog units of this dialog.</entry>
 </row>
 <row>
 <entry><link linkend="dePopup">popup</link></entry>
@@ -1225,8 +1241,16 @@
 <entry>Sets the <emphasis role="italic">data</emphasis>, (the state,) of a number of Windows dialog controls to the values specified by a stem.</entry>
 </row>
 <row>
+<entry><link linkend="mthSetDlgFont">setDlgFont</link></entry>
+<entry>Sets the font that to be used for the underlying Windows dialog, when it is created.</entry>
+</row>
+<row>
 <entry><link linkend="mthSetEditData">setEditData</link></entry>
 <entry>Sets the <emphasis role="italic">data</emphasis> of an edit contol.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetFocus">setFocus</link></entry>
+<entry>sets the input focus to a dialog control specified by hwnd and returns the window handle of the control that previously had the focus.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetFocusToWindow">setFocusToWindow</link></entry>
@@ -1317,7 +1341,7 @@
 <entry>Changes the size, position, visibility, and Z order of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetWindowRect">setWindowRect</link></entry>
+<entry><link linkend="deSetWindowRect">setWindowRect</link></entry>
 <entry>Sets new coordinates for the specified window.</entry>
 </row>
 <row>
@@ -2167,7 +2191,7 @@ WindowBase::<link linkend="atrFactorY">factorY</link>
   return 0
   -- End of entry point.
 
-  ::requires "oodWin32.cls"
+  ::requires "ooDialog.cls"
 
   ::class 'MessageBox' subclass UserDialog
 
@@ -6956,7 +6980,8 @@ If the dialog is already completely on the screen, then no action is taken.
               nop -- First execution will not find the ini file
           else
               do
-                  self~setWindowRect(handle,k1,k2,k3-k1,k4-k2)
+                  r = .Rect~new(k1, k2, k3-k1, k4-k2)
+                  self~setWindowRect(handle, r)
                   self~ensureVisible
               end
       end
@@ -8130,70 +8155,35 @@ removing the tabstop style.
 </section>
 
 
-<section id="mthSetWindowRect"><title>setWindowRect</title>
-<indexterm><primary>setWindowRect</primary></indexterm>
+<section id="deSetWindowRect"><title>setWindowRect</title>
 <programlisting>
+DialogExtensions::<link linkend="mthSetWindowRect">setWindowRect</link>
+
 <![CDATA[
->>--setWindowRect(--hwnd-,-x-,-y-,-width-,-height--+-------------+--)----------><
-                                                   +-,-showOpts--+
+Form 1:
+
+>>--setWindowRect(--hwnd--,--rectangle--+---------+--)-------------------------><
+                                        +-,-opts--+
+
+Form 2:
+
+>>--setWindowRect(--hwnd--,--pt--,--size--+---------+--)-----------------------><
+                                          +-,-opts--+
+
+Form 3:
+
+>>--setWindowRect(--hwnd--,--x-,--y-,--cx-,--cy--+---------+--)----------------><
+                                                 +-,-opts--+
+
+Generic form:
+
+>>--setWindowRect(--hwnd--,--rectCoordinates--+---------+--)-------------------><
+                                              +-,-opts--+
 
 ]]>
 </programlisting>
-
-<para>The setWindowRect method sets new coordinates for
-a specific window. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the dialog that is to be repositioned.
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>The new position of the upper left corner, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>width</term>
-<listitem><para>The new width of the window, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>height</term>
-<listitem><para>The new height of the window, in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>showOpts</term>
-<listitem><para>This argument can be one or more of the following keywords, separated
-by blanks:
-<variablelist>
-<varlistentry><term>NOMOVE</term>
-<listitem><para>The upper left position of the window has not changed.
-</para></listitem></varlistentry>
-<varlistentry><term>NOSIZE</term>
-<listitem><para>The size of the window has not changed.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDEWINDOW</term>
-<listitem><para>The window is to be made invisible.
-</para></listitem></varlistentry>
-<varlistentry><term>SHOWWINDOW</term>
-<listitem><para>The window is to be made visible.
-</para></listitem></varlistentry>
-<varlistentry><term>NOREDRAW</term>
-<listitem><para>The window is to be repositioned without redrawing it.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Repositioning was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Repositioning failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
 </section>
+
 
 <section id="mthSetWindowText"><title>setWindowText</title>
 <indexterm><primary>setWindowText</primary></indexterm>
@@ -8734,8 +8724,8 @@ a = .Alarm~new("17:30:00", msg)
 </listitem>
 <listitem>
 <para>
-  <link linkend="mthSetWindowRect">setWindowRect</link>: ... the size of the edit control window is set using to the
-  size of the dialog's client area.
+  <link linkend="mthSetWindowRect">setWindowRect</link>: ... the size and position of the edit control window is set to
+  take up the entire dialog's client area.
 </para>
 </listitem>
 <listitem>
@@ -8780,7 +8770,7 @@ a = .Alarm~new("17:30:00", msg)
   end
 
 -- End of entry point.
-::requires "OODWin32.cls"
+::requires "ooDialog.cls"
 
 ::class FileView subclass UserDialog inherit AdvancedControls
 
@@ -8860,10 +8850,10 @@ a = .Alarm~new("17:30:00", msg)
 ::method resizeEditControl
   expose editControl isHidden
 
-  hWnd = self~getControlHandle(IDC_MULTILINE)
-  parse value self~getClientRect with wx wy wcx wcy
+  hwnd = self~getControlHandle(IDC_MULTILINE)
+  rect = self~clientRect
 
-  self~setWindowRect(hWnd, 0, 0, wcx, wcy)
+  self~setWindowRect(hWnd, rect)
 
   if isHidden then do
     self~showControl(IDC_MULTIINE)

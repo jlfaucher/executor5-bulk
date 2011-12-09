@@ -963,6 +963,52 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 </section>
 
+<section id="ovvRectangleCoordinates"><title>Rectangle Coordinates</title>
+<para>
+  The ooDialog framework, and Windows itself, often use a <link linkend="clsRect">Rect</link> object to specify
+  coordinates of a window, or a portion of a window. However, there are two different ways the rectangle is used. For
+  purposes of this documentation, the two types of rectangle are defined as a <emphasis role="bold">bonding</emphasis>
+  rectangle and a <emphasis role="bold">point/size</emphasis> rectangle.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Bounding Rectangle:</emphasis></term>
+  <listitem>
+  <para>
+    In a <emphasis role="italic">bounding</emphasis> rectangle, the members of the <computeroutput>Rect</computeroutput>
+    object define the upper left point of the rectangle and the lower right point of the rectangle. That is, the
+    <emphasis role="italic">left</emphasis> and <emphasis role="italic">top</emphasis> attributes of the
+    <computeroutput>Rect</computeroutput> object are the (x,y) coordinates of the upper left corner of the rectangle and
+    the <emphasis role="italic">right</emphasis> and <emphasis role="italic">bottom</emphasis> attributes are the
+    (x1,y1) coordinates of the bottom right corner of the rectangle.
+  </para>
+  <para>
+    In this usage, the width of the rectangle is derived by subtracting the <emphasis role="italic">left</emphasis>
+    attribute from the <emphasis role="italic">right</emphasis> attribute and the height of the rectangle is derived by
+    subtracting the <emphasis role="italic">top</emphasis> attribtue from the <emphasis role="italic">bottom</emphasis>
+    attribute.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Point / Size Rectangle:</emphasis></term>
+  <listitem>
+  <para>
+    In a <emphasis role="italic">point / size</emphasis> rectangle, the members of the
+    <computeroutput>Rect</computeroutput> object define the upper left point of the rectangle and the size of the
+    rectangle. That is, the <emphasis role="italic">left</emphasis> and <emphasis role="italic">top</emphasis>
+    attributes of the <computeroutput>Rect</computeroutput> object are the (x,y) coordinates of the upper left corner of
+    the rectangle. The <emphasis role="italic">right</emphasis> attribute of the <computeroutput>Rect</computeroutput>
+    object is the width of the rectangle. The <emphasis role="italic">bottom</emphasis> attribute is the height of the
+    rectangle
+  </para>
+  <para>
+    In this usage, the x coordinate of lower right corner of the rectangle is derived by adding the <emphasis
+    role="italic">left</emphasis> and <emphasis role="italic">right</emphasis> attributes. The y coordinate of the lower
+    corner of the rectangle is derived by adding the <emphasis role="italic">top</emphasis> and <emphasis
+    role="italic">bottom</emphasis> attributes.
+  </para>
+  </listitem></varlistentry>
+</variablelist> </section>
+
 <section id="ovvRequiredWindows"><title>Required Windows Version</title>
 <para>
   The required Windows version is similar to the <link linkend="ovvComctl32">required ComCtl32</link> library version.

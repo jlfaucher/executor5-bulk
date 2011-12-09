@@ -487,16 +487,16 @@
 <entry>Minimizes the dialog to the taskbar.</entry>
 </row>
 <row>
-<entry><link linkend="mthNewPushButton">newPushButton</link></entry>
-<entry>Returns an object of the <computeroutput>Button</computeroutput> class for the push button control with the specified resource ID.</entry>
-</row>
-<row>
 <entry><link linkend="mthNewCheckBox">newCheckBox</link></entry>
 <entry>Returns an object of the <computeroutput>CheckBox</computeroutput> class for the check box control with the specified resource ID.</entry>
 </row>
 <row>
 <entry><link linkend="mthNewComboBox">newComboBox</link></entry>
 <entry>Returns an object of the <computeroutput>ComboBox</computeroutput> class for the combo box control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewDateTimePicker">newDateTimePicker</link></entry>
+<entry>Returns an object of the <computeroutput>DateTimePicker</computeroutput> class for the date time picker control with the specified resource ID.</entry>
 </row>
 <row>
 <entry><link linkend="mthNewEdit">newEdit</link></entry>
@@ -515,8 +515,16 @@
 <entry>Returns an object of the <computeroutput>ListView</computeroutput> class for the list-view control with the specified resource ID.</entry>
 </row>
 <row>
+<entry><link linkend="mthNewMonthCalendar">newMonthCalendar</link></entry>
+<entry>Returns an object of the <computeroutput>MonthCalendar</computeroutput> class for the month calendar control with the specified resource ID.</entry>
+</row>
+<row>
 <entry><link linkend="mthNewProgressBar">newProgressBar</link></entry>
 <entry>Returns an object of the <computeroutput>ProgressBar</computeroutput> class for the progress bar control with the specified resource ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthNewPushButton">newPushButton</link></entry>
+<entry>Returns an object of the <computeroutput>Button</computeroutput> class for the push button control with the specified resource ID.</entry>
 </row>
 <row>
 <entry><link linkend="mthNewRadioButton">newRadioButton</link></entry>
@@ -543,12 +551,20 @@
 <entry>Returns an object of the <computeroutput>TreeView</computeroutput> class for the tree-view control with the specified resource ID.</entry>
 </row>
 <row>
+<entry><link linkend="mthNewUpDown">newUpDown</link></entry>
+<entry>Returns an object of the <computeroutput>UpDown</computeroutput> class for the up-down control with the specified resource ID.</entry>
+</row>
+<row>
 <entry><link linkend="mthNoAutoDetection">noAutoDetection</link></entry>
 <entry>Turns automatic data field detection off</entry>
 </row>
 <row>
 <entry><link linkend="mthOk">ok</link></entry>
 <entry>A default event handler, provided by the ooDialog framework, for the cancel event.</entry>
+</row>
+<row>
+<entry><link linkend="mthPixel2dlgUnit">pixel2dlgUnit</link></entry>
+<entry>Takes a dimension expressed in pixels and tranforms it to a dimension expressed in dialog units of this dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthRestore">restore</link></entry>
@@ -607,8 +623,16 @@
 <entry>Sets the <emphasis role="italic">data</emphasis>, (the state,) of a number of Windows dialog controls to the values specified by a stem.</entry>
 </row>
 <row>
+<entry><link linkend="mthSetDlgFont">setDlgFont</link></entry>
+<entry>Sets the font that to be used for the underlying Windows dialog, when it is created.</entry>
+</row>
+<row>
 <entry><link linkend="mthSetEditData">setEditData</link></entry>
 <entry>Sets the <emphasis role="italic">data</emphasis> of an edit contol.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetFocus">setFocus</link></entry>
+<entry>sets the input focus to a dialog control specified by hwnd and returns the window handle of the control that previously had the focus.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetFocusToWindow">setFocusToWindow</link></entry>
@@ -633,10 +657,6 @@
 <row>
 <entry><link linkend="mthSetTabStop">setTabStop</link></entry>
 <entry>Add or remove the tab stop style for the specified control.</entry>
-</row>
-<row>
-<entry><link linkend="mthSetWindowRect">setWindowRect</link></entry>
-<entry>Sets new coordinates for the specified window.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetWindowText">setWindowText</link></entry>
