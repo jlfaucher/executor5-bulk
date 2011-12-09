@@ -98,12 +98,24 @@
 <entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
 </row>
 <row>
+<entry><link linkend="atrHDlg">hDlg</link></entry>
+<entry>Reflects the window handle of the underlying Windows dialog that the dialog control belongs to.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoHwnd">hwnd</link></entry>
 <entry>The window handle of the dialog control.</entry>
 </row>
 <row>
+<entry><link linkend="atrID">id</link></entry>
+<entry>Reflects the numeric resource ID for the dialog control.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoInitCode">initCode</link></entry>
 <entry>Meaningless for a dialog control, it is always 0.</entry>
+</row>
+<row>
+<entry><link linkend="atrODlg">oDlg</link></entry>
+<entry>Reflects the Rexx dialog object that the dialog control belongs to.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoSizeX">sizeX</link></entry>
@@ -126,95 +138,95 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="wbdcoSendMessage">sendMessage</link></entry>
-<entry>Sends a Windows message to the underlying control and returns its response as a whole number.</entry>
+<entry><link linkend="wbdcoClear">clear</link></entry>
+<entry>Clears the client area of the control by painting it with the background brush.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoSendMessageHandle">sendMessageHandle</link></entry>
-<entry>Sends a Windows message to the underlying control and returns its response as a handle.</entry>
+<entry><link linkend="wbdcoClient2screen">client2screen</link></entry>
+<entry>Converts a point or points in client-area coordinates of the control to its screen coordinates.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoEnable">enable</link></entry>
-<entry>Enables the control</entry>
+<entry><link linkend="wbdcoClientRect">clientRect</link></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the control's client area in pixels.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoDisable">disable</link></entry>
-<entry>Disables the control</entry>
+<entry><link linkend="wbdcoClientToScreen">clientToScreen</link></entry>
+<entry>Converts client-area coordinates of the control to its screen coordinates.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoIsVisible">isVisible</link></entry>
-<entry>Tests if the control is visible.</entry>
+<entry><link linkend="wedcoCreateFont">createFont</link></entry>
+<entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoIsEnabled">isEnabled</link></entry>
-<entry>Tests if the control is enabled.</entry>
+<entry><link linkend="wedcoCreateFontEx">createFontEx</link></entry>
+<entry>Retrieves a handle to a logical font from the system font manager</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoShow">show</link></entry>
-<entry>Makes the control visible if it was hidden and repaints it.</entry>
+<entry><link linkend="mthData">data</link></entry>
+<entry>Retrievs the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoHide">hide</link></entry>
-<entry>Makes the control invisible and repaints it.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoShowfast">showFast</link></entry>
-<entry>Marks the control as visible.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoHideFast">hideFast</link></entry>
-<entry>Marks the control as invisible</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoDisplay">display</link></entry>
-<entry>Shows or hides the control.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoUpdate">update</link></entry>
-<entry>Invalidates the entire client area of the control.</entry>
+<entry><link linkend="mthDataEquals">data=</link></entry>
+<entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoDraw">draw</link></entry>
 <entry>Redraws the entire client area of the control immediately.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoRedrawClient">redrawClient</link></entry>
-<entry>Redraws the entire client area of the control immediately.</entry>
+<entry><link linkend="wbdcoDisable">disable</link></entry>
+<entry>Disables the control</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoRedraw">redraw</link></entry>
-<entry>Redraws the entire control window and all its child windows immediately.</entry>
+<entry><link linkend="wbdcoDisplay">display</link></entry>
+<entry>Shows or hides the control.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoGetID">getID</link></entry>
-<entry>Retrieves the identification number of the control.</entry>
+<entry><link linkend="wbdcoEnable">enable</link></entry>
+<entry>Enables the control</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoGetStyleRaw">getStyleRaw</link></entry>
-<entry>Retrieves the numeric value of the control's style flags.</entry>
+<entry><link linkend="wbdcoForegroundWindow">foregroundWindow</link></entry>
+<entry>Returns the handle of the window in the foreground.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetClientRect">getClientRect</link></entry>
+<entry>Returns the dimensions of the control's client area.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoGetExStyleRaw">getExStyleRaw</link></entry>
 <entry>Retrieves the numeric value of the control's extended style flags.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoSetText">setText</link></entry>
-<entry>Sets the text of the control.</entry>
+<entry><link linkend="wbdcoGetID">getID</link></entry>
+<entry>Retrieves the identification number of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetPos">getPos</link></entry>
+<entry>Returns the position of the control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetRealPos">getRealPos</link></entry>
+<entry>Returns the position of the control in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetRealSize">getRealSize</link></entry>
+<entry>Returns the size of the control in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetRect">getRect</link></entry>
+<entry>Returns the dimesions of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetSize">getSize</link></entry>
+<entry>Returns the size of the control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="wbdcoGetStyleRaw">getStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the control's style flags.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoGetText">getText</link></entry>
-<entry>Gets the text of the control.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoTitleEquals">title=</link></entry>
-<entry>Sets the text of the control.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoSetTitle">setTitle</link></entry>
-<entry>Sets the text of the control.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoTitle">title</link></entry>
 <entry>Gets the text of the control.</entry>
 </row>
 <row>
@@ -226,51 +238,88 @@
 <entry>Calculates the size needed for a string in pixels.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoSetRect">setRect</link></entry>
-<entry>Moves and / or resizes the control.</entry>
+<entry><link linkend="wbdcoHide">hide</link></entry>
+<entry>Makes the control invisible and repaints it.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoResizeTo">resizeTo</link></entry>
-<entry>Resizes the control to the size specified in pixels.</entry>
+<entry><link linkend="wbdcoHideFast">hideFast</link></entry>
+<entry>Marks the control as invisible</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoIsVisible">isVisible</link></entry>
+<entry>Tests if the control is visible.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoIsEnabled">isEnabled</link></entry>
+<entry>Tests if the control is enabled.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoMoveTo">moveTo</link></entry>
 <entry>Moves the control to the position specified in pixels.</entry>
 </row>
 <row>
+<entry><link linkend="wbdcoMoveWindow">moveWindow</link></entry>
+<entry>Changes the position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoRedraw">redraw</link></entry>
+<entry>Redraws the entire control window and all its child windows immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoRedrawClient">redrawClient</link></entry>
+<entry>Redraws the entire client area of the control immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoResizeTo">resizeTo</link></entry>
+<entry>Resizes the control to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying control and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying control and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetRect">setRect</link></entry>
+<entry>Moves and / or resizes the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetText">setText</link></entry>
+<entry>Sets the text of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoSetTitle">setTitle</link></entry>
+<entry>Sets the text of the control.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoSetWindowPos">setWindowPos</link></entry>
 <entry>Changes the size, position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoShow">show</link></entry>
+<entry>Makes the control visible if it was hidden and repaints it.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoShowfast">showFast</link></entry>
+<entry>Marks the control as visible.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoSizeWindow">sizeWindow</link></entry>
 <entry>Changes the size, visibility, and Z order of the dialog.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoMoveWindow">moveWindow</link></entry>
-<entry>Changes the position, visibility, and Z order of the dialog.</entry>
+<entry><link linkend="wbdcoTitle">title</link></entry>
+<entry>Gets the text of the control.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoGetRealSize">getRealSize</link></entry>
-<entry>Returns the size of the control in pixels as a <computeroutput>Size</computeroutput> object.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoGetRealPos">getRealPos</link></entry>
-<entry>Returns the position of the control in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+<entry><link linkend="wbdcoTitleEquals">title=</link></entry>
+<entry>Sets the text of the control.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoWindowRect">windowRect</link></entry>
 <entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the control in pixels.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoClientRect">clientRect</link></entry>
-<entry>
-  Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the control's client area in
-  pixels.
-</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoClear">clear</link></entry>
-<entry>Clears the client area of the control by painting it with the background brush.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoResize">resize</link></entry>
@@ -281,64 +330,28 @@
 <entry>Moves the control to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="wbdcoGetSize">getSize</link></entry>
-<entry>Returns the size of the control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbdcoGetPos">getPos</link></entry>
-<entry>Returns the position of the control in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbdcoGetRect">getRect</link></entry>
-<entry>Returns the dimesions of the control.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoGetClientRect">getClientRect</link></entry>
-<entry>Returns the dimensions of the control's client area.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoForegroundWindow">foregroundWindow</link></entry>
-<entry>Returns the handle of the window in the foreground.</entry>
-</row>
-<row>
 <entry><link linkend="wbdcoScreen2client">screen2client</link></entry>
 <entry>Converts a point or points in screen coordinates to the client-area coordinates of the control.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoClient2screen">client2screen</link></entry>
-<entry>Converts a point or points in client-area coordinates of the control to its screen coordinates.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoScreenToClient">screenToClient</link></entry>
 <entry>Converts screen coordinates to the client-area coordinates of the control.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoClientToScreen">clientToScreen</link></entry>
-<entry>Converts client-area coordinates of the control to its screen coordinates.</entry>
+<entry><link linkend="wedcoDeleteFont">deleteFont</link></entry>
+<entry>Deletes a font returned from <emphasis role="italic">createFontEx</emphasis> or <emphasis role="italic">createFont</emphasis>.</entry>
 </row>
 <row>
 <entry><link linkend="wedcoGetFont">getFont</link></entry>
 <entry>Returns the font used by the dialog control.</entry>
 </row>
 <row>
-<entry><link linkend="wedcoSetFont">setFont</link></entry>
-<entry>Sets a new font to be used by the dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCreateFontEx">createFontEx</link></entry>
-<entry>Retrieves a handle to a logical font from the system font manager</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCreateFont">createFont</link></entry>
-<entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoDeleteFont">deleteFont</link></entry>
-<entry>Deletes a font returned from <emphasis role="italic">createFontEx</emphasis> or <emphasis role="italic">createFont</emphasis>.</entry>
-</row>
-<row>
 <entry><link linkend="wedcoScrollClsWE">scroll</link></entry>
 <entry>Scrolls the contents of the dialog control's client area by the amount specified.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetFont">setFont</link></entry>
+<entry>Sets a new font to be used by the dialog control.</entry>
 </row>
 <row>
 <entry><link linkend="wedcoHScrollPos">hScrollPos</link></entry>
@@ -539,12 +552,8 @@
 <entry><link linkend="mthTabStop">tabStop</link></entry>
 </row>
 <row>
-<entry><link linkend="mthData">data</link></entry>
-<entry>Retrievs the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
-</row>
-<row>
-<entry><link linkend="mthDataEquals">data=</link></entry>
-<entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
+<entry><link linkend="wbdcoUpdate">update</link></entry>
+<entry>Invalidates the entire client area of the control.</entry>
 </row>
 </tbody></tgroup>
 </table>
