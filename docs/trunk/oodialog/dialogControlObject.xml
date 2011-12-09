@@ -491,8 +491,8 @@
 
 
 <row>
-<entry>AssignFocus</entry>
-<entry><link linkend="assignfocus">AssignFocus</link></entry>
+<entry>assignFocus</entry>
+<entry><link linkend="mthAssignFocus">assignFocus</link></entry>
 </row>
 <row>
 <entry>clear</entry>
@@ -553,7 +553,7 @@
 </section>
 
 
-<section id="sctDialogControlAttributes"><title>Attributes</title>
+<section id="sctDialogControlAttributes"><title>Attribute Methods</title>
 <indexterm><primary>dialog control object</primary><secondary>attributes</secondary></indexterm>
 <para>
   This section describes the attributes of the dialog control object.
@@ -667,6 +667,7 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 </variablelist>
 </section>  <!-- End DialogControl::id() [attribute]  -->
 
+
 <section id="wbdcoInitCode"><title>initCode (Attribute)</title>
 <programlisting>
 WindowBase::<link linkend="atrInitCode">initCode</link>
@@ -680,63 +681,10 @@ WindowBase::<link linkend="atrInitCode">initCode</link>
 </programlisting>
 </section>
 
-<section id="atrHDlg"><title>hdlg (Attribute)</title>
-<indexterm><primary>hdlg</primary></indexterm>
-<indexterm><primary>DialogControl class</primary><secondary>hdlg</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--hdlg-----------------------------------------------------><
-
->>--hdlg-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">hdlg get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">hdlg set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogControl::hdlg() [attribute]  -->
 
 <section id="atrODlg"><title>oDlg (Attribute)</title>
 <indexterm><primary>oDlg</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>oDlg</secondary></indexterm>
 <indexterm><primary>DialogControl class</primary><secondary>oDlg</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -768,6 +716,7 @@ WindowBase::<link linkend="atrInitCode">initCode</link>
 </variablelist>
 </section>  <!-- End DialogControl::oDlg() [attribute]  -->
 
+
 <section id="wbdcoSizeX"><title>sizeX (Attribute)</title>
 <programlisting>
 WindowBase::<link linkend="atrSizeX">sizeX</link>
@@ -779,6 +728,7 @@ WindowBase::<link linkend="atrSizeX">sizeX</link>
 ]]>
 </programlisting>
 </section>
+
 
 <section id="wbdcoSizeY"><title>sizeY (Attribute)</title>
 <programlisting>
@@ -792,6 +742,7 @@ WindowBase::<link linkend="atrSizeY">sizeY</link>
 </programlisting>
 </section>
 
+
 <section id="wbdcoPixelCX"><title>pixelCX (Attribute)</title>
 <programlisting>
 WindowBase::<link linkend="atrPixelCX">pixelCX</link>
@@ -801,6 +752,7 @@ WindowBase::<link linkend="atrPixelCX">pixelCX</link>
 ]]>
 </programlisting>
 </section>
+
 
 <section id="wbdcoPixelCY"><title>pixelCY (Attribute)</title>
 <programlisting>
@@ -825,19 +777,30 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 <!-- <section id="sctWindowExtensionsDCO"><title>Extended Window Methods</title>  END   -->
 
 
-<section id="appmodmeth"><title>Appearance and Behavior Methods</title>
-<indexterm><primary>enable methods</primary>
-<secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>disable methods</primary>
-<secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>hide methods</primary>
-<secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>show methods</primary>
-<secondary>dialog control pbkect</secondary></indexterm>
-<para>The following methods deal with the appearance or the behavior of the
-dialog control. The list contains methods to get or change the size, position,
-visibility, behavior, etc., of dialog controls.
+<section id="sctDCOAppearanceBehaviorMethods"><title>Appearance and Behavior Methods</title>
+<indexterm><primary>enable methods</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>disable methods</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>hide methods</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>show methods</primary><secondary>dialog control pbkect</secondary></indexterm>
+<para>
+  The following methods deal with the appearance or the behavior of the dialog control. The list contains methods to get
+  or change the size, position, visibility, behavior, etc., of dialog controls.
 </para>
+
+<section id="mthAssignFocus"><title>assignFocus</title>
+<indexterm><primary>assignFocus</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--assignFocus----------------------------------><
+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">assignFocus</emphasis> method sets the input focus to this dialog control.
+</para>
+</section>
 
 <section id="mthGroup"><title>group</title>
 <indexterm><primary>group</primary></indexterm>
@@ -914,92 +877,6 @@ visibility, behavior, etc., of dialog controls.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
-
-<section id="mthTabStop"><title>tabStop</title>
-<indexterm><primary>tabStop</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--tabStop(--+-----------+--)-------------------><
-              +-wantStyle-+
-
-]]>
-</programlisting>
-
-<para>
-  Add or remove the <link linkend="wstabstop">tab stop style</link> for the control.  When  a control has the tabstop
-  style, the user can set the focus to the control by using the tab key.  When a control does not have this style, the
-  tab key will skip over the control.  Adding or removing this style during the execution of a dialog allows the
-  programmer to alter how the user navigates through the dialog controls.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The only argument is:
-  <variablelist>
-    <varlistentry><term>wantStyle [optional]</term>
-    <listitem>
-    <para>
-      A boolean (.true or .false) to indicate whether the control should have or not have the tabstop style. True (the
-      default) indicates the control should have the tabstop style and false indicates the control should not have the
-      style.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Negative values indicate the function failed, non-negative values indicate success.
-  <variablelist>
-    <varlistentry><term>-4 or less</term>
-    <listitem><para>
-      The value is the negated Operating System Error code. The absolute value of the return can be used to look up the
-      error reason in the Windows documentation.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-3</term>
-    <listitem>
-    <para>
-      The second argument to the method is not a boolean.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-2</term>
-    <listitem>
-    <para>
-      There is an (internal) problem with the dialog or the dialog handle.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      There is an (internal) problem with the resource ID of the control.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>0 or greater</term>
-    <listitem>
-    <para>
-      The window style of the dialog control prior to adding or removing the tabstop style.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="assignfocus"><title>AssignFocus</title>
-<indexterm><primary>AssignFocus</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aDialogControl~AssignFocus----------------------------------><
-
-
-]]>
-</programlisting>
-
-<para>The AssignFocus method sets the input focus to
-the associated dialog control.</para>
 </section>
 
 <section id="mthSetColor"><title>setColor</title>
@@ -1144,6 +1021,79 @@ the associated dialog control.</para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DialogControl::setSysColor() -->
+
+
+<section id="mthTabStop"><title>tabStop</title>
+<indexterm><primary>tabStop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--tabStop(--+-----------+--)-------------------><
+              +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>
+  Add or remove the <link linkend="wstabstop">tab stop style</link> for the control.  When  a control has the tabstop
+  style, the user can set the focus to the control by using the tab key.  When a control does not have this style, the
+  tab key will skip over the control.  Adding or removing this style during the execution of a dialog allows the
+  programmer to alter how the user navigates through the dialog controls.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The only argument is:
+  <variablelist>
+    <varlistentry><term>wantStyle [optional]</term>
+    <listitem>
+    <para>
+      A boolean (.true or .false) to indicate whether the control should have or not have the tabstop style. True (the
+      default) indicates the control should have the tabstop style and false indicates the control should not have the
+      style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Negative values indicate the function failed, non-negative values indicate success.
+  <variablelist>
+    <varlistentry><term>-4 or less</term>
+    <listitem><para>
+      The value is the negated Operating System Error code. The absolute value of the return can be used to look up the
+      error reason in the Windows documentation.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-3</term>
+    <listitem>
+    <para>
+      The second argument to the method is not a boolean.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem>
+    <para>
+      There is an (internal) problem with the dialog or the dialog handle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      There is an (internal) problem with the resource ID of the control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0 or greater</term>
+    <listitem>
+    <para>
+      The window style of the dialog control prior to adding or removing the tabstop style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 
 </section>
 
@@ -2108,7 +2058,7 @@ method onDisable
 
 </section>
 
-<section id="drawmeth"><title>Draw Methods</title>
+<section id="sctWindowDrawMethods"><title>Window Draw Methods</title>
 <indexterm><primary>draw methods</primary>
 <secondary>dialog control object</secondary></indexterm>
 <para>The following methods are used to draw, redraw, and clear a dialog or dialog
