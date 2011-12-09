@@ -777,22 +777,12 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 <!-- <section id="sctWindowExtensionsDCO"><title>Extended Window Methods</title>  END   -->
 
 
-<section id="sctDCOAppearanceBehaviorMethods"><title>Appearance and Behavior Methods</title>
-<indexterm><primary>enable methods</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>disable methods</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>hide methods</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>show methods</primary><secondary>dialog control pbkect</secondary></indexterm>
-<para>
-  The following methods deal with the appearance or the behavior of the dialog control. The list contains methods to get
-  or change the size, position, visibility, behavior, etc., of dialog controls.
-</para>
 
 <section id="mthAssignFocus"><title>assignFocus</title>
 <indexterm><primary>assignFocus</primary></indexterm>
 <programlisting>
 <![CDATA[
 >>--assignFocus----------------------------------><
-
 
 ]]>
 </programlisting>
@@ -802,32 +792,55 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 </para>
 </section>
 
-<section id="mthGroup"><title>group</title>
-<indexterm><primary>group</primary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>group</secondary></indexterm>
+
+<section id="mthClearRectClsDialogControl"><title>clearRect</title>
+<indexterm><primary>clearRect</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>clearRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--group(--+-----------+--)---------------------><
-            +-wantStyle-+
+Form 1:
+
+>>--clearRect(--rectangle--)---------------------><
+
+
+Form 2:
+
+>>--clearRect(--pt1--,--pt2--)-------------------><
+
+
+Form 3:
+
+>>--clearRect(--x-,--y-,--cx-,--cy--)------------><
+
+
+Generic form:
+
+>>--clearRect(--rectCoordinates--)---------------><
+
 
 ]]>
 </programlisting>
 
 <para>
-  Adds or removes the <link linkend="wsgroup">group style</link> for this control.
+  The <emphasis role="italic">clearRect</emphasis> method clears the specified rectangular within the client area of
+  this control. The rectangle is <emphasis role="italic">cleared</emphasis> by redrawing it with the background brush
+  set to the typical background color for dialog boxes and three dimensional elements.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The only argument is
+    The arguments are:
     <variablelist>
-      <varlistentry><term>wantStyle [optional]</term>
+      <varlistentry><term>rectCoordinates [required]</term>
       <listitem>
       <para>
-        A boolean (.true or .false) to indicate whether the control should have or not have the group style.  True (the
-        default) indicates the control should have the group style and false indicates the control should not have the
-        style.
+        The coordinates of the rectangle to be cleared. The coordinates specify the upper left and lower right corners
+        of the rectangle. The corners can be specified using either a <link linkend="clsRect">rect</link> object, two
+        <link linkend="clsPoint">point</link> objects, or the individual x and y coordinates of each corner.
+      </para>
+      <para>
+        The coordinates are specified as <link linkend="defClientArea">client-area</link> coordinates, in pixels.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -836,38 +849,16 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Negative values indicate the function failed, positive values indicate success.
-    <variablelist>
-      <varlistentry><term>Less than 0</term>
-      <listitem>
-      <para>
-        The value is the negated operating system error code.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>Greater than 0</term>
-      <listitem>
-      <para>
-        The window style of the dialog control prior to adding or removing the group style.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    0 on success, 1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The group style controls how the user can navigate through the dialog using the keyboard.  For most dialogs this
-    does not change while the dialog is executing. However, in some dialogs the programmer may want to change the
-    navigation depending on the options the user selects.
-  </para>
-  <para>
-    The negative return value from this method is a hold over from a period prior to the introduction of the <link
-    linkend="dotSystemErrorCode">.SystemErrorCode</link>. This method now sets the
-    <computeroutput>.SystemErrorCode</computeroutput>, making it easier to use the negative return as a failure
-    indication and use the <computeroutput>.SystemErrorCode</computeroutput> value to look up the actual error.
+    The rectangle is not really cleared, but rather is redrawn using the normal background color for a dialog box.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -877,449 +868,8 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End dialog control object::clearRect() -->
 
-<section id="mthSetColor"><title>setColor</title>
-<indexterm><primary>setColor</primary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>setColor</secondary></indexterm>
-<indexterm><primary>DialogControl class</primary><secondary>setColor</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setColor(--bk--+-------+--)----><
-                   +-,-fg--+
-]]>
-</programlisting>
-
-<para>
-  Sets the background color, and optionally the text color, for this dialog control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>bk [required]</term>
-      <listitem>
-      <para>
-        The color <link linkend="defColor">number</link> for the background color of the dialog control.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>fg [optional]</term>
-      <listitem>
-      <para>
-        The color <link linkend="defColor">number</link> for the foreground color of the dialog control. The foreground
-        color is the color that text is written in.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns 0 on success or 1 on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
-    control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
-    limit to the number of controls having their color set.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example changes the background color of a push button in the dialog to red and the text color to yellow:
-<programlisting>
-<![CDATA[
-
-::method changeColor
-  expose pushButton
-
-  pushButton~setColor(2, 4)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogControl::setColor() -->
-
-
-<section id="mthSetSysColor"><title>setSysColor</title>
-<indexterm><primary>setSysColor</primary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>setSysColor</secondary></indexterm>
-<indexterm><primary>DialogControl class</primary><secondary>setSysColor</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setSysColor(--bk--+-------+--)---------------><
-                      +-,-fg--+
-]]>
-</programlisting>
-
-<para>
-  Sets the background color, and optionally the text color, for this dialog control using the system <link
-  linkend="defSysColor">colors</link>.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>bk [required]</term>
-      <listitem>
-      <para>
-        The system color ID for the background color of the dialog control. This can be either the whole number ID or
-        the keyword ID. IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>fg [optional]</term>
-      <listitem>
-      <para>
-        The system color for the foreground color of the dialog control. The foreground color is the color that text is
-        written in. This can be either the whole number ID or the keyword ID. IDs can be looked up in the System Color
-        Elements <link linkend="tblSysColors">table</link>
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns 0 on success or 1 on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
-    control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
-    limit to the number of controls having their color set.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example changes the background color of the push button in the dialog to the system background color for a
-    menu:
-<programlisting>
-<![CDATA[
-
-::method changeColor
-  expose pushButton
-
-  pushButton~setSysColor('MENU')
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogControl::setSysColor() -->
-
-
-<section id="mthTabStop"><title>tabStop</title>
-<indexterm><primary>tabStop</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--tabStop(--+-----------+--)-------------------><
-              +-wantStyle-+
-
-]]>
-</programlisting>
-
-<para>
-  Add or remove the <link linkend="wstabstop">tab stop style</link> for the control.  When  a control has the tabstop
-  style, the user can set the focus to the control by using the tab key.  When a control does not have this style, the
-  tab key will skip over the control.  Adding or removing this style during the execution of a dialog allows the
-  programmer to alter how the user navigates through the dialog controls.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The only argument is:
-  <variablelist>
-    <varlistentry><term>wantStyle [optional]</term>
-    <listitem>
-    <para>
-      A boolean (.true or .false) to indicate whether the control should have or not have the tabstop style. True (the
-      default) indicates the control should have the tabstop style and false indicates the control should not have the
-      style.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Negative values indicate the function failed, non-negative values indicate success.
-  <variablelist>
-    <varlistentry><term>-4 or less</term>
-    <listitem><para>
-      The value is the negated Operating System Error code. The absolute value of the return can be used to look up the
-      error reason in the Windows documentation.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-3</term>
-    <listitem>
-    <para>
-      The second argument to the method is not a boolean.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-2</term>
-    <listitem>
-    <para>
-      There is an (internal) problem with the dialog or the dialog handle.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      There is an (internal) problem with the resource ID of the control.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>0 or greater</term>
-    <listitem>
-    <para>
-      The window style of the dialog control prior to adding or removing the tabstop style.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-</section>
-
-<section id="miscDialogControl"><title>Miscellaneous Dialog Control Methods</title>
-<indexterm><primary>Miscellaneous Methods</primary></indexterm>
-<para>
-  The following methods are general purpose dialog control methods.
-</para>
-
-<section id="mthData"><title>data</title>
-<indexterm><primary>data method</primary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>data method</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--data-------------------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">data</emphasis> method retrieves the current <link
-  linkend="sctUnderstandingDataAttributes">data</link> of the dialog control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The current data of the dialog control as a string. Exactly what this string represents is dependent on the type of
-    the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
-    detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
-    control.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method was really intended to be used on controls that have previously been connected to a data attribute.
-    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
-    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
-    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
-    the specific dialog control object to determine the control's state.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-
-</section>
-
-<section id="mthDataEquals"><title>data=</title>
-<indexterm><primary>data=</primary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>data=</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--data-=--newData--------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Sets the <link linkend="sctUnderstandingDataAttributes">data</link> of the dialog control to the new value specified.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <variablelist>
-    <varlistentry><term>newData</term>
-    <listitem>
-    <para>
-      A string used to set the data of the dialog control. The exact format of this string is dependent on the type of
-      the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
-      detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
-      control.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method was really intended to be used on controls that have previously been connected to a data attribute.
-    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
-    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
-    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
-    the specific dialog control object to set the control's state.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example unchecks the check box with the symbolic resource id of IDC_CHK_RESTART and checks the check
-    box with the symbolic resource id of IDC_CHK_VERIFY:
-
-<programlisting>
-<![CDATA[
-MyDialog~newCheckBox(IDC_CHK_RESTART)~data = 1
-MyDialog~newCheckBox(IDC_CHK_VERIFY)~data = 0
-]]>
-</programlisting>
-    The same thing can be accomplished in this manner:
-
-<programlisting>
-<![CDATA[
-MyDialog~newCheckBox(IDC_CHK_RESTART)~check
-MyDialog~newCheckBox(IDC_CHK_VERIFY)~unCheck
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-
-</section>
-
-<section id="mthGetTextSizeDlgClsDialogControl"><title>getTextSizeDlg</title>
-<indexterm><primary>getTextSizeDlg</primary>
-<secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>dialog control object</primary>
-<secondary>getTextSizeDlg</secondary></indexterm>
-<indexterm><primary>dialog control object</primary>
-<secondary>getTextSizeDlg</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
-                           +-,-fontname--+  +-,-fontSize--+  +-,-hwnd--+
-]]>
-</programlisting>
-
-<para>
-  Calculates the size, (width and height,) in <link linkend="defDialogUnit">dialog units</link> for a given string.
-</para>
-<para>
-  <emphasis role="bold">Note:</emphasis> The convoluted arguments to this method are needed to retain backwards
-  compatibility with older versions of ooDialog. The recommendation is that the ooDialog programmer not use this method
-  of the dialog control object.
-</para>
-<para>
-  In general, dialog units are only of value in laying out the dialog controls before the underlying dialog is
-  created.  Once the underlying dialog is created, it makes more sense to work with pixels. In addition, dialog units
-  are tied directly to the actual font used by a specific dialog.  Therefore, the optional arguments do not make much
-  sense. Since the dialog object directly knows which font it is using, and the dialog control does not, it does not
-  make much sense for this method to be a method of a dialog control in the first place.
-</para>
-<para>
-  The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use either the <emphasis
-  role="italic">getTextSizeDu</emphasis> or <emphasis role="italic">getTextSizeDlg</emphasis> methods of the dialog
-  object.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>The arguments are:
-  <variablelist>
-    <varlistentry><term>text [required]</term>
-    <listitem>
-    <para>
-      The string whose size is desired.  If none of the optional arguments are specified then the font of the dialog
-      that owns the control is used to calculate the size.
-    </para>
-    <para>
-      However, there are some exceptions to this if the method is invoked <emphasis role="italic">after</emphasis> the
-      underlying dialog is created.
-      <orderedlist>
-        <listitem>
-        <para>
-          If this method is invoked through a dialog control object, then the size is calculated using the dialog
-          control font.  This usage is deprecated and the ooDialog programmer is <emphasis
-          role="bold">strongly</emphasis> encouraged to not use this method in this manner.
-        </para>
-        </listitem>
-        <listitem>
-        <para>
-          If the fourth, optional, hwnd argument is used, then the font of that window is used to calculate the size.
-          Again, the ooDialog programmer is <emphasis role="bold">strongly</emphasis> encouraged to not use this
-          method in this manner.
-        </para>
-        </listitem>
-      </orderedlist>
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>fontName [optional]</term>
-    <listitem>
-    <para>
-      The name of the font to use to calculate the size needed for the string.  Use this argument when the string will
-      be displayed in a font <emphasis role="bold">different</emphasis> than the dialog font.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>fontSize [optional]</term>
-    <listitem>
-    <para>
-      The size of the font named by the fontName argument. If this argument is omitted then the default font size is
-      used. (Currently the default size is 8.) This argument is ignored completely when the fontName argument is
-      omitted.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>hwnd [optional]</term>
-    <listitem>
-    <para>
-      Optional. A valid window handle. The font of this window is used to calculate the text size. This argument is
-      always ignored when the fontName argument is specified.  As per the notes above the ooDialog programmer is
-      encouraged not to use this argument.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The size needed for the string is returned in a <link linkend="clsSize">Size</link> object. The size is specified
-    in dialog units.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogControl::getTextSizeDlg() -->
-
-</section>
-
-<section id="sctConnectEventMethodsDialogControObjectl"><title>Connect Event Methods</title>
-<indexterm><primary>connect event methods</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>connect event methods</secondary></indexterm>
-<para>
-  The methods in this section have to do with connecting key press <link linkend="ovvEvents">event</link> notifications
-  from the <link linkend="ovvUnderlying">underlying</link> dialog control to a method in the Rexx dialog. In the
-  ooDialog framework, almost all methods that connect event notifications are in the <link
-  linkend="clsEventNotification">EventNotification</link> class. However, the methods in the
-  <computeroutput>EventNotification</computeroutput> class intercept notifications sent to the dialog. The methods here
-  intercept notifications sent to the dialog control.
-</para>
 
 <section id="mthConnectKeyPressDialogControlObject"><title>connectKeyPress</title>
 <indexterm><primary>connectKeyPress</primary><secondary>dialog control object</secondary></indexterm>
@@ -1729,6 +1279,7 @@ MyDialog~newCheckBox(IDC_CHK_VERIFY)~unCheck
 </variablelist>
 </section>  <!-- End dialog control ojbect::connectKeyPress() -->
 
+
 <section id="mthConnectFKeyPressDialogControlObject"><title>connectFKeyPress</title>
 <indexterm><primary>connectFKeyPress</primary><secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>connectFKeyPress</secondary></indexterm>
@@ -1863,6 +1414,109 @@ MyDialog~newCheckBox(IDC_CHK_VERIFY)~unCheck
 </variablelist>
 </section>  <!-- End dialog control object::connectFKeyPress() -->
 
+
+<section id="mthData"><title>data</title>
+<indexterm><primary>data method</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>data method</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--data-------------------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">data</emphasis> method retrieves the current <link
+  linkend="sctUnderstandingDataAttributes">data</link> of the dialog control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The current data of the dialog control as a string. Exactly what this string represents is dependent on the type of
+    the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
+    detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
+    control.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method was really intended to be used on controls that have previously been connected to a data attribute.
+    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
+    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
+    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
+    the specific dialog control object to determine the control's state.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthDataEquals"><title>data=</title>
+<indexterm><primary>data=</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>data=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--data-=--newData--------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the <link linkend="sctUnderstandingDataAttributes">data</link> of the dialog control to the new value specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>newData</term>
+    <listitem>
+    <para>
+      A string used to set the data of the dialog control. The exact format of this string is dependent on the type of
+      the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
+      detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
+      control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method was really intended to be used on controls that have previously been connected to a data attribute.
+    But, since the dialog control object, itself, knows which type of control it is, the method works whether the
+    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
+    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
+    the specific dialog control object to set the control's state.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example unchecks the check box with the symbolic resource id of IDC_CHK_RESTART and checks the check
+    box with the symbolic resource id of IDC_CHK_VERIFY:
+
+<programlisting>
+<![CDATA[
+MyDialog~newCheckBox(IDC_CHK_RESTART)~data = 1
+MyDialog~newCheckBox(IDC_CHK_VERIFY)~data = 0
+]]>
+</programlisting>
+    The same thing can be accomplished in this manner:
+
+<programlisting>
+<![CDATA[
+MyDialog~newCheckBox(IDC_CHK_RESTART)~check
+MyDialog~newCheckBox(IDC_CHK_VERIFY)~unCheck
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
 <section id="mthDisconnectKeyPressDialogControlObject"><title>disconnectKeyPress</title>
 <indexterm><primary>disconnectKeyPress</primary><secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>disconnectKeyPress</secondary></indexterm>
@@ -1969,6 +1623,185 @@ method onDisable
 </variablelist>
 </section>  <!-- End dialog control object::disconnectKeyPress() -->
 
+
+<section id="mthGetTextSizeDlgClsDialogControl"><title>getTextSizeDlg</title>
+<indexterm><primary>getTextSizeDlg</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getTextSizeDlg</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>getTextSizeDlg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
+                           +-,-fontname--+  +-,-fontSize--+  +-,-hwnd--+
+]]>
+</programlisting>
+
+<para>
+  Calculates the size, (width and height,) in <link linkend="defDialogUnit">dialog units</link> for a given string.
+</para>
+<para>
+  <emphasis role="bold">Note:</emphasis> The convoluted arguments to this method are needed to retain backwards
+  compatibility with older versions of ooDialog. The recommendation is that the ooDialog programmer not use this method
+  of the dialog control object.
+</para>
+<para>
+  In general, dialog units are only of value in laying out the dialog controls before the underlying dialog is
+  created.  Once the underlying dialog is created, it makes more sense to work with pixels. In addition, dialog units
+  are tied directly to the actual font used by a specific dialog.  Therefore, the optional arguments do not make much
+  sense. Since the dialog object directly knows which font it is using, and the dialog control does not, it does not
+  make much sense for this method to be a method of a dialog control in the first place.
+</para>
+<para>
+  The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use either the <emphasis
+  role="italic">getTextSizeDu</emphasis> or <emphasis role="italic">getTextSizeDlg</emphasis> methods of the dialog
+  object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>The arguments are:
+  <variablelist>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The string whose size is desired.  If none of the optional arguments are specified then the font of the dialog
+      that owns the control is used to calculate the size.
+    </para>
+    <para>
+      However, there are some exceptions to this if the method is invoked <emphasis role="italic">after</emphasis> the
+      underlying dialog is created.
+      <orderedlist>
+        <listitem>
+        <para>
+          If this method is invoked through a dialog control object, then the size is calculated using the dialog
+          control font.  This usage is deprecated and the ooDialog programmer is <emphasis
+          role="bold">strongly</emphasis> encouraged to not use this method in this manner.
+        </para>
+        </listitem>
+        <listitem>
+        <para>
+          If the fourth, optional, hwnd argument is used, then the font of that window is used to calculate the size.
+          Again, the ooDialog programmer is <emphasis role="bold">strongly</emphasis> encouraged to not use this
+          method in this manner.
+        </para>
+        </listitem>
+      </orderedlist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fontName [optional]</term>
+    <listitem>
+    <para>
+      The name of the font to use to calculate the size needed for the string.  Use this argument when the string will
+      be displayed in a font <emphasis role="bold">different</emphasis> than the dialog font.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fontSize [optional]</term>
+    <listitem>
+    <para>
+      The size of the font named by the fontName argument. If this argument is omitted then the default font size is
+      used. (Currently the default size is 8.) This argument is ignored completely when the fontName argument is
+      omitted.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd [optional]</term>
+    <listitem>
+    <para>
+      Optional. A valid window handle. The font of this window is used to calculate the text size. This argument is
+      always ignored when the fontName argument is specified.  As per the notes above the ooDialog programmer is
+      encouraged not to use this argument.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The size needed for the string is returned in a <link linkend="clsSize">Size</link> object. The size is specified
+    in dialog units.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::getTextSizeDlg() -->
+
+
+<section id="mthGroup"><title>group</title>
+<indexterm><primary>group</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>group</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--group(--+-----------+--)---------------------><
+            +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>
+  Adds or removes the <link linkend="wsgroup">group style</link> for this control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is
+    <variablelist>
+      <varlistentry><term>wantStyle [optional]</term>
+      <listitem>
+      <para>
+        A boolean (.true or .false) to indicate whether the control should have or not have the group style.  True (the
+        default) indicates the control should have the group style and false indicates the control should not have the
+        style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Negative values indicate the function failed, positive values indicate success.
+    <variablelist>
+      <varlistentry><term>Less than 0</term>
+      <listitem>
+      <para>
+        The value is the negated operating system error code.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Greater than 0</term>
+      <listitem>
+      <para>
+        The window style of the dialog control prior to adding or removing the group style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The group style controls how the user can navigate through the dialog using the keyboard.  For most dialogs this
+    does not change while the dialog is executing. However, in some dialogs the programmer may want to change the
+    navigation depending on the options the user selects.
+  </para>
+  <para>
+    The negative return value from this method is a hold over from a period prior to the introduction of the <link
+    linkend="dotSystemErrorCode">.SystemErrorCode</link>. This method now sets the
+    <computeroutput>.SystemErrorCode</computeroutput>, making it easier to use the negative return as a failure
+    indication and use the <computeroutput>.SystemErrorCode</computeroutput> value to look up the actual error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
 <section id="mthHasKeyPressConnectionDialogControlObject"><title>hasKeyPressConnection</title>
 <indexterm><primary>hasKeyPressConnection</primary><secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
@@ -2056,91 +1889,6 @@ method onDisable
 </variablelist>
 </section>  <!-- End dialog control object::hasKeyPressConnection() -->
 
-</section>
-
-<section id="sctDCOWindowDrawMethods"><title>Window Draw Methods</title>
-<indexterm><primary>draw methods</primary>
-<secondary>dialog control object</secondary></indexterm>
-<para>The following methods are used to draw, redraw, and clear a dialog or dialog
-control.</para>
-
-<section id="mthClearRectClsDialogControl"><title>clearRect</title>
-<indexterm><primary>clearRect</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>clearRect</secondary></indexterm>
-<programlisting>
-<![CDATA[
-Form 1:
-
->>--clearRect(--rectangle--)---------------------><
-
-
-Form 2:
-
->>--clearRect(--pt1--,--pt2--)-------------------><
-
-
-Form 3:
-
->>--clearRect(--x-,--y-,--cx-,--cy--)------------><
-
-
-Generic form:
-
->>--clearRect(--rectCoordinates--)---------------><
-
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">clearRect</emphasis> method clears the specified rectangular within the client area of
-  this control. The rectangle is <emphasis role="italic">cleared</emphasis> by redrawing it with the background brush
-  set to the typical background color for dialog boxes and three dimensional elements.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>rectCoordinates [required]</term>
-      <listitem>
-      <para>
-        The coordinates of the rectangle to be cleared. The coordinates specify the upper left and lower right corners
-        of the rectangle. The corners can be specified using either a <link linkend="clsRect">rect</link> object, two
-        <link linkend="clsPoint">point</link> objects, or the individual x and y coordinates of each corner.
-      </para>
-      <para>
-        The coordinates are specified as <link linkend="defClientArea">client-area</link> coordinates, in pixels.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    0 on success, 1 on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The rectangle is not really cleared, but rather is redrawn using the normal background color for a dialog box.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog control object::clearRect() -->
-
 
 <section id="mthRedrawRectClsDialogControl"><title>redrawRect</title>
 <indexterm><primary>redrawRect</primary><secondary>dialog control object</secondary></indexterm>
@@ -2187,57 +1935,223 @@ erased before repainting.
 </variablelist>
 </section>
 
-</section>
 
+<section id="mthSetColor"><title>setColor</title>
+<indexterm><primary>setColor</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setColor</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>setColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setColor(--bk--+-------+--)----><
+                   +-,-fg--+
+]]>
+</programlisting>
 
-<section id="mousecursormeth"><title>Mouse and Cursor Methods</title>
-<indexterm><primary>mouse and cursor methods</primary></indexterm>
-<para>The following methods are used to position and shape the mouse cursor and
-to capture the mouse.</para>
-
-
-</section>
-
-<section id="dcmeth"><title>Device Context Methods</title>
-<indexterm><primary>device context methods</primary>
-<secondary>dialog control object</secondary></indexterm>
-<para>The following methods are used to retrieve and release a device context
-(DC).</para>
-<para>A device context (DC) is associated with a dialog or dialog control, and
-is a drawing area managed by a dialog or dialog control. It stores information
-about graphic objects (such as bitmaps, lines, and pixels that are displayed)
-and the tools (such as pens, brushes, and fonts) that are used to display
-them.</para>
-
-</section>
-
-<section id="textmeth"><title>Text Methods</title>
-<indexterm><primary>text methods</primary>
-<secondary>dialog control object</secondary></indexterm>
-<para>The following methods are used to display text dynamically in a window
-area and to modify the state of a device context. See <link linkend="mthGetWindowDC">getWindowDC</link>, <link
-linkend="mthGetDC">getDC</link>, and <link linkend="mthGetControlDC">getControlDC</link> for information on how to
-retrieve a device context.
-</para>
-
-</section>
-
-<section id="man0023"><title>Graphic Drawing Methods</title>
-<indexterm><primary>graphic drawing methods</primary></indexterm>
-<para>The following methods are used to draw rectangles, lines, pixels, and arcs
-in a device context. See <link linkend="mthGetWindowDC">getWindowDC</link>, <link linkend="mthGetDC">getDC</link>, and
-<link linkend="mthGetControlDC">getControlDC</link> for how to retrieve a device context. A pen and a brush can be
-activated using <link linkend="mthObjectToDC">objectToDC</link> before invoking the drawing methods.
-</para>
-
-<note><title>Note</title>
 <para>
-  Because the pixel values include the title bar in a dialog it is easier to define a button filling the window, and
-  then draw on the button.
+  Sets the background color, and optionally the text color, for this dialog control.
 </para>
-</note>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>bk [required]</term>
+      <listitem>
+      <para>
+        The color <link linkend="defColor">number</link> for the background color of the dialog control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fg [optional]</term>
+      <listitem>
+      <para>
+        The color <link linkend="defColor">number</link> for the foreground color of the dialog control. The foreground
+        color is the color that text is written in.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success or 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
+    control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
+    limit to the number of controls having their color set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the background color of a push button in the dialog to red and the text color to yellow:
+<programlisting>
+<![CDATA[
 
+::method changeColor
+  expose pushButton
+
+  pushButton~setColor(2, 4)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::setColor() -->
+
+
+<section id="mthSetSysColor"><title>setSysColor</title>
+<indexterm><primary>setSysColor</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>setSysColor</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>setSysColor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setSysColor(--bk--+-------+--)---------------><
+                      +-,-fg--+
+]]>
+</programlisting>
+
+<para>
+  Sets the background color, and optionally the text color, for this dialog control using the system <link
+  linkend="defSysColor">colors</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>bk [required]</term>
+      <listitem>
+      <para>
+        The system color ID for the background color of the dialog control. This can be either the whole number ID or
+        the keyword ID. IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fg [optional]</term>
+      <listitem>
+      <para>
+        The system color for the foreground color of the dialog control. The foreground color is the color that text is
+        written in. This can be either the whole number ID or the keyword ID. IDs can be looked up in the System Color
+        Elements <link linkend="tblSysColors">table</link>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0 on success or 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Earlier versions of ooDialog had a restriction on the number of different dialog controls that could have their
+    control changed from their default color. In ooDialog version 4.2.0 that restriction was lifted and there is no
+    limit to the number of controls having their color set.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the background color of the push button in the dialog to the system background color for a
+    menu:
+<programlisting>
+<![CDATA[
+
+::method changeColor
+  expose pushButton
+
+  pushButton~setSysColor('MENU')
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::setSysColor() -->
+
+
+<section id="mthTabStop"><title>tabStop</title>
+<indexterm><primary>tabStop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--tabStop(--+-----------+--)-------------------><
+              +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>
+  Add or remove the <link linkend="wstabstop">tab stop style</link> for the control.  When  a control has the tabstop
+  style, the user can set the focus to the control by using the tab key.  When a control does not have this style, the
+  tab key will skip over the control.  Adding or removing this style during the execution of a dialog allows the
+  programmer to alter how the user navigates through the dialog controls.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The only argument is:
+  <variablelist>
+    <varlistentry><term>wantStyle [optional]</term>
+    <listitem>
+    <para>
+      A boolean (.true or .false) to indicate whether the control should have or not have the tabstop style. True (the
+      default) indicates the control should have the tabstop style and false indicates the control should not have the
+      style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Negative values indicate the function failed, non-negative values indicate success.
+  <variablelist>
+    <varlistentry><term>-4 or less</term>
+    <listitem><para>
+      The value is the negated Operating System Error code. The absolute value of the return can be used to look up the
+      error reason in the Windows documentation.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-3</term>
+    <listitem>
+    <para>
+      The second argument to the method is not a boolean.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-2</term>
+    <listitem>
+    <para>
+      There is an (internal) problem with the dialog or the dialog handle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      There is an (internal) problem with the resource ID of the control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0 or greater</term>
+    <listitem>
+    <para>
+      The window style of the dialog control prior to adding or removing the tabstop style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
+
 
 
 </chapter>
