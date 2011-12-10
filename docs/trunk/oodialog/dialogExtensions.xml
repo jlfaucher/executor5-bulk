@@ -3034,8 +3034,8 @@ should be erased before redrawing. The default is 0.
 
 <section id="mthRedrawRectClsDialogExtensions"><title>redrawRect</title>
 <indexterm><primary>redrawRect</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object </primary>redrawRect<secondary></secondary></indexterm>
-<indexterm><primary>DialogExtensions class</primary>redrawRect<secondary></secondary></indexterm>
+<indexterm><primary>dialog object </primary><secondary>redrawRect</secondary></indexterm>
+<indexterm><primary>DialogExtensions class</primary><secondary>redrawRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
 Form 1:
@@ -3097,6 +3097,7 @@ Generic form:
         whether the background of the rectangle should be redrawn (<computeroutput>.true</computeroutput>) or not
         <computeroutput>.false</computeroutput>.) The default is <computeroutput>.false</computeroutput>
       </para>
+      </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -3170,60 +3171,6 @@ Generic form:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DialogExtensions::redrawRect() -->
-
-
-<section id="mthRedrawRectClsDialogExtensions"><title>redrawRect</title>
-<indexterm><primary>redrawRect</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object </primary>redrawRect<secondary></secondary></indexterm>
-<indexterm><primary>DialogExtensions class</primary>redrawRect<secondary></secondary></indexterm>
-<programlisting>
-<![CDATA[
-
->>--redrawRect(--+------+-,-left-,-top-,-right-,-bottom-,-+-------+--)---------><
-                 +-hwnd-+                                 +-erase-+
-]]>
-</programlisting>
-
-<para>The redrawRect method immediately redraws a rectangle
-within the client area of a dialog. You can specify whether the background
-of the dialog is to be erased before redrawing. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>hwnd</term>
-<listitem><para>The handle to the dialog in which parts of the client area are to be
-redrawn. See <link linkend="mthGet">get</link> or <link linkend="mthGetControlHandle">getControlHandle</link> for
-information on how to get a window handle. If you omit this argument, the
-handle of the dialog instance is used.
-</para></listitem></varlistentry>
-<varlistentry><term>left, top</term>
-<listitem><para>The upper left corner of the rectangle relative to the client area,
-in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>right, bottom</term>
-<listitem><para>The lower right corner of the rectangle relative to the client area,
-in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>erasebkg</term>
-<listitem><para>If this argument is 1 or 0, the background of the dialog is erased before
-redrawing. The default is 0.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Redrawing was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Redrawing failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
 
 
 <section id="mthRedrawWindow"><title>redrawWindow</title>
