@@ -3014,7 +3014,7 @@ method to manually update the display.
 ]]>
 </programlisting>
 
-<para>The redrawControl method redraws the given button. </para>
+<para>The redrawControl method redraws the specified dialog control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -3034,7 +3034,148 @@ should be erased before redrawing. The default is 0.
 
 <section id="mthRedrawRectClsDialogExtensions"><title>redrawRect</title>
 <indexterm><primary>redrawRect</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>redrawRect</primary><secondary>DialogExtensions class</secondary></indexterm>
+<indexterm><primary>dialog object </primary>redrawRect<secondary></secondary></indexterm>
+<indexterm><primary>DialogExtensions class</primary>redrawRect<secondary></secondary></indexterm>
+<programlisting>
+<![CDATA[
+Form 1:
+
+>>--redrawRect(--+--------+-,--rectangle--+---------+--)-----------------------><
+                 +--hwnd--+              +-,-erase-+
+
+Form 2:
+
+>>--redrawRect(--+--------+-,--pt1--,--pt2--+---------+--)---------------------><
+                 +--hwnd--+            +-,-erase-+
+
+Form 3:
+
+>>--redrawRect(--+--------+-,--x-,--y-,--x1-,--y1--+---------+--)--------------><
+                 +--hwnd--+                   +-,-erase-+
+
+Generic form:
+
+>>--redrawRect(--+--------+-,--rectCoordinates--+---------+--)-----------------><
+                 +--hwnd--+                +-,-erase-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">redrawRect</emphasis> method redraws the specified <link
+  linkend="ovvRectangleCoordinates">bounding</link> rectangular within the client area of this dialog. Optionally,
+  another window can be specified, and the background of the rectangle can be erased first.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>hwnd [optional]</term>
+      <listitem>
+      <para>
+        By default the rectangle to redraw is assumed to belong to the client area of this dialog. Optionally, the
+        window <link linkend="defHandle">handle</link> of some other window can be specified.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rectCoordinates [required]</term>
+      <listitem>
+      <para>
+        The coordinates of the rectangle to be redrawn. The coordinates specify the upper left and lower right corners
+        of the rectangle. The corners can be specified using either a <link linkend="clsRect">rect</link> object, two
+        <link linkend="clsPoint">point</link> objects, or the individual x and y coordinates of each corner.
+      </para>
+      <para>
+        The coordinates are specified as <link linkend="defClientArea">client-area</link> coordinates, in pixels.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>erase [optional]</term>
+      <listitem>
+      <para>
+        A boolean (<computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>) that specifies
+        whether the background of the rectangle should be redrawn (<computeroutput>.true</computeroutput>) or not
+        <computeroutput>.false</computeroutput>.) The default is <computeroutput>.false</computeroutput>
+      </para>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The rectangle is not really erased, but rather the background is specified to be redrawn also. By default the
+    operating system does not redraw the background.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows 2 methods in an application that hides some of its dialog controls, under certain circumstances,
+    and unhides them later:
+
+<programlisting>
+<![CDATA[
+
+::method hideCustomerControls private
+
+  gb = self~newGroupBox(IDC_GB)
+  pb = self~newPushButton(IDC_PB)
+
+  rGB = gb~windowRect
+  self~screen2client(rGB)
+
+  rLV = list~windowRect
+  self~screen2client(rLV)
+
+  rRect = .Rect~new(rGB~left, rGB~top, rLV~right, rLV~bottom)
+
+  gb~hideFast
+  list~hideFast
+  self~redrawRect( , rRect, .true)
+
+  return 0
+
+::method showCustomerControls private
+
+  gb = self~newGroupBox(IDC_GB)
+  pb = self~newPushButton(IDC_PB)
+
+  rLV = list~windowRect
+  self~screen2client(rLV)
+
+  rRect = .Rect~new(rGB~left, rGB~top, rLV~right, rLV~bottom)
+
+  gb~showFast
+  list~showFast
+  self~redrawRect( , rRect)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogExtensions::redrawRect() -->
+
+
+<section id="mthRedrawRectClsDialogExtensions"><title>redrawRect</title>
+<indexterm><primary>redrawRect</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object </primary>redrawRect<secondary></secondary></indexterm>
+<indexterm><primary>DialogExtensions class</primary>redrawRect<secondary></secondary></indexterm>
 <programlisting>
 <![CDATA[
 

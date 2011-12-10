@@ -732,6 +732,186 @@
   <listitem><para><link linkend="clsWindowExtensions">WindowExtensions</link></para></listitem>
   </itemizedlist>
 </para>
+
+<section id="sctMethodsDialogContorlObject"><title>Method Table</title>
+<para>
+  The following table lists the attribute methods and instance methods of the
+  <computeroutput>DialogControl</computeroutput> class:
+
+<table id="tblDialogControlObject" frame="all">
+<title>Dialog Control Object Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.65in">
+<thead>
+<row>
+<entry>Dialog Control Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrHDlg">hDlg</link></entry>
+<entry>Reflects the window handle of the underlying Windows dialog that the dialog control belongs to.</entry>
+</row>
+<row>
+<entry><link linkend="atrID">id</link></entry>
+<entry>Reflects the numeric resource ID for the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="atrODlg">oDlg</link></entry>
+<entry>Reflects the Rexx dialog object that the dialog control belongs to.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAssignFocus">assignFocus</link></entry>
+<entry>Sets the input focus to this dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="mthClearRectClsDialogControl">clearRect</link></entry>
+<entry>Clears the specified rectangular within the client area of this control.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link></entry>
+<entry>Connects all F Key key press events to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link></entry>
+<entry>Connects a key press event notification with a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthData">data</link></entry>
+<entry>Retrievs the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
+</row>
+<row>
+<entry><link linkend="mthDataEquals">data=</link></entry>
+<entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
+<row>
+<entry><link linkend="mthDisconnectKeyPressDialogControlObject">disconnectKeyPress</link></entry>
+<entry>Disconnects a method in the Rexx dialog from a previously connected key press event.</entry>
+</row>
+<row>
+<entry><link linkend="mthGroup">group</link></entry>
+<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control.</entry>
+</row>
+<row>
+<entry><link linkend="mthHasKeyPressConnectionDialogControlObject">hasKeyPressConnection</link></entry>
+<entry>Queries if a specific method, or any method, in the Rexx dialog has a connection to a key press event.</entry>
+</row>
+<row>
+<entry><link linkend="mthRedrawRectClsDialogControl">redrawRect</link></entry>
+<entry>Immediately redraws the rectangle of the client area of the associated dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetColor">setColor</link></entry>
+<entry>Sets the background color, and optionally the text color, for this dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetSysColor">setSysColor</link></entry>
+<entry>Sets the background color, and optionally the text color, for this dialog control using the system colors.</entry>
+</row>
+<row>
+<entry><link linkend="mthTabStop">tabStop</link></entry>
+<entry>Add or remove the tab stop style for the control.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+
+</section>
+
+
+<section id="dcoAssignFocus"><title>assignFocus</title>
+<programlisting>
+DialogControl::<link linkend="mthAssignFocus">assignFocus</link>
+
+<![CDATA[
+>>--assignFocus----------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoClearRect"><title>clearRect</title>
+<programlisting>
+DialogControl::<link linkend="mthClearRectClsDialogControl">clearRect</link>
+
+<![CDATA[
+Form 1:
+
+>>--clearRect(--rectangle--)---------------------><
+
+
+Form 2:
+
+>>--clearRect(--pt1--,--pt2--)-------------------><
+
+
+Form 3:
+
+>>--clearRect(--x-,--y-,--cx-,--cy--)------------><
+
+
+Generic form:
+
+>>--clearRect(--rectCoordinates--)---------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoConnectFKeyPress"><title>connectFKeyPress</title>
+<programlisting>
+DialogControl::<link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link>
+
+<![CDATA[
+>>--connectFKeyPress(--methodName--)--------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoConnectKeyPress"><title>connectKeyPress</title>
+<programlisting>
+DialogControl::<link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link>
+
+<![CDATA[
+>>--connectKeyPress(--methodName--,--keys--+-----------+--)-----><
+                                           +-,-filter--+
+]]>
+</programlisting>
+</section>
+
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
+!mthsect
 </section>
 
 <!-- <section id="clsWindowBase"><title>WindowBase Mixin Class</title>               START -->

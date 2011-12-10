@@ -138,8 +138,16 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="mthAssignFocus">assignFocus</link></entry>
+<entry>Sets the input focus to this dialog control.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoClear">clear</link></entry>
 <entry>Clears the client area of the control by painting it with the background brush.</entry>
+</row>
+<row>
+<entry><link linkend="mthClearRectClsDialogControl">clearRect</link></entry>
+<entry>Clears the specified rectangular within the client area of this control.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoClient2screen">client2screen</link></entry>
@@ -154,12 +162,52 @@
 <entry>Converts client-area coordinates of the control to its screen coordinates.</entry>
 </row>
 <row>
+<entry><link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link></entry>
+<entry>Connects all F Key key press events to a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link></entry>
+<entry>Connects a key press event notification with a method in the Rexx dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCreateBrush">createBrush</link></entry>
+<entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCreatePen">createPen</link></entry>
+<entry>Creates a logical pen that has the specified style, width, and color.</entry>
+</row>
+<row>
 <entry><link linkend="wedcoCreateFont">createFont</link></entry>
 <entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
 </row>
 <row>
 <entry><link linkend="wedcoCreateFontEx">createFontEx</link></entry>
 <entry>Retrieves a handle to a logical font from the system font manager</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorAppStarting">cursor_appstarting</link></entry>
+<entry>Sets the shape of the mouse cursor to the standard arrow with a small hourglass.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorArrow">cursor_arrow</link></entry>
+<entry>Sets the shape of the mouse cursor to the standard arrow.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorCross">cursor_cross</link></entry>
+<entry>Sets the shape of the mouse cursor to a crosshair.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorNo">cursor_no</link></entry>
+<entry>Sets the shape of the mouse cursor to a slashed circle.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorWait">cursor_wait</link></entry>
+<entry>Sets the shape of the mouse cursor to an hourglass.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCursorPos">cursorPos</link></entry>
+<entry>Retrieves the current cursor position in pixels as a string.</entry>
 </row>
 <row>
 <entry><link linkend="mthData">data</link></entry>
@@ -170,36 +218,104 @@
 <entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoDraw">draw</link></entry>
-<entry>Redraws the entire client area of the control immediately.</entry>
+<entry><link linkend="wedcoDeleteFont">deleteFont</link></entry>
+<entry>Deletes a font returned from <emphasis role="italic">createFontEx</emphasis> or <emphasis role="italic">createFont</emphasis>.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDeleteObject">deleteObject</link></entry>
+<entry>Deletes a graphic object,</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoDisable">disable</link></entry>
 <entry>Disables the control</entry>
 </row>
 <row>
+<entry><link linkend="mthDisconnectKeyPressDialogControlObject">disconnectKeyPress</link></entry>
+<entry>Disconnects a method in the Rexx dialog from a previously connected key press event.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoDisplay">display</link></entry>
 <entry>Shows or hides the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoDraw">draw</link></entry>
+<entry>Redraws the entire client area of the control immediately.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawAngleArc">drawAngleArc</link></entry>
+<entry>Draws a partial circle (arc) and a line connecting the start drawing point with the start of the arc.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawArc">drawArc</link></entry>
+<entry>Draws a circle or ellipse withi the given device context using the active pen.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawLine">drawLine</link></entry>
+<entry>Draws a line within the device context using the active pen.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawPie">drawPie</link></entry>
+<entry>Draws and fills a pie of a circle or ellipse within the given device context using the active brush and pen.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoDrawPixel">drawPixel</link></entry>
+<entry>Draws a pixel within the device context.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoEnable">enable</link></entry>
 <entry>Enables the control</entry>
 </row>
 <row>
+<entry><link linkend="wedcoFillDrawing">fillDrawing</link></entry>
+<entry>Fills in an outline figure within the device context using the active brush.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoFontColor">fontColor</link></entry>
+<entry>Sets the font color for a device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoFontToDC">fontToDC</link></entry>
+<entry>Loads a font into a device context and returns the handle of the previous font.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoForegroundWindow">foregroundWindow</link></entry>
 <entry>Returns the handle of the window in the foreground.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoFreeDC">freeDC</link></entry>
+<entry>Releases a device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoGetArcDirection">getArcDirection</link></entry>
+<entry>Returns the current drawing direction.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoGetClientRect">getClientRect</link></entry>
 <entry>Returns the dimensions of the control's client area.</entry>
 </row>
 <row>
+<entry><link linkend="wedcoGetCursorPos">getCursorPos</link></entry>
+<entry>Retrieves the current cursor position in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoGetDC">getDC</link></entry>
+<entry>Returns the handle to the display device context of a dialog control.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoGetExStyleRaw">getExStyleRaw</link></entry>
 <entry>Retrieves the numeric value of the control's extended style flags.</entry>
 </row>
 <row>
+<entry><link linkend="wedcoGetFont">getFont</link></entry>
+<entry>Returns the font used by the dialog control.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoGetID">getID</link></entry>
 <entry>Retrieves the identification number of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoGetPixel">getPixel</link></entry>
+<entry>Returns the color number of a pixel within the device context.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoGetPos">getPos</link></entry>
@@ -238,12 +354,24 @@
 <entry>Calculates the size needed for a string in pixels.</entry>
 </row>
 <row>
+<entry><link linkend="mthGroup">group</link></entry>
+<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control.</entry>
+</row>
+<row>
+<entry><link linkend="mthHasKeyPressConnectionDialogControlObject">hasKeyPressConnection</link></entry>
+<entry>Queries if a specific method, or any method, in the Rexx dialog has a connection to a key press event.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoHide">hide</link></entry>
 <entry>Makes the control invisible and repaints it.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoHideFast">hideFast</link></entry>
 <entry>Marks the control as invisible</entry>
+</row>
+<row>
+<entry><link linkend="wedcoHScrollPos">hScrollPos</link></entry>
+<entry>Returns the position of the horizontal scroll bar in the dialog control.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoIsVisible">isVisible</link></entry>
@@ -254,12 +382,32 @@
 <entry>Tests if the control is enabled.</entry>
 </row>
 <row>
+<entry><link linkend="wedcoLoadBitmap">loadBitmap</link></entry>
+<entry>Loads a bitmap from a file into memory and returns the handle to the bitmap.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoMove">move</link></entry>
+<entry>Moves the control to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
 <entry><link linkend="wbdcoMoveTo">moveTo</link></entry>
 <entry>Moves the control to the position specified in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoMoveWindow">moveWindow</link></entry>
 <entry>Changes the position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoObjectToDC">objectToDC</link></entry>
+<entry>Loads a graphic object into a device context.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoOpaqueText">opaqueText</link></entry>
+<entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
+</row>
+<row>
+<entry><link linkend="wedcoRectangle">rectangle</link></entry>
+<entry>Draws a rectangle within the given device context.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoRedraw">redraw</link></entry>
@@ -270,8 +418,36 @@
 <entry>Redraws the entire client area of the control immediately.</entry>
 </row>
 <row>
+<entry><link linkend="mthRedrawRectClsDialogControl">redrawRect</link></entry>
+<entry>Immediately redraws the rectangle of the client area of the associated dialog.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoRemoveBitmap">removeBitmap</link></entry>
+<entry>Frees an in-memory bitmap that was loaded through the <emphasis role="italic">loadBitmap</emphasis> method.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoResize">resize</link></entry>
+<entry>Resizes the control to the size specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
 <entry><link linkend="wbdcoResizeTo">resizeTo</link></entry>
 <entry>Resizes the control to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoRestoreCursorShape">restoreCursorShape</link></entry>
+<entry>Restores the shape of the mouse cursor.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoScreen2client">screen2client</link></entry>
+<entry>Converts a point or points in screen coordinates to the client-area coordinates of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wbdcoScreenToClient">screenToClient</link></entry>
+<entry>Converts screen coordinates to the client-area coordinates of the control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoScrollClsWE">scroll</link></entry>
+<entry>Scrolls the contents of the dialog control's client area by the amount specified.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoSendMessage">sendMessage</link></entry>
@@ -280,6 +456,30 @@
 <row>
 <entry><link linkend="wbdcoSendMessageHandle">sendMessageHandle</link></entry>
 <entry>Sends a Windows message to the underlying control and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetArcDirection">setArcDirection</link></entry>
+<entry>Sets the current drawing direction.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetColor">setColor</link></entry>
+<entry>Sets the background color, and optionally the text color, for this dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetCursorPos">setCursorPos</link></entry>
+<entry>Moves the mouse cursor to the specified position.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetFont">setFont</link></entry>
+<entry>Sets a new font to be used by the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetHScrollPos">setHScrollPos</link></entry>
+<entry>Sets the thumb position of the horizontal scroll bar contained in the dialog control.</entry>
+</row>
+<row>
+<entry><link linkend="wedcoSetVScrollPos">setVScrollPos</link></entry>
+<entry>Sets the thumb position of the vertical scroll bar contained in the dialog control.</entry>
 </row>
 <row>
 <entry><link linkend="wbdcoSetRect">setRect</link></entry>
@@ -310,6 +510,14 @@
 <entry>Changes the size, visibility, and Z order of the dialog.</entry>
 </row>
 <row>
+<entry><link linkend="mthSetSysColor">setSysColor</link></entry>
+<entry>Sets the background color, and optionally the text color, for this dialog control using the system colors.</entry>
+</row>
+<row>
+<entry><link linkend="mthTabStop">tabStop</link></entry>
+<entry>Add or remove the tab stop style for the control.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoTitle">title</link></entry>
 <entry>Gets the text of the control.</entry>
 </row>
@@ -318,100 +526,20 @@
 <entry>Sets the text of the control.</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoWindowRect">windowRect</link></entry>
-<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the control in pixels.</entry>
+<entry><link linkend="wedcoTransparentText">transparentText</link></entry>
+<entry>Sets the text drawing mode in a device context to transparent, (background is not changed.)</entry>
 </row>
 <row>
-<entry><link linkend="wbdcoResize">resize</link></entry>
-<entry>Resizes the control to the size specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbdcoMove">move</link></entry>
-<entry>Moves the control to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="wbdcoScreen2client">screen2client</link></entry>
-<entry>Converts a point or points in screen coordinates to the client-area coordinates of the control.</entry>
-</row>
-<row>
-<entry><link linkend="wbdcoScreenToClient">screenToClient</link></entry>
-<entry>Converts screen coordinates to the client-area coordinates of the control.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoDeleteFont">deleteFont</link></entry>
-<entry>Deletes a font returned from <emphasis role="italic">createFontEx</emphasis> or <emphasis role="italic">createFont</emphasis>.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoGetFont">getFont</link></entry>
-<entry>Returns the font used by the dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoScrollClsWE">scroll</link></entry>
-<entry>Scrolls the contents of the dialog control's client area by the amount specified.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoSetFont">setFont</link></entry>
-<entry>Sets a new font to be used by the dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoHScrollPos">hScrollPos</link></entry>
-<entry>Returns the position of the horizontal scroll bar in the dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoSetHScrollPos">setHScrollPos</link></entry>
-<entry>Sets the thumb position of the horizontal scroll bar contained in the dialog control.</entry>
+<entry><link linkend="wbdcoUpdate">update</link></entry>
+<entry>Invalidates the entire client area of the control.</entry>
 </row>
 <row>
 <entry><link linkend="wedcoVScrollPos">vScrollPos</link></entry>
 <entry>Returns the position of the vertical scroll bar in the dialog control.</entry>
 </row>
 <row>
-<entry><link linkend="wedcoSetVScrollPos">setVScrollPos</link></entry>
-<entry>Sets the thumb position of the vertical scroll bar contained in the dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoLoadBitmap">loadBitmap</link></entry>
-<entry>Loads a bitmap from a file into memory and returns the handle to the bitmap.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoRemoveBitmap">removeBitmap</link></entry>
-<entry>Frees an in-memory bitmap that was loaded through the <emphasis role="italic">loadBitmap</emphasis> method.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoSetCursorPos">setCursorPos</link></entry>
-<entry>Moves the mouse cursor to the specified position.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoGetCursorPos">getCursorPos</link></entry>
-<entry>Retrieves the current cursor position in pixels as a <computeroutput>Point</computeroutput> object.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoRestoreCursorShape">restoreCursorShape</link></entry>
-<entry>Restores the shape of the mouse cursor.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCursorArrow">cursor_arrow</link></entry>
-<entry>Sets the shape of the mouse cursor to the standard arrow.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCursorAppStarting">cursor_appstarting</link></entry>
-<entry>Sets the shape of the mouse cursor to the standard arrow with a small hourglass.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCursorCross">cursor_cross</link></entry>
-<entry>Sets the shape of the mouse cursor to a crosshair.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCursorNo">cursor_no</link></entry>
-<entry>Sets the shape of the mouse cursor to a slashed circle.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCursorWait">cursor_wait</link></entry>
-<entry>Sets the shape of the mouse cursor to an hourglass.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCursorPos">cursorPos</link></entry>
-<entry>Retrieves the current cursor position in pixels as a string.</entry>
+<entry><link linkend="wbdcoWindowRect">windowRect</link></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the control in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="wedcoWrite">write</link></entry>
@@ -420,140 +548,6 @@
 <row>
 <entry><link linkend="wedcoWriteDirect">writeDirect</link></entry>
 <entry>Writes text in a dialog control at the position specified using a device context.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCreateBrush">createBrush</link></entry>
-<entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoCreatePen">createPen</link></entry>
-<entry>Creates a logical pen that has the specified style, width, and color.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoDeleteObject">deleteObject</link></entry>
-<entry>Deletes a graphic object,</entry>
-</row>
-<row>
-<entry><link linkend="wedcoGetDC">getDC</link></entry>
-<entry>Returns the handle to the display device context of a dialog control.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoFreeDC">freeDC</link></entry>
-<entry>Releases a device context.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoObjectToDC">objectToDC</link></entry>
-<entry>Loads a graphic object into a device context.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoFontToDC">fontToDC</link></entry>
-<entry>Loads a font into a device context and returns the handle of the previous font.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoRectangle">rectangle</link></entry>
-<entry>Draws a rectangle within the given device context.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoDrawLine">drawLine</link></entry>
-<entry>Draws a line within the device context using the active pen.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoDrawPixel">drawPixel</link></entry>
-<entry>Draws a pixel within the device context.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoGetPixel">getPixel</link></entry>
-<entry>Returns the color number of a pixel within the device context.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoFillDrawing">fillDrawing</link></entry>
-<entry>Fills in an outline figure within the device context using the active brush.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoDrawArc">drawArc</link></entry>
-<entry>Draws a circle or ellipse withi the given device context using the active pen.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoDrawPie">drawPie</link></entry>
-<entry>Draws and fills a pie of a circle or ellipse within the given device context using the active brush and pen.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoDrawAngleArc">drawAngleArc</link></entry>
-<entry>Draws a partial circle (arc) and a line connecting the start drawing point with the start of the arc.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoGetArcDirection">getArcDirection</link></entry>
-<entry>Returns the current drawing direction.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoSetArcDirection">setArcDirection</link></entry>
-<entry>Sets the current drawing direction.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoFontColor">fontColor</link></entry>
-<entry>Sets the font color for a device context.</entry>
-</row>
-<row>
-<entry><link linkend="wedcoTransparentText">transparentText</link></entry>
-<entry>Sets the text drawing mode in a device context to transparent, (background is not changed.)</entry>
-</row>
-<row>
-<entry><link linkend="wedcoOpaqueText">opaqueText</link></entry>
-<entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
-</row>
-
-
-<row>
-<entry>assignFocus</entry>
-<entry><link linkend="mthAssignFocus">assignFocus</link></entry>
-</row>
-<row>
-<entry>clear</entry>
-<entry><link linkend="mthClear">clear</link></entry>
-</row>
-<row>
-<entry>clearRect</entry>
-<entry><link linkend="mthClearRectClsDialogControl">clearRect</link></entry>
-</row>
-<row>
-<entry>clientToScreen</entry>
-<entry><link linkend="mthClientToScreen">clientToScreen</link></entry>
-</row>
-<row>
-<entry><link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link></entry>
-<entry>Connects all F Key key press events to a method in the Rexx dialog.</entry>
-</row>
-<row>
-<entry><link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link></entry>
-<entry>Connects a key press event notification with a method in the Rexx dialog.</entry>
-</row>
-<row>
-<entry><link linkend="mthDisconnectKeyPressDialogControlObject">disconnectKeyPress</link></entry>
-<entry>Disconnects a method in the Rexx dialog from a previously connected key press event.</entry>
-</row>
-<row>
-<entry><link linkend="mthGroup">group</link></entry>
-<entry>Adds or removes the <link linkend="wsgroup">group style</link> for the control.</entry>
-</row>
-<row>
-<entry><link linkend="mthHasKeyPressConnectionDialogControlObject">hasKeyPressConnection</link></entry>
-<entry>Queries if a specific method, or any method, in the Rexx dialog has a connection to a key press event.</entry>
-</row>
-<row>
-<entry>redrawRect</entry>
-<entry><link linkend="mthRedrawRectClsDialogControl">redrawRect</link></entry>
-</row>
-<row>
-<entry>setColor</entry>
-<entry><link linkend="mthSetColor">setColor</link></entry>
-</row>
-<row>
-<entry>tabStop</entry>
-<entry><link linkend="mthTabStop">tabStop</link></entry>
-</row>
-<row>
-<entry><link linkend="wbdcoUpdate">update</link></entry>
-<entry>Invalidates the entire client area of the control.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -573,9 +567,9 @@
 WindowBase::<link linkend="atrFactorX">factorX</link>
 
 <![CDATA[
->>--factorX-----------------------------------------------------><
+>>--factorX--------------------------------------><
 
->>--factorX-=-ratio---------------------------------------------><
+>>--factorX-=-ratio------------------------------><
 ]]>
 
 </programlisting>
@@ -586,9 +580,9 @@ WindowBase::<link linkend="atrFactorX">factorX</link>
 WindowBase::<link linkend="atrFactorY">factorY</link>
 
 <![CDATA[
->>--factorY-----------------------------------------------------><
+>>--factorY--------------------------------------><
 
->>--factorY-=-ratio---------------------------------------------><
+>>--factorY-=-ratio------------------------------><
 ]]>
 
 </programlisting>
@@ -601,9 +595,9 @@ WindowBase::<link linkend="atrFactorY">factorY</link>
 <indexterm><primary>DialogControl class</primary><secondary>hDlg</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hDlg-----------------------------------------------------><
+>>--hDlg-----------------------------------------><
 
->>--hDlg-=-varName-------------------------------------------><
+>>--hDlg-=-varName-------------------------------><
 
 ]]>
 </programlisting>
@@ -635,7 +629,7 @@ WindowBase::<link linkend="atrFactorY">factorY</link>
 WindowBase::<link linkend="atrHwnd">hwnd</link>
 
 <![CDATA[
->>--hwnd-----------------------------------------------------><
+>>--hwnd-----------------------------------------><
 
 ]]>
 </programlisting>
@@ -647,9 +641,9 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 <indexterm><primary>DialogControl class</primary><secondary>id</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--id-----------------------------------------------------><
+>>--id-------------------------------------------><
 
->>--id-=-varName-------------------------------------------><
+>>--id-=-varName---------------------------------><
 
 ]]>
 </programlisting>
@@ -682,9 +676,9 @@ WindowBase::<link linkend="atrHwnd">hwnd</link>
 WindowBase::<link linkend="atrInitCode">initCode</link>
 
 <![CDATA[
->>--initCode-----------------------------------------------------><
+>>--initCode-------------------------------------><
 
->>--initCode-=-code----------------------------------------------><
+>>--initCode-=-code------------------------------><
 
 ]]>
 </programlisting>
@@ -697,9 +691,9 @@ WindowBase::<link linkend="atrInitCode">initCode</link>
 <indexterm><primary>DialogControl class</primary><secondary>oDlg</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--oDlg-----------------------------------------------------><
+>>--oDlg-----------------------------------------><
 
->>--oDlg-=-varName-------------------------------------------><
+>>--oDlg-=-varName-------------------------------><
 
 ]]>
 </programlisting>
@@ -731,9 +725,9 @@ WindowBase::<link linkend="atrInitCode">initCode</link>
 WindowBase::<link linkend="atrSizeX">sizeX</link>
 
 <![CDATA[
->>--sizeX-----------------------------------------------------><
+>>--sizeX----------------------------------------><
 
->>--sizeX-=-dialogUnits---------------------------------------><
+>>--sizeX-=-dialogUnits--------------------------><
 ]]>
 </programlisting>
 </section>
@@ -744,9 +738,9 @@ WindowBase::<link linkend="atrSizeX">sizeX</link>
 WindowBase::<link linkend="atrSizeY">sizeY</link>
 
 <![CDATA[
->>--sizeY-----------------------------------------------------><
+>>--sizeY----------------------------------------><
 
->>--sizeY-=-dialogUnits---------------------------------------><
+>>--sizeY-=-dialogUnits--------------------------><
 ]]>
 </programlisting>
 </section>
@@ -757,7 +751,7 @@ WindowBase::<link linkend="atrSizeY">sizeY</link>
 WindowBase::<link linkend="atrPixelCX">pixelCX</link>
 
 <![CDATA[
->>--pixelCX-----------------------------------------------------><
+>>--pixelCX--------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -768,7 +762,7 @@ WindowBase::<link linkend="atrPixelCX">pixelCX</link>
 WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 
 <![CDATA[
->>--pixelCY-----------------------------------------------------><
+>>--pixelCY--------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -786,25 +780,48 @@ WindowBase::<link linkend="atrPixelCY">pixelCY</link>
 <!-- <section id="sctWindowExtensionsDCO"><title>Extended Window Methods</title>  END   -->
 
 
-
 <section id="mthAssignFocus"><title>assignFocus</title>
 <indexterm><primary>assignFocus</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>assignFocus</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>assignFocus</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--assignFocus----------------------------------><
-
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">assignFocus</emphasis> method sets the input focus to this dialog control.
+  Assigns the input focus to this dialog control.
 </para>
-</section>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns 0, always.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a dialog control is assigned the focus, the operating system does more than just set the input focus to the
+    window. The Windows dialog manager also updates the default push button border, sets the default control identifier,
+    and automatically selects the text of an edit control (if the target window is an edit control).
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::assignFocus() -->
 
 
 <section id="mthClearRectClsDialogControl"><title>clearRect</title>
 <indexterm><primary>clearRect</primary><secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>clearRect</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>clearRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
 Form 1:
@@ -880,9 +897,146 @@ Generic form:
 </section>  <!-- End dialog control object::clearRect() -->
 
 
+<section id="mthConnectFKeyPressDialogControlObject"><title>connectFKeyPress</title>
+<indexterm><primary>connectFKeyPress</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>connectFKeyPress</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>connectFKeyPress</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectFKeyPress(--methodName--)-------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectFKeyPress</emphasis> method connects all F Key key press events to a method in the
+  Rexx dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is:
+    <variablelist>
+      <varlistentry><term>methodName [required]</term>
+      <listitem>
+      <para>
+        The name of the method that is to be invoked when a F Key key press event happens. The method name can not be
+        the empty string. The method is defined by the programmer in the dialog class that is the parent to the dialog
+        control.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        The underlying mechanism in the Windows API that is used to capture key events failed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-6</term>
+      <listitem>
+      <para>
+        The maximum number of connections has been reached.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-7</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">methodName</emphasis> method is already connected to a key down event for this
+        dialog.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">connectFKeyPress</emphasis> method is a convenience method for the <link
+    linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link> method. It is equivalent to using the
+    <emphasis role="italic">connectKeyPress</emphasis> method and supplying the FKEYS keyword for the <emphasis
+    role="italic">keys</emphasis> arguement and omitting the <emphasis role="italic">filter</emphasis> argument. The
+    <emphasis role="italic">connectKeyPress</emphasis> method documentation goes into deeper detail in explaining how
+    the <emphasis role="italic">connectKeyPress</emphasis> method, and by extension the <emphasis
+    role="italic">connectFKeyPress</emphasis> method, works.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary
+    use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the
+    library.
+  </para>
+  <para>
+    Raises syntax errors when some incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example connects the F key down events for an edit control. The application determines which F key
+    was pressed and takes appropriate action.  For this application, the F3 key is the search key.
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose editControl lastSearchToken
+
+  editControl = self~newEdit(IDC_EDIT)
+  editControl~connectFKeyPress(onFKey)
+  ...
+  lastSearchToken = ""
+  ...
+
+::method onFKey
+  expose editControl lastSearchToken
+  use arg key
+
+  select
+    when key == .VK~F2 then do
+      ...
+    end
+    when key == .VK~F3 then do
+      description = "What word would you like to search for?"
+      lastSearchToken = inputBox(description, "Search", lastSearchToken)
+
+      if lastSearchToken <> "" then
+        self~findAndHighlight(lastSearchToken, editControl)
+    end
+    when key == .VK~F4 then do
+      ...
+    end
+    ...
+  end
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog control object::connectFKeyPress() -->
+
+
 <section id="mthConnectKeyPressDialogControlObject"><title>connectKeyPress</title>
 <indexterm><primary>connectKeyPress</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>dialog control ojbect</primary><secondary>connectKeyPress</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>connectKeyPress</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>connectKeyPress</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--connectKeyPress(--methodName--,--keys--+-----------+--)-----><
@@ -1101,7 +1255,7 @@ Generic form:
     </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
     There is a maximum limit of 63 methods, per dialog, that can be connected to key press events. Connections can be
@@ -1120,7 +1274,7 @@ Generic form:
     dialog control has the focus, you will receive two event notifications.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
     This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary
@@ -1286,150 +1440,16 @@ Generic form:
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End dialog control ojbect::connectKeyPress() -->
-
-
-<section id="mthConnectFKeyPressDialogControlObject"><title>connectFKeyPress</title>
-<indexterm><primary>connectFKeyPress</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>connectFKeyPress</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--connectFKeyPress(--methodName--)--------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">connectFKeyPress</emphasis> method connects all F Key key press events to a method in the
-  Rexx dialog.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single arguments is:
-    <variablelist>
-      <varlistentry><term>methodName [required]</term>
-      <listitem>
-      <para>
-        The name of the method that is to be invoked when a F Key key press event happens. The method name can not be
-        the empty string. The method is defined by the programmer in the dialog class that is the parent to the dialog
-        control.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-      <para>
-        Success.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-2</term>
-      <listitem>
-      <para>
-        The underlying mechanism in the Windows API that is used to capture key events failed.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-6</term>
-      <listitem>
-      <para>
-        The maximum number of connections has been reached.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-7</term>
-      <listitem>
-      <para>
-        The <emphasis role="italic">methodName</emphasis> method is already connected to a key down event for this
-        dialog.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The <emphasis role="italic">connectFKeyPress</emphasis> method is a convenience method for the <link
-    linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link> method. It is equivalent to using the
-    <emphasis role="italic">connectKeyPress</emphasis> method and supplying the FKEYS keyword for the <emphasis
-    role="italic">keys</emphasis> arguement and omitting the <emphasis role="italic">filter</emphasis> argument. The
-    <emphasis role="italic">connectKeyPress</emphasis> method documentation goes into deeper detail in explaining how
-    the <emphasis role="italic">connectKeyPress</emphasis> method, and by extension the <emphasis
-    role="italic">connectFKeyPress</emphasis> method, works.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary
-    use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the
-    library.
-  </para>
-  <para>
-    Raises syntax errors when some incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example connects the F key down events for an edit control. The application determines which F key
-    was pressed and takes appropriate action.  For this application, the F3 key is the search key.
-
-<programlisting>
-<![CDATA[
-
-::method initDialog
-  expose editControl lastSearchToken
-
-  editControl = self~newEdit(IDC_EDIT)
-  editControl~connectFKeyPress(onFKey)
-  ...
-  lastSearchToken = ""
-  ...
-
-::method onFKey
-  expose editControl lastSearchToken
-  use arg key
-
-  select
-    when key == .VK~F2 then do
-      ...
-    end
-    when key == .VK~F3 then do
-      description = "What word would you like to search for?"
-      lastSearchToken = inputBox(description, "Search", lastSearchToken)
-
-      if lastSearchToken <> "" then
-        self~findAndHighlight(lastSearchToken, editControl)
-    end
-    when key == .VK~F4 then do
-      ...
-    end
-    ...
-  end
-  ...
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog control object::connectFKeyPress() -->
+</section>  <!-- End dialog control object::connectKeyPress() -->
 
 
 <section id="mthData"><title>data</title>
 <indexterm><primary>data method</primary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>data method</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>data method</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--data-------------------------------------------------------><
+>>--data-----------------------------------------><
 
 ]]>
 </programlisting>
@@ -1439,13 +1459,19 @@ Generic form:
   linkend="sctUnderstandingDataAttributes">data</link> of the dialog control.
 </para>
 <variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not take any arguments.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The current data of the dialog control as a string. Exactly what this string represents is dependent on the type of
-    the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
-    detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
-    control.
+    The current <emphasis role="italic">data</emphasis> of the dialog control. Exactly what the format of the <emphasis
+    role="italic">data</emphasis> takes is dependent on the type of the control. The <link
+    linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a detailed discussion on
+    data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1458,16 +1484,70 @@ Generic form:
     the specific dialog control object to determine the control's state.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example determines if the restart check box is checked, and if so sets a flag that tells the
+    application to restart the computer:
+
+<programlisting>
+<![CDATA[
+
+::method leaving
+  expose restartChk fancyFont logoBmp appCleanUpParams
+
+  if restartChk~data == 1 then do
+    self~deleteFont(fancyFont)
+    logoBmp~release
+
+    appCleanUpParams['NoErrs']  = .true
+    appCleanUpParams['UserOK']  = .true
+    appCleanUpParams['Restart'] = .true
+  end
+  else do
+    ...
+    appCleanUpParams['Restart'] = .false
+  end
+
+]]>
+</programlisting>
+    The same thing can be accomplished in this manner:
+
+<programlisting>
+<![CDATA[
+
+::method leaving
+  expose restartChk fancyFont logoBmp appCleanUpParams
+
+  if restartChk~checked then do
+    self~deleteFont(fancyFont)
+    logoBmp~release
+
+    appCleanUpParams['NoErrs']  = .true
+    appCleanUpParams['UserOK']  = .true
+    appCleanUpParams['Restart'] = .true
+  end
+  else do
+    ...
+    appCleanUpParams['Restart'] = .false
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 
-</section>
+</section>  <!-- End dialog control object::data() -->
+
 
 <section id="mthDataEquals"><title>data=</title>
 <indexterm><primary>data=</primary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>data=</secondary></indexterm>
+<indexterm><primary>DialogCcontrol class</primary><secondary>data=</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--data-=--newData--------------------------------------------><
+>>--data-=--newData------------------------------><
 
 ]]>
 </programlisting>
@@ -1479,13 +1559,13 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <variablelist>
-    <varlistentry><term>newData</term>
+    <varlistentry><term>newData [required]</term>
     <listitem>
     <para>
-      A string used to set the data of the dialog control. The exact format of this string is dependent on the type of
-      the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link> section of this reference has a
-      detailed discussion on data attributes and the meaning of the <emphasis role="italic">data</emphasis> of a dialog
-      control.
+      The value used to set the <emphasis role="italic">data</emphasis> of the dialog control. The exact format of this
+      value is dependent on the type of the control. The <link linkend="sctDataAttributes">Data Attribute Methods</link>
+      section of this reference has a detailed discussion on data attributes and the meaning of the <emphasis
+      role="italic">data</emphasis> of a dialog control.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1495,40 +1575,51 @@ Generic form:
   <para>
     This method was really intended to be used on controls that have previously been connected to a data attribute.
     But, since the dialog control object, itself, knows which type of control it is, the method works whether the
-    control is connected or not. However, the abstraction of viewing a dialog control's state as data, represented by a
-    single string, is restrictive and somewhat out of date. It is more flexible, and often easier, to use the methods of
-    the specific dialog control object to set the control's state.
+    control is connected or not. However, the abstraction of viewing a dialog control's state as data is restrictive and
+    somewhat out of date. It is more flexible, and often easier, to use the methods of the specific dialog control
+    object to set the control's state.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example unchecks the check box with the symbolic resource id of IDC_CHK_RESTART and checks the check
-    box with the symbolic resource id of IDC_CHK_VERIFY:
+    The following example checks the restart check box and unchecks the verify check box:
 
 <programlisting>
 <![CDATA[
-MyDialog~newCheckBox(IDC_CHK_RESTART)~data = 1
-MyDialog~newCheckBox(IDC_CHK_VERIFY)~data = 0
+
+::method setRestart private
+  expose restartChk verifyChk
+
+  restartChk~data = 1
+  verifyChk~data = 0
+
 ]]>
 </programlisting>
     The same thing can be accomplished in this manner:
 
 <programlisting>
 <![CDATA[
-MyDialog~newCheckBox(IDC_CHK_RESTART)~check
-MyDialog~newCheckBox(IDC_CHK_VERIFY)~unCheck
+
+::method setRestart private
+  expose restartChk verifyChk
+
+  restartChk~check
+  verifyChk~uncheck
+
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
 
-</section>
+</section>  <!-- End dialog control object::data= -->
+
 
 <section id="mthDisconnectKeyPressDialogControlObject"><title>disconnectKeyPress</title>
 <indexterm><primary>disconnectKeyPress</primary><secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>disconnectKeyPress</secondary></indexterm>
+<indexterm><primary>DialogControl object</primary><secondary>disconnectKeyPress</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--disconnectKeyPress(--+--------------+--)-----><
@@ -1660,14 +1751,14 @@ method onDisable
   make much sense for this method to be a method of a dialog control in the first place.
 </para>
 <para>
-  The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use either the <emphasis
-  role="italic">getTextSizeDu</emphasis> or <emphasis role="italic">getTextSizeDlg</emphasis> methods of the dialog
-  object.
+  The ooDialog programmer is therefore <emphasis role="bold">strongly</emphasis> encouraged to use the <link
+  linkend="mthGetTextSizeDu">getTextSizeDu</link> method of the <link linkend="chpDialogObject">dialog</link> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-  <para>The arguments are:
+  <para>
+    The arguments are:
   <variablelist>
     <varlistentry><term>text [required]</term>
     <listitem>
@@ -1736,6 +1827,7 @@ method onDisable
 <section id="mthGroup"><title>group</title>
 <indexterm><primary>group</primary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>group</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>group</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--group(--+-----------+--)---------------------><
@@ -1752,36 +1844,36 @@ method onDisable
   <listitem>
   <para>
     The only argument is
-    <variablelist>
-      <varlistentry><term>wantStyle [optional]</term>
-      <listitem>
-      <para>
-        A boolean (.true or .false) to indicate whether the control should have or not have the group style.  True (the
-        default) indicates the control should have the group style and false indicates the control should not have the
-        style.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <variablelist>
+    <varlistentry><term>wantStyle [optional]</term>
+    <listitem>
+    <para>
+      A boolean (.true or .false) to indicate whether the control should have or not have the group style.  True (the
+      default) indicates the control should have the group style and false indicates the control should not have the
+      style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
     Negative values indicate the function failed, positive values indicate success.
-    <variablelist>
-      <varlistentry><term>Less than 0</term>
-      <listitem>
-      <para>
-        The value is the negated operating system error code.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>Greater than 0</term>
-      <listitem>
-      <para>
-        The window style of the dialog control prior to adding or removing the group style.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+  <variablelist>
+    <varlistentry><term>Less than 0</term>
+    <listitem>
+    <para>
+      The value is the negated operating system error code.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Greater than 0</term>
+    <listitem>
+    <para>
+      The window style of the dialog control prior to adding or removing the group style.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1808,12 +1900,13 @@ method onDisable
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+</section>  <!-- End DialogControl::group() -->
 
 
 <section id="mthHasKeyPressConnectionDialogControlObject"><title>hasKeyPressConnection</title>
 <indexterm><primary>hasKeyPressConnection</primary><secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>hasKeyPressConnection</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--hasKeyPressConnection(--+--------------+--)--><
@@ -1901,48 +1994,89 @@ method onDisable
 
 <section id="mthRedrawRectClsDialogControl"><title>redrawRect</title>
 <indexterm><primary>redrawRect</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>redrawRect</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>redrawRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--redrawRect(--left--,--top--,--right--,--bottom--+------------+--)----------><
-                                                    +-,-erasebkg-+
+Form 1:
+
+>>--redrawRect(--rectangle--+---------+--)----------------------><
+                            +-,-erase-+
+
+Form 2:
+
+>>--redrawRect(--pt1--,--pt2--+---------+--)--------------------><
+                              +-,-erase-+
+
+Form 3:
+
+>>--redrawRect(--x-,--y-,--x1-,--y1--+---------+--)-------------><
+                                     +-,-erase-+
+
+Generic form:
+
+>>--redrawRect(--rectCoordinates--+---------+--)----------------><
+                                  +-,-erase-+
 
 ]]>
 </programlisting>
 
-<para>The redrawRect method immediately redraws the rectangle
-of the client area of the associated dialog. You can specify whether the background
-of the dialog is to be erased before redrawing.</para>
+<para>
+  The <emphasis role="italic">redrawRect</emphasis> method redraws the specified <link
+  linkend="ovvRectangleCoordinates">bounding</link> rectangular within the client area of this dialog control.
+  Optionally the background of the rectangle can be erased first.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>left,top</term>
-<listitem><para>The upper left corner of the rectangle relative to the client area,
-in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>right,bottom</term>
-<listitem><para>The lower right corner of the rectangle relative to the client area,
-in screen pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>erasebkg</term>
-<listitem><para>If this argument is 1 or &quot;Y&quot;, the background of the dialog is
-erased before repainting.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>rectCoordinates [required]</term>
+      <listitem>
+      <para>
+        The coordinates of the rectangle to be redrawn. The coordinates specify the upper left and lower right corners
+        of the rectangle. The corners can be specified using either a <link linkend="clsRect">rect</link> object, two
+        <link linkend="clsPoint">point</link> objects, or the individual x and y coordinates of each corner.
+      </para>
+      <para>
+        The coordinates are specified as <link linkend="defClientArea">client-area</link> coordinates, in pixels.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>erase [optional]</term>
+      <listitem>
+      <para>
+        A boolean (<computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>) that specifies
+        whether the background of the rectangle should be redrawn (<computeroutput>.true</computeroutput>) or not
+        <computeroutput>.false</computeroutput>.) The default is <computeroutput>.false</computeroutput>
+      </para>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    0 on success, 1 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    For the <emphasis role="italic">erase</emphasis> argument, the background is not really erased, but rather the
+    background is specified to be redrawn also. By default the operating system does not redraw the background.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>Redrawing was successful.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>Redrawing failed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End DialogControl::redrawRect() -->
 
 
 <section id="mthSetColor"><title>setColor</title>
@@ -1951,7 +2085,7 @@ erased before repainting.
 <indexterm><primary>DialogControl class</primary><secondary>setColor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setColor(--bk--+-------+--)----><
+>>--setColor(--bk--+-------+--)------------------><
                    +-,-fg--+
 ]]>
 </programlisting>
@@ -2100,7 +2234,10 @@ erased before repainting.
 </programlisting>
 
 <para>
-  Add or remove the <link linkend="wstabstop">tab stop style</link> for the control.  When  a control has the tabstop
+  Add or remove the <link linkend="wstabstop">tab stop style</link> for this control.
+</para>
+<para>
+  When  a control has the tabstop
   style, the user can set the focus to the control by using the tab key.  When a control does not have this style, the
   tab key will skip over the control.  Adding or removing this style during the execution of a dialog allows the
   programmer to alter how the user navigates through the dialog controls.
@@ -2158,9 +2295,30 @@ erased before repainting.
   </variablelist>
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a control has the tabstop style, the user can set the focus to the control by using the tab key.  When a
+    control does not have this style, the tab key will skip over the control.  Adding or removing this style during the
+    execution of a dialog allows the programmer to alter how the user navigates through the dialog controls.
+  </para>
+  <para>
+    The negative return value from this method is a hold over from a period prior to the introduction of the <link
+    linkend="dotSystemErrorCode">.SystemErrorCode</link>. This method now sets the
+    <computeroutput>.SystemErrorCode</computeroutput>, making it easier to use the negative return as a failure
+    indication and use the <computeroutput>.SystemErrorCode</computeroutput> value to look up the actual error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</section>
-
-
+</section>  <!-- End DialogControl::tabStop() -->
 
 </chapter>
