@@ -82,7 +82,7 @@
 </figure>
 </section>
 
-<section id="clsPlainBaseDialog"><title>PlainBaseDialog</title>
+<section id="clsPlainBaseDialog"><title>PlainBaseDialog Class</title>
 <indexterm><primary>PlainBaseDialog Class</primary></indexterm>
 <para>
   PlainBaseDialog is the base class of all dialog classes in the ooDialog framework.  It implements methods that are
@@ -706,8 +706,38 @@
 </table>
 </section>
 
+<section id="pbdGetFontName"><title>getFontName (Class method)</title>
+<programlisting>
+PlainBaseDialog::<link linkend="mthClsGetFontName">getFontName</link>
 
+<![CDATA[
+>>--getFontName--------------------------------------><
+]]>
+</programlisting>
 </section>
+
+<section id="pbdClsGetFontSize"><title>getFontSize (Class method)</title>
+<programlisting>
+PlainBaseDialog::<link linkend="mthGetFontSize">getFontSize</link>
+
+<![CDATA[
+>>--getFontSize--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="pbdSetDefaultFont"><title>setDefaultFont (Class method)</title>
+<programlisting>
+PlainBaseDialog::<link linkend="mthClsSetDefaultFont">setDefaultFont</link>
+
+r<![CDATA[
+>>--setDefaultFont(--fontName--,--fontSize--)--------><
+]]>
+</programlisting>
+</section>
+
+
+</section>  <!-- End Section PlainBaseDialog Class -->
 
 <section id="clsDialogControl"><title>DialogControl</title>
 <indexterm><primary>DialogControl Class</primary></indexterm>
@@ -883,6 +913,132 @@ DialogControl::<link linkend="mthConnectKeyPressDialogControlObject">connectKeyP
 <![CDATA[
 >>--connectKeyPress(--methodName--,--keys--+-----------+--)-----><
                                            +-,-filter--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoData"><title>data</title>
+<programlisting>
+DialogControl::<link linkend="mthData">data</link>
+
+<![CDATA[
+>>--data-----------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoDataEquals"><title>data=</title>
+<programlisting>
+DialogControl::<link linkend="mthDataEquals">data=</link>
+
+<![CDATA[
+>>--data-=--newData------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="dcoDisconnectKeyPress"><title>disconnectKeyPress</title>
+<programlisting>
+DialogControl::<link linkend="mthDisconnectKeyPressDialogControlObject">disconnectKeyPress</link>
+
+<![CDATA[
+>>--disconnectKeyPress(--+--------------+--)-----><
+                         +--methodName--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoGetTextSizeDlg"><title>getTextSizeDlg</title>
+<programlisting>
+DialogControl::<link linkend="mthGetTextSizeDlgClsDialogControl">getTextSizeDlg</link>
+
+<![CDATA[
+>>--getTextSizeDlg(--text--+-------------+--+-------------+--+---------+--)----><
+                           +-,-fontname--+  +-,-fontSize--+  +-,-hwnd--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoGroup"><title>group</title>
+<programlisting>
+DialogControl::<link linkend="mthGroup">group</link>
+
+<![CDATA[
+>>--group(--+-----------+--)---------------------><
+            +-wantStyle-+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoHasKeyPressConnection"><title>hasKeyPressConnection</title>
+<programlisting>
+DialogControl::<link linkend="mthHasKeyPressConnectionDialogControlObject">hasKeyPressConnection</link>
+
+<![CDATA[
+>>--hasKeyPressConnection(--+--------------+--)--><
+                            +--methodName--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoRedrawRect"><title>redrawRect</title>
+<programlisting>
+DialogControl::<link linkend="mthRedrawRectClsDialogControl">redrawRect</link>
+
+<![CDATA[
+Form 1:
+
+>>--redrawRect(--rectangle--+---------+--)----------------------><
+                            +-,-erase-+
+
+Form 2:
+
+>>--redrawRect(--pt1--,--pt2--+---------+--)--------------------><
+                              +-,-erase-+
+
+Form 3:
+
+>>--redrawRect(--x-,--y-,--x1-,--y1--+---------+--)-------------><
+                                     +-,-erase-+
+
+Generic form:
+
+>>--redrawRect(--rectCoordinates--+---------+--)----------------><
+                                  +-,-erase-+
+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoSetColor"><title>setColor</title>
+<programlisting>
+DialogControl::<link linkend="mthSetColor">setColor</link>
+
+<![CDATA[
+>>--setColor(--bk--+-------+--)------------------><
+                   +-,-fg--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoSetSysColor"><title>setSysColor</title>
+<programlisting>
+DialogControl::<link linkend="mthSetSysColor">setSysColor</link>
+
+<![CDATA[
+>>--setSysColor(--bk--+-------+--)---------------><
+                      +-,-fg--+
+]]>
+</programlisting>
+</section>
+
+<section id="dcoTabStop"><title>tabStop</title>
+<programlisting>
+DialogControl::<link linkend="mthTabStop">tabStop</link>
+
+<![CDATA[
+>>--tabStop(--+-----------+--)-------------------><
+              +-wantStyle-+
 ]]>
 </programlisting>
 </section>
@@ -1245,7 +1401,7 @@ DialogControl::<link linkend="mthConnectKeyPressDialogControlObject">connectKeyP
 </variablelist>
 </section>  <!-- End ResourceUtils::resolveSymbolicID() -->
 
-</section>
+</section>  <!-- End Section ResourceUtils Mixin Class -->
 
 
 <section id="clsDynamicDialog"><title>DynamicDialog Mixin Class</title>

@@ -771,405 +771,6 @@ if success then dlg~execute
 </para>
 </section>
 
- <section id="mthDefineDialog"><title>defineDialog</title>
- <indexterm><primary>defineDialog</primary></indexterm>
- <indexterm><primary>UserDialog class</primary><secondary>defineDialog</secondary></indexterm>
- <programlisting>
- <![CDATA[
->>--defineDialog---------------------------------><
-
- ]]>
- </programlisting>
-
-<para>
-  The <emphasis role="italic">defineDialog</emphasis> method is invoked automatically by the ooDialog framework. It is
-  designed to be over-ridden in a subclass of <computeroutput>UserDialog</computeroutput>. The programmer uses this
-  method to dynamically create the dialog controls for the dialog by using the appropriate
-  <link linkend="sctCreateMethods">create ...</link> methods. For all practical purposes, all dialog controls of a
-  <computeroutput>UserDialog</computeroutput> should be created in this method.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    No arguments are passed to this method when the ooDialog framework invokes the method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    No return valued is expected. The ooDialog framework ignores any return.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The programmer should <emphasis role="bold">not</emphasis> invoke this method, the ooDialog framework invokes it at
-    the proper time. Rather, the programmer must over-ride the method in his
-    <computeroutput>UserDialog</computeroutput> subclass in order to add dialog controls to the dialog.
-  </para>
-  <para>
-    It is important to note that the <emphasis role="italic">defineDialog</emphasis> method is invoked <emphasis
-    role="bold">before</emphasis> the <link linkend="ovvUnderlying">underlying</link> Windows dialog is create.
-    Therefore, all methods requiring the underlying dialog to exist can not be used in the <emphasis
-    role="italic">defineDialog</emphasis> method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example demonsrates how to create a <link linkend="mthCreatePushButton">push button</link> and an <link
-    linkend="mthCreateEdit">edit</link> control in a dilaog:
-
-<programlisting>
-<![CDATA[
-::class MyDialog subclass UserDialog
-     .
-     .
-     .
-::method defineDialog
-self~createPushButton(401, 20, 235, 40, 15, "NOTAB", "&More...")
-self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
-     .
-     .
-     .
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End UserDialog::defineDialog() -->
-
-
-<section id="mthLoad"><title>load</title>
-<indexterm><primary>load</primary></indexterm>
-<indexterm><primary>UserDialog class</primary><secondary>load</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--load(--rcFile--+-------+--+----------+--+-------------+--)-----------------><
-                   +-,-id--+  +--,-opts--+  +-,--expected-+
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">load</emphasis> method reads the dialog <link linkend="ovvDialogTemplate">template</link>
-  form a resource <link linkend="defResourceScript">script</link> file. The method invokes the <link
-  linkend="mthLoadFrame">loadFrame</link> and <link linkend="mthLoadItems">loadItems</link> methods to parse the
-  resource script statements create the in-memory form of the dialog template needed by the operating system.
-</para>
-<para>
-  An alternative to using the <emphasis role="italic">load</emphasis> method directly is to subclass the <link
-  linkend="clsRcDialog">RcDialog</link> instead of the <computeroutput>UserDialog</computeroutput>. The
-  <computeroutput>RcDialog</computeroutput> handles the details of how and when to invoke the <emphasis
-  role="italic">load</emphasis> method automatically.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>rcFile [required]</term>
-    <listitem>
-    <para>
-      The resource script file name.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>id [optional]</term>
-    <listitem>
-    <para>
-      The resource ID of the dialog. May be numeric or <link linkend="defSymbolicID">symbolic</link>. Resource scripts
-      often contain more thant one dialog definition, the resource ID is used to locate the correct dialog. If the
-      resource script only contains one dialog resource, then this argument can be omitted.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>opts [optional]</term>
-    <listitem>
-    <para>
-      Zero or more of the following keywords, separated by blanks. Case is not significant:
-    <variablelist>
-      <varlistentry><term>CENTER</term>
-      <listitem>
-      <para>
-        The dialog is positioned in the center of the screen. This keyword would over-ride the position specified in
-        the resource file.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>CONNECTBUTTONS</term>
-      <listitem>
-      <para>
-        For each push button in the dialog template, the <link linkend="mthConnectButtonEvent">button</link> CLICKED
-        event notification is connected to a method in the Rexx dialog object. The label of the push button is used to
-        automatically generate the method name. All space, tab, ampersand, colon, and plus characters are removed from
-        the label. In addition, if there is a trailing &quot;...&quot; it is also removed. The resulting string is
-        used as the method name.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>CONNECTRADIOS</term>
-      <listitem>
-      <para>
-        For each radio button in the dialog template, the <link linkend="mthConnectButtonEvent">button</link> CLICKED
-        event notification is connected to a method in the Rexx dialog object. The method name is automatically
-        generated from the label of the radion button. All space, tab, ampersand, colon, and plus characters are removed from the label. In addition,
-        if there is a trailing &quot;...&quot; it is also removed. This string has the characters
-        <computeroutput>ID</computeroutput> prepended, and the result is used for the method name.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>CONNECTCHECKS</term>
-      <listitem>
-      <para>
-        This option connects the check box controls as CONNECTRADIOS connects radio buttons. The method name is
-        generated in the same way as it is for radio buttons.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>expected [optional]</term>
-    <listitem>
-    <para>
-      This is a value used by the ooDialog framework to estimate the amount of memory to reserve for the dialog
-      template. It serves the same purpose as the <emphasis role="italic">expected</emphasis> argument the <link
-      linkend="mthCreate">create</link> method. The default value is 200. A minimum value should be at least the number
-      of dialog controls in the template.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method returns 0 for success and non-zero on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example creates a dialog from the dialog template with a symbolic resource id of
-    <computeroutput>IDD_DIALOG1</computeroutput> in the <computeroutput>dialog1.rc</computeroutput> resource script
-    file. As the resource script file is being parsed, the CLICKED <link linkend="ovvEvents">events</link> for all push
-    and radio buttons are connected to a methods in the Rexx dialog object. See the CONNECTBUTTONS and CONNECTRADIOS
-    keyword above for a little more detail on how the method names are constructed.
-
-  <programlisting>
-  <![CDATA[
-  MyDlg = .UserDialog~new( , 'Dialog1.h')
-  MyDlg~load("Dialog1.rc", IDD_DIALOG1, "CONNECTBUTTONS CONNECTRADIOS")
-  ]]>
-  </programlisting>
-
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthLoadFrame"><title>loadFrame</title>
-<indexterm><primary>loadFrame</primary></indexterm>
-<indexterm><primary>UserDialog class</primary><secondary>loadFrame</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--loadFrame(--rcFile--+-------+--+----------+--+-------------+--)------------><
-                        +-,-id--+  +--,-opts--+  +-,--expected-+
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">loadFrame</emphasis> method starts the creation of the in-memory Windows dialog <link
-  linkend="ovvDialogTemplate">template</link> using a dialog definition from a resource <link
-  linkend="defResourceScript">script</link> file. It creates the <link linkend="defClientArea">nonclient</link> area of
-  the dialog.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    This is a private method. It is invoked automatically by the <link linkend="mthLoad">load</link> method. There is
-    seldom a need for the Rexx programmer to invoke this method directly.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>rcFile [required]</term>
-    <listitem>
-    <para>
-      The resource script file name.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>id [optional]</term>
-    <listitem>
-    <para>
-      The resource ID of the dialog. May be numeric or <link linkend="defSymbolicID">symbolic</link>. Resource scripts
-      often contain more thant one dialog definition, the resource ID is used to locate the correct dialog. If the
-      resource script only contains one dialog resource, then this argument can be omitted.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>opts [optional]</term>
-    <listitem>
-    <para>
-      If keyword, CENTER, is contained in the opts string then the dialog is positioned in the center of the screen.
-      This option would over-ride the position specified in the resource file.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>expected [optional]</term>
-    <listitem>
-    <para>
-      This is a value used by the ooDialog framework to estimate the amount of memory to reserve for the dialog
-      template. It serves the same purpose as the <emphasis role="italic">expected</emphasis> argument the <link
-      linkend="mthCreate">create</link> method. The default value is 200. A minimum value should be at least the number
-      of dialog controls in the template.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method returns 0 for success and non-zero on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example over-rides the <link linkend="mthLoad">load</link> method, so that it only loads the dialog
-    frame, but none of the dialog controls.
-
-<programlisting>
-<![CDATA[
-::class WindowOnlyDialog subclass UserDialog
-     .
-     .
-     .
-::method load
-  return self~loadFrame("Dialog2.rc", 100, "CENTER", 20)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthLoadItems"><title>loadItems</title>
-<indexterm><primary>loadItems</primary></indexterm>
-<indexterm><primary>UserDialog class</primary><secondary>loadItems</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--loadItems(--rcFile--+-------+--+----------+--)-----------------------------><
-                        +-,-id--+  +--,-opts--+
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">loadItems</emphasis> method finishes the creation of the in-memory Windows dialog <link
-  linkend="ovvDialogTemplate">template</link> using a dialog definition from a resource <link
-  linkend="defResourceScript">script</link> file. It creates the dialog controls for the dialog. In essence it defines
-  the <link linkend="defClientArea">client</link> area of the dialog.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    This is a private method. It is normally invoked automatically by the <link linkend="mthLoad">load</link> method.
-    There is seldom a need for the Rexx programmer to inovke this method directly.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>rcFile [required]</term>
-    <listitem>
-    <para>
-      The resource script file name.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>id [optional]</term>
-    <listitem>
-    <para>
-      The resource ID of the dialog. May be numeric or <link linkend="defSymbolicID">symbolic</link>. Resource scripts
-      often contain more thant one dialog definition, the resource ID is used to locate the correct dialog. If the
-      resource script only contains one dialog resource, then this argument can be omitted.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>opts [optional]</term>
-    <listitem>
-    <para>
-      Zero or more of the following keywords, separated by blanks. Case is not significant:
-    <variablelist>
-      <varlistentry><term>CONNECTBUTTONS</term>
-      <listitem>
-      <para>
-        For each push button in the dialog template, the <link linkend="mthConnectButtonEvent">button</link> CLICKED
-        event notification is connected to a method in the Rexx dialog object. The label of the push button is used to
-        automatically generate the method name. All space, tab, ampersand, colon, and plus characters are removed from
-        the label. In addition, if there is a trailing &quot;...&quot; it is also removed. The resulting string is
-        used as the method name.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>CONNECTRADIOS</term>
-      <listitem>
-      <para>
-        For each radio button in the dialog template, the <link linkend="mthConnectButtonEvent">button</link> CLICKED
-        event notification is connected to a method in the Rexx dialog object. The method name is automatically
-        generated from the label of the radion button. All space, tab, ampersand, colon, and plus characters are removed from the label. In addition,
-        if there is a trailing &quot;...&quot; it is also removed. This string has the characters
-        <computeroutput>ID</computeroutput> prepended, and the result is used for the method name.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>CONNECTCHECKS</term>
-      <listitem>
-      <para>
-        This option connects the check box controls as CONNECTRADIOS connects radio buttons. The method name is
-        generated in the same way as it is for radio buttons.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method returns 0 for success and non-zero on error.
-  </para>
-  </listitem></varlistentry>
-
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    In the following example the dialog is created either with the controls of dialog 200 or dialog 300, depending on
-    the <emphasis role="italic">view</emphasis> argument:
-
-  <programlisting>
-  <![CDATA[
-  ::class MyDialog subclass UserDialog
-      ...
-
-  ::method load
-     use strict arg view
-     self~loadFrame("Dialog2.rc", 200, "CENTER", 200)
-     if view == "special" then
-        self~loadItems("Dialog2.rc", 200, "CONNECTBUTTONS")
-     else
-        self~loadItems("Dialog2.rc", 300, "CONNECTBUTTONS")
-  ]]>
-  </programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="sctCreateMethods"><title>Create... Methods</title>
 <indexterm><primary>create... methods</primary></indexterm>
 <indexterm><primary>UserDialog class</primary><secondary>create... methods</secondary></indexterm>
@@ -10842,5 +10443,404 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
 
 </section>  <!-- End Create... Methods Section -->
 
+
+ <section id="mthDefineDialog"><title>defineDialog</title>
+ <indexterm><primary>defineDialog</primary></indexterm>
+ <indexterm><primary>UserDialog class</primary><secondary>defineDialog</secondary></indexterm>
+ <programlisting>
+ <![CDATA[
+>>--defineDialog---------------------------------><
+
+ ]]>
+ </programlisting>
+
+<para>
+  The <emphasis role="italic">defineDialog</emphasis> method is invoked automatically by the ooDialog framework. It is
+  designed to be over-ridden in a subclass of <computeroutput>UserDialog</computeroutput>. The programmer uses this
+  method to dynamically create the dialog controls for the dialog by using the appropriate
+  <link linkend="sctCreateMethods">create ...</link> methods. For all practical purposes, all dialog controls of a
+  <computeroutput>UserDialog</computeroutput> should be created in this method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    No arguments are passed to this method when the ooDialog framework invokes the method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    No return valued is expected. The ooDialog framework ignores any return.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer should <emphasis role="bold">not</emphasis> invoke this method, the ooDialog framework invokes it at
+    the proper time. Rather, the programmer must over-ride the method in his
+    <computeroutput>UserDialog</computeroutput> subclass in order to add dialog controls to the dialog.
+  </para>
+  <para>
+    It is important to note that the <emphasis role="italic">defineDialog</emphasis> method is invoked <emphasis
+    role="bold">before</emphasis> the <link linkend="ovvUnderlying">underlying</link> Windows dialog is create.
+    Therefore, all methods requiring the underlying dialog to exist can not be used in the <emphasis
+    role="italic">defineDialog</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example demonsrates how to create a <link linkend="mthCreatePushButton">push button</link> and an <link
+    linkend="mthCreateEdit">edit</link> control in a dilaog:
+
+<programlisting>
+<![CDATA[
+::class MyDialog subclass UserDialog
+     .
+     .
+     .
+::method defineDialog
+self~createPushButton(401, 20, 235, 40, 15, "NOTAB", "&More...")
+self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
+     .
+     .
+     .
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UserDialog::defineDialog() -->
+
+
+<section id="mthLoad"><title>load</title>
+<indexterm><primary>load</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>load</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--load(--rcFile--+-------+--+----------+--+-------------+--)-----------------><
+                   +-,-id--+  +--,-opts--+  +-,--expected-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">load</emphasis> method reads the dialog <link linkend="ovvDialogTemplate">template</link>
+  form a resource <link linkend="defResourceScript">script</link> file. The method invokes the <link
+  linkend="mthLoadFrame">loadFrame</link> and <link linkend="mthLoadItems">loadItems</link> methods to parse the
+  resource script statements create the in-memory form of the dialog template needed by the operating system.
+</para>
+<para>
+  An alternative to using the <emphasis role="italic">load</emphasis> method directly is to subclass the <link
+  linkend="clsRcDialog">RcDialog</link> instead of the <computeroutput>UserDialog</computeroutput>. The
+  <computeroutput>RcDialog</computeroutput> handles the details of how and when to invoke the <emphasis
+  role="italic">load</emphasis> method automatically.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>rcFile [required]</term>
+    <listitem>
+    <para>
+      The resource script file name.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id [optional]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog. May be numeric or <link linkend="defSymbolicID">symbolic</link>. Resource scripts
+      often contain more thant one dialog definition, the resource ID is used to locate the correct dialog. If the
+      resource script only contains one dialog resource, then this argument can be omitted.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      Zero or more of the following keywords, separated by blanks. Case is not significant:
+    <variablelist>
+      <varlistentry><term>CENTER</term>
+      <listitem>
+      <para>
+        The dialog is positioned in the center of the screen. This keyword would over-ride the position specified in
+        the resource file.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CONNECTBUTTONS</term>
+      <listitem>
+      <para>
+        For each push button in the dialog template, the <link linkend="mthConnectButtonEvent">button</link> CLICKED
+        event notification is connected to a method in the Rexx dialog object. The label of the push button is used to
+        automatically generate the method name. All space, tab, ampersand, colon, and plus characters are removed from
+        the label. In addition, if there is a trailing &quot;...&quot; it is also removed. The resulting string is
+        used as the method name.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CONNECTRADIOS</term>
+      <listitem>
+      <para>
+        For each radio button in the dialog template, the <link linkend="mthConnectButtonEvent">button</link> CLICKED
+        event notification is connected to a method in the Rexx dialog object. The method name is automatically
+        generated from the label of the radion button. All space, tab, ampersand, colon, and plus characters are removed from the label. In addition,
+        if there is a trailing &quot;...&quot; it is also removed. This string has the characters
+        <computeroutput>ID</computeroutput> prepended, and the result is used for the method name.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CONNECTCHECKS</term>
+      <listitem>
+      <para>
+        This option connects the check box controls as CONNECTRADIOS connects radio buttons. The method name is
+        generated in the same way as it is for radio buttons.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>expected [optional]</term>
+    <listitem>
+    <para>
+      This is a value used by the ooDialog framework to estimate the amount of memory to reserve for the dialog
+      template. It serves the same purpose as the <emphasis role="italic">expected</emphasis> argument the <link
+      linkend="mthCreate">create</link> method. The default value is 200. A minimum value should be at least the number
+      of dialog controls in the template.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns 0 for success and non-zero on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example creates a dialog from the dialog template with a symbolic resource id of
+    <computeroutput>IDD_DIALOG1</computeroutput> in the <computeroutput>dialog1.rc</computeroutput> resource script
+    file. As the resource script file is being parsed, the CLICKED <link linkend="ovvEvents">events</link> for all push
+    and radio buttons are connected to a methods in the Rexx dialog object. See the CONNECTBUTTONS and CONNECTRADIOS
+    keyword above for a little more detail on how the method names are constructed.
+
+  <programlisting>
+  <![CDATA[
+  MyDlg = .UserDialog~new( , 'Dialog1.h')
+  MyDlg~load("Dialog1.rc", IDD_DIALOG1, "CONNECTBUTTONS CONNECTRADIOS")
+  ]]>
+  </programlisting>
+
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthLoadFrame"><title>loadFrame</title>
+<indexterm><primary>loadFrame</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>loadFrame</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--loadFrame(--rcFile--+-------+--+----------+--+-------------+--)------------><
+                        +-,-id--+  +--,-opts--+  +-,--expected-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">loadFrame</emphasis> method starts the creation of the in-memory Windows dialog <link
+  linkend="ovvDialogTemplate">template</link> using a dialog definition from a resource <link
+  linkend="defResourceScript">script</link> file. It creates the <link linkend="defClientArea">nonclient</link> area of
+  the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This is a private method. It is invoked automatically by the <link linkend="mthLoad">load</link> method. There is
+    seldom a need for the Rexx programmer to invoke this method directly.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>rcFile [required]</term>
+    <listitem>
+    <para>
+      The resource script file name.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id [optional]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog. May be numeric or <link linkend="defSymbolicID">symbolic</link>. Resource scripts
+      often contain more thant one dialog definition, the resource ID is used to locate the correct dialog. If the
+      resource script only contains one dialog resource, then this argument can be omitted.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      If keyword, CENTER, is contained in the opts string then the dialog is positioned in the center of the screen.
+      This option would over-ride the position specified in the resource file.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>expected [optional]</term>
+    <listitem>
+    <para>
+      This is a value used by the ooDialog framework to estimate the amount of memory to reserve for the dialog
+      template. It serves the same purpose as the <emphasis role="italic">expected</emphasis> argument the <link
+      linkend="mthCreate">create</link> method. The default value is 200. A minimum value should be at least the number
+      of dialog controls in the template.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns 0 for success and non-zero on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example over-rides the <link linkend="mthLoad">load</link> method, so that it only loads the dialog
+    frame, but none of the dialog controls.
+
+<programlisting>
+<![CDATA[
+::class WindowOnlyDialog subclass UserDialog
+     .
+     .
+     .
+::method load
+  return self~loadFrame("Dialog2.rc", 100, "CENTER", 20)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthLoadItems"><title>loadItems</title>
+<indexterm><primary>loadItems</primary></indexterm>
+<indexterm><primary>UserDialog class</primary><secondary>loadItems</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--loadItems(--rcFile--+-------+--+----------+--)-----------------------------><
+                        +-,-id--+  +--,-opts--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">loadItems</emphasis> method finishes the creation of the in-memory Windows dialog <link
+  linkend="ovvDialogTemplate">template</link> using a dialog definition from a resource <link
+  linkend="defResourceScript">script</link> file. It creates the dialog controls for the dialog. In essence it defines
+  the <link linkend="defClientArea">client</link> area of the dialog.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This is a private method. It is normally invoked automatically by the <link linkend="mthLoad">load</link> method.
+    There is seldom a need for the Rexx programmer to inovke this method directly.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>rcFile [required]</term>
+    <listitem>
+    <para>
+      The resource script file name.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id [optional]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog. May be numeric or <link linkend="defSymbolicID">symbolic</link>. Resource scripts
+      often contain more thant one dialog definition, the resource ID is used to locate the correct dialog. If the
+      resource script only contains one dialog resource, then this argument can be omitted.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      Zero or more of the following keywords, separated by blanks. Case is not significant:
+    <variablelist>
+      <varlistentry><term>CONNECTBUTTONS</term>
+      <listitem>
+      <para>
+        For each push button in the dialog template, the <link linkend="mthConnectButtonEvent">button</link> CLICKED
+        event notification is connected to a method in the Rexx dialog object. The label of the push button is used to
+        automatically generate the method name. All space, tab, ampersand, colon, and plus characters are removed from
+        the label. In addition, if there is a trailing &quot;...&quot; it is also removed. The resulting string is
+        used as the method name.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CONNECTRADIOS</term>
+      <listitem>
+      <para>
+        For each radio button in the dialog template, the <link linkend="mthConnectButtonEvent">button</link> CLICKED
+        event notification is connected to a method in the Rexx dialog object. The method name is automatically
+        generated from the label of the radion button. All space, tab, ampersand, colon, and plus characters are removed from the label. In addition,
+        if there is a trailing &quot;...&quot; it is also removed. This string has the characters
+        <computeroutput>ID</computeroutput> prepended, and the result is used for the method name.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>CONNECTCHECKS</term>
+      <listitem>
+      <para>
+        This option connects the check box controls as CONNECTRADIOS connects radio buttons. The method name is
+        generated in the same way as it is for radio buttons.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns 0 for success and non-zero on error.
+  </para>
+  </listitem></varlistentry>
+
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In the following example the dialog is created either with the controls of dialog 200 or dialog 300, depending on
+    the <emphasis role="italic">view</emphasis> argument:
+
+  <programlisting>
+  <![CDATA[
+  ::class MyDialog subclass UserDialog
+      ...
+
+  ::method load
+     use strict arg view
+     self~loadFrame("Dialog2.rc", 200, "CENTER", 200)
+     if view == "special" then
+        self~loadItems("Dialog2.rc", 200, "CONNECTBUTTONS")
+     else
+        self~loadItems("Dialog2.rc", 300, "CONNECTBUTTONS")
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 
 </chapter>
