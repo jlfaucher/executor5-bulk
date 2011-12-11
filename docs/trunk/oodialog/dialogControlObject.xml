@@ -162,6 +162,10 @@
 <entry>Converts client-area coordinates of the control to its screen coordinates.</entry>
 </row>
 <row>
+<entry><link linkend="mthConnectCharEvent">connectCharEvent</link></entry>
+<entry>Connects a WM_CHAR message sent to the control to a method in the Rexx dialog.</entry>
+</row>
+<row>
 <entry><link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link></entry>
 <entry>Connects all F Key key press events to a method in the Rexx dialog.</entry>
 </row>
@@ -346,6 +350,10 @@
 <entry>Gets the text of the control.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetTextSizeDlgClsDialogControl">getTextSizeDlg</link></entry>
+<entry>Calculates the size, (width and height,) in dialog units for a given string.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoGetTextSizePx">getTextSizePx</link></entry>
 <entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
 </row>
@@ -518,6 +526,10 @@
 <entry>Add or remove the tab stop style for the control.</entry>
 </row>
 <row>
+<entry><link linkend="mthTextSize">textSize</link></entry>
+<entry>Computes the width and height in pixels of the specified string of text when displayed by this control.</entry>
+</row>
+<row>
 <entry><link linkend="wbdcoTitle">title</link></entry>
 <entry>Gets the text of the control.</entry>
 </row>
@@ -532,6 +544,14 @@
 <row>
 <entry><link linkend="wbdcoUpdate">update</link></entry>
 <entry>Invalidates the entire client area of the control.</entry>
+</row>
+<row>
+<entry><link linkend="mthUseUnicode">useUnicode</link></entry>
+<entry>Sets the format flag telling the control to use, or not use, Unicode.</entry>
+</row>
+<row>
+<entry><link linkend="mthUsingUnicode">usingCode</link></entry>
+<entry>Determines if the control is using Unicode or not.</entry>
 </row>
 <row>
 <entry><link linkend="wedcoVScrollPos">vScrollPos</link></entry>
@@ -895,6 +915,70 @@ Generic form:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End dialog control object::clearRect() -->
+
+<section id="mthConnectCharEvent"><title>connectCharEvent</title>
+<indexterm><primary>connectCharEvent</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>connectCharEvent</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>connectCharEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectCharEvent(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::connectCharEvent() -->
 
 
 <section id="mthConnectFKeyPressDialogControlObject"><title>connectFKeyPress</title>
@@ -2315,5 +2399,194 @@ Generic form:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DialogControl::tabStop() -->
+
+<section id="mthTextSize"><title>testSize</title>
+<indexterm><primary>testSize</primary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>testSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--testSize(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::testSize() -->
+
+<section id="mthUseUnicode"><title>useUnicode</title>
+<indexterm><primary>useUnicode</primary></indexterm>
+<indexterm><primary>Dialog Control class</primary><secondary>useUnicode</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--useUnicode(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Dialog Control::useUnicode() -->
+
+<section id="mthUsingUnicode"><title>usingUnicode</title>
+<indexterm><primary>usingUnicode</primary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>usingUnicode</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--usingUnicode(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DialogControl::usingUnicode() -->
 
 </chapter>

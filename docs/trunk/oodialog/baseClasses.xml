@@ -726,12 +726,121 @@ PlainBaseDialog::<link linkend="mthClsGetFontSize">getFontSize</link>
 </programlisting>
 </section>
 
+<section id="pbdNew"><title>new (Class method)</title>
+<programlisting>
+PlainBaseDialog::<link linkend="mthNewDialogObject">new</link>
+
+<![CDATA[
+>>--new(--library--,--id--+-------------+--+----------+--)---------------------><
+                          +-,--dlgData.-+  +-,--hFile-+
+]]>
+</programlisting>
+</section>
+
 <section id="pbdSetDefaultFont"><title>setDefaultFont (Class method)</title>
 <programlisting>
 PlainBaseDialog::<link linkend="mthClsSetDefaultFont">setDefaultFont</link>
 
 r<![CDATA[
 >>--setDefaultFont(--fontName--,--fontSize--)--------><
+]]>
+</programlisting>
+</section>
+
+<section id="pbdAutoDetect"><title>autoDetect</title>
+<programlisting>
+PlainBaseDialog::<link linkend="atrAutoDetect">autoDetect (Attribute)</link>
+
+<![CDATA[
+>>--autoDetect---------------------------------------><
+
+>>--autoDetect-=-onOff-------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="pbdDlgHandle"><title>dlgHandle (Attribute)</title>
+<programlisting>
+PlainBaseDialog::<link linkend="atrDlgHandle">dlgHandle</link>
+
+<![CDATA[
+]]>
+</programlisting>
+</section>
+
+<section id="pbdFontName"><title>fontName (Attribute)</title>
+<programlisting>
+PlainBaseDialog::<link linkend="atrFontName">fontName</link>
+
+<![CDATA[
+>>--fontName-----------------------------------------><
+
+>>--fontName=nameVar---------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="pbdFontSize"><title>fontSize (Attribute)</title>
+<programlisting>
+PlainBaseDialog::<link linkend="atrFontSize">fontSize</link>
+
+<![CDATA[
+>>--fontSize-----------------------------------------><
+
+>>--fontSize=sizeVar---------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="pbdOwnerDialog"><title>ownerDialog (Attribute)</title>
+<programlisting>
+PlainBaseDialog::<link linkend="atrOwnerDialog">ownerDialog</link>
+
+<![CDATA[
+>>--ownerDialog----------------------------------><
+
+>>--ownerDialog-=-rexxDlg------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="pbdAddComboEntry"><title>addComboEntry</title>
+<programlisting>
+PlainBaseDialog::<link linkend="mthAddComboEntry">addComboEntry</link>
+
+<![CDATA[
+>>--addComboEntry(--id--,--aString--)------------><
+]]>
+</programlisting>
+</section>
+
+<section id="pbdInsertComboEntry"><title>insertComboEntry</title>
+<programlisting>
+PlainBaseDialog::<link linkend="mthInsertComboEntry">insertComboEntry</link>
+
+<![CDATA[
+>>--insertComboEntry(--id--,--+-------+--,--string--)-----------><
+                              +-index-+
+]]>
+</programlisting>
+</section>
+
+<section id="pbdDeleteComboEntry"><title>deleteComboEntry</title>
+<programlisting>
+PlainBaseDialog::<link linkend="mthDeleteComboEntry">deleteComboEntry</link>
+
+<![CDATA[
+>>--deleteComboEntry(--id--,--index--)-----------><
+]]>
+</programlisting>
+</section>
+
+<section id="pbdFindComboEntry"><title>findComboEntry</title>
+<programlisting>
+PlainBaseDialog::<link linkend="mthFindComboEntry">findComboEntry</link>
+
+r<![CDATA[
+>>--findComboEntry(--id--,--aString--)-----------><
 ]]>
 </programlisting>
 </section>
@@ -826,6 +935,10 @@ r<![CDATA[
 <row>
 <entry><link linkend="mthDisconnectKeyPressDialogControlObject">disconnectKeyPress</link></entry>
 <entry>Disconnects a method in the Rexx dialog from a previously connected key press event.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetTextSizeDlgClsDialogControl">getTextSizeDlg</link></entry>
+<entry>Calculates the size, (width and height,) in dialog units for a given string.</entry>
 </row>
 <row>
 <entry><link linkend="mthGroup">group</link></entry>
