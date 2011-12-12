@@ -423,7 +423,7 @@ returnNil:
       .local~mailItemAbort = .false
 
       mailItem~addEventMethod("open", producer~getOpenEvent)
-      mailItem~addEventMethod("close", producer~getCloseEvent)
+      mailItem~addEventMethod("OLEEvent_Close", producer~getCloseEvent)
 
       /* Simply calling mailItem~display is *usually* enough to show the mail
        * item.  The mail item window is always created.  99% of the time the
@@ -939,6 +939,9 @@ returnNil:
 ::method abort
   .local~mailItemAbort = .true
   return self~cancel:super
+
+::method initAutoDetection
+  self~noAutoDetection
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\

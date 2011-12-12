@@ -62,7 +62,6 @@
 
   -- Change EDIT to a valid e-mail address.  Like tom@gmail.com
   recipient = 'EDIT'
-  recipient = 'bmiesfeld@san.rr.com'
 
   if recipient == 'EDIT' then do
     say 'You must edit the outLookSend.rex file so it has a valid'

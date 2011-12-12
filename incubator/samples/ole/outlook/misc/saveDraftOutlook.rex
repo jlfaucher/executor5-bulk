@@ -57,7 +57,6 @@
   -- Set the recipient variable to a valid e-mail address, presumably your own
   -- address:
   recipient = 'EDIT'
-  recipient = 'miesfeld@gmail.com'
 
   if recipient == 'EDIT' then do
     say 'You must change the "recipient" variable in the first'
