@@ -198,6 +198,7 @@ Section  installFiles
   ${CreateDirectory} "$INSTDIR\Controls"
   ${CreateDirectory} "$INSTDIR\Controls\Edit"
   ${CreateDirectory} "$INSTDIR\Controls\List-view"
+  ${CreateDirectory} "$INSTDIR\Controls\Static"
   ${CreateDirectory} "$INSTDIR\Dialogs"
   ${CreateDirectory} "$INSTDIR\Menus"
 
@@ -214,6 +215,10 @@ Section  installFiles
   ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.bmp"
   ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.h"
   ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.rex"
+
+  ${SetOutPath} "$INSTDIR\Controls\Static"
+  ${File} "${SRCDIR}\Controls\Static\" "shaveIce.ico"
+  ${File} "${SRCDIR}\Controls\Static\" "staticImage.rex"
 
   ${SetOutPath} "$INSTDIR\Dialogs\application.icon"
   ${File} "${SRCDIR}\Dialogs\application.icon\" "appIcon.h"
