@@ -922,33 +922,26 @@ Generic form:
 <indexterm><primary>DialogControl class</primary><secondary>connectCharEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectCharEvent(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--connectCharEvent-----------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">connectCharEvent</emphasis> method connects a keyboard character event notification to
+  this dialog control with a method in the Rexx dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns <computeroutput>.true</computeroutput> on success and <computeroutput>.false</computeroutput> on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -960,10 +953,126 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary
+    use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the
+    library.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The ooDialog method connected to the key press event will receive the following five arguments in the order listed:
+    <variablelist>
+      <varlistentry><term>keyCode</term>
+      <listitem>
+      <para>
+        The numeric code of the key pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>shift</term>
+      <listitem>
+      <para>
+        A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
+        be true if a shift key was down and false if the shift key was not down.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>control</term>
+      <listitem>
+      <para>
+        True if a control key was down at the time of the key press, false if it was not.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>alt</term>
+      <listitem>
+      <para>
+        True if an alt key was down at the time of the key press, false if it was not.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>extraInfo</term>
+      <listitem>
+      <para>
+        This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
+        time of a key press event. The string will contain some combination of these keywords
+        <variablelist>
+          <varlistentry><term>numOn</term>
+          <listitem>
+          <para>
+            Num Lock was on at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>numOff</term>
+          <listitem>
+          <para>
+            Num Lock was off.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>capsOn</term>
+          <listitem>
+          <para>
+            Caps Lock was on at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>capsOff</term>
+          <listitem>
+          <para>
+            Caps Lock was off.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>scrollOn</term>
+          <listitem>
+          <para>
+            Scroll Lock was on at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>scrollOff</term>
+          <listitem>
+          <para>
+            Scroll Lock was off.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>lShift</term>
+          <listitem>
+          <para>
+            The left shift key was down at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rShift</term>
+          <listitem>
+          <para>
+            The right shift key was down.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>lControl</term>
+          <listitem>
+          <para>
+            The left control key was down at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rControl</term>
+          <listitem>
+          <para>
+            The right control key was down.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>lAlt</term>
+          <listitem>
+          <para>
+            The left alt key was down at the time of the key press event.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rAlt</term>
+          <listitem>
+          <para>
+            The right alt key was down.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
