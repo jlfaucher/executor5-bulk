@@ -238,6 +238,9 @@ Section  installFiles
   ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.rex"
   ${File} "${SRCDIR}\Dialogs\dlgData\" "symbolicDlgData.rex"
 
+  ${SetOutPath} "$INSTDIR\Dialogs\simple.dialogs"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\" "inputDlg.rex"
+
   ; Write the uninstall keys.
   DetailPrint "Writing uninstall keys."
   WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "InstallLocation" '"$INSTDIR"'
