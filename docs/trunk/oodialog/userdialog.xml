@@ -1281,7 +1281,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
                                   +-,-cx-+  +-,-cy-+  +-,-style-+  +-,-label-+
 
 >----+-----------------+--+--------------+--)----------------------------------><
-     +-,-attributeName-+  +-,-connectOpt-+
+     +-,-attributeName-+  +-,-connectMth-+
 ]]>
 </programlisting>
 
@@ -1513,13 +1513,27 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
         method can be used to manually create and connect the data attrbiute when data detection is off.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>connectOpt [optional]</term>
+      <varlistentry><term>connectMth [optional]</term>
       <listitem>
       <para>
-        A text string. If this string contains the word CONNECTCHECKS, case insignificant, then the <link
-        linkend="mthConnectButtonEvent">button</link> CLICKED event notification is automatically connected to a method
-        in the dialog. The method name is generated from the label of the button with all space, tab, ampersand, colon,
-        and plus sign characters removed. In addition, if the label were to have a trailing ... that is also removed.
+        A text string that allows the <link linkend="mthConnectButtonEvent">button</link> CLICKED event notification to
+        be automatically connected to a method in the dialog. In normal usage <emphasis
+        role="italic">connectMth</emphasis> is the name of the method in the Rexx dialog to be connected to the CLICKED
+        event.
+      </para>
+      <para>
+        However, the <emphasis role="italic">createCheckBox</emphasis> method is also used by the <link
+        linkend="clsRcDialog">RcDialog</link> to create check box controls found in the resource <link
+        linkend="defResourceScript">script</link> for the dialog. Therefore, if this string contains the word
+        CONNECTCHECKS, case insignificant, then the method name is generated in the same way as it is by specifying
+        CONNECTCHECKS in the <emphasis role="italic">opts</emphasis> argument when <link
+        linkend="mthNewClsRcDialog">instantiating</link> a <computeroutput>RcDialog</computeroutput>.
+      </para>
+      <para>
+        First a string is constructed from the label of the button with all space, tab, ampersand, colon, and plus sign
+        characters removed. In addition, if the label were to have a trailing ... that is also removed. Then that string
+        is prepended with the text <computeroutput>id</computeroutput>. This string is used as the method name to
+        connect the clicked event to.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2548,8 +2562,8 @@ self~objectrexx = 1
 >>--createRadioButton(-id-,-x-,-y-+------+--+------+--+---------+-------------->
                                   +-,-cx-+  +-,-cy-+  +-,-style-+
 
->--+--------+--+--------+--)---------------------------------------------------><
-   +-,-text-+  +-,-attr-+
+>--+--------+--+--------+--+--------------+--)---------------------------------><
+   +-,-text-+  +-,-attr-+  +-,-connectMth-+
 
 ]]>
 </programlisting>
@@ -2763,6 +2777,29 @@ self~objectrexx = 1
         button. If you omit this argument then the name of the data attribute is constructed <link
         linkend="sctDataAttributeNames">automatically</link>. If <link linkend="mthInitAutoDetection">auto
         detection</link> is off, this argument is ignored.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>connectMth [optional]</term>
+      <listitem>
+      <para>
+        A text string that allows the <link linkend="mthConnectButtonEvent">button</link> CLICKED event notification to
+        be automatically connected to a method in the dialog. In normal usage <emphasis
+        role="italic">connectMth</emphasis> is the name of the method in the Rexx dialog to be connected to the CLICKED
+        event.
+      </para>
+      <para>
+        However, the <emphasis role="italic">createRadioButton</emphasis> method is also used by the <link
+        linkend="clsRcDialog">RcDialog</link> to create radio button controls found in the resource <link
+        linkend="defResourceScript">script</link> for the dialog. Therefore, if this string contains the word
+        CONNECTRADIOS, case insignificant, then the method name is generated in the same way as it is by specifying
+        CONNECTRADIOS in the <emphasis role="italic">opts</emphasis> argument when <link
+        linkend="mthNewClsRcDialog">instantiating</link> a <computeroutput>RcDialog</computeroutput>.
+      </para>
+      <para>
+        First a string is constructed from the label of the button with all space, tab, ampersand, colon, and plus sign
+        characters removed. In addition, if the label were to have a trailing ... that is also removed. Then that string
+        is prepended with the text <computeroutput>id</computeroutput>. This string is used as the method name to
+        connect the clicked event to.
       </para>
       </listitem></varlistentry>
     </variablelist>

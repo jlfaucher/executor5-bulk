@@ -288,7 +288,8 @@ end
           linkend="ovvEvents">event</link> notification connected automatically to a method in the Rexx dialog object.
           This is the same as using the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the
           CLICKED notification. The name for the method is generated automatically by the ooDialog framework. The method
-          name is the button label with all spaces, ampersands, and colons removed.
+          name is the button label with all spaces, ampersands, colons, and trailing <emphasis
+          role="italic">...</emphasis> characters removed.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CONNECTRADIOS</term>
@@ -297,18 +298,22 @@ end
           Similar to CONNECTBUTTONS, this option connects the CLICKED event notification from each <link
           linkend="clsRadioButton">radio</link> button to a method in the Rexx dialog object. Again, this is the same as
           using the <emphasis role="italic">connectButtonEvent</emphasis> method.  For radio buttons, the generated
-          method name is the button label, with all spaces, ampersands, and colons removed, prepended with the text
-          <computeroutput>ID</computeroutput>.
+
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CONNECTCHECKS</term>
         <listitem>
         <para>
           Exactly the same as CONNECTRADIOS, for <link linkend="clsCheckBox">check box</link> controls. The object
-          method name is generated in the same way as it is for radio buttons.
+          method name is generated in the same way as it is for radio buttons. That is, the method name is the button
+          label, with all spaces, ampersands, colons, and trailing <emphasis role="italic">...</emphasis> characters
+          removed. Which is then <emphasis role="bold"> prepended</emphasis> with the text
+          <computeroutput>ID</computeroutput>.
         </para>
-        </listitem></varlistentry> </variablelist>
-      </para> </listitem></varlistentry>
+        </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>expected [optional]</term>
       <listitem>
       <para>
