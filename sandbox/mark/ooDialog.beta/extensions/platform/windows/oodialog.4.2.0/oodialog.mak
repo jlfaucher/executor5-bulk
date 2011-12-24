@@ -54,7 +54,7 @@ OR_LIB=$(OR_OUTDIR)
 # All Source Files
 SOURCEF= $(OR_OUTDIR_OOD420)\APICommon.obj $(OR_OUTDIR_OOD420)\oodBarControls.obj $(OR_OUTDIR_OOD420)\oodBaseDialog.obj $(OR_OUTDIR_OOD420)\oodBasicControls.obj \
          $(OR_OUTDIR_OOD420)\oodCommon.obj $(OR_OUTDIR_OOD420)\oodControl.obj $(OR_OUTDIR_OOD420)\oodData.obj $(OR_OUTDIR_OOD420)\oodDeviceGraphics.obj \
-         $(OR_OUTDIR_OOD420)\ooDialog.obj $(OR_OUTDIR_OOD420)\oodMenu.obj $(OR_OUTDIR_OOD420)\oodMessaging.obj $(OR_OUTDIR_OOD420)\oodPackageEntry.obj \
+         $(OR_OUTDIR_OOD420)\ooDialog.obj $(OR_OUTDIR_OOD420)\oodMenu.obj $(OR_OUTDIR_OOD420)\oodMessaging.obj $(OR_OUTDIR_OOD420)\oodMouse.obj $(OR_OUTDIR_OOD420)\oodPackageEntry.obj \
          $(OR_OUTDIR_OOD420)\oodPropertySheetDialog.obj $(OR_OUTDIR_OOD420)\oodResources.obj $(OR_OUTDIR_OOD420)\oodRoutines.obj $(OR_OUTDIR_OOD420)\oodUser.obj \
          $(OR_OUTDIR_OOD420)\oodUtilities.obj $(OR_OUTDIR_OOD420)\oodViewControls.obj $(OR_OUTDIR_OOD420)\oodialog.res
 
