@@ -80,16 +80,21 @@
 #define WM_USER_CREATECHILD            WM_USER + 0x0601
 #define WM_USER_INTERRUPTSCROLL        WM_USER + 0x0602
 #define WM_USER_GETFOCUS               WM_USER + 0x0603
-#define WM_USER_GETSETCAPTURE          WM_USER + 0x0604
-#define WM_USER_GETKEYSTATE            WM_USER + 0x0605
-#define WM_USER_SUBCLASS               WM_USER + 0x0606
-#define WM_USER_SUBCLASS_REMOVE        WM_USER + 0x0607
-#define WM_USER_HOOK                   WM_USER + 0x0608
-#define WM_USER_CONTEXT_MENU           WM_USER + 0x0609
-#define WM_USER_CREATECONTROL_DLG      WM_USER + 0x060A
-#define WM_USER_CREATECONTROL_RESDLG   WM_USER + 0x060B
+#define WM_USER_MOUSE_MISC             WM_USER + 0x0604
+#define WM_USER_SUBCLASS               WM_USER + 0x0605
+#define WM_USER_SUBCLASS_REMOVE        WM_USER + 0x0606
+#define WM_USER_HOOK                   WM_USER + 0x0607
+#define WM_USER_CONTEXT_MENU           WM_USER + 0x0608
+#define WM_USER_CREATECONTROL_DLG      WM_USER + 0x0609
+#define WM_USER_CREATECONTROL_RESDLG   WM_USER + 0x060A
+#define WM_USER_CREATEPROPSHEET_DLG    WM_USER + 0x060B
 
-#define WM_USER_CREATEPROPSHEET_DLG    WM_USER + 0x060C
+// Flags for WM_USER_MOUSE_MISC
+#define MF_GETCAPTURE       0
+#define MF_SETCAPTURE       1
+#define MF_RELEASECAPTURE   2
+#define MF_BUTTONDOWN       3
+#define MF_SHOWCURSOR       4
 
 #define OODDLL                      "oodialog.dll"
 #define OOD_LVL_MAJOR               4
@@ -545,6 +550,8 @@ typedef struct _pbdCSelf {
     RexxObjectPtr        rexxParent;    // This dialog's Rexx parent dialog object
     void                *dlgPrivate;    // Subclasses can store data unique to the subclass
     void                *initPrivate;   // Subclasses can store init data unique to the subclass
+    void                *mouseCSelf;
+    RexxObjectPtr        rexxMouse;
     DATATABLEENTRY      *DataTab;
     ICONTABLEENTRY      *IconTab;
     COLORTABLEENTRY     *ColorTab;
@@ -562,7 +569,7 @@ typedef struct _pbdCSelf {
     WPARAM               stopScroll;
     HPALETTE             colorPalette;
     logical_t            autoDetect;
-    DWORD                threadID;
+    DWORD                dlgProcThreadID;
     uint32_t             fontSize;
     bool                 onTheTop;
     bool                 isCategoryDlg;  // Need to use IsNestedDialogMessage()
@@ -597,6 +604,8 @@ typedef struct _dcCSelf {
     HWND           hCtrl;    // Handle of the dialog control
     RexxObjectPtr  oDlg;     // The Rexx owner dialog object
     HWND           hDlg;     // Handle of the dialog the control is in.
+    void          *mouseCSelf;
+    RexxObjectPtr  rexxMouse;
 } CDialogControl;
 typedef CDialogControl *pCDialogControl;
 
@@ -611,6 +620,24 @@ typedef struct _ddCSelf {
     uint32_t           count;         // Dialog item count (dialogItemCount)
 } CDynamicDialog;
 typedef CDynamicDialog *pCDynamicDialog;
+
+/* Struct for the Mouse object CSelf. Note that the owner window can be a dialog
+ * window, or a dialog control window.  If the owner window is a dialog control,
+ * then there is, still, a dialog CSelf and a dialog window handle.  These are
+ * the dialog control's owner dialog, which are present for all dialog controls.
+ */
+typedef struct _mCSelf {
+    RexxObjectPtr      rexxSelf;        // Rexx Mouse object.
+    HWND               hWindow;         // Window handle of owner window
+    RexxObjectPtr      rexxWindow;      // Rexx owner window object
+    RexxObjectPtr      rexxDlg;         // Dialog Rexx self
+    HWND               hDlg;            // Dialog window handle
+    pCPlainBaseDialog  dlgCSelf;        // Dialog CSelf struct pointer
+    pCDialogControl    controlCSelf;    // Pointer to dialog control owner CSelf struct, if owner is a dialog control window
+    uint32_t           dlgProcThreadID; // Dialog window message processing function thread.
+    bool               isDlgWindow;     // True if owner window is a dialog, false if owner window is a dialog control
+} CMouse;
+typedef CMouse *pCMouse;
 
 
 /* Struct for the ControlDialogInfo object CSelf. */
@@ -712,6 +739,7 @@ typedef struct _pspCSelf {
     char                   *headerTitle;
     char                   *headerSubTitle;
     oodClass_t              pageType;
+    uint32_t                dlgProcThreadID;
     uint32_t                cx;               // Width and height of the dialog.
     uint32_t                cy;
     uint32_t                pageFlags;
@@ -744,6 +772,7 @@ typedef struct _psdCSelf {
     HPALETTE             hplWatermark;     // Palette to use when drawing watermark and / or header bitmap
     HIMAGELIST           imageList;        // imageList attribute, C++ part of .ImageList
     uint32_t             startPage;        // Index of start page, 1-based.  If 0 not set;
+    uint32_t             dlgProcThreadID;
     char                *caption;
     uint32_t             pageCount;
     uint32_t             propSheetFlags;

@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 06: ProductView.rex - The ProductView component      v02-01 19Sep11
+   Exercise 06: ProductView.rex - The ProductView component      v02-03 01Dec11
 
    Contains: 	   classes "ProductView" and "AboutDialog".
    Pre-requisites: ProductView.dll, ProductView.h, Pproduct.ico, ProductIcon.bmp,
@@ -53,6 +53,10 @@
    v02-00 09Sep11: Changed to be invoked from its own folder. This has meant
                    changing file references to include the Product folder.
    v02-01 19Sep11: Changed to provide for standalone invocation.
+   v02-02 29Nov11: Brought up to date with Ex05 version (added state attribute
+                   plus better "cancel" method).
+   v02-03 01Dec11: Changed OK/Cancel to Yes/No on "cancel while in update" dialog.
+
 ------------------------------------------------------------------------------*/
 
 ::requires "ooDialog.cls"
@@ -62,7 +66,7 @@
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  ProductView							  v02-00 09Sep11
+  ProductView							  v02-03 01Dec11
   -----------
   The "view" part of the Product component. Now designed to operate from its own
   folder. Should be invoked from immediately outside the Product folder.
@@ -70,6 +74,8 @@
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS ProductView SUBCLASS ResDialog PUBLIC
+
+  ::ATTRIBUTE dialogState PRIVATE	-- States are: 'closable' or 'inUpdate".
 
   /*----------------------------------------------------------------------------
     Class Methods
@@ -105,6 +111,7 @@
   ::METHOD activate UNGUARDED
     use arg rootDlg, productNo					--ADDED FOR EXERCISE06.
     say "ProductView-activate-01: rootDlg =" rootDlg
+    self~dialogState = "closable"
     if rootDlg = "SA" then self~execute("SHOWTOP","IDI_PROD_DLGICON")		--ADDED FOR EXERCISE06.
     else self~popUpAsChild(rootDlg,"SHOWTOP",,"IDI_PROD_DLGICON")		--ADDED FOR EXERCISE06.
     return
@@ -161,10 +168,13 @@
     prodControls[pbSaveChanges]~state = "FOCUS"  -- Put input focus on the button
     self~tabToNext()				 -- put text cursor on Product Description
     						 --   (as if the user had pressed tab)
+    self~dialogState = "inUpdate"
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD refreshData UNGUARDED
     self~disableControl("IDC_PROD_SAVE_CHANGES")
     self~showData
+    self~dialogState = "closable"
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD print UNGUARDED
@@ -234,6 +244,7 @@
     if newProdData~size \= "M" then prodControls[rbMedium]~disable
     if newProdData~size \= "L" then prodControls[rbLarge]~disable
     self~disableControl("IDC_PROD_SAVE_CHANGES")
+    self~dialogState = "closable"
 
     prodData = newProdData
     prodData~list
@@ -257,11 +268,17 @@
   ::METHOD ok unguarded
     return
 
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    "Cancel" - This is a no-op method that over-rides the default Windows action
-           of 'cancel window' for an Escape key.			    --*/
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD cancel
-    return
+    -- If in the process of updating, then ask whether any changes should be
+    -- thrown away and dialog closed. If yes then close by calling the superclass,
+    -- else nop. If not in update, then close immediately
+    if self~dialogState = "inUpdate" then do
+      ans = MessageDialog(.HRS~closeInUpdate, self~dlgHandle, .HRS~updateIP, "YESNO", "WARNING", "DEFBUTTON2")
+      if ans = .PlainBaseDialog~IDYES then return self~cancel:super
+      else nop
+    end
+    else return self~cancel:super
 
 
   /*----------------------------------------------------------------------------
@@ -459,11 +476,14 @@
 ::CLASS HRS PRIVATE		-- Human-Readable Strings
   ::CONSTANT AboutDblClick  "You double-clicked!"
   ::CONSTANT badRatio	    "The new price/UOM ratio cannot be changed more than 50% up or down."
-  ::CONSTANT nilSaved       "Nothing was changed! Data not saved."
-  ::CONSTANT saved	    "Changes saved."
-  ::CONSTANT uomTooSmall    "The new UOM is too small."
-  ::CONSTANT uomTooBig      "The new UOM is too large."
-  ::CONSTANT notSaved       "Changes Not Saved!"
+  ::CONSTANT closeInUpdate  "Any changes made will be lost. Exit anyway?"
   ::CONSTANT descrTooBig    "The Product Description is too long."
+  ::CONSTANT nilSaved       "Nothing was changed! Data not saved."
+  ::CONSTANT notSaved       "Changes Not Saved!"
   ::CONSTANT prodNameTooBig "The Product Name is too long."
+  ::CONSTANT saved	    "Changes saved."
+  ::CONSTANT uomTooBig      "The new UOM is too large."
+  ::CONSTANT uomTooSmall    "The new UOM is too small."
+  ::CONSTANT updateIP       "Update in process"
   ::CONSTANT updateProd     "Update Product"
+

@@ -131,12 +131,6 @@
    if sb == .nil then return -1
    return sb~determinePosition
 
-::method setListWidthPx unguarded
-   use strict arg id, pixels
-   listBox = self~newListBox(id)
-   if listBox == .nil then return -1
-   return listBox~setWidthPx(pixels)
-
 ::method getListWidthPx unguarded
    use strict arg id
    listBox = self~newListBox(id)
@@ -155,6 +149,13 @@
    listBox = self~newListBox(id)
    if listBox == .nil then return -1
    listBox~listItemHeightPx = pixels
+   return 0
+
+::method setListWidthPx unguarded
+   use strict arg id, pixels
+   listBox = self~newListBox(id)
+   if listBox == .nil then return -1
+   listBox~setWidthPx(pixels)
    return 0
 
 ::method getListItemHeightPx unguarded
@@ -219,42 +220,6 @@
    return .Window~new(hwnd)~redraw
 
 -- DEPRECATED START
-::method clearButtonRect unguarded
-   forward message 'CLEARCONTROLRECT'
-::method redrawButton unguarded
-   forward message 'REDRAWCONTROL'
-::method setItemFont unguarded
-   forward message 'setControlFont'
-::method setItemColor
-   forward message "setControlColor"
-::method setItemSysColor
-   forward message "setControlSysColor"
-::method connectAnimatedButton
-   forward message "INSTALLANIMATEDBUTTON"
-::method connectBitmapButton
-   forward message "INSTALLBITMAPBUTTON"
-
-::method getWindowRect unguarded        -- Old method returns coordinates as a string.
-   forward message "windowRect" continue
-   rect = result
-   return rect~left rect~top rect~right rect~bottom
-
-::method getButtonRect unguarded -- old method returns coordinates as a string
-   forward message "getControlRect" continue
-   rect = result
-   if \ rect~isA(.Rect) then return 1  -- mimic old behavior
-   return rect~left rect~top rect~right rect~bottom
-
-::method moveItem unguarded      -- old method, this is not accurate
-   use strict arg id, xPos, yPos, showOptions = ""
-   p = .Point~new(trunc(xPos * self~factorX), trunc(yPos * self~factorY))
-   return self~moveControl(id, p, showOptions)
-
-::method resizeItem unguarded    -- old method, this is not accurate
-   use strict arg id, width, height, showOptions = ""
-   s = .Size~new(trunc(width * self~factorX), trunc(height * self~factorY))
-   return self~resizeControl(id, s, showOptions)
-
 ::method combineELwithSB  -- Use UpDown control, this method works very poorly
    use strict arg elid, sbID, step = 0, poscode = 0
    sb = self~newScrollBar(sbID)
@@ -285,6 +250,50 @@
    self~setEditData(elid, pos)
    return 0
 
+::method connectAnimatedButton
+   forward message "INSTALLANIMATEDBUTTON"
+::method connectBitmapButton
+   forward message "INSTALLBITMAPBUTTON"
+::method clearButtonRect unguarded
+   forward message 'CLEARCONTROLRECT'
+::method freeButtonDC unguarded
+   forward message 'FREECONTROLDC'
+::method getButtonDC unguarded
+   forward message 'GETCONTROLDC'
+::method getButtonRect unguarded -- old method returns coordinates as a string
+   forward message "GETCONTROLRECT" continue
+   rect = result
+   if \ rect~isA(.Rect) then return 1  -- mimic old behavior
+   return rect~left rect~top rect~right rect~bottom
+
+::method getWindowRect unguarded        -- Old method returns coordinates as a string.
+   forward message "WINDOWRECT" continue
+   rect = result
+   return rect~left rect~top rect~right rect~bottom
+
+::method moveItem unguarded      -- old method, this is not accurate
+   use strict arg id, xPos, yPos, showOptions = ""
+   p = .Point~new(trunc(xPos * self~factorX), trunc(yPos * self~factorY))
+   return self~moveControl(id, p, showOptions)
+
+::method redrawButton unguarded
+   forward message 'REDRAWCONTROL'
+::method resizeItem unguarded    -- old method, this is not accurate
+   use strict arg id, width, height, showOptions = ""
+   s = .Size~new(trunc(width * self~factorX), trunc(height * self~factorY))
+   return self~resizeControl(id, s, showOptions)
+
+::method scrollInButton unguarded
+   forward message 'SCROLLINCONTROL'
+::method setItemFont unguarded
+   forward message 'SETCONTROLFONT'
+::method setItemColor
+   forward message "SETCONTROLCOLOR"
+::method setItemSysColor
+   forward message "SETCONTROLSYSCOLOR"
+::method writeToButton unguarded
+   forward message "WRITETOCONTROL"
+
 -- END DEPRECATED
 
 
@@ -301,7 +310,6 @@
 ::method drawBitmap unguarded external "LIBRARY oodialog dlgext_drawBitmap"
 
 ::method scrollText unguarded external "LIBRARY oodialog dlgext_scrollText"
-::method scrollInButton unguarded external "LIBRARY oodialog dlgext_scrollText"
 ::method scrollInControl unguarded external "LIBRARY oodialog dlgext_scrollText"
 
 ::method displaceBitmap unguarded external "LIBRARY oodialog dlgext_setBitmapPosition"
@@ -346,11 +354,10 @@
      || "," || moveY || "," || sizeX || "," || sizeY || "," || delay || "," || xNow || "," || yNow)
 
 -- Draw the bitmap step by step.
-::method dimBitmap unguarded
-   use strict arg id, bmp, cx, cy, stepX = 2, stepY = 2, steps = 10
-   button = self~newPushButton(id)
-   if button == .nil then return -1
-   return button~dimBitmap(bmp, cx, cy, stepX, stepY, steps)
+::method dimBitmap unguarded external "LIBRARY oodialog dlgext_dimBitmap"
+
+-- This method moves the rectangle within a button.  TODO be sure can take a .Rect for arg
+::method scrollButton unguarded external "LIBRARY oodialog dlgext_scrollButton"
 
 -- Scroll a bitmap from one position to another within a button.
 ::method scrollBitmapFromTo unguarded
@@ -485,35 +492,22 @@
 
 ::method writeToWindow unguarded external "LIBRARY oodialog dlgext_writeToWindow"
 
-::method writeToButton unguarded
-   use strict arg id, xPos, yPos, text, fontName = "System", fontSize = 10, fontStyle = "", fgColor = (-1), bkColor = (-1)
-   button = self~newPushButton(arg(1))
-   if button == .nil then return -1
-   else return button~write(xPos, yPos, text, fontName, fontSize, fontStyle, fgColor, bkColor)
-
--- This method moves the rectangle within a button.  TODO be sure can take a .Rect for arg
-::method scrollButton unguarded
-   -- use arg id, xPos, yPos, left, top, right, bottom
-   newArgs = arg(2, "A")
-   button = self~newPushButton(arg(1))
-   if button == .nil then return -1
-   return button~sendWith("scroll", newArgs)
+::method writeToControl unguarded
+   argArray = arg(1,"A")
+   argArray[1] = self~getControlHandle(arg(1))
+   forward message 'writeToWindow' arguments (argArray)
 
 ::method getWindowDC unguarded external "LIBRARY oodialog dlgext_getWindowDC"
-::method getButtonDC unguarded
+::method getControlDC unguarded
    use strict arg id
    return self~getWindowDC(self~getControlHandle(id))
 
 ::method freeWindowDC unguarded external "LIBRARY oodialog dlgext_freeWindowDC"
-::method freeButtonDC unguarded
+::method freeControlDC unguarded
    use strict arg id, dc
    hwnd = self~getControlHandle(id)
    return self~freeWindowDC(hwnd, dc)
 
-::method captureMouse external "LIBRARY oodialog dlgext_captureMouse"
-::method getMouseCapture external "LIBRARY oodialog dlgext_mouseCapture"
-::method releaseMouseCapture external "LIBRARY oodialog dlgext_mouseCapture"
-::method isMouseButtonDown external "LIBRARY oodialog dlgext_isMouseButtonDown"
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -552,6 +546,34 @@ syntax:
   self~menuBar = .nil
   self~isLinked = .false
   return menu
+
+-- Deprecated to end of file.
+::method captureMouse
+  use strict arg id = (-1)
+
+  if arg(1, 'O') then do
+    mouse = .Mouse~new(self)
+  end
+  else do
+    ctrlSelf = self~newControl(id)
+    mouse = .Mouse~new(ctrlSelf);
+  end
+  return mouse~capture
+
+::method getMouseCapture
+  use strict arg
+  mouse = .Mouse~new(self)
+  return mouse~getCapture
+
+::method releaseMouseCapture
+  use strict arg
+  mouse = .Mouse~new(self)
+  return mouse~releaseCapture
+
+::method isMouseButtonDown
+  use strict arg whichButton = "LEFT"
+  mouse = .Mouse~new(self)
+  return mouse~isButtonDown(whichButton)
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   The following menu bar methods are deprecated, instead, use the Menu classes

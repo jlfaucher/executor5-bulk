@@ -301,6 +301,40 @@
 ::method equateTo external "LIBRARY oodialog size_equateTo"
 
 
+::class 'Mouse' public
+::method new class external "LIBRARY oodialog mouse_new_cls"
+::method init external "LIBRARY oodialog mouse_init"
+::method uninit external "LIBRARY oodialog mouse_uninit"
+
+::method getDoubleClickTime class external "LIBRARY oodialog mouse_getDoubleClickTime_cls"
+::method loadCursor class external "LIBRARY oodialog mouse_loadCursor_cls"
+::method loadCursorFromFile class external "LIBRARY oodialog mouse_loadCursorFromFile_cls"
+::method setDoubleClickTime class external "LIBRARY oodialog mouse_setDoubleClickTime_cls"
+::method swapButton class external "LIBRARY oodialog mouse_swapButton_cls"
+
+::method appStarting external "LIBRARY oodialog mouse_setCursor"
+::method arrow external "LIBRARY oodialog mouse_setCursor"
+::method capture external "LIBRARY oodialog mouse_capture"
+::method clipCursor external "LIBRARY oodialog mouse_clipCursor"
+::method connectEvent external "LIBRARY oodialog mouse_connectEvent"
+::method cross external "LIBRARY oodialog mouse_setCursor"
+::method dragDetect external "LIBRARY oodialog mouse_dragDetect"
+::method getCapture external "LIBRARY oodialog mouse_get_release_capture"
+::method getClipCursor external "LIBRARY oodialog mouse_getClipCursor"
+::method getCursorPos external "LIBRARY oodialog mouse_getCursorPos"
+::method isButtonDown external "LIBRARY oodialog mouse_isButtonDown"
+::method no external "LIBRARY oodialog mouse_setCursor"
+::method releaseCapture external "LIBRARY oodialog mouse_get_release_capture"
+::method restoreCursor external "LIBRARY oodialog mouse_restoreCursor"
+::method setCursor external "LIBRARY oodialog mouse_setCursor"
+::method setCursorPos external "LIBRARY oodialog mouse_setCursorPos"
+::method showCursor external "LIBRARY oodialog mouse_showCursor"
+::method trackEvent external "LIBRARY oodialog mouse_trackEvent"
+::method wait external "LIBRARY oodialog mouse_setCursor"
+
+::method test external "LIBRARY oodialog mouse_test"
+
+
 ::class 'DayState' public
 ::method init external "LIBRARY oodialog ds_init"
 ::method value external "LIBRARY oodialog ds_value"
@@ -730,7 +764,6 @@
 ::constant OIC_ERROR           32513
 ::constant OIC_INFORMATION     32516
 ::constant OIC_SHIELD          32518
-
 
 /**
  * Standard Dialog Control Classes.  Some simple short cut dialogs.

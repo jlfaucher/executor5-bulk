@@ -1518,7 +1518,7 @@ RexxMethod3(logical_t, dyndlg_startParentDialog, uint32_t, iconID, logical_t, mo
         // Set the thread priority higher for faster drawing.
         SetThreadPriority(pcpbd->hDlgProcThread, THREAD_PRIORITY_ABOVE_NORMAL);
         pcpbd->onTheTop = true;
-        pcpbd->threadID = thID;
+        pcpbd->dlgProcThreadID = thID;
 
         // Do we have a modal dialog?
         checkModal((pCPlainBaseDialog)pcpbd->previous, modeless);
@@ -1566,7 +1566,10 @@ RexxMethod3(logical_t, dyndlg_startParentDialog, uint32_t, iconID, logical_t, mo
  *
  *  @return  The handle of the underlying Windows dialog, 0 on error.
  *
- *  @remarks  The child dialog needs to be created in the window procedure
+ *  @remarks  TODO these comments need to be rewritten, they are very out of
+ *            date and inaccurate.
+ *
+ *            The child dialog needs to be created in the window procedure
  *            thread of the parent.  SendMessage() is used to send a user
  *            message to the message loop thread.  The child dialog is then
  *            created in that thread and the dialog handle returned.  On error,
@@ -1882,6 +1885,16 @@ RexxMethod10(int32_t, dyndlg_createPushButton, RexxObjectPtr, rxID, int, x, int,
 
 /** DynamicDialog::createRadioButton() / DynamicDialog::createCheckBox()
  *
+ *  @remarks  The loadOptions() argument comes from the parsing of a .rc file
+ *            and would be CONNECTCHECKS or CONNECTRADIOS. However the argument
+ *            exists whether the dialog is a RcDialog or an UserDialog. The
+ *            original thinking was to document the argument so that users could
+ *            invoke createCheckBox() or createRadioButton() in a UserDialog and
+ *            automatically have the clicked event connected in the same way as
+ *            push buttons are.  We allow the users to specify their own method
+ *            name when using a UserDialog, but for a RcDialog the code needs to
+ *            remain the same if the argument is CONNECTCHECKS or CONNECTRADIOS.
+ *
  *  @remarks  The code for both createRadioButton() and createCheckBox() is so
  *            parallel it just doesn't make sense to have 2 separate native
  *            methods.
@@ -1964,27 +1977,35 @@ RexxMethod10(int32_t, dyndlg_createRadioButton, RexxObjectPtr, rxID, int, x, int
 
     int32_t result = 0;
 
-    if ( needButtonConnect(loadOptions, ctrl) )
+    if ( argumentExists(9) && *loadOptions != '\0' )
     {
-        CSTRING methName = strdup_2methodName(label);
-        if ( methName == NULL )
+        if ( needButtonConnect(loadOptions, ctrl) )
         {
-            outOfMemoryException(context->threadContext);
-            return -2;
-        }
+            CSTRING methName = strdup_2methodName(label);
+            if ( methName == NULL )
+            {
+                outOfMemoryException(context->threadContext);
+                return -2;
+            }
 
-        char *finalName = (char *)malloc(strlen(methName) + 3);
-        if ( finalName == NULL )
+            char *finalName = (char *)malloc(strlen(methName) + 3);
+            if ( finalName == NULL )
+            {
+                outOfMemoryException(context->threadContext);
+                free((void *)methName);
+                return -2;
+            }
+            strcpy(finalName, "ID");
+            strcat(finalName, methName);
+
+            result = addCommandMessage(pcpbd->enCSelf, context, id, UINTPTR_MAX, 0, 0, finalName, 0) ? 0 : 1;
+            free((void *)methName);
+            free((void *)finalName);
+        }
+        else
         {
-            outOfMemoryException(context->threadContext);
-            return -2;
+            result = addCommandMessage(pcpbd->enCSelf, context, id, UINTPTR_MAX, 0, 0, loadOptions, 0) ? 0 : 1;
         }
-        strcpy(finalName, "ID");
-        strcat(finalName, methName);
-
-        result = addCommandMessage(pcpbd->enCSelf, context, id, UINTPTR_MAX, 0, 0, finalName, 0) ? 0 : 1;
-        free((void *)methName);
-        free((void *)finalName);
     }
 
     // Connect the data attribute if we need to.

@@ -441,6 +441,14 @@ int32_t delDialog(pCPlainBaseDialog pcpbd, RexxThreadContext *c)
     }
     pcpbd->isActive = false;
 
+    if ( pcpbd->mouseCSelf != NULL )
+    {
+        pCMouse pcm = (pCMouse)pcpbd->mouseCSelf;
+        pcm->dlgCSelf = NULL;
+        pcpbd->rexxMouse  = NULLOBJECT;
+        pcpbd->mouseCSelf = NULL;
+    }
+
     // Swap back the saved icons, if needed.  See the remarks in the function
     // header.
     if ( pcpbd->hDlg && pcpbd->didChangeIcon )
@@ -713,29 +721,22 @@ static inline pCWindowBase validateWbCSelf(RexxMethodContext *c, void *pCSelf)
     return pcwb;
 }
 
-static inline HWND getWBWindow(void *pCSelf)
+static inline HWND getWBWindow(RexxMethodContext *c, void *pCSelf)
 {
-    return ((pCWindowBase)pCSelf)->hwnd;
+    pCWindowBase pcwb = validateWbCSelf(c, pCSelf);
+    return pcwb == NULL ? NULL : pcwb->hwnd;
 }
 
 static HWND wbSetUp(RexxMethodContext *c, void *pCSelf)
 {
-    HWND hwnd = NULL;
+    oodResetSysErrCode(c->threadContext);
 
-    if ( pCSelf == NULL )
+    HWND hwnd = getWBWindow(c, pCSelf);
+    if ( hwnd == NULL )
     {
-        baseClassIntializationException(c);
+        noWindowsDialogException(c, ((pCWindowBase)pCSelf)->rexxSelf);
     }
-    else
-    {
-        oodResetSysErrCode(c->threadContext);
 
-        hwnd = getWBWindow(pCSelf);
-        if ( hwnd == NULL )
-        {
-            noWindowsDialogException(c, ((pCWindowBase)pCSelf)->rexxSelf);
-        }
-    }
     return hwnd;
 }
 
@@ -1203,7 +1204,7 @@ RexxMethod1(uint32_t, wb_getPixelCY, CSELF, pCSelf)
 RexxMethod5(RexxObjectPtr, wb_sendMessage, CSTRING, wm_msg, RexxObjectPtr, _wParam, RexxObjectPtr, _lParam,
             NAME, method, CSELF, pCSelf)
 {
-    HWND hwnd = getWBWindow(pCSelf);
+    HWND hwnd = getWBWindow(context, pCSelf);
     bool doIntReturn = (strlen(method) == 11 ? true : false);
 
     return sendWinMsgGeneric(context, hwnd, wm_msg, _wParam, _lParam, 1, doIntReturn);
@@ -1395,17 +1396,17 @@ RexxMethod1(logical_t, wb_enable, CSELF, pCSelf)
     {
         enable = FALSE;
     }
-    return EnableWindow(getWBWindow(pCSelf), enable);
+    return EnableWindow(getWBWindow(context, pCSelf), enable);
 }
 
 RexxMethod1(logical_t, wb_isEnabled, CSELF, pCSelf)
 {
-    return IsWindowEnabled(getWBWindow(pCSelf));
+    return IsWindowEnabled(getWBWindow(context, pCSelf));
 }
 
 RexxMethod1(logical_t, wb_isVisible, CSELF, pCSelf)
 {
-    return IsWindowVisible(getWBWindow(pCSelf));
+    return IsWindowVisible(getWBWindow(context, pCSelf));
 }
 
 /** WindowBase::show() / WindowBase::hide()
@@ -1423,7 +1424,7 @@ RexxMethod1(logical_t, wb_isVisible, CSELF, pCSelf)
  */
 RexxMethod2(logical_t, wb_show, NAME, method, CSELF, pCSelf)
 {
-    return showWindow(getWBWindow(pCSelf), (*method == 'S' ? 'N' : 'H'));
+    return showWindow(getWBWindow(context, pCSelf), (*method == 'S' ? 'N' : 'H'));
 }
 
 /** WindowBase::showFast() / WindowBase::hideFast()
@@ -1438,13 +1439,16 @@ RexxMethod2(logical_t, wb_show, NAME, method, CSELF, pCSelf)
  */
 RexxMethod1(uint32_t, wb_showFast, CSELF, pCSelf)
 {
-    return showFast(getWBWindow(pCSelf), msgAbbrev(context));
+    return showFast(getWBWindow(context, pCSelf), msgAbbrev(context));
 }
 
 /** WindowBase::display()
  *
  *
  *  @return  0 for success, 1 for error.  An error is highly unlikely.
+ *
+ *  @notes   Sets the .SystemErrorCode.  The underlying dialog must have been
+ *           created or a synatx exceptions is raised.
  *
  *  @remarks display() is a method that was originally in WindowExtentions,
  *           making it a method of both a dialog and a dialog object. It is one
@@ -1461,7 +1465,12 @@ RexxMethod2(uint32_t, wb_display, OPTIONAL_CSTRING, opts,  CSELF, pCSelf)
     char type;
     uint32_t ret = 0;
     bool doFast = false;
-    HWND hwnd = getWBWindow(pCSelf);
+    HWND hwnd = wbSetUp(context, pCSelf);
+
+    if ( hwnd == NULL )
+    {
+        return 1;
+    }
 
     if ( opts != NULL && StrStrI(opts, "FAST") != NULL )
     {
@@ -1537,7 +1546,7 @@ done_out:
  */
 RexxMethod2(RexxObjectPtr, wb_redrawClient, OPTIONAL_CSTRING, erase, CSELF, pCSelf)
 {
-    HWND hwnd = getWBWindow(pCSelf);
+    HWND hwnd = getWBWindow(context, pCSelf);
     char flag = msgAbbrev(context);
     bool doErase;
     bool doUpdate = true;
@@ -1569,7 +1578,7 @@ RexxMethod2(RexxObjectPtr, wb_redrawClient, OPTIONAL_CSTRING, erase, CSELF, pCSe
 RexxMethod1(RexxObjectPtr, wb_redraw, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
-    if ( RedrawWindow(getWBWindow(pCSelf), NULL, NULL,
+    if ( RedrawWindow(getWBWindow(context, pCSelf), NULL, NULL,
                       RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN) == 0 )
     {
         oodSetSysErrCode(context->threadContext);
@@ -1595,7 +1604,7 @@ RexxMethod1(RexxObjectPtr, wb_redraw, CSELF, pCSelf)
 RexxMethod1(RexxStringObject, wb_getText, CSELF, pCSelf)
 {
     RexxStringObject result = context->NullString();
-    HWND hwnd = getWBWindow(pCSelf);
+    HWND hwnd = getWBWindow(context, pCSelf);
 
     // Whether this fails or succeeds doesn't matter, we just return result.
     rxGetWindowText(context, hwnd, &result);
@@ -1622,7 +1631,7 @@ RexxMethod1(RexxStringObject, wb_getText, CSELF, pCSelf)
 RexxMethod2(wholenumber_t, wb_setText, CSTRING, text, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
-    if ( SetWindowText(getWBWindow(pCSelf), text) == 0 )
+    if ( SetWindowText(getWBWindow(context, pCSelf), text) == 0 )
     {
         oodSetSysErrCode(context->threadContext);
         return 1;
@@ -1828,7 +1837,7 @@ error_out:
  */
 RexxMethod2(RexxObjectPtr, wb_windowRect, OPTIONAL_POINTERSTRING, _hwnd, CSELF, pCSelf)
 {
-    HWND hwnd = (argumentOmitted(1) ? getWBWindow(pCSelf) : (HWND)_hwnd);
+    HWND hwnd = (argumentOmitted(1) ? getWBWindow(context, pCSelf) : (HWND)_hwnd);
     return oodGetWindowRect(context, hwnd);
 }
 
@@ -1852,7 +1861,7 @@ RexxMethod2(RexxObjectPtr, wb_windowRect, OPTIONAL_POINTERSTRING, _hwnd, CSELF, 
  *  @note  Sets the .SystemErrorCode.
  *
  *  @remarks  The clientRect() method supplies an alternative to the
- *            getClinetRect(hwnd) method, to allow returning a .Rect object
+ *            getClientRect(hwnd) method, to allow returning a .Rect object
  *            rather than a string of blank separated values.
  *
  *            Pre 4.0.1, getClientRect() was in WindowExtensions.  The need to
@@ -1863,7 +1872,7 @@ RexxMethod2(RexxObjectPtr, wb_windowRect, OPTIONAL_POINTERSTRING, _hwnd, CSELF, 
  */
 RexxMethod2(RexxObjectPtr, wb_clientRect, OPTIONAL_POINTERSTRING, _hwnd, CSELF, pCSelf)
 {
-    HWND hwnd = (argumentOmitted(1) ? getWBWindow(pCSelf) : (HWND)_hwnd);
+    HWND hwnd = (argumentOmitted(1) ? getWBWindow(context, pCSelf) : (HWND)_hwnd);
 
     RECT r = {0};
     oodGetClientRect(context, (HWND)hwnd, &r);
@@ -2092,7 +2101,7 @@ RexxMethod2(RexxObjectPtr, wb_getSizePos, NAME, method, CSELF, pCSelf)
     }
 
     RECT r = {0};
-    if ( GetWindowRect(getWBWindow(pCSelf), &r) == 0 )
+    if ( GetWindowRect(getWBWindow(context, pCSelf), &r) == 0 )
     {
         oodSetSysErrCode(context->threadContext);
     }
@@ -2354,7 +2363,7 @@ done_out:
  */
 RexxMethod1(RexxObjectPtr, wb_clear, CSELF, pCSelf)
 {
-    HWND hwnd = getWBWindow(pCSelf);
+    HWND hwnd = getWBWindow(context, pCSelf);
 
     RECT r = {0};
     if ( oodGetClientRect(context, hwnd, &r) == TheOneObj )
@@ -2419,7 +2428,7 @@ RexxMethod4(logical_t, wb_screenClient, RexxObjectPtr, pt, NAME, method, OSELF, 
     oodResetSysErrCode(context->threadContext);
     BOOL success = FALSE;
 
-    HWND hwnd = getWBWindow(pCSelf);
+    HWND hwnd = getWBWindow(context, pCSelf);
     if ( hwnd == NULL )
     {
         noWindowsDialogException(context, self);
@@ -2497,7 +2506,7 @@ done_out:
  */
 RexxMethod2(uint32_t, wb_getWindowLong_pvt, int32_t, flag, CSELF, pCSelf)
 {
-    return GetWindowLong(getWBWindow(pCSelf), flag);
+    return GetWindowLong(getWBWindow(context, pCSelf), flag);
 }
 
 
@@ -2619,17 +2628,26 @@ void setDlgHandle(RexxThreadContext *c, pCPlainBaseDialog pcpbd)
 /**
  * Gets the window handle of the dialog control that has the focus.  The call to
  * GetFocus() needs to run in the window thread of the dialog to ensure that the
- * correct handle is obtained.
+ * correct handle is obtained. However, we could executing on that thread.
  *
- * @param c       Method context we are operating in.
- * @param hDlg    Handle to the dialog of interest.
+ * @param c                Method context we are operating in.
+ * @param hDlg             Handle to the dialog of interest.
+ * @param isDlgProcThread  Is this the dialog message processing thread?
  *
  * @return  The window handle of the dialog control with the focus, or 0 on
  *          failure.
  */
-RexxObjectPtr oodGetFocus(RexxMethodContext *c, HWND hDlg)
+RexxObjectPtr oodGetFocus(RexxMethodContext *c, HWND hDlg, bool isDlgProcThread)
 {
-   HWND hwndFocus = (HWND)SendMessage(hDlg, WM_USER_GETFOCUS, 0,0);
+   HWND hwndFocus;
+   if ( isDlgProcThread )
+   {
+       hwndFocus = GetFocus();
+   }
+   else
+   {
+       hwndFocus = (HWND)SendMessage(hDlg, WM_USER_GETFOCUS, 0, 0);
+   }
    return pointer2string(c, hwndFocus);
 }
 
@@ -2700,7 +2718,7 @@ static bool checkDlgType(RexxMethodContext *c, RexxObjectPtr self, pCPlainBaseDi
         {
             if ( c->IsOfType(ownerData, "PLAINBASEDIALOG") )
             {
-                pCPlainBaseDialog ownerPcpbd = requiredDlgCSelf(c, ownerData, oodPlainBaseDialog, 5);
+                pCPlainBaseDialog ownerPcpbd = requiredDlgCSelf(c, ownerData, oodPlainBaseDialog, 5, NULL);
                 if ( ownerPcpbd == NULL )
                 {
                     goto err_out;
@@ -3221,7 +3239,7 @@ RexxMethod2(RexxObjectPtr, pbdlg_setOwnerDialog, RexxObjectPtr, owner, CSELF, pC
         return NULLOBJECT;
     }
 
-    pCPlainBaseDialog ownerPcpbd = requiredDlgCSelf(context, owner, oodPlainBaseDialog, 1);
+    pCPlainBaseDialog ownerPcpbd = requiredDlgCSelf(context, owner, oodPlainBaseDialog, 1, NULL);
     if ( ownerPcpbd != NULL )
     {
         if ( ! isValidOwner(ownerPcpbd) )
@@ -3826,7 +3844,7 @@ RexxMethod3(RexxObjectPtr, pbdlg_center, OPTIONAL_CSTRING, options, OPTIONAL_log
     oodResetSysErrCode(context->threadContext);
 
     HWND hwnd = getPBDWindow(context, pCSelf);
-    if ( hwnd = NULL )
+    if ( hwnd == NULL )
     {
         return TheFalseObj;
     }
@@ -3922,7 +3940,7 @@ RexxMethod2(wholenumber_t, pbdlg_setWindowText, POINTERSTRING, hwnd, CSTRING, te
 RexxMethod1(RexxObjectPtr, pbdlg_toTheTop, CSELF, pCSelf)
 {
     HWND hwnd = getPBDWindow(context, pCSelf);
-    if ( hwnd = NULL )
+    if ( hwnd == NULL )
     {
         return TheZeroObj;
     }
@@ -3938,11 +3956,11 @@ RexxMethod1(RexxObjectPtr, pbdlg_toTheTop, CSELF, pCSelf)
 RexxMethod1(RexxObjectPtr, pbdlg_getFocus, CSELF, pCSelf)
 {
     HWND hwnd = getPBDWindow(context, pCSelf);
-    if ( hwnd = NULL )
+    if ( hwnd == NULL )
     {
         return TheZeroObj;
     }
-    return oodGetFocus(context, hwnd);
+    return oodGetFocus(context, hwnd, isDlgThread((pCPlainBaseDialog)pCSelf));
 }
 
 /** PlainBaseDialog::setFocus()
@@ -3981,7 +3999,7 @@ RexxMethod3(RexxObjectPtr, pbdlg_setFocus, RexxStringObject, hwnd, NAME, method,
         return TheNegativeOneObj;
     }
 
-    RexxObjectPtr previousFocus = oodGetFocus(context, hDlg);
+    RexxObjectPtr previousFocus = oodGetFocus(context, hDlg, isDlgThread((pCPlainBaseDialog)pCSelf));
     if ( strlen(method) > 7 )
     {
         if ( oodSetForegroundWindow(context, focusNext) == TheZeroObj )
@@ -4024,7 +4042,7 @@ RexxMethod2(RexxObjectPtr, pbdlg_tabTo, NAME, method, CSELF, pCSelf)
         return TheNegativeOneObj;
     }
 
-    RexxObjectPtr previousFocus = oodGetFocus(context, hDlg);
+    RexxObjectPtr previousFocus = oodGetFocus(context, hDlg, isDlgThread((pCPlainBaseDialog)pCSelf));
     if ( method[5] == 'N' )
     {
         SendMessage(hDlg, WM_NEXTDLGCTL, 0, FALSE);
@@ -4608,6 +4626,12 @@ RexxMethod2(uint32_t, pbdlg_setDlgDataFromStem_pvt, RexxStemObject, internDlgDat
     {
         return 0;
     }
+    if ( pcpbd->hDlg == NULL )
+    {
+        noWindowsDialogException(context, pcpbd->rexxSelf);
+        return 0;
+    }
+
     return setDlgDataFromStem(context, pcpbd, internDlgData);
 }
 
@@ -4619,6 +4643,12 @@ RexxMethod2(uint32_t, pbdlg_putDlgDataInStem_pvt, RexxStemObject, internDlgData,
     {
         return 0;
     }
+    if ( pcpbd->hDlg == NULL )
+    {
+        noWindowsDialogException(context, pcpbd->rexxSelf);
+        return 0;
+    }
+
     return putDlgDataInStem(context, pcpbd, internDlgData);
 }
 
@@ -4692,10 +4722,10 @@ RexxMethod3(RexxObjectPtr, pbdlg_getControlData, RexxObjectPtr, rxID, NAME, msgN
  *  @return  0 for success, 1 for error, -1 for bad resource ID.
  *
  *  @remarks  The control type is determined by the invoking method name.  When
- *            the general purpose SETCONTROLDATA + 3 name is passed to
- *            oodName2controlType() it won't resolve and winUnknown will be
- *            returned.  This is the value that signals setControlData() to do a
- *            data table look up by resource ID.
+ *            the general purpose setControlDate name (msgName + 3 is
+ *            ControlData) is passed to oodName2controlType() it won't resolve
+ *            and winUnknown will be returned.  This is the value that signals
+ *            setControlData() to do a data table look up by resource ID.
  */
 RexxMethod4(int32_t, pbdlg_setControlData, RexxObjectPtr, rxID, CSTRING, data, NAME, msgName, CSELF, pCSelf)
 {
@@ -4867,6 +4897,63 @@ RexxMethod5(RexxObjectPtr, pbdlg_newControl, RexxObjectPtr, rxID, OPTIONAL_uint3
     }
 
     result = createRexxControl(context->threadContext, hControl, hDlg, id, controlType, self, controlCls, isCategoryDlg, true);
+
+out:
+    return result;
+}
+
+/** PlainBaseDialog::getNewControl()
+ *
+ *  Returns an instantiated dialog control object from the specified resoure ID.
+ *
+ *  @param  Dialog control resource ID, may be symbolic or numeric.
+ *
+ *  @return The Rexx dialog control object, or .nil on error.  However, a
+ *          condition is raised for *all* errors.
+ *
+ *  @remarks  The method is written for use by the ooDialog framework in certain
+ *            special circumstances.  Currently the only special circumstance is
+ *            to provide backward compatibility for deprecated methods.  It may,
+ *            or may not, be documented for the user.  Not decided yet.
+ */
+RexxMethod3(RexxObjectPtr, pbdlg_getNewControl, RexxObjectPtr, rxID, OSELF, self, CSELF, pCSelf)
+{
+    RexxMethodContext *c = context;
+    RexxObjectPtr result = TheNilObj;
+
+    HWND hDlg = getPBDWindow(context, pCSelf);
+    if ( hDlg == NULL )
+    {
+        goto out;
+    }
+
+    int32_t id = oodResolveSymbolicID(context, self, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto out;
+    }
+
+    HWND hControl = GetDlgItem(hDlg, (int)id);
+    if ( hControl == NULL )
+    {
+        noSuchControlException(context, id, self, 1);
+        goto out;
+    }
+
+    oodControl_t controlType = control2controlType(hControl);
+    if ( controlType == winUnknown )
+    {
+        controlNotSupportedException(context, rxID, self, 1, controlWindow2rexxString(context, hControl));
+        goto out;
+    }
+
+    RexxClassObject controlCls = oodClass4controlType(controlType, context);
+    if ( controlCls == NULLOBJECT )
+    {
+        goto out;
+    }
+
+    result = createRexxControl(context->threadContext, hControl, hDlg, id, controlType, self, controlCls, false, true);
 
 out:
     return result;

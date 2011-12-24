@@ -69,18 +69,6 @@
    use strict arg
    return (self~sendWinIntMsg(self~CCM_GETUNICODEFORMAT, 0, 0) <> 0)
 
-::method getFocus unguarded
-   forward to (self~oDlg)
-
-::method setFocus unguarded
-   forward to (self~oDlg)
-
-::method tabToNext unguarded
-   forward to (self~oDlg)
-
-::method tabToPrevious unguarded
-   forward to (self~oDlg)
-
 ::method assignFocus unguarded external "LIBRARY oodialog dlgctrl_assignFocus"
 ::method tabStop unguarded external "LIBRARY oodialog dlgctrl_tabGroup"
 ::method group unguarded external "LIBRARY oodialog dlgctrl_tabGroup"
@@ -92,16 +80,6 @@
 ::method data unguarded external "LIBRARY oodialog dlgctrl_data"
 ::method "data=" unguarded external "LIBRARY oodialog dlgctrl_dataEquals"
 
-::method getMouseCapture unguarded
-   forward to (self~oDlg)
-
-::method releaseMouseCapture unguarded
-   forward to (self~oDlg)
-
-::method isMouseButtonDown unguarded
-   forward to (self~oDlg)
-
-::method captureMouse unguarded external "LIBRARY oodialog dlgctrl_captureMouse"
 ::method connectCharEvent unguarded external "LIBRARY oodialog dlgctrl_connectCharEvent"
 ::method connectFKeyPress unguarded external "LIBRARY oodialog dlgctrl_connectFKeyPress"
 ::method connectKeyPress unguarded external "LIBRARY oodialog dlgctrl_connectKeyPress"
@@ -110,12 +88,36 @@
 ::method getTextSizeDlg unguarded external "LIBRARY oodialog dlgctrl_getTextSizeDlg"
 
 -- DEPRECATED START
-::method processMessage
-   forward message "sendMessage"
+::method captureMouse unguarded
+   forward to (self~oDlg) array (self~hwnd)
+
+::method getFocus unguarded
+   forward to (self~oDlg)
+
+::method getMouseCapture unguarded
+   forward to (self~oDlg)
 
 ::method getTextSize unguarded
    forward message "getTextSizeDlg" continue
    return result~width result~height
+
+::method isMouseButtonDown unguarded
+   forward to (self~oDlg)
+
+::method processMessage
+   forward message "sendMessage"
+
+::method releaseMouseCapture unguarded
+   forward to (self~oDlg)
+
+::method setFocus unguarded
+   forward to (self~oDlg)
+
+::method tabToPrevious unguarded
+   forward to (self~oDlg)
+
+::method tabToNext unguarded
+   forward to (self~oDlg)
 
 ::method value unguarded external "LIBRARY oodialog dlgctrl_data"
 ::method "value=" unguarded external "LIBRARY oodialog dlgctrl_dataEquals"
@@ -349,14 +351,12 @@
 ::method getImageList unguarded external "LIBRARY oodialog bc_getImageList"
 ::method getImage unguarded external "LIBRARY oodialog bc_getImage"
 ::method setImage unguarded external "LIBRARY oodialog bc_setImage"
-::method scroll unguarded external "LIBRARY oodialog bc_scroll"
 
--- Bitmap button methods.
-::method dimBitmap unguarded external "LIBRARY oodialog bc_dimBitmap"
+-- Bitmap button methods ALL DEPRECATED.
 
--- The following methods are implemented in DialogExtensions rather than here
--- because many of them do not require that that underlying dialog is already
--- created.  There is no button control until after the dialog is created.
+-- Almost all the bitmap button methods were implemented in DialogExtensions.
+-- The whole 'bitmap' button idea is antiquated, so the DialogExtensions methods
+-- are documented, the button methods are deprecated and not documented.
 ::method changeBitmap unguarded
    arga = arg(1,"A")
    newarg = .array~new(arga~Items+1)
@@ -364,34 +364,16 @@
    do i = 1 to arga~Items; if arga~hasindex(i) = 1 then newarg[i+1] = arga[i]; end
    forward to (self~oDlg) message "CHANGEBITMAPBUTTON" arguments (newarg)
 
-::method setBitmapPosition unguarded
-   use strict arg x, y = 0
-   if arg(2, "E") then return self~oDlg~setBimapPosition(self~id, x, y)
-   else return self~oDlg~setBimapPosition(self~id, x)
-
-::method getBitmapPosition unguarded
-   use strict arg pos
-   return self~oDlg~getBitmapPosition(self~ID, pos)
+::method dimBitmap unguarded
+   arga = arg(1,"A")
+   newarg = .array~new(arga~Items+1)
+   newarg[1] = self~ID
+   do i = 1 to arga~Items; if arga~hasindex(i) = 1 then newarg[i+1] = arga[i]; end
+   forward to (self~oDlg) arguments (newarg)
 
 ::method displaceBitmap unguarded
    use strict arg x, y
    return self~oDlg~setBitmapPosition(self~ID, x, y)
-
-::method getBmpDisplacement unguarded
-   return self~oDlg~getBmpDisplacement(self~ID)
-
-::method scrollText unguarded
-   arga = arg(1,"A")
-   newarg = .array~new(arga~Items+1)
-   newarg[1] = self~hwnd
-   do i = 1 to arga~Items; if arga~hasindex(i) = 1 then newarg[i+1] = arga[i]; end
-   forward to (self~oDlg) arguments (newarg)
-
-::method getBitmapSizeX unguarded
-   return self~oDlg~getBitmapSizeX(self~ID)
-
-::method getBitmapSizeY unguarded
-   return self~oDlg~getBitmapSizeY(self~ID)
 
 ::method drawBitmap unguarded
    arga = arg(1,"A")
@@ -401,6 +383,26 @@
    do i = 1 to arga~Items; if arga~hasindex(i) = 1 then newarg[i+2] = arga[i]; end
    forward to (self~oDlg) arguments (newarg)
 
+::method getBitmapPosition unguarded
+   use strict arg pos
+   return self~oDlg~getBitmapPosition(self~ID, pos)
+
+::method getBitmapSizeX unguarded
+   return self~oDlg~getBitmapSizeX(self~ID)
+
+::method getBitmapSizeY unguarded
+   return self~oDlg~getBitmapSizeY(self~ID)
+
+::method getBmpDisplacement unguarded
+   return self~oDlg~getBmpDisplacement(self~ID)
+
+::method scroll unguarded
+   arga = arg(1,"A")
+   newarg = .array~new(arga~Items+1)
+   newarg[1] = self~ID
+   do i = 1 to arga~Items; if arga~hasindex(i) = 1 then newarg[i+1] = arga[i]; end
+   forward to (self~oDlg) message "SCROLLBUTTON" arguments (newarg)
+
 ::method scrollBitmapFromTo unguarded
    arga = arg(1,"A")
    newarg = .array~new(arga~Items+1)
@@ -408,6 +410,19 @@
    do i = 1 to arga~Items; if arga~hasindex(i) = 1 then newarg[i+1] = arga[i]; end
    forward to (self~oDlg) arguments (newarg)
 
+::method scrollText unguarded
+   arga = arg(1,"A")
+   newarg = .array~new(arga~Items+1)
+   newarg[1] = self~hwnd
+   do i = 1 to arga~Items; if arga~hasindex(i) = 1 then newarg[i+1] = arga[i]; end
+   forward to (self~oDlg) arguments (newarg)
+
+::method setBitmapPosition unguarded
+   use strict arg x, y = 0
+   if arg(2, "E") then return self~oDlg~setBimapPosition(self~id, x, y)
+   else return self~oDlg~setBimapPosition(self~id, x)
+
+-- Bitmap button methods END ALL DEPRECATED.
 
 /* For internal testing only, do not use this method */
 ::method test external "LIBRARY oodialog bc_test"

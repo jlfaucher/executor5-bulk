@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
-   Exercise 04b: ProductView.rex - The ProductView component      v00-04 17Aug11
+   Exercise 04b: ProductView.rex - The ProductView component      v00-08 01Dec11
 
    Contains: 	   classes "ProductView" and "AboutDialog".
    Pre-requisites: ProductView.dll, ProductView.h.
@@ -57,6 +57,16 @@
    v00-04 17Aug11: Changed to .Application~setDefaults in newInstance method,
                    and deleted autoDetection methods - not now needed as turn
                    off autoDetection in .Application~setDefaults().
+   v00-05 23Nov11: Allow for standard close actions. These were disabled in
+                   previous versions to illustrate the point, but this fails the
+                   principle of least astonishment. Guide modified to discuss
+                   this briefly.
+   v00-06 26Nov11: Provide a status attribute (dialogState) so that close (e.g.
+   		   pressing Esc) can issue a "changes made but not committed
+   		   - are you sure" message.
+   v00-07 29Nov11: Added a comment to the cancel method. No change in function.
+   v00-08 01Dec11: Changed OK/Cancel to Yes/No on "cancel while in update" dialog.
+
 ------------------------------------------------------------------------------*/
 
 ::requires "ooDialog.cls"
@@ -73,6 +83,8 @@
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS ProductView SUBCLASS ResDialog PUBLIC
+
+  ::ATTRIBUTE dialogState PRIVATE	-- States are: 'closable' or 'inUpdate".
 
   /*----------------------------------------------------------------------------
     Class Methods
@@ -107,6 +119,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate UNGUARDED
     say "ProductView-activate-01."
+    self~dialogState = "closable"
     self~execute("SHOWTOP","IDB_PROD_ICON")
     return
 
@@ -149,7 +162,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD updateProduct UNGUARDED
     expose prodControls
-
+say "ProductView-updateProduct-01."
     -- Enable the controls to allow changes to the data:
     prodControls[ecProdName]~setReadOnly(.false)
     prodControls[ecProdPrice]~setReadOnly(.false)
@@ -162,10 +175,13 @@
     prodControls[pbSaveChanges]~state = "FOCUS"  -- Put input focus on the button
     self~tabToNext()				 -- put text cursor on Product Description
     						 --   (as if the user had pressed tab)
+    self~dialogState = "inUpdate"
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD refreshData UNGUARDED
     self~disableControl("IDC_PROD_SAVE_CHANGES")
     self~showData
+    self~dialogState = "closable"
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD print UNGUARDED
@@ -174,7 +190,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD close UNGUARDED
     say "ProductView-close-01"
-    return self~cancel:super
+    self~cancel
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD about UNGUARDED
@@ -235,6 +251,7 @@
     if newProdData~size \= "M" then prodControls[rbMedium]~disable
     if newProdData~size \= "L" then prodControls[rbLarge]~disable
     self~disableControl("IDC_PROD_SAVE_CHANGES")
+    self~dialogState = "closable"
 
     prodData = newProdData
     prodData~list
@@ -252,17 +269,18 @@
     -- called for each character entered in the price or UOM fields.
     forward to (arg(6))
 
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    "OK" - This is a no-op method that over-rides the default Windows action
-           of 'close window' for an Enter key 				    --*/
-  ::METHOD ok unguarded
-    return
-
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    "Cancel" - This is a no-op method that over-rides the default Windows action
-           of 'cancel window' for an Escape key.			    --*/
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD cancel
-    return
+    -- If in the process of updating, then ask whether any changes should be
+    -- thrown away and dialog closed. If yes then close by calling the superclass,
+    -- else nop. If not in update, then close immediately
+    say "ProductView-cancel-01."
+    if self~dialogState = "inUpdate" then do
+      ans = MessageDialog(.HRS~closeInUpdate, self~dlgHandle, .HRS~updateIP, "YESNO", "WARNING", "DEFBUTTON2")
+      if ans = .PlainBaseDialog~IDYES then return self~cancel:super
+      else nop
+    end
+    else return self~cancel:super
 
 
   /*----------------------------------------------------------------------------
@@ -436,7 +454,7 @@
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::method showMsgBox
     say "AboutDialog-showMsgBox-01."
-    ans = MessageDialog(.HRS~AboutDblClick)
+    ans = MessageDialog(.HRS~aboutDblClick)
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
@@ -458,13 +476,16 @@
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS HRS PRIVATE		-- Human-Readable Strings
-  ::CONSTANT AboutDblClick  "You double-clicked!"
+  ::CONSTANT aboutDblClick  "You double-clicked!"
   ::CONSTANT badRatio	    "The new price/UOM ratio cannot be changed more than 50% up or down."
-  ::CONSTANT nilSaved       "Nothing was changed! Data not saved."
-  ::CONSTANT saved	    "Changes saved."
-  ::CONSTANT uomTooSmall    "The new UOM is too small."
-  ::CONSTANT uomTooBig      "The new UOM is too large."
-  ::CONSTANT notSaved       "Changes Not Saved!"
+  ::CONSTANT closeInUpdate  "Any changes made will be lost. Exit anyway?"
   ::CONSTANT descrTooBig    "The Product Description is too long."
+  ::CONSTANT nilSaved       "Nothing was changed! Data not saved."
+  ::CONSTANT notSaved       "Changes Not Saved!"
   ::CONSTANT prodNameTooBig "The Product Name is too long."
+  ::CONSTANT saved	    "Changes saved."
+  ::CONSTANT uomTooBig      "The new UOM is too large."
+  ::CONSTANT uomTooSmall    "The new UOM is too small."
+  ::CONSTANT updateIP       "Update in process"
   ::CONSTANT updateProd     "Update Product"
+

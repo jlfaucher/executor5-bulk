@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2011 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -47,6 +47,7 @@
  * are only partially concerned with GDI.
  */
 #include "ooDialog.hpp"     // Must be first, includes windows.h, commctrl.h, and oorexxapi.h
+#include "oodControl.hpp"
 
 #include <stdio.h>
 #include <dlgs.h>
@@ -424,11 +425,11 @@ uint32_t parseShowOptions(CSTRING options)
 
     if ( options != NULL )
     {
-       if ( StrStrI(options, "NOMOVE"    ) ) opts |= SWP_NOMOVE;
-       if ( StrStrI(options, "NOSIZE"    ) ) opts |= SWP_NOSIZE;
-       if ( StrStrI(options, "HIDEWINDOW") ) opts |= SWP_HIDEWINDOW;
-       if ( StrStrI(options, "SHOWWINDOW") ) opts |= SWP_SHOWWINDOW;
-       if ( StrStrI(options, "NOREDRAW"  ) ) opts |= SWP_NOREDRAW;
+       if ( StrStrI(options, "NOMOVE"    ) != NULL ) opts |= SWP_NOMOVE;
+       if ( StrStrI(options, "NOSIZE"    ) != NULL ) opts |= SWP_NOSIZE;
+       if ( StrStrI(options, "HIDEWINDOW") != NULL ) opts |= SWP_HIDEWINDOW;
+       if ( StrStrI(options, "SHOWWINDOW") != NULL ) opts |= SWP_SHOWWINDOW;
+       if ( StrStrI(options, "NOREDRAW"  ) != NULL ) opts |= SWP_NOREDRAW;
     }
     return opts;
 }
@@ -1468,6 +1469,79 @@ inline bool isIntResource(CSTRING bmp)
     return false;
 }
 
+/**
+ * Retrieves the system color index number from a Rexx object that may be the
+ * actual number or the color keyword.
+ *
+ * @param c       Method context we are operating in.
+ * @param clr     Rexx object, presumably the system color number or keyword.
+ * @param color   The color index is returned here on success
+ * @param argPos  The argument position of the Rexx object.
+ *
+ * @return True on success, othewise false.
+ *
+ * @remarks  Currently this is only called when clr is an argument to a method.
+ *           If called under other circumstances, the logic may need to be
+ *           adjusted.
+ *
+ *           Raises a syntax condition on failure to convert clr.
+ */
+bool getSystemColor(RexxMethodContext *c, RexxObjectPtr clr, int32_t *color, size_t argPos)
+{
+    if ( c->Int32(clr, color) )
+    {
+        return true;
+    }
+
+    CSTRING keyword = c->ObjectToStringValue(clr);
+
+    if (      StrCmpI(keyword, "3DDKSHADOW")              == 0) *color =21;
+    else if ( StrCmpI(keyword, "3DFACE")                  == 0) *color =15;
+    else if ( StrCmpI(keyword, "3DHIGHLIGHT")             == 0) *color =20;
+    else if ( StrCmpI(keyword, "3DHILIGHT")               == 0) *color =20;
+    else if ( StrCmpI(keyword, "3DLIGHT")                 == 0) *color =22;
+    else if ( StrCmpI(keyword, "3DSHADOW")                == 0) *color =16;
+    else if ( StrCmpI(keyword, "ACTIVEBORDER")            == 0) *color =10;
+    else if ( StrCmpI(keyword, "ACTIVECAPTION")           == 0) *color = 2;
+    else if ( StrCmpI(keyword, "APPWORKSPACE")            == 0) *color =12;
+    else if ( StrCmpI(keyword, "BACKGROUND")              == 0) *color = 1;
+    else if ( StrCmpI(keyword, "BTNFACE")                 == 0) *color =15;
+    else if ( StrCmpI(keyword, "BTNHIGHLIGHT")            == 0) *color =20;
+    else if ( StrCmpI(keyword, "BTNHILIGHT")              == 0) *color =20;
+    else if ( StrCmpI(keyword, "BTNSHADOW")               == 0) *color =16;
+    else if ( StrCmpI(keyword, "BTNTEXT")                 == 0) *color =18;
+    else if ( StrCmpI(keyword, "CAPTIONTEXT")             == 0) *color = 9;
+    else if ( StrCmpI(keyword, "DESKTOP")                 == 0) *color = 1;
+    else if ( StrCmpI(keyword, "GRADIENTACTIVECAPTION")   == 0) *color =27;
+    else if ( StrCmpI(keyword, "GRADIENTINACTIVECAPTION") == 0) *color =28;
+    else if ( StrCmpI(keyword, "GRAYTEXT")                == 0) *color =17;
+    else if ( StrCmpI(keyword, "HIGHLIGHT")               == 0) *color =13;
+    else if ( StrCmpI(keyword, "HIGHLIGHTTEXT")           == 0) *color =14;
+    else if ( StrCmpI(keyword, "HOTLIGHT")                == 0) *color =26;
+    else if ( StrCmpI(keyword, "INACTIVEBORDER")          == 0) *color =11;
+    else if ( StrCmpI(keyword, "INACTIVECAPTION")         == 0) *color = 3;
+    else if ( StrCmpI(keyword, "INACTIVECAPTIONTEXT")     == 0) *color =19;
+    else if ( StrCmpI(keyword, "INFOBK")                  == 0) *color =24;
+    else if ( StrCmpI(keyword, "INFOTEXT")                == 0) *color =23;
+    else if ( StrCmpI(keyword, "MENU")                    == 0) *color = 4;
+    else if ( StrCmpI(keyword, "MENUHILIGHT")             == 0) *color =29;
+    else if ( StrCmpI(keyword, "MENUBAR")                 == 0) *color =30;
+    else if ( StrCmpI(keyword, "MENUTEXT")                == 0) *color = 7;
+    else if ( StrCmpI(keyword, "SCROLLBAR")               == 0) *color = 0;
+    else if ( StrCmpI(keyword, "WINDOW")                  == 0) *color = 5;
+    else if ( StrCmpI(keyword, "WINDOWFRAME")             == 0) *color = 6;
+    else if ( StrCmpI(keyword, "WINDOWTEXT")              == 0) *color = 8;
+    else
+    {
+        TCHAR buffer[512];
+        _snprintf(buffer, sizeof(buffer), "Argument %d is not a valid system color keyword; found %s", argPos, keyword);
+        userDefinedMsgException(c, buffer);
+
+        return false;
+    }
+    return true;
+}
+
 void assignBitmap(pCPlainBaseDialog pcpbd, size_t index, CSTRING bmp, PUSHBUTTON_STATES type, bool isInMemory)
 {
     HBITMAP hBmp = NULL;
@@ -1515,7 +1589,7 @@ pCPlainBaseDialog dlgExtSetup(RexxMethodContext *c, RexxObjectPtr dlg)
 {
     oodResetSysErrCode(c->threadContext);
 
-    pCPlainBaseDialog pcpbd = requiredDlgCSelf(c, dlg, oodPlainBaseDialog, 0);
+    pCPlainBaseDialog pcpbd = requiredDlgCSelf(c, dlg, oodPlainBaseDialog, 0, NULL);
     if ( pcpbd == NULL )
     {
         return (pCPlainBaseDialog)baseClassIntializationException(c);
@@ -1535,6 +1609,10 @@ pCPlainBaseDialog dlgExtSetup(RexxMethodContext *c, RexxObjectPtr dlg)
  *
  * Note that we want to be able to call this, some times, before the underlying
  * dialog has been created, so we bypass dlgExtSetup().
+ *
+ * Passing in null for phCtrl, signals that the underlying dialog does not need
+ * to be created yet.  If phCtrl is not null, then that signals that the method
+ * requires the underlying dialog to exist.
  *
  * @param c
  * @param self
@@ -1616,7 +1694,7 @@ RexxMethod2(RexxObjectPtr, dlgext_clearWindowRect, POINTERSTRING, hwnd, OSELF, s
 
 /** DialogExtensions::clearRect()
  *
- *  'Clears' a rectangle in the specified Window.
+ *  'Clears' a bounding rectangle in the specified Window.
  *
  *  @param hwnd         The window of the dialog or dialog control to act on.
  *  @param coordinates  The coordinates of the rectangle, given in pixels.
@@ -1690,6 +1768,11 @@ RexxMethod3(RexxObjectPtr, dlgext_clearRect, POINTERSTRING, hwnd, ARGLIST, args,
  *            This method is essentially WindowBase::setRect() but works
  *            wit a supplied window handle rather then the window handle of the
  *            Rexx object.
+ *
+ *            There is no syntax exception if the underlying Windows dialog does
+ *            not exist.  There is no reason why the dialog would need to exist,
+ *            since we are using the window handle to position a window.  If the
+ *            hwnd arg is not a window, the system error code will get set.
  */
 RexxMethod3(RexxObjectPtr, dlgext_setWindowRect, POINTERSTRING, hwnd, ARGLIST, args, OSELF, self)
 {
@@ -1777,8 +1860,8 @@ RexxMethod3(RexxObjectPtr, dlgext_redrawWindowRect, OPTIONAL_POINTERSTRING, _hwn
 
 /** DialogExtensions::redrawRect()
  *
- *  Immediately redraws the specified rectangle in the specified window, (a
- *  dialog or a dialog control.)
+ *  Immediately redraws the specified rectangle in the client area of the
+ *  specified window.
  *
  *  @param hwnd   [OPITONAL]  The window of the dialog or dialog control to act
  *                on.  The default is this dialog.
@@ -2466,7 +2549,8 @@ RexxMethod3(RexxObjectPtr, dlgext_setBitmapPosition, RexxObjectPtr, rxID, ARGLIS
     return TheOneObj;
 }
 
-/** DialogExtensions::getBitmapSizeX()
+/** DialogExtensions::getBitmapSize()
+ *  DialogExtensions::getBitmapSizeX()
  *  DialogExtensions::getBitmapSizeY()
  *
  *
@@ -2510,10 +2594,218 @@ RexxMethod3(RexxObjectPtr, dlgext_getBitmapSize, RexxObjectPtr, rxID, NAME, meth
                 return context->Int32(y);
             default :
                 break;
-
         }
     }
     return TheNegativeOneObj;
+}
+
+
+/** DialogExtensions:scrollButton()
+ *
+ *  Moves the specified rectangle within the button and redraws the uncovered
+ *  area with the button background color.  This method is used to move bitmaps
+ *  within bitmap buttons.
+ *
+ *  @note  Sets .SystemErrorCode.
+ *
+ *  @remarks  TODO convert to using an options .Rect arg.
+ *
+ *            The original ooDialog external function had an option whether or
+ *            not to redraw the uncovered portion of the button.  The option was
+ *            not documented and internally the function was always called with
+ *            true.  That option was therefore eliminated
+ *
+ *            This method was originally a Button method, the scroll() method.
+ *            But it belongs in the rather silly bitmap button category.  Since
+ *            the majority of these methods were implemented in the dialog
+ *            extensions class, this method was moved here.
+ *
+ *            The DialogExtensions class already had the scrollButton() method,
+ *            which simply forwarded to the Button::scroll() method.  So we just
+ *            reversed the logic and have the Button::scroll() method forward to
+ *            this method.
+ *
+ *            For backwards compatibility, the Button::scroll() method has to be
+ *            maintained.  It now simply forwards to this method.  The button
+ *            method is deprecated, and therefore no longer documented.
+ *
+ *            Although we use logical_t for the return, the actual return is 0
+ *            for success and 1 for failure.
+ */
+RexxMethod8(logical_t, dlgext_scrollButton, RexxObjectPtr, rxID, int32_t, xPos, int32_t, yPos, int32_t, left, int32_t, top,
+            int32_t, right, int32_t, bottom, OSELF, self)
+{
+    pCPlainBaseDialog pcpbd;
+    HWND hwnd;
+
+    if ( dlgExtControlSetup(context, self, rxID, &pcpbd, NULL, &hwnd) != TheZeroObj )
+    {
+        goto err_out;
+    }
+
+    // Enforce that this is a button control.
+    oodControl_t controlType = oodName2controlType("PUSHBUTTON");
+    if ( ! isControlMatch(hwnd, controlType) )
+    {
+        goto err_out;
+    }
+
+    RECT r;
+    if ( GetWindowRect(hwnd, &r) )
+    {
+        RECT rs;
+        HDC hDC = GetDC(hwnd);
+
+        rs.left = left;
+        rs.top = top;
+        rs.right = right;
+        rs.bottom = bottom;
+
+        r.right = r.right - r.left;
+        r.bottom = r.bottom - r.top;
+        r.left = 0;
+        r.top = 0;
+
+        if ( ScrollDC(hDC, xPos, yPos, &rs, &r, NULL, NULL) == 0 )
+        {
+            oodSetSysErrCode(context->threadContext);
+            goto err_out;
+        }
+
+        // Draw uncovered rectangle with background color.
+        HBRUSH hBrush, hOldBrush;
+        HPEN hOldPen, hPen;
+
+        if ( pcpbd->bkgBrush )
+        {
+            hBrush = pcpbd->bkgBrush;
+        }
+        else
+        {
+            hBrush = GetSysColorBrush(COLOR_BTNFACE);
+        }
+
+        hPen = CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNFACE));
+        hOldPen = (HPEN)SelectObject(hDC, hPen);
+        hOldBrush = (HBRUSH)SelectObject(hDC, hBrush);
+
+        if ( xPos > 0 )
+        {
+            Rectangle(hDC, rs.left, rs.top, rs.left + xPos, rs.bottom);
+        }
+        else if ( xPos < 0 )
+        {
+            Rectangle(hDC, rs.right + xPos, rs.top, rs.right, rs.bottom);
+        }
+
+        if ( yPos > 0 )
+        {
+            Rectangle(hDC, rs.left, rs.top, rs.right, rs.top + yPos);
+        }
+        else if ( yPos < 0 )
+        {
+            Rectangle(hDC, rs.left, rs.bottom + yPos, rs.right, rs.bottom);
+        }
+
+        SelectObject(hDC, hOldBrush);
+        SelectObject(hDC, hOldPen);
+        DeleteObject(hPen);
+
+        ReleaseDC(hwnd, hDC);
+        return 0;
+    }
+
+err_out:
+    return 1;
+}
+
+
+/** Button::dimBitmap()
+ *
+ *  Draws a bitmap on the client area of the button control step by step.
+ *
+ *  @param  id    The resource ID of the bitmap button.  Can be numeric or
+ *                symbolic.
+ *  @param  hBmp  A handle to the bitmap loaded with loadBitmap.
+ *
+ *  @param  cx, cy [required] The width and height of the bitmap.
+ *
+ *  @param  stepx, stepy [optional] The number of pixels to increment the x and
+ *                       y position of the bitmap at each step. The default is 2
+ *                       pixels for both cx and cy.
+ *
+ *  @param  steps [optional]  The number of iterations used to draw the bitmap.
+ *                            The bitmap is redrawn at each step. The default is
+ *                            10.
+ *
+ *  @notes  We enforce that the control must be a button.
+ *
+ *  @remarks  This method was originally a Button method, but it belongs in the
+ *            rather silly bitmap button category.  Since the majority of these
+ *            methods were implemented in the dialog extensions class, this
+ *            method was moved here.
+ *
+ *            For backwards compatibility, the Button::dimBitmap() method has to
+ *            be maintained.  It now simply forwards to this method.  The button
+ *            method is deprecated, and therefore no longer documented.
+ */
+RexxMethod8(RexxObjectPtr, dlgext_dimBitmap, RexxObjectPtr, rxID, POINTERSTRING, hBmp, uint32_t, width, uint32_t, height,
+            OPTIONAL_uint32_t, stepX, OPTIONAL_uint32_t, stepY, OPTIONAL_uint32_t, steps, OSELF, self)
+{
+    HWND hwnd;
+
+    if ( dlgExtControlSetup(context, self, rxID, NULL, NULL, &hwnd) != TheZeroObj )
+    {
+        return TheNegativeOneObj;
+    }
+
+    // Enforce that this is a button control.
+    oodControl_t controlType = oodName2controlType("PUSHBUTTON");
+    if ( ! isControlMatch(hwnd, controlType) )
+    {
+        return TheNegativeOneObj;
+    }
+
+    stepX = (argumentOmitted(4) ? 2  : stepX);
+    stepY = (argumentOmitted(5) ? 2  : stepY);
+    steps = (argumentOmitted(6) ? 10 : steps);
+
+    HDC hDC = GetWindowDC(hwnd);
+
+    LOGBRUSH logicalBrush;
+    logicalBrush.lbStyle = BS_DIBPATTERNPT;
+    logicalBrush.lbColor = DIB_RGB_COLORS;
+    logicalBrush.lbHatch = (ULONG_PTR)hBmp;
+
+    HBRUSH hBrush = CreateBrushIndirect(&logicalBrush);
+    HPEN hPen = CreatePen(PS_NULL, 0, PALETTEINDEX(0));
+
+    HBRUSH oldBrush = (HBRUSH)SelectObject(hDC, hBrush);
+    HPEN oldPen = (HPEN)SelectObject(hDC, hPen);
+
+    uint32_t diffY = steps * stepY;
+    uint32_t diffX = steps * stepX;
+
+    uint32_t a, i, j, x, y;
+
+    for ( a = 0; a < steps; a++ )
+    {
+       for ( y = a * stepY, i = 0; i < height / steps; y += diffY, i++ )
+       {
+          for ( x = a * stepX, j = 0; j < width / steps; x += diffX, j++ )
+          {
+              Rectangle(hDC, x - a * stepX, y - a * stepY, x + stepX + 1, y + stepY + 1);
+          }
+       }
+    }
+
+    SelectObject(hDC, oldBrush);
+    SelectObject(hDC, oldPen);
+    DeleteObject(oldBrush);
+    DeleteObject(oldPen);
+    ReleaseDC(hwnd, hDC);
+
+    return TheZeroObj;
 }
 
 
@@ -2664,137 +2956,6 @@ done_out:
     return hBrush;
 }
 
-
-/** DialogExtensions::getMouseCapture()
- *
- *  Retrieves a handle to the window (if any) that has captured the mouse.
- *
- *  Only one window at a time can capture the mouse; this window receives mouse
- *  input whether or not the cursor is within its borders.
- *
- *  @return  A NULL return value means the current thread has not captured the
- *           mouse. However, it is possible that another thread or process has
- *           captured the mouse.
- *
- *  DialogExtensions::releaseMouseCapture()
- *
- *  Releases the mouse capture from a window in the current thread and restores
- *  normal mouse input processing.
- *
- *  @return  0 on success, 1 on error.
- *
- *  @note  Sets the .SystemErrorCode, but that only has meaning for
- *         releaseMouseCapture().
- *
- *  @remarks  GetCapture() and ReleaseCapture() need to run on the same thread
- *            as the dialog's message loop.  So we use SendMessage with one of
- *            the custom window messages.
- *
- */
-RexxMethod2(RexxObjectPtr, dlgext_mouseCapture, NAME, method, OSELF, self)
-{
-    RexxObjectPtr result = NULLOBJECT;
-
-    pCPlainBaseDialog pcpbd = dlgExtSetup(context, self);
-    if ( pcpbd != NULL )
-    {
-        if ( *method == 'G' )
-        {
-            HWND hwnd = (HWND)SendMessage(pcpbd->hDlg, WM_USER_GETSETCAPTURE, 0, 0);
-            result = pointer2string(context, hwnd);
-        }
-        else
-        {
-            RexxMethodContext *c = context;
-            uint32_t rc = (uint32_t)SendMessage(pcpbd->hDlg, WM_USER_GETSETCAPTURE, 2,0);
-            result = (rc == 0 ? TheZeroObj : c->UnsignedInt32(rc));
-        }
-    }
-    return result;
-}
-
-/** DialogExtensions::captureMouse
- *
- *  Sets the mouse capture to this dialog window.  captureMouse() captures mouse
- *  input either when the mouse is over the dialog, or when the mouse button was
- *  pressed while the mouse was over the dialog and the button is still down.
- *  Only one window at a time can capture the mouse.
- *
- *  If the mouse cursor is over a window created by another thread, the system
- *  will direct mouse input to the specified window only if a mouse button is
- *  down.
- *
- *  @return  The window handle of the window that previously had captured the
- *           mouse, or 0 if there was no such window.
- *
- *  @note  Sets the .SystemErrorCode,
- */
-RexxMethod1(RexxObjectPtr, dlgext_captureMouse, OSELF, self)
-{
-    RexxObjectPtr result = TheZeroObj;
-
-    pCPlainBaseDialog pcpbd = dlgExtSetup(context, self);
-    if ( pcpbd != NULL )
-    {
-        HWND oldCapture = (HWND)SendMessage(pcpbd->hDlg, WM_USER_GETSETCAPTURE, 1, (LPARAM)pcpbd->hDlg);
-        result = pointer2string(context, oldCapture);
-    }
-    return result;
-}
-
-
-/** DialogExtensions::isMouseButtonDown()
- *
- *  Determines if one of the mouse buttons is down.
- *
- *  @param  whichButton  [OPTIONAL]  Keyword indicating which mouse button
- *                       should be queried. By default it is the left button
- *                       that is queried.
- *
- *  @return  True if the specified mouse button was down, otherwise false
- *
- *  @note  Sets the .SystemErrorCode, but there is nothing that would change it
- *         to not zero.
- *
- *  @remarks  The key state must be handled in the window thread, so
- *            SendMessage() has to be used.
- */
-RexxMethod2(RexxObjectPtr, dlgext_isMouseButtonDown, OPTIONAL_CSTRING, whichButton, OSELF, self)
-{
-    pCPlainBaseDialog pcpbd = dlgExtSetup(context, self);
-    if ( pcpbd == NULL )
-    {
-        return NULLOBJECT;
-    }
-
-    int mb = VK_LBUTTON;
-    if ( argumentExists(1) )
-    {
-        if ( StrStrI(whichButton, "LEFT"  ) ) mb = VK_LBUTTON;
-        else if ( StrStrI(whichButton, "RIGHT" ) ) mb = VK_RBUTTON;
-        else if ( StrStrI(whichButton, "MIDDLE") ) mb = VK_MBUTTON;
-        else
-        {
-            return wrongArgValueException(context->threadContext, 1, "LEFT, RIGHT, MIDDLE", whichButton);
-        }
-    }
-
-    if ( GetSystemMetrics(SM_SWAPBUTTON) )
-    {
-        if ( mb == VK_LBUTTON )
-        {
-            mb = VK_RBUTTON;
-        }
-        else if ( mb == VK_RBUTTON )
-        {
-            mb = VK_LBUTTON;
-        }
-    }
-
-    return ((short)SendMessage(pcpbd->hDlg, WM_USER_GETKEYSTATE, mb, 0) & ISDOWN) ? TheTrueObj : TheFalseObj;
-}
-
-
 /** DialogExtensions::setForegroundWindow()
  *
  *  Brings the specified wind to the foreground.
@@ -2838,8 +2999,15 @@ RexxMethod1(RexxObjectPtr, dlgext_setForgroundWindow, RexxStringObject, hwnd)
 
 /** DialogExtensions::setControlColor()
  *  DialogExtensions::setControlSysColor()
+ *
+ *  @remarks  For sys color we accept keyword IDs, but not for regular colors.
+ *            At some point we might convert regular colors to accept keywords
+ *            also.
+ *
+ *            Since accepting keywords is a 4.2.0 or later feature, we raise a
+ *            syntax error if an unsupported keyword is used.
  */
-RexxMethod5(int32_t, dlgext_setControlColor, RexxObjectPtr, rxID, int32_t, bkColor, OPTIONAL_int32_t, fgColor,
+RexxMethod5(int32_t, dlgext_setControlColor, RexxObjectPtr, rxID, RexxObjectPtr, rxBG, OPTIONAL_RexxObjectPtr, rxFG,
             NAME, method, OSELF, self)
 {
     pCPlainBaseDialog pcpbd = dlgToCSelf(context, self);
@@ -2855,8 +3023,31 @@ RexxMethod5(int32_t, dlgext_setControlColor, RexxObjectPtr, rxID, int32_t, bkCol
         return -1;
     }
 
-    return (int32_t)oodColorTable(context, pcpbd, id, bkColor, (argumentOmitted(3) ? -1 : fgColor),
-                                  (method[10] == 'S'));
+    bool    useSysColor = (method[10] == 'S');
+    int32_t bkColor = 0;
+    int32_t fgColor = -1;
+
+    RexxMethodContext *c = context;
+    if ( useSysColor )
+    {
+        if ( ! getSystemColor(context, rxBG, &bkColor, 2) )
+        {
+            return -1;
+        }
+        if ( argumentExists(3) && ! getSystemColor(context, rxFG, &fgColor, 3) )
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        if ( ! context->Int32(rxBG, &bkColor) || (argumentExists(3) && ! context->Int32(rxBG, &fgColor)) )
+        {
+            return -1;
+        }
+    }
+
+    return (int32_t)oodColorTable(context, pcpbd, id, bkColor, fgColor, useSysColor);
 }
 
 
@@ -3631,5 +3822,4 @@ bool getTextSize(RexxMethodContext *context, CSTRING text, CSTRING fontName, uin
 error_out:
     return false;
 }
-
 
