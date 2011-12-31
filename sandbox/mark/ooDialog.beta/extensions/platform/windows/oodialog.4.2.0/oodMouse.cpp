@@ -52,6 +52,7 @@
 
 #include "APICommon.hpp"
 #include "oodCommon.hpp"
+#include "oodControl.hpp"
 #include "oodMessaging.hpp"
 #include "oodResources.hpp"
 #include "oodMouse.hpp"
@@ -303,6 +304,234 @@ done_out:
 
 
 /**
+ * Process window messages relating to mouse messages sent to a dialog control
+ * subclass window procedure. All messages diverted here have been tagged by the
+ * ooDialog framework with the mouse tag.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param msg
+ * @param hwnd
+ * @param wParam
+ * @param lParam
+ * @param pcdc
+ *
+ * @return LRESULT
+ */
+LRESULT processMouseMsg(RexxThreadContext *c, char *methodName, uint32_t tag, uint32_t msg, HWND hwnd,
+                        WPARAM wParam, LPARAM lParam, pCDialogControl pcdc)
+{
+    pCPlainBaseDialog pcpbd     = pcdc->pcpbd;
+    bool              willReply = (tag & CTRLTAG_EXTRAMASK) == CTRLTAG_REPLYFROMREXX;
+
+    switch ( msg )
+    {
+        case WM_CAPTURECHANGED :
+        {
+            // Send the window losing capture handle and the mouse object.
+            RexxArrayObject args = c->ArrayOfTwo(pointer2string(c, (void *)lParam), pcdc->rexxMouse);
+
+            if ( willReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+            }
+            return 0;
+        }
+        break;
+
+        case WM_LBUTTONDOWN :
+        {
+            RexxArrayObject args = getMouseArgs(c, pcdc->rexxMouse, wParam, lParam, 3);
+
+            if ( willReply )
+            {
+                RexxObjectPtr rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+                if ( ! checkForCondition(c, false) )
+                {
+                    if ( rexxReply == TheTrueObj )
+                    {
+                        return 0;
+                    }
+                }
+                return DefSubclassProc(hwnd, msg, wParam, lParam);
+            }
+            else
+            {
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+            }
+            return 0;
+        }
+        break;
+
+        case WM_LBUTTONUP :
+        case WM_LBUTTONDBLCLK :
+        case WM_MOUSEHOVER :
+        case WM_MOUSEMOVE :
+        {
+            RexxArrayObject args = getMouseArgs(c, pcdc->rexxMouse, wParam, lParam, 3);
+
+            if ( willReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+            }
+            return 0;
+        }
+        break;
+
+        case WM_MOUSELEAVE :
+        {
+            // Send the mouse object, and not even sure we need to do that..
+            RexxArrayObject args = c->ArrayOfOne(pcdc->rexxMouse);
+
+            if ( willReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+            }
+            return 0;
+        }
+        break;
+
+        case WM_MOUSEWHEEL :
+        {
+            if ( tag & CTRLTAG_SENDTODEFWINDOWPROC )
+            {
+                return DefWindowProc(hwnd, msg, wParam, lParam);
+            }
+
+            MOUSEWHEELDATA mwd;
+            mwd.method    = methodName;
+            mwd.mouse     = pcdc->rexxMouse;
+            mwd.pcpbd     = pcpbd;
+            mwd.willReply = willReply;
+
+            mouseWheelNotify(&mwd, wParam, lParam);
+
+            return 0;
+        }
+        break;
+
+        default :
+            break;
+    }
+
+    return DefSubclassProc(hwnd, msg, wParam, lParam);
+}
+
+
+/**
+ * Process window messages relating to mouse messages sent to the dialog window.
+ * All messages diverted here have been tagged by the ooDialog framework with
+ * the mouse tag.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param msg
+ * @param wParam
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  For the mouse object, I don't think we can be here without a valid
+ *           mouse object in pcpbd, but we will check any way.
+ */
+MsgReplyType processMouseMsg(RexxThreadContext *c, char *methodName, uint32_t tag, uint32_t msg,
+                             WPARAM wParam, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    bool willReply = (tag & TAG_EXTRAMASK) == TAG_REPLYFROMREXX;
+
+    switch ( msg )
+    {
+        case WM_CAPTURECHANGED :
+        {
+            // Send the window losing capture handle and the mouse object.
+            RexxArrayObject args = c->ArrayOfTwo(pointer2string(c, (void *)lParam), pcpbd->rexxMouse);
+
+            if ( willReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+            }
+            return ReplyTrue;
+        }
+        break;
+
+        case WM_LBUTTONDOWN :
+        case WM_LBUTTONUP :
+        case WM_LBUTTONDBLCLK :
+        case WM_MOUSEHOVER :
+        case WM_MOUSEMOVE :
+        {
+            RexxArrayObject args = getMouseArgs(c, pcpbd->rexxMouse, wParam, lParam, 3);
+
+            if ( willReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+            }
+            return ReplyTrue;
+        }
+        break;
+
+        case WM_MOUSELEAVE :
+        {
+            // Send the mouse object, and not even sure we need to do that..
+            RexxArrayObject args = c->ArrayOfOne(pcpbd->rexxMouse);
+
+            if ( willReply )
+            {
+                invokeDirect(c, pcpbd, methodName, args);
+            }
+            else
+            {
+                invokeDispatch(c, pcpbd->rexxSelf, c->String(methodName), args);
+            }
+            return ReplyTrue;
+        }
+        break;
+
+        case WM_MOUSEWHEEL :
+        {
+            MOUSEWHEELDATA mwd;
+            mwd.method         = methodName;
+            mwd.mouse          = pcpbd->rexxMouse;
+            mwd.pcpbd          = pcpbd;
+            mwd.willReply      = willReply;
+
+            mouseWheelNotify(&mwd, wParam, lParam);
+
+            return ReplyTrue;
+        }
+        break;
+
+        default :
+            break;
+    }
+    return ReplyFalse;
+}
+
+
+/**
  * Produces a rexx argument array for the standard mouse event handler
  * arugments.  Which are: keyState, mousePos, mouseObj.
  *
@@ -315,7 +544,7 @@ done_out:
  *
  * @return RexxArrayObject
  */
-RexxArrayObject getMouseArgs(RexxThreadContext *c, pCPlainBaseDialog pcpbd, WPARAM wParam, LPARAM lParam, uint32_t count)
+RexxArrayObject getMouseArgs(RexxThreadContext *c, RexxObjectPtr rxMouse, WPARAM wParam, LPARAM lParam, uint32_t count)
 {
     char  buf[256] = {0};
     int   state    = GET_KEYSTATE_WPARAM(wParam);
@@ -334,16 +563,11 @@ RexxArrayObject getMouseArgs(RexxThreadContext *c, pCPlainBaseDialog pcpbd, WPAR
         if ( state & MK_XBUTTON1 ) strcat(buf, "xButton1 ");
         if ( state & MK_XBUTTON1 ) strcat(buf, "xButton2 ");
 
-        buf[strlen(buf)] = '\0';
+        buf[strlen(buf) - 1] = '\0';
     }
 
     RexxStringObject rxState = c->String(buf);
     RexxObjectPtr    rxPoint = rxNewPoint(c, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-
-    // Send the window losing capture and the mouse object.  Note, I
-    // don't think we can be here without a valid mouse object in pcpbd,
-    // but we will check any way.
-    RexxObjectPtr rxMouse = pcpbd->rexxMouse ? pcpbd->rexxMouse : TheNilObj;
 
     RexxArrayObject args;
     if ( count > 3 )
@@ -378,9 +602,9 @@ RexxArrayObject getMouseArgs(RexxThreadContext *c, pCPlainBaseDialog pcpbd, WPAR
  */
 bool mouseWheelNotify(PMOUSEWHEELDATA mwd, WPARAM wParam, LPARAM lParam)
 {
-    RexxThreadContext *c = mwd->dlgProcContext;
+    RexxThreadContext *c = mwd->pcpbd->dlgProcContext;
 
-    RexxArrayObject args = getMouseArgs(c, mwd->pcpbd, wParam, lParam, 4);
+    RexxArrayObject args = getMouseArgs(c, mwd->mouse, wParam, lParam, 4);
 
     RexxObjectPtr rxDelta = c->WholeNumber(GET_WHEEL_DELTA_WPARAM(wParam));
     c->ArrayPut(args, rxDelta, 4);
@@ -391,7 +615,7 @@ bool mouseWheelNotify(PMOUSEWHEELDATA mwd, WPARAM wParam, LPARAM lParam)
     }
     else
     {
-        invokeDispatch(c, mwd->ownerDlg, c->String(mwd->method), args);
+        invokeDispatch(c, mwd->pcpbd->rexxSelf, c->String(mwd->method), args);
     }
     return true;
 }
@@ -723,36 +947,6 @@ done_out:
     return 0;
 }
 
-/** Mouse::uninit()
- *
- *  TODO I don't think we need an uninit() method after all.
- *
- */
-RexxMethod1(RexxObjectPtr, mouse_uninit, CSELF, pCSelf)
-{
-    if ( pCSelf != NULLOBJECT )
-    {
-        pCMouse pcm = (pCMouse)pCSelf;
-
-#if 1
-        printf("Mouse::uninit() Dlg CSelf=%p\n", pcm->dlgCSelf);
-#endif
-
-        EnterCriticalSection(&crit_sec);
-
-        if ( pcm->dlgCSelf != NULL )
-        {
-            pcm->dlgCSelf->mouseCSelf = NULL;
-            pcm->dlgCSelf->rexxMouse  = NULLOBJECT;
-        }
-
-        LeaveCriticalSection(&crit_sec);
-
-    }
-
-    return TheZeroObj;
-}
-
 /** Mouse::trackEvent()
  *
  *
@@ -872,6 +1066,7 @@ RexxMethod2(RexxObjectPtr, mouse_dragDetect, RexxObjectPtr, _pt, CSELF, pCSelf)
     {
         return TheFalseObj;
     }
+
     return DragDetect(pcm->hWindow, *pt) ? TheTrueObj : TheFalseObj;
 }
 
@@ -1496,17 +1691,26 @@ RexxMethod1(logical_t, mouse_getClipCursor, RexxObjectPtr, _rect)
 
 /** Mouse::connectEvent()
  *
+ *  @param  event       [required]  Event keyword.
+ *  @param  methodName  [optional]  methodName.
+ *  @param  willReply   [optional]  If the interpreter should wait for the reply
+ *                                  from the connected method in the window
+ *                                  procedure.  The default is true.
+ *  @param  opts        [optional]  Additional keyword options used for dialog
+ *                                  control mouse windows.  Ignrored if the
+ *                                  mouse is a dialog window mouse.
  *
  * @return  True on success, false on error.
  */
-RexxMethod4(RexxObjectPtr, mouse_connectEvent, CSTRING, event, OPTIONAL_CSTRING, methodName,
-            OPTIONAL_logical_t, _willReply, CSELF, pCSelf)
+RexxMethod5(RexxObjectPtr, mouse_connectEvent, CSTRING, event, OPTIONAL_CSTRING, methodName,
+            OPTIONAL_logical_t, _willReply, OPTIONAL_CSTRING, opts, CSELF, pCSelf)
 {
     pCEventNotification pcen = getMousePCEN(context, (pCMouse)pCSelf);
     if ( pcen == NULL )
     {
         goto err_out;
     }
+    pCMouse pcm = (pCMouse)pCSelf;
 
     uint32_t wmMsg;
     if ( ! keyword2wm(context, event, &wmMsg) )
@@ -1519,14 +1723,41 @@ RexxMethod4(RexxObjectPtr, mouse_connectEvent, CSTRING, event, OPTIONAL_CSTRING,
         methodName = wm2name(wmMsg);
     }
 
-    uint32_t tag = TAG_MOUSE;
     bool willReply = argumentOmitted(3) || _willReply;
+    uint32_t tag = TAG_MOUSE;
 
-    tag |= willReply ? TAG_REPLYFROMREXX : 0;
-
-    if ( addMiscMessage(pcen, context, wmMsg, 0xFFFFFFFF, 0, 0, 0, 0, methodName, tag) )
+    if ( pcm->isDlgWindow )
     {
-        return TheTrueObj;
+        tag |= willReply ? TAG_REPLYFROMREXX : 0;
+
+        if ( addMiscMessage(pcen, context, wmMsg, 0xFFFFFFFF, 0, 0, 0, 0, methodName, tag) )
+        {
+            return TheTrueObj;
+        }
+    }
+    else
+    {
+        tag = CTRLTAG_MOUSE;
+        tag |= willReply ? CTRLTAG_REPLYFROMREXX : 0;
+
+        if ( argumentExists(4) )
+        {
+            if ( ! parseTagOpts(context->threadContext, opts, &tag, 4) )
+            {
+                goto err_out;
+            }
+        }
+
+        WinMessageFilter wmf = {0};
+        wmf.wm       = wmMsg;
+        wmf.wmFilter = 0xFFFFFFFF;
+        wmf.method   = methodName;
+        wmf.tag      = tag;
+
+        if ( addSubclassMessage(context, pcm->controlCSelf, &wmf) )
+        {
+            return TheTrueObj;
+        }
     }
 
 err_out:

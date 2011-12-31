@@ -270,7 +270,7 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD cancel
-    -- If in the process of updating, then ask whether any changes should be
+    -- If in the process of updating, then ask whether any changes should be 
     -- thrown away and dialog closed. If yes then close by calling the superclass,
     -- else nop. If not in update, then close immediately
     if self~dialogState = "inUpdate" then do

@@ -69,6 +69,7 @@
    use strict arg
    return (self~sendWinIntMsg(self~CCM_GETUNICODEFORMAT, 0, 0) <> 0)
 
+::method addUserSubclass unguarded external "LIBRARY oodialog dlgctrl_addUserSubclass"
 ::method assignFocus unguarded external "LIBRARY oodialog dlgctrl_assignFocus"
 ::method tabStop unguarded external "LIBRARY oodialog dlgctrl_tabGroup"
 ::method group unguarded external "LIBRARY oodialog dlgctrl_tabGroup"
@@ -80,12 +81,16 @@
 ::method data unguarded external "LIBRARY oodialog dlgctrl_data"
 ::method "data=" unguarded external "LIBRARY oodialog dlgctrl_dataEquals"
 
-::method connectCharEvent unguarded external "LIBRARY oodialog dlgctrl_connectCharEvent"
+::method connectEvent unguarded external "LIBRARY oodialog dlgctrl_connectEvent"
 ::method connectFKeyPress unguarded external "LIBRARY oodialog dlgctrl_connectFKeyPress"
 ::method connectKeyPress unguarded external "LIBRARY oodialog dlgctrl_connectKeyPress"
 ::method disconnectKeyPress unguarded external "LIBRARY oodialog dlgctrl_disconnectKeyPress"
 ::method hasKeyPressConnection unguarded external "LIBRARY oodialog dlgctrl_hasKeyPressConnection"
 ::method getTextSizeDlg unguarded external "LIBRARY oodialog dlgctrl_getTextSizeDlg"
+
+::method connectCharEvent unguarded
+  use strict arg methodName = 'onChar'
+  return self~connectEvent('CHAR', methodName)
 
 -- DEPRECATED START
 ::method captureMouse unguarded
@@ -201,9 +206,14 @@
 ::method addStyle unguarded external "LIBRARY oodialog e_style"
 ::method removeStyle unguarded external "LIBRARY oodialog e_style"
 ::method getStyle unguarded external "LIBRARY oodialog e_style"
-::method noContextMenu unguarded external "LIBRARY oodialog e_noContextMenu"
-::method disableInternalResize unguarded external "LIBRARY oodialog e_disableInternalResize"
-::method ignoreMouseWheel unguarded external "LIBRARY oodialog e_ignoreMouseWheel"
+
+::method noContextMenu unguarded
+  use strict arg
+  return self~connectEvent('CONTEXTMENU')
+
+::method disableInternalResize unguarded
+  use strict arg
+  return self~connectEvent('WM_SIZE')
 
 ::method canUndo unguarded
     use strict arg
@@ -1189,6 +1199,7 @@
 ::method add unguarded external "LIBRARY oodialog lv_add"
 ::method addRow unguarded external "LIBRARY oodialog lv_addRow"
 ::method addFullRow unguarded external "LIBRARY oodialog lv_addFullRow"  -- TODO review implementation before release
+::method hitTestInfo unguarded external "LIBRARY oodialog lv_hitTestInfo"
 ::method modify unguarded external "LIBRARY oodialog lv_modify"
 ::method setItemState unguarded external "LIBRARY oodialog lv_setItemState"
 ::method getExtendedStyle unguarded external "LIBRARY oodialog lv_getExtendedStyle"

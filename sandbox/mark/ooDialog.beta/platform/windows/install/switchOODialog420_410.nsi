@@ -231,6 +231,8 @@ Section  doSwitch
     File "${SamplesDir420}\mouse\*.rex"
     File "${SamplesDir420}\mouse\*.h"
     File "${SamplesDir420}\mouse\*.rc"
+    File "${SamplesDir420}\mouse\*.cur"
+    File "${SamplesDir420}\mouse\*.txt"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\oleinfo
