@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
-    # Copyright (c) 2005-2011, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2011-2011, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -41,24 +41,62 @@
     #
     #########################################################################
 -->
-<chapter id="man0099"><title>Standard Dialogs, and Public Routines</title>
-<indexterm><primary>Standard Dialogs, Public Routines</primary></indexterm>
+<chapter id="chapUserInput"><title>User Input</title>
+<indexterm><primary>User Input</primary></indexterm>
 <para>
-  The ooDialog framework provides a number of easy to use standard dialogs and public routines that allow
-  programmers to include simple graphical elements in their Rexx applications. A few of the functions,
-  like <link linkend="rtnMSSleep">MSSleep</link> expose functionality that can be useful in any type of
-  Rexx application. The public routines can be called with a single line of code and the standard
-  dialogs can usually be executed with only two lines of code. This does not require the programmer to do
-  much set up and makes them simple to work with.
+  xxx
+</para>
+<para>
+  yyy
+</para>
+<para>
+  zzz
+</para>
+
+
+<section id="sctUserInputGroups"><title>User Input Groups</title>
+<para> The following table lists the general categories of user input that are documented in this chapter:
+<table id="tblUserInputClasses" frame="all"> <title>ooDialog User Input Groups</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>User Input</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="sctCommonDialogLibrary">Common</link></entry>
+<entry>Objects and routines used to easily gather user input.</entry>
+</row>
+<row>
+<entry><link linkend="clsMouse">Mouse</link></entry>
+<entry>ooDialog programs deal with mouse input primarily through the <computeroutput>Mouse</computeroutput> class</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+
+<section id="sctCommonDialogLibrary"><title>Common Dialog Library</title>
+<indexterm><primary>Common Input Dialogs and Routines</primary></indexterm>
+<para>
+  The ooDialog framework provides a number of easy to use dialogs and routines that obtain user input in common
+  scenarios. These dialogs and routines allow programmers to include simple graphical elements in their Rexx
+  applications and collect user input in a standard way.. The public routines can be called with a single line of code
+  and the standard dialogs can usually be executed with only two lines of code. This does not require the programmer to
+  do much set up and makes them simple to work with.
 </para>
 
 <section id="sctStandardClassesRoutines"><title>Class and Routine Table</title>
 
 <para>
-  The standard dialogs and public routines are listed the following table:
+  The common dialogs and routines are listed the following table:
 </para>
 <table id="tStandardElements" frame="all">
-<title>Standard Dialog Classes and Public Routines</title>
+<title>Common Dialog Classes and Public Routines</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
 <thead>
@@ -129,10 +167,6 @@
 <entry>Causes a file selection dialog box to appear.</entry>
 </row>
 <row>
-<entry><link linkend="rtnFindWindow">FindWindow routine</link></entry>
-<entry>Searches the desktop for a specific window and returns its handle.</entry>
-</row>
-<row>
 <entry><link linkend="rtnInfoDialog">InfoDialog routine</link></entry>
 <entry>Pops up a message box containing the specified text and an Ok push button.</entry>
 </row>
@@ -153,10 +187,6 @@
 <entry>Pops up a message box with the options specified.</entry>
 </row>
 <row>
-<entry><link linkend="rtnMSSleep">MSSleep routine</link></entry>
-<entry>Sleeps for the specified number of milliseconds.</entry>
-</row>
-<row>
 <entry><link linkend="rtnMultiInputBox">MultiInputBox routine</link></entry>
 <entry>Provides a shortcut function to invoke a <computeroutput>MultiInputBox</computeroutput> dialog</entry>
 </row>
@@ -167,14 +197,6 @@
 <row>
 <entry><link linkend="rtnPasswordBox">PasswordBox routine</link></entry>
 <entry>A shortcut to invoke a <computeroutput>PasswordBox</computeroutput> dialog.</entry>
-</row>
-<row>
-<entry><link linkend="rtnPlay">Play routine</link></entry>
-<entry>Used to play audio sounds.</entry>
-</row>
-<row>
-<entry><link linkend="rtnScreenSize">ScreenSize routine</link></entry>
-<entry>Obtains the screen size in dialog units and in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="rtnSingleSelection">SingleSelection routine</link></entry>
@@ -1825,111 +1847,6 @@ call directory curdir
 </variablelist>
 </section>
 
-<section id="rtnFindWindow"><title>FindWindow Routine</title>
-<indexterm><primary>FindWindow</primary></indexterm>
-<indexterm><primary>public routines</primary>
-<secondary>FindWindow</secondary></indexterm>
-<para>Searches the Windows application list for a specific window and
-returns its handle.</para>
-<programlisting>
-<![CDATA[
->>-FindWindow(--Caption--)------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>Caption</term>
-<listitem><para>Caption of the window that is to be searched.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>Handle of the window or 0 if the window was not found.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="rtnScreenSize"><title>ScreenSize Routine</title>
-<indexterm><primary>ScreenSize</primary></indexterm>
-<indexterm><primary>public routines</primary>
-<secondary>ScreenSize</secondary></indexterm>
-<para>Obtains the screen size in dialog units and in pixels.</para>
-<programlisting>
-<![CDATA[
->>-ScreenSize()-----------------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
-<listitem><para>This function takes no arguments.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>An array containing the screen size.  The size in dialog units
-of the width is at index 1 and the height in dialog units is at index 2. The
-size in pixels of the width is at index 3 and the height in pixels is at index
-4.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
-<listitem>
-<para>
-  There are a few problems with this routine. The main problem is with the values returned for the <link
-  linkend="defDialogUnit">dialog units</link>. Since dialog units are depenedent on the font in use for a specific
-  dialog, and there is no dialog involved here, the routine calculates the dialog units using 8 point System font. It is
-  higly unlikely that this is correct for any specific dialog.
-</para>
-<para>
-  The <link linkend="mthScreenSize">screenSize</link> method of the <link linkend="clsDlgUtil">DlgUtil</link> class is
-  a better way to get the screen size. It can provide accurate dialog units and may be more convenient to use since the
-  programmer seldom needs to get the size in both pixels and dialog units.
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example</emphasis></term>
-<listitem><para>Get the screen size and display it to the user.
-<programlisting>
-<![CDATA[
-size = screenSize()
-say
-say 'The monitor is' size[1] 'dialog units wide and' size[2] 'dialog units high.'
-say 'The monitor is' size[3] 'pixels wide and' size[4] 'pixels high.'
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="rtnMSSleep"><title>MSSleep Routine</title>
-<indexterm><primary>MSSleep</primary></indexterm>
-<indexterm><primary>public routines</primary>
-<secondary>MSSleep</secondary></indexterm>
-<para>Sleeps for the specified number of milliseconds.</para>
-<programlisting>
-<![CDATA[
->>-MSSleep(--duration--)--------------------------------------><
-]]>
-</programlisting>
-
-<para></para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Argument:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>duration</term>
-<listitem><para>The time in milliseconds to sleep.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>This function always returns 0.
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="rtnTimedMessage"><title>TimedMessage Routine</title>
 <indexterm><primary>TimedMessage</primary>
 <secondary>function</secondary></indexterm>
@@ -2281,78 +2198,14 @@ array is passed into the function.
 </para>
 </section>
 
-<section id="rtnPlay"><title>Play Routine</title>
-<indexterm><primary>Play</primary></indexterm>
-<indexterm><primary>public routines</primary>
-<secondary>Play</secondary></indexterm>
-<para>This routine is used to play audio sounds.</para>
-<programlisting>
-<![CDATA[
->>-Play(--+----------+--+---------+--)------------------------><
-          +-fileName-+  +-,--YES--+
-                        +-,--LOOP-+
-
-
-]]>
-</programlisting>
-
-<para>
-  The Play routine can be used to play an audio file using the Windows multimedia capabilities.  When the
-  arguments are omitted, the currently playing sound file is stopped.
-</para>
-<para>
-  The named file is searched for in the current directory and in the directories of the SOUNDPATH
-  environment variable.
-</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>fileName</term>
-<listitem>
-  <para>
-    The file name of an audio (.WAV) file. The file is searched for in the current directory and in the
-    directories listed in the SOUNDPATH environment variable. If this argument is omitted, the currently
-    playing sound file is stopped.
-</para>
-<note><title>Note</title><para>
-  The system can only play one audio file at a time using the <emphasis role="italic">play</emphasis>()
-  routine. If an audio file is currently playing, calling the routine with arguments will disrupt the
-  audio file already playing.
-</para></note>
-</listitem></varlistentry>
-<varlistentry><term>option</term>
-<listitem>
-  <para>
-    When this argument is omitted, the audio file is played synchronously. Otherwise, use one of the
-    following keywords:
-<variablelist>
-<varlistentry><term>YES</term>
-<listitem><para>The audio file is played asynchronously.
-</para></listitem></varlistentry>
-<varlistentry><term>LOOP</term>
-<listitem>
-  <para>
-    The audio file is played asynchronously in a loop. The loop is stopped by calling Play again with no
-    arguments.
-  </para>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example plays a welcoming message:
-<programlisting>
-<![CDATA[
-rc = play("Welcome.wav")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 </section>
+
+
+<!-- <section id="clsMouse"><title>Mouse Class</title>  START -->
+&clsMouse;
+<!-- <section id="clsMouse"><title>Mouse Class</title>  END   -->
 
 
 </chapter>

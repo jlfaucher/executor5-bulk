@@ -62,6 +62,7 @@ xml_FILES = baseClasses.xml \
 	     listview.xml \
 	     menus.xml \
 	     monthcalendar.xml \
+	     mouse.xml \
 	     oodialog.xml \
 	     overview.xml \
 	     preface.xml \
@@ -70,13 +71,13 @@ xml_FILES = baseClasses.xml \
 	     resdialog.xml \
 	     resources.xml \
 	     scrollbar.xml \
-	     standarddialog.xml \
 	     static.xml \
 	     tab.xml \
 	     trackbar.xml \
 	     treeview.xml \
 	     updown.xml \
 	     userdialog.xml \
+	     userInput.xml \
 	     utilityclasses.xml \
 	     windowBase.xml \
 	     windowBaseDO.xml \
