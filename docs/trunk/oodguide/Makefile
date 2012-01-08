@@ -48,6 +48,7 @@ xml_FILES = oodguide.xml \
 	     appendix01.xml \
 	     appendix02.xml \
 	     appendix03.xml \
+	     appendix04.xml \
 	     Chapter02.xml \
 	     Chapter03.xml \
 	     Chapter04.xml \
