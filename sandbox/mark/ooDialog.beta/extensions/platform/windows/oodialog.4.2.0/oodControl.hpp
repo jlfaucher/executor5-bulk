@@ -39,6 +39,18 @@
 #ifndef oodControl_Included
 #define oodControl_Included
 
+/**
+ * Many of the Windows controls allow the user to store a user defined value
+ * either with the control, or with each item of a control.  A good example is
+ * the list view control where the programmer can store / associate a value with
+ * each item in the list view.
+ *
+ * In ooDialog, where a dialog control object allows the Rexx programmer to take
+ * advantage of the Windows function each user value is put in the dialog
+ * control object's bag to prevent garbage collection until the dialog control
+ * object itself is garbage collected.
+ */
+#define DIALOGCONTROL_BAG_ATTRIBUTE  "DialogControlBagAttribute"
 
 /**
  *  A 'tag' is used in processing the mapping of Windows messages to user
@@ -113,6 +125,21 @@ typedef struct newControlParams
     bool                isCatDlg;
 } NEWCONTROLPARAMS;
 typedef NEWCONTROLPARAMS *PNEWCONTROLPARAMS;
+
+/* Struct for the LvFullRow object CSelf. */
+typedef struct _lvFullRow
+{
+    uint32_t          magic;         // Indentifies this struct
+    LPLVITEM         *subItems;      // Subitem[0] is actually the item the rest are the subitems
+    RexxObjectPtr    *rxSubItems;    // The Rexx subitems rxSubItems[0] is a LvItem, the rest LvSubItems
+    RexxObjectPtr     rexxSelf;      // The LvFullRow Rexx object
+    uint32_t          subItemCount;  // The number of subItems
+    uint32_t          size;          // The allocated size of the subItem array.
+} CLvFullRow;
+typedef CLvFullRow *pCLvFullRow;
+
+#define LVFULLROW_MAGIC              0xCafeDeaf  // Magic number to identify a CLvFullRow struct
+#define LVFULLROW_DEF_SUBITEMS       10          // Initial size of the subItems array
 
 enum DateTimePart {dtFull, dtTime, dtDate, dtNow};
 
@@ -201,6 +228,20 @@ inline uint32_t getDCinsertIndex(void *pCSelf)
 {
     return (((pCDialogControl)pCSelf)->lastItem + 1);
 }
+
+/**
+ * Validates that the CSelf pointer for a DialogControl object is not null.
+ */
+inline pCDialogControl validateDCCSelf(RexxMethodContext *c, void *pcdc)
+{
+    oodResetSysErrCode(c->threadContext);
+    if ( pcdc == NULL )
+    {
+        baseClassIntializationException(c);
+    }
+    return (pCDialogControl)pcdc;
+}
+
 
 
 #endif

@@ -618,20 +618,6 @@ done_out:
 #define DIALOGCONTROL_CLASS        "DialogControl"
 
 /**
- * Validates that the CSelf pointer for a DialogControl object is not null.
- */
-inline pCDialogControl validateDCCSelf(RexxMethodContext *c, void *pcdc)
-{
-    oodResetSysErrCode(c->threadContext);
-    if ( pcdc == NULL )
-    {
-        baseClassIntializationException(c);
-    }
-    return (pCDialogControl)pcdc;
-}
-
-
-/**
  * Tests if the key code is considered an extended key for the purposes of
  * connectCharEvent().
  *
@@ -1407,6 +1393,13 @@ RexxMethod1(RexxObjectPtr, dlgctrl_unInit, CSELF, pCSelf)
             freeKeyPressData((pSubClassData)pcdc->pscd);
         }
 
+        if ( pcdc->pcrs != NULL )
+        {
+            safeLocalFree(pcdc->pcrs->method);
+            LocalFree(pcdc->pcrs);
+            pcdc->pcrs = NULL;
+        }
+
         pCWindowBase pcwb = ((pCDialogControl)pCSelf)->wndBase;
         if ( pcwb->rexxHwnd != TheZeroObj )
         {
@@ -2067,4 +2060,22 @@ done_out:
     return result;
 }
 
+
+RexxMethod2(RexxObjectPtr, dlgctrl_putInBag, RexxObjectPtr, object, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+
+    if ( pcdc != NULL )
+    {
+        if ( pcdc->rexxBag == NULL )
+        {
+            RexxObjectPtr bag = rxNewBag(context);
+            context->SetObjectVariable(DIALOGCONTROL_BAG_ATTRIBUTE, bag);
+            pcdc->rexxBag = bag;
+        }
+        context->SendMessage2(pcdc->rexxBag, "PUT", object, object);
+    }
+
+    return TheNilObj;
+}
 
