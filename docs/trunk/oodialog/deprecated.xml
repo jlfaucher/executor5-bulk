@@ -124,23 +124,10 @@
   section.
 </para>
 
-<section><title>absRect2LogRect</title>
+<section><title>captureMouse</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
-  linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
-  linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
-</para>
-</section>
-
-<section><title>assignWindow</title>
-<para>
-  This method is deprecated and always returns 0, <emphasis role="italic">the assignment failed</emphasis>. To work with
-  a dialog or dialog control object, construct the proper ooDialog object. This ensures that the object has the correct
-  methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
-  <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
-  of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
-  method common to all windows when only the window <link linkend="defHandle">handle</link> is known.  For these cases
-  use a <link linkend="clsWindow">Window</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
@@ -393,6 +380,13 @@
 </para>
 </section>
 
+<section><title>getMouseCapture</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
+</para>
+</section>
+
 <section><title>getMultiList</title>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
@@ -439,14 +433,6 @@
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewStatic">newStatic</link>() method.
-</para>
-</section>
-
-<section><title>getSystemMetrics</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method the functionally equivalent <link
-  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
-  role="italic">.DlgUtil</emphasis>class.
 </para>
 </section>
 
@@ -518,19 +504,18 @@
 </para>
 </section>
 
+<section><title>isMouseButtonDown</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
+</para>
+</section>
+
 <section><title>itemText</title>
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthSetControlText">setControlText</link>() method. <emphasis role="bold">Note</emphasis> that this method has
   always been present in ooDialog, but was never previously documented.
-</para>
-</section>
-
-<section><title>logRect2AbsRect</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
-  linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
-  linkend="mthDlgUnit2pixel">dlgUnit2pixel</link>() method.
 </para>
 </section>
 
@@ -551,6 +536,13 @@
 <para>
   This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthRedrawControl">redrawControl</link>() method.
+</para>
+</section>
+
+<section><title>releaseMouseCapture</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
@@ -635,6 +627,700 @@
 </section>
 
 </section>
+
+
+<section id="deprecatedDialogControls"><title>Deprecated Dialog Control Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>dialog control methods</secondary></indexterm>
+
+<section id="deprecatedButton"><title>Deprecated Button Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>button methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">Button</emphasis> class and how to replace those methods in ooDialog programs. The implementation of the
+  following <emphasis role="italic">bitmap</emphasis> button methods was done in the <link
+  linkend="chpDialogObject">dialog</link> object. The methods are methods of the dialog, not the button.
+</para>
+
+<section><title>changeBitmap</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthChangeBitmapButton">changeBitmapButton</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>dimBitmap</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthDimBitmap">dimBitmap</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>displaceBitmap</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthDisplaceBitmap">displaceBitmap</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>drawBitmap</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthDrawBitmap">drawBitmap</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>getBitmapPosition</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthGetBitmapPosition">getBitmapPosition</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>getBitmapSizeX</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthGetBitmapSizeX"></link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>getBitmapSizeY</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthGetBitmapSizeY">getBitmapSizeY</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>getBitmapSizeY</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthGetBitmapSizeY">getBitmapSizeY</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>scroll</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthScrollbutton">scrollButton</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>scrollBitmapFromTo</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthScrollBitmapFromTo">scrollBitmapFromTo</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>scrollText</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthScrollText">scrollText</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+<section><title>setBitmapPosition</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  linkend="mthSetBitmapPosition">setBitmapPosition</link>() method of the the <link
+  linkend="chpDialogObject">dialog</link> object.
+</para>
+</section>
+
+</section>  <!-- End Deprecated Buttons Methods Section -->
+
+<section id="deprecatedComboBox"><title>Deprecated ComboBox Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>combo box methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">ComboBox</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>editSelection</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link
+  linkend="mthSetEditSelection">setEditSelection</link>().
+</para>
+</section>
+
+</section>  <!-- End Deprecated ComboBox Methods Section -->
+
+<section id="deprecatedListView"><title>Deprecated ListView Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>list-view methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">ListView</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>removeImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>removeSmallImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>setImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>setSmallImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+</section>  <!-- End Deprecated TreeView Methods Section -->
+
+<section id="deprecatedProgressBar"><title>Deprecated ProgressBar Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>progress bar methods</secondary></indexterm>
+
+<section><title>getRange</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link linkend="mthGetFullRangePBC">getFullRange</link>().
+</para>
+</section>
+
+<section id="mthSetRangePBC"><title>setRange</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link linkend="mthSetFullRangePBC">setFullRange</link>().
+</para>
+</section>
+
+</section>  <!-- End Deprecated ProgressBar Methods Section -->
+
+
+<section id="deprecatedRadiobuttonMethods"><title>Deprecated Radio Button Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>radio button methods</secondary></indexterm>
+
+<section><title>isChecked</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method for radio buttons, and the over-ridden <link
+  linkend="mthGetCheckStateClsCheckBox">getCheckState</link>() method for check boxes. This method was poorly named and
+  in some circumstances produced inconsistent results.
+</para>
+</section>
+
+<section><title>indeterminate</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthSetIndeterminate">setIndeterminate</link>() method of the <link linkend="clsCheckBox">CheckBox</link>
+  class. Radio buttons can not be set to indeterminate. Using this method with a radio button sets it to the checked
+  state, not the indeterminate state. In addition, this method was poorly named. One can check a button, but one does
+  not indeterminate a check box.
+</para>
+</section>
+
+</section>  <!-- End Deprecated Radio Button Methods Section -->
+
+
+<section id="deprecatedTab"><title>Deprecated Tab Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>tab methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">Tab</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>removeImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTabControl">setImageList()</link> method.  Do not use this method in new code. Try to
+  migrate existing code to to the <computeroutput>setImageList()</computeroutput> method. This method may not exist in
+  future versions of ooDialog.
+</para>
+</section>
+
+<section><title>setImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTabControl">setImageList()</link> method. Do not use this method in new code. Try to
+  migrate existing code to to the <computeroutput>setImageList()</computeroutput> method. This method may not exist in
+  future versions of ooDialog.
+</para>
+</section>
+
+</section>  <!-- End Deprecated Tab Methods Section -->
+
+<section id="deprecatedTreeView"><title>Deprecated TreeView Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>tree-view methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">TreeView</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>removeImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTreeView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>setImages</title>
+<para>
+  This method is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthSetImageListClsTreeView">setImageList()</link> method.  Do not use this method in new
+  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
+  This method may not exist in future versions of ooDialog.
+</para>
+</section>
+
+</section>  <!-- End Deprecated TreeView Methods Section -->
+
+</section>  <!-- End Deprecated Dialog Control Methods Section -->
+
+
+<section id="deprecatedDialogControl"><title>Deprecated DialogControl Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>dialog control object methods</secondary></indexterm>
+<para>
+  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  role="italic">DialogControl</emphasis> class and how to replace those methods in ooDialog programs.
+</para>
+
+<section><title>captureMouse</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>getFocus</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
+  object's <link linkend="mthGetFocus">getFocus</link>() method instead.
+</para>
+</section>
+
+<section><title>getMouseCapture</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>getTextSize</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with the <link
+  linkend="mthGetTextSizeDu">getTextSizeDu</link>() method. The <link
+  linkend="mthGetTextSizeDlgClsDialogControl">getTextSizeDlg</link>() method could also be used, if absolutely
+  necessary. However, that is not recommended.
+</para>
+<para>
+  This method never worked correctly, the previous documentation for this method was incorrect and /
+  or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDlgDu</emphasis>() method.
+</para>
+</section>
+
+<section><title>isMouseButtonDown</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>processMessage</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="wbdcoSendMessage">sendMessage</link>() method.
+</para>
+</section>
+
+<section><title>releaseMouseCapture</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
+</para>
+</section>
+
+<section><title>setFocus</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
+  object's <link linkend="mthSetFocus">setFocus</link>() method instead.
+</para>
+</section>
+
+<section><title>tabToNext</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
+  object's <link linkend="mthTabToNext">tabToNext</link>() method instead.
+</para>
+</section>
+
+<section><title>tabToPrevious</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
+  object's <link linkend="mthTabToPrevious">tabToPrevious</link>() method instead.
+</para>
+</section>
+
+<section><title>value</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthData">data</link>() method.
+</para>
+</section>
+
+<section><title>value=</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthDataEquals">data=</link>() method.
+</para>
+</section>
+
+</section>  <!-- End Deprecated DialogControl Methods Section -->
+
+
+<section id="deprecatedEventNotification"><title>Deprecated Event Notification Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>MessageExtensions methods</secondary></indexterm>
+<indexterm><primary>Deprecated</primary><secondary>EventNotification methods</secondary></indexterm>
+<para>
+  Earlier versions of ooDialog used a confusing array of method names with the word <emphasis
+  role="italic">connect</emphasis> in them. After the release of ooRexx 4.0.0, an effort was made to unify the method
+  names in ooDialog. The methods listed in this section are all <link linkend="ovvDeprecated">deprecated</link>. They
+  all forward to the method that has taken their place. You can remove this level of indirection in your programs by
+  replacing all of the deprecated methods.
+</para>
+
+<section><title>connectButton</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method using the <link
+  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method in this maner:
+<programlisting>
+<![CDATA[
+  -- Change the following code:
+  self~connectButton(IDC_PB_REFRESH, onRefresh)
+
+  -- To this code:
+  self~connectListButtonEvent(IDC_PB_REFRESH, "CLICKED", onRefresh)
+]]>
+</programlisting>
+</para>
+</section>
+
+<section><title>connectButtonNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectComboBoxNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectCommonNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectNotifyEvent">connectNotifyEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectControl</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectCommandEvents">connectCommandEvents</link>() method.
+</para>
+</section>
+
+<section><title>connectEditNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectEditEvent">connectEditEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectList</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
+  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
+<programlisting>
+<![CDATA[
+  -- Change the following code:
+  self~connectList(IDC_LISTBOX, onList)
+
+  -- To this code:
+  self~connectListBoxEvent(IDC_LISTBOX, "SELCHANGE", onList)
+]]>
+</programlisting>
+</para>
+</section>
+
+<section><title>connectListBoxNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectListLeftDoubleClick</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
+  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
+<programlisting>
+<![CDATA[
+  -- Change the following code:
+  self~connectListLeftDoubleClick(IDC_LISTBOX, onDoubleClick)
+
+  -- To this code:
+  self~connectListBoxEvent(IDC_LISTBOX, "DLBCLK", onDoubleClick)
+]]>
+</programlisting>
+</para>
+</section>
+
+<section><title>connectListNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectListViewNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectMenuItem</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpMenus">menu</link> object
+  methods directly.
+</para>
+</section>
+
+<section><title>connectMouseCapture</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="clsMouse">mouse</link> object
+  methods directly.
+</para>
+</section>
+
+<section><title>connectScrollBar</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectEachSBEvent">connectEachSBEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectScrollBarNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectSliderNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectStaticNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectStaticEvent">connectStaticEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectTabNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTabEvent">connectTabEvent</link>() method.
+</para>
+</section>
+
+<section><title>connectTreeNotify</title>
+<para>
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>() method.
+</para>
+</section>
+
+</section>
+
+
+<section id="deprecatedExternalFunctions"><title>Deprecated External Functions</title>
+<indexterm><primary>Deprecated</primary><secondary>external functions</secondary></indexterm>
+
+<para>
+  <emphasis role="bold">Do not directly use any of the ooDialog external functions.</emphasis>
+</para>
+<para>
+  The ooDialog documentation prior to ooDialog 4.0.0 documented ten external functions as <emphasis
+  role="italic">callable functions that can be used in your Object Rexx programs</emphasis>. It then
+  mentioned in passing that the <link linkend="sctPublicRoutines">Public Routines</link> were a more
+  convenient way to use these functions. It was noted that the external routines were registered
+  automatically when the first dialog was initialized, but if the programmer wanted to use the external
+  routines when no dialog was created, he could register the individual functions using
+  <computeroutput>RxFuncAdd</computeroutput>.
+</para>
+<para>
+  The 3.2.0 documentation expounded on that a little and also mentioned that there were other external
+  functions, noting that it would be difficult for ooDialog programmers to use these other functions
+  unless they were experienced C programmers. In hindsight that was a mistake. Each of the external
+  functions has a matching public routine. No mention of the external functions should have been made.
+  Instead, only the public routines should have been documented.
+</para>
+<para>
+  The reason for this is simple, the external functions have been removed. Prior to 4.0.0, ooDialog was
+  implemented using the original external naitve API. This API was useful, but somewhat limiting.
+  Particularly when used with the object-orientated paradigm. ooRexx 4.0.0 introduces a new native API
+  that is much more robust and flexible. Using this new API makes writing exernal packages like ooDialog
+  much easier.
+</para>
+<para>
+  ooDialog has been completely converted to use this new API. <emphasis role="italic"><emphasis
+  role="bold">All</emphasis> of the external functions have been removed.</emphasis> If your programs directly uses any
+  of the <emphasis role="bold">undocumented</emphasis> external functions, they will not work with the 4.2.0 release of
+  ooDialog.
+</para>
+<para>
+  The documented external functions will be available as <emphasis role="bold">deprecated</emphasis>
+  functions, with the possibility of their removal in the future. However, they will simply map to the
+  corresponding public routine. The programmer can remove this extra level of indirection by calling the
+  public routine directly. It would be nice if ooDialog did not have to drag along this baggage forever
+  into the future.
+</para>
+<para>
+  It is no longer necessary to use RxFuncAdd(). Doing so is a nop. Likewise, registering InstMMFuncs()
+  and calling it does nothing. The ooDialog programmer should remove any references to RxFuncAdd (when
+  used to register any ooDialog external function,) and InstMMFuncs in their code as the opportunity
+  arises.
+</para>
+
+<section><title>errorMessage</title>
+<para>
+  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  linkend="rtnErrorDialog">errorDialog</link>.
+</para>
+</section>
+
+<section><title>getFileNameWindow</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
+  <link linkend="rtnFileNameDialog">FileNameDialog</link>. Do not use this function in new code. Try to migrate existing
+  code to FileNameDialog. This function may not exist in future versions of ooDialog.
+</para> </section>
+
+<section><title>getScreenSize</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the
+  public routine <link linkend="rtnScreenSize">screenSize</link>. Do not use this method in new code. Try to migrate
+  existing code to screenSize. This function may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>getSysMetrics</title>
+<para>
+  This function is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
+  use this function in new code. Try to migrate existing code to to the
+  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This function may not exist in
+  future versions of ooDialog.
+</para>
+</section>
+
+<section><title>infoMessage</title>
+<para>
+  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  linkend="rtnInfoDialog">infoDialog</link>.
+</para>
+</section>
+
+<section><title>playSoundFile</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
+  <link linkend="rtnPlay">Play</link>. Do not use this function in new code. Try to migrate existing code to Play. This
+  function may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>playSoundFileInLoop</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
+  <link linkend="rtnPlay">play</link>. Do not use this function in new code. Try to migrate existing code to <emphasis
+  role="italic">play</emphasis>(). This function may not exist in future versions of ooDialog.
+</para>
+</section>
+
+<section><title>sleepMS</title>
+<para>
+  This fucntion is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  linkend="rtnMSSleep">msSleep</link>.
+</para>
+</section>
+
+<section><title>stopSoundFile</title>
+<para>
+  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
+  <link linkend="rtnPlay">play</link>. Do not use this function in new code. Try to migrate existing code to <emphasis
+  role="italic">play</emphasis>(). This function may not exist in future versions of ooDialog.
+</para> </section>
+
+<section><title>systemMetrics Routine</title>
+<para>
+  This routine is deprecated.  It is replaced by the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not use this
+  routine in new code. Try to migrate existing code to to the
+  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method. This routine may not exist in future versions of
+  ooDialog.
+</para>
+</section>
+
+<section><title>winTimer</title>
+<para>
+  This function is <link linkend="ovvDeprecated">deprecated</link>. There is no replacement for this function.
+</para>
+<para>
+  The implementation of this function is poor. It uses 100% of the CPU while waiting. It should be possible to provide
+  this functionality without consuming all the CPU. A future version of ooDialog may provide a proper implementation for
+  the functionality of waiting on a repeating timer.
+</para>
+</section>
+
+<section><title>yesNoMessage</title>
+<para>
+  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  linkend="rtnAskDialog">askDialog</link>.
+</para>
+</section>
+
+</section>  <!-- End Deprecated External Functions Section -->
 
 
 <section id="deprecatedUserDialogMethods"><title>Deprecated UserDialog Methods</title>
@@ -976,178 +1662,17 @@
 </section>  <!-- End Deprecated UserDialog Methods Section -->
 
 
-<section id="deprecatedEventNotification"><title>Deprecated Event Notification Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>MessageExtensions methods</secondary></indexterm>
-<indexterm><primary>Deprecated</primary><secondary>EventNotification methods</secondary></indexterm>
+<section id="deprecatedWindowBase"><title>Deprecated WindowBase Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>WindowBase methods</secondary></indexterm>
 <para>
-  Earlier versions of ooDialog used a confusing array of method names with the word <emphasis
-  role="italic">connect</emphasis> in them. After the release of ooRexx 4.0.0, an effort was made to unify the method
-  names in ooDialog. The methods listed in this section are all <link linkend="ovvDeprecated">deprecated</link>. They
-  all forward to the method that has taken their place. You can remove this level of indirection in your programs by
-  replacing all of the deprecated methods.
+  The <link linkend="clsWindowBase">WindowBase</link> class is inherited by both the dialog <link
+  linkend="chpDialogObject">object</link> and the dialog control <link linkend="chpDialogControlObject">object</link>.
+  Therefore, depending on the point of view of the reader, these deprecated methods may be thought of as either
+  deprecated dialog mehods or deprecated dialog control methods.
 </para>
-
-<section><title>connectButton</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method using the <link
-  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method in this maner:
-<programlisting>
-<![CDATA[
-  -- Change the following code:
-  self~connectButton(IDC_PB_REFRESH, onRefresh)
-
-  -- To this code:
-  self~connectListButtonEvent(IDC_PB_REFRESH, "CLICKED", onRefresh)
-]]>
-</programlisting>
-</para>
-</section>
-
-<section><title>connectButtonNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectComboBoxNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectCommonNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectNotifyEvent">connectNotifyEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectControl</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectCommandEvents">connectCommandEvents</link>() method.
-</para>
-</section>
-
-<section><title>connectEditNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectEditEvent">connectEditEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectList</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
-  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
-<programlisting>
-<![CDATA[
-  -- Change the following code:
-  self~connectList(IDC_LISTBOX, onList)
-
-  -- To this code:
-  self~connectListBoxEvent(IDC_LISTBOX, "SELCHANGE", onList)
-]]>
-</programlisting>
-</para>
-</section>
-
-<section><title>connectListBoxNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectListLeftDoubleClick</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
-  linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
-<programlisting>
-<![CDATA[
-  -- Change the following code:
-  self~connectListLeftDoubleClick(IDC_LISTBOX, onDoubleClick)
-
-  -- To this code:
-  self~connectListBoxEvent(IDC_LISTBOX, "DLBCLK", onDoubleClick)
-]]>
-</programlisting>
-</para>
-</section>
-
-<section><title>connectListNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectListViewNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectMenuItem</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpMenus">menu</link> object
-  methods directly.
-</para>
-</section>
-
-<section><title>connectScrollBar</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectEachSBEvent">connectEachSBEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectScrollBarNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectSliderNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectStaticNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectStaticEvent">connectStaticEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectTabNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTabEvent">connectTabEvent</link>() method.
-</para>
-</section>
-
-<section><title>connectTreeNotify</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>() method.
-</para>
-</section>
-
-</section>
-
-
-<section id="deprecatedDialogControl"><title>Deprecated DialogControl Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>dialog control object methods</secondary></indexterm>
 <para>
   The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
-  role="italic">DialogControl</emphasis> class and how to replace those methods in ooDialog programs.
+  role="italic">WindowBase</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
 <section><title>assignWindow</title>
@@ -1162,516 +1687,103 @@
 </para>
 </section>
 
-<section><title>captureMous</title>
+<section><title>getSystemMetrics</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
-  object's <link linkend="mthCaptureMouse">captureMouse</link>() method instead.
+  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method the functionally equivalent <link
+  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
+  role="italic">.DlgUtil</emphasis>class.
 </para>
 </section>
 
-<section><title>getFocus</title>
+</section>  <!-- End Deprecated WindowBase Methods Section -->
+
+
+<section id="deprecatedWindowExtensions"><title>Deprecated WindowExtensions Methods</title>
+<indexterm><primary>Deprecated</primary><secondary>WindowExtensions methods</secondary></indexterm>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
-  object's <link linkend="mthGetFocus">getFocus</link>() method instead.
+  The <link linkend="clsWindowExtensions">WindowExtensions</link> class is inherited by both the dialog <link
+  linkend="chpDialogObject">object</link> and the dialog control <link linkend="chpDialogControlObject">object</link>.
+  Therefore, depending on the point of view of the reader, these deprecated methods may be thought of as either
+  deprecated dialog mehods or deprecated dialog control methods.
 </para>
-</section>
-
-<section><title>getMouseCapture</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
-  object's <link linkend="mthGetMouseCapture">getMouseCapture</link>() method instead.
-</para>
-</section>
-
-<section><title>getTextSize</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with the <link
-  linkend="mthGetTextSizeDu">getTextSizeDu</link>() method. The <link
-  linkend="mthGetTextSizeDlgClsDialogControl">getTextSizeDlg</link>() method could also be used, if absolutely
-  necessary. However, that is not recommended.
-</para>
-<para>
-  This method never worked correctly, the previous documentation for this method was incorrect and /
-  or misleading. That has been fixed in the <emphasis role="italic">getTextSizeDlgDu</emphasis>() method.
-</para>
-</section>
-
-<section><title>isMouseButtonDown</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
-  object's <link linkend="mthIsMouseButtonDown">isMouseButtonDown</link>() method instead.
-</para>
-</section>
-
-<section><title>processMessage</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="wbdcoSendMessage">sendMessage</link>() method.
-</para>
-</section>
-
-<section><title>releaseMouseCapture</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
-  object's <link linkend="mthReleaseMouseCapture">releaseMouseCapture</link>() method instead.
-</para>
-</section>
-
-<section><title>setFocus</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
-  object's <link linkend="mthSetFocus">setFocus</link>() method instead.
-</para>
-</section>
-
-<section><title>tabToNext</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
-  object's <link linkend="mthTabToNext">tabToNext</link>() method instead.
-</para>
-</section>
-
-<section><title>tabToPrevious</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
-  object's <link linkend="mthTabToPrevious">tabToPrevious</link>() method instead.
-</para>
-</section>
-
-<section><title>value</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthData">data</link>() method.
-</para>
-</section>
-
-<section><title>value=</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthDataEquals">data=</link>() method.
-</para>
-</section>
-
-</section>  <!-- End Deprecated DialogControl Methods Section -->
-
-
-<section id="deprecatedDialogControls"><title>Deprecated Methods of Dialog Controls</title>
-<indexterm><primary>Deprecated</primary><secondary>dialog control methods</secondary></indexterm>
-
-<section id="deprecatedButton"><title>Deprecated Button Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>button methods</secondary></indexterm>
 <para>
   The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
-  role="italic">Button</emphasis> class and how to replace those methods in ooDialog programs. The implementation of the
-  following <emphasis role="italic">bitmap</emphasis> button methods was done in the <link
-  linkend="chpDialogObject">dialog</link> object. The methods are methods of the dialog, not the button.
+  role="italic">WindowExtensions</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
-<section><title>changeBitmap</title>
+<section><title>absRect2LogRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthChangeBitmapButton">changeBitmapButton</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
+  linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
+  linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
 </para>
 </section>
 
-<section><title>dimBitmap</title>
+<section><title>cursor_appStarting</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthDimBitmap">dimBitmap</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>displaceBitmap</title>
+<section><title>cursor_arrow</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthDisplaceBitmap">displaceBitmap</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>drawBitmap</title>
+<section><title>cursor_cross</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthDrawBitmap">drawBitmap</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>getBitmapPosition</title>
+<section><title>cursor_no</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthGetBitmapPosition">getBitmapPosition</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>getBitmapSizeX</title>
+<section><title>cursor_wait</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthGetBitmapSizeX"></link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>getBitmapSizeY</title>
+<section><title>cursorPos</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthGetBitmapSizeY">getBitmapSizeY</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>getBitmapSizeY</title>
+<section><title>logRect2AbsRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthGetBitmapSizeY">getBitmapSizeY</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
+  linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
+  linkend="mthDlgUnit2pixel">dlgUnit2pixel</link>() method.
 </para>
 </section>
 
-<section><title>scroll</title>
+<section><title>restoreCursorShape</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthScrollbutton">scrollButton</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>scrollBitmapFromTo</title>
+<section><title>setCursorPos</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthScrollBitmapFromTo">scrollBitmapFromTo</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
+  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  object methods directly.
 </para>
 </section>
 
-<section><title>scrollText</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthScrollText">scrollText</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
-</para>
-</section>
-
-<section><title>setBitmapPosition</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
-  linkend="mthSetBitmapPosition">setBitmapPosition</link>() method of the the <link
-  linkend="chpDialogObject">dialog</link> object.
-</para>
-</section>
-
-</section>  <!-- End Deprecated Buttons Methods Section -->
-
-<section id="deprecatedComboBox"><title>Deprecated ComboBox Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>combo box methods</secondary></indexterm>
-<para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
-  role="italic">ComboBox</emphasis> class and how to replace those methods in ooDialog programs.
-</para>
-
-<section><title>editSelection</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link
-  linkend="mthSetEditSelection">setEditSelection</link>().
-</para>
-</section>
-
-</section>  <!-- End Deprecated ComboBox Methods Section -->
-
-<section id="deprecatedListView"><title>Deprecated ListView Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>list-view methods</secondary></indexterm>
-<para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
-  role="italic">ListView</emphasis> class and how to replace those methods in ooDialog programs.
-</para>
-
-<section><title>removeImages</title>
-<para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
-  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
-  This method may not exist in future versions of ooDialog.
-</para>
-</section>
-
-<section><title>removeSmallImages</title>
-<para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
-  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
-  This method may not exist in future versions of ooDialog.
-</para>
-</section>
-
-<section><title>setImages</title>
-<para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
-  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
-  This method may not exist in future versions of ooDialog.
-</para>
-</section>
-
-<section><title>setSmallImages</title>
-<para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsListView">setImageList()</link> method.  Do not use this method in new
-  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
-  This method may not exist in future versions of ooDialog.
-</para>
-</section>
-
-</section>  <!-- End Deprecated TreeView Methods Section -->
-
-<section id="deprecatedProgressBar"><title>Deprecated ProgressBar Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>progress bar methods</secondary></indexterm>
-
-<section><title>getRange</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link linkend="mthGetFullRangePBC">getFullRange</link>().
-</para>
-</section>
-
-<section id="mthSetRangePBC"><title>setRange</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link linkend="mthSetFullRangePBC">setFullRange</link>().
-</para>
-</section>
-
-</section>  <!-- End Deprecated ProgressBar Methods Section -->
-
-
-<section id="deprecatedRadiobuttonMethods"><title>Deprecated Radio Button Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>radio button methods</secondary></indexterm>
-
-<section><title>isChecked</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method for radio buttons, and the over-ridden <link
-  linkend="mthGetCheckStateClsCheckBox">getCheckState</link>() method for check boxes. This method was poorly named and
-  in some circumstances produced inconsistent results.
-</para>
-</section>
-
-<section><title>indeterminate</title>
-<para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
-  linkend="mthSetIndeterminate">setIndeterminate</link>() method of the <link linkend="clsCheckBox">CheckBox</link>
-  class. Radio buttons can not be set to indeterminate. Using this method with a radio button sets it to the checked
-  state, not the indeterminate state. In addition, this method was poorly named. One can check a button, but one does
-  not indeterminate a check box.
-</para>
-</section>
-
-</section>  <!-- End Deprecated Radio Button Methods Section -->
-
-
-<section id="deprecatedTab"><title>Deprecated Tab Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>tab methods</secondary></indexterm>
-<para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
-  role="italic">Tab</emphasis> class and how to replace those methods in ooDialog programs.
-</para>
-
-<section><title>removeImages</title>
-<para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsTabControl">setImageList()</link> method.  Do not use this method in new code. Try to
-  migrate existing code to to the <computeroutput>setImageList()</computeroutput> method. This method may not exist in
-  future versions of ooDialog.
-</para>
-</section>
-
-<section><title>setImages</title>
-<para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsTabControl">setImageList()</link> method. Do not use this method in new code. Try to
-  migrate existing code to to the <computeroutput>setImageList()</computeroutput> method. This method may not exist in
-  future versions of ooDialog.
-</para>
-</section>
-
-</section>  <!-- End Deprecated Tab Methods Section -->
-
-<section id="deprecatedTreeView"><title>Deprecated TreeView Methods</title>
-<indexterm><primary>Deprecated</primary><secondary>tree-view methods</secondary></indexterm>
-<para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
-  role="italic">TreeView</emphasis> class and how to replace those methods in ooDialog programs.
-</para>
-
-<section><title>removeImages</title>
-<para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsTreeView">setImageList()</link> method.  Do not use this method in new
-  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
-  This method may not exist in future versions of ooDialog.
-</para>
-</section>
-
-<section><title>setImages</title>
-<para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthSetImageListClsTreeView">setImageList()</link> method.  Do not use this method in new
-  code. Try to migrate existing code to to the <computeroutput>setImageList()</computeroutput> method.
-  This method may not exist in future versions of ooDialog.
-</para>
-</section>
-
-</section>  <!-- End Deprecated TreeView Methods Section -->
-
-</section>  <!-- End Deprecated Dialog Controls Methods Section -->
-
-<section id="deprecatedExternalFunctions"><title>Deprecated External Functions</title>
-<indexterm><primary>Deprecated</primary><secondary>external functions</secondary></indexterm>
-
-<para>
-  <emphasis role="bold">Do not directly use any of the ooDialog external functions.</emphasis>
-</para>
-<para>
-  The ooDialog documentation prior to ooDialog 4.0.0 documented ten external functions as <emphasis
-  role="italic">callable functions that can be used in your Object Rexx programs</emphasis>. It then
-  mentioned in passing that the <link linkend="sctPublicRoutines">Public Routines</link> were a more
-  convenient way to use these functions. It was noted that the external routines were registered
-  automatically when the first dialog was initialized, but if the programmer wanted to use the external
-  routines when no dialog was created, he could register the individual functions using
-  <computeroutput>RxFuncAdd</computeroutput>.
-</para>
-<para>
-  The 3.2.0 documentation expounded on that a little and also mentioned that there were other external
-  functions, noting that it would be difficult for ooDialog programmers to use these other functions
-  unless they were experienced C programmers. In hindsight that was a mistake. Each of the external
-  functions has a matching public routine. No mention of the external functions should have been made.
-  Instead, only the public routines should have been documented.
-</para>
-<para>
-  The reason for this is simple, the external functions have been removed. Prior to 4.0.0, ooDialog was
-  implemented using the original external naitve API. This API was useful, but somewhat limiting.
-  Particularly when used with the object-orientated paradigm. ooRexx 4.0.0 introduces a new native API
-  that is much more robust and flexible. Using this new API makes writing exernal packages like ooDialog
-  much easier.
-</para>
-<para>
-  ooDialog has been completely converted to use this new API. <emphasis role="italic"><emphasis
-  role="bold">All</emphasis> of the external functions have been removed.</emphasis> If your programs directly uses any
-  of the <emphasis role="bold">undocumented</emphasis> external functions, they will not work with the 4.2.0 release of
-  ooDialog.
-</para>
-<para>
-  The documented external functions will be available as <emphasis role="bold">deprecated</emphasis>
-  functions, with the possibility of their removal in the future. However, they will simply map to the
-  corresponding public routine. The programmer can remove this extra level of indirection by calling the
-  public routine directly. It would be nice if ooDialog did not have to drag along this baggage forever
-  into the future.
-</para>
-<para>
-  It is no longer necessary to use RxFuncAdd(). Doing so is a nop. Likewise, registering InstMMFuncs()
-  and calling it does nothing. The ooDialog programmer should remove any references to RxFuncAdd (when
-  used to register any ooDialog external function,) and InstMMFuncs in their code as the opportunity
-  arises.
-</para>
-
-<section><title>errorMessage</title>
-<para>
-  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
-  linkend="rtnErrorDialog">errorDialog</link>.
-</para>
-</section>
-
-<section><title>getFileNameWindow</title>
-<para>
-  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
-  <link linkend="rtnFileNameDialog">FileNameDialog</link>. Do not use this function in new code. Try to migrate existing
-  code to FileNameDialog. This function may not exist in future versions of ooDialog.
-</para> </section>
-
-<section><title>getScreenSize</title>
-<para>
-  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the
-  public routine <link linkend="rtnScreenSize">screenSize</link>. Do not use this method in new code. Try to migrate
-  existing code to screenSize. This function may not exist in future versions of ooDialog.
-</para>
-</section>
-
-<section><title>getSysMetrics</title>
-<para>
-  This function is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not
-  use this function in new code. Try to migrate existing code to to the
-  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method.  This function may not exist in
-  future versions of ooDialog.
-</para>
-</section>
-
-<section><title>infoMessage</title>
-<para>
-  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
-  linkend="rtnInfoDialog">infoDialog</link>.
-</para>
-</section>
-
-<section><title>playSoundFile</title>
-<para>
-  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
-  <link linkend="rtnPlay">Play</link>. Do not use this function in new code. Try to migrate existing code to Play. This
-  function may not exist in future versions of ooDialog.
-</para>
-</section>
-
-<section><title>playSoundFileInLoop</title>
-<para>
-  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
-  <link linkend="rtnPlay">play</link>. Do not use this function in new code. Try to migrate existing code to <emphasis
-  role="italic">play</emphasis>(). This function may not exist in future versions of ooDialog.
-</para>
-</section>
-
-<section><title>sleepMS</title>
-<para>
-  This fucntion is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
-  linkend="rtnMSSleep">msSleep</link>.
-</para>
-</section>
-
-<section><title>stopSoundFile</title>
-<para>
-  This function is deprecated. See this <link linkend="deprecatedExternalFunctions">explanation</link>. Use the public routine
-  <link linkend="rtnPlay">play</link>. Do not use this function in new code. Try to migrate existing code to <emphasis
-  role="italic">play</emphasis>(). This function may not exist in future versions of ooDialog.
-</para> </section>
-
-<section><title>systemMetrics Routine</title>
-<para>
-  This routine is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the .DlgUtil class.  Do not use this
-  routine in new code. Try to migrate existing code to to the
-  <computeroutput>.DlgUtil~getSystemMetrics()</computeroutput> method. This routine may not exist in future versions of
-  ooDialog.
-</para>
-</section>
-
-<section><title>winTimer</title>
-<para>
-  This function is <link linkend="ovvDeprecated">deprecated</link>. There is no replacement for this function.
-</para>
-<para>
-  The implementation of this function is poor. It uses 100% of the CPU while waiting. It should be possible to provide
-  this functionality without consuming all the CPU. A future version of ooDialog may provide a proper implementation for
-  the functionality of waiting on a repeating timer.
-</para>
-</section>
-
-<section><title>yesNoMessage</title>
-<para>
-  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
-  linkend="rtnAskDialog">askDialog</link>.
-</para>
-</section>
-
-</section>  <!-- End Deprecated External Functions Section -->
+</section>  <!-- End Deprecated WindowBase Methods Section -->
 
 
 </appendix>

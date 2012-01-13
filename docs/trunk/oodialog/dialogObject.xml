@@ -201,10 +201,6 @@
 <entry>A default event handler, provided by the ooDialog framework , for the cancel event.</entry>
 </row>
 <row>
-<entry><link linkend="deCaptureMouse">captureMouse</link></entry>
-<entry>Sets the mouse capture to this dialog window, or optionally a dialog control window belonging to this dialog.</entry>
-</row>
-<row>
 <entry><link linkend="deCreateBrushClsDialogExtensions">createBrush</link></entry>
 <entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
 </row>
@@ -349,14 +345,6 @@
 <entry>Connects an event notification from a month calendar to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry><link linkend="enConnectMouseCapture">connectMouseCapture</link></entry>
-<entry>Connects the losing the mouse capture event notification to a method in the Rexx dialog.</entry>
-</row>
-<row>
-<entry><link linkend="enConnectMouseWheel">connectMouseWheel</link></entry>
-<entry>Connects the mouse wheel event notification to a method in the Rexx dialog.</entry>
-</row>
-<row>
 <entry><link linkend="enConnectMove">connectMove</link></entry>
 <entry>Connects the move event notification to a method in the Rexx dialog.</entry>
 </row>
@@ -435,30 +423,6 @@
 <row>
 <entry><link linkend="wedoCreateFontEx">createFontEx</link></entry>
 <entry>Retrieves a handle to a logical font from the system font manager</entry>
-</row>
-<row>
-<entry><link linkend="wedoCursorAppStarting">cursor_appstarting</link></entry>
-<entry>Sets the shape of the mouse cursor to the standard arrow with a small hourglass.</entry>
-</row>
-<row>
-<entry><link linkend="wedoCursorArrow">cursor_arrow</link></entry>
-<entry>Sets the shape of the mouse cursor to the standard arrow.</entry>
-</row>
-<row>
-<entry><link linkend="wedoCursorCross">cursor_cross</link></entry>
-<entry>Sets the shape of the mouse cursor to a crosshair.</entry>
-</row>
-<row>
-<entry><link linkend="wedoCursorNo">cursor_no</link></entry>
-<entry>Sets the shape of the mouse cursor to a slashed circle.</entry>
-</row>
-<row>
-<entry><link linkend="wedoCursorWait">cursor_wait</link></entry>
-<entry>Sets the shape of the mouse cursor to an hourglass.</entry>
-</row>
-<row>
-<entry><link linkend="wedoCursorPos">cursorPos</link></entry>
-<entry>Retrieves the current cursor position in pixels as a string.</entry>
 </row>
 <row>
 <entry><link linkend="enDefListDragHandler">defListDragHandler</link></entry>
@@ -689,10 +653,6 @@
 <entry>Returns the index of the currently selected list box item, or 0 if no item is selected.</entry>
 </row>
 <row>
-<entry><link linkend="wedoGetCursorPos">getCursorPos</link></entry>
-<entry>Retrieves the current cursor position in pixels as a <computeroutput>Point</computeroutput> object.</entry>
-</row>
-<row>
 <entry><link linkend="mthGetData">getData</link></entry>
 <entry>Sets all the Rexx dialog data attribute values to the state of the underlying, connected, Windows dialog controls.</entry>
 </row>
@@ -759,10 +719,6 @@
 <row>
 <entry><link linkend="mthGetMenuBar">getMenuBar</link></entry>
 <entry>Returns the menu object attached to the dialog, or .nil if there is no menu attached.</entry>
-</row>
-<row>
-<entry><link linkend="deGetMouseCapture">getMouseCapture</link></entry>
-<entry>Retrieves the window handle, if any, that currently has captured the mouse.</entry>
 </row>
 <row>
 <entry><link linkend="wedoGetPixel">getPixel</link></entry>
@@ -915,10 +871,6 @@
 <row>
 <entry><link linkend="mthIsMinimized">isMinimized</link></entry>
 <entry>Checks if a dialog is currently minimized.</entry>
-</row>
-<row>
-<entry><link linkend="deIsMouseButtonDown">isMouseButtonDown</link></entry>
-<entry>Retrieves information on whether a mouse button is pressed.</entry>
 </row>
 <row>
 <entry><link linkend="wbdoIsVisible">isVisible</link></entry>
@@ -1097,10 +1049,6 @@
 <entry>Forces this dialog to completely redraw its client area, or optionally the client area of a specified window.</entry>
 </row>
 <row>
-<entry><link linkend="deReleaseMouseCapture">releaseMouseCapture</link></entry>
-<entry>Releases the mouse capture from this dialog, or the dialog control belonging to this dialog, which had previously captured the mouse.</entry>
-</row>
-<row>
 <entry><link linkend="wedoRemoveBitmap">removeBitmap</link></entry>
 <entry>Frees an in-memory bitmap that was loaded through the <emphasis role="italic">loadBitmap</emphasis> method.</entry>
 </row>
@@ -1223,10 +1171,6 @@
 <row>
 <entry><link linkend="mthSetCurrentListIndex">setCurrentListIndex</link></entry>
 <entry>Selects the item with the specified index in the list box. If called without an index, all items in the list box are deselected.</entry>
-</row>
-<row>
-<entry><link linkend="wedoSetCursorPos">setCursorPos</link></entry>
-<entry>Moves the mouse cursor to the specified position.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetData">setData</link></entry>
@@ -4435,28 +4379,6 @@ EventNotifcation::<link linkend="mthConnectMonthCalendarEvent">connectMonthCalen
 <![CDATA[
 >>--connectMonthCalendarEvent(--id--,--event--+---------+--+-------------+-)---><
                                               +-,-mName-+  +-,-willReply-+
-]]>
-</programlisting>
-</section>
-
-<section id="enConnectMouseCapture"><title>connectMouseCapture</title>
-<programlisting>
-EventNotifcation::<link linkend="mthConnectMouseCapture">connectMouseCapture</link>
-
-<![CDATA[
->>--connectMouseCapture(--methodName--)----------><
-]]>
-
-</programlisting>
-</section>
-
-<section id="enConnectMouseWheel"><title>connectMouseWheel</title>
-<programlisting>
-EventNotifcation::<link linkend="mthConnectMouseWheel">connectMouseWheel</link>
-
-<![CDATA[
->>--connectMouseWheel(--+--------------+--+--------------+--)---><
-                        +--methodName--+  +-,-willReply--+
 ]]>
 </programlisting>
 </section>
@@ -8375,18 +8297,6 @@ var2  "09"x  ,
   functionality provided by the operating system, such as capturing the mouse, or converting dialog units to pixels.
 </para>
 
-<section id="deCaptureMouse"><title>captureMouse</title>
-<programlisting>
-DialogExtensions::<link linkend="mthCaptureMouse">captureMouse</link>
-
-<![CDATA[
->>--captureMouse---------------------------------><
-
-]]>
-</programlisting>
-</section>
-
-
 <section id="mthDlgUnit2pixel"><title>dlgUnit2pixel</title>
 <indexterm><primary>dlgUnit2pixel</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>dlgUnit2pixel</secondary></indexterm>
@@ -8442,17 +8352,6 @@ DialogExtensions::<link linkend="mthCaptureMouse">captureMouse</link>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End dialog object::dlgUnit2pixel() -->
-
-
-<section id="deGetMouseCapture"><title>getMouseCapture</title>
-<programlisting>
-DialogExtensions::<link linkend="mthGetMouseCapture">getMouseCapture</link>
-
-<![CDATA[
->>--getMouseCapture------------------------------><
-]]>
-</programlisting>
-</section>
 
 
 <section id="mthGetSelf"><title>getSelf</title>
@@ -9018,17 +8917,6 @@ DialogExtensions::<link linkend="mthGetMouseCapture">getMouseCapture</link>
 </section>  <!-- End PlainBaseDialog::getTextSizeDlg() -->
 
 
-<section id="deIsMouseButtonDown"><title>isMouseButtonDown</title>
-<programlisting>
-DialogExtensions::<link linkend="mthIsMouseButtonDown">isMouseButtonDown</link>
-
-<![CDATA[
->>--isMouseButtonDown(--whichButton--)-----------><
-]]>
-</programlisting>
-</section>
-
-
 <section id="mthPixel2dlgUnit"><title>pixel2dlgUnit</title>
 <indexterm><primary>pixel2dlgUnit</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>pixel2dlgUnit</secondary></indexterm>
@@ -9129,16 +9017,6 @@ DialogExtensions::<link linkend="mthIsMouseButtonDown">isMouseButtonDown</link>
 </variablelist>
 </section>  <!-- End dialog object::pixel2dlgUnit() -->
 
-
-<section id="deReleaseMouseCapture"><title>releaseMouseCapture</title>
-<programlisting>
-DialogExtensions::<link linkend="mthReleaseMouseCapture">releaseMouseCapture</link>
-
-<![CDATA[
->>--releaseMouseCapture--------------------------><
-]]>
-</programlisting>
-</section>
 
 </section>  <!-- End Section: Operating System Related Methods -->
 

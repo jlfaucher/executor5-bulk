@@ -1,10 +1,24 @@
 <section id="clsMouse"><title>Mouse Class</title>
 <indexterm><primary>Mouse class</primary></indexterm>
 <para>
-  A Mouse object ...
+  In Windows the mouse is one of the important user input devices for programs. A program recieves mouse input in the
+  form of <link linkend="ovvWindowMessages">messages</link> that are sent or posted to the windows of the program. In
+  addition the operating system provides a number of functions to work with the mouse. These functions allow the
+  programmer to change the mouse behavior, configure the mouse, change its appearence, etc..
 </para>
 <para>
-  xx
+  <emphasis role="bold">Mouse Cursor:</emphasis> As the user moves the mouse across the screen, the operating system
+  paints a bitmap on the screen that gives the user feedback as to the position of the mouse. This bitmap is called the
+  <emphasis role="italic">mouse cursor</emphasis>. The cusor has a single pixel point in the bitmap called the <emphasis
+  role="italic">hot spot</emphasis>. The position of the hot spot is considered to be the position of the mouse. All
+  mouse messages are, normally, sent to the window beneath the hot spot, whether or not that window is acitve or has the
+  keyboard focus.
+</para>
+<para>
+  In the ooDialog framework, the <computeroutput>Mouse</computeroutput> class provides all the methods to work with the
+  mouse and the mouse cursor. Because all mouse messages are sent by the operating system to a single window, in
+  ooDialog each instantiated mouse object is affiliated with a specific window object. I.e., a specific dialog or dialog
+  control object.
 </para>
 
 <section id="sctMethodsMouse"><title>Method Table</title>
@@ -26,12 +40,55 @@
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
 <entry><link linkend="mthNewClsMouse">new</link></entry>
+<entry>Instantiates a new mouse object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAppStarting">appStarting</link></entry>
+<entry>Sets the mouse cursor to the system's default <emphasis role="italic">application staring</emphasis> cursor, which is usually the standard arrow with a small hourglass.</entry>
+</row>
+<row>
+<entry><link linkend="mth"></link></entry>
+<entry>Sets the mouse cursor to the system's default <emphasis role="italic"></emphasis>, which is usually the </entry>
+</row>
+<entry><link linkend="mthCapture">capture</link></entry>
+<entry>Sets the mouse capture to this mouse's window.</entry>
+</row>
+<row>
+<entry><link linkend="mth"></link></entry>
+<entry>Sets the mouse cursor to the system's default <emphasis role="italic"></emphasis>, which is usually the </entry>
+</row>
+<row>
+<entry><link linkend="mthGetCapture">getCapture</link></entry>
+<entry>Retrieves the window handle, if any, that currently has captured the mouse.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCursorPos">getCursorPos</link></entry>
+<entry>Retrieves the current cursor position in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsButtonDown">isButtonDown</link></entry>
+<entry>Determines if a mouse button is pressed.</entry>
+</row>
+<row>
+<entry><link linkend="mthNo">no</link></entry>
+<entry>Sets the mouse cursor to the system's default <emphasis role="italic">not allowed</emphasis> cursor, which is usually the circle with a slash across it cursor.</entry>
+</row>
+<row>
+<entry><link linkend="mthReleaseCapture">releaseCapture</link></entry>
+<entry>Releases the mouse capture from the window which had previously captured the mouse.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCursorPos">setCursorPos</link></entry>
+<entry>Moves the mouse cursor to the specified position.</entry>
+</row>
+<row>
+<entry><link linkend="mthWait">wait</link></entry>
+<entry>Sets the mouse cursor to the system's default <emphasis role="italic">busy</emphasis> cursor, which is usually the hourglass cursor.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -43,8 +100,8 @@
 <indexterm><primary>Mouse class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new(--windowObj--)-----------------><
+
 ]]>
 </programlisting>
 
@@ -100,6 +157,1819 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Mouse::new() -->
+
+<section id="mthDoubleClickTime"><title>doubleClickTime (Class Mehod)</title>
+<indexterm><primary>doubleClickTime</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>doubleClickTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--doubleClickTime(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::doubleClickTime() -->
+
+<section id="mthLoadCursor"><title>loadCursor (Class Method)</title>
+<indexterm><primary>loadCursor</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>loadCursor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--loadCursor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::loadCursor() -->
+
+<section id="mthLoadCursorFromFile"><title>loadCursorFromFile (Class Method)</title>
+<indexterm><primary>loadCursorFromFile</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>loadCursorFromFile</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--loadCursorFromFile(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::loadCursorFromFile() -->
+
+<section id="mthSetDoubleClickTime"><title>setDoubleClickTime (Class Method)</title>
+<indexterm><primary>setDoubleClickTime</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>setDoubleClickTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setDoubleClickTime(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::setDoubleClickTime() -->
+
+<section id="mthSwapButton"><title>swapButton (Class Method)</title>
+<indexterm><primary>swapButton</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>swapButton</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--swapButton(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::swapButton() -->
+
+<section id="mthAppStarting"><title>appStarting</title>
+<indexterm><primary>appStarting</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>appStarting</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--appStarting------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the cursor for the window of this mouse instance to the operating system's predefined <emphasis
+  role="italic">application starting</emphasis> cursor.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous cursor on success, or 0 on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::appStarting() -->
+
+<section id="mthArrow"><title>arrow</title>
+<indexterm><primary>arrow</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>arrow</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--arrow(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::arrow() -->
+
+<section id="mthCapture"><title>capture</title>
+<indexterm><primary>capture</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>capture</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--capture----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the mouse capture to this mouse's window. Once a window has captured the mouse, all mouse input is directed to
+  the window even when the mouse is moved outside the boundaries of the window.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The method takes no arguments
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The handle to the window that previously captured the mouse, or 0 if the mouse was not captured before.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The mouse capture functions work with windows of the same thread. For ooDialog, this means the dialog window and the
+    dialog control windows that belong to the same dialog as this mouse's window. The <emphasis
+    role="italic">capture</emphasis> method can capture mouse input either when the mouse is over the dialog this
+    mouse's window belongs to, or when the mouse button was pressed while the mouse was over that dialog, and the button
+    is still down. Only one window at a time can capture the mouse.
+  </para>
+  <para>
+    If the mouse cursor is over a window created by another thread, the system will direct mouse input to the specified
+    window only if a mouse button is down.
+  </para>
+  <para>
+    Only the foreground window, or a window belonging to the foreground window, can capture the mouse. Also, even if the
+    foreground window has captured the mouse, the user can still click another window, bringing it to the foreground.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors if incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable to 0, but there are no operating system
+    errors that would change the varible.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::capture() -->
+
+<section id="mthClipCursor"><title>clipCursor</title>
+<indexterm><primary>clipCursor</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>clipCursor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clipCursor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::clipCursor() -->
+
+<section id="mthConnectEvent"><title>connectEvent</title>
+<indexterm><primary>connectEvent</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>connectEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectEvent(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional information on the mouse wheel and handling mouse wheel events is found in the mouse wheel event <link
+    linkend="evtMOUSEWHEEL">handler</link>, the system parameter <link
+    linkend="atrWheelScrollLines">wheelScrollLines</link> attribute.
+  </para>
+  <para>
+    SAVED FROM IGNOREMOUSEWHEEL. The mouse wheel event notification is sent by the operating system to the window with
+    the current input focus.  If the window does not process the message, then the OS sends the message to the parent
+    window of that window.  This continues on up the parent / child window chain until either a window does process the
+    notification or the top of the chain is reached.
+  </para>
+  <para>
+    Multi-line edit controls <emphasis role="italic">do</emphasis> process the notification and normally handle their
+    own scrolling. If the programmer wants to implement some type of custom scrolling using the connecMouseWheel method,
+    the edit control's interception of the notification may interfere with the custom scrolling. Forcing the edit
+    control to ignore the notification allows it to reach the dialog.
+  </para>
+  <para>
+    Note that using the optional <emphasis role="italic">methName</emphasis> argument is very similar to using the
+    connectMouseWheel method. However, the <emphasis role="italic">methName</emphasis> event handler in this case
+    will only be invoked when the edit control has the input focus. The <emphasis role="italic">methName</emphasis>
+    event handler will receive the same arguments as the <link linkend="evtMOUSEWHEEL">event</link> handler described
+    for the <emphasis role="italic">connectMouseWheel</emphasis> method.
+  </para>
+  <para>
+    SAVED FROM CONNECTMOUSECAPTURE An event notification is generated when a window <emphasis
+    role="bold">loses</emphasis> the mouse capture. The <emphasis role="italic">connectMouseCapture</emphasis> method
+    connects that event notification to a method in the Rexx dialog. This event is generated, for example, when the user
+    moves a dialog with the mouse and then releases the mouse button.
+  </para>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="evtMOUSEWHEEL"><title>MouseWheel Event Handler</title>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSEWHEEL</tertiary></indexterm>
+<para>
+  The event handler for the mouse wheel event is invoked each time the user scrolls the mouse wheel one notch.
+</para>
+<para>
+  The programmer decides whether to have the interpreter wait, or not wait, in the message processing loop for the reply
+  from the event handler. This is done in <link linkend="mthConnectMouseWheel">connectMouseWheel</link> method, or in
+  the <link linkend="mthIgnoreMouseWheel">ignoreMouseWheel</link> method of the <link linkend="clsEdit">Edit</link>
+  class. (The <emphasis role="italic">ignoreMouseWheel</emphasis> method can optionally connect a mouse wheel event
+  handler.) The actual reply is ignored by the operating system. A common value to return would be 0.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onMouseWheel unguarded
+  use arg delta, state, pos
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>delta</term>
+    <listitem>
+    <para>
+      A whole number that represents the amount the scroll wheel was turned. The operating system alway sends a multiple
+      of 120. Microsoft says this is to allow for future expansion with hardare that has a finer grain of control. If
+      the number is positive, the user turned the wheel away from herself and indicates to scroll up. When negative
+      the user turned the wheel towards himself, and indicates to scroll down.
+    </para>
+    <para>
+      At this point in time (c. 2011) the OS sends the event notification for each notch of the scroll wheel. Therefore
+      delta is always 120 or -120.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state</term>
+    <listitem>
+    <para>
+      A list of keywords that indicate the keyboard and mouse button modifiers. The list will contain 1 or more of the
+      following keywords separated by spaces. It will never be the empty string:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>None    </member>
+        <member>Control </member>
+        <member>lButton </member>
+        <member>mButton </member>
+        <member>rButton </member>
+        <member>Shift   </member>
+        <member>xButton1</member>
+        <member>xButton2</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>None</term>
+        <listitem>
+        <para>
+          There are no modifiers. <emphasis role="italic">None</emphasis> will always be the only keyword if it is
+          present.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>Control</term>
+        <listitem>
+        <para>
+          The control key is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lButton</term>
+        <listitem>
+        <para>
+          The left mouse button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>mButton</term>
+        <listitem>
+        <para>
+          The middle mouse button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rButton</term>
+        <listitem>
+        <para>
+          The right mouse button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>xButton1</term>
+        <listitem>
+        <para>
+          The first X button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>xButton2</term>
+        <listitem>
+        <para>
+          The second X button is down.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pos</term>
+    <listitem>
+    <para>
+      A <link linkend="clsPoint">Point</link> object that contains the x and y co-ordinates of the pointer, relative to
+      the upper-left corner of the screen.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The return is ignored by Windows, so any value is sufficient.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example uses the <link linkend="mthIgnoreMouseWheel">ignoreMouseWheel</link> method to force the edit
+    control to not process the mouse wheel event and then supplies some custon scrolling.  But, only if the mouse
+    pointer is over the edit control:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose eData
+
+  eData = self~newEdit(IDC_EDIT_DATA)
+
+  eData~ignoreMouseWheel
+  self~connectMouseWheel
+  ...
+
+::method onMouseWheel unguarded
+  expose eData
+  use arg delta, state, pos
+
+  if \ pos~inRect(eData~windowRect) then return 0
+
+  if delta > 0 then direction = 'up'
+  else direction = 'down'
+
+  scrollLines = .SPI~wheelScrollLines
+
+  select
+    when state == 'None' then do
+      amt = scrollLines
+      if direction == 'up' then cmd = 'UP'
+      else cmd = 'DOWN'
+    end
+
+    when state~wordPos('Control') <> 0, state~wordPos('Shift') <> 0 then do
+      amt = 3
+      if direction == 'up' then cmd = 'PAGEUP'
+      else cmd = 'PAGEDOWN'
+    end
+
+    when state~wordPos('Control') <> 0 then do
+      amt = 1
+      if direction == 'up' then cmd = 'PAGEUP'
+      else cmd = 'PAGEDOWN'
+    end
+
+    when state~wordPos('Shift') <> 0 then do
+      amt = 3 * scrollLines
+      if direction == 'up' then cmd = 'UP'
+      else cmd = 'DOWN'
+    end
+
+    otherwise do
+      -- Some other modifier(s), we treat this
+      -- the same as 'None'
+      amt = scrollLines
+      if direction == 'up' then cmd = 'UP'
+      else cmd = 'DOWN'
+    end
+  end
+
+  eData~scrollCommand(cmd, amt)
+
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End MouseWheel Event Handler -->
+
+</section>  <!-- End Mouse::connectEvent() -->
+
+<section id="mthCross"><title>cross</title>
+<indexterm><primary>cross</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>cross</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cross(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::cross() -->
+
+<section id="mthDragDetect"><title>dragDetect</title>
+<indexterm><primary>dragDetect</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>dragDetect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dragDetect(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::dragDetect() -->
+
+<section id="mthGetCapture"><title>getCapture</title>
+<indexterm><primary>getCapture</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>getCapture</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCapture-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">getCapture</emphasis> method retrieves the window handle, if any, that currently has
+  captured the mouse. The window that has captured the mouse recieves all mouse input regardless of whether the mouse
+  cursor is within the borders of the window or not.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The window <link linkend="defHandle">handle</link> of the window, belonging to the same dialog as this mouse's
+    window, that had previously captured the mouse, or 0 if no window previosly had the capture.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The mouse capture functions work with windows of the same thread. For ooDialog, this means the dialog window and the
+    dialog control windows that belong to the same dialog as this mouse's window. Getting the mouse capture, can only
+    get the window handle of windows belonging to this mouse's window. If 0 is returned, it means that no window in the
+    same dialog as this mouse's window has the mouse capture. However, some window belonging to another dialog could
+    have the mouse capture.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable to 0, but there are no system errors
+    that would change the variable from 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::getCapture() -->
+
+<section id="mthGetClipCursor"><title>getClipCursor</title>
+<indexterm><primary>getClipCursor</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>getClipCursor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getClipCursor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::getClipCursor() -->
+
+<section id="mthGetCursorPos"><title>getCursorPos</title>
+<indexterm><primary>getCursorPos</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>getCursorPos</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCursorPos---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the current position of the cursor.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the postion, in <link linkend="defScreenCoordinates">screen</link> coodinates, as a
+    <link linkend="clsPoint">point</link> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The <link linkend="exampleSetCursorPos">setCursorPos</link> example uses the <emphasis
+    role="italic">getCursorPos</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::getCursorPos() -->
+
+<section id="mthIsButtonDown"><title>isButtonDown</title>
+<indexterm><primary>isButtonDown</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>isButtonDown</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isMouseButtonDown(--+---------------+--------><
+                        +--whichButton--+
+]]>
+</programlisting>
+
+<para>
+  Retrieves information on whether a mouse button is pressed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single optional argument is:
+    <variablelist>
+      <varlistentry><term>whichButton [optional]</term>
+      <listitem>
+      <para>
+        If this argument is omitted the defualt is the default keyword is LEFT. Otherwise, use exactly one of the
+        following keywords, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>LEFT    </member>
+          <member>RIGHT   </member>
+          <member>MIDDLE  </member>
+          <member>XBUTTON1</member>
+          <member>XBUTTON2</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>LEFT</term>
+          <listitem>
+          <para>
+            Determine if the primary mouse button is down. The primary mouse button may actually be the right physical
+            mouse button if the user has configured the system to swap the mouse buttons.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>T2</term>
+          <listitem>
+          <para>
+            Determine if the secondary mouse button is down. The secondary mouse button may actually be the left
+            physical mouse button if the user has configured the system to swap the mouse buttons.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MIDDLE</term>
+          <listitem>
+          <para>
+            Determine if the middle mouse button is down.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>XBUTTON1</term>
+          <listitem>
+          <para>
+            Determine if the first X button is down. XBUTTON1 and XBUTTON2 are used by the operating system to support
+            the Microsoft IntelliMouse Explorer.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>XBUTTON2</term>
+          <listitem>
+          <para>
+            Determine if the second X button is down. XBUTTON1 and XBUTTON2 are used by the operating system to support
+            the Microsoft IntelliMouse Explorer.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if the specified button is being pressed, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors if incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable to 0, but there are no operarting
+    system errors that would change it from 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::isButtonDown() -->
+
+<section id="mthNo"><title>no</title>
+<indexterm><primary>no</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>no</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--no(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::no() -->
+
+<section id="mthReleaseCapture"><title>releaseCapture</title>
+<indexterm><primary>releaseCapture</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>releaseCapture</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--releaseMouseCapture--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">releaseCapture</emphasis> method releases the mouse capture from the window belonging to
+  the same dialog as this mouse's window which had previously <link linkend="mthCapture">captured</link> the mouse.
+  Normal mouse input processing is then resotred.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem><para>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      The mouse capture was released.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Releasing the mouse capture failed, the <computeroutput>.SystemErrorCode</computeroutput> will be set.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The mouse capture functions work with windows of the same thread. For ooDialog, this means the dialog window and the
+    dialog control windows that belong to the same dialog as this mouse's window.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::releaseCapture() -->
+
+<section id="mthRestoreCursor"><title>restoreCursor</title>
+<indexterm><primary>restoreCursor</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>restoreCursor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--restoreCursor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::restoreCursor() -->
+
+<section id="mthSetCursor"><title>setCursor</title>
+<indexterm><primary>setCursor</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>setCursor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setCursor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::setCursor() -->
+
+<section id="mthSetCursorPos"><title>setCursorPos</title>
+<indexterm><primary>setCursorPos</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>setCursorPos</secondary></indexterm>
+<programlisting>
+<![CDATA[
+
+Form 1:
+
+>>--setCursorPos(--point--)----------------------><
+
+Form 2:
+
+>>--setCursorPos(--x--,--y--)--------------------><
+
+Generic form:
+
+>>--setCursorPos(--newPosition--)----------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">setCursorPos</emphasis> method moves the mouse cursor to the specified position. This
+  method can be used to force the repainting of the mouse cursor or to keep the mouse cursor within a specific
+  rectangle.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The argument(s) specify the (x, y) coordinates for the new position of the mouse cursor. These coordinates can be
+    specifed either as a <link linkend="clsPoint">object</link> or as 2 separate whole number arguments, as in Form 2.
+    <variablelist>
+      <varlistentry><term>newPosition [required]</term>
+      <listitem>
+      <para>
+        Whether the coordinates are specified as a <computeroutput>point</computeroutput> object or in the x, y format
+        both coordinates are required. The coordinates are specified as <link
+        linkend="defScreenCoordinates">screen</link> coordinates.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      Moving the mouse cursor was successful.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      Moving the mouse cursor failed.
+    </para>
+    </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleSetCursorPos"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows two methods: one indicating that processing has started and one indicating that
+    processing has completed. The method <emphasis role="italic">indicateBeginProcessing</emphasis> changes the mouse
+    cursor to the WAIT cursor and <emphasis role="italic">indicateEndProcessing</emphasis> restores the original mouse
+    cursor. Both methods retrieve the current position of the mouse and move it by one screen pixel in each direction
+    to force the repainting of the cursor.
+  </para>
+<programlisting>
+<![CDATA[
+::method indicateBeginProcessing
+  expose oldCursor
+
+  mouse = .Mouse~new(self)
+  oldCursor = mouse~wait
+  p = mouse~getCursorPos
+  mouse~setCursorPos(p++)
+
+::method indicateEndProcessing
+  expose oldCursor
+
+  mouse = .Mouse~new(self)
+  mouse~restoreCursor(oldCursor)
+  p = mouse~getCursorPos
+  mouse~setCursorPos(p++)
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::setCursorPos() -->
+
+<section id="mthShowCursor"><title>showCursor</title>
+<indexterm><primary>showCursor</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>showCursor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--showCursor(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::showCursor() -->
+
+<section id="mthTrackEvent"><title>trackEvent</title>
+<indexterm><primary>trackEvent</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>trackEvent</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--trackEvent(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::trackEvent() -->
+
+<section id="mthWait"><title>wait</title>
+<indexterm><primary>wait</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>wait</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wait(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::wait() -->
 
 </section> <!-- End Mouse Class -->
 

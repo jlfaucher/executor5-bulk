@@ -73,10 +73,6 @@
 <entry>Adds a method name and parameters to an internal queue whose items are started automatically and run concurrently when the dialog is executed.</entry>
 </row>
 <row>
-<entry><link linkend="mthCaptureMouse">captureMouse</link></entry>
-<entry>Sets the mouse capture to this dialog window, or optionally a dialog control window belonging to this dialog.</entry>
-</row>
-<row>
 <entry><link linkend="mthChangeBitmapButton">changeBitmapButton</link></entry>
 <entry>Changes the bitmap of a bitmap button.</entry>
 </row>
@@ -173,10 +169,6 @@
 <entry>Returns the scrollable width of a list box in pixels.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetMouseCapture">getMouseCapture</link></entry>
-<entry>Retrieves the window handle, if any, that currently has captured the mouse.</entry>
-</row>
-<row>
 <entry><link linkend="mthGetSBPos">getSBPos</link></entry>
 <entry>Returns the current position of a scroll bar control.</entry>
 </row>
@@ -195,10 +187,6 @@
 <row>
 <entry><link linkend="mthInstallBitmapButton">installBitmapButton</link></entry>
 <entry>Connects bitmap(s) and a method with a push button.</entry>
-</row>
-<row>
-<entry><link linkend="mthIsMouseButtonDown">isMouseButtonDown</link></entry>
-<entry>Retrieves information on whether a mouse button is pressed.</entry>
 </row>
 <row>
 <entry><link linkend="mthMoveControl">moveControl</link></entry>
@@ -227,10 +215,6 @@
 <row>
 <entry><link linkend="mthRedrawWindowRect">redrawWindowRect</link></entry>
 <entry>Forces this dialog to completely redraw its client area, or optionally the client area of a specified window.</entry>
-</row>
-<row>
-<entry><link linkend="mthReleaseMouseCapture"></link></entry>
-<entry>Releases the mouse capture from this dialog, or the dialog control belonging to this dialog, which had previously captured the mouse.</entry>
 </row>
 <row>
 <entry><link linkend="mthResizeControl">resizeControl</link></entry>
@@ -373,67 +357,6 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
 </para></listitem></varlistentry>
 </variablelist>
 </section>
-
-
-<section id="mthCaptureMouse"><title>captureMouse</title>
-<indexterm><primary>captureMouse</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>captureMouse</secondary></indexterm>
-<indexterm><primary>DialogExtensions</primary><secondary>captureMouse</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--captureMouse(--+------+--)-------------------><
-                   +--id--+
-]]>
-</programlisting>
-
-<para>
-  Sets the mouse capture to this dialog window, or optionally a dialog control window belonging to this dialog.  Once a
-  window has captured the mouse, all mouse input is directed to the window even when the mouse is moved outside the
-  boundaries of the window.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single optional argument is:
-    <variablelist>
-      <varlistentry><term>id [optional]</term>
-      <listitem>
-      <para>
-        Sets the mouse capture to the dialog control with this resource ID. The control must belong to this dialog. See
-        the remarks section. The ID may be numeric or <link linkend="defSymbolicID">symbolic</link>.
-      </para> </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The handle to the window that previously captured the mouse, or 0 if the mouse was not captured before.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    <emphasis role="italic">captureMouse</emphasis> can capture mouse input either when the mouse is over the dialog,
-    or when the mouse button was pressed while the mouse was over the dialog and the button is still down. Only one
-    window at a time can capture the mouse.
-  </para>
-  <para>
-    If the mouse cursor is over a window created by another thread, the system will direct mouse input to the specified
-    window only if a mouse button is down.
-  </para>
-  <para>
-    Only the foreground window can capture the mouse. Also, even if the foreground window has captured the mouse, the
-    user can still click another window, bringing it to the foreground.
-  </para>
-  <para>
-    ooDialog has always had the functionality to set the mouse capture to a dialog control window. However, it is
-    difficult to imagine any scenario, in ooDialog, where this could be of any use.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogExtensions::captureMouse() -->
 
 
 <section id="mthChangeBitmapButton"><title>changeBitmapButton</title>
@@ -2202,51 +2125,6 @@ the operations (see <link linkend="mthFreeControlDC">freeControlDC</link>). </pa
 </section>  <!-- End DialogExtensions::getListWidthPx() -->
 
 
-<section id="mthGetMouseCapture"><title>getMouseCapture</title>
-<indexterm><primary>getMouseCapture</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>getMouseCapture</secondary></indexterm>
-<indexterm><primary>DialogExtensions</primary><secondary>getMouseCapture</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getMouseCapture------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">getMouseCapture</emphasis> method retrieves the window handle, if any, that currently has
-  captured the mouse. The window that has captured the mouse recieves all mouse input regardless of whether the mouse
-  cursor is within the borders of the window or not.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method takes no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The window handle to the dialog or dialog control that has captured the mouse, or 0 if the mouse is not captured.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The mouse capture functions work with windows of the same thread. For ooDialog, this means the dialog window and the
-    dialog control windows that belong to this dialog. Getting the mouse capture, only gets the window handle of this
-    dialog, or one of its controls. If 0 is returned, it means that no window in this dialog's thread has the mouse
-    capture. However, some window in another thread could have the the mouse capture.
-  </para>
-  <para>
-    ooDialog has always had the functionality to set the mouse capture to a dialog control window. However, it is
-    difficult to imagine any scenario, in ooDialog, where this could be of any use.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthGetSBPos"><title>getSBPos</title>
 <indexterm><primary>getSBPos</primary></indexterm>
 <programlisting>
@@ -2543,44 +2421,6 @@ loaded through a DLL.
 </para></listitem></varlistentry>
 </variablelist>
 <para>See also method <link linkend="mthChangeBitmapButton">changeBitmapButton</link>.</para>
-</section>
-
-
-<section id="mthIsMouseButtonDown"><title>isMouseButtonDown</title>
-<indexterm><primary>isMouseButtonDown</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--isMouseButtonDown(--whichButton--)-----------><
-
-]]>
-</programlisting>
-
-<para>The isMouseButtonDown method retrieves information
-on whether a mouse button is pressed.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>button</term>
-<listitem>
-<para>
-  A keyword specifying which mouse button. Keywords are: LEFT, MIDDLE, and RIGHT.
-</para>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>The button is not being pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The button is being pressed.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
 </section>
 
 
@@ -3261,69 +3101,6 @@ Generic form:
   </listitem></varlistentry>
 </variablelist>
 </section>
-
-
-<section id="mthReleaseMouseCapture"><title>releaseMouseCapture</title>
-<indexterm><primary>releaseMouseCapture</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>releaseMouseCapture</secondary></indexterm>
-<indexterm><primary>DialogExtensions</primary><secondary>releaseMouseCapture</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--releaseMouseCapture--------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">releaseMouseCapture</emphasis> method releases the mouse capture from this dialog, or the
-  dialog control belonging to the dialog, which had previously <link linkend="mthCaptureMouse">captured</link> the
-  mouse. Normal mouse input processing is then resotred.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method takes no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem><para>
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      The mouse capture was released.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      Releasing the mouse capture failed, the <computeroutput>.SystemErrorCode</computeroutput> will be set.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The mouse capture functions work with windows of the same thread. For ooDialog, this is the dialog window and the
-    dialog control windows that belong to this dialog. Releasing the mouse capture, releases the capture from any dialog
-    control window within the dialog, or the dialog window itself.
-  </para>
-  <para>
-    ooDialog has always had the functionality to set the mouse capture to a dialog control window. However, it is
-    difficult to imagine any scenario, in ooDialog, where this could be of any use.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DialogExtensions::releaseMouseCapture() -->
 
 
 <section id="mthResizeControl"><title>resizeControl</title>

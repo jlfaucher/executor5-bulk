@@ -44,15 +44,15 @@
 <chapter id="chapUserInput"><title>User Input</title>
 <indexterm><primary>User Input</primary></indexterm>
 <para>
-  xxx
+  Capturing user input is normally an important part of any program. In one sense, the ooDialog framework is almost
+  completely about capturing user input as that is the primary role of a dialog.
 </para>
 <para>
-  yyy
-</para>
-<para>
-  zzz
-</para>
-<para> The following table lists the general categories of user input that are documented in this chapter:
+  The following table lists the general categories of user input in the Windows operating system, as described by the
+  Windows documentation. Several of the categories have no current implmentation in the ooDialog, or the implementation
+  is scatterd throughout the <link linkend="chpDialogObject">dialog</link> and dialog <link
+  linkend="chpDialogControl">control</link> classes. These categories are mentioned here for completeness. Future
+  versions of ooDialog may be enhanced to address those categories.
 <table id="tblUserInputClasses" frame="all"> <title>ooDialog User Input Groups</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
@@ -64,12 +64,27 @@
 </thead>
 <tbody>
 <row>
-<entry><link linkend="sctCommonDialogLibrary">Common</link></entry>
-<entry>Objects and routines used to easily gather user input.</entry>
+<entry><link linkend="sctCommonDialogLibrary">Common Dialogs</link></entry>
+<entry>Objects and routines used to easily gather user input in a standard way.</entry>
 </row>
 <row>
-<entry><link linkend="clsMouse">Mouse</link></entry>
+<entry>Keyboard Accelerators</entry>
+<entry>Keyboard accelerators are keystrokes or combination of keystrokes that generate a command notification for a program.</entry>
+</row>
+<row>
+<entry>Keyboard Input</entry>
+<entry>The operating system generates keyboard input from the physical keyboard and provides the means for a program to recieve and process that input.</entry>
+</row>
+<row>
+<entry><link linkend="clsMouse">Mouse</link> Input</entry>
 <entry>ooDialog programs deal with mouse input primarily through the <computeroutput>Mouse</computeroutput> class</entry>
+</row>
+<row>
+<entry>Raw Input</entry>
+<entry>
+  There are many user input devices beside the traditional keyboard and mouse, such as a joystick or touchpad. The operating system provides a generalized means for programs to receive and process
+  that input.
+</entry>
 </row>
 </tbody></tgroup>
 </table>
