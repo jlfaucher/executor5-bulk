@@ -52,15 +52,16 @@
 <entry>Sets the mouse cursor to the system's default <emphasis role="italic">application staring</emphasis> cursor, which is usually the standard arrow with a small hourglass.</entry>
 </row>
 <row>
-<entry><link linkend="mth"></link></entry>
-<entry>Sets the mouse cursor to the system's default <emphasis role="italic"></emphasis>, which is usually the </entry>
+<entry><link linkend="mthArrow"></link>arrow</entry>
+<entry>Sets the mouse cursor to the system's default cursor, which is usually the arrow cursor.</entry>
 </row>
+<row>
 <entry><link linkend="mthCapture">capture</link></entry>
 <entry>Sets the mouse capture to this mouse's window.</entry>
 </row>
 <row>
-<entry><link linkend="mth"></link></entry>
-<entry>Sets the mouse cursor to the system's default <emphasis role="italic"></emphasis>, which is usually the </entry>
+<entry><link linkend="mthCross"></link></entry>
+<entry>Sets the mouse cursor to the system's default <emphasis role="italic">high precision</emphasis> cursor, which is usually the crosshair cursor.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetCapture">getCapture</link></entry>
@@ -492,7 +493,6 @@
   <listitem>
   <para>
     This method takes no arguments.
-    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -611,8 +611,7 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The method takes no arguments
-    </variablelist>
+    The method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -825,10 +824,8 @@
 </para>
 <para>
   The programmer decides whether to have the interpreter wait, or not wait, in the message processing loop for the reply
-  from the event handler. This is done in <link linkend="mthConnectMouseWheel">connectMouseWheel</link> method, or in
-  the <link linkend="mthIgnoreMouseWheel">ignoreMouseWheel</link> method of the <link linkend="clsEdit">Edit</link>
-  class. (The <emphasis role="italic">ignoreMouseWheel</emphasis> method can optionally connect a mouse wheel event
-  handler.) The actual reply is ignored by the operating system. A common value to return would be 0.
+  from the event handler. This is done in <link linkend="mthConnectEvent">connectEvent</link> method. The actual reply
+  is ignored by the operating system. A common value to return would be 0.
 </para>
 
 <programlisting>
@@ -942,9 +939,10 @@
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example uses the <link linkend="mthIgnoreMouseWheel">ignoreMouseWheel</link> method to force the edit
-    control to not process the mouse wheel event and then supplies some custon scrolling.  But, only if the mouse
-    pointer is over the edit control:
+    The following example uses the <link linkend="mthConnectEvent">connectEvent</link> method to connect the mouse wheel
+    event sent to the edit control to a method in the Rexx dialog. This then allows the programmer to supply some custon
+    scrolling.  Normally, a multi-line edit control handles the mouse wheel event itself and the notification message
+    will never reach the dialog.
 <programlisting>
 <![CDATA[
 
@@ -953,8 +951,9 @@
 
   eData = self~newEdit(IDC_EDIT_DATA)
 
-  eData~ignoreMouseWheel
-  self~connectMouseWheel
+  mouse = .Mouse~new(eData)
+  mouse~connectEvent(MOUSEWHEEL, onMouseWheel)
+
   ...
 
 ::method onMouseWheel unguarded
