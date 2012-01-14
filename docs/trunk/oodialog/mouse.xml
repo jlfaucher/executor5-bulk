@@ -92,7 +92,7 @@
 <entry>Sets the mouse cursor to the system's default <emphasis role="italic">high precision</emphasis> cursor, which is usually the crosshair cursor.</entry>
 </row>
 <row>
-<entry><link linkend="mthDragDetect"></link>dragDetect</entry>
+<entry><link linkend="mthDragDetect">dragDetect</link></entry>
 <entry></entry>
 </row>
 <row>
@@ -159,18 +159,22 @@
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>Mouse</computeroutput> object. Each mouse object is associated with a single
+  <link linkend="ovvUnderlying">underlying</link> window, the window of the Rexx object used to instantiate the mouse
+  object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>windowObj [required]</term>
     <listitem>
     <para>
-      xx
+      A Rexx object that has an underlying Windows window. In all practical terms this is either a Rexx dialog <link
+      linkend="chpDialogObject">object</link> or a Rexx dialog control <link
+      linkend="chpDialogControlObject">object</link>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -179,13 +183,22 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is a new <computeroutput>Mouse</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The operating system sends all mouse related <link linkend="ovvWindowMessages">messages</link> to the window the
+    mouse is over. Because of this, each Rexx mouse object is assoicated with a specific window. This is important for
+    the programmer to understand, especially when connecting mouse event notifications. Since all dialog controls are
+    windows, when the mouse is over a dialog, most messages go to one of the dialog controls that make up the dialog.
+    Therefore, if the programmer is interested is the mouse event notifications, much of the time the programmer will
+    need to use a mouse object associated with a dialog control, not a mouse associated with the dialog.
+  </para>
+  <para>
+    All mouse event notifications are connected through the <link linkend="mthConnectEvent">connectEvent</link> method
+    of the <computeroutput>Mouse</computeroutput> class, not through one of the connect event methods of the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -193,16 +206,27 @@
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example constructs a mouse object using the dialog object and then connects the double click mouse event to a
+    method in the dialog. When the user double clicks the primary mouse button on the background of the dialog, not on a
+    dialog control, the event handler is invoked:
 <programlisting>
 <![CDATA[
+
+  ::method init
+    ...
+
+    mouse = .Mouse~new(self)
+    mouse~connectEvent('LBUTTONDBLCLK', onDoubleClick)
+    ...
+
+  ::method onDoubleClick unguarded
+    use arg state, position, mouse
+
+    -- Do something ...
 
 ]]>
 </programlisting>
@@ -216,56 +240,51 @@
 <indexterm><primary>Mouse class</primary><secondary>doubleClickTime</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--doubleClickTime(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--doubleClickTime--------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the current double-click time for the mouse.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is the current double-click time in milliseconds.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    A double-click is a series of two clicks of the mouse button, the second occurring within a specified time after the
+    first. The double-click time is the maximum number of milliseconds that may occur between the first and second click
+    of a double-click. The double-click time is a system-wide parameter.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This simple example prints the double-click time to the screen:
 <programlisting>
 <![CDATA[
+
+  ::method showDoubleClkTime
+
+    say 'The system-wide mouse double-click time is:' .Mouse~doubleClickTime 'milliseconds.'
+
+  /* Output might be:
+
+  The system-wide mouse double-click time is: 340 milliseconds.
+
+  /*
 
 ]]>
 </programlisting>
@@ -279,24 +298,130 @@
 <indexterm><primary>Mouse class</primary><secondary>loadCursor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--loadCursor(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--loadCursor(--cursorName--)---------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns one of the shared pre-defined system cursors.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>cursorName [required]</term>
       <listitem>
       <para>
-        xx
+        Exactly one of the following keywords to indicate which system cursor is desired, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>APPSTARTING</member>
+          <member>ARROW      </member>
+          <member>CROSS      </member>
+          <member>HAND       </member>
+          <member>HELP       </member>
+          <member>IBEAM      </member>
+          <member>NO         </member>
+          <member>SIZEALL    </member>
+          <member>SIZENESW   </member>
+          <member>SIZENS     </member>
+          <member>SIZENWSE   </member>
+          <member>SIZEWE     </member>
+          <member>UPARROW    </member>
+          <member>WAIT       </member>
+          <member></member>
+          <member></member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>APPSTARTING</term>
+          <listitem>
+          <para>
+            Standard arrow and small hourglass.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ARROW</term>
+          <listitem>
+          <para>
+            Standard arrow.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CROSS</term>
+          <listitem>
+          <para>
+            Crosshair.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HAND</term>
+          <listitem>
+          <para>
+            Hand.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HELP</term>
+          <listitem>
+          <para>
+            Arrow and question mark.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>IBEAM</term>
+          <listitem>
+          <para>
+            I-beam.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NO</term>
+          <listitem>
+          <para>
+            Slashed circle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZEALL</term>
+          <listitem>
+          <para>
+            Four-pointed arrow pointing north, south, east, and west.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZENESW</term>
+          <listitem>
+          <para>
+            Double-pointed arrow pointing northeast and southwest.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZENS</term>
+          <listitem>
+          <para>
+            Double-pointed arrow pointing north and south.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZENWSE</term>
+          <listitem>
+          <para>
+            Double-pointed arrow pointing northwest and southeast.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZEWE</term>
+          <listitem>
+          <para>
+            Double-pointed arrow pointing west and east.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>UPARROW</term>
+          <listitem>
+          <para>
+            Vertical arrow.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WAIT</term>
+          <listitem>
+          <para>
+            Hourglass.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -305,19 +430,29 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The requested cursor as a <link linkend="clsImage">Image</link> object on success, or 0 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The returned <computeroutput>Image</computeroutput> object is a shared image and should not be released.  The
+    ooDialog framework will ignore any requests to release the object.
+  </para>
+  <para>
+    Note that the description for the system cursors is the description for the default pre-defined cursors. The user
+    has the ability to change any of the default cursors to a custom cursor.
+  </para>
+  <para>
+    The loaded cursor is suitable to use in the <link linkend="mthSetCursor">setCursor</link> method. Note that the
+    system cursors can also be loaded directly using the <link linkend="clsImage">Image</link> class's <link
+    linkend="mthGetImageClsImage">getImage</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
@@ -326,9 +461,26 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example loads the <emphasis role="italic">No</emphasis> system cursor and checks for error. In reality, there
+    is almost no chance of failure provided the correct keyword is used.
 <programlisting>
 <![CDATA[
+
+::method init
+  ...
+
+  noDropCursor = .Mouse~loadCursor("NO")
+  if noDropCursor == 0 then do
+    msg = 'Error loading No Drop Cursor, system error code: ' || -
+          .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+
+    title = 'Drag N Drop Rexx - Unrecoverable Error'
+
+    ret = MessageDialog(msg, , title, 'OK', "EXCLAMATION")
+
+    self~initCode = 1
+    return self~initCode
+  end
 
 ]]>
 </programlisting>
@@ -342,24 +494,25 @@
 <indexterm><primary>Mouse class</primary><secondary>loadCursorFromFile</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--loadCursorFromFile(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--loadCursorFromFile(--fileName--)---><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Creates a cursor based on data from a file.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>fileName [required]</term>
       <listitem>
       <para>
-        xx
+        The name of the file containing the cursor data. This argument can either be a fully qualified or a relative
+        file name.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -368,19 +521,30 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The requested cursor as a <link linkend="clsImage">Image</link> object on success, or 0 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    <emphasis role="bold">Note</emphasis> that the source file for the cursor must actually be a cursor file or the OS
+    will refuse to load it. E.g., the file can not be simply any image file, trying to load a bitmap, or even an icon
+    file, as a cursor will fail.
+  </para>
+  <para>
+    The returned <link linkend="clsImage">Image</link> object is not a shared image and can be released when no longer
+    needed, if desired to free up some (small) amount of system resources.
+  </para>
+  <para>
+    The loaded cursor is suitable to use in the <link linkend="mthSetCursor">setCursor</link> method. Note that the
+    system cursors can also be loaded directly using the <link linkend="clsImage">Image</link> class's <link
+    linkend="mthGetImageClsImage">getImage</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
@@ -389,9 +553,26 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is similar to the <link linkend="mthLoadCursor">loadCursor</link>, but it loads a custom cursor from a
+    file:
 <programlisting>
 <![CDATA[
+
+::method init
+  ...
+
+  dropOkCursor = .Mouse~loadCursorFromFile("dragging.cur")
+  if dropOkCursor == 0 then do
+    msg = 'Error loading Drop Ok Cursor, system error code: ' || -
+          .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+
+    title = 'Drag N Drop Rexx - Unrecoverable Error'
+
+    ret = MessageDialog(msg, , title, 'OK', "EXCLAMATION")
+
+    self~initCode = 1
+    return self~initCode
+  end
 
 ]]>
 </programlisting>
@@ -405,24 +586,26 @@
 <indexterm><primary>Mouse class</primary><secondary>setDoubleClickTime</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDoubleClickTime(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setDoubleClickTime(--+------------+--)----------------------><
+                         +-,-interval-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the double-click time for the mouse.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>interval [optional]</term>
       <listitem>
       <para>
-        xx
+        The time in milliseconds to set the double-click time to. If this is 0, the default system double-click time is
+        restored, which is 500 milliseconds. If omitted the default for <emphasis role="italic">interval</emphasis> is
+        0.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -431,19 +614,21 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A double-click is a series of two clicks of the mouse button, the second occurring within a specified time after the
+    first. The double-click time is the maximum number of milliseconds that may occur between the first and second click
+    of a double-click. The double-click time is a system-wide parameter.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
@@ -452,9 +637,18 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example checks the current double-click time and if it is below 500 milliseconds, it resets the the time to the
+    usual system default.
 <programlisting>
 <![CDATA[
+
+::method resetDefaults private
+
+  ...
+
+  if .Mouse~doubleClickTime > 500 then .Mouse~setDoubleClickTime
+
+  ...
 
 ]]>
 </programlisting>
@@ -469,23 +663,27 @@
 <programlisting>
 <![CDATA[
 >>--swapButton(--+--------+--)---------------------------------------------><
-                  +--type--+
+                 +--swap--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reverses or restores the meaning of the left and right mouse buttons.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>swap [optional]</term>
       <listitem>
       <para>
-        xx
+        Specifies whether the meaning of the mouse buttons are reversed or restored.
+      </para>
+      <para>
+        If true, the left button generates right-button messages and the right button generates left-button messages. If
+        false, the buttons are restored to their original meanings. The default is true.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -494,30 +692,56 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    If the buttons were swapped before this method is invoked, the return is true, if the buttons were not swapped, the
+    return is false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Button swapping is provided by Windows as a convenience to people who use the mouse with their left hands. The
+    button swapping functionality is usually done through the Control Panel only. Although any application is free to
+    use this functionality, the mouse is a shared resource and reversing the meaning of its buttons affects the entire
+    system.
+  </para>
+  <para>
+    Note that the way the operating system handles button swapping makes this mostly transparent to the programmer. When
+    the programmer is interested in receiving a mouse event notification, say the left mouse button clicked event, then
+    he just needs to connect the LBUTTONDOWN event and not worry about whether the user has swapped buttons or not. If
+    the user has swapped the mouse buttons, the operating system will generate the LBUTTONDOWN event when the user
+    presses the right hand button.
+  </para>
+  <para>
+    Arguably, it might be better to call the left physical mouse button the <emphasis role="italic">primary</emphasis>
+    button or <emphasis role="italic">button1</emphasis>, Windows does not do this and this documentation uses the
+    Windows naming conventions.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable to 0, but there are no system errors
+    that would change the value from 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from a program my nephew wrote and set to automatically run at 12:01 am, April 1st on his
+    brothers computer. He thought it was hilarious, his brother was not amused.
 <programlisting>
 <![CDATA[
+
+/* aprilFools.rex */
+
+  .Mouse~swapButton
+
+  return 0
+
+::requires 'ooDialog.cls'
 
 ]]>
 </programlisting>
@@ -556,14 +780,12 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">appStarting</emphasis> method is convenience method. It is exactly equivalent to using
+    the <link linkend="mthSetCursor">setCursor</link> method with the APPSTARTING keyword.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
@@ -571,9 +793,46 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the cursor to the application starting cursor for 2 seconds, then restores it. This could be done,
+    for instance, while the application is displaying a splash screen when it starts up. (A practice that used to be
+    very common in Windows, but you don't see that often anymore.)
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  self~startingUp
+
+::method startingUp private unguarded
+
+  reply 0
+
+  mouse = .Mouse~new(self)
+
+  -- This sets the mouse position to a point we know is
+  -- not over a dialog control.  If the mouse is over a
+  -- dialog control, changing the cursor will have no
+  -- effect, unless the user moves it over the dialog
+  -- background during the 2 seconds.
+  p = .Point~new(30, 30)
+  self~client2screen(p)
+
+  mouse~setCursorPos(p)
+
+  oldCursor = mouse~appStarting
+
+  -- Jiggle the mouse so that it repaints immediately
+  p = mouse~getCursorPos
+  p~incr
+  mouse~setCursorPos(p)
+
+  j = SysSleep(2)
+
+  mouse~setCursor(oldCursor)
+
+  -- Jiggle ...
+  p = mouse~getCursorPos
+  p~decr
+  mouse~setCursorPos(p)
 
 ]]>
 </programlisting>
@@ -587,46 +846,37 @@
 <indexterm><primary>Mouse class</primary><secondary>arrow</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--arrow(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--arrow------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the cursor for the window of this mouse instance to the operating system's predefined normal cursor, which is
+  usually the standard arrow.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous cursor on success, or 0 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">arrow</emphasis> method is convenience method. It is exactly equivalent to using
+    the <link linkend="mthSetCursor">setCursor</link> method with the ARROW keyword.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
@@ -634,9 +884,12 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example just shows syntax, the method is not difficult to understand:
 <programlisting>
 <![CDATA[
+
+  mouse = .Mouse~new(self)
+  oldCursor = mouse~arrow
 
 ]]>
 </programlisting>
@@ -1072,46 +1325,37 @@
 <indexterm><primary>Mouse class</primary><secondary>cross</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--cross(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--cross------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the mouse cursor to the system's default <emphasis role="italic">high precision</emphasis> cursor, which is
+  usually the crosshair cursor.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous cursor on success, or 0 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">cross</emphasis> method is convenience method. It is exactly equivalent to using
+    the <link linkend="mthSetCursor">setCursor</link> method with the CROSS keyword.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
@@ -1119,9 +1363,12 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This a simple method to use:
 <programlisting>
 <![CDATA[
+
+  mouse = .Mouse~new(self)
+  oldCursor = mouse~cross
 
 ]]>
 </programlisting>
@@ -1474,46 +1721,37 @@
 <indexterm><primary>Mouse class</primary><secondary>no</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--no(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--no---------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the mouse cursor to the system's default <emphasis role="italic">not allowed</emphasis> cursor, which is usually
+  a circle with a slash across it.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous cursor on success, or 0 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">no</emphasis> method is convenience method. It is exactly equivalent to usingthe <link
+    linkend="mthSetCursor">setCursor</link> method with the NO keyword.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
@@ -1521,9 +1759,12 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This a simple method to use:
 <programlisting>
 <![CDATA[
+
+  mouse = .Mouse~new(self)
+  oldCursor = mouse~no
 
 ]]>
 </programlisting>
@@ -1964,46 +2205,37 @@ Generic form:
 <indexterm><primary>Mouse class</primary><secondary>wait</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wait(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--wait-------------------------------><
+
 ]]>
 </programlisting>
-
+  Sets the mouse cursor to the system's default <emphasis role="italic">busy</emphasis> cursor, which is usually the
+  hourglass cursor.
 <para>
-  xx
+
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous cursor on success, or 0 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">wait</emphasis> method is convenience method. It is exactly equivalent to usingthe <link
+    linkend="mthSetCursor">setCursor</link> method with the WAIT keyword.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
@@ -2011,16 +2243,19 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This a simple method to use:
 <programlisting>
 <![CDATA[
+
+  mouse = .Mouse~new(self)
+  oldCursor = mouse~wait
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End Mouse::wait() -->
+</section>  <!-- End Mouse::no() -->
 
 </section> <!-- End Mouse Class -->
 

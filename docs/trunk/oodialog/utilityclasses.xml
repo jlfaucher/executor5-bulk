@@ -5790,6 +5790,10 @@ rc = play("Welcome.wav")
 <entry>Increments the x and y attributes by the amount specified</entry>
 </row>
 <row>
+<entry><link linkend="mthInRect">inRect</link></entry>
+<entry>Tests if this point is within a specified rectanglular area.</entry>
+</row>
+<row>
 <entry><link linkend="mthStringPoint">string</link></entry>
 <entry>Provides an informative string representation of the <computeroutput>Point</computeroutput> object.</entry>
 </row>
@@ -5981,7 +5985,7 @@ Changed point q to be at (150,300)
 </section>  <!-- End Point::y() [attribute]  -->
 
 
-<section id="mthPlus"><title>+</title>
+<section id="mthPlus"><title>+ (addition)</title>
 <indexterm><primary>+</primary></indexterm>
 <indexterm><primary>Point class</primary><secondary>+</secondary></indexterm>
 <programlisting>
@@ -6048,7 +6052,7 @@ Changed point q to be at (150,300)
 </section>  <!-- End Point::+() -->
 
 
-<section id="mthMinus"><title>-</title>
+<section id="mthMinus"><title>&#x002d (subtraction)</title>
 <indexterm><primary>-</primary></indexterm>
 <indexterm><primary>Point class</primary><secondary>-</secondary></indexterm>
 <programlisting>
@@ -6117,7 +6121,7 @@ Changed point q to be at (150,300)
 </section>  <!-- End Point::-() -->
 
 
-<section id="mthDecr"><title>Decr</title>
+<section id="mthDecr"><title>decr</title>
 <indexterm><primary>decr</primary></indexterm>
 <indexterm><primary>Point class</primary><secondary>decr</secondary></indexterm>
 <programlisting>
@@ -6270,6 +6274,82 @@ Changed point q to be at (150,300)
 </variablelist>
 </section>  <!-- End Point::incr() -->
 
+<section id="mthInRect"><title>inRect</title>
+<indexterm><primary>inRect</primary></indexterm>
+<indexterm><primary>Point class</primary><secondary>inRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--inRect(--rect--)-------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Tests if this point is within a specified rectanglular area.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>rect [required]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsRect">Rect</link> object that specifies the area to be tested.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if the point lies within the rectangle, otherwise false. See the remarks for the definition of <emphasis
+    role="italic">within</emphasis> .
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Windows defines that a point is within a rectangle if it lies on the left or top side or is within all four sides. A
+    point on the right or bottom side is considered outside the rectangle.
+  </para>
+  <para>
+    The rectangle must be normalized, that is, rect~right must be greater than rect~left and rect~bottom must be greater
+    than rect~top. If the rectangle is not normalized, a point is never considered inside of the rectangle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example tests if the current cursor position lies with the client area of the dialog:
+<programlisting>
+<![CDATA[
+
+  mouse = .Mouse~new(self)
+  p = mouse~getCursorPos
+
+  self~screen2client(p)
+  if p~inRect(self~clientRect) then do
+    say 'The mouse cursor is over this dialog'
+  end
+  else do
+    say 'The mouse cursor is NOT over this dialog'
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Point::inRect() -->
 
 <section id="mthStringPoint"><title>string</title>
 <indexterm><primary>string</primary><secondary>Point class</secondary></indexterm>
@@ -6722,7 +6802,7 @@ New upper corner (55,75) new lower corner 110,125)
 <![CDATA[
 
   r = .Rect~new(5, 5, 120, 40)
-  say 4
+  say r
 
   /* Output would be:
 
@@ -7353,23 +7433,47 @@ s2: a Size (2, 3)
 </row>
 <row>
 <entry><link linkend="atrCxCursor">cxCursor</link></entry>
-<entry>The width of a cursor.</entry>
+<entry>The width of a cursor in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="atrCxDrag">cxDrag</link></entry>
+<entry>The width of the drag rectangle in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="atrCxFixedFrame">cxFixedFrame</link></entry>
+<entry>The thickness of the border around a non-resizable window that has a caption, in pixels. The width of the vertical border.</entry>
+</row>
+<row>
+<entry><link linkend="atrCxScreen">cxScreen</link></entry>
+<entry>The width of the primary monitor in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="atrCxVscroll">cxVscroll</link></entry>
-<entry>The width of a vertical scroll bar.</entry>
+<entry>The width of a vertical scroll bar in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="atrCyCaption">cyCaption</link></entry>
-<entry>The height of a caption area.</entry>
+<entry>The height of a caption area in pixesl.</entry>
 </row>
 <row>
 <entry><link linkend="atrCyCursor">cyCursor</link></entry>
-<entry>The height of a cursor.</entry>
+<entry>The height of a cursor in pixles.</entry>
+</row>
+<row>
+<entry><link linkend="atrCyDrag">cyDrag</link></entry>
+<entry>The height of drag rectangle in pixles.</entry>
+</row>
+<row>
+<entry><link linkend="atrCyFixedFrame">cyFixedFrame</link></entry>
+<entry>The thickness of the border around a non-resizable window that has a caption, in pixels. The height of the horizontal border.</entry>
 </row>
 <row>
 <entry><link linkend="atrCyHscroll">cyHscroll</link></entry>
-<entry>The height of a horizontal scroll bar.</entry>
+<entry>The height of a horizontal scroll bar in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="atrCyScreen">cyScreen</link></entry>
+<entry>The height of the primary monitor in pixles.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -7437,6 +7541,105 @@ s2: a Size (2, 3)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End SM::cxCursor() [attribute]  -->
+
+
+<section id="atrCxDrag"><title>cxDrag (Attribute)</title>
+<indexterm><primary>cxDrag</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cxDrag</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cxDrag---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the width of the drag rectangle in pixels. The drag rectangle is a rectangle that is centered on a drag point
+  to allow for limited movement of the mouse pointer before a drag operation begins. It allows the user to click and
+  release the mouse button easily without unintentionally starting a drag operation.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cxDrag get:</emphasis></term>
+  <listitem>
+  <para>
+    The width of the drag rectangle, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxDrag set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cxDrag</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute. However, the size of the drag rectangle can be changed using the <link linkend="clsSPI">SPI</link>
+    class through its <link linkend="atrDragWidth">dragWidth</link> and <link linkend="atrDragHeight">dragHeight</link>
+    attributes.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cxDrag() [attribute]  -->
+
+
+<section id="atrCxFixedFrame"><title>cxFixedFrame (Attribute)</title>
+<indexterm><primary>cxFixedFrame</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cxFixedFrame</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cxFixedFrame---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the thickness of a frame around the perimeter of a window that has a caption but is not sizable, in pixels.
+  <emphasis role="italic">cxFixedFrame</emphasis> is the width of the vertical border and <link
+  linkend="atrCyFixedFrame">cyFixedFrame</link> is the height of the horizontal border.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cxFixedFrame get:</emphasis></term>
+  <listitem>
+  <para>
+    The width of the border (frame) of a non-sizable window that has a caption. This is a normal dialog's border.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxFixedFrame set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cxFixedFrame</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cxFixedFrame() [attribute]  -->
+
+
+<section id="atrCxScreen"><title>cxScreen (Attribute)</title>
+<indexterm><primary>cxScreen</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cxScreen</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cxScreen-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the width of the screen of the primary display monitor, in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cxScreen get:</emphasis></term>
+  <listitem>
+  <para>
+    The width of the screen in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxScreen set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cxScreen</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cxScreen() [attribute]  -->
 
 
 <section id="atrCxVscroll"><title>cxVscroll (Attribute)</title>
@@ -7532,6 +7735,74 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cyCursor() [attribute]  -->
 
 
+<section id="atrCyDrag"><title>cyDrag (Attribute)</title>
+<indexterm><primary>cyDrag</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cyDrag</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cyDrag---------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the height of the drag rectangle in pixels. The drag rectangle is a rectangle that is centered on a drag
+  point to allow for limited movement of the mouse pointer before a drag operation begins. It allows the user to click
+  and release the mouse button easily without unintentionally starting a drag operation.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cyDrag get:</emphasis></term>
+  <listitem>
+  <para>
+    The height of the drag rectangle, in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxDrag set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cyDrag</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute. However, the size of the drag rectangle can be changed using the <link linkend="clsSPI">SPI</link>
+    class through its <link linkend="atrDragWidth">dragWidth</link> and <link linkend="atrDragHeight">dragHeight</link>
+    attributes.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cyDrag() [attribute]  -->
+
+
+<section id="atrCyFixedFrame"><title>cyFixedFrame (Attribute)</title>
+<indexterm><primary>cyFixedFrame</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cyFixedFrame</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cyFixedFrame---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the thickness of a frame around the perimeter of a window that has a caption but is not sizable, in pixels.
+  <emphasis role="italic">cyFixedFrame</emphasis> is the height of the horizontal border and <link
+  linkend="atrCxFixedFrame">cxFixedFrame</link> is the width of the vertical border.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cyFixedFrame get:</emphasis></term>
+  <listitem>
+  <para>
+    The height of the border (frame) of a non-sizable window that has a caption. This is a normal dialog's border.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxCursor set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cxFixedFrame</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cxFixedFrame() [attribute]  -->
+
+
 <section id="atrCyHscroll"><title>cyHscroll (Attribute)</title>
 <indexterm><primary>cyHscroll</primary></indexterm>
 <indexterm><primary>SM class</primary><secondary>cyHscroll</secondary></indexterm>
@@ -7561,6 +7832,38 @@ s2: a Size (2, 3)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End SM::cyHscroll() [attribute]  -->
+
+
+<section id="atrCyScreen"><title>cyScreen (Attribute)</title>
+<indexterm><primary>cyScreen</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>cyScreen</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--cyScreen-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the hight of the screen of the primary display monitor, in pixels.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">cyScreen get:</emphasis></term>
+  <listitem>
+  <para>
+    The height of the screen in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">cxScreen set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">cyScreen</emphasis> attribute can not be changed. You can not assign a new value to
+    this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::cyScreen() [attribute]  -->
+
 
 </section> <!-- End SM Class -->
 
@@ -7640,6 +7943,104 @@ s2: a Size (2, 3)
   more information on the mouse wheel.
 </para>
 </section>  <!-- End SPI::WHEEL_PAGESCROLL [constant]  -->
+
+<section id="atrDragHeight"><title>dragHeight (Attribute)</title>
+<indexterm><primary>dragHeight</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>dragHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dragHeight-----------------------------------><
+
+>>--dragHeight-=-height--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the height of the drag rectangle. The drag rectangle is the rectangle used to detect the start of a drag
+  operation.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">dragHeight get:</emphasis></term>
+  <listitem>
+  <para>
+    Retrieves the height of the system wide drag rectangle in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">dragHeight set:</emphasis></term>
+  <listitem>
+  <para>
+    Use a non-negative whole number to set the height, in pixels, of the drag rectangle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The drag rectangle is a rectangle that is centered on a drag point to allow for limited movement of the mouse
+    pointer before a drag operation begins. It allows the user to click and release the mouse button easily without
+    unintentionally starting a drag operation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::dragHeight() [attribute]  -->
+
+<section id="atrDragWidth"><title>dragWidth (Attribute)</title>
+<indexterm><primary>dragWidth</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>dragWidth</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--dragWidth------------------------------------><
+
+>>--dragWidth-=-width----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the width of the drag rectangle. The drag rectangle is the rectangle used to detect the start of a drag
+  operation.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">dragWidth get:</emphasis></term>
+  <listitem>
+  <para>
+    Retrieves the width of the system wide drag rectangle in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">dragWidth set:</emphasis></term>
+  <listitem>
+  <para>
+    Use a non-negative whole number to set the width, in pixels, of the drag rectangle.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The drag rectangle is a rectangle that is centered on a drag point to allow for limited movement of the mouse
+    pointer before a drag operation begins. It allows the user to click and release the mouse button easily without
+    unintentionally starting a drag operation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::dragWidth() [attribute]  -->
 
 <section id="atrUpDateFlag"><title>updateFlag (Attribute)</title>
 <indexterm><primary>updateFlag</primary></indexterm>
