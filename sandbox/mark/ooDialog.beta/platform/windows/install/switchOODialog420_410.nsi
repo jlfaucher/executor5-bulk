@@ -776,12 +776,14 @@ Function DisplayInfo
         'key' must be 420 or 410."
 
   ${If} $CurrentVersion == 410
-    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n\
-                      Active version of ooDialog: 4.1.0$\n$\n$\n$Message"
+    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n$\n\
+                      Switch ooDialog version:$\t${VERSION}$\n\
+                      Active version of ooDialog:$\t4.1.0$\n$\n$\n$Message"
 
   ${Else}
-    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n\
-                      Active version of ooDialog: 4.2.0$\n$\n$\n$Message"
+    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n$\n\
+                      Switch ooDialog version:$\t${VERSION}$\n\
+                      Active version of ooDialog:$\t4.2.0$\n$\n$\n$Message"
   ${EndIf}
 
   Abort
