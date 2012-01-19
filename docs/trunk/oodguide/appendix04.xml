@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file.
     #
-    # Copyright (c) 2011-2012 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2011-2011, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -38,12 +38,14 @@
     #########################################################################
 -->
 
-<!-- Appendix 04 - Dialog Sequences				  v00-01 08Jan12
+<!-- Appendix 04 - Dialog Sequences				  v00-02 19Jan12
      Shows the methods invoked during dialog creation.
 
      Changes:
      v00-01 08Jan12: First version
+     v00-02 19Jan12: minor additions/corrections.
 -->
+
 <appendix id="apx-dlgsequences">
   <title id="dlgsequences.title">Dialog Creation Methods</title>
   <indexterm><primary>Dialog</primary><secondary>Creation</secondary></indexterm>
@@ -142,7 +144,8 @@
  and initialize them using
  <emphasis role="italic">proxy = self~new...(...)</emphasis>
 
- Attach Menubar</literallayout></entry>
+ Attach Menubar
+ <emphasis role="italic">menuBar~attachTo(self)</emphasis></literallayout></entry>
     <entry><literallayout>  Create "proxies" for controls
  and initialize them using
  <emphasis role="italic">proxy = self~new...(...)</emphasis>
@@ -166,22 +169,33 @@
       method, but could also be created later.</para>
   <para>The <emphasis role="italic">defineDialog</emphasis> method (see section 8.7 of the ooDialog
       Reference) is invoked automatically by the superclass' <emphasis role="italic">init</emphasis>
-      method. The <emphasis role="italic">defineDialog</emphasis> method provides for the creation
-      of the "Dialog Template" (see ooDialog Reference section 2.3.2) - that is, the layout of
-      controls on the dialog. The dialog template for an <computeroutput>RcDialog</computeroutput>
-      is normally fully-defined by the *.rc file, but can optionally be enhanced here. However, the
-      template for an <computeroutput>RcDialog</computeroutput>is fully-defined in the *.dll file,
-      and so <emphasis role="italic">defineDialog</emphasis> is not sent.</para>
+      method. This method provides for the creation of the "Dialog Template" (see ooDialog Reference
+      section 2.3.2) - that is, the layout of controls on the dialog. For a
+        <computeroutput>UserDialog</computeroutput> the dialog template must be created using
+      self~create(...) instructions. For an <computeroutput>RcDialog</computeroutput> the dialog
+      template is normally fully-defined by the *.rc file, but can optionally be enhanced here.
+      However, in the case of an <computeroutput>ResDialog</computeroutput>, the dialog template is
+      fully-defined by the *.dll file, and cannot be changed programmatically. Therefore, a
+        <emphasis role="italic">defineDialog</emphasis> message is not sent to a
+        <computeroutput>ResDialog</computeroutput>.</para>
     <para>On exit from the <emphasis role="italic">defineDialog</emphasis> method, the dialog
       template is established. </para>
     <para>The "underlying dialog" (see ooDialog Reference section 2.3.11) is then created and
       surfaced (made visible to the user) by invoking the superclass' <emphasis role="italic"
         >execute</emphasis> method (see ooDialog Reference section 3.7.5). </para>
-    <para>Finally, the <emphasis role="italic">initDialog</emphasis> method (see ooDialog Reference
-      section 3.7.7) is provided for the programmer to initialize the various controls - e.g. set an
-      edit control to its initial data value, or select a radio button. This is done by creating
-      "proxies" for those controls that need to be manipulated within the program, typically using
-        <emphasis role="italic">proxy = self~new...(...)</emphasis> statements. </para>
+    <para>The last method in the table - <emphasis role="italic">initDialog</emphasis> (see ooDialog
+      Reference section 3.7.7) - is provided for the programmer to initialize the various controls -
+      e.g. set an edit control to its initial data value, or pre-select a radio button. This is done
+      by creating "proxies" for those controls that need to be manipulated within the program,
+      typically using <emphasis role="italic">proxy = self~new...(...)</emphasis> statements. Note
+      that it's worth remembering that the "init" in <emphasis role="italic">initDialog</emphasis>
+      means "initialize" - not to be confused with the ooRexx <emphasis role="italic"
+        >init</emphasis> method. </para>
+    <para>Finally, although the creation of a menubar is mentioned in the table, technically it is
+      not part of dialog creation. A menubar can be created any time. However, it can only be
+      attached to a dialog after the underlying dialog is created. Thus the first opportunity to
+      attach a menubar to the dialog is in the <emphasis role="italic">initDialog</emphasis> method;
+      but it can be done later. </para>
 
 </appendix>
 
