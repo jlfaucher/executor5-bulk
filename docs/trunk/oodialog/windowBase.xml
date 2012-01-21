@@ -514,7 +514,8 @@ The dialog unit height of the button is: 11
       <varlistentry><term>point [required]</term>
       <listitem>
       <para>
-        A <link linkend="clsPoint">point</link> object specifying the point to test for.
+        A <link linkend="clsPoint">point</link> object specifying the point to test for. The point must be in <link
+        linkend="defScreenCoordinates">client</link> coordinates of the parent window.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>flags [optional]</term>
@@ -574,7 +575,14 @@ The dialog unit height of the button is: 11
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-
+    The search is restricted to immediate child windows. Grandchildren and deeper descendant windows are not searched.
+  </para>
+  <para>
+    Since this method is a method of the <link linkend="clsWindowBase">WindowBase</link> class, it is a method of both
+    the <link linkend="chpDialogObject">dialog</link> object and the dialog <link
+    linkend="chDialogControlObject">control</link> object. It is of limited use with a dialog control because most
+    dialog controls do not have child windows. However, some do. For instance, a <link linkend="clsListView">list</link>
+    view control in report view contains a child header window.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -589,9 +597,19 @@ The dialog unit height of the button is: 11
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example tests if a list view control is under the point 20, 25 of the dialog:
 <programlisting>
 <![CDATA[
+
+  pt = .Point~new(20, 25)
+
+  hwnd = self~childWindowFromPoint(pt)
+  if hwnd = self~newListView(IDC_LV_ADDRESSES)~hwnd then do
+    say 'The point 20, 25 is contained by the Adresses list view.'
+  end
+  else do
+  say 'The point 20, 25 is not contained by the Adresses list view.'
+  end
 
 ]]>
 </programlisting>
