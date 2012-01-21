@@ -706,6 +706,21 @@ done_out:
  */
 #define DLGUTIL_CLASS      "DlgUtil"
 
+
+RexxObjectPtr SPI_getWorkArea(RexxMethodContext *c)
+{
+    oodResetSysErrCode(c->threadContext);
+
+    RECT r = {0};
+    if ( ! SystemParametersInfo(SPI_GETWORKAREA, 0, &r, 0) )
+    {
+        oodSetSysErrCode(c->threadContext);
+    }
+
+    return rxNewRect(c, &r);
+}
+
+
 /** DlgUtil::init() [class method]
  *
  * The .DlgUtil class init() method.  It executes when the .DlgUtil class is
@@ -1053,19 +1068,6 @@ done_out:
     return result;
 }
 
-RexxObjectPtr SPI_getWorkArea(RexxMethodContext *c)
-{
-    oodResetSysErrCode(c->threadContext);
-
-    RECT r = {0};
-    if ( ! SystemParametersInfo(SPI_GETWORKAREA, 0, &r, 0) )
-    {
-        oodSetSysErrCode(c->threadContext);
-    }
-
-    return rxNewRect(c, &r);
-}
-
 /** DlgUtil::screenArea()  [class method]
  *
  *  Gets the usable screen area (work area.) on the primary display monitor. The
@@ -1103,6 +1105,21 @@ RexxMethod0(uint32_t, dlgutil_threadID_cls)
     return GetCurrentThreadId();
 }
 
+
+/** DlgUtil::windowFromPoint()  [class method]
+ *
+ *
+ */
+RexxMethod1(RexxStringObject, dlgutil_windowFromPoint_cls, RexxObjectPtr, pt)
+{
+    PPOINT p = rxGetPoint(context, pt, 1);
+    if ( p != NULL )
+    {
+        return pointer2string(context, WindowFromPoint(*p));
+    }
+    return NULLOBJECT;
+}
+
 /** DlgUtil::test()  [class method]
  *
  *  Simple method to use for testing.
@@ -1134,6 +1151,22 @@ RexxMethod1(RexxObjectPtr, spi_init_cls, OSELF, self)
     return NULLOBJECT;
 }
 
+/** SPI::dragHeight  [class attribute get]
+ *
+ *  @remarks  SystemParametersInfo() can not be used to get the drag height or
+ *            width.  So originally the attribute was going to be a set only
+ *            attribute.  But, on reflection this seems silly, there is no
+ *            reason the SPI class has to *only* use SystemParametersInfo().  We
+ *            can just use GetSystemMetrics().
+ */
+RexxMethod0(uint32_t, spi_getDragHeight_cls)
+{
+    oodResetSysErrCode(context->threadContext);
+    return (uint32_t)GetSystemMetrics(SM_CYDRAG);
+}
+
+/** SPI::dragHeight  [class attribute set]
+ */
 RexxMethod2(RexxObjectPtr, spi_setDragHeight_cls, uint32_t, pixels, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
@@ -1145,6 +1178,22 @@ RexxMethod2(RexxObjectPtr, spi_setDragHeight_cls, uint32_t, pixels, CSELF, pCSel
     return NULLOBJECT;
 }
 
+/** SPI::dragWidth  [class attribute get]
+ *
+ *  @remarks  SystemParametersInfo() can not be used to get the drag height or
+ *            width.  So originally the attribute was going to be a set only
+ *            attribute.  But, on reflection this seems silly, there is no
+ *            reason the SPI class has to *only* use SystemParametersInfo().  We
+ *            can just use GetSystemMetrics().
+ */
+RexxMethod0(uint32_t, spi_getDragWidth_cls)
+{
+    oodResetSysErrCode(context->threadContext);
+    return (uint32_t)GetSystemMetrics(SM_CXDRAG);
+}
+
+/** SPI::dragWidth  [class attribute set]
+ */
 RexxMethod2(RexxObjectPtr, spi_setDragWidth_cls, uint32_t, pixels, CSELF, pCSelf)
 {
     oodResetSysErrCode(context->threadContext);
@@ -1553,6 +1602,17 @@ RexxMethod1(int32_t, point_x, CSELF, p) { return ((POINT *)p)->x; }
 RexxMethod1(int32_t, point_y, CSELF, p) { return ((POINT *)p)->y; }
 RexxMethod2(RexxObjectPtr, point_setX, CSELF, p, int32_t, x) { ((POINT *)p)->x = x; return NULLOBJECT; }
 RexxMethod2(RexxObjectPtr, point_setY, CSELF, p, int32_t, y) { ((POINT *)p)->y = y; return NULLOBJECT; }
+
+/** Point::copy()
+ *
+ *  Returns a new point object that is a copy of this point.
+ *
+ */
+RexxMethod1(RexxObjectPtr, point_copy, CSELF, p)
+{
+    POINT *_p = (POINT *)p;
+    return rxNewPoint(context, _p->x, _p->y);
+}
 
 /** Point::+
  *

@@ -193,7 +193,7 @@ typedef enum
 } MsgReplyType;
 
 
-// Identifies an error, that should never happen, discovered in RexxDlgProc().
+// Identifies an error, that should never happen, discovered in RexxDlgProc(),
 // or some other place trying to do a therad attach. Used in
 // endDialogPremature() to determine what message to display.
 typedef enum
