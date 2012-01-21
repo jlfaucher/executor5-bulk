@@ -116,6 +116,10 @@
 <entry>Sets the mouse cursor to the system's default <emphasis role="italic">not allowed</emphasis> cursor, which is usually a circle with a slash across it.</entry>
 </row>
 <row>
+<entry><link linkend="mthReleaseClipCursor">releaseClipCursor</link></entry>
+<entry>Releases the cursor so that it is free to move anywhere on the screen.</entry>
+</row>
+<row>
 <entry><link linkend="mthReleaseCapture">releaseCapture</link></entry>
 <entry>Releases the mouse capture from the window which had previously captured the mouse.</entry>
 </row>
@@ -153,7 +157,7 @@
 <indexterm><primary>Mouse class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--windowObj--)-----------------><
+>>--new(--windowObj--)---------------------------><
 
 ]]>
 </programlisting>
@@ -240,7 +244,7 @@
 <indexterm><primary>Mouse class</primary><secondary>doubleClickTime</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--doubleClickTime--------------------><
+>>--doubleClickTime------------------------------><
 
 ]]>
 </programlisting>
@@ -298,7 +302,7 @@
 <indexterm><primary>Mouse class</primary><secondary>loadCursor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--loadCursor(--cursorName--)---------><
+>>--loadCursor(--cursorName--)-------------------><
 
 ]]>
 </programlisting>
@@ -494,7 +498,7 @@
 <indexterm><primary>Mouse class</primary><secondary>loadCursorFromFile</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--loadCursorFromFile(--fileName--)---><
+>>--loadCursorFromFile(--fileName--)-------------><
 
 ]]>
 </programlisting>
@@ -586,7 +590,7 @@
 <indexterm><primary>Mouse class</primary><secondary>setDoubleClickTime</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDoubleClickTime(--+------------+--)----------------------><
+>>--setDoubleClickTime(--+------------+--)-------><
                          +-,-interval-+
 ]]>
 </programlisting>
@@ -662,7 +666,7 @@
 <indexterm><primary>Mouse class</primary><secondary>swapButton</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--swapButton(--+--------+--)---------------------------------------------><
+>>--swapButton(--+--------+--)-------------------><
                  +--swap--+
 ]]>
 </programlisting>
@@ -755,7 +759,7 @@
 <indexterm><primary>Mouse class</primary><secondary>appStarting</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--appStarting------------------------><
+>>--appStarting----------------------------------><
 
 ]]>
 </programlisting>
@@ -846,7 +850,7 @@
 <indexterm><primary>Mouse class</primary><secondary>arrow</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--arrow------------------------------><
+>>--arrow----------------------------------------><
 
 ]]>
 </programlisting>
@@ -903,7 +907,7 @@
 <indexterm><primary>Mouse class</primary><secondary>capture</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--capture----------------------------><
+>>--capture--------------------------------------><
 
 ]]>
 </programlisting>
@@ -978,7 +982,10 @@
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">clipCursor</emphasis> function restricts the cursor position to a rectangular area on the
+  screen. When, or if, a subsequent cursor position (set by the <link linkend="mthSetCursorPos">setCursorPos</link>
+  method or a mouse movement) would be outside the rectangle, the operating system automatically adjusts the position to
+  keep the cursor inside the rectangular area
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1229,7 +1236,7 @@
     <varlistentry><term>pos</term>
     <listitem>
     <para>
-      A <link linkend="clsPoint">Point</link> object that contains the x and y co-ordinates of the pointer, relative to
+      A <link linkend="clsPoint">Point</link> object that contains the x and y coordinates of the pointer, relative to
       the upper-left corner of the screen.
     </para>
     </listitem></varlistentry>
@@ -1325,7 +1332,7 @@
 <indexterm><primary>Mouse class</primary><secondary>cross</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--cross------------------------------><
+>>--cross----------------------------------------><
 
 ]]>
 </programlisting>
@@ -1445,7 +1452,7 @@
 <indexterm><primary>Mouse class</primary><secondary>getCapture</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCapture-------------------------><
+>>--getCapture-----------------------------------><
 
 ]]>
 </programlisting>
@@ -1617,7 +1624,7 @@
 <indexterm><primary>Mouse class</primary><secondary>isButtonDown</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isMouseButtonDown(--+---------------+--------><
+>>--isMouseButtonDown(--+---------------+--)-----><
                         +--whichButton--+
 ]]>
 </programlisting>
@@ -1721,7 +1728,7 @@
 <indexterm><primary>Mouse class</primary><secondary>no</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--no---------------------------------><
+>>--no-------------------------------------------><
 
 ]]>
 </programlisting>
@@ -1842,6 +1849,72 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Mouse::releaseCapture() -->
+
+<section id="mthReleaseClipCursor"><title>releaseClipCursor</title>
+<indexterm><primary>releaseClipCursor</primary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>releaseClipCursor</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--releaseClipCursor----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Releases the cursor so that it is free to move anywhere on the screen.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The cursor is a shared resource. If an application confines the cursor through the <link
+    linkend="mthClipCursor">clipCursor</link> method, it must release the cursor at some point by using
+    <emphasis role="italic">releaseClipCursor</emphasis> before the user can move to another application using the
+    mouse.
+  </para>
+  <para>
+    Although the MSDN documentation does not explicity state this, experimentation shows that if the user brings up the
+    Alt-Tab switching dialog and moves to another application in that manner, the cursor is no lnoger confined. If the
+    user closes the dialog, the mouse is no longer confined.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example releases the cursor from the clipped state.
+<programlisting>
+<![CDATA[
+
+  mouse = .Mouse~new(self)
+  mouse~releaseClipCursor
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Mouse::releaseClipCursor() -->
 
 <section id="mthRestoreCursor"><title>restoreCursor</title>
 <indexterm><primary>restoreCursor</primary></indexterm>
@@ -2205,7 +2278,7 @@ Generic form:
 <indexterm><primary>Mouse class</primary><secondary>wait</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wait-------------------------------><
+>>--wait-----------------------------------------><
 
 ]]>
 </programlisting>

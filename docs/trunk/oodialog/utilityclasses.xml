@@ -474,7 +474,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 <indexterm><primary>ApplicationManager class</primary><secondary>defaultFont</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--defaultFont(--+------------+--+-------------+--)------------><
+>>--defaultFont(--+------------+--+-------------+--)---------------------------><
                   +--fontName--+  +-,-fontSize--+
 ]]>
 </programlisting>
@@ -791,7 +791,7 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
 <indexterm><primary>ApplicationManager class</primary><secondary>useGlobalConstDir</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--useGlobalConstDir(--mode--+-------------+--)----------------><
+>>--useGlobalConstDir(--mode--+-------------+--)-------------------------------><
                               +--symbolSrc--+
 ]]>
 </programlisting>
@@ -3707,6 +3707,10 @@ u~resize(self, sizeinfo)
 <entry><link linkend="mthVersion">version</link></entry>
 <entry>Returns the ooDialog version string.</entry>
 </row>
+<row>
+<entry><link linkend="mthWindowFromPoint">windowFromPoint</link></entry>
+<entry>Retrieves the window handle of the window that contains the specified point.</entry>
+</row>
 </tbody></tgroup>
 </table>
 </para>
@@ -4736,7 +4740,7 @@ return .true
 <indexterm><primary>DlgUtil class</primary><secondary>sLoWord</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--sLoWord(--param--)----------------------------><
+>>--sLoWord(--param--)---------------------------><
 
 ]]>
 </programlisting>
@@ -5177,6 +5181,82 @@ Too bad, you are still running ooRexx 4.0.0
 </variablelist>
 </section>
 
+<section id="mthWindowFromPoint"><title>windowFromPoint</title>
+<indexterm><primary>windowFromPoint</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>windowFromPoint</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--windowFromPoint(--p--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the window <link linkend="defHandle">handle</link> of the window that contains the specified point.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>p [required]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsPoint">point</link> object that specifies the point to be tested.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a handle to the window that contains the point. If no window exists at the point then 0 is returned. For a
+    <link linkend="clsStatic">static</link> text control, the handle to the window under the control is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not retrieve handles of hidden or disabled windows even if the point is within the window. The
+    <link linkend="mthChildWindowFromPoint">childWindowFromPoint</link> method of the <link
+    linkend="chpDialogObject">dialog</link> object can be used for a nonrestrictive search.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows a method that tests if the mouse is over a list view control and that there is no other window
+    covering the list view at that point:
+<programlisting>
+<![CDATA[
+
+  ::method overListView private
+
+    if \ self~isDialogActive then return .false
+
+    mouse = .Mouse~new(self)
+    pos = mouse~getCursorPos
+
+    hwndLV = self~newListView(IDC_LV)~hwnd
+
+    if .DlgUtil~windowFromPoint(pos) == hwndLV then return .true
+    else return .false
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::windowFromPoint() -->
+
 </section> <!-- End DlgUtil Class -->
 
 
@@ -5188,7 +5268,7 @@ Too bad, you are still running ooRexx 4.0.0
 returns its handle.</para>
 <programlisting>
 <![CDATA[
->>-FindWindow(--Caption--)------------------------------------><
+>>-FindWindow(--Caption--)-----------------------><
 ]]>
 </programlisting>
 
@@ -5216,7 +5296,7 @@ returns its handle.</para>
 <para>Sleeps for the specified number of milliseconds.</para>
 <programlisting>
 <![CDATA[
->>-MSSleep(--duration--)--------------------------------------><
+>>-MSSleep(--duration--)-------------------------><
 ]]>
 </programlisting>
 
@@ -5663,7 +5743,7 @@ returns its handle.</para>
 <para>This routine is used to play audio sounds.</para>
 <programlisting>
 <![CDATA[
->>-Play(--+----------+--+---------+--)------------------------><
+>>-Play(--+----------+--+---------+--)-----------><
           +-fileName-+  +-,--YES--+
                         +-,--LOOP-+
 
@@ -5780,6 +5860,10 @@ rc = play("Welcome.wav")
 <row>
 <entry><link linkend="mthMinus">-</link></entry>
 <entry>Subtracts two <computeroutput>Point</computeroutput>objects</entry>
+</row>
+<row>
+<entry><link linkend="mthCopy">decr</link></entry>
+<entry>Returns a new <computeroutput>Point</computeroutput> object that represents the same coordinates as this point.</entry>
 </row>
 <row>
 <entry><link linkend="mthDecr">decr</link></entry>
@@ -6120,6 +6204,69 @@ Changed point q to be at (150,300)
 </variablelist>
 </section>  <!-- End Point::-() -->
 
+<section id="mthCopy"><title>copy</title>
+<indexterm><primary>copy</primary></indexterm>
+<indexterm><primary>Point class</primary><secondary>copy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--copy-----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns a new <computeroutput>Point</computeroutput> object that represents the same coordinates as this point.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments for this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns a new point whose <emphasis role="italic">x</emphasis> and <emphasis role="italic">y</emphasis> attributes
+    are the same as this point's attriubtes.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example makes a copy of the current mouse postion so that it can be mapped to the client coordinates of the
+    dialog without altering the position in screen coordinates:
+<programlisting>
+<![CDATA[
+
+  ::method initDialog
+    expose mouse
+
+    mouse = .Mouse~new(self)
+    ...
+
+::method mouseOverDialog private
+  expose mouse
+
+  pos = mouse~getCursorPos
+  clientPos = pos~copy
+
+  self~screen2client(clientPos)
+
+  say 'Screen mouse postion:       ' pos
+  say 'Dialog client mouse postion:' clientPos
+  say 'Mouse over dialog?          ' clientPos~inRect(self~clientRect)
+
+  return clientPos~inRect(self~clientRect)
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Point::copy() -->
+
 
 <section id="mthDecr"><title>decr</title>
 <indexterm><primary>decr</primary></indexterm>
@@ -6279,7 +6426,7 @@ Changed point q to be at (150,300)
 <indexterm><primary>Point class</primary><secondary>inRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--inRect(--rect--)-------------------><
+>>--inRect(--rect--)-----------------------------><
 
 ]]>
 </programlisting>
@@ -6442,19 +6589,19 @@ Changed point q to be at (150,300)
 </row>
 <row>
 <entry><link linkend="atrBottomClsRect">bottom</link></entry>
-<entry>The <emphasis role="italic">bottom</emphasis> co-ordinate of the rectangle.</entry>
+<entry>The <emphasis role="italic">bottom</emphasis> coordinate of the rectangle.</entry>
 </row>
 <row>
 <entry><link linkend="atrLeftClsRect">left</link></entry>
-<entry>The <emphasis role="italic">left</emphasis> co-ordinate of the rectangle.</entry>
+<entry>The <emphasis role="italic">left</emphasis> coordinate of the rectangle.</entry>
 </row>
 <row>
 <entry><link linkend="atrRightClsRect">right</link></entry>
-<entry>The <emphasis role="italic">right</emphasis> co-ordinate of the rectangle.</entry>
+<entry>The <emphasis role="italic">right</emphasis> coordinate of the rectangle.</entry>
 </row>
 <row>
 <entry><link linkend="atrTopClsRect">top</link></entry>
-<entry>The <emphasis role="italic">top</emphasis> co-ordinate of the rectangle.</entry>
+<entry>The <emphasis role="italic">top</emphasis> coordinate of the rectangle.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -6775,7 +6922,7 @@ New upper corner (55,75) new lower corner 110,125)
 <para>
   The <emphasis role="italic">string</emphasis> method over-rides the <computeroutput>.Object</computeroutput> classes
   <emphasis role="italic">string</emphasis> method to provide more informative string representation of a
-  <computeroutput>Rect</computeroutput> object. The returned string include the value of the co-ordinates of the
+  <computeroutput>Rect</computeroutput> object. The returned string include the value of the coordinates of the
   rectangle. I.e., the left, top, right, and bottom attributes.
 </para>
 <variablelist>
@@ -6827,7 +6974,7 @@ New upper corner (55,75) new lower corner 110,125)
 <para>Obtains the screen size in dialog units and in pixels.</para>
 <programlisting>
 <![CDATA[
->>-ScreenSize()-----------------------------------------------><
+>>-ScreenSize()----------------------------------><
 ]]>
 </programlisting>
 
@@ -8158,9 +8305,9 @@ s2: a Size (2, 3)
 <indexterm><primary>SPI class</primary><secondary>wheelScrollLines</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wheelScrollLines-----------------------------------------------------><
+>>--wheelScrollLines-----------------------------><
 
->>--wheelScrollLines-=-count---------------------------------------------><
+>>--wheelScrollLines-=-count---------------------><
 
 ]]>
 </programlisting>
@@ -8252,7 +8399,7 @@ s2: a Size (2, 3)
   <listitem>
   <para>
     Assign a <computeroutput>.Rect</computeroutput> object as the value of this attribute. This changes the current work
-    area to the co-ordinates specified in the <computeroutput>.Rect</computeroutput> object.
+    area to the coordinates specified in the <computeroutput>.Rect</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -9969,7 +10116,7 @@ WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
 WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
 
 <![CDATA[
->>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)---><
+>>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
                              +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
 ]]>
 </programlisting>

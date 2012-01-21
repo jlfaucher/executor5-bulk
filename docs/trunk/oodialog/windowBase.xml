@@ -492,6 +492,114 @@ The dialog unit height of the button is: 11
 </section>  <!-- End WindowBase::sizeY() [attribute]  -->
 
 
+<section id="mthChildWindorFromPoint"><title>childWindowFromPoint</title>
+<indexterm><primary>childWindowFromPoint</primary></indexterm>
+<indexterm><primary>WindowBase class</primary><secondary>childWindowFromPoint</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--childWindowFromPoint(--point--+----------+--)------------------------------><
+                                  +-,-flags--+
+]]>
+</programlisting>
+
+<para>
+  Determines which, if any, of the child windows belonging to this window contains the specified point.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>point [required]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsPoint">point</link> object specifying the point to test for.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>flags [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. This argument
+        specifies which child windows to skip. When omitted, the flags are set to SKIPINVISIBLE
+        SKIPDISABLED SKIPTRANSPARENT, that is disabled, invisible, and transparent child windows are ignored in the
+        search.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>ALL            </member>
+          <member>SKIPDISABLED   </member>
+          <member>SKIPINVISIBLE  </member>
+          <member>SKIPTRANSPARENT</member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>ALL</term>
+          <listitem>
+          <para>
+            Does not skip any child windows.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SKIPDISABLED</term>
+          <listitem>
+          <para>
+            Skips disabled child windows.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SKIPINVISIBLE</term>
+          <listitem>
+          <para>
+            Skips invisible child windows.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SKIPTRANSPARENT</term>
+          <listitem>
+          <para>
+            Skips transparent child windows.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the window <link linkend="defHandle">handle</link> of the first child window meeting the seach criteria. If
+    the point lies within the parent window, but not within a child window meeting the search criteria, then the handle
+    of the parent window is returned. If the point lies outside of the parent window, then 0 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowBase::childWindowFromPoint() -->
+
 <section id="mthClear"><title>clear</title>
 <indexterm><primary>clear</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>clear</secondary></indexterm>
@@ -1321,7 +1429,7 @@ self~move(px - 10, py - 10)
   <listitem>
   <para>
     The position of the window, in pixels, as a <link linkend="clsPoint">Point</link> object. In the unlikely event of
-    an error, the x and y co-ordinates will be 0. Of course those coordinates could be valid, check
+    an error, the x and y coordinates will be 0. Of course those coordinates could be valid, check
     <computeroutput>.SystemErrorCode</computeroutput> for a possible error code.
   </para>
   </listitem></varlistentry>
