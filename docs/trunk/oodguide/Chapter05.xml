@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file.
     #
-    # Copyright (c) 2011-2012 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2011-2012, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-07 25Jan12
+<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-07 26Jan12
      5.1 - Dialog Initiation - using the newInstance class method.
      5.2 - Compiling a binary resource file
      5.3 - Differences between RcDialog and ResDialog
@@ -53,7 +53,7 @@
      v00-05 17Aug11: Updated to reflect change to using .application~setdefaults.
      v00-06 29Nov11: Updated to discuss disabling close (or doing something to
                      over-ride normal Windows behaviour).
-     v00-07 25Jan12: Minor corrections to wording after proof-read.
+     v00-07 26Jan12: Various minor updates to wording.
 -->
 <chapter id="chapFive">
     <title>Using Binary Resource Dialogs</title>
@@ -84,8 +84,8 @@
         ooRexx routine, for dialog initiation. By "initiation" is meant the two statements
           "<computeroutput>dlg=.[DialogClassName]~new</computeroutput>" and
           "<computeroutput>dlg~execute(...)</computeroutput>". In other words, the responsibility
-        for issuing these two initiation statements - which handle the technical creation and
-        initial display of the dialog - have been outside the dialog class. If they could be moved
+        for issuing these two initiation statements - which are essential for the creation of the
+        dialog - have previously been outside the dialog class. If they could be moved
           <emphasis role="italic">within</emphasis> the class, then encapsulation would be enhanced
         - always a desirable thing. The question is, how. Well, ooRexx has a mature implementation
         of OO that (among other things) allows for class methods (as opposed to instance methods).
@@ -111,7 +111,8 @@
           <primary>Class methods</primary>
           <secondary>newInstance</secondary>
         </indexterm> Note also that the first parameter of the
-          <computeroutput>.ProductView~new()</computeroutput> statement allows file paths. </para>
+          <computeroutput>.ProductView~new()</computeroutput> statement allows for file paths
+          to be specified.</para>
     </section>
     <!-- End of section 5.1 -->
   <section id="chap05-resfile">
@@ -175,9 +176,8 @@ CustomerView                                        ProductView
 D:\...\Exercise04>startup                           D:\...\Exercise05>startup
 StartCustomerView Routine-01: Start.                .ProductView-newInstance-01: Start.
 CustomerView-init-01.                               ProductView-init-01.
-CustomerView-initAutoDetection-01.                  ProductView-initAutoDetection-01.
 CustomerView-createMenuBar-01.
-StartCustomerView Routine-02: dlg~activate.         ProductView-newInstance-02: dlg~Activate.
+StartCustomerView Routine-02: dlg~activate.         .ProductView-newInstance-02: dlg~Activate.
 CustomerView-activate-01.                           ProductView-activate-01.
 CustomerView-initDialog-01.                         ProductView-initDialog-01
 ]]>
@@ -198,6 +198,9 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           as bitmaps and/or icons, the number of files required for an RcDialog class can result in
           a minor file management challenge in the runtime environment. A ResDialog class, on the
           other hand, has only two files: the *.dll and the *.h. </para>
+          <para>See <link linkend="apx-dlgsequences" endterm="dlgsequences.title"></link> for a
+          comparison of dialog startup methods comparing an <computeroutpur>RcDialog</computeroutpur>,
+          a <computeroutpur>ResDialog</computeroutpur> and a <computeroutpur>UserDialog</computeroutpur>.</para>
       </section>
       <!-- End of section 5.2.2 -->
     </section>
@@ -219,9 +222,9 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           <secondary>RadioButton</secondary>
         </indexterm>
         <para> For Radio Buttons to operate automatically - that is, when an "off" button is
-          clicked, the "on" button goes off - they must be within a Group Box. This is defined in
+          clicked, the previously "on" button goes off - they must be within a Group Box. This is defined in
           the *.rc file first as a GROUPBOX control with the style WS_GROUP. After this is defined,
-          the radio buttons, which must have the AUTORADIOBUTTON style, are placed in the groupbox.
+          the radio buttons (which must have the AUTORADIOBUTTON style) are placed in the groupbox.
           However, the containment is done through the order of controls in the *.rc file. To
           achieve this using ResEdit, first drag a Group Box control onto the dialog, and set the
           "Group" property to "True". Then drag the radio buttons from the controls palette into the
@@ -275,7 +278,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
                 grouped in the directory object <emphasis role="italic">prodControls</emphasis> for
                 ease of "exposing" them across methods; also, edit
                 control instances have the prefix "ec" in conformance with the
-                <link linkend="chap04-convs-names">naming standards</link> mentioned in Chapter 4.
+                <link linkend="chap04-convs-names">naming conventions</link> mentioned in Chapter 4.
               </para>
             </listitem>
             <listitem>
@@ -299,7 +302,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
         </programlisting> The sixth argument to the event handler is the control object
                 where the character event occurred, and the event must be forwarded to that object -
                 that is, to the eventful edit control. The event is then handled by the mixin class,
-                where the numeric-only editing is done. Note that other method names can be used.</para>
+                where the numeric-only editing is done.</para>
             </listitem>
           </orderedlist>
         </para>
@@ -308,13 +311,15 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
       <section id="chap05-accels">
         <title>Menu Accelerators</title>
         <!-- Section 5.3.3 -->
+        <indexterm><primary>Menus</primary><secondary>Accelerator key</secondary></indexterm>
+        <indexterm><primary>Accelerator key</primary><secondary>in menus</secondary></indexterm>
         <para>Open the Product View dialog, and then press the Alt key on the keyboard, followed by
           the down-arrow key. The "Actions" menu is first highlighted and then opened. The top menu
           item is "Update Product" - with an underscore
           beneath the "U". Pressing the "U" key will then initiate the Update Product behavior. The
           underlined letter is known as an "accelerator" key. It is produced by placing an ampersand
-          (&amp;) immediately before the letter that's to be the accelerator key. In the
-            <computeroutput>ProductView.rc</computeroutput> file, you'll see the Update menu item
+          (&amp;) immediately before the letter that's to be the accelerator key on the *.rc file.
+          In <computeroutput>ProductView.rc</computeroutput>, you'll see the Update menu item
           defined as <computeroutput>MENUITEM "&amp;Update Product",
             IDM_PROD_UPDATE</computeroutput>. </para>
         <para>Interestingly, if you mouse-click on the "Actions" menu to open it, the "U" is not
@@ -336,6 +341,8 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
         <section id="chap05-imagecontrol">
           <title>Creating the Image</title>
           <!-- section 5.3.4.1 -->
+          <indexterm><primary>Image</primary><secondary>creating</secondary></indexterm>
+          <indexterm><primary>Creating an Image</primary></indexterm>
           <para>An image is created by placing a bitmap (a file of type "*.bmp") into a "Picture
             Control". The bitmap and Picture control are both defined in the *.rc file, but placing
             the image into the picture control is done in code. </para>
@@ -375,7 +382,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
                     authoritative list of styles is found in the <ulink
                       url="http://msdn.microsoft.com/en-us/library/bb773169%28v=VS.85%29.aspx">
                       <citetitle>Microsoft Control Library</citetitle></ulink>. Look up the Static
-                    Control, and you'll find some thirty different styles. <indexterm>
+                    Control, and you'll find around thirty different styles. <indexterm>
                       <primary>Controls</primary>
                       <secondary>Styles</secondary>
                     </indexterm>
@@ -414,7 +421,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
               26.4). The second statement uses the ResourceImages's <emphasis role="italic"
                 >getImage</emphasis> method (see ooDialog Reference 26.2.4) to return an instance of
               the <computeroutput>Image</computeroutput> class. The last statement creates a static
-              control and sets the image in it. </para>
+              control proxy and sets the image in it. </para>
           </section>
           <!-- end of section 5.3.4.1.2 -->
         </section>
@@ -441,7 +448,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
             closed (see ooDialog Reference 3.8.5). Its purpose is to allow for clean-up. In the case
             of the About dialog, the two resources used (an image and a font) are let go. This is
             not really necessary in this simple application, but is a good habit to get into (see
-            the discussion at the end of section 26.2 of the ooDialog reference).</para>
+            the discussion at the start of section 26.2 of the ooDialog reference).</para>
         </section>
         <!-- End of section 5.3.4.2 -->
       </section>
@@ -458,7 +465,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
 <section><title>Data Types</title>  <!-- Section 5.4.1 -->
 <para>Most non-trivial software systems consist of a number of components.
   Each of these could in principle be written in a different programming language - assuming of course that all
-  the languages support common invocation mechanisms. Within each component there are typically some number of
+  the languages are supported by common invocation mechanisms. Within each component there are typically some number of
   classes, and these interact privately. Between components, which often interact with "data-heavy" invocations,
   it is usual to define specific "data-only" classes, so that everyone can be sure of using the same data structures.
   Examples are: a Customer data class, an Address data class, and a SalesOrder data class.
@@ -477,13 +484,13 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
 
 <section><title>View Data vs Application data</title>  <!-- Section 5.4.2 -->
 <para>There is often a difference between data that the user sees or enters on a dialog and the data
-          that flows between components in data types. This is similar to the difference between
-          data in a normalized database and data as used by application code. For example, on the
+          that flows between components in data types (just as there are differences between
+          data in a normalized database and data as used by application code). For example, on the
           Product View dialog, a price is shown with two decimal digits after a decimal point. Price in the
           <computeroutput>ProductDT</computeroutput> data type, on the other hand, has no decimal places
           - it's expressed in units of 1/100s of the currency unit (that is, in cents if the currency unit is
-          the Dollar). Thus the price from the data type must be transformed somewhere for both display and
-          user input purposes</para>
+          the Dollar). Thus the price data type must be transformed both when displayed to the
+          user and when read in by the program.</para>
 <para>The principle for where to do the transformation is simple: do it as close to the screen as
           possible (just as, at the other end, transformation to database formats are done as close
           to the DB programming interface (e.g. SQL) as possible, meaning that most of the
@@ -514,7 +521,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
   <emphasis role="italic">about</emphasis> method is modal. That is, the Product View window cannot be
   accessed while the About window is open. This is because "About"
   was launched using the <emphasis role='italic'>execute(..)</emphasis> method. Making an "about
-  box" modal seems quite reasonable. But in later chapters some of ooDialog's alternatives to
+  box" modal seems quite reasonable. But in later chapters alternatives to
   <emphasis role='italic'>execute</emphasis> will be used in order to launch non-modal dialogs.
 </para>
 </section>  <!-- End of section 5.4.3 -->
@@ -557,7 +564,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           beginning and start again. </para>
 </section>  <!-- End of section 5.4.5 -->
 
-<section id="chap05-dlgCancel"><title>Controlling Dialog Cancel</title>  <!-- Section 5.4.6 -->
+<section id="chap05-cancel"><title id="chap05-cancel.title">Controlling Dialog Cancel</title>  <!-- Section 5.4.6 -->
 <para>Windows provides for three ways for the user to cancel a dialog: by pressing the Esc key,
       by clicking on the "close" icon at the extreme top right of the dialog, or by clicking
       the "close" action on the system menu (click the icon at the extreme top left of the window).
@@ -602,8 +609,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
             <listitem>
               <para>The third state is the modal "exit messagebox" state which, depending on the user's
                 choice, either closes the dialog or returns to the "inUpdate" state.
-                If the user selects any of the close actions, then the dialog closes
-                immediately. </para>
+                If the user selects "close", then the dialog closes immediately. </para>
             </listitem>
           </orderedlist>
         </para>

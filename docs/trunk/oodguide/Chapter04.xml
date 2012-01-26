@@ -628,7 +628,8 @@
   </para></listitem>
   <listitem><para>Second, the Customer Address data is an array, which for display
     in a multi-line edit control must be transformed into a text string with line-ends
-    inserted at appropriate places. This kind of transformation is very usual
+    inserted at appropriate places. This is done in the <emphasis role='italic'>showData</emphasis>
+    method. Data transformation of this sort is very usual
     within view classes; after all, it's the responsibility of any View class (or
     of its subsidiary classes or routines) to handle any re-formatting for display purposes.
   </para></listitem>
@@ -666,18 +667,17 @@
     Processing from this point is almost all
     plain ooRexx with little ooDialog involvement:
     <itemizedlist>
-      <listitem><para>The method <emphasis role="italic">xformView2App</emphasis>
-      (transform view format to application format) is invoked and returns the data from the edit
-      controls as a directory, with the address element being an array. To read data
-      that the user has entered, the method uses the <emphasis role="italic">getText</emphasis>
-      and <emphasis role="italic">getLine</emphasis> methods of the Edit Control.</para>
+      <listitem><para>The <emphasis role="italic">recordChanges</emphasis> method reads data from
+      dialog controls using the <emphasis role="italic">getText</emphasis>
+      and <emphasis role="italic">getLine</emphasis> methods of the Edit Control.
+      Any view-formatted data is transformed into application format (in this case, the Address
+      needs to be transformed from strings with line-end characters to an array).</para>
       </listitem>
       <listitem><para>Then the <emphasis role="italic">checkForChanges</emphasis> method is invoked
-      with, as a parameter, the data returned from the
-      <emphasis role="italic">xformView2App</emphasis> method.</para>
+      with, as a parameter, the data just read in from the dialog controls.</para>
       </listitem>
       <listitem><para>If the data has not changed, a message box is displayed. If it has changed,
-      then the old data is replaced with the new. In either case, the edit controls are
+      then the old data is replaced with the new. Finally, in either case, the edit controls are
       set to read-only, and the "Record Changes" button is disabled.</para>
       </listitem>
     </itemizedlist>
