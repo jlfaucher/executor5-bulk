@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file.
     #
-    # Copyright (c) 2011-2011, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2011-2012, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter04 - Using Resource Dialogs			          v00-08 25Jan12
+<!-- Chapter04 - Using Resource Dialogs			          v00-09 25Jan12
      4.1   Naming and Coding Conventions
      4.1.1 Naming Conventions
      4.1.2 Coding Conventions
@@ -56,6 +56,7 @@
      v00-07 17Aug11: Updated to reflect use of new .Application~setDefaults
                      in CustomerView code.
      v00-08 25Jan12: A number of individually minor corrections.
+     v00-09 25Jan12: Oops - forgot about hitting Esc and disappearing the dialog.
 -->
 <chapter id="chapFour">
   <title>Using Resource Dialogs</title>
@@ -644,43 +645,50 @@
     <![CDATA[
     custControls[ecCustName]~setReadOnly(.false)
     ]]>
-  </programlisting>Pushbuttons are enabled by invoking <emphasis role="italic"
-              >enableControl</emphasis> on the dialog, the parameter being the control's symbolic ID
-            as shown in the first statement below. The second statement below puts focus on the
-            push-button - in this case by invoking the <emphasis role="italic">state</emphasis>
-            method of the control object. Finally, the cursor is placed in the Customer Name edit
-            control by invoking the dialog's <emphasis role="italic">focusControl</emphasis> method. <programlisting>
-  <![CDATA[
+  </programlisting>
+  </para>
+  <para>Pushbuttons are enabled by invoking <emphasis role="italic">enableControl</emphasis>
+    on the dialog, the parameter being the control's symbolic ID
+    as shown in the first statement below. The second statement below puts focus on the
+    push-button - in this case by invoking the <emphasis role="italic">state</emphasis>
+    method of the control object. Finally, the cursor is placed in the Customer Name edit
+    control by invoking the dialog's <emphasis role="italic">focusControl</emphasis> method.
+    <programlisting>
+    <![CDATA[
     self~enableControl("IDC_CUST_BTN_RECORDCHANGES")
     custControls[btnRecordChanges]~state = "FOCUS"  -- Put focus on the button
     self~focusControl("IDC_CUST_EDT_CUSTNAME")         -- place cursor in the CustName edit control.
     ]]>
-  </programlisting>The dialog is now in a state whereby the user can make changes to the
-            data. When the user presses the "Record Changes" button, the <emphasis role="italic"
-              >recordChanges</emphasis> method is invoked. Processing from this point is almost all
-            plain ooRexx with little ooDialog involvement: <itemizedlist>
-              <listitem>
-                <para>The method <emphasis role="italic">xformView2App</emphasis> (transform view
-                  format to application format) is invoked and returns the data from the edit
-                  controls as a directory, with the address element being an array. To read data
-                  that the user has entered, the method uses the <emphasis role="italic"
-                    >getText</emphasis> and <emphasis role="italic">getLine</emphasis> methods of
-                  the Edit Control. </para>
-              </listitem>
-              <listitem>
-                <para>Then the <emphasis role="italic">checkForChanges</emphasis> method is invoked
-                  with, as a parameter, the data returned from the <emphasis role="italic"
-                    >xformView2App</emphasis> method.</para>
-              </listitem>
-              <listitem>
-                <para>If the data has not changed, a message box is displayed. If it has changed,
-                  then the old data is replaced with the new. In either case, the edit controls are
-                  set to read-only, and the "Record Changes" button is disabled.</para>
-              </listitem>
-            </itemizedlist></para>
-<para>The next chapter discusses the use of the ooDialog class
-  <computeroutput>ResDialog</computeroutput>, which uses a compiled resource file (a *dll file)
-  instead of the *.rc file that <computeroutput>RcDialog</computeroutput> requires.
+    </programlisting>
+    The dialog is now in a state whereby the user can make changes to the
+    data. When the user presses the "Record Changes" button, the
+    <emphasis role="italic">recordChanges</emphasis> method is invoked.
+    Processing from this point is almost all
+    plain ooRexx with little ooDialog involvement:
+    <itemizedlist>
+      <listitem><para>The method <emphasis role="italic">xformView2App</emphasis>
+      (transform view format to application format) is invoked and returns the data from the edit
+      controls as a directory, with the address element being an array. To read data
+      that the user has entered, the method uses the <emphasis role="italic">getText</emphasis>
+      and <emphasis role="italic">getLine</emphasis> methods of the Edit Control.</para>
+      </listitem>
+      <listitem><para>Then the <emphasis role="italic">checkForChanges</emphasis> method is invoked
+      with, as a parameter, the data returned from the
+      <emphasis role="italic">xformView2App</emphasis> method.</para>
+      </listitem>
+      <listitem><para>If the data has not changed, a message box is displayed. If it has changed,
+      then the old data is replaced with the new. In either case, the edit controls are
+      set to read-only, and the "Record Changes" button is disabled.</para>
+      </listitem>
+    </itemizedlist>
+  </para>
+<para>Suppose in the middle of updating, the user presses the Escape key by mistake? Try it.
+  The dialog disappears - together with any changes made. This is
+  certainly not best practice, and is addressed in the next chapter which discusses the use
+  of ooDialog's <computeroutput>ResDialog</computeroutput> class. A dialog
+  subclassed from <computeroutput>ResDialog</computeroutput> uses a compiled
+  resource file (a *dll file) instead of the *.rc file
+  required by an <computeroutput>RcDialog</computeroutput> subclass.
 </para>
 </section> <!--end of section 4.3.3.2 -->
 
