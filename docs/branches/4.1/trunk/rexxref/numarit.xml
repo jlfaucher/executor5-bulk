@@ -124,7 +124,6 @@ according to specific rules. The most important rules are: </para>
 <listitem><para>Results are calculated up to a maximum number of significant
 digits. The default is <computeroutput>9</computeroutput>, but can be overridden
 on a source-file basis with the <link linkend="optionsd">::OPTIONS directive</link>.
-<computeroutput>19</computeroutput> for 64-bit systems,
 The default setting can be altered with the NUMERIC DIGITS instruction.
 <indexterm><primary>DIGITS option of NUMERIC instruction</primary></indexterm>
 Thus, with NUMERIC DIGITS 9, if a result requires more than 9 digits, it is rounded to 9 digits.
@@ -530,9 +529,8 @@ say  4.9999 < 5     /* Displays "0"    */
 <para> When Rexx uses numbers directly,
 that is, numbers that have not been involved in an arithmetic operation, they
 are rounded, if necessary, according to the setting of NUMERIC DIGITS.  The normal
-whole number limit depends on the platform default NUMERIC DIGITS setting.  If the
-default setting is 9, the whole number limit is 999999999.  If the default DIGITS
-value is 18, the whole number limit is 999999999999999999.
+whole number limit depends on the default NUMERIC DIGITS setting.  The default setting is 9, making the normal whole
+number limit 999999999.
 </para>
 <para>The following table shows which numbers must be whole numbers and what
 their limits are:</para>
