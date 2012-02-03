@@ -6383,20 +6383,27 @@ implement a compareTo() method to enable sorting.
 For example, consider the
 following simple class:</para>
 <programlisting>
-    ::class Employee inherit Comparable
-    ::method init
-      expose id name
-      use arg id, name
-    ::method id attribute
-    ::method name attribute
-    ::method compareTo
-      expose id
-      use arg other
-      return id~compareTo(other~id)  -- comparison performed using employee id
-    ::method string
-      expose name
-      use arg name
-      return "Employee" name
+<![CDATA[
+  ::class Employee inherit Comparable
+
+  ::attribute id
+  ::attribute name
+
+  ::method init
+    expose id name
+    use arg id, name
+
+  ::method compareTo
+    expose id
+  	use arg other
+    return id~compareTo(other~id) -- comparison performed using employee id
+
+  ::method string
+    expose name
+    return "Employee" name
+
+
+]]>
 </programlisting>
 <para>The Employee class implements its sort order using the employee identification number.  When the
 <emphasis role="bold">sort</emphasis> method needs to compare two Employee instances, it will call the
@@ -6404,6 +6411,7 @@ following simple class:</para>
 The <emphasis role="bold">compareTo</emphasis> method tells the <emphasis role="bold">sort</emphasis> method
 which of the two instances should be first.</para>
 <programlisting>
+<![CDATA[
     a = .array~new
     a[1] = .Employee~new(654321, "Fred")
     a[2] = .Employee~new(123456, "George")
@@ -6414,6 +6422,7 @@ which of the two instances should be first.</para>
     do employee over a
        say employee    -- sorted order is "George", "William", "Fred"
     end
+]]>
 </programlisting>
 </section>
 <section id="sortcomparator"><title>Sorting with more than one order</title>
