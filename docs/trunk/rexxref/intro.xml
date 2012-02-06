@@ -902,7 +902,9 @@ or a period, and it can end with the sequence
 followed immediately by an optional sign (<computeroutput>-</computeroutput>
 or <computeroutput>+</computeroutput>), followed immediately by one
 or more digits (which cannot be followed
-by any other symbol characters). The sign in this context is part of the symbol
+by any other symbol characters). The character sequence to the left of the "E" or "e" must be a valid simple number, consisting only of digits or '.'.
+There must be at least one digit and at most one '.'.
+The sign in this context is part of the symbol
 and is not an operator.</para>
 <para>These are valid numbers in exponential notation: </para>
 <indexterm><primary>exponential notation</primary>
@@ -910,6 +912,12 @@ and is not an operator.</para>
 <programlisting>
 17.3E-12
 .03e+9
+</programlisting>
+<para>These are not valid numbers in exponential notation, but rather multiple tokens with an operator between:</para>
+<programlisting>
+.E-12     -- no digits
+3ae+6     -- non-digit character
+3..0e+9   -- more than one '.'
 </programlisting>
 </section>
 
