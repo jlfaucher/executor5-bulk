@@ -120,3 +120,17 @@ return testResult
 ::method 'test014'
     self~assertSame('  xxx', .mutablebuffer~new('')~replaceAt("xxx", 3)~string)
     self~assertSame('**xxx', .mutablebuffer~new('')~replaceAt("xxx", 3,, "*")~string)
+
+::method 'test015'
+    self~assertSame('xyyyy', .mutablebuffer~new('xxx')~replaceAt("yyyy", 2, )~string)
+    self~assertSame('xyyyyx', .mutablebuffer~new('xxx')~replaceAt("yyyy", 2, 1)~string)
+    self~assertSame('xxx*yyyy', .mutablebuffer~new('xxx')~replaceAt("yyyy", 5, , '*')~string)
+    self~assertSame('xxx*yyyy', .mutablebuffer~new('xxx')~replaceAt("yyyy", 5, 9, '*')~string)
+    self~assertSame('xxx', .mutablebuffer~new('xyyyyx')~replaceAt("x", 2, 4)~string)
+
+::method 'test016'
+    self~assertSame('ab def', .mutablebuffer~new('abcdef')~replaceAt(" ", 3, 1)~string)
+    self~assertSame('ab f', .mutablebuffer~new('abcdef')~replaceAt(" ", 3, 3)~string)
+    self~assertSame('abc+123', .mutablebuffer~new('abc')~replaceAt("123", 5, 6, "+")~string)
+
+

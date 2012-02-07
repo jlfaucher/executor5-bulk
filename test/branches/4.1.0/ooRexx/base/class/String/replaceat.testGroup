@@ -121,6 +121,15 @@ return testResult
     self~assertSame('  xxx', ''~replaceAt("xxx", 3))
     self~assertSame('**xxx', ''~replaceAt("xxx", 3,, "*"))
 
+::method 'test015'
+    self~assertSame('xyyyy',    'xxx'~replaceAt("yyyy", 2, ))
+    self~assertSame('xyyyyx',   'xxx'~replaceAt("yyyy", 2, 1))
+    self~assertSame('xxx*yyyy', 'xxx'~replaceAt("yyyy", 5, , '*'))
+    self~assertSame('xxx*yyyy', 'xxx'~replaceAt("yyyy", 5, 9, '*'))
+    self~assertSame('xxx',      'xyyyyx'~replaceAt("x", 2, 4))
 
-
+::method 'test016'
+    self~assertSame('ab def',  'abcdef'~replaceAt(" ", 3, 1))
+    self~assertSame('ab f',    'abcdef'~replaceAt(" ", 3, 3))
+    self~assertSame('abc+123', 'abc'~replaceAt("123", 5, 6, "+"))
 
