@@ -3875,8 +3875,8 @@ x1~pos(" ",5)       ->    8
 
 <programlisting>
 <![CDATA[
->>-replaceAt(new,n,length-+------+-)-----><
-                          +-,pad-+
+>>-replaceAt(new-,-n-,-+----------+-+-------+-)-----><
+                       +-,-length-+ +-,-pad-+
 ]]>
 </programlisting>
 
@@ -3885,16 +3885,15 @@ x1~pos(" ",5)       ->    8
 characters replaced with
 <emphasis role="italic">new</emphasis>. The replacement position and length can
 extend beyond the end of the receiving string.
-The starting
-position,
-<emphasis role="italic">n</emphasis>, must be a positive whole number, and
-the
-<emphasis role="italic">length</emphasis> must be a positive whole number or
-zero.  If <emphasis
-role="italic">n</emphasis> is greater than the length of the receiving string,
-padding is added before the <emphasis role="italic">new</emphasis> string. The
-default
-<emphasis role="italic">pad</emphasis> character is a blank.
+The starting position, <emphasis role="italic">n</emphasis>, is required and must be a positive whole number. The
+<emphasis role="italic">length</emphasis> is optional and must be a positive whole number or zero. If <emphasis
+role="italic">length</emphasis> is omitted, it defaults to the length of <emphasis role="italic">new</emphasis>.
+</para>
+<para>
+If <emphasis role="italic">n</emphasis> is greater than the length of the receiving string, padding is added
+before
+the <emphasis role="italic">new</emphasis> string. The default <emphasis role="italic">pad</emphasis> character is a
+blank.
 </para>
 </section>
 
@@ -5861,7 +5860,7 @@ The Buffer class new method will raise an error if invoked.</para>
 <indexterm><primary>class</primary>
 <secondary>File class</secondary></indexterm>
 
-<para>The File class provides services which are common to all the filesystems supported by ooRexx. A File object represents a path to a file or directory. The path can be relative or absolute. 
+<para>The File class provides services which are common to all the filesystems supported by ooRexx. A File object represents a path to a file or directory. The path can be relative or absolute.
 </para>
 <para>
 If you create a File object with a relative path, the absolute path will be calculated using the current default directory.
@@ -5922,8 +5921,8 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></not
 ]]>
 </programlisting>
 
-<para>Returns the file system root elements, as an array of string. 
-On Windows, each of the drives is a root element (Ex : "C:\"). 
+<para>Returns the file system root elements, as an array of string.
+On Windows, each of the drives is a root element (Ex : "C:\").
 On Unix, there is just one root ("/").
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -5976,7 +5975,7 @@ R:\
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
 <![CDATA[
-file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file")  
+file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file")
 -- "dir1/dir2/file" on Unix, "dir1\dir2\file" on Windows
 ]]>
 </programlisting>
@@ -6316,7 +6315,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
   <listitem>
     <para>Sets the last modified date of the file/directory denoted by the absolute path of the receiver object.
     </para>
-    <para>The <emphasis role="italic">date</emphasis> parameter is a DateTime object. 
+    <para>The <emphasis role="italic">date</emphasis> parameter is a DateTime object.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Examples:</emphasis></term>
@@ -6327,7 +6326,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
     say .File~new("C:\Program Files")~lastModified~class    -- The DateTime class
     say .File~new("C:\Program Files")~lastModified          -- 2010-11-01T19:14:49.000000
     say .File~new("dummy")~lastModified                     -- The NIL object
-    
+
     /* A possible implementation of : touch -c -m -r referenceFile file
        -c, --no-create             do not create any files
        -m                          change only the modification time
@@ -6379,9 +6378,9 @@ path of the receiver object.
 <para>Returns an array of files/directories names which are immediate childrens of the directory
 denoted by the absolute path of the receiver object.
 The order in which the names are returned is dependent on the file system (not necessarily alphabetic order).
-The special names "." and ".." are not returned. 
+The special names "." and ".." are not returned.
 </para>
-<para>The result is an array of strings. 
+<para>The result is an array of strings.
 If the receiver object is not a directory then the result is .nil.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -6414,11 +6413,11 @@ factor.rex
 </programlisting>
 
 <para>Returns an array of files/directories which are immediate childrens of the directory
-denoted by the absolute path of the receiver object. 
+denoted by the absolute path of the receiver object.
 The order in which the names are returned is dependent on the file system (not necessarily alphabetic order).
-The special names "." and ".." are not returned. 
+The special names "." and ".." are not returned.
 </para>
-<para>The result is an array of File objects. 
+<para>The result is an array of File objects.
 If the receiver object is not a directory then the result is .nil.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -6539,7 +6538,7 @@ say .File~new("/")~name                                  -- empty string
 </programlisting>
 
 <para>Returns the parent directory portion of the receiver object's absolute path.
-If no separator is found or the absolute path ends with a separator 
+If no separator is found or the absolute path ends with a separator
 (which means this is a root path) then returns .nil.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -6571,7 +6570,7 @@ say .File~new("/")~parent                                  -- The NIL object
 
 <para>Returns the <link linkend="mthFileParent">parent</link> directory
 portion as a File object.
-If no separator is found or the absolute path ends with a separator 
+If no separator is found or the absolute path ends with a separator
 (which means this is a root path) then returns .nil.
 </para>
 </section>
