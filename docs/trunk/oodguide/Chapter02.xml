@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file.
     #
-    # Copyright (c) 2011-2012 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2011-2011, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -38,9 +38,10 @@
     #########################################################################
 -->
 
-<!-- Chapter02 - In The Beginning				  v00-05 11Aug11
-     version 00-04 26Jly11
-     version 00-05  Minor corrections to match exercise numbers.
+<!-- Chapter02 - In The Beginning				  v00-06 06Feb12
+     v00-04 26Jly11
+     v00-05 11Aug11: Minor corrections to match exercise numbers.
+     v00-06 06Feb12: Code change - resource number -1 changed to 101.
 -->
 
 <chapter id="chapTwo"><title>In The Beginning</title>
@@ -260,7 +261,7 @@ we both add to the way windows are populated with controls, and also show how us
   ::METHOD defineDialog
     self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom")
     self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
-    self~createStaticText(-1, 40, 40, 200, 20, , -
+    self~createStaticText(101, 40, 40, 200, 20, , -
      "Complex problems have simple solutions"||.endofline||"- which are wrong.")
   ]]>
   </programlisting>
@@ -289,13 +290,16 @@ we both add to the way windows are populated with controls, and also show how us
    </itemizedlist>
   The third statement creates some static text (text that cannot be changed by the user),
   with the text itself as the last parameter. The first parameter is the resource number,
-  "-1" being standard for static text, and the following four parameters define
-  the size and position of the text. Last but not least is
-  the text to be displayed. This text comprises the initial (and so far only)
-  "words of wisdom".
+  "101". (Resource numbers or IDs identify controls to the underlying
+  Windows platform, and can be given in either numeric or symbolic form, as will
+  be discussed in Chapter 3. Any number above 50 can be used - "101" is merely the author's
+  mild preference. See also ooDialog Reference section 2.3.7.) The next four parameters define
+  the size and position of the static text control.
+  Last but not least is the text to be displayed. This text comprises the initial
+  (and so far only) "words of wisdom".
 </para>
 <para>
-Now we need to make the <emphasis role="italic">More wisdom</emphasis> button work,
+Now we need to make the <emphasis role=italic>More wisdom</emphasis> button work,
 which we now do in <computeroutput>Wow2.rex</computeroutput>.
 </para>
 
@@ -342,7 +346,7 @@ which we now do in <computeroutput>Wow2.rex</computeroutput>.
   ::method defineDialog
     self~createPushButton(901, 142, 99, 50, 14, "DEFAULT", "More wisdom", OkClicked)
     self~createPushButton(IDCANCEL, 197, 99, 50, 14, ,"Cancel")
-    self~createStaticText(-1, 40, 40, 200, 40, , "Click 'More wisdom'")
+    self~createStaticText(101, 40, 40, 200, 40, , "Click 'More wisdom'")
   ]]>
   </programlisting>
 </para>
@@ -371,8 +375,8 @@ which we now do in <computeroutput>Wow2.rex</computeroutput>.
   Have a look at it the code that implements this method in <computeroutput>Wow2.rex</computeroutput>.
   Note that the penultimate pseudocode statement above - "show that text in
   the static text field" - is implemented in two steps. First the statement
-  <computeroutput>newText = self~newStatic(-1)</computeroutput>
-  creates an object that represents the static text control, the resource number -1
+  <computeroutput>newText = self~newStatic(101)</computeroutput>
+  creates an object that represents the static text control, the resource number 101
   defining the control to be represented. Second, that object is used to change the control's text
   in the statement <computeroutput>newText~setText(arrWow[i])</computeroutput>.
 </para>
