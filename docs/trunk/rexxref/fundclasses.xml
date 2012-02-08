@@ -634,15 +634,16 @@ arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
+
 world=.WorldObject~new
-// the following 3 calls are equivalent
+-- the following 3 calls are equivalent
 msg1=world~hello("Fred")
 msg2=world~send("HELLO", "Fred")
 msg3=.message~new(world,"HELLO", "i", "Fred")~~send
 
-say msg1~result           /* Produces Hello Fred 21:04:25.065000  */
+say msg1                  /* Produces Hello Fred 21:04:25.065000  */
                           /* for example                          */
-say msg2~result           /* Produces Hello Fred 21:04:25.081000  */
+say msg2                  /* Produces Hello Fred 21:04:25.081000  */
                           /* for example                          */
 say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
                           /* for example                          */
@@ -5780,24 +5781,6 @@ array of strings containing individual method lines.</para>
 <para>The third parameter influences the scope of the routine. If none is given,
 the program scope is used. If another method or routine object is specified, the
 scope of the provided method or routine is used.
-</para>
-</section>
-
-<section id="mthPackageNewFile"><title>newFile (Class Method)</title>
-<indexterm><primary>newFile method</primary>
-<secondary>of Package class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>newFile method</secondary>
-<tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-newFile(filename)-------------------------------------------><
-]]>
-</programlisting>
-
-<para>Returns a new instance of the package class, which is an executable
-representation of the code contained in the file filename. The filename is a
-string.
 </para>
 </section>
 
