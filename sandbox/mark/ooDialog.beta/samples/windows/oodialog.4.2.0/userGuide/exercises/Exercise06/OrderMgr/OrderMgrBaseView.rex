@@ -36,21 +36,25 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
    Exercise 06: The OrderManagementBaseView class
-   OrderMgmtBaseView.rex					  v00-03 30Sep11
+   OrderMgrBaseView.rex						  v00-07 11Feb12
 
-   Contains: classes "OrderMgmtBaseBase", HRS (private).
+   Contains: classes "OrderMgrBaseBase", HRSombv (private).
 
-   Pre-requisite files: OrderManagementBaseView.rc, OrderManagementBaseView.h.
+   Pre-requisite files: OrderMgrBaseView.rc, OrderMgrBaseView.h.
 
    Changes:
      v00-01 22Aug11: First version.
      v00-02 28Sep11: Add OrderList icon (a bitmap).
      v00-03 29Sep11: Corrected wrong window size on open.
+     v00-04 03Oct11: Re-factor code to move all app function (including ListView
+                     setup) to the OrderMgrView sublcass. No function/appearance
+                     change.
+     v00-05 28Jan12: Changed class name HRS to HRSombv to allow for multiple
+     		     HRS classes in same file at some future time.
+     v00-06 15Feb12: Changes to comments only.
+     v00-07 11Feb12: Add .application~setDefaults to this file.
 
-   To Do: - Fix close by system (top right icon on window) - should bring up
-            "are you sure" msg.
-          - Fix no-warning close when hit enter.
-          - Add Find Customer, Find Product (buttons or menu items?)
+   To Do: - Add Find Customer, Find Product (buttons or menu items?)
           - Tidy up comments in code.
 
    Possible future additions:
@@ -60,24 +64,29 @@
 
 ------------------------------------------------------------------------------*/
 
-::requires "ooDialog.cls"
---::requires "CustomerListView.rex"
+::REQUIRES "ooDialog.cls"
 
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  OrderMgmtBaseView						  v00-01 22Aug11
+  OrderMgrBaseView						  v00-06 11Feb12
   -----------------
-  The base "view" (or "gui") part of the OrderManagement component (part of the
+  The base "view" (or "gui") part of the OrderMgr component (part of the
   sample Order Management application). This class provides for (a) handling
   of a re-sizeable dilaog, and also for providing the icons for the main control
   in the dialog which is a ListView control.
 
-  interface iOrderManagementBaseView {
+   Changes:
+   v00-06 11Feb12: Moved .application~setDefaults() to app startup file.
+                   changed to .application~addToConstDir() here.
+
+  
+
+  interface iOrderMgrBaseView {
     void newInstance();
   }
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderMgmtBaseView SUBCLASS UserDialog PUBLIC
+::CLASS OrderMgrBaseView SUBCLASS UserDialog PUBLIC
 
   ::ATTRIBUTE lv PRIVATE	-- The ListView that contains the icons.
 
@@ -86,14 +95,14 @@
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD newInstance CLASS PUBLIC UNGUARDED
-    say ".OrderMgmtBaseView-newInstance-01: Start."
+    --say ".OrderMgrBaseView-newInstance-01: Start."
     -- Enable use of symbolic IDs in menu creation, and turn off AutoDetection
     -- (the third parameter:
-    .Application~setDefaults("O", "OrderMgmt\OrderMgmtBaseView.h", .false)
-    -- Create an instance of OrderMgmtBaseView and show it:
+    .Application~addToConstDir("OrderMgr\OrderMgrBaseView.h")
+    -- Create an instance of OrderMgrBaseView and show it:
     dlg = self~new
 
-    say ".OrderMgmtBaseView-newInstance-02: dlg~Activate."
+    --say ".OrderMgrBaseView-newInstance-02: dlg~Activate."
     dlg~activate
 
 
@@ -104,12 +113,13 @@
   /*----------------------------------------------------------------------------
     Dialog Setup Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
   ::METHOD init
     expose menuBar records
 
     forward class (super) continue
 
-    success = self~createCenter(310, 220, .HRS~omWindowTitle,     -
+    success = self~createCenter(310, 220, .HRSombv~WindowTitle,     -
                                 'ThickFrame MinimizeBox MaximizeBox', , -
                                 'MS Sans Serif', 8)
     if \ success then do
@@ -117,16 +127,11 @@
       return
     end
 
-    self~createImageLists
-    records = self~initRecords
-
     self~connectResize('onResize')
     self~connectResizing('onResizing')
     self~connectSizeMoveEnded('onSizeMoveEnded')
 
-    menuBar = .ScriptMenuBar~new("OrderMgmt\OrderMgmtBaseView.rc", IDR_ORDMGMT_MENU, , , .true, self)
-
-
+    menuBar = .ScriptMenuBar~new("OrderMgr\OrderMgrBaseView.rc", IDR_ORDMGR_MENU, , , .true, self)
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD defineDialog
@@ -144,47 +149,41 @@
     minMaximized = .false
 
     --Add controls to the set of controls that won't be resized on a resize event.
-    u~noResizePut('IDC_ORDMGMT_EXIT')
-    u~noResizePut('IDC_ORDMGMT_RESET')
+    u~noResizePut('IDC_ORDMGR_EXIT')
+    u~noResizePut('IDC_ORDMGR_RESET')
 
     e = .dlgArea~new(u~x       , u~y       , u~w,        u~h('90%'))   -- ListView area
     s = .dlgArea~new(u~x       , u~y('90%'), u~w,        u~hr      )   -- Button Area (only one button)
 
     -- Note - in the following, use of single or double quotes around the symbolic ID produces a "could not parse" error message.
-    self~createListView(IDC_ORDMGMT_ICONS,   e~x,       e~y, e~w,        e~h,        'icon')
-    self~createPushButton(IDC_ORDMGMT_RESET, s~x('0%'), s~y, s~w('20%'), s~h('95%'), ,.HRS~omReset, resetIcons)
-    self~createPushButton(IDC_ORDMGMT_EXIT,  s~x(-60),  s~y, s~w('20%'), s~h('95%'), ,.HRS~omExit, exitApp)  -- Works, but button moves back/forward on resize.
+    self~createListView(IDC_ORDMGR_ICONS,   e~x,       e~y, e~w,        e~h,        "ICON")
+    self~createPushButton(IDC_ORDMGR_RESET, s~x('0%'), s~y, s~w('20%'), s~h('95%'), ,.HRSombv~Reset, resetIcons)
+    self~createPushButton(IDC_ORDMGR_EXIT,  s~x(-60),  s~y, s~w('20%'), s~h('95%'), ,.HRSombv~ExitApp, exitApp)
 
-    self~connectListViewEvent(IDC_ORDMGMT_ICONS, "ACTIVATE", "onDoubleClick")
-    -- Following line requires to allow icons to be dragged around the listview.
-    self~connectListViewEvent(IDC_ORDMGMT_ICONS, "BEGINDRAG", "DefListDragHandler")
-
+    self~connectListViewEvent(IDC_ORDMGR_ICONS, "ACTIVATE", "onDoubleClick")
+    -- Following line required to allow icons to be dragged around the listview.
+    self~connectListViewEvent(IDC_ORDMGR_ICONS, "BEGINDRAG", "DefListDragHandler")
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD activate UNGUARDED
-    say "OrderMgmtBaseView-activate."
+    --say "OrderMgrBaseView-activate."
     self~execute('SHOWTOP') -- Try showing dialog at end of initDialog to get sizing right.
     --self~execute("HIDE")
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
-    expose minWidth minHeight normalIcons records menuBar u lastSizeInfo sizing --lv
-    say "OrderMgmtBaseView-initDialog."
+    expose minWidth minHeight iconList records menuBar u lastSizeInfo sizing
+    --say "OrderMgrBaseView-initDialog."
     menuBar~attachTo(self)
 
-    -- Create a proxy for the List View and set icons into it.
-    self~lv = self~newListView(IDC_ORDMGMT_ICONS)
-    self~lv~setImageList(normalIcons, .Image~toID(LVSIL_NORMAL))
-    -- Add icons (i.e. records) to the ListView:
-    do i=1 to records~items
-      self~lv~addRow(, i-1, records[i]~name)
-    end
+    -- Create a proxy for the List View and store in instance variable 'lv'.
+    self~lv = self~newListView(IDC_ORDMGR_ICONS)
 
     -- Any underlying edit controls internally resize themselves as the dialog
     -- they are contained in is resized.  We don't want that, so we disable that
-    -- behavior in the underlying edit control as follows:
+    -- behavior in any underlying edit control as follows (e.g):
     --      self~newEdit(IDC_EDIT)~disableInternalResize
-    -- But no edit controls in Ordermanagement View.
+    -- (But no edit controls in OrderMgr View.)
 
     -- Restrict the minimum width and minimum height to the original
     -- width and height
@@ -197,21 +196,21 @@
     -- of the many MSDN System Metrics; it has a value of 15.)
     SM_CYMENU = 15
     height = .DlgUtil~getSystemMetrics(SM_CYMENU)
-
     -- Get the actual size of the dialog in pixels.
     s = self~getRealSize
-
     lastSizeInfo = .DlgUtil~makeLParam(s~width, s~height)
     sizing = .true
-
     s~height += height
     self~resizeTo(s)
     self~onSizeMoveEnded
 
 
+  /*----------------------------------------------------------------------------
+    Sizing Control Methods
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  -- The RESIZING event happens when the user is resizing the dialog, but (os: the first one) *before*
+  -- The RESIZING event happens when the user is resizing the dialog, but *before*
   -- the size of the dialog is actually changed.  The first arg is a .RECT object
   -- that describes the new size.  If we change the coordinates in the rectangle,
   -- and reply .true.  The new size of the dialog will be our changed coordinates.
@@ -225,13 +224,12 @@
 ::METHOD onResizing UNGUARDED
   expose minWidth minHeight
   use arg r, direction
-  --os say "Direction:" direction
 
   select
     when direction == 'TOP' then do
       if r~bottom - r~top < minHeight then do
         r~top = r~bottom - minHeight
-        say "r~top:" r~top "   r~bottom:" r~bottom
+        --say "r~top:" r~top "   r~bottom:" r~bottom
         return .true
       end
     end
@@ -324,7 +322,7 @@
   ::METHOD onResize unguarded
   expose u sizing minMaximized lastSizeInfo
   use arg sizingType, sizeinfo
-  say "OrderMgmtBaseView-onResize."
+  --say "OrderMgrBaseView-onResize."
   --os - this methed sent while re-sizing.
   -- Save the size information so we know the final size of the dialog.
   lastSizeInfo = sizeInfo
@@ -361,7 +359,7 @@
 
   ::METHOD onSizeMoveEnded UNGUARDED
     expose u sizing lastSizeInfo
-    say "OrderMgmtBaseView-onSizeMoveEnded."
+    --say "OrderMgrBaseView-onSizeMoveEnded."
     -- If we were resizing, force the dialog controls to redraw themselves.
     if sizing then do
       u~resize(self, lastSizeInfo)
@@ -374,67 +372,17 @@
 
 
 
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --
-    Icon (ListView contents) Methods:
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD createImageLists private
-    expose normalIcons
-    imgCustList  = .Image~getImage("customer\bmp\CustList.bmp")
-    imgProdList  = .Image~getImage("product\res\ProdList.bmp")
-    imgOrderList = .Image~getImage("order\bmp\OrderList.bmp")
-    imgOrderForm = .Image~getImage("order\bmp\OrderForm.bmp")
-    tmpIL = .ImageList~create(.Size~new(64, 64), .Image~toID(ILC_COLOR4), 4, 0)
-    if \imgCustList~isNull,  \tmpIL~isNull then do  -- check for errors in images/imagelist
-      tmpIL~add(imgCustList)   -- item 0 in the list
-      tmpIL~add(imgProdList)   -- item 1 in the list
-      tmpIL~add(imgOrderList)  -- item 2 in the list
-      tmpIL~add(imgOrderForm)  -- item 3 in the list
-      imgCustList~release
-      imgProdList~release
-      imgOrderList~release
-      imgOrderForm~release
-      normalIcons = tmpIL
-    end
-    else do
-      normalIcons = .nil
-    end
-    return
-
-
-
-  -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  ::METHOD exitApp UNGUARDED
-    self~cancel
-
-  ::METHOD cancel
-    response = askDialog(.HRS~omQExit, "N")
-    if response = 1 then forward class (super)
-
-  ::METHOD ok
-    -- Invoked when enter key pressed - if passed to superclass, cancels dialog.
-    return  -- do not close dialog - appears as a no-op to the user.
-
-
-  -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  ::METHOD resetIcons
-    expose lv
-    say "Reset Icons."
-    r = lv~arrange
-    say "r =" r
-
-
-
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
-  HRS (Human-Readable Strings for OrderMgmtViewBase)		  v00-01 21Aug11
+  HRSombv (Human-Readable Strings for OrderMgrViewBase)		  v00-01 21Aug11
   ---
-  The HRS class provides constant character strings for user-visible messages
-  issued by the OrderMgmtBaseView class.
+  The OmHRS class provides constant character strings for user-visible messages
+  issued by the OrderMgrBaseView class.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-::CLASS HRS PRIVATE		-- Human-Readable Strings
-  ::CONSTANT omWindowTitle  "Sales Order Management"
-  ::CONSTANT omReset        "Reset Icons"
-  ::CONSTANT omExit         "Exit Application"
-  ::CONSTANT omQExit        "Are you sure you want to close all windows and exit the application?"
+::CLASS HRSombv PRIVATE	  -- Human-Readable Strings
+  ::CONSTANT WindowTitle  "Sales Order Management"	-- Dialog Caption
+  ::CONSTANT Reset        "Reset Icons"			-- PushButton
+  ::CONSTANT ExitApp      "Exit Application"		-- PushButton
+/*============================================================================*/

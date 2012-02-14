@@ -380,11 +380,11 @@ Section  doSwitch
     File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\bmp\*.ico"
     File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\bmp\*.bmp"
 
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\OrderMgmt
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\OrderMgr
     ; Add the files ...
-    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgmt\*.h"
-    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgmt\*.rc"
-    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgmt\*.rex"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgr\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgr\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgr\*.rex"
 
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Product

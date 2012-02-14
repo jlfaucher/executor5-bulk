@@ -36,7 +36,15 @@
 /*----------------------------------------------------------------------------*/
 /* ooDialog User Guide
    Exercise 06: The Order Management Application
-   Startup.rex 							  v00-01 21Aug11
+   Startup.rex 							  v00-04 11Feb12
+
+   Changes:
+   v00-01 21Aug11: First version.
+   v00-02 03Oct11: Deleted a bebug "say" instruction.
+   v00-03 02Dec11: Changed name from OrderMgmt to OrderMgr.
+   v00-04 11Feb12: Added .application... to startup (and changed it to 
+                   .application~addToConstDir in component files).
+
 ------------------------------------------------------------------------------*/
 
 /*******************************************************************************
@@ -45,17 +53,20 @@
  ******************************************************************************/
 
 
+-- Set application defaults:
+.Application~setDefaults("O", , .false)
+
+
 parse arg pwOption
 
 if pwOption = "enterPW" then do
   pwd = PasswordBox("Please enter your password","Sign In")  -- See ooDialoog Reference section 9.3.11.
   if pwd \= "Password" then exit
 end
-say "Hooray!"
 
-.OrderMgmtView~newInstance
+.OrderMgrView~newInstance
 
 
-::requires "OrderMgmt\OrderMgmtView.rex"
+::REQUIRES "OrderMgr\OrderMgrView.rex"
 
 /******************************************************************************/
