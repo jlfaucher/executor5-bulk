@@ -216,6 +216,9 @@ Section  installFiles
   ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.h"
   ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.rex"
 
+  ${SetOutPath} "$INSTDIR\Controls\List-view\transfer.items"
+  ${File} "${SRCDIR}\Controls\List-view\transfer.items\" "propertyValues.rex"
+
   ${SetOutPath} "$INSTDIR\Controls\Static"
   ${File} "${SRCDIR}\Controls\Static\" "shaveIce.ico"
   ${File} "${SRCDIR}\Controls\Static\" "staticImage.rex"
