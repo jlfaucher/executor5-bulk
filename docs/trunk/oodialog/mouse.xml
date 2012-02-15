@@ -73,11 +73,11 @@
 </row>
 <row>
 <entry><link linkend="mthArrow">arrow</link></entry>
-<entry>Sets the mouse cursor to the system's default cursor, which is usually the arrow cursor.</entry>
+<entry>Sets the mouse cursor to the system's <emphasis role="italic">default</emphasis> cursor, which is usually the arrow cursor.</entry>
 </row>
 <row>
 <entry><link linkend="mthCapture">capture</link></entry>
-<entry>Sets the mouse capture to this mouse's window.</entry>
+<entry>Sets the mouse capture to the window of this mouse instance.</entry>
 </row>
 <row>
 <entry><link linkend="mthClipCursor">clipCursor</link></entry>
@@ -85,7 +85,7 @@
 </row>
 <row>
 <entry><link linkend="mthConnectEvent">connectEvent</link></entry>
-<entry>Connects mouse related Windows <link linkend="ovvEvents">event</link> notifications to a method in the Rexx dialog.</entry>
+<entry>Connects mouse related <link linkend="ovvEvents">event</link> notifications to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthCross">cross</link></entry>
@@ -137,11 +137,11 @@
 </row>
 <row>
 <entry><link linkend="mthShowCursor">showCursor</link></entry>
-<entry></entry>
+<entry>Displays or hides the cursor.</entry>
 </row>
 <row>
 <entry><link linkend="mthTrackEvent">trackEvent</link></entry>
-<entry></entry>
+<entry>Initiates, or queries, mouse tracking behavior.</entry>
 </row>
 <row>
 <entry><link linkend="mthWait">wait</link></entry>
@@ -722,7 +722,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect is detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable to 0, but there are no system errors
@@ -733,7 +733,7 @@
   <listitem>
   <para>
     This example comes from a program my nephew wrote and set to automatically run at 12:01 am, April 1st on his
-    brothers computer. He thought it was hilarious, his brother was not amused.
+    brother's computer. He thought it was hilarious, his brother was not amused.
 <programlisting>
 <![CDATA[
 
@@ -776,7 +776,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the previous cursor on success, or 0 on error.
+    Returns the previous cursor on success, or 0 on error. An error is unlikely.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -854,8 +854,8 @@
 </programlisting>
 
 <para>
-  Sets the cursor for the window of this mouse instance to the operating system's predefined normal cursor, which is
-  usually the standard arrow.
+  Sets the cursor for the window of this mouse instance to the operating system's predefined <emphasis
+  role="italic">normal</emphasis> cursor, which is usually the standard arrow.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -958,9 +958,25 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a method that initiates a drag and drop operation. It captures the mouse so that all mouse
+    messages are directed to the same window and the program can monitor both the current position of the mouse, and
+    when the mouse button is released:
 <programlisting>
 <![CDATA[
+
+::method doDrag private
+  expose oldCursor noDropCursor cursorIsNoDrop dragging
+  use arg listView, index, p, mouse
+
+  mouse~capture
+  oldCursor = mouse~setCursor(noDropCursor)
+
+  dragItem = .DragItem~new(listView, index, p, mouse)
+
+  cursorIsNoDrop = .true
+  dragging       = .true
+
+  return dragItem
 
 ]]>
 </programlisting>
@@ -1016,7 +1032,7 @@
   </para>
   <para>
     However, although the MSDN documentation does not explicity state this, experimentation shows that if the user
-    brings up the Alt-Tab switching dialog and moves to another application in that manner, the cursor is no lnoger
+    brings up the Alt-Tab switching dialog and moves to another application in that manner, the cursor is no longer
     confined. If the user closes the dialog, the mouse is no longer confined.
   </para>
   </listitem></varlistentry>
@@ -1176,6 +1192,25 @@
           <para>
             The event notification is sent when the mouse wheel is rotated. The <link
             linkend="evtMOUSEWHEEL">MouseWheel</link> Event Handler contains information on coding the event handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NCMOUSEHOVER</term>
+          <listitem>
+          <para>
+            The event notification is sent when the cursor hovers over the <link
+            linkend="defClientArea">non-client</link> area of the window for the period of time specified in a prior
+            call to the <link linkend="mthTrackEvent">trackEvent</link> method. The <link
+            linkend="evtNCMOUSEHOVER">NcMouseHover</link> Mouse Event Handler contains information on coding the event
+            handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NCMOUSELEAVE</term>
+          <listitem>
+          <para>
+            The event notification is sent when the cursor leaves the <link linkend="defClientArea">non-client</link>
+            area of the window specified in a prior call to the <link linkend="mthTrackEvent">trackEvent</link> method.
+            The <link linkend="evtMOUSELEAVE">MouseLeave</link> Event Handler contains information on coding the event
+            handler.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>RBUTTONDBLCLK</term>
@@ -1406,9 +1441,22 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example connects the MOUSEWHEEL event for an edit control, using the SENDTODLG keyword for the <emphasis
+    role="italic">opts</emphasis> argument. Note that no MOUSEWHEEL event is connected to the dialog. This has the
+    effect of <emphasis role="italic">swallowing</emphasis> the event. The event notification is intercepted before it
+    reaches the edit control, and no method in the dialog is invoked. When the user scrolls the mouse wheel while over
+    the edit control, nothing happens.
 <programlisting>
 <![CDATA[
+
+::method initDialog
+
+  edit = self~newEdit(IDC_EDIT_FILE)
+
+  mouse = .Mouse~new(edit)
+  mouse~connectEvent(MOUSEWHEEL, , , SENDTODLG)
+
+  ...
 
 ]]>
 </programlisting>
@@ -1427,7 +1475,7 @@
 </para>
 <para>
   The programmer specifies if the interpreter waits or not for the return from the event handler through the arguments
-  used in <link linkend="mthConnectEvent"></link> method.
+  used in the <link linkend="mthConnectEvent">connectEvent</link> method.
 </para>
 
 <programlisting>
@@ -1443,7 +1491,7 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>hwnd</term>
@@ -1456,7 +1504,7 @@
     <varlistentry><term>mouse</term>
     <listitem>
     <para>
-      The Rexx <link linkend="clsMouse">Mouse</link> object for the window that recieved the MOUSEWHEEL event
+      The Rexx <link linkend="clsMouse">Mouse</link> object for the window that received the MOUSEWHEEL event
       notification.
     </para>
     </listitem></varlistentry>
@@ -1468,7 +1516,7 @@
     In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
     <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
     on how the event was connected, and is summarized in the <link linkend="tblReplyCombinationsMouse">Remarks</link>
-    section for the <emphasis role="italic">connectEvent</emphasis>.
+    section for the <emphasis role="italic">connectEvent</emphasis> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1489,10 +1537,22 @@
 <indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>RBUTTONDBLCLK</tertiary></indexterm>
 <para>
   There are a number of mouse events where the event handler recieves the same arguments and the reply from the event
-  handler is generally done in the same manner. These are the: LButtonDown, LButtonUp, LButtonDBlClk, MButtonDown,
-  MButtonUp, MButtonDBlClk, MouseHover, MouseMove, RButtonDown, RButtonUp, and RButtonDBlClk events. The handler for the
-  events is discussed here. When each event is generated is described in the arugment description for the <link
-  linkend="mthConnectEvent">connectEvent</link> method.
+  handler is generally done in the same manner. These events are:
+  <itemizedlist>
+  <listitem><para>LButtonDown</para></listitem>
+  <listitem><para>LButtonUp</para></listitem>
+  <listitem><para>LButtonDBlClk</para></listitem>
+  <listitem><para>MButtonDown</para></listitem>
+  <listitem><para>MButtonUp</para></listitem>
+  <listitem><para>MButtonDBlClk</para></listitem>
+  <listitem><para>MouseHover</para></listitem>
+  <listitem><para>MouseMove</para></listitem>
+  <listitem><para>RButtonDown</para></listitem>
+  <listitem><para>RButtonUp</para></listitem>
+  <listitem><para>RButtonDBlClk</para></listitem>
+  </itemizedlist>
+  The handler for these events is discussed here. When each event is generated is described in the arugment description
+  for the <link linkend="mthConnectEvent">connectEvent</link> method.
 </para>
 <para>
   The programmer decides whether to have the interpreter wait, or not wait, in the message processing loop for the reply
@@ -1583,8 +1643,8 @@
     <varlistentry><term>pos</term>
     <listitem>
     <para>
-      A <link linkend="clsPoint">Point</link> object that contains the x and y coordinates of the pointer, relative to
-      the upper-left corner of the screen.
+      A <link linkend="clsPoint">Point</link> object that contains the x and y coordinates of the position of the mouse,
+      relative to the upper-left corner of the screen.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>mouse</term>
@@ -1613,9 +1673,9 @@
     down, mouse button up, mouse button double click, and mouse button up.
   </para>
   <para>
-    To recieve the mouse hover event, the programmer must first invoke the <link
+    To receive the mouse hover event, the programmer must first invoke the <link
     linkend="mthTrackEvent">trackEvent</link> method with the proper arguments. The mouse tracking is canceled when the
-    mouse hover notification is generated. To recieve further mouse hover or mouse leave events, the <emphasis
+    mouse hover notification is generated. To receive further mouse hover or mouse leave events, the <emphasis
     role="italic">trackEvent</emphasis> method must be invoked again.
   </para>
   </listitem></varlistentry>
@@ -1669,17 +1729,136 @@
 
 </section>  <!-- End General Mouse Event Handler -->
 
-<section id="evtMOUSELEAVE"><title>MouseLeave Event Handler</title>
-<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSELEAVE</tertiary></indexterm>
+<section id="evtNCMOUSEHOVER"><title>NcMouseHover Event Handler</title>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>NCMOUSEHOVER</tertiary></indexterm>
 <para>
-  The event handler for the mouse leave event is invoked when the cursor leaves the client area of the window assigned
-  to the mouse object. Normally, the event notifications are <emphasis role="italic">not</emphasis> generated. To
-  receive these notifications the <link linkend="mthTrackEvent">trackEvent</link> method must be invoked to set up the
-  tracking behavior.
+  The event handler for the nc mouse leave event is invoked when the cursor leaves the <link
+  linkend="defClientArea">non-client</link> area of the window assigned to the mouse object. Normally, this event
+  notification is <emphasis role="italic">not</emphasis> generated. To receive the notification the <link
+  linkend="mthTrackEvent">trackEvent</link> method must be invoked to set up the tracking behavior.
 </para>
 <para>
   The programmer specifies if the interpreter waits or not for the return from the event handler through the arguments
-  used in <link linkend="mthConnectEvent"></link> method.
+  used in the <link linkend="mthConnectEvent">connectEvent</link> method.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onNcMouseHover unguarded
+  use arg hit, pos, mouse
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 argument:
+  </para>
+  <variablelist>
+    <varlistentry><term>hit</term>
+    <listitem>
+    <para>
+      A single keyword that indicates the result of the operating system's hit test of the mouse position. This defines
+      exactly where in the non-client area the mouse position is.  Over the max button, on the border, etc.. The keyword
+      will be one of the words in the following table:
+
+      <table id="tblHitTestHover" frame="all"> <title>Possible <emphasis role="italic">hit</emphasis> Values</title>
+      <tgroup cols="2">
+      <colspec colwidth="1.5in">
+      <thead>
+      <row>
+      <entry>Keyword</entry>
+      <entry>Description</entry>
+      </row>
+      </thead>
+      <tbody>
+      <row><entry>ERROR";    </entry><entry>On the screen background or on a dividing line between windows (same as NOWHERE.)</entry></row>
+      <row><entry>TRANSPARENT</entry><entry>In a window currently covered by another window in the same thread.</entry></row>
+      <row><entry>NOWHERE";  </entry><entry>On the screen background or on a dividing line between windows.</entry></row>
+      <row><entry>CLIENT";   </entry><entry>In a client area.</entry></row>
+      <row><entry>CAPTION";  </entry><entry>In a title bar.</entry></row>
+      <row><entry>SYSMENU";  </entry><entry>In a window menu or in a Close button in a child window.</entry></row>
+      <row><entry>GROWBOX";  </entry><entry>In a size box.</entry></row>
+      <row><entry>MENU";     </entry><entry>In a menu.</entry></row>
+      <row><entry>HSCROLL";  </entry><entry>In a horizontal scroll bar.</entry></row>
+      <row><entry>VSCROLL";  </entry><entry>In the vertical scroll bar.</entry></row>
+      <row><entry>MINBUTTON";</entry><entry>In a Minimize button.</entry></row>
+      <row><entry>MAXBUTTON";</entry><entry>In a Maximize button.</entry></row>
+      <row><entry>LEFT";     </entry><entry>In the left border of a resizable window (the user can click the mouse to resize the window horizontally).</entry></row>
+      <row><entry>RIGHT";    </entry><entry>In the right border of a resizable window (the user can click the mouse to resize the window horizontally).</entry></row>
+      <row><entry>TOP";      </entry><entry>In the upper-horizontal border of a window.</entry></row>
+      <row><entry>TOPLEFT";  </entry><entry>In the upper-left corner of a window border.</entry></row>
+      <row><entry>TOPRIGHT"; </entry><entry>In the upper-right corner of a window border.</entry></row>
+      <row><entry>BOTTOM";   </entry><entry>In the lower-horizontal border of a resizable window (the user can click the mouse to resize the window vertically).</entry></row>
+      <row><entry>BOTTOMLEFT"</entry><entry>In the lower-left corner of a border of a resizable window (the user can click the mouse to resize the window diagonally).</entry></row>
+      <row><entry>BOTTOMRIGHT</entry><entry>In the lower-right corner of a border of a resizable window (the user can click the mouse to resize the window diagonally).</entry></row>
+      <row><entry>BORDER";   </entry><entry>In the border of a window that does not have a sizing border.</entry></row>
+      <row><entry>OBJECT";   </entry><entry>Microsoft does not describe what this means.</entry></row>
+      <row><entry>CLOSE";    </entry><entry>In a Close button.</entry></row>
+      <row><entry>HELP";     </entry><entry>In a Help button.</entry></row>
+      </tbody></tgroup>
+      </table>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pos</term>
+    <listitem>
+    <para>
+      A <link linkend="clsPoint">Point</link> object that contains the x and y coordinates of the position of the mouse,
+      relative to the upper-left corner of the screen.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mouse</term>
+    <listitem>
+    <para>
+      The Rexx <link linkend="clsMouse">Mouse</link> object for the window that recieved the MOUSELEAVE or NCMOUSELEAVE
+      event notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
+    <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
+    on how the event was connected, and is summarized in the <link linkend="tblReplyCombinationsMouse">Remarks</link>
+    section for the <emphasis role="italic">connectEvent</emphasis> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To receive either of the mouse leave events, the programmer must first invoke the <link
+    linkend="mthTrackEvent">trackEvent</link> method with the proper arguments. The mouse tracking is canceled when the
+    mouse leave notification, (or the mouse hover notification,) is generated. To receive further mouse leave or mouse
+    hover events, the <emphasis role="italic">trackEvent</emphasis> method must be invoked again.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End MouseLeave Event Handler -->
+
+<section id="evtMOUSELEAVE"><title>MouseLeave Event Handler</title>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSELEAVE</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>NCMOUSELEAVE</tertiary></indexterm>
+<para>
+  This description for the mouse leave event handler pertains to both the <link linkend="defClientArea">client</link>
+  mouse leave (MOUSELEAVE) and the <emphasis role="italic">non-client</emphasis> mouse leave (NCMOUSELEAVE) events. The
+  arguments received by event handler for both events are exactly the same, and the event handler should behave the same
+  for both events.
+</para>
+<para>
+  The event handler for the mouse leave event is invoked when the cursor leaves the client area (MOUSELEAVE) or the
+  non-client area (NCMOUSELEAVE) of the window assigned to the mouse object. Normally, these event notifications are
+  <emphasis role="italic">not</emphasis> generated. To receive these notifications the <link
+  linkend="mthTrackEvent">trackEvent</link> method must be invoked to set up the tracking behavior.
+</para>
+<para>
+  The programmer specifies if the interpreter waits or not for the return from the event handler through the arguments
+  used in the <link linkend="mthConnectEvent">connectEvent</link> method.
 </para>
 
 <programlisting>
@@ -1701,8 +1880,8 @@
     <varlistentry><term>mouse</term>
     <listitem>
     <para>
-      The Rexx <link linkend="clsMouse">Mouse</link> object for the window that recieved the MOUSEWHEEL event
-      notification.
+      The Rexx <link linkend="clsMouse">Mouse</link> object for the window that recieved the MOUSELEAVE or NCMOUSELEAVE
+      event notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1713,16 +1892,16 @@
     In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
     <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
     on how the event was connected, and is summarized in the <link linkend="tblReplyCombinationsMouse">Remarks</link>
-    section for the <emphasis role="italic">connectEvent</emphasis>.
+    section for the <emphasis role="italic">connectEvent</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    To recieve the mouse leave event, the programmer must first invoke the <link
+    To receive either of the mouse leave events, the programmer must first invoke the <link
     linkend="mthTrackEvent">trackEvent</link> method with the proper arguments. The mouse tracking is canceled when the
-    mouse leave notification is generated. To recieve further mouse leave or mouse hover events, the <emphasis
-    role="italic">trackEvent</emphasis> method must be invoked again.
+    mouse leave notification, (or the mouse hover notification,) is generated. To receive further mouse leave or mouse
+    hover events, the <emphasis role="italic">trackEvent</emphasis> method must be invoked again.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1732,7 +1911,7 @@
 <section id="evtMOUSEWHEEL"><title>MouseWheel Event Handler</title>
 <indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSEWHEEL</tertiary></indexterm>
 <para>
-  The event handler for the mouse wheel event is invoked each time the user scrolls the mouse wheel one notch.
+  The event handler for the mouse wheel event is invoked each time the user scrolls the mouse wheel.
 </para>
 <para>
   The programmer decides whether to have the interpreter wait, or not wait, in the message processing loop for the reply
@@ -1823,8 +2002,8 @@
     <varlistentry><term>pos</term>
     <listitem>
     <para>
-      A <link linkend="clsPoint">Point</link> object that contains the x and y coordinates of the pointer, relative to
-      the upper-left corner of the screen.
+      A <link linkend="clsPoint">Point</link> object that contains the x and y coordinates of the mouse position,
+      relative to the upper-left corner of the screen.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>mouse</term>
@@ -1838,7 +2017,7 @@
     <listitem>
     <para>
       A whole number that represents the amount the scroll wheel was turned. The operating system alway sends a multiple
-      of 120. Microsoft says this is to allow for future expansion with hardare that has a finer grain of control. If
+      of 120. Microsoft says this is to allow for future expansion with hardware that has a finer grain of control. If
       the number is positive, the user turned the wheel away from herself and indicates to scroll up. When negative
       the user turned the wheel towards himself, and indicates to scroll down.
     </para>
@@ -1904,8 +2083,11 @@
   expose eData
   use arg state, pos, mosue, delta
 
-  -- Indicate the event was processed.
+  -- If the mouse is not over the edit control, do nothing and
+  -- return .true to indicate the event was processed.
   if \ pos~inRect(eData~windowRect) then return .true
+
+  -- Mouse is over our edit control, do custom scrolling ...
 
   if delta > 0 then direction = 'up'
   else direction = 'down'
@@ -2156,17 +2338,6 @@
     that would change the variable from 0.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Mouse::getCapture() -->
 
@@ -2291,8 +2462,8 @@
       <varlistentry><term>whichButton [optional]</term>
       <listitem>
       <para>
-        If this argument is omitted the defualt is the default keyword is LEFT. Otherwise, use exactly one of the
-        following keywords, case is not significant:
+        If this argument is omitted the default keyword is LEFT. Otherwise, use exactly one of the following keywords,
+        case is not significant:
       </para>
       <para>
         <simplelist type='vert' columns='3'>
@@ -2310,7 +2481,7 @@
             mouse button if the user has configured the system to swap the mouse buttons.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>T2</term>
+          <varlistentry><term>RIGHT</term>
           <listitem>
           <para>
             Determine if the secondary mouse button is down. The secondary mouse button may actually be the left
@@ -2362,9 +2533,20 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example carries out some operation, does stuff, while either the right or the left mouse button, but not both
+    buttons, is pressed:
 <programlisting>
 <![CDATA[
+
+  lMB = self~isMouseButtonDown("LEFT")
+  rMB = self~isMouseButtonDown("RIGHT")
+  do while (lMB | rMB) & \(lMB & rMB)
+      -- do stuff
+      ...
+
+      lMB = self~isMouseButtonDown("LEFT")
+      rMB = self~isMouseButtonDown("RIGHT")
+  end
 
 ]]>
 </programlisting>
@@ -2441,9 +2623,9 @@
 </programlisting>
 
 <para>
-  The <emphasis role="italic">releaseCapture</emphasis> method releases the mouse capture from the window belonging to
-  the same dialog as this mouse's window which had previously <link linkend="mthCapture">captured</link> the mouse.
-  Normal mouse input processing is then resotred.
+  The <emphasis role="italic">releaseCapture</emphasis> method releases the mouse capture from the window, belonging to
+  the same dialog as this mouse's window, which had previously <link linkend="mthCapture">captured</link> the mouse.
+  Normal mouse input processing is then restored.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2453,21 +2635,10 @@
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem><para>
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      The mouse capture was released.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      Releasing the mouse capture failed, the <computeroutput>.SystemErrorCode</computeroutput> will be set.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+  <listitem>
+  <para>
+    Returns 0 on success, the mouse capture was released, or 1 on failure. On failure, the
+    <computeroutput>.SystemErrorCode</computeroutput> will be set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -2489,9 +2660,22 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is a snippet of code from a drag and drop enabled program. It is part of the processing of the left
+    button up event handler. If <emphasis role="italic">draggin</emphasis> is <computeroutput>.true</computeroutput>
+    then we know that the mouse was captured when the drag operation was initiated, so the capture is released. The
+    return from <emphasis role="italic">releaseCapture</emphasis> is not checked because it is unlikely to fail:
 <programlisting>
 <![CDATA[
+
+  if dragging then do
+    okayToDrop = (cusorIsNoDrop \== .true)
+
+    dragging = .false
+    cursorIsNoDrop = .false
+    mouse~releaseCapture
+    mouse~setCursor(oldCursor)
+    ...
+  end
 
 ]]>
 </programlisting>
@@ -2536,7 +2720,7 @@
   </para>
   <para>
     Although the MSDN documentation does not explicity state this, experimentation shows that if the user brings up the
-    Alt-Tab switching dialog and moves to another application in that manner, the cursor is no lnoger confined. If the
+    Alt-Tab switching dialog and moves to another application in that manner, the cursor is no longer confined. If the
     user closes the dialog, the mouse is no longer confined.
   </para>
   </listitem></varlistentry>
@@ -2590,8 +2774,8 @@
       <listitem>
       <para>
         A cursor <link linkend="clsImage">Image</link> object that will be set as the cursor for the window of this
-        mouse instance. If this argument is omitted then the operating system's predfined normal cursor, which is
-        usually the arrow cursor, is set as the cursor for the window.
+        mouse instance. If this argument is omitted then the operating system's pre-defined <emphasis
+        role="italic">normal</emphasis> cursor, which is usually the arrow cursor, is set as the cursor for the window.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2606,9 +2790,9 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Normal usage of this method would generally be to use a cursor saved from <link
-    linkend="mthSetCursor">setCursor</link> as the <emphasis role="italic">cursor</emphasis> argument. Assuming the
-    previous cursor was the arrow cursor and omitting the <emphasis role="italic">cursor</emphasis> argument can be
+    Normal usage of this method would generally be to use a cursor saved using the return from the <link
+    linkend="mthSetCursor">setCursor</link> method as the <emphasis role="italic">cursor</emphasis> argument. Assuming
+    the previous cursor was the arrow cursor and omitting the <emphasis role="italic">cursor</emphasis> argument can be
     wrong if the user has customized his system.
   </para>
   </listitem></varlistentry>
@@ -2872,7 +3056,8 @@ Generic form:
   <listitem>
   <para>
     The argument(s) specify the (x, y) coordinates for the new position of the mouse cursor. These coordinates can be
-    specifed either as a <link linkend="clsPoint">object</link> or as 2 separate whole number arguments, as in Form 2.
+    specifed either as a <link linkend="clsPoint">point</link> object or as 2 separate whole number arguments, as in
+    Form 2.
     <variablelist>
       <varlistentry><term>newPosition [required]</term>
       <listitem>
@@ -2888,21 +3073,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The possible return values are:
-    <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      Moving the mouse cursor was successful.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      Moving the mouse cursor failed.
-    </para>
-    </listitem></varlistentry>
-    </variablelist>
+    Returns 0 on success or 1 on failure.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2931,7 +3102,7 @@ Generic form:
   mouse = .Mouse~new(self)
   oldCursor = mouse~wait
   p = mouse~getCursorPos
-  mouse~setCursorPos(p++)
+  mouse~setCursorPos(p~incr)
 
 ::method indicateEndProcessing
   expose oldCursor
@@ -2939,7 +3110,7 @@ Generic form:
   mouse = .Mouse~new(self)
   mouse~restoreCursor(oldCursor)
   p = mouse~getCursorPos
-  mouse~setCursorPos(p++)
+  mouse~setCursorPos(p~decr)
 ]]>
 </programlisting>
   </listitem></varlistentry>
@@ -2951,24 +3122,26 @@ Generic form:
 <indexterm><primary>Mouse class</primary><secondary>showCursor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--showCursor(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--showCursor(--+--------+--)-------------------><
+                 +--show--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Displays or hides the cursor.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>show [optional]</term>
       <listitem>
       <para>
-        xx
+        Specifies whether the internal display counter, (see the Remarks section,) is to be incremented or decremented.
+        If .true, the display count is incremented by one. If <computeroutput>.false</computeroutput>, the display
+        count is decremented by one. The default is <computeroutput>.true</computeroutput>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2977,13 +3150,27 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The new display count.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The operating system maintains an internal display counter that determines whether the cursor should be displayed.
+    The cursor is displayed only if the display count is greater than or equal to 0. If a mouse is installed, the
+    initial display count is set to 0. If no mouse is installed, the display count is –1.
+  </para>
+  <para>
+    In early versions of Windows the internal counter was system wide, but now it is thread specific.  What this means
+    in terms of ooDialog is that the cursor state, shown or hidden, will apply only to the dialog and all its child
+    windows. For a dialog, the child windows are the dialog control windows, and any <link
+    linkend="clsControlDialog">ControlDialog</link> windows, if present.
+  </para>
+  <para>
+    Note that this method does not hide or show the cursor, it changes the internal counter. This implies that if the
+    programmer invokes this method 10 times with <emphasis role="italic">show</emphasis> equal to
+    <computeroutput>.false</computeroutput>, it will take at least 10 invocations of the method with <emphasis
+    role="italic">show</emphasis> equal to <computeroutput>.true</computeroutput> to get the cursor to show.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2992,15 +3179,33 @@ Generic form:
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable to 0. However, there are no system
+    errors that would change the variable from 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is a code snippet from a program that hides the cursor while it is over one of the dialog windows in
+    the program and shows it when not over that dialog window
 <programlisting>
 <![CDATA[
+
+::method hideCursor private
+  use strict arg obj
+
+  mouse = .Mouse~new(obj)
+  do while mouse~showCursor(.false) >= 0
+    nop
+  end
+
+::method showCursor private
+  use strict arg obj
+
+  mouse = .Mouse~new(obj)
+  do while mouse~showCursor(.true) < 0
+    nop
+  end
 
 ]]>
 </programlisting>
@@ -3014,13 +3219,16 @@ Generic form:
 <indexterm><primary>Mouse class</primary><secondary>trackEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--trackEvent(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--trackEvent(--+--------+--+-------------+--+----------+--)------------------><
+                  +-event-+  +-,-hoverTime-+  +-,-answer-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">trackEvent</emphasis> method initiates mouse tracking behavior. It can also be used to
+  query the current tracking behavior. When mouse tracking is in effect mouse hover and mouse leave <link
+  linkend="ovvEvents">event</link> notifications, depending on the type of tracking specified, will be generated.
+  Normally these event notifications are <emphasis role="italic">not</emphasis> generated.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3028,7 +3236,85 @@ Generic form:
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>event [optional]</term>
+      <listitem>
+      <para>
+        A list of 1 or more of the following keywords separated by spaces, case is not significant. The keywords define
+        the tracking behavior to initiate. If this argument is omitted, the default list is <emphasis
+        role="italic">LEAVE</emphasis>:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>CANCEL   </member>
+          <member>HOVER    </member>
+          <member>LEAVE    </member>
+          <member>NONCLIENT</member>
+          <member>QUERY    </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>CANCEL</term>
+          <listitem>
+          <para>
+            Cancel a prior tracking request. The type of tracking to be canceled should also be specified. For example,
+            to cancel hover tracking, the keyword list should be <emphasis role="italic">Cancel Hover</emphasis>. (Case
+            is not significant of course.)
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HOVER</term>
+          <listitem>
+          <para>
+            Hover notifications should be generated. The notification generated is the MOUSEHOVER notification, connect
+            this event using the <link linkend="mthConnectEvernt">connectEvent</link>method.
+          </para>
+          <para>
+            If hover tracking is requested while hover tracking is already active, the hover timer will be reset. The
+            operating system completely ignores this request if the mouse pointer is not over the window of this mouse
+            instance.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LEAVE</term>
+          <listitem>
+          <para>
+            Leave notifications should be generated. The notification generated is the MOUSELEAVE notification, connect
+            this event using the <link linkend="mthConnectEvernt">connectEvent</link>method. If the mouse is not over
+            the window of this mouse instance, a leave notification is generated immediately and no further tracking is
+            performed.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NONCLIENT</term>
+          <listitem>
+          <para>
+            <link linkend="defClientArea">Non-client</link> hover and leave notifications should be generated. The
+            notifications generated are the NCMOUSELEAVE and NCMOUSEHOVER notifications, connect these events using the
+            <link linkend="mthConnectEvernt">connectEvent</link>method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>QUERY</term>
+          <listitem>
+          <para>
+            Rather than treating this as a tracking request, the <emphasis role="italic">answer</emphasis> argument,
+            which must be a <computeroutput>.Directory</computeroutput> object is filled in. The
+            <computeroutput>Directory</computeroutput> object will contain an EVENT and a HOVERTIME index. These indexs
+            will contain values such that had they been used for the <emphasis role="italic">event</emphasis> and
+            <emphasis role="italic">hoverTime</emphasis> arguments to to the <emphasis
+            role="italic">trackEvent</emphasis> method, the method would generate the current tracking.
+          </para>
+          <para>
+            The only
+            anomaly is that the hover time-out returned is always the actual time-out and not HOVER_DEFAULT, if
+            HOVER_DEFAULT was specified during the original TrackMouseEvent request.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hoverTime [optional]</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>answer [optional]</term>
       <listitem>
       <para>
         xx
