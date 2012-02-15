@@ -125,11 +125,11 @@
 </row>
 <row>
 <entry><link linkend="mthRestoreCursor">restoreCursor</link></entry>
-<entry>Restores the cursor.</entry>
+<entry>Restores the cursor for the window of this mouse instance.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetCursor">setCursor</link></entry>
-<entry></entry>
+<entry>Sets the cursor for the window of this mouse instance.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetCursorPos">setCursorPos</link></entry>
@@ -337,8 +337,6 @@
           <member>SIZEWE     </member>
           <member>UPARROW    </member>
           <member>WAIT       </member>
-          <member></member>
-          <member></member>
         </simplelist>
         <variablelist>
           <varlistentry><term>APPSTARTING</term>
@@ -1354,7 +1352,7 @@
     <colspec colwidth=".75in">
     <colspec colwidth=".50in">
     <colspec colwidth=".50in">
-    <colspec colwidth=".135in">
+    <colspec colwidth="1.35in">
     <thead>
     <row>
     <entry>Event</entry><entry>Will</entry><entry>Reply</entry><entry>opts</entry><entry>Action</entry>
@@ -2661,24 +2659,134 @@
 <indexterm><primary>Mouse class</primary><secondary>setCursor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setCursor(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setCursor(--cursor--)------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the cursor for the window of this mouse instance.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>cursor [required]</term>
       <listitem>
       <para>
-        xx
+        This argument can either be a <link linkend="clsImage">.Image</link> cursor object, in which case the image is
+        used for the new cursor, or a single keyword. When <emphasis role="italic">cursor</emphasis> is a keyword, the
+        new cursor is set to one of the shared pre-defined system cursors.
+      </para>
+      <para>
+        When using a keyword as the <emphasis role="italic">cursor</emphasis> arguemnt, it must be exactly one of the
+        following to indicate which system cursor is desired, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>APPSTARTING</member>
+          <member>ARROW      </member>
+          <member>CROSS      </member>
+          <member>HAND       </member>
+          <member>HELP       </member>
+          <member>IBEAM      </member>
+          <member>NO         </member>
+          <member>SIZEALL    </member>
+          <member>SIZENESW   </member>
+          <member>SIZENS     </member>
+          <member>SIZENWSE   </member>
+          <member>SIZEWE     </member>
+          <member>UPARROW    </member>
+          <member>WAIT       </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>APPSTARTING</term>
+          <listitem>
+          <para>
+            Standard arrow and small hourglass.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ARROW</term>
+          <listitem>
+          <para>
+            Standard arrow.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CROSS</term>
+          <listitem>
+          <para>
+            Crosshair.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HAND</term>
+          <listitem>
+          <para>
+            Hand.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HELP</term>
+          <listitem>
+          <para>
+            Arrow and question mark.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>IBEAM</term>
+          <listitem>
+          <para>
+            I-beam.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NO</term>
+          <listitem>
+          <para>
+            Slashed circle.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZEALL</term>
+          <listitem>
+          <para>
+            Four-pointed arrow pointing north, south, east, and west.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZENESW</term>
+          <listitem>
+          <para>
+            Double-pointed arrow pointing northeast and southwest.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZENS</term>
+          <listitem>
+          <para>
+            Double-pointed arrow pointing north and south.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZENWSE</term>
+          <listitem>
+          <para>
+            Double-pointed arrow pointing northwest and southeast.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SIZEWE</term>
+          <listitem>
+          <para>
+            Double-pointed arrow pointing west and east.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>UPARROW</term>
+          <listitem>
+          <para>
+            Vertical arrow.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WAIT</term>
+          <listitem>
+          <para>
+            Hourglass.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2687,19 +2795,14 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    On success, returns the previous cursor for the window as an <computeroutput>Image</computeroutput> object. On error
+    returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
@@ -2708,9 +2811,28 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is similar to the example for the <link linkend="mthRestoreCursor">restoreCursor</link> method, but it
+    only uses the <emphasis role="italic">setCursor</emphasis> method:
 <programlisting>
 <![CDATA[
+
+  -- Get the current mouse position.
+  mouse = .Mouse~new(self)
+  oldCursorPos = mouse~getCursorPos
+
+  -- Set the cursor to the busy symbol and jiggle the
+  -- mouse so it repaints.
+  oldCursorPos~incr
+  oldCursor = mouse~setCursor("WAIT")
+  mouse~setCursorPos(oldCursorPos)
+
+  -- Calculate pi to 35 decimal places.
+  pi = self~calcPi(35)
+
+  -- Restore the cursor.
+  oldCursorPos~decr
+  mouse~setCursor(oldCusor)
+  mouse~setCursorPos(oldCursorPos)
 
 ]]>
 </programlisting>
