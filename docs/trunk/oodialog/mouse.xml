@@ -85,7 +85,7 @@
 </row>
 <row>
 <entry><link linkend="mthConnectEvent">connectEvent</link></entry>
-<entry></entry>
+<entry>Connects mouse related Windows <link linkend="ovvEvents">event</link> notifications to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthCross">cross</link></entry>
@@ -93,7 +93,7 @@
 </row>
 <row>
 <entry><link linkend="mthDragDetect">dragDetect</link></entry>
-<entry></entry>
+<entry>Used to determine if the user has started a drag operation.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetCapture">getCapture</link></entry>
@@ -101,7 +101,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetClipCursor">getClipCursor</link></entry>
-<entry></entry>
+<entry>Retrieves the screen coordinates of the rectangular area to which the cursor is confined.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetCursorPos">getCursorPos</link></entry>
@@ -125,7 +125,7 @@
 </row>
 <row>
 <entry><link linkend="mthRestoreCursor">restoreCursor</link></entry>
-<entry></entry>
+<entry>Restores the cursor.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetCursor">setCursor</link></entry>
@@ -1075,62 +1075,133 @@
       </para>
       <para>
         <simplelist type='vert' columns='3'>
-          <member>MOUSEMOVE     </member>
-          <member>MOUSEWHEEL    </member>
-          <member>MOUSELEAVE    </member>
-          <member>MOUSEHOVER    </member>
+          <member>CAPTURECHANGED</member>
+          <member>LBUTTONDBLCLK </member>
           <member>LBUTTONDOWN   </member>
           <member>LBUTTONUP     </member>
-          <member>LBUTTONDBLCLK </member>
-          <member>CAPTURECHANGED</member>
+          <member>MBUTTONDOWN   </member>
+          <member>MBUTTONUP     </member>
+          <member>MBUTTONDBLCLK </member>
+          <member>MOUSEHOVER    </member>
+          <member>MOUSELEAVE    </member>
+          <member>MOUSEMOVE     </member>
+          <member>MOUSEWHEEL    </member>
+          <member>RBUTTONDBLCLK </member>
+          <member>RBUTTONDOWN   </member>
+          <member>RBUTTONUP     </member>
         </simplelist>
         <variablelist>
-          <varlistentry><term>MOUSEMOVE</term>
+          <varlistentry><term>CAPTURECHANGED</term>
           <listitem>
           <para>
-
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MOUSEWHEEL</term>
-          <listitem>
-          <para>
-
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MOUSELEAVE</term>
-          <listitem>
-          <para>
-
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>MOUSEHOVER</term>
-          <listitem>
-          <para>
-
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LBUTTONDOWN</term>
-          <listitem>
-          <para>
-
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>LBUTTONUP</term>
-          <listitem>
-          <para>
-
+            This event notification is sent to the window that is losing the mouse capture. The <link
+            linkend="evtCAPTURCHANGED">CaptureChanged</link> Event Handler contains information on coding the event
+            handler.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>LBUTTONDBLCLK</term>
           <listitem>
           <para>
-
+            The event notification is sent when the user double-clicks the left mouse button while the cursor is in the
+            client area of the window. The <link linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler
+            contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>CAPTURECHANGED</term>
+          <varlistentry><term>LBUTTONDOWN</term>
           <listitem>
           <para>
-
+            The event notification is sent when the user presses the left mouse button while the cursor is in the client
+            area of the window. The <link linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler contains
+            information on coding the event handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LBUTTONUP</term>
+          <listitem>
+          <para>
+            The event notification is sent when the user releases the left mouse button while the cursor is in the
+            client area of the window. The <link linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler
+            contains information on coding the event handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MBUTTONDBLCLK</term>
+          <listitem>
+          <para>
+            The event notification is sent when the user double-clicks the middle mouse button while the cursor is in
+            the client area of the window. The <link linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler
+            contains information on coding the event handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MBUTTONDOWN</term>
+          <listitem>
+          <para>
+            The event notification is sent when the user presses the middle mouse button while the cursor is in the
+            client area of the window. The <link linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler
+            contains information on coding the event handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MBUTTONUP</term>
+          <listitem>
+          <para>
+            The event notification is sent when the user releases the middle mouse button while the cursor is in the
+            client area of the window. The <link linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler
+            contains information on coding the event handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MOUSEHOVER</term>
+          <listitem>
+          <para>
+            The event notification is sent when the cursor hovers over the client area of the window for the period of
+            time specified in a prior call to the <link linkend="mthTrackEvent">trackEvent</link> method. The <link
+            linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler contains information on coding the event
+            handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MOUSELEAVE</term>
+          <listitem>
+          <para>
+            The event notification is sent when the cursor leaves the client area of the window specified in a prior
+            call to the <link linkend="mthTrackEvent">trackEvent</link> method. The <link
+            linkend="evtMOUSELEAVE">MouseLeave</link> Event Handler contains information on coding the event
+            handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MOUSEMOVE</term>
+          <listitem>
+          <para>
+            The event notification is sent when the cursor moves. The <link
+            linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler contains information on coding the event
+            handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MOUSEWHEEL</term>
+          <listitem>
+          <para>
+            The event notification is sent when the mouse wheel is rotated. The <link
+            linkend="evtMOUSEWHEEL">MouseWheel</link> Event Handler contains information on coding the event handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RBUTTONDBLCLK</term>
+          <listitem>
+          <para>
+            The event notification is sent when the user double-clicks the right mouse button while the cursor is in
+            the client area of the window. The <link linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler
+            contains information on coding the event handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RBUTTONDOWN</term>
+          <listitem>
+          <para>
+            The event notification is sent when the user presses the right mouse button while the cursor is in the
+            client area of the window. The <link linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler
+            contains information on coding the event handler.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RBUTTONUP</term>
+          <listitem>
+          <para>
+            The event notification is sent when the user releases the right mouse button while the cursor is in the
+            client area of the window. The <link linkend="evtGeneralMouseEvent">General</link> Mouse Event Handler
+            contains information on coding the event handler.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -1139,7 +1210,12 @@
       <varlistentry><term>methName [optional]</term>
       <listitem>
       <para>
-        xx
+        The name of the method in the Rexx dialog that is to be invoked when the event notification is generated. If
+        this argument is omitted, the method name is constructed automatically by the ooDialog framework. The method
+        name is constructed by prepending the word <emphasis role="italic">on</emphasis> to the event keyword. For
+        example, if the event is LBUTTONDOWN, the constructed method name would be <emphasis
+        role="italic">onLButtonDown</emphasis>. If the event is MOUSEHOVER, the constructed method name would be
+        <emphasis role="italic">onMouseHover</emphasis>, etc..
       </para>
       </listitem></varlistentry>
       <varlistentry><term>willReply [optional]</term>
@@ -1156,42 +1232,43 @@
       <listitem>
       <para>
         Exactly one of the following keywords, case is not significant. The argument adds some control as to how the
-        ooDialog replies to the operating system for the specified event notification. This argument is only used when
-        the mouse object is tied to a dialog control window. If the mouse is tied to a dialog window, this argument is
-        always ignored.
+        ooDialog framework replies to the operating system for the specified event notification. This argument is only
+        applicapable in certain cases. See the Remarks section for further details.
       </para>
       <para>
         <simplelist type='vert' columns='3'>
-          <member>T1   </member>
-          <member>T2    </member>
-          <member>T3   </member>
+          <member>REPLYFALSE   </member>
+          <member>SENDTODLG    </member>
+          <member>SENDTOCONTROL</member>
         </simplelist>
         <variablelist>
-          <varlistentry><term>T1</term>
+          <varlistentry><term>REPLYFALSE</term>
           <listitem>
           <para>
-            text
+            When the mouse window is a dialog window and <emphasis role="italic">willReply</emphasis> is false, this
+            keyword will cause the reply to the operating system to indicate that the mouse event was not handled. By
+            default the reply to the operating system will indicate the event was handled.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>T2</term>
+          <varlistentry><term>SENDTODLG</term>
           <listitem>
           <para>
-            text
+            When the mouse window is a dialog control window, this keyword indicates that the mouse event notification
+            message should be sent straight to the dialog. In this case, the <emphasis
+            role="italic">methodName</emphasis> and <emphasis role="italic">willReply</emphasis> arguments have no
+            effect. No method will be invoked. The event will be handled by the dialog window, if connected.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>T3</term>
+          <varlistentry><term>SENDTOCONTROL</term>
           <listitem>
           <para>
-            text
+            When the mouse window is a dialog control window and <emphasis role="italic">willReply</emphasis> is false,
+            this keyword will cause the event notification to be passed on to the dialog control. This allows the dialog
+            control to handle the event as it normally would. By default, the reply to the operating system is that the
+            event was handled, and the dialog control never sees the event.
           </para>
           </listitem></varlistentry>
         </variablelist>
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>opts [optional]</term>
-      <listitem>
-      <para>
-        xx
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1200,7 +1277,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, false on error. An error is not likely.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1220,15 +1297,102 @@
     is particularily true for the the MOUSEMOVE event.
   </para>
   <para>
-    Additional information on the mouse wheel and handling mouse wheel events is found in the mouse wheel event <link
-    linkend="evtMOUSEWHEEL">handler</link> and the system parameters information (<link linkend="clsSPI">SPI</link>)
-    classes <link linkend="atrWheelScrollLines">wheelScrollLines</link> attribute.
+    For mouse events, there are several possible ways for the ooDialog framework to reply to the operating system in
+    repsonse to the underlying notification message. The possible replies are dependent on which type of window the
+    mouse event is for, a dialog window or a dialog control window.
   </para>
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">dialog window:</emphasis></term>
+    <listitem>
+    <para>
+      When the mouse event is for a dialog window, ooDialog can reply to the operating system in these ways:
+      <orderedlist>
+      <listitem>
+      <para>
+        Tell the operating system the event was processed.
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        Tell the operating system the event was not processed.
+      </para>
+      </listitem>
+      </orderedlist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">dialog control window:</emphasis></term>
+    <listitem>
+    <para>
+      When the mouse event is for a dialog control window, ooDialog can reply to the operating system in these ways:
+      <orderedlist>
+      <listitem>
+      <para>
+        Tell the operating system the event was processed.
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        Have the operating system pass the message directly to the dialog.
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        Have the operating system pass the message to the dialog control it was originally intended for.
+      </para>
+      </listitem>
+      </orderedlist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   <para>
-    SAVED FROM CONNECTMOUSECAPTURE An event notification is generated when a window <emphasis
-    role="bold">loses</emphasis> the mouse capture. The <emphasis role="italic">connectMouseCapture</emphasis> method
-    connects that event notification to a method in the Rexx dialog. This event is generated, for example, when the user
-    moves a dialog with the mouse and then releases the mouse button.
+    The programmer specifies how ooDialog replies to the operating system through a combination of the <emphasis
+    role="italic">willReply</emphasis> argument, the <emphasis role="italic">opts</emphasis> argument, and the return
+    value of the event handler. The combinations are summarized in the following table:
+
+    <table id="tblReplyCombinationsMouse" frame="all"> <title>Possible Replies to the Operating System</title>
+    <tgroup cols="5">
+    <colspec colwidth=".75in">
+    <colspec colwidth=".50in">
+    <colspec colwidth=".50in">
+    <colspec colwidth=".135in">
+    <thead>
+    <row>
+    <entry>Event</entry><entry>Will</entry><entry>Reply</entry><entry>opts</entry><entry>Action</entry>
+    </row>
+    <row>
+    <entry>Window</entry><entry>Reply</entry><entry>Value</entry><entry>Argument</entry><entry>Taken</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>dialog</entry><entry>true</entry><entry><computeroutput>.true</computeroutput></entry><entry>omitted</entry><entry>OS told event processed.</entry>
+    </row>
+    <row>
+    <entry>dialog</entry><entry>true</entry><entry><computeroutput>.false</computeroutput></entry><entry>omitted</entry><entry>OS told event not processed.</entry>
+    </row>
+    <row>
+    <entry>dialog</entry><entry>false</entry><entry><computeroutput>n/a</computeroutput></entry><entry>omitted</entry><entry>OS told event processed.</entry>
+    </row>
+    <row>
+    <entry>dialog</entry><entry>false</entry><entry><computeroutput>n/a</computeroutput></entry><entry>REPLYFALSE</entry><entry>OS told event not processed.</entry>
+    </row>
+    <row>
+    <entry>dialog control</entry><entry>true</entry><entry><computeroutput>.true</computeroutput></entry><entry>omitted</entry><entry>OS told event processed.</entry>
+    </row>
+    <row>
+    <entry>dialog control</entry><entry>true</entry><entry><computeroutput>.false</computeroutput></entry><entry>omitted</entry><entry>Message passed to the dialog control.</entry>
+    </row>
+    <row>
+    <entry>dialog control</entry><entry>n/a</entry><entry><computeroutput>n/a</computeroutput></entry><entry>SENDTODLG</entry><entry>Message sent directly to the dialog.</entry>
+    </row>
+    <row>
+    <entry>dialog control</entry><entry>false</entry><entry><computeroutput>n/a</computeroutput></entry><entry>omitted</entry><entry>OS told event processed.</entry>
+    </row>
+    <row>
+    <entry>dialog control</entry><entry>false</entry><entry><computeroutput>n/a</computeroutput></entry><entry>SENDTOCONTROL</entry><entry>Message passed to the dialog control.</entry>
+    </row>
+    </tbody></tgroup>
+    </table>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1254,6 +1418,319 @@
   </listitem></varlistentry>
 </variablelist>
 
+
+<section id="evtCAPTURCHANGED"><title>CaptureChanged Event Handler</title>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>CAPTURECHANGED</tertiary></indexterm>
+<para>
+  The event handler for the capture changed event is invoked when the window assigned to the mouse object is losing the
+  capture. The event is received even if it is the mouse object itself that is <link
+  linkend="mthReleaseCapture">releaseing</link> the capture. Microsoft's documentation states that the event handler
+  should not attempt to <link linkend="mthCapture">capture</link> the mouse in response to this event.
+</para>
+<para>
+  The programmer specifies if the interpreter waits or not for the return from the event handler through the arguments
+  used in <link linkend="mthConnectEvent"></link> method.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onCaptureChanged unguarded
+  use arg hwnd, mouse
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 2 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> of the window gaining the mouse capture.  This may be 0 if
+      there is no window gaining the capture.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mouse</term>
+    <listitem>
+    <para>
+      The Rexx <link linkend="clsMouse">Mouse</link> object for the window that recieved the MOUSEWHEEL event
+      notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
+    <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
+    on how the event was connected, and is summarized in the <link linkend="tblReplyCombinationsMouse">Remarks</link>
+    section for the <emphasis role="italic">connectEvent</emphasis>.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End CaptureChanged Event Handler -->
+
+<section id="evtGeneralMouseEvent"><title>General Mouse Event Handler</title>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>LBUTTONDOWN</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>LBUTTONUP</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>LBUTTONDBLCLK</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MBUTTONDOWN</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MBUTTONUP</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MBUTTONDBLCLK</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSEHOVER</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSEMOVE</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>RBUTTONDOWN</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>RBUTTONUP</tertiary></indexterm>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>RBUTTONDBLCLK</tertiary></indexterm>
+<para>
+  There are a number of mouse events where the event handler recieves the same arguments and the reply from the event
+  handler is generally done in the same manner. These are the: LButtonDown, LButtonUp, LButtonDBlClk, MButtonDown,
+  MButtonUp, MButtonDBlClk, MouseHover, MouseMove, RButtonDown, RButtonUp, and RButtonDBlClk events. The handler for the
+  events is discussed here. When each event is generated is described in the arugment description for the <link
+  linkend="mthConnectEvent">connectEvent</link> method.
+</para>
+<para>
+  The programmer decides whether to have the interpreter wait, or not wait, in the message processing loop for the reply
+  from the event handler. This is done through the <link linkend="mthConnectEvent">connectEvent</link> method. The reply
+  indicates if the event was processed or not. A common value to return would be <computeroutput>.true</computeroutput>.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onMouseEvent unguarded
+  use arg state, pos, mouse
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>state</term>
+    <listitem>
+    <para>
+      A list of keywords that indicate the keyboard and mouse button modifiers. The list will contain 1 or more of the
+      following keywords separated by spaces. It will never be the empty string:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>None    </member>
+        <member>Control </member>
+        <member>lButton </member>
+        <member>mButton </member>
+        <member>rButton </member>
+        <member>Shift   </member>
+        <member>xButton1</member>
+        <member>xButton2</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>None</term>
+        <listitem>
+        <para>
+          There are no modifiers. <emphasis role="italic">None</emphasis> will always be the only keyword if it is
+          present.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>Control</term>
+        <listitem>
+        <para>
+          The control key is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lButton</term>
+        <listitem>
+        <para>
+          The left mouse button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>mButton</term>
+        <listitem>
+        <para>
+          The middle mouse button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rButton</term>
+        <listitem>
+        <para>
+          The right mouse button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>xButton1</term>
+        <listitem>
+        <para>
+          The first X button is down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>xButton2</term>
+        <listitem>
+        <para>
+          The second X button is down.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pos</term>
+    <listitem>
+    <para>
+      A <link linkend="clsPoint">Point</link> object that contains the x and y coordinates of the pointer, relative to
+      the upper-left corner of the screen.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mouse</term>
+    <listitem>
+    <para>
+      The Rexx <link linkend="clsMouse">Mouse</link> object for the window that recieved the mouse event notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
+    <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
+    on how the event was connected, and is summarized in the <link linkend="tblReplyCombinationsMouse">Remarks</link>
+    section for the <link linkend="mthConnectEvent">connectEvent</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Only windows that have the CS_DBLCLKS style can receive double click event notifications. The system generates the
+    notification whenever the user presses, releases, and again presses the mouse button within the system's
+    double-click time limit. Double-clicking a mouse button actually generates a sequence of four messages: mouse button
+    down, mouse button up, mouse button double click, and mouse button up.
+  </para>
+  <para>
+    To recieve the mouse hover event, the programmer must first invoke the <link
+    linkend="mthTrackEvent">trackEvent</link> method with the proper arguments. The mouse tracking is canceled when the
+    mouse hover notification is generated. To recieve further mouse hover or mouse leave events, the <emphasis
+    role="italic">trackEvent</emphasis> method must be invoked again.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example uses the <link linkend="mthConnectEvent">connectEvent</link> method to connect the mouse left
+    button down event sent to a list view window with the onLBDown method of the dialog.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose listView
+
+  listView = self~newListView(IDC_LV_DATA)
+
+  mouse = .Mouse~new(listView)
+  mouse~connectEvent(LBUTTONDOWN, onLBDown)
+
+  ...
+
+
+::method onLBdown unguarded
+  expose listView
+  use arg keyState, p, mouse
+
+  index = listView~hitTestInfo(p)
+
+  if keyState \== 'lButton' | index = -1 then do
+    -- Pass the message on to the list view control.
+    return .false
+  end
+
+  -- Since the list view will not receive the left button
+  -- down event, we need to manually do the item selection
+  listView~assignFocus
+  listView~focus(index)
+  listView~select(index)
+
+  -- Do custom processing for left button down
+  ...
+
+  -- Indicate the event was processed.
+  return .true
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End General Mouse Event Handler -->
+
+<section id="evtMOUSELEAVE"><title>MouseLeave Event Handler</title>
+<indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSELEAVE</tertiary></indexterm>
+<para>
+  The event handler for the mouse leave event is invoked when the cursor leaves the client area of the window assigned
+  to the mouse object. Normally, the event notifications are <emphasis role="italic">not</emphasis> generated. To
+  receive these notifications the <link linkend="mthTrackEvent">trackEvent</link> method must be invoked to set up the
+  tracking behavior.
+</para>
+<para>
+  The programmer specifies if the interpreter waits or not for the return from the event handler through the arguments
+  used in <link linkend="mthConnectEvent"></link> method.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onMouseLeave unguarded
+  use arg mouse
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 1 argument:
+  </para>
+  <variablelist>
+    <varlistentry><term>mouse</term>
+    <listitem>
+    <para>
+      The Rexx <link linkend="clsMouse">Mouse</link> object for the window that recieved the MOUSEWHEEL event
+      notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
+    <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
+    on how the event was connected, and is summarized in the <link linkend="tblReplyCombinationsMouse">Remarks</link>
+    section for the <emphasis role="italic">connectEvent</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To recieve the mouse leave event, the programmer must first invoke the <link
+    linkend="mthTrackEvent">trackEvent</link> method with the proper arguments. The mouse tracking is canceled when the
+    mouse leave notification is generated. To recieve further mouse leave or mouse hover events, the <emphasis
+    role="italic">trackEvent</emphasis> method must be invoked again.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End MouseLeave Event Handler -->
+
 <section id="evtMOUSEWHEEL"><title>MouseWheel Event Handler</title>
 <indexterm><primary>Mouse class</primary><secondary>events</secondary><tertiary>MOUSEWHEEL</tertiary></indexterm>
 <para>
@@ -1261,16 +1738,16 @@
 </para>
 <para>
   The programmer decides whether to have the interpreter wait, or not wait, in the message processing loop for the reply
-  from the event handler. This is done in <link linkend="mthConnectEvent">connectEvent</link> method. The actual reply
-  is ignored by the operating system. A common value to return would be 0.  TODO this is not 100% correct.
+  from the event handler. This is done through the <link linkend="mthConnectEvent">connectEvent</link> method. The reply
+  indicates if the event was processed or not. A common value to return would be <computeroutput>.true</computeroutput>.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onMouseWheel unguarded
-  use arg state, pos, mouse, state
+  use arg state, pos, mouse, delta
 
-  return 0
+  return .true
 ]]>
 </programlisting>
 
@@ -1377,7 +1854,10 @@
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The return is ignored by Windows, so any value is sufficient.  TODO this is not 100% correct.
+    In general, return <computeroutput>.true</computeroutput> to indicate the event has been processed and
+    <computeroutput>.false</computeroutput> to indicate it was not processed. However, the correct response is dependent
+    on how the event was connected, and is summarized in the <link linkend="tblReplyCombinationsMouse">Remarks</link>
+    section for the <link linkend="mthConnectEvent">connectEvent</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1391,16 +1871,15 @@
   </para>
   <para>
     Multi-line edit controls <emphasis role="italic">do</emphasis> process the notification and normally handle their
-    own scrolling. If the programmer wants to implement some type of custom scrolling using the connecMouseWheel method,
-    the edit control's interception of the notification may interfere with the custom scrolling. Forcing the edit
-    control to ignore the notification allows it to reach the dialog.
+    own scrolling. If the programmer wants to implement some type of custom scrolling using the <link
+    linkend="mthConnectEvent">connectEvent</link> method, the edit control's interception of the notification may
+    interfere with the custom scrolling. Forcing the edit control to ignore the notification allows it to reach the
+    dialog.
   </para>
   <para>
-    Note that using the optional <emphasis role="italic">methName</emphasis> argument is very similar to using the
-    connectMouseWheel method. However, the <emphasis role="italic">methName</emphasis> event handler in this case
-    will only be invoked when the edit control has the input focus. The <emphasis role="italic">methName</emphasis>
-    event handler will receive the same arguments as the <link linkend="evtMOUSEWHEEL">event</link> handler described
-    for the <emphasis role="italic">connectMouseWheel</emphasis> method.
+    Additional information on the mouse wheel and handling mouse wheel events is found in the system parameters
+    information (<link linkend="clsSPI">SPI</link>) class's <link linkend="atrWheelScrollLines">wheelScrollLines</link>
+    attribute.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
@@ -1427,7 +1906,8 @@
   expose eData
   use arg state, pos, mosue, delta
 
-  if \ pos~inRect(eData~windowRect) then return 0
+  -- Indicate the event was processed.
+  if \ pos~inRect(eData~windowRect) then return .true
 
   if delta > 0 then direction = 'up'
   else direction = 'down'
@@ -1470,7 +1950,8 @@
 
   eData~scrollCommand(cmd, amt)
 
-  return 0
+  -- Indicate the event was processed.
+  return .true
 
 ]]>
 </programlisting>
@@ -1544,24 +2025,26 @@
 <indexterm><primary>Mouse class</primary><secondary>dragDetect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--dragDetect(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--dragDetect(--point--)------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">dragDetect</emphasis> method is used to determine if the user has started a drag
+  operation.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>point [required]</term>
       <listitem>
       <para>
-        xx
+        The initial position of the cursor, in <link linkend="defScreenCoordinates">screen</link> coodinates, specified
+        as a <link linkend="clsPoint">point</link> object. Recall that screen coordinates are always in pixels.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1570,30 +2053,54 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is true if the user is dragging and false otherwise.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    In a drag and drop enabled program it is not desirable to start a drag operation each time the user presses the left
+    mouse button. This results in the user moving something when they only wanted to click on it. The operating system
+    provides the drag detect functionality as a convenience to programmers.
+  </para>
+  <para>
+    A drag operation is detected when the user presses the mouse button and then moves the cursor outside of the
+    <emphasis role="italic">drag rectangle</emphasis>, while keeping the mouse button down. The drag rectangle is
+    configurable, allowing for smaller or larger rectangles. The size of the current drag rectangle, and changing the
+    size of the drag rectangle can be done through the <link linkend="atrDragWidth">dragWidth</link> and <link
+    linkend="atrDragHeight">dragHeight</link> attributes of the <link linkend="clsSPI">SPI</link> (System Parameters
+    Information) class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Resets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable to 0. However, there are no system
+    errors that would change that value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the event handler for a left button down event. When the event occurs, the handler checks if the
+    user has started a drag operation. If so, the application initiates the operation and returns true. If not, the
+    handler simply returns:
 <programlisting>
 <![CDATA[
+
+::method onLBdown unguarded
+  expose dragItem
+  use arg keyState, p, mouse
+
+  if mouse~dragDetect(p) then do
+    dragItem = self~doDrag(p, mouse)
+    return .true
+  end
+
+  return .false
 
 ]]>
 </programlisting>
@@ -1636,9 +2143,9 @@
   <para>
     The mouse capture functions work with windows of the same thread. For ooDialog, this means the dialog window and the
     dialog control windows that belong to the same dialog as this mouse's window. Getting the mouse capture, can only
-    get the window handle of windows belonging to this mouse's window. If 0 is returned, it means that no window in the
-    same dialog as this mouse's window has the mouse capture. However, some window belonging to another dialog could
-    have the mouse capture.
+    get the window handle of windows belonging to the same dialog as this mouse's window. If 0 is returned, it means
+    that no window in the same dialog as this mouse's window has the mouse capture. However, some window belonging to
+    another dialog could have the mouse capture.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1670,24 +2177,24 @@
 <indexterm><primary>Mouse class</primary><secondary>getClipCursor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getClipCursor(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getClipCursor(--rect--)----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the screen coordinates of the rectangular area to which the cursor is confined.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>rect [required]</term>
       <listitem>
       <para>
-        xx
+        A <link linkend="clsRect">Rect</link> object in which the coordinates are returned.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1696,33 +2203,23 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If the cursor is not confined, (<link linkend="mthClipCursor">clipped</link>,) then on return <emphasis
+    role="italic">rect</emphasis> will contain the coordinates of the screen.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2076,24 +2573,27 @@
 <indexterm><primary>Mouse class</primary><secondary>restoreCursor</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--restoreCursor(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--restoreCursor(--+----------+--)--------------><
+                    +--cursor--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Restores the cursor. This is a convenience method, the same functionality can be achieved using the <link
+ linkend="mthSetCursor">setCursor</link> method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>cursor [optional]</term>
       <listitem>
       <para>
-        xx
+        A cursor <link linkend="clsImage">Image</link> object that will be set as the cursor for the window of this
+        mouse instance. If this argument is omitted then the operating system's predfined normal cursor, which is
+        usually the arrow cursor, is set as the cursor for the window.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2102,19 +2602,22 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous cursor on success, or 0 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Normal usage of this method would generally be to use a cursor saved from <link
+    linkend="mthSetCursor">setCursor</link> as the <emphasis role="italic">cursor</emphasis> argument. Assuming the
+    previous cursor was the arrow cursor and omitting the <emphasis role="italic">cursor</emphasis> argument can be
+    wrong if the user has customized his system.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
@@ -2123,9 +2626,28 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example calculates pi to 35 decimal places. While the calculation is being done the cursor is changed to the
+    busy cursor, and then restored when the calculation is finished:
 <programlisting>
 <![CDATA[
+
+  -- Get the current mouse position.
+  mouse = .Mouse~new(self)
+  oldCursorPos = mouse~getCursorPos
+
+  -- Set the cursor to the busy symbol and jiggle the
+  -- mouse so it repaints.
+  oldCursor = mouse~wait
+  oldCursorPos~incr
+  mouse~setCursorPos(oldCursorPos)
+
+  -- Calculate pi to 35 decimal places.
+  pi = self~calcPi(35)
+
+  -- Restore the cursor.
+  oldCursorPos~decr
+  mouse~restoreCursor(oldCusor)
+  mouse~setCursorPos(oldCursorPos)
 
 ]]>
 </programlisting>
