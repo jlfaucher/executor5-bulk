@@ -3264,7 +3264,7 @@ Generic form:
           <listitem>
           <para>
             Hover notifications should be generated. The notification generated is the MOUSEHOVER notification, connect
-            this event using the <link linkend="mthConnectEvernt">connectEvent</link>method.
+            this event using the <link linkend="mthConnectEvent">connectEvent</link>method.
           </para>
           <para>
             If hover tracking is requested while hover tracking is already active, the hover timer will be reset. The
@@ -3276,7 +3276,7 @@ Generic form:
           <listitem>
           <para>
             Leave notifications should be generated. The notification generated is the MOUSELEAVE notification, connect
-            this event using the <link linkend="mthConnectEvernt">connectEvent</link>method. If the mouse is not over
+            this event using the <link linkend="mthConnectEvent">connectEvent</link>method. If the mouse is not over
             the window of this mouse instance, a leave notification is generated immediately and no further tracking is
             performed.
           </para>
@@ -3286,22 +3286,21 @@ Generic form:
           <para>
             <link linkend="defClientArea">Non-client</link> hover and leave notifications should be generated. The
             notifications generated are the NCMOUSELEAVE and NCMOUSEHOVER notifications, connect these events using the
-            <link linkend="mthConnectEvernt">connectEvent</link>method.
+            <link linkend="mthConnectEvent">connectEvent</link>method.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>QUERY</term>
           <listitem>
           <para>
             Rather than treating this as a tracking request, the <emphasis role="italic">answer</emphasis> argument,
-            which must be a <computeroutput>.Directory</computeroutput> object is filled in. The
+            which must be a <computeroutput>.Directory</computeroutput> object, is filled in. The
             <computeroutput>Directory</computeroutput> object will contain an EVENT and a HOVERTIME index. These indexs
-            will contain values such that had they been used for the <emphasis role="italic">event</emphasis> and
+            will contain values such that, had they been used for the <emphasis role="italic">event</emphasis> and
             <emphasis role="italic">hoverTime</emphasis> arguments to to the <emphasis
             role="italic">trackEvent</emphasis> method, the method would generate the current tracking.
           </para>
           <para>
-            The only
-            anomaly is that the hover time-out returned is always the actual time-out and not HOVER_DEFAULT, if
+            The only anomaly is that the hover time-out returned is always the actual time-out and not HOVER_DEFAULT, if
             HOVER_DEFAULT was specified during the original TrackMouseEvent request.
           </para>
           </listitem></varlistentry>
@@ -3332,7 +3331,9 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The mouse pointer is considered to be <emphasis role="italic">hovering</emphasis> when it stays within a specific
+    rectangle for a specific period of time. Call SystemParametersInfo. and use the values SPI_GETMOUSEHOVERWIDTH,
+    SPI_GETMOUSEHOVERHEIGHT, and SPI_GETMOUSEHOVERTIME to retrieve the size of the rectangle and the time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
