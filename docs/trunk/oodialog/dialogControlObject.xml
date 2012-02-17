@@ -894,20 +894,29 @@ Generic form:
 <indexterm><primary>DialogControl class</primary><secondary>connectCharEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectCharEvent-----------------------------><
-
+>>--connectCharEvent(--+--------------+--)-------><
+                       +--methodName--+
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectCharEvent</emphasis> method connects a keyboard character event notification to
+  The <emphasis role="italic">connectCharEvent</emphasis> method connects a keyboard <emphasis role="italic">character</emphasis> event notification to
   this dialog control with a method in the Rexx dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This method has no arguments.
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        The name of the Rexx method to be connected to the character event. If this argument is omitted, the ooDialog
+        framework uses a method name of: <emphasis role="italic">onChar</emphasis>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -916,7 +925,7 @@ Generic form:
     Returns <computeroutput>.true</computeroutput> on success and <computeroutput>.false</computeroutput> on error.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <varlistentry id="rmkConnectCharEvent"><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
     Additional comments.
@@ -933,132 +942,241 @@ Generic form:
     library.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The ooDialog method connected to the key press event will receive the following five arguments in the order listed:
-    <variablelist>
-      <varlistentry><term>keyCode</term>
-      <listitem>
-      <para>
-        The numeric code of the key pressed.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>shift</term>
-      <listitem>
-      <para>
-        A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
-        be true if a shift key was down and false if the shift key was not down.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>control</term>
-      <listitem>
-      <para>
-        True if a control key was down at the time of the key press, false if it was not.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>alt</term>
-      <listitem>
-      <para>
-        True if an alt key was down at the time of the key press, false if it was not.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>extraInfo</term>
-      <listitem>
-      <para>
-        This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
-        time of a key press event. The string will contain some combination of these keywords
-        <variablelist>
-          <varlistentry><term>numOn</term>
-          <listitem>
-          <para>
-            Num Lock was on at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>numOff</term>
-          <listitem>
-          <para>
-            Num Lock was off.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>capsOn</term>
-          <listitem>
-          <para>
-            Caps Lock was on at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>capsOff</term>
-          <listitem>
-          <para>
-            Caps Lock was off.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>scrollOn</term>
-          <listitem>
-          <para>
-            Scroll Lock was on at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>scrollOff</term>
-          <listitem>
-          <para>
-            Scroll Lock was off.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>lShift</term>
-          <listitem>
-          <para>
-            The left shift key was down at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>rShift</term>
-          <listitem>
-          <para>
-            The right shift key was down.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>lControl</term>
-          <listitem>
-          <para>
-            The left control key was down at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>rControl</term>
-          <listitem>
-          <para>
-            The right control key was down.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>lAlt</term>
-          <listitem>
-          <para>
-            The left alt key was down at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>rAlt</term>
-          <listitem>
-          <para>
-            The right alt key was down.
-          </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This is a complete working example. It can be used to experiment with the <emphasis
+    role="italic">connectCharEvent</emphasis> method:
 <programlisting>
 <![CDATA[
+
+/* Print characters received */
+
+  .application~setDefaults('O', , .false)
+  .constDir[IDC_EDIT] = 200
+
+  dlg = .TestDialog~new
+  dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+::requires "ooDialog.cls"
+
+::class 'TestDialog' subclass UserDialog
+
+::method init
+  forward class (super) continue
+  self~create(30, 30, 250, 200, "CHAR Tester", "CENTER")
+
+::method defineDialog
+
+  self~createEdit(IDC_EDIT, 10, 10, 230, 155, "MULTILINE")
+  self~createPushButton(IDOK, 135, 175, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 190, 175, 50, 14, , "Cancel")
+
+::method initDialog
+
+  self~newEdit(IDC_EDIT)~connectCharEvent(onChar)
+
+::method onChar unguarded
+  use arg char, isShift, isCtrl, isAlt, misc, control
+
+  if misc~pos('extended') <> 0 then c = .VK~key2name(char)
+  else c = char~d2c
+
+  say 'Char:' char c 'isShift' isShift 'isCtrl' isCtrl 'isAlt' isAlt 'misc' misc
+  return .true
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+
+<section id="evtDialogControlCHAR"><title>Char Event Handler</title>
+<indexterm><primary>dialog control object Event</primary><secondary>CHAR</secondary></indexterm>
+<para>
+  The <link linkend="ovvEvents">event</link> handler for the char event is invoked when the dialog control has the
+  keyboard focus and the user types a key or a keyboard combination that the operating system translates to a <link
+  linkend="rmkConnectCharEvent">character</link>.
+</para>
+<para>
+  The programmer must return a value from the event handler and the interpreter waits for this return. Generic
+  information on how to <link linkend="sctCodingEventHandlers">code</link> event handlers is included in the
+  documentation for the <link linkend="clsEventNotification">EventNotification</link> classe.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onChar unguarded
+  use arg char, isShift, isCtrl, isAlt, misc, controlObj
+
+  return response
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 6 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>char</term>
+    <listitem>
+    <para>
+      The numeric character code of the key pressed, or on extended keyboards, the virtual key code of an extended key.
+    </para>
+    <para>
+      For enhanced 101-key and 102-key keyboards, the extended keys are the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and
+      the arrow keys in the clusters to the left of the numeric keypad.
+    </para>
+    <para>
+      To determine the character received use <computeroutput>char~d2c</computeroutput> when <emphasis
+      role="italic">isCtrl</emphasis> is false and <emphasis role="italic">misc</emphasis> does <emphasis
+      role="italic">not</emphasis> contain the word <emphasis role="italic">extended</emphasis>. Use the <link
+      linkend="clsVK">VK</link> class when <emphasis role="italic">isCtrl</emphasis> is false and <emphasis
+      role="italic">misc</emphasis> contains the word <emphasis role="italic">extended</emphasis>.
+    </para>
+    <para>
+      In addition, the characters Ctrl-A through Ctrl-Z, plus Ctrl-[ and Ctrl-] are received. For this group of
+      characters, the <emphasis role="italic">isCtrl</emphasis> argument will be true and the numeric value of
+      <emphasis role="italic">char</emphasis> will be 1 through 26 for Ctrl-A through Ctrl-Z, 27 for Ctrl-[, and 29 for
+      Ctrl-]
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isShift</term>
+    <listitem>
+    <para>
+      A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
+      be true if a shift key was down and false if the shift key was not down.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isCtrl</term>
+    <listitem>
+    <para>
+      True if a control key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isAlt</term>
+    <listitem>
+    <para>
+      True if an alt key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>extraInfo</term>
+    <listitem>
+    <para>
+      This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
+      time of a key press event. The string will contain some combination of these keywords
+      <variablelist>
+        <varlistentry><term>extended</term>
+        <listitem>
+        <para>
+          The character event is for one of the extended keys previously mentioned, INS, DEL, HOME, END, PAGE UP, PAGE
+          DOWN, or one of the arrow keys.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>numOn</term>
+        <listitem>
+        <para>
+          Num Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>numOff</term>
+        <listitem>
+        <para>
+          Num Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOn</term>
+        <listitem>
+        <para>
+          Caps Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOff</term>
+        <listitem>
+        <para>
+          Caps Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOn</term>
+        <listitem>
+        <para>
+          Scroll Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOff</term>
+        <listitem>
+        <para>
+          Scroll Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lShift</term>
+        <listitem>
+        <para>
+          The left shift key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rShift</term>
+        <listitem>
+        <para>
+          The right shift key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lControl</term>
+        <listitem>
+        <para>
+          The left control key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rControl</term>
+        <listitem>
+        <para>
+          The right control key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lAlt</term>
+        <listitem>
+        <para>
+          The left alt key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rAlt</term>
+        <listitem>
+        <para>
+          The right alt key was down.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler must return <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or a
+    numeric character code. Returning <computeroutput>.true</computeroutput> allows the event to be
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End char Event Handler -->
+
 </section>  <!-- End DialogControl::connectCharEvent() -->
 
 
@@ -1889,6 +2007,95 @@ method onDisable
 </section>  <!-- End dialog control object::disconnectKeyPress() -->
 
 
+<section id="mthHasKeyPressConnectionDialogControlObject"><title>hasKeyPressConnection</title>
+<indexterm><primary>hasKeyPressConnection</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hasKeyPressConnection(--+--------------+--)--><
+                            +--methodName--+
+]]>
+</programlisting>
+
+<para>
+  Queries if a specific method in the Rexx dialog has a connection to a key down event, or if any methods are connected
+  to a key down event.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">methodName</emphasis> is specified, then this method checks if there is a key press
+        event connected to that method. When the argument is omitted, then the check is if any methods are connected to
+        key press events.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if a key press event connection exists, otherwise
+    <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The dialog object also has a <link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPressConnection</link>
+    method. The method of the dialog control object (this method) can only check for connecttions that were set with the
+    dialog control object's versions of <link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link> and
+    <link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link> methods. This method can not check
+    for connections that were set with the dialog object's versions of <link
+    linkend="mthConnectKeyPressDialogObject">connectKeyPress</link> and <link
+    linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example is from an application where the user can enable the use of hot keys when an edit control has
+    the focus, or not. The reset push button is used in the application to reset the state of the dialog. One of the
+    things done when the state is reset to check or uncheck a check box that shows whether hot keys are currently
+    enabled or not.
+
+  <programlisting>
+  <![CDATA[
+
+  ::method defineDialog
+
+    ...
+    self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
+    ...
+    self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
+    ...
+
+  ::method onReset
+
+    ...
+    editControl = self~newEdit(IDC_EDIT)
+
+    if editControl~hasKeyPressConnection then
+      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
+    else
+      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
+    ...
+
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog control object::hasKeyPressConnection() -->
+
+
 <section id="mthGetTextSizeDlgClsDialogControl"><title>getTextSizeDlg</title>
 <indexterm><primary>getTextSizeDlg</primary><secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>getTextSizeDlg</secondary></indexterm>
@@ -2066,95 +2273,6 @@ method onDisable
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DialogControl::group() -->
-
-
-<section id="mthHasKeyPressConnectionDialogControlObject"><title>hasKeyPressConnection</title>
-<indexterm><primary>hasKeyPressConnection</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
-<indexterm><primary>DialogControl class</primary><secondary>hasKeyPressConnection</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--hasKeyPressConnection(--+--------------+--)--><
-                            +--methodName--+
-]]>
-</programlisting>
-
-<para>
-  Queries if a specific method in the Rexx dialog has a connection to a key down event, or if any methods are connected
-  to a key down event.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>methodName [optional]</term>
-      <listitem>
-      <para>
-        If <emphasis role="italic">methodName</emphasis> is specified, then this method checks if there is a key press
-        event connected to that method. When the argument is omitted, then the check is if any methods are connected to
-        key press events.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns <computeroutput>.true</computeroutput> if a key press event connection exists, otherwise
-    <computeroutput>.false</computeroutput>.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The dialog object also has a <link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPressConnection</link>
-    method. The method of the dialog control object (this method) can only check for connecttions that were set with the
-    dialog control object's versions of <link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link> and
-    <link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link> methods. This method can not check
-    for connections that were set with the dialog object's versions of <link
-    linkend="mthConnectKeyPressDialogObject">connectKeyPress</link> and <link
-    linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link> methods.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example is from an application where the user can enable the use of hot keys when an edit control has
-    the focus, or not. The reset push button is used in the application to reset the state of the dialog. One of the
-    things done when the state is reset to check or uncheck a check box that shows whether hot keys are currently
-    enabled or not.
-
-  <programlisting>
-  <![CDATA[
-
-  ::method defineDialog
-
-    ...
-    self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
-    ...
-    self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
-    ...
-
-  ::method onReset
-
-    ...
-    editControl = self~newEdit(IDC_EDIT)
-
-    if editControl~hasKeyPressConnection then
-      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
-    else
-      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
-    ...
-
-  ]]>
-  </programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog control object::hasKeyPressConnection() -->
 
 
 <section id="mthRedrawRectClsDialogControl"><title>redrawRect</title>

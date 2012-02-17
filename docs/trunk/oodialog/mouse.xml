@@ -36,6 +36,10 @@
 </thead>
 <tbody>
 <row>
+<entry><link linkend="sctMouseConstantMethods">Constant Methods</link></entry>
+<entry>The <computeroutput>Mouse</computeroutput> class provides a single <emphasis role="italic">constant</emphasis> value through the <computeroutput>::constant</computeroutput>directive.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
@@ -150,6 +154,31 @@
 </tbody></tgroup>
 </table>
 </para>
+</section>
+
+<section id="sctMouseConstantMethods"><title>Constant Methods</title>
+<indexterm><primary>constant methods</primary><secondary>Mouse class</secondary></indexterm>
+<para>
+  The <computeroutput>Mouse</computeroutput> class provides a single <emphasis role="italic">constant</emphasis> value
+  through the use of the <computeroutput>::constant</computeroutput> directive. The constant is listed in the following
+  table.
+</para>
+<table id="tblConstantsMouse" frame="all"> <title>Mouse Class Constant Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.75in">
+<thead>
+<row>
+<entry>Constant Symbol</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>HOVER_DEFAULT</entry>
+<entry>The default hover time out. Can be used for the <emphasis role="italic">hoverTime</emphasis> argument in the <link linkend="mthTrackEvent">trackEvent</link> method.</entry>
+</row>
+</tbody></tgroup>
+</table>
 </section>
 
 <section id="mthNewClsMouse"><title>new (Class Method)</title>
@@ -1675,7 +1704,7 @@
   <para>
     To receive the mouse hover event, the programmer must first invoke the <link
     linkend="mthTrackEvent">trackEvent</link> method with the proper arguments. The mouse tracking is canceled when the
-    mouse hover notification is generated. To receive further mouse hover or mouse leave events, the <emphasis
+    mouse hover notification is generated. To receive further mouse hover events, the <emphasis
     role="italic">trackEvent</emphasis> method must be invoked again.
   </para>
   </listitem></varlistentry>
@@ -1900,8 +1929,8 @@
   <para>
     To receive either of the mouse leave events, the programmer must first invoke the <link
     linkend="mthTrackEvent">trackEvent</link> method with the proper arguments. The mouse tracking is canceled when the
-    mouse leave notification, (or the mouse hover notification,) is generated. To receive further mouse leave or mouse
-    hover events, the <emphasis role="italic">trackEvent</emphasis> method must be invoked again.
+    mouse leave notification is generated. To receive further mouse leave, the <emphasis
+    role="italic">trackEvent</emphasis> method must be invoked again.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3296,12 +3325,14 @@ Generic form:
             which must be a <computeroutput>.Directory</computeroutput> object, is filled in. The
             <computeroutput>Directory</computeroutput> object will contain an EVENT and a HOVERTIME index. These indexs
             will contain values such that, had they been used for the <emphasis role="italic">event</emphasis> and
-            <emphasis role="italic">hoverTime</emphasis> arguments to to the <emphasis
-            role="italic">trackEvent</emphasis> method, the method would generate the current tracking.
+            <emphasis role="italic">hoverTime</emphasis> arguments to the <emphasis role="italic">trackEvent</emphasis>
+            method, the method would generate the current tracking.
           </para>
           <para>
-            The only anomaly is that the hover time-out returned is always the actual time-out and not HOVER_DEFAULT, if
-            HOVER_DEFAULT was specified during the original TrackMouseEvent request.
+            The only anomaly is that the hover time out returned is always the actual time out and not <link
+            linkend="sctMouseConstantMethods">HOVER_DEFAULT</link>, if HOVER_DEFAULT was specified as <emphasis
+            role="italic">hoverTime</emphasis> during the original <emphasis role="italic">trackEvent</emphasis>
+            request.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -3310,14 +3341,39 @@ Generic form:
       <varlistentry><term>hoverTime [optional]</term>
       <listitem>
       <para>
-        xx
+        Specifies the hover time out, (if HOVER was specified in <emphasis role="italic">event</emphasis>,) in
+        milliseconds. The constant, <link linkend="sctMouseConstantMethods">HOVER_DEFAULT</link> can also be use to
+        specify the system default hover time out. The value of the system default hover time out can be determined, or
+        changed, through the <link linkend="atrMouseHoverTime">mouseHoverTime</link> attribute of the <link
+        linkend="clsSPI">SPI</link> (System Parameters Infomation) class.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>answer [optional]</term>
+      <varlistentry><term>answer [optional] [in / out]</term>
       <listitem>
       <para>
-        xx
+        A <computeroutput>Directory</computeroutput> object in which the results of a QUERY request are returned. This
+        is required if the <emphasis role="italic">event</emphasis> argument contains the QUERY keyword, otherwise this
+        argument is ignored. On a successful return the <computeroutput>Directory</computeroutput> object will contain
+        the following indexes:
       </para>
+      <variablelist>
+        <varlistentry><term>EVENT</term>
+        <listitem>
+        <para>
+          A keyword list, using the same keywords thar are listed for the <emphasis role="italic">event</emphasis>
+          argument. The keywords will reflect the current tracking. If the list had been used in a tracking request,
+          they would produce the current tracking.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HOVERTIME</term>
+        <listitem>
+        <para>
+          The hover time out in effect for the current tracking. However, if HOVER_DEFAULT had been used for the
+          <emphasis role="italic">hoverTime</emphasis> argument in the tracking request, this value will be the actual
+          time out value, not the value of HOVER_DEFAULT.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
       </listitem></varlistentry>
     </variablelist>
   </para>
@@ -3325,15 +3381,23 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
     The mouse pointer is considered to be <emphasis role="italic">hovering</emphasis> when it stays within a specific
-    rectangle for a specific period of time. Call SystemParametersInfo. and use the values SPI_GETMOUSEHOVERWIDTH,
-    SPI_GETMOUSEHOVERHEIGHT, and SPI_GETMOUSEHOVERTIME to retrieve the size of the rectangle and the time.
+    rectangle for a specific period of time. The <link linkend="clsSPI">SPI</link> class has attributes that can be used
+    to retrieve (or change) the hover rectangle or hover time out value. The <link
+    linkend="atrMouseHoverWidth">mouseHoverWidth</link> and <link linkend="atrMouseHoverHeight">mouseHoverHeight</link>
+    attributes reflect the hover rectangle. The <link linkend="atrMouseHoverTime">mouseHoverTime</link> attribute
+    reflects the hover time out.
+  </para>
+  <para>
+    The system default hover time out is initially the menu drop-down time, which is 400 milliseconds. The system
+    default hover rectangle is the same as the double-click rectangle. Hovever, these values may be changed / customized
+    by the user.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3348,9 +3412,65 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example connects the mouse move, leave, and hover events. The first time a mouse move is received, the
+    <emphasis role="italic">trackEvent</emphasis> method is used to request tracking for the leave and hover events.
+    When either one of the events is received, the tracking for that event is canceled. In order to receive further
+    events, a flag is set so that on the next mouse move event, the <emphasis role="italic">trackEvent</emphasis> method
+    is invoked again.
 <programlisting>
 <![CDATA[
+
+::method init
+
+  ...
+
+  mouse = .Mouse~new(self)
+  mouse~connectEvent('MOUSEMOVE')
+  mouse~connectEvent('MOUSELEAVE')
+  mouse~connectEvent('MOUSEHOVER')
+
+  -- so leave and hover tracking is requested on first mouse move
+  mouseEntered  = .false
+  mouseHovering = .true
+
+::method onMouseMove unguarded
+  expose mouseEntered mouseHovering
+  use arg keyState, p, mouse
+
+  if \ mouseEntered then do
+    if \ mouse~trackEvent("LEAVE") then do
+      say "trackEvent() failed. Error" .SystemErrorCode ':' SysGetErrorText(.SystemErrorCode)
+    end
+    mouseEntered = .true
+  end
+
+  if mouseHovering then do
+    if \ mouse~trackEvent("HOVER") then do
+      say "trackEvent() failed. Error" .SystemErrorCode ':' SysGetErrorText(.SystemErrorCode)
+    end
+    mouseHovering = .false
+  end
+  ...
+  return .true
+
+::method onMouseLeave unguarded
+  expose mouseEntered
+  use arg mouse
+
+  mouseEntered = .false
+
+  -- so hover tracking is started when mouse re-enters.
+  mouseHovering = .true
+  ...
+  return .true
+
+::method onMouseHover unguarded
+  expose mouseHovering
+  use arg keyState, mousePos, mouse
+
+  mouseHovering = .true
+  ...
+  return .true
 
 ]]>
 </programlisting>

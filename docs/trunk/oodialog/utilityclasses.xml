@@ -8065,6 +8065,18 @@ s2: a Size (2, 3)
 <entry>Reflects the width of the drag rectangle.</entry>
 </row>
 <row>
+<entry><link linkend="atrMouseHoverHeight">mouseHoverHeight</link></entry>
+<entry>Reflects the height in pixels of the rectangle the mouse needs to stay in to generate a hover notification.</entry>
+</row>
+<row>
+<entry><link linkend="atrMouseHoverTime">mouseHoverTime</link></entry>
+<entry>Reflects the time in milliseconds the mouse has to remain in the hover rectangle to generate a hover notification.</entry>
+</row>
+<row>
+<entry><link linkend="atrMouseHoverWidth">mouseHoverWidth</link></entry>
+<entry>Reflects the width in pixels of the rectangle the mouse needs to stay in to generate a hover notification.</entry>
+</row>
+<row>
 <entry><link linkend="atrUpdateFlag">updateFlag</link></entry>
 <entry>Defines additional actions to take when a system-wide parameter is set.</entry>
 </row>
@@ -8196,6 +8208,159 @@ s2: a Size (2, 3)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End SPI::dragWidth() [attribute]  -->
+
+<section id="atrMouseHoverTime"><title>mouseHoverTime (Attribute)</title>
+<indexterm><primary>mouseHoverTime</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>mouseHoverTime</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--mouseHoverTime-------------------------------><
+
+>>--mouseHoverTime=-milliseconds-----------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the time, in milliseconds the mouse must remain in the hover rectangle to generate a MOUSEHOVER notification.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">mouseHoverTime get:</emphasis></term>
+  <listitem>
+  <para>
+    Retrieves the system wide default hover time out value in milliseconds
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">mouseHoverTime set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the time, in milliseconds, for the hover time out. The <emphasis role="italic">milliseconds</emphasis> must be
+    a non-negative whole number within the range of 10 to 2147483647.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The hover rectangle is the rectangle within which the mouse pointer has to stay for the operating system to generate
+    a <link linkend="mthConnectEvent">MOUSEHOVER</link> notification. The time out value is the number of milliseconds
+    the mouse has to remain in the rectangle. Normally the mouse hover event is not generated. The <link
+    linkend="mthTrackEvent">trackEvent</link> method must be invoked to request hover tracking before the operating
+    system will generate the hover notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::mouseHoverHeight() [attribute]  -->
+
+<section id="atrMouseHoverHeight"><title>mouseHoverHeight (Attribute)</title>
+<indexterm><primary>mouseHoverHeight</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>mouseHoverHeight</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--mouseHoverHeight-----------------------------><
+
+>>--mouseHoverHeight-=-height--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the height of the hover rectangle. The hover rectangle is the rectangle within which the mouse pointer has
+  to stay to generate a MOUSEHOVER notification.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">mouseHoverHeight get:</emphasis></term>
+  <listitem>
+  <para>
+    Retrieves the height of the system wide hover rectangle in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">mouseHoverHeight set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the width, in pixels, of the hover rectangle. The <emphasis role="italic">width</emphasis> must be a
+    non-negative whole number.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The hover rectangle is the rectangle within which the mouse pointer has to stay for the operating system to generate
+    a <link linkend="mthConnectEvent">MOUSEHOVER</link> notification. Normally the mouse hover event is not generated.
+    The <link linkend="mthTrackEvent">trackEvent</link> method must be invoked to request hover tracking before the
+    operating system will generate the hover notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::mouseHoverHeight() [attribute]  -->
+
+<section id="atrMouseHoverWidth"><title>mouseHoverWidth (Attribute)</title>
+<indexterm><primary>mouseHoverWidth</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>mouseHoverWidth</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--mouseHoverWidth------------------------------><
+
+>>--mouseHoverWidth-=-width----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects the width of the hover rectangle. The hover rectangle is the rectangle  within which the mouse pointer has to
+  stay to generate a MOUSEHOVER notification.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">mouseHoverWidth get:</emphasis></term>
+  <listitem>
+  <para>
+    Retrieves the width of the system wide hover rectangle in pixels.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">mouseHoverWidth set:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the width, in pixels, of the hover rectangle. The <emphasis role="italic">width</emphasis> must be a
+    non-negative whole number.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The hover rectangle is the rectangle within which the mouse pointer has to stay for the operating system to generate
+    a <link linkend="mthConnectEvent">MOUSEHOVER</link> notification. Normally the mouse hover event is not generated.
+    The <link linkend="mthTrackEvent">trackEvent</link> method must be invoked to request hover tracking before the
+    operating system will generate the hover notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::mouseHoverWidth() [attribute]  -->
 
 <section id="atrUpDateFlag"><title>updateFlag (Attribute)</title>
 <indexterm><primary>updateFlag</primary></indexterm>
