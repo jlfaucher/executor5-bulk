@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: Release Notes SGML File
     #
-    # Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2012, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -51,13 +51,13 @@
 </para>
 <itemizedlist>
 <listitem><para>
-  Approximately 38 MB free disk space is needed for a complete installation.
+  Approximately 45 MB free disk space is needed for a complete installation.
 </para></listitem>
 <listitem><para>
   8 MB free disk space for the core interpreter.
 </para></listitem>
 <listitem><para>
-  22 MB free disk space for online documentation.
+  25 MB free disk space for online documentation.
 </para></listitem>
 <listitem><para>
   7 MB free disk space for all samples.
@@ -81,7 +81,7 @@
 <listitem><para>Windows 7</para></listitem>
 </itemizedlist>
 <para>
-  ooRexx version 4.1.0 is not supported on Windows prior to Windows 2000. There is no known reason why this version of
+  ooRexx version 4.1.1 is not supported on Windows prior to Windows 2000. There is no known reason why this version of
   ooRexx will not work on Windows NT(R) 4.0, but it has not been tested. Likewise, ooRexx may work on Windows 98 or
   Windows Me, but it has not been tested and there is no support for it.
 </para>
@@ -102,7 +102,8 @@
 <para>
   However, beginning with ooRexx 4.1.0, a type of <link linkend="windowsUpdateInstall">update</link> install is
   supported. Technically, this is not a true update install because: rxapi must be stopped, all files from the previous
-  installation are deleted. This type of install will preserve the current ooRexx registry settings, path entry, etc.
+  installation are deleted. However, this type of install will preserve the current ooRexx registry settings, path
+  entry, etc.
 </para>
 <para>
   A previous version of ooRexx can be <link linkend="sectWindowsUninstall">uninstalled</link> before
@@ -140,8 +141,8 @@
   not be installed on a 32-bit version of Windows. Either the 32-bit or the 64-bit ooRexx can be installed on a 64-bit
   version of Windows . However, to take full advantage of both the operating system and ooRexx, the user should install
   the 64-bit version of ooRexx on a 64-bit version of Windows. The installation programs for the two types of ooRexx are
-  clearly labeled: <computeroutput>ooRexx-4.1.0.i586.exe</computeroutput> and
-  <computeroutput>ooRexx-4.1.0.x86_64.exe</computeroutput>.
+  clearly labeled: <computeroutput>ooRexx-4.1.1-x86_32.exe</computeroutput> and
+  <computeroutput>ooRexx-4.1.1-windows.x86_64.exe</computeroutput>.
 </para>
 </section>
 
@@ -153,9 +154,9 @@
 <para>
   The ooRexx installation program is a typical Windows installation program. Download the appropriate installation
   program, 32-bit or 64-bit. From Windows Explorer double-click the installation package:
-  <computeroutput>ooRexx-4.1.0.i586.exe</computeroutput> or <computeroutput>ooRexx-4.1.0.x86_64.exe</computeroutput>.
-  Follow the prompts in the installation dialog. Naturally, the program can also be run from a console window by typing
-  the executable name at the command prompt.
+  <computeroutput>ooRexx-4.1.1-windows.x86_32.exe</computeroutput> or
+  <computeroutput>ooRexx-4.1.0-windows.x86_64.exe</computeroutput>. Follow the prompts in the installation dialog.
+  Naturally, the program can also be run from a console window by typing the executable name at the command prompt.
 </para>
 <para>
   <emphasis role="bold">A running rxapi process.</emphasis> If a previous version of ooRexx is installed and the rxapi
@@ -236,12 +237,6 @@
 </listitem>
 <listitem>
 <para>
-  <emphasis role="bold">Install rxapi as a Windows Service.</emphasis> It is highly recommended that rxapi be installed
-  as a service.
-</para>
-</listitem>
-<listitem>
-<para>
   <emphasis role="bold">Create file assoications.</emphasis> Individual file associations can be created for each of the
   executables: rexx, rexxhide, and rexxpaws. When selected, pages are presented to customize the file associations. If
   not selected, no file associations will be created. Normally on Windows a file association is created for rexx and it
@@ -304,7 +299,7 @@
   contains spaces. For example:
 <programlisting>
 <![CDATA[
-ooRexx-4.1.0.x86_64.exe /S /D=C:\Program Files\Interpreters\ooRexx
+ooRexx-4.1.1.x86_64.exe /S /D=C:\Program Files\Interpreters\ooRexx
 ]]>
 </programlisting>
 </para></listitem>
