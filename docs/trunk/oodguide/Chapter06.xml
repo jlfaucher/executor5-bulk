@@ -1,4 +1,4 @@
-<!--#########################################################################
+﻿<!--#########################################################################
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file.
     #
@@ -38,84 +38,29 @@
     #########################################################################
 -->
 
-<!-- Chapter06 - List Views, Re-Sizing, and PopUps 		  v00-03 03Feb12
+<!-- Chapter06 - List Views, Re-Sizing, and PopUps 		  v00-04 ??Feb12
 
     Changes:
      v00-01 25Aug11: First version
      v00-02 03Dec11: Second version.
-     v00-03 03Feb12: Sorted out structure and added some text.
+     v00-03 03Feb12: Sorted out structure; added text.
+     v00-04 ??Feb12
 
-
-     6.    An Application Workplace
-
-- the OrderManagerView
-     is the "home" window. It'll have a sign-on and password field in a sub-dialog
-     (also programmer-designed) which comes modally  when the OrderManagemwent
-     window is established. Thus we demonstrate/discuss:
-     - programmatic layout (can only use userDialog)
-     - modal sub-window
-     - Handling icons and showing them.
-     - password dialog (shows asterisks when you type into it) - but can avoid
-       with startup param "skipPW" (but the dialog in the startup prog to show
-       use of ooDialog in normal rexx progs).
-     - Icons that when dbl-clicked startup other views
-     - Most menu items on OrderMgmgt dialog not implemented.
-
-            - app function very absent - e.g. all dialog data is hard-coded - same for Cust, Prod, Order - no real data in any file.
-                                                    - e.g. no function for "New Order"
-     6.1    Program Structure
-     6.1.1      Have to change .rc file manually to get icon showing properly - ResEdit makes it .\bmp\icon.ico
-                   instead of .\order\bmp\icon.ico - even if you start resedit from Exercise06 and specify "resedit order\orderlistview.rc".
-                   (Paths - esepc for ResEdit.)
-     6.1.2    about use of .Application - not good for a shipped app - address later when "package" an app for shipping.
-     6.1.3    Mention HRS class name changes to allow for possible packaging - all classes in a single file.
-     6.1.3    Stand-alone testing
-                  - incl how get dlgicons to show (Answer: rc file must be built and saved into the parent folder so that file path is right for invocation from the parent folder. )
-                          Ditto for ResDialog - compile the dll in the parent folder (check this!)
-     6.1.4    Several place-holders for app functions - custmodel & custdata created for each showmodel. Fix in next exercise.
-     6.1.5    One Folder per component - for resources such as bitmaps/icons for RcDialogs, need to run resedit from parent folder so that path to resource is correct when run the component from the parent folder.
-     6.1.6    Reference to standalone code and the sample. Also must start from the Exercise06 folder - Customer\StartupCustomer - 'cos all paths in the code are relative to the Exercise06 folder.
-     6.1.7    Why no Model/Data components for list views?
-     6.1.8    Generally, in real life, creating something (Customer, Product, Order) requires a process different from merely updating something. This means a different GUI. But for this Guide, we'll assume Customer and Product get new records from a different place,
-     so new records can(in this sample app) be got by adding to the relevant data files. However, OrderForm and Order are different - so have a component each.
-     6.1.9    The lists create a new instance for each list item - which is silly.
-     6.1.10  Naming - explain diff between OrderMgmt & OrderMgr where appropriate.
-
-???   Mention standalone execution - point to sample code in samples and to App3.
-
-     6.2    Pop-Ups and Parents incl Non-Modal Dialogs
-     6.2.1    How get pop-up to pop up away from parent? Answer - have to code it yourself.
-     6.2.2    Starting a dialog from a dialog (incl interpret statement - pointer to later)
-                 Use of "interpret", better would be to have a class object - but later we'll need interpret (won't we?) for the ObjectMgr.
-                 Leave "interpret" in but mention it, say class object would be better - show how can be fixed in later exercise where
-                 this will be moved to a support class (ObjectMgr).
-
-     6.3    Icons and Lists
-     6.3.1    The Icon View
-	- List Views - normal icon view - a "workplace" for Order Management..
-	- Auto-resizing when window sized by user
-
-     6.3.2.   The Report View
-                 - Looking at the two list views, almost begs for a superclass.
-                 - how do different fonts for the listView items
-                 - Explain the surfacing of an instance in the listview dialogs - check the showModel method.
-
-     6.4    Re-Sizing Dialogs
-
-     6.5    Creating and Using Icons
-	- Icons - making them, getting 'em into the program. -
-              (1) Does the icon have to be a certain size, or will it get automatically shrunk?
-              (2) If it has to be a certain size, what's the size, and are there any restrictions as to the palette (I'm no expert, but using GIMP I'm given the option of saving as 16-bit, 24-bit or 32-bit color (or I think it's color!)).
-              (3) In the ~execute statement, I need to provide an ID. Does this mean I must have a *.rc file? Or can I invent an ID programmatically somehow - perhaps along the same lines as creating an ImageList?
-              (4) I want to assign my own icon as the dialog icon (that is, the icon at the extreme top left of a dialog). This is done (I understand) in the ~execute(..., <icon_ID> ) method (ooDialog Reference section 3.10.3).
-
-     6.6    Utility Dialogs - <- ??? <What's this??> (Is this the layer - process-entity-utility? Or just useful "canned" dialogs?)
-	- Mention password on startup to illustrate ooDialog use in otherwise non-ooDialog rexx programs.
-	  "startup enterPW" - password is "Password".
-
-
-
-
+    6     "An Application Workplace"      chapSix
+    6.1     Program Structure             chap06-struc
+    6.1.1     Overview
+    6.1.2     Some Implications
+    6.1.2.1     File Paths
+    6.1.2.2     .Application Usage
+    6.1.2.3     Externalized Strings
+    6.1.3     Application Function
+    6.2     Popups and Parents            chap06-popups
+    6.3     Icons and Lists               chap06-lviews
+    6.3.1     The Icon View               chap06-lviews-icon
+    6.3.2     The Report View             chap06-listview-report
+    6.4     Re-sizing Dialogs             chap06-resize
+    6.5     Creating and Using Icons      chap06-icons
+    6.6     Utility Dialogs               chap06-utildlgs
 
 -->
 <chapter id="chapSix"><title>An Application Workplace</title>
@@ -129,17 +74,19 @@
       consists mainly of a List View containing four icons. Move the icons around; double-click them
       and if a Customer, Product, or Order List appears then double-click a list item; re-size the
       Order Management window; check out the menu items and the pushbuttons. As you see, while much
-      of the application function is absent, and the data is hard-coded, the essential parts of the
-      Order Management application mentioned in <xref linkend="chapFour"/> are visible. This chapter
-      addresses the following topics in the context of the Order Management application: <itemizedlist>
+      of the application function is absent, and the data is hard-coded, and there is some
+      redundancy (e.g. every time you double-click on an item in a list view a new Model and Data
+      object is created), the essential parts of the Order Management application mentioned in
+      <xref linkend="chapFour"/> are visible. This chapter addresses the following topics in the context
+      of the Order Management application: <itemizedlist>
         <listitem>
           <para><xref linkend="chap06-struc"/></para>
         </listitem>
         <listitem>
-          <para><xref linkend="chap06-listviews"/>Icons and Lists</para>
+          <para><xref linkend="chap06-popups"/></para>
         </listitem>
         <listitem>
-          <para><xref linkend="chap06-popups"/></para>
+          <para><xref linkend="chap06-lviews"/></para>
         </listitem>
         <listitem>
           <para><xref linkend="chap06-resize"/></para>
@@ -148,12 +95,14 @@
           <para><xref linkend="chap06-icons"/></para>
         </listitem>
         <listitem>
-          <para><xref linkend="chap06-utildlgs"/>Utility Dialogs</para>
+          <para><xref linkend="chap06-utildlgs"/></para>
         </listitem>
       </itemizedlist>
     </para>
 
 <section id="chap06-struc"><title>Program Structure</title>  <!-- Section 6.1 -->
+
+  <section id="chap06-struc-overview"><title>Overview</title>  <!-- Section 6.1.1 -->
   <para>In Exercise06, each business component has its own folder:
     Customer, Order, OrderMgr, and Product. Customer and Product are more or less identical
     to the same components introduced in Exercises 04 and 05.
@@ -178,39 +127,198 @@
     share a single Data component. The Customer and Product
     component groups are essentially identical to those introduced in Exercises 4 and 5 respectively.
   </para>
-  <para>
-    The Order Management business component is, in this Exercise, implemented by a view class only. In fact,
-    there are two view classes, each in its own .rex file: <computeroutput>OrderMgmtBaseView</computeroutput>
-    and its subclass <computeroutput>OrderMgmtView</computeroutput>.
-    <computeroutput>OrderMgmtBaseView</computeroutput>
-    contains the code for handling a re-sizable dialog, and is a subclass of <computeroutput>UserDialog</computeroutput>
-    which is required for any dialog that is dynamically
-    re-sizable (see <xref linkend="chap06-resize"/>). <computeroutput>OrderMgmtView</computeroutput> contains the code
-    specific to the Order Management application.
-    The only reason for splitting the code like this is that it seems to fall happily into these two parts. This reduces
-    the amount of code in any one class or file, and so makes for better readability.
+  <para>The Order Management business component is, in this Exercise, implemented by a view class
+          only. In fact, there are two view classes, each in its own .rex file:
+            <computeroutput>OrderMgmtBaseView</computeroutput> and its subclass
+            <computeroutput>OrderMgmtView</computeroutput>.
+            <computeroutput>OrderMgmtBaseView</computeroutput> contains the code for handling a
+          re-sizable dialog, and is a subclass of <computeroutput>UserDialog</computeroutput> which
+          is required for any dialog that is dynamically re-sizable (see
+          <xref linkend="chap06-resize"/>). <computeroutput>OrderMgmtView</computeroutput> contains the
+          code specific to the Order Management application. The only reason for splitting the code
+          like this is that it seems to fall happily into these two parts. This reduces the amount
+          of code in any one class or file, and so (arguably) makes for better readability. </para>
+  <para>Note that the "data" of the OrderManagement business component is the set of icons and their
+    associated data. In Exercise06, this data is effectively embedded in the View classes.
+    However, the code in the <computeroutput>OrderMgmtView</computeroutput> class uses an
+    <emphasis role="italic">interpret</emphasis> instruction to launch views of the
+    components represented by icons. Thus in principle, additional components can be added
+    without changing the code in the <computeroutput>OrdermgmtView</computeroutput> class. To
+    support this, a separate file - <computeroutput>RequiresList.rex</computeroutput> -
+    contains the set of <emphasis role="italic">::requires</emphasis> statements corresponding
+    to the components that might be surfaced. This is why the first executable statement in
+    the file <computeroutput>OrderMgmtView.rex</computeroutput> is
+    <emphasis role="italic">call "OrderMgmt\RequiresList.rex"</emphasis>. Examples of possible additional
+    components could be a "commodities" component which shows the commodities required to
+    produce a given product; or a credit-check component that links to an external
+    credit-check agency.</para>
+  <para>Finally, it's worth noting that the folder structure, while useful for development, is
+    not necessarily the most appropriate structure for a deployed application. A more
+    appropriate deployment structure will be described in the next chapter.
   </para>
+  </section>  <!-- End of section 6.1.1 -->
+
+  <section id="chap06-struc-impls"><title>Some Implications</title>  <!-- Section 6.1.2 -->
+    <para>Choosing this folder structure for the development of the application has these
+      design implications: file paths, the use of <computeroutput>.Application</computeroutput>, ????
+    </para>
+    <section id="chap06-struc-impls-paths"><title>File Paths</title>  <!-- Section 6.1.2.1 -->
+      <para>When an ooRexx program is run, the current (or
+        "home") directory is that from which the program is started. (That is, if a
+        program is started on a command prompt like this: <computeroutput>c:\aaa\bbb>myprog.rex</computeroutput>,
+        then the current directory will be <computeroutput>c:\aaa\bbb</computeroutput>. However, if the program
+        is started like this: <computeroutput>c:\aaaa>bbb\myprog.rex</computeroutput>, then the current directory
+        will be <computeroutput>c:\aaa</computeroutput> .) In Exercise06,
+        all programs are started from the <computeroutput>Exercise06</computeroutput>
+        folder. Thus any relative paths must be relative to
+        <computeroutput>Exercise06</computeroutput>. However, using ResEdit with relative
+        paths, the path for a resource such as a dialog icon is relative to the folder in
+        which the *.rc file is created. For example, if <computeroutput>CustomerView.rc</computeroutput>
+        is created in the <computeroutput>Customer</computeroutput> folder, then the icon will be specified
+        in <computeroutput>CustomerView.rc</computeroutput> with the path
+        <computeroutput>".\\bmp\\Customer.ico"</computeroutput> So the path to the icon
+        resource in the *.rc file will be wrong, and the dialog icon will not be shown.</para>
+      <para>The solution is either to edit the *.rc file and change the icon resource's path, or (much better)
+        create the *.rc file in the Exercise06 folder and then move it into the
+        <computeroutput>Customer</computeroutput> folder.
+      </para>
+      <para>Considering the implication of paths also applies to other parts of the code, such
+        header files specified in the
+        <computeroutput>.Application~addToConstDir(...)</computeroutput> statement.
+      </para>
+      <para>In summary, all paths (if not absolute) must be relative to the folder from which the
+        program is started. This is why, when running a stand-alone test such as
+        <computeroutput>startupCustomer.rex</computeroutput>, the program must be started
+        from the <computeroutput>Exercise06</computeroutput> folder, since the design decision was
+        taken to make all paths relative to <computeroutput>Exercise06</computeroutput> folder.
+      </para>
+      <para>This discussion on paths prompts two thoughts (at least). First, is there not a way to have some support code
+        manage paths, so that each component asks this support code for the path it should use? While this may be feasible,
+        it's much more a design question than an ooDialog one, and so is not pursued here. Second, using ResDialog instead of
+        RcDialog reduces the problem of paths, since resources such as icons and bitmaps are placed in the *.dll file.
+      </para>
+      </section>  <!-- End of Section 6.2.1.1 -->
+
+    <section><title>.Application Usage</title>  <!-- Section 6.2.1.2 -->
+      <para>The startup file (<computeroutput>startup.rex</computeroutput>) applies application-wide
+        defaults with the statement <computeroutput>.Application~setDefaults("O", , .false)</computeroutput>.
+        However, the header file for each view class is included in its <computeroutput>newInstance</computeroutput>
+        method; for example: <computeroutput>.Application~addToConstDir("Customer\CustomerView.h")</computeroutput>.
+        For a shipped application that includes multiple classes, it would be much better to provide all the
+        <computeroutput>~addToConstDir</computeroutput> statements in the startup file after, say, the
+        <computeroutput>~setDefaults</computeroutput> statement. However, because at this stage the application
+        is still in a pre-deployment state, and each component needs to be able to be unit-tested (see "Stand-alone Testing" below),
+        it was deemed better to include <computeroutput>~addToConstDir</computeroutput> statements in each view file
+        (of course an alternative is to include them in the unit-test startup programs).
+      </para>
+    </section>  <!-- End of Section 6.1.2.2 -->
+
+    <section><title>Externalized Strings</title>  <!-- Section 6.1.2.3 -->
+      <para>All components that display information to the user have the displayed strings separated from code either in
+        a class whose name is prefaced "HRS" for "Human-Readable Strings" or in a *.rc file. Each such class name has a suffix
+        - e.g. "HRScv" for the <computeroutput>CustomerView</computeroutput> class. The reason for the suffix is to
+        distinguish the various HRS classes if the various files were later to be placed into a single file for
+        application deployment purposes.
+      </para>
+      <para>Human-readable strings in *.rc classes are a problem when internationalization is a requirement. Internationalization
+        (often referred to as I18N - there are 20 letters in the word "internationalization") is the term often given to
+        allowing for translation of human-readable text to other languages.
+        <indexterm><primary>Internationalization</primary></indexterm>
+        An immediate solution is to display the translated strings from within the program rather than from the *.rc file.
+        The <emphasis role="italic">initDialog</emphasis> method is a good place to do this. Try inserting the following
+        in <computeroutput>CustomerView.rex</computeroutput>, say just before
+        the statement <computeroutput>self~getData</computeroutput> in <emphasis role="italic">initDialog</emphasis>:
+        <programlisting>
+        <![CDATA[
+          custNameLabel = self~newStatic("IDC_CUST_LBL_CUSTNAME")
+          custNameLabel~setText("Namen:")
+        ]]>
+        </programlisting>
+        The Customer View will be displayed with "Namen" (German)instead of "Name" (English).
+      </para>
+      <para>Of course, this text should
+        come from an HRS class or better from a proper I18N resource file. Such files would be produced using special
+        I18N tools. These tools take account of the many considerations and gotchas of internationalization.
+        For example, in our trivial attempt to change the label from English "Name" to German "Namen", we've lost the colon
+        at the end. This is because the
+        horizontal space given to this particular static text in <computeroutput>CustomerView.rc</computeroutput> is not big enough.
+        Some authorities suggest that 150% of the space required for English is needed to allow for proper translations to other languages.
+        And this is only one of the lesser considerations in the task of internationalization.
+        The following quote from the Wikipedia entry illustrates something of the full complexity of I18N:
+        "It should be noted that "internationalized" does not necessarily mean that a system can be used absolutely anywhere,
+        since simultaneous support for all possible locales is both practically almost impossible and commercially very hard
+        to justify. In many cases an internationalized system includes full support only for the most spoken languages,
+        plus any others of particular relevance to the application."
+      </para>
+    </section>  <!-- End of Section 6.1.2.3 -->
+
+  </section>  <!-- End of Section 6.1.2 -->
+
+  <section><title>Application Function</title>  <!-- Section 6.1.3 -->
   <para>
-    Note that the "data" of the OrderManagement business component is the set of icons and their associated data.
-    In Exercise06, this data is effectively embedded in the View classes. However, the code in the
-    <computeroutput>OrderMgmtView</computeroutput> class uses an <emphasis role="italic">interpret</emphasis>
-    instruction to launch views of the components represented by icons. Thus in principle, additional components
-    can be added without changing the code in the <computeroutput>OrdermgmtView</computeroutput> class. To support this,
-    a separate file - <computeroutput>RequiresList.rex</computeroutput> - contains the set of
-    <emphasis role="italic">::requires</emphasis> statements corresponding to the components that might be surfaced.
-    This is why the first executable statement in the file <computeroutput>OrderMgmtView.rex</computeroutput> is
-    <emphasis role="italic">call "OrderMgmt\RequiresList.rex"</emphasis>. Examples of possible additional components
-    could be a "commodities" component which shows
-    the commodities required to produce a given product; or a credit-check component that links to an external
-    credit-check agency.
+
+    <!--
+      - the OrderManagerView
+      is the "home" window. It'll have a sign-on and password field in a sub-dialog
+      (also programmer-designed) which comes modally  when the OrderManagemwent
+      window is established. Thus we demonstrate/discuss:
+      - programmatic layout (can only use userDialog)
+      - modal sub-window
+      - Handling icons and showing them.
+      - password dialog (shows asterisks when you type into it) - but can avoid
+      with startup param "skipPW" (but the dialog in the startup prog to show
+      use of ooDialog in normal rexx progs).
+      - Icons that when dbl-clicked startup other views
+      - Most menu items on OrderMgmgt dialog not implemented.
+
+      - app function very absent - e.g. all dialog data is hard-coded - same for Cust, Prod, Order - no real data in any file.
+      - e.g. no function for "New Order"
+    -->
+
+    Generally, in real applications, creating a Customer, or Product, or Order each requires a processmore
+    complex process than shown by the sample application. This means that real apps have a different GUI than that shown here.
+    But for present purposes, we'll assume Customer and Product get new records from a different place,
+      so new records can(in this sample app) be got by adding to the relevant data files.
+      However, OrderForm and Order are different - so have a component each.
+
+
+    Naming - explain diff between OrderMgmt and OrderMgr where appropriate.
+
   </para>
+  </section>  <!-- End of Section 6.1.3 -->
+
 </section>  <!-- End of section 6.1 -->
 
+<section id="chap06-popups"><title>Popups and Parents</title>  <!-- Section 6.2 -->
+  <indexterm><primary>Popups</primary><secondary>Parents</secondary></indexterm>
+  <indexterm><primary>Parents</primary><secondary>Popups</secondary></indexterm>
+  <!--
+    6.2    Pop-Ups and Parents incl Non-Modal Dialogs
+    6.2.1    How get pop-up to pop up away from parent? Answer - have to code it yourself.
+    6.2.2    Starting a dialog from a dialog (incl interpret statement - pointer to later)
+    Use of "interpret", better would be to have a class object - but later we'll need interpret (won't we?) for the ObjectMgr.
+    Leave "interpret" in but mention it – say class object would be better - show how can be fixed in later exercise – where
+    this will be moved to a support class (ObjectMgr).
+  -->
 
-<section id="chap06-listviews"><title>Icons and Lists</title>  <!-- Section 6.2 -->
-  <indexterm><primary>ListView</primary></indexterm>
-  <indexterm><primary>Controls</primary><secondary>ListView</secondary></indexterm>
-  <indexterm><primary>Icons</primary><secondary>in a ListView</secondary></indexterm>
+  <section id="chap06-nonmodal"><title>Non-Modal Dialogs</title>  <!-- Section 6.2.1 -->
+    <para>
+    </para>
+  </section>  <!-- End of Section 6.2.1 -->
+
+  <section id="chap06-dlgStart"><title>Starting a Popup Dialog</title>  <!-- Section 6.2.2 -->
+    <para>
+    </para>
+  </section>  <!-- End of Section 6.2.2 -->
+
+
+</section>  <!-- End of Section 6.2 -->
+
+<section id="chap06-lviews"><title>Icons and Lists</title>  <!-- Section 6.3 -->
+    <indexterm><primary>ListView</primary></indexterm>
+    <indexterm><primary>Controls</primary><secondary>ListView</secondary></indexterm>
+    <indexterm><primary>Icons</primary><secondary>in a ListView</secondary></indexterm>
+
   <para>The <computeroutput>ListView</computeroutput> should not be confused with <computeroutput>ListBox</computeroutput>;
   a ListView (see ooDialog Reference chapter 20) is a souped-up ListBox with lots of additional features. In particular:
   <itemizedlist>
@@ -235,7 +343,14 @@
     It also provides the tabular lists (report views) in the CustomerList, ProductList, and OrderList dialogs.
     </para>
 
-  <section id="chap06-listview-icon"><title>The Icon View</title>  <!-- Section 6.2.1 -->
+  <section id="chap06-lviews-icon"><title>The Icon View</title>  <!-- Section 6.3.1 -->
+    <!--
+
+      6.3.1    The Icon View
+      - List Views - normal icon view - a "workplace" for Order Management..
+      - Auto-resizing when window sized by user
+    -->
+
   <para>
 
 <!--
@@ -403,24 +518,24 @@
     </listitem>
   </orderedlist>
 
-  </section>  <!-- End of section 6.2.1 -->
+  </section>  <!-- End of section 6.3.1 -->
 
-  <section id="chap06-listview-report"><title>The Report View</title>  <!-- Section 6.2.2 -->
+  <section id="chap06-listview-report"><title>The Report View</title>  <!-- Section 6.3.2 -->
+    <!--
+      6.3.2.   The Report View
+      - Looking at the two list views, almost begs for a superclass.
+      - how do different fonts for the listView items
+      - Explain the surfacing of an instance in the listview dialogs - check the showModel method.
+    -->
     <para>Three of the icons in the Order Management dialog surface a list when double-clicked - Customers, Products, and Orders.
       These three components are technically very similar - to the extent that a "list superclass" could perhaps be created.
       For the meantime, however, this is not done, and each list is quite separate. However, their similarity means that discussing one
       list - the Customer List - effectively addresses all.
     </para>
     <para></para>
-  </section>  <!-- End of section 6.2.2 -->
+  </section>  <!-- End of section 6.3.2 -->
 
-
-</section>  <!-- End of section 6.2 -->
-
-  <section id="chap06-popups"><title>Non-Modal Dialogs</title>  <!-- Section 6.3 -->
-    <para>
-    </para>
-  </section>  <!-- End of section 6.3 -->
+</section>  <!-- End of section 6.3 -->
 
 <section id="chap06-resize"><title>Re-sizing Dialogs</title>  <!-- Section 6.4 -->
 <para>If you haven't already done so, try re-sizing the Order Management dialog.
@@ -453,6 +568,14 @@
 
 
 <section id="chap06-icons"><title>Creating and Using Icons</title>  <!-- Section 6.5 -->
+  <!--
+    6.5    Creating and Using Icons
+    - Icons - making them, getting 'em into the program. -
+    (1) Does the icon have to be a certain size, or will it get automatically shrunk?
+    (2) If it has to be a certain size, what's the size, and are there any restrictions as to the palette (I'm no expert, but using GIMP I'm given the option of saving as 16-bit, 24-bit or 32-bit color (or I think it's color!)).
+    (3) In the ~execute statement, I need to provide an ID. Does this mean I must have a *.rc file? Or can I invent an ID programmatically somehow - perhaps along the same lines as creating an ImageList?
+    (4) I want to assign my own icon as the dialog icon (that is, the icon at the extreme top left of a dialog). This is done (I understand) in the ~execute(..., <icon_ID> ) method (ooDialog Reference section 3.10.3).
+  -->
   <para>- Icons - making them, getting 'em into the program. - GIMP (GNU Image Manipulation Program) from
       http://www.gimp.org
 </para>
@@ -461,6 +584,11 @@
 <section id="chap06-utildlgs"><title>Utility Dialogs</title>   <!-- Section 6.6 -->
   <indexterm><primary>Password dialog</primary></indexterm>
   <indexterm><primary>Utility routine</primary><secondary>PasswordBox</secondary></indexterm>
+  <!--
+    6.6    Utility Dialogs - <- ??? <What's this??> (Is this the layer - process-entity-utility? Or just useful "canned" dialogs?)
+    - Mention password on startup to illustrate ooDialog use in otherwise non-ooDialog rexx programs.
+    "startup enterPW" - password is "Password".
+  -->
   <para>A subject not yet mentioned is the use of ooDialog utility classes and routines in non-ooDialog ooRexx programs.
     These are documented in Chapter 9 of the ooDialog Reference. The routines are very simple, and are often one-liners.
     As an example, the Exercise06 startup program
