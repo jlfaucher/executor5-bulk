@@ -471,6 +471,16 @@ int RexxEntry TestContextInitExit(RexxExitContext *context, int code, int subcod
     }
 
     context->SetContextVariable("test1", context->NewStringFromAsciiz("Hello World"));
+    // retrieve this to ensure this was set
+    RexxObjectPtr value = context->GetContextVariable("test1");
+    if (value == NULL)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Initialization Exit context variable set failure"));
+    }
+    else if (strcmp(context->ObjectToStringValue(value), "Hello World") != 0)
+    {
+        context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Initialization Exit context variable set failure"));
+    }
     return RXEXIT_HANDLED;
 }
 
@@ -494,7 +504,7 @@ int RexxEntry TestContextTerminationExit(RexxExitContext *context, int code, int
     {
         context->RaiseException1(Rexx_Error_System_service_user_defined, context->NewStringFromAsciiz("Termination Exit"));
     }
-    return RXEXIT_NOT_HANDLED;
+    return RXEXIT_HANDLED;
 }
 
 int RexxEntry TestContextScriptFunctionExit(RexxExitContext *context, int code, int subcode, PEXIT exitInfo)
