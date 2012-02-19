@@ -55,6 +55,9 @@
     6.1.2.3     Externalized Strings
     6.1.3     Application Function
     6.2     Popups and Parents            chap06-popups
+    6.2.1     Starting a Popup Dialog     chap06-popups-start
+    6.2.2     Offsetting Dialogs          chap06-popups-offset
+    6.2.3     Use of 'Interpret'          chap06-popups-interpret
     6.3     Icons and Lists               chap06-lviews
     6.3.1     The Icon View               chap06-lviews-icon
     6.3.2     The Report View             chap06-listview-report
@@ -63,6 +66,17 @@
     6.6     Utility Dialogs               chap06-utildlgs
 
 -->
+<!--  is the following useful??
+  - the OrderManagerView
+  We demonstrate/discuss:
+  - programmatic layout (can only use userDialog)
+  - modal sub-window
+  - Handling icons and showing them.
+  - Icons that when dbl-clicked startup other views
+  - Most menu items on OrderMgmgt dialog not implemented.
+  - e.g. no function for "New Order"
+-->
+
 <chapter id="chapSix"><title>An Application Workplace</title>
 <indexterm><primary>OrderManager component</primary></indexterm>
 <para>This chapter introduces the Order Management application, which is designed as a "workplace"
@@ -128,27 +142,18 @@
     component groups are essentially identical to those introduced in Exercises 4 and 5 respectively.
   </para>
   <para>The Order Management business component is, in this Exercise, implemented by a view class
-          only. In fact, there are two view classes, each in its own .rex file:
-            <computeroutput>OrderMgmtBaseView</computeroutput> and its subclass
-            <computeroutput>OrderMgmtView</computeroutput>.
-            <computeroutput>OrderMgmtBaseView</computeroutput> contains the code for handling a
-          re-sizable dialog, and is a subclass of <computeroutput>UserDialog</computeroutput> which
-          is required for any dialog that is dynamically re-sizable (see
-          <xref linkend="chap06-resize"/>). <computeroutput>OrderMgmtView</computeroutput> contains the
-          code specific to the Order Management application. The only reason for splitting the code
-          like this is that it seems to fall happily into these two parts. This reduces the amount
-          of code in any one class or file, and so (arguably) makes for better readability. </para>
+    only. In fact, there are two view classes, each in its own .rex file:
+    <computeroutput>OrderMgmtBaseView</computeroutput> and its subclass <computeroutput>OrderMgmtView</computeroutput>.
+    <computeroutput>OrderMgmtBaseView</computeroutput> contains the code for handling a
+    re-sizable dialog, and is a subclass of <computeroutput>UserDialog</computeroutput> which
+    is required for any dialog that is dynamically re-sizable (see <xref linkend="chap06-resize"/>).
+    <computeroutput>OrderMgmtView</computeroutput> contains the
+    code specific to the Order Management application. The only reason for splitting the code
+    like this is that it seems to fall happily into these two parts. This reduces the amount
+    of code in any one class or file, and so (arguably) makes for better readability.
+  </para>
   <para>Note that the "data" of the OrderManagement business component is the set of icons and their
-    associated data. In Exercise06, this data is effectively embedded in the View classes.
-    However, the code in the <computeroutput>OrderMgmtView</computeroutput> class uses an
-    <emphasis role="italic">interpret</emphasis> instruction to launch views of the
-    components represented by icons. Thus in principle, additional components can be added
-    without changing the code in the <computeroutput>OrdermgmtView</computeroutput> class. To
-    support this, a separate file - <computeroutput>RequiresList.rex</computeroutput> -
-    contains the set of <emphasis role="italic">::requires</emphasis> statements corresponding
-    to the components that might be surfaced. This is why the first executable statement in
-    the file <computeroutput>OrderMgmtView.rex</computeroutput> is
-    <emphasis role="italic">call "OrderMgmt\RequiresList.rex"</emphasis>. Examples of possible additional
+    associated data. Examples of possible additional
     components could be a "commodities" component which shows the commodities required to
     produce a given product; or a credit-check component that links to an external
     credit-check agency.</para>
@@ -197,9 +202,9 @@
         it's much more a design question than an ooDialog one, and so is not pursued here. Second, using ResDialog instead of
         RcDialog reduces the problem of paths, since resources such as icons and bitmaps are placed in the *.dll file.
       </para>
-      </section>  <!-- End of Section 6.2.1.1 -->
+      </section>  <!-- End of Section 6.1.2.1 -->
 
-    <section><title>.Application Usage</title>  <!-- Section 6.2.1.2 -->
+    <section><title>.Application Usage</title>  <!-- Section 6.1.2.2 -->
       <para>The startup file (<computeroutput>startup.rex</computeroutput>) applies application-wide
         defaults with the statement <computeroutput>.Application~setDefaults("O", , .false)</computeroutput>.
         However, the header file for each view class is included in its <computeroutput>newInstance</computeroutput>
@@ -254,63 +259,168 @@
 
   </section>  <!-- End of Section 6.1.2 -->
 
-  <section><title>Application Function</title>  <!-- Section 6.1.3 -->
+  <section><title>Application Function and Naming</title>  <!-- Section 6.1.3 -->
   <para>
-
-    <!--
-      - the OrderManagerView
-      is the "home" window. It'll have a sign-on and password field in a sub-dialog
-      (also programmer-designed) which comes modally  when the OrderManagemwent
-      window is established. Thus we demonstrate/discuss:
-      - programmatic layout (can only use userDialog)
-      - modal sub-window
-      - Handling icons and showing them.
-      - password dialog (shows asterisks when you type into it) - but can avoid
-      with startup param "skipPW" (but the dialog in the startup prog to show
-      use of ooDialog in normal rexx progs).
-      - Icons that when dbl-clicked startup other views
-      - Most menu items on OrderMgmgt dialog not implemented.
-
-      - app function very absent - e.g. all dialog data is hard-coded - same for Cust, Prod, Order - no real data in any file.
-      - e.g. no function for "New Order"
-    -->
-
-    Generally, in real applications, creating a Customer, or Product, or Order each requires a processmore
-    complex process than shown by the sample application. This means that real apps have a different GUI than that shown here.
-    But for present purposes, we'll assume Customer and Product get new records from a different place,
-      so new records can(in this sample app) be got by adding to the relevant data files.
-      However, OrderForm and Order are different - so have a component each.
-
-
-    Naming - explain diff between OrderMgmt and OrderMgr where appropriate.
-
+    The first thing to notice is that there is very little application function. For example, data is all hard-coded -
+    all Customers have identical data, as do all Products and all Orders (this will be fixed in the next exercise).
+    The second thing is that while there's an Order component to display sales orders, and an separate OrderForm component
+    for creating new sales orders, there is no way to create new Customers or products. This will not be
+    fixed in the next exercise, mainly because while this would give additional application function, no new ooDialog
+    features would be needed. (However, trivially, in the next exercise you will be able to change and add data by
+    updating a data files.)
   </para>
+  <para>Why a different dialog for creating as opposed to viewing and updating? Well, in real applications,
+    creating a Customer, or Product, or Order generally requires a more complex process than updating. For example,
+    creating a Customer often cannot be done without a credit check and
+    establishing the customer's bank details in the accounting system. In our Order Management application,
+    only Order has a separate Order Creation dialog. So, for present purposes, we'll assume that Customer and Product
+    creation takes place outside in a separate process outside the sample Order Management application.
+  </para>
+  <para>Although perhaps not immediately apparent, a specific naming convention has been used.
+    <indexterm><primary>Naming convention</primary><secondary>Components</secondary></indexterm>
+    <indexterm><primary>Component names</primary><secondary>Naming convention</secondary></indexterm>
+    This convention is useful to differentiate between the various parts of the application.
+    Thus "X Management" is the name given to the application as a whole (in our case "X" is "Sales Order").
+    Generally, a componentized application has one or more "coordinator" components that arrange for the
+    "choreographing" of other components. These are often called "Managers" - hence the "Order Manager"
+    component that provides the framework for the application. Finally, entities such as Customer
+    are given the entity name - "Customer", "Product", etc. - followed by the suffix "View", "Model",
+    or "Data" as discussed in <xref linkend="chapThree"/>.
+  </para>
+  <para>Finally, starting an application that can make changes to a business is generally guarded by some form of security.
+    When starting the sample application, this is represented by a password dialog, which is visible if you start the application
+    (in the Exercise06 folder) with the command <computeroutput>startup enterPW</computeroutput> instead of just
+    <computeroutput>startup</computeroutput>. Yes, this is the wrong way round, but its purpose is to illustrate the code
+    required for a password prompt. It is very simple, and uses one of the many ooDialog built-in dialogs (documented in the
+    ooDialog Reference sections 6.2 "Standard Dialog Classes) and 6.3 "Public Routines"), as follows:
+    <programlisting>
+    <![CDATA[
+      parse arg pwOption
+      if pwOption = "enterPW" then do
+        pwd = PasswordBox("Please enter your password","Sign In")  -- See ooDialoog Reference section 6.3.11.
+        if pwd \= "Password" then exit
+      end
+    ]]>
+    </programlisting>
+  </para>
+
   </section>  <!-- End of Section 6.1.3 -->
 
 </section>  <!-- End of section 6.1 -->
 
 <section id="chap06-popups"><title>Popups and Parents</title>  <!-- Section 6.2 -->
+  <para>This section addresses how the various dialogs in the Order Management application are launched.
+    First, the way in which dialogs are started is addressed. Second, the use of the
+    <emphasis role="italic">interpret</emphasis> statement in displaying dialogs
+    by double-clicking an icon in the Order Management window is discussed
+  </para>
+
+<section id="chap06-popups-start"><title>Starting a Popup Dialog</title>  <!-- Section 6.2.2 -->
   <indexterm><primary>Popups</primary><secondary>Parents</secondary></indexterm>
   <indexterm><primary>Parents</primary><secondary>Popups</secondary></indexterm>
   <!--
     6.2    Pop-Ups and Parents incl Non-Modal Dialogs
-    6.2.1    How get pop-up to pop up away from parent? Answer - have to code it yourself.
-    6.2.2    Starting a dialog from a dialog (incl interpret statement - pointer to later)
-    Use of "interpret", better would be to have a class object - but later we'll need interpret (won't we?) for the ObjectMgr.
-    Leave "interpret" in but mention it – say class object would be better - show how can be fixed in later exercise – where
-    this will be moved to a support class (ObjectMgr).
   -->
 
-  <section id="chap06-nonmodal"><title>Non-Modal Dialogs</title>  <!-- Section 6.2.1 -->
-    <para>
-    </para>
+  <para>In previous chapters, dialogs have been started using the statement
+    <emphasis role="italic">self~execute(...)</emphasis>. The <emphasis>~execute</emphasis> method
+    made the dialogs "modal", that is, access to other dialogs was blocked until the dialog was closed
+    (see also ooDialog Reference section 2.2.11). A good example of a modal dialog is the Help-About
+    dialog in Exercise05. While this was open, the Product View dialog was blocked.
+  </para>
+  <para>The dialogs in Exercise06 are not modal; they are "amodal" or "modeless". Any of them can be accessed
+    by the user at any time. A modeless dialog is
+    created by using the <emphasis role="italic">~popup</emphasis> or <emphasis role="italic">~popUpAsChild</emphasis>
+    methods. Only the initial dialog <computeroutput>OrderMgrView</computeroutput> is started with
+    <emphasis role="italic">~execute</emphasis>.
+    All others are started with <emphasis role="italic">~popUpAsChild</emphasis>.
+    (Note that <computeroutput>ProductView</computeroutput>'s "About" dialog is still modal: it blocks access
+    to the specific instance of <computeroutput>ProductView</computeroutput> from which it is launched; other instances
+    of <computeroutput>ProductView</computeroutput> are unaffected.)
+  </para>
+  <para>The difference between a dialog astarted with <emphasis role="italic">~popup</emphasis> as opposed to
+    <emphasis role="italic">~popUpAsChild</emphasis> is that the former is closed when the parent closes, whereas
+    with the latter, if the parent is closed the child remains. And it is the latter -
+    <emphasis role="italic">~popUpAsChild</emphasis> - that best fits the requirements of the Order Management application.
+    Thus while <computeroutput>OrderMgr</computeroutput> is started with <emphasis role="italic">~execute</emphasis>
+    all other Order Management dialogs are started with <emphasis role="italic">~popUpAsChild</emphasis>. Consider, for example,
+    <computeroutput>CustomerListView</computeroutput>:
+    <programlisting>
+    <![CDATA[
+      ::METHOD activate UNGUARDED
+        expose rootDlg
+        use arg rootDlg
+        if rootDlg = "SA" then do			-- If standalone operation required
+          rootDlg = self				      -- To pass on to children
+          self~execute("SHOWTOP","IDI_CUSTLIST_DLGICON")
+        end
+        else self~popupAsChild(rootDlg, "SHOWTOP", ,"IDI_CUSTLIST_DLGICON")
+        return
+    ]]>
+    </programlisting>
+    The first thing to note about this code is that it provides for dialogs to be started in one of two ways: either
+    normally from the Order Management dialog or from one of the list view dialogs, or, for testing purposes,
+    in "stand-alone" mode; that is directly,
+    without first having to launch <computeroutput>OrderMgr</computeroutput>.
+    See <xref linkend="apx-satesting"/> for a discussion of stand-alone testing.
+  </para>
+
   </section>  <!-- End of Section 6.2.1 -->
 
-  <section id="chap06-dlgStart"><title>Starting a Popup Dialog</title>  <!-- Section 6.2.2 -->
-    <para>
+  <section id="chap06-popups-offset"><title>Offsetting Dialogs</title>  <!-- Section 6.2.2 -->
+    <para>When creating a resource file for a dialog, it is unusual to define the position of the dialog
+      on the When a dialog is started, from a "parent" dialog, it appears on
+      <!-- How get pop-up to pop up away (offset) from parent? Answer - have to code it yourself.
+
+      Test in ...\Ancillary\Tests\DragDrop:
+
+      In DMHarness:
+
+        ::METHOD startSourceDlg UNGUARDED
+          parentPos = self~getRealPos             /* ooDialog Ref 4.4.22 */
+          .DMSource~newInstance(self,parentPos)
+
+     In DMSource:
+
+     ::method newInstance class
+       use arg parent, parentPos
+       dlg = self~new
+       dlg~activate(parent,parentPos)
+       return
+
+     ::method initDialog
+       expose ... parentpos
+       ...
+       parentPos~incr(100,100)                  /* ooDialog Ref 9.11.7 */
+       self~moveTo(parentPos, 'SHOWWINDOW')     /* ooDialog Ref 4.4.35 */
+       self~ensureVisible                       /* ooDialog Ref 3.15.7 */
+
+      -->
+
     </para>
   </section>  <!-- End of Section 6.2.2 -->
 
+  <section id="chap06-popups-interpret"><title>Use of Interpret</title>  <!-- Section 6.2.3 -->
+    <!--
+      Starting a dialog from a dialog (incl interpret statement - pointer to later)
+      Use of "interpret", better would be to have a class object - but later we'll need interpret (won't we?) for the ObjectMgr.
+      Leave "interpret" in but mention it – say class object would be better - show how can be fixed in later exercise – where
+      this will be moved to a support class (ObjectMgr).
+    -->
+    <para>
+      <!-- Fragment: -->However, the code in the <computeroutput>OrderMgmtView</computeroutput> class uses an
+      <emphasis role="italic">interpret</emphasis> instruction to launch views of the
+      components represented by icons. Thus in principle, additional components can be added
+      without changing the code in the <computeroutput>OrdermgmtView</computeroutput> class. To
+      support this, a separate file - <computeroutput>RequiresList.rex</computeroutput> -
+      contains the set of <emphasis role="italic">::requires</emphasis> statements corresponding
+      to the components that might be surfaced. This is why the first executable statement in
+      the file <computeroutput>OrderMgmtView.rex</computeroutput> is
+      <emphasis role="italic">call "OrderMgmt\RequiresList.rex"</emphasis>.
+    </para>
+
+
+  </section>  <!-- End of Section 6.2.3 -->
 
 </section>  <!-- End of Section 6.2 -->
 
