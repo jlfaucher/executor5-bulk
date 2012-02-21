@@ -164,32 +164,33 @@
   </section>  <!-- End of section 6.1.1 -->
 
   <section id="chap06-struc-impls"><title>Some Implications</title>  <!-- Section 6.1.2 -->
-    <para>Choosing this folder structure for the development of the application has these
-      design implications: file paths, the use of <computeroutput>.Application</computeroutput>, ????
+    <para>Choosing this folder structure for the development of the application has certain
+      design implications worth mentioning. These are: file paths, the use of <computeroutput>.Application</computeroutput>,
+      and the handling of externalized human-readable strings.
     </para>
     <section id="chap06-struc-impls-paths"><title>File Paths</title>  <!-- Section 6.1.2.1 -->
       <para>When an ooRexx program is run, the current (or
-        "home") directory is that from which the program is started. (That is, if a
+        "home") directory is that from which the program is started. That is, if a
         program is started on a command prompt like this: <computeroutput>c:\aaa\bbb>myprog.rex</computeroutput>,
         then the current directory will be <computeroutput>c:\aaa\bbb</computeroutput>. However, if the program
         is started like this: <computeroutput>c:\aaaa>bbb\myprog.rex</computeroutput>, then the current directory
-        will be <computeroutput>c:\aaa</computeroutput> .) In Exercise06,
+        will be <computeroutput>c:\aaa</computeroutput>. In Exercise06,
         all programs are started from the <computeroutput>Exercise06</computeroutput>
-        folder. Thus any relative paths must be relative to
-        <computeroutput>Exercise06</computeroutput>. However, using ResEdit with relative
+        folder. Thus any relative paths must be relative to the
+        <computeroutput>Exercise06</computeroutput> folder. However, using ResEdit with relative
         paths, the path for a resource such as a dialog icon is relative to the folder in
         which the *.rc file is created. For example, if <computeroutput>CustomerView.rc</computeroutput>
         is created in the <computeroutput>Customer</computeroutput> folder, then the icon will be specified
         in <computeroutput>CustomerView.rc</computeroutput> with the path
         <computeroutput>".\\bmp\\Customer.ico"</computeroutput> So the path to the icon
         resource in the *.rc file will be wrong, and the dialog icon will not be shown.</para>
-      <para>The solution is either to edit the *.rc file and change the icon resource's path, or (much better)
+      <para>The solution is either to edit the *.rc file and change the icon resource's path, or (better)
         create the *.rc file in the Exercise06 folder and then move it into the
         <computeroutput>Customer</computeroutput> folder.
       </para>
       <para>Considering the implication of paths also applies to other parts of the code, such
-        header files specified in the
-        <computeroutput>.Application~addToConstDir(...)</computeroutput> statement.
+        header files specified in the <emphasis role="italic">.Application~addToConstDir(...)</emphasis> statement and
+        dialog creation statements such as <emphasis role="italic">dlg = .CustomerView~new(...)</emphasis>.
       </para>
       <para>In summary, all paths (if not absolute) must be relative to the folder from which the
         program is started. This is why, when running a stand-alone test such as
@@ -199,22 +200,27 @@
       </para>
       <para>This discussion on paths prompts two thoughts (at least). First, is there not a way to have some support code
         manage paths, so that each component asks this support code for the path it should use? While this may be feasible,
-        it's much more a design question than an ooDialog one, and so is not pursued here. Second, using ResDialog instead of
-        RcDialog reduces the problem of paths, since resources such as icons and bitmaps are placed in the *.dll file.
+        it's not specifically an ooDialog questions, and so is not pursued here. Second, using the
+        <computeroutput>ResDialog</computeroutput> class instead of <computeroutput>RcDialog</computeroutput>
+        reduces the problem of paths, since resources such as icons and bitmaps are placed in the *.dll file.
       </para>
       </section>  <!-- End of Section 6.1.2.1 -->
 
     <section><title>.Application Usage</title>  <!-- Section 6.1.2.2 -->
-      <para>The startup file (<computeroutput>startup.rex</computeroutput>) applies application-wide
-        defaults with the statement <computeroutput>.Application~setDefaults("O", , .false)</computeroutput>.
-        However, the header file for each view class is included in its <computeroutput>newInstance</computeroutput>
-        method; for example: <computeroutput>.Application~addToConstDir("Customer\CustomerView.h")</computeroutput>.
+      <para>The file (<computeroutput>startup.rex</computeroutput>) applies application-wide
+        defaults with the statement <emphasis role="italic">.Application~setDefaults("O", , .false)</emphasis> .
+        However, the header file for each view class is included at the beginning of its file. For example,
+        <emphasis role="italic">.Application~addToConstDir("Customer\CustomerView.h")</emphasis> is the first
+        executable statement in the file <computeroutput>CustomerView.rex</computeroutput>.
         For a shipped application that includes multiple classes, it would be much better to provide all the
-        <computeroutput>~addToConstDir</computeroutput> statements in the startup file after, say, the
-        <computeroutput>~setDefaults</computeroutput> statement. However, because at this stage the application
-        is still in a pre-deployment state, and each component needs to be able to be unit-tested (see "Stand-alone Testing" below),
-        it was deemed better to include <computeroutput>~addToConstDir</computeroutput> statements in each view file
-        (of course an alternative is to include them in the unit-test startup programs).
+        <emphasis role="italic">~addToConstDir()</emphasis> statements in the startup file after, say, the
+        <computeroutput>~setDefaults()</computeroutput> statement. However, because at this stage the application
+        is still in a pre-deployment state, and each component needs to be able to be unit-tested
+        (see <xref linkend="apx-satesting"/>),
+        it was deemed better to include the <emphasis role="italic">~addToConstDir()</emphasis> statements in each view file.
+        An alternative was to duplicate them in the unit-test startup programs, but code duplication is generally not the best strategy.
+        <indexterm><primary>Unit-testing</primary><secondary>Placement of .Application statement</secondary></indexterm>
+        <indexterm><primary>.Application</primary><secondary>and Unit-Testing</secondary></indexterm>
       </para>
     </section>  <!-- End of Section 6.1.2.2 -->
 
@@ -232,7 +238,7 @@
         An immediate solution is to display the translated strings from within the program rather than from the *.rc file.
         The <emphasis role="italic">initDialog</emphasis> method is a good place to do this. Try inserting the following
         in <computeroutput>CustomerView.rex</computeroutput>, say just before
-        the statement <computeroutput>self~getData</computeroutput> in <emphasis role="italic">initDialog</emphasis>:
+        the statement <emphasis role="italic">self~getData</emphasis> in the <emphasis role="italic">initDialog</emphasis> method:
         <programlisting>
         <![CDATA[
           custNameLabel = self~newStatic("IDC_CUST_LBL_CUSTNAME")
@@ -261,20 +267,23 @@
 
   <section><title>Application Function and Naming</title>  <!-- Section 6.1.3 -->
   <para>
-    The first thing to notice is that there is very little application function. For example, data is all hard-coded -
-    all Customers have identical data, as do all Products and all Orders (this will be fixed in the next exercise).
-    The second thing is that while there's an Order component to display sales orders, and an separate OrderForm component
-    for creating new sales orders, there is no way to create new Customers or products. This will not be
-    fixed in the next exercise, mainly because while this would give additional application function, no new ooDialog
-    features would be needed. (However, trivially, in the next exercise you will be able to change and add data by
-    updating a data files.)
+    One of the first things to notice about Exercise06 is that there is very little application function.
+    For example, data is all hard-coded, and all Customers have identical data, as do all Products and all Orders
+    (this will be fixed in the next exercise).
+    The second thing is that while there's an Order component to display and change existing sales orders,
+    there's a separate <computeroutput>OrderForm</computeroutput> component
+    for creating new sales orders. But there is no way to create new Customers or Products. This will not be
+    fixed in the next exercise, mainly because providing this function would not exercise any new ooDialog
+    features. However, trivially, in the next exercise data will be able to be changed or added
+    by updating a data file.
   </para>
-  <para>Why a different dialog for creating as opposed to viewing and updating? Well, in real applications,
+  <para>The reason for having a different dialog for creating as opposed to viewing and updating is that in real applications,
     creating a Customer, or Product, or Order generally requires a more complex process than updating. For example,
     creating a Customer often cannot be done without a credit check and
     establishing the customer's bank details in the accounting system. In our Order Management application,
-    only Order has a separate Order Creation dialog. So, for present purposes, we'll assume that Customer and Product
-    creation takes place outside in a separate process outside the sample Order Management application.
+    only the <computeroutput>Order</computeroutput> component has a separate Order Creation dialog, in order to exercise,
+    in the next chapter, more ooDialog capabilities. So, for present purposes,
+    we assume that Customer and Product creation takes place outside of the sample Order Management application.
   </para>
   <para>Although perhaps not immediately apparent, a specific naming convention has been used.
     <indexterm><primary>Naming convention</primary><secondary>Components</secondary></indexterm>
@@ -289,10 +298,10 @@
   </para>
   <para>Finally, starting an application that can make changes to a business is generally guarded by some form of security.
     When starting the sample application, this is represented by a password dialog, which is visible if you start the application
-    (in the Exercise06 folder) with the command <computeroutput>startup enterPW</computeroutput> instead of just
-    <computeroutput>startup</computeroutput>. Yes, this is the wrong way round, but its purpose is to illustrate the code
+    (in the Exercise06 folder) with the command <emphasis role="italic">startup enterPW</emphasis> instead of just
+    <emphasis role="italic">startup</emphasis>. Yes, this is the wrong way round, but its purpose is to illustrate the code
     required for a password prompt. It is very simple, and uses one of the many ooDialog built-in dialogs (documented in the
-    ooDialog Reference sections 6.2 "Standard Dialog Classes) and 6.3 "Public Routines"), as follows:
+    ooDialog Reference sections 6.2 "Standard Dialog Classes" and 6.3 "Public Routines"), as follows:
     <programlisting>
     <![CDATA[
       parse arg pwOption
@@ -312,39 +321,39 @@
   <para>This section addresses how the various dialogs in the Order Management application are launched.
     First, the way in which dialogs are started is addressed. Second, the use of the
     <emphasis role="italic">interpret</emphasis> statement in displaying dialogs
-    by double-clicking an icon in the Order Management window is discussed
+    by double-clicking an icon in the Order Management window is discussed.
   </para>
 
 <section id="chap06-popups-start"><title>Starting a Popup Dialog</title>  <!-- Section 6.2.2 -->
   <indexterm><primary>Popups</primary><secondary>Parents</secondary></indexterm>
   <indexterm><primary>Parents</primary><secondary>Popups</secondary></indexterm>
-  <!--
-    6.2    Pop-Ups and Parents incl Non-Modal Dialogs
-  -->
-
   <para>In previous chapters, dialogs have been started using the statement
-    <emphasis role="italic">self~execute(...)</emphasis>. The <emphasis>~execute</emphasis> method
+    <emphasis role="italic">self~execute(...)</emphasis>. The <emphasis role="italic">~execute</emphasis> method
     made the dialogs "modal", that is, access to other dialogs was blocked until the dialog was closed
     (see also ooDialog Reference section 2.2.11). A good example of a modal dialog is the Help-About
-    dialog in Exercise05. While this was open, the Product View dialog was blocked.
+    dialog in Exercise05. While this is open, the Product View dialog is blocked.
   </para>
   <para>The dialogs in Exercise06 are not modal; they are "amodal" or "modeless". Any of them can be accessed
     by the user at any time. A modeless dialog is
-    created by using the <emphasis role="italic">~popup</emphasis> or <emphasis role="italic">~popUpAsChild</emphasis>
-    methods. Only the initial dialog <computeroutput>OrderMgrView</computeroutput> is started with
-    <emphasis role="italic">~execute</emphasis>.
+    created by using the <emphasis role="italic">~popup</emphasis> or <emphasis role="italic">~popupAsChild</emphasis>
+    methods. In the sample Order Management application, only the initial dialog <computeroutput>OrderMgrView</computeroutput>
+    is started with <emphasis role="italic">~execute</emphasis>.
     All others are started with <emphasis role="italic">~popUpAsChild</emphasis>.
     (Note that <computeroutput>ProductView</computeroutput>'s "About" dialog is still modal: it blocks access
     to the specific instance of <computeroutput>ProductView</computeroutput> from which it is launched; other instances
-    of <computeroutput>ProductView</computeroutput> are unaffected.)
+    of <computeroutput>ProductView</computeroutput> are unaffected, as are other dialogs.)
   </para>
-  <para>The difference between a dialog astarted with <emphasis role="italic">~popup</emphasis> as opposed to
-    <emphasis role="italic">~popUpAsChild</emphasis> is that the former is closed when the parent closes, whereas
-    with the latter, if the parent is closed the child remains. And it is the latter -
-    <emphasis role="italic">~popUpAsChild</emphasis> - that best fits the requirements of the Order Management application.
+  <para>The difference between a dialog started with <emphasis role="italic">~popup</emphasis> as opposed to
+    <emphasis role="italic">~popupAsChild</emphasis> is that ??? <!-- ******* -->
+        <!-- if startupcustomerlist, if open a customer, then close list, cust also closes. But if use startup, it doesn't. -->
+    <indexterm><primary>Popups</primary><secondary>PopupAsChild</secondary></indexterm>
+    <indexterm><primary>PopupAsChild</primary></indexterm>
+    And it is the latter -
+    <emphasis role="italic">~popupAsChild</emphasis> - that best fits the requirements of the Order Management application.
     Thus while <computeroutput>OrderMgr</computeroutput> is started with <emphasis role="italic">~execute</emphasis>
-    all other Order Management dialogs are started with <emphasis role="italic">~popUpAsChild</emphasis>. Consider, for example,
-    <computeroutput>CustomerListView</computeroutput>:
+    all other Order Management dialogs are started with <emphasis role="italic">~popupAsChild</emphasis>. Consider, for example,
+    the <emphasis role="italic">activate></emphasis> method of <computeroutput>CustomerListView</computeroutput>
+    (called from the <emphasis role="italic">newInstance</emphasis> class method):
     <programlisting>
     <![CDATA[
       ::METHOD activate UNGUARDED
@@ -358,11 +367,18 @@
         return
     ]]>
     </programlisting>
-    The first thing to note about this code is that it provides for dialogs to be started in one of two ways: either
-    normally from the Order Management dialog or from one of the list view dialogs, or, for testing purposes,
-    in "stand-alone" mode; that is directly,
-    without first having to launch <computeroutput>OrderMgr</computeroutput>.
-    See <xref linkend="apx-satesting"/> for a discussion of stand-alone testing.
+    This method illustrates the two ways of starting a dialog. For stand-alone testing
+    (see <xref linkend="apx-satesting"/>),
+    the dialog is started using <emphasis role="italic">self~execute()</emphasis>.
+    In normal operation, however, it is started by <emphasis role="italic">self~popupAsChild(...)</emphasis>.
+    Notice that the first parameter of <emphasis role="italic">~popupAsChild(...)</emphasis> is the parent
+    dialog <emphasis role="italic"></emphasis>, which is passed to the <emphasis role="italic">newInstance</emphasis>
+    class method and thence as the parameter <emphasis role="italic">rootDlg</emphasis> to the
+    <emphasis role="italic">activate</emphasis> method. This dialog, the <computeroutput>CustomerListView</computeroutput> class,
+    is both a child of the <computeroutput>OrderMgr</computeroutput> and parent of the <computeroutput>Customer</computeroutput> class.
+    Later in <computeroutput>CustomerListView</computeroutput>, a Customer is displayed by the user double-clicking on an item in
+    the List View. The code that surfaces the Customer is as follows:
+
   </para>
 
   </section>  <!-- End of Section 6.2.1 -->
