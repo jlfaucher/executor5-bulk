@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-07 26Jan12
+<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-08 21Feb12
      5.1 - Dialog Initiation - using the newInstance class method.
      5.2 - Compiling a binary resource file
      5.3 - Differences between RcDialog and ResDialog
@@ -54,7 +54,9 @@
      v00-06 29Nov11: Updated to discuss disabling close (or doing something to
                      over-ride normal Windows behaviour).
      v00-07 26Jan12: Various minor updates to wording.
+     v00-08 21Feb12: Added section 5.3.5 about Min/Max buttons on a dialog.
 -->
+
 <chapter id="chapFive">
     <title>Using Binary Resource Dialogs</title>
     <indexterm>
@@ -153,7 +155,7 @@
             </listitem>
           </itemizedlist>
         </para>
-        <para>At run-time, a ResDialog class needs only the *.dll the *.h files.
+        <para>At run-time, a ResDialog class needs only the *.dll and the *.h files.
         <indexterm><primary>Resource files</primary><secondary>ResDialog</secondary></indexterm>
         <indexterm><primary>ResDialog</primary><secondary>Resource files needed</secondary></indexterm>
         </para>
@@ -453,6 +455,41 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
         <!-- End of section 5.3.4.2 -->
       </section>
       <!-- End of section 5.3.4 -->
+      <section><title>Minimize and Maximize Buttons</title>  <!-- Section 5.3.5 -->
+      <indexterm><primary>Minimize Button</primary></indexterm>
+      <indexterm><primary>Maximize Button</primary></indexterm>
+      <para>The Product View dialog has a minimize button and a disabled maximize button,
+      both at the top right of the dialog to the right of the title bar and to the left
+      of the close button. The minimize button is defined in the *.rc file.
+      When only one button
+      is specified, Windows automatically includes both buttons, but with the non-specified
+      button being disabled.
+      </para>
+      <para>If you look in <computeroutput>ProductView.rc</computeroutput> file, you will
+      see the following styles defined for the dialog (slightly re-formatted for readability):
+      <programlisting>
+      <![CDATA[
+      STYLE DS_3DLOOK | DS_CENTER | DS_SHELLFONT  | WS_CAPTION | WS_VISIBLE |
+            WS_GROUP  | WS_POPUP  | WS_THICKFRAME | WS_SYSMENU
+      ]]>
+      </programlisting>
+      So where is the <computeroutput>WS_MINIMIZEBOX</computeroutput> style (as mentioned in section
+      8.4 of the ooDialog Reference)? Well, one of the curiosities of Windows, probably
+      historical, is that both the <computeroutput>WS_MINIMIZEBOX</computeroutput> style
+      and the <computeroutput>WS_GROUP</computeroutput> style (defined in the Windows
+      <computeroutput>WinUser.h</computeroutput> file) map to the same numeric value (0x00020000L).
+      Also, the <computeroutput>WS_MAXIMIZEBOX</computeroutput> and <computeroutput>WS_TABSTOP</computeroutput>
+      styles both map the same number (0x00010000L).
+      Clearly ResEdit likes the older form, and includes a <computeroutput>WS_GROUP</computeroutput>
+      when you specify a Minimize Box. Luckily, ooDialog accepts either.
+      </para>
+      <para>You might try adding either or both of the styles <computeroutput>WS_MINIMIZEBOX</computeroutput>
+        and <computeroutput>WS_MAXIMIZEBOX</computeroutput> to <computeroutput>CustomerView.rc</computeroutput>
+        in Exercise04. The line to change is the one starting: <computeroutput>STYLE DS_3DLOOK</computeroutput>.
+        Then run the exercise,and check the result. You should see the Customer dialog as before except for
+        the minimize and/or maximize buttons.
+      </para>
+      </section> <!-- End of section 5.3.5 -->
     </section>
     <!-- End of section 5.3 -->
 
