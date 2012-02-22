@@ -51,6 +51,254 @@
   the <link linkend="clsWindow">Window</link> class inherits the WindowBase class.
 </para>
 
+<section id="sctMethodsWindowBase"><title>Method Table</title>
+<para>
+  The following table lists the attribute methods, and instance methods of the
+  <computeroutput>WindowBase</computeroutput> Mixin Class.
+</para>
+<table id="tblMethodsWindowBase" frame="all"> <title>WindowBase Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.75in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrFactorX">factorX</link></entry>
+<entry>The horizontal size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="atrFactorY">factorY</link></entry>
+<entry>The vertical size of one dialog unit in pixels. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="atrHwnd">hwnd</link></entry>
+<entry>The window handle of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="atrInitCode">initCode</link></entry>
+<entry>Reflects if the object initialization was successful.</entry>
+</row>
+<row>
+<entry><link linkend="atrPixelCX">pixelCX</link></entry>
+<entry>The width of the dialog in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="atrPixelCY">pixelCY</link></entry>
+<entry>The height of the dialog in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="atrSizeX">sizeX</link></entry>
+<entry>The width of the dialog in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry><link linkend="atrSizeY">sizeY</link></entry>
+<entry>The height of the dialog in dialog units. (Inaccurate.)</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthChildWindowFromPoint">childWindowFromPoint</link></entry>
+<entry>Determines which, if any, of the child windows belonging to this dialog contains the specified point.</entry>
+</row>
+<row>
+<entry><link linkend="mthClear">clear</link></entry>
+<entry>Clears the client area of the dialog by painting it with the background brush.</entry>
+</row>
+<row>
+<entry><link linkend="mthClient2screen">client2screen</link></entry>
+<entry>Converts a point, or points, in client-area coordinates of the dialog to its screen coordinates.</entry>
+</row>
+<row>
+<entry><link linkend="mthClientRect">clientRect</link></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the dialog's client area in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="mthClientToScreen">clientToScreen</link></entry>
+<entry>Converts client-area coordinates of the dialog to its screen coordinates.</entry>
+</row>
+<row>
+<entry><link linkend="mthDisable">disable</link></entry>
+<entry>Disables the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthDisplay">display</link></entry>
+<entry>Shows or hides the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthDraw">draw</link></entry>
+<entry>Redraws the entire client area of the dialog immediately.</entry>
+</row>
+<row>
+<entry><link linkend="mthEnable">enable</link></entry>
+<entry>Enables the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthForegroundWindow">foregroundWindow</link></entry>
+<entry>Returns the handle of the window in the foreground.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetClientRect">getClientRect</link></entry>
+<entry>Returns the dimensions of the dialog's client area.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetExStyleRaw">getExStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the dialog's extended style flags.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetID">getID</link></entry>
+<entry>Retrieves the identification number of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetPos">getPos</link></entry>
+<entry>Returns the position of the dialog in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthGetRealPos">getRealPos</link></entry>
+<entry>Returns the position of the dialog in pixels as a <computeroutput>Point</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetRealSize">getRealSize</link></entry>
+<entry>Returns the size of the dialog in pixels as a <computeroutput>Size</computeroutput> object.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetRect">getRect</link></entry>
+<entry>Returns the dimesions of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetSize">getSize</link></entry>
+<entry>Returns the size of the dialog in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthGetStyleRaw">getStyleRaw</link></entry>
+<entry>Retrieves the numeric value of the dialog's style flags.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetText">getText</link></entry>
+<entry>Gets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetTextSizePx">getTextSizePx</link></entry>
+<entry>Calculates the size needed for a string in pixels <emphasis role="bold">(preferred method.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthGetTextSizeScreen">getTextSizeScreen</link></entry>
+<entry>Calculates the size needed for a string in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="mthHide">hide</link></entry>
+<entry>Hides the dialog by marking it invisible and immediately redrawing the area it occupies.</entry>
+</row>
+<row>
+<entry><link linkend="mthHideFast">hideFast</link></entry>
+<entry>Marks the dialog as invisible, no redrawing is done.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsEnabled">isEnabled</link></entry>
+<entry>Tests if the dialog is enabled.</entry>
+</row>
+<row>
+<entry><link linkend="mthIsVisible">isVisible</link></entry>
+<entry>Tests if the dialog is visible.</entry>
+</row>
+<row>
+<entry><link linkend="mthMove">move</link></entry>
+<entry>Moves the dialog to the position specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthMoveTo">moveTo</link></entry>
+<entry>Moves the dialog to the position specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="mthMoveWindow">moveWindow</link></entry>
+<entry>Changes the position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthRedraw">redraw</link></entry>
+<entry>Redraws the entire dialog window and all its child windows immediately.</entry>
+</row>
+<row>
+<entry><link linkend="mthRedrawClient">redrawClient</link></entry>
+<entry>Redraws the entire client area of the dialog immediately.</entry>
+</row>
+<row>
+<entry><link linkend="mthResize">resize</link></entry>
+<entry>Resizes the dialog to the size specified in dialog units <emphasis role="bold">(not accurate.)</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthResizeTo">resizeTo</link></entry>
+<entry>Resizes the dialog to the size specified in pixels.</entry>
+</row>
+<row>
+<entry><link linkend="mthScreen2client">screen2client</link></entry>
+<entry>Converts a point or points in screen coordinates to the client-area coordinates of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthScreenToClient">screenToClient</link></entry>
+<entry>Converts screen coordinates to the client-area coordinates of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessage">sendMessage</link></entry>
+<entry>Sends a Windows message to the underlying dialog and returns its response as a whole number.</entry>
+</row>
+<row>
+<entry><link linkend="mthSendMessageHandle">sendMessageHandle</link></entry>
+<entry>Sends a Windows message to the underlying dialog and returns its response as a handle.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetRect">setRect</link></entry>
+<entry>Moves and / or resizes the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetText">setText</link></entry>
+<entry>Sets the text, the caption, of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetTitle">setTitle</link></entry>
+<entry>Sets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetWindowPos">setWindowPos</link></entry>
+<entry>Changes the size, position, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowfast">showFast</link></entry>
+<entry>Marks the dialog as visible.</entry>
+</row>
+<row>
+<entry><link linkend="mthSizeWindow">sizeWindow</link></entry>
+<entry>Changes the size, visibility, and Z order of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthTitle">title</link></entry>
+<entry>Gets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthTitleEquals">title=</link></entry>
+<entry>Sets the text of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthUpdate">update</link></entry>
+<entry>Invalidates the entire client area of the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthWindowRect">windowRect</link></entry>
+<entry>Returns a <computeroutput>Rect</computeroutput> object containng the dimensions of the dialog in pixels.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
 <section id="atrFactorX"><title>factorX (Attribute)</title>
 <indexterm><primary>factorX</primary></indexterm>
 <indexterm><primary>WindowBase</primary><secondary>factorX</secondary></indexterm>

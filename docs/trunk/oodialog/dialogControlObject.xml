@@ -167,7 +167,7 @@
 </row>
 <row>
 <entry><link linkend="mthConnectCharEvent">connectCharEvent</link></entry>
-<entry>Connects a WM_CHAR message sent to the control to a method in the Rexx dialog.</entry>
+<entry>Connects a character event notification sent to the control to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link></entry>
@@ -182,16 +182,16 @@
 <entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
 </row>
 <row>
-<entry><link linkend="wedcoCreatePen">createPen</link></entry>
-<entry>Creates a logical pen that has the specified style, width, and color.</entry>
-</row>
-<row>
 <entry><link linkend="wedcoCreateFont">createFont</link></entry>
 <entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
 </row>
 <row>
 <entry><link linkend="wedcoCreateFontEx">createFontEx</link></entry>
 <entry>Retrieves a handle to a logical font from the system font manager</entry>
+</row>
+<row>
+<entry><link linkend="wedcoCreatePen">createPen</link></entry>
+<entry>Creates a logical pen that has the specified style, width, and color.</entry>
 </row>
 <row>
 <entry><link linkend="mthData">data</link></entry>
@@ -928,7 +928,62 @@ Generic form:
   <varlistentry id="rmkConnectCharEvent"><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The operating system translates the numeric <link linkend="clsVK">virtual</link> key code produced by a key down /
+    key up combination into a numeric <emphasis role="italic">character</emphasis> code. The character code is sent to
+    the window with the keyboard focus in a character event notification. For enhanced 101-key and 102-key keyboards,
+    the <link linkend="evtDialogControlCHAR">character</link> event handler will also recieve extended key
+    notifications. The extended keys are the INS, DEL, HOME, END, PAGE UP, PAGE DOWN and the arrow keys in the clusters
+    to the left of the numeric keypad.
+  </para>
+  <para>
+    There is not a one to one correspondence between the numeric value of a virtual key code and the numeric character
+    code for the same key. For example the character key code for the dash <emphasis role="italic">-</emphasis> is 45,
+    but 45 is the virtual key code for INSERT. I.e., <computeroutput>45 == .VK~INSERT</computeroutput> and
+    <computeroutput>45~d2c == -</computeroutput>.
+  </para>
+  <para>
+    The character codes expected to reach the <link linkend="evtDialogControlCHAR">character</link> event handler are in
+    the following table. The explanation for the character event handler describes how to determine which character is
+    received.
+
+    <table id="tblCharacterCode" frame="all"> <title>Numeric Character Code for the Character Event</title>
+    <tgroup cols="2">
+    <thead>
+    <row>
+    <entry>ASCII Characters</entry><entry>Numeric Codes</entry>
+    </row>
+    </thead>
+    <tbody>
+    <row>
+    <entry>Ctrl-A through Ctrl-Z</entry><entry>1 through 26</entry>
+    </row>
+    <row>
+    <entry>Ctrl-[</entry><entry>27</entry>
+    </row>
+    <row>
+    <entry>Ctrl-]</entry><entry>29</entry>
+    </row>
+    <row>
+    <entry>Normal alphabetic characters</entry><entry>use <computeroutput>d2c</computeroutput></entry>
+    </row>
+    <row>
+    <entry>Punctuation characters</entry><entry>use <computeroutput>d2c</computeroutput></entry>
+    </row>
+    <row>
+    <entry>Numeric characters</entry><entry>use <computeroutput>d2c</computeroutput></entry>
+    </row>
+    <row>
+    <entry>Extended keys</entry><entry>use the <link linkend="clsVK">VK</link>class</entry>
+    </row>
+    </tbody></tgroup>
+    </table>
+  </para>
+  <para>
+    <emphasis role="bold">Note</emphasis> that the Microsoft documentation states that character notifications are only
+    generated for keys that are mapped to ASCII characters by the keyboard driver. This implies that different keyboards
+    may produce different character codes than those listed above. The list was produced through experimentation by the
+    author, using an extended keyboard, and is in general correct. Some specific details may be different for other
+    keyboards.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -946,7 +1001,8 @@ Generic form:
   <listitem>
   <para>
     This is a complete working example. It can be used to experiment with the <emphasis
-    role="italic">connectCharEvent</emphasis> method:
+    role="italic">connectCharEvent</emphasis> method. As the user types in the edit box, information from the character
+    event are printed to the console. This allows the user to see what key presses reach the application as characters:
 <programlisting>
 <![CDATA[
 
@@ -1002,7 +1058,7 @@ Generic form:
 <para>
   The programmer must return a value from the event handler and the interpreter waits for this return. Generic
   information on how to <link linkend="sctCodingEventHandlers">code</link> event handlers is included in the
-  documentation for the <link linkend="clsEventNotification">EventNotification</link> classe.
+  documentation for the <link linkend="clsEventNotification">EventNotification</link> class.
 </para>
 
 <programlisting>
@@ -1163,11 +1219,30 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    This example comes from some code my nephew wrote. I wrote a typing tutorial for my neice and nephews, they each had
+    their own copy. Each week their typing scores were expected to get better. If their score was worse, they were
+    assigned extra chores for the next week.  My nephew injected the following code into his brother's typing tutorial.
+    He thought it was hilarious, his brother was not amused:
 
 <programlisting>
 <![CDATA[
 
+  self~newEdit(IDC_EDIT_TYPING_WINDOW)~connectCharEvent(onChar)
+
+::method onChar unguarded
+  use arg char, isShift, isCtrl, isAlt, misc, control
+
+  if misc~pos('extended') <> 0 then do
+    if char == .VK~END then char = .VK~HOME
+    else if char == .VK~HOME then char = .VK~END
+    else if char == .VK~LEFT then char = .VK~RIGHT
+  end
+  else do
+    if char~d2c == 'a' then char = 'z'~c2d
+    else if char~d2c == 'i' then char = 'k'~c2d
+  end
+
+  return char
 
 ]]>
 </programlisting>
@@ -2509,6 +2584,8 @@ Generic form:
 
 <section id="mthTabStop"><title>tabStop</title>
 <indexterm><primary>tabStop</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>tabStop</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>tabStop</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--tabStop(--+-----------+--)-------------------><
@@ -2599,18 +2676,19 @@ Generic form:
 </variablelist>
 </section>  <!-- End DialogControl::tabStop() -->
 
-<section id="mthTextSize"><title>testSize</title>
-<indexterm><primary>testSize</primary></indexterm>
-<indexterm><primary>DialogControl class</primary><secondary>testSize</secondary></indexterm>
+<section id="mthTextSize"><title>textSize</title>
+<indexterm><primary>textSize</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>textSize</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>textSize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--testSize(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--textSize(--text--,--size--)------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Computes the width and height in pixels of the specified string of text when displayed by this control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2618,10 +2696,16 @@ Generic form:
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>text [required]</term>
       <listitem>
       <para>
-        xx
+        The text whose size is needed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>size [required] [in / out]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsSize">Size</link> object. The computed size is returned in this argument.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2630,7 +2714,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, otherwise false. It is unlikely this method will fail.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -2660,31 +2744,33 @@ Generic form:
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End DialogControl::testSize() -->
+</section>  <!-- End DialogControl::textSize() -->
 
 <section id="mthUseUnicode"><title>useUnicode</title>
 <indexterm><primary>useUnicode</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>useUnicodce</secondary></indexterm>
 <indexterm><primary>Dialog Control class</primary><secondary>useUnicode</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--useUnicode(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--useUnicode(--use--)--------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the Unicode character format flag that tells the dialog control to use, or not use, Unicode.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>use [required]</term>
       <listitem>
       <para>
-        xx
+        If this argument is <computeroutput>.true</computeroutput> the format flag is set to tell the control to use
+        Unicode. If it is <computeroutput>.false</computeroutput> the format flag is set to not use Unicode.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2693,33 +2779,20 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the previous format flag for the control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Currently, the ooDialog framework is compiled in ANSI only mode. Therefore this method will have no effect. It is
+    possible that future version of ooDialog may be compiled in a manner that will allow Unicode to be used.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2727,62 +2800,43 @@ Generic form:
 
 <section id="mthUsingUnicode"><title>usingUnicode</title>
 <indexterm><primary>usingUnicode</primary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>usingUnicode</secondary></indexterm>
 <indexterm><primary>DialogControl class</primary><secondary>usingUnicode</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--usingUnicode(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--usingUnicode---------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if the dialog control is using Unicode characters.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The return is true if the dialog control is using Unicode characters and false if the control is not using Unicode
+    characters.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Currently, the ooDialog framework is compiled in ANSI only mode. Therefore this method will always return false. It
+    is possible that future version of ooDialog may be compiled in a manner that will allow Unicode to be used.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>

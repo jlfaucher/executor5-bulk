@@ -68,6 +68,165 @@
 </para>
 
 
+<section id="sctMethodsWindowExtensions"><title>Method Table</title>
+<para>
+  The following table lists the instance methods of the <computeroutput>WindowExtensions</computeroutput> Mixin Class.
+</para>
+<table id="tblMethodsWindowExtensions" frame="all"> <title>WindowExtension Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.75in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthCreateBrush">createBrush</link></entry>
+<entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateFont">createFont</link></entry>
+<entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreatePen">createPen</link></entry>
+<entry>Creates a logical pen that has the specified style, width, and color.</entry>
+</row>
+<row>
+<entry><link linkend="mthCreateFontEx">createFontEx</link></entry>
+<entry>Retrieves a handle to a logical font from the system font manager</entry>
+</row>
+<row>
+<entry><link linkend="mthDeleteFont">deleteFont</link></entry>
+<entry>Deletes a font returned from <emphasis role="italic">createFontEx</emphasis> or <emphasis role="italic">createFont</emphasis>.</entry>
+</row>
+<row>
+<entry><link linkend="mthDeleteObject">deleteObject</link></entry>
+<entry>Deletes a graphic object,</entry>
+</row>
+<row>
+<entry><link linkend="mthDrawAngleArc">drawAngleArc</link></entry>
+<entry>Draws a partial circle (arc) and a line connecting the start drawing point with the start of the arc.</entry>
+</row>
+<row>
+<entry><link linkend="mthDrawArc">drawArc</link></entry>
+<entry>Draws a circle or ellipse withi the given device context using the active pen.</entry>
+</row>
+<row>
+<entry><link linkend="mthDrawLine">drawLine</link></entry>
+<entry>Draws a line within the device context using the active pen.</entry>
+</row>
+<row>
+<entry><link linkend="mthDrawPie">drawPie</link></entry>
+<entry>Draws and fills a pie of a circle or ellipse within the given device context using the active brush and pen.</entry>
+</row>
+<row>
+<entry><link linkend="mthDrawPixel">drawPixel</link></entry>
+<entry>Draws a pixel within the device context.</entry>
+</row>
+<row>
+<entry><link linkend="mthFillDrawing">fillDrawing</link></entry>
+<entry>Fills in an outline figure within the device context using the active brush.</entry>
+</row>
+<row>
+<entry><link linkend="mthFontColor">fontColor</link></entry>
+<entry>Sets the font color for a device context.</entry>
+</row>
+<row>
+<entry><link linkend="mthFontToDC">fontToDC</link></entry>
+<entry>Loads a font into a device context and returns the handle of the previous font.</entry>
+</row>
+<row>
+<entry><link linkend="mthFreeDC">freeDC</link></entry>
+<entry>Releases a device context.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetArcDirection">getArcDirection</link></entry>
+<entry>Returns the current drawing direction.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetFont">getFont</link></entry>
+<entry>Returns the font used by the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetPixel">getPixel</link></entry>
+<entry>Returns the color number of a pixel within the device context.</entry>
+</row>
+<row>
+<entry><link linkend="mthHScrollPos">hScrollPos</link></entry>
+<entry>Returns the position of the horizontal scroll bar in the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthLoadBitmap">loadBitmap</link></entry>
+<entry>Loads a bitmap from a file into memory and returns the handle to the bitmap.</entry>
+</row>
+<row>
+<entry><link linkend="mthObjectToDC">objectToDC</link></entry>
+<entry>Loads a graphic object into a device context.</entry>
+</row>
+<row>
+<entry><link linkend="mthOpaqueText">opaqueText</link></entry>
+<entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
+</row>
+<row>
+<entry><link linkend="mthRectangle">rectangle</link></entry>
+<entry>Draws a rectangle within the given device context.</entry>
+</row>
+<row>
+<entry><link linkend="mthRemoveBitmap">removeBitmap</link></entry>
+<entry>Frees an in-memory bitmap that was loaded through the <emphasis role="italic">loadBitmap</emphasis> method.</entry>
+</row>
+<row>
+<entry><link linkend="mthRestoreCursorShape">restoreCursorShape</link></entry>
+<entry>Restores the shape of the mouse cursor.</entry>
+</row>
+<row>
+<entry><link linkend="mthScrollClsWE">scroll</link></entry>
+<entry>Scrolls the contents of the dialog's client area by the amount specified.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetArcDirection">setArcDirection</link></entry>
+<entry>Sets the current drawing direction.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetFont">setFont</link></entry>
+<entry>Sets a new font to be used by the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetHScrollPos">setHScrollPos</link></entry>
+<entry>Sets the thumb position of the horizontal scroll bar contained in the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetVScrollPos">setVScrollPos</link></entry>
+<entry>Sets the thumb position of the vertical scroll bar contained in the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthTransparentText">transparentText</link></entry>
+<entry>Sets the text drawing mode in a device context to transparent, (background is not changed.)</entry>
+</row>
+<row>
+<entry><link linkend="mthVScrollPos">vScrollPos</link></entry>
+<entry>Returns the position of the vertical scroll bar in the dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthWrite">write</link></entry>
+<entry>Writes text in a dialog using the given font, style, and color at the position specified.</entry>
+</row>
+<row>
+<entry><link linkend="mthWriteDirect">writeDirect</link></entry>
+<entry>Writes text in a dialog at the position specified using a device context.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
 <section id="mthCreateBrush"><title>createBrush</title>
 <indexterm><primary>createBrush</primary><secondary>WindowExtensions</secondary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>createBrush</secondary></indexterm>

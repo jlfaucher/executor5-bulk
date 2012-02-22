@@ -417,6 +417,10 @@
 <entry>Connects an event notification from an up-down control to a method in the Rexx dialog.</entry>
 </row>
 <row>
+<entry><link linkend="wedoCreateBrush">createBrush</link></entry>
+<entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
+</row>
+<row>
 <entry><link linkend="wedoCreateFont">createFont</link></entry>
 <entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
 </row>
@@ -2640,7 +2644,6 @@ DialogExtensions::<link linkend="mthEndAsyncExecution">endAsyncExecution</link>
 >>--execute(--+-------------+--+---------+--)----><
               +--showOption-+  +-,--icon-+
 
-
 ]]>
 </programlisting>
 
@@ -2895,7 +2898,6 @@ DialogExtensions::<link linkend="mthExecuteAsync">executeAsync</link>
 <![CDATA[
 >>--isDialogActive-------------------------------><
 
-
 ]]>
 </programlisting>
 
@@ -3096,76 +3098,6 @@ controlObject = dialogObject~new[ControlName](resourceID)
   control. Dialog control objects can only be instantiated after the <link linkend="ovvUnderlying">underlying</link>
   dialog has been created. For any error, all the methods return the <emphasis role="italic">.nil</emphasis> object.
 </para>
-
-<section id="mthNewStatic"><title>newStatic</title>
-<indexterm><primary>newStatic</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>newStatic</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--newStatic(--id--)----------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">newStatic</emphasis> method returns an object of the <link
-  linkend="clsStatic">Static</link> control class. This object represents the static control in the underlying dialog
-  with the specified resource ID.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The resource ID of the static dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    An object of the static control class or <emphasis role="italic">.nil</emphasis> on any error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Often static controls are give a resource ID of -1 because they do not usually need to be changed after the
-    underlying dialog is created. However, if the programmer needs to manipulate a static control in any way, then the
-    control has to have a positive resource ID.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example gets a new static control object that represents the static control in the underlying dialog
-    with the symbolic ID of IDC_ST_NAME. Provided the underlying dialog control exists, it is resized and its text,
-    background color, and foreground color is changed:
-
-  <programlisting>
-  <![CDATA[
-  ::class 'MyDlgClass' subclass RcDialog
-
-  ::method reArrange
-    di = self~newStatic(IDC_ST_NAME)
-    if di == .nil then return
-    di~setRect(.Rect~new(0, 0, 100, 25), "NOMOVE HIDE")
-    di~setText("Processing layout update!")
-    di~setColor(7,4)
-    di~show
-    ...
-  ]]>
-  </programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthNewCheckBox"><title>newCheckBox</title>
 <indexterm><primary>newCheckBox</primary></indexterm>
@@ -3990,6 +3922,76 @@ controlObject = dialogObject~new[ControlName](resourceID)
 </variablelist>
 </section>
 
+
+<section id="mthNewStatic"><title>newStatic</title>
+<indexterm><primary>newStatic</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>newStatic</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--newStatic(--id--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">newStatic</emphasis> method returns an object of the <link
+  linkend="clsStatic">Static</link> control class. This object represents the static control in the underlying dialog
+  with the specified resource ID.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the static dialog control. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An object of the static control class or <emphasis role="italic">.nil</emphasis> on any error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Often static controls are give a resource ID of -1 because they do not usually need to be changed after the
+    underlying dialog is created. However, if the programmer needs to manipulate a static control in any way, then the
+    control has to have a positive resource ID.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example gets a new static control object that represents the static control in the underlying dialog
+    with the symbolic ID of IDC_ST_NAME. Provided the underlying dialog control exists, it is resized and its text,
+    background color, and foreground color is changed:
+
+  <programlisting>
+  <![CDATA[
+  ::class 'MyDlgClass' subclass RcDialog
+
+  ::method reArrange
+    di = self~newStatic(IDC_ST_NAME)
+    if di == .nil then return
+    di~setRect(.Rect~new(0, 0, 100, 25), "NOMOVE HIDE")
+    di~setText("Processing layout update!")
+    di~setColor(7,4)
+    di~show
+    ...
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
 
 <section id="mthNewTrackBar"><title>newTrackBar</title>
 <indexterm><primary>newTrackBar</primary></indexterm>
