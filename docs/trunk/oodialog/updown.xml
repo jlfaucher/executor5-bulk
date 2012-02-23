@@ -311,6 +311,66 @@
 </section>  <!-- End UpDown::deltaPosReply() -->
 
 
+<section id="mthGetAcceleration"><title>getAcceleration</title>
+<indexterm><primary>getAcceleration</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>getAcceleration</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getAcceleration------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the acceleration information for the up-down control in an array of
+  <computeroutput>Directory</computeroutput> objects.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    An array of <computeroutput>Directory</computeroutput> objects. Each directory contains the following indexes:
+  </para>
+  <variablelist>
+    <varlistentry><term>SECONDS</term>
+    <listitem>
+    <para>
+      The amount of elapsed time, in seconds, before the position change increment specified by the <emphasis
+      role="italic">increment</emphasis> index is used.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>INCREMENT</term>
+    <listitem>
+    <para>
+      The increment used to change the position after the time specified by the <emphasis
+      role="italic">seconds</emphasis> index elapses.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Accleration information allows the up-down control change its position faster the longer the user holds down the
+    control's up or down arrow, or the up or down keyboard arrow. A single acceleration specifies that after so many
+    seconds increment the position by this amount. For example, after 1 second increment the postion by 4. After 2
+    seconds increment the postion by 8.
+  </para>
+  <para>
+    The accelerations are always sorted by seconds in ascending order. Typically the first acelleration would be 0
+    seconds with an increment of 1. The programmer can change the acceleration information for the up-down control
+    through the <link linkend="mthSetAcceleration">setAccelleration</link> method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::getAcceleration() -->
+
 <section id="mthGetBase"><title>getBase</title>
 <indexterm><primary>getBase</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>getBase</secondary></indexterm>
@@ -339,68 +399,6 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End UpDown::getBase() -->
-
-<section id="mthSetBase"><title>setBase</title>
-<indexterm><primary>setBase</primary></indexterm>
-<indexterm><primary>UpDown class</primary><secondary>setBase</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setBase(--radixBase--)-----------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Sets the radix base for an up-down control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-  <variablelist>
-    <varlistentry><term>radixBase</term>
-    <listitem>
-    <para>
-      The base for the up-down. Can be 10 or 16.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the previous base of the up-down control, or 0 if the new base specified is not valid.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The base value determines how the numbers are displayed in the buddy window. With base 10, the numbers displayed are
-    decimal digits, and with base 16, hexadecimal digits. Hexadecimal numbers are always non-negative, (not signed,) and
-    decimal numbers are whole numbers, (they can be signed.)
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example changes the base of the up-down control to 16:
-<programlisting>
-<![CDATA[
-
-  upDown = self~newUpDown(IDC_UPD)
-  ret = upDown~setBase(16)
-  if ret == 16 then say "The up-down base was already set to 16."
-  else if ret == 10 say "The up-down base was changed from 10 to 16."
-  else say "This else will never execute."
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End UpDown::setBase() -->
 
 <section id="mthGetBuddy"><title>getBuddy</title>
 <indexterm><primary>getBuddy</primary></indexterm>
@@ -456,78 +454,6 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End UpDown::getBuddy() -->
-
-<section id="mthSetBuddy"><title>setBuddy</title>
-<indexterm><primary>setBuddy</primary></indexterm>
-<indexterm><primary>UpDown class</primary><secondary>setBuddy</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setBuddy(--dlgControlObj--)------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Sets the buddy window for the up-down control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-  <variablelist>
-    <varlistentry><term>dlgControlObj [required]</term>
-    <listitem>
-    <para>
-      The dialog control object that is to be the new buddy window for the up-down control.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns the previous dialog control object of the buddy window, if there was a previous buddy. Returns
-    <computeroutput>.nil</computeroutput> if there was no previous buddy window.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    When an up-down control has the AUOTBUDDY style, the up-down control selects the previous window in the dialog
-    template as its buddy window. If the up-down control does not have that style, the <emphasis
-    role="italic">setBuddy</emphasis> method can be used to assign a specific dialog control as the buddy window. Of
-    course, the <emphasis role="italic">setBuddy</emphasis> method can be used to assign a specific dialog control, when
-    desired, for any other reason the programmer may have.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example sets the buddy window during the <link linkend="mthInitDialog">initDialog</link> method for an up-down
-    control that does not have the AUTOBUDDY style.
-<programlisting>
-<![CDATA[
-
-::method initDialog
-
-  edit = self~newEdit(IDC_EDIT_EXPIRATION_YEAR)
-  upd = self~newUpDown(IDC_UPD_EXPIRATION)
-  upd~setBuddy(edit)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End UpDown::setBuddy() -->
 
 <section id="mthGetPosition"><title>getPosition</title>
 <indexterm><primary>getPosition</primary></indexterm>
@@ -612,6 +538,294 @@
 </variablelist>
 </section>  <!-- End UpDown::getPosition() -->
 
+<section id="mthGetRange"><title>getRange</title>
+<indexterm><primary>getRange</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>getRange</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getRange-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns the current range of the up-down control in a <computeroutput>Directory</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A <computeroutput>Directory</computeroutput> object containing the minium and maximum position for the up-down
+    control. The directory contains the following indexes:
+  </para>
+  <variablelist>
+    <varlistentry><term>MIN</term>
+    <listitem>
+    <para>
+      The minimum value of the current range for the up-down control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>MAX</term>
+    <listitem>
+    <para>
+      The maximum value of the current range for the up-down control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The maximum range value can be less than the minimum value. The up arrow moves towards the maximum and the down
+    arrow moves towards the minimum. If the maximum value is less than the minium, then using the up arrow will decrease
+    the current position and the down arrow will increase the positions.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::getRange() -->
+
+<section id="mthSetAcceleration"><title>setAcceleration</title>
+<indexterm><primary>setAcceleration</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>setAcceleration</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setAcceleration(--accelerations--)-----------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the acceleration for the up-down control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>accelerations</term>
+    <listitem>
+    <para>
+      An array of <computeroutput>Directory</computeroutput> objects. Each directory in the array defines a single
+      acceleration and must contain the following indexes:
+    </para>
+    <variablelist>
+      <varlistentry><term>SECONDS</term>
+      <listitem>
+      <para>
+        The amount of elapsed time, in seconds, before the position change increment specified by the <emphasis
+        role="italic">increment</emphasis> index is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>INCREMENT</term>
+      <listitem>
+      <para>
+        The increment used to change the position after the time specified by the <emphasis
+        role="italic">seconds</emphasis> index elapses.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    <para>
+      The array can not be sparse, that is each index must contain a value. The value at each index must be a
+      <computeroutput>Directory</computeroutput> object and must contain the proper indexes.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On succes, true. On failure false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Accleration information allows the up-down control change its position faster the longer the user holds down the
+    control's up or down arrow, or the up or down keyboard arrow. A single acceleration specifies that after so many
+    seconds increment the position by this amount. For example, after 1 second increment the postion by 4. After 2
+    seconds increment the postion by 8, etc..
+  </para>
+  <para>
+    The accelerations must be sorted in the array, by seconds, in ascending order. Typically the first acelleration
+    would be 0 seconds with an increment of 1.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets the acceleration to be very fast, much faster than normal:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  upd = self~newUpDown(IDC_UPD_HUGH_RANGE)
+
+  accels = .array~new(5)
+  do i = 0 to 4
+    d = .directory~new
+    d~seconds = i
+    d~increment = 8 ** i
+    accels[i + 1] = d
+  end
+
+  upd~setAcceleration(accels)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::setAcceleration() -->
+
+<section id="mthSetBase"><title>setBase</title>
+<indexterm><primary>setBase</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>setBase</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setBase(--radixBase--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the radix base for an up-down control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>radixBase</term>
+    <listitem>
+    <para>
+      The base for the up-down. Can be 10 or 16.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous base of the up-down control, or 0 if the new base specified is not valid.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The base value determines how the numbers are displayed in the buddy window. With base 10, the numbers displayed are
+    decimal digits, and with base 16, hexadecimal digits. Hexadecimal numbers are always non-negative, (not signed,) and
+    decimal numbers are whole numbers, (they can be signed.)
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example changes the base of the up-down control to 16:
+<programlisting>
+<![CDATA[
+
+  upDown = self~newUpDown(IDC_UPD)
+  ret = upDown~setBase(16)
+  if ret == 16 then say "The up-down base was already set to 16."
+  else if ret == 10 say "The up-down base was changed from 10 to 16."
+  else say "This else will never execute."
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::setBase() -->
+
+<section id="mthSetBuddy"><title>setBuddy</title>
+<indexterm><primary>setBuddy</primary></indexterm>
+<indexterm><primary>UpDown class</primary><secondary>setBuddy</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setBuddy(--dlgControlObj--)------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the buddy window for the up-down control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  <variablelist>
+    <varlistentry><term>dlgControlObj [required]</term>
+    <listitem>
+    <para>
+      The dialog control object that is to be the new buddy window for the up-down control.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the previous dialog control object of the buddy window, if there was a previous buddy. Returns
+    <computeroutput>.nil</computeroutput> if there was no previous buddy window.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When an up-down control has the AUOTBUDDY style, the up-down control selects the previous window in the dialog
+    template as its buddy window. If the up-down control does not have that style, the <emphasis
+    role="italic">setBuddy</emphasis> method can be used to assign a specific dialog control as the buddy window. Of
+    course, the <emphasis role="italic">setBuddy</emphasis> method can be used to assign a specific dialog control, when
+    desired, for any other reason the programmer may have.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets the buddy window during the <link linkend="mthInitDialog">initDialog</link> method for an up-down
+    control that does not have the AUTOBUDDY style.
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  edit = self~newEdit(IDC_EDIT_EXPIRATION_YEAR)
+  upd = self~newUpDown(IDC_UPD_EXPIRATION)
+  upd~setBuddy(edit)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End UpDown::setBuddy() -->
+
 <section id="mthSetPosition"><title>setPosition</title>
 <indexterm><primary>setPosition</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>setPosition</secondary></indexterm>
@@ -680,58 +894,6 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End UpDown::setPosition() -->
-
-<section id="mthGetRange"><title>getRange</title>
-<indexterm><primary>getRange</primary></indexterm>
-<indexterm><primary>UpDown class</primary><secondary>getRange</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getRange-------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Returns the current range of the up-down control in a <computeroutput>Directory</computeroutput> object.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    There are no arguments to this method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    A <computeroutput>Directory</computeroutput> object containing the minium and maximum position for the up-down
-    control. The directory contains the following indexes:
-  </para>
-  <variablelist>
-    <varlistentry><term>MIN</term>
-    <listitem>
-    <para>
-      The minimum value of the current range for the up-down control.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>MAX</term>
-    <listitem>
-    <para>
-      The maximum value of the current range for the up-down control.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The maximum range value can be less than the minimum value. The up arrow moves towards the maximum and the down
-    arrow moves towards the minimum. If the maximum value is less than the minium, then using the up arrow will decrease
-    the current position and the down arrow will increase the positions.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End UpDown::getRange() -->
 
 <section id="mthSetRangeClsUpDown"><title>setRange</title>
 <indexterm><primary>setRange</primary></indexterm>
@@ -891,168 +1053,6 @@ Generic form:
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End UpDown::setRange() -->
-
-<section id="mthGetAcceleration"><title>getAcceleration</title>
-<indexterm><primary>getAcceleration</primary></indexterm>
-<indexterm><primary>UpDown class</primary><secondary>getAcceleration</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getAcceleration------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Retrieves the acceleration information for the up-down control in an array of
-  <computeroutput>Directory</computeroutput> objects.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method takes no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    An array of <computeroutput>Directory</computeroutput> objects. Each directory contains the following indexes:
-  </para>
-  <variablelist>
-    <varlistentry><term>SECONDS</term>
-    <listitem>
-    <para>
-      The amount of elapsed time, in seconds, before the position change increment specified by the <emphasis
-      role="italic">increment</emphasis> index is used.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>INCREMENT</term>
-    <listitem>
-    <para>
-      The increment used to change the position after the time specified by the <emphasis
-      role="italic">seconds</emphasis> index elapses.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Accleration information allows the up-down control change its position faster the longer the user holds down the
-    control's up or down arrow, or the up or down keyboard arrow. A single acceleration specifies that after so many
-    seconds increment the position by this amount. For example, after 1 second increment the postion by 4. After 2
-    seconds increment the postion by 8.
-  </para>
-  <para>
-    The accelerations are always sorted by seconds in ascending order. Typically the first acelleration would be 0
-    seconds with an increment of 1. The programmer can change the acceleration information for the up-down control
-    through the <link linkend="mthSetAcceleration">setAccelleration</link> method.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End UpDown::getAcceleration() -->
-
-<section id="mthSetAcceleration"><title>setAcceleration</title>
-<indexterm><primary>setAcceleration</primary></indexterm>
-<indexterm><primary>UpDown class</primary><secondary>setAcceleration</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setAcceleration(--accelerations--)-----------><
-
-]]>
-</programlisting>
-
-<para>
-  Sets the acceleration for the up-down control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-  <variablelist>
-    <varlistentry><term>accelerations</term>
-    <listitem>
-    <para>
-      An array of <computeroutput>Directory</computeroutput> objects. Each directory in the array defines a single
-      acceleration and must contain the following indexes:
-    </para>
-    <variablelist>
-      <varlistentry><term>SECONDS</term>
-      <listitem>
-      <para>
-        The amount of elapsed time, in seconds, before the position change increment specified by the <emphasis
-        role="italic">increment</emphasis> index is used.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>INCREMENT</term>
-      <listitem>
-      <para>
-        The increment used to change the position after the time specified by the <emphasis
-        role="italic">seconds</emphasis> index elapses.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-    <para>
-      The array can not be sparse, that is each index must contain a value. The value at each index must be a
-      <computeroutput>Directory</computeroutput> object and must contain the proper indexes.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    On succes, true. On failure false.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Accleration information allows the up-down control change its position faster the longer the user holds down the
-    control's up or down arrow, or the up or down keyboard arrow. A single acceleration specifies that after so many
-    seconds increment the position by this amount. For example, after 1 second increment the postion by 4. After 2
-    seconds increment the postion by 8, etc..
-  </para>
-  <para>
-    The accelerations must be sorted in the array, by seconds, in ascending order. Typically the first acelleration
-    would be 0 seconds with an increment of 1.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example sets the acceleration to be very fast, much faster than normal:
-<programlisting>
-<![CDATA[
-
-::method initDialog
-
-  upd = self~newUpDown(IDC_UPD_HUGH_RANGE)
-
-  accels = .array~new(5)
-  do i = 0 to 4
-    d = .directory~new
-    d~seconds = i
-    d~increment = 8 ** i
-    accels[i + 1] = d
-  end
-
-  upd~setAcceleration(accels)
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End UpDown::setAcceleration() -->
 
 </chapter>  <!-- End UpDown class -->
 
