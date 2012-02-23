@@ -2082,95 +2082,6 @@ method onDisable
 </section>  <!-- End dialog control object::disconnectKeyPress() -->
 
 
-<section id="mthHasKeyPressConnectionDialogControlObject"><title>hasKeyPressConnection</title>
-<indexterm><primary>hasKeyPressConnection</primary><secondary>dialog control object</secondary></indexterm>
-<indexterm><primary>dialog control object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
-<indexterm><primary>DialogControl class</primary><secondary>hasKeyPressConnection</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--hasKeyPressConnection(--+--------------+--)--><
-                            +--methodName--+
-]]>
-</programlisting>
-
-<para>
-  Queries if a specific method in the Rexx dialog has a connection to a key down event, or if any methods are connected
-  to a key down event.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>methodName [optional]</term>
-      <listitem>
-      <para>
-        If <emphasis role="italic">methodName</emphasis> is specified, then this method checks if there is a key press
-        event connected to that method. When the argument is omitted, then the check is if any methods are connected to
-        key press events.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns <computeroutput>.true</computeroutput> if a key press event connection exists, otherwise
-    <computeroutput>.false</computeroutput>.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The dialog object also has a <link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPressConnection</link>
-    method. The method of the dialog control object (this method) can only check for connecttions that were set with the
-    dialog control object's versions of <link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link> and
-    <link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link> methods. This method can not check
-    for connections that were set with the dialog object's versions of <link
-    linkend="mthConnectKeyPressDialogObject">connectKeyPress</link> and <link
-    linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link> methods.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example is from an application where the user can enable the use of hot keys when an edit control has
-    the focus, or not. The reset push button is used in the application to reset the state of the dialog. One of the
-    things done when the state is reset to check or uncheck a check box that shows whether hot keys are currently
-    enabled or not.
-
-  <programlisting>
-  <![CDATA[
-
-  ::method defineDialog
-
-    ...
-    self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
-    ...
-    self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
-    ...
-
-  ::method onReset
-
-    ...
-    editControl = self~newEdit(IDC_EDIT)
-
-    if editControl~hasKeyPressConnection then
-      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
-    else
-      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
-    ...
-
-  ]]>
-  </programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End dialog control object::hasKeyPressConnection() -->
-
-
 <section id="mthGetTextSizeDlgClsDialogControl"><title>getTextSizeDlg</title>
 <indexterm><primary>getTextSizeDlg</primary><secondary>dialog control object</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>getTextSizeDlg</secondary></indexterm>
@@ -2348,6 +2259,95 @@ method onDisable
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DialogControl::group() -->
+
+
+<section id="mthHasKeyPressConnectionDialogControlObject"><title>hasKeyPressConnection</title>
+<indexterm><primary>hasKeyPressConnection</primary><secondary>dialog control object</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<indexterm><primary>DialogControl class</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hasKeyPressConnection(--+--------------+--)--><
+                            +--methodName--+
+]]>
+</programlisting>
+
+<para>
+  Queries if a specific method in the Rexx dialog has a connection to a key down event, or if any methods are connected
+  to a key down event.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">methodName</emphasis> is specified, then this method checks if there is a key press
+        event connected to that method. When the argument is omitted, then the check is if any methods are connected to
+        key press events.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if a key press event connection exists, otherwise
+    <computeroutput>.false</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The dialog object also has a <link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPressConnection</link>
+    method. The method of the dialog control object (this method) can only check for connecttions that were set with the
+    dialog control object's versions of <link linkend="mthConnectKeyPressDialogControlObject">connectKeyPress</link> and
+    <link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link> methods. This method can not check
+    for connections that were set with the dialog object's versions of <link
+    linkend="mthConnectKeyPressDialogObject">connectKeyPress</link> and <link
+    linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example is from an application where the user can enable the use of hot keys when an edit control has
+    the focus, or not. The reset push button is used in the application to reset the state of the dialog. One of the
+    things done when the state is reset to check or uncheck a check box that shows whether hot keys are currently
+    enabled or not.
+
+  <programlisting>
+  <![CDATA[
+
+  ::method defineDialog
+
+    ...
+    self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
+    ...
+    self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
+    ...
+
+  ::method onReset
+
+    ...
+    editControl = self~newEdit(IDC_EDIT)
+
+    if editControl~hasKeyPressConnection then
+      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
+    else
+      self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
+    ...
+
+  ]]>
+  </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog control object::hasKeyPressConnection() -->
 
 
 <section id="mthRedrawRectClsDialogControl"><title>redrawRect</title>

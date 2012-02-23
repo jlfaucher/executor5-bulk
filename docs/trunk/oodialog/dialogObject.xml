@@ -2978,7 +2978,7 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
 <indexterm><primary>setDlgFont</primary><secondary>dialog object</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setDlgFont(--fontName--+-----------+--)------------------------------------><
+>>--setDlgFont(--fontName--+-----------+--)------><
                            +-,-fontSize+
 ]]>
 </programlisting>
@@ -4807,7 +4807,6 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
 <![CDATA[
 >>--leaving--------------------------------------><
 
-
 ]]>
 </programlisting>
 
@@ -4824,7 +4823,6 @@ EventNotifcation::<link linkend="mthHasKeyPressConnectionDialogObject">hasKeyPre
 <programlisting>
 <![CDATA[
 >>--validate-------------------------------------><
-
 
 ]]>
 </programlisting>
@@ -5103,8 +5101,7 @@ to manually update the display.
 
 <programlisting>
 <![CDATA[
->>-aBaseDialog~EnsureVisible---------------------><
-
+>>--ensureVisible--------------------------------><
 
 ]]>
 </programlisting>
@@ -5638,8 +5635,7 @@ manually redraw the dialog window, using the <link linkend="mthUpdate">update</l
 <indexterm><primary>isMaximized</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~IsMaximized-----------------------><
-
+>>--isMaximized----------------------------------><
 
 ]]>
 </programlisting>
@@ -5683,8 +5679,7 @@ being maximized.
 <indexterm><primary>isMinimized</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~IsMinimized-----------------------><
-
+>>--isMinimized----------------------------------><
 
 ]]>
 </programlisting>
@@ -5734,7 +5729,7 @@ complete program listing that this code snippet comes from is available (see the
 <indexterm><primary>maximize</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Maximize--------------------------><
+>>--maximize-------------------------------------><
 
 
 ]]>
@@ -5794,8 +5789,7 @@ It is used in the FileViewer example.  The complete program listing is available
 <indexterm><primary>minimize</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Minimize--------------------------><
-
+>>--minimize-------------------------------------><
 
 ]]>
 </programlisting>
@@ -5887,8 +5881,7 @@ DialogExtensions::<link linkend="mthResizeControl">resizeControl</link>
 <indexterm><primary>restore</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~Restore---------------------------><
-
+>>--restore--------------------------------------><
 
 ]]>
 </programlisting>
@@ -5981,7 +5974,7 @@ DialogExtensions::<link linkend="mthSetControlSysColor">setControlSysColor</link
 <indexterm><primary>dialog object</primary><secondary>setControlText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getControlText(--id--,--text--)--------------------------------------------><
+>>--setControlText(--id--,--text--)--------------><
 
 ]]>
 </programlisting>
@@ -6047,97 +6040,6 @@ DialogExtensions::<link linkend="mthSetControlSysColor">setControlSysColor</link
   </listitem></varlistentry>
 </variablelist>
 </section>
-
-<section id="mthSetGroup"><title>setGroup</title>
-<indexterm><primary>setGroup</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>setGroup</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setGroup(--id--+-----------+--)--------------><
-                   +-wantStyle-+
-
-]]>
-</programlisting>
-
-<para>
-  Adds or removes the <link linkend="wsgroup">group style</link> for the control specified.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>id [required]</term>
-      <listitem>
-      <para>
-        The resource ID of the dialog control that will gain or lose the group style. May be numeric or <link
-        linkend="defSymbolicID">symbolic</link> .
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>wantStyle [optional]</term>
-      <listitem>
-      <para>
-        A boolean (.true or .false) to indicate whether the control should have or not have the group style.  True (the
-        default) indicates the dialog control should have the group style and false indicates the control should not
-        have the style.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Negative values indicate the function failed, positive values indicate success.
-    <variablelist>
-      <varlistentry><term>Less than -1</term>
-      <listitem>
-      <para>
-        The value is the negated operating system error code.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-      <para>
-        The resource ID specified for the dialog control is not correct.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>Greater than 0</term>
-      <listitem>
-      <para>
-        The window style of the dialog control prior to adding or removing the group style.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The group style controls how the user can navigate through the dialog using the keyboard.  For most dialogs this
-    does not change while the dialog is executing. However, in some dialogs the programmer may want to change the
-    navigation depending on the options the user selects.
-  </para>
-  <para>
-    The negative return values less than -1 are a hold over from a period prior to the introduction of the <link
-    linkend="dotSystemErrorCode">.SystemErrorCode</link>. This method now sets the
-    <computeroutput>.SystemErrorCode</computeroutput>, making it easier to use the
-    <computeroutput>.SystemErrorCode</computeroutput> value to look up the actual error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments, other than the resource ID, are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
 
 <section id="mthSetFocus"><title>setFocus</title>
 <indexterm><primary>setFocus</primary></indexterm>
@@ -6263,12 +6165,103 @@ DialogExtensions::<link linkend="mthSetForegroundWindow">setForegroundWindow</li
 </section>
 
 
+<section id="mthSetGroup"><title>setGroup</title>
+<indexterm><primary>setGroup</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>setGroup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setGroup(--id--+-----------+--)--------------><
+                   +-wantStyle-+
+
+]]>
+</programlisting>
+
+<para>
+  Adds or removes the <link linkend="wsgroup">group style</link> for the control specified.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog control that will gain or lose the group style. May be numeric or <link
+        linkend="defSymbolicID">symbolic</link> .
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>wantStyle [optional]</term>
+      <listitem>
+      <para>
+        A boolean (.true or .false) to indicate whether the control should have or not have the group style.  True (the
+        default) indicates the dialog control should have the group style and false indicates the control should not
+        have the style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Negative values indicate the function failed, positive values indicate success.
+    <variablelist>
+      <varlistentry><term>Less than -1</term>
+      <listitem>
+      <para>
+        The value is the negated operating system error code.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The resource ID specified for the dialog control is not correct.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Greater than 0</term>
+      <listitem>
+      <para>
+        The window style of the dialog control prior to adding or removing the group style.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The group style controls how the user can navigate through the dialog using the keyboard.  For most dialogs this
+    does not change while the dialog is executing. However, in some dialogs the programmer may want to change the
+    navigation depending on the options the user selects.
+  </para>
+  <para>
+    The negative return values less than -1 are a hold over from a period prior to the introduction of the <link
+    linkend="dotSystemErrorCode">.SystemErrorCode</link>. This method now sets the
+    <computeroutput>.SystemErrorCode</computeroutput>, making it easier to use the
+    <computeroutput>.SystemErrorCode</computeroutput> value to look up the actual error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments, other than the resource ID, are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
 <section id="mthSetTabStop"><title>setTabStop</title>
 <indexterm><primary>setTabStop</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~setTabStop(--id--,--+-----------+--)----------------------------><
-                                   +-wantStyle-+
+>>--setTabStop(--id--,--+-----------+--)---------><
+                        +-wantStyle-+
 
 ]]>
 </programlisting>
@@ -6557,8 +6550,7 @@ Generic form:
 <indexterm><primary>showControl</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~showControl(--id--)---------------><
-
+>>--showControl(--id--)--------------------------><
 
 ]]>
 </programlisting>
@@ -7268,7 +7260,6 @@ Generic form:
 <![CDATA[
 >>--tiledBackgroundBitmap(--bmpFilename--)-------><
 
-
 ]]>
 </programlisting>
 
@@ -7332,17 +7323,64 @@ MyDialog~addComboEntry(103, "Another item")
 </variablelist>
 </section>
 
-<section id="mthInsertComboEntry"><title>insertComboEntry</title>
-<indexterm><primary>insertComboEntry</primary></indexterm>
+<section id="mthChangeComboEntry"><title>changeComboEntry</title>
+<indexterm><primary>changeComboEntry</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--insertComboEntry(--id--,--+-------+--,--string--)--------------------------><
+>>--changeComboEntry(--id--,--+-------+--,--aString--)-------------------------><
                               +-index-+
+
 ]]>
 </programlisting>
 
-<para>The insertComboEntry method inserts a string into
-the list of a combo box. </para>
+<para>The changeComboEntry method changes the value of
+a given entry in a combo box to a new string. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the combo box
+</para></listitem></varlistentry>
+<varlistentry><term>index</term>
+<listitem><para>The index number of the item you want to replace. To retrieve the index,
+use the findComboEntry or getCurrentComboIndex method (see page <link linkend="mthFindComboEntry">findComboEntry</link> or <link linkend="mthGetCurrentComboIndex">getCurrentComboIndex</link>).
+</para></listitem></varlistentry>
+<varlistentry><term>aString</term>
+<listitem><para>The new text.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>In the following example, method <computeroutput>ChangeButtonPressed</computeroutput> changes
+the currently selected line of combo box 230 to the value in entry line 250:
+
+<programlisting>
+<![CDATA[
+     .
+     .
+     .
+::method ChangeButtonPressed
+   idx = self~GetCurrentComboEntry(230)
+   str = self~getEditData(250)
+   self~changeComboEntry(230, idx, str)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthComboAddDirectory"><title>comboAddDirectory</title>
+<indexterm><primary>comboAddDirectory</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--comboAddDirectory(--id--,--drvpath--,--fileAtrs--)----------><
+
+]]>
+</programlisting>
+
+<para>The comboAddDirectory method adds all or selected
+file names in the given directory to the combo box. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -7350,25 +7388,67 @@ the list of a combo box. </para>
 <varlistentry><term>id</term>
 <listitem><para>The ID of the combo box.
 </para></listitem></varlistentry>
-<varlistentry><term>index</term>
-<listitem><para>The index (line number) where you want to insert the new item. If this
-argument is omitted, the new item is inserted after the currently selected
-item.
+<varlistentry><term>drvpath</term>
+<listitem><para>The drive, path, and name pattern.
 </para></listitem></varlistentry>
-<varlistentry><term>string</term>
-<listitem><para>The data string to be inserted.
+<varlistentry><term>fileAtrs</term>
+<listitem><para>Specify the file attributes that the files must have in order to be
+added:
+<variablelist>
+<varlistentry><term>READWRITE</term>
+<listitem><para>Normal read/write files (same as none).
+</para></listitem></varlistentry>
+<varlistentry><term>READONLY</term>
+<listitem><para>Files that have the read-only bit.
+</para></listitem></varlistentry>
+<varlistentry><term>HIDDEN</term>
+<listitem><para>Files that have the hidden bit.
+</para></listitem></varlistentry>
+<varlistentry><term>SYSTEM</term>
+<listitem><para>Files that have the system bit.
+</para></listitem></varlistentry>
+<varlistentry><term>DIRECTORY</term>
+<listitem><para>Files that have the directory bit.
+</para></listitem></varlistentry>
+<varlistentry><term>ARCHIVE</term>
+<listitem><para>Files that have the archive bit.
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>This statement inserts <computeroutput>The new third line</computeroutput> after the second
-line into the list of combo box 103:
+<listitem><para>The following example fills the combo box list with the names of all
+read/write files with extension .REX in the given directory:
 
 <programlisting>
 <![CDATA[
-MyDialog~insertComboEntry(103, 2, "The new third line")
+MyDialog~comboAddDirectory(203, drive":\"path"\*.rex", "READWRITE")
 ]]>
 </programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthComboDrop"><title>comboDrop</title>
+<indexterm><primary>comboDrop</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--comboDrop(--id--)----------------------------><
+
+]]>
+</programlisting>
+
+<para>The comboDrop method deletes all items from the
+list of the given combo box.</para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The only argument is:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the combo box.
+</para></listitem></varlistentry>
+</variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -7553,6 +7633,47 @@ each time the selected item within the combo box changes.</para>
 </variablelist>
 </section>
 
+<section id="mthInsertComboEntry"><title>insertComboEntry</title>
+<indexterm><primary>insertComboEntry</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insertComboEntry(--id--,--+-------+--,--string--)--------------------------><
+                              +-index-+
+]]>
+</programlisting>
+
+<para>The insertComboEntry method inserts a string into
+the list of a combo box. </para>
+<variablelist>
+<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+<listitem><para>The arguments are:
+<variablelist>
+<varlistentry><term>id</term>
+<listitem><para>The ID of the combo box.
+</para></listitem></varlistentry>
+<varlistentry><term>index</term>
+<listitem><para>The index (line number) where you want to insert the new item. If this
+argument is omitted, the new item is inserted after the currently selected
+item.
+</para></listitem></varlistentry>
+<varlistentry><term>string</term>
+<listitem><para>The data string to be inserted.
+</para></listitem></varlistentry>
+</variablelist>
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+<listitem><para>This statement inserts <computeroutput>The new third line</computeroutput> after the second
+line into the list of combo box 103:
+
+<programlisting>
+<![CDATA[
+MyDialog~insertComboEntry(103, 2, "The new third line")
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthSetCurrentComboIndex"><title>setCurrentComboIndex</title>
 <indexterm><primary>setCurrentComboIndex</primary></indexterm>
 <programlisting>
@@ -7576,136 +7697,6 @@ how to select a combo box item using a data value. </para>
 </para></listitem></varlistentry>
 <varlistentry><term>index</term>
 <listitem><para>The index within the combo box.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthChangeComboEntry"><title>changeComboEntry</title>
-<indexterm><primary>changeComboEntry</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--changeComboEntry(--id--,--+-------+--,--aString--)-------------------------><
-                              +-index-+
-
-]]>
-</programlisting>
-
-<para>The changeComboEntry method changes the value of
-a given entry in a combo box to a new string. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the combo box
-</para></listitem></varlistentry>
-<varlistentry><term>index</term>
-<listitem><para>The index number of the item you want to replace. To retrieve the index,
-use the findComboEntry or getCurrentComboIndex method (see page <link linkend="mthFindComboEntry">findComboEntry</link> or <link linkend="mthGetCurrentComboIndex">getCurrentComboIndex</link>).
-</para></listitem></varlistentry>
-<varlistentry><term>aString</term>
-<listitem><para>The new text.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>In the following example, method <computeroutput>ChangeButtonPressed</computeroutput> changes
-the currently selected line of combo box 230 to the value in entry line 250:
-
-<programlisting>
-<![CDATA[
-     .
-     .
-     .
-::method ChangeButtonPressed
-   idx = self~GetCurrentComboEntry(230)
-   str = self~getEditData(250)
-   self~changeComboEntry(230, idx, str)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthComboAddDirectory"><title>comboAddDirectory</title>
-<indexterm><primary>comboAddDirectory</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-aBaseDialog~comboAddDirectory(--id--,--drvpath--,--fileAtrs--)--------------><
-
-]]>
-</programlisting>
-
-<para>The comboAddDirectory method adds all or selected
-file names in the given directory to the combo box. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the combo box.
-</para></listitem></varlistentry>
-<varlistentry><term>drvpath</term>
-<listitem><para>The drive, path, and name pattern.
-</para></listitem></varlistentry>
-<varlistentry><term>fileAtrs</term>
-<listitem><para>Specify the file attributes that the files must have in order to be
-added:
-<variablelist>
-<varlistentry><term>READWRITE</term>
-<listitem><para>Normal read/write files (same as none).
-</para></listitem></varlistentry>
-<varlistentry><term>READONLY</term>
-<listitem><para>Files that have the read-only bit.
-</para></listitem></varlistentry>
-<varlistentry><term>HIDDEN</term>
-<listitem><para>Files that have the hidden bit.
-</para></listitem></varlistentry>
-<varlistentry><term>SYSTEM</term>
-<listitem><para>Files that have the system bit.
-</para></listitem></varlistentry>
-<varlistentry><term>DIRECTORY</term>
-<listitem><para>Files that have the directory bit.
-</para></listitem></varlistentry>
-<varlistentry><term>ARCHIVE</term>
-<listitem><para>Files that have the archive bit.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example fills the combo box list with the names of all
-read/write files with extension .REX in the given directory:
-
-<programlisting>
-<![CDATA[
-MyDialog~comboAddDirectory(203, drive":\"path"\*.rex", "READWRITE")
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthComboDrop"><title>comboDrop</title>
-<indexterm><primary>comboDrop</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--comboDrop(--id--)----------------------------><
-
-]]>
-</programlisting>
-
-<para>The comboDrop method deletes all items from the
-list of the given combo box.</para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the combo box.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -8028,7 +8019,7 @@ after the currently selected item.
 <indexterm><primary>listAddDirectory</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-aBaseDialog~listAddDirectory(--id--,--drvPath--,--fileAtrs--)---------------><
+>>--listAddDirectory(--id--,--drvPath--,--fileAtrs--)-----------><
 
 ]]>
 </programlisting>
@@ -8452,7 +8443,6 @@ var2  "09"x  ,
 <![CDATA[
 >>--get------------------------------------------><
 
-
 ]]>
 </programlisting>
 
@@ -8600,7 +8590,6 @@ var2  "09"x  ,
 <programlisting>
 <![CDATA[
 >>--getControlID(--hwnd--)-----------------------><
-
 
 ]]>
 </programlisting>

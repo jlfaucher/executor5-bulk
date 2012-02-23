@@ -218,7 +218,11 @@
 </row>
 <row>
 <entry><link linkend="mthDeselect">deselect</link></entry>
-<entry>Deselects an item.</entry>
+<entry>Deselects an item in the list-view.</entry>
+</row>
+<row>
+<entry><link linkend="mthDeselectAll">deselectAll</link></entry>
+<entry>Deselects all items in the list-view.</entry>
 </row>
 <row>
 <entry><link linkend="mthDropHighLighted">dropHighlighted</link></entry>
@@ -273,8 +277,12 @@
 <entry>Returns the number of columns in the list-view control when it has the report style.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetColumnCount">getColumnOrder</link></entry>
+<entry><link linkend="mthGetColumnOrder">getColumnOrder</link></entry>
 <entry>Retrieves the current column order of the list-view when it has the  report style.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetColumnText">getColumnText</link></entry>
+<entry>Retrieves the column header text for a list-view when it is in report view.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetExtendedStyle">getExtendedStyle</link></entry>
@@ -293,6 +301,10 @@
 <entry>Retrieves the current image list for the image list type specified.</entry>
 </row>
 <row>
+<entry><link linkend="mthGetItemData">getItemData</link></entry>
+<entry>TERM</entry>
+</row>
+<row>
 <entry><link linkend="mthGetItemInfo">getItemInfo</link></entry>
 <entry>Retrieves the attributes of a list-view item in a <computeroutput>Directory</computeroutput> object.</entry>
 </row>
@@ -303,6 +315,10 @@
 <row>
 <entry><link linkend="mthHasCheckBoxes">hasCheckBoxes</link></entry>
 <entry>Determines if a list-view control has the CHECKBOXES extened list-view style.</entry>
+</row>
+<row>
+<entry><link linkend="mthHitTestInfo">hitTestInfo</link></entry>
+<entry>TERM</entry>
 </row>
 <row>
 <entry><link linkend="mthInsertClsListControl">insert</link></entry>
@@ -453,6 +469,10 @@
 <entry>Assigns, or removes, an image list for the list-view control.</entry>
 </row>
 <row>
+<entry><link linkend="mthSetItemData">setItemData</link></entry>
+<entry>TERM</entry>
+</row>
+<row>
 <entry><link linkend="mthSetItemPos">setItemPos</link></entry>
 <entry>Moves an item to a specified position in a list-view control that has the icon or small-icon style.</entry>
 </row>
@@ -471,6 +491,10 @@
 <row>
 <entry><link linkend="mthSnapToGrid">snapToGrid</link></entry>
 <entry>Snaps all icons to the nearest grid position.</entry>
+</row>
+<row>
+<entry><link linkend="mthSortItems">sortItems</link></entry>
+<entry>TERM</entry>
 </row>
 <row>
 <entry><link linkend="mthSpacing">spacing</link></entry>
@@ -1568,6 +1592,48 @@ last.
 </variablelist>
 </section>
 
+<section id="mthDeselectAll"><title>deselectAll</title>
+<indexterm><primary>deselectAll</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>deselectAll</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--deselectAll----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Deselects all items in the list-view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has not arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the number of items delsected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example deselects any selected items in the list-view.
+<programlisting>
+<![CDATA[
+
+  self~newListView(IDC_LV_ADDRESSES)~deselectAll
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::deselectAll() -->
+
 <section id="mthDropHighLighted"><title>dropHighlighted</title>
 <indexterm><primary>dropHighlighted</primary>
 <secondary>ListView class</secondary></indexterm>
@@ -2235,6 +2301,43 @@ Current order:
 </variablelist>
 </section>  <!-- End ListControl::getColumnOrder() -->
 
+<section id="mthGetColumnText"><title>getColumnText</title>
+<indexterm><primary>getColumnText</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>getColumnText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getColumnText(--index--)---------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the column header text for a list-view when it is in report view.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>index [required]</term>
+      <listitem>
+      <para>
+        The zero-based column index for which to get the text.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the text for the specified column, or the empty string on error.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::getColumnText() -->
+
 
 <section id="mthGetExtendedStyle"><title>getExtendedStyle</title>
 <indexterm><primary>getExtendedStyle</primary></indexterm>
@@ -2560,6 +2663,73 @@ incremented or decremented by .1 of a second.
 </variablelist>
 </section>  <!-- End ListControl::getImageList() -->
 
+<section id="mthGetItemData"><title>getItemData</title>
+<indexterm><primary>getItemData</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>getItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getItemData(--index--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the user data associated with the specified list-view item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>index [required]</term>
+      <listitem>
+      <para>
+        The zero-based index of the item to retrieve the user data from.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the user data associated with the specified item, or the <computeroutput>.nil</computeroutput> object if
+    there is no data associated with the item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
+    list-view items. This can be any ooRexx object. This can be useful in any number of ways. One specific use is in the
+    <link linkend="mthSortItems">sortItems</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::getItemData() -->
+
+
 <section id="mthGetItemInfo"><title>getItemInfo</title>
 <indexterm><primary>getItemInfo</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>getItemInfo</secondary></indexterm>
@@ -2800,6 +2970,68 @@ incremented or decremented by .1 of a second.
 </variablelist>
 </section>  <!-- End Listview::hasCheckBoxes() -->
 
+<section id="mthHitTestInfo"><title>hitTestInfo</title>
+<indexterm><primary>hitTestInfo</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>hitTestInfo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hitTestInfo(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::hitTestInfo() -->
 
 <section id="mthInsertClsListControl"><title>insert</title>
 <indexterm><primary>insert</primary>
@@ -4896,6 +5128,70 @@ second the row is automatically selectd.
 </variablelist>
 </section>  <!-- End ListView::setImageList() -->
 
+<section id="mthSetItemData"><title>setItemData</title>
+<indexterm><primary>setItemData</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>setItemData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setItemData(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::setItemData() -->
+
+
 <section id="mthSetItemPos"><title>setItemPos</title>
 <indexterm><primary>setItemPos</primary></indexterm>
 <programlisting>
@@ -5134,6 +5430,70 @@ grid position.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthSortItems"><title>sortItems</title>
+<indexterm><primary>sortItems</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>sortItems</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--sortItems(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::sortItems() -->
+
 
 <section id="mthSpacing"><title>spacing</title>
 <indexterm><primary>spacing</primary></indexterm>
