@@ -2,7 +2,7 @@
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file.
     #
-    # Copyright (c) 2011-2012, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2011-2011, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -38,37 +38,37 @@
     #########################################################################
 -->
 
-<!-- Appendix 04 - Dialog Sequences				  v00-02 19Jan12
+<!-- Appendix 04 - Dialog Sequences				  v00-03 23Feb12
      Shows the methods invoked during dialog creation.
 
      Changes:
      v00-01 08Jan12: First version
      v00-02 19Jan12: minor additions/corrections.
--->
+     v00-03 23Feb12: Decrease table width so it's not off the edge of the page(!).-->
 
 <appendix id="apx-dlgsequences">
   <title id="dlgsequences.title">Dialog Creation Methods</title>
   <indexterm><primary>Dialog</primary><secondary>Creation</secondary></indexterm>
   <indexterm><primary>Methods</primary><secondary>Dialog Creation</secondary></indexterm>
   <para>This appendix provides a programmer's aide-memoire for the methods required to create and
-    set up a dialog using one of the more usual superclasses - <computeroutput>UserDialog</computeroutput>,
-    <computeroutput>RcDialog</computeroutput> and <computeroutput>ResDialog</computeroutput>.
-      Menu creation is included even though this is technically quite separate from
-      dialog creation.</para>
+      set up a dialog using one of the more usual superclasses -
+        <computeroutput>UserDialog</computeroutput>, <computeroutput>RcDialog</computeroutput> or
+        <computeroutput>ResDialog</computeroutput>. Menu creation is included even though this is
+      technically quite separate from dialog creation.</para>
       <para>The following table shows, for each of the three main dialog types, the method
       invocations that the programmer must code and the methods (invoked by ooDialog-provided
       superclasses as part of the dialog creation framework) that the programmer must provide. </para>
 <table id="dlgcreation" frame="all"><title>Dialog Creation - Method Sequences</title>
 <tgroup cols="5">
-        <colspec colnum="1" colname="c1" colwidth="81.75pt">
-        <colspec colnum="2" colname="c2" colwidth="141.75pt">
-        <colspec colnum="3" colname="c3" colwidth="137.25pt">
-        <colspec colnum="4" colname="c4" colwidth="140.25pt">
-        <colspec colnum="5" colname="c5" colwidth="114.75pt">
+        <colspec colnum="1" colname="c1" colwidth="78.75pt">
+        <colspec colnum="2" colname="c2" colwidth="106.5pt">
+        <colspec colnum="3" colname="c3" colwidth="106.5pt">
+        <colspec colnum="4" colname="c4" colwidth="106.5pt">
+        <colspec colnum="5" colname="c5" colwidth="96.75pt">
 <thead>
   <row>
-    <entry><literallayout> Methods
- /  ~Invocations</literallayout></entry>
+    <entry><literallayout> Methods /
+ ~Invocations</literallayout></entry>
     <entry> UserDialog</entry>
     <entry> RcDialog</entry>
     <entry> ResDialog</entry>
@@ -89,35 +89,41 @@
     <entry> Yes.</entry>
     <entry>
       <literallayout> Yes.
- Create Menubar using
- <emphasis role="italic">.ScriptMenuBar~new</emphasis></literallayout>
+ Create Menubar
+ <emphasis role="italic">.ScriptMenuBar
+    ~new</emphasis></literallayout>
     </entry>
     <entry> Yes.</entry>
-    <entry><literallayout> Must be passed to the
- superclass using
- <emphasis role="italic">forward class (super)
-  - continue</emphasis> </literallayout></entry>
+    <entry><literallayout> Must be passed to
+ the superclass using
+ <emphasis role="italic">forward class
+  (super) continue</emphasis> </literallayout></entry>
   </row>
   <row>
     <entry><emphasis role="italic"> defineDialog</emphasis></entry>
     <entry><literallayout> Yes.
- Programmer creates the
- Dialog Template using
+ Programmer creates
+ the Dialog Template
+ using
  <emphasis role="italic">self~create...(...)</emphasis></literallayout></entry>
     <entry><literallayout> Optional.
- Dialog Template is defined
- by the *.rc file, but additional
- controls (or menu items)
- can be added here.</literallayout></entry>
+ Dialog Template is
+ defined by the *.rc
+ file, but additional
+ controls (or menu
+ items) can be added
+ here.</literallayout></entry>
     <entry><literallayout> No.
- Not invoked - the Dialog
- Template is defined by
- the *.dll file - so controls
- or menu items cannot be
- added.</literallayout></entry>
-    <entry><literallayout> Called by super's <emphasis role="italic">init</emphasis>
- method (but not
- for <computeroutput>ResDialog</computeroutput>s)
+ Not invoked -
+ Dialog Template is
+ defined by the *.dll
+ file - so controls or
+ menu items cannot
+ be added.</literallayout></entry>
+    <entry><literallayout> Called by super's
+ <emphasis role="italic">init</emphasis> method
+ (but not for
+ <computeroutput>ResDialog</computeroutput>s)
 
  Purpose: create the
  Dialog Template.  </literallayout></entry>
@@ -127,31 +133,37 @@
     <entry> Yes.</entry>
     <entry> Yes. </entry>
     <entry> Yes. </entry>
-    <entry><literallayout> Creates the Underlying
- Dialog based on the
- Dialog Template </literallayout></entry>
+    <entry><literallayout> Creates the Under-
+ lying Dialog based
+ on the Dialog
+ Template </literallayout></entry>
   </row>
   <row>
     <entry><emphasis role="italic"> initDialog</emphasis></entry>
-    <entry><literallayout> Create "proxies" for controls
- and initialize them using
- <emphasis role="italic">proxy = self~new...(...)</emphasis>
+    <entry><literallayout> Create "proxies" for
+ controls and initialize
+ them using
+ <emphasis role="italic">ctl=self~new...(...)</emphasis>
 
  Create Menubar
- <emphasis role="italic">.BinaryMenuBar~new()</emphasis></literallayout></entry>
+ <emphasis role="italic">.BinaryMenuBar
+    ~new()</emphasis></literallayout></entry>
 
-    <entry> <literallayout> Create "proxies" for controls
- and initialize them using
- <emphasis role="italic">proxy = self~new...(...)</emphasis>
+    <entry> <literallayout> Create "proxies" for
+ controls and initialize
+ them using
+ <emphasis role="italic">ctl=self~new...(...)</emphasis>
 
- Attach Menubar
- <emphasis role="italic">menuBar~attachTo(self)</emphasis></literallayout></entry>
-    <entry><literallayout>  Create "proxies" for controls
- and initialize them using
- <emphasis role="italic">proxy = self~new...(...)</emphasis>
+ Attach Menubar using
+ <emphasis role="italic">~attachTo(self)</emphasis></literallayout></entry>
+    <entry><literallayout> Create "proxies" for
+ controls and initialize
+ them using
+ <emphasis role="italic">ctl=self~new...(...)</emphasis>
 
-      Create Menubar
- <emphasis role="italic">.BinaryMenuBar~new()</emphasis></literallayout>
+ Create Menubar
+ <emphasis role="italic">.BinaryMenuBar
+    ~new()</emphasis></literallayout>
     </entry>
     <entry><literallayout> Called automatically
  after <emphasis role="italic">~execute</emphasis> is
@@ -162,7 +174,7 @@
 </tgroup>
 </table>
   <para>First, as for all ooRexx objects, the <emphasis role="italic">~new</emphasis> method creates
-      an instance of a dialog, and the <emphasis role="italic">init</emphasis> method is then
+      an instance of a dialog class, and the <emphasis role="italic">init</emphasis> method is then
       invoked on the new instance, which must invoke the superclass' <emphasis role="italic"
         >init</emphasis> using <emphasis role="italic">forward class (super) continue</emphasis>.
       For <computeroutput>RcDialog</computeroutput> subclasses, a menubar could be created in this
@@ -174,7 +186,7 @@
         <computeroutput>UserDialog</computeroutput> the dialog template must be created using
       self~create(...) instructions. For an <computeroutput>RcDialog</computeroutput> the dialog
       template is normally fully-defined by the *.rc file, but can optionally be enhanced here.
-      However, in the case of an <computeroutput>ResDialog</computeroutput>, the dialog template is
+      However, in the case of <computeroutput>ResDialog</computeroutput>, the dialog template is
       fully-defined by the *.dll file, and cannot be changed programmatically. Therefore, a
         <emphasis role="italic">defineDialog</emphasis> message is not sent to a
         <computeroutput>ResDialog</computeroutput>.</para>
@@ -182,15 +194,15 @@
       template is established. </para>
     <para>The "underlying dialog" (see ooDialog Reference section 2.3.11) is then created and
       surfaced (made visible to the user) by invoking the superclass' <emphasis role="italic"
-        >execute</emphasis> method (see ooDialog Reference section 3.7.5). </para>
+        >execute</emphasis> method (see ooDialog Reference section 3.7.5).  </para>
     <para>The last method in the table - <emphasis role="italic">initDialog</emphasis> (see ooDialog
       Reference section 3.7.7) - is provided for the programmer to initialize the various controls -
       e.g. set an edit control to its initial data value, or pre-select a radio button. This is done
       by creating "proxies" for those controls that need to be manipulated within the program,
-      typically using <emphasis role="italic">proxy = self~new...(...)</emphasis> statements. Note
-      that it's worth remembering that the "init" in <emphasis role="italic">initDialog</emphasis>
-      means "initialize" - not to be confused with the ooRexx <emphasis role="italic"
-        >init</emphasis> method. </para>
+      typically using <emphasis role="italic">proxy = self~new...(...)</emphasis> statements. It's
+      worth remembering that the "init" in <emphasis role="italic">initDialog</emphasis> means
+      "initialize" - not to be confused with the ooRexx <emphasis role="italic">init</emphasis>
+      method. </para>
     <para>Finally, although the creation of a menubar is mentioned in the table, technically it is
       not part of dialog creation. A menubar can be created any time. However, it can only be
       attached to a dialog after the underlying dialog is created. Thus the first opportunity to
