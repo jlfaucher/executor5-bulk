@@ -302,7 +302,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetItemData">getItemData</link></entry>
-<entry>TERM</entry>
+<entry>Retrieves the user data associated with the specified list-view item.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetItemInfo">getItemInfo</link></entry>
@@ -318,7 +318,7 @@
 </row>
 <row>
 <entry><link linkend="mthHitTestInfoClsListView">hitTestInfo</link></entry>
-<entry>TERM</entry>
+<entry>Determines which list-view item, if any, is at the specified position.</entry>
 </row>
 <row>
 <entry><link linkend="mthInsertClsListControl">insert</link></entry>
@@ -414,7 +414,7 @@
 </row>
 <row>
 <entry><link linkend="mthRemoveItemData">removeItemData</link></entry>
-<entry>TERM</entry>
+<entry>Removes and returns the user data associated with the specified list-view item.</entry>
 </row>
 <row>
 <entry><link linkend="mthRemoveExtendedStyle">removeExtendedStyle</link></entry>
@@ -474,7 +474,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetItemData">setItemData</link></entry>
-<entry>TERM</entry>
+<entry>Sets the user data associated for the specified list-view item.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetItemPos">setItemPos</link></entry>
@@ -2684,7 +2684,7 @@ incremented or decremented by .1 of a second.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
       <varlistentry><term>index [required]</term>
       <listitem>
@@ -2706,8 +2706,10 @@ incremented or decremented by .1 of a second.
   <listitem>
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
-    list-view items. This can be any ooRexx object. This can be useful in any number of ways. One specific use is in the
-    <link linkend="mthSortItems">sortItems</link> method.
+    list-view items. The data value can be any ooRexx object. The data value is set using the <link
+    linkend="mthSetItemData">setItemData</link> method. If needed the data value can be removed from a list-view item
+    through the <link linkend="mthRemoveDataItem">removeDataItem</link> method.  Storing a user value for each item can
+    be useful in any number of ways. One specific use is in the <link linkend="mthSortItems">sortItems</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2722,9 +2724,49 @@ incremented or decremented by .1 of a second.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the data value stored for each item to display extra employee information when the user double
+    clicks on an item in a list-view that dislays each employee. Note that the Rexx object stored for each list-view
+    item is a <computeroutput>Directory</computeroutput> object:
 <programlisting>
 <![CDATA[
+
+::method onDoubleClick
+  expose list
+  use arg id, index, subitem, flags
+
+  tab = '9'x
+
+  if index <> -1 then do
+    data = list~getItemData(index)
+
+    msg = 'Extra Information for' data~fName data~lName || .endOfLine~copies(2)
+
+    select
+      when subItem == 0 then do
+        msg ||= 'Employee ID:' || tab           || data~ID      || .endOfLine
+        msg ||= 'Manager:'     || tab~copies(2) || data~manager || .endOfLine
+      end
+      when subitem == 1 then do
+        msg ||= 'Telephone:' || tab || data~telephone || .endOfLine
+        msg ||= 'Cellphone:' || tab || data~cell      || .endOfLine
+      end
+      when subitem == 2 then do
+        msg ||= 'Pay scale:' || tab || data~scale     || .endOfLine
+        msg ||= 'Status:'    || tab || data~empStatus || .endOfLine
+      end
+      otherwise do
+        -- insurance, can't happen
+        nop
+      end
+    end
+    -- End select
+
+    title = 'Acme Plumbing Employee Statistics'
+
+    z = MessageDialog(msg, self~hwnd, title, 'OK')
+  end
+
+  return 0
 
 ]]>
 </programlisting>
@@ -2979,13 +3021,27 @@ incremented or decremented by .1 of a second.
 <indexterm><primary>ListView class</primary><secondary>hitTestInfo</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hitTestInfo(--+--------+--)---------------------------------------------><
-                  +--type--+
+
+Form 1:
+
+>>--hitTestInfo(--pos--+---------+--)------------><
+                       +-,-info--+
+
+Form 2:
+
+>>--hitTestInfo(--x--,--y--+---------+--)--------><
+                           +-,-info--+
+
+Generic Form:
+
+>>--hitTestInfo(--hitPoint--+---------+--)-------><
+                            +-,-info--+
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines which list-view item, if any, is at the specified position.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2993,11 +3049,197 @@ incremented or decremented by .1 of a second.
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>hitPoint [required]</term>
       <listitem>
       <para>
-        xx
+        The point, in <link linkend="defScreenCoordinates">client</link> coodinates, to test.
       </para>
+      </listitem></varlistentry>
+      <varlistentry><term>info [optional in / out]</term>
+      <listitem>
+      <para>
+        A <computeroutput>.Directory</computeroutput> object in which additional information concerning the hit test
+        will be returned. This argument can be omitted if the additional information is not needed. When the argument is
+        used, on return <emphasis role="italic">info</emphasis> will contain some, or all, of the following indexes,
+        depending on the version of Windows:
+      </para>
+      <variablelist>
+        <varlistentry><term>INFO</term>
+        <listitem>
+        <para>
+          A string of keywords containing information about the hit test. One or more of the following keywords will be
+          present:
+        </para>
+        <para>
+          <simplelist type='vert' columns='3'>
+            <member>Above      </member>
+            <member>Below      </member>
+            <member>ToRight    </member>
+            <member>ToLeft     </member>
+            <member>Nowhere    </member>
+            <member>OnIcon     </member>
+            <member>OnLabel    </member>
+            <member>OnStateIcon</member>
+            <member>OnItem     </member>
+          </simplelist>
+          <variablelist>
+            <varlistentry><term>Above</term>
+            <listitem>
+            <para>
+              The position is above the list-view's client area.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>Below</term>
+            <listitem>
+            <para>
+              The position is below the list-view's client area.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ToRight</term>
+            <listitem>
+            <para>
+              The position is to the right of the list-view's client area.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>ToLeft</term>
+            <listitem>
+            <para>
+              The position is to the left of the list-view's client area.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>Nowhere</term>
+            <listitem>
+            <para>
+              The position is inside the list-view control's client window, but it is not over a list item.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>OnIcon</term>
+            <listitem>
+            <para>
+              The position is over a list-view item's icon.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>OnLabel</term>
+            <listitem>
+            <para>
+              The position is over a list-view item's text.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>OnStateIcon</term>
+            <listitem>
+            <para>
+              The position is over the state image of a list-view item.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>OnItem</term>
+            <listitem>
+            <para>
+              The position is over a list-view item. This is a combination of <emphasis role="italic">OnIcon</emphasis>,
+              or <emphasis role="italic">OnLabel</emphasis>, or <emphasis role="italic">OnStateIcon</emphasis>.
+            </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INFOEX</term>
+        <listitem>
+        <para>
+          This index will only be present on Vista or later and is a string of keywords containing extended information
+         about the hit test. The index may contain one or more of the following keywords:
+        </para>
+        <para>
+          <simplelist type='vert' columns='3'>
+            <member>Footer         </member>
+            <member>Group          </member>
+            <member>GroupBackground</member>
+            <member>GroupCollapse  </member>
+            <member>GroupFooter    </member>
+            <member>GroupHeader    </member>
+            <member>GroupStateIcon </member>
+            <member>GroupSubsetLink</member>
+            <member>OnContents     </member>
+          </simplelist>
+          <variablelist>
+            <varlistentry><term>Footer</term>
+            <listitem>
+            <para>
+              The point is within the footer of the list-view control.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>Group</term>
+            <listitem>
+            <para>
+              The point is within a group. This is a combination of <emphasis role="italic">GroupBackground</emphasis>,
+              or <emphasis role="italic">GroupCollapse</emphasis>, or <emphasis
+              role="italic">GroupFooter</emphasis>, or <emphasis role="italic">GroupHeader</emphasis>, or <emphasis
+              role="italic">GroupStateIcon</emphasis>, or <emphasis role="italic">GroupSubsetLink</emphasis>.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GroupBackground</term>
+            <listitem>
+            <para>
+              The point is within the area of the group where items are displayed.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GroupCollapse</term>
+            <listitem>
+            <para>
+              The point is within the collapse/expand button of the group.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GroupFooter</term>
+            <listitem>
+            <para>
+              The point is within the group footer.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GroupHeader</term>
+            <listitem>
+            <para>
+              The point is within the group header.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GroupStatIcon</term>
+            <listitem>
+            <para>
+              The point is within the state icon of the group.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>GroupSubsetLink</term>
+            <listitem>
+            <para>
+              The point is within the subset link of the group.
+            </para>
+            </listitem></varlistentry>
+            <varlistentry><term>OnContents</term>
+            <listitem>
+            <para>
+              The point is within the icon or text content of the item and not on the background.
+            </para>
+            </listitem></varlistentry>
+          </variablelist>
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ITEM</term>
+        <listitem>
+        <para>
+          The index of the item if the point hits an item or subitem. -1 if the point did not hit an item or subitem.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>SUBITEM</term>
+        <listitem>
+        <para>
+          The subitem index if the point hits a subitem, othewise 0.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GROUP</term>
+        <listitem>
+        <para>
+          Vista or later only. The group index of the item hit. This is valid only for owner data. If the point is
+          within an item that is displayed in multiple groups then GROUP will specify the group index of the item.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
       </listitem></varlistentry>
     </variablelist>
   </para>
@@ -3005,13 +3247,19 @@ incremented or decremented by .1 of a second.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The index of the list-view item hit, or -1 if the point does not hit an item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Sometimes the returned index of the hit spot is all that is needed. In these cases, there is no need to supply the
+    optional <computeroutput>.Directory</computeroutput> object.  However, other times the complete hit test information
+    may be desired.
+  </para>
+  <para>
+    Any x, y coordinates will work.  I.e. -6000, -7000 will work. The item indes will be -1 and location will be
+    <emphasis role="italic">Above ToLeft</emphasis>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3026,9 +3274,19 @@ incremented or decremented by .1 of a second.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from a program that allows the user to edit the text of subitems. The code snippet checks if the
+    point p is over an item's subitem and if so invokes the editing method:
 <programlisting>
 <![CDATA[
+
+  listView = self~newListView(IDC_LV_PLAYERS)
+
+  d = .Directory~new
+  index = listView~hitTestInfo(p, d)
+  if index <> -1 & d~subItem <> 0 then do
+    self~subItemEdit(index, d~subItem)
+    ...
+  end
 
 ]]>
 </programlisting>
@@ -4162,24 +4420,24 @@ to redraw a range of items.</para>
 <indexterm><primary>ListView class</primary><secondary>removeItemData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--removeItemData(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--removeItemData(--index--)--------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes and returns the user data associated with the specified list-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The zero-based index of the item whose data value is being removed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -4188,13 +4446,19 @@ to redraw a range of items.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the user data value associated with the specified item, or <computeroutput>.nil</computeroutput> if there is
+    no data associated with the item.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
+    list-view items. The data value can be any ooRexx object. The data value is set using the <link
+    linkend="mthSetItemData">setItemData</link> method. The data value can be retrieved without removing it from a
+    list-view item through the <link linkend="mthGetDataItem">getDataItem</link> method.  Storing a user value for each
+    item can be useful in any number of ways. One specific use is in the <link linkend="mthSortItems">sortItems</link>
+    method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4209,10 +4473,56 @@ to redraw a range of items.</para>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
+    This example comes from a program where the user can add items to a list-view and rearrange the items in any she
+    wnats. The user can also reset the order of the items to its original order when the program started up. To do that,
+    the original index of each item is stored in the data value for each item when it is added to the list-view
+  </para>
+  <para>
+    Since the list-view control associates the data value with the index of an item, when the items are reset to their
+    original order, the data value is removed from the index it is currently at. When the items are added back to the
+    list-view in their original order the data value is then assoicated with the new item index.
+<programlisting> <![CDATA[
 
+::method initDialog
+  expose list
+
+  list = self~newListView(IDC_LV)
+  ...
+
+  items = self~getItems
+  index = 0
+
+  do item over items
+    list~addRow(index, , item~text, item~fName, item~lName)
+    item~origIndex = index
+
+    list~setItemData(index, item)
+    index += 1
+  end
+
+
+::method onReset
+  expose list
+
+  countItems = list~items
+  items = .array~new(countItems)
+
+  do i = 1 to countItems
+    data = list~removeItemData(i - 1)
+
+    items[data~origIndex + 1] = data
+  end
+
+  list~deleteAll
+
+  do i = 1 to countItems
+    data = items[i]
+
+    list~addRow(i - 1, , data~text, data~fName, data~lName)
+    list~setItemData(i - 1, data)
+  end
+
+return 0
 ]]>
 </programlisting>
   </para>
@@ -5201,13 +5511,13 @@ second the row is automatically selectd.
 <indexterm><primary>ListView class</primary><secondary>setItemData</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setItemData(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setItemData(--index--,--data--)--------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the user data associated for the specified list-view item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5215,10 +5525,17 @@ second the row is automatically selectd.
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The zero-based index of the item the data value is associated with.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>data [required]</term>
+      <listitem>
+      <para>
+        The data value to store for the list-view item. This can be any Rexx object. (Recall that in ooRexx numbers and
+        strings are also objects.)
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5227,13 +5544,17 @@ second the row is automatically selectd.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error. An error is unlikely.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
+    list-view items. The data value can be any ooRexx object. The data value can be retrieved without removing it from a
+    list-view item through the <link linkend="mthGetDataItem">getDataItem</link> method, or it can be removed through
+    the <link linkend="mthRemoveItemData">removeItemData</link>. Storing a user value for each item can be useful in any
+    number of ways. One specific use is in the <link linkend="mthSortItems">sortItems</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5248,9 +5569,30 @@ second the row is automatically selectd.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example stores a <computeroutput>.Direcotry</computeroutput> object with each list-view item when the item is
+    added to the list-view. The <computeroutput>.Directory</computeroutput> object contains the text for the item and
+    its subitems and additional information not shown in the code snippet:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose list
+
+  list = self~newListView(IDC_LV)
+  ...
+
+  items = self~getItems
+
+  do item over items
+    index = list~addRow(, , item~text, item~fName, item~lName)
+
+    if index == -1 the do
+      -- do some error routine
+      return 0
+    end
+
+    list~setItemData(index, item)
+  end
 
 ]]>
 </programlisting>
@@ -5504,13 +5846,14 @@ grid position.</para>
 <indexterm><primary>ListView class</primary><secondary>sortItems</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--sortItems(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--sortItems(--methodName--+----------+--)------><
+                            +-,-param--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">sortItems</emphasis> method causes the list-view control to sort its items using the
+  specified comparison method in the Rexx dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5518,10 +5861,22 @@ grid position.</para>
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>methodName [required]</term>
       <listitem>
       <para>
-        xx
+        A comparison method in the Rexx dialog that is used by the list-view to sort its items. The Rexx method is
+        passed the <link linkend="mthSetItemData">data</link> value associated with two list-view items being compared.
+        The Rexx method must return a whole number: less than 0 if the first list-view item should precede the second
+        item, greater than 0 if the first list-view item should follow the second, or 0 if the two items are equivalent.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>param [optional]</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">param</emphasis> argument can be any object the programmer wants to use. If the
+        argument exists, it is passed as the third argument to the <emphasis role="italic">methodName</emphasis>
+        comparison method. If it is not specified, <computeroutput>.nil</computeroutput> is passed as the third
+        argument.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5530,14 +5885,77 @@ grid position.</para>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error. An error is unlikely.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The list-view control allows the user (the Rexx programmer) to associate a <link
+    linkend="mthSetItemData">data</link> value with any, or all, of the list-view items. The data value can be any
+    ooRexx object. For the <emphasis role="italic">sortItems</emphasis> method to work correctly, the programmer must
+    associate a data value with each list-view item.
   </para>
+  <para>
+    When the list-view control needs to compare two items it will invoke, through the ooDialog framework, the comparison
+    method, <emphasis role="italic">methodName</emphasis>, in the Rexx dialog. The return from the Rexx method
+    determines how the items are sorted.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Comparsion Method</emphasis></term>
+  <listitem>
+  <para>
+    The comparsion method named by <emphasis role="italic">methodName</emphasis> is invoked by the list-view to compare
+    two list-view items while it is sorting the list. The comparsion method must return a whole number and this value is
+    passed on to the list-view control. While the list-view is sorting, the list is not stable and the comparison method
+    must not invoke any <computeroutput>ListView</computeroutput> methods. If methods of the
+    <computeroutput>ListView</computeroutput> object are invoked, the results of the sort are unpredictable.
+  </para>
+
+<programlisting>
+<![CDATA[
+::method compare
+  use arg data1, data2, param
+]]>
+</programlisting>
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+    <listitem>
+    <para>
+      The comparison method receives 3 arguments:
+    </para>
+    <variablelist>
+      <varlistentry><term>data1</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">data value</emphasis> assigned to the first list-view item to be compared.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>data1</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">data value</emphasis> assigned to the second list-view item to be compared.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>param</term>
+      <listitem>
+      <para>
+        The <emphasis role="italic">param</emphasis> argument passed to the <emphasis role="italic">sortItems</emphasis>
+        method, if it exists. If it was omitted, the param argument will be the <computeroutput>.nil</computeroutput>
+        object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+    <listitem>
+    <para>
+      The return must be a whole number. Less than 0 places the first list item before the second item, greater than 0
+      places the first item after the second. Return 0 if the two items are equivalent.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -5551,9 +5969,48 @@ grid position.</para>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example show one approach to sorting the list items on either a first name or last name, and either ascending
+    or descending:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  ...
+  -- Get the list-view object
+  list = self~newListView(IDC_LV)
+
+  -- Get the data value for each list item.
+  -- names is an array of .directory objects.
+  -- Each .directory object has a fName and a
+  -- lName index
+  names = self~getFirstLastNames
+
+  do i = 1 to names~items
+    list~setItemData(i - 0, names[i])
+  end
+  ...
+
+::method sortList unguarded
+  use strict arg ascending, column, list
+
+  -- column is the column to sort on. Column 1 is
+  -- the first name, column 2 is the last name.
+
+  if ascending then list~sortItems(sortUp, column)
+  else list~sortItems(sortDown, column)
+
+::method sortUp unguarded
+  use arg data1, data2, param
+
+  if param == 1 then return data1~fName~compareTo(data2~fName)
+  else return data1~lName~compareTo(data2~lName)
+
+::method sortDown unguarded
+  expose field
+  use arg data1, data2, param
+
+  if param == 1 then return data2~fName~compareTo(data1~fName)
+  else return data2~lName~compareTo(data1~lName)
 
 ]]>
 </programlisting>

@@ -1206,7 +1206,7 @@
 <programlisting>
 <![CDATA[
 
-::method onActivate
+::method onActivate unguarded
   expose listViewPageDialog lastFocused
   use arg flag, hwnd, hFocused, isMinimized
 
@@ -1443,11 +1443,13 @@
 
 <programlisting>
 <![CDATA[
-::method handler
+::method handler unguarded
   use arg info, handle
   id = .DlgUtil~loWord(info)
   eventCode = .DlgUtil~hiWord(info)
   ...
+
+  return 0
 ]]>
 </programlisting>
     </para>
@@ -1459,10 +1461,11 @@
 
 <programlisting>
 <![CDATA[
-::method onHover
+::method onHover unguarded
   use arg id, entering
   say 'onHover() id:' id 'entering:' entering
   ...
+  return 0
 
 /* Output might be:
 
@@ -1513,8 +1516,9 @@
   self~init:super(...)
   self~connectButtonEvent("OK", "HILITE")
 
-::method onHilite
+::method onHilite unguarded
   say "The OK button has been selected"
+  return 0
 ]]>
 </programlisting>
 </listitem></varlistentry>
@@ -1621,12 +1625,13 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method PlaySong
+::method playSong unguarded
   use arg eventID, handle
   id = .DlgUtil~loWord(eventID)
   if id == self~constDir[IDC_CB_PROFESSIONS] then
     -- take some action
   ...
+  return 0
 ]]>
 </programlisting>
 
@@ -1751,7 +1756,7 @@ incorrect.
   ...
   self~connectCommandEvents(IDC_LB_FILES, onCommand)
 
-::method onCommand
+::method onCommand unguarded
   use arg cmdCode, hwnd
   say 'cmdCode:                  ' cmdCode
   say 'hwnd:                     ' hwnd
@@ -1759,6 +1764,7 @@ incorrect.
   say 'lo word resource ID:      ' .DlgUtil~loWord(cmdCode)
   say '(List box resource ID)    ' self~constDir[IDC_LB_FILES]
   say
+  return 0
 
 /* Output might be:
 cmdCode:                   263147
@@ -2168,7 +2174,7 @@ lo word resource ID:       1003
   staticMsg = self~newStatic(IDC_ST1)
   ...
 
-::method onChange
+::method onChange unguarded
   expose staticMsg
   use arg dateTime, valid, idFrom, hwndFrom
 
@@ -2180,6 +2186,7 @@ lo word resource ID:       1003
     staticMsg~setText("No valid date selected.")
   end
 
+  return 0
 
 ::class 'SimpleFormatter' public
 
@@ -2635,7 +2642,7 @@ lo word resource ID:       1003
 <programlisting>
 <![CDATA[
 
-::method onKeyDown
+::method onKeyDown unguarded
   use arg field, dt, vKey, idFrom, hwndFrom
 
   select
@@ -3198,11 +3205,12 @@ incorrect.
   <para><emphasis role="bold">Example:</emphasis></para>
   <programlisting>
   <![CDATA[
-  ::method Handler
+  ::method Handler unguarded
     use arg info, handle
     id = .DlgUtil~loWord(info)
     eventID = .DlgUtil~hiWord(info
     ...
+    return 0
   ]]>
   </programlisting>
   </listitem>
@@ -3219,13 +3227,14 @@ it to 0 when a nonnumeric value was entered:
   self~init:super(...)
   self~connectEditEvent("AMOUNT", "CHANGE")
 
-::method OnChange
+::method onChange unguarded
   ec = self~newEdit("AMOUNT")
   if ec~GetText~Space(0) \= "" & ec~GetText~DataType("N") = 0 then do
     ec~setModified(.false)
     ec~select
     ec~replaceSelText("0")
    end
+  return 0
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -3376,7 +3385,7 @@ it to 0 when a nonnumeric value was entered:
 
     ...
 
-  ::method onFKey
+  ::method onFKey unguarded
     use arg keyPressed
 
     select
@@ -3396,6 +3405,7 @@ it to 0 when a nonnumeric value was entered:
       end
     end
 
+    return 0
   ]]>
   </programlisting>
   </para>
@@ -3520,12 +3530,14 @@ it to 0 when a nonnumeric value was entered:
     self~connectHelp(onHelp)
     ...
 
-::method onHelp
+::method onHelp unguarded
     use arg id, type, mouseX, mouseY
     if type == "MENU" then w = 'Menu id' id; else w = 'Dialog id' id
     say "Help request:"
     say " " w
     say "  Mouse position x:" mouseX "y:" mouseY
+
+    return 0
 
 /* As the user presses the F1 key at various times when the dialog has the focus
  * the output might be as follows:
@@ -3948,19 +3960,23 @@ Help request:
 
   ...
 
-::method onF2
+::method onF2 unguarded
   self~showCustomerLookupDialog
+  return 0
 
-::method onF3
+::method onF3 unguarded
 
   prodNum = self~newEdit(IDC_EDIT_PRODUCT)~getText
   if prodNum \== "" then self~showProductInfo(prodNum)
+  return 0
 
-::method onF4
+::method onF4 unguarded
   self~resetAllFields
+  return 0
 
-::method onF5
+::method onF5 unguarded
   self~printInvoice
+  return 0
 
 ]]>
 </programlisting>
@@ -4051,10 +4067,11 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method PlaySong
+::method playSong unguarded
   use arg eventID, handle
   id = .DlgUtil~loWord(eventID)
   ...
+  return 0
 ]]>
 </programlisting>
 
@@ -4069,9 +4086,10 @@ incorrect.
 ::method init
   self~connectListBoxEvent(IDC_LB_PLAYLIST, "SELCHANGE", "SelectionChanged")
 
-::method selectionChanged
+::method selectionChanged unguarded
   li = self~newListBox(IDC_LB_PLAYLIST)
   say "New selection is:" li~selected
+  return 0
 ]]>
 </programlisting>
 </para>
@@ -4184,6 +4202,14 @@ incorrect.
         This event is generated when the list-view is clicked with the left mouse button. However, in report view only,
         this excludes the column headers. Connecting the CLICK event is a replacement for the <link
         linkend="mthConnectNotifyEvent">connectNotifyEvent</link> method's CLICK event.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DBLCLK</term>
+      <listitem>
+      <para>
+        This event is generated when the list-view is double-clicked with the left mouse button. However, in
+        report view only, this excludes the column headers. Connecting the DBLCLK event is a replacement for the <link
+        linkend="mthConnectNotifyEvent">connectNotifyEvent</link> method's DBLCLK event.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>COLUMNCLICK</term>
@@ -4321,33 +4347,39 @@ incorrect.
 
   ::method init
     self~init:super(...)
-    self~connectListViewEvent("EMPLOYEES", "COLUMNCLICK", "ColumnAction")
+    self~connectListViewEvent("EMPLOYEES", "COLUMNCLICK", "columnAction")
 
-  ::method ColumnAction
+  ::method columnAction unguarded
     use arg id, column
     lc = self~newListView("EMPLOYEES")
     lc~replaceStyle("REPORT", "SMALLICON EDIT SINGLESEL ASCENDING")
     if column > 0 then ...
+
+    return 0
   ]]>
   </programlisting>
   </listitem></varlistentry>
 </variablelist>
 
-<section id="evtListViewCLICK"><title>Click Event Handler</title>
+<section id="evtListViewCLICK"><title>Click / Double Click Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>CLICK</secondary></indexterm>
+<indexterm><primary>ListView Event</primary><secondary>DBLCLK</secondary></indexterm>
 <para>
   The event handling method for the CLICK event is invoked when the user clicks on the list-view with the left mouse.
-  This excludes the column headers in report view. Note that the user can click on a list-view item, or on the
-  background of the list view. When the click is on the background of the list-view then both the <emphasis
-  role="italic">itemIndex</emphasis> and <emphasis role="italic">columnInex</emphasis> will be -1. The method will
-  receive four arugments:
+  The event handler for the DBLCLK is invoked when the user double clicks on the list-view. This excludes the column
+  headers in report view. Both event handlers recieve the same arguments.
+</para>
+  Note that the user can click on a list-view item, or on the background of the list view. When the click is on the
+  background of the list-view then both the <emphasis role="italic">itemIndex</emphasis> and <emphasis
+  role="italic">columnInex</emphasis> will be -1. The method will receive four arguments:
 </para>
 
 <programlisting>
 <![CDATA[
-  ::method onClick
+  ::method onClick unguarded
     use arg id, itemIndex, columnIndex, keyState
 
+    return 0
 ]]>
 </programlisting>
 
@@ -4380,7 +4412,7 @@ incorrect.
     a string of keywords separated by blanks.  The keywords consist of: SHIFT, CONTROL, ALT, or NONE. The presence of a
     keyword indicates the key was held down when the user clicked on the list-view control.  NONE of course indicates
     that none of the keys were down.  If the user managed to hold all three of the keys down at the time of the mouse
-    click, the argument would be the string: &quot;SHIFT CONTROL ALT&quot;
+    click, the argument would be the string: <emphasis role="italic">SHIFT CONTROL ALT</emphasis>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4395,9 +4427,10 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method onCheckboxChanged
+::method onCheckboxChanged unguarded
   use arg id, itemIndex, state
 
+  return 0
 ]]>
 </programlisting>
 <variablelist>
@@ -4442,7 +4475,7 @@ incorrect.
   self~connectListViewEvent(IDC_LV_ADDRESSES, "CHECKBOXCHANGED")
   ...
 
-::method onCheckboxChanged
+::method onCheckboxChanged unguarded
   expose mailList
   use arg id, itemIndex, state
 
@@ -4451,6 +4484,7 @@ incorrect.
   else
     self~removeFromMailMerge(mailList, itemIndex)
 
+  return 0
 ]]>
 </programlisting>
 
@@ -4465,9 +4499,10 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method onSelectChanged
+::method onSelectChanged unguarded
   use arg id, itemIndex, state
 
+  return 0
 ]]>
 </programlisting>
 
@@ -4503,9 +4538,10 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method onFocusChanged
+::method onFocusChanged unguarded
   use arg id, itemIndex, state
 
+  return 0
 ]]>
 </programlisting>
 <variablelist>
@@ -4540,9 +4576,10 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method onSelectFocusChanged
+::method onSelectFocusChanged unguarded
   use arg id, itemIndex, state
 
+  return 0
 ]]>
 </programlisting>
 
@@ -4582,8 +4619,10 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method OnEndEdit
+::method onEndEdit unguarded
   use arg item, newText
+
+  return 0
 ]]>
 </programlisting>
 
@@ -4598,8 +4637,10 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method OnColumnClick
+::method onColumnClick unguarded
   use arg id, column
+
+  return 0
 ]]>
 </programlisting>
 
@@ -4615,9 +4656,11 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method OnKeyDown
+::method onKeyDown unguarded
   use arg id, vkey
   say "Key" .VK~key2name(vkey) "was pressed."
+
+  return 0
 ]]>
 </programlisting>
 
@@ -4634,8 +4677,10 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method 0nBeginDrag
+::method onBeginDrag unguarded
   use arg id, item, where
+
+  return 0
 ]]>
 </programlisting>
 </section>
@@ -4651,8 +4696,10 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method 0nBeginRightDrag
+::method onBeginRightDrag unguarded
   use arg id, item, where
+
+  return 0
 ]]>
 </programlisting>
 </section>
@@ -5262,13 +5309,15 @@ incorrect.
 
   self~connectMove(onMove)
 
-::method onMove
+::method onMove unguarded
   use arg unUsed, posInfo
 
   -- The dialog position has changed, print out where we are.
   x = .DlgUtil~loWord(posInfo)
   y = .DlgUtil~hiWord(posInfo)
   say 'At coordinate (' x',' y' ) on the screen. (In pixels.)'
+
+  return 0
 
 ]]>
 </programlisting>
@@ -5390,9 +5439,11 @@ incorrect.
   self~init:super(...)
   self~connectNotifyEvent(DLGITEM1, "DBLCLK")
 
-::method onDblClk
+::method onDblClk unguarded
   use arg id, hwnd
   say "Control" id " has been double-clicked! It's window handle is:" hwnd
+
+  return 0
 ]]>
 </programlisting>
   </para>
@@ -5475,13 +5526,15 @@ incorrect.
   ...
   self~connectPosChanged("onNewPos")
 
-::method onNewPos
+::method onNewPos unguarded
   rect = self~windowRect
   say "The new dialog window rectangle is:"
   say "  Left:  " rect~left
   say "  Top:   " rect~top
   say "  Right: " rect~right
   say "  Bottom:" rect~bottom
+
+  return 0
 ]]>
 </programlisting>
   </para>
@@ -5568,7 +5621,7 @@ incorrect.
 
   self~connectResize("onSize")
 
-::method onSize
+::method onSize unguarded
   use arg sizeEvent, sizeInfo
 
   -- sizeInfo contains information about the new width and height in pixels.
@@ -5576,6 +5629,7 @@ incorrect.
   h = .DlgUtil~hiWord(sizeinfo)
   say "New width=" w ", new height=" h
 
+  return 0
 ]]>
 </programlisting>
   </listitem></varlistentry>
@@ -5605,7 +5659,7 @@ incorrect.
  * SIZE_MINIMIZED  = 1
  * SIZE_MAXIMIZED  = 2
  */
-::method onSize
+::method onSize unguarded
   expose wasMinimized
   use arg sizeEvent, sizeInfo
 
@@ -5616,6 +5670,7 @@ incorrect.
     wasMinimized = .false
   end
 
+  return 0
 ]]>
 </programlisting>
   </para>
@@ -5828,7 +5883,7 @@ incorrect.
 
   self~connectResizing("onSizing")
 
-::method onSizing
+::method onSizing unguarded
   use arg rect, direction
 
   select
@@ -6048,9 +6103,10 @@ incorrect.
 
 <programlisting>
 <![CDATA[
-::method onScrollBarEvent
+::method onScrollBarEvent unguarded
   use arg posInfo, hwnd
 
+  return 0
 ]]>
 </programlisting>
 
@@ -6079,7 +6135,7 @@ incorrect.
 
   self~connectScrollBarEvent(IDC_SB_FILE, "POSITION")
 
-::method onPosition
+::method onPosition unguarded
   use arg posInfo, hwnd
 
   pos       = .DlgUtil~hiWord(posData)
@@ -6092,6 +6148,8 @@ incorrect.
   say "Verify event code:
   say "  THUMBPOSITION:" .ScrollBar~THUMBPOSITION
   say "  This event:   " eventCode
+
+  return 0
 ]]>
 </programlisting>
   </para>
@@ -6391,7 +6449,7 @@ incorrect.
   </para>
 <programlisting>
 <![CDATA[
-::method editStats
+::method editStats unguarded
   use arg ctrlInfo, ctrlHwnd
 
   ctrlID = .DlgUtil~loWord(ctrlInfo)
@@ -6400,6 +6458,8 @@ incorrect.
   rec = self~getCurrentRecord
 
   if self~userUpdate(ctrlID, rec) then self~setStats(rec)
+
+  return 0
 ]]>
 </programlisting>
   </listitem></varlistentry>
@@ -6721,13 +6781,15 @@ for POSITION, which should be 4:
 
 ::method initDialog
   self~InitDialog:super(...)
-  self~connectTrackBarEvent("MYSLIDER", "POSITION", PosSet)
+  self~connectTrackBarEvent("MYSLIDER", "POSITION", posSet)
 
-::method PosSet
+::method posSet unguarded
   use arg ev_pos, hnd
   pos = .DlgUtil~hiWord(ev_pos)
 
   say "Verify event code (should be 4):" .DlgUtil~loWord(ev_pos)
+
+  return 0
 ]]>
 </programlisting>
 </para></listitem></varlistentry>
@@ -6742,9 +6804,11 @@ and the handle to the trackbar control. For some events, you can retrieve the
 trackbar position by extracting the high-oder word. Example:
 <programlisting>
 <![CDATA[
-::method Handler
+::method handler unguarded
   use arg ev_pos, handle
   position = .DlgUtil~hiWord(ev_pos)
+
+  return 0
 ]]>
 </programlisting></para></listitem>
 </orderedlist>
@@ -6892,8 +6956,10 @@ trackbar position by extracting the high-oder word. Example:
 <programlisting>
 <![CDATA[
 
-::method onEndEdit
+::method onEndEdit unguarded
   use arg item, newText
+
+  return 0
 ]]>
 </programlisting>
 
@@ -6908,9 +6974,11 @@ trackbar position by extracting the high-oder word. Example:
 <programlisting>
 <![CDATA[
 
-::method onKeyDown
+::method onKeyDown unguarded
   use arg id, vkey
   say "Key" .VK~name2key(vkey) "was pressed."
+
+  return 0
 ]]>
 </programlisting>
 
@@ -6924,9 +6992,11 @@ trackbar position by extracting the high-oder word. Example:
 
   <programlisting>
   <![CDATA[
-  ::method onExpanding
+  ::method onExpanding unguarded
     use arg id, item, what
     say "Item with handle" item "is going to be" what
+
+    return 0
   ]]>
   </programlisting>
 
@@ -6941,11 +7011,13 @@ trackbar position by extracting the high-oder word. Example:
   <programlisting>
   <![CDATA[
 
-  ::method onBeginDrag
+  ::method onBeginDrag unguarded
     use arg id, item, where
     say "Item with handle" item "is in drag-and-drop mode"
     parse var where x y
     say "The drag operation started at point ("x","y")"
+
+    return 0
   ]]>
   </programlisting>
 
@@ -6982,10 +7054,12 @@ trackbar position by extracting the high-oder word. Example:
   ::method init
     self~connectTreeViewEvent(IDC_TV_FILES, "SELCHANGED", "newTreeSelection")
 
-  ::method newTreeSelection
+  ::method newTreeSelection unguarded
     tc = self~newTreeView(IDC_TV_FILES)
     info. = tc~itemInfo(tc~selected)
     say "New selection is:" info.!text
+
+    return 0
   ]]>
   </programlisting>
   </para>
@@ -7411,19 +7485,24 @@ trackbar position by extracting the high-oder word. Example:
 
   ...
 
-::method onF2
+::method onF2 unguarded
   self~showCustomerLookupDialog
 
-::method onF3
+  return 0
+
+::method onF3 unguarded
 
   prodNum = self~newEdit(IDC_EDIT_PRODUCT)~getText
   if prodNum \== "" then self~showProductInfo(prodNum)
+  return 0
 
 ::method onF4
   self~resetAllFields
+  return 0
 
 ::method onF5
   self~printInvoice
+  return 0
 
 ::method onF7
 
@@ -7431,6 +7510,7 @@ trackbar position by extracting the high-oder word. Example:
   self~disconnectKeyPress(onF2)
   self~disconnectKeyPress(onF3)
   self~disconnectKeyPress(onF4)
+  return 0
 
 ::method onF9
 
@@ -7438,6 +7518,7 @@ trackbar position by extracting the high-oder word. Example:
   self~connectKeyPress(onF2, 112, "NONE")
   self~connectKeyPress(onF3, 114, "NONE")
   self~connectKeyPress(onF4, 115, "NONE")
+  return 0
 
 ]]>
 </programlisting>
@@ -7516,7 +7597,7 @@ trackbar position by extracting the high-oder word. Example:
   self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
   ...
 
-::method onReset
+::method onReset unguarded
 
   ...
   if self~hasKeyPressConnection then
@@ -7524,6 +7605,7 @@ trackbar position by extracting the high-oder word. Example:
   else
     self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
   ...
+  return 0
 
 ]]>
 </programlisting>
