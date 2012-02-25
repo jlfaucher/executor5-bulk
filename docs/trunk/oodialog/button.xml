@@ -100,6 +100,1091 @@
 </table>
 </para>
 
+<section id="anibut"><title>Animated Buttons</title>
+<indexterm><primary>AnimatedButton class</primary></indexterm>
+<para>The AnimatedButton class provides the methods to
+implement an animated button within a dialog. The attributes and methods are
+only described briefly in this document. An example program,
+<computeroutput>oowalker.rex</computeroutput>,
+is provided with the ooDialog sample programs. </para>
+<variablelist>
+<varlistentry><term>ParentDlg</term>
+<listitem><para>Attribute holding the handle of the parent dialog
+</para></listitem></varlistentry>
+<varlistentry><term>Stopped</term>
+<listitem><para>Animation ends when set to 1 (see Stop method)
+</para></listitem></varlistentry>
+<varlistentry><term>init</term>
+<listitem><para>Initialize the animation parameters:</para>
+<programlisting>
+<![CDATA[
+but = .AnimatedButton~new(buttonid,from,to, ,
+                          movex,movey,sizex,sizey,delay, ,
+                          startx,starty,parentdialog)
+]]>
+</programlisting>
+<para>The values are
+stored in a stem variable: </para>
+<variablelist>
+<varlistentry><term>sprite.buttonid</term>
+<listitem><para>ID of animation button
+</para></listitem></varlistentry>
+<varlistentry><term>sprite.from</term>
+<listitem><para>Array of in-memory bitmap handles, or a bitmap resource ID in a DLL,
+or the name of an array in the .local directory containing handles to bitmaps
+loaded with <link linkend="mthLoadBitmap">loadBitmap</link>.
+The array has to start with 1 and continue in increments by 1.
+</para></listitem></varlistentry>
+<varlistentry><term>sprite.to</term>
+<listitem><para>0 if sprite.from is an array, or the name of
+an array stored in <computeroutput>.local</computeroutput>,
+or a bitmap resource ID in a DLL
+</para></listitem></varlistentry>
+<varlistentry><term>sprite.movex</term>
+<listitem><para>Size of one move horizontally (pixels)
+</para></listitem></varlistentry>
+<varlistentry><term>sprite.movey</term>
+<listitem><para>Size of one move vertically
+</para></listitem></varlistentry>
+<varlistentry><term>sprite.sizex</term>
+<listitem><para>Horizontal size of all bitmaps (pixels)
+</para></listitem></varlistentry>
+<varlistentry><term>sprite.sizey</term>
+<listitem><para>Vertical size of all bitmaps
+</para></listitem></varlistentry>
+<varlistentry><term>sprite.delay</term>
+<listitem><para>Time delay between moves (ms)
+</para></listitem></varlistentry>
+</variablelist>
+<para>Startx and starty
+are the initial bitmap position, and parentdialog
+is stored in the ParentDlg attribute.</para>
+<para>Two more
+values are initialized in the stem variable: </para>
+<variablelist>
+<varlistentry><term>sprite.smooth</term>
+<listitem><para>Set to 1 for smooth edge change (can be changed to 0 for
+a bouncy edge change)
+</para></listitem></varlistentry>
+<varlistentry><term>sprite.step</term>
+<listitem><para>Set to 1 as the step size between sprite.from
+and sprite.to for bitmaps in a DLL
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+<varlistentry><term>SetSprite</term>
+<listitem><para>Set all the sprite. animation values using a stem:
+<programlisting>
+<![CDATA[
+mysprite.from = .array~of(bmp1,bmp2,...)
+mysprite.to = 0
+mysprite.movex = ...
+...
+self~setSprite(mysprite.)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>GetSprite</term>
+<listitem><para>Retrieve the animation values into a stem:
+<programlisting>
+<![CDATA[
+self~getSprite(mysprite.)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>SetFromTo</term>
+<listitem><para>Set bitmap information (sprite.from and sprite.to):
+<programlisting>
+<![CDATA[
+self~setFromTo(bmpfrom,bmpto)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>SetMove</term>
+<listitem><para>Set size of one move (sprite.movex and sprite.movey):
+<programlisting>
+<![CDATA[
+self~setMove(movex,movey)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>SetDelay</term>
+<listitem><para>Set delay between moves in milliseconds (sprite.delay):
+<programlisting>
+<![CDATA[
+self~setDelay(delay)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>SetSmooth</term>
+<listitem><para>Set smooth (1) or bouncy (0) edges (sprite.smooth):
+<programlisting>
+<![CDATA[
+self~setSmooth(smooth)  /* 1 or 0 */
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>setStep</term>
+<listitem><para>Set the step size (sprite.step) between sprite.from and
+sprite.to for bitmaps in a DLL, for example, if bitmap resources are numbered
+202, 204, 206, etc:
+<programlisting>
+<![CDATA[
+self~setFromTo(202,210)
+self~setStep(2)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>Run</term>
+<listitem><para>Run the animation by going through all the bitmaps repetitively
+until dialog is stopped; invokes MoveSeq:
+<programlisting>
+<![CDATA[
+self~run
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>MoveSeq</term>
+<listitem><para>Animate one sequence through all the bitmaps in the given move
+steps; invokes MovePos:
+<programlisting>
+<![CDATA[
+self~moveSeq
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>MovePos</term>
+<listitem><para>Move the bitmaps by the arguments:
+<programlisting>
+<![CDATA[
+self~movePos(movex,movey)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>MoveTo</term>
+<listitem><para>Move the bitmaps in the predefined steps to
+the given position; invokes MoveSeq:
+<programlisting>
+<![CDATA[
+self~moveTo(posx,posy)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>setPos</term>
+<listitem><para>Set the new starting position of the bitmaps:
+<programlisting>
+<![CDATA[
+self~setPos(newx,newy)
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>getPos</term>
+<listitem><para>Retrieve the current position into a stem:
+<programlisting>
+<![CDATA[
+self~getPos(pos.)
+say "pos=" pos.x pos.y
+]]>
+</programlisting>
+</para></listitem></varlistentry>
+<varlistentry><term>ParentStopped</term>
+<listitem><para>Check the parent dialog window to see if it is finished. Returns 1 if the parent is finished.
+</para></listitem></varlistentry>
+<varlistentry><term>Stop</term>
+<listitem><para>Stop animation by setting the stopped attribute to 1
+</para></listitem></varlistentry>
+<varlistentry><term>HitRight</term>
+<listitem><para>Invoked by run when the bitmap hits the right edge (returns 1 and bitmap
+starts at left again; you can return 0 and set the new position yourself)
+</para></listitem></varlistentry>
+<varlistentry><term>HitLeft</term>
+<listitem><para>Invoked when the bitmap hits the left edge (default action is to start
+at right again)
+</para></listitem></varlistentry>
+<varlistentry><term>HitBottom</term>
+<listitem><para>Invoked when the bitmap hits the bottom edge (default action is to start
+at top again)
+</para></listitem></varlistentry>
+<varlistentry><term>HitTop</term>
+<listitem><para>Invoked when the bitmap hits the top edge (default action is to start
+at bottom again)
+</para></listitem></varlistentry>
+</variablelist>
+<para>To use an animated button a dialog has to: </para>
+<itemizedlist>
+<listitem><para>Define a button in a resource file (owner-drawn)</para></listitem>
+<listitem><para>Load the bitmaps of the animation into memory using an array</para></listitem>
+<listitem><para>Initialize the animated button with the animation parameters</para></listitem>
+<listitem><para>Invoke the run method of the animated button</para></listitem>
+<listitem><para>Stop the animation and remove the bitmaps from memory</para></listitem>
+</itemizedlist>
+<para>The dialog may also dynamically change the parameters (for example, the
+size of a move, or the speed) and over-ride actions, such as hitting an edge.</para>
+<para>See the <computeroutput>oowalker.rex</computeroutput> and
+<computeroutput>oowalk2.rex</computeroutput> examples in
+<computeroutput>OODIALOG\SAMPLES</computeroutput>.</para>
+<para>For further information see
+<link linkend="mthInstallAnimatedButton">installAnimatedButton</link>.</para>
+</section>
+
+<section id="clsCheckBox"><title>Check Boxes</title>
+<indexterm><primary>CheckBox class</primary></indexterm>
+<para>
+  Check boxes are similar in many ways to radio buttons. A check box consists of a square box and a
+  programmer defined label, icon, or bitmap that indicates to the user a choice. Check boxes are
+  typically grouped together as a set of independent options. Checking or unchecking one option usually
+  has no effect on the other check box options.
+</para>
+<para>
+  There are four styles of check boxes: standard, automatic, three-state, and automatic three-state, The
+  system manages the check state of automatic and automatic three-state check boxes. All check boxes have
+  at least two states, either checked or cleared (unchecked). In addition three-state check boxes have a
+  third state called indeterminate, which the system draws as a grayed box inside the check box.
+</para>
+<para>
+  Repeatedly clicking standard and automatic check boxes toggles them back and forth from cleared to
+  checked, and back again. Doing the same with a three-state check box toggles it from cleared, to
+  checked, to indeterminate, and back again.
+</para>
+<para>
+  The <computeroutput>CheckBox</computeroutput> class provides methods to query and modify check box controls.
+</para>
+<para>
+  The <computeroutput>CheckBox</computeroutput> class is a subclass of the <link linkend="clsButton">Button</link> class
+  and therefore has all the instance methods of that class.  In addition to the methods of the class itself, the
+  following methods from other classes in the ooDialog framework are needed, or are useful, when working with check box
+  controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+    <para>
+      Use the <link linkend="tmthNewCheckBox">newCheckBox</link>() method to retrieve an object of
+      the check box class.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+    <para>
+      To dynamically define a check box in a <link linkend="clsUserDialog">UserDialog</link> class,
+      use one of the create button control methods described in the <link linkend="sctCreateButtonControls">Create
+      Button Controls</link> section. That section also describes methods for creating push buttons, radio buttons,
+      etc... All the methods to create check boxes begin with: <emphasis role="italic">createCheck</emphasis>.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+    <para>
+      A check box, is a button, and the programmer uses the same method to receive notifications of events as with the
+      button control, the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+
+<section id="sctMethodsCheckBox"><title>Method Table</title>
+
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working with
+  <computeroutput>CheckBox</computeroutput> objects, including the pertinent methods from other classes.
+</para>
+
+<table id="tblCheckBoxMethods" frame="all">
+<title>CheckBox Instance Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewCheckBox">newCheckBox</link></entry>
+<entry>Returns a <computeroutput>CheckBox</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateCheckBox">createCheckBox</link></entry>
+<entry>Creates a check box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectButtonEvent">connectButtonEvent</link></entry>
+<entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthIsIndeterminate">isIndeterminate</link></entry>
+<entry>Determines if the check box is in indeterminate state, or not.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCheckStateClsCheckBox">getCheckState</link></entry>
+<entry>Returns a keyword indicating the check state of the check box, checked, unchecked, or indeterminate.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetIndeterminate">setIndeterminate</link></entry>
+<entry>Puts the check box in the indeterminate state.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="tmthNewCheckBox"><title>newCheckBox (dialog object method)</title>
+<para>
+  Check box objects can not be instantiated by the programmer from Rexx code. Rather a check box object is
+  obtained by using the <link linkend="mthNewCheckBox">newCheckBox</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>--newCheckBox(--id--)--------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End Dialog::newCheckBox() (dialog object method) -->
+
+
+<section id="tmthCreateCheckBox"><title>createCheckBox (UserDialog method)</title>
+<para>
+  A check box object can be created in the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
+  through the <link linkend="mthCreateCheckBox">createCheckBox</link>() method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createCheckBox(-id-,--x-,--y--+------+--+------+--+---------+--+---------+->
+                                  +-,-cx-+  +-,-cy-+  +-,-style-+  +-,-label-+
+
+>----+-----------------+--+--------------+--)----------------------------------><
+     +-,-attributeName-+  +-,-connectOpt-+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createCheckBox() [UserDialog method] -->
+
+
+<section id="mthGetCheckStateClsCheckBox"><title>getCheckState</title>
+<indexterm><primary>getCheckState</primary><secondary>CheckBox class</secondary></indexterm>
+<indexterm><primary>CheckBox class</primary><secondary>getCheckState</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCheckState--------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  This method overrides the RadioButton <link
+  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method to return a keyword indicating
+  the check state of the check box, checked, unchecked, or indeterminate.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is a keyword indicating the checked state of the check box and will be exactly one of
+      the following:
+      <informaltable frame='none' colsep='0' rowsep='0' pgwide='1'>
+      <tgroup cols='2'>
+      <colspec align='left' colwidth='1*'>
+      <colspec align='left' colwidth='3*'>
+      <tbody>
+      <row><entry>UNCHECKED    </entry><entry>The check box is not checked.               </entry></row>
+      <row><entry>CHECKED      </entry><entry>The check box is checked.                   </entry></row>
+      <row><entry>INDETERMINATE</entry><entry>The check box is in the indeterminate state.</entry></row>
+      <row><entry>UNKNOWN      </entry><entry>The object is not a check box.              </entry></row>
+      </tbody>
+      </tgroup>
+      </informaltable>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example is a variation of the example for the isIndeterminate() method.
+<programlisting>
+<![CDATA[
+  state = self~newCheckBox(IDC_CHK_BACKGROUND)~getCheckState
+
+  select
+    when state == "CHECKED" then return self~blackBackground
+    when state == "UNCHECKED" then return self~whiteBackground
+    when state == "INDETERMINATE" then return self~grayBackground
+    otherwise nop  -- Drop through and do error handling
+  end
+  -- End select
+
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CheckBox::getCheckState() -->
+
+<section id="mthIsIndeterminate"><title>isIndeterminate</title>
+<indexterm><primary>isIndeterminate</primary></indexterm>
+<indexterm><primary>CheckBox class</primary><secondary>isIndeterminate</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isIndeterminate------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if the check box is in indeterminate state, or not.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      Returns true if the check box is in the indeterminate state, otherwise false.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example is from a program that sets the background color to black, white, or gray.
+
+<programlisting>
+<![CDATA[
+  chkBox = self~newCheckBox(IDC_CHK_BACKGROUND)
+  if chkBox~isIndeterminate then return self~grayBackground
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CheckBox::isIndeterminate() -->
+
+
+<section id="mthSetIndeterminate"><title>setIndeterminate</title>
+<indexterm><primary>setIndeterminate</primary></indexterm>
+<indexterm><primary>CheckBox class</primary><secondary>setIndeterminate</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setIndterminate------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Puts the check box in the indeterminate state. The system will redraw the check box to indicate the indeterminate
+  state.
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CheckBox::setIndeterminate() -->
+
+</section>
+
+<section id="clsGroupBox"><title>Group Boxes</title>
+<indexterm><primary>GroupBox class</primary></indexterm>
+<para>
+  The Windows Group Box control is actually a button control, not a static control.  Its purpose is to
+  group together a set of related controls.  It consists of a label and a rectangle.  The related
+  controls are placed within the rectangle. Group boxes have no state, they can not be selected, and an
+  application can not send messages to the control. In addition, a group box does not send notifications
+  to its parent so there are no events to connect to a group box.
+</para>
+<para>
+  The GroupBox class provides methods to work with group box controls.
+</para>
+<para>
+  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
+  needed, or are useful, when working with group box controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <link linkend="tmthNewGroupBox">newGroupBox</link> method to retrieve an object of the group box class.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically define a group box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>
+    class, use the <link linkend="mthCreateGroupBox">createGroupbox</link> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    Group boxes do not generate notifications.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+
+<section id="sctMethodsGroupBox"><title>Method Table</title>
+
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working with
+  <computeroutput>GroupBox</computeroutput> objects, including the pertinent methods from other classes.
+</para>
+
+<table id="tblGroupBoxMethods" frame="all">
+<title>GroupBox Instance Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewGroupBox">newGroupBox</link></entry>
+<entry>Returns a <computeroutput>GroupBox</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateGroupBox">createGroupBox</link></entry>
+<entry>Creates a group box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthGBStyleEquals">style=</link></entry>
+<entry>Assigns a new text alignment to the group box.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
+
+<section id="tmthNewGroupBox"><title>newGroupBox (dialog object method)</title>
+<para>
+  Group box objects can not be instantiated by the programmer from Rexx code. Rather a group box object is
+  obtained by using the <link linkend="mthNewGroupBox">newGroupBox</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>--newGroupBox(--id--)--------------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End Dialog::newGroupBox() (dialog object method) -->
+
+
+<section id="tmthCreateGroupBox"><title>createGroupBox (UserDialog method)</title>
+<para>
+  A group box object can be create in the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
+  dialog through the <link linkend="mthCreateGroupBox">createGroupBox</link>() method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createGroupbox(-+------+-,-x-,-y-,-cx-,-cy--+---------+-+--------+-)-------><
+                    +--id--+                    +-,-style-+ +-,-text-+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createGroupBox() [UserDialog method] -->
+
+
+
+
+<section id="mthGBStyleEquals"><title>style=</title>
+<indexterm><primary>style=</primary><secondary>GroupBox class</secondary></indexterm>
+<indexterm><primary>GroupBox class</primary><secondary>style=</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--style=-styleKeyword--------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Assigns a new text alignment to the group box.  By default the text of a group box is in the upper left
+  corner. The alignment can also be set to the right or to the center, although this is not commonly done.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>styleKeyword</term>
+      <listitem>
+      <para>
+        A keyword that is one of the following:
+        <variablelist>
+        <varlistentry><term>LEFT</term>
+        <listitem>
+        <para>
+          The group box label is aligned to the upper left.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          The label is aligned to the upper right.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CENTER</term>
+        <listitem>
+        <para>
+          The label is aligned to the upper center.
+        </para>
+        </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para> Changing the style is straightforward:
+<programlisting>
+<![CDATA[
+  gb = self~newGroupBox(IDC_GB_AREACODES)
+  if gb == .Nil then return
+  gb~style="RIGHT"
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>
+
+<section id="clsRadioButton"><title>Radio Buttons</title>
+<indexterm><primary>RadioButton class</primary></indexterm>
+<para>
+   Radio buttons consist of a round button and a programmer defined label, icon, or bitmap that indicates
+   to the user a choice. Radio buttons are typically grouped together as a set of mutually exclusive
+   options. Radio buttons can be either standard or automatic. The system manages the check state of
+   automatic radio buttons. The state of a radio button can be either checked or cleared (unchecked.)
+</para>
+<para>
+   provides methods to query and modify radio button controls.
+</para>
+<para>
+  The <computeroutput>RadioButton</computeroutput> class is a subclass of the <link linkend="clsButton">Button</link>
+  class and therefore has all the instance methods of that class. In addition to the methods of the class itself, the
+  following methods from other classes in the ooDialog framework are needed, or are useful, when working with radio
+  button controls:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
+  <listitem>
+  <para>
+    Use the <link linkend="tmthNewRadioButton">newRadioButton</link>() method of the <link
+    linkend="chpDialogObject">dialog</link> object to retrieve a new <computeroutput>RadioButton</computeroutput>
+    object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically define a radio button in a <link linkend="clsUserDialog">UserDialog</link> class, use the
+    <link linkend="mthCreateRadioButton">createRadioButton</link> method. There are also a number of methods that create
+    groups of radio buttons. These methods are described  described in the <link
+    linkend="sctCreateButtonControls">Create Button Controls</link> section. That section also describes methods for
+    creating push buttons, check boxes, etc..
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
+  <listitem>
+  <para>
+    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying radio button control to a
+    method in the Rexx dialog object use the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+
+<section id="sctMethodsRadioButton"><title>Method Table</title>
+
+<para>
+  The following table provides links to the documentation for the primary methods and attributes used in working
+  with radio button objects, including the pertinent methods from other classes.
+</para>
+<table id="tblRadioButtonMethods" frame="all">
+<title>RadioButton Class and Instance Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
+<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="tmthNewRadioButton">newRadioButton</link></entry>
+<entry>Returns a <computeroutput>RadionButton</computeroutput> object for the control with the specified ID.</entry>
+</row>
+<row>
+<entry><link linkend="tmthCreateRadioButton">createRadiobutton</link></entry>
+<entry>Creates a radio button in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
+</row>
+<row>
+<entry><link linkend="tmthConnectButtonEvent">connectButtonEvent</link></entry>
+<entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthCheckInGroupCls">checkInGroup</link></entry>
+<entry>Checks the specified radio button in a group and unchecks all other radio buttons in the group.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthCheck">check</link></entry>
+<entry>Puts the button in the checked state.</entry>
+</row>
+<row>
+<entry><link linkend="mthChecked">checked</link></entry>
+<entry>Determines if the button is checked, or not.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCheckStateClsRadioButton">getCheckState</link></entry>
+<entry>Returns a keyword indicating the check state of the radio button.</entry>
+</row>
+<row>
+<entry><link linkend="mthUncheck">uncheck</link></entry>
+<entry>Puts the button in the unchecked state.</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+</section>
+
+<section id="tmthNewRadioButton"><title>newRadioButton (dialog object method)</title>
+<para>
+  Radio button objects can not be instantiated by the programmer from Rexx code. Rather a radio button object is
+  obtained by using the <link linkend="mthNewRadioButton">newRadioButton</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
+<programlisting>
+<![CDATA[
+>>--newRadioButton(--id--)-----------------------><
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End newRadioButton() [PlainBaseDialog method] -->
+
+
+<section id="tmthCreateRadioButton"><title>createRadioButton (UserDialog method)</title>
+<para>
+  A radio button object can be created in the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
+  dialog through the <link linkend="mthCreateRadioButton">createRadioButton</link>() method. The basic syntax is:
+<programlisting>
+<![CDATA[
+>>--createRadioButton(-id-,-x-,-y-+------+--+------+--+---------+-------------->
+                                  +-,-cx-+  +-,-cy-+  +-,-style-+
+
+>--+--------+--+--------+--)---------------------------------------------------><
+   +-,-text-+  +-,-attr-+
+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End UserDialog::createPushButton() [UserDialog method] -->
+
+
+<section id="mthcheckInGroupCls"><title>checkInGroup (Class)</title>
+<indexterm><primary>checkInGroup</primary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>checkInGroup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--checkInGroup(--dlg--,--idFirst--,--idLast--+------------+--)---------------><
+                                               +-,-idCheck--+
+]]>
+</programlisting>
+
+<para>
+  Adds a check mark to (checks) the specified radio button in a group and removes the check mark from (clears) all other
+  radio buttons in the group.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>The arguments are:
+    <variablelist>
+      <varlistentry><term>dlg [required]</term>
+      <listitem>
+        <para>
+          The dialog that contains the radio button to be checked.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idFirst [required]</term>
+      <listitem>
+        <para>
+          The resource ID of the first radio button in the group. May be numeric or symbolic.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idLast [required]</term>
+      <listitem>
+        <para>
+          The resource ID of the last radio button in the group. May be numeric or symbolic.
+        </para>
+      </listitem></varlistentry>
+      <varlistentry><term>idCheck [optional]</term>
+      <listitem>
+        <para>
+          The resource ID of the radio button that is to be checked. May be numeric or symbolic. If this argument is
+          omitted, is 0, or -1 than all radio buttons in the group are unchecked.
+        </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      This method return 0 on success and a <link linkend="defSystemErrorCode">system error</link> code if the operating
+      system reports one.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+    <para>
+      The use of the <emphasis role="italic">idCheck</emphasis> argument allows the programmer to uncheck all radio
+      buttons.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+    <para>
+      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    </para>
+    <para>
+      Raises syntax errors when incorrect arguments are detected.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This method is simple to use:
+<programlisting>
+<![CDATA[
+ret = .RadioButton~checkInGroup(self, IDC_RB_WHITE, IDC_RB_BLACK, IDC_GREEN)
+return 0
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End RadioButton::checkInGroup() [class method] -->
+
+
+<section id="mthCheck"><title>check</title>
+<indexterm><primary>check</primary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>check</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--check----------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The check method puts the button in the checked state. The system will redraw the button with the check
+  mark appropriate for the button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthChecked"><title>checked</title>
+<indexterm><primary>checked</primary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>checked</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--checked--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if the button is checked, or not.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      Returns true if the button is checked, otherwise false.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This example determines if the user is choosing to print the current page, all pages, or a
+      selection:
+<programlisting>
+<![CDATA[
+if self~newRadioButton(IDC_RB_CURRENT)~checked then do
+  --Print the current page ...
+end
+else if self~newRadioButton(IDC_RB_ALL)~checked then do
+  -- Print all pages ...
+end
+else do
+  -- Must be print the selection ...
+end
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End RadioButton::checked() -->
+
+
+<section id="mthGetCheckStateClsRadioButton"><title>getCheckState</title>
+<indexterm><primary>getCheckState</primary><secondary>RadioButton class</secondary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>getCheckState</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getCheckState--------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Returns a keyword indicating the check state of the radio button, checked or unchecked.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+    <para>
+      There are no arguments to this method.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+    <para>
+      The return value is a keyword indicating the checked state of the radio button and will be  exactly
+      one of the following:
+      <informaltable frame='none' colsep='0' rowsep='0' pgwide='1'>
+      <tgroup cols='2'>
+      <colspec align='left' colwidth='1*'>
+      <colspec align='left' colwidth='4*'>
+      <tbody>
+      <row><entry>UNCHECKED</entry><entry>The radio button is not checked. </entry></row>
+      <row><entry>CHECKED  </entry><entry>The radio button is checked.     </entry></row>
+      <row><entry>UNKNOWN  </entry><entry>The object is not a radio button.</entry></row>
+      </tbody>
+      </tgroup>
+      </informaltable>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+      This method is straightforward to use:
+<programlisting>
+<![CDATA[
+rb = self~newRadioButton(IDC_RB_ITALIC)
+if rb~getCheckState == "CHECKED" then self~printInItalics()
+...
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End RadioButton::getCheckState() -->
+
+<section id="mthUncheck"><title>uncheck</title>
+<indexterm><primary>uncheck</primary></indexterm>
+<indexterm><primary>RadioButton class</primary><secondary>uncheck</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--uncheck--------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The uncheck method puts the button in the unchecked state. The system will redraw the button without
+  the check mark.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section>
+
 <section id="clsButton"><title>Push Buttons</title>
 <indexterm><primary>Button class</primary></indexterm>
 <indexterm><primary>Push buttons</primary></indexterm>
@@ -124,6 +1209,7 @@
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
   needed, or are useful, when working with push buttons:
+</para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
@@ -149,7 +1235,6 @@
   </para>
 </listitem></varlistentry>
 </variablelist>
-</para>
 
 <section id="sctMethodsButton"><title>Method Table</title>
 
@@ -290,6 +1375,375 @@
 </section>  <!-- End connectButtonEvent() [EventNotification method] -->
 
 
+<section id="mthClick"><title>click</title>
+<indexterm><primary>click</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>click</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--click----------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">click</emphasis> method programmatically clicks the associated button control.  It
+  simulates the user clicking the button and produces exactly the same behavior as if the user had clicked on the button
+  with the mouse.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method takes no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method always returns 0.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example closes the dialog as if the user had clicked the cancel button.  (Provided of course that the dialog
+    has a cancel button.)
+<programlisting>
+<![CDATA[
+self~newPushButton(IDCANCEL)~click
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetIdealSize"><title>getIdealSize</title>
+<indexterm><primary>getIdealSize</primary><secondary>Button class</secondary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getIdealSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getIdealSize---------------------------------><
+
+]]>
+</programlisting>
+<para>
+  This method queries the button control for its ideal size.  The ideal size is the size that best fits
+  its text or image.  (If the button has an image.)
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>A <link linkend="clsSize">.Size</link> object</term>
+      <listitem>
+      <para>
+        The ideal size for the button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
+      <listitem>
+      <para>
+        Some unanticipated error.  This is very unlikely to happen.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.If necessary use
+    the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the
+    library.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+<programlisting>
+<![CDATA[
+
+  size = self~newPushButton(IDC_PB_REVIEW)~getIdealSize
+  say 'The ideal height for the button is' size~height'
+  say 'The ideal width for the button is' size~width
+
+  /* Output might be for example:
+   *   The ideal height for the button is 24
+   *   The ideal width for the button is 45
+   */
+]]>
+</programlisting>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetImage"><title>getImage</title>
+<indexterm><primary>getImage</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getImage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImage-------------------------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves a button's image if one is set, or <computeroutput>.nil</computeroutput> if the button does not have an
+  image associated with it.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not take any arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the <link linkend="clsImage">.Image</link> object for the button, or .nil if the button does not
+    have an image.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In this example a bitmap has been set for the button on a popup dialog. When the dialog closes, bitmap image is
+    retrieved from the button and released.
+
+<programlisting>
+<![CDATA[
+::method cancel
+  button = self~newPushButton(IDC_PB_PUSHME)
+  image = button~getImage
+  if image <> .nil then image~release
+  return self~cancel:super
+]]>
+</programlisting>
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ButtonControl::getImage() -->
+
+
+<section id="mthGetImageList"><title>getImageList</title>
+<indexterm><primary>getImageList</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getImageList</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getImageList---------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  This method retrieves information describing the image list for the associated button, if there is one.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    There are no arguments to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return value is:
+    <variablelist>
+      <varlistentry><term>A <computeroutput>.Directory</computeroutput> object.</term>
+      <listitem>
+      <para>
+        The image list information is returned in a Directory object. See the <link
+        linkend="mthSetImageList">setImageList</link>() method for clarification of the information returned. The
+        directory object has the following entries:
+        <variablelist>
+          <varlistentry><term>imageList</term>
+          <listitem>
+          <para>
+            The <link linkend="clsImageList">.ImageList</link> object containing the images for the button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>rect</term>
+          <listitem>
+          <para>
+            A <link linkend="clsRect">.Rect</link> object that specifies the margin around the image.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>alignment</term>
+          <listitem>
+          <para>
+            The numeric flag that specifies the alignment of the image list.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
+      <listitem>
+      <para>
+        The Nil object is returned if the button does not have an image list, or for some other
+        unanticipated error.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+    determine the current version of the library.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the image list from the View push button and displays the information returned.
+<programlisting>
+<![CDATA[
+
+  pbView = self~newPushButton(IDC_PB_VIEW)
+  d = pbView~getImageList
+
+  say 'Got image list:' d
+  if d <> .nil then do
+    say '  image:  ' d~imageList
+    say '  rect:   ' d~rect
+    say '  align:  ' self~getAlignmentText(d~alignment)
+
+    say 'Image margins:' d~rect~left',' d~rect~top',' d~rect~right',' d~rect~bottom
+  end
+  ...
+
+::method getAlignmentText private
+  use strict arg align
+  select
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_CENTER) then return "center"
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_LEFT) then return "left"
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_RIGHT) then return "right"
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_TOP) then return "top"
+    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_BOTTOM) then return "bottom"
+    otherwise return "error"
+  end
+  -- End select
+
+/* Output might be for example:
+
+  Got image list: a Directory
+    image:   an ImageList
+    rect:    a Rect
+    align:   left
+  Image margins: 1, 1, 1, 1
+
+ */
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="mthGetTextMargin"><title>getTextMargin</title>
+<indexterm><primary>getTextMargin</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>getTextMargin</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextMargin--------------------------------><
+]]>
+</programlisting>
+
+<para>
+  This method retrieves the margins used to draw text within the button control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method does not take any arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>A <link linkend="clsRect">.Rect</link> object</term>
+      <listitem>
+      <para>
+        The margin for drawing text in the button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>The <computeroutput>.nil</computeroutput> object.</term>
+      <listitem>
+      <para>
+        An unanticipated error.  This is not likely to happen.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+    determine the current version of the library.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets the text margins for the Redraw button and displays the information:
+
+<programlisting>
+<![CDATA[
+  margins = self~newPushButton(IDC_PB_REDRAW)~getTextMagin
+  say 'The text margins for the "Redraw" button:'
+  say '  Left:  ' margins~left
+  say '  Top:   ' margins~top
+  say '  Right: ' margins~right
+  say '  Bottom:' margins~bottom
+
+  /* Output might be for example:
+   *   The text margins for the "Redraw" button:
+   *     Left:   1
+   *     Top:    1
+   *     Right:  1
+   *     Bottom: 1
+   */
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
 <section id="mthPush"><title>push</title>
 <indexterm><primary>push</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>push</secondary></indexterm>
@@ -342,41 +1796,335 @@ return .true
 </section>
 
 
-<section id="mthClick"><title>click</title>
-<indexterm><primary>click</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>click</secondary></indexterm>
+<section id="mthSetImage"><title>setImage</title>
+<indexterm><primary>setImage</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>setImage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--click----------------------------------------><
+>>--setImage(-newImage-)-------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">click</emphasis> method programmatically clicks the associated button control.  It
-  simulates the user clicking the button and produces exactly the same behavior as if the user had clicked on the button
-  with the mouse.
+  Sets, or removes, the image associated with a button. The image can bet a bitmap, icon, or cursor. Note that the
+  button style has to match the type of image. For cursors and icons, the button must be an ICON button. For bitmap
+  images, the button must be a BITMAP button.
+</para>
+<para>
+  To completely remove an image associated with the button use <computeroutput>.nil</computeroutput> for the argument.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This method takes no arguments.
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>newImage [required]</term>
+      <listitem>
+      <para>
+        The new <link linkend="clsImage">.Image</link> object to be associated with the button or
+        <computeroutput>.nil</computeroutput>. The use of <computeroutput>.nil</computeroutput> for the argument removes any
+        existing image.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method always returns 0.
+    This method returns the old image, if there was one, otherwise <computeroutput>.nil</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example closes the dialog as if the user had clicked the cancel button.  (Provided of course that the dialog
-    has a cancel button.)
+    This example gets an image from the resource file for a <link linkend="clsResDialog">ResDialog</link> and associates
+    it with the Push Me button.
+
 <programlisting>
 <![CDATA[
-self~newPushButton(IDCANCEL)~click
+::method initDialog
+  module = .ResourceImage~new("imageButton.dll", self)
+  image = module~getImage(101)
+  self~newPushButton(IDC_PB_PUSHME)~setImage(image)
+  self~connectButtonEvent(IDC_PB_PUSHME, "CLICKED", onPushMe)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ButtonControl::setImage() -->
+
+
+<section id="mthSetImageList"><title>setImageList</title>
+<indexterm><primary>setImageList</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>setImageList</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setImageList(--imageList--,--+--------+--,--+-------+--)-------------------><
+                                 +-margin-+     +-align-+
+
+]]>
+</programlisting>
+
+<para>
+  Sets, or removes, the image list for the button. To remove an existing image list, the programmer passes in .nil for
+  the first argument.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>imageList [required]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsImageList">.ImageList</link> object containing the images for the button. If this argument
+        is the <computeroutput>.Nil</computeroutput> object, then any existing image list is removed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>margin [optional]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsRect">.Rect</link> object containing the margins around the image. The default is a 0
+        margin.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>alignment [optional]</term>
+      <listitem>
+      <para>
+        Specifies the alignment of the image on the button. You can use <link
+        linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
+        following symbols, or use the numeric value itself.
+      </para>
+      <para>
+        <simplelist type='horiz' columns='2'>
+        <member>BUTTON_IMAGELIST_ALIGN_LEFT   </member>
+        <member>BUTTON_IMAGELIST_ALIGN_RIGHT  </member>
+        <member>BUTTON_IMAGELIST_ALIGN_TOP    </member>
+        <member>BUTTON_IMAGELIST_ALIGN_BOTTOM </member>
+        <member>BUTTON_IMAGELIST_ALIGN_CENTER </member>
+        </simplelist>
+      </para>
+      <para>
+        The default is BUTTON_IMAGELIST_ALIGN_CENTER.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>oldImageList</term>
+      <listitem>
+      <para>
+        If there is an existing image list, it is returned in the same format specified in the <link
+        linkend="mthGetImageList"></link>() method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>.nil</term>
+      <listitem>
+      <para>
+        The <computeroutput>.Nil</computeroutput> object is returned if there was no existing image list, and also if
+        an error is encountered. In general, the <computeroutput>.SystemErrorCode</computeroutput> variable should be
+        set to non-zero if an error happened.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Using an image list with a button is a new feature that requires Windows XP or later. It provides an easier, more
+    convenient way to do owner-drawn buttons. This method should be the preferred way for the ooDialog programmer to do
+    bitmap buttons, where the primary purpose is to provide an image on the button. Using an image list will automatically
+    give the button the same look and feel as other buttons on the system.
+  </para>
+  <para>
+    A <link linkend="clsImageList">.ImageList</link> object is used to supply the images for the button. If the image list
+    only contains 1 image at the first index, then that image is used for all button states. If more than 1 image is
+    supplied, the the image at each index is used for the button state with this mapping:
+  </para>
+  <para>
+  <simplelist type='vert' columns='1'>
+    <member>index 0 = Normal   </member>
+    <member>index 1 = Hot      </member>
+    <member>index 2 = Press    </member>
+    <member>index 3 = Disabled </member>
+    <member>index 4 = Defaulted</member>
+    <member>index 5 = StylusHot</member>
+  </simplelist>
+  </para>
+  <para>
+    StylusHot is only used on tablet computers. If more than 1 image is supplied, but some indexes do not have an image,
+    then the system does not draw an image for that state. The programmer retains ownership of the image list. What this
+    means in essence is the programmer decide when, or if, the image list should be released. See the discussion in the
+    <link linkend="clsImageList">ImageList</link> class about releasing image lists if needed. If you release the image
+    list while the dialog is still active, the images on the button disappear.
+  </para>
+  <para>
+    A sample program: <computeroutput>imageButton.rex</computeroutput> in the samples directory is provided
+    that shows how to use this method. It is in:
+    <computeroutput>samples\oodialog\examples</computeroutput>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+    determine the current version of the library.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry id="exampleSetImageList"><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example creates an image list from a set of bitmap files. Each image represents one of the possible buttons
+    states. In the program, as the button changes states, the text on the button is also changed. So, the program
+    calculates the ideal button size using the longest label, then resets the button size to the ideal size.
+  </para>
+  <para>
+    Since the image list API is only available with XP or later, the program checks that the API is available before
+    proceeding. For further information on some of the methods used in the example see <link
+    linkend="mthGetIdealSize">getIdealSize</link> and <link linkend="mthComCtl32Version">comCtl32Version</link>.
+
+<programlisting>
+<![CDATA[
+
+  ...
+  if .DlgUtil~comCtl32Version  < 6 then return -2
+
+  files = .array~new()
+  files[1] = "resources\Normal.bmp"       -- Normal
+  files[2] = "resources\Hot.bmp"          -- Hot (hover)
+  files[3] = "resources\Pushed.bmp"       -- Pushed
+  files[4] = "resources\Disabled.bmp"     -- Disabled
+  files[5] = "resources\Default.bmp"      -- Default button
+  files[6] = "resources\Hot.bmp"          -- Stylus hot, tablet PC only
+
+  -- Set the flags to create a 24 bit color, masked image list.
+  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
+  imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10)
+
+  images = .Image~fromFiles(files)
+  cRef = .Image~colorRef(255, 255, 255)
+  imageList~addImages(images, cRef)
+
+  align = .Image~toID(BUTTON_IMAGELIST_ALIGN_LEFT)
+  margin = .Rect~new(1)
+
+  ret = pbView~setImageList(imageList, margin, align)
+  if .SystemErrorCode <> 0 then do
+    -- put some error handling here
+    return -1
+  end
+
+  -- Temporarily set the title to the longest text, to calculate
+  -- the ideal size.
+  pbView~setTitle("DEATH if you touch me")
+  bestSize = pbView~getIdealSize
+
+  -- Not reset the button label and set the size to the ideal size.
+  pbView~setTitle("View Pictures")
+  pbView~setRect(0, 0, bestSize~width, bestSize~height, "NOMOVE")
+
+return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+
+<section id="mthSetTextMargin"><title>setTextMargin</title>
+<indexterm><primary>setTextMargin</primary></indexterm>
+<indexterm><primary>Button class</primary><secondary>setTextMargin</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setTextMargin(--margins--)-------------------><
+
+]]>
+</programlisting>
+
+<para>
+  This method sets the margins for drawing text in the associated button control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+    <variablelist>
+      <varlistentry><term>margins</term>
+      <listitem>
+      <para>
+        A <link linkend="clsRect">.Rect</link> object describing the new margins.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term><computeroutput>.true</computeroutput></term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><computeroutput>.false</computeroutput></term>
+      <listitem>
+      <para>
+        Failed.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
+    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+    determine the current version of the library.
+  </para>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets a new text margin of 5 for the button control.
+
+<programlisting>
+<![CDATA[
+
+  margins = .Rect~new(5, 5, 5, 5)
+  self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
 ]]>
 </programlisting>
   </para>
@@ -900,1751 +2648,7 @@ button~style="DEFPUSHBUTTON"
 </section>
 
 
-<section id="mthGetIdealSize"><title>getIdealSize</title>
-<indexterm><primary>getIdealSize</primary><secondary>Button class</secondary></indexterm>
-<indexterm><primary>Button class</primary><secondary>getIdealSize</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getIdealSize---------------------------------><
-
-]]>
-</programlisting>
-<para>
-  This method queries the button control for its ideal size.  The ideal size is the size that best fits
-  its text or image.  (If the button has an image.)
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method has no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-      <varlistentry><term>A <link linkend="clsSize">.Size</link> object</term>
-      <listitem>
-      <para>
-        The ideal size for the button.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
-      <listitem>
-      <para>
-        Some unanticipated error.  This is very unlikely to happen.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.If necessary use
-    the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the
-    library.
-  </para>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-<programlisting>
-<![CDATA[
-
-  size = self~newPushButton(IDC_PB_REVIEW)~getIdealSize
-  say 'The ideal height for the button is' size~height'
-  say 'The ideal width for the button is' size~width
-
-  /* Output might be for example:
-   *   The ideal height for the button is 24
-   *   The ideal width for the button is 45
-   */
-]]>
-</programlisting>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-
-<section id="mthGetTextMargin"><title>getTextMargin</title>
-<indexterm><primary>getTextMargin</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>getTextMargin</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getTextMargin--------------------------------><
-]]>
-</programlisting>
-
-<para>
-  This method retrieves the margins used to draw text within the button control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method does not take any arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-      <varlistentry><term>A <link linkend="clsRect">.Rect</link> object</term>
-      <listitem>
-      <para>
-        The margin for drawing text in the button.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>The <computeroutput>.nil</computeroutput> object.</term>
-      <listitem>
-      <para>
-        An unanticipated error.  This is not likely to happen.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-    determine the current version of the library.
-  </para>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example gets the text margins for the Redraw button and displays the information:
-
-<programlisting>
-<![CDATA[
-  margins = self~newPushButton(IDC_PB_REDRAW)~getTextMagin
-  say 'The text margins for the "Redraw" button:'
-  say '  Left:  ' margins~left
-  say '  Top:   ' margins~top
-  say '  Right: ' margins~right
-  say '  Bottom:' margins~bottom
-
-  /* Output might be for example:
-   *   The text margins for the "Redraw" button:
-   *     Left:   1
-   *     Top:    1
-   *     Right:  1
-   *     Bottom: 1
-   */
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthSetTextMargin"><title>setTextMargin</title>
-<indexterm><primary>setTextMargin</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>setTextMargin</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setTextMargin(--margins--)-------------------><
-
-]]>
-</programlisting>
-
-<para>
-  This method sets the margins for drawing text in the associated button control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The only argument is:
-    <variablelist>
-      <varlistentry><term>margins</term>
-      <listitem>
-      <para>
-        A <link linkend="clsRect">.Rect</link> object describing the new margins.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para> </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-      <varlistentry><term><computeroutput>.true</computeroutput></term>
-      <listitem>
-      <para>
-        Success.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term><computeroutput>.false</computeroutput></term>
-      <listitem>
-      <para>
-        Failed.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-    determine the current version of the library.
-  </para>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example sets a new text margin of 5 for the button control.
-
-<programlisting>
-<![CDATA[
-
-  margins = .Rect~new(5, 5, 5, 5)
-  self~newPushButton(IDC_PB_SHOW_DETAILS)~setTextMargin(margins)
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-
-<section id="mthGetImageList"><title>getImageList</title>
-<indexterm><primary>getImageList</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>getImageList</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getImageList---------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  This method retrieves information describing the image list for the associated button, if there is one.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    There are no arguments to this method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The return value is:
-    <variablelist>
-      <varlistentry><term>A <computeroutput>.Directory</computeroutput> object.</term>
-      <listitem>
-      <para>
-        The image list information is returned in a Directory object. See the <link
-        linkend="mthSetImageList">setImageList</link>() method for clarification of the information returned. The
-        directory object has the following entries:
-        <variablelist>
-          <varlistentry><term>imageList</term>
-          <listitem>
-          <para>
-            The <link linkend="clsImageList">.ImageList</link> object containing the images for the button.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>rect</term>
-          <listitem>
-          <para>
-            A <link linkend="clsRect">.Rect</link> object that specifies the margin around the image.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>alignment</term>
-          <listitem>
-          <para>
-            The numeric flag that specifies the alignment of the image list.
-          </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>The <computeroutput>.nil</computeroutput> object</term>
-      <listitem>
-      <para>
-        The Nil object is returned if the button does not have an image list, or for some other
-        unanticipated error.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-    determine the current version of the library.
-  </para>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example gets the image list from the View push button and displays the information returned.
-<programlisting>
-<![CDATA[
-
-  pbView = self~newPushButton(IDC_PB_VIEW)
-  d = pbView~getImageList
-
-  say 'Got image list:' d
-  if d <> .nil then do
-    say '  image:  ' d~imageList
-    say '  rect:   ' d~rect
-    say '  align:  ' self~getAlignmentText(d~alignment)
-
-    say 'Image margins:' d~rect~left',' d~rect~top',' d~rect~right',' d~rect~bottom
-  end
-  ...
-
-::method getAlignmentText private
-  use strict arg align
-  select
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_CENTER) then return "center"
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_LEFT) then return "left"
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_RIGHT) then return "right"
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_TOP) then return "top"
-    when align = .Image~toID(BUTTON_IMAGELIST_ALIGN_BOTTOM) then return "bottom"
-    otherwise return "error"
-  end
-  -- End select
-
-/* Output might be for example:
-
-  Got image list: a Directory
-    image:   an ImageList
-    rect:    a Rect
-    align:   left
-  Image margins: 1, 1, 1, 1
-
- */
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-
-<section id="mthSetImageList"><title>setImageList</title>
-<indexterm><primary>setImageList</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>setImageList</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setImageList(--imageList--,--+--------+--,--+-------+--)-------------------><
-                                 +-margin-+     +-align-+
-
-]]>
-</programlisting>
-
-<para>
-  Sets, or removes, the image list for the button. To remove an existing image list, the programmer passes in .nil for
-  the first argument.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>imageList [required]</term>
-      <listitem>
-      <para>
-        A <link linkend="clsImageList">.ImageList</link> object containing the images for the button. If this argument
-        is the <computeroutput>.Nil</computeroutput> object, then any existing image list is removed.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>margin [optional]</term>
-      <listitem>
-      <para>
-        A <link linkend="clsRect">.Rect</link> object containing the margins around the image. The default is a 0
-        margin.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>alignment [optional]</term>
-      <listitem>
-      <para>
-        Specifies the alignment of the image on the button. You can use <link
-        linkend="mthToIDClsImage">.Image~toID()</link> to get the correct numeric value for one of the
-        following symbols, or use the numeric value itself.
-      </para>
-      <para>
-        <simplelist type='horiz' columns='2'>
-        <member>BUTTON_IMAGELIST_ALIGN_LEFT   </member>
-        <member>BUTTON_IMAGELIST_ALIGN_RIGHT  </member>
-        <member>BUTTON_IMAGELIST_ALIGN_TOP    </member>
-        <member>BUTTON_IMAGELIST_ALIGN_BOTTOM </member>
-        <member>BUTTON_IMAGELIST_ALIGN_CENTER </member>
-        </simplelist>
-      </para>
-      <para>
-        The default is BUTTON_IMAGELIST_ALIGN_CENTER.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-      <varlistentry><term>oldImageList</term>
-      <listitem>
-      <para>
-        If there is an existing image list, it is returned in the same format specified in the <link
-        linkend="mthGetImageList"></link>() method.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>.nil</term>
-      <listitem>
-      <para>
-        The <computeroutput>.Nil</computeroutput> object is returned if there was no existing image list, and also if
-        an error is encountered. In general, the <computeroutput>.SystemErrorCode</computeroutput> variable should be
-        set to non-zero if an error happened.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Using an image list with a button is a new feature that requires Windows XP or later. It provides an easier, more
-    convenient way to do owner-drawn buttons. This method should be the preferred way for the ooDialog programmer to do
-    bitmap buttons, where the primary purpose is to provide an image on the button. Using an image list will automatically
-    give the button the same look and feel as other buttons on the system.
-  </para>
-  <para>
-    A <link linkend="clsImageList">.ImageList</link> object is used to supply the images for the button. If the image list
-    only contains 1 image at the first index, then that image is used for all button states. If more than 1 image is
-    supplied, the the image at each index is used for the button state with this mapping:
-  </para>
-  <para>
-  <simplelist type='vert' columns='1'>
-    <member>index 0 = Normal   </member>
-    <member>index 1 = Hot      </member>
-    <member>index 2 = Press    </member>
-    <member>index 3 = Disabled </member>
-    <member>index 4 = Defaulted</member>
-    <member>index 5 = StylusHot</member>
-  </simplelist>
-  </para>
-  <para>
-    StylusHot is only used on tablet computers. If more than 1 image is supplied, but some indexes do not have an image,
-    then the system does not draw an image for that state. The programmer retains ownership of the image list. What this
-    means in essence is the programmer decide when, or if, the image list should be released. See the discussion in the
-    <link linkend="clsImageList">ImageList</link> class about releasing image lists if needed. If you release the image
-    list while the dialog is still active, the images on the button disappear.
-  </para>
-  <para>
-    A sample program: <computeroutput>imageButton.rex</computeroutput> in the samples directory is provided
-    that shows how to use this method. It is in:
-    <computeroutput>samples\oodialog\examples</computeroutput>.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-    If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
-    determine the current version of the library.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry id="exampleSetImageList"><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example creates an image list from a set of bitmap files. Each image represents one of the possible buttons
-    states. In the program, as the button changes states, the text on the button is also changed. So, the program
-    calculates the ideal button size using the longest label, then resets the button size to the ideal size.
-  </para>
-  <para>
-    Since the image list API is only available with XP or later, the program checks that the API is available before
-    proceeding. For further information on some of the methods used in the example see <link
-    linkend="mthGetIdealSize">getIdealSize</link> and <link linkend="mthComCtl32Version">comCtl32Version</link>.
-
-<programlisting>
-<![CDATA[
-
-  ...
-  if .DlgUtil~comCtl32Version  < 6 then return -2
-
-  files = .array~new()
-  files[1] = "resources\Normal.bmp"       -- Normal
-  files[2] = "resources\Hot.bmp"          -- Hot (hover)
-  files[3] = "resources\Pushed.bmp"       -- Pushed
-  files[4] = "resources\Disabled.bmp"     -- Disabled
-  files[5] = "resources\Default.bmp"      -- Default button
-  files[6] = "resources\Hot.bmp"          -- Stylus hot, tablet PC only
-
-  -- Set the flags to create a 24 bit color, masked image list.
-  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
-  imageList = .ImageList~create(.Size~new(61, 46), flags, 10, 10)
-
-  images = .Image~fromFiles(files)
-  cRef = .Image~colorRef(255, 255, 255)
-  imageList~addImages(images, cRef)
-
-  align = .Image~toID(BUTTON_IMAGELIST_ALIGN_LEFT)
-  margin = .Rect~new(1)
-
-  ret = pbView~setImageList(imageList, margin, align)
-  if .SystemErrorCode <> 0 then do
-    -- put some error handling here
-    return -1
-  end
-
-  -- Temporarily set the title to the longest text, to calculate
-  -- the ideal size.
-  pbView~setTitle("DEATH if you touch me")
-  bestSize = pbView~getIdealSize
-
-  -- Not reset the button label and set the size to the ideal size.
-  pbView~setTitle("View Pictures")
-  pbView~setRect(0, 0, bestSize~width, bestSize~height, "NOMOVE")
-
-return 0
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-
-</section>
-
-
-<section id="mthGetImage"><title>getImage</title>
-<indexterm><primary>getImage</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>getImage</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getImage-------------------------------------><
-]]>
-</programlisting>
-
-<para>
-  Retrieves a button's image if one is set, or <computeroutput>.nil</computeroutput> if the button does not have an
-  image associated with it.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method does not take any arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method returns the <link linkend="clsImage">.Image</link> object for the button, or .nil if the button does not
-    have an image.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    In this example a bitmap has been set for the button on a popup dialog. When the dialog closes, bitmap image is
-    retrieved from the button and released.
-
-<programlisting>
-<![CDATA[
-::method cancel
-  button = self~newPushButton(IDC_PB_PUSHME)
-  image = button~getImage
-  if image <> .nil then image~release
-  return self~cancel:super
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End ButtonControl::getImage() -->
-
-
-<section id="mthSetImage"><title>setImage</title>
-<indexterm><primary>setImage</primary></indexterm>
-<indexterm><primary>Button class</primary><secondary>setImage</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setImage(-newImage-)-------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Sets, or removes, the image associated with a button. The image can bet a bitmap, icon, or cursor. Note that the
-  button style has to match the type of image. For cursors and icons, the button must be an ICON button. For bitmap
-  images, the button must be a BITMAP button.
-</para>
-<para>
-  To completely remove an image associated with the button use <computeroutput>.nil</computeroutput> for the argument.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>newImage [required]</term>
-      <listitem>
-      <para>
-        The new <link linkend="clsImage">.Image</link> object to be associated with the button or
-        <computeroutput>.nil</computeroutput>. The use of <computeroutput>.nil</computeroutput> for the argument removes any
-        existing image.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method returns the old image, if there was one, otherwise <computeroutput>.nil</computeroutput>.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example gets an image from the resource file for a <link linkend="clsResDialog">ResDialog</link> and associates
-    it with the Push Me button.
-
-<programlisting>
-<![CDATA[
-::method initDialog
-  module = .ResourceImage~new("imageButton.dll", self)
-  image = module~getImage(101)
-  self~newPushButton(IDC_PB_PUSHME)~setImage(image)
-  self~connectButtonEvent(IDC_PB_PUSHME, "CLICKED", onPushMe)
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End ButtonControl::setImage() -->
-
-
 </section>  <!-- End Section Push Buttons -->
 
-
-<section id="clsRadioButton"><title>Radio Buttons</title>
-<indexterm><primary>RadioButton class</primary></indexterm>
-<para>
-   Radio buttons consist of a round button and a programmer defined label, icon, or bitmap that indicates
-   to the user a choice. Radio buttons are typically grouped together as a set of mutually exclusive
-   options. Radio buttons can be either standard or automatic. The system manages the check state of
-   automatic radio buttons. The state of a radio button can be either checked or cleared (unchecked.)
-</para>
-<para>
-  The RadioButton class provides methods to query and modify radio button controls.
-</para>
-<para>
-  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
-  needed, or are useful, when working with radio button controls:
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
-  <listitem>
-  <para>
-    Use the <link linkend="tmthNewRadioButton">newRadioButton</link>() method of the <link
-    linkend="chpDialogObject">dialog</link> object to retrieve a new <computeroutput>RadioButton</computeroutput>
-    object.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
-  <listitem>
-  <para>
-    To dynamically define a radio button in a <link linkend="clsUserDialog">UserDialog</link> class, use the
-    <link linkend="mthCreateRadioButton">createRadioButton</link> method. There are also a number of methods that create
-    groups of radio buttons. These methods are described  described in the <link
-    linkend="sctCreateButtonControls">Create Button Controls</link> section. That section also describes methods for
-    creating push buttons, check boxes, etc..
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
-  <listitem>
-  <para>
-    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying radio button control to a
-    method in the Rexx dialog object use the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</para>
-
-<section id="sctMethodsRadioButton"><title>Method Table</title>
-
-<para>
-  The following table provides links to the documentation for the primary methods and attributes used in working
-  with radio button objects, including the pertinent methods from other classes.
-</para>
-<table id="tblRadioButtonMethods" frame="all">
-<title>RadioButton Class and Instance Methods</title>
-<tgroup cols="2">
-<colspec colwidth="1.5in">
-<thead>
-<row>
-<entry>Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
-<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="tmthNewRadioButton">newRadioButton</link></entry>
-<entry>Returns a <computeroutput>RadionButton</computeroutput> object for the control with the specified ID.</entry>
-</row>
-<row>
-<entry><link linkend="tmthCreateRadioButton">createRadiobutton</link></entry>
-<entry>Creates a radio button in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
-</row>
-<row>
-<entry><link linkend="tmthConnectButtonEvent">connectButtonEvent</link></entry>
-<entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="mthCheckInGroupCls">checkInGroup</link></entry>
-<entry>Checks the specified radio button in a group and unchecks all other radio buttons in the group.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="mthCheck">check</link></entry>
-<entry>Puts the button in the checked state.</entry>
-</row>
-<row>
-<entry><link linkend="mthChecked">checked</link></entry>
-<entry>Determines if the button is checked, or not.</entry>
-</row>
-<row>
-<entry><link linkend="mthGetCheckStateClsRadioButton">getCheckState</link></entry>
-<entry>Returns a keyword indicating the check state of the radio button.</entry>
-</row>
-<row>
-<entry><link linkend="mthUncheck">uncheck</link></entry>
-<entry>Puts the button in the unchecked state.</entry>
-</row>
-</tbody></tgroup>
-</table>
-
-</section>
-
-<section id="tmthNewRadioButton"><title>newRadioButton (dialog object method)</title>
-<para>
-  Radio button objects can not be instantiated by the programmer from Rexx code. Rather a radio button object is
-  obtained by using the <link linkend="mthNewRadioButton">newRadioButton</link>() method of the dialog <link
-  linkend="chpDialogObject">object</link>. The syntax is:
-<programlisting>
-<![CDATA[
->>--newRadioButton(--id--)-----------------------><
-
-]]>
-</programlisting>
-</para>
-</section>  <!-- End newRadioButton() [PlainBaseDialog method] -->
-
-
-<section id="tmthCreateRadioButton"><title>createRadioButton (UserDialog method)</title>
-<para>
-  A radio button object can be created in the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
-  dialog through the <link linkend="mthCreateRadioButton">createRadioButton</link>() method. The basic syntax is:
-<programlisting>
-<![CDATA[
->>--createRadioButton(-id-,-x-,-y-+------+--+------+--+---------+-------------->
-                                  +-,-cx-+  +-,-cy-+  +-,-style-+
-
->--+--------+--+--------+--)---------------------------------------------------><
-   +-,-text-+  +-,-attr-+
-
-]]>
-</programlisting>
-</para>
-</section>  <!-- End UserDialog::createPushButton() [UserDialog method] -->
-
-
-<section id="mthcheckInGroupCls"><title>checkInGroup (Class)</title>
-<indexterm><primary>checkInGroup</primary></indexterm>
-<indexterm><primary>RadioButton class</primary><secondary>checkInGroup</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--checkInGroup(--dlg--,--idFirst--,--idLast--+------------+--)---------------><
-                                               +-,-idCheck--+
-]]>
-</programlisting>
-
-<para>
-  Adds a check mark to (checks) the specified radio button in a group and removes the check mark from (clears) all other
-  radio buttons in the group.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>dlg [required]</term>
-      <listitem>
-        <para>
-          The dialog that contains the radio button to be checked.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>idFirst [required]</term>
-      <listitem>
-        <para>
-          The resource ID of the first radio button in the group. May be numeric or symbolic.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>idLast [required]</term>
-      <listitem>
-        <para>
-          The resource ID of the last radio button in the group. May be numeric or symbolic.
-        </para>
-      </listitem></varlistentry>
-      <varlistentry><term>idCheck [optional]</term>
-      <listitem>
-        <para>
-          The resource ID of the radio button that is to be checked. May be numeric or symbolic. If this argument is
-          omitted, is 0, or -1 than all radio buttons in the group are unchecked.
-        </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      This method return 0 on success and a <link linkend="defSystemErrorCode">system error</link> code if the operating
-      system reports one.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-    <para>
-      The use of the <emphasis role="italic">idCheck</emphasis> argument allows the programmer to uncheck all radio
-      buttons.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-    <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-    </para>
-    <para>
-      Raises syntax errors when incorrect arguments are detected.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This method is simple to use:
-<programlisting>
-<![CDATA[
-ret = .RadioButton~checkInGroup(self, IDC_RB_WHITE, IDC_RB_BLACK, IDC_GREEN)
-return 0
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End RadioButton::checkInGroup() [class method] -->
-
-
-<section id="mthChecked"><title>checked</title>
-<indexterm><primary>checked</primary></indexterm>
-<indexterm><primary>RadioButton class</primary><secondary>checked</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--checked--------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Determines if the button is checked, or not.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>
-      There are no arguments.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      Returns true if the button is checked, otherwise false.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This example determines if the user is choosing to print the current page, all pages, or a
-      selection:
-<programlisting>
-<![CDATA[
-if self~newRadioButton(IDC_RB_CURRENT)~checked then do
-  --Print the current page ...
-end
-else if self~newRadioButton(IDC_RB_ALL)~checked then do
-  -- Print all pages ...
-end
-else do
-  -- Must be print the selection ...
-end
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End RadioButton::checked() -->
-
-
-<section id="mthGetCheckStateClsRadioButton"><title>getCheckState</title>
-<indexterm><primary>getCheckState</primary><secondary>RadioButton class</secondary></indexterm>
-<indexterm><primary>RadioButton class</primary><secondary>getCheckState</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getCheckState--------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Returns a keyword indicating the check state of the radio button, checked or unchecked.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>
-      There are no arguments to this method.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The return value is a keyword indicating the checked state of the radio button and will be  exactly
-      one of the following:
-      <informaltable frame='none' colsep='0' rowsep='0' pgwide='1'>
-      <tgroup cols='2'>
-      <colspec align='left' colwidth='1*'>
-      <colspec align='left' colwidth='4*'>
-      <tbody>
-      <row><entry>UNCHECKED</entry><entry>The radio button is not checked. </entry></row>
-      <row><entry>CHECKED  </entry><entry>The radio button is checked.     </entry></row>
-      <row><entry>UNKNOWN  </entry><entry>The object is not a radio button.</entry></row>
-      </tbody>
-      </tgroup>
-      </informaltable>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This method is straightforward to use:
-<programlisting>
-<![CDATA[
-rb = self~newRadioButton(IDC_RB_ITALIC)
-if rb~getCheckState == "CHECKED" then self~printInItalics()
-...
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End RadioButton::getCheckState() -->
-
-<section id="mthCheck"><title>check</title>
-<indexterm><primary>check</primary></indexterm>
-<indexterm><primary>RadioButton class</primary><secondary>check</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--check----------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The check method puts the button in the checked state. The system will redraw the button with the check
-  mark appropriate for the button.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method takes no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method always returns 0.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthUncheck"><title>uncheck</title>
-<indexterm><primary>uncheck</primary></indexterm>
-<indexterm><primary>RadioButton class</primary><secondary>uncheck</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--uncheck--------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  The uncheck method puts the button in the unchecked state. The system will redraw the button without
-  the check mark.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method takes no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method always returns 0.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-</section>
-
-<section id="clsCheckBox"><title>Check Boxes</title>
-<indexterm><primary>CheckBox class</primary></indexterm>
-<para>
-  Check boxes are similar in many ways to radio buttons. A check box consists of a square box and a
-  programmer defined label, icon, or bitmap that indicates to the user a choice. Check boxes are
-  typically grouped together as a set of independent options. Checking or unchecking one option usually
-  has no effect on the other check box options.
-</para>
-<para>
-  There are four styles of check boxes: standard, automatic, three-state, and automatic three-state, The
-  system manages the check state of automatic and automatic three-state check boxes. All check boxes have
-  at least two states, either checked or cleared (unchecked). In addition three-state check boxes have a
-  third state called indeterminate, which the system draws as a grayed box inside the check box.
-</para>
-<para>
-  Repeatedly clicking standard and automatic check boxes toggles them back and forth from cleared to
-  checked, and back again. Doing the same with a three-state check box toggles it from cleared, to
-  checked, to indeterminate, and back again.
-</para>
-<para>
-  The <computeroutput>CheckBox</computeroutput> class provides methods to query and modify check box controls.
-</para>
-<para>
-  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
-  needed, or are useful, when working with check box controls:
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
-  <listitem>
-    <para>
-      Use the <link linkend="tmthNewCheckBox">newCheckBox</link>() method to retrieve an object of
-      the check box class.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
-  <listitem>
-    <para>
-      To dynamically define a check box in a <link linkend="clsUserDialog">UserDialog</link> class,
-      use one of the create button control methods described in the <link linkend="sctCreateButtonControls">Create
-      Button Controls</link> section. That section also describes methods for creating push buttons, radio buttons,
-      etc... All the methods to create check boxes begin with: <emphasis role="italic">createCheck</emphasis>.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
-  <listitem>
-    <para>
-      A check box, is a button, and the programmer uses the same method to receive notifications of events as with the
-      button control, the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</para>
-
-<section id="sctMethodsCheckBox"><title>Method Table</title>
-
-<para>
-  The following table provides links to the documentation for the primary methods and attributes used in working with
-  <computeroutput>CheckBox</computeroutput> objects, including the pertinent methods from other classes.
-</para>
-
-<table id="tblCheckBoxMethods" frame="all">
-<title>CheckBox Instance Methods</title>
-<tgroup cols="2">
-<colspec colwidth="1.5in">
-<thead>
-<row>
-<entry>Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
-<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="tmthNewCheckBox">newCheckBox</link></entry>
-<entry>Returns a <computeroutput>CheckBox</computeroutput> object for the control with the specified ID.</entry>
-</row>
-<row>
-<entry><link linkend="tmthCreateCheckBox">createCheckBox</link></entry>
-<entry>Creates a check box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
-</row>
-<row>
-<entry><link linkend="tmthConnectButtonEvent">connectButtonEvent</link></entry>
-<entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="mthIsIndeterminate">isIndeterminate</link></entry>
-<entry>Determines if the check box is in indeterminate state, or not.</entry>
-</row>
-<row>
-<entry><link linkend="mthGetCheckStateClsCheckBox">getCheckState</link></entry>
-<entry>Returns a keyword indicating the check state of the check box, checked, unchecked, or indeterminate.</entry>
-</row>
-<row>
-<entry><link linkend="mthSetIndeterminate">setIndeterminate</link></entry>
-<entry>Puts the check box in the indeterminate state.</entry>
-</row>
-</tbody></tgroup>
-</table>
-</section>
-
-
-<section id="tmthNewCheckBox"><title>newCheckBox (dialog object method)</title>
-<para>
-  Check box objects can not be instantiated by the programmer from Rexx code. Rather a check box object is
-  obtained by using the <link linkend="mthNewCheckBox">newCheckBox</link>() method of the dialog <link
-  linkend="chpDialogObject">object</link>. The syntax is:
-<programlisting>
-<![CDATA[
->>--newCheckBox(--id--)--------------------------><
-
-]]>
-</programlisting>
-</para>
-</section>  <!-- End Dialog::newCheckBox() (dialog object method) -->
-
-
-<section id="tmthCreateCheckBox"><title>createCheckBox (UserDialog method)</title>
-<para>
-  A check box object can be created in the dialog template for a <link linkend="clsUserDialog">UserDialog</link> dialog
-  through the <link linkend="mthCreateCheckBox">createCheckBox</link>() method. The basic syntax is:
-<programlisting>
-<![CDATA[
->>--createCheckBox(-id-,--x-,--y--+------+--+------+--+---------+--+---------+->
-                                  +-,-cx-+  +-,-cy-+  +-,-style-+  +-,-label-+
-
->----+-----------------+--+--------------+--)----------------------------------><
-     +-,-attributeName-+  +-,-connectOpt-+
-]]>
-</programlisting>
-</para>
-</section>  <!-- End UserDialog::createCheckBox() [UserDialog method] -->
-
-
-<section id="mthIsIndeterminate"><title>isIndeterminate</title>
-<indexterm><primary>isIndeterminate</primary></indexterm>
-<indexterm><primary>CheckBox class</primary><secondary>isIndeterminate</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--isIndeterminate------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Determines if the check box is in indeterminate state, or not.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>
-      There are no arguments.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      Returns true if the check box is in the indeterminate state, otherwise false.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This example is from a program that sets the background color to black, white, or gray.
-
-<programlisting>
-<![CDATA[
-  chkBox = self~newCheckBox(IDC_CHK_BACKGROUND)
-  if chkBox~isIndeterminate then return self~grayBackground
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CheckBox::isIndeterminate() -->
-
-
-<section id="mthGetCheckStateClsCheckBox"><title>getCheckState</title>
-<indexterm><primary>getCheckState</primary><secondary>CheckBox class</secondary></indexterm>
-<indexterm><primary>CheckBox class</primary><secondary>getCheckState</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getCheckState--------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  This method overrides the RadioButton <link
-  linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method to return a keyword indicating
-  the check state of the check box, checked, unchecked, or indeterminate.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-    <para>
-      There are no arguments to this method.
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-    <para>
-      The return value is a keyword indicating the checked state of the check box and will be exactly one of
-      the following:
-      <informaltable frame='none' colsep='0' rowsep='0' pgwide='1'>
-      <tgroup cols='2'>
-      <colspec align='left' colwidth='1*'>
-      <colspec align='left' colwidth='3*'>
-      <tbody>
-      <row><entry>UNCHECKED    </entry><entry>The check box is not checked.               </entry></row>
-      <row><entry>CHECKED      </entry><entry>The check box is checked.                   </entry></row>
-      <row><entry>INDETERMINATE</entry><entry>The check box is in the indeterminate state.</entry></row>
-      <row><entry>UNKNOWN      </entry><entry>The object is not a check box.              </entry></row>
-      </tbody>
-      </tgroup>
-      </informaltable>
-    </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
-      This example is a variation of the example for the isIndeterminate() method.
-<programlisting>
-<![CDATA[
-  state = self~newCheckBox(IDC_CHK_BACKGROUND)~getCheckState
-
-  select
-    when state == "CHECKED" then return self~blackBackground
-    when state == "UNCHECKED" then return self~whiteBackground
-    when state == "INDETERMINATE" then return self~grayBackground
-    otherwise nop  -- Drop through and do error handling
-  end
-  -- End select
-
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CheckBox::getCheckState() -->
-
-<section id="mthSetIndeterminate"><title>setIndeterminate</title>
-<indexterm><primary>setIndeterminate</primary></indexterm>
-<indexterm><primary>CheckBox class</primary><secondary>setIndeterminate</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setIndterminate------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Puts the check box in the indeterminate state. The system will redraw the check box to indicate the indeterminate
-  state.
-</para>
-
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    This method takes no arguments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method always returns 0.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End CheckBox::setIndeterminate() -->
-
-</section>
-
-<section id="clsGroupBox"><title>Group Boxes</title>
-<indexterm><primary>GroupBox class</primary></indexterm>
-<para>
-  The Windows Group Box control is actually a button control, not a static control.  Its purpose is to
-  group together a set of related controls.  It consists of a label and a rectangle.  The related
-  controls are placed within the rectangle. Group boxes have no state, they can not be selected, and an
-  application can not send messages to the control. In addition, a group box does not send notifications
-  to its parent so there are no events to connect to a group box.
-</para>
-<para>
-  The GroupBox class provides methods to work with group box controls.
-</para>
-<para>
-  In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
-  needed, or are useful, when working with group box controls:
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
-  <listitem>
-  <para>
-    Use the <link linkend="tmthNewGroupBox">newGroupBox</link> method to retrieve an object of the group box class.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
-  <listitem>
-  <para>
-    To dynamically define a group box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>
-    class, use the <link linkend="mthCreateGroupBox">createGroupbox</link> method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
-  <listitem>
-  <para>
-    Group boxes do not generate notifications.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</para>
-
-<section id="sctMethodsGroupBox"><title>Method Table</title>
-
-<para>
-  The following table provides links to the documentation for the primary methods and attributes used in working with
-  <computeroutput>GroupBox</computeroutput> objects, including the pertinent methods from other classes.
-</para>
-
-<table id="tblGroupBoxMethods" frame="all">
-<title>GroupBox Instance Methods</title>
-<tgroup cols="2">
-<colspec colwidth="1.5in">
-<thead>
-<row>
-<entry>Method</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry align="center"><emphasis role="bold">Useful</emphasis></entry>
-<entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="tmthNewGroupBox">newGroupBox</link></entry>
-<entry>Returns a <computeroutput>GroupBox</computeroutput> object for the control with the specified ID.</entry>
-</row>
-<row>
-<entry><link linkend="tmthCreateGroupBox">createGroupBox</link></entry>
-<entry>Creates a group box in the dialog template of a <link linkend="clsUserDialog">UserDialog</link>.</entry>
-</row>
-<row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-</row>
-<row>
-<entry><link linkend="mthGBStyleEquals">style=</link></entry>
-<entry>Assigns a new text alignment to the group box.</entry>
-</row>
-</tbody></tgroup>
-</table>
-</section>
-
-
-<section id="tmthNewGroupBox"><title>newGroupBox (dialog object method)</title>
-<para>
-  Group box objects can not be instantiated by the programmer from Rexx code. Rather a group box object is
-  obtained by using the <link linkend="mthNewGroupBox">newGroupBox</link>() method of the dialog <link
-  linkend="chpDialogObject">object</link>. The syntax is:
-<programlisting>
-<![CDATA[
->>--newGroupBox(--id--)--------------------------><
-
-]]>
-</programlisting>
-</para>
-</section>  <!-- End Dialog::newGroupBox() (dialog object method) -->
-
-
-<section id="tmthCreateGroupBox"><title>createGroupBox (UserDialog method)</title>
-<para>
-  A group box object can be create in the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
-  dialog through the <link linkend="mthCreateGroupBox">createGroupBox</link>() method. The basic syntax is:
-<programlisting>
-<![CDATA[
->>--createGroupbox(-+------+-,-x-,-y-,-cx-,-cy--+---------+-+--------+-)-------><
-                    +--id--+                    +-,-style-+ +-,-text-+
-]]>
-</programlisting>
-</para>
-</section>  <!-- End UserDialog::createGroupBox() [UserDialog method] -->
-
-
-
-
-<section id="mthGBStyleEquals"><title>style=</title>
-<indexterm><primary>style=</primary><secondary>GroupBox class</secondary></indexterm>
-<indexterm><primary>GroupBox class</primary><secondary>style=</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--style=-styleKeyword--------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Assigns a new text alignment to the group box.  By default the text of a group box is in the upper left
-  corner. The alignment can also be set to the right or to the center, although this is not commonly done.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The only argument is:
-    <variablelist>
-      <varlistentry><term>styleKeyword</term>
-      <listitem>
-      <para>
-        A keyword that is one of the following:
-        <variablelist>
-        <varlistentry><term>LEFT</term>
-        <listitem>
-        <para>
-          The group box label is aligned to the upper left.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>RIGHT</term>
-        <listitem>
-        <para>
-          The label is aligned to the upper right.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>CENTER</term>
-        <listitem>
-        <para>
-          The label is aligned to the upper center.
-        </para>
-        </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para> Changing the style is straightforward:
-<programlisting>
-<![CDATA[
-  gb = self~newGroupBox(IDC_GB_AREACODES)
-  if gb == .Nil then return
-  gb~style="RIGHT"
-]]>
-</programlisting>
-    </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-</section>
-
-<section id="anibut"><title>Animated Buttons</title>
-<indexterm><primary>AnimatedButton class</primary></indexterm>
-<para>The AnimatedButton class provides the methods to
-implement an animated button within a dialog. The attributes and methods are
-only described briefly in this document. An example program,
-<computeroutput>oowalker.rex</computeroutput>,
-is provided with the ooDialog sample programs. </para>
-<variablelist>
-<varlistentry><term>ParentDlg</term>
-<listitem><para>Attribute holding the handle of the parent dialog
-</para></listitem></varlistentry>
-<varlistentry><term>Stopped</term>
-<listitem><para>Animation ends when set to 1 (see Stop method)
-</para></listitem></varlistentry>
-<varlistentry><term>init</term>
-<listitem><para>Initialize the animation parameters:</para>
-<programlisting>
-<![CDATA[
-but = .AnimatedButton~new(buttonid,from,to, ,
-                          movex,movey,sizex,sizey,delay, ,
-                          startx,starty,parentdialog)
-]]>
-</programlisting>
-<para>The values are
-stored in a stem variable: </para>
-<variablelist>
-<varlistentry><term>sprite.buttonid</term>
-<listitem><para>ID of animation button
-</para></listitem></varlistentry>
-<varlistentry><term>sprite.from</term>
-<listitem><para>Array of in-memory bitmap handles, or a bitmap resource ID in a DLL,
-or the name of an array in the .local directory containing handles to bitmaps
-loaded with <link linkend="mthLoadBitmap">loadBitmap</link>.
-The array has to start with 1 and continue in increments by 1.
-</para></listitem></varlistentry>
-<varlistentry><term>sprite.to</term>
-<listitem><para>0 if sprite.from is an array, or the name of
-an array stored in <computeroutput>.local</computeroutput>,
-or a bitmap resource ID in a DLL
-</para></listitem></varlistentry>
-<varlistentry><term>sprite.movex</term>
-<listitem><para>Size of one move horizontally (pixels)
-</para></listitem></varlistentry>
-<varlistentry><term>sprite.movey</term>
-<listitem><para>Size of one move vertically
-</para></listitem></varlistentry>
-<varlistentry><term>sprite.sizex</term>
-<listitem><para>Horizontal size of all bitmaps (pixels)
-</para></listitem></varlistentry>
-<varlistentry><term>sprite.sizey</term>
-<listitem><para>Vertical size of all bitmaps
-</para></listitem></varlistentry>
-<varlistentry><term>sprite.delay</term>
-<listitem><para>Time delay between moves (ms)
-</para></listitem></varlistentry>
-</variablelist>
-<para>Startx and starty
-are the initial bitmap position, and parentdialog
-is stored in the ParentDlg attribute.</para>
-<para>Two more
-values are initialized in the stem variable: </para>
-<variablelist>
-<varlistentry><term>sprite.smooth</term>
-<listitem><para>Set to 1 for smooth edge change (can be changed to 0 for
-a bouncy edge change)
-</para></listitem></varlistentry>
-<varlistentry><term>sprite.step</term>
-<listitem><para>Set to 1 as the step size between sprite.from
-and sprite.to for bitmaps in a DLL
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-<varlistentry><term>SetSprite</term>
-<listitem><para>Set all the sprite. animation values using a stem:
-<programlisting>
-<![CDATA[
-mysprite.from = .array~of(bmp1,bmp2,...)
-mysprite.to = 0
-mysprite.movex = ...
-...
-self~setSprite(mysprite.)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>GetSprite</term>
-<listitem><para>Retrieve the animation values into a stem:
-<programlisting>
-<![CDATA[
-self~getSprite(mysprite.)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>SetFromTo</term>
-<listitem><para>Set bitmap information (sprite.from and sprite.to):
-<programlisting>
-<![CDATA[
-self~setFromTo(bmpfrom,bmpto)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>SetMove</term>
-<listitem><para>Set size of one move (sprite.movex and sprite.movey):
-<programlisting>
-<![CDATA[
-self~setMove(movex,movey)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>SetDelay</term>
-<listitem><para>Set delay between moves in milliseconds (sprite.delay):
-<programlisting>
-<![CDATA[
-self~setDelay(delay)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>SetSmooth</term>
-<listitem><para>Set smooth (1) or bouncy (0) edges (sprite.smooth):
-<programlisting>
-<![CDATA[
-self~setSmooth(smooth)  /* 1 or 0 */
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>setStep</term>
-<listitem><para>Set the step size (sprite.step) between sprite.from and
-sprite.to for bitmaps in a DLL, for example, if bitmap resources are numbered
-202, 204, 206, etc:
-<programlisting>
-<![CDATA[
-self~setFromTo(202,210)
-self~setStep(2)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>Run</term>
-<listitem><para>Run the animation by going through all the bitmaps repetitively
-until dialog is stopped; invokes MoveSeq:
-<programlisting>
-<![CDATA[
-self~run
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>MoveSeq</term>
-<listitem><para>Animate one sequence through all the bitmaps in the given move
-steps; invokes MovePos:
-<programlisting>
-<![CDATA[
-self~moveSeq
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>MovePos</term>
-<listitem><para>Move the bitmaps by the arguments:
-<programlisting>
-<![CDATA[
-self~movePos(movex,movey)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>MoveTo</term>
-<listitem><para>Move the bitmaps in the predefined steps to
-the given position; invokes MoveSeq:
-<programlisting>
-<![CDATA[
-self~moveTo(posx,posy)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>setPos</term>
-<listitem><para>Set the new starting position of the bitmaps:
-<programlisting>
-<![CDATA[
-self~setPos(newx,newy)
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>getPos</term>
-<listitem><para>Retrieve the current position into a stem:
-<programlisting>
-<![CDATA[
-self~getPos(pos.)
-say "pos=" pos.x pos.y
-]]>
-</programlisting>
-</para></listitem></varlistentry>
-<varlistentry><term>ParentStopped</term>
-<listitem><para>Check the parent dialog window to see if it is finished. Returns 1 if the parent is finished.
-</para></listitem></varlistentry>
-<varlistentry><term>Stop</term>
-<listitem><para>Stop animation by setting the stopped attribute to 1
-</para></listitem></varlistentry>
-<varlistentry><term>HitRight</term>
-<listitem><para>Invoked by run when the bitmap hits the right edge (returns 1 and bitmap
-starts at left again; you can return 0 and set the new position yourself)
-</para></listitem></varlistentry>
-<varlistentry><term>HitLeft</term>
-<listitem><para>Invoked when the bitmap hits the left edge (default action is to start
-at right again)
-</para></listitem></varlistentry>
-<varlistentry><term>HitBottom</term>
-<listitem><para>Invoked when the bitmap hits the bottom edge (default action is to start
-at top again)
-</para></listitem></varlistentry>
-<varlistentry><term>HitTop</term>
-<listitem><para>Invoked when the bitmap hits the top edge (default action is to start
-at bottom again)
-</para></listitem></varlistentry>
-</variablelist>
-<para>To use an animated button a dialog has to: </para>
-<itemizedlist>
-<listitem><para>Define a button in a resource file (owner-drawn)</para></listitem>
-<listitem><para>Load the bitmaps of the animation into memory using an array</para></listitem>
-<listitem><para>Initialize the animated button with the animation parameters</para></listitem>
-<listitem><para>Invoke the run method of the animated button</para></listitem>
-<listitem><para>Stop the animation and remove the bitmaps from memory</para></listitem>
-</itemizedlist>
-<para>The dialog may also dynamically change the parameters (for example, the
-size of a move, or the speed) and over-ride actions, such as hitting an edge.</para>
-<para>See the <computeroutput>oowalker.rex</computeroutput> and
-<computeroutput>oowalk2.rex</computeroutput> examples in
-<computeroutput>OODIALOG\SAMPLES</computeroutput>.</para>
-<para>For further information see
-<link linkend="mthInstallAnimatedButton">installAnimatedButton</link>.</para>
-</section>
 
 </chapter>

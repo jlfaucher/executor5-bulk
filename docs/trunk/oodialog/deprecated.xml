@@ -42,27 +42,51 @@
 <appendix id="apxDeprecated"><title>Deprecated Classes, Methods, Functions, and Routines</title>
 <indexterm><primary>Deprecated</primary></indexterm>
 <para>
-  Why deprecated
+  Beginning with ooDialog 4.2.0, many methods and some classes are deprecated. All the deprecated classes and methods
+  are listed in this section, along with information on how to replace the deprecated classes and methods. In general,
+  the deprecated classes are no longer needed and references to them can simply be removed. Most, but not all, of the
+  deprecated methods can simply be replaced with a another method.
 </para>
 <para>
-  xx
+  It is the <emphasis role="italic">intent</emphasis> that older programs using deprecated methods will run without
+  having to make changes to the code. This has been fairly well tested, but as with all intentions, there may be
+  situations where the intent was not satisfied. If such a situation is found, it should be brought to the attention of
+  the developers. However, there are some situations where <emphasis role="italic">internal use only</emphasis> methods
+  have been used, and there are a very few deprecated methods that were simply buggy. Programs that no longer run
+  because they used <emphasis role="italic">internal use only</emphasis> methods are expected to no longer run if the
+  internal implementation is changed. Programs that only worked because of a bug, are also likely to have a problem when
+  the bug is fixed.
 </para>
 <para>
-  xx
+  There are a number of reasons why classes or methods have been deprecated. Many methods, probably the majority have
+  been deprectated due to the effort to <link linkend="termMethodNameUnification">unify</link> the naming of methods.
+  The deprecated classes are primarily classes that overcomplicated the programming task, for no good reason. There
+  should be no need to inherit the <emphasis role="italic">AdvancedControls</emphasis> mixin class in order to use some
+  controls in a dialog, but not have to inherit the class for other controls. Some few methods are deprecated because
+  their implementation is buggy, and a few others are deprecated because they used or relied on programming techniques
+  for Windows 3.1 that no longer work well in a modern Windows version.
+</para>
+<para>
+  In all cases, deprecated methods should never be used in new code. In addition, programmers are strongly encouraged to
+  migrate existing code away from deprecated classes and methods. Deprecated methods usually forward to their
+  replacement methods. Programmers can eliminate this level of redirection by removing the deprecated methods.
+  Deprecated methods and classes are <emphasis role="italic">not</emphasis> documented any longer in the ooDialog
+  reference, except as listed in this section. If the programmer needs to look up the documentation for a deprected
+  class or method, he should simply replace that class or method in his code.
 </para>
 
 
 <section id="deprecatedBaseClasses"><title>Deprecated Classes</title>
 <indexterm><primary>Deprecated</primary><secondary>classes</secondary></indexterm>
 <para>
-  All <link linkend="ovvDeprecated">deprecated</link> base and mixin classes are listed in this section. In general, the
+  All <link linkend="apxDeprecated">deprecated</link> base and mixin classes are listed in this section. In general, the
   deprecated classes are simply not needed anymore, and the programmer need do nothing to replace them.
 </para>
 
 <section><title>AdvancedControls Mixin Class</title>
 <indexterm><primary>Deprecated</primary><secondary>AdvancedControls Class</secondary></indexterm>
 <para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
+  This class is <link linkend="apxDeprecated">deprecated</link>. The ooDialog framework <link
   linkend="sctHistory">no longer</link> makes a distinction between some types of dialog controls, and how to use the
   controls. I.e., the programmer no longer needs to inherit a special class to use some of the dialog controls. All the
   methods of the AdvancedControls have been moved into the appropriate dialog class. Therefore the programmer does not
@@ -75,7 +99,7 @@
 <section><title>MessageExtensions Mixin Class</title>
 <indexterm><primary>Deprecated</primary><secondary>MessageExtensions Class</secondary></indexterm>
 <para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The MessageExtensions class has been renamed to the
+  This class is <link linkend="apxDeprecated">deprecated</link>. The MessageExtensions class has been renamed to the
   <link linkend="clsEventNotification">EventNotification</link> class. In addition, the EventNotification class is
   inherited by the <link linkend="chpDialogObject">dialog object</link> so that the programmer need do nothing special
   to use event notifications in any dialog. In new code simply omit inheriting MessageExtensions. In old code, <emphasis
@@ -87,29 +111,41 @@
 <section><title>PlainUserDialog Class</title>
 <indexterm><primary>Deprecated</primary><secondary>PlainUserDialog Class</secondary></indexterm>
 <para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The ooDialog framework <link
+  This class is <link linkend="apxDeprecated">deprecated</link>. The ooDialog framework <link
   linkend="sctHistory">no longer</link> makes a distinction between a plain user dialog and an <link
   linkend="clsUserDialog">user dialog</link>. Directly subclass the <emphasis role="italic">Userdialog</emphasis>
   instead of the <emphasis role="italic">PlainUserDialog</emphasis>.
 </para>
 </section>
 
-<section><title>CategoryDialog Class</title>
+<section id="deprecatedCategoryDialog"><title>CategoryDialog Class</title>
 <indexterm><primary>Deprecated</primary><secondary>CategoryDialog Class</secondary></indexterm>
 <para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The <computeroutput>CategoryDialog</computeroutput>
-  class was never documented well, was confusing to most users, was buggy, and was difficult to debug.  TODO need links
-  to PropertySheetDialog.
+  This class is <link linkend="apxDeprecated">deprecated</link>. The <computeroutput>CategoryDialog</computeroutput>
+  class was never documented well, was hard for most users to understand, was buggy, and was difficult to debug. In
+  addition, the dialog pages of the <computeroutput>CategoryDialog</computeroutput> functioned using a completely
+  different paradigm than all other dialogs. This was not only confusing, but <emphasis
+  role="italic">unnecessary</emphasis> to begin with.
+</para>
+<para>
+  Use the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link>, or a <link linkend="clsTab">tab</link>
+  control with one of the <link linkend="sctControlDialogs">Control</link> dialog classes, to replace the
+  <computeroutput>CategoryDialog</computeroutput> class.
 </para>
 </section>
 
-<section><title>PropertySheet Class</title>
+<section id="deprecatedPropertySheet"><title>PropertySheet Class</title>
 <indexterm><primary>Deprecated</primary><secondary>PropertySheet Class</secondary></indexterm>
 <para>
-  This class is <link linkend="ovvDeprecated">deprecated</link>. The <computeroutput>PropertySheet</computeroutput>
-  class was never documented well, was confusing to most users, was buggy, and was difficult to debug. Use the <link
-  linkend="clsPropertySheetDialog">PropertySheetDialog</link> or one of the <link
-  linkend="sctControlDialogs">Control</link> dialog classes to replace the
+  This class is <link linkend="apxDeprecated">deprecated</link>. The <computeroutput>PropertySheet</computeroutput>
+  class was never documented well, was hard for most users to understand, was buggy, and was difficult to debug. In
+  addition, the dialog pages of the <computeroutput>PropertySheet</computeroutput> functioned using a completely
+  different paradigm than all other dialogs. This was not only confusing, but <emphasis
+  role="italic">unnecessary</emphasis> to begin with.
+</para>
+<para>
+  Use the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link>, or a <link linkend="clsTab">tab</link>
+  control with one of the <link linkend="sctControlDialogs">Control</link> dialog classes, to replace the
   <computeroutput>PropertySheet</computeroutput> class.
 </para>
 </section>
@@ -120,40 +156,40 @@
 <section id="deprecatedDialogMethods"><title>Deprecated Dialog Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>dialog object methods</secondary></indexterm>
 <para>
-  <link linkend="ovvDeprecated">Deprecated</link> dialog methods and their replacement methods are listed in this
+  <link linkend="apxDeprecated">Deprecated</link> dialog methods and their replacement methods are listed in this
   section.
 </para>
 
 <section><title>captureMouse</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>checkMenuItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>clearButtonRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthClearControlRect">clearControlRect</link>() method.
 </para>
 </section>
 
 <section><title>clearMessages</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing.
+  This method is <link linkend="apxDeprecated">deprecated</link>. It does nothing.
 </para>
 </section>
 
 <section><title>combineELwithSB</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. It uses an outdated process to add function to a
+  This method is <link linkend="apxDeprecated">deprecated</link>. It uses an outdated process to add function to a
   dialog that is similar to a modern up-down control. The method does not work properly. The <link
   linkend="clsUpDown">up-down</link> dialog control should be used directly to replace this method.
 </para>
@@ -161,63 +197,63 @@
 
 <section><title>connectAnimatedButton</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthInstallAnimatedButton">installAnimatedButton</link>() method.
 </para>
 </section>
 
 <section><title>connectBitmapButton</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthInstallBitmapButton">installBitmapButton</link>() method.
 </para>
 </section>
 
 <section><title>connectEntryLine</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectEdit">connectEdit</link>() method.
 </para>
 </section>
 
 <section><title>connectListControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectListView">connectListView</link>() method.
 </para>
 </section>
 
 <section><title>connectMultiListBox</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectListBox">connectListBox</link>() method.
 </para>
 </section>
 
 <section><title>connectSliderControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectTrackBar">connectTrackBar</link>() method.
 </para>
 </section>
 
 <section><title>connectTabControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectTab">connectTab</link>() method.
 </para>
 </section>
 
 <section><title>connectTreeControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectTreeView">connectTreeView</link>() method.
 </para>
 </section>
 
 <section><title>deInstall</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  It does nothing and always returns 0. In older
+  This method is <link linkend="apxDeprecated">deprecated</link>.  It does nothing and always returns 0. In older
   versions of ooDialog, the <emphasis role="italic">deInstall</emphasis>() method was used to deregister the
   external functions with the API manager. This mechanism is no longer needed using the modern APIs introduced in
   ooRexx 4.0.0.
@@ -226,21 +262,21 @@
 
 <section><title>disableItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthDisableControl">disableControl</link>() method.
 </para>
 </section>
 
 <section><title>disableMenuItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>dump</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  It will simply print: &quot;dump() deprecated.&quot; In
+  This method is <link linkend="apxDeprecated">deprecated</link>.  It will simply print: &quot;dump() deprecated.&quot; In
   older versions of ooDialog, the <emphasis role="italic">dump</emphasis>() method would print out information tied to
   the undocumented internal implementation of ooDialog. Since the internal implementation has changed, this information
   no longer exists.
@@ -249,203 +285,203 @@
 
 <section><title>enableItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthEnableControl">enableControl</link>() method.
 </para>
 </section>
 
 <section><title>enableMenuItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>freeButtonDC</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthFreeControlDC">freeControlDC</link>() method.
 </para>
 </section>
 
 <section><title>focusItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthFocusControl">focusControl</link>() method.
 </para>
 </section>
 
 <section><title>getButtonControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewPushButton">newPushButton</link>() method.
 </para>
 </section>
 
 <section><title>getButtonDC</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetControlDC">getControlDC</link>() method.
 </para>
 </section>
 
 <section><title>getButtonRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link
   linkend="mthGetControlRect">getControlRect</link>() method instead.
 </para>
 </section>
 
 <section><title>getCheckBox</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetCheckBoxData">getCheckBoxData</link>() method.
 </para>
 </section>
 
 <section><title>getCheckControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewCheckBox">newCheckBox</link>() method.
 </para>
 </section>
 
 <section><title>getComboBox</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewComboBox">newComboBox</link>() method.
 </para>
 </section>
 
 <section><title>getComboLine</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetComboBoxData">getComboBoxData</link>() method.
 </para>
 </section>
 
 <section><title>getEditControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewEdit">newEdit</link>() method.
 </para>
 </section>
 
 <section><title>getEntryLine</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetEditData">getEditData</link>() method.
 </para>
 </section>
 
 <section><title>getGroupBox</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewGroupBox">newGroupBox</link>() method.
 </para>
 </section>
 
 <section><title>getItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetControlHandle">getControlHandle</link>() method.
 </para>
 </section>
 
 <section><title>getListBox</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewListBox">newListBox</link>() method.
 </para>
 </section>
 
 <section><title>getListControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewListView">newListView</link>() method.
 </para>
 </section>
 
 <section><title>getListLine</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetListBoxData">getListBoxData</link>() method.
 </para>
 </section>
 
 <section><title>getMenuItemState</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>getMouseCapture</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>getMultiList</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetListBoxData">getListBoxData</link>() method.
 </para>
 </section>
 
 <section><title>getProgressBar</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewProgressBar">newProgressBar</link>() method.
 </para>
 </section>
 
 <section><title>getRadioButton</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetRadioButtonData">getRadioButtonData</link>() method.
 </para>
 </section>
 
 <section><title>getRadioControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewRadioButton">newRadioButton</link>() method.
 </para>
 </section>
 
 <section><title>getScrollBar</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewScrollBar">newScrollBar</link>() method.
 </para>
 </section>
 
 <section><title>getSliderControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewTrackBar">newTrackBar</link>() method.
 </para>
 </section>
 
 <section><title>getStaticControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewStatic">newStatic</link>() method.
 </para>
 </section>
 
 <section><title>getTabControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewTab">newTab</link>() method.
 </para>
 </section>
 
 <section><title>getTextSize</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with, preferably, the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Replace this method with, preferably, the <link
   linkend="mthGetTextSizeDu">getTextSizeDu</link>() method, or the <link
   linkend="mthGetTextSizeDlgClsPlainBaseDialog">getTextSizeDlg</link>() method if absolutely necessary.
 </para>
@@ -458,62 +494,62 @@
 
 <section><title>getTreeControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthNewTreeView">newTreeView</link>() method.
 </para>
 </section>
 
 <section><title>getValue</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetControlData">getControlData</link>() method.
 </para>
 </section>
 
 <section><title>getWindowRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link
   linkend="mthWindowRect">windowRect</link>() method instead.
 </para>
 </section>
 
 <section><title>grayMenuItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>handleMessages</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. It sleeps for 10 miliseconds and returns.
+  This method is <link linkend="apxDeprecated">deprecated</link>. It sleeps for 10 miliseconds and returns.
 </para>
 </section>
 
 <section><title>hideItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthHideControl">hideControl</link>() method.
 </para>
 </section>
 
 <section><title>hideItemFast</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthHideControlFast">hideControlFast</link>() method.
 </para>
 </section>
 
 <section><title>isMouseButtonDown</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>itemText</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthSetControlText">setControlText</link>() method. <emphasis role="bold">Note</emphasis> that this method has
   always been present in ooDialog, but was never previously documented.
 </para>
@@ -521,41 +557,41 @@
 
 <section><title>moveItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link
   linkend="mthMoveControl">moveControl</link>() method instead.
 </para>
 </section>
 
 <section><title>peekDialogMessage</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing and always returns the empty string.
+  This method is <link linkend="apxDeprecated">deprecated</link>. It does nothing and always returns the empty string.
 </para>
 </section>
 
 <section><title>redrawItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthRedrawControl">redrawControl</link>() method.
 </para>
 </section>
 
 <section><title>releaseMouseCapture</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>resizeItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link
   linkend="mthResizeControl">resizeControl</link>() method instead.
 </para>
 </section>
 
 <section><title>run</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. It does nothing except sit in a loop burning up CPU.
+  This method is <link linkend="apxDeprecated">deprecated</link>. It does nothing except sit in a loop burning up CPU.
 </para>
 <para>
   Although this method was documented previously, it is the author's opion that it was intended for internal use only.
@@ -572,56 +608,56 @@
 
 <section><title>scrollInButton</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthScrollInControl">scrollInScroll</link>() method.
 </para>
 </section>
 
 <section><title>setItemFont</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthSetControlFont">setControlFont</link>() method.
 </para>
 </section>
 
 <section><title>setItemColor</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthSetControlColor">setControlColor</link>() method.
 </para>
 </section>
 
 <section><title>setItemSysColor</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthSetControlSysColor">setControlSysColor</link>() method.
 </para>
 </section>
 
 <section><title>setMenuItemRadio</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>setStaticText</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthSetControlText">setControlText</link>() method.
 </para>
 </section>
 
 <section><title>uncheckMenuItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>writeToButton</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthWriteToControl">writeToControl</link>() method.
 </para>
 </section>
@@ -635,7 +671,7 @@
 <section id="deprecatedButton"><title>Deprecated Button Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>button methods</secondary></indexterm>
 <para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
   role="italic">Button</emphasis> class and how to replace those methods in ooDialog programs. The implementation of the
   following <emphasis role="italic">bitmap</emphasis> button methods was done in the <link
   linkend="chpDialogObject">dialog</link> object. The methods are methods of the dialog, not the button.
@@ -643,7 +679,7 @@
 
 <section><title>changeBitmap</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthChangeBitmapButton">changeBitmapButton</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -651,7 +687,7 @@
 
 <section><title>dimBitmap</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthDimBitmap">dimBitmap</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -659,7 +695,7 @@
 
 <section><title>displaceBitmap</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthDisplaceBitmap">displaceBitmap</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -667,7 +703,7 @@
 
 <section><title>drawBitmap</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthDrawBitmap">drawBitmap</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -675,7 +711,7 @@
 
 <section><title>getBitmapPosition</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthGetBitmapPosition">getBitmapPosition</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -683,7 +719,7 @@
 
 <section><title>getBitmapSizeX</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthGetBitmapSizeX"></link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -691,7 +727,7 @@
 
 <section><title>getBitmapSizeY</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthGetBitmapSizeY">getBitmapSizeY</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -699,7 +735,7 @@
 
 <section><title>getBitmapSizeY</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthGetBitmapSizeY">getBitmapSizeY</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -707,7 +743,7 @@
 
 <section><title>scroll</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthScrollbutton">scrollButton</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -715,7 +751,7 @@
 
 <section><title>scrollBitmapFromTo</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthScrollBitmapFromTo">scrollBitmapFromTo</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -723,7 +759,7 @@
 
 <section><title>scrollText</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthScrollText">scrollText</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -731,7 +767,7 @@
 
 <section><title>setBitmapPosition</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Replace this method with the <link
   linkend="mthSetBitmapPosition">setBitmapPosition</link>() method of the the <link
   linkend="chpDialogObject">dialog</link> object.
 </para>
@@ -742,13 +778,13 @@
 <section id="deprecatedComboBox"><title>Deprecated ComboBox Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>combo box methods</secondary></indexterm>
 <para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
   role="italic">ComboBox</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
 <section><title>editSelection</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link
+  This method is <link linkend="apxDeprecated">deprecated</link>  Use <link
   linkend="mthSetEditSelection">setEditSelection</link>().
 </para>
 </section>
@@ -758,7 +794,7 @@
 <section id="deprecatedListView"><title>Deprecated ListView Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>list-view methods</secondary></indexterm>
 <para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
   role="italic">ListView</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
@@ -805,13 +841,13 @@
 
 <section><title>getRange</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link linkend="mthGetFullRangePBC">getFullRange</link>().
+  This method is <link linkend="apxDeprecated">deprecated</link>  Use <link linkend="mthGetFullRangePBC">getFullRange</link>().
 </para>
 </section>
 
 <section id="mthSetRangePBC"><title>setRange</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>  Use <link linkend="mthSetFullRangePBC">setFullRange</link>().
+  This method is <link linkend="apxDeprecated">deprecated</link>  Use <link linkend="mthSetFullRangePBC">setFullRange</link>().
 </para>
 </section>
 
@@ -823,7 +859,7 @@
 
 <section><title>isChecked</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthGetCheckStateClsRadioButton">getCheckState</link>() method for radio buttons, and the over-ridden <link
   linkend="mthGetCheckStateClsCheckBox">getCheckState</link>() method for check boxes. This method was poorly named and
   in some circumstances produced inconsistent results.
@@ -832,7 +868,7 @@
 
 <section><title>indeterminate</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthSetIndeterminate">setIndeterminate</link>() method of the <link linkend="clsCheckBox">CheckBox</link>
   class. Radio buttons can not be set to indeterminate. Using this method with a radio button sets it to the checked
   state, not the indeterminate state. In addition, this method was poorly named. One can check a button, but one does
@@ -846,7 +882,7 @@
 <section id="deprecatedTab"><title>Deprecated Tab Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>tab methods</secondary></indexterm>
 <para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
   role="italic">Tab</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
@@ -873,7 +909,7 @@
 <section id="deprecatedTreeView"><title>Deprecated TreeView Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>tree-view methods</secondary></indexterm>
 <para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
   role="italic">TreeView</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
@@ -903,34 +939,34 @@
 <section id="deprecatedDialogControl"><title>Deprecated DialogControl Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>dialog control object methods</secondary></indexterm>
 <para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
   role="italic">DialogControl</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
 <section><title>captureMouse</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>getFocus</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
   object's <link linkend="mthGetFocus">getFocus</link>() method instead.
 </para>
 </section>
 
 <section><title>getMouseCapture</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>getTextSize</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Replace this method with the <link
   linkend="mthGetTextSizeDu">getTextSizeDu</link>() method. The <link
   linkend="mthGetTextSizeDlgClsDialogControl">getTextSizeDlg</link>() method could also be used, if absolutely
   necessary. However, that is not recommended.
@@ -943,56 +979,56 @@
 
 <section><title>isMouseButtonDown</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>processMessage</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="wbdcoSendMessage">sendMessage</link>() method.
 </para>
 </section>
 
 <section><title>releaseMouseCapture</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>setFocus</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
   object's <link linkend="mthSetFocus">setFocus</link>() method instead.
 </para>
 </section>
 
 <section><title>tabToNext</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
   object's <link linkend="mthTabToNext">tabToNext</link>() method instead.
 </para>
 </section>
 
 <section><title>tabToPrevious</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link linkend="chpDialogObject">dialog</link>
   object's <link linkend="mthTabToPrevious">tabToPrevious</link>() method instead.
 </para>
 </section>
 
 <section><title>value</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthData">data</link>() method.
 </para>
 </section>
 
 <section><title>value=</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthDataEquals">data=</link>() method.
 </para>
 </section>
@@ -1006,14 +1042,14 @@
 <para>
   Earlier versions of ooDialog used a confusing array of method names with the word <emphasis
   role="italic">connect</emphasis> in them. After the release of ooRexx 4.0.0, an effort was made to unify the method
-  names in ooDialog. The methods listed in this section are all <link linkend="ovvDeprecated">deprecated</link>. They
+  names in ooDialog. The methods listed in this section are all <link linkend="apxDeprecated">deprecated</link>. They
   all forward to the method that has taken their place. You can remove this level of indirection in your programs by
   replacing all of the deprecated methods.
 </para>
 
 <section><title>connectButton</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method using the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method using the <link
   linkend="mthConnectButtonEvent">connectButtonEvent</link>() method in this maner:
 <programlisting>
 <![CDATA[
@@ -1029,42 +1065,42 @@
 
 <section><title>connectButtonNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectButtonEvent">connectButtonEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectComboBoxNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectComboBoxEvent">connectComboBoxEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectCommonNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectNotifyEvent">connectNotifyEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectCommandEvents">connectCommandEvents</link>() method.
 </para>
 </section>
 
 <section><title>connectEditNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectEditEvent">connectEditEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectList</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method by using the <link
   linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
 <programlisting>
 <![CDATA[
@@ -1080,14 +1116,14 @@
 
 <section><title>connectListBoxNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectListBoxEvent">connectListBoxEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectListLeftDoubleClick</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method by using the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method by using the <link
   linkend="mthConnectListViewEvent">connectListBoxEvent</link>() method in this manner:
 <programlisting>
 <![CDATA[
@@ -1103,70 +1139,70 @@
 
 <section><title>connectListNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectListViewNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectListViewEvent">connectListViewEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectMenuItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="chpMenus">menu</link> object
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link linkend="chpMenus">menu</link> object
   methods directly.
 </para>
 </section>
 
 <section><title>connectMouseCapture</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Use the <link linkend="clsMouse">mouse</link> object
+  This method is <link linkend="apxDeprecated">deprecated</link>. Use the <link linkend="clsMouse">mouse</link> object
   methods directly.
 </para>
 </section>
 
 <section><title>connectScrollBar</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectEachSBEvent">connectEachSBEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectScrollBarNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectSliderNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectTrackBarEvent">connectTrackBarEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectStaticNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectStaticEvent">connectStaticEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectTabNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectTabEvent">connectTabEvent</link>() method.
 </para>
 </section>
 
 <section><title>connectTreeNotify</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthConnectTreeViewEvent">connectTreeViewEvent</link>() method.
 </para>
 </section>
@@ -1225,7 +1261,7 @@
 
 <section><title>errorMessage</title>
 <para>
-  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  This function is <link linkend="apxDeprecated">deprecated</link>. Use the public routine <link
   linkend="rtnErrorDialog">errorDialog</link>.
 </para>
 </section>
@@ -1257,7 +1293,7 @@
 
 <section><title>infoMessage</title>
 <para>
-  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  This function is <link linkend="apxDeprecated">deprecated</link>. Use the public routine <link
   linkend="rtnInfoDialog">infoDialog</link>.
 </para>
 </section>
@@ -1280,7 +1316,7 @@
 
 <section><title>sleepMS</title>
 <para>
-  This fucntion is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  This fucntion is <link linkend="apxDeprecated">deprecated</link>. Use the public routine <link
   linkend="rtnMSSleep">msSleep</link>.
 </para>
 </section>
@@ -1304,7 +1340,7 @@
 
 <section><title>winTimer</title>
 <para>
-  This function is <link linkend="ovvDeprecated">deprecated</link>. There is no replacement for this function.
+  This function is <link linkend="apxDeprecated">deprecated</link>. There is no replacement for this function.
 </para>
 <para>
   The implementation of this function is poor. It uses 100% of the CPU while waiting. It should be possible to provide
@@ -1315,7 +1351,7 @@
 
 <section><title>yesNoMessage</title>
 <para>
-  This function is <link linkend="ovvDeprecated">deprecated</link>. Use the public routine <link
+  This function is <link linkend="apxDeprecated">deprecated</link>. Use the public routine <link
   linkend="rtnAskDialog">askDialog</link>.
 </para>
 </section>
@@ -1326,335 +1362,335 @@
 <section id="deprecatedUserDialogMethods"><title>Deprecated UserDialog Methods</title>
 <indexterm><primary>Deprecated</primary><secondary>UserDialog methods</secondary></indexterm>
 <para>
-  <link linkend="ovvDeprecated">Deprecated</link> <computeroutput>UserDialog</computeroutput> methods and their
+  <link linkend="apxDeprecated">Deprecated</link> <computeroutput>UserDialog</computeroutput> methods and their
   replacement methods are listed in this section.
 </para>
 
 <section><title>addBitmapButton</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateBitmapButton">createBitmapButton</link>() method.
 </para>
 </section>
 
 <section><title>addBlackFrame</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateBlackFrame">createBlackFrame</link>() method.
 </para>
 </section>
 
 <section><title>addBlackRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateBlackRect">createBlackRect</link>() method.
 </para>
 </section>
 
 <section><title>addButton</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreatePushButton">createPushButton</link>() method.
 </para>
 </section>
 
 <section><title>addButtonGroup</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreatePushButtonGroup">createPushButtonGroup</link>() method.
 </para>
 </section>
 
 <section><title>addCheckBox</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateCheckBox">createCheckBox</link>() method.
 </para>
 </section>
 
 <section><title>addCheckBoxStem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateCheckBoxStem">createCheckBoxStem</link>() method.
 </para>
 </section>
 
 <section><title>addCheckGroup</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateCheckBoxGroup">createCheckBoxGroup</link>() method.
 </para>
 </section>
 
 <section><title>addComboBox</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateComboBox">createComboBox</link>() method.
 </para>
 </section>
 
 <section><title>addComboInput</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateComboBoxInput">createComboBoxInput</link>() method.
 </para>
 </section>
 
 <section><title>addEntryLine</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateEdit">createEdit</link>() method.
 </para>
 </section>
 
 <section><title>addEtchedFrame</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateEtchedFrame">createEtchedFrame</link>() method.
 </para>
 </section>
 
 <section><title>addEtchedHorizontal</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateEtchedHorizontal">createEtchedHorizontal</link>() method.
 </para>
 </section>
 
 <section><title>addEtchedVertical</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateEtchedVertical">createEtchedVertical</link>() method.
 </para>
 </section>
 
 <section><title>addGrayFrame</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateGrayFrame">createGrayFrame</link>() method.
 </para>
 </section>
 
 <section><title>addGrayRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateGrayRect">createGrayRect</link>() method.
 </para>
 </section>
 
 <section><title>addGroupBox</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateGroupBox">createGroupBox</link>() method.
 </para>
 </section>
 
 <section><title>addIcon</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthAddIconResource">addIconResource</link>() method.
 </para>
 </section>
 
 <section><title>addImage</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateStaticImage">createStaticImage</link>() method.
 </para>
 </section>
 
 <section><title>addInput</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateEditInput">createEditInput</link>() method.
 </para>
 </section>
 
 <section><title>addInputGroup</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateEditInputGroup">createEditInputGroup</link>() method.
 </para>
 </section>
 
 <section><title>addInputStem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateEditInputStem">createEditInputStem</link>() method.
 </para>
 </section>
 
 <section><title>addListBox</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateListBox">createListBox</link>() method.
 </para>
 </section>
 
 <section><title>addListControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateListView">createListView</link>() method.
 </para>
 </section>
 
 <section><title>addMenuItem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>addMenuSeparator</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>addOkCancelLeftBottom</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateOkCancelLeftBottom">createOkCancelLeftBottom</link>() method.
 </para>
 </section>
 
 <section><title>addOkCancelLeftTop</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateOkCancelLeftTop">createOkCancelLeftTop</link>() method.
 </para>
 </section>
 
 <section><title>addOkCancelRightBottom</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateOkCancelRightBottom">createOkCancelRightBottom</link>() method.
 </para>
 </section>
 
 <section><title>addOkCancelRightTop</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateOkCancelRightTop">createOkCancelRightTop</link>() method.
 </para>
 </section>
 
 <section><title>addPasswordLine</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreatePasswordEdit">createPasswordEdit</link>() method.
 </para>
 </section>
 
 <section><title>addPopupMenu</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>addProgressBar</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateProgressBar">createProgressBar</link>() method.
 </para>
 </section>
 
 <section><title>addRadioButton</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateRadioButton">createRadioButton</link>() method.
 </para>
 </section>
 
 <section><title>addRadioGroup</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateRadioButtonGroup">createRadioButtonGroup</link>() method.
 </para>
 </section>
 
 <section><title>addRadioStem</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateRadioButtonStem">createRadioButtonStem</link>() method.
 </para>
 </section>
 
 <section><title>addScrollBar</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateScrollBar">createScrollBar</link>() method.
 </para>
 </section>
 
 <section><title>addSliderControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateTrackbar">createTrackbar</link>() method.
 </para>
 </section>
 
 <section><title>addStatic</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateStatic">createStatic</link>() method.
 </para>
 </section>
 
 <section><title>addTabControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateTab">createTab</link>() method.
 </para>
 </section>
 
 <section><title>addText</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateStaticText">createStaticTest</link>() method.
 </para>
 </section>
 
 <section><title>addTreeControl</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateTreeView">createTreeView</link>() method.
 </para>
 </section>
 
 <section><title>addWhiteFrame</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateWhiteFrame">createWhiteFrame</link>() method.
 </para>
 </section>
 
 <section><title>addWhiteRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method with the <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method with the <link
   linkend="mthCreateWhiteRect">createWhiteRect</link>() method.
 </para>
 </section>
 
 <section><title>createMenu</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>loadMenu</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>setMenu</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="chpMenus">menu</link>
   object methods directly.
 </para>
 </section>
@@ -1671,7 +1707,7 @@
   deprecated dialog mehods or deprecated dialog control methods.
 </para>
 <para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
   role="italic">WindowBase</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
@@ -1689,7 +1725,7 @@
 
 <section><title>getSystemMetrics</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>. Replace this method the functionally equivalent <link
+  This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method the functionally equivalent <link
   linkend="mthGetSystemMetricsClsDlgUtil">getSystemMetrics()</link> method of the <emphasis
   role="italic">.DlgUtil</emphasis>class.
 </para>
@@ -1707,13 +1743,13 @@
   deprecated dialog mehods or deprecated dialog control methods.
 </para>
 <para>
-  The following lists the <link linkend="ovvDeprecated">deprecated</link> methods of the <emphasis
+  The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
   role="italic">WindowExtensions</emphasis> class and how to replace those methods in ooDialog programs.
 </para>
 
 <section><title>absRect2LogRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
+  This method is <link linkend="apxDeprecated">deprecated</link> because it is incorrectly implemented and <link
   linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
   linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>() method.
 </para>
@@ -1721,49 +1757,49 @@
 
 <section><title>cursor_appStarting</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursor_arrow</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursor_cross</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursor_no</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursor_wait</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>cursorPos</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>logRect2AbsRect</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link> because it is incorrectly implemented and <link
+  This method is <link linkend="apxDeprecated">deprecated</link> because it is incorrectly implemented and <link
   linkend="ovvInaccurate">inaccurate</link>. Replace this method with the <link
   linkend="mthDlgUnit2pixel">dlgUnit2pixel</link>() method.
 </para>
@@ -1771,14 +1807,14 @@
 
 <section><title>restoreCursorShape</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>
 
 <section><title>setCursorPos</title>
 <para>
-  This method is <link linkend="ovvDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
+  This method is <link linkend="apxDeprecated">deprecated</link>.  Use the <link linkend="clsMouse">mouse</link>
   object methods directly.
 </para>
 </section>

@@ -212,19 +212,120 @@
 </section>
 
 
-<section id="tmthNewStatic"><title>newStatic (dialog object method)</title>
+<section id="tmthCreateBlackFrame"><title>createBlackFrame (UserDialog method)</title>
 <para>
-  Static objects can not be instantiated by the programmer from Rexx code. Rather an Static object is obtained
-  by using the <link linkend="mthNewStatic">newStatic</link>() method of the dialog <link
-  linkend="chpDialogObject">object</link>. The syntax is:
+  The <link linkend="mthCreateBlackFrame">createBlackFrame</link> method creates a black <link
+  linkend="figFramesRects">frame</link> static control in the dialog template. The rectangle is drawn with the current
+  window frame color, which is black in the default color scheme. This is the basic syntax:
+
 <programlisting>
 <![CDATA[
->>--newStatic(--id--)----------------------------><
-
+>>--createBlackFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)--------------><
+                       +--id--+                   +-,--style--+
 ]]>
 </programlisting>
+
 </para>
-</section>  <!-- End newStatic() [PlainBaseDialog method] -->
+</section>  <!-- End UserDialog::createBlackFrame() [UserDialog method] -->
+
+
+<section id="tmthCreateBlackRect"><title>createBlackRect (UserDialog method)</title>
+<para>
+  The <link linkend="mthCreateBlackRect">createBlackRect</link> method creates a black <link
+  linkend="figFramesRects">rectangle</link> static control in the dialog template. The rectangle is filled with the
+  current window frame color, which is black in the default color scheme. This is the basic syntax:
+
+<programlisting>
+<![CDATA[
+>>--createBlackRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
+                      +--id--+                   +-,--style--+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End UserDialog::createBlackRect() [UserDialog method] -->
+
+
+<section id="tmthCreateEtchedFrame"><title>createEtchedFrame (UserDialog method)</title>
+<para>
+  The <link linkend="mthCreateEtchedFrame">createEtchedFrame</link> method adds an etched <link
+  linkend="figFramesRects">frame</link> static control to the dialog template. This is the basic syntax:
+
+<programlisting>
+<![CDATA[
+>>--createEtchedFrame(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)------------><
+                        +--id-,-+                   +-,--style--+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End UserDialog::createEtchedFrame() [UserDialog method] -->
+
+
+<section id="tmthCreateEtchedHorizontal"><title>createEtchedHorizontal (UserDialog method)</title>
+<para>
+  The <link linkend="mthCreateEtchedHorizontal">createEtchedHorizontal</link> method adds an etched horizontal <link
+  linkend="figFramesRects">line</link> static control to the dialog.
+
+<programlisting>
+<![CDATA[
+>>--createEtchedHorizontal(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)-------><
+                             +--id-,-+                   +-,--style--+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End UserDialog::createEtchedHorizontal() [UserDialog method] -->
+
+
+<section id="tmthCreateEtchedVertical"><title>createEtchedVertical (UserDialog method)</title>
+<para>
+  The <link linkend="mthCreateEtchedVertical">createEtchedVertical</link> method adds an etched vertical <link
+  linkend="figFramesRects">line</link> static control to the dialog.
+
+<programlisting>
+<![CDATA[
+>>--createEtchedVertical(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)---------><
+                           +--id-,-+                   +-,--style--+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End UserDialog::createEtchedVertical() [UserDialog method] -->
+
+
+<section id="tmthCreateGrayFrame"><title>createGrayFrame (UserDialog method)</title>
+<para>
+  The <link linkend="mthCreateGrayFrame">createGrayFrame</link> method creates a gray <link
+  linkend="figFramesRects">frame</link> static control in the dialog template. The frame is drawn with the same color
+  as the screen background (desktop), which is gray in the default color scheme. This is the basic syntax:
+
+<programlisting>
+<![CDATA[
+>>--createGrayFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
+                      +--id--+                   +-,--style--+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End UserDialog::createGrayFrame() [UserDialog method] -->
+
+
+<section id="tmthCreateGrayRect"><title>createGrayRect (UserDialog method)</title>
+<para>
+  The <link linkend="mthCreateGrayRect">createGrayRect</link> method creates a gray <link
+  linkend="figFramesRects">rectangle</link> static control in the dialog template. The rectangle is filled with the
+  same color as the screen background (desktop), which is gray in the default color scheme. This is the basic syntax:
+
+<programlisting>
+<![CDATA[
+>>--createGrayRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)----------------><
+                     +--id--+                   +-,--style--+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End UserDialog::createGrayRect() [UserDialog method] -->
 
 
 <section id="tmthCreateStatic"><title>createStatic (UserDialog method)</title>
@@ -244,22 +345,7 @@
 </section>  <!-- End UserDialog::createStatic() [UserDialog method] -->
 
 
-<section id="tmthCreateStaticText"><title>createStaticText</title>
-<para>
-  The <link linkend="mthCreateStaticText">createStaticText</link> method creates a static text control in the dialog
-  template. The basic syntax is:
-<programlisting>
-<![CDATA[
-
->>-createStaticText(-+------+--x-,--y-+------+-+------+-+----------+-+--------+-)-><
-                     +-id-,-+         +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
-]]>
-</programlisting>
-</para>
-</section>  <!-- End UserDialog::createStaticText() [UserDialog method] -->
-
-
-<section id="tmthCreateStaticImage"><title>createStaticImage</title>
+<section id="tmthCreateStaticImage"><title>createStaticImage (UserDialog method)</title>
 <para>
   The <link linkend="mthCreateStaticImage">createStaticImage</link> method creates a static control that displays images
   in the dialog template. The basic syntax is:
@@ -274,23 +360,22 @@
 </section>  <!-- End UserDialog::createStaticImage() [UserDialog method] -->
 
 
-<section id="tmthCreateWhiteRect"><title>createWhiteRect</title>
+<section id="tmthCreateStaticText"><title>createStaticText (UserDialog method)</title>
 <para>
-  The <link linkend="mthCreateWhiteRect">createWhiteRect</link> method creates a white <link
-  linkend="figFramesRects">rectangle</link> static control in the dialog template. The rectangle is filled with the
-  current window background color, which is white in the default color scheme. The basic syntax is:
-
+  The <link linkend="mthCreateStaticText">createStaticText</link> method creates a static text control in the dialog
+  template. The basic syntax is:
 <programlisting>
 <![CDATA[
->>--createWhiteRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
-                      +--id--+                   +-,--style--+
+
+>>-createStaticText(-+------+--x-,--y-+------+-+------+-+----------+-+--------+-)-><
+                     +-id-,-+         +-,-cx-+ +-,-cy-+ +-,-style--+ +-,-text-+
 ]]>
 </programlisting>
 </para>
-</section>  <!-- End UserDialog::createWhiteRect() [UserDialog method] -->
+</section>  <!-- End UserDialog::createStaticText() [UserDialog method] -->
 
 
-<section id="tmthCreateWhiteFrame"><title>createWhiteFrame</title>
+<section id="tmthCreateWhiteFrame"><title>createWhiteFrame (UserDialog method)</title>
 <para>
   The <link linkend="mthCreateWhiteFrame">createWhiteFrame</link> method creates a white <link
   linkend="figFramesRects">frame</link> static control in the dialog template. The frame is drawn with the
@@ -306,120 +391,21 @@
 </section>  <!-- End UserDialog::createWhiteFrame() [UserDialog method] -->
 
 
-<section id="tmthCreateGrayRect"><title>createGrayRect</title>
+<section id="tmthCreateWhiteRect"><title>createWhiteRect (UserDialog method)</title>
 <para>
-  The <link linkend="mthCreateGrayRect">createGrayRect</link> method creates a gray <link
+  The <link linkend="mthCreateWhiteRect">createWhiteRect</link> method creates a white <link
   linkend="figFramesRects">rectangle</link> static control in the dialog template. The rectangle is filled with the
-  same color as the screen background (desktop), which is gray in the default color scheme. This is the basic syntax:
+  current window background color, which is white in the default color scheme. The basic syntax is:
 
 <programlisting>
 <![CDATA[
->>--createGrayRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)----------------><
-                     +--id--+                   +-,--style--+
-]]>
-</programlisting>
-
-</para>
-</section>  <!-- End UserDialog::createGrayRect() [UserDialog method] -->
-
-
-<section id="tmthCreateGrayFrame"><title>createGrayFrame</title>
-<para>
-  The <link linkend="mthCreateGrayFrame">createGrayFrame</link> method creates a gray <link
-  linkend="figFramesRects">frame</link> static control in the dialog template. The frame is drawn with the same color
-  as the screen background (desktop), which is gray in the default color scheme. This is the basic syntax:
-
-<programlisting>
-<![CDATA[
->>--createGrayFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
+>>--createWhiteRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
                       +--id--+                   +-,--style--+
 ]]>
 </programlisting>
-
 </para>
-</section>  <!-- End UserDialog::createGrayFrame() [UserDialog method] -->
+</section>  <!-- End UserDialog::createWhiteRect() [UserDialog method] -->
 
-
-<section id="tmthCreateBlackRect"><title>createBlackRect</title>
-<para>
-  The <link linkend="mthCreateBlackRect">createBlackRect</link> method creates a black <link
-  linkend="figFramesRects">rectangle</link> static control in the dialog template. The rectangle is filled with the
-  current window frame color, which is black in the default color scheme. This is the basic syntax:
-
-<programlisting>
-<![CDATA[
->>--createBlackRect(--+------+--x-,-y-,-cx-,-cy--+-----------+-)---------------><
-                      +--id--+                   +-,--style--+
-]]>
-</programlisting>
-
-</para>
-</section>  <!-- End UserDialog::createBlackRect() [UserDialog method] -->
-
-
-<section id="tmthCreateBlackFrame"><title>createBlackFrame</title>
-<para>
-  The <link linkend="mthCreateBlackFrame">createBlackFrame</link> method creates a black <link
-  linkend="figFramesRects">frame</link> static control in the dialog template. The rectangle is drawn with the current
-  window frame color, which is black in the default color scheme. This is the basic syntax:
-
-<programlisting>
-<![CDATA[
->>--createBlackFrame(--+------+--x-,-y-,-cx-,-cy--+-----------+-)--------------><
-                       +--id--+                   +-,--style--+
-]]>
-</programlisting>
-
-</para>
-</section>  <!-- End UserDialog::createBlackFrame() [UserDialog method] -->
-
-
-<section id="tmthCreateEtchedFrame"><title>createEtchedFrame</title>
-<para>
-  The <link linkend="mthCreateEtchedFrame">createEtchedFrame</link> method adds an etched <link
-  linkend="figFramesRects">frame</link> static control to the dialog template. This is the basic syntax:
-
-<programlisting>
-<![CDATA[
->>--createEtchedFrame(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)------------><
-                        +--id-,-+                   +-,--style--+
-]]>
-</programlisting>
-
-</para>
-</section>  <!-- End UserDialog::createEtchedFrame() [UserDialog method] -->
-
-
-<section id="tmthCreateEtchedHorizontal"><title>createEtchedHorizontal</title>
-<para>
-  The <link linkend="mthCreateEtchedHorizontal">createEtchedHorizontal</link> method adds an etched horizontal <link
-  linkend="figFramesRects">line</link> static control to the dialog.
-
-<programlisting>
-<![CDATA[
->>--createEtchedHorizontal(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)-------><
-                             +--id-,-+                   +-,--style--+
-]]>
-</programlisting>
-
-</para>
-</section>  <!-- End UserDialog::createEtchedHorizontal() [UserDialog method] -->
-
-
-<section id="tmthCreateEtchedVertical"><title>createEtchedVertical</title>
-<para>
-  The <link linkend="mthCreateEtchedVertical">createEtchedVertical</link> method adds an etched vertical <link
-  linkend="figFramesRects">line</link> static control to the dialog.
-
-<programlisting>
-<![CDATA[
->>--createEtchedVertical(--+-------+--x-,-y-,-cx-,-cy--+-----------+-)---------><
-                           +--id-,-+                   +-,--style--+
-]]>
-</programlisting>
-
-</para>
-</section>  <!-- End UserDialog::createEtchedVertical() [UserDialog method] -->
 
 <section id="tmthConnectStaticEvent"><title>connectStaticEvent (dialog object method)</title>
 <para>
@@ -437,72 +423,19 @@
 </section>  <!-- End connectStaticEvent() [EventNotification method] -->
 
 
-<section id="mthSetIcon"><title>setIcon</title>
-<indexterm><primary>setIcon</primary></indexterm>
-<indexterm><primary>Static class</primary><secondary>setIcon</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setIcon(--newImage--)------------------------><
-
-]]>
-</programlisting>
-
+<section id="tmthNewStatic"><title>newStatic (dialog object method)</title>
 <para>
-  Sets or removes the icon image for this static control. This method only effects the image type static control. For
-  instance an icon can not be set for a frame or rectangle.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>The single argument is:
-  <variablelist>
-    <varlistentry><term>newImage [required]</term>
-    <listitem>
-    <para>
-      An <link linkend="clsImage">.Image</link> object that represents the image for the control, or .nil to remove an
-      existing image.  The image object must be an icon image.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method returns the existing image object, if there is one.  Otherwise .nil is returned.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    The programmer should manage the image objects as he thinks best.  See the <link linkend="clsImage">.Image</link>
-    documentation for a discussion of this.  The static control does not make a copy of the icon, nor does it release an
-    icon image.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-    <para>
+  Static objects can not be instantiated by the programmer from Rexx code. Rather an Static object is obtained
+  by using the <link linkend="mthNewStatic">newStatic</link>() method of the dialog <link
+  linkend="chpDialogObject">object</link>. The syntax is:
 <programlisting>
 <![CDATA[
-icon = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
-if \ icon~isNull then do
-  oldIcon = iconControl~setIcon(icon)
-  ...
-end
-else do
-  -- handle error
-  ...
-end
+>>--newStatic(--id--)----------------------------><
+
 ]]>
 </programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End Static::setIcon() -->
+</para>
+</section>  <!-- End newStatic() [PlainBaseDialog method] -->
 
 
 <section id="mthGetIcon"><title>getIcon</title>
@@ -563,73 +496,6 @@ end
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Static::getIcon() -->
-
-
-<section id="mthSetImageClsStaticControl"><title>setImage</title>
-<indexterm><primary>setImage</primary><secondary>Static class</secondary></indexterm>
-<indexterm><primary>Static class</primary><secondary>setImage</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--setImage(--imageObject--)--------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Sets or removes the image for the static control. An image can only be set with the image type static
-  control.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>The arguments are:
-  <variablelist>
-    <varlistentry><term>imageObject [required]</term>
-    <listitem>
-    <para>
-      An <link linkend="clsImage">.Image</link> object that represents the image for the control, or .nil to remove an
-      existing image.  The image object can be any image type, including an icon image.
-    </para> </listitem></varlistentry>
-  </variablelist> </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    This method returns the existing image object, if there is one.  Otherwise .nil is returned.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Programmers should manage the image objects as they think best.  See the <link
-    linkend="clsImage">.Image</link> documentation for a discussion of this.  The static control does
-    not make a copy of the image, nor does it release an image.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-<programlisting>
-<![CDATA[
-image = .Image~getImage("Camera.bmp", .Image~toID(IMAGE_BITMAP))
-if \ image~isNull then do
-  oldImage = staticControl~setImage(image)
-  if oldImage \== .nil then oldImage~release
-  ...
-end
-else do
-  -- handle error
-  ...
-end
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End Static::setImage() -->
 
 
 <section id="mthGetImageClsStaticControl"><title>getImage</title>
@@ -709,6 +575,141 @@ end
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Static::getImage() -->
+
+
+<section id="mthSetIcon"><title>setIcon</title>
+<indexterm><primary>setIcon</primary></indexterm>
+<indexterm><primary>Static class</primary><secondary>setIcon</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setIcon(--newImage--)------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets or removes the icon image for this static control. This method only effects the image type static control. For
+  instance an icon can not be set for a frame or rectangle.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>The single argument is:
+  <variablelist>
+    <varlistentry><term>newImage [required]</term>
+    <listitem>
+    <para>
+      An <link linkend="clsImage">.Image</link> object that represents the image for the control, or .nil to remove an
+      existing image.  The image object must be an icon image.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the existing image object, if there is one.  Otherwise .nil is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    The programmer should manage the image objects as he thinks best.  See the <link linkend="clsImage">.Image</link>
+    documentation for a discussion of this.  The static control does not make a copy of the icon, nor does it release an
+    icon image.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+    <para>
+<programlisting>
+<![CDATA[
+icon = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
+if \ icon~isNull then do
+  oldIcon = iconControl~setIcon(icon)
+  ...
+end
+else do
+  -- handle error
+  ...
+end
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Static::setIcon() -->
+
+
+<section id="mthSetImageClsStaticControl"><title>setImage</title>
+<indexterm><primary>setImage</primary><secondary>Static class</secondary></indexterm>
+<indexterm><primary>Static class</primary><secondary>setImage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setImage(--imageObject--)--------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets or removes the image for the static control. An image can only be set with the image type static
+  control.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>The arguments are:
+  <variablelist>
+    <varlistentry><term>imageObject [required]</term>
+    <listitem>
+    <para>
+      An <link linkend="clsImage">.Image</link> object that represents the image for the control, or .nil to remove an
+      existing image.  The image object can be any image type, including an icon image.
+    </para> </listitem></varlistentry>
+  </variablelist> </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns the existing image object, if there is one.  Otherwise .nil is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Programmers should manage the image objects as they think best.  See the <link
+    linkend="clsImage">.Image</link> documentation for a discussion of this.  The static control does
+    not make a copy of the image, nor does it release an image.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+<programlisting>
+<![CDATA[
+image = .Image~getImage("Camera.bmp", .Image~toID(IMAGE_BITMAP))
+if \ image~isNull then do
+  oldImage = staticControl~setImage(image)
+  if oldImage \== .nil then oldImage~release
+  ...
+end
+else do
+  -- handle error
+  ...
+end
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End Static::setImage() -->
 
 
 </chapter>  <!-- End Static class -->

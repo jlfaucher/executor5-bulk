@@ -1626,8 +1626,9 @@ List control extended style flags:
 </programlisting>
 
 <para>
-  OLD METHOD this is not accurate.  The getPos method returns the coordinates of the upper left corner a window, either
-  a dialog or a dialog control, in dialog units.
+  The getPos method returns the coordinates of the upper left corner a window, either a dialog or a dialog control, in
+  dialog units. This method is not <link linkend="ovvInaccurate">accurate</link> because it uses the incorrect <emphasis
+  role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
@@ -1797,7 +1798,7 @@ self~move(px - 10, py - 10)
 ]]>
 </programlisting>
 
-<para>OLD METHOD RETURNS COORDINATES AS A STRING
+<para>
   Retrieves the dimensions of the rectangle surrounding the associated
 dialog or dialog control. The coordinates are relative to the upper left corner
 of the screen and are specified in screen pixels. The order is: left, top,
@@ -2460,8 +2461,11 @@ else
 ]]>
 </programlisting>
 
-<para>OLD METHOD this is not accurate.  The Move method moves the associated dialog or
-dialog control to the specified position. </para>
+<para>
+  The move method moves the associated dialog or dialog control to the specified position. This method is not <link
+  linkend="ovvInaccurate">accurate</link> because it uses the incorrect <emphasis role="italic">factorX</emphasis> and
+  <emphasis role="italic">factorY</emphasis> attributes.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:

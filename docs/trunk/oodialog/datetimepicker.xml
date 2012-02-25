@@ -553,6 +553,80 @@
 </variablelist>
 </section>  <!-- End DateTimePicker::getDateTime() -->
 
+<section id="mthGetIdealSizeClsDTP"><title>getIdealSize</title>
+<indexterm><primary>getIdealSize</primary><secondary>>DateTimePicker class</secondary></indexterm>
+<indexterm><primary>DateTimePicker class</primary><secondary>getIdealSize</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getIdealSize(--size--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Gets the size needed to display the date time picker control without clipping.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single required argument is:
+  <variablelist>
+    <varlistentry><term>size [required] [in / out]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsSize">Size</link> object in which the ideal size is returned.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true always because the method always succeeds.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example sets a longish format for a DTP control and then resizes the control to its ideal size:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose dtp
+
+  dtp = self~newDateTimePicker(IDC_DTP);
+
+  format = 'dddd MMMM d, yyyy - h:mm tt'
+  dtp~setFormat(format)
+
+  time = .DateTime~fromISODate('2011-03-01T10:00:00.000000')
+  dtp~setDateTime(time)
+
+  ideal = .Size~new
+  dtp~getIdealSize(ideal)
+
+  dtp~resizeTo(ideal)
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DateTimePicker::getIdealSize() -->
+
 <section id="mthGetInfo"><title>getInfo</title>
 <indexterm><primary>getInfo</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>getInfo</secondary></indexterm>
@@ -728,80 +802,6 @@ UpDown:      The NIL object
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DateTimePicker::getInfo() -->
-
-<section id="mthGetIdealSizeClsDTP"><title>getIdealSize</title>
-<indexterm><primary>getIdealSize</primary><secondary>>DateTimePicker class</secondary></indexterm>
-<indexterm><primary>DateTimePicker class</primary><secondary>getIdealSize</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getIdealSize(--size--)-----------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Gets the size needed to display the date time picker control without clipping.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single required argument is:
-  <variablelist>
-    <varlistentry><term>size [required] [in / out]</term>
-    <listitem>
-    <para>
-      A <link linkend="clsSize">Size</link> object in which the ideal size is returned.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns true always because the method always succeeds.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Requires <link linkend="ovvRequiredWindows">Windows Vista</link> or later.
-  </para>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example sets a longish format for a DTP control and then resizes the control to its ideal size:
-<programlisting>
-<![CDATA[
-
-::method initDialog
-  expose dtp
-
-  dtp = self~newDateTimePicker(IDC_DTP);
-
-  format = 'dddd MMMM d, yyyy - h:mm tt'
-  dtp~setFormat(format)
-
-  time = .DateTime~fromISODate('2011-03-01T10:00:00.000000')
-  dtp~setDateTime(time)
-
-  ideal = .Size~new
-  dtp~getIdealSize(ideal)
-
-  dtp~resizeTo(ideal)
-  ...
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End DateTimePicker::getIdealSize() -->
 
 <section id="mthGetMonthCal"><title>getMonthCal</title>
 <indexterm><primary>getMonthCal</primary></indexterm>
