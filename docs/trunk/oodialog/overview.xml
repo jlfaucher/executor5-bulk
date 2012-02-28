@@ -1579,7 +1579,7 @@ xPixels = xDialogUnits * self~FactorX
     linkend="deprecatedAdvancedControls">AdvancedControls</link> is deprecated.
   </para>
   <para>
-    In 4.2.0 the <link linkend="deprecatedMesageExtensions">MessageExtensions</link> class is also deprecated.
+    In 4.2.0 the <link linkend="deprecatedMessageExtensions">MessageExtensions</link> class is also deprecated.
     Connecting <link linkend="ovvEvents">event</link> notifications to a method in the Rexx dialog is such a fundamental
     part of using a dialog that the programmer should not need to do anything special. The methods to connect events are
     now all methods of the base classes where they are needed. The methods to connect dialog events are part of the base
@@ -1626,8 +1626,8 @@ xPixels = xDialogUnits * self~FactorX
     linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>, etc., have been added that accurately convert between pixels and
     dialog units. Methods that are inaccurate have had, matching, accurate, methods added to the ooDialog framework. The
     accurate <link linkend="mthGetRealPos">getRealPos</link> is added to match the inaccurate <link
-    linkend="mthGetPos">getPos</link> method. The accurate <link linkend="mthGetColumnWidthPX">getColumnWidhtPX</link>
-    is added to match the inaccurate <link linkend="mthGetColumnWidth"></link>. The accurate <link
+    linkend="mthGetPos">getPos</link> method. The accurate <link linkend="mthColumnWidthPX">columnWidhtPX</link> is
+    added to match the inaccurate <link linkend="mthColumnWidth">columnWidth</link>. The accurate <link
     linkend="mthMoveTo">moveTo</link> is added to match the inaccurate <link linkend="mthMove">move</link> method, and
     so on.
   </para>
@@ -1653,7 +1653,7 @@ xPixels = xDialogUnits * self~FactorX
     </listitem>
     <listitem>
     <para>
-      <link linkend="clsControlDlgInfo">ControlDlgInfo</link>: Used to initialize a
+      <link linkend="clsControlDialogInfo">ControlDialogInfo</link>: Used to initialize a
       <computeroutput>ControlDialog</computeroutput>.
     </para>
     </listitem>
@@ -1726,7 +1726,7 @@ xPixels = xDialogUnits * self~FactorX
     </listitem>
     <listitem>
     <para>
-      <link linkend="clsTabOwnerDlgInfo">TabOwnerDlgInfo</link>: Used to initialize a
+      <link linkend="clsTabOwnerDialogInfo">TabOwnerDialogInfo</link>: Used to initialize a
      <computeroutput>TabOwnerDialog</computeroutput> object.
     </para>
     </listitem>
@@ -1788,13 +1788,6 @@ xPixels = xDialogUnits * self~FactorX
       <link linkend="clsMenuBar">MenuBar</link>: A menu bar is often called the top-level menu. It is the bar positioned
       just below the title bar of an application window or a dialog. The <computeroutput>MenuBar</computeroutput> class
       implements the methods thar are common to all menu bars.
-    </para>
-    </listitem>
-    <listitem>
-    <para>
-      <link linkend="clsMenuTemplate">MenuTemplate</link>: Menus are created from menu templates in the same way that
-      dialogs are created from dialog templates. The <computeroutput>MenuTemplate</computeroutput> is a mixin class used
-      the the <computeroutput>UserMenuBar</computeroutput> to create an in-memory menu template.
     </para>
     </listitem>
     <listitem>
