@@ -69,12 +69,13 @@
 </para>
 <para>
   This book is primarily a reference that describes the classes and methods in detail. There is no tutorial contained
-  within the book. In ooDialog 4.2.0, a new document, the ooDialog User Guide has been started. However, it is currently
-  a work in progress, but does contain a tutorial section. There is little other documentation for the newcomer on how
-  to get started using ooDialog. Until the ooDialog User Guide gets fleshed, the sample ooDialog programs that accompany
-  the ooRexx distribution are probably the best source of help in getting started.  However, there are also numerous
-  snippets of example code in this book.  In addition the <link linkend="helpGettingHelp">getting help </link> section
-  of this reference lists a number of resources for the programmer with questions about ooDialog.
+  within the book. In ooDialog 4.2.0, a new document, the ooDialog User Guide has been started. It does contain a
+  tutorial section, but at this point it is still a work in progress. The User Guide is a good starting point for the
+  newcomer and will help to get started using ooDialog. Until the ooDialog User Guide gets completely fleshed out, the
+  sample ooDialog programs that accompany the ooRexx distribution are probably the best additional source of help for
+  learning how to use ooDialog. However, there are also numerous snippets of example code in this book. In addition the
+  <link linkend="helpGettingHelp">getting help </link> section of this reference lists a number of resources for the
+  programmer with questions about ooDialog.
 </para>
 </section>
 
@@ -1468,7 +1469,7 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Level 4.1.0</emphasis></term>
   <listitem>
   <para>
-    ooDialog at level 4.1.0 is the ooDialog shipped with ooRexx 4.1.0. This ooDialog contains all the bug fixes and
+    ooDialog at level 4.1.0 is the ooDialog shipped with ooRexx 4.1.1. This ooDialog contains all the bug fixes and
     enhancements that were included in that distribution. It is also provided as a separate download on SourceForge and
     also requires the installed ooRexx be 4.0.0 or later. This code is frozen, no changes will be made to the code. Bugs
     found in this code will be fixed in upcoming releases of ooDialog.
@@ -1486,7 +1487,7 @@ xPixels = xDialogUnits * self~FactorX
     This is the actively maintained ooDialog level. The level will be incremented in the future as circumstances
     dictate. It requires an installed ooRexx of 4.1.0 or later. New versions of ooDialog at the 4.2.0 level will be
     released as they become ready. It is available as a separate download from SourceForge and will also be the
-    ooDialog level shipped with future versions of ooRexx, (versions past ooRexx 4.1.0.)
+    ooDialog level shipped with future versions of ooRexx, (versions past ooRexx 4.1.1.)
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1517,24 +1518,23 @@ xPixels = xDialogUnits * self~FactorX
   </para>
   <para>
     In ooDialog 4.2.0 an effort has been made to unify the naming of methods and classes. To begin with, each dialog
-    control is now named with the same name as used by Microsoft. An example of this is the edit control. The name of
-    the control is <emphasis role="italic">edit</emphasis>. Rather than call an edit control an <emphasis
-    role="italic">entry line</emphasis>, it is called an edit control, just as Microsoft does. Another example is the
-    list-view and tree-view controls.  All dialog controls are controls. Adding <emphasis
-    role="italic">control</emphasis> to the control's name is redundent, especially when it is done in some cases and
-    not in other cases. A list-view is no longer called a ListControl, but rather it is called a ListView.
+    control is named the same as it is in the Microsoft <link linkend="defWindowsDoc">documentation</link>. An example
+    of this is the edit control. The name of the control is <emphasis role="italic">edit</emphasis>. Rather than call an
+    edit control an <emphasis role="italic">entry line</emphasis>, it is called an edit control. In addition, all dialog
+    controls are controls. Adding <emphasis role="italic">control</emphasis> to the control's name is redundent, and
+    confusing when it is done in some cases and not in other cases. A list-view is no longer called a ListControl, but
+    rather it is called a ListView, a tree-view is no longer called a TreeControl, it is called a TreeView.
   </para>
   <para>
-    In addtion, prior to 4.2.0, there were a large number of method names with the word <emphasis
-    role="italic">connect</emphasis> in them, with no rhyme or reason to the entire method name. To overcome this, a
-    unified naming scheme has been carried out. All methods with the name of a dialog control in them, now use the same
-    name as Microsoft gives the control. Method names with connect in them use a similar name for all methods that
-    connect similar things. Methods that connect a number of dialog control event notifications will have <emphasis
-    role="italic">event</emphasis> in the name. Mehtods that connect a data attribute will have <emphasis
-    role="italic">data</emphasis> in the name.
+    Prior to 4.2.0, there were a large number of method names with the word <emphasis role="italic">connect</emphasis>
+    in them, with no rhyme or reason to the entire method name. To overcome this, a unified naming scheme has been
+    carried out. All methods with the name of a dialog control in them use the same name as Microsoft's documentation.
+    Method names with connect in them use a similar name for all methods that connect similar things. Methods that
+    connect a data attribute will have <emphasis role="italic">data</emphasis> in the name. Methods that connect an
+    event notification will have <emphasis role="italic">event</emphasis> in the name, etc..
   </para>
   <para>
-    The old names of the methods are now <link linkend="apxDeprecated">deprecated</link>, but still work. In order to
+    The old names of these methods are now <link linkend="apxDeprecated">deprecated</link>, but still work. In order to
     avoid conflicts with old, deprecated method names, certain groups of methods use a new verb in the name. All methods
     that return an instantiated dialog control object begin with <emphasis role="italic">new</emphasis> and contain the
     control name. I.e., <emphasis role="italic">newTreeView</emphasis>, <emphasis role="italic">newEdit</emphasis>, or
@@ -1548,39 +1548,57 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     The primary areas that should be looked at for this unification are the <link
     linkend="sctCreateMethods">create</link> methods of the UserDialog, methods concerned with connecting <link
-    linkend="sctUnderstandingDataAttributes">data</link> attributes, <link
-    linkend="sctInstantiateControls">instantiating</link> dialog control objects, and with connecting event <link
+    linkend="sctUnderstandingDataAttributes">data</link> attributes, methods returning an <link
+    linkend="sctInstantiateControls">instantiated</link> dialog control object, and methods that connect event <link
     linkend="sctMethodsEventNotification">notifications</link>.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Simplification of Requires Statement</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Simplification of Requires Statements</emphasis></term>
   <listitem>
   <para>
-    Prior to ooDialog 4.2.0 there were three different ooDialog class files that were needed to be <emphasis
-    role="italic">required</emphasis> (using <computeroutput>::requires</computeroutput> directive) under different
-    circumstances. This was often confusing to users, and served no real purpose. In 4.2.0, there is only one <emphasis
-    role="italic">required</emphasis> file, <computeroutput>ooDialog.cls</computeroutput>.
+    Prior to ooDialog 4.2.0 there were three different ooDialog class files:
+    <computeroutput>oodPlain.cls</computeroutput>, <computeroutput>ooDialog.cls</computeroutput>, and
+    <computeroutput>oodWin32.cls</computeroutput>. An ooDialog program would need to <emphasis
+    role="italic">require</emphasis> (using a <computeroutput>::requires</computeroutput> directive) one or more of
+    these class files, depending on what parts of the ooDialog framework were going to be used. It was often confusing
+    to users as to which files needed to be required. Breaking the ooDialog framework into three peieces served no real
+    purpose. In 4.2.0, the three files have been combined into a single file. All ooDialog programs only need to
+    <emphasis role="italic">require</emphasis> the <computeroutput>ooDialog.cls</computeroutput> file.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Simplification of Inherited Classes</emphasis></term>
   <listitem>
   <para>
     Previously certain dialog controls were deemed <emphasis role="italic">advanced</emphasis> and to use those
-    controls, or even to use some features common to all controls the programmer need to inherit the
-    <computeroutput>AdvanceControls</computeroutput> class. This was often confusing, and again there was no real reason
-    for it. The <emphasis role="italic">advanced</emphasis> controls were only advanced in the previous millenium. To
-    simplify this area, the need to use the <computeroutput>AdvancedControls</computeroutput>,
-    <computeroutput>MessageExtensions</computeroutput>, and <computeroutput>PlainUserDialog</computeroutput> classes has
-    been eliminated. Any dialog can use any dialog control. All dialogs can connect any event notification available.
-    There is no longer any distinction between dialogs and plain dialogs.
+    controls, or even to use some features common to all controls, the programmer needed to inherit the
+    <computeroutput>AdvancedControls</computeroutput> class. This was often confusing, and again there was no real
+    reason for it. The <emphasis role="italic">advanced</emphasis> controls were only advanced in the previous
+    millenium. To simplify this, the need to inherit the <computeroutput>AdvancedControls</computeroutput> class has
+    been eliminated. The methods to work with all controls are part of the base <link
+    linkend="chpDialogObject">dialog</link> object. The <link
+    linkend="deprecatedAdvancedControls">AdvancedControls</link> is deprecated.
+  </para>
+  <para>
+    In 4.2.0 the <link linkend="deprecatedMesageExtensions">MessageExtensions</link> class is also deprecated.
+    Connecting <link linkend="ovvEvents">event</link> notifications to a method in the Rexx dialog is such a fundamental
+    part of using a dialog that the programmer should not need to do anything special. The methods to connect events are
+    now all methods of the base classes where they are needed. The methods to connect dialog events are part of the base
+    <link linkend="chpDialogObject">dialog</link>, methods to connect menu events are part of the <link
+    linkend="clsMenu">Menu</link> class, methods to connect mouse events are part of the <link
+    linkend="clsMouse">Mouse</link> class, etc..
+  </para>
+  <para>
+    ooDialog 4.2.0 no longer makes a distinction between a <emphasis role="italic">plain</emphasis> dialog and a
+    <emphasis role="italic">dialog</emphasis>. The <link linkend="deprecatedPlainUserDialog">PlainUserDialog</link> is
+    deprecated and no longer needed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">True Call Backs from the Windows Message Loop</emphasis></term>
   <listitem>
   <para>
-    This is probably the most significant change in ooDialog 4.2.0. Prior to 4.2.0 window message <link
+    This is probably the most significant change in ooDialog 4.2.0. Prior to 4.2.0, window message <link
     linkend="ovvEvents">event</link> notifications were put into a queue to be dispatched at some later point
-    to the connected method in the Rexx dialog. But, the operating system expects a reply to its event messages and the
+    to the connected method in the Rexx dialog. But, the operating system expects a reply to its event messages, and the
     reply allows the programmer to customize the behavior of the dialog. Because the programmer could not reply in any
     way to the operating system, ooDialog was severly restricted in what it could support, compared to a normal Windows
     application.
@@ -1605,10 +1623,13 @@ xPixels = xDialogUnits * self~FactorX
   </para>
   <para>
     To fix this problem new methods, such as <link linkend="mthDlgUnit2pixel">dlgUnit2pixel</link>, <link
-    linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>, and others, that accurately convert between pixels and dialog
-    units. Methods such as <link linkend="mthGetPos">getPos</link> and <link linkend="mthMove">move</link> that are
-    inaccurate have, matching, accurate methods added such as <link linkend="mthGetRealPos">getRealPos</link> and <link
-    linkend="mthMoveTo">moveTo</link>.
+    linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>, etc., have been added that accurately convert between pixels and
+    dialog units. Methods that are inaccurate have had, matching, accurate, methods added to the ooDialog framework. The
+    accurate <link linkend="mthGetRealPos">getRealPos</link> is added to match the inaccurate <link
+    linkend="mthGetPos">getPos</link> method. The accurate <link linkend="mthGetColumnWidthPX">getColumnWidhtPX</link>
+    is added to match the inaccurate <link linkend="mthGetColumnWidth"></link>. The accurate <link
+    linkend="mthMoveTo">moveTo</link> is added to match the inaccurate <link linkend="mthMove">move</link> method, and
+    so on.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Dialog Classes</emphasis></term>
@@ -1628,6 +1649,12 @@ xPixels = xDialogUnits * self~FactorX
       <link linkend="clsControlDialog">ControlDialog</link>: Control dialogs work well as a dialog within a top-level
       dialog. In essence, a <computeroutput>ControlDialog</computeroutput> functions as a dialog <emphasis
       role="italic">control</emphasis> within the top-level dialog.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsControlDlgInfo">ControlDlgInfo</link>: Used to initialize a
+      <computeroutput>ControlDialog</computeroutput>.
     </para>
     </listitem>
     <listitem>
@@ -1652,14 +1679,13 @@ xPixels = xDialogUnits * self~FactorX
     <para>
       <link linkend="clsPropertySheetDialog">PropertySheetDialog</link>: The
       <computeroutput>PropertySheetDialog</computeroutput> is an implementation of the Windows property sheet and the
-      Windows wizards.
+      Windows wizard. Unlike most ooDialog dialogs, the operating system does most of the management of these dialogs.
     </para>
     </listitem>
     <listitem>
     <para>
       <link linkend="clsPropertySheetPage">PropertySheetPage</link>: <computeroutput>PropertySheetPage</computeroutput>
-      dialogs are used as the pages of property sheets and wizards.
-    </para>
+      dialogs are used as the pages of property sheets and wizards.</para>
     </listitem>
     <listitem>
     <para>
@@ -1679,67 +1705,318 @@ xPixels = xDialogUnits * self~FactorX
       on the <computeroutput>UserDialog</computeroutput> dialog.
     </para>
     </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsManagedTab">ManagedTab</link>: Managed tabs are used by the
+      <computeroutput>TabOwnerDialog</computeroutput> class. A <computeroutput>ManagedTab</computeroutput> reflects a
+      single tab control in the tab owner dialog and contains the information the owner dialog needs to manage the
+      pages in the tab control.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsTabOwnerDialog">TabOwnerDialog</link>: Control dialogs, (the
+      <computeroutput>ControlDialog</computeroutput> class,) are very useful as the pages of a tab control. The
+      programmer can manage the tab control and its pages herself. However, this includes quite a bit of work,
+      instantiating the page dialogs at the proper time, sizing, positioning, and showing the pages properly, etc.. A
+      <computeroutput>TabOwnerDialog</computeroutput> does most of this management itself, allowing the programmer to
+      concentrate on other areas. The tab owner dialog is similar in ways to the property sheet dialog, but removes some
+      of the restrictions of the <computeroutput>PropertySheetDialog</computeroutput> class.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsTabOwnerDlgInfo">TabOwnerDlgInfo</link>: Used to initialize a
+     <computeroutput>TabOwnerDialog</computeroutput> object.
+    </para>
+    </listitem>
     </itemizedlist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Dialog Control Classes</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    Three new dialog control classes are available in ooDialog 4.2.0:
+    <itemizedlist>
+    <listitem>
+    <para>
+      <link linkend="clsDateTimePicker">DateTimePicker</link>: A control that provides a simple interface with which to
+      exchange date and time information with the user.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsMonthCalendar">MonthCalendar</link>: A control that provides an easy to use interface which
+      allows users to select or enter dates. The control has the appearence of a typical calendar.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsUpDown">UpDown</link>: A control that consists of a pair of arrow buttons that the user can
+      click to increment or decrement a value, such as a scroll position or a number displayed in a companion control.
+    </para>
+    </listitem>
+    </itemizedlist>
+  </para>
+  <para>
+    The new control classes are fully implemented so that all the functionality of the control, up through Windows 7, is
+    available to the ooDialog programmer.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Menu Classes</emphasis></term>
+  <listitem>
+  <para>
+    In ooDialog 4.2.0 menus are elevated to class objects. The menu classes more fully implement the functionality of
+    Windows menus, rather than just a small subset of the functionality as was done in ooDialog prior to 4.2.0. They
+    also make it easier for the programmer to create the menus needed for an application. These menu classes have been
+    added:
+    <itemizedlist>
+    <listitem>
+    <para>
+      <link linkend="clsBinaryMenuBar">BinaryMenuBar</link>: A <computeroutput>MenuBar</computeroutput> created from a
+      binary resource, or by the programmer with the easy to use menu class methods.
+    </para>
+    <listitem>
+    <para>
+      <link linkend="clsMenu">Menu</link>: The <computeroutput>Menu</computeroutput> class implements the large number
+      of methods that are the same for all menus.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsMenuBar">MenuBar</link>: A menu bar is often called the top-level menu. It is the bar positioned
+      just below the title bar of an application window or a dialog. The <computeroutput>MenuBar</computeroutput> class
+      implements the methods thar are common to all menu bars.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsMenuTemplate">MenuTemplate</link>: Menus are created from menu templates in the same way that
+      dialogs are created from dialog templates. The <computeroutput>MenuTemplate</computeroutput> is a mixin class used
+      the the <computeroutput>UserMenuBar</computeroutput> to create an in-memory menu template.
+    </para>
+    </listitem>
+    </itemizedlist>
+    <listitem>
+    <para>
+      <link linkend="clsPopupMenu">PopupMenu</link>: A menu bar contains submenus, and submenus can also contain
+      submenus. Submenus go by various names, including drop down menus, popup menus, context menus, and shortcut menus.
+      The <computeroutput>PopupMenu</computeroutput> class is an implementation of submenus, no matter which name it
+      goes by. Popup menus can be inserted into menu bars, or other submenus. They are also used as context menus. The
+      <computeroutput>PopupMenu</computeroutput> class implements the functionality of submenus, including the
+      functionality of true Windows context menus.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsScriptMenuBar">ScriptMenuBar</link>: A <computeroutput>MenuBar</computeroutput> whose menu
+      template is created by parsing a resource script, (usually a .rec file.) Similar to a <link
+      linkend="clsRcDialog">RcDialog</link>.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsSystemMenu">SystemMenu</link>: The <computeroutput>SystemMenu</computeroutput> class represents
+      the Windows <emphasis role="italic">system</emphasis> menu, which is also known as the <emphasis
+      role="italic">window</emphasis> menu or the <emphasis role="italic">control</emphasis> menu.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsUserMenuBar">UserMenuBar</link>: A <computeroutput>MenuBar</computeroutput> whose menu
+      template is created by the programmer using the methods defined by the class. Similar to a <link
+      linkend="clsUserDialog">UserDialog</link>.
+    </para> </listitem>
+    </itemizedlist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Other New Classes</emphasis></term>
+  <listitem>
+  <para>
+    There are a number of new utility and helper classes available in ooDialog 4.2.0:
+    <itemizedlist>
+    <listitem>
+    <para>
+      <link linkend="clsApplicationManager">ApplicationManager</link>: Used to set application wide defaults and to
+      perform tasks that effect the entire ooDialog application.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsDayState">DayState</link>: Represents the state of each day in a month. A helper class for the
+      <link linkend="clsMonthCalendar">MonthCalendar</link> control.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsDayStates">DayStates</link>: A sequential collection of
+      <computeroutput>DayState</computeroutput> objects. A helper class for the
+      <link linkend="clsMonthCalendar">MonthCalendar</link> control.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsMouse">Mouse</link>: Provides all the methods to work with and manipulate the mouse and the
+      mouse cursor.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsOS">OS</link>: Rrovides methods for extracting information about the operating system the
+      program is currently executing on.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsSM">SM</link>: The attributes of this class reflect the system metrics or configuration
+      settings of the computer the Rexx program is running on.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsSPI">SPI</link>: The attributes of this class reflect the system-wide parameters of the
+      computer the Rexx program is running on
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsVK">VK</link>: The <computeroutput>VK</computeroutput> class allows the programmer to use
+      symbolic names in a program instead of the numeric value of the virtual key codes. Unlike the
+      <computeroutput>VirtualKeyCodes</computeroutput> class in <computeroutput>winsystm.cls</computeroutput> the
+      <computeroutput>VK</computeroutput> class has constants for every virtual key code. Another advantage of the
+      <computeroutput>VK</computeroutput> class is that the programmer does not need to require
+      <computeroutput>winsystm.cls</computeroutput> in his programs.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="clsWindow">Window</link>: The <computeroutput>Window</computeroutput> class allows the invocation
+      of methods common to every window.
+    </para>
+    </listitem>
+    </itemizedlist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">New Methods on Existing Classes</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    Many, many new methods have been added to both the dialog and the dialog control classes. Too many to list
+    individually. The documentation for each class has been expanded to include a complete method table for the class at
+    the start of the class documentation. The reader can glance through the method table to see which methods the class
+    has, which will give her an idea of the new methods available to that class.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">New Classes</emphasis></term>
+  <varlistentry><term><emphasis role="bold">New Utility Objects</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    ooDialog 4.2.0 includes three new utility objects.
+    <itemizedlist>
+    <listitem>
+    <para>
+      <link linkend="dotApplication">.application</link> object: The <computeroutput>.application</computeroutput>
+      object is an instance of the <link linkend="clsApplicationManager">ApplicationManager</link> class that is present
+      in all ooDialog programs. It is used by the programmer to manage application wide settings, behaviour, and
+      constants.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="dotConstdir">.constdir</link> object: Part of the <link
+      linkend="ovvSymbolicIDMechanism">mechanism</link> allowing the use of <link linkend="defSymbolicID">symbolic</link>
+      IDs in ooDialog programs. The <computeroutput>.constDir</computeroutput> is the most efficient way to use
+      symbolic IDs.
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="dotSystemErrorCode">.systemErrorCode</link> object: Can be used, at times, to obtain additional
+      information when the invocation of a method generates an operating system error.
+    </para>
+    </listitem>
+    </itemizedlist>
   </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Use of Objects as Arguments and Return Values</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    Prior to ooRexx 4.0.0, all arguments to and returns from external functions had to be strings. Although stems could
+    also be used, working with them was difficult and inflexible within the external function implmentation. With the
+    advent of ooRexx 4.0.0, it became very easy to use any ooRexx object as an argument to, or return from, the ooDialog
+    external library implementation. In addition, instance methods can be implemented directory in the external library.
+  </para>
+  <para>
+    In the ooDialog released with ooRexx 4.0.0 through ooRexx 4.1.1, a very limited use of passing and returning objects
+    was begun. In ooDialog 4.2.0 extensive use of passing objects is present in the new classes and methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Raising of Syntax Conditions</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    Up through ooDialog 3.2.0 there was very little error checking and reporting in the ooDialog framework. Because of
+    this many things appeared to the user to simply not work. In many cases, the programmer was using incorrect
+    arguments to methods, or using the method incorrectly. In addition, detectable errors reported by the operating
+    system were simply ignored.
+  </para>
+  <para>
+    In ooDialog 4.2.0 syntax conditions are raised when incorrect usage is detected. There is also the new <link
+    linkend="dotSystemErrorCode">.systemErrorCode</link> object which is set when the operating system reports an error.
+    This is of great benefit to the programmer, expecially when writing new programs. Incorrect usage, pointed out by
+    syntax conditions raised the first time the programmer tests his code, allow the programmer to quickly fix mistakes
+    she is making in her code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Completely New Example Programs</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    There are many completely new example programs in ooDialog 4.2.0. Many of the new programs demonstrate the new
+    features in ooDialog 4.2.0. The intent with the new examples is to have a range of programs from the simple to the
+    more complex, giving help to newcomers and providing examples of how to move on to more complex real-world
+    applications. The ooDialog programmer should be sure to look through the many programs under the
+    <computeroutput>samples\oodialog</computeroutput> directory tree.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Updating of Existing Example Programs</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
-  </para>
-  </listitem></varlistentry>
+    Almost every existing ooDialog example program has been updated. Deprecate methods and classes have been removed. An
+    attempt to better comment the examples has been made. Some examples used <emphasis role="italic">internal use
+    only</emphasis> methods and this has been corrected. In other examples, the use of questionable techniques has been
+    removed. Even experienced ooDialog programmers can probably gain insight from looking through the existing examples
+    they have seen in previous ooDialog releases.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Revision of the Documentation</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    The ooDialog reference, this book, has been almost completely rewritten. The old reference was often incomplete,
+    misleading, and in many cases simply wrong. A large effort has been made to expand incomplete areas and to correct
+    misleading or wrong information. That effort is not 100% complete and will need to be finished in future releases.
+    However, the documentation is very much improved. If there were areas in the previous documentation not well
+    undstood, the ooDialog programmer is encouraged to reread those sections in this document.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Deprecated Classes and Methods</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    ooDialog 4.2.0 has introduced the concept of <emphasis role="italic">deprcated</emphasis> methods and classes. All
+    <link linkend="apxDeprecated">deprecated</link> classes and methods are listed in <emphasis role="italic">Appendix
+    A</emphasis>. The depreacted classes and methods are no longer documented. When writing new code, the programmer
+    should not use anything deprectated. Wherever possible in existing code, deprecated classes and methods should be
+    replaced.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Backwards Compatibility</emphasis></term>
   <listitem>
   <para>
-    xxx and xxx sss.
+    The ooDialog implementation has been largely rewritten and refactored. Every effort has been made to maintain
+    backwards compatibility. If a case is found where backwards compatibility is broken, it is likely that it was not
+    intentional, and the case should be brought up with the developers. The <emphasis role="italic">Getting <link
+    linkend="helpGettingHelp">Help</link> and Submitting Feedback</emphasis> section of this book contains a list of
+    numerous venues through which feedback can be submitted, or questions raised.
+  </para>
+  <para>
+    There may be a very few areas where maintaining backwards compatibility is not consistent with the intent to move
+    ooDialog past Windows 3.1 and on to Windows 7. If such an area is discovered, the ooDialog developers welcome any
+    reasoned discussion concerning how to deal with that area. Ultimately, the individual programmer may have to decide
+    if the benfits of moving ooDialog into the 21st century outweigh any effort to change existing code.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1748,13 +2025,28 @@ xPixels = xDialogUnits * self~FactorX
 <section id="sctOODialogFuture"><title>Future</title>
 <indexterm><primary>future directions</primary></indexterm>
 <para>
-  xxx and xxx sss.
+  The current future direction of ooDialog is to update ooDialog to take full advantage of the Windows 7 functionality
+  for graphical interfaces, related to dialogs. This includes adding more of the missing dialog controls, such as tool
+  tips, status bars, ip address controls, etc.. It also includes updating existing dialog controls to the full
+  functionality available to them in Windows 7.
 </para>
 <para>
-  xxx and xxx sss.
+  There are a number of new classes introduced in ooDialog 4.0.0 through 4.2.0 that are intended to be enhanced in
+  furture releases. The <link linkend="clsImage">Image</link>, <link linkend="clsTabOwnerDialog">TabOwnerDialog</link>,
+  and <link linkend="clsImageList">ImageList</link>, etc.. Work will continue on extending those types of classes. In
+  addition work will be done on implementing features requested by ooDialog programmers.
 </para>
 <para>
-  xxx and xxx sss.
+  Work will continue on improving the ooDialog reference manual. Sections that were not reviewed for this release will
+  be reviewed and corrected. It is intended that the ooDialog User Guild will continue to be improved.
+</para>
+<para>
+  The users of ooDialog can take part in directing the future of ooDialog through discussion on the Users Mailing List
+  and by opening requests for enhancements at the SourecForge ooRexx project. Users can subscribe to the oorexx-users
+  mailing list at <ulink url="http://sourceforge.net/mail/?group_id=119701"> <citetitle>ooRexx Mailing List
+  Subscriptions</citetitle></ulink> page. Requests for ooDialog features can be made at the
+  <ulink url="http://sourceforge.net/tracker/?group_id=119701&amp;atid=684733"><citetitle>ooRexx Feature
+  Requests</citetitle></ulink> page.
 </para>
 </section>
 
