@@ -136,16 +136,16 @@
 </para>
 
 <variablelist>
-  <varlistentry id="entMenuItemIdentifier"><term><emphasis role="bold">Menu-Item Identifier</emphasis></term>
+  <varlistentry id="entMenuItemIdentifier"><term><emphasis role="bold">Menu Item Identifier</emphasis></term>
   <listitem>
   <para>
-    Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu-item identifier.
+    Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu item identifier.
     These numbers are essentially the same as any other resource <link linkend="defResourceID">ID</link> used in
-    ooDialog. The Rexx programmer can use numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link> IDs for
-    menu-item identifier's, in the same way as for other resource IDs.
+    ooDialog. The Rexx programmer can use numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link> IDs for menu
+    item identifier's, in the same way as for other resource IDs.
   </para>
   <para>
-    All menus assign menu-item identifiers to command items and submenus. ooDialog uses what the Windows operating
+    All menus assign menu item identifiers to command items and submenus. ooDialog uses what the Windows operating
     system calls <emphasis role="italic">extended</emphasis> menus. Extended menus also assign identifiers to
     separators. Identifiers are used for menu command <link linkend="sctMenuCommandEvents">events</link>. In addition, a
     menu item can be specified using its identifier in method invocations. For example, to <link
@@ -157,7 +157,7 @@
     specified position
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Menu-Item Position</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Menu Item Position</emphasis></term>
   <listitem>
   <para>
     In addition to having a unique identifier, each menu item in a menu bar or menu has a unique position value.
@@ -183,14 +183,14 @@
 </para>
 </section>
 
-<section id="sctMenuSymbolicIDs"><title>Symbolic Menu-item IDs</title>
+<section id="sctMenuSymbolicIDs"><title>Symbolic Menu Item IDs</title>
 <para>
-  Menu-item <link linkend="entMenuItemIdentifier">identifiers</link> are essentially resource <link
-  linkend="defResourceID">IDs</link>. The programmer can use symbolic <link linkend="defSymbolicID">IDs</link> for
-  menu-item IDs rather than numeric IDs for any argument in a menu object method that requires a menu-item ID. However,
+  Menu item <link linkend="entMenuItemIdentifier">identifiers</link> are essentially resource <link
+  linkend="defResourceID">IDs</link>. The programmer can use symbolic <link linkend="defSymbolicID">IDs</link> for menu
+  item IDs rather than numeric IDs for any argument in a menu object method that requires a menu item ID. However,
   to do so, the programmer <emphasis role="italic">must</emphasis> use the global <link
   linkend="dotConstDir">.constDir</link>. If the global <computeroutput>.constDir</computeroutput> is not used, then all
-  menu-item ID arguments must be numeric.
+  menu item ID arguments must be numeric.
 </para>
 </section>
 
@@ -262,7 +262,7 @@
 
 </section>
 
-<section id="sctMenuCommandEventHandlers"><title>Menu Command Event Handlerss</title>
+<section id="sctMenuCommandEventHandlers"><title>Menu Command Event Handlers</title>
 <indexterm><primary>menu object</primary><secondary>command event handlers</secondary></indexterm>
 <para>
   To be filled in --- .
@@ -524,11 +524,7 @@
 </para>
 </section>
 
-<section id="sctMenuClassMethods"><title>Class Methods</title>
-<indexterm><primary>class methods</primary><secondary>menu object</secondary></indexterm>
-<indexterm><primary>menu object</primary><secondary>class methods</secondary></indexterm>
-
-<section id="mthConnectCommandEventCls"><title>connectCommandEvent</title>
+<section id="mthConnectCommandEventCls"><title>connectCommandEvent (Class method)</title>
 <indexterm><primary>connectCommandEvent</primary><secondary>menu object</secondary><tertiary>class method</tertiary></indexterm>
 <indexterm><primary>menu object</primary><secondary>connectCommandEvent</secondary><tertiary>class method</tertiary></indexterm>
 <programlisting>
@@ -678,12 +674,7 @@
 </variablelist>
 </section>  <!-- End Menu::connectCommandEvent() -->
 
-</section>  <!-- End Section: Class Methods -->
-
-<section id="sctMenuAttributes"><title>Attributes</title>
-<indexterm><primary>menu object</primary><secondary>attributes</secondary></indexterm>
-
-<section id="atrHMenu"><title>hMenu</title>
+<section id="atrHMenu"><title>hMenu (Attribute)</title>
 <indexterm><primary>hMenu</primary></indexterm>
 <indexterm><primary>menu object</primary><secondary>hMenu</secondary></indexterm>
 <programlisting>
@@ -729,7 +720,7 @@
 </variablelist>
 </section>  <!-- End Menu::hMenu() [attribute]  -->
 
-<section id="atrWID"><title>wID</title>
+<section id="atrWID"><title>wID (Attribute)</title>
 <indexterm><primary>wID</primary></indexterm>
 <indexterm><primary>menu object</primary><secondary>wID</secondary></indexterm>
 <programlisting>
@@ -775,8 +766,6 @@
 </variablelist>
 </section>  <!-- End Menu::wID() [attribute]  -->
 
-
-</section>  <!-- End Section: Attributes -->
 
 <section id="mthGetCountClsMenu"><title>getCount</title>
 <indexterm><primary>getCount</primary><secondary>Menu class</secondary></indexterm>
@@ -3858,20 +3847,20 @@
 <entry>Attaches the menu bar to the specified dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthIsAttached">isAttached</link></entry>
-<entry>.</entry>
-</row>
-<row>
 <entry><link linkend="mthDetach">detach</link></entry>
 <entry>.</entry>
 </row>
 <row>
-<entry><link linkend="mthReplace">replace</link></entry>
+<entry><link linkend="mthIsAttached">isAttached</link></entry>
 <entry>.</entry>
 </row>
 <row>
 <entry><link linkend="mthRedrawClsMenu">redraw</link></entry>
 <entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthReplace">replace</link></entry>
+<entry>If this menu bar is attached to a dialog, replaces this menu bar with the specified menu bar.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -3889,8 +3878,7 @@
 </programlisting>
 
 <para>
-  Attaches this menu bar to the specified dialog/  If the dialog already has a menu bar attached to it, this method will
-  replace that menu bar with this menu bar.
+  Attaches this menu bar to the specified dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3915,7 +3903,14 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A menu bar can only be attached to one dialog and a dialog can only have one menu bar attached to it. If either the
+    menu bar is already attached to a dialog, or the dialog already has a menu bar attached to it, this method fails.
+  </para>
+  <para>
+    If this menu bar is already attached to a dialog and needs to be attached to a differnt dialog, first use the <link
+    linkend="mthDetach">detach</link> method to detach it. If the dialog already has a menu bar attached to it and this
+    menu bar needs to be attached to that dialog get a reference to the dialog's current menu bar and use the <link
+    linkend="mthReplace">replace</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3938,59 +3933,32 @@ return 0
 <indexterm><primary>menu bar object</primary><secondary>isAttached</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isAttached(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--isAttached-----------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if this menu bar is currently attached to a dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method takes no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns true if this menu bar is attached to a dialog, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. There are no errors that could changes
+    the value from 0.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4064,24 +4032,24 @@ return 0
 <indexterm><primary>menu bar object</primary><secondary>replace</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--replace(--+--------+--)---------------------------------------------><
-              +--type--+
+>>--replace(--newMenuBar--)----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  If this menu bar is attached to a dialog, the menu bar for the dialog is replaced by the specified menu bar.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single required argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>newMenuBar [required]</term>
     <listitem>
     <para>
-      xx
+      The new menu bar for the dialog this menu bar is attached to.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4090,7 +4058,8 @@ return 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the menu bar that was previously attached to the dialog, which of course is this menu bar. On error the
+    <computeroutput>.Nil</computeroutput> object is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -4102,18 +4071,40 @@ return 0
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> on error. The system error code is set this way
+    in addition to what the OS might set:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_INVALID_FUNCTION (1)</emphasis></term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> This menu bar is not attached to a dialog.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from a program that uses 2 completely different menu bars depending on if the application is in
+    edit or view mode. When the mode is switched, the menu bar is replaced by the appropriate one for the mode:
 <programlisting>
 <![CDATA[
+
+::method onToggleMode
+  expose fileMenu viewMenu currentMode
+
+  if currentMode == 'Edit' then do
+    fileMenu~replace(viewMenu)
+    currentMode = 'View'
+  end
+  else do
+    viewMenu~replace(fileMenu)
+    currentMode = 'Edit'
+  end
 
 ]]>
 </programlisting>
@@ -4228,18 +4219,24 @@ return 0
 </programlisting>
 
 <para>
-  Instantiates a new <computeroutput>BinaryMenuBar</computeroutput> object. The menu template can be obtained from a
-  compiled binary resource, or an empty binary menu template is constructed in memory.  When an empty template is
-  constructed in memory, the programmer can add to the template dynamically using the menu object methods such as <link
-  linkend="mthInsertPopup">insertPopup</link>, <link linkend="mthInsertItem">insertItem</link>, etc.. Dynamically
-  constructing a menu template in this way is much less error prone than using the <link
+  Instantiates a new <computeroutput>BinaryMenuBar</computeroutput> object.
+</para>
+<para>
+  The new menu bar is initiallly empty if <emphasis role="italic">menuSrc</emphasis> is omitted. If <emphasis
+  role="italic">menuSrc</emphasis> is not omitted, the menu template is obtained from the compiled binary resource
+  pointed by <emphasis role="italic">menuSrc</emphasis>.
+</para>
+<para>
+  When an empty menu bar is instantiate, the programmer can add to the menu dynamically using menu object methods such
+  as <link linkend="mthInsertPopup">insertPopup</link>, <link linkend="mthInsertItem">insertItem</link>, etc..
+  Dynamically constructing a menu in this way is much less error prone than using the <link
   linkend="clsUserMenuBar">UserMenuBar</link> class.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    All arguments are optional and are:
+    The arguments are:
   <variablelist>
     <varlistentry><term>menuSrc [optional]</term>
     <listitem>
@@ -4251,7 +4248,7 @@ return 0
       <varlistentry><term><emphasis role="bold">.nil:</emphasis></term>
       <listitem>
       <para>
-        Constructs an empty menu template is memory. This is identical to omitting the arugmen altogether.
+        Constructs an empty menu template is memory. This is identical to omitting the arugment altogether.
       </para>
       </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">.ResDialog:</emphasis></term>
@@ -4259,6 +4256,14 @@ return 0
       <para>
         The menu template is located in the resource only DLL of the <link linkend="clsResDialog">ResDialog</link>
         object specified. In this case, the resource <emphasis role="italic">id</emphasis> argument is required.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">.String:</emphasis></term>
+      <listitem>
+      <para>
+        The file name of an executable module containing the menu template. When this source of the menu template is
+        used, the resource <emphasis role="italic">id</emphasis> argument is required.  An executable module is either a
+        DLL, or a .exe file, both of which can contain compiled resources.
       </para>
       </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">.Pointer</emphasis></term>
@@ -4271,38 +4276,34 @@ return 0
         other ways to get a menu handle.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">.String:</emphasis></term>
-      <listitem>
-      <para>
-        The file name of an executable module containing the menu template. When this source of the menu template is
-        used, the resource <emphasis role="italic">id</emphasis> argument is required.  An executable module is either a
-        DLL, or a .exe file, both of which can contain compiled resources.
-      </para>
-      </listitem></varlistentry>
     </variablelist>
     </listitem></varlistentry>
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the menu bar, may be <link linkend="sctMenuSymbolicIDs">symbolic</link> or numeric. This
+      argument is required if <emphasis role="italic">menuSrc</emphasis> is either a
+      <computeroutput>.ResDialog</computeroutput> or <computeroutput>.String</computeroutput> object.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>hID [optional]</term>
     <listitem>
     <para>
-      xx
+      The context help resource ID of the menu bar, may be <link linkend="sctMenuSymbolicIDs">symbolic</link> or
+      numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>attachTo [optional]</term>
     <listitem>
     <para>
-      xx
+      If specified, attach this menu to the specified dialog. If used, <emphasis role="italic">attachTo</emphasis> has
+      to be a <link linkend="chpDialogObject">dialog</link> object. If it is not, an exception is raised.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>auto [optional]</term>
     <listitem>
     <para>
-      xx
+      If true turn on auto connection. The default is false.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">mName [optional]</emphasis></term>

@@ -45,7 +45,7 @@
 <indexterm><primary>overview</primary></indexterm>
 <para>
   ooDialog is a <emphasis role="italic">framework</emphasis> that aids ooRexx programmers in adding graphical elements
-  to their Rexx progamms. The framework provides the base infrastructure, through a number of classes, that the
+  to their Rexx programs. The framework provides the base infrastructure, through a number of classes, that the
   programmer builds on to quickly produce Windows dialogs. This book is a reference to the ooDialog classes, methods,
   and utilities that make up the base infrastructure.
 </para>
@@ -71,10 +71,10 @@
   This book is primarily a reference that describes the classes and methods in detail. There is no tutorial contained
   within the book. In ooDialog 4.2.0, a new document, the ooDialog User Guide has been started. It does contain a
   tutorial section, but at this point it is still a work in progress. The User Guide is a good starting point for the
-  newcomer and will help to get started using ooDialog. Until the ooDialog User Guide gets completely fleshed out, the
-  sample ooDialog programs that accompany the ooRexx distribution are probably the best additional source of help for
-  learning how to use ooDialog. However, there are also numerous snippets of example code in this book. In addition the
-  <link linkend="helpGettingHelp">getting help </link> section of this reference lists a number of resources for the
+  newcomer and will help to get started using ooDialog. In addition to the ooDialog User Guide, the sample ooDialog
+  programs that accompany the ooRexx distribution are probably the best additional source of help for learning how to
+  use ooDialog. However, there are also numerous snippets of example code in this book. In addition the <link
+  linkend="helpGettingHelp">getting help </link> section of this reference lists a number of resources for the
   programmer with questions about ooDialog.
 </para>
 </section>
@@ -781,8 +781,8 @@ xPixels = xDialogUnits * self~FactorX
   <link linkend="chpDialogObject">dialog object</link> were intended to provide a way to convert between <link
   linkend="defPixel">pixels</link> and <link linkend="defDialogUnit">dialog units</link>, and vice versa. Although their
   values may have been correct when ooDialog was <link linkend="sctHistory">originally designed</link>, in almost all
-  cases the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is no
-  longer correct.
+  cases the values are now incorrect. The method used to calculate the ratio between dialog units and pixels is not
+  correct.
 </para>
 <para>
   Unfortunately, many of the methods in the ooDialog framework use <emphasis role="italic">factorX</emphasis> and
@@ -1438,7 +1438,7 @@ xPixels = xDialogUnits * self~FactorX
 <row>
 <entry>4.1.0</entry>
 <entry>4.0.0</entry>
-<entry>ooDialog as shipped with ooRexx 4.0.0 with all bug fixes through ooRexx 4.1.0.</entry>
+<entry>ooDialog as shipped with ooRexx 4.0.0 with all bug fixes through ooRexx 4.1.1.</entry>
 </row>
 <row>
 <entry>4.2.0</entry>
@@ -1469,16 +1469,16 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Level 4.1.0</emphasis></term>
   <listitem>
   <para>
-    ooDialog at level 4.1.0 is the ooDialog shipped with ooRexx 4.1.1. This ooDialog contains all the bug fixes and
-    enhancements that were included in that distribution. It is also provided as a separate download on SourceForge and
-    also requires the installed ooRexx be 4.0.0 or later. This code is frozen, no changes will be made to the code. Bugs
-    found in this code will be fixed in upcoming releases of ooDialog.
+    ooDialog at level 4.1.0 is the ooDialog that shipped with ooRexx 4.0.0, plus all bug fixes and changes up through
+    ooRexx 4.1.1. It is also provided as a separate download on SourceForge and also requires the installed ooRexx be
+    4.0.0 or later. This code is frozen, no changes will be made to the code. Bugs found in this code will be fixed in
+    upcoming releases of ooDialog.
   </para>
   <para>
     It allows users that have not upgraded their ooRexx from 4.0.0 or 4.0.1 to pick up the bug fixes in ooDialog
-    included in the ooRexx 4.1.0 distribution. However, its primary purpose is for users who may be unhappy with the
-    future direction of ooDialog. It will provide a way for users to upgrade to future versions of ooRexx and yet
-    retain an unchanged ooDialog.
+    included in the ooRexx distributions up throgh ooRexx 4.1.1. However, its primary purpose is for users who may be
+    unhappy with the future direction of ooDialog. It will provide a way for users to upgrade to future versions of
+    ooRexx and yet retain an unchanged ooDialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Level 4.2.0</emphasis></term>
@@ -1542,8 +1542,8 @@ xPixels = xDialogUnits * self~FactorX
     <computeroutput>UserDialog</computeroutput> now begin with the word <emphasis role="italic">create</emphasis> and
     include the control name when a single control is being created. For example, <emphasis
     role="italic">createListView</emphasis>, <emphasis role="italic">createUpDown</emphasis>, <emphasis
-    role="italic">createMonthCalendar</emphasis>. Similar naming changes are in connecting data attributes and
-    connecting event notifications.
+    role="italic">createMonthCalendar</emphasis>. Similar naming changes are in methods connecting data attributes, in
+    methods connecting event notifications, etc..
   </para>
   <para>
     The primary areas that should be looked at for this unification are the <link
@@ -1607,7 +1607,7 @@ xPixels = xDialogUnits * self~FactorX
     ooDialog 4.2.0 has been completely rewritten to use the C++ native APIs introduced in ooRexx 4.0.0. A primary
     benefit of this is that now the ooDialog framework can directly invoke the connected event handling method in the
     Rexx dialog and the programmer can directly reply to the operating system message. Further discussion on the
-    benefits of this is included in the section on <link linkend="sctMethodsEventNotification">coding</link> event
+    benefits of this is included in the section on <link linkend="sctCodingEventHandlers">coding</link> event
     handling methods.
   </para>
   </listitem></varlistentry>
@@ -1721,7 +1721,8 @@ xPixels = xDialogUnits * self~FactorX
       instantiating the page dialogs at the proper time, sizing, positioning, and showing the pages properly, etc.. A
       <computeroutput>TabOwnerDialog</computeroutput> does most of this management itself, allowing the programmer to
       concentrate on other areas. The tab owner dialog is similar in ways to the property sheet dialog, but removes some
-      of the restrictions of the <computeroutput>PropertySheetDialog</computeroutput> class.
+      of the restrictions of the <computeroutput>PropertySheetDialog</computeroutput> class imposed by the operating
+      system.
     </para>
     </listitem>
     <listitem>
@@ -1803,7 +1804,7 @@ xPixels = xDialogUnits * self~FactorX
     <listitem>
     <para>
       <link linkend="clsScriptMenuBar">ScriptMenuBar</link>: A <computeroutput>MenuBar</computeroutput> whose menu
-      template is created by parsing a resource script, (usually a .rec file.) Similar to a <link
+      template is created by parsing a resource script, (usually a .rc file.) Similar to a <link
       linkend="clsRcDialog">RcDialog</link>.
     </para>
     </listitem>
@@ -1936,7 +1937,7 @@ xPixels = xDialogUnits * self~FactorX
     Prior to ooRexx 4.0.0, all arguments to and returns from external functions had to be strings. Although stems could
     also be used, working with them was difficult and inflexible within the external function implmentation. With the
     advent of ooRexx 4.0.0, it became very easy to use any ooRexx object as an argument to, or return from, the ooDialog
-    external library implementation. In addition, instance methods can be implemented directory in the external library.
+    external library implementation. In addition, instance methods can be implemented directly in the external library.
   </para>
   <para>
     In the ooDialog released with ooRexx 4.0.0 through ooRexx 4.1.1, a very limited use of passing and returning objects
@@ -2028,8 +2029,8 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   There are a number of new classes introduced in ooDialog 4.0.0 through 4.2.0 that are intended to be enhanced in
   furture releases. The <link linkend="clsImage">Image</link>, <link linkend="clsTabOwnerDialog">TabOwnerDialog</link>,
-  and <link linkend="clsImageList">ImageList</link>, etc.. Work will continue on extending those types of classes. In
-  addition work will be done on implementing features requested by ooDialog programmers.
+  and <link linkend="clsImageList">ImageList</link> classes to name just a few. Work will continue on extending those
+  types of classes. In addition work will be done on implementing features requested by ooDialog programmers.
 </para>
 <para>
   Work will continue on improving the ooDialog reference manual. Sections that were not reviewed for this release will
@@ -2038,8 +2039,8 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   The users of ooDialog can take part in directing the future of ooDialog through discussion on the Users Mailing List
   and by opening requests for enhancements at the SourecForge ooRexx project. Users can subscribe to the oorexx-users
-  mailing list at <ulink url="http://sourceforge.net/mail/?group_id=119701"> <citetitle>ooRexx Mailing List
-  Subscriptions</citetitle></ulink> page. Requests for ooDialog features can be made at the
+  mailing list on the <ulink url="http://sourceforge.net/mail/?group_id=119701"> <citetitle>ooRexx Mailing List
+  Subscriptions</citetitle></ulink> page. Requests for ooDialog features can be made on the
   <ulink url="http://sourceforge.net/tracker/?group_id=119701&amp;atid=684733"><citetitle>ooRexx Feature
   Requests</citetitle></ulink> page.
 </para>
