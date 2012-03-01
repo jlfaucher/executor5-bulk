@@ -486,14 +486,14 @@
   <para>
     When the <emphasis role="italic">getPosition</emphasis> method is invoked, the up-down control updates its position
     based on the text of its buddy window. If there is no buddy window, or if the text is outside of the range of the
-    up-down control, then the position is not changed and <computeroutput>.SystemErrorCode</computeroutput> is set to
+    up-down control, then the position is not changed and <computeroutput>.systemErrorCode</computeroutput> is set to
     13, the data is invalid.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. See the remarks section.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable. See the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -510,7 +510,7 @@
   ...
   upd = self~newUpDown(IDC_UPD_YEARS_EXPERIENCE)
   years = upd~getPostion
-  if .SystemErrorCode <> 0 then do
+  if .systemErrorCode <> 0 then do
     eol = .endOfLine
     edit = upd~getBuddy
 

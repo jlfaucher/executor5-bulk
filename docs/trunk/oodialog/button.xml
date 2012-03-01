@@ -997,7 +997,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -1938,7 +1938,7 @@ return .true
       <listitem>
       <para>
         The <computeroutput>.Nil</computeroutput> object is returned if there was no existing image list, and also if
-        an error is encountered. In general, the <computeroutput>.SystemErrorCode</computeroutput> variable should be
+        an error is encountered. In general, the <computeroutput>.systemErrorCode</computeroutput> variable should be
         set to non-zero if an error happened.
       </para>
       </listitem></varlistentry>
@@ -1989,7 +1989,7 @@ return .true
     determine the current version of the library.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -2033,7 +2033,7 @@ return .true
   margin = .Rect~new(1)
 
   ret = pbView~setImageList(imageList, margin, align)
-  if .SystemErrorCode <> 0 then do
+  if .systemErrorCode <> 0 then do
     -- put some error handling here
     return -1
   end

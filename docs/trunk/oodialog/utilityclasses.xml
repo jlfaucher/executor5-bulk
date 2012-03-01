@@ -8151,7 +8151,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8200,7 +8200,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8251,7 +8251,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8302,7 +8302,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8353,7 +8353,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8507,7 +8507,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -8578,7 +8578,7 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   <para>
     Raises syntax errors when incorrect usage is detected.
@@ -8590,10 +8590,10 @@ s2: a Size (2, 3)
 </section> <!-- End SPI Class -->
 
 
-<section id="dotSystemErrorCode"><title>.SystemErrorCode object</title>
-<indexterm><primary>.SystemErrorCode</primary></indexterm>
+<section id="dotSystemErrorCode"><title>.systemErrorCode object</title>
+<indexterm><primary>.systemErrorCode</primary></indexterm>
 <para>
-  The .SystemErrorCode can be used, at times, to obtain additional information when the invocation of a
+  The .systemErrorCode can be used, at times, to obtain additional information when the invocation of a
   method generates an operating system error.
 </para>
 <para>
@@ -8603,18 +8603,18 @@ s2: a Size (2, 3)
   Win32 APIs do not set a system error code.)
 </para>
 <para>
-  When the ooDialog framework first initializes, it sets the value of .SystemErrorCode to 0.  <emphasis
-  role="italic">Some</emphasis>, of the methods of the ooDialog classes will set the .SystemErrorCode to
+  When the ooDialog framework first initializes, it sets the value of .systemErrorCode to 0.  <emphasis
+  role="italic">Some</emphasis>, of the methods of the ooDialog classes will set the .systemErrorCode to
   the value of the system error code when the method detects that a Win32 API has failed and has set the
   error code.  Most methods do <emphasis role="bold">not</emphasis> change the value of .SystemErrorCode.
-  Only those methods that explicitly document they use .SystemErrorCode will ever change its value.
+  Only those methods that explicitly document they use .systemErrorCode will ever change its value.
 </para>
 <para>
-  One consequence of the fact that most methods do not change .SystemErrorCode is that its value is only
+  One consequence of the fact that most methods do not change .systemErrorCode is that its value is only
   meaningful immediately after the invocation of a method that is documented as using .SystemErrorCode.
   Those methods will set the code to 0 and, if they detect a Win32 API has set the system error code to
-  non-zero, they will then set .SystemErrorCode to the value of the system error.  Checking
-  .SystemErrorCode after the invocation of a method that does not set .SystemErrorCode will tell the
+  non-zero, they will then set .systemErrorCode to the value of the system error.  Checking
+  .systemErrorCode after the invocation of a method that does not set .systemErrorCode will tell the
   programmer nothing. Neither that a system error happened, or that it did not happen.
 </para>
 <para>
@@ -8629,9 +8629,9 @@ s2: a Size (2, 3)
 image = .Image~getImage("resources\bogus.bmp")
 if image~isNull then do
   say "Error getting the bogus.bmp image."
-  if .SystemErrorCode <> 0 then do
-    say 'System error code:' .SystemErrorCode
-    say '  system message:' SysGetErrorText(.SystemErrorCode)
+  if .systemErrorCode <> 0 then do
+    say 'System error code:' .systemErrorCode
+    say '  system message:' SysGetErrorText(.systemErrorCode)
   end
 end
 

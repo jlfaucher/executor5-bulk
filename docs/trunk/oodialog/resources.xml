@@ -398,7 +398,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -511,7 +511,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -727,14 +727,14 @@ A fancy purple: 16734709 (0x00FF59F5)
     <para>
       A .Image object that represents the image specified.  If an error happened, the object may not be
       valid.  Use the <link linkend="mthIsNullClsImage">isNull()</link> method to check if the image is
-      valid.  If there was an error, <link linkend="dotSystemErrorCode">.SystemErrorCode</link> may help
+      valid.  If there was an error, <link linkend="dotSystemErrorCode">.systemErrorCode</link> may help
       to determine the error.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -756,7 +756,7 @@ A fancy purple: 16734709 (0x00FF59F5)
                                    .Image~toID(IMAGE_ICON),                -
                                    .Size~new(0, 0), flags)
     if questionIcon~isNull then do
-      say 'Error getting the question icon.  Error code:' .SystemErrorCode
+      say 'Error getting the question icon.  Error code:' .systemErrorCode
     end
 
     /* Note that you can always use the raw numeric value for the args.
@@ -764,7 +764,7 @@ A fancy purple: 16734709 (0x00FF59F5)
      */
     questionIcon = .Image~getImage(32514, 1, .Size~new(0, 0), 36928)
     if questionIcon~isNull then do
-      say 'Error getting the question icon.  Error code:' .SystemErrorCode
+      say 'Error getting the question icon.  Error code:' .systemErrorCode
     end
 
     ]]>
@@ -1048,7 +1048,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     Raises syntax errors when incorrect arguments are detected. This includes an invalid sybmbolic ID.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1192,7 +1192,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1209,7 +1209,7 @@ A fancy purple: 16734709 (0x00FF59F5)
           hQuestion = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_ICON))
           say 'Question icon:' hQuestion~handle
           if hQuestion~isNull then do
-            say 'errror code:' .SystemErrorCode
+            say 'errror code:' .systemErrorCode
           end
           else do
             image = iconControl~setImage(hQuestion)
@@ -1219,7 +1219,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
             -- The old image is no longer needed.
             ret = image~release
-            say 'Released old image return:' ret '.SystemErrorCode:' .SystemErrorCode
+            say 'Released old image return:' ret '.SystemErrorCode:' .systemErrorCode
           end
         end
 
@@ -1280,8 +1280,8 @@ A fancy purple: 16734709 (0x00FF59F5)
       <![CDATA[
       hQuestion = .Image~getImage(.Image~toID(IDI_QUESTION), .Image~toID(IMAGE_BITMAP))
       if hQuestion~isNull then do
-        say 'System Errror code:' .SystemErrorCode
-        say '  System message:  ' SysGetErrorText(.SystemErrorCode)
+        say 'System Errror code:' .systemErrorCode
+        say '  System message:  ' SysGetErrorText(.systemErrorCode)
       end
 
       /* Output would be:
@@ -1311,8 +1311,8 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   The systemErrorCode attribute of the image object will reflect any system error codes that are detected
   while working with an image object.  This is the same error code as the <link
-  linkend="dotSystemErrorCode">.SystemErrorCode</link> is set to.  This can be useful if the programmer
-  wants to check for an error code at some point when it is possible that .SystemErrorCode has been
+  linkend="dotSystemErrorCode">.systemErrorCode</link> is set to.  This can be useful if the programmer
+  wants to check for an error code at some point when it is possible that .systemErrorCode has been
   reset.  (See the example below.)
 </para>
 <para>
@@ -1337,7 +1337,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       In this example the system error code attribute for an image is checked at a point in the
-      life-cycle of the application when checking the <computeroutput>.SystemErrorCode</computeroutput>
+      life-cycle of the application when checking the <computeroutput>.systemErrorCode</computeroutput>
       would be meaningless:
       <programlisting>
       <![CDATA[
@@ -1956,8 +1956,8 @@ A fancy purple: 16734709 (0x00FF59F5)
       images = .Image~fromFiles(files1, .Image~toID(IMAGE_ICON), size)
       if images~items <> files1~items then do
         say 'Error loading images.'
-        say '  System error:' .SystemErrorCode
-        say '  Message:     ' SysGetErrorText(.SystemErrorCode)
+        say '  System error:' .systemErrorCode
+        say '  Message:     ' SysGetErrorText(.systemErrorCode)
         return
       end
 
@@ -2739,7 +2739,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <para>
       Returns a new ResourceImage object.  This object may be null if an error occurred.  Use the <link
       linkend="mthIsNullClsResourceImage">isNull()</link> method to check for this.  Both the <link
-      linkend="dotSystemErrorCode">.SystemErrorCode</link> or the <link
+      linkend="dotSystemErrorCode">.systemErrorCode</link> or the <link
       linkend="mthSystemErrorCodeClsResourceImage">systemErrorCode()</link> method should contain an
       error code if the object is null.
     </para>
@@ -2747,7 +2747,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -2896,7 +2896,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the resource image is null.
     </para>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -3028,7 +3028,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       image of any specified ID, the corresponding index in the returned array will be empty.
     </para>
     <para>
-      If there is an error, both the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> and the
+      If there is an error, both the <link linkend="dotSystemErrorCode">.systemErrorCode</link> and the
       <link linkend="mthSystemErrorCodeClsResourceImage">systemErrorCode</link> attribute of this
       resource image will be set (to the same code.)  It is conceivable that an error could occur where
       the system does not set an error code, but unlikely.
@@ -3040,7 +3040,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the resource image is null.
     </para>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -3267,7 +3267,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       This method return the system error code, which will be zero if there is no error, and non-zero if
-      there is an error. The <link linkend="dotSystemErrorCode">.SystemErrorCode</link> is also set to
+      there is an error. The <link linkend="dotSystemErrorCode">.systemErrorCode</link> is also set to
       this value.
     </para>
   </listitem></varlistentry>
@@ -3277,7 +3277,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the resource image is null.
     </para>
     <para>
-      Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+      Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3324,9 +3324,9 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 <para>
   When a method for a resource image is invoked that sets the <link
-  linkend="dotSystemErrorCode">.SystemErrorCode</link>, the systemErrorCode attribute of the resource
+  linkend="dotSystemErrorCode">.systemErrorCode</link>, the systemErrorCode attribute of the resource
   image object is also set. This can be useful if the programmer wants to check for an error code at some
-  point when it is possible that .SystemErrorCode has been reset.
+  point when it is possible that .systemErrorCode has been reset.
 </para>
 <para>
   This method can always be invoked, even if the resource image is null.  It is very similar to the <link
@@ -3350,7 +3350,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       This example uses the <computeroutput>systemErrorCode</computeroutput> attribute to get more
-      information on a possbile error, rather than the <computeroutput>.SystemErrorCode</computeroutput>.
+      information on a possbile error, rather than the <computeroutput>.systemErrorCode</computeroutput>.
       <programlisting>
       <![CDATA[
       ::method initDialog
