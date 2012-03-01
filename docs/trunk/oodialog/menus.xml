@@ -266,7 +266,7 @@
 <indexterm><primary>menu object</primary><secondary>command event connections</secondary></indexterm>
 <para>
   The menu classes provide a number of methods to connect menu command events to a method in the Rexx dialog. As <link
-  linkend="sctMenuCommandEvetns">explained</link> in <emphasis role="italic">Menu Command Events</emphasis> ..
+  linkend="sctMenuCommandEvents">explained</link> in <emphasis role="italic">Menu Command Events</emphasis> ..
 </para>
 <para>
   To be filled in - three strategies, etc..
@@ -4259,9 +4259,9 @@
 </para>
 <para>
   The ooDialog framework provides three basic types of menu bars. The only difference in the three types is the source
-  of the menu template for the menu bar. In a <link linkend="ScriptMenuBar">ScriptMenuBar</link> the source of the menu
-  template is a <link linkend="defResourceScript">resource</link> file (usually a .rc file) that ooDialog parses and
-  uses to construct the menu template. For an <link linkend="clsUserMenuBar">UserMenuBar</link>, ooDialog constructs
+  of the menu template for the menu bar. In a <link linkend="clsScriptMenuBar">ScriptMenuBar</link> the source of the
+  menu template is a <link linkend="defResourceScript">resource</link> file (usually a .rc file) that ooDialog parses
+  and uses to construct the menu template. For an <link linkend="clsUserMenuBar">UserMenuBar</link>, ooDialog constructs
   the menu template dynamically from method invocations in the program code.
 </para>
 <para>
@@ -4506,7 +4506,7 @@
   <computeroutput>ScriptMenuBar</computeroutput>. For convenience, the inherited methods from the <link
   linkend="clsMenuBar">MenuBar</link> mixin class are also listed here. Note that the
   <computeroutput>ScriptMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and therefor also contains
-  all the methods of the <link linkend="clsMen">Menu</link> class.
+  all the methods of the <link linkend="clsMenu">Menu</link> class.
 <table id="tblMethodsScriptMenuBar" frame="all"> <title>ScriptMenuBar Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
@@ -4689,9 +4689,9 @@
 </para>
 <para>
   The ooDialog framework provides three basic types of menu bars. The only difference in the three types is the source
-  of the menu template for the menu bar. In a <link linkend="ScriptMenuBar">ScriptMenuBar</link> the source of the menu
-  template is a <link linkend="defResourceScript">resource</link> file (usually a .rc file) that ooDialog parses and
-  uses to construct the menu template. For a <link linkend="clsBinaryMenuBar">BinaryMenuBar</link> the menu template
+  of the menu template for the menu bar. In a <link linkend="clsScriptMenuBar">ScriptMenuBar</link> the source of the
+  menu template is a <link linkend="defResourceScript">resource</link> file (usually a .rc file) that ooDialog parses
+  and uses to construct the menu template. For a <link linkend="clsBinaryMenuBar">BinaryMenuBar</link> the menu template
   comes from a compiled binary resource, or the menu template is constructed as an empty menu.
 </para>
 <para>
@@ -4705,7 +4705,7 @@
   The following table lists the class and instance methods of the <computeroutput>UserMenuBar</computeroutput>. For convenience, the inherited methods from the <link
   linkend="clsMenuBar">MenuBar</link> mixin class are also listed here. Note that the
   <computeroutput>UserMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and therefor also contains
-  all the methods of the <link linkend="clsMen">Menu</link> class.
+  all the methods of the <link linkend="clsMenu">Menu</link> class.
 <table id="tblMethodsUserMenuBar" frame="all"> <title>UserMenuBar Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
