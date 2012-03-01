@@ -3071,22 +3071,21 @@
 </programlisting>
 
 <para>
-  Converts <emphasis role="italic">text</emphasis> to a method name as if <emphasis role="italic">text</emphasis> where
+  Converts <emphasis role="italic">text</emphasis> to a method name as if <emphasis role="italic">text</emphasis> were
   the text of a menu command item. This method can be used as a debugging helper if the programmer has difficulty in
   determining what method name the ooDialog framework is constructing when automatically <link
   linkend="sctMenuCommandEventConnections">connecting</link> menu command items.
 </para>
 <para>
-  The ooDialog framework constructs a method name from a string in this way: All space, tab, ampersand, <emphasis
-  role="italic">:</emphasis>, and <emphasis role="italic">+</emphasis> characters are removed. In addition any trailing
-  periods are remove from the string. Upper-casing the characters is skipped, because this should not matter in a
-  method name.
+  The ooDialog framework constructs a method name from a string in this way: All space, tab, ampersand, colon, and plus
+  characters are removed from the string. In addition any trailing periods are remove from the string. The remaining
+  string is used as the method name.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The single arguemnt id:
+    The single argument is:
   <variablelist>
     <varlistentry><term>text [required]</term>
     <listitem>
@@ -3108,8 +3107,13 @@
   <para>
     In the menu classes there are a number of methods that connect menu command <link
     linkend="sctMenuCommandEvents">events</link> to a method in the Rexx dialog. Most of these methods will
-    automatically construct the method name based on the text of the menu command item. Sometimes, the programmer may
-    have a hard time knowing what the constructed name is going to be. This method can help in those situations by
+    automatically construct the connected method name if the programmer does not specify a method name. The name is
+    constructed based on the text of the menu command item that is being connected.
+  </para>
+  <para>
+    Sometimes, it may be difficult for the programmer to know what the constructed name is going to be. For instance,
+    with a compiled binary menu, the programmer might need to look at the original resource script. Or, the programmer
+    may not recall exactly what the rules are for constructing the name. This method can help in those situations by
     returning the method name that would be constructed. The programmer could add some quick debug code that printed the
     name to the screen.
   </para>
@@ -3869,7 +3873,7 @@
 
 <section id="sctMethodsMenuBar"><title>Method Table</title>
 <para>
-  The following table lists the class methods, attributes, and instance methods of the menu bar object.
+  The following table lists the instance methods of the menu bar object.
 <table id="tblMethodsMenuBar" frame="all"> <title>MenuBar Object Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
@@ -3941,9 +3945,9 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If <link linkend="sctMenuCommandEventConnections">autoconnect</link> is turned on (<link
-    linkend="mthGetAutoConnectStatus">getAutoConnectStatus</link>) then all menu command items are connected are
-    connected to a method in the <emphasis role="italic">dlg</emphasis> dialog at this time.
+    If <link linkend="sctMenuCommandEventConnections">auto</link> connection is turned on (<link
+    linkend="mthGetAutoConnectStatus">getAutoConnectStatus</link>) then all menu command items are connected to a
+    method in the <emphasis role="italic">dlg</emphasis> dialog at this time.
   </para>
   <para>
     A menu bar can only be attached to a dialog after the <link linkend="ovvUnderlying">underlying</link> dialog exists.
@@ -4014,8 +4018,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example attaches a dialog's menu bar in the <emphasis role="italic">initDialog</emphasis>. The menu bar was
-    instantiated previously and save in an instance variable:
+    This example attaches a dialog's menu bar in the <emphasis role="italic">initDialog</emphasis> method. In the
+    example, the menu bar was instantiated previously, and saved in an instance variable:
 <programlisting>
 <![CDATA[
 
@@ -4202,8 +4206,8 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the menu bar that was previously attached to the dialog, which of course is this menu bar. On error the
-    <computeroutput>.Nil</computeroutput> object is returned.
+    On success, returns the menu bar that was previously attached to the dialog, which of course is this menu bar. On
+    error the <computeroutput>.Nil</computeroutput> object is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4272,11 +4276,10 @@
 
 <section id="sctMethodsBinaryMenuBar"><title>Method Table</title>
 <para>
-  The following table lists the class methods and instance methods of the
-  <computeroutput>BinaryMenuBar</computeroutput>. For convenience, the inherited methods from the <link
-  linkend="clsMenuBar">MenuBar</link> mixin class are also listed here. Note that the
-  <computeroutput>BinaryMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and therefor also contains
-  all the methods of the <link linkend="clsMenu">Menu</link> class.
+  The following table lists the class and instance methods of the <computeroutput>BinaryMenuBar</computeroutput>. For
+  convenience, the inherited methods from the <link linkend="clsMenuBar">MenuBar</link> mixin class are also listed
+  here. Note that the <computeroutput>BinaryMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and
+  therefore also contains all the methods of the <link linkend="clsMenu">Menu</link> class.
 <table id="tblMethodsBinaryMenuBar" frame="all"> <title>Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
@@ -4332,10 +4335,10 @@
 <para>
   The new menu bar is initiallly empty if <emphasis role="italic">menuSrc</emphasis> is omitted. If <emphasis
   role="italic">menuSrc</emphasis> is not omitted, the menu template is obtained from the compiled binary resource
-  pointed by <emphasis role="italic">menuSrc</emphasis>.
+  pointed to by <emphasis role="italic">menuSrc</emphasis>.
 </para>
 <para>
-  When an empty menu bar is instantiate, the programmer can add to the menu dynamically using menu object methods such
+  When an empty menu bar is instantiated, the programmer can add to the menu dynamically using menu object methods such
   as <link linkend="mthInsertPopup">insertPopup</link>, <link linkend="mthInsertItem">insertItem</link>, etc..
   Dynamically constructing a menu in this way is much less error prone than using the <link
   linkend="clsUserMenuBar">UserMenuBar</link> class.
@@ -4413,19 +4416,20 @@
     <varlistentry><term>auto [optional]</term>
     <listitem>
     <para>
-      If true, turn on <link linkend="sctMenuCommandEventConnections">auto</link> connection. The default is false. This
-      is an <link linkend="sctMenuCommandEventConnections">auto</link> connection type of connection. When auto
-      connection is on, <emphasis role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu
-      command <link linkend="sctMenuCommandEvents">events</link> are connected to a method in the dialog.
+      If true, turn on <emphasis role="italic">auto connection</emphasis>. The default is false. Refer to the
+      discussion on command event <link linkend="sctMenuCommandEventConnections">connections</link> to understand the
+      details of <emphasis role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
+      role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command <link
+      linkend="sctMenuCommandEvents">events</link> are connected to a method in the dialog.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">mName [optional]</emphasis></term>
+    <varlistentry><term>mName [optional]/term>
     <listitem>
     <para>
       This argument is ignored unless <emphasis role="italic">auto</emphasis> is true. If so <emphasis
-      role="italic">mName</emphasis> is used as the auto connection method name for all menu command events. If this
-      argument is omitted, the name of the connected method for each menu command item is composed from the menu item
-      <link linkend="mthItemTextToMethodName">text</link>.
+      role="italic">mName</emphasis> is used as the auto connection method name for all menu command events. When
+      <emphasis role="italic">auto</emphasis> is true and this argument is omitted, the name of the connected method for
+      each menu command item is composed from the menu item <link linkend="mthItemTextToMethodName">text</link>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4502,11 +4506,10 @@
 
 <section id="sctMethodsScriptMenuBar"><title>Method Table</title>
 <para>
-  The following table lists the class methods and instance methods of the
-  <computeroutput>ScriptMenuBar</computeroutput>. For convenience, the inherited methods from the <link
-  linkend="clsMenuBar">MenuBar</link> mixin class are also listed here. Note that the
-  <computeroutput>ScriptMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and therefor also contains
-  all the methods of the <link linkend="clsMenu">Menu</link> class.
+  The following table lists the class and instance methods of the <computeroutput>ScriptMenuBar</computeroutput>. For
+  convenience, the inherited methods from the <link linkend="clsMenuBar">MenuBar</link> mixin class are also listed
+  here. Note that the <computeroutput>ScriptMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and
+  therefore also contains all the methods of the <link linkend="clsMenu">Menu</link> class.
 <table id="tblMethodsScriptMenuBar" frame="all"> <title>ScriptMenuBar Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
@@ -4585,8 +4588,8 @@
       <varlistentry><term>helpID [optional]</term>
       <listitem>
       <para>
-        The Help ID for this menu. May be numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link>. If omitted, the
-        menu will not have a Help ID.
+        The context help ID for this menu. May be numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link>. If
+        omitted, the menu will not have a help ID.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>count [optional]</term>
@@ -4617,9 +4620,10 @@
       <varlistentry><term>attachTo [optional]</term>
       <listitem>
       <para>
-        Specifies a Rexx dialog object for the menu to attach to immediately. The <link
-        linkend="ovvUnderlying">underlying</link> Windows dialog must exist and that dialog must not already have a menu
-        bar attached. If those conditions arre not met, then a synctax condition is raised.
+        Specifies a Rexx dialog object for the menu to attach to immediately. This argument must be a <link
+        linkend="chpDialogObject">dialog</link> object, the <link linkend="ovvUnderlying">underlying</link> Windows
+        dialog must exist and that dialog must not already have a menu bar attached. If those conditions are not met,
+        then a syntax condition is raised.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -4704,7 +4708,7 @@
 <para>
   The following table lists the class and instance methods of the <computeroutput>UserMenuBar</computeroutput>. For convenience, the inherited methods from the <link
   linkend="clsMenuBar">MenuBar</link> mixin class are also listed here. Note that the
-  <computeroutput>UserMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and therefor also contains
+  <computeroutput>UserMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and therefore also contains
   all the methods of the <link linkend="clsMenu">Menu</link> class.
 <table id="tblMethodsUserMenuBar" frame="all"> <title>UserMenuBar Method Reference</title>
 <tgroup cols="2">
@@ -4778,8 +4782,8 @@
 
 <para>
   Instantiates a new <computeroutput>UserMenuBar</computeroutput> object. The menu template of a user menu bar is
-  created dynamically in the program code use the methods of the <computeroutput>UserMenuBar</computeroutput> class.
-  this is similar to the creation of the dialog template in a <link linkend="clsUserDialog">UserDialog</link>.
+  created dynamically in the program code, using the methods of the <computeroutput>UserMenuBar</computeroutput> class.
+  This is similar to the creation of the dialog template in a <link linkend="clsUserDialog">UserDialog</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4797,8 +4801,8 @@
     <varlistentry><term>helpID [optional]</term>
     <listitem>
     <para>
-      The Help ID for this menu. May be numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link>. If omitted, the
-      menu will not have a Help ID.
+      The context help ID for this menu. May be numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link>. If
+      omitted, the menu will not have a help ID.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>count [optional]</term>
@@ -4817,19 +4821,20 @@
     <varlistentry><term>auto [optional]</term>
     <listitem>
     <para>
-      If true, turn on <link linkend="sctMenuCommandEventConnections">auto</link> connection. The default is false. This
-      is an <link linkend="sctMenuCommandEventConnections">auto</link> connection type of connection. When auto
-      connection is on, <emphasis role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu
-      command <link linkend="sctMenuCommandEvents">events</link> are connected to a method in the dialog.
+      If true, turn on <emphasis role="italic">auto connection</emphasis>. The default is false. Refer to the
+      discussion on command event <link linkend="sctMenuCommandEventConnections">connections</link> to understand the
+      details of <emphasis role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
+      role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command <link
+      linkend="sctMenuCommandEvents">events</link> are connected to a method in the dialog.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">mName [optional]</emphasis></term>
+    <varlistentry><term>mName [optional]</term>
     <listitem>
     <para>
       This argument is ignored unless <emphasis role="italic">auto</emphasis> is true. If so <emphasis
-      role="italic">mName</emphasis> is used as the auto connection method name for all menu command events. If this
-      argument is omitted, the name of the connected method for each menu command event is composed from the menu item
-      <link linkend="mthItemTextToMethodName">text</link>.
+      role="italic">mName</emphasis> is used as the auto connection method name for all menu command events. When
+      <emphasis role="italic">auto</emphasis> is true and this argument is omitted, the name of the connected method for
+      each menu command item is composed from the menu item <link linkend="mthItemTextToMethodName">text</link>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5017,12 +5022,12 @@
     <listitem>
     <para>
       A list of 0 or more of the following keywords separated by spaces, case is not significant. The keywords set the
-      state and type of the of the popup menu, and specify when the popup menu is the last item at the current
-      level in the menu.
+      state and type of the popup menu, and specify when the popup menu is the last item at the current level in the
+      menu.
     </para>
     <para>
-      The keywords: ENABLED UNHILITE NOTDEFAULT, although valid keywords are simply ignored for this method. By default
-      the state will be ENABLED UNHILITE NOTDEFAULT. The keywords are:
+      The keywords: ENABLED UNHILITE NOTDEFAULT, although valid keywords, are simply ignored for this method. By default
+      the state will be ENABLED UNHILITE NOTDEFAULT, with no special type. The keywords are:
     </para>
     <para>
     <simplelist type='vert' columns='3'>
@@ -5064,13 +5069,17 @@
       <varlistentry><term>MENUBARBREAK</term>
       <listitem>
       <para>
-         The
+         A menu type specification. Places the menu item on a new line (for a menu bar) or in a new column (for a drop
+         down menu, submenu, or shortcut menu). For a drop down menu, submenu, or shortcut menu, a vertical line
+         separates the new column from the old.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>MENUBREAK</term>
       <listitem>
       <para>
-         T
+         A menu type specification. Places the menu item on a new line (for a menu bar) or in a new column (for a drop
+         down menu, submenu, or shortcut menu). For a drop down menu, submenu, or shortcut menu, the columns are
+         <emphasis role="italic">not</emphasis> separated by a vertical line.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>RIGHTJUSTIFY</term>
