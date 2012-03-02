@@ -141,7 +141,7 @@
   <para>
     Each menu item has a unique, non-negative, integer assigned to it by the programmer, called a menu item identifier.
     These numbers are essentially the same as any other resource <link linkend="defResourceID">ID</link> used in
-    ooDialog. The Rexx programmer can use numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link> IDs for menu
+    ooDialog. The Rexx programmer can use numeric or <link linkend="itmMenuSymbolicIDs">symbolic</link> IDs for menu
     item identifier's, in the same way as for other resource IDs.
   </para>
   <para>
@@ -173,34 +173,41 @@
     submenu.
   </para>
   </listitem></varlistentry>
+  <varlistentry id="itmMenuSymbolicIDs"><term><emphasis role="bold">Symbolic Menu Item IDs</emphasis></term>
+  <listitem>
+  <para>
+    Menu <emphasis role="italic">item identifiers</emphasis> are essentially resource <link
+    linkend="defResourceID">IDs</link>. The programmer can use symbolic <link linkend="defSymbolicID">IDs</link> for
+    menu item identifiers rather than numeric IDs for any argument in a menu object method that uses a menu item
+    identifier. However, to do so, the programmer <emphasis role="italic">must</emphasis> use the global <link
+    linkend="dotConstDir">.constDir</link>. If the global <computeroutput>.constDir</computeroutput> is not used, then
+    all menu item identifier arguments <emphasis role="bold">must</emphasis> be numeric.
+  </para> </listitem></varlistentry>
 </variablelist>
 <para>
-  Except in a few methods where it simply does not make any sense, all menu methods that require specifying a menu item
-  accept either a menu item identifier or a menu item position. The menu item specifier is refered to as the menu item
-  ID. Since both identifiers and positions are numbers, the programmer needs to specify which is being used. However, by
-  default, the ID is assumed to be an indetifier. Therefore, the programmer only need indicate when the ID is a position
-  ID.
+  Except in a few methods where it simply does not make any sense, all menu methods that require specifying a menu item,
+  accept either a menu item identifier or a menu item position. The menu item specifier is refered to as the menu
+  item ID. Since both identifiers and positions are numbers, the programmer needs to specify which is being used.
+  However, by default, the ID is assumed to be an indetifier. Therefore, the programmer only need indicate when the ID
+  is a position ID.
 </para>
 </section>
 
-<section id="sctMenuSymbolicIDs"><title>Symbolic Menu Item IDs</title>
+
+
+
+<section id="sctMenuCommandItems"><title>Menu Command Items</title>
+<indexterm><primary>menu object</primary><secondary>command items</secondary></indexterm>
 <para>
-  Menu item <link linkend="entMenuItemIdentifier">identifiers</link> are essentially resource <link
-  linkend="defResourceID">IDs</link>. The programmer can use symbolic <link linkend="defSymbolicID">IDs</link> for menu
-  item IDs rather than numeric IDs for any argument in a menu object method that requires a menu item ID. However,
-  to do so, the programmer <emphasis role="italic">must</emphasis> use the global <link
-  linkend="dotConstDir">.constDir</link>. If the global <computeroutput>.constDir</computeroutput> is not used, then all
-  menu item ID arguments must be numeric.
+  Menu items that are not separators and do not open a submenu are called menu command items.
 </para>
-</section>
 
 <section id="sctMenuCommandEvents"><title>Menu Command Events</title>
 <indexterm><primary>menu object</primary><secondary>command events</secondary></indexterm>
 <para>
-  Menu items that are not separators and do not open a submenu are called menu command items. When a user selects a
-  command item, an <link linkend="ovvEvents">event</link> is generated and the operating system sends a notification to
-  the owner window of the menu. The ooDialog framework provides methods to connect this menu command notification to a
-  method in the Rexx dialog object in a similar manner to connecting dialog control <link
+  When a user selects a menu command item, an <link linkend="ovvEvents">event</link> is generated and the operating
+  system sends a notification to the owner window of the menu. The ooDialog framework provides methods to connect this
+  menu command notification to a method in the Rexx dialog object in a similar manner to connecting dialog control <link
   linkend="sctConnectingEvents">notifications</link>. The event connection methods are contained within the various menu
   objects and are similar to the event connection methods of the dialog object.
 </para>
@@ -260,30 +267,365 @@
   linkend="defHandle">handle</link> of the button.
 </para>
 
-</section>
+</section>  <!-- End Section::Menu Command Events -->
 
 <section id="sctMenuCommandEventConnections"><title>Menu Command Event Connections</title>
 <indexterm><primary>menu object</primary><secondary>command event connections</secondary></indexterm>
 <para>
-  The menu classes provide a number of methods to connect menu command events to a method in the Rexx dialog. As <link
-  linkend="sctMenuCommandEvents">explained</link> in <emphasis role="italic">Menu Command Events</emphasis> ..
+  Menus are separate objects from dialog objects and can be instantiated with no reference to any dialog. In addition,
+  menus can be assigned different owner dialogs during an application's life time. Because of this, unlike connecting
+  dialog control envents, there are several different strategies that can be used when connecting menu command events.
 </para>
 <para>
-  To be filled in - three strategies, etc..
+  The menu classes provide a number of ways, and a number of methods, to connect menu command events to methods in the
+  Rexx dialog. There are three basic types of ways to make command event connections, <emphasis role="italic">auto
+  connection</emphasis>, <emphasis role="italic">connect request</emphasis>, and <emphasis role="italic">direct
+  connection</emphasis>.
 </para>
 
-</section>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Auto Connection</emphasis></term>
+  <listitem>
+  <para>
+    When auto connection is on, <emphasis role="italic">each</emphasis> time a menu bar is attached to a dialog, or a
+    context menu is assigned to an owner dialog, every menu command item is automatically connected to a method in that
+    dialog. The programmer can specify if every command item is connected to the same method, or if every command item
+    is connect to a unique method. When every command item is connected to an unique method, ooDialog automatically
+    generates the method name based on the text of the command item.
+  </para>
+  <para>
+    Note that if auto connection is on, the automatic connection of menu items is <emphasis
+    role="italic">always</emphasis> done when a menu bar is attached to a dialog or a context menu is assigned its
+    owner dialog. This is true even if the <emphasis role="italic">connection request</emphasis> way of connecting
+    command items is also in use.
+  </para>
+  <para>
+    Auto connection can be explicitly turned on by using the <link
+    linkend="mthSetAutoConnection">setAutoConnection</link> <emphasis role="italic">before</emphasis> a menu bar is
+    attached, or a context menu is assigned, to a dialog. <emphasis role="italic">setAutoConnection</emphasis> can also
+    be used to turn auto connection off at any time.
+  </para>
+  <para>
+    The following is some specific details regarding auto connection for the different menu classes and menu class
+    methods:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">BinaryMenuBar class</emphasis></term>
+      <listitem>
+      <para>
+        Auto connection can also be turned on explicity in the <link linkend="mthNewClsBinaryMenuBar">new</link> method
+        of the <computeroutput>BinaryMenuBar</computeroutput>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">insertItem method</emphasis></term>
+      <listitem>
+      <para>
+        If auto connection is turned on in the menu bar that the item is inserted into, and the menu bar is already
+        attached to a dialog, then the item will be automatically connected. The method name that is used for the
+        connected method is based on the current auto connection status (<link linkend="mthGetAutoConnectStatus">get
+        AutoConnectionStatus</link> can be used to determine the current auto connection status.)
+      </para>
+      <para>
+        This will <emphasis role="italic">only</emphasis> be done if the item is being inserted by item identifier, not
+        if it is being inserted by item position. It is only done if the item is being inserted into a menu bar, not if
+        it is being inserted into a popup menu.
+      </para>
+      <para>
+        <emphasis role="bold">Note</emphasis> that the arguments to the <link linkend="mthInsertItem">insertItem</link>
+        method, the <emphasis role="italic">connect</emphasis> argument, can also be used to specify a <emphasis
+        role="italic">connection request</emphasis> type of connection. If a connection request is made using the
+        <emphasis role="italic">connect</emphasis> argument and auto connection is turned on, both connections will be
+        made. This should <emphasis role="italic">not</emphasis> be done, the result is non-deterministic.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">PopupMenu class</emphasis></term>
+      <listitem>
+      <para>
+        When a popup menu is used as a submenu of a menu bar, auto connection is meaningless. A submenu can not be
+        attached or assigned to a dialog. When a popup menu is used as a context menu, auto connection can be turned on,
+        either explicitly by using the <link linkend="mthSetAutoConnection">setAutoConnection</link> method, or by using
+        the <emphasis role="italic">autoConnect</emphasis> option in the <link linkend="mthAssignTo">assignTo</link>
+        method.
+      </para>
+      <para>
+        Note that <emphasis role="italic">setAutoConnection</emphasis> has to be invoked on the top-level menu of the
+        context menu. Invoking it on a submenu of the context menu would have no effect. When the <link
+        linkend="mthTrack">track</link> or <link linkend="mthShowClsPopupMenu">show</link> methods are used with a
+        popup menu, auto connection is ignored.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ScriptMenuBar class</emphasis></term>
+      <listitem>
+      <para>
+        Auto connection can  be turned on explicitly using the <link
+        linkend="mthSetAutoConnection">setAutoConnection</link> method <emphasis role="italic">after</emphasis> the
+        <computeroutput>ScriptMenuBar</computeroutput> is instantiated, but <emphasis role="italic">before</emphasis> it
+        is attached to a dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">UserMenuBar class</emphasis></term>
+      <listitem>
+      <para>
+        Auto connection can be turned on in the <link linkend="mthNewClsUserMenuBar">new</link> method of the
+        <computeroutput>UserMenuBar</computeroutput>.
+      </para>
+      <para>
+        Auto connection can  be turned on explicitly using the <link
+        linkend="mthSetAutoConnection">setAutoConnection</link> method <emphasis role="italic">after</emphasis> the
+        <computeroutput>UserMenuBar</computeroutput> is instantiated, but <emphasis role="italic">before</emphasis> it
+        is attached to a dialog.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Connection Request</emphasis></term>
+  <listitem>
+  <para>
+    A <emphasis role="italic">connection request</emphasis> is made when a menu command item is to be connected to a
+    specific method name in a dialog, before the menu bar has been attached to a dialog. Obviously it is impossible to
+    connect the item to a dialog method, before it is known what dialog the menu bar is going to be connected to. All
+    connection requests are fulfilled the <emphasis role="italic">first</emphasis> time the menu bar is connected to a
+    dialog. The requests are then discarded.
+  </para>
+  <para>
+    Connection requests are made by specifying a method to invoke when adding a command item to a
+    <computeroutput>UserMenuBar</computeroutput> through the <link linkend="mthAddItem">addItem</link> method, or by
+    specifying <computeroutput>.true</computeroutput> for the <emphasis role="italic">connect</emphasis> argument in the
+    <link linkend="mthNewClsScriptMenuBar">new</link> method of the <computeroutput>ScriptMenuBar</computeroutput>. The
+    request can also, possibly, be made by specifying a method to inovke when inserting a command item through the <link
+    linkend="mthInsertItem">insertItem</link> method.
+  </para>
+  <para>
+    The following is some specific details regarding connection requests for the different menu classes and menu class
+    methods:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">BinaryMenuBar class</emphasis></term>
+      <listitem>
+      <para>
+        Connection requests are not used in <computeroutput>BinaryMenuBar</computeroutput> class, except possibly though
+        the <emphasis role="italic">insertItem</emphasis> method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">insertItem method</emphasis></term>
+      <listitem>
+      <para>
+        A connection request can be made through the <link linkend="mthInsertItem">insertItem</link> method under these
+        specific conditions.  The <emphasis role="italic">insertItem</emphasis> method is invoked on a menu bar, not
+        using by position, and the menu bar is not currently attached to a dialog.  Then a connection request is made by
+        using the last arguments to the method, the <emphasis role="italic">connect</emphasis> and possibly the
+        <emphasis role="italic">mName</emphasis> methods. If the menu bar is already attached to a dialog, then those
+        last two arguments connect the item immediately, which in this discussion is considered the <emphasis
+        role="italic">direct connect</emphasis> type of making event connections.
+      </para>
+      <para>
+        <emphasis role="bold">Note</emphasis> that if auto connection is turned and a connection request is made using
+        the <emphasis role="italic">insertItem</emphasis> method, then both connections will be made. This should
+        <emphasis role="italic">not</emphasis> be done, the result is non-deterministic.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">PopupMenu class</emphasis></term>
+      <listitem>
+      <para>
+        Connection requests have no meaning in a popup menu, there is no such thing.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ScriptMenuBar class</emphasis></term>
+      <listitem>
+      <para>
+        Connection requests are made by using the <emphasis role="italic">connnect</emphasis> argument in the <link
+        linkend="mthNewClsScriptMenuBar">new</link> method of the class. If <emphasis role="italic">connect</emphasis>
+        is true, then a connection request is made for each command item found in the resource script, using a method
+        name constructed from the text of the command item.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">UserMenuBar class</emphasis></term>
+      <listitem>
+      <para>
+        In a <computeroutput>UserMenuBar</computeroutput>, a connection request can be made in the <link
+        linkend="mthAddItem">addItem</link> method by specifying a method name as the last argument, the <emphasis
+        role="italic">mName</emphasis> argument.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  <para>
+    As can be seen from the discussion above. the connection request type of making connections is primarily meant to
+    allow the programmer to automatically connect the menu items in a resourece script when the script is parsed
+    (<computeroutput>ScriptMenuBar</computeroutput>), or when the <emphasis role="italic">addItem</emphasis> method is
+    used (<computeroutput>UserMenuBar</computeroutput>.)
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Direct Connection</emphasis></term>
+  <listitem>
+  <para>
+    The direct connection type of connecting command item events is an explicit, connect <emphasis
+    role="italic">this</emphasis> command item to a method in <emphasis role="italic">this</emphasis> dialog. This is
+    relatively simple to understand. Directly connecting menu command events is done through the following methods:
+    <itemizedlist>
+    <listitem>
+    <para>
+      <link linkend="mthConnectCommandEventCls">connectCommandEvent (Class method)</link>
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="mthConnectAllCommandEvents">connectAllCommandEvents</link>
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="mthConnectCommandEvent">connectCommandEvent (Instance method)</link>
+    </para>
+    </listitem>
+    <listitem>
+    <para>
+      <link linkend="mthConnectSomeCommandEvents">connectSomeCommandEvents</link>
+    </para>
+    </listitem>
+    </itemizedlist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  In general, only one type of making command event connections should be used in any one menu. Auto connection should
+  never be used with the other two types of making connections. Mixing the 3 types of connecting command items to
+  methods can result in unpredicatable results.
+  <itemizedlist>
+  <listitem>
+  <para>
+    The same command item can end up connected to different methods, which method is invoked is non-deterministic.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Numerous entries in the dialog's message table for the same command item connected to the same method can happen.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Both of the above can result in the message table becoming far larger than necessary.
+  </para>
+  </listitem>
+  </itemizedlist>
+</para>
+<para>
+  At first glance, making menu command event connections may seem a little complex. However, <emphasis role="bold">in
+  practice</emphasis>, in ooDialog programs, it is relatively straight forward. The complexity only arises when multiple
+  menus are used with multiple dialogs in a single application and the programmer <emphasis
+  role="italic">chooses</emphasis> to mix the different types of making connections. <emphasis
+  role="italic">Most</emphasis> ooDialog programs contain a single dialog with a single menu bar and / or a single
+  context menu. If the programmer picks one type of making the menu item connection for her menu(s), things are really
+  pretty simple:
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose menuBar
+
+  menuBar = .BinaryMenuBar~new("menuResourceEx.dll", IDR_MENU1, , self, .true, onMenuSelect)
+
+]]>
+</programlisting>
+
+  The above creates a menu bar from a binary resource, attaches it to the dialog, and automatically connects all the
+  menu items in the menu to the <emphasis role="italic">onMenuSelect</emphasis> method, in one step. Which is pretty
+  simple.
+</para>
+
+</section>  <!-- End Section::Menu Command Event Connections -->
 
 <section id="sctMenuCommandEventHandlers"><title>Menu Command Event Handlers</title>
 <indexterm><primary>menu object</primary><secondary>command event handlers</secondary></indexterm>
 <para>
-  To be filled in --- .
-</para>
-<para>
-  To be filled in - need to explain SystemMenu command event handlers.
+  Menu command <link linkend="ovvEvents">event</link> notifications are actually the same notifications as the <link
+  linkend="mthConnectButtonEvent">button</link> CLICK event. These makes the event handler for a menu command event
+  pretty simple. The event handler is invoked when the user selects a menu command item. The programmer should return 0
+  from the event handler, however the interpreter does not <link linkend="sctCodingEventHandlers">wait</link> for the
+  return.
 </para>
 
-</section>
+<programlisting>
+<![CDATA[
+::method onMenuSelect unguarded
+  use arg id, arg2
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The menu command event handling method recieves 2 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric menu item identifier of the command item the user selected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      For menu command events, this argument is <emphasis role="italic">always</emphasis> 0. For button click events,
+      this argument is always the window handle of the button.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    Return 0, although, since the interpreter does not wait for the reply, the value returned is ignored. However, it is
+    good practice to always return a value from an event handler and 0 is the proper value for this notification.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Since the event handler for the menu command event is sent the ID of the menu item selected, there are two equally
+    valid ways of coding the event handler. One way would be to connect all menu command items to one method. In that
+    method check the menu item ID to determine which item the user selecte and take the appropriate action. The other
+    way would be to connect each menu item to its own method and ignore the arguments, simply take the action for that
+    menu item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example connects the <emphasis role="italic">File Open</emphasis> menu item with a method and then
+    opens a file when the user selects that menu item:
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  expose menuBar
+
+  menuBar~attachTo(self)
+  ...
+  menuBar~connectCommandEvent(IDM_OPEN, onFileOpen)
+  ...
+
+::method onFileOpen unguarded
+  use arg id, arg2
+
+  self~openFile
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Section::Menu Command Event Handlers -->
+
+</section>  <!-- End Section::Menu Command Items -->
+
 
 <section id="clsMenu"><title>The Menu Object</title>
 <indexterm><primary>Menu class</primary></indexterm>
@@ -559,7 +901,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID of the menu item, may be <link linkend="sctMenuSymbolicIDs">symbolic</link> or numeric.
+      The resource ID of the menu item, may be <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>methodName [required]</term>
@@ -991,7 +1333,7 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the menu item, may be <link linkend="sctMenuSymbolicIDs">symbolic</link> or numeric.
+        The resource ID of the menu item, may be <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>methodName [required]</term>
@@ -4392,7 +4734,7 @@
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID of the menu bar, may be <link linkend="sctMenuSymbolicIDs">symbolic</link> or numeric. This
+      The resource ID of the menu bar, may be <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This
       argument is required if <emphasis role="italic">menuSrc</emphasis> is either a
       <computeroutput>.ResDialog</computeroutput> or <computeroutput>.String</computeroutput> object.
     </para>
@@ -4400,7 +4742,7 @@
     <varlistentry><term>hID [optional]</term>
     <listitem>
     <para>
-      The context help resource ID of the menu bar, may be <link linkend="sctMenuSymbolicIDs">symbolic</link> or
+      The context help resource ID of the menu bar, may be <link linkend="itmMenuSymbolicIDs">symbolic</link> or
       numeric.
     </para>
     </listitem></varlistentry>
@@ -4447,7 +4789,7 @@
     Raises conditions for all failures. If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use <link linkend="sctMenuSymbolicIDs">symbolic</link> IDs with menu objects the programmer must use the global
+    To use <link linkend="itmMenuSymbolicIDs">symbolic</link> IDs with menu objects the programmer must use the global
     <link linkend="dotConstDir">.constDir</link>.
   </para>
   </listitem></varlistentry>
@@ -4581,14 +4923,14 @@
       <listitem>
       <para>
         The resource ID of the menu definition in the resource script. May be <link
-        linkend="sctMenuSymbolicIDs">symbolic</link> or numeric. If this argument is omitted, the first menu definition
+        linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. If this argument is omitted, the first menu definition
         found in the resource script is used.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>helpID [optional]</term>
       <listitem>
       <para>
-        The context help ID for this menu. May be numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link>. If
+        The context help ID for this menu. May be numeric or <link linkend="itmMenuSymbolicIDs">symbolic</link>. If
         omitted, the menu will not have a help ID.
       </para>
       </listitem></varlistentry>
@@ -4641,7 +4983,7 @@
     Raises conditions for all failures. If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use <link linkend="sctMenuSymbolicIDs">symbolic</link> IDs with menu objects the programmer must use the global
+    To use <link linkend="itmMenuSymbolicIDs">symbolic</link> IDs with menu objects the programmer must use the global
     <link linkend="dotConstDir">.constDir</link>.
   </para>
   </listitem></varlistentry>
@@ -4794,14 +5136,14 @@
     <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      The resource ID for the menu bar. May be <link linkend="sctMenuSymbolicIDs">symbolic</link> or numeric. If this
+      The resource ID for the menu bar. May be <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. If this
       argument is omitted or is -1, the menu bar will not have a resource ID.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>helpID [optional]</term>
     <listitem>
     <para>
-      The context help ID for this menu. May be numeric or <link linkend="sctMenuSymbolicIDs">symbolic</link>. If
+      The context help ID for this menu. May be numeric or <link linkend="itmMenuSymbolicIDs">symbolic</link>. If
       omitted, the menu will not have a help ID.
     </para>
     </listitem></varlistentry>
@@ -4859,7 +5201,7 @@
     Raises conditions for all failures. If no condition is raised then the menu has been created successfully.
   </para>
   <para>
-    To use <link linkend="sctMenuSymbolicIDs">symbolic</link> IDs with menu objects the programmer must use the global
+    To use <link linkend="itmMenuSymbolicIDs">symbolic</link> IDs with menu objects the programmer must use the global
     <link linkend="dotConstDir">.constDir</link>.
   </para>
   </listitem></varlistentry>
@@ -4874,7 +5216,7 @@
     the help ID is set and there is a Windows API failure. It is unlikely that this could happen.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <varlistentry id="exampleNewUserMenuBar"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     This example shows the creation of a user menu bar in a private method of the dialog. The application use symbolic
@@ -4931,7 +5273,7 @@
 </programlisting>
 
 <para>
-  Adds a menu command item to the menu template.  This method is only valid after the
+  Adds a menu command item to the menu template. This method is only valid after the
   <computeroutput>UserMenuBar</computeroutput> has been instantiated and before the menu template is <link
   linkend="mthComplete">completed</link>.
 </para>
@@ -4944,42 +5286,166 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID for the menu command item. May be <link linkend="sctMenuSymbolicIDs">symbolic</link> or numeric.
+      The resource ID for the menu command item. May be <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The text, the label, for the menu item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant. The keywords set the
+      state and type of the popup menu, and specify when the popup menu is the last item at the current level in the
+      menu.
+    </para>
+    <para>
+      The keywords: ENABLED UNHILITE NOTDEFAULT UNCHECKED, although valid keywords, are simply ignored for this method.
+      By default the state will be ENABLED UNHILITE NOTDEFAULT UNCHECKED, with no special type. The keywords are:
+    </para>
+    <para>
+    <simplelist type='vert' columns='3'>
+      <member>CHECKED      </member>
+      <member>DEFAULT      </member>
+      <member>DISABLED     </member>
+      <member>GRAYED       </member>
+      <member>HILITE       </member>
+      <member>MENUBARBREAK </member>
+      <member>MENUBREAK    </member>
+      <member>RADIO        </member>
+      <member>RIGHTJUSTIFY </member>
+      <member>END          </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>CHECKED</term>
+      <listitem>
+      <para>
+        A menu item state specification. Checks the menu item. If the item also has the RADIO type, the check is a
+        bullet, otherwise it is a normal check mark.
+      </para>
+      <varlistentry><term>DEFAULT</term>
+      <listitem>
+      <para>
+        A menu item state specification. Specifies that the menu item is the default. A menu can contain only one
+        default menu item, which is displayed in bold.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DISABLE</term>
+      <listitem>
+      <para>
+        A menu item state specification. Disables the menu item and grays it so that it cannot be selected. DISABLED and
+        GRAYED are exactly the same.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GRAYED</term>
+      <listitem>
+      <para>
+        A menu item state specification. Disables the menu item and grays it so that it cannot be selected. DISABLED and
+        GRAYED are exactly the same.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HILITE</term>
+      <listitem>
+      <para>
+        A menu item state specification. Highlights the menu item. Although the menu item can be created with this
+        state, it would not normally be done. It gives the user the appearance the menu is selected, but it is not
+        actually selected.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MENUBARBREAK</term>
+      <listitem>
+      <para>
+        A menu item type specification. Places the menu item on a new line (for a menu bar) or in a new column (for a
+        drop down menu, submenu, or shortcut menu). For a drop down menu, submenu, or shortcut menu, a vertical line
+        separates the new column from the old.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MENUBREAK</term>
+      <listitem>
+      <para>
+        A menu item type specification. Places the menu item on a new line (if in the top level of a menu bar) or in a
+        new column (for a menu item in a drop down menu, submenu, or shortcut menu). For a drop down menu, submenu, or
+        shortcut menu, the columns are <emphasis role="italic">not</emphasis> separated by a vertical line.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHTJUSTIFY</term>
+      <listitem>
+      <para>
+        A menu item type specification. Right-justifies the menu item and any subsequent popup menus. This value is
+        valid only if the menu item is in the top level of a menu bar. (Although it is not common to put a menu item in
+        the top level of a menu bar, it can be done.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>END</term>
+      <listitem>
+      <para>
+        Indicates that this is the last menu item at the current level of the menu. The END keyword <emphasis
+        role="italic">must</emphasis> be present if the item is the last menu item at the current level, and can
+        <emphasis role="italic">not</emphasis> be present otherwise. Incorrect placement of the END keyword is the most
+        common problem programmers have when using the <computeroutput>UserMenuBar</computeroutput> class.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
     </para>
     </listitem></varlistentry>
   </variablelist>
   </para>
   </listitem></varlistentry>
+  <varlistentry><term>mName [optional]</term>
+  <listitem>
+  <para>
+    A method name to connect the menu command event to. The default is to not connect the menu command item. This is a
+    connection <link linkend="sctMenuCommandEventConnections">request</link> type of connection. If this argument is
+    used it can not be the empty string.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    It is suggested that the ooDialog programmer create an empty <link linkend="clsBinaryMenuBar">BinaryMenuBar</link>
+    and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as <link
+    linkend="mthInsertPopup">insertPopup</link>. This provides all the functionality of the
+    <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The <computeroutput>UserMenuBar</computeroutput>
+        has already been <link linkend="mthIsComplete">completed</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_INVALID_PARAMETER (87)</term>
+      <listitem>
+      <para>
+        The parameter is incorrect. <emphasis role="bold">Meaning:</emphasis> When the <emphasis
+      role="italic">mName</emphasis> argument is used, it can not be the empty string.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    There is a good example of using the <emphasis role="italic">addItem</emphasis> method in the <link
+    linkend="exampleNewUserMenuBar">example</link> for the <emphasis role="italic">new</emphasis> method of the
+    <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5009,7 +5475,7 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID for the popup menu. May be <link linkend="sctMenuSymbolicIDs">symbolic</link> or numeric.
+      The resource ID for the popup menu. May be <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>name [required]</term>
@@ -5045,59 +5511,198 @@
       <varlistentry><term>DEFAULT</term>
       <listitem>
       <para>
-        text
+        A popup menu state specification. Specifies that the popup menu is the default. A menu can contain only one
+        default menu item, which is displayed in bold.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>DISABLE</term>
       <listitem>
       <para>
-         The
+        A popup menu state specification. Disables the popup menu and grays it so that it cannot be selected. DISABLED
+        and GRAYED are exactly the same
       </para>
       </listitem></varlistentry>
       <varlistentry><term>GRAYED</term>
       <listitem>
       <para>
-         The
+        A popup menu state specification. Disables the popup menu and grays it so that it cannot be selected. DISABLED
+        and GRAYED are exactly the same
       </para>
       </listitem></varlistentry>
       <varlistentry><term>HILITE</term>
       <listitem>
       <para>
-         The
+        A popup menu state specification. Highlights the popup menu. Although the popup menu can be created with this
+        state, it would not normally be done. It gives the user the appearance the popup menu is selected, but it is not
+        actually selected.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>MENUBARBREAK</term>
       <listitem>
       <para>
-         A menu type specification. Places the menu item on a new line (for a menu bar) or in a new column (for a drop
-         down menu, submenu, or shortcut menu). For a drop down menu, submenu, or shortcut menu, a vertical line
-         separates the new column from the old.
+        A popup menu type specification. Places the popup menu on a new line (for a menu bar) or in a new column (for a
+        drop down menu, submenu, or shortcut menu). For a drop down menu, submenu, or shortcut menu, a vertical line
+        separates the new column from the old.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>MENUBREAK</term>
       <listitem>
       <para>
-         A menu type specification. Places the menu item on a new line (for a menu bar) or in a new column (for a drop
-         down menu, submenu, or shortcut menu). For a drop down menu, submenu, or shortcut menu, the columns are
-         <emphasis role="italic">not</emphasis> separated by a vertical line.
+        A popup menu type specification. Places the popupt menu on a new line (for a menu bar) or in a new column (for
+        a drop down menu, submenu, or shortcut menu). For a drop down menu, submenu, or shortcut menu, the columns are
+        <emphasis role="italic">not</emphasis> separated by a vertical line.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>RIGHTJUSTIFY</term>
       <listitem>
       <para>
-         T
+        A popup menu type specification. Right-justifies the popup menu and any subsequent popup menus. This value is
+        valid only if the popup menu is in a menu bar.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>RIGHTORDER</term>
       <listitem>
       <para>
-         T
+        A popup menu type specification.  Specifies that menus cascade right-to-left (the default is left-to-right).
+        This is used to support right-to-left languages, such as Arabic and Hebrew.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>END</term>
       <listitem>
       <para>
-         T
+        Indicates that this is the last menu item at the current level of the menu. The END keyword <emphasis
+        role="italic">must</emphasis> be present if the popup menu is the last menu item at the current level, and can
+        <emphasis role="italic">not</emphasis> be present otherwise. Incorrect placement of the END keyword is the most
+        common problem programmers have when using the <computeroutput>UserMenuBar</computeroutput> class.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>helpID [optional]</term>
+    <listitem>
+    <para>
+      The context help ID for the popup menu. May be <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    It is suggested that the ooDialog programmer create an empty <link linkend="clsBinaryMenuBar">BinaryMenuBar</link>
+    and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as <link
+    linkend="mthInsertPopup">insertPopup</link>. This provides all the functionality of the
+    <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The <computeroutput>UserMenuBar</computeroutput>
+        has already been <link linkend="mthIsComplete">completed</link>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    There is a good example of using the <emphasis role="italic">addPopup</emphasis> method in the <link
+    linkend="exampleNewUserMenuBar">example</link> for the <emphasis role="italic">new</emphasis> method of the
+    <computeroutput>UserMenuBar</computeroutput> class.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAddSeparator"><title>addSeparator</title>
+<indexterm><primary>addSeparator</primary></indexterm>
+<indexterm><primary>UserMenuBar class</primary><secondary>addSeparator</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addSeparator(--id--+---------+--)------------><
+                       +-,-opts--+
+]]>
+</programlisting>
+
+<para>
+  Adds a separator, which is a horizontal line, to the menu template. This method is only valid after the
+  <computeroutput>UserMenuBar</computeroutput> has been instantiated and before the menu template is <link
+  linkend="mthComplete">completed</link>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID for the separator. May be <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. -1 is
+      accepted to indicate no ID is desired, however, there are many advantages to assigning valid IDs to separators.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant. The keywords set the
+      few valid types of the separator, and specify when the separator is the last item at the current level in the
+      menu. The keywords are:
+    </para>
+    <para>
+    <simplelist type='vert' columns='3'>
+      <member>MENUBARBREAK </member>
+      <member>MENUBREAK    </member>
+      <member>RIGHTJUSTIFY </member>
+      <member>END          </member>
+    </simplelist>
+    <variablelist>
+      <varlistentry><term>MENUBARBREAK</term>
+      <listitem>
+      <para>
+        A separator type specification. Places the separator, and all menu items following it, on a new line (for a menu
+        bar) or in a new column (for a drop down menu, submenu, or shortcut menu). For a drop down menu, submenu, or
+        shortcut menu, a vertical line separates the new column from the old.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MENUBREAK</term>
+      <listitem>
+      <para>
+        A separator type specification. Places the separator, and all menu items following it, on a new line (for a menu
+        bar) or in a new column (for a drop down menu, submenu, or shortcut menu). For a drop down menu, submenu, or
+        shortcut menu, the columns are <emphasis role="italic">not</emphasis> separated by a vertical line.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHTJUSTIFY</term>
+      <listitem>
+      <para>
+        A separator type specification. Right-justifies the separator and any subsequent menu items. This value is
+        valid only if the separator is in a menu bar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>END</term>
+      <listitem>
+      <para>
+        Indicates that this is the last menu item at the current level of the menu. The END keyword <emphasis
+        role="italic">must</emphasis> be present if the separator is the last menu item at the current level, and can
+        <emphasis role="italic">not</emphasis> be present otherwise. Incorrect placement of the END keyword is the most
+        common problem programmers have when using the <computeroutput>UserMenuBar</computeroutput> class.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5109,97 +5714,46 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method always returns 0.
+    Returns true on success and false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The Microsoft documentation indicates that a separator can not be used in a menu bar, only in a submenu. However, on
+    Windows 7 at least, separators can be used in the menu bar. No vertical line is shown, but the separator will take
+    up a little space. The separator <emphasis role="italic">type</emphasis> keywords work as expected. I.e., if the
+    separtor is given the RIGHTJUSTIFY type, it and all subsequent menut items are right justified in the menu bar.
+  </para>
+  <para>
+    It is suggested that the ooDialog programmer create an empty <link linkend="clsBinaryMenuBar">BinaryMenuBar</link>
+    and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as <link
+    linkend="mthInsertPopup">insertPopup</link>. This provides all the functionality of the
+    <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthAddSeparator"><title>addSeparator</title>
-<indexterm><primary>addSeparator</primary></indexterm>
-<indexterm><primary>UserMenuBar class</primary><secondary>addSeparator</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--addSeparator(--+--------+--)---------------------------------------------><
-                   +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The <computeroutput>UserMenuBar</computeroutput>
+        has already been <link linkend="mthIsComplete">completed</link>.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    There is a good example of using the <emphasis role="italic">addSeparator</emphasis> method in the <link
+    linkend="exampleNewUserMenuBar">example</link> for the <emphasis role="italic">new</emphasis> method of the
+    <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5210,46 +5764,55 @@ return 0
 <indexterm><primary>UserMenuBar class</primary><secondary>complete</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--complete(--+--------+--)---------------------------------------------><
-               +--type--+
+>>--complete-------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">complete</emphasis> method finializes the in-memory template and converts it to an actual
+  menu bar.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The menu bar can not be attached to a dialog prior to invoking the <emphasis role="italic">complete</emphasis>
+    method. Likewise, no menu items can be added to the template using the <link linkend="mthAddItem">addItem</link>,
+    <link linkend="mthAddPopup">addPopup</link>, or <link linkend="mthAddSeparator">addSeparator</link> methods after
+    the <emphasis role="italic">complete</emphasis> method is invoked. However, once the menu bar is complete, the
+    <emphasis role="italic">insert</emphasis> methods of the menu object, such as the <link
+    linkend="mthInsertPopup">insertPopup</link> method can all be used to insert menu items.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The menu template has already been finialized.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
