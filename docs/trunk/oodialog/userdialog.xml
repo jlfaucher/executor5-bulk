@@ -159,7 +159,7 @@
 </row>
 <row>
 <entry><link linkend="mthCreateComboBoxInput">createComboBoxInput</link></entry>
-<entry>Creates a combobox with a static text control (for the label) in the dilaog template. </entry>
+<entry>Creates a combobox with a static text control (for the label) in the dialog template. </entry>
 </row>
 <row>
 <entry><link linkend="mthCreateDateTimePicker">createDateTimePicker</link></entry>
@@ -187,7 +187,7 @@
 </row>
 <row>
 <entry><link linkend="mthCreateEtchedHorizontal">createEtchedHorizontal</link></entry>
-<entry>Creates a static control in the dialog template that is an etched hoizontal line.</entry>
+<entry>Creates a static control in the dialog template that is an etched horizontal line.</entry>
 </row>
 <row>
 <entry><link linkend="mthCreateEtchedVertical">createEtchedVertical</link></entry>
@@ -207,7 +207,7 @@
 </row>
 <row>
 <entry><link linkend="mthCreateListbox">createListBox</link></entry>
-<entry>Creats a list box control in the dialog template.</entry>
+<entry>Creates a list box control in the dialog template.</entry>
 </row>
 <row>
 <entry><link linkend="mthCreateListView">createListView</link></entry>
@@ -567,7 +567,7 @@
       The width and height of the dialog in dialog units.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>title [optiona]</term>
+    <varlistentry><term>title [optional]</term>
     <listitem>
     <para>
       The title for the dialog. If omitted, the dialog will not have a title.
@@ -582,7 +582,7 @@
       <listitem>
       <para>
         Creates the dialog in a visible state. The default is to create the dialog invisible. The operating system does
-        not show the dialog until the visble state is set, and the programmer sets the dialog to visible when desired.
+        not show the dialog until the visible state is set, and the programmer sets the dialog to visible when desired.
       </para>
       <para>
         A common technique in Windows is to create the dialog invisible, initialize all the dialog controls, and then
@@ -676,7 +676,7 @@
     <listitem>
     <para>
       Name of the window class used for the dialog. This argument is, and always has been, ignored. It is difficult to
-      say what the original intent for the arguement was.
+      say what the original intent for the argument was.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>fontName [optional]</term>
@@ -691,7 +691,7 @@
     <varlistentry><term>fontSize [optional]</term>
     <listitem>
     <para>
-      The point size of the font used by the dialog.  When this arugment is omitted, the default dialog font size is
+      The point size of the font used by the dialog.  When this argument is omitted, the default dialog font size is
       used, in the same manner as the font name.
     </para>
     </listitem></varlistentry>
@@ -827,7 +827,7 @@ if success then dlg~execute
   successfully. In addition, the methods cannot be used once the underlying dialog has been created. In general this is
   after the <link linkend="mthExecute">execute</link>() or the <link linkend="mthExecuteAsync">executeAsync</link>()
   methods have been invoked. If the programmer puts all the create... methods in the <emphasis
-  role="italic">defineDialog</emphasis> method as recommended, then he does not need to worry about inovking the methods
+  role="italic">defineDialog</emphasis> method as recommended, then he does not need to worry about invoking the methods
   at the wrong time.
 </para>
 <para id="paraStyleExplanation">
@@ -957,7 +957,7 @@ if success then dlg~execute
   linkend="defDialogUnit">units</link>. The position of the dialog control is specified in relation to the upper left
   corner of the dialog's <link linkend="defClientArea">client</link>. All the create... methods that create a single
   control have the following common arguments.  Some of the other create... methods that create a group of
-  controls will only take the postion, or the size arguments:
+  controls will only take the position, or the size arguments:
 </para>
 <variablelist>
   <varlistentry><term id="xArgument"><emphasis role="bold">x</emphasis></term>
@@ -995,7 +995,7 @@ if success then dlg~execute
   <para>
     By default static controls and group boxes are assigned a resource id of -1. However, assigning a positive id allows
     the programmer to modify the static control or group box after it is created, perhaps to change the text of
-    its title, or to change its postition. Without a positive ID, a static control or group box can not be modified.
+    its title, or to change its position. Without a positive ID, a static control or group box can not be modified.
     Which is fine, normally static controls and group boxes do not need to be modified.
   </para>
   </listitem></varlistentry>
@@ -1081,7 +1081,7 @@ if success then dlg~execute
     <para>
       <emphasis role="bold">Note:</emphasis> The 3.2.0 ooDialog documentation incorrectly stated you could use the
       NOTIFY style keyword. Do not do this. Owner-drawn buttons should not use any other button styles than OWNER or
-      DEFAUALT, and the OWNER style is automatically added by the ooDialog framework. The result of using the
+      DEFAULT, and the OWNER style is automatically added by the ooDialog framework. The result of using the
       NOTIFY style will be less than satisfactory. A button that uses an <link linkend="mthSetImageList">image
       list</link> allows the use of the NOTIFY style and will give a better overall look to the dialog.  Using a button
       with an image list should be the preferred method for non-text buttons.
@@ -1289,10 +1289,10 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
   The <emphasis role="italic">createCheckBox</emphasis> method creates a check box in the dialog template.
 </para>
 <para>
-  By default the check box will have the AUTOMATIC check box stlye. With this style, the operating system automatically
+  By default the check box will have the AUTOMATIC check box style. With this style, the operating system automatically
   checks or unchecks the control when the user changes the check state. The opposite of the this style is the STANDARD
-  check box. With the standard check box, the programmer is responisble for managing the check state of the control.
-  The 3STATE style, creates the check boxas an automatic three-state check box, also with the AUTOMATIC style. Standard
+  check box. With the standard check box, the programmer is responsible for managing the check state of the control.
+  The 3STATE style, creates the check boxes an automatic three-state check box, also with the AUTOMATIC style. Standard
   and standard three-state check boxes can not be created through this method. See the <link
   linkend="clsCheckBox">CheckBox</link> class for more information on check box controls.
 </para>
@@ -1312,7 +1312,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
       <listitem>
       <para>
         The  control <link linkend="paraControlCoordinates">coordinates</link> If cx or cy are omitted, then the size for
-        the check box is calcuated internally using its label.
+        the check box is calculated internally using its label.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>style [optional]</term>
@@ -1411,7 +1411,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
           <varlistentry><term>VCENTER</term>
           <listitem>
           <para>
-            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
             specified.
           </para>
           </listitem></varlistentry>
@@ -1510,7 +1510,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
       <para>
         If automatic data <link linkend="mthInitAutoDetection">detection</link> is off then no data attribute is
         created, whether this argument is used or not. The <link linkend="mthConnectCheckBox">connectCheckBox</link>()
-        method can be used to manually create and connect the data attrbiute when data detection is off.
+        method can be used to manually create and connect the data attribute when data detection is off.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>connectMth [optional]</term>
@@ -1576,7 +1576,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
   <listitem>
   <para>
     The following example defines an automatic three-state check box. The label for the check box is rather long, so a
-    multilinee style is used.
+    multiline style is used.
   </para>
 <programlisting>
 <![CDATA[
@@ -1748,7 +1748,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
           <varlistentry><term>VCENTER</term>
           <listitem>
           <para>
-            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
             specified.
           </para>
           </listitem></varlistentry>
@@ -1837,7 +1837,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
       <para>
         This argument is used to set the resource <link linkend="idArgument">ID</link> for the <link
         linkend="clsGroupBox">group box</link>, if one is used. The argument is ignored if the NOBORDER style is used.
-        If the NOBORDER style is not used and this argument is omittend then -1 is used for the resource ID.
+        If the NOBORDER style is not used and this argument is omitted then -1 is used for the resource ID.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1922,8 +1922,8 @@ self~objectrexx = 1
       <varlistentry><term>txt. [required]</term>
       <listitem>
       <para>
-        A stem containing the text for the label of each check box. The stem indexes shoud start at 1 and continue
-        consecutively, with each succeding number containing the the label for the next check box. This argument
+        A stem containing the text for the label of each check box. The stem indexes should start at 1 and continue
+        consecutively, with each succeeding number containing the the label for the next check box. This argument
         determines the number of check boxes in total.
       </para>
       </listitem></varlistentry>
@@ -1931,7 +1931,7 @@ self~objectrexx = 1
       <listitem>
       <para>
         A number specifying the maximum check boxes to put in a column. The programmer can use this to balance the look
-        of the group by placing the check boxe in more than 1 column. For instance, if there are 8 check boxes and the
+        of the group by placing the check box in more than 1 column. For instance, if there are 8 check boxes and the
         max argument is 4 then the result will have 4 check boxes in 2 side-by-side columns. Likewise if max is 3 and
         there are 9 check boxes, then this methods will create 3 columns of 3 check boxes. If this argument is omitted,
         all the check boxes are placed in a single column.
@@ -2033,7 +2033,7 @@ self~objectrexx = 1
           <varlistentry><term>VCENTER</term>
           <listitem>
           <para>
-            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
             specified.
           </para>
           </listitem></varlistentry>
@@ -2388,7 +2388,7 @@ self~objectrexx = 1
 
 <para>
   The <emphasis role="italic">createOkCancelLeftTop</emphasis> method creates an OK and a Cancel push button group in
-  the dialog template. The group is placed in a columnt at the upper-left edge of the dialog.
+  the dialog template. The group is placed in a column at the upper-left edge of the dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2679,7 +2679,7 @@ self~objectrexx = 1
           <varlistentry><term>VCENTER</term>
           <listitem>
           <para>
-            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
             specified.
           </para>
           </listitem></varlistentry>
@@ -2731,7 +2731,7 @@ self~objectrexx = 1
           <varlistentry><term>HIDDEN</term>
           <listitem>
           <para>
-            The contorl has the <link linkend="wsvisible">not visible</link> window style.
+            The control has the <link linkend="wsvisible">not visible</link> window style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>DISABLED</term>
@@ -2757,7 +2757,7 @@ self~objectrexx = 1
           <varlistentry><term>NOTAB</term>
           <listitem>
           <para>
-            The cotrol does not have the <link linkend="wstabstop">tabstop</link> style.
+            The control does not have the <link linkend="wstabstop">tabstop</link> style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -2997,7 +2997,7 @@ end
           <varlistentry><term>VCENTER</term>
           <listitem>
           <para>
-            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
             specified.
           </para>
           </listitem></varlistentry>
@@ -3169,8 +3169,8 @@ MyDialog~execute
       <varlistentry><term>text. [required]</term>
       <listitem>
       <para>
-        A stem containing the text label for each radio button. The stem indexes shoud start at 1 and continue
-        consecutively, with each succeding number containing the the label for the next radion button. This argument
+        A stem containing the text label for each radio button. The stem indexes should start at 1 and continue
+        consecutively, with each succeeding number containing the the label for the next radion button. This argument
         determines the number of radio buttons in total.
       </para>
       </listitem></varlistentry>
@@ -3269,7 +3269,7 @@ MyDialog~execute
           <varlistentry><term>VCENTER</term>
           <listitem>
           <para>
-            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
             specified.
           </para>
           </listitem></varlistentry>
@@ -3448,7 +3448,7 @@ MyDialog~execute
         The  control <link linkend="paraControlCoordinates">coordinates</link>
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>style [otpional]</term>
+      <varlistentry><term>style [optional]</term>
       <listitem>
       <para>
         A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords
@@ -3542,7 +3542,7 @@ MyDialog~execute
           <varlistentry><term>VCENTER</term>
           <listitem>
           <para>
-            The text is vertically centered in the button rectanble.  This is the default if neither
+            The text is vertically centered in the button rectangle.  This is the default if neither
             TOP nor BOTTOM are specified.
           </para>
           </listitem></varlistentry>
@@ -3729,7 +3729,7 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
       <para>
         A list of 0 or more of the following <link linkend="paraStyleExplanation">style</link> keywords separated by
         spaces. Each button is given the same set of styles, except for the DEFAULT style. If the style arg contains the
-        DEFAULT keywork, it is only given to the first button:
+        DEFAULT keyword, it is only given to the first button:
       </para>
       <para>
         <simplelist type='vert' columns='3'>
@@ -3818,7 +3818,7 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
           <varlistentry><term>VCENTER</term>
           <listitem>
           <para>
-            The text is vertically centered in the button rectanble.  This is the default if neither TOP nor BOTTOM are
+            The text is vertically centered in the button rectangle.  This is the default if neither TOP nor BOTTOM are
             specified.
           </para>
           </listitem></varlistentry>
@@ -4040,8 +4040,8 @@ self~createPushButtonGroup(20, 235, , ,              -
         </para>
         <para>
           <emphasis role="bold">Note</emphasis> that the horizontal extent for the combo box is 0 when the combo box is
-          created. Because of that, adding a hozizontal scroll will have no effect unless the programmer also changes
-          the extent using the <link linkend="mthSetHorizontalExtentClsComboBox">setHoizontalExtent</link>.
+          created. Because of that, adding a horizontal scroll will have no effect unless the programmer also changes
+          the extent using the <link linkend="mthSetHorizontalExtentClsComboBox">setHorizontalExtent</link>.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>LOWER</term>
@@ -4340,7 +4340,7 @@ self~createPushButtonGroup(20, 235, , ,              -
     <listitem>
     <para>
       This argument is used to set the resource <link linkend="idArgument">ID</link> for the label, if one is desired.
-      If omitted, the default stactic control ID (-1) is used.
+      If omitted, the default static control ID (-1) is used.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>attrName [optional]</term>
@@ -4468,7 +4468,7 @@ self~createPushButtonGroup(20, 235, , ,              -
           <varlistentry><term>CENTURY</term>
           <listitem>
           <para>
-            The CENTURY style dislplays the date similarily to the SHORT style, except the year uses all four digits:
+            The CENTURY style displays the date similarily to the SHORT style, except the year uses all four digits:
             "12/26/2010". Mutually exclusive with the LONG< SHORT, and TIME styles.
           </para>
           </listitem></varlistentry>
@@ -4491,14 +4491,14 @@ self~createPushButtonGroup(20, 235, , ,              -
           <varlistentry><term>RIGHT</term>
           <listitem>
           <para>
-            The drop-down month calendar is right-aligned with the date and time picker. The default is for the drop-donw
+            The drop-down month calendar is right-aligned with the date and time picker. The default is for the drop-down
             to be left-aligned.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>SHOWNONE</term>
           <listitem>
           <para>
-            This stle makes it possible to have no date currently selected in the control. The date and time picker
+            This style makes it possible to have no date currently selected in the control. The date and time picker
             displays a check box that is selected automatically whenever a date is picked or entered. When the check box
             is deselected, the programmer can not get the date from the control, the date is essentially no date. The
             state of the check box can be set using the <link linkend="mthSetDateTime">setDateTime</link> method or
@@ -5153,7 +5153,7 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
     <listitem>
     <para>
       This argument is used to set the resource <link linkend="idArgument">ID</link> for the static control, if one is
-      desired. If omitted, the default stactic control ID (-1) is used.
+      desired. If omitted, the default static control ID (-1) is used.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>attr [optional]</term>
@@ -5486,7 +5486,7 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
     <listitem>
     <para>
       This argument is used to set the resource <link linkend="idArgument">ID</link> for the first static text control,
-      that is, the label for the first edit control. If this argument is ommited, the static text controls are assigned
+      that is, the label for the first edit control. If this argument is omitted, the static text controls are assigned
       the default (-1) static control ID.
     </para>
     </listitem></varlistentry>
@@ -5801,11 +5801,11 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
       </variablelist>
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>idStat [optiona]</term>
+    <varlistentry><term>idStat [optional]</term>
     <listitem>
     <para>
       This argument is used to set the resource <link linkend="idArgument">ID</link> for the first static text control,
-      that is, the label for the first edit control. If this arugment is omitted the static text controls are assigned
+      that is, the label for the first edit control. If this argument is omitted the static text controls are assigned
       the default (-1) static control ID. Resource IDs only need to be assigned to the static controls if there is some
       need to manipulate the underlying static control after it has been created. For instance if its text needed to be
       changed, or its position needed to be changed.
@@ -6289,7 +6289,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
         </para>
         <para>
           To take advantage of this style, the programmer would need to use the <link
-          linkend="mthAddUserMsg">addUserMsg</link>() method to receive the keyboard event notification. Furture versions
+          linkend="mthAddUserMsg">addUserMsg</link>() method to receive the keyboard event notification. Future versions
           of ooDialog may support this event directly.
         </para>
         </listitem></varlistentry>
@@ -7366,7 +7366,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
 
 <para>
   The <emphasis role="italic">createBlackRect</emphasis> method creates a black <link
-  linkend="figFramesRects">rectangle</link> static control in the dialog template. The rectangle is flled with the
+  linkend="figFramesRects">rectangle</link> static control in the dialog template. The rectangle is filled with the
   current window frame color, which is black in the default color scheme.
 </para>
 <variablelist>
@@ -8186,7 +8186,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguements are:
+    The arguments are:
   <variablelist>
     <varlistentry><term>id [optional]</term>
     <listitem>
@@ -8791,7 +8791,7 @@ self~createProgressBar("IDC_PBAR_DONE", 10, self~sizeY - 22, self~sizeX - 20, 12
     <listitem>
     <para>
       The resource <link linkend="idArgument">ID</link> for the static control. The resource id is required for this
-      method becuase, without a positive resource ID, there is no way to set the image in the control.
+      method because, without a positive resource ID, there is no way to set the image in the control.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>x, y, cx, cy [required]</term>
@@ -9711,8 +9711,8 @@ return 0
           <varlistentry><term>MULTILINE</term>
           <listitem>
           <para>
-            Tabs are displayed in multiple rows when there are more tabs than can be displayed in a single row. In ths way
-            all tabs are visisble.
+            Tabs are displayed in multiple rows when there are more tabs than can be displayed in a single row. In this way
+            all tabs are visible.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>HIDDEN</term>
@@ -9737,7 +9737,7 @@ return 0
           <listitem>
           <para>
             Create the control with the <link linkend="wsborder">border</link> window style. By default tab controls are
-            created without the border sytle.
+            created without the border style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOTTAB</term>
@@ -9799,7 +9799,7 @@ return 0
   <listitem>
   <para>
     The following example creates a tab control within the in-memory dialog template. Its resource id is the numeric
-    value of the <link linkend="defSymbolicID">symbolic</link> id: IDC_TAB. If needed, ultiple rows of tabs are
+    value of the <link linkend="defSymbolicID">symbolic</link> id: IDC_TAB. If needed, multiple rows of tabs are
     displayed so tat all tabs are visible at once. All tabs have the same width. Its data (the selected tab) is
     associated with data attribute CURRENTPAGE.
 <programlisting>
@@ -10528,8 +10528,8 @@ self~createTreeView(IDC_TV_ORG_CHART, 100, 80, 40, 120, "LINES BUTTON EDIT ATROO
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example demonsrates how to create a <link linkend="mthCreatePushButton">push button</link> and an <link
-    linkend="mthCreateEdit">edit</link> control in a dilaog:
+    This example demonstrates how to create a <link linkend="mthCreatePushButton">push button</link> and an <link
+    linkend="mthCreateEdit">edit</link> control in a dialog:
 
 <programlisting>
 <![CDATA[
@@ -10590,7 +10590,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
     <listitem>
     <para>
       The resource ID of the dialog. May be numeric or <link linkend="defSymbolicID">symbolic</link>. Resource scripts
-      often contain more thant one dialog definition, the resource ID is used to locate the correct dialog. If the
+      often contain more than one dialog definition, the resource ID is used to locate the correct dialog. If the
       resource script only contains one dialog resource, then this argument can be omitted.
     </para>
     </listitem></varlistentry>
@@ -10715,7 +10715,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
     <listitem>
     <para>
       The resource ID of the dialog. May be numeric or <link linkend="defSymbolicID">symbolic</link>. Resource scripts
-      often contain more thant one dialog definition, the resource ID is used to locate the correct dialog. If the
+      often contain more than one dialog definition, the resource ID is used to locate the correct dialog. If the
       resource script only contains one dialog resource, then this argument can be omitted.
     </para>
     </listitem></varlistentry>
@@ -10788,7 +10788,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
   <listitem>
   <para>
     This is a private method. It is normally invoked automatically by the <link linkend="mthLoad">load</link> method.
-    There is seldom a need for the Rexx programmer to inovke this method directly.
+    There is seldom a need for the Rexx programmer to invoke this method directly.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -10806,7 +10806,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
     <listitem>
     <para>
       The resource ID of the dialog. May be numeric or <link linkend="defSymbolicID">symbolic</link>. Resource scripts
-      often contain more thant one dialog definition, the resource ID is used to locate the correct dialog. If the
+      often contain more than one dialog definition, the resource ID is used to locate the correct dialog. If the
       resource script only contains one dialog resource, then this argument can be omitted.
     </para>
     </listitem></varlistentry>
