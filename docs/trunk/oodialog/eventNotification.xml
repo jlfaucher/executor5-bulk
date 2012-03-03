@@ -572,7 +572,7 @@
 <entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthConnectDateTimePickerEvent">conectDateTimePickerEvent</link></entry>
+<entry><link linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link></entry>
 <entry>Connects an event notification form a date time picker to a method in the Rexx dialog.</entry>
 </row>
 <row>
@@ -815,7 +815,7 @@
 
 ]]>
 </programlisting>
-    only the WM_KEYDWN message will match and <emphasis role="italic">onKeyDown</emphasis> is only invoked for that
+    only the WM_KEYDOWN message will match and <emphasis role="italic">onKeyDown</emphasis> is only invoked for that
     message.
   </para>
   <para>
@@ -835,7 +835,7 @@
   <para>
     In a similar fashion, both the LBN_SETFOCUS (0x4) and the LBN_KILLFOCUS (0x5) notifications are sent to a list box
     using the WM_COMMAND (0x0111) message.  For the WM_COMMAND message, the WPARAM parameter contains the control ID in
-    the low word of the parameter and the notfication code in the high word of the parameter.
+    the low word of the parameter and the notification code in the high word of the parameter.
   </para>
   <para>
     Say the list box control has an ID of 256 (0xFF,) when
@@ -868,7 +868,7 @@
 
 ]]>
 </programlisting>
-    both the LBN_SETFOCUS and LBN_KILLFOCUS notifications to the listbox will invole the <emphasis
+    both the LBN_SETFOCUS and LBN_KILLFOCUS notifications to the listbox will invoke the <emphasis
   role="italic">onFocus</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -959,7 +959,7 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves two arguments. However, as noted in the remarks for the <link
+    The event handling method receives two arguments. However, as noted in the remarks for the <link
     linkend="mthAddUserMsg">addUserMessage</link> this does not hold if ooDialog already has a connect event method for
     the window message. In which case, the programmer should use the existing method, rather than <emphasis
     role="italic">addUserMsg</emphasis>.
@@ -1059,7 +1059,7 @@
     the user is currently working with. The activate notification is only sent to top-level windows. The activate
     notification is always sent in pairs, one notification to the window losing the activation and one to the window
     gaining the activation. The arguments to the event handler for the notification allow the programmer to determine if
-    the window is gaining or losing the acivation.
+    the window is gaining or losing the activation.
   </para>
   <para>
     Common guidelines on <link linkend="paraWhereToConnectEvents">where</link> to invoke the <emphasis
@@ -1112,7 +1112,7 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves four arguments:
+    The event handling method receives four arguments:
   </para>
   <variablelist>
     <varlistentry><term>status</term>
@@ -1379,7 +1379,7 @@
       <varlistentry><term>mName [optional]</term>
       <listitem>
       <para>
-        The name of the method to inovke whenever the specified notification is received from the button control. Provide
+        The name of the method to invoke whenever the specified notification is received from the button control. Provide
         a method with a matching name. If you omit this argument, a method name is generated automatically. The name
         consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance:
         <computeroutput>onGotFocus</computeroutput>. The method name can not be the empty string.
@@ -1827,7 +1827,7 @@ lo word resource ID:       1003
     <para>
       Exactly one of the following keywords. The keyword specifies the event to be connected. For each event, the
       documentation for the event handler, (<link linkend="evtDateTimePickerCLOSEUP">CloseUp</link>, <link
-      linkend="evtDateTimePickerDATETIMECHANGE">DateTimeChange</link>, etc.,) will contain additional infomation about
+      linkend="evtDateTimePickerDATETIMECHANGE">DateTimeChange</link>, etc.,) will contain additional information about
       the event. Case is not significant:
     </para>
     <para>
@@ -1967,7 +1967,7 @@ lo word resource ID:       1003
     connected event happens.
   </para>
   <para>
-    The underlying dialog recieves the DTN_* messages as the notifications for the date time picker events.
+    The underlying dialog receives the DTN_* messages as the notifications for the date time picker events.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2031,7 +2031,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>idFrom</term>
@@ -2112,7 +2112,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>dateTime</term>
@@ -2121,8 +2121,8 @@ lo word resource ID:       1003
       The <emphasis role="italic">dateTime</emphasis> argument is a <computeroutput>DateTime</computeroutput> object.
       When the <emphasis role="italic">valid</emphasis> argument is true, <emphasis role="italic">dateTime</emphasis>
       specifies the new displayed date and time in the DTP control. When <emphasis role="italic">valid</emphasis> is
-      false, <emphasis role="italic">dateTime</emphasis> will be the exact date and time that the notifcation was
-      recieved.
+      false, <emphasis role="italic">dateTime</emphasis> will be the exact date and time that the notification was
+      received.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>valid</term>
@@ -2242,7 +2242,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The drop down event handler recieves 2 arguments:
+    The drop down event handler receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>idFrom</term>
@@ -2349,7 +2349,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>field</term>
@@ -2457,7 +2457,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>field</term>
@@ -2567,7 +2567,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method receives xx arguments:
   </para>
   <variablelist>
     <varlistentry><term>field</term>
@@ -2696,7 +2696,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The kill focus event handler recieves 2 arguments:
+    The kill focus event handler receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>idFrom</term>
@@ -2750,7 +2750,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The set focus event handler recieves 2 arguments:
+    The set focus event handler receives 2 arguments:
   </para>
   <variablelist>
     <varlistentry><term>idFrom</term>
@@ -2802,7 +2802,7 @@ lo word resource ID:       1003
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>dateTime</term>
@@ -3322,7 +3322,7 @@ it to 0 when a nonnumeric value was entered:
 
   </para>
   <para>
-    The event handling method recieves the same arguments as the <link
+    The event handling method receives the same arguments as the <link
     linkend="connectKeyPressEventHandler">event</link> handler for the <emphasis
     role="italic">connectKeyPress</emphasis> method .
   </para>
@@ -3336,17 +3336,17 @@ it to 0 when a nonnumeric value was entered:
   <para>
     The dialog control object also has a <link linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link>()
     method. The method of the dialog object (this method) will capture any F key press event when the dialog is the
-    active window. The method of the dialg control object will only capture a F key press when the control has the
+    active window. The method of the dialog control object will only capture a F key press when the control has the
     keyboard focus.
   </para>
   <para>
     Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
-    most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message
+    most of the other methods of the <computeroutput>EventNotification</computeroutput> class. There is no single message
     sent to the underlying dialog for a key stroke event.
   </para>
   </listitem>
   </varlistentry>
-  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     In general error return codes are used to indicate incorrect usage rather than raised syntax conditions. However,
@@ -3362,7 +3362,7 @@ it to 0 when a nonnumeric value was entered:
   </para>
   <para>
     Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
-    most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message
+    most of the other methods of the <computeroutput>EventNotification</computeroutput> class. There is no single message
     sent to the underlying dialog for a key stroke event.
   </para>
   </listitem>
@@ -3801,7 +3801,7 @@ Help request:
     notifications.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     In general error return codes are used to indicate incorrect usage rather than raised syntax conditions. However,
@@ -3817,7 +3817,7 @@ Help request:
   </para>
   <para>
     Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
-    most of the other methods of the <computeroutput>EventNotication</computeroutput> class. There is no single message
+    most of the other methods of the <computeroutput>EventNotification</computeroutput> class. There is no single message
     sent to the underlying dialog for a key stroke event.
   </para>
   </listitem></varlistentry>
@@ -4139,14 +4139,14 @@ incorrect.
       <varlistentry><term>BEGINDRAG</term>
       <listitem>
       <para>
-        A drag-and-drop operaton was initiated. See <link linkend="mthDefListDragHandler">defListDragHandler</link> for
+        A drag-and-drop operation was initiated. See <link linkend="mthDefListDragHandler">defListDragHandler</link> for
         information on how to implement a drag-and-drop handler.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>BEGINRDRAG</term>
       <listitem>
       <para>
-        A drag-and-drop operaton involving the right mouse button was initiated. See <link
+        A drag-and-drop operation involving the right mouse button was initiated. See <link
         linkend="mthDefListDragHandler">defListDragHandler</link> for information on how to implement a drag-and-drop
         handler.
       </para>
@@ -4215,7 +4215,7 @@ incorrect.
       <varlistentry><term>COLUMNCLICK</term>
       <listitem>
       <para>
-        In report view only, a column header has been clicked.  Contrast this wiht the CLICK keyword.
+        In report view only, a column header has been clicked.  Contrast this with the CLICK keyword.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>DELETE</term>
@@ -4313,7 +4313,7 @@ incorrect.
     <computeroutput>connectListViewEvent</computeroutput> method uses several event keywords that provide more
     information, for the same event, than that provided by the original ooDialog implementation.  For instance, the
     CHECKBOXCHANGED, SELECTIONCHANGED, FOCUSCHANGED, and SELECTFOCUSCHANGED keywords all connect the same event as the
-    CHANGED keyword.  Howver, these keyword connections all provide more specific, detailed information in the arguments
+    CHANGED keyword.  However, these keyword connections all provide more specific, detailed information in the arguments
     passed to the connected method than that provided by using the CHANGED keyword.
   </para>
   <para>
@@ -4331,7 +4331,7 @@ incorrect.
   </para>
   <para>
     When using <computeroutput>connectListViewEvent</computeroutput> a separate method can be connected to each of the
-    CHECKBOXCHANGED, SELECTIONCHANGED, and FOCUSCHANGED events.  These event connectionss are all replacements for the
+    CHECKBOXCHANGED, SELECTIONCHANGED, and FOCUSCHANGED events.  These event connections are all replacements for the
     CHANGED event.
   </para>
   </listitem></varlistentry>
@@ -4367,12 +4367,12 @@ incorrect.
 <para>
   The event handling method for the CLICK event is invoked when the user clicks on the list-view with the left mouse.
   The event handler for the DBLCLK is invoked when the user double clicks on the list-view. This excludes the column
-  headers in report view. Both event handlers recieve the same arguments.
+  headers in report view. Both event handlers receive the same arguments.
 </para>
 <para>
   Note that the user can click on a list-view item, or on the background of the list view. When the click is on the
   background of the list-view then both the <emphasis role="italic">itemIndex</emphasis> and <emphasis
-  role="italic">columnInex</emphasis> will be -1. The method will receive four arguments:
+  role="italic">columnIndex</emphasis> will be -1. The method will receive four arguments:
 </para>
 
 <programlisting>
@@ -4423,7 +4423,7 @@ incorrect.
 <indexterm><primary>ListView Event</primary><secondary>CHECKBOXCHANGED</secondary></indexterm>
 <para>
   The event handler for the checkbox changed event is invoked when the user checks or unchecks a checkbox in the
-  <computeroutput>ListView</computeroutput> control. The method recieves three arguments:
+  <computeroutput>ListView</computeroutput> control. The method receives three arguments:
 </para>
 
 <programlisting>
@@ -4495,7 +4495,7 @@ incorrect.
 <indexterm><primary>ListView Event</primary><secondary>SELECTCHANGE</secondary></indexterm>
 <para>
   The event handler for the selection changed event is invoked when the selection state of an item changes. The method
-  recieves three arguments:
+  receives three arguments:
 </para>
 
 <programlisting>
@@ -4533,7 +4533,7 @@ incorrect.
 <section id="evtListViewFOCUSCHANGED"><title>FocusChanged Event Handler</title>
 <indexterm><primary>ListView Event</primary><secondary>FOCUSCHANGED</secondary></indexterm>
 <para>
-  The event handler for the focus changed event is invoked when an item gains or loses focus. The method recieves three
+  The event handler for the focus changed event is invoked when an item gains or loses focus. The method receives three
   arguments:
 </para>
 
@@ -4572,7 +4572,7 @@ incorrect.
 <indexterm><primary>ListView Event</primary><secondary>SELECTFOCUSCHANGED</secondary></indexterm>
 <para>
   The event handle for the selection or focus changed event is invoked when either the selection or the focus of an item
-  changes. The method recieves 3 arguments:
+  changes. The method receives 3 arguments:
 </para>
 
 <programlisting>
@@ -4730,7 +4730,7 @@ incorrect.
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>id [reguired]</term>
+      <varlistentry><term>id [required]</term>
       <listitem>
       <para>
         The resource ID of the month calendar control. May be numeric or <link linkend="defSymbolicId">symbolic</link>.
@@ -4839,7 +4839,7 @@ incorrect.
     connected event happens.
   </para>
   <para>
-    The underlying dialog recieves the MCN_* messages as the notifications for the month calendar events.
+    The underlying dialog receives the MCN_* messages as the notifications for the month calendar events.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4881,7 +4881,7 @@ incorrect.
 
 <para>
   The event handler for the get day state event is invoked when the month calendar control requests information on how
-  to dispaly days in the calendar. The notification is only sent when the month calendar has the DAYSTATE style. The
+  to display days in the calendar. The notification is only sent when the month calendar has the DAYSTATE style. The
   programmer must reply to this notification and <emphasis role="bold">must</emphasis> use the <link
   linkend="clsDayStates">DayStates</link> class to properly construct the reply. The interpreter waits for the reply.
 </para>
@@ -4899,7 +4899,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves three arguments:
+    The event handling method receives three arguments:
   </para>
   <variablelist>
     <varlistentry><term>startDate</term>
@@ -5001,7 +5001,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves two arguments:
+    The event handling method receives two arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -5061,7 +5061,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves three arguments:
+    The event handling method receives three arguments:
   </para>
   <variablelist>
     <varlistentry><term>selStart</term>
@@ -5117,7 +5117,7 @@ incorrect.
 </programlisting>
 
 <para>
-  The SELECT event handler is invoked when the user explicity selects a new date. Contrast this with the <link
+  The SELECT event handler is invoked when the user explicitly selects a new date. Contrast this with the <link
   linkend="evtMonthCalendarSELCHANGED">SELCHANGE</link> event handler which is invoked when the selected date is changed for any
   reason.
 </para>
@@ -5130,7 +5130,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves four arguments:
+    The event handling method receives four arguments:
   </para>
   <variablelist>
     <varlistentry><term>selStart</term>
@@ -5165,7 +5165,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The programmer can return any value because the operating system ingores the returned value. Typically 0 is
+    The programmer can return any value because the operating system ignores the returned value. Typically 0 is
     returned.
   </para>
   </listitem></varlistentry>
@@ -5199,21 +5199,21 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves four arguments:
+    The event handling method receives four arguments:
   </para>
   <variablelist>
     <varlistentry><term>oldView</term>
     <listitem>
     <para>
       The <emphasis role="italic">oldView</emphasis> argument is a keyword denoting what the previous view was. It will be
-      one of: month, year, decade, or centuary.
+      one of: month, year, decade, or century.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>newView</term>
     <listitem>
     <para>
       The <emphasis role="italic">newView</emphasis> argument is a keyword denoting what the view was changed to. It also
-      will be one of: month, year, decade, or centuary.
+      will be one of: month, year, decade, or century.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>id</term>
@@ -5348,7 +5348,7 @@ incorrect.
   notifications are common to a number of dialog controls. In general, if one of the dialog control specific event
   connection methods, such as <link linkend="mthConnectListViewEvent">connectListViewEvent</link> can make a connection
   for the event, then <emphasis role="italic">connectNotifyEvent</emphasis> should not be used. In these cases, the
-  dialog control does not send one of the generic event notificaions. It sends a notification specific to itself.
+  dialog control does not send one of the generic event notifications. It sends a notification specific to itself.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5413,7 +5413,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      The <emphasis role="italic">connectNovityEvent</emphasis> method is a member of the <link
+      The <emphasis role="italic">connectNotifyEvent</emphasis> method is a member of the <link
       linkend="clsEventNotification">EventNotification</link> mixin class.
     </para>
     <para>
@@ -5755,7 +5755,7 @@ incorrect.
     <computeroutput>.false</computeroutput> to this notification.
   </para>
   <para>
-    The event handler recieves 2 arguments. The first argument is a <computeroutput>Rect</computeroutput> object with
+    The event handler receives 2 arguments. The first argument is a <computeroutput>Rect</computeroutput> object with
     the coordinates of the new size for the dialog. The programmer can change the coordinates in the
     <computeroutput>Rect</computeroutput> object and reply <computeroutput>.true</computeroutput>. This causes the
     dialog to be resized to the changed coordinates in the <computeroutput>Rect</computeroutput> object rather than the
@@ -5946,11 +5946,11 @@ incorrect.
   <para>
     A keyword specifying which scroll bar event should be connected. This methods connects either a vertical or a
     horizontal scroll bar. The symbolic keyword names are orientated towards which type the scroll bar is. But the
-    values that the scroll bar sends are the same for similiar events.
+    values that the scroll bar sends are the same for similar events.
   </para>
   <para>
-    I.e., one event is to move 1 unit towards the upper left. For a vertical scroll bar this is one line up (LINEUP,)
-    for a horizontal scroll bar this is one unit to the left, (LINELEFT.) But, the numeric value that a scroll bar sends
+    I.e., one event is to move 1 unit towards the upper left. For a vertical scroll bar this is one line up (LINEUP),
+    for a horizontal scroll bar this is one unit to the left (LINELEFT). But, the numeric value that a scroll bar sends
     for the event is the same. Therefore, the LINEUP and LINELEFT keywords produce the identical effect. If the scroll
     bar is a vertical scroll bar, using the LINELEFT keyword produces the same effect as using the LINEUP keyword. The
     programmer can use whichever keyword makes the most sense.
@@ -6034,7 +6034,7 @@ incorrect.
     </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry><term>mName [opitonal]</term>
+  <varlistentry><term>mName [optional]</term>
   <listitem>
   <para>
     The name of the method that is to be invoked whenever the specified notification is received from the scroll bar. If
@@ -6100,7 +6100,7 @@ incorrect.
     moved.
   </para>
   <para>
-    The event handler recieves two arguments as shown:
+    The event handler receives two arguments as shown:
 
 <programlisting>
 <![CDATA[
@@ -6112,7 +6112,7 @@ incorrect.
 </programlisting>
 
     The <emphasis role="italic">posInfo</emphasis> argument contains the scroll bar event code in the low word of the
-    argument. For the POSITION and the DRAG events, the high word contains the postion of the scroll box. For the other
+    argument. For the POSITION and the DRAG events, the high word contains the position of the scroll box. For the other
     events, the high word is not used. When the notification comes from a <link linkend="clsScrollBar">scroll</link> bar
     control, the <emphasis role="italic">hwnd</emphasis> argument is the window handle of the scroll bar. When the
     notification does not come from a scroll bar control, <emphasis role="italic">hwnd</emphasis> is 0.
@@ -6122,9 +6122,9 @@ incorrect.
   <listitem>
   <para>
     The following example connects the POSITION event with a method in the Rexx dialog. Since the third argument is
-    omitted, the ooDialog framwork automatically connects the event to the <emphasis
+    omitted, the ooDialog framework automatically connects the event to the <emphasis
     role="italic">onPosition</emphasis> method. The event handler extracts the new position from the notification
-    arguments and sets the postion for the scroll bar. It also displays the new position and the event type. The
+    arguments and sets the position for the scroll bar. It also displays the new position and the event type. The
     <computeroutput>ScrollBar</computeroutput> class provides the <link linkend="sctSBEventCode">THUMBPOSITION</link>
     constant, whose value is the value of the POSITION event code.
 
@@ -6428,7 +6428,7 @@ incorrect.
   <para>
     The following example comes from an application that displays employee statistics.  A single click on the employee
     number field advances the display to the next employee.  A double click on either the employee name or employee job
-    duties alllows those fields to be edited.
+    duties allows those fields to be edited.
   </para>
 <programlisting>
 <![CDATA[
@@ -6848,7 +6848,7 @@ trackbar position by extracting the high-oder word. Example:
         <varlistentry><term>BEGINDRAG</term>
         <listitem>
         <para>
-          A drag-and-drop operaton using the left mouse button was initiated. The documentation for the <link
+          A drag-and-drop operation using the left mouse button was initiated. The documentation for the <link
           linkend="mthDefTreeDragHandler">defTreeDragHandler</link>() method contains further information on how to
           implement a drag-and-drop handler.
         </para>
@@ -6856,7 +6856,7 @@ trackbar position by extracting the high-oder word. Example:
         <varlistentry><term>BEGINRDRAG</term>
         <listitem>
         <para>
-          A drag-and-drop operaton involving the right mouse button was initiated. The documentation for the <link
+          A drag-and-drop operation involving the right mouse button was initiated. The documentation for the <link
           linkend="mthDefTreeDragHandler">defTreeDragHandler</link>() method contains further information on how to
           implement a drag-and-drop handler.
         handler.
@@ -7109,7 +7109,7 @@ trackbar position by extracting the high-oder word. Example:
         <para>
            Sent when the position of the control is about to change. This happens when the user requests a change in the
            value by pressing the control's up or down arrow. The event handler must <link
-           linkend="sctCodingEventHandlers">return</link> a reply for this event. The intrepreter waits for that reply.
+           linkend="sctCodingEventHandlers">return</link> a reply for this event. The interpreter waits for that reply.
         </para>
         <para>
           The DELTAPOS notification is sent before the scroll message which actually changes the control's position.
@@ -7133,7 +7133,7 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns <computeroutput>.true</computeroutput> if the event was connected corrrectly, otherwise
+    Returns <computeroutput>.true</computeroutput> if the event was connected correctly, otherwise
    <computeroutput>.false</computeroutput>.
   </para>
   </listitem></varlistentry>
@@ -7157,7 +7157,7 @@ trackbar position by extracting the high-oder word. Example:
     connected event happens.
   </para>
   <para>
-    The underlying dialog recieves the UDN_* messages as the notifications for the up-down events.
+    The underlying dialog receives the UDN_* messages as the notifications for the up-down events.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -7177,7 +7177,7 @@ trackbar position by extracting the high-oder word. Example:
 
 <para>
   The event handler for the up-down DELTAPOS event is invoked when when the position of the control is about to change.
-  The arguments the event handler recieves allow the programmer to examine the proposed change in position, to modify
+  The arguments the event handler receives allow the programmer to examine the proposed change in position, to modify
   the change, or to cancel the change all together.
 </para>
 <para>
@@ -7189,7 +7189,7 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves four arguments:
+    The event handling method receives four arguments:
   </para>
   <variablelist>
     <varlistentry><term>pos</term>
@@ -7235,7 +7235,7 @@ trackbar position by extracting the high-oder word. Example:
   <para>
     The following example examines the change in position in the up-down control and modifies it so that the position in
     the up-down control is always an even number. Note that the <emphasis role="italic">deltaPosReply</emphasis> method
-    ignores the second and third arguments when the first arguement is <computeroutput>.false</computeroutput>. So, in
+    ignores the second and third arguments when the first argument is <computeroutput>.false</computeroutput>. So, in
     the code below, if <emphasis role="italic">change</emphasis> remains <computeroutput>.false</computeroutput>, then
     the values of <emphasis role="italic">cancel</emphasis> and <emphasis role="italic">delta</emphasis> do not matter.
 
@@ -7300,7 +7300,7 @@ trackbar position by extracting the high-oder word. Example:
 <para>
   If the programmer wants to implement her own drag-and-drop event handler, she may want to examine the how the
   <emphasis role="italic">defListDragHandler</emphasis> method in the <computeroutput>ooDialog.cls</computeroutput>
-  file. In addition the <computeroutput>oodlist.rex</computeroutput> example progam uses the <emphasis
+  file. In addition the <computeroutput>oodlist.rex</computeroutput> example program uses the <emphasis
   role="italic">defListDragHandler</emphasis>. Running the example program will show the behavior of the current
   <emphasis role="italic">defListDragHandler</emphasis> implementation.
 </para>
@@ -7349,7 +7349,7 @@ trackbar position by extracting the high-oder word. Example:
   If the programmer wants to implement her own drag-and-drop event handler, she may want to examine the how the
   <emphasis role="italic">defTreeDragHandler</emphasis> method in the <computeroutput>ooDialog.cls</computeroutput>
   file. In addition both the <computeroutput>oodtree.rex</computeroutput> and
-  <computeroutput>propdemo.rex</computeroutput> example progams uses the <emphasis
+  <computeroutput>propdemo.rex</computeroutput> example programs uses the <emphasis
   role="italic">defTreeDragHandler</emphasis>. Running these example programs will show the behavior of the current
   <emphasis role="italic">defTreeDragHandler</emphasis> implementation.
 </para>
@@ -7371,7 +7371,7 @@ trackbar position by extracting the high-oder word. Example:
 <section id="mthDisconnectKeyPressDialogObject"><title>disconnectKeyPress</title>
 <indexterm><primary>disconnectKeyPress</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>disconnectKeyPress</secondary></indexterm>
-<indexterm><primary>EventNotification</primary><secondary>disConnectFKeyPress</secondary></indexterm>
+<indexterm><primary>EventNotification</primary><secondary>disconnectFKeyPress</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--disconnectKeyPress(--+--------------+--)-----><
@@ -7442,7 +7442,7 @@ trackbar position by extracting the high-oder word. Example:
     linkend="mthConnectFKeyPressDialogControlObject">connectFKeyPress</link> methods.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when some incorrect usage is detected.
@@ -7552,7 +7552,7 @@ trackbar position by extracting the high-oder word. Example:
     <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
-      Query if any key press events are connected to the speicified method. If this argument is omitted, the query is if
+      Query if any key press events are connected to the specified method. If this argument is omitted, the query is if
       any key press events are connected to <emphasis role="bold">any</emphasis> methods.
     </para>
     </listitem></varlistentry>
@@ -7566,12 +7566,12 @@ trackbar position by extracting the high-oder word. Example:
     <computeroutput>.false</computeroutput> otherwise.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Detalis</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    The dialog contol object also has a <link
+    The dialog control object also has a <link
     linkend="mthHasKeyPressConnectionDialogControlObject">hasKeyPressConnection</link> method. The method of the dialog
-    object (this method) can only check for connecttions that were set with the dialog object's versions of <link
+    object (this method) can only check for connections that were set with the dialog object's versions of <link
     linkend="mthConnectKeyPressDialogObject">connectKeyPress</link> and <link
     linkend="mthConnectFKeyPressDialogObject">connectFKeyPress</link> methods. This method can not check for connections
     that were set with the dialog control object's versions of <link
