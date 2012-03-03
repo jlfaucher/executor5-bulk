@@ -1915,43 +1915,31 @@
 </programlisting>
 
 <para>
-  xx
+  Reflects whether automatic data field <link linkend="sctUnderstandingDataAttributes">detection</link> is on or off.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">autoDetect get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    When <emphasis role="italic">autoDetect</emphasis> is <computeroutput>.true</computeroutput> automatic data field
+    detection is on. When <computeroutput>.false</computeroutput>, automatic detection is off.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">autoDetect set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set <emphasis role="italic">autoDetect</emphasis> to <computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput> to automatic detection on or off. A syntax condition is raised if the
+    programmer attempts to set the attribut to any other value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    Although the programmer <emphasis role="italic">can</emphasis> access the <emphasis
+    role="italic">autoDetect</emphasis> attribute directly, it will not be of much use. The <link
+    linkend="mthInitAutoDetection">initAutoDetection</link> method should be over-ridden to turn automatic data field
+    detection on or off.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1985,40 +1973,41 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
 </programlisting>
 
 <para>
-  xx
+  Reflects the window <link linkend="defHandle">handle</link> of the <link linkend="ovvUnderlying">underlying</link>
+  dialog this Rexx dialog represents.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">dlgHandle get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The <emphasis role="italic">dlgHandle</emphasis> is used to retrieve the window handle of this dialog for use in
+    methods that required a handle.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">dlgHandle set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The ooDialog programmer can not set the <emphasis role="italic">dlgHandle</emphasis> attribute. It is set to the
+    correct value by the ooDialog framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    xx
+    Dialog objects also have the <link linkend="atrHwnd">hwnd</link> attribute which is inherited from the <link
+    linkend="clsWindowBase">WindoBase</link> class. The two attributes are essentially the same and can be used by the
+   programmer interchangeably.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the window handle of the dialog to invoke the <link
+    linkend="mthClearWindowRect">clearWindowRect</link> method:
 <programlisting>
 <![CDATA[
 
+  self~clearWindowRect(self~dlgHandle)
 
 ]]>
 </programlisting>
