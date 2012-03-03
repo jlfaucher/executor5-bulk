@@ -152,7 +152,7 @@
 
 -- Incorrect:
 " 0xffff"              -- leading space
-"0XFZFF"               -- Z is not a hexidecimal symbol
+"0XFZFF"               -- Z is not a hexadecimal symbol
 "000012ab"             -- second character must be x
 "0x0123456789ABCDEF1"  -- 17 characters
 "00x0"                 -- second character must be x, not 0
@@ -204,7 +204,7 @@
   resource, a resource script, or by using the <link linkend="mthAddIconResource">addIconResource</link> method of the
   UserDialog.  The following table shows the pre-defined symbolic IDs of the icon images provided by ooDialog. The
   symbolic ID should always be used in case the numeric value is changed in the future. In addition, the programmer
-  should avoid using any of the pre-defifned symbolic IDs <link linkend="ovvPreDefinedSymbolicIDs">reserved</link> by ooDialog. The
+  should avoid using any of the pre-defined symbolic IDs <link linkend="ovvPreDefinedSymbolicIDs">reserved</link> by ooDialog. The
   IDI_DLG_DEFAULT is a fifth symbolic ID that represents the default dialog icon. This ID can always be used where a
   dialog icon ID is needed.
 </para>
@@ -344,7 +344,7 @@ xPixels = xDialogUnits * self~FactorX
 
 <section id="defResourceId"><title>Resource ID</title>
 <para>
-  A resouce ID is the identification number of a dialog resource. There are several different types of dialog
+  A resource ID is the identification number of a dialog resource. There are several different types of dialog
   resources, menus, dialog controls, and bitmaps, to name a few. You assign IDs when you create the resource definition
   for your dialog.  An ID can be either numerical (for example, 1) or symbolic (for example, "IDOK").
 </para>
@@ -387,11 +387,11 @@ xPixels = xDialogUnits * self~FactorX
   code easier to understand.
 </para>
 <para>
-  Symbolic names are most often used in compiled programs, where a preprocessor replaces each ocurrence of the symbolic
+  Symbolic names are most often used in compiled programs, where a preprocessor replaces each occurrence of the symbolic
   name in the code with its numeric value before the code is compiled. Symbolic names are less often used in interpreted
-  languages because there is no preprocessor step where substituitons can be made. However, ooDialog provides a robust
+  languages because there is no preprocessor step where substitutions can be made. However, ooDialog provides a robust
   and useful <link linkend="ovvSymbolicIDMechanism">mechanism</link> for using symbolic IDs in ooDialog programs.
-  Programmers wishing to use symbolic resource IDs in their programs should be familar with this <link
+  Programmers wishing to use symbolic resource IDs in their programs should be familiar with this <link
   linkend="ovvSymbolicIDMechanism">mechanism</link>.
 </para>
 </section>
@@ -415,7 +415,7 @@ xPixels = xDialogUnits * self~FactorX
 <table id="tblSysColors" frame="all">
 <title>System Color Elements</title>
 <tgroup cols="3">
-<colspec colwidth=".5in">
+<colspec colwidth=".5in"/>
 <thead>
 <row>
   <entry>ID</entry>
@@ -667,7 +667,7 @@ xPixels = xDialogUnits * self~FactorX
   that provide direct access to the Windows API.
 </para>
 <para>
-  As an example, the <link linkend="mthAddUserMsg">addUsermessage</link> method allows the programmer to connect any
+  As an example, the <link linkend="mthAddUserMsg">addUserMessage</link> method allows the programmer to connect any
   Windows message sent to a dialog to a method in his ooDialog class.  To use this method, the programmer would go to
   the MSDN library to look up details on the message and message parameters he is interested in.  He would then use the
   Platform SDK to determine the numeric value of the Windows message and possibly the numeric values of its parameters.
@@ -756,7 +756,7 @@ xPixels = xDialogUnits * self~FactorX
   Event notification messages in Windows fall into two groups, messages where the reply is ignored and messages where
   the reply is significant. Prior to the introduction of the <link linkend="sctHistory">C++</link> native APIs, there
   was <emphasis role="bold">no way</emphasis> in ooDialog to <emphasis role="italic">directly</emphasis> reply to the
-  nofication message. This placed a severe restriction on ooDialog programs. Many of the features of the operating
+  notification message. This placed a severe restriction on ooDialog programs. Many of the features of the operating
   system could not be used with this restriction. For instance, when a user selects a new tab in a <link
   linkend="clsTab">tab</link> control, the operating system sends a SELCHANGING event notification before the selected
   tab is changed. The programmer can allow or prevent the change by replying true or false to the notification message.
@@ -968,7 +968,7 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   The ooDialog framework, and Windows itself, often use a <link linkend="clsRect">Rect</link> object to specify
   coordinates of a window, or a portion of a window. However, there are two different ways the rectangle is used. For
-  purposes of this documentation, the two types of rectangle are defined as a <emphasis role="bold">bonding</emphasis>
+  purposes of this documentation, the two types of rectangle are defined as a <emphasis role="bold">bounding</emphasis>
   rectangle and a <emphasis role="bold">point/size</emphasis> rectangle.
 </para>
 
@@ -986,7 +986,7 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     In this usage, the width of the rectangle is derived by subtracting the <emphasis role="italic">left</emphasis>
     attribute from the <emphasis role="italic">right</emphasis> attribute and the height of the rectangle is derived by
-    subtracting the <emphasis role="italic">top</emphasis> attribtue from the <emphasis role="italic">bottom</emphasis>
+    subtracting the <emphasis role="italic">top</emphasis> attribute from the <emphasis role="italic">bottom</emphasis>
     attribute.
   </para>
   </listitem></varlistentry>
@@ -1192,7 +1192,7 @@ xPixels = xDialogUnits * self~FactorX
     linkend="mthNewDialogObject">dialog</link> object or the <link linkend="mthNewClsUserDialog">UserDialog</link>
     class.) If the programmer supplies the optional header file argument, the ooDialog framework automatically parses
     the file and adds all defined symbols it finds in the file to a constant directory. Again, to be clear, which
-    constant directory the symbol is placed in is depenedent on which <computeroutput>.constDir</computeroutput> <link
+    constant directory the symbol is placed in is dependent on which <computeroutput>.constDir</computeroutput> <link
     linkend="entConstDirStrategy">strategy</link> the programmer has elected to use.
   </para>
   <para>
@@ -1200,9 +1200,9 @@ xPixels = xDialogUnits * self~FactorX
     place the symbol definitions in a separate header file. Therefore having the ooDialog framework read and parse a
     header file is the most practical way to add symbols to a constant directory. In addition to using the optional
     header file argument in the <link linkend="mthNewDialogObject">new</link> method of a dialog, the ooDialog framework
-    provides some addtional methods for reading a file and adding the symbol definitions to a constant directory. The
+    provides some additional methods for reading a file and adding the symbol definitions to a constant directory. The
     dialog object has the <link linkend="mthParseIncludeFile">parseIncludeFile</link> method. The <link
-    linkend="clsApplicationManager">ApplicationManger</link> class has serveral methods, which are accessed through the
+    linkend="clsApplicationManager">ApplicationManager</link> class has several methods, which are accessed through the
     <link linkend="dotApplication">.application</link> object. These are: the <link
     linkend="mthUseGlobalConstDir">useGlobalConstDir</link>, <link linkend="mthAddToConstDir">addToConstDir</link>,
     <link linkend="mthSetDefaults">setDefaults</link>, and <link linkend="mthParseIncludeFile">parseIncludeFile</link>
@@ -1248,7 +1248,7 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     As explained previously, the dialog object's <link linkend="atrConstDir">constDir</link> attribute allows
     programmers to use symbolic IDs for arguments requiring resource IDs in the methods of the <link
-    linkend="chpDialogObject">dialog</link> object and the <link linkend="chpDialogControlObject">dialog</link> contol
+    linkend="chpDialogObject">dialog</link> object and the <link linkend="chpDialogControlObject">dialog</link> control
     object. However, the ooDialog framework contains other classes with methods requiring resource IDs. The <link
     linkend="clsMenu">Menu</link> classes and the <link linkend="clsResourceImage">ResourceImage</link> class are
     examples of these classes. If the programmer wishes to use symbolic IDs in classes other than the dialog and
@@ -1286,7 +1286,7 @@ xPixels = xDialogUnits * self~FactorX
   </para>
   <para>
     The indexes in the <computeroutput>.constDir</computeroutput> are case sensitive. However, this allows symbol
-    resolution to be more efficient and faster. Case sesitivity is not a problem if a distinctive naming scheme is used
+    resolution to be more efficient and faster. Case sensitivity is not a problem if a distinctive naming scheme is used
     for symbolic IDs where the symbol names would never be used for variable names, and the symbol names are never
     quoted.
   </para>
@@ -1303,7 +1303,7 @@ xPixels = xDialogUnits * self~FactorX
     edit control in the first dialog, had a define like this: <computeroutput>#define IDC_EDIT  100</computeroutput> and
     the edit control in the second dialog had a define like this: <computeroutput>#define IDC_EDIT
     200</computeroutput>. The solution to this is too either use two different symbols for the two edit controls, or use
-    the same resource ID number for both edit contols.
+    the same resource ID number for both edit controls.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1419,9 +1419,9 @@ xPixels = xDialogUnits * self~FactorX
 <table id="tblOODialogLevels" frame="all" pgwide='1'>
 <title>ooDialog Levels</title>
 <tgroup cols="3">
-<colspec align='left' colwidth='1*'>
-<colspec align='left' colwidth='1*'>
-<colspec align='left' colwidth='6*'>
+<colspec align='left' colwidth='1*'/>
+<colspec align='left' colwidth='1*'/>
+<colspec align='left' colwidth='6*'/>
 <thead>
 <row>
 <entry>Level</entry>
@@ -1476,7 +1476,7 @@ xPixels = xDialogUnits * self~FactorX
   </para>
   <para>
     It allows users that have not upgraded their ooRexx from 4.0.0 or 4.0.1 to pick up the bug fixes in ooDialog
-    included in the ooRexx distributions up throgh ooRexx 4.1.1. However, its primary purpose is for users who may be
+    included in the ooRexx distributions up through ooRexx 4.1.1. However, its primary purpose is for users who may be
     unhappy with the future direction of ooDialog. It will provide a way for users to upgrade to future versions of
     ooRexx and yet retain an unchanged ooDialog.
   </para>
@@ -1521,7 +1521,7 @@ xPixels = xDialogUnits * self~FactorX
     control is named the same as it is in the Microsoft <link linkend="defWindowsDoc">documentation</link>. An example
     of this is the edit control. The name of the control is <emphasis role="italic">edit</emphasis>. Rather than call an
     edit control an <emphasis role="italic">entry line</emphasis>, it is called an edit control. In addition, all dialog
-    controls are controls. Adding <emphasis role="italic">control</emphasis> to the control's name is redundent, and
+    controls are controls. Adding <emphasis role="italic">control</emphasis> to the control's name is redundant, and
     confusing when it is done in some cases and not in other cases. A list-view is no longer called a ListControl, but
     rather it is called a ListView, a tree-view is no longer called a TreeControl, it is called a TreeView.
   </para>
@@ -1600,7 +1600,7 @@ xPixels = xDialogUnits * self~FactorX
     linkend="ovvEvents">event</link> notifications were put into a queue to be dispatched at some later point
     to the connected method in the Rexx dialog. But, the operating system expects a reply to its event messages, and the
     reply allows the programmer to customize the behavior of the dialog. Because the programmer could not reply in any
-    way to the operating system, ooDialog was severly restricted in what it could support, compared to a normal Windows
+    way to the operating system, ooDialog was severely restricted in what it could support, compared to a normal Windows
     application.
   </para>
   <para>
@@ -1626,7 +1626,7 @@ xPixels = xDialogUnits * self~FactorX
     linkend="mthPixel2dlgUnit">pixel2dlgUnit</link>, etc., have been added that accurately convert between pixels and
     dialog units. Methods that are inaccurate have had, matching, accurate, methods added to the ooDialog framework. The
     accurate <link linkend="mthGetRealPos">getRealPos</link> is added to match the inaccurate <link
-    linkend="mthGetPos">getPos</link> method. The accurate <link linkend="mthColumnWidthPX">columnWidhtPX</link> is
+    linkend="mthGetPos">getPos</link> method. The accurate <link linkend="mthColumnWidthPX">columnWidthPX</link> is
     added to match the inaccurate <link linkend="mthColumnWidth">columnWidth</link>. The accurate <link
     linkend="mthMoveTo">moveTo</link> is added to match the inaccurate <link linkend="mthMove">move</link> method, and
     so on.
@@ -1637,7 +1637,7 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     New dialog classes have been added that implement true Windows property sheets, wizards, and dialogs that function
     as controls. These classes replace the deprecated <link linkend="deprecatedCategoryDialog">CategoryDialog</link> and
-    <link linkend="deprecatedPropertySheet">PropertySheet</link> classes. The new dialogs are easier to use and eaiser
+    <link linkend="deprecatedPropertySheet">PropertySheet</link> classes. The new dialogs are easier to use and easier
     to understand because the pages of the dialogs are dialog objects that are programmed and behave using the same
     paradigm as any other dialog.
   </para>
@@ -1748,7 +1748,7 @@ xPixels = xDialogUnits * self~FactorX
     <listitem>
     <para>
       <link linkend="clsMonthCalendar">MonthCalendar</link>: A control that provides an easy to use interface which
-      allows users to select or enter dates. The control has the appearence of a typical calendar.
+      allows users to select or enter dates. The control has the appearance of a typical calendar.
     </para>
     </listitem>
     <listitem>
@@ -1788,7 +1788,7 @@ xPixels = xDialogUnits * self~FactorX
     <para>
       <link linkend="clsMenuBar">MenuBar</link>: A menu bar is often called the top-level menu. It is the bar positioned
       just below the title bar of an application window or a dialog. The <computeroutput>MenuBar</computeroutput> class
-      implements the methods thar are common to all menu bars.
+      implements the methods that are common to all menu bars.
     </para>
     </listitem>
     <listitem>
@@ -1857,7 +1857,7 @@ xPixels = xDialogUnits * self~FactorX
     </listitem>
     <listitem>
     <para>
-      <link linkend="clsOS">OS</link>: Rrovides methods for extracting information about the operating system the
+      <link linkend="clsOS">OS</link>: Provides methods for extracting information about the operating system the
       program is currently executing on.
     </para>
     </listitem>
@@ -1935,7 +1935,7 @@ xPixels = xDialogUnits * self~FactorX
   <listitem>
   <para>
     Prior to ooRexx 4.0.0, all arguments to and returns from external functions had to be strings. Although stems could
-    also be used, working with them was difficult and inflexible within the external function implmentation. With the
+    also be used, working with them was difficult and inflexible within the external function implementation. With the
     advent of ooRexx 4.0.0, it became very easy to use any ooRexx object as an argument to, or return from, the ooDialog
     external library implementation. In addition, instance methods can be implemented directly in the external library.
   </para>
@@ -1955,7 +1955,7 @@ xPixels = xDialogUnits * self~FactorX
   <para>
     In ooDialog 4.2.0 syntax conditions are raised when incorrect usage is detected. There is also the new <link
     linkend="dotSystemErrorCode">.systemErrorCode</link> object which is set when the operating system reports an error.
-    This is of great benefit to the programmer, expecially when writing new programs. Incorrect usage, pointed out by
+    This is of great benefit to the programmer, especially when writing new programs. Incorrect usage, pointed out by
     syntax conditions raised the first time the programmer tests his code, allow the programmer to quickly fix mistakes
     she is making in her code.
   </para>
@@ -1986,16 +1986,16 @@ xPixels = xDialogUnits * self~FactorX
     misleading, and in many cases simply wrong. A large effort has been made to expand incomplete areas and to correct
     misleading or wrong information. That effort is not 100% complete and will need to be finished in future releases.
     However, the documentation is very much improved. If there were areas in the previous documentation not well
-    undstood, the ooDialog programmer is encouraged to reread those sections in this document.
+    understood, the ooDialog programmer is encouraged to reread those sections in this document.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Deprecated Classes and Methods</emphasis></term>
   <listitem>
   <para>
-    ooDialog 4.2.0 has introduced the concept of <emphasis role="italic">deprcated</emphasis> methods and classes. All
+    ooDialog 4.2.0 has introduced the concept of <emphasis role="italic">deprecated</emphasis> methods and classes. All
     <link linkend="apxDeprecated">deprecated</link> classes and methods are listed in <emphasis role="italic">Appendix
-    A</emphasis>. The depreacted classes and methods are no longer documented. When writing new code, the programmer
-    should not use anything deprectated. Wherever possible in existing code, deprecated classes and methods should be
+    A</emphasis>. The deprecated classes and methods are no longer documented. When writing new code, the programmer
+    should not use anything deprecated. Wherever possible in existing code, deprecated classes and methods should be
     replaced.
   </para>
   </listitem></varlistentry>
@@ -2012,7 +2012,7 @@ xPixels = xDialogUnits * self~FactorX
     There may be a very few areas where maintaining backwards compatibility is not consistent with the intent to move
     ooDialog past Windows 3.1 and on to Windows 7. If such an area is discovered, the ooDialog developers welcome any
     reasoned discussion concerning how to deal with that area. Ultimately, the individual programmer may have to decide
-    if the benfits of moving ooDialog into the 21st century outweigh any effort to change existing code.
+    if the benefits of moving ooDialog into the 21st century outweigh any effort to change existing code.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2034,11 +2034,11 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 <para>
   Work will continue on improving the ooDialog reference manual. Sections that were not reviewed for this release will
-  be reviewed and corrected. It is intended that the ooDialog User Guild will continue to be improved.
+  be reviewed and corrected. It is intended that the ooDialog User Guide will continue to be improved.
 </para>
 <para>
   The users of ooDialog can take part in directing the future of ooDialog through discussion on the Users Mailing List
-  and by opening requests for enhancements at the SourecForge ooRexx project. Users can subscribe to the oorexx-users
+  and by opening requests for enhancements at the SourceForge ooRexx project. Users can subscribe to the oorexx-users
   mailing list on the <ulink url="http://sourceforge.net/mail/?group_id=119701"> <citetitle>ooRexx Mailing List
   Subscriptions</citetitle></ulink> page. Requests for ooDialog features can be made on the
   <ulink url="http://sourceforge.net/tracker/?group_id=119701&amp;atid=684733"><citetitle>ooRexx Feature
