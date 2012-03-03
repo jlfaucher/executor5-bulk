@@ -5084,7 +5084,7 @@
 </row>
 <row>
 <entry><link linkend="mthComplete">complete</link></entry>
-<entry>Converts the menu template to a menu.</entry>
+<entry>Finializes the in-memory template and converts it to an actual menu bar.</entry>
 </row>
 <row>
 <entry><link linkend="mthDetach">detach</link></entry>
@@ -5816,12 +5816,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The <link linkend="exampleNewUserMenuBar">example</link> for the <emphasis role="italic">new</emphasis> method of
+    the <computeroutput>UserMenuBar</computeroutput> class uses the <emphasis role="italic">complete</emphasis> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5832,56 +5828,53 @@
 <indexterm><primary>UserMenuBar class</primary><secondary>isComplete</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isComplete(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--isComplete-----------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Tests if the menu template has been finished and converted to a menu.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method has no arguments
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if the menu template has already been finished and converted to a menu, otherwise returns false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Once the menu template has been finalized and converted to an actual menu, menu items can not longer be added to the
+    template.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a method that adds a separator to the menu template when invoked. It first checks that the menu
+    template is still available to add menu items
 <programlisting>
 <![CDATA[
+
+::method maybeAddSeparator private
+  use strict arg id, isEnd
+
+  if self~isComplete then return .false
+
+  if isEnd the do
+    self~addSeparator(id, 'END')
+  end
+  else do
+    self~addSeparator(id)
+  end
 
 ]]>
 </programlisting>
@@ -5895,11 +5888,87 @@
 <section id="clsPopupMenu"><title>PopupMenu Class</title>
 <indexterm><primary>PopupMenu class</primary></indexterm>
 <para>
-  A ... is ..
+  A popup menu is a <emphasis role="italic">menu</emphasis> as oppossed to a <emphasis role="italic">menu
+  bar</emphasis>. Menus are arranged in a hierarchy with the menu bar being the top-level of the hierarchy. Popup menus
+  go by a variety of names depending on where they are located in the hierarchy, and their use. But, they are all the
+  same no matter the name used.
 </para>
 <para>
-  Text
+  When a popup menu is in the menu bar, it is often called a drop-down menu. When a popup menu is within another popup
+  menu it is usually called a submenu. Menus can also exist that are not attached to a menu bar, in which case they are
+  often called shortcut menus, context menus, or popup menus. This documentation tries to be
+  consistent and use the term popup menu in all cases. Method names in the Menu classes always use <emphasis
+  role="italic">popup</emphasis>.
 </para>
+
+
+<section id="evtPopupMenuCONTEXT"><title>ContextMenu Event Handler</title>
+<indexterm><primary>PopupMenu Event</primary><secondary>CONTEXTMENU</secondary></indexterm>
+<para>
+  The event handler for the xx xx event is invoked when ...
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method oncontext unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End context Event Handler -->
 
 <section id="sctMethodsPopupMenu"><title>Method Table</title>
 <para>
@@ -5955,90 +6024,6 @@
 </para>
 </section>
 
-<section id="mthNewClsPopupMenu"><title>new (Class)</title>
-<indexterm><primary>new</primary><secondary>PopupMenu class</secondary></indexterm>
-<indexterm><primary>PopupMenu class</primary><secondary>new</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--new(--x--,--y--)---------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Description
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>x</term>
-    <listitem>
-    <para>
-      xx.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>y</term>
-    <listitem>
-    <para>
-      yyy
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      Success
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      Some error.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-x = y
-return 0
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
 <section id="mthConnectContextMenuCls"><title>connectContextMenu (Class)</title>
 <indexterm><primary>connectContextMenu</primary><secondary>PopupMenu class</secondary><tertiary>class method</tertiary></indexterm>
 <indexterm><primary>PopupMenu class</primary><secondary>connectContextMenu</secondary><tertiary>class method</tertiary></indexterm>
@@ -6090,24 +6075,24 @@ return 0
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    In many cases, the <link linkend="mthConnectContextMenu">connectContextMenu</link>() method will be more convenient
-    to use. This class method is provided for times when the menu object itself is not available. For instance, some
-    Windows applications dynamically create a context menu when receiving the event notification and then discard the
-    menu.
+    The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
+    the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.)
+  </para>
+  <para>
+    In many cases, the <link linkend="mthConnectContextMenu">connectContextMenu</link> instance method will be more
+    convenient to use. This class method is provided for times when the menu object itself is not available. For
+    instance, some Windows applications dynamically create a context menu when receiving the event notification and then
+    discard the menu.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
-    the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.)
-  </para>
-  <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on error. The system error code is set this way
-    in addition to what the OS might set:
+    by ooDialog, in addition to error codes the OS might set:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_WINDOW_NOT_DIALOG (1420)</emphasis></term>
       <listitem>
@@ -6158,29 +6143,37 @@ return 0
 </variablelist>
 </section>  <!-- End PopupMenu::connectContextMenu()::ClassMehtod -->
 
-<section id="mthAssignTo"><title>assignTo</title>
-<indexterm><primary>assignTo</primary></indexterm>
-<indexterm><primary>PopupMenu class</primary><secondary>assignTo</secondary></indexterm>
+<section id="mthNewClsPopupMenu"><title>new (Class)</title>
+<indexterm><primary>new</primary><secondary>PopupMenu class</secondary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--assignTo(--+--------+--)-------------------------><
-               +--type--+
+>>--new(--+----+--+-----------+--)---------------><
+          +-id-+  +-,-helpID--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>PopupMenu</computeroutput> object. Initially the menu is empty.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [optional]</term>
     <listitem>
     <para>
-      xx
+      The resource ID for the popup menu. May be <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. If this
+      argument is omitted or is -1, the popup menu will not have a resource ID.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>helpID [optional]</term>
+    <listitem>
+    <para>
+      The context help ID for this menu. May be numeric or <link linkend="itmMenuSymbolicIDs">symbolic</link>. If
+      omitted, the popup menu will not have a help ID.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -6189,13 +6182,17 @@ return 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a new <computeroutput>PopupMenu</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When using a popup menu as a context menu, it is often convenient to simply get the menu from an existing menu
+    through the <link linkend="mthGetPopup">getPopup</link> method. This is particularly true when the application is
+    based on resource script files or binary compiled resources. In those types of applications, the menus are created
+    in the resource script file. Within the resource script, all menus have to be defined as menu bars. To define a
+    popup menu that is only used as a context menu, simply define a menu bar that only contains one menu.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6204,15 +6201,136 @@ return 0
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable. However, the variable will only be
+    non-zero if the Windows API used to set the help ID fails. This is unlikely to happen.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example instantiates a popup menu and then adds a few menu items to it:
 <programlisting>
 <![CDATA[
+
+  m = .PopupMenu~new(IDM_LV_BAR)
+
+  m~insertItem(IDM_LV_RESTORE, IDM_LV_RESTORE, "Restore Original Order")
+  m~insertItem(IDM_LV_RESTORE, IDM_LV_PROFESSION, "Order by Profession")
+  m~insertItem(IDM_LV_PROFESSION, IDM_LV_FNAME, "Order by First Name")
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+<section id="mthAssignTo"><title>assignTo</title>
+<indexterm><primary>assignTo</primary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>assignTo</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--assignTo(--dlg--+-------+-+----------+--)----><
+                    +-,-auto+ +-,-mName--+
+]]>
+</programlisting>
+
+<para>
+  Assigns this popup menu to a dialog. This is only used when the menu is used as a context, or shortcut, menu.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlg [required]</term>
+    <listitem>
+    <para>
+      The owner dialog to assign this menu to. See the Remarks section below.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>auto [optional]</term>
+    <listitem>
+    <para>
+      If true, turn on auto <link linkend="sctMenuCommandEventConnections">connection</link>. The default is false.
+      When <emphasis role="italic">auto connection</emphasis> is on, <emphasis role="italic">each</emphasis> time this
+      popup menu is assigned to a dialog, all menu command <link linkend="sctMenuCommandEvents">events</link> are
+      connected to a method in the dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mName [optional]</term>
+    <listitem>
+    <para>
+      Only used if <emphasis role="italic">auto</emphasis> true. If <emphasis role="italic">auto</emphasis> is true and
+      this argument is not omitted, then <emphasis role="italic">mName</emphasis> is used to set, or reset, the auto
+      connection method name. Note that this implies that if <emphasis role="italic">auto connection</emphasis> is
+      already turned on for this menu, then <emphasis role="italic">mName</emphasis> can be used to change the auto
+      connection method name.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a popup menu is used as a shortcut (context) menu it sends messages to its owner dialog when menu items are
+    selected. Even if the short cut menu is only used with the <link linkend="mthTrack">track</link> method, (where
+    selecting a menu item does not send a message to its owner dialog,) the operating system still requires that the
+    short cut menu have an owner dialog.
+  </para>
+  <para>
+    It is not neccessary to assign a short cut menu to a dialog, it just may be more convenient.  If the shortcut menu
+    does not have an assigned dialog, then the owner dialog must be specified each time the <link
+    linkend="mthTrack">track</link> or <link linkend="mthShowClsPopupMenu">show</link> methods are invoked.
+  </para>
+  <para>
+    A short cut menu can only be assigned to one dialog, if this menu is already assigned to a dialog, the owner dialog
+    is replaced by the specified dialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_MENU_HANDLE (1401)</term>
+      <listitem>
+      <para>
+        Invalid menu handle.  <emphasis role="bold">Meaning:</emphasis> This menu has been destroyed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_WINDOW_NOT_DIALOG (1420)</term>
+      <listitem>
+      <para>
+        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> <emphasis
+        role="italic">dlg</emphasis> is not a <link linkend="chpDialogObject">dialog</link> object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example calls a function that creates a context menu and then assigns the menu to the dialog object:
+<programlisting>
+<![CDATA[
+
+  contextMenu = createListViewMenu()
+
+  if \ contexMenu~assignTo(self, .true) then do
+    say 'Error assigning the context menu. SystemErrorCode:' || -
+    .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+  end
 
 ]]>
 </programlisting>
@@ -6221,29 +6339,45 @@ return 0
 </variablelist>
 </section>  <!-- End PopupMenu::assignTo() -->
 
-<section id="mthIsAssigned"><title>isAssigned</title>
-<indexterm><primary>isAssigned</primary></indexterm>
-<indexterm><primary>PopupMenu class</primary><secondary>isAssigned</secondary></indexterm>
+<section id="mthConnectContextMenu"><title>connectContextMenu</title>
+<indexterm><primary>connectContextMenu</primary><secondary>PopupMenu class</secondary><tertiary>instance method</tertiary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>connectContextMenu</secondary><tertiary>instance method</tertiary></indexterm>
 <programlisting>
 <![CDATA[
->>--isAssigned(--+--------+--)-----------------------><
-                 +--type--+
+>>--connectContextMenu(--methodName--+--------+--+---------+--)----------------><
+                                     +-,-dlg--+  +-,-hwnd--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Connects the context menu <link linkend="ovvEvents">event</link> notification to a method in a Rexx dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>methodName [required]</term>
     <listitem>
     <para>
-      xx
+      The method in the Rexx dialog to be invoked when the event happens.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlg [optional]</term>
+    <listitem>
+    <para>
+      By default, the notification is connected to the owner dialog of the menu. However, the programmer can specify any
+      Rexx dialog here to connect the notification to. If the menu does not have an owner dialog then the programmer
+      must specify the Rexx dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd [optional]</term>
+    <listitem>
+    <para>
+      A window handle to filter the right-clicks on. This can be the window handle of any control in the dialog being
+      connnected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
+      received. If omitted, all right-clicks on the dialog are received.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -6252,13 +6386,17 @@ return 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
+    the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.)
+  </para>
+  <para>
+    NEED TEXT about args sent to the method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6267,16 +6405,119 @@ return 0
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on error. The system error code is set this way
+    in addition to what the OS might set:
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">ERROR_INVALID_FUNCTION (1)</emphasis></term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The dialog argument was omitted and the menu does
+        not have an assigned dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_WINDOW_NOT_DIALOG (1420)</emphasis></term>
+      <listitem>
+      <para>
+        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
+        role="italic">dlg</emphasis> argument is not a <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of
+        course.)
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">ERROR_NOT_ENOUGH_MEMORY (8)</emphasis></term>
+      <listitem>
+      <para>
+        Not enough storage is available to process this command. <emphasis role="bold">Meaning:</emphasis> The dialog
+        message table is full.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  <para>
+    If the programmer does not provide a method named <emphasis role="italic">methodName</emphasis> in the Rexx dialog,
+    a syntax condition will be raised if any context menu events happen.
+  </para>
+  <para>
+    The underlying dialog recieves the WM_CONTEXTMENU message as the notification for this event.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example the context menu notification is connected to the method, <emphasis
+    role="italic">onContextMenu</emphasis>. All
+<programlisting>
+<![CDATA[
+::method initDialog
+  ...
+
+  lvHwnd = self~newListView(IDC_LV_EMPLOYEES)~hwnd
+  .PopupMenu~connectContextMenu(self, "onListViewContext", lvHwnd)
+
+  .PopupMenu~connectContextMenu(self, "onDialogContext", self~hwnd)
+
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PopupMenu::connectContextMenu()::InstanceMethod -->
+
+<section id="mthIsAssigned"><title>isAssigned</title>
+<indexterm><primary>isAssigned</primary></indexterm>
+<indexterm><primary>PopupMenu class</primary><secondary>isAssigned</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--isAssigned-----------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Determines if this menu has an assigned owner.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This method has no arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if this menu has been assigned to an owner dialog, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Only popup menus can be assigned to a dialog, menu bars are <emphasis role="italic">attached</emphasis> to dialogs.
+    Only popup menus that are used as context menus need to be <link linkend="mthAssignTo">assigned</link> to a dialog.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Resets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable to 0. There are no operating system
+    errors that would change that.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example checks if the context menu is already assigned to a dialog before assigning it to the current dialog
+    object:
 <programlisting>
 <![CDATA[
 
+  if \ contextMenu~isAssigned then do
+    if \ contexMenu~assignTo(self, .true) then do
+      say 'Error assigning the context menu. SystemErrorCode:' || -
+      .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+    end
+  end
 ]]>
 </programlisting>
   </para>
@@ -6409,131 +6650,6 @@ return 0
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PopupMenu::track() -->
-
-<section id="mthConnectContextMenu"><title>connectContextMenu</title>
-<indexterm><primary>connectContextMenu</primary><secondary>PopupMenu class</secondary><tertiary>instance method</tertiary></indexterm>
-<indexterm><primary>PopupMenu class</primary><secondary>connectContextMenu</secondary><tertiary>instance method</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--connectContextMenu(--methodName--+--------+--+---------+--+-----------+--)--><
-                                     +-,-dlg--+  +-,-hwnd--+  +-,-handles-+
-]]>
-</programlisting>
-
-<para>
-  Connects the context menu <link linkend="ovvEvents">event</link> notification to a method in a Rexx dialog.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>methodName [required]</term>
-    <listitem>
-    <para>
-      The method in the Rexx dialog to be invoked when the event happens.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>dlg [optional]</term>
-    <listitem>
-    <para>
-      By default, the notification is connected to the owner dialog of the menu. However, the programmer can specify any
-      Rexx dialog here to connect the notification to. If the menu does not have an owner dialog then the programmer
-      must specify the Rexx dialog.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>hwnd [optional]</term>
-    <listitem>
-    <para>
-      A window handle to filter the right-clicks on. This can be the window handle of any control in the dialog being
-      connnected, or even the dialog window handle itself. If used, only right-clicks on the specified window will be
-      received. If omitted, all right-clicks on the dialog are received.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns true on success, false on error.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The context menu event is generated when the user right-mouse clicks on a window. The event can also be generated by
-    the keyboard by using SHIFT-F10 or the VK_APPS key (the Applications key on a Natural keyboard.)
-  </para>
-  <para>
-    NEED TEXT about args sent to the method.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on error. The system error code is set this way
-    in addition to what the OS might set:
-    <variablelist>
-      <varlistentry><term><emphasis role="bold">ERROR_INVALID_FUNCTION (1)</emphasis></term>
-      <listitem>
-      <para>
-        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The dialog argument was omitted and the menu does
-        not have an assigned dialog.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">ERROR_WINDOW_NOT_DIALOG (1420)</emphasis></term>
-      <listitem>
-      <para>
-        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
-        role="italic">dlg</emphasis> argument is not a <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of
-        course.)
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">ERROR_NOT_ENOUGH_MEMORY (8)</emphasis></term>
-      <listitem>
-      <para>
-        Not enough storage is available to process this command. <emphasis role="bold">Meaning:</emphasis> The dialog
-        message table is full.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  <para>
-    If the programmer does not provide a method named <emphasis role="italic">methodName</emphasis> in the Rexx dialog,
-    a syntax condition will be raised if any context menu events happen.
-  </para>
-  <para>
-    The underlying dialog recieves the WM_CONTEXTMENU message as the notification for this event.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    In this example the context menu notification is connected to the method, <emphasis
-    role="italic">onContextMenu</emphasis>. All
-<programlisting>
-<![CDATA[
-::method initDialog
-  ...
-
-  lvHwnd = self~newListView(IDC_LV_EMPLOYEES)~hwnd
-  .PopupMenu~connectContextMenu(self, "onListViewContext", lvHwnd)
-
-  .PopupMenu~connectContextMenu(self, "onDialogContext", self~hwnd)
-
-  ...
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End PopupMenu::connectContextMenu()::InstanceMethod -->
 
 </section>  <!-- End PopupMenu class -->
 
