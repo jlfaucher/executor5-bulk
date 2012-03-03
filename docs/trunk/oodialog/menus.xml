@@ -5905,18 +5905,23 @@
 <section id="evtPopupMenuCONTEXT"><title>ContextMenu Event Handler</title>
 <indexterm><primary>PopupMenu Event</primary><secondary>CONTEXTMENU</secondary></indexterm>
 <para>
-  The event handler for the xx xx event is invoked when ...
+  The event handler for the context menu event is invoked when the user right-mouse clicks on a window, types SHIFT-F10
+  on the keyboard, or types the VK_APPS key on the keyboard. The VK_APPS key is the <emphasis
+  role="italic">Applications</emphasis> key on a Natural keyboard. Use the <link
+  linkend="mthConnectContextMenuCls">connectContextMenu</link> class method, of the <link
+  linkend="mthConnectContextMenu">connectContextMenu</link> instance method to connect the context menu event.
 </para>
 <para>
-  The programmer must return xx and the interpreter waits (does not wait) for this return.
+  The interpreter does not wait for the return from the event handler, so the method does not need to return a value.
+  However, good practice would be to always return a value from an event handler. 0 would be a good value to return.
 </para>
 
 <programlisting>
 <![CDATA[
-::method oncontext unguarded
-  use arg x, y, z
+::method onContextMenu unguarded
+  use arg hwnd, x, y
 
-  return zz
+  return 0
 ]]>
 </programlisting>
 
@@ -5924,25 +5929,30 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 3 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>hwnd</term>
     <listitem>
     <para>
-      xx
+      The window <link linkend="defHandle">handle</link> of the window the user clicked the mouse on, or the window
+      that has the focuse if the user generated the context menu event with the keyboard. Note that this will only be
+      the dialog window handle of the user clicks on the dialog background. Quite often it is going to be one of the
+      dialog controls.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>x</term>
     <listitem>
     <para>
-      xx
+      The X coordinate of the mouse position, in <link linkend="defScreenCoordinates">screen</link> coordinates, at the
+      time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
+    <varlistentry><term>y</term>
     <listitem>
     <para>
-      xx
+      The Y coordinate of the mouse position, in <link linkend="defScreenCoordinates">screen</link> coordinates, at the
+      time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5950,16 +5960,48 @@
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    0 makes a good return value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following example shows the event handler method that is only invoked for a list view in the application. Note
+    that since the application uses the <link linkend="mthShowClsPopupMenu">show</link> method to put up the context
+    menu, the handling of the menu command item selection is done in a menu command event <link
+    linkend="sctMenuCommandEventHandlers">handler</link>.
 
 <programlisting>
 <![CDATA[
+
+  if \ lvPopup~connectContextMenu(onListViewContext, self~newListView(IDC_LV)~hwnd) then do
+    say 'Error conecting context menu. SystemErrorCode:' || -
+    .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+  end
+  ...
+
+::method onListViewContext
+  expose lvPopup listView
+  use arg hwnd, x, y
+
+  if x == -1, y == -1 then do
+    -- The keyboard was used, not the mouse.  Position the context menu as
+    -- at the lower right of the list view.
+    rect = listView~windowRect
+    x = rect~right - .SM~cxVScroll + 15
+    y = rect~bottom - 15
+  end
+
+  -- pos is the point on the screen, in pixels, to place the context menu.
+  pos = .Point~new(x, y)
+
+  -- We show the menu.  The second optional argument is the dialog to assign the
+  -- the menu to, but we've already done that in makeMenuConnections().
+  ret = lvPopup~show(pos)
+  if ret == -1 then do
+    say 'lvPopup~show() failed SystemErrorCode:' || -
+    .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+  end
 
 
 ]]>
