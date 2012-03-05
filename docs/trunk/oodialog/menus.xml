@@ -5888,7 +5888,7 @@
 <section id="clsPopupMenu"><title>PopupMenu Class</title>
 <indexterm><primary>PopupMenu class</primary></indexterm>
 <para>
-  A popup menu is a <emphasis role="italic">menu</emphasis> as oppossed to a <emphasis role="italic">menu
+  A popup menu is a <emphasis role="italic">menu</emphasis> as opposed to a <emphasis role="italic">menu
   bar</emphasis>. Menus are arranged in a hierarchy with the menu bar being the top-level of the hierarchy. Popup menus
   go by a variety of names depending on where they are located in the hierarchy, and their use. But, they are all the
   same no matter the name used.
@@ -5907,7 +5907,7 @@
   The event handler for the context menu event is invoked when the user right-mouse clicks on a window, types SHIFT-F10
   on the keyboard, or types the VK_APPS key on the keyboard. The VK_APPS key is the <emphasis
   role="italic">Applications</emphasis> key on a Natural keyboard. Use the <link
-  linkend="mthConnectContextMenuCls">connectContextMenu</link> class method, of the <link
+  linkend="mthConnectContextMenuCls">connectContextMenu</link> class method, or the <link
   linkend="mthConnectContextMenu">connectContextMenu</link> instance method to connect the context menu event.
 </para>
 <para>
@@ -5935,7 +5935,7 @@
     <listitem>
     <para>
       The window <link linkend="defHandle">handle</link> of the window the user clicked the mouse on, or the window
-      that has the focuse if the user generated the context menu event with the keyboard. Note that this will only be
+      that has the focus if the user generated the context menu event with the keyboard. Note that this will only be
       the dialog window handle of the user clicks on the dialog background. Quite often it is going to be one of the
       dialog controls.
     </para>
@@ -6030,7 +6030,7 @@
 </row>
 <row>
 <entry><link linkend="mthConnectContextMenuCls">connectContextMenu</link></entry>
-<entry>.</entry>
+<entry>Connects the Windows context menu event with a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthNewClsPopupMenu">new</link></entry>
@@ -6042,15 +6042,15 @@
 </row>
 <row>
 <entry><link linkend="mthAssignTo">assignTo</link></entry>
-<entry>.</entry>
+<entry>Assigns this popup menu to a dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectContextMenu">connectContextMenu</link></entry>
-<entry>.</entry>
+<entry>Connects the Windows context menu event with a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsAssigned">isAssigned</link></entry>
-<entry>.</entry>
+<entry>Determines if this menu has an assigned owner.</entry>
 </row>
 <row>
 <entry><link linkend="mthShowClsPopupMenu">show</link></entry>
@@ -6572,8 +6572,8 @@
 <indexterm><primary>PopupMenu class</primary><secondary>show</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--show(--+--------+--)-----------------------------><
-           +--type--+
+>>--show(--p--+-------+--+--------+--+--------------+--+---------------+--)----><
+              +-,-dlg-+  +-,-opts-+  +-,-bothButons-+  +-,-excludeRect-+
 ]]>
 </programlisting>
 
