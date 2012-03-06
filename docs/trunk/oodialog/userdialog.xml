@@ -769,6 +769,188 @@ if success then dlg~execute
   arguments are not needed because they are ignored when the dialog is centered.  Other than that the method is exactly
   the same as the <emphasis role="italic">create</emphasis> method.
 </para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>cx, cy [required]</term>
+    <listitem>
+    <para>
+      The width and height of the dialog in dialog units.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>title [optional]</term>
+    <listitem>
+    <para>
+      The title for the dialog. If omitted, the dialog will not have a title.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style [optional]</term>
+    <listitem>
+    <para>
+      Zero or more of the keywords listed below, separated by blanks:
+    <variablelist>
+      <varlistentry><term>VISIBLE</term>
+      <listitem>
+      <para>
+        Creates the dialog in a visible state. The default is to create the dialog invisible. The operating system does
+        not show the dialog until the visible state is set, and the programmer sets the dialog to visible when desired.
+      </para>
+      <para>
+        A common technique in Windows is to create the dialog invisible, initialize all the dialog controls, and then
+        make the dialog visible. To use this technique in ooDialog, the programmer would not use the VISIBLE keyword in
+        <emphasis role="italic">create</emphasis> or <link linkend="mthCreateCenter">createCenter</link>. Then in the
+        method that runs the dialog, <link linkend="mthExecute">execute</link>, <link linkend="mthPopup">popup</link>,
+        <link linkend="mthPopupAsChild">popupAsChild</link>, etc., make the dialog visible through the use of the
+        <emphasis role="italic">show</emphasis> argument. In those methods, the ooDialog framework invokes <link
+        linkend="mthInitDialog">initDialog</link> before it shows the dialog. During the execution of <emphasis
+        role="italic">initDialog</emphasis> the dialog is invisible on the screen.
+      </para>
+      <para>
+        On the other hand, if the programmer <emphasis role="bold">does</emphasis> want the dialog visible during
+        <emphasis role="italic">initDialog</emphasis>, the VISIBLE keyword should be used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOMENU</term>
+      <listitem>
+      <para>
+        Creates a dialog without a system menu. By default the dialog is created with a system menu.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>NOTMODAL</term>
+      <listitem>
+      <para>
+        Creates a dialog with a normal dialog frame. This option is not needed, and is probably a hold over from the
+        original ooDialog that ran on Windows 3.1. The programmer will not see any difference in the dialog frame
+        whether this option is used or not used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SYSTEMMODAL</term>
+      <listitem>
+      <para>
+        In many ways this option is also obsolete. It adds a dialog style that was used in Windows 3.1. In Windows 3.1,
+        the style would create a dialog that blocked access to all other windows.  In modern versions of Windows this is
+        no longer the case, with this style the user can still access other windows. However, with this style, the
+        dialog will remain on top of all other windows in the system, even when the user is working with another window.
+        This is an unusual state that may frustrate the user.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>THICKFRAME</term>
+      <indexterm><primary>THICKFRAME</primary></indexterm>
+      <indexterm><primary>Resize a dialog</primary></indexterm>
+      <listitem>
+      <para>
+        Creates a dialog with a thick frame that can be used to resize the dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MINIMIZEBOX</term>
+      <listitem>
+      <para>
+        Creates a dialog with a minimize button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>MAXIMIZEBOX</term>
+      <listitem>
+      <para>
+        Creates a dialog with a maximize button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>VSCROLL</term>
+      <listitem>
+      <para>
+        Creates a dialog that has a vertical scroll bar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>HSCROLL</term>
+      <listitem>
+      <para>
+        Creates a dialog with a horizontal scroll bar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>OVERLAPPED</term>
+      <listitem>
+      <para>
+        This keyword is accepted, but like the NOTMODAL keyword, it has no discernable effect.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlgClass [optional]</term>
+    <listitem>
+    <para>
+      Name of the window class used for the dialog. This argument is, and always has been, ignored. It is difficult to
+      say what the original intent for the argument was.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>fontName [optional]</term>
+    <listitem><para>
+      The name of the font to be used by the dialog for all text. If this argument is omitted, the default dialog font
+      is used.  The programmer can change this default by using the<link linkend="mthClsSetDefaultfont">
+      setDefaultFont</link>() class method. If the default font has not been changed, ooDialog uses a symbolic font
+      name provided by Microsoft. This symbolic name signals the operating system to use the appropriate dialog font
+      for the specific version of Windows in use. I.e., the dialog font under Windows 2000 might be different then the
+      font under Windows XP.
+    </para></listitem></varlistentry>
+    <varlistentry><term>fontSize [optional]</term>
+    <listitem>
+    <para>
+      The point size of the font used by the dialog.  When this argument is omitted, the default dialog font size is
+      used, in the same manner as the font name.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>expected [optional]</term>
+    <listitem>
+    <para>
+      This argument specifies the maximum number of dialog controls the dialog template is expected to contain. Since
+      the dialog template is constructed in memory, ooDialog needs to have some idea of the size of the system resources
+      to reserve for the template. The default value is 200.
+    </para>
+    <para>
+      This value is just a means of doing a rough estimate of the memory needed for the template. The amount of memory
+      for each dialog control varies depending on how much, if any, text is associated with the control. If your dialog
+      has more than 200 controls, you should probably set the expected value larger.
+    </para>
+    <para>
+      As the dialog template is being constructed, the ooDialog framework will detect if the template is about to extend
+      past its allocated storage. If so, an error condition is raised. The condition text will look similar to:
+
+<programlisting>
+<![CDATA[
+Error 98 running C:\Program Files\ooDialog.cls line xxxx:  Execution error
+Error 98.900:  the storage allocated for the dialog template is too small
+]]>
+</programlisting>
+      If this condition is raised, the programmer needs to use a larger value for the <emphasis
+      role="italic">expected</emphasis> argument.
+    </para>
+    </listitem></varlistentry>
+  </variablelist> </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    This method returns true on success, otherwise false. However, if the method fails a condition is raised.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example creates a dialog with a size of 300 by 200 dialog units and centered on the screen. The
+    dialog has no system menu, minimize box, or maximize box. The dialog will use a 12-point Courier font and is
+    expected to contain fewer than 100 dialog controls.
+
+<programlisting>
+<![CDATA[
+success = dlg~create(20, 20, 300, 200, "My first Dialog", "NOMENU", , "Courier", 12, 100)
+if success then dlg~execute
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 </section>
 
 <section id="sctCreateMethods"><title>Create... Methods</title>
@@ -3670,8 +3852,8 @@ MyDialog~createPushButton(555, 100, 80, 40, 15, "NOTAB", "&Get new Info", "getIn
 <indexterm><primary>UserDialog class</primary><secondary>createPushButtonGroup</secondary></indexterm>
 <programlisting>
 <![CDATA[
-                                                 +----------------+
-                                                 V                |
+                                                      +-----------+
+                                                      V           |
 >>--createPushButtonGroup(-x-,-y-+------+-+------+-,-txt- -id- -m-+--+-----+-+-----+-)-><
                                  +-,-cx-+ +-,-cy-+                   +-,-r-+ +-,-o-+
 ]]>
