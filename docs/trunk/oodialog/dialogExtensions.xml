@@ -365,11 +365,9 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
 <programlisting>
 <![CDATA[
 
->>--changeBitmapButton(--id--,--normal--+-----------+--+------------+---------->
-                                        +-,-focused-+  +-,-selected-+
+>>--changeBitmapButton(--id-,-bN-+------+-+------+-+------+-+--------+--)------><
+                                 +-,-bF-+ +-,-bS-+ +-,-bD-+ +-,-opts-+
 
->--+------------+--+---------+--)----------------------------------------------><
-   +-,-disabled-+  +-,-style-+
 ]]>
 </programlisting>
 
@@ -387,10 +385,10 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
       <listitem>
       <para>
         The resource ID for the bitmap button whose bitmaps are being changed. May be numeric or <link
-      linkend="defSymbolicID">symbolic</link> .
+        linkend="defSymbolicID">symbolic</link> .
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>normal [required]</term>
+      <varlistentry><term>bN [required]</term>
       <listitem>
       <para>
         The bitmap to use for the normal state of the button. See the remarks for information on how the bitmap may be
@@ -481,27 +479,8 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return values are:
-    <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-      <para>
-        Success.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-      <para>
-        The resource ID could not be resolved.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-1</term>
-      <listitem>
-      <para>
-        Error.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    Returns 0 for success. On error returns -1 if the resource ID was symbolic and it could not be resolved to a numeric
+    ID, or 1 for any other error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -509,8 +488,9 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
   <para>
     The arguments specifying the bitmaps can be a bitmap file name, a bitmap <link linkend="defHandle">handle</link>, or
     the resource number of a bitmap compiled into the resource DLL of a <link linkend="clsResDialog">ResDialog</link>.
-    The bitmap arguments must all be the same type. I.e. all file names, all resource IDs, or all handles. If the bitmap
-    arguments are handles the style argument must contain the INMEMORY keyword.
+    The bitmap arguments must all be the same type. I.e. all file names, all resource IDs, or all handles. Symbolic
+    resource IDs can be used for the bitmap arguments. If the bitmap arguments are handles the style argument must
+    contain the INMEMORY keyword.
   </para>
   <para>
     The bitmap button must have already been assigned bitmaps, if there are no assigned bitmaps this method fails. All
@@ -2322,8 +2302,10 @@ end
 </programlisting>
 </section>
 
-<section id="mthInstallBitmapButton"><title>installBitmapButton</title>
+<section id="mthInstallBitmapbutton"><title>installBitmapbutton</title>
 <indexterm><primary>installBitmapButton</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>installBitmapButton</secondary></indexterm>
+<indexterm><primary>DialogExtensions class</primary><secondary>installBitmapButton</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--installBitmapButton(-id-+-------+-,-bN--+------+-+------+-+-------+-+--------+-)-><
@@ -2332,9 +2314,191 @@ end
 ]]>
 </programlisting>
 
-<para>The installBitmapButton method connects a bitmap
-and a method with a push button. The given bitmaps are displayed instead of
-a Windows push button.</para>
+<para>
+  The <emphasis role="italic">installBitmapButton</emphasis> method installs the bitmaps for a bitmap push button and
+  optionally connects the push button click <link linkend="ovvEvents">event</link> with a method in the Rexx dialog.
+  When the button needs to be drawn, the ooDialog framework draws the button using the suppliced bitmaps rather than
+  having the operating system draw a default push button.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the button. May be numeric or <link linkend="defSymbolicID">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>mth [optional]</term>
+      <listitem>
+      <para>
+        The name of the event handler method in the Rexx dialog that will be invoked when the push button is clicked. If
+        this method is omitted, then the event notification is not connected.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>bN [required]</term>
+      <listitem>
+      <para>
+        The source of the bitmap to be used for the button face when it is in the <emphasis
+        role="italic">normal</emphasis> state. See the Remarks section for details on how to specify a bitmap source for
+        this method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>bF [optional]</term>
+      <listitem>
+      <para>
+        The source of the bitmap to be used for the button face when it is in the <emphasis
+        role="italic">focused</emphasis> state. See the Remarks section for details on how to specify a bitmap source
+        for this method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>bS [optional]</term>
+      <listitem>
+      <para>
+        The source of the bitmap to be used for the button face when it is in the <emphasis
+        role="italic">selected</emphasis> state. See the Remarks section for details on how to specify a bitmap source
+        for this method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>bD [optional]</term>
+      <listitem>
+      <para>
+        The source of the bitmap to be used for the button face when it is in the <emphasis
+        role="italic">disabled</emphasis> state. See the Remarks section for details on how to specify a bitmap source
+        for this method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>opts [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='2'>
+          <member>FRAME   </member>
+          <member>INMEMORY</member>
+          <member>STRETCH </member>
+          <member>USEPAL  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>FRAME</term>
+          <listitem>
+          <para>
+            Draws a frame around the button. When this option is used, the appearance of the bitmap button is more
+            similar to a normal Windows button, except that the button face is drawn using the bitmap rather than text.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>INMEMORY</term>
+          <listitem>
+          <para>
+            This option <emphasis role="italic">must</emphasis> be used if the named bitmaps are already loaded into memory by using the <link
+            linkend="mthLoadBitmap">loadBitmap</link> method. The bitmap source arguments must be specified as the
+            bitmap <link linkend="defHandle">handle</link> returned from the <emphasis
+            role="italic">loadBitmap</emphasis> method.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>STRETCH</term>
+          <listitem>
+          <para>
+            If this option is specified and the extent of the bitmap is smaller than the extent of the button rectangle,
+            the bitmap is adapted to match the extent of the button. STRETCH has no effect for bitmaps loaded through a
+            DLL.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEPAL</term>
+          <listitem>
+          <para>
+            Stores the colors of the bitmap file as the system color palette.  This option is needed when the bitmap was
+            created with a palette other than the default Windows color palette. Use it for one button only, because
+            only one color palette can be active at any time. <emphasis role="italic">USEPAL</emphasis> is
+            invalid for a bitmap loaded from a DLL.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Retunrs 0 on success. Otherwise, returns -1 if the <emphasis role="italic">id</emphasis> argument was symbolic and
+    could not be resolved and 1 for any other error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    There are 3 ways to specify the bitmap source for the <emphasis role="italic">bN</emphasis>, <emphasis
+    role="italic">bf</emphasis>, <emphasis role="italic">bS</emphasis>, and <emphasis role="italic">bD</emphasis>
+    arguments. The arguments can be a bitmap file name, in which case the bitmap is loaded from the file, the arguments
+    can be the resource ID of bitmap compiled into the resource DLL for a <link linkend="clsResDialog">ResDialog</link>,
+    or the arguments can be a bitmap <emphasis role="italic">handle</emphasis> returned from the <link
+    linkend="mthLoadBitmap">loadBitmap</link> method.
+  </para>
+  <para>
+    However, <emphasis role="italic">all</emphasis> the bitmap source arguments <emphasis role="bold">must</emphasis>
+    be the same type. I.e., if the <emphasis role="italic">bN</emphasis> argument is specified as a file name, if any of
+    the other bitmap source arguments are used they must also be specified as file names. Symbolic IDs can be used when
+    using resource IDs to specify the bitmap sources.
+  </para>
+  <para>
+    Once a bitmap push button is installed, the <link linkend="mthChangeBitmapButton">changeBitmapButton</link> method
+    can be used to change the bitmaps assoicated with the button.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example installs a bitmap push button using four bitmaps and connects the button click event to a method:
+<programlisting>
+<![CDATA[
+
+::method initDialog
+  ...
+
+  self~installBitmapButton(204, "onBmpButtonClicked",                   -
+                                "AddBut_n.bmp", "AddBut_f.bmp",         -
+                                "AddBut_s.bmp", "AddBut_d.bmp", "FRAME")
+  ...
+
+::method onBmpButtonClicked
+  ...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End dialog object::installBitmapbutton() -->
+
+<section id="mthInstallBitmapButton"><title>installBitmapButton</title>
+<indexterm><primary>installBitmapButton</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>installBitmapButton</secondary></indexterm>
+<indexterm><primary>DialogExtensions class</primary><secondary>installBitmapButton</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--installBitmapButton(-id-+-------+-,-bN--+------+-+------+-+-------+-+--------+-)-><
+                            +-,-mth-+       +-,-bF-+ +-,-bS-+ +-,-bD--+ +-,-opts-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">installBitmapButton</emphasis> method installs the bitmaps for a bitmap button and
+  optionally connects the button click event with a method with a method in the Rexx dialog. The given bitmaps
+  are displayed instead of a Windows push button.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
