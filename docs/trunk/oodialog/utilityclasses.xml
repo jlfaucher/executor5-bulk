@@ -7622,6 +7622,10 @@ s2: a Size (2, 3)
 <entry><link linkend="atrCyScreen">cyScreen</link></entry>
 <entry>The height of the primary monitor in pixles.</entry>
 </row>
+<row>
+<entry><link linkend="atrMenuDropAlignment"></link>menuDropAlignment</entry>
+<entry>Reflects whether drop-down menus are right aligned or not.</entry>
+</row>
 </tbody></tgroup>
 </table>
 </para>
@@ -8012,6 +8016,37 @@ s2: a Size (2, 3)
 </section>  <!-- End SM::cyScreen() [attribute]  -->
 
 
+<section id="atrMenuDropAlignment"><title>menuDropAlignment (Attribute)</title>
+<indexterm><primary>menuDropAlignment</primary></indexterm>
+<indexterm><primary>SM class</primary><secondary>menuDropAlignment</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--menuDropAlignment-------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects whether drop-down menus are right aligned or not.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">menuDropAlignment get:</emphasis></term>
+  <listitem>
+  <para>
+    The value of the attribute is nonzero if drop-down menus are right-aligned with the corresponding menu-bar item, and
+    0 if the menus are left-aligned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">menuDropAlignment set:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">menuDropAlignment</emphasis> attribute can not be changed. You can not assign a new
+    value to this attribute.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SM::menuDropAlignment() [attribute]  -->
+
 </section> <!-- End SM Class -->
 
 
@@ -8063,6 +8098,14 @@ s2: a Size (2, 3)
 <row>
 <entry><link linkend="atrDragWidth">dragWidth</link></entry>
 <entry>Reflects the width of the drag rectangle.</entry>
+</row>
+<row>
+<entry><link linkend="atrMenuAnimation">menuAnimation</link></entry>
+<entry>Reflects whether menu animation is enabled or disabled.</entry>
+</row>
+<row>
+<entry><link linkend="atrMenuFade">menuFade</link></entry>
+<entry>Reflects whether menu animation uses fade or slide animation.</entry>
 </row>
 <row>
 <entry><link linkend="atrMouseHoverHeight">mouseHoverHeight</link></entry>
@@ -8208,6 +8251,102 @@ s2: a Size (2, 3)
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End SPI::dragWidth() [attribute]  -->
+
+<section id="atrMenuAnimation"><title>menuAnimation (Attribute)</title>
+<indexterm><primary>menuAnimation</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>menuAnimation</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--menuAnimation--------------------------------><
+
+>>--menuAnimation = onOff------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects whether menu animation is on or off.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">menuAnimation get:</emphasis></term>
+  <listitem>
+  <para>
+    The value of the attribute is <computeroutput>.true</computeroutput> if menu animation is on and
+  <computeroutput>.false</computeroutput> when menu animation is off.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">menuAnimation set:</emphasis></term>
+  <listitem>
+  <para>
+    Enables or disables menu animation. Set the attribute to <computeroutput>.true</computeroutput> to enable menu
+    animation and to <computeroutput>.false</computeroutput> to disable menu animation.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Menu animation must be on for <emphasis role="italic">any</emphasis> menu animations to occur. The <link
+    linkend="atrMenuFade">menuFade</link> attribute reflects whether menus use slide or fade animation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::menuAnimation() [attribute]  -->
+
+<section id="atrMenuFade"><title>menuFade (Attribute)</title>
+<indexterm><primary>menuFade</primary></indexterm>
+<indexterm><primary>SPI class</primary><secondary>menuFade</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--menuFade--------------------------------><
+
+>>--menuFade = onOff------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Reflects whether menu animation uses fade or slide animation.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">menuFade get:</emphasis></term>
+  <listitem>
+  <para>
+    The value of the attribute is <computeroutput>.true</computeroutput> if menu fade animation is used and
+  <computeroutput>.false</computeroutput> when menu fade animation is not used.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">menuFade set:</emphasis></term>
+  <listitem>
+  <para>
+    Enables or disables menu fade animation. Set the attribute to <computeroutput>.true</computeroutput> to enable menu
+    fade animation and to <computeroutput>.false</computeroutput> to disable menu fade animation.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When menu fade is off, menus use slide animation. For any animation to be used, <link
+    linkend="atrMenuAnimation">menuAnimation</link> must be on. Menu fade effect is only possible if the system has a
+    color depth of more than 256 colors.
+  </para> </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+  </para>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End SPI::menuFade() [attribute]  -->
 
 <section id="atrMouseHoverTime"><title>mouseHoverTime (Attribute)</title>
 <indexterm><primary>mouseHoverTime</primary></indexterm>

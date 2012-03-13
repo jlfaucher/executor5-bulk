@@ -539,7 +539,7 @@
 <indexterm><primary>menu object</primary><secondary>command event handlers</secondary></indexterm>
 <para>
   Menu command <link linkend="ovvEvents">event</link> notifications are actually the same notifications as the <link
-  linkend="mthConnectButtonEvent">button</link> CLICK event. These makes the event handler for a menu command event
+  linkend="mthConnectButtonEvent">button</link> CLICK event. This makes the event handler for a menu command event
   pretty simple. The event handler is invoked when the user selects a menu command item. The programmer should return 0
   from the event handler, however the interpreter does not <link linkend="sctCodingEventHandlers">wait</link> for the
   return.
@@ -6578,18 +6578,172 @@
 </programlisting>
 
 <para>
-  xx
+  Displays a contex menu and returns after the user has selected an item or canceled the menu.  When the user selects an
+  item, a menu <link linkend="sctMenuCommandEvens">command</link> event notification, using the id of the menu item
+  selected, is generated. If the user cancels, nothing happens.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>p [required]</term>
     <listitem>
     <para>
-      xx
+      A <link linkend="clsPoint">Point</link> object specifying the location for the shortcut menu, in <link
+      linkend="defScreenCoordinates">screen</link> co-ordinates.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlg [optional]</term>
+    <listitem>
+    <para>
+      The Rexx dialog object that the menu should be assigned to. If the menu has already been assigned an owner dialog
+      this argument can be omitted. If there is no already assigned dialog, this argument is required. Any menu
+      displayed on the screen is required by the operating system to have an assigned dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, specifying additional options for the shortcut
+      menu, case is not significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>LEFT           </member>
+        <member>HCENTER        </member>
+        <member>RIGHT          </member>
+        <member>TOP            </member>
+        <member>VCENTER        </member>
+        <member>BOTTOM         </member>
+        <member>HORNEGANIMATION</member>
+        <member>HORPOSANIMATION</member>
+        <member>NOANIMATION    </member>
+        <member>VERNEGANIMATION</member>
+        <member>VERPOSANIMATION</member>
+        <member>HORIZONTAL     </member>
+        <member>VERTICAL       </member>
+        <member>RECURSE        </member>
+        <member>LAYOUTRTL      </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>LEFT</term>
+        <listitem>
+        <para>
+          Centers the shortcut menu horizontally relative to the x coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HCENTER</term>
+        <listitem>
+        <para>
+          Positions the shortcut menu so that its left side is aligned with the x coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          Positions the shortcut menu so that its right side is aligned with the x coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument. Specify only one of the LEFT, HCENTER, or RIGHT keywords. RIGHT is the
+          default if none of the keywords is used.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TOP</term>
+        <listitem>
+        <para>
+          Positions the shortcut menu so that its top side is aligned with the Y coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VCENTER</term>
+        <listitem>
+        <para>
+          Centers the shortcut menu vertically relative to the y coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BOTTOM</term>
+        <listitem>
+        <para>
+          Positions the shortcut menu so that its bottom side is aligned with the y coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument. Specify only one of the TOP, VCENTER, or BOTTOM keywords. BOTTOM is the
+          default if none of the keywords is used.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HORNEGANIMATION</term>
+        <listitem>
+        <para>
+          Animates the menu from right to left.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HORPOSANIMATION</term>
+        <listitem>
+        <para>
+          Animates the menu from left to right.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOANIMATION</term>
+        <listitem>
+        <para>
+          Displays menu without animation.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VERNEGANIMATION</term>
+        <listitem>
+        <para>
+          Animates the menu from bottom to top.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VERPOSANIMATION</term>
+        <listitem>
+        <para>
+          Animates the menu from top to bottom.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HORIZONTAL</term>
+        <listitem>
+        <para>
+          If the menu cannot be shown at the specified location without overlapping the excluded rectangle, the OS tries
+          to accommodate the requested horizontal alignment before the requested vertical alignment.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VERTICAL</term>
+        <listitem>
+        <para>
+          If the menu cannot be shown at the specified location without overlapping the excluded rectangle, the OS tries
+          to accommodate the requested vertical alignment before the requested horizontal alignment.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RECURSE</term>
+        <listitem>
+        <para>
+          Used to display a menu when another menu is already displayed. This is intended to support context menus
+          within a menu.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LAYOUTRTL</term>
+        <listitem>
+        <para>
+          Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. Use right to left
+          text layout. By default left to right text layout is used.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bothButtons [optional]</term>
+    <listitem>
+    <para>
+      If true, the user can use either the right or the left buttons to select a menu item. If false only the left
+      button can be used. The defualt if omitted is false.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>excludeRect [optional]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsRect">Rect</link> object that specifies an area of the screen the menu should not overlap.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -6598,13 +6752,35 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns <computeroutput>.true</computeroutput> on success and <computeroutput>.false</computeroutput> on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">show</emphasis> and the <link linkend="mthTrack">track</link> methods are both used to
+    display a shortcut menu. The only difference is that when the <emphasis role="italic">show</emphasis> method is
+    used, a menu command event is generated when the user selects a menu command item, but the <emphasis
+    role="italic">track</emphasis> method directly returns the ID of the menu item selected.
+  </para>
+  <para>
+    For any animation to occur, the System Parameters Information menu animation must be on. (<link
+    linkend="clsSPI">SPI</link> class, <link linkend="atrMenuAnimation">menuAnimation</link> attribute.) In addition,
+    all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (<link
+    linkend="clsSPI">SPI</link> class, <link linkend="atrMenuFade">menuFade</link> attribute.)
+  </para>
+  <para>
+    Microsoft says that it is essential that the System Metric, menu drop alignment (<link linkend="clsSM">SM</link>
+    class, <link linkend="atrMenuAlignment">menuAnimation</link> attribute,) be checked to determine the correct
+    horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
+    HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
+    developing Microsoft Tablet PC applications.
+  </para>
+  <para>
+    Microsoft also notes that to display a context menu for a notification icon, the current window must be the
+    foreground window before invoking the <emphasis role="italic">show</emphasis> or <link
+    linkend="mthTrack">track</link> methods. Otherwise, the menu will not disappear when the user clicks outside of the
+    menu or the window that created the menu (if it is visible).
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6613,16 +6789,57 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The dialog argument was omitted and the menu does
+        not have an assigned dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_INVALID_WINDOW_HANDLE (1400)</term>
+      <listitem>
+      <para>
+        Invalid window handle. <emphasis role="bold">Meaning:</emphasis> The window handle for the dialog could not be
+        obtained.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_INVALID_MENU_HANDLE (1401)</term>
+      <listitem>
+      <para>
+        Invalid menu handle.  <emphasis role="bold">Meaning:</emphasis> This menu has been destroyed, or is no longer
+        valid for some reason.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_WINDOW_NOT_DIALOG (1420)</term>
+      <listitem>
+      <para>
+        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
+        role="italic">dlg</emphasis> argument was specified, but the object is not a <link
+        linkend="chpDialogObject">dialog</link> object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a context menu:
 <programlisting>
 <![CDATA[
 
+  pos = .Point~new(x, y)
+
+  ret = dlgPopup~show(pos, self)
+  if ret == -1 then do
+    say 'dlgPopup~show() failed SystemErrorCode:' || -
+    .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+  end
+
+  return 0
 ]]>
 </programlisting>
   </para>
@@ -6635,24 +6852,178 @@
 <indexterm><primary>PopupMenu class</primary><secondary>track</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--track(--+--------+--)----------------------------><
-            +--type--+
+>>--track(--p--+-------+--+--------+--+--------------+--+---------------+--)---><
+               +-,-dlg-+  +-,-opts-+  +-,-bothButons-+  +-,-excludeRect-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Displays a contex menu and returns the menu ID that the user has selected.  When the user selects an item, <emphasis
+  role="italic">no</emphasis> menu <link linkend="sctMenuCommandEvens">command</link> event notification is generated.
+  If the user cancels the menu 0 is returned.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>p [required]</term>
     <listitem>
     <para>
-      xx
+      A <link linkend="clsPoint">Point</link> object specifying the location for the shortcut menu, in <link
+      linkend="defScreenCoordinates">screen</link> co-ordinates.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlg [optional]</term>
+    <listitem>
+    <para>
+      The Rexx dialog object that the menu should be assigned to. If the menu has already been assigned an owner dialog
+      this argument can be omitted. If there is no already assigned dialog, this argument is required. Any menu
+      displayed on the screen is required by the operating system to have an assigned dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>opts [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, specifying additional options for the shortcut
+      menu, case is not significant:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>LEFT           </member>
+        <member>HCENTER        </member>
+        <member>RIGHT          </member>
+        <member>TOP            </member>
+        <member>VCENTER        </member>
+        <member>BOTTOM         </member>
+        <member>HORNEGANIMATION</member>
+        <member>HORPOSANIMATION</member>
+        <member>NOANIMATION    </member>
+        <member>VERNEGANIMATION</member>
+        <member>VERPOSANIMATION</member>
+        <member>HORIZONTAL     </member>
+        <member>VERTICAL       </member>
+        <member>RECURSE        </member>
+        <member>LAYOUTRTL      </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>LEFT</term>
+        <listitem>
+        <para>
+          Centers the shortcut menu horizontally relative to the x coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HCENTER</term>
+        <listitem>
+        <para>
+          Positions the shortcut menu so that its left side is aligned with the x coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHT</term>
+        <listitem>
+        <para>
+          Positions the shortcut menu so that its right side is aligned with the x coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument. Specify only one of the LEFT, HCENTER, or RIGHT keywords. RIGHT is the
+          default if none of the keywords is used.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>TOP</term>
+        <listitem>
+        <para>
+          Positions the shortcut menu so that its top side is aligned with the Y coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VCENTER</term>
+        <listitem>
+        <para>
+          Centers the shortcut menu vertically relative to the y coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>BOTTOM</term>
+        <listitem>
+        <para>
+          Positions the shortcut menu so that its bottom side is aligned with the y coordinate specified by the <emphasis
+          role="italic">p</emphasis> argument. Specify only one of the TOP, VCENTER, or BOTTOM keywords. BOTTOM is the
+          default if none of the keywords is used.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HORNEGANIMATION</term>
+        <listitem>
+        <para>
+          Animates the menu from right to left.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HORPOSANIMATION</term>
+        <listitem>
+        <para>
+          Animates the menu from left to right.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOANIMATION</term>
+        <listitem>
+        <para>
+          Displays menu without animation.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VERNEGANIMATION</term>
+        <listitem>
+        <para>
+          Animates the menu from bottom to top.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VERPOSANIMATION</term>
+        <listitem>
+        <para>
+          Animates the menu from top to bottom.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HORIZONTAL</term>
+        <listitem>
+        <para>
+          If the menu cannot be shown at the specified location without overlapping the excluded rectangle, the OS tries
+          to accommodate the requested horizontal alignment before the requested vertical alignment.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>VERTICAL</term>
+        <listitem>
+        <para>
+          If the menu cannot be shown at the specified location without overlapping the excluded rectangle, the OS tries
+          to accommodate the requested vertical alignment before the requested horizontal alignment.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RECURSE</term>
+        <listitem>
+        <para>
+          Used to display a menu when another menu is already displayed. This is intended to support context menus
+          within a menu.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>LAYOUTRTL</term>
+        <listitem>
+        <para>
+          Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. Use right to left
+          text layout. By default left to right text layout is used.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bothButtons [optional]</term>
+    <listitem>
+    <para>
+      If true, the user can use either the right or the left buttons to select a menu item. If false only the left
+      button can be used. The defualt if omitted is false.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>excludeRect [optional]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsRect">Rect</link> object that specifies an area of the screen the menu should not overlap.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -6661,13 +7032,36 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a non-negative number on success, -1 on error.  On success, the return is either 0, meaning the user
+    canceled the menu, or the id of the menu item selected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">track</emphasis> and the <link linkend="mthShow">show</link> methods are both used to
+    display a shortcut menu. The only difference is that when the <emphasis role="italic">show</emphasis> method is
+    used, a menu command event is generated when the user selects a menu command item and when the <emphasis
+    role="italic">track</emphasis> method directly returns the ID of the menu item selected.
+  </para>
+  <para>
+    For any animation to occur, the System Parameters Information menu animation must be on. (<link
+    linkend="clsSPI">SPI</link> class, <link linkend="atrMenuAnimation">menuAnimation</link> attribute.) In addition,
+    all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (<link
+    linkend="clsSPI">SPI</link> class, <link linkend="atrMenuFade">menuFade</link> attribute.)
+  </para>
+  <para>
+    Microsoft says that it is essential that the System Metric, menu drop alignment (<link linkend="clsSM">SM</link>
+    class, <link linkend="atrMenuAlignment">menuAnimation</link> attribute,) be checked to determine the correct
+    horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
+    HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
+    developing Microsoft Tablet PC applications.
+  </para>
+  <para>
+    Microsoft also notes that to display a context menu for a notification icon, the current window must be the
+    foreground window before invoking the <emphasis role="italic">show</emphasis> or <link
+    linkend="mthTrack">track</link> methods. Otherwise, the menu will not disappear when the user clicks outside of the
+    menu or the window that created the menu (if it is visible).
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -6676,15 +7070,58 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The dialog argument was omitted and the menu does
+        not have an assigned dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_INVALID_WINDOW_HANDLE (1400)</term>
+      <listitem>
+      <para>
+        Invalid window handle. <emphasis role="bold">Meaning:</emphasis> The window handle for the dialog could not be
+        obtained.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_INVALID_MENU_HANDLE (1401)</term>
+      <listitem>
+      <para>
+        Invalid menu handle.  <emphasis role="bold">Meaning:</emphasis> This menu has been destroyed, or is no longer
+        valid for some reason.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_WINDOW_NOT_DIALOG (1420)</term>
+      <listitem>
+      <para>
+        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
+        role="italic">dlg</emphasis> argument was specified, but the object is not a <link
+        linkend="chpDialogObject">dialog</link> object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows a context menu using the <emphasis role="italic">track</emphasis> method:
 <programlisting>
 <![CDATA[
+
+  pos = .Point~new(x, y)
+
+  id = dlgPopup~track(pos, self)
+  if id == -1 then do
+    say 'dlgPopup~track() failed SystemErrorCode:' || -
+    .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+  end
+  else do
+    return self~doMenuCommand(ret
+  end
 
 ]]>
 </programlisting>
@@ -6698,9 +7135,25 @@
 <section id="clsSystemMenu"><title>SystemMenu Class</title>
 <indexterm><primary>SystemMenu class</primary></indexterm>
 <para>
-  A ... is ..
+  The System menu is also known as the <emphasis role="italic">Window</emphasis> or <emphasis
+  role="italic">Control</emphasis> menu. The System menu is normally defined and managed completely by the operating
+  system. It is a pop-up menu that the user can open by clicking on the application icon in the title bar, or by right
+  clicking anywhere on the title bar. The <computeroutput>SystemMenu</computeroutput> class provides methods for the
+  programmer to work with and manipulate the Windows System menu.
 </para>
 <para>
+  The OS provides a standard set of menu items on the System menu that the user can choose to size or move a window,
+  close a window, etc..  Menu items can be added, removed, and modified, but most applications just leave the System
+  menu alone. A dialog window can have a System menu. For normal windows it is unusual to not have a System menu, but
+  many simple dialogs do not use a System menu.
+</para>
+<para>
+  When a user selects a System menu item an <link linkend="ovvEvents">event</link> notification is sent to the owner
+  window of the menu. However, most applications don't process the notification, but rather let the OS handle the
+  notification with the default processing. The ooDialog programmer can connect the event notification to a method in
+  her Rexx dialog in the same manner as other event notifications are connected. If the programmer adds menu command
+  items to the System menu, the the event notification for the item should be connected and processed by the
+  application.
 </para>
 
 <section id="sctMethodsSystemMenu"><title>Method Table</title>
@@ -6746,24 +7199,26 @@
 <indexterm><primary>new</primary><secondary>SystemMenu class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-          +--type--+
+>>--new(--dlg--)---------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates a new <computeroutput>SystemMenu</computeroutput> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>dlg</term>
     <listitem>
     <para>
-      xx
+      The Rexx dialog object that contains the System menu. To be explicit, the dialog must have a System menu. A
+      <computeroutput>SystemMenu</computeroutput> object can not be initialized if the dialog does not already have a
+      System menu .
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -6778,7 +7233,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The underlying menu object is a copy of the System menu of the specified dialog.  Once the copy is made, the System
+    menu can be manipulated and modified just like other menu objects.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
