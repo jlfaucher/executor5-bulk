@@ -94,32 +94,34 @@
       <xref linkend="chapFour"/> are visible. This chapter addresses the following topics in the context
       of the Order Management application: <itemizedlist>
         <listitem>
-          <para><xref linkend="chap06-struc"/></para>
+          <para><link linkend="chap06-struc" endterm="progstruc.title"></link></para>
         </listitem>
         <listitem>
-          <para><xref linkend="chap06-popups"/></para>
+          <para><link linkend="chap06-popups" endterm="popups.title"></link></para>
         </listitem>
         <listitem>
-          <para><xref linkend="chap06-lviews"/></para>
+          <para><link linkend="chap06-lviews" endterm="lviews.title"></link></para>
         </listitem>
         <listitem>
-          <para><xref linkend="chap06-resize"/></para>
+          <para><link linkend="chap06-resize" endterm="resize.title"></link></para>
         </listitem>
         <listitem>
-          <para><xref linkend="chap06-icons"/></para>
+          <para><link linkend="chap06-icons" endterm="icons.title"></link></para>
         </listitem>
         <listitem>
-          <para><xref linkend="chap06-utildlgs"/></para>
+          <para><link linkend="chap06-utildlgs" endterm="utildlgs.title"></link></para>
         </listitem>
       </itemizedlist>
+      Test of xref only: 1: blah <xref linkend="chapFour"/> blah. 2: blah <xref linkend="chapFour">
+      blah. 3: blah <xref linkend="chapFour"></xref> blah.
     </para>
 
-<section id="chap06-struc"><title>Program Structure</title>  <!-- Section 6.1 -->
+<section id="chap06-struc"><title id="progstruc.title">Program Structure</title>  <!-- Section 6.1 -->
 
   <section id="chap06-struc-overview"><title>Overview</title>  <!-- Section 6.1.1 -->
-  <para>In Exercise06, each business component has its own folder:
+  <para>In Exercise 6, each business component has its own folder:
     Customer, Order, OrderMgr, and Product. Customer and Product are more or less identical
-    to the same components introduced in Exercises 04 and 05.
+    to the same components introduced in Exercises 4 and 5.
     Placing each business component into a separate folder
     helps promote high cohesion and low coupling in the software,
     since the internals of each business component are opaque to other business components.
@@ -169,12 +171,13 @@
       and the handling of externalized human-readable strings.
     </para>
     <section id="chap06-struc-impls-paths"><title>File Paths</title>  <!-- Section 6.1.2.1 -->
+      <indexterm><primary>File path</primary></indexterm>
       <para>When an ooRexx program is run, the current (or
         "home") directory is that from which the program is started. That is, if a
         program is started on a command prompt like this: <computeroutput>c:\aaa\bbb>myprog.rex</computeroutput>,
         then the current directory will be <computeroutput>c:\aaa\bbb</computeroutput>. However, if the program
         is started like this: <computeroutput>c:\aaaa>bbb\myprog.rex</computeroutput>, then the current directory
-        will be <computeroutput>c:\aaa</computeroutput>. In Exercise06,
+        will be <computeroutput>c:\aaa</computeroutput>. In Exercise 6,
         all programs are started from the <computeroutput>Exercise06</computeroutput>
         folder. Thus any relative paths must be relative to the
         <computeroutput>Exercise06</computeroutput> folder. However, using ResEdit with relative
@@ -232,8 +235,8 @@
         application deployment purposes.
       </para>
       <para>Human-readable strings in *.rc classes are a problem when internationalization is a requirement. Internationalization
-        (often referred to as I18N - there are 20 letters in the word "internationalization") is the term often given to
-        allowing for translation of human-readable text to other languages.
+        (often referred to as I18N - there are 20 letters in the word "internationalization") is the term given to
+        providing for translation of human-readable text to other languages.
         <indexterm><primary>Internationalization</primary></indexterm>
         An immediate solution is to display the translated strings from within the program rather than from the *.rc file.
         The <emphasis role="italic">initDialog</emphasis> method is a good place to do this. Try inserting the following
@@ -267,10 +270,10 @@
 
   <section><title>Application Function and Naming</title>  <!-- Section 6.1.3 -->
   <para>
-    One of the first things to notice about Exercise06 is that there is very little application function.
+    One of the first things to notice about Exercise 6 is that there is very little application function.
     For example, data is all hard-coded, and all Customers have identical data, as do all Products and all Orders
     (this will be fixed in the next exercise).
-    The second thing is that while there's an Order component to display and change existing sales orders,
+    The second thing is that while there's an <computeroutput>Order</computeroutput> component to display and change existing sales orders,
     there's a separate <computeroutput>OrderForm</computeroutput> component
     for creating new sales orders. But there is no way to create new Customers or Products. This will not be
     fixed in the next exercise, mainly because providing this function would not exercise any new ooDialog
@@ -298,7 +301,7 @@
   </para>
   <para>Finally, starting an application that can make changes to a business is generally guarded by some form of security.
     When starting the sample application, this is represented by a password dialog, which is visible if you start the application
-    (in the Exercise06 folder) with the command <emphasis role="italic">startup enterPW</emphasis> instead of just
+    (in the <computeroutput>Exercise06</computeroutput> folder) with the command <emphasis role="italic">startup enterPW</emphasis> instead of just
     <emphasis role="italic">startup</emphasis>. Yes, this is the wrong way round, but its purpose is to illustrate the code
     required for a password prompt. It is very simple, and uses one of the many ooDialog built-in dialogs (documented in the
     ooDialog Reference sections 6.2 "Standard Dialog Classes" and 6.3 "Public Routines"), as follows:
@@ -306,7 +309,7 @@
     <![CDATA[
       parse arg pwOption
       if pwOption = "enterPW" then do
-        pwd = PasswordBox("Please enter your password","Sign In")  -- See ooDialoog Reference section 6.3.11.
+        pwd = PasswordBox("Please enter your password","Sign In")
         if pwd \= "Password" then exit
       end
     ]]>
@@ -317,7 +320,7 @@
 
 </section>  <!-- End of section 6.1 -->
 
-<section id="chap06-popups"><title>Popups and Parents</title>  <!-- Section 6.2 -->
+<section id="chap06-popups"><title id="popups.title">Popups and Parents</title>  <!-- Section 6.2 -->
   <para>This section addresses how the various dialogs in the Order Management application are launched.
     First, the way in which dialogs are started is addressed. Second, the use of the
     <emphasis role="italic">interpret</emphasis> statement in displaying dialogs
@@ -329,31 +332,51 @@
   <indexterm><primary>Parents</primary><secondary>Popups</secondary></indexterm>
   <para>In previous chapters, dialogs have been started using the statement
     <emphasis role="italic">self~execute(...)</emphasis>. The <emphasis role="italic">~execute</emphasis> method
-    made the dialogs "modal", that is, access to other dialogs was blocked until the dialog was closed
-    (see also ooDialog Reference section 2.2.11). A good example of a modal dialog is the Help-About
-    dialog in Exercise05. While this is open, the Product View dialog is blocked.
+    makes the dialogs "modal", that is, access to other dialogs is blocked until the dialog is closed
+    (ooDialog Reference section 2.2.11). A good example of a modal dialog is the Help-About
+    dialog in Exercise 5. While this is open, the Product View dialog is blocked.
   </para>
-  <para>The dialogs in Exercise06 are not modal; they are "amodal" or "modeless". Any of them can be accessed
+  <para>The dialogs in Exercise 6 are not modal; they are "amodal" or "modeless". Any of them can be accessed
     by the user at any time. A modeless dialog is
     created by using the <emphasis role="italic">~popup</emphasis> or <emphasis role="italic">~popupAsChild</emphasis>
-    methods. In the sample Order Management application, only the initial dialog <computeroutput>OrderMgrView</computeroutput>
-    is started with <emphasis role="italic">~execute</emphasis>.
-    All others are started with <emphasis role="italic">~popUpAsChild</emphasis>.
+    methods in place of <emphasis role="italic">~execute</emphasis>.
+  </para>
+  <para>The difference between a dialog started with <emphasis role="italic">~popup</emphasis> as
+    opposed to <emphasis role="italic">~popupAsChild</emphasis> is as follows.
+    <itemizedlist>
+      <listitem><para><emphasis role="bold"><emphasis role="italic">~popup()</emphasis></emphasis> - If dialog A
+        pops up dialog B, then B exists independently of A. Either can be accessed by the user at any time.
+        Either can be closed without affecting the other. The application ends only when both are closed. </para>
+      </listitem>
+      <listitem><para><emphasis role="italic"><emphasis role="bold">~popupAsChild(parentDlg)</emphasis></emphasis> - If dialog
+        A pops up dialog B as its child, then B's existence depends on A's. If A is closed, so does B. However, as with
+        <emphasis role="italic">~popup</emphasis> either can be accessed by the user at any time. Note that the only required
+        argument for <emphasis role="italic">~popupAsChild(parentDlg)</emphasis> is the parent dialog.</para>
+      </listitem>
+    </itemizedlist>
+    <!-- if startupcustomerlist, if open a customer, then close list, cust also closes. But if use startup, it doesn't. -->
+          <indexterm><primary>Popups</primary><secondary>PopupAsChild</secondary></indexterm>
+          <indexterm><primary>PopupAsChild</primary></indexterm>
+  </para>
+  <para>
+    It is the latter - <emphasis role="italic">~popupAsChild</emphasis> -
+    that best fits the requirements of the Order Management application. Thus while
+    <computeroutput>OrderMgrView</computeroutput> is started with <emphasis role="italic"
+      >~execute</emphasis>, all other Order Management dialogs are started with <emphasis
+        role="italic">~popupAsChild(rootDlg)</emphasis> where the "root" (or parent) dialog is always
+    <computeroutput>OrderMgrView</computeroutput>. Thus all dialogs are modeless and independent of each other.
+    The application ends only when <computeroutput>OrderMgrView</computeroutput> is closed.
     (Note that <computeroutput>ProductView</computeroutput>'s "About" dialog is still modal: it blocks access
     to the specific instance of <computeroutput>ProductView</computeroutput> from which it is launched; other instances
     of <computeroutput>ProductView</computeroutput> are unaffected, as are other dialogs.)
   </para>
-  <para>The difference between a dialog started with <emphasis role="italic">~popup</emphasis> as opposed to
-    <emphasis role="italic">~popupAsChild</emphasis> is that ??? <!-- ******* -->
-        <!-- if startupcustomerlist, if open a customer, then close list, cust also closes. But if use startup, it doesn't. -->
-    <indexterm><primary>Popups</primary><secondary>PopupAsChild</secondary></indexterm>
-    <indexterm><primary>PopupAsChild</primary></indexterm>
-    And it is the latter -
-    <emphasis role="italic">~popupAsChild</emphasis> - that best fits the requirements of the Order Management application.
-    Thus while <computeroutput>OrderMgr</computeroutput> is started with <emphasis role="italic">~execute</emphasis>
-    all other Order Management dialogs are started with <emphasis role="italic">~popupAsChild</emphasis>. Consider, for example,
-    the <emphasis role="italic">activate></emphasis> method of <computeroutput>CustomerListView</computeroutput>
-    (called from the <emphasis role="italic">newInstance</emphasis> class method):
+  <para>So, for a dialog to be "popped up as child", there has to be a parent dialog that was surfaced
+    with either <emphasis role="italic">~popup</emphasis> or <emphasis role="italic">~execute</emphasis>.
+    This presents a problem for stand-alone testing. The solution adopted in the sample Order Management
+    application is illustrated in the following code fragment, taken from
+    <computeroutput>CustomerListView</computeroutput>'s
+    <emphasis role="italic">activate></emphasis> method (which is called from its
+    <emphasis role="italic">newInstance</emphasis> class method):
     <programlisting>
     <![CDATA[
       ::METHOD activate UNGUARDED
@@ -367,25 +390,71 @@
         return
     ]]>
     </programlisting>
-    This method illustrates the two ways of starting a dialog. For stand-alone testing
-    (see <xref linkend="apx-satesting"/>),
-    the dialog is started using <emphasis role="italic">self~execute()</emphasis>.
-    In normal operation, however, it is started by <emphasis role="italic">self~popupAsChild(...)</emphasis>.
-    Notice that the first parameter of <emphasis role="italic">~popupAsChild(...)</emphasis> is the parent
-    dialog <emphasis role="italic"></emphasis>, which is passed to the <emphasis role="italic">newInstance</emphasis>
+    This code illustrates the two ways of starting a dialog. For stand-alone testing (see
+    <xref linkend="apx-satesting"/>), the dialog is started using
+    <emphasis role="italic">self~execute()</emphasis>. In normal operation, however, it is started by
+    <emphasis role="italic">self~popupAsChild(...)</emphasis>. Notice that the first parameter of
+    <emphasis role="italic">~popupAsChild(rootDlg, ...)</emphasis> is the <computeroutput>OrderMgrView</computeroutput>
+    dialog, which is passed to the <emphasis role="italic">newInstance</emphasis>
     class method and thence as the parameter <emphasis role="italic">rootDlg</emphasis> to the
-    <emphasis role="italic">activate</emphasis> method. This dialog, the <computeroutput>CustomerListView</computeroutput> class,
-    is both a child of the <computeroutput>OrderMgr</computeroutput> and parent of the <computeroutput>Customer</computeroutput> class.
-    Later in <computeroutput>CustomerListView</computeroutput>, a Customer is displayed by the user double-clicking on an item in
-    the List View. The code that surfaces the Customer is as follows:
-
+    <emphasis role="italic">activate</emphasis> method. This dialog, the
+    <computeroutput>CustomerListView</computeroutput> class, is both a child of the
+    <computeroutput>OrderMgr</computeroutput> and parent of the
+    <computeroutput>Customer</computeroutput> class. Later in
+    <computeroutput>CustomerListView</computeroutput>, a Customer is displayed by the user
+    double-clicking on an item in the List View. The event handler method (<emphasis role="italic">showCustomer</emphasis>)
+    that surfaces the Customer is as follows:
+    <programlisting>
+    <![CDATA[
+      ::METHOD showCustomer UNGUARDED
+        expose lvCustomers rootDlg
+        item = lvCustomers~selected
+        if item = -1 then do		-- if no item selected.
+          ret = MessageDialog(.HRSclv~nilSelected, self~hwnd, title, 'WARNING')
+          return
+        end
+        info=.Directory~new
+        if lvCustomers~getItemInfo(item, info) then do
+          .local~my.idCustomerData  = .CustomerData~new	   -- create Customer Data instance
+          .local~my.idCustomerModel = .CustomerModel~new	 -- create Customer Model instance
+          .local~my.idCustomerData~activate
+          .local~my.idCustomerModel~activate
+          .CustomerView~newInstance(rootDlg,"CU003")
+          self~disableControl("IDC_CUSTLIST_SHOWCUST")
+        end
+        else do
+          say "CustomerListView-showCustomer-04: ~getItemInfo returned .false."
+        end
+    ]]>
+    </programlisting>
+    The list of customers is shown in a ListView control (see <xref linkend="lviews.title"/> below).
+    The <emphasis role="italic">showCustomer</emphasis> method is invoked when the user double-clicks
+    on an item in the list. This item is identified by the
+    statement <emphasis role="italic">item = lvCustomers~selected</emphasis>, the proxy object for the
+    list control being <emphasis role="italic">lvCustomers</emphasis>. If no item is selected, an error message
+    is displayed, and the method returns. The data in the selected row is then placed in a directory
+    (with an error check in case <emphasis role="italic">~getItemInfo</emphasis> returns
+    <computeroutput>.false</computeroutput>). The next statements (<emphasis role="italic">.local~my...</emphasis>)
+    create instances of the <computeroutput>CustomerModel</computeroutput> and <computeroutput>CustomerData</computeroutput>
+    classes that are required by <computeroutput>CustomerView</computeroutput> (see <xref linkend="chap03-cplg"/>.
+    Then an instance of <computeroutput>CustomerView</computeroutput> is created by the statement
+    <emphasis role="italic">.CustomerView~newInstance(rootDlg,"CU003")</emphasis>. Finally, the "Show Customer"
+    pushbutton is disabled.
   </para>
-
+  <para>
+    The approach to establishing the model and data objects shown here is not ideal. Indeed, the above code
+    merely satisfies the requirement for a <computeroutput>CustomerView</computeroutput> object to have access
+    to a <computeroutput>CustomerModel</computeroutput> instance which in turn needs access to an instance of
+    <computeroutput>CustomerView</computeroutput>. Indeed, in this exercise, the data is all hard-coded. The
+    next exercise will illustrate a much better way of doing this - but with data being read from a disk file
+    (a notional "data base").
+  </para>
   </section>  <!-- End of Section 6.2.1 -->
 
   <section id="chap06-popups-offset"><title>Offsetting Dialogs</title>  <!-- Section 6.2.2 -->
     <para>When creating a resource file for a dialog, it is unusual to define the position of the dialog
-      on the When a dialog is started, from a "parent" dialog, it appears on
+      on the screen, Instead, the option to center the dialog in the screen us often used.
+      However, when a number of different dialogs are all
       <!-- How get pop-up to pop up away (offset) from parent? Answer - have to code it yourself.
 
       Test in ...\Ancillary\Tests\DragDrop:
@@ -420,7 +489,7 @@
     <!--
       Starting a dialog from a dialog (incl interpret statement - pointer to later)
       Use of "interpret", better would be to have a class object - but later we'll need interpret (won't we?) for the ObjectMgr.
-      Leave "interpret" in but mention it - say class object would be better - show how can be fixed in later exercise - where
+      Leave "interpret" in but mention it - say class object would be better - show how can be fixed in later exercise – where
       this will be moved to a support class (ObjectMgr).
     -->
     <para>
@@ -440,7 +509,7 @@
 
 </section>  <!-- End of Section 6.2 -->
 
-<section id="chap06-lviews"><title>Icons and Lists</title>  <!-- Section 6.3 -->
+<section id="chap06-lviews"><title id="lviews.title">Icons and Lists</title>  <!-- Section 6.3 -->
     <indexterm><primary>ListView</primary></indexterm>
     <indexterm><primary>Controls</primary><secondary>ListView</secondary></indexterm>
     <indexterm><primary>Icons</primary><secondary>in a ListView</secondary></indexterm>
@@ -663,7 +732,7 @@
 
 </section>  <!-- End of section 6.3 -->
 
-<section id="chap06-resize"><title>Re-sizing Dialogs</title>  <!-- Section 6.4 -->
+<section id="chap06-resize"><title id="resize.title">Re-sizing Dialogs</title>  <!-- Section 6.4 -->
 <para>If you haven't already done so, try re-sizing the Order Management dialog.
   The ListView containing the icons
   expands to match the new window size, and one of the two pushbuttons moves as well, although their size
@@ -693,7 +762,7 @@
 </section>  <!-- End of section 6.4 -->
 
 
-<section id="chap06-icons"><title>Creating and Using Icons</title>  <!-- Section 6.5 -->
+<section id="chap06-icons"><title id="icons.title">Creating and Using Icons</title>  <!-- Section 6.5 -->
   <!--
     6.5    Creating and Using Icons
     - Icons - making them, getting 'em into the program. -
@@ -707,7 +776,7 @@
 </para>
 </section>  <!-- End of section 6.5 -->
 
-<section id="chap06-utildlgs"><title>Utility Dialogs</title>   <!-- Section 6.6 -->
+<section id="chap06-utildlgs"><title id="utildlgs.title">Utility Dialogs</title>   <!-- Section 6.6 -->
   <indexterm><primary>Password dialog</primary></indexterm>
   <indexterm><primary>Utility routine</primary><secondary>PasswordBox</secondary></indexterm>
   <!--
@@ -737,4 +806,3 @@
 </section>  <!-- End of section 6.6 -->
 
 </chapter>
-
