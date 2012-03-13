@@ -359,8 +359,8 @@ a defined duration. </para>
 <secondary>TimedMessage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>-aTimedMessage~init(--msg--,--title--,--sleeping--+--------------+--)----><
-                                                    +-,-earlyReply-+
+>>-aTimedMessage~init(--msg-,-title-,-sleeping--+--------------+-+-----+--)----><
+                                                +-,-earlyReply-+ +-,-p-+
 
 ]]>
 </programlisting>
@@ -397,6 +397,14 @@ returns immediately.  This allows the code at the point where <computeroutput>
 execute</computeroutput> was invoked to continue.  The message windows continues
 to display for its specified duration and then dismisses itself automatically.
 </para></listitem></varlistentry>
+<varlistentry><term>p [optional]</term>
+<listitem>
+<para>
+  A <link linkend="Point">Point</link> object that specifies the position, in pixels, for the position of the timed
+  message dialog on the screen. By default the dialog is centered in the screen. If <emphasis role="italic">p</emphasis>
+  is used, the point specifies the position of the upper left corner of the dialog.
+</para>
+</listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 <varlistentry id="example1TimedMessage"><term><emphasis role="bold">Example
