@@ -6579,7 +6579,7 @@
 
 <para>
   Displays a contex menu and returns after the user has selected an item or canceled the menu.  When the user selects an
-  item, a menu <link linkend="sctMenuCommandEvens">command</link> event notification, using the id of the menu item
+  item, a menu <link linkend="sctMenuCommandEvents">command</link> event notification, using the id of the menu item
   selected, is generated. If the user cancels, nothing happens.
 </para>
 <variablelist>
@@ -6771,7 +6771,7 @@
   </para>
   <para>
     Microsoft says that it is essential that the System Metric, menu drop alignment (<link linkend="clsSM">SM</link>
-    class, <link linkend="atrMenuAlignment">menuAnimation</link> attribute,) be checked to determine the correct
+    class, <link linkend="atrMenuDropAlignment">menuAnimation</link> attribute,) be checked to determine the correct
     horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
     HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
     developing Microsoft Tablet PC applications.
@@ -6859,7 +6859,7 @@
 
 <para>
   Displays a contex menu and returns the menu ID that the user has selected.  When the user selects an item, <emphasis
-  role="italic">no</emphasis> menu <link linkend="sctMenuCommandEvens">command</link> event notification is generated.
+  role="italic">no</emphasis> menu <link linkend="sctMenuCommandEvenst">command</link> event notification is generated.
   If the user cancels the menu 0 is returned.
 </para>
 <variablelist>
@@ -7039,8 +7039,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">track</emphasis> and the <link linkend="mthShow">show</link> methods are both used to
-    display a shortcut menu. The only difference is that when the <emphasis role="italic">show</emphasis> method is
+    The <emphasis role="italic">track</emphasis> and the <link linkend="mthShowClsPopupMenu">show</link> methods are both used
+    to display a shortcut menu. The only difference is that when the <emphasis role="italic">show</emphasis> method is
     used, a menu command event is generated when the user selects a menu command item and when the <emphasis
     role="italic">track</emphasis> method directly returns the ID of the menu item selected.
   </para>
@@ -7052,7 +7052,7 @@
   </para>
   <para>
     Microsoft says that it is essential that the System Metric, menu drop alignment (<link linkend="clsSM">SM</link>
-    class, <link linkend="atrMenuAlignment">menuAnimation</link> attribute,) be checked to determine the correct
+    class, <link linkend="atrMenuDropAlignment">menuAnimation</link> attribute,) be checked to determine the correct
     horizontal alignment flag (LEFT or RIGHT) and/or horizontal animation direction flag (HORPOSANIMATION or
     HORNEGANIMATION) to use. The say it is essential for creating the optimal user experience, especially when
     developing Microsoft Tablet PC applications.
@@ -7218,7 +7218,7 @@
     <para>
       The Rexx dialog object that contains the System menu. To be explicit, the dialog must have a System menu. A
       <computeroutput>SystemMenu</computeroutput> object can not be initialized if the dialog does not already have a
-      System menu .
+      System menu.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7227,7 +7227,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a new <computeroutput>SystemMenu</computeroutput> objec.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
