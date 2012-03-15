@@ -134,6 +134,12 @@ any of the directory methods ([],[]=, PUT, AT, SETENTRY, ENTRY,
 or SETMETHOD). To avoid potential name clashes with built-in objects and public
 objects that Rexx provides, each object that your programs add to these
 environments should have a period in its index.</para>
+<para>Starting with ooRexx 4.2.0 a new object is available in the .LOCAL directory. The object
+is a Rexx Array of all the command line options supplied to the program. Normally all the
+command line objects are combined into single string and passed to the script as an argument
+retrievable via the BIF ARG(1). The array supplied by the .LOCAL environment is a direct
+collection of the individual C arguments passed to the program. The name of this array is
+SYSCARGS.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <programlisting>
 /* .LOCAL example--places something in the Local environment directory */
@@ -160,6 +166,13 @@ say .myapp.uid                         /* Displays "200"               */
 /* Redirect SAY lines into a file:  */
 .output~destination(.stream~new("SAY_REDIRECT.TXT"))
 say "This goes into a file, and not onto the screen!"
+</programlisting>
+<programlisting>
+/* .LOCAL example--get the individual command line arguments */
+cmdargs = .local~syscargs
+do carg over cmdargs
+   say carg
+end
 </programlisting>
 </section>
 
