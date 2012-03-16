@@ -764,8 +764,16 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   Without the ability to reply directly to the notification, the ooDialog programmer could not take advantage of the
   SELCHANGING notification. The introduction of the C++ native APIs in ooRexx 4.0.0 removed this restriction. Beginning
-  in ooDialog 4.2.0, the event handling methods in the Rexx dialog object are directly invoked from the Windows message
-  processing loop. This allows the Rexx dialog object to reply directly to the notification message.
+  in ooDialog 4.2.0, the event handling methods in the Rexx dialog object can be directly invoked from the Windows
+  message processing loop. This allows the Rexx dialog object to reply directly to the notification message.
+</para>
+<para>
+  In addition, the underlying Windows message processing loop provides a form of synchronization in Windows
+  applications. Within the loop, a Windows application recieves a message, processes it, then recieves the next message,
+  processes it, and so on. In older ooDialog programs this syncronization was lost because ooDialog put the recieved
+  message on a queue, recieved the next message, put it on the queue, and continued. This meant that many messages could
+  be recieved in the processing loop before a single message was process by the ooDialog program. This loss of
+  synchronization caused ooDialog applications to perform poorly.
 </para>
 <para>
   The ability to directly reply to event notifications greatly extends the power of the ooDialog framework. However, it

@@ -192,7 +192,7 @@
 </listitem>
 <listitem>
 <para>
-  Over time, the existing connections will be enhanced to also take a fourth optional argument. This will allow the
+  Over time, the existing connections will be enhanced to also take an optional argument. This will allow the
   programmer to specify that the framework invoke the event handler directly and wait for the return. This enhancement
   has started, but is far from complete.
 </para>
@@ -5549,8 +5549,8 @@ incorrect.
 <indexterm><primary>EventNotification</primary><secondary>connectResize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectResize(--+--------------+--)----------><
-                    +--methodName--+
+>>--connectResize(--+--------------+--+---------+--)------------><
+                    +--methodName--+  +-,-synch-+
 ]]>
 </programlisting>
 
@@ -5562,13 +5562,22 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The only argument is:
+    The arguments are:
   <variablelist>
     <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the method that is invoked each time the size of the dialog has changed. The method name can not be the
       empty string. When this argument is omitted the name defaults to <emphasis role="italic">onResize</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>synch [optional]</term>
+    <listitem>
+    <para>
+      A boolean value that specifies if the interpreter should invoke the event handler <link
+      linkend="ovvEventsDirectReply">directly</link> or not. The default is <computeroutput>.true</computeroutput>, see
+      the remarks. If this behavior is not desired, the <emphasis role="italic">synch</emphasis> argument can be used to
+      specify that the interpreter should not wait for a reply.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5590,6 +5599,28 @@ incorrect.
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Typically when the user is resizing a window, there are many event notifications that come quickly. In older
+    ooDialog versions, where the notification was placed on a queue to be processed at a later date, this caused a
+    number of notifications to be placed on the queue before a single notification was processed. Programs that
+    connected the resize event perform poorly when many notifications pile up before they are processed.
+  </para>
+  <para>
+    The poor performance is mostly fixed by having the interpreter invoke the event handler directly, which causes each
+    notification to be processed one by one. When <emphasis role="italic">synch</emphasis> is true, all ooDialog
+    programs that connect the resize event are likely to perform much better. This is why the default is true.
+  </para>
+  <para>
+    Normally, when the interpreter waits for the event handler to return, a syntax condition is raised if a value is not
+    returned from the event handler. The <emphasis role="italic">synch</emphasis> option causes the interpreter to wait
+    until the event handler returns, but to not expect a returned value. This provides backwards compatibility for older
+    programs where the programmer <emphasis role="bold"><emphasis role="italic">mistakenly</emphasis></emphasis> did not
+    return a value from event handlers. Best practice is to <emphasis role="italic">always</emphasis> return a value
+    from an event handler. If the operating system ignores the return value, return 0.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
