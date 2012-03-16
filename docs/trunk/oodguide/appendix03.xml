@@ -38,7 +38,7 @@
     #########################################################################
 -->
 
-<!-- Appendix 03 - Testing Popups				  v00-02 04Mar12
+<!-- Appendix 03 - Testing Popups				  v00-05 16Mar12
      An illustration of (a) how popups can be tested in stand-alone mode with a
      single code base, and (b) how "child" dialogs can be visually offset from
      the "parent" dialog that pops up the "child".
@@ -47,6 +47,8 @@
      Changes:
      v00-01 17Sep11: First version
      v00-04 04Mar12: Added offset capability.
+     v00-05 16Mar12: Revised to take account of new simpified offset function.
+
 -->
 <appendix id="apx-satesting">
   <title id="satesting.title">Testing Popups in Stand-Alone Mode</title>
@@ -67,34 +69,39 @@
   dialogs, which in turn may pop-up GreatGrandchild dialogs, and so on.
   </para>
   <para>When testing an application, there is often a need to test an individual dialog which, in
-        the application, is a "child" that's invoked by a "parent" dialog which issues <emphasis
-          role="italic">self~popUpAsChild(...)</emphasis> rather than <emphasis role="italic"
-          >self~execute(...)</emphasis> to surface the child dialog. In addition, popping-up
-        requires the parent dialog to be specified as a method argument: <emphasis role="italic"
-          >self~popUpAsChild(parent,...)</emphasis>. In the Order Management application, the
-          <computeroutput>OrderMgrView</computeroutput> class is the parent for all child dialogs.
-        The reason for using popupAsChild is so that, for example, a CustomerList can be closed
-        without automatically closing any Customer dialogs that might have been opened from it. </para>
+    the application, is a "child" that's invoked by a "parent" dialog which issues <emphasis
+    role="italic">self~popUpAsChild(...)</emphasis> rather than
+    <emphasis role="italic">self~execute(...)</emphasis> to surface the child dialog.
+    In addition, popping-up requires the parent dialog to be specified as a method argument:
+    <emphasis role="italic">self~popUpAsChild(parent,...)</emphasis>.
+  </para>
+  <para>In the Order Management application, the
+    <computeroutput>OrderMgrView</computeroutput> class is the parent for all child dialogs.
+    The reason for using popupAsChild is so that, for example, a CustomerList can be closed
+    without automatically closing any Customer dialogs that might have been opened from it.
+  </para>
   <para>Now, using the parent dialog (Order Manager in our case) as some sort of test-harness that
-        will eventually surface the child dialog to be tested can be time-consuming and irritating.
-        However, if a child dialog is started without the parent first being run, it must still be
-        able to invoke subordinate dialogs in the same way as if it were running as part of the full
-        application. Thus there is a need to enable individual child dialogs to be tested in
-        "stand-alone" mode, without using the parent dialog just to surface them, but invoking other
-        "subordinate" dialogs as if it was not being run stand-alone. In addition, a stand-alone
-        test of what is normally a "child" dialog will require the child to act as the parent of any
-        "grandchild" dialogs that it invokes, which means that the child must pass its own id to the
-        grandchild instead of passing the parent's. </para>
+    will eventually surface the child dialog to be tested can be time-consuming and irritating.
+    However, if a child dialog is started without the parent first being run, it must still be
+    able to invoke subordinate dialogs in the same way as if it were running as part of the full
+    application. Thus there is a need to enable individual child dialogs to be tested in
+    "stand-alone" mode, without using the parent dialog just to surface them, but invoking other
+    "subordinate" dialogs as if it was not being run stand-alone. In addition, a stand-alone
+    test of what is normally a "child" dialog will require the child to act as the parent of any
+    "grandchild" dialogs that it invokes, which means that the child must pass its own id to the
+    grandchild instead of passing the parent's.
+  </para>
   <para>One approach to resolving this problem is to have two versions of each child dialog - one
   using <emphasis role="italic">~execute(...)</emphasis> and one using <emphasis
-  role="italic">~popupAsChild(...)</emphasis>. This results in two code bases for each dialog - which can quickly get
-  out of sync. Not the best idea.
+  role="italic">~popupAsChild(...)</emphasis>. This results in two code bases for each dialog -
+  which can quickly get out of sync. Not the best idea.
   </para>
   <para>An arguably better solution is to build each dialog so it can be run either individually
-        (stand-alone) or within the application. The file
-          <computeroutput>Popups.rex</computeroutput> in the folder
-          <computeroutput>Samples\Popups</computeroutput> shows a way of doing this, using dialogs
-        that are as simple as possible. </para>
+    (stand-alone) or within the application. The file
+    <computeroutput>Popups.rex</computeroutput> in the folder
+    <computeroutput>Samples\Popups</computeroutput> shows a way of doing this, using dialogs
+    that are as simple as possible.
+  </para>
   <para>The rules illustrated by the code in <computeroutput>Popups.rex</computeroutput> are as
         follows, assuming an application consisting of a single Parent dialog that invokes one or
         more Child dialogs, each of which may invoke one or more Grandchild dialogs, each of which
@@ -164,7 +171,7 @@ A Leaf Dialog:
 </programlisting>
       </para>
   <para>Try running the <computeroutput>Popups.rex</computeroutput> program without any parameters.
-        Note that as each "subordinate" dialog is created (by pressing the pushbutton in the
+        Note that as each "junior" dialog is created (by pressing the pushbutton in the
         "senior" dialog) it completely obscures its parent. This is because all dialogs are coded to
         surface in the center of the screen (by the style "<computeroutput>CENTER</computeroutput>
         in the <emphasis role="italic">create</emphasis> method), and second all dialogs are the
@@ -183,68 +190,96 @@ A Leaf Dialog:
         see that popped-up dialogs are offset from the dialogs from which they're popped up, and do
         not now obscure them. <computeroutput>OffsetPopups ?</computeroutput> provides help on the
         available arguments. </para>
-<para>In <computeroutput>OffsetPopups.rex</computeroutput>, all classes except
-          <computeroutput>Parent</computeroutput> are subclassed from a
+<para>In <computeroutput>OffsetPopups.rex</computeroutput>, all classes are subclassed from a
           <computeroutput>View</computeroutput> class (itself subclassed from
-          <computeroutput>UserDialog</computeroutput>) which has a single method called <emphasis
-          role="italic">offset</emphasis>: <programlisting>
+          <computeroutput>UserDialog</computeroutput>) which has one class attribute and two methods,
+          <emphasis role="italic">getPopupPos</emphasis> and <emphasis role="italic">offset</emphasis>,
+          as follows:
+  <programlisting>
   <![CDATA[
-    ::METHOD offset
-      use arg parent, offset
-      parentPos = parent~getRealPos
-      parentPos~incr(offset,offset)
-      self~moveTo(parentPos, 'SHOWWINDOW')
-      self~ensureVisible()
+    ::CLASS View SUBCLASS UserDialog
+
+      ::ATTRIBUTE offsetAmount CLASS PUBLIC
+
+      ::METHOD getPopupPos
+        popupPos = self~getRealpos
+        offset = .View~offsetAmount
+        popupPos~incr(offset,offset)
+        return popupPos
+
+      ::METHOD offset
+        use arg dlgPos
+        self~moveTo(dlgPos, 'SHOWWINDOW')
+        self~ensureVisible()
   ]]>
-  </programlisting>(Of course, this code could have been placed into each of the other
-        classes, but it's arguably neater to put common code in a superclass or in a routine, or
-        maybe in a subclass.) In brief, the <emphasis role="italic">offset</emphasis> method (a)
-        finds the position of the "parent" dialog, (b) adds the specified offset to it, (c) moves
-        the popped-up or "current" dialog to that position, and then (d) ensures that the current
-        dialog is still wholly visible on the screen. The term "parent dialog" in this section
-        refers to the dialog that pops another dialog, and in the sample code refers to any of the
-        classes <computeroutput>Parent</computeroutput>, <computeroutput>Child</computeroutput>, and
-          <computeroutput>GrandChild</computeroutput>. The term "current dialog" refers to the
-        dialog being popped up by its parent, and in the sample code refers to any of the classes
-          <computeroutput>Child</computeroutput>, <computeroutput>GrandChild</computeroutput>, and
-          <computeroutput>GreatGrandChild</computeroutput>.  </para>
+  </programlisting>
+  The class attribute <emphasis role="italic">offsetAmount</emphasis> is set
+  at the start of the program, and defines the amount of space by which to offset a junior dialog.
+  The term "junior dialog" in this section
+  refers to a dialog that is popped up by a "senior dialog", and in the sample code refers
+  to any of the classes <computeroutput>Child</computeroutput>,
+  <computeroutput>GrandChild</computeroutput>, and<computeroutput>GreatGrandChild</computeroutput>.
+  "Senior dialog" refers to the dialog that pops up a junior dialog, and in the sample code
+  refers to any of the classes <computeroutput>Parent</computeroutput>, <computeroutput>Child</computeroutput>,
+  and <computeroutput>GrandChild</computeroutput>
+  </para>
+  <para>
+  In brief, the method <emphasis role="italic">getPopupPos</emphasis> is used by a senior dialog to
+  establish where it wants a junior dialog to pop up.
+  The junior dialog then uses the <emphasis role="italic">offset</emphasis> method to (a) move
+  itself to the desired position, and (b) to ensure that it is wholly visible on the screen
+  and not partly off the screen.
+  </para>
   <para>In detail:
+
+   (the variable <emphasis role="italic">popupPos</emphasis>)
+  (as the variable <emphasis role="italic">dlgPos</emphasis>)
+
   <itemizedlist>
-    <listitem><para>The method argument <emphasis role="italic">parent</emphasis> is the
-      parent dialog that popped the current dialog, and the argument
-      <emphasis role="italic">offset</emphasis> is the number of pixels (ooDialog reference 2.2.10)
-      by which to offset the current dialog from its parent.</para>
-    </listitem>
-    <listitem><para>The statement <emphasis role="italic">parentPos = parent~getRealPos</emphasis> gets the
-              position of the parent dialog as a point object (ooDialog Reference 10.11) whose
-              attributes are the point's <emphasis role="italic">x</emphasis> and <emphasis
-                role="italic">y</emphasis> screen coordinates (that is, the top-left corner of the
-              dialog), and assigns it to <emphasis role="italic">parentPos</emphasis>. <indexterm>
-                <primary>Point object</primary>
-              </indexterm>
-            </para>
-    </listitem>
-    <listitem><para>Then the statement <emphasis role="italic">parentPos~incr(offset,offset)</emphasis>
-      increments each coordinate of the <emphasis role="italic">parentPoint</emphasis>
-      object by <emphasis role="italic">offset</emphasis>. That is,
-      <emphasis role="italic">parentPos</emphasis> is now the desired
-      new position of the current dialog.</para>
+    <listitem><para><emphasis role="bold"><emphasis role="italic">getPopupPos</emphasis></emphasis> -
+      This method is used by the senior dialog to establish where on the screen
+      the junior dialog is to appear (relative to the senior dialog).
+      The first statement <emphasis role="italic">popupPos = self~getRealPos</emphasis> gets the
+      position of the senior dialog as a point object (ooDialog Reference 10.11) whose
+      attributes are the point's <emphasis role="italic">x</emphasis> and <emphasis
+      role="italic">y</emphasis> screen coordinates (that is, the top-left corner of the
+      dialog). The point object is assigned to <emphasis role="italic">popupPos</emphasis>.
+      <indexterm><primary>Point object</primary></indexterm></para>
     </listitem>
     <listitem><para>
-      Moving the current dialog to its new offset position is done by the fourth statement,
-      <emphasis role="italic">self~moveTo(parentPos,'SHOWWINDOW')</emphasis>
-      (ooDialog Reference 5.4.36).</para>
+      The second statement, <emphasis role="italic">offset = .View~offsetAmount</emphasis>
+      gets the offest amount from a class attribute.</para>
     </listitem>
-    <listitem><para>So why the last statement <emphasis role="italic">self~ensureVisible()</emphasis>? Well, if
-              the parent dialog is near the bottom or right-hand edge of the screen, the current
-              dialog first surfaces half-off the screen in the correct offset position. But half-off
-              the screen is not particularly friendly. So the last statement, as it says, ensures
-              that the current dialog is wholly visible (ooDialog Reference 3.15.6). However,
-              because it's so fast, you don't see this re-positioning. To see the re-positioning,
-              insert <emphasis role="italic">call sysSleep(2)</emphasis> just before the last
-              statement, run the program, and move the parent dialog to the bottom of the screen.
-              Then popup the child dialog. It appears half-off the screen, then after two seconds it
-              snaps up to a wholly-visible position. Neat.</para>
+    <listitem><para>Then the statement
+      <emphasis role="italic">popupPos~incr(offset,offset)</emphasis> increments
+      each coordinate of the <emphasis role="italic">popupPos</emphasis>
+      object by the amount defined by <emphasis role="italic">offset</emphasis>.
+      That is, <emphasis role="italic">popupPos</emphasis> is now the desired
+      new position of the junior dialog.</para>
+    </listitem>
+    <listitem><para>Finally, the desired junior dialog's position is returned to
+      the senior dialog, which will then pass it to the junior dialog when the
+      latter is created via its <emphasis role="italic">newInstance</emphasis> method.</para>
+    </listitem>
+  </itemizedlist>
+  <itemizedlist>
+    <listitem><para><emphasis role="bold"><emphasis role="italic">offset</emphasis></emphasis> -
+      This method is invoked from the the junior dialog's <emphasis role="italic">initDialog</emphasis>
+      method in order to  move itself to the position
+      (<emphasis role="italic">dlgPos</emphasis>) defined by the senior dialog.
+      The first statement (<emphasis role="italic">self~moveTo(dlgPos,'SHOWWINDOW')</emphasis>)
+      moves the dialog. However, if the senior dialog is near the bottom or right-hand
+      edge of the screen, the junior dialog could surface half-off the screen in
+      the correct offset position. But half-off the screen is not particularly
+      friendly.So...</para>
+    </listitem>
+    <listitem><para>... the last statement (<emphasis role="italic">self~ensureVisible()</emphasis>)
+      ensuresthat the current dialog is wholly visible. However,
+      because it's so fast, you don't see this re-positioning. To see the re-positioning,
+      insert <emphasis role="italic">call sysSleep(2)</emphasis> just before the last
+      statement, run the program, and move the parent dialog to the bottom of the screen.
+      Then popup the child dialog. It appears half-off the screen, then after two seconds it
+      snaps up to a wholly-visible position. Neat.</para>
     </listitem>
   </itemizedlist>
 </para>
