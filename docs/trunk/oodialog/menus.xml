@@ -188,7 +188,7 @@
   Except in a few methods where it simply does not make any sense, all menu methods that require specifying a menu item,
   accept either a menu item identifier or a menu item position. The menu item specifier is refered to as the menu
   item ID. Since both identifiers and positions are numbers, the programmer needs to specify which is being used.
-  However, by default, the ID is assumed to be an indetifier. Therefore, the programmer only need indicate when the ID
+  However, by default, the ID is assumed to be an identifier. Therefore, the programmer only need indicate when the ID
   is a position ID.
 </para>
 </section>
@@ -259,12 +259,7 @@
 </para>
 <para>
   Notice that, since a button click and a menu item selection generate the same notification, it is not possible to
-  connect a menu item and a button click to separate methods if the they both have the same resource ID. However, in the
-  event <link linkend="sctCodingEventHandlers">handling</link> method it is possible to tell whether the event
-  originated from the user clicking a button or from selecting a menu item. The first argument to the method will be the
-  resource ID of the button or menu item. The second argument will always be 0 if the user selected a menu item and
-  non-zero if the user pushed a button. For button controls, the second argument is the window <link
-  linkend="defHandle">handle</link> of the button.
+  connect a menu item and a button click to separate methods if the they both have the same resource ID.
 </para>
 
 </section>  <!-- End Section::Menu Command Events -->
@@ -290,7 +285,7 @@
     When auto connection is on, <emphasis role="italic">each</emphasis> time a menu bar is attached to a dialog, or a
     context menu is assigned to an owner dialog, every menu command item is automatically connected to a method in that
     dialog. The programmer can specify if every command item is connected to the same method, or if every command item
-    is connect to a unique method. When every command item is connected to an unique method, ooDialog automatically
+    is connected to a unique method. When every command item is connected to an unique method, ooDialog automatically
     generates the method name based on the text of the command item.
   </para>
   <para>
