@@ -4235,6 +4235,51 @@ did not exist in the target Directory.
 </para>
 </section>
 
+<section id="mthDisplayCondition"><title>DisplayCondition</title>
+<indexterm><primary>DisplayCondition</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>DisplayCondition</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>DisplayCondition</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>DisplayCondition</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>DisplayCondition</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="72pc">
+<colspec colnum="2" colwidth="45pc">
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting>
+<![CDATA[
+wholenumber_t rc;
+
+>>--rc = context->DisplayCondition();------------------------------------><
+]]>
+</programlisting>
+<para>If any syntax conditions are currently pending in the Rexx context, then
+error information will be output to the current .error stream.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<para>None.
+</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>If there is syntax information to display, the return code will be the
+major error number for the syntax error.  Returns 0 if there is no current syntax condition.<para>
+</section>
+
 <section id="mthDouble"><title>Double</title>
 <indexterm><primary>Double</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
