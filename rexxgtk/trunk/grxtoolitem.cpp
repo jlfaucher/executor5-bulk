@@ -129,7 +129,7 @@ RexxMethod1(int,                       // Return type
     GtkToolItem *toolitem = gtk_tool_item_new();
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(toolitem));
+    context->SendMessage1(self, "set_cself", context->NewPointer(toolitem));
     g_object_set_data(G_OBJECT(toolitem), "OORXOBJECT", self);
 
     return 0;

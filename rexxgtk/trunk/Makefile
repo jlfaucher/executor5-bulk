@@ -94,7 +94,7 @@ OBJECTS = rexxgtk.o \
 
 # Build the shared library
 librexxgtk.so: $(OBJECTS)
-	gcc $(GRXLFLAGS) -L /usr/lib/ooRexx -lrexx -lrexxapi -o librexxgtk.so $(OBJECTS)
+	gcc $(GRXLFLAGS) -L /usr/lib64/ooRexx -L /usr/lib/ooRexx -lrexx -lrexxapi -o librexxgtk.so $(OBJECTS)
 
 
 # Build the objects

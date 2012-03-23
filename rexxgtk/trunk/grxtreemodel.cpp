@@ -374,9 +374,10 @@ RexxMethod2(RexxObjectPtr,             // Return type
  *
  * @return        Zero.
  **/
-RexxMethod1(int,                       // Return type
+RexxMethod2(int,                       // Return type
             GrxTreeModelNew,           // Object_method name
-            POINTER, ptr)              // Pointer
+            POINTER, ptr,              // Pointer
+            OSELF, self)               // Self
 {
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(ptr));

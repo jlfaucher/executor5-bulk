@@ -212,7 +212,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *treeview = gtk_tree_view_new();
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(treeview));
+    context->SendMessage1(self, "set_cself", context->NewPointer(treeview));
     g_object_set_data(G_OBJECT(treeview), "OORXOBJECT", self);
 
     return 0;

@@ -174,7 +174,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget = gtk_entry_new();
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -442,7 +442,7 @@ RexxMethod4(int,                       // Return type
     GtkWidget *myWidget = gtk_spin_button_new(adj, crate, digits);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -471,7 +471,7 @@ RexxMethod4(int,                       // Return type
     GtkWidget *myWidget = gtk_spin_button_new_with_range(lower, upper, step);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;

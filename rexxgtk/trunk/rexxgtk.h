@@ -138,6 +138,7 @@ gboolean signal_GdkEventGrabBroken(GtkWidget *window,
 /*----------------------------------------------------------------------------*/
 
 REXX_METHOD_PROTOTYPE(GrxWidgetNew)
+REXX_METHOD_PROTOTYPE(GrxWidgetSetCSELF)
 REXX_METHOD_PROTOTYPE(GrxWidgetShow)
 REXX_METHOD_PROTOTYPE(GrxWidgetShowAll)
 REXX_METHOD_PROTOTYPE(GrxWidgetHide)

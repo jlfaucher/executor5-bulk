@@ -1,5 +1,5 @@
                       ooRexx RexxGTK Readme
-                       Version 0.10.0 beta
+                       Version 0.11.0 beta
 
 This is the first official beta release of the RexxGTK package for ooRexx. It is fully functional
 in its current form, but does not yet fully cover all classes and functions available in the GTK+
@@ -24,6 +24,6 @@ will be added later.
 
 I hope you have fun.
 
-W. david Ashley
+W. David Ashley
 ooRexx Team
 

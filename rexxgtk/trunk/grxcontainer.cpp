@@ -255,7 +255,7 @@ RexxMethod3(int,                       // Return type
     GtkWidget *myWidget = gtk_vbox_new(homogeneous, spacing);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -278,7 +278,7 @@ RexxMethod2(int,                       // Return type
     GtkVBox *vbox = (GtkVBox *)rxptr;
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(vbox));
+    context->SendMessage1(self, "set_cself", context->NewPointer(vbox));
     g_object_set_data(G_OBJECT(vbox), "OORXOBJECT", self);
 
     return 0;
@@ -301,7 +301,7 @@ RexxMethod2(int,                       // Return type
     GtkWidget *myWidget = (GtkWidget *)ptr;
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(ptr), "OORXOBJECT", self);
 
     return 0;
@@ -327,7 +327,7 @@ RexxMethod3(int,                       // Return type
     GtkWidget *myWidget = gtk_hbox_new(homogeneous, spacing);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -350,7 +350,7 @@ RexxMethod2(int,                       // Return type
     GtkVBox *hbox = (GtkVBox *)rxptr;
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(hbox));
+    context->SendMessage1(self, "set_cself", context->NewPointer(hbox));
     g_object_set_data(G_OBJECT(hbox), "OORXOBJECT", self);
 
     return 0;
@@ -382,7 +382,7 @@ RexxMethod5(int,                       // Return type
     GtkWidget *myWidget = gtk_alignment_new(xalign, yalign, xscale, yscale);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -475,7 +475,7 @@ RexxMethod3(int,                       // Return type
     GtkWidget *myWidget = gtk_viewport_new(hadj, vadj);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;

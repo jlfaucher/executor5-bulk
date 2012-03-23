@@ -141,6 +141,22 @@ RexxMethod1(int,                       // Return type
 }
 
 /**
+ * Method:  set_cself
+ *
+ * Set the CSELF variable.
+ *
+ * @return        Zero.
+ **/
+RexxMethod1(int,                       // Return type
+            GrxWidgetSetCSELF,         // Object_method name
+            RexxObjectPtr, self)       // GTK self
+{
+    context->SetObjectVariable("CSELF", self);
+
+    return 0;
+}
+
+/**
  * Method:  show
  *
  * Show the widget.

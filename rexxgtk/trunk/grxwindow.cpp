@@ -107,7 +107,7 @@ RexxMethod2(int,                       // Return type
     GtkWidget *myWidget = gtk_window_new((GtkWindowType)type);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -125,7 +125,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
             CSELF, self)               // GTK self
 {
     const char * retc = gtk_window_get_title(GTK_WINDOW(self));
-    if (retc ==NULL) {
+    if (retc == NULL) {
         return (RexxObjectPtr)context->NewStringFromAsciiz("\0");
     }
     return (RexxObjectPtr)context->NewStringFromAsciiz(retc);

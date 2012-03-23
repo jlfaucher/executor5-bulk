@@ -140,7 +140,7 @@ RexxMethod5(int,                       // Return type
     }
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     // create the vbox object
@@ -303,7 +303,7 @@ RexxMethod6(int,                       // Return type
                                       (GtkButtonsType)bset, text);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -364,7 +364,7 @@ RexxMethod5(int,                       // Return type
     }
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -389,7 +389,7 @@ RexxMethod2(int,                       // Return type
     GtkWidget *myWidget = gtk_font_selection_dialog_new(title);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -455,7 +455,7 @@ RexxMethod1(int,                       // Return type
             OSELF, self)               // Self
 {
     GtkWidget *myWidget = gtk_about_dialog_new();
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;
@@ -773,7 +773,7 @@ RexxMethod2(int,                       // Return type
     gtk_color_selection_set_has_opacity_control(GTK_COLOR_SELECTION(colorsel), TRUE);
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;

@@ -89,7 +89,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *calendar = gtk_calendar_new();
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(calendar));
+    context->SendMessage1(self, "set_cself", context->NewPointer(calendar));
     g_object_set_data(G_OBJECT(calendar), "OORXOBJECT", self);
 
     return 0;

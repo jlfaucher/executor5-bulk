@@ -93,7 +93,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *myWidget = gtk_statusbar_new();
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(myWidget));
+    context->SendMessage1(self, "set_cself", context->NewPointer(myWidget));
     g_object_set_data(G_OBJECT(myWidget), "OORXOBJECT", self);
 
     return 0;

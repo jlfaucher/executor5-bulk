@@ -883,6 +883,7 @@ return
 use strict arg clsname
 return .context~package~findClass(clsname)~new()
 
+::METHOD set_cself EXTERNAL "LIBRARY rexxgtk GrxWidgetSetCSELF"
 ::METHOD destroy EXTERNAL "LIBRARY rexxgtk GrxWidgetDestroy"
 ::METHOD font EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetFont"
 ::METHOD get_font EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetFont"

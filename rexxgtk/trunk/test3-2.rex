@@ -66,7 +66,7 @@ do i = 1 to names~items()
 window~add(vbox)
 window~show_all()
 
--- start the GTL main event loop
+-- start the GTK main event loop
 call gtk_main
 
 return

@@ -146,7 +146,7 @@ RexxMethod1(int,                       // Return type
     GtkWidget *toolbar = gtk_toolbar_new();
 
     // Save ourself
-    context->SetObjectVariable("CSELF", context->NewPointer(toolbar));
+    context->SendMessage1(self, "set_cself", context->NewPointer(toolbar));
     g_object_set_data(G_OBJECT(toolbar), "OORXOBJECT", self);
 
     return 0;

@@ -331,6 +331,7 @@ RexxRoutineEntry gtkobject_routines[] = {
 RexxMethodEntry gtkobject_methods[] = {
     REXX_METHOD(GrxWidgetNew, GrxWidgetNew),
 //    REXX_METHOD(GrxWidgetUninit, GrxWidgetUninit),
+    REXX_METHOD(GrxWidgetSetCSELF, GrxWidgetSetCSELF),
     REXX_METHOD(GrxWidgetShow, GrxWidgetShow),
     REXX_METHOD(GrxWidgetShowAll, GrxWidgetShowAll),
     REXX_METHOD(GrxWidgetHide, GrxWidgetHide),

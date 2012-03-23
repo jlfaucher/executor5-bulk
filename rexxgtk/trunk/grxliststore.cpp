@@ -85,9 +85,13 @@ RexxMethod2(int,                       // Return type
         return 0;
     }
     for (int i = 1; i <= members; i++) {
-        context->ObjectToInt32(context->ArrayAt(args, i), (int32_t *)&types[i - 1]);
+        GType type;
+        int32_t temp;
+        context->ObjectToInt32(context->ArrayAt(args, i), &temp);
+        types[i - 1] = (GType) temp;
     }
-    lstore = (GtkListStore *)gtk_list_store_newv(members, types);
+    printf("Got here\n");
+    lstore = (GtkListStore *)gtk_list_store_newv((gint)members, types);
 
     // Save ourself
     context->SetObjectVariable("CSELF", context->NewPointer(lstore));
