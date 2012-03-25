@@ -694,10 +694,10 @@
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example instantiates a <link linkend="clsSystemMenu">object</link> and uses it to insert an <emphasis
-    role="italic">Edit</emphasis> menu into the system menu for the application. The new menu items are connected to
-    appropriate event handlers. Note that the event handlers shown in the example are just stubs. Real code to handle
-    the event would need to be added:
+    The following example instantiates a <link linkend="clsSystemMenu">SystemMenu</link> object and uses it to insert
+    an <emphasis role="italic">Edit</emphasis> menu into the system menu for the application. The new menu items are
+    connected to appropriate event handlers. Note that the event handlers shown in the example are just stubs. Real code
+    to handle the event would need to be added:
 
 <programlisting>
 <![CDATA[
@@ -811,15 +811,15 @@
 </row>
 <row>
 <entry><link linkend="mthCheckClsMenu">check</link></entry>
-<entry>.</entry>
+<entry>Checks one or more menu items.</entry>
 </row>
 <row>
 <entry><link linkend="mthcheckRadio">checkRadio</link></entry>
-<entry>.</entry>
+<entry>Checks a specified menu item in a group of items and makes it a radio item.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectAllCommandEvents">connectAllCommandEvents</link></entry>
-<entry>.</entry>
+<entry>Connects every command item in this menu to a method, or methods, in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectCommandEvent">connectCommandEvent</link></entry>
@@ -827,15 +827,15 @@
 </row>
 <row>
 <entry><link linkend="mthConnectMenuEvent">connectMenuEvent</link></entry>
-<entry>.</entry>
+<entry>Connects menu <link linkend="ovvEvents">event</link> notifications, other than menu command events, to a method in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthConnectSomeCommandEvents">connectSomeCommandEvents</link></entry>
-<entry>.</entry>
+<entry>Connects the specified subset of command items in this menu to a method, or methods, in the Rexx dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthDeletePopup">deletePopup</link></entry>
-<entry>.</entry>
+<entry>Deletes the specified popup menu from this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthDestroyClsMenu">destroy</link></entry>
@@ -995,7 +995,7 @@
 </row>
 <row>
 <entry><link linkend="mthUncheckClsMenu">uncheck</link></entry>
-<entry>.</entry>
+<entry>Unchecks one or more menu items.</entry>
 </row>
 <row>
 <entry><link linkend="mthUnhilite">unhilite</link></entry>
@@ -1085,10 +1085,8 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
-        role="italic">dlg</emphasis> argument is not a <computeroutput>PlainBaseDialog</computeroutput>, (or subclass of
-        course.)
-      </para>
-      </listitem></varlistentry>
+        role="italic">dlg</emphasis> argument is not a <link linkend="chpDialogObject">dialog</link> object.
+      </para> </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_ENOUGH_MEMORY (8)</emphasis></term>
       <listitem>
       <para>
@@ -1254,24 +1252,34 @@
 <indexterm><primary>menu object</primary><secondary>check</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--check(--+--------+--)---------------------------------------------><
-            +--type--+
+>>--check(--IDs--+--------------+--)-------------><
+                 +-,-byPosition-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Checks one or more menu items. Separators can not be checked.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      xx
+      The item <link linkend="entMenuItemIdentifier">ID(s)</link> to be checked, may be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
+      role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
+      resource IDs or all position IDs.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If true, the item IDs are positional IDs, otherwise they are resource IDs. The default is false, resource IDs.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1280,13 +1288,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To check more than 1 menu item at a time, use a collection object, such as an
+    <computeroutput>array</computeroutput>, where each item in the collection is the menu item ID of the item to be
+    checked.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1295,15 +1305,53 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The menu item specified to be checked is a
+        separator.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  <para>
     Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from an editor application that has a hexidecimal view of the text. The user can switch back and
+    forth between the hexidecimal and normal views using the menu item with the text of <emphasis
+    role="italic">hex</emphasis>. When the user selects the menu item, the view is toggled. A check mark by the menu
+    item shows it is in hex view, when there is no check mark the view is normal:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose inHex
+
+  inHex = .false
+  ...
+
+::mehthod onHexSelect unguarded
+  expose menuBar inHex
+
+  if inHex then do
+    inHex = .false
+    menuBar~uncheck(IDM_HEX_VIEW)
+    self~switchToAscii
+  end
+  else do
+    inHex = .true
+    menuBar~check(IDM_HEX_VIEW)
+    self~switchToHex
+  end
+
+  return 0
 
 ]]>
 </programlisting>
@@ -1317,24 +1365,46 @@
 <indexterm><primary>menu object</primary><secondary>checkRadio</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--checkRadio(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--checkRadio(--start-,-end-,-check--+--------------+--)-------><
+                                      +-,-byPosition-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Checks a specified menu item in a group of items and makes it a radio item. At the same time, the function clears all
+  other menu items in the associated group and clears the radio-item type flag for those items.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>start [required]</term>
     <listitem>
     <para>
-      xx
+      The resource ID of the first menu item in the group, may be <link linkend="itmMenuSymbolicIDs">symbolic</link> or
+      numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>end [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the last menu item in the group, may be <link linkend="itmMenuSymbolicIDs">symbolic</link> or
+      numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>check [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the menu item in the group that will be checked, may be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If true, the item IDs are positional IDs, otherwise they are resource IDs. The default is false, resource IDs.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1343,13 +1413,13 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Note that all item IDs must be the same type, that is they must all be resource IDs or all by position IDs.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1364,9 +1434,18 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from an application that has a <emphasis role="italic">zoom</emphasis> view. The user can select a
+    zoom in a range through the menu. A radion button menu item shows which zoom is currently in place:
 <programlisting>
 <![CDATA[
+
+::method setZoom
+  expose menuBar
+  use strict arg zoomVal
+
+  menuBar~checkRadio(IDM_ZOOM_MIN, IDM_ZOOM_MAX, zoomVal)
+  self~zoomTo(zoomVal)
+  return 0
 
 ]]>
 </programlisting>
@@ -1610,24 +1689,95 @@
 <indexterm><primary>menu object</primary><secondary>connectMenuEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectMenuEvent(--+--------+--)---------------------------------------------><
-                       +--type--+
+>>--connectMenuEvent(--mName-,-event--+-----------+--+--------+--)-------------><
+                                      +-,-hFilter-+  +-,-dlg--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Connects menu <link linkend="ovvEvents">event</link> notifications to a method in the Rexx dialog. These are menu
+  notifications <emphasis role="italic">other</emphasis> than the menu command <link
+  linkend="sctMenuCommandEvents">event</link> notifications.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>mName [required]</term>
     <listitem>
     <para>
-      xx
+      The method name of the event handler to be connected. This can not be the empty string.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
+    <listitem>
+    <para>
+      Exactly one of the following keywords, case is not significant, that indicates the event to be connected:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>CONTEXTMENU  </member>
+        <member>INITMENU     </member>
+        <member>INITMENUPOPUP</member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>CONTEXT</term>
+        <listitem>
+        <para>
+          Notifies a window that the user clicked the right-clicked the mouse button in the window. The application
+          should display a context menu. The <link linkend="mthConnectContextMenuCls">connectContextMenu</link> class
+          method or the <link linkend="mthConnectContextMenu">conectContextMenu</link> instance method provide the same
+          functionality and may be more convenient to use.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INITMENU</term>
+        <listitem>
+        <para>
+          Notifies the application that a menu is about to become active. The event occurs when the user clicks an item
+          on the menu bar, clicks on the system menu, or presses a menu key. This notification allows the application to
+          modify the menu before it is shown.
+        </para>
+        <para>
+          The notification is also generated before a context menu is about to become active, but only if the
+          application displays a context menu. I.e., the event notification is not generated if the application uses a
+          context menu, but does not actually display it for some reason.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>INTIMENUPOPUP</term>
+        <listitem>
+        <para>
+          Notifies the application that a drop-down menu or submenu is about to become active. This allows the
+          application to modify the menu before it is shown, without changing the entire menu.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hFilter [optional]</term>
+    <listitem>
+    <para>
+      The Windows <link linkend="defHandle">handle</link> of an object to use to filter the connected notification. The
+      use of this filter is specific to the event being connectd. For the CONTEXTMENU event it can be a window handle,
+      in which case only notifications for that specific window are generated. When this menu is a menu <link
+      linkend="clsMenuBar">bar</link>, then for the INITMENUPOPUP event it can be the menu handle of a submenu, in which
+      case only notifications for that specific submenu are generated. When this menu is not a menu bar, the argument is
+      ignored. For the INITMENU event, this argument is ignored.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dlg [optional]</term>
+    <listitem>
+    <para>
+      The dialog being connected to the event. By default the dialog this menu is attached or assigned to is used.
+      However, any dialog can be used. In most cases, it only makes sense to connect the menu notification to the dialog
+      the menu is attached to.
+    </para>
+    <para>
+      Recall that menu objects exist and are not tied to dialog objects. Menu event connections can be, and maybe often
+      are, made before a menu is assigned or attached to a dialog. Recall also that submenus in a menubar never have an
+      ower dialog. In these cases, omitting the <emphasis role="italic">dlg</emphasis> argument results in <emphasis
+      role="italic">no</emphasis> connection being made.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1636,13 +1786,26 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The INITMENU notification is only sent when a menu is first accessed, only one INITMENU notification is generated
+    for each access. Moving the mouse across several menu items while holding down the button does not generate new
+    messages. The INITMENU notification gives the programmer the opportunity to modify the entire menu before the user
+    sees it. If the application only needs to modify a small part of the menu, the INITMENUPOPUP notification allows the
+    programmer to only modify a specific portion of the menu and only if it is actually going to be displayed.
+  </para>
+  <para>
+    When this menu is a menu bar, connecting the INITMENUPOPUP event and not using the optional <emphasis
+    role="italic">hFilter</emphasis> argument results in <emphasis role="italic">all</emphasis> INITMENUPOPUP events
+    sent to the <link linkend="ovvUnderlying">underlying</link> dialog invoking the connected event handler. Note that
+    this will include notifications that the programmer may not at first expect. If the user clicks on the system menu,
+    an INITMENUPOPUP notification is generated. If the application uses a context menu, the INITMENUPOPUP notification
+    is generated before the context menu is shown. The connected event handler will also be invoked for these
+    notifications.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1651,21 +1814,356 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The dialog argument was omitted and the menu does
+        not have an assigned dialog.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_NOT_ENOUGH_MEMORY (8)</term>
+      <listitem>
+      <para>
+        Not enough storage is available to process this command. <emphasis role="bold">Meaning:</emphasis> The dialog
+        message table is full.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERROR_WINDOW_NOT_DIALOG (1420)</term>
+      <listitem>
+      <para>
+        The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
+        ommitted, but the object is not a <link linkend="chpDialogObject">dialog</link> object.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example connects the INTIMENU event to the <emphasis role="italic">menuInit</emphasis> method in the dialog:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose menuBar
+
+  menuBar~attachTo(self)
+  menuBar~connectMenuEvent(menuInit, INITMENU)
 
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+
+<section id="evtMenuObjectCONTEXTMENU"><title>Context Menu Event Handler</title>
+<indexterm><primary>menu object event</primary><secondary>CONTEXTMENU</secondary></indexterm>
+<para>
+  <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the <link
+  linkend="mthConnectMenuEvent">connectMenuEvent</link>, described in this section, is the same as the event handler
+  <link linkend="evtPopupMenuCONTEXT">described</link> for the CONTEXTMENU event connected through one of the <link
+  linkend="clsPopupMenu">PopupMenu</link> class methods. The event and event handler are the same no matter how the
+  event connection is made.
+</para>
+<para>
+  The event handler for the context menu event is invoked when the user right-mouse clicks on a window, types SHIFT-F10
+  on the keyboard, or types the VK_APPS key on the keyboard. The VK_APPS key is the <emphasis
+  role="italic">Applications</emphasis> key on a Natural keyboard.
+</para>
+<para>
+  The interpreter does not wait for the return from the event handler, so the method does not need to return a value.
+  However, good practice would be to always return a value from an event handler.
+  <computeroutput>.true</computeroutput>, the notification was processed, is a good value to return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onContextMenu unguarded
+  use arg hwnd, x, y
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window <link linkend="defHandle">handle</link> of the window the user clicked the mouse on, or the window
+      that has the focus if the user generated the context menu event with the keyboard. Note that this will only be
+      the dialog window handle of the user clicks on the dialog background. Quite often it is going to be one of the
+      dialog controls.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x</term>
+    <listitem>
+    <para>
+      The X coordinate of the mouse position, in <link linkend="defScreenCoordinates">screen</link> coordinates, at the
+      time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y</term>
+    <listitem>
+    <para>
+      The Y coordinate of the mouse position, in <link linkend="defScreenCoordinates">screen</link> coordinates, at the
+      time of the mouse click. Or, -1 if the user generated the context menu event by using the keyboard.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    0 makes a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows the event handler method that is only invoked for a list view in the application. Note
+    that since the application uses the <link linkend="mthShowClsPopupMenu">show</link> method to put up the context
+    menu, the handling of the menu command item selection is done in a menu command event
+    <link linkend="sctMenuCommandEventHandlers">handler</link>.
+
+<programlisting>
+<![CDATA[
+
+::method iniitDialog
+  expose shortCutMenu
+  ...
+
+  shortCutMenu = self~createMenu
+  shortCutMenu~assignTo(self)
+  shortCutMenu~connectMenuEvent(onContext, 'CONTEXTMENU)
+
+  ...
+
+::method onContext
+  expose shortCutMenu listView
+  use arg hwnd, x, y
+
+  if x == -1, y == -1 then do
+    -- The keyboard was used, not the mouse.  Position the context menu as
+    -- at the lower right of the list view.
+    rect = listView~windowRect
+    x = rect~right - .SM~cxVScroll + 15
+    y = rect~bottom - 15
+  end
+
+  -- pos is the point on the screen, in pixels, to place the context menu.
+  pos = .Point~new(x, y)
+
+  -- Show the menu.
+  ret = shortCutMenu~show(pos)
+  if ret == -1 then do
+    say "shortCutMenu~show() failed SystemErrorCode:' || -
+    .SystemErrorCode SysGetErrortext(.SystemErrorCode)
+  end
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Context Menu Event Handler -->
+
+<section id="evtMenuObjectINITMENU"><title>InitMenu Event Handler</title>
+<indexterm><primary>menu object event</primary><secondary>INITMENU</secondary></indexterm>
+<para>
+  The event handler for the init menu event is invoked when the user clicks on a menu or uses a menu key. The menu is
+  about to become active, but has not actually been shown yet. This allows the programmer to modify the menu before it
+  is displayed.
+</para>
+<para>
+  The programmer must return <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> from the
+  event handler, and the interpreter <link linkend="sctCodingEventHandlers">waits</link> for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onInitMenu unguarded
+  use arg hMenu
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 1 arguments
+  </para>
+  <variablelist>
+    <varlistentry><term>hMenu</term>
+    <listitem>
+    <para>
+      The Windows <link linkend="defHandle">handle</link> for the menu about to become active.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    Return true to indicate the notification was processed, otherwise return false. Note that the Microsoft
+    documentation is vague in this area. Experimentation seems to indicate that, for dialogs, it does not matter if true
+    or false is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+     The INITMENU notification is only generated when a menu is first accessed and only one notification is generated
+     for each access. For example, moving the mouse across several menu items while holding down the button does not
+     generate new notifications.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows an event handler that disables some (most) of the items in a system menu before it is
+    shown. Whether or not the items are disabled is controled by an instance variable that is set in other parts of the
+    application:
+
+<programlisting>
+<![CDATA[
+
+::method onInitMenu
+  expose sysMenu disableItems
+  use arg hMenu
+
+  if disableItems then do
+    sysMenu~disable(SC_MAXIMIZE)
+    sysMenu~disable(SC_MINIMIZE)
+    sysMenu~disable(SC_MOVE)
+    sysMenu~disable(SC_CLOSE)
+    return .true
+  end
+  else do
+    return .false
+  end
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End InitMenu Event Handler -->
+
+<section id="evtMenuOobjectINITMENUPOPUP"><title>InitMenuPopup Event Handler</title>
+<indexterm><primary>menu object event</primary><secondary>INITMENUPOPUP</secondary></indexterm>
+<para>
+  The event handler for the init menu popup event is invoked when a submenu is about to become active. This includes
+  the system menu or a context menu. This allows the programmer to modify a portion of a menu, rather than the whole
+  menu.
+</para>
+<para>
+  The programmer must return <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> from the
+  event handler, and the interpreter <link linkend="sctCodingEventHandlers">waits</link> for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onInitMenuPopup unguarded
+  use arg position, isSystemMenu, hMenu
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>position</term>
+    <listitem>
+    <para>
+      The one-based position index of the submenu. For instance if the submenu is the third from the left in a menu bar,
+      then position will be 3.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isSystemMenu</term>
+    <listitem>
+    <para>
+      True if the submenu about to become active is the system menu, otherwise false
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hMenu</term>
+    <listitem>
+    <para>
+      The Windows <link linkend="defHandle">handle</link> for the submenu about to become active.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    Return true to indicate the notification was processed, otherwise return false. Note that the Microsoft
+    documentation is vague in this area. Experimentation seems to indicate that, for dialogs, it does not matter if true
+    or false is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If both the <link linkend="evtMenuObjectINITMENU">INITMENU</link> and INTITMENUPOPUP events are connected, then two
+    successive event handlers will often be invoked. Take for instance a menu bar that contains a <emphasis
+    role="italic">File</emphasis> submenu. If the user clicks on the <emphasis role="italic">File</emphasis> menu, the
+    operating system first generates an INITMENU notification (for the menubar about to become active) and then
+    generates an INTIMENUPOPUP notification (for the <emphasis role="italic">File</emphasis> submenu about to be come
+    active.)
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example is from an application with a large menu, with an <emphasis role="italic">Edit</emphasis>
+    menu that has a <emphasis role="italic">Copy</emphasis> menu item. If there is nothing selected, the <emphasis
+    role="italic">Copy</emphasis> menu item is disabled, if and only if, the user actually navigates to the <emphasis
+    role="italic">Edit</emphasis> submenu.
+
+<programlisting>
+<![CDATA[
+
+  ...
+  hMenu = menuBar~getPopup(IDM_EDIT_SUBMEN)~hMenu
+  menuBar~connectMenuEvent(onEditMenuPopup, 'INITMENUPOPUP', hMenu)
+  ...
+
+::method on EditMenuPopup unguarded
+  expose menuBar
+  use arg pos, isSysMenu, hMenu
+
+  if self~haveSomeSelection then menuBar~enable(IDM_COPY)
+  else menuBar~disable(IDM_COPY)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End InitMenuPopup Event Handler -->
+
 </section>  <!-- End menu object::connectMenuEvent() -->
 
 <section id="mthConnectSomeCommandEvents"><title>connectSomeCommandEvents</title>
@@ -1809,24 +2307,32 @@
 <indexterm><primary>menu object</primary><secondary>deletePopup</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--deletePopup(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--deletePopup(--id--+---------------+--)-------><
+                      +-,-byPosition--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Deletes the specified popup menu from this menu.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The <link linkend="sctMenuItemIDs">ID</link> of the popup ment to be deleted. This can be a position ID or a
+      resource ID, depending on the value of <emphasis role="italic">byPosition</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">id</emphasis> is a positional ID, otherwise it
+      is a resource ID. The default is <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1835,13 +2341,20 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When a popup menu (a submenu) is deleted, the operating system frees all resources used by the popup menu and any
+    references to the popup are no longer valid. To be explicit, this means that any <link
+    linkend="clsPopupMenu">PopupMenu</link> objects that represent this submenu are no longer valid, which would also
+    include any menu that has this submenu as one of its submenus.
+  </para>
+  <para>
+    To remove a submenu from a menu, and still use the submenu, use the <link
+    linkend="mthRemovePopup">removePopup</link> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1850,15 +2363,29 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error code may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The specified menu item is not a popup menu.
+      </para>
+    </variablelist>
+  </para>
+  <para>
     Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example removes the <emphasis role="italic">View</emphasis> popup menu from a menubar and deletes it, freeing
+    up the system resources used for it:
 <programlisting>
 <![CDATA[
+
+  menuBar~deletePopup(IDM_VIEW)
 
 ]]>
 </programlisting>
@@ -4304,24 +4831,34 @@
 <indexterm><primary>menu object</primary><secondary>uncheck</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--uncheck(--+--------+--)---------------------------------------------><
-              +--type--+
+>>--uncheck(--IDs--+--------------+--)-----------><
+                   +-,-byPosition-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Unchecks one or more menu items.  Separators can not be unchecked.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      xx
+      The item <link linkend="entMenuItemIdentifier">ID(s)</link> to be unchecked, may be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
+      role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
+      resource IDs or all position IDs.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If true, the item IDs are positional IDs, otherwise they are resource IDs. The default is false, resource IDs.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4330,13 +4867,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To uncheck more than 1 menu item at a time, use a collection object, such as an
+    <computeroutput>array</computeroutput>, where each item in the collection is the menu item ID of the item to be
+    checked.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4345,15 +4884,53 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The menu item specified to be unchecked is a
+        separator.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  <para>
     Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from an editor application that has a hexidecimal view of the text. The user can switch back and
+    forth between the hexidecimal and normal views using the menu item with the text of <emphasis
+    role="italic">hex</emphasis>. When the user selects the menu item, the view is toggled. A check mark by the menu
+    item shows it is in hex view, when there is no check mark the view is normal:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+  expose inHex
+
+  inHex = .false
+  ...
+
+::mehthod onHexSelect unguarded
+  expose menuBar inHex
+
+  if inHex then do
+    inHex = .false
+    menuBar~uncheck(IDM_HEX_VIEW)
+    self~switchToAscii
+  end
+  else do
+    inHex = .true
+    menuBar~check(IDM_HEX_VIEW)
+    self~switchToHex
+  end
+
+  return 0
 
 ]]>
 </programlisting>
@@ -6138,6 +6715,14 @@
 
 <section id="evtPopupMenuCONTEXT"><title>ContextMenu Event Handler</title>
 <indexterm><primary>PopupMenu Event</primary><secondary>CONTEXTMENU</secondary></indexterm>
+<para>
+  <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the <link
+  linkend="mthConnectContextMenuCls">connectContextMenu</link> class method or the <link
+  linkend="mthConnectContextMenu">connectContextMenu</link> instance method, described in this section, is the same as
+  the event handler <link linkend="evtMenuObjectCONTEXTMENU">described</link> for the CONTEXTMENU event connected
+  through the <link linkend="mthConnectMenuEvent">connectMenuEvent</link> method. The event and event handler are the
+  same no matter how the event connection is made.
+</para>
 <para>
   The event handler for the context menu event is invoked when the user right-mouse clicks on a window, types SHIFT-F10
   on the keyboard, or types the VK_APPS key on the keyboard. The VK_APPS key is the <emphasis
