@@ -279,7 +279,7 @@
 </para>
 
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Auto Connection</emphasis></term>
+  <varlistentry id="varAutoConnection"><term><emphasis role="bold">Auto Connection</emphasis></term>
   <listitem>
   <para>
     When auto connection is on, <emphasis role="italic">each</emphasis> time a menu bar is attached to a dialog, or a
@@ -843,11 +843,11 @@
 </row>
 <row>
 <entry><link linkend="mthDisableClsMenu">disable</link></entry>
-<entry>.</entry>
+<entry>Disables one or more menu items.</entry>
 </row>
 <row>
 <entry><link linkend="mthEnableClsMenu">enable</link></entry>
-<entry>.</entry>
+<entry>Enables one or more menu items.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetAutoConnectStatus">getAutoConnectStatus</link></entry>
@@ -895,11 +895,11 @@
 </row>
 <row>
 <entry><link linkend="mthGray">gray</link></entry>
-<entry>.</entry>
+<entry>Grays one or more menu items.</entry>
 </row>
 <row>
 <entry><link linkend="mthHilite">hilite</link></entry>
-<entry>.</entry>
+<entry>Draws one or more menu items as high lighted. A high lighted menu item is drawn as though it were selected.</entry>
 </row>
 <row>
 <entry><link linkend="mthInsertItem">insertItem</link></entry>
@@ -999,7 +999,7 @@
 </row>
 <row>
 <entry><link linkend="mthUnhilite">unhilite</link></entry>
-<entry>.</entry>
+<entry>Removes the high light from one or more menu items.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -1246,7 +1246,6 @@
 </variablelist>
 </section>  <!-- End Menu::wID() [attribute]  -->
 
-
 <section id="mthCheckClsMenu"><title>check</title>
 <indexterm><primary>check</primary><secondary>menu object</secondary></indexterm>
 <indexterm><primary>menu object</primary><secondary>check</secondary></indexterm>
@@ -1316,9 +1315,6 @@
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2397,39 +2393,45 @@
 <indexterm><primary>menu object</primary><secondary>destroy</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--destroy(--+--------+--)---------------------------------------------><
-              +--type--+
+>>--destroy--------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Releases the operating system resources for the <link linkend="defUnderlying">underlying</link> menu of this
+  <computeroutput>Menu</computeroutput> object. Menubars attached to a dialog, or submenus that are a part of a menubar,
+  should not be destroyed. A menubar attached to a window is automatically destroyed by the operating system when the
+  window is destroyed. When the operating system destroys a menubar or popup menu, it does so recursively. All submenus
+  of the menu are also destroyed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    It is only when a menubar is not attached to a window, or a popup menu is not part of a menubar, that a menu needs
+    to be destroyed. This should be done before the application ends, but it could be done at any time if the menu is no
+    longer needed. Do not destroy a submenu of a menubar unless the submenu has been <link
+    linkend="mthRemovePopup">removed</link> from the menubar, when the menubar is attached to a dialog. The results are
+    unpredictable.
+  </para>
+  <para>
+    When the <emphasis role="italic">destroy</emphasis> method is invoked, if this menu is a menubar attached to a
+    dialog, the menubar is first <link linkend="mthDetach">detached</link>. The menubar is then destroyed. This in turn will
+    cause the dialog to redraw its client area and all controls in the dialog will be moved up by the amount of space
+    the menubar had occupied.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2444,9 +2446,18 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from an application that has a simple mode and an <emphasis role="italic">advanced</emphasis>
+    mode. The simple and advanced modes each have their own menubars. When the user switches modes, the existing menubar
+    is detached and the menubar for the new mode is attached to the dialog. When the dialog is ended, the menubar not
+    currently in use is destroyed:
 <programlisting>
 <![CDATA[
+
+::method leaving
+  expose advancedMenubar simpleMenubar
+
+  if self~isAdvancedMode then simpleMenubar~destroy
+  else advancedMenubar~destroy
 
 ]]>
 </programlisting>
@@ -2460,24 +2471,34 @@
 <indexterm><primary>menu object</primary><secondary>disable</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--disable(--+--------+--)---------------------------------------------><
-              +--type--+
+>>--disable(--IDs--+--------------+--)-----------><
+                   +-,-byPosition-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Disables one or more menu items. Separators can not be disabled. Note that disable and gray are the exact same thing.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      xx
+      The menu item <link linkend="entMenuItemIdentifier">ID(s)</link> to be disabled, may be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
+      role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
+      resource IDs or all position IDs.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If true, the item IDs are positional IDs, otherwise they are resource IDs. The default is false, resource IDs.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2486,13 +2507,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To disable more than 1 menu item at a time, use a collection object, such as an
+    <computeroutput>array</computeroutput>, where each item in the collection is the menu item ID of the item to be
+    disabled.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2501,15 +2524,35 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The menu item specified to be disabled is a
+        separator.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from an application that only allows the user to open 1 file at a time. When the current file is
+    closed, the Close File menu item is disabled and the Open File menu item is enabled.
 <programlisting>
 <![CDATA[
+
+::method onCloseFile unguarded
+  expose menuBar
+
+  menuBar~disable(IDM_FILE_CLOSE)
+  menuBar~enable(IDM_FILE_OPEN)
+
+  self~closeCurrentFile
+  return 0
 
 ]]>
 </programlisting>
@@ -2523,24 +2566,34 @@
 <indexterm><primary>menu object</primary><secondary>enable</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--enable(--+--------+--)---------------------------------------------><
-             +--type--+
+>>--enable(--IDs--+--------------+--)------------><
+                  +-,-byPosition-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Enables one or more menu items. Separators can not be enabled.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      xx
+      The menu item <link linkend="entMenuItemIdentifier">ID(s)</link> to be enabled, may be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
+      role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
+      resource IDs or all position IDs.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If true, the item IDs are positional IDs, otherwise they are resource IDs. The default is false, resource IDs.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2549,13 +2602,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To enable more than 1 menu item at a time, use a collection object, such as an
+    <computeroutput>array</computeroutput>, where each item in the collection is the menu item ID of the item to be
+    enabled.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2564,15 +2619,36 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The menu item specified to be enabled is a
+        separator.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from an application that only allows the user to open 1 file at a time. When the current file is
+    opened, the Open File menu item is disabled and the Close File menu item is enabled.
 <programlisting>
 <![CDATA[
+
+::method onOpenFile unguarded
+  expose menuBar
+
+  if self~openFile then do
+    menuBar~disable(IDM_FILE_OPEN)
+    menuBar~enable(IDM_FILE_CLOSE)
+  end
+
+  return 0
 
 ]]>
 </programlisting>
@@ -2586,57 +2662,62 @@
 <indexterm><primary>menu object</primary><secondary>getAutoConnectStatus</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getAutoConnectStatus(--+--------+--)---------------------------------------------><
-                           +--type--+
+>>--getAutoConnectStatus-------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns a <computeroutput>Directory</computeroutput> object containing the current status of <link
+  linkend="varAutoConnection">autoconnection</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <computeroutput>.Directory</computeroutput> object with the following indexes:
   </para>
+  <variablelist>
+    <varlistentry><term>AUTOCONNECT</term>
+    <listitem>
+    <para>
+      If true, autoconnection is on. If false, autoconnection is off
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>MEHTODNAME</term>
+    <listitem>
+    <para>
+      The method name for autoconnection, if set. The <computeroutput>.nil</computeroutput> object if no method name is
+      set, or autoconnection is off.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Use the <link linkend="mthSetAutoConnection">setAutoConnection</link> method to change the status of autoconnection.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This code could be used to determine if autoconnection is on or off:
 <programlisting>
 <![CDATA[
 
+  if menu~getAutoConnectStatus~autoConnect then do
+    -- autoconnection is on, do something ...
+  end
+  else do
+    -- autoconnection is no on, do something else ...
+  end
 ]]>
 </programlisting>
   </para>
@@ -3275,24 +3356,34 @@
 <indexterm><primary>menu object</primary><secondary>gray</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--gray(--+--------+--)---------------------------------------------><
-           +--type--+
+>>--gray(--IDs--+--------------+--)--------------><
+                +-,-byPosition-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Grays one or more menu items. Separators can not be grayed. Note that disable and gray are the exact same thing.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      xx
+      The menu item <link linkend="entMenuItemIdentifier">ID(s)</link> to be grayed, may be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
+      role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
+      resource IDs or all position IDs.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If true, the item IDs are positional IDs, otherwise they are resource IDs. The default is false, resource IDs.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3301,13 +3392,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To gray more than 1 menu item at a time, use a collection object, such as an
+    <computeroutput>array</computeroutput>, where each item in the collection is the menu item ID of the item to be
+    grayed.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -3316,15 +3409,35 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The menu item specified to be grayed is a
+        separator.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from an application that only allows the user to open 1 file at a time. When the current file is
+    closed, the Close File menu item is grayed and the Open File menu item is enabled.
 <programlisting>
 <![CDATA[
+
+::method onCloseFile unguarded
+  expose menuBar
+
+  menuBar~gray(IDM_FILE_CLOSE)
+  menuBar~enable(IDM_FILE_OPEN)
+
+  self~closeCurrentFile
+  return 0
 
 ]]>
 </programlisting>
@@ -3338,24 +3451,35 @@
 <indexterm><primary>menu object</primary><secondary>hilite</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hilite(--+--------+--)---------------------------------------------><
-             +--type--+
+>>--hilite(--IDs--+--------------+--)------------><
+                  +-,-byPosition-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  High lights one or more menu items. Separators can not be high lighted. A high lighted menu item is drawn as though it
+  were the selected item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      xx
+      The menu item <link linkend="entMenuItemIdentifier">ID(s)</link> to be high lighted, may be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
+      role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
+      resource IDs or all position IDs.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If true, the item IDs are positional IDs, otherwise they are resource IDs. The default is false, resource IDs.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3364,13 +3488,21 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    True on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    To high light more than 1 menu item at a time, use a collection object, such as an
+    <computeroutput>array</computeroutput>, where each item in the collection is the menu item ID of the item to be
+    high lighted.
+  </para>
+  <para>
+    There is not much use for this method, in the author's opinion, but it is documented for completeness since the
+    method does exist. High lighting a menu item does not actually select the item, it just makes it look like it is
+    selected. This would be confusing to the user. In addition, although this method will accept a collection of item
+    IDs, as do the other similar methods, it makes little sense to high light more than one menu item at a time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -3379,18 +3511,17 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The menu item specified to be high lighted is a
+        separator.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4514,24 +4645,45 @@
 <indexterm><primary>menu object</primary><secondary>setAutoConnection</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setAutoConnection(--+--------+--)---------------------------------------------><
-                        +--type--+
+>>--setAutoConnection(--onOff--+----------+--)---><
+                               +-,-mName--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Set the current status of <link linkend="varAutoConnection">autoconnection</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>onOff [required]</term>
     <listitem>
     <para>
-      xx
+      True to set autoconnection on, false to turn it off.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mName [optional]</term>
+    <listitem>
+    <para>
+      This argument is ignored unless <emphasis role="italic">onOff</emphasis> is true. If so the <emphasis
+      role="italic">mName</emphasis> argument can be used to change the current autoconnection method name.
+    </para>
+    <para>
+      When the autoconnection method name is not set, then when auto connection is done, the name of the connected
+      method for each menu command item is composed from the menu item <link
+      linkend="mthItemTextToMethodName">text</link>. On the other hand, if the autoconnection method name is set, then
+      each menu command item is connected to the same method, which is the autoconnection method name.
+    </para>
+    <para>
+      When the <emphasis role="italic">setAutoConnection</emphasis> method is used to turn autoconnection on, if the
+      <emphasis role="italic">mName</emphasis> argument is omitted, then no change is made to the current setting for
+      the autoconnection method name. If <emphasis role="italic">mName</emphasis> is the empty string, then the
+      autoconnection method name, if there is one, is removed. If <emphasis role="italic">mName</emphasis> is not
+      ommitted and not the empty string, then the autoconnection method name is set to <emphasis
+      role="italic">mName</emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4540,31 +4692,43 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error. An error is unlikely.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    When <emphasis role="italic">setAutoConnection</emphasis> is used to turn autoconnection off, the autoconnection
+    method name, if there is one, is always removed. If autoconnection is later turned on, and an autoconnection method
+    name is desired, it will have to be specified.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example turns autoconnection on and sets the autoconnection method name to onSelect. Thus, when autoconnection
+    is done, every menu command item in the menu will be connected to the onSelect method:
 <programlisting>
 <![CDATA[
-
+  menuBar~setAutoConnection(.true, onSelect)
+]]>
+</programlisting>
+  </para>
+  <para>
+    This example turns autoconnection off:
+<programlisting>
+<![CDATA[
+  menuBar~setAutoConnection(.false)
+]]>
+</programlisting>
+  </para>
+  <para>
+    This example assumes autoconnection is already on, with the autoconnection method name set. However, the programmer
+    now wants each menu command item connected to an individual method in the dialog. That is, the programmer wants the
+    autoconnection method name removed:
+<programlisting>
+<![CDATA[
+  menuBar~setAutoConnection(.true, '')
 ]]>
 </programlisting>
   </para>
@@ -4835,7 +4999,7 @@
 </programlisting>
 
 <para>
-  Unchecks one or more menu items.  Separators can not be unchecked.
+  Unchecks one or more menu items. Separators can not be checked.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4894,9 +5058,6 @@
       </listitem></varlistentry>
     </variablelist>
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -4936,6 +5097,81 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End menu object::uncheck() -->
+
+<section id="mthUnhilite"><title>unhilite</title>
+<indexterm><primary>unhilite</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>unhilite</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--unhilite(--IDs--+--------------+--)-----------><
+                    +-,-byPosition-+
+]]>
+</programlisting>
+
+<para>
+  Removes the high light from one or more menu items. Separators can not be high lighted. A high lighted menu item is
+  drawn as though it were the selected item.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>IDs [required]</term>
+    <listitem>
+    <para>
+      The menu item <link linkend="entMenuItemIdentifier">ID(s)</link> whose high light is to be removed, may be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
+      role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
+      resource IDs or all position IDs.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If true, the item IDs are positional IDs, otherwise they are resource IDs. The default is false, resource IDs.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True on success, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    To remove the high light from more than 1 menu item at a time, use a collection object, such as an
+    <computeroutput>array</computeroutput>, where each item in the collection is the menu item ID of the item whose high
+    light will be removed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The menu item specified to have its high light
+        removed is a separator.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::unhilite() -->
 
 <section id="mthUnhilite"><title>unhilite</title>
 <indexterm><primary>unhilite</primary></indexterm>
