@@ -157,7 +157,7 @@
     specified position
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Menu Item Position</emphasis></term>
+  <varlistentry id="entMenuItemPosition"><term><emphasis role="bold">Menu Item Position</emphasis></term>
   <listitem>
   <para>
     In addition to having a unique identifier, each menu item in a menu bar or menu has a unique position value.
@@ -839,7 +839,7 @@
 </row>
 <row>
 <entry><link linkend="mthDestroyClsMenu">destroy</link></entry>
-<entry>Releases the system resources used by the menu.</entry>
+<entry>Releases the system resources used by this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthDisableClsMenu">disable</link></entry>
@@ -851,23 +851,23 @@
 </row>
 <row>
 <entry><link linkend="mthGetAutoConnectStatus">getAutoConnectStatus</link></entry>
-<entry>.</entry>
+<entry>Returns a <computeroutput>Directory</computeroutput> object containing the current status of <link linkend="varAutoConnection">autoconnection</link>.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetCountClsMenu">getCount</link></entry>
-<entry>Returns the number of items in the menu.</entry>
+<entry>Returns the number of items in this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetHandle">getHandle</link></entry>
-<entry>Returns the value of the hMenu attribute of the menu.</entry>
+<entry>Returns the value of the hMenu attribute of this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetHelpID">getHelpID</link></entry>
-<entry>.</entry>
+<entry>Gets the Help context identifier for this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetIDClsMenu">getID</link></entry>
-<entry>.</entry>
+<entry>Gets the resource ID of the specified menu item.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetItemState">getItemState</link></entry>
@@ -875,7 +875,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetMaxHeight">getMaxHeight</link></entry>
-<entry>.</entry>
+<entry>Gets the current maximum height for this menu, in pixels.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMenuHandle">getMenuHandle</link></entry>
@@ -983,11 +983,11 @@
 </row>
 <row>
 <entry><link linkend="mthSetID">setID</link></entry>
-<entry>Sets the resource ID of the menu.</entry>
+<entry>Sets the resource ID of this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetMaxHeight">setMaxHeight</link></entry>
-<entry>.</entry>
+<entry>Sets the maximum height for this menu, in pixels, and optionally sets the height for all submenus of this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetTextClsMenu">setText</link></entry>
@@ -2789,56 +2789,55 @@
 <indexterm><primary>menu object</primary><secondary>getHandle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getHandle----------------------------------------><
+>>--getHandle------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the Windows <link linkend="defHandle">handle</link> to the <link linkend="ovvUnderlying">menu</link> this
+  Rexx object represents.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The handle to the menu.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
+    If a menu is released through the <link linkend="mthDestroyClsMenu">destroy</link>() method, the menu handle will
+    then be null and is no longer valid. The menu handle is a Rexx <computeroutput>Pointer</computeroutput> object and
+    therefore has the methods of that class. Specifically it has the <emphasis role="italic">isNull</emphasis>() method,
+    which can be used to test if the handle is still valid.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    The value returned from <emphasis role="italic">getHandle</emphasis> is identical to the value of the <link
+    linkend="atrHMenu">hMenu</link> attribute.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the handle for an Edit submenu and then uses it as a filter in the <link
+    linkend="connectMenuEvent">connectMenuEvent</link> method:
 <programlisting>
 <![CDATA[
+
+  ...
+
+  editMenu = menuBar~getPopup(IDM_POP_EDIT)
+  hEditMenu = editMenu~hMenu
+
+  menuBar~connectMenuEvent(onEditMenuPopup, 'INITMENUPOPUP', hEditMenu)
 
 ]]>
 </programlisting>
@@ -2852,59 +2851,31 @@
 <indexterm><primary>menu object</primary><secondary>getHelpID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getHelpID(--+--------+--)---------------------------------------------><
-                +--type--+
+>>--getHelpID------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the Help context identifier for this menu.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    On success, returns the help ID, or 0 if the help ID for the menu is not set. On failure, returns -1.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
     Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2915,24 +2886,25 @@
 <indexterm><primary>menu object</primary><secondary>getID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getID(--+--------+--)---------------------------------------------><
-            +--type--+
+>>--getID(--pos--)-------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the resource ID of the specified menu item.  This is always done by position, if the ID is already known, there
+  is no use querying for it.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The single argument is:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>pos</term>
     <listitem>
     <para>
-      xx
+      The menu item <link linkend="entMenuItemPosition">position</link> identifier whose resource ID is required.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2941,13 +2913,14 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the resource ID of the specified menu item, which is always greater than 0, or -1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Recall that when using menu item position identifiers, the item must be in the immediate menu, the menu that
+    actually holds the menu item. The item can not be in a submenu of the menu.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2962,9 +2935,22 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example searches a menu until it finds a menu item that matches the specified text. If it finds that item, it
+    returns the item's resource ID, otherwise it returns -1.
 <programlisting>
 <![CDATA[
+
+::method retrieveID private
+  use strict arg menu, label
+
+  do i = 1 to menu~getCount
+    if menu~getText(i, .true) == label then do
+      id = menu~getID(i)
+      if id > 0 then return id
+    end
+  end
+
+  return -1
 
 ]]>
 </programlisting>
@@ -3041,46 +3027,38 @@
 <indexterm><primary>menu object</primary><secondary>getMaxHeight</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getMaxHeight(--+--------+--)---------------------------------------------><
-                   +--type--+
+>>--getMaxHeight---------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the current maximum height for this menu, in pixels.  Note that 0, indicates that the maximum height is the
+  height of the screen.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
+    There are no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The maximum height of this menu in pixels, or -1 on error. As mentioned, a return of 0 indicates that the maximum
+    height is the height of the screen.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    By default, the maximum height of a menu is the height of the screen. This can be changed by the programmer through
+    the <link linkend="mthSetMaxHeight">setMaxHeight</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
@@ -3088,9 +3066,20 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the current maximum height of the File drop down menu and checks if it is equal to the height
+    of the dialog. If not, it changes the maximum height to the height of the dialog:
 <programlisting>
 <![CDATA[
+
+::method checkHeight private
+  expose menuBar
+
+  size = self~getRealSize
+
+  filePopup = menuBar~getPopup(IDM_FILE)
+  if filePopup~getMaxHeight <> size~height then filePopup~setMaxHeight(size~height)
+
+  return 0
 
 ]]>
 </programlisting>
@@ -4867,24 +4856,31 @@
 <indexterm><primary>menu object</primary><secondary>setMaxHeight</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setMaxHeight(--+--------+--)---------------------------------------------><
-                   +--type--+
+>>--setMaxHeight(--height--+------------+--)-----><
+                           +-,-recurse--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the maximum height for this menu, and optionally all submenus.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>height [required]</term>
     <listitem>
     <para>
-      xx
+      The maximum height, in pixels, for this menu. Use zero to revert the height back to the system default, which is
+      the height of the screen.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>recurse [optional]</term>
+    <listitem>
+    <para>
+      If true, set the height for this menu and all submenus of this menu. The default is false.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4893,13 +4889,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When a menu reaches the maximum height, scroll bars are automatically added. The default height is the height of
+    the screen.  To revert back to the defualt height, specify 0 for the <emphasis role="italic">height</emphasis>
+    argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4914,9 +4912,20 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the current maximum height of the File drop down menu and checks if it is equal to the height
+    of the dialog. If not, it changes the maximum height to the height of the dialog:
 <programlisting>
 <![CDATA[
+
+::method checkHeight private
+  expose menuBar
+
+  size = self~getRealSize
+
+  filePopup = menuBar~getPopup(IDM_FILE)
+  if filePopup~getMaxHeight <> size~height then filePopup~setMaxHeight(size~height)
+
+  return 0
 
 ]]>
 </programlisting>
