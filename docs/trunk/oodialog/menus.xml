@@ -871,7 +871,7 @@
 </row>
 <row>
 <entry><link linkend="mthGetItemState">getItemState</link></entry>
-<entry>.</entry>
+<entry>Returns a string of 0 or more keywords that indicate the current state of the specified menu item.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetMaxHeight">getMaxHeight</link></entry>
@@ -879,19 +879,19 @@
 </row>
 <row>
 <entry><link linkend="mthGetMenuHandle">getMenuHandle</link></entry>
-<entry>.</entry>
+<entry>Retrieves the Windows <link linkend="defHandle">handle</link> of the <link linkend="ovvUnderlying">underylying</link> menu for the specified popup menu of this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetPopup">getPopup</link></entry>
-<entry>.</entry>
+<entry>Gets the specified popup menu from this menu. This menu is unchanged.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetTextClsMenu">getText</link></entry>
-<entry>.</entry>
+<entry>Gets the text, the label, for the specified menu item. Separators do not have any text.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetType">getType</link></entry>
-<entry>.</entry>
+<entry>Returns a string of 0 or more keywords that indicate the type of the specified menu item.</entry>
 </row>
 <row>
 <entry><link linkend="mthGray">gray</link></entry>
@@ -903,59 +903,59 @@
 </row>
 <row>
 <entry><link linkend="mthInsertItem">insertItem</link></entry>
-<entry>.</entry>
+<entry>Inserts a new menu command item into this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthInsertPopup">insertPopup</link></entry>
-<entry>.</entry>
+<entry>Inserts a new submenu into this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthInsertSeparator">insertSeparator</link></entry>
-<entry>.</entry>
+<entry>Inserts a separator into this menu at the specified position.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsChecked">isChecked</link></entry>
-<entry>.</entry>
+<entry>Determines if the specified menu item is checked.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsCommandItem">isCommandItem</link></entry>
-<entry>.</entry>
+<entry>Determines if the specified menu item is command menu item, that is if the menu item is one that a user would expect to carry out a command.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsDisabled">isDisabled</link></entry>
-<entry>.</entry>
+<entry>Determines if the specified menu item is disabled or not.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsEnabledClsMenu">isEnabled</link></entry>
-<entry>.</entry>
+<entry>Determines if the specified menu item is enabled or not.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsGrayed">isGrayed</link></entry>
-<entry>.</entry>
+<entry>Determines if the specified menu item is grayed or not.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsPopup">isPopup</link></entry>
-<entry>.</entry>
+<entry>Determines if the specified menu item is a submenu (a pop up menu.)</entry>
 </row>
 <row>
 <entry><link linkend="mthIsSeparator">isSeparator</link></entry>
-<entry>.</entry>
+<entry>Determines if the specified menu item is a separator.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsValidItemID">isValidItemID</link></entry>
-<entry>.</entry>
+<entry>Determines if a specific menu item <link linkend="sctMenuItemIDs">ID</link> is valid for this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsValidMenu">isValidMenu</link></entry>
-<entry>.</entry>
+<entry>Checks if this menu is valid.</entry>
 </row>
 <row>
 <entry><link linkend="mthIsValidMenuHandle">isValidMenuHandle</link></entry>
-<entry>.</entry>
+<entry>Given a <link linkend="defHandle">handle</link>, determines if the handle is a menu handle and, if it is, if the menu is still valid.</entry>
 </row>
 <row>
 <entry><link linkend="mthItemTextToMethodName">itemTextToMethodName</link></entry>
-<entry>.</entry>
+<entry>Converts the specified text to a method name as if the text were the text of a menu command item.</entry>
 </row>
 <row>
 <entry><link linkend="mthReleaseMenuHandle">releaseMenuHandle</link></entry>
@@ -963,23 +963,23 @@
 </row>
 <row>
 <entry><link linkend="mthRemoveItem">removeItem</link></entry>
-<entry>.</entry>
+<entry>Removes, but does not delete, the specified popup menu from the menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthRemovePopup">removePopup</link></entry>
-<entry>.</entry>
+<entry>Removes, but does not delete, the specified popup menu from the menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthRemoveSeparator">removeSeparator</link></entry>
-<entry>.</entry>
+<entry>Removes (deletes) the specified menu separator from this menu.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetAutoConnection">setAutoConnection</link></entry>
-<entry>.</entry>
+<entry>Set the current status of <link linkend="varAutoConnection">autoconnection</link>.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetHelpID">setHelpID</link></entry>
-<entry>.</entry>
+<entry>Sets the Help context identifier for the this menu, and optionally all submenus.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetID">setID</link></entry>
@@ -991,7 +991,7 @@
 </row>
 <row>
 <entry><link linkend="mthSetTextClsMenu">setText</link></entry>
-<entry>.</entry>
+<entry>Sets the text of the specified menu item..</entry>
 </row>
 <row>
 <entry><link linkend="mthUncheckClsMenu">uncheck</link></entry>
@@ -3716,6 +3716,569 @@
 </variablelist>
 </section>  <!-- End menu object::hilite() -->
 
+<section id="mthInsertItem"><title>insertItem</title>
+<indexterm><primary>insertItem</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>insertItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insertItem(-idBefore-,-id-,-text--+----------+--+--------+------->
+                                      +-,-state--+  +-,-type-+
+
+>------------+--------------+--+-----------+--+---------+--)---------><
+             +-,-byPosition-+  +-,-connect-+  +-,-mName-+
+
+]]>
+</programlisting>
+
+<para>
+  Inserts a new menu command item into this menu.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>idBefore [required]</term>
+    <listitem>
+    <para>
+      The newly inserted item is inserted before the item with this <link linkend="sctMenuItemIDs">ID</link>. May be
+      <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID,
+      depending on the value of <emphasis role="italic">byPosition</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctMenuItemIDs">ID</link> of the menu item to be inserted. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The text, the label, for the new menu item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant. These specify the
+      state of the new item. If this argument is omitted or the empty string the state is set to ENABLED UNHILITE NOTDEFAULT
+      UNCHECKED.:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>CHECKED   </member>
+        <member>DEFAULT   </member>
+        <member>DISABLED  </member>
+        <member>ENABLED   </member>
+        <member>GRAYED    </member>
+        <member>HILITE    </member>
+        <member>NOTDEFAULT</member>
+        <member>UNCHECKED </member>
+        <member>UNHILITE  </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>CHECKED</term>
+        <listitem>
+        <para>
+          The menu item is checked.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DEFAULT</term>
+        <listitem>
+        <para>
+          The menu item is the default menu item. Only one item in any submenu can be the default item.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+        <para>
+          The menu item is disabled. Disabled and grayed are exactly the same thing.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ENABLED</term>
+        <listitem>
+        <para>
+          The menu item is not disabled. This keyword does not need to be specified. If neither DISABLED nor GRAYED are
+          specified, the menu item is automatically enabled
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GRAYED</term>
+        <listitem>
+        <para>
+          The menu item is disabled. Disabled and grayed are exactly the same thing.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HILITE</term>
+        <listitem>
+        <para>
+          The menu item is high lighted, that is, it is drawn with the selected appearance.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTDEFAULT</term>
+        <listitem>
+        <para>
+          The menu item is not the default menu item. This keyword does not need to be specified. If DEFAULT is not
+          specified, the menu item is automatically not the default menu item.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UNCHECKED</term>
+        <listitem>
+        <para>
+          The menu item is not checked. This keyword does not need to be specified. If CHECKED is not specified, the new
+          item will automatically be unchecked.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UNHILITE</term>
+        <listitem>
+        <para>
+          The menu item is not high lighted, that is, it is not drawn with the selected state. This keyword does not
+          need to be specified, if the HILITE keyword is omitted, the NOHILITE state is set automatically.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant. These specify the type
+      of the new item. If this argument is omitted, or the empty string, then no special type is set:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>RADIO       </member>
+        <member>RIGHTJUSTIFY</member>
+        <member>MENUBARBREAK</member>
+        <member>MENUBAR     </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>RADIO</term>
+        <listitem>
+        <para>
+          Displays checked menu items using a radio-button mark instead of a check mark.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHTJUSTIFY</term>
+        <listitem>
+        <para>
+          Right-justifies the menu item and any subsequent items. This value is valid only if the menu item is in a menu
+          bar. It has no effect if the item is in a popup menu.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MENUBARBREAK</term>
+        <listitem>
+        <para>
+          Places the menu item on a new line (for a menu bar) or in a new column (for a drop-down menu, submenu, or
+          shortcut menu). For a drop-down menu, submenu, or shortcut menu, a vertical line separates the new column from
+          the old.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MENUBREAK</term>
+        <listitem>
+        <para>
+          This is exactly the same as MENUBARBREAK, except that no vertical line is drawn between the columns when the
+          item is not in a menu bar.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">idBefore</emphasis> is a positional ID,
+      otherwise it is a resource ID. The default is <computeroutput>.false</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>connect</term>
+    <listitem>
+    <para>
+      Whether to automatically connect the command item to a method in the owning dialog. This is a <link
+      linkend="varConnectionRequest">connection request</link> type of connection type. Do not mix this with <link
+      linkend="varAutoConnection">autoconnection</link>. The default is false. If connect is true and the menu is
+      already attached to a dialog the connection is made immediately. Otherwise the request is put in to a queue and
+      the connection is made when the menu is first attached to a dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mName</term>
+    <listitem>
+    <para>
+      If <emphasis role="italic">connect</emphasis> is true, this can be the name of the method to connect the command
+      event to. If <emphasis role="italic">connect</emphasis> is false, this argument is ignored. If <emphasis
+      role="italic">connect</emphasis> is true and this argument is omitted, then the method name is automatically
+      constructed from the text of the new item.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    If <link linkend="mthGetAutoConnectStatus">autoconnection</link> is on and <emphasis
+    role="italic">connect</emphasis> is set to true by the programmer then the new menu item is connected by <emphasis
+    role="italic">autoconnection</emphasis> and also connecte because of the <emphasis role="italic">connect</emphasis>
+    request. The result of this is unpredictable. The <emphasis role="italic">connect</emphasis> argument should never
+    be set to true if autoconnection is on for the menu.
+  </para>
+  <para>
+    When the menu command item is inserted into the menu, if there are no other items in the menu there is no ID for the
+    <emphasis role="italic">before</emphasis> argument. In this case the programmer can use any non-negative number and
+    the operating system will accept it. The ooDialog examples commonly use the same ID for both the <emphasis
+    role="italic">idBefore</emphasis> and <emphasis role="italic">id</emphasis> arguments for this case. 0 is also a
+    good choice for the <emphasis role="italic">idBefore</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example inserts a new menu command item into a menu bar with the resource ID of IDM_LV_PROFESSION. By position
+    is false, (it could have been omitted,) so IDM_LV_RESTORE is a resource ID. The new item is inserted before the
+    IDM_LV_RESTORE menu item, where ever it is in the menu bar. The <emphasis role="italic">connect</emphasis> argument
+    is true, so the new menu command item is connected to the <emphasis role="italic">onOrderByProfession</emphasis>
+    method, either immediately if the menubar is already attached to a dialog, or when the menubar is first attached to
+    a dialog:
+<programlisting>
+<![CDATA[
+
+  menuBar~insertItem(IDM_LV_RESTORE, IDM_LV_PROFESSION, "Order by Profession", -
+                     'DEFAULT CHECKED', 'RADIO', .false, .true, onOrderByProfession)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::insertItem() -->
+
+<section id="mthInsertPopup"><title>insertPopup</title>
+<indexterm><primary>insertPopup</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>insertPopup</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insertPopup(-idBefore-,-id-,-pop-,-txt-+----------+-+--------+-+---------+--)--><
+                                           +-,-state--+ +-,-type-+ +-,-byPos-+
+
+]]>
+</programlisting>
+
+<para>
+  Inserts a new submenu into this menu.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>idBefore [required]</term>
+    <listitem>
+    <para>
+      The newly inserted submenu is inserted before the item with this <link linkend="sctMenuItemIDs">ID</link>. May be
+      <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID,
+      depending on the value of <emphasis role="italic">byPos</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource <link linkend="sctMenuItemIDs">ID</link> of the submenu to be inserted. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pop [required]</term>
+    <listitem>
+    <para>
+      The <link linkend="PopupMenu">PopupMenu</link> object being inserted.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>txt [required]</term>
+    <listitem>
+    <para>
+      The text, the label, for the new submenu.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant. These specify the
+      state of the new submenu. If this argument is omitted or the empty string the state is set to ENABLED UNHILITE
+      NOTDEFAULT:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>DEFAULT   </member>
+        <member>DISABLED  </member>
+        <member>ENABLED   </member>
+        <member>GRAYED    </member>
+        <member>HILITE    </member>
+        <member>NOTDEFAULT</member>
+        <member>UNHILITE  </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>DEFAULT</term>
+        <listitem>
+        <para>
+          The submenu is the default menu item. Only one item in any menu can be the default item.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>DISABLED</term>
+        <listitem>
+        <para>
+          The summenu is disabled. Disabled and grayed are exactly the same thing.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ENABLED</term>
+        <listitem>
+        <para>
+          The submenu is not disabled. This keyword does not need to be specified. If neither DISABLED nor GRAYED are
+          specified, the submenu is automatically enabled
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>GRAYED</term>
+        <listitem>
+        <para>
+          The submenu is disabled. Disabled and grayed are exactly the same thing.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>HILITE</term>
+        <listitem>
+        <para>
+          The submenu is high lighted, that is, it is drawn with the selected appearance.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>NOTDEFAULT</term>
+        <listitem>
+        <para>
+          The submenu is not the default menu item. This keyword does not need to be specified. If DEFAULT is not
+          specified, the submenu is automatically not the default menu item.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>UNHILITE</term>
+        <listitem>
+        <para>
+          The submenu is not high lighted, that is, it is not drawn with the selected state. This keyword does not need
+          to be specified, if the HILITE keyword is omitted, the NOHILITE state is set automatically.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type [optional]</term>
+    <listitem>
+    <para>
+      A list of 0 or more of the following keywords separated by spaces, case is not significant. These specify the type
+      of the new submenu. If this argument is omitted or the empty string then no special type is set:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>RIGHTJUSTIFY</member>
+        <member>RIGHTORDER  </member>
+        <member>MENUBARBREAK</member>
+        <member>MENUBAR     </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>RIGHTJUSTIFY</term>
+        <listitem>
+        <para>
+          Right-justifies the submenu and any subsequent items. This value is valid only if the submenu is in a menu
+          bar. It has no effect if the item is in a popup menu.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>RIGHTORDER</term>
+        <listitem>
+        <para>
+          Specifies that menus cascade right-to-left (the default is left-to-right). This is used to support
+          right-to-left languages, such as Arabic and Hebrew.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MENUBARBREAK</term>
+        <listitem>
+        <para>
+          Places the submenu on a new line (for a menu bar) or in a new column (for a drop-down menu, submenu, or
+          shortcut menu). For a drop-down menu, submenu, or shortcut menu, a vertical line separates the new column from
+          the old.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>MENUBREAK</term>
+        <listitem>
+        <para>
+          This is exactly the same as MENUBARBREAK, except that no vertical line is drawn between the columns when the
+          submenu is not in a menu bar.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">idBefore</emphasis> is a positional ID,
+      otherwise it is a resource ID. The default is <computeroutput>.false</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When the submenu is inserted into the menu, if there are no other items in the menu there is no ID for the
+    <emphasis role="italic">before</emphasis> argument. In this case the programmer can use any non-negative number and
+    the operating system will accept it. The ooDialog examples commonly use the same ID for both the <emphasis
+    role="italic">idBefore</emphasis> and <emphasis role="italic">id</emphasis> arguments for this case. 0 is also a
+    good choice for the <emphasis role="italic">idBefore</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the start of the creation of a binary menubar. First a new empty menubar is instantiated. Then a
+    new popup menu is instantiated with the resource id of IDM_HELP. One menu item is inserted into the popup menu, and
+    the popup menu is inserted into the menubar. Note that the menubar at this point does not have any menu items, so
+    there is no menu item for the <emphasis role="italic">idBefore</emphasis> argument. In this case the operating
+    system does not seem to care what number is used for the <emphasis role="italic">idBefore</emphasis> argument. The
+    examples in ooDialog generally will use the same ID as the ID of the menu item being inserted:
+<programlisting>
+<![CDATA[
+
+  menu = .BinaryMenuBar~new(.nil, IDM_MENUBAR, , self)
+
+  subMenu = .PopupMenu~new(IDM_HELP))
+  subMenu~insertItem(IDM_ITEM_ABOUT, IDM_ITEM_ABOUT, "About")
+
+  menu~insertPopup(IDM_HELP, IDM_HELP, subMenu, "Help", , 'RIGHTJUSTIFY')
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::insertPopup() -->
+
+<section id="mthInsertSeparator"><title>insertSeparator</title>
+<indexterm><primary>insertSeparator</primary></indexterm>
+<indexterm><primary>menu object</primary><secondary>insertSeparator</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insertSeparator(--idBefore-,-id--+---------+--)-------------><
+                                     +-,-byPos-+
+]]>
+</programlisting>
+
+<para>
+  Inserts a separator into this menu at the specified position.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>idBefore [required]</term>
+    <listitem>
+    <para>
+      The new separator is inserted before the item with this <link linkend="sctMenuItemIDs">ID</link>. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      the value of <emphasis role="italic">byPos</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource <link linkend="sctMenuItemIDs">ID</link> of the separator to be inserted. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">idBefore</emphasis> is a positional ID,
+      otherwise it is a resource ID. The default is <computeroutput>.false</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, fasle on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When the separator is inserted into the menu, if there are no other items in the menu there is no ID for the
+    <emphasis role="italic">before</emphasis> argument. In this case the programmer can use any non-negative number and
+    the operating system will accept it. The ooDialog examples commonly use the same ID for both the <emphasis
+    role="italic">idBefore</emphasis> and <emphasis role="italic">id</emphasis> arguments for this case. 0 is also a
+    good choice for the <emphasis role="italic">idBefore</emphasis> argument.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example creates a new popup menu and inserts several menu items, including a separator:
+<programlisting>
+<![CDATA[
+
+  subMenu = .PopupMenu~new(IDM_POP_FILE)
+
+  subMenu~insertItem(IDOK, IDOK, "Exit")
+  subMenu~insertItem(IDOK, IDM_MI_LEAVE, "Leave")
+  subMenu~insertItem(IDM_MI_LEAVE, IDM_MI_TEST_ITEM, "Test Item")
+  subMenu~insertItem(IDM_MI_LEAVE, IDM_MI_CONTEXT, "Context")
+  subMenu~insertSeparator(IDM_MI_LEAVE, IDM_SEPARATOR)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End menu object::insertSeparator() -->
+
 <section id="mthIsChecked"><title>isChecked</title>
 <indexterm><primary>isChecked</primary></indexterm>
 <indexterm><primary>menu object</primary><secondary>isChecked</secondary></indexterm>
@@ -4113,13 +4676,13 @@
 <indexterm><primary>menu object</primary><secondary>isSeparator</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--isPopup(--id--+---------------+--)-----------><
-                  +-,-byPosition--+
+>>--isSeparator(--id--+---------------+--)-------><
+                      +-,-byPosition--+
 ]]>
 </programlisting>
 
 <para>
-  Determines if the specified menu item is a submenu (a pop up menu.)
+  Determines if the specified menu item is a separator.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4352,377 +4915,6 @@
 </variablelist>
 </section>  <!-- End menu object::isValidMenuHandle() -->
 
-<section id="mthInsertItem"><title>insertItem</title>
-<indexterm><primary>insertItem</primary></indexterm>
-<indexterm><primary>menu object</primary><secondary>insertItem</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--insertItem(-idNext-,-id-,-text--+----------+--+--------+------->
-                                    +-,-state--+  +-,-type-+
-
->------------+--------------+--+-----------+--+---------+--)-------><
-             +-,-byPosition-+  +-,-connect-+  +-,-mName-+
-
-]]>
-</programlisting>
-
-<para>
-  Inserts a new menu command item into this menu.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  <variablelist>
-    <varlistentry><term>idNext [required]</term>
-    <listitem>
-    <para>
-      The newly inserted item is inserted before the item with this <link linkend="sctMenuItemIDs">ID</link>. May be
-      <link linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID,
-      depending on the value of <emphasis role="italic">byPosition</emphasis>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The <link linkend="sctMenuItemIDs">ID</link> of the menu item to be inserted. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>text [required]</term>
-    <listitem>
-    <para>
-      The text, the label, for the new menu item.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>state [optional]</term>
-    <listitem>
-    <para>
-      A list of 0 or more of the following keywords separated by spaces, case is not significant. These specify the
-      state of the new item. If this argument is omitted or the empty string the state is set to ENABLED UNHILITE NOTDEFAULT
-      UNCHECKED.:
-    </para>
-    <para>
-      <simplelist type='vert' columns='3'>
-        <member>CHECKED   </member>
-        <member>DEFAULT   </member>
-        <member>DISABLED  </member>
-        <member>ENABLED   </member>
-        <member>GRAYED    </member>
-        <member>HILITE    </member>
-        <member>NOTDEFAULT</member>
-        <member>UNCHECKED </member>
-        <member>UNHILITE  </member>
-      </simplelist>
-      <variablelist>
-        <varlistentry><term>CHECKED</term>
-        <listitem>
-        <para>
-          The menu item is checked.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>DEFAULT</term>
-        <listitem>
-        <para>
-          The menu item is the default menu item. Only one item in any submenu can be the default item.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>DISABLED</term>
-        <listitem>
-        <para>
-          The menu item is disabled. Disabled and grayed are exactly the same thing.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>ENABLED</term>
-        <listitem>
-        <para>
-          The menu item is not disabled. This keyword does not need to be specified. If neither DISABLED nor GRAYED are
-          specified, the menu item is automatically enabled
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>GRAYED</term>
-        <listitem>
-        <para>
-          The menu item is disabled. Disabled and grayed are exactly the same thing.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>HILITE</term>
-        <listitem>
-        <para>
-          The menu item is high lighted, that is, it is drawn with the selected appearance.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>NOTDEFAULT</term>
-        <listitem>
-        <para>
-          The menu item is not the default menu item. This keyword does not need to be specified. If DEFAULT is not
-          specified, the menu item is automatically not the default menu item.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>UNCHECKED</term>
-        <listitem>
-        <para>
-          The menu item is not checked. This keyword does not need to be specified. If CHECKED is not specified, the new
-          item will automatically be unchecked.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>UNHILITE</term>
-        <listitem>
-        <para>
-          The menu item is not high lighted, that is, it is not drawn with the selected state. This keyword does not
-          need to be specified, if the HILITE keyword is omitted, the NOHILITE state is set automatically.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>type [optional]</term>
-    <listitem>
-    <para>
-      A list of 0 or more of the following keywords separated by spaces, case is not significant. These specify the type
-      of the new item. If this argument is omitted or the empty string then not special type is set:
-    </para>
-    <para>
-      <simplelist type='vert' columns='3'>
-        <member>RADIO       </member>
-        <member>RIGHTJUSTIFY</member>
-        <member>MENUBARBREAK</member>
-        <member>MENUBAR     </member>
-      </simplelist>
-      <variablelist>
-        <varlistentry><term>RADIO</term>
-        <listitem>
-        <para>
-          Displays checked menu items using a radio-button mark instead of a check mark.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>RIGHTJUSTIFY</term>
-        <listitem>
-        <para>
-          Right-justifies the menu item and any subsequent items. This value is valid only if the menu item is in a menu
-          bar. It has no effect if the item is in a popup menu.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>MENUBARBREAK</term>
-        <listitem>
-        <para>
-          Places the menu item on a new line (for a menu bar) or in a new column (for a drop-down menu, submenu, or
-          shortcut menu). For a drop-down menu, submenu, or shortcut menu, a vertical line separates the new column from
-          the old.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>MENUBREAK</term>
-        <listitem>
-        <para>
-          This is exactly the same as MENUBARBREAK, except that no vertical line is drawn between the columns when the
-          item is not in a menu bar.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>byPosition [optional]</term>
-    <listitem>
-    <para>
-      If <computeroutput>.true</computeroutput>, <emphasis role="italic">idNext</emphasis> is a positional ID, otherwise
-      it is a resource ID. The default is <computeroutput>.false</computeroutput>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>connect</term>
-    <listitem>
-    <para>
-      Whether to automatically connect the command item to a method in the owning dialog. This is a <link
-      linkend="varConnectionRequest">connection request</link> type of connection type. Do not mix this with <link
-      linkend="varAutoConnection">autoconnection</link>. The default is false. If connect is true and the menu is
-      already attached to a dialog the connection is made immediately. Otherwise the request is put in to a queue and
-      the connection is made when the menu is first attached to a dialog.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mName</term>
-    <listitem>
-    <para>
-      If <emphasis role="italic">connect</emphasis> is true, this can be the name of the method to connect the command
-      event to. If <emphasis role="italic">connect</emphasis> is false, this argument is ignored. If <emphasis
-      role="italic">connect</emphasis> is true and this argument is omitted, then the method name is automatically
-      constructed from the text of the new item.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    If <link linkend="mthGetAutoConnectStatus">autoconnection</link> is on and <emphasis
-    role="italic">connect</emphasis> is set to true by the programmer then the new menu item is connected by <emphasis
-    role="italic">autoconnection</emphasis> and also connecte because of the <emphasis role="italic">connect</emphasis>
-    request. The result of this is unpredictable. The <emphasis role="italic">connect</emphasis> argument should never
-    be set to true if autoconnection is on for the menu.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example inserts a new menu command item into a menu bar with the resource ID of IDM_LV_PROFESSION. By position
-    is false, (it could have been omitted,) so IDM_LV_RESTORE is a resource ID. The new item is inserted before the
-    IDM_LV_RESTORE menu item, where ever it is in the menu bar. The <emphasis role="italic">connect</emphasis> argument
-    is true, so the new menu command item is connected to the <emphasis role="italic">onOrderByProfession</emphasis>
-    method, either immediately if the menubar is already attached to a dialog, or when the menubar is first attached to
-    a dialog:
-<programlisting>
-<![CDATA[
-
-  menuBar~insertItem(IDM_LV_RESTORE, IDM_LV_PROFESSION, "Order by Profession", -
-                     'DEFAULT CHECKED', 'RADIO', .false, .true, onOrderByProfession)
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End menu object::insertItem() -->
-
-<section id="mthInsertPopup"><title>insertPopup</title>
-<indexterm><primary>insertPopup</primary></indexterm>
-<indexterm><primary>menu object</primary><secondary>insertPopup</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--insertPopup(--+--------+--)---------------------------------------------><
-                  +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End menu object::insertPopup() -->
-
-<section id="mthInsertSeparator"><title>insertSeparator</title>
-<indexterm><primary>insertSeparator</primary></indexterm>
-<indexterm><primary>menu object</primary><secondary>insertSeparator</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--insertSeparator(--+--------+--)---------------------------------------------><
-                      +--type--+
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End menu object::insertSeparator() -->
-
 <section id="mthItemTextToMethodName"><title>itemTextToMethodName</title>
 <indexterm><primary>itemTextToMethodName</primary></indexterm>
 <indexterm><primary>menu object</primary><secondary>itemTextToMethodName</secondary></indexterm>
@@ -4855,7 +5047,11 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the operating system frees the system resource used by a menu, that menu is no longer valid. If there is a Rexx
+    menu object that represents the menu specified by the <emphasis role="italic">handle</emphasis> argument then the
+    Rexx object's menu will no longer be valid. In general, the Rexx programmer will not have much, if any, use for
+    this method. It is provided for completeness. Normally, the <link linkend="mthDestroyClsMenu">destroy</link> method
+    will be used.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4865,17 +5061,6 @@
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4886,24 +5071,33 @@
 <indexterm><primary>menu object</primary><secondary>removeItem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--removeItem(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--removeItem(--id--+---------------+--)--------><
+                     +-,-byPosition--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes (deletes) the specified menu command item from this menu.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The <link linkend="sctMenuItemIDs">ID</link> of the menu command item to remove. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      the value of <emphasis role="italic">byPosition</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">id</emphasis> is a positional ID, otherwise it
+      is a resource ID. The default is <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4912,13 +5106,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4927,15 +5115,37 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The specified menu item is not a menu command
+        item.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from an application that removes the Copy and Cut menu items from its menubar when there is
+    currently no selected text. (A more common approach for this situation is to disable the two menu items.)
 <programlisting>
 <![CDATA[
+
+::method prepareMenu private
+  expose menuBar
+
+  ...
+  if \ self~selectedText then do
+    menuBar~removeItem(IDM_MI_COPY)
+    menuBar~removeItem(IDM_MI_CUT)
+  end
+
+  ...
 
 ]]>
 </programlisting>
@@ -4949,24 +5159,33 @@
 <indexterm><primary>menu object</primary><secondary>removePopup</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--removePopup(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--removePopup(--id--+---------------+--)-------><
+                      +-,-byPosition--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes, but does not delete, the specified popup menu from the menu.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The <link linkend="sctMenuItemIDs">ID</link> of the submenu to remove. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      the value of <emphasis role="italic">byPosition</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">id</emphasis> is a positional ID, otherwise it
+      is a resource ID. The default is <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4975,13 +5194,22 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the specified submenu on success, 0 on failure.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When a popup menu (a submenu) is deleted, the operating system frees all resources used by the popup menu and any
+    references to the popup are no longer valid. On the other hand, the <emphasis role="italic">removePopup</emphasis>
+    method removes the specified submenu and returns it. The operating system resources are not freed and the returned
+    submenu is still valid.
+  </para>
+  <para>
+    The returned submenu can then be used in any number of ways, as a context menu, it can be inserted into some other
+    menu, or even reinserted back into the menu it was removed from. If the removed submenu is no longer needed by the
+    application, then the <link linkend="mthDeletePopup">deletePopup</link> method can be used instead of <emphasis
+    role="italic">removePopup</emphasis>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4990,15 +5218,32 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The specified menu item is not a popup menu.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses a context menu that is gotten from a menubar. Since the menubar is not used in the application, it
+    is just the source for the context menu, the menubar is destroyed after the context menu is removed:
 <programlisting>
 <![CDATA[
+
+  dlgPopup = menubar~removePopup(1, .true)
+
+  -- Start with the menu item to enable the list view greyed out.
+  dlgPopup~disable(IDM_RC_ENABLE_LV)
+
+  menuBar~destroy
 
 ]]>
 </programlisting>
@@ -5012,24 +5257,33 @@
 <indexterm><primary>menu object</primary><secondary>removeSeparator</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--removeSeparator(--+--------+--)---------------------------------------------><
-                      +--type--+
+>>--removeSeparator(--id--+---------------+--)---><
+                          +-,-byPosition--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes (deletes) the specified menu separator from this menu.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The <link linkend="sctMenuItemIDs">ID</link> of the submenu to remove. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      the value of <emphasis role="italic">byPosition</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">id</emphasis> is a positional ID, otherwise it
+      is a resource ID. The default is <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5038,13 +5292,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -5053,15 +5301,51 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The specified menu item is not a separator.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example, if there is no text selected the Cut and Copy menu items are removed from the menu. If there is no
+    data on the clipboard then the Paste menu item is removed. Above and below those 3 menu items are separators. If all
+    3 menu items are removed then the separators are also removed.
 <programlisting>
 <![CDATA[
+
+::method prepareMenu private
+  expose menuBar
+  ...
+
+  noSelection = .false
+  noClipboard = .false
+
+  if \ self~selectedText then do
+    noSelection = .true
+    menuBar~removeItem(IDM_MI_COPY)
+    menuBar~removeItem(IDM_MI_CUT)
+  end
+
+  if \ self~hasClipboardData then do
+    noClipboard = .true
+    menuBar~removeItem(IDM_MI_PASTE)
+  end
+
+  if noSelection & noClipboard then do
+    menuBar~removeSeparator(IDM_MI_SEPARATOR_TOP)
+    menuBar~removeSeparator(IDM_MI_SEPARATOR_BOTTOM)
+  end
+
+  ...
 
 ]]>
 </programlisting>
@@ -5171,24 +5455,31 @@
 <indexterm><primary>menu object</primary><secondary>setHelpID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setHelpID(--+--------+--)---------------------------------------------><
-                +--type--+
+>>--setHelpID(--id--+------------+--)------------><
+                    +-,-recurse--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the Help context identifier for the this menu, and optionally all submenus.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The help <link linkend="sctMenuItemIDs">ID</link> to be set. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>recurse [optional]</term>
+    <listitem>
+    <para>
+      If true, set the id for this menu and all submenus of this menu. The default is false.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5197,13 +5488,16 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success and false on failure.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Associated with each menubar, menu, submenu, and shortcut menu is a help identifier. If the user presses the F1 key
+    while the menu is active, this value is sent to the owner window as part of the Windows <link
+    linkend="mthConnectHelp">HELP</link> event notification. The menu help ID is sent to the event handler as the first
+    argument, the <emphasis role="italic">id</emphasis> argument.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -5218,9 +5512,17 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the help ID for 3 of the submenus in a menubar. Since none of the submenus have submenus, the
+    <emphasis role="italic">recurse</emphasis> argument is omitted. The application uses symbolic IDs for all resource
+    IDs:
 <programlisting>
 <![CDATA[
+
+  ...
+  menuBar~getPopup(IDM_POP_FILE)~setHelpID(IDM_HELP_FILE)
+  menuBar~getPopup(IDM_POP_EDIT)~setHelpID(IDM_HELP_EDIT)
+  menuBar~getPopup(IDM_POP_VIEW)~setHelpID(IDM_HELP_VIEW)
+  ...
 
 ]]>
 </programlisting>
@@ -5234,24 +5536,40 @@
 <indexterm><primary>menu object</primary><secondary>setID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setID(--+--------+--)----------------------------><
-            +--type--+
+>>--setID(--id-,-newID--+--------------+--)------><
+                        +-,-byPosition-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets or resets the resource ID of the specified menu item.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The <link linkend="sctMenuItemIDs">ID</link> of the menu item whose resource ID is to be set. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      the value of <emphasis role="italic">byPosition</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>newID [required]</term>
+    <listitem>
+    <para>
+      The new resource ID for the specified menu item. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">id</emphasis> is a positional ID, otherwise it
+      is a resource ID. The default is <emphasis role="bold"><computeroutput>.true</computeroutput></emphasis>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5260,13 +5578,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">setID</emphasis> method would usually be done using a by position ID to specify the menu
+    item. Maybe to set the ID of a menu item that does not have an ID. However, the method could also be used to change
+    the existing ID of an item. For this reason, the menu item can be specified by resource ID.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -5275,18 +5595,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5380,24 +5689,39 @@
 <indexterm><primary>menu object</primary><secondary>setText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setText(--+--------+--)---------------------------------------------><
-              +--type--+
+>>--setText(--id--,--text--+---------------+--)--><
+                           +-,-byPosition--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the text of the specified menu item. Separator menu items do not have text.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The arguments are:
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      xx
+      The <link linkend="sctMenuItemIDs">ID</link> of the menu item whose text is being set. May be <link
+      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      the value of <emphasis role="italic">byPosition</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>text [required]</term>
+    <listitem>
+    <para>
+      The text for the menu item.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>byPosition [optional]</term>
+    <listitem>
+    <para>
+      If <computeroutput>.true</computeroutput>, <emphasis role="italic">id</emphasis> is a positional ID, otherwise it
+      is a resource ID. The default is <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -5406,13 +5730,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns true on success and false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -5421,18 +5739,16 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> on failure. In addition to error codes set by
+    the operating system, the following error codes may be set by ooDialog:
+    <variablelist>
+      <varlistentry><term>ERROR_INVALID_FUNCTION (1)</term>
+      <listitem>
+      <para>
+        Incorrect function. <emphasis role="bold">Meaning:</emphasis> The specified menu item is a separator.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
   </para>
   </listitem></varlistentry>
 </variablelist>
