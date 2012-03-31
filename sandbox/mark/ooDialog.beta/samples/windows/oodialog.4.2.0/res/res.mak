@@ -6,7 +6,7 @@
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
 #/* distribution. A copy is also available at the following address:           */
-#/* http://www.oorexx.org/license.html                          */
+#/* http://www.oorexx.org/license.html                                         */
 #/*                                                                            */
 #/* Redistribution and use in source and binary forms, with or                 */
 #/* without modification, are permitted provided that the following            */
@@ -39,12 +39,12 @@
 
 rcflags_common = /DWIN32 /v
 
-all:  oopet.dll oowalk2.dll PropertySheetDemo.dll TabOwnerDemo.dll
-
-oopet.dll: oopet.res
-    link $(@B).res /NOENTRY /DLL -out:$(@B).dll
+all:  oowalk2.dll AnimalGame.dll PropertySheetDemo.dll TabOwnerDemo.dll
 
 oowalk2.dll: oowalk2.res
+    link $(@B).res /NOENTRY /DLL -out:$(@B).dll
+
+AnimalGame.dll: AnimalGame.res
     link $(@B).res /NOENTRY /DLL -out:$(@B).dll
 
 PropertySheetDemo.dll: PropertySheetDemo.res
@@ -54,11 +54,11 @@ TabOwnerDemo.dll: TabOwnerDemo.res
     link $(@B).res /NOENTRY /DLL -out:$(@B).dll
 
 # Create .res from .rc
-oopet.res: ..\rc\oopet.rc
-        rc $(rcflags_common) -r -fo$(@B).res ..\rc\$(@B).rc
-
 oowalk2.res: ..\rc\walker.rc
         rc $(rcflags_common) -r -fo$(@B).res ..\rc\walker.rc
+
+AnimalGame.res: ..\rc\AnimalGame.rc
+        rc $(rcflags_common) -r -fo$(@B).res ..\rc\AnimalGame.rc
 
 PropertySheetDemo.res: ..\rc\PropertySheetDemo.rc
         rc $(rcflags_common) -r -fo$(@B).res ..\rc\PropertySheetDemo.rc

@@ -1,6 +1,5 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
@@ -35,35 +34,34 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/****************************************************************************
 
-ootree.rc
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
 
-produced by IBM Object REXX Resource Workshop
-
-*****************************************************************************/
-
-#include <windows.h>
-
-#define IDD_TREE_DLG    100
-#define IDC_PB_NEW      110
-#define IDC_PB_DELETE   111
-#define IDC_PB_EXP_ALL  112
-#define IDC_PB_COL_ALL  113
-#define IDC_PB_INFO     114
-#define IDC_TREE        120
-
-IDD_TREE_DLG DIALOG 40, 60, 266, 302
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
-CAPTION "Contents"
-FONT 8, "MS Sans Serif"
-{
- PUSHBUTTON "New", IDC_PB_NEW, 10, 249, 50, 14, WS_GROUP | WS_TABSTOP
- PUSHBUTTON "Delete", IDC_PB_DELETE, 72, 249, 50, 14
- PUSHBUTTON "Cancel", IDCANCEL, 141, 249, 50, 14
- PUSHBUTTON "Help", IDHELP, 203, 249, 50, 14
- PUSHBUTTON "Expand All", IDC_PB_EXP_ALL, 11, 276, 50, 14
- PUSHBUTTON "Collapse All", IDC_PB_COL_ALL, 72, 276, 50, 14
- PUSHBUTTON "Info", IDC_PB_INFO, 141, 276, 50, 14
- CONTROL "Tree", IDC_TREE, "SysTreeView32", TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_EDITLABELS | TVS_SHOWSELALWAYS | WS_CHILD | WS_VISIBLE | WS_BORDER, 4, 8, 253, 231
-}
+#define IDD_ANIMALS                             103
+#define IDBMP_RHINO                             201
+#define IDBMP_TIGER                             202
+#define IDBMP_ELEPHANT                          203
+#define IDBMP_MOOSE                             204
+#define IDBMP_GOAT                              205
+#define IDBMP_DOG                               206
+#define IDBMP_SEAL                              207
+#define IDBMP_HORSE                             208
+#define IDBMP_KANGURU                           209
+#define IDC_PB_RHINO                            2001
+#define IDC_PB_TIGER                            2002
+#define IDC_PB_ELEPHANT                         2003
+#define IDC_PB_MOOSE                            2004
+#define IDC_PB_GOAT                             2005
+#define IDC_PB_DOG                              2006
+#define IDC_PB_SEAL                             2007
+#define IDC_PB_HORSE                            2008
+#define IDC_EDIT_RHINO                          2021
+#define IDC_EDIT_TIGER                          2022
+#define IDC_EDIT_ELEPHANT                       2023
+#define IDC_EDIT_MOOSE                          2024
+#define IDC_EDIT_GOAT                           2025
+#define IDC_EDIT_DOG                            2026
+#define IDC_EDIT_SEAL                           2027
+#define IDC_EDIT_HORSE                          2028

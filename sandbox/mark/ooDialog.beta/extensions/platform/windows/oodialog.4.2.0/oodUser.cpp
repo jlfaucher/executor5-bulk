@@ -912,41 +912,6 @@ static bool hasCenterFlag(CSTRING opts)
 }
 
 
-/**
- * Gets the attribute name for a dialog control from the dataConnection array
- * for the specified ID.
- *
- *
- * @param c
- * @param pcpbd
- * @param id
- * @param name
- * @param bufLength
- *
- * @return bool
- */
-bool getAttributeName(RexxMethodContext *c, pCPlainBaseDialog pcpbd, int32_t id, char *name, size_t bufLength)
-{
-    if ( id > 0 )
-    {
-        RexxArrayObject dataConnection = (RexxArrayObject)c->SendMessage0(pcpbd->rexxSelf, "DATACONNECTION");
-        if ( dataConnection != NULLOBJECT )
-        {
-            RexxObjectPtr rxName = c->ArrayAt(dataConnection, (size_t)id);
-            if ( rxName!= NULLOBJECT )
-            {
-                CSTRING cName = c->ObjectToStringValue(rxName);
-                if ( strlen(cName) < bufLength )
-                {
-                    strcpy(name, cName);
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
-
 int32_t connectCreatedControl(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr rxID, int32_t id,
                               CSTRING attributeName, oodControl_t ctrl)
 {
@@ -1045,11 +1010,16 @@ int32_t createStaticText(RexxMethodContext *c, RexxObjectPtr rxID, int x, int y,
     // However, this has the potential of breaking old programs because
     // originally no static control was added to the data table.  Now, by adding
     // it, the text will get set to "" if auto detection is on and the attribute
-    // is not set to some text. (Which it will be in old programs.) The only
-    // certain way to know the attribute name is to fetch it from the
-    // dataConnection attribute of dialog, after addAttribute() has executed. On
-    // return, we fetch the newly created attribute name, and set the attribute
-    // to the text of the control.
+    // is not set to some text. (Which it will be in old programs.)  Not only
+    // that, but if the user is using the dialog data stem, the dialog data stem
+    // will set the static text to "".
+    //
+    // We actually need to do several things here, get the attribute name and
+    // set it to the text of static control, check if the dialog data attribute
+    // is being used, and if so set the stem at id (i.e. dlgData.2008) to the
+    // text. This is a case where it is actually eaiser done in Rexx code.  So,
+    // we have an internal use only method, setStaticTextAttribute() of the
+    // UserDialog, and let it do the work.
     //
     // This also makes auto detection work more consistently.
 
@@ -1058,15 +1028,7 @@ int32_t createStaticText(RexxMethodContext *c, RexxObjectPtr rxID, int x, int y,
         result = connectCreatedControl(c, pcpbd, rxID, id, NULL, winStatic);
         if ( result == OOD_NO_ERROR )
         {
-            char name[256];
-
-            if ( ! getAttributeName(c, pcpbd, id, name, 256) )
-            {
-                return -1;
-            }
-
-            strcat(name, "=");
-            c->SendMessage1(pcpbd->rexxSelf, name, c->String(text));
+            c->SendMessage2(pcpbd->rexxSelf, "SETSTATICTEXTATTRIBUTE", c->Int32(id), c->String(text));
         }
     }
     return result;
@@ -1815,6 +1777,29 @@ inline bool needButtonConnect(CSTRING opts, oodControl_t ctrl)
     return false;
 }
 
+/**
+ * Determines if one of the keyword options for loading the dialog template from
+ * a .rc file is contained in the specified string
+ *
+ * @param opts
+ *
+ * @return bool
+ */
+inline bool isRcLoadItemsArg(CSTRING opts)
+{
+    if ( opts != NULL )
+    {
+        if ( StrStrI(opts, "CENTER")         != NULL ||
+             StrStrI(opts, "CONNECTBUTTONS") != NULL ||
+             StrStrI(opts, "CONNECTCHECKS")  != NULL ||
+             StrStrI(opts, "CONNECTRADIOS")  != NULL )
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 /** DynamicDialog::createPushButton()
  *
  */
@@ -1868,7 +1853,7 @@ RexxMethod10(int32_t, dyndlg_createPushButton, RexxObjectPtr, rxID, int, x, int,
     {
         methName = strdup_2methodName(label);
     }
-    else if ( argumentExists(8) )
+    else if ( argumentExists(8) && ! isRcLoadItemsArg(loadOptions) )
     {
         methName = strdup_nospace(msgToRaise);
     }
@@ -2002,7 +1987,7 @@ RexxMethod10(int32_t, dyndlg_createRadioButton, RexxObjectPtr, rxID, int, x, int
             free((void *)methName);
             free((void *)finalName);
         }
-        else
+        else if ( ! isRcLoadItemsArg(loadOptions) )
         {
             result = addCommandMessage(pcpbd->enCSelf, context, id, UINTPTR_MAX, 0, 0, loadOptions, 0) ? 0 : 1;
         }

@@ -55,9 +55,8 @@
 #define OOD_MFS_UNCHECKED 0x80000000
 #define OOD_MFS_UNHILITE  0x40000000
 
-#define TEMPLATE_TOO_SMALL_MSG       "the number of menu items has exceeded the storage allocated for the menu"
-#define CAN_NOT_ATTACH_ON_INIT_MSG   "can not attach menu unless arg 4 'attachTo' is a dialog object"
-#define INVALID_MENU_HANDLE_MSG      "menu handle"
+#define TEMPLATE_TOO_SMALL_MSG        "the number of menu items has exceeded the storage allocated for the menu"
+#define INVALID_MENU_HANDLE_MSG       "menu handle"
 
 
 inline UINT byPositionFlag(logical_t byPosition)
@@ -144,13 +143,15 @@ public:
     }
 
     RexxDirectoryObject autoConnectionStatus();
-    void setAutoConnection(logical_t on, CSTRING methodName);
+    bool setAutoConnection(logical_t on, CSTRING methodName);
     BOOL maybeConnectItem(uint32_t id, CSTRING text, logical_t connect, CSTRING methodName);
     logical_t attachToDlg(RexxObjectPtr dialog);
+    RexxObjectPtr replace(RexxObjectPtr newMenu);
     logical_t assignToDlg(RexxObjectPtr dialog, logical_t autoConnect, CSTRING methodName);
     bool addToConnectionQ(uint32_t id, CSTRING methodName);
     BOOL checkPendingConnections();
     BOOL checkAutoConnect(pCEventNotification pcen);
+    void uninitMenu();
     void releaseConnectionQ();
     BOOL detach(bool skipChecks);
     BOOL destroy();
@@ -199,8 +200,8 @@ protected:
    size_t connectionQSize;
    size_t connectionQIndex;
 
-   CSTRING connectionMethod;
-   bool autoConnect;
+   char *connectionMethod;
+   bool  autoConnect;
 };
 
 inline CppMenu *menuToCSelf(RexxMethodContext *c, RexxObjectPtr self)

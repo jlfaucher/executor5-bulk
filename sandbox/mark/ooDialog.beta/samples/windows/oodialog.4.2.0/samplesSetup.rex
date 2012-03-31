@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,35 +35,39 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/****************************************************************************
 
-ootree.rc
+/**
+ * Contains common set up code for a number of the ooDialog sample programs.
+ *
+ * This file is intended to be used in a ::requires directive by the sample
+ * programs that use this common code.
+ */
+/*------------------------------convenience class---------------------*/
 
-produced by IBM Object REXX Resource Workshop
+::class 'DirectoryManager' public
 
-*****************************************************************************/
+::method init
+  expose originalDirectory
 
-#include <windows.h>
+  -- Save our current directory.
+  originalDirectory = directory()
 
-#define IDD_TREE_DLG    100
-#define IDC_PB_NEW      110
-#define IDC_PB_DELETE   111
-#define IDC_PB_EXP_ALL  112
-#define IDC_PB_COL_ALL  113
-#define IDC_PB_INFO     114
-#define IDC_TREE        120
+  -- Get the full path to this program file.
+  parse source . . pgmFile
 
-IDD_TREE_DLG DIALOG 40, 60, 266, 302
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
-CAPTION "Contents"
-FONT 8, "MS Sans Serif"
-{
- PUSHBUTTON "New", IDC_PB_NEW, 10, 249, 50, 14, WS_GROUP | WS_TABSTOP
- PUSHBUTTON "Delete", IDC_PB_DELETE, 72, 249, 50, 14
- PUSHBUTTON "Cancel", IDCANCEL, 141, 249, 50, 14
- PUSHBUTTON "Help", IDHELP, 203, 249, 50, 14
- PUSHBUTTON "Expand All", IDC_PB_EXP_ALL, 11, 276, 50, 14
- PUSHBUTTON "Collapse All", IDC_PB_COL_ALL, 72, 276, 50, 14
- PUSHBUTTON "Info", IDC_PB_INFO, 141, 276, 50, 14
- CONTROL "Tree", IDC_TREE, "SysTreeView32", TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_EDITLABELS | TVS_SHOWSELALWAYS | WS_CHILD | WS_VISIBLE | WS_BORDER, 4, 8, 253, 231
-}
+  -- Get the directory this program file is located in, and then cd to it.
+  pgmDir = pgmFile~left(pgmFile~lastpos('\') - 1)
+  pgmDir = directory(pgmDir)
+
+  -- Add the wav subdirectory to the sound path environment variable. The wav
+  -- directory is a subdirectory of this program file's location that contains
+  -- the wave files played in this program.
+  env = 'ENVIRONMENT'
+  win = value('WINDIR', , env)
+  sp = value('SOUNDPATH', , env)
+  sp = value('SOUNDPATH', win';'pgmDir'\WAV;' sp, env)
+
+::method goBack
+  expose originalDirectory
+  ret = directory(originalDirectory)
+

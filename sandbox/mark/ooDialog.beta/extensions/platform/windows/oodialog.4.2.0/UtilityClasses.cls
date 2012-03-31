@@ -217,6 +217,10 @@
 ::attribute dragHeight set class external "LIBRARY oodialog spi_setDragHeight_cls"
 ::attribute dragWidth get class external "LIBRARY oodialog spi_getDragWidth_cls"
 ::attribute dragWidth set class external "LIBRARY oodialog spi_setDragWidth_cls"
+::attribute menuAnimation get class external "LIBRARY oodialog spi_getMenuAnimation_cls"
+::attribute menuAnimation set class external "LIBRARY oodialog spi_setMenuAnimation_cls"
+::attribute menuFade get class external "LIBRARY oodialog spi_getMenuFade_cls"
+::attribute menuFade set class external "LIBRARY oodialog spi_setMenuFade_cls"
 ::attribute mouseHoverHeight get class external "LIBRARY oodialog spi_getMouseHoverHeight_cls"
 ::attribute mouseHoverHeight set class external "LIBRARY oodialog spi_getMouseHoverHeight_cls"
 ::attribute mouseHoverTime get class external "LIBRARY oodialog spi_getMouseHoverTime_cls"
@@ -245,6 +249,7 @@
 ::attribute cyFixedFrame get class external  "LIBRARY oodialog sm_cyFixedFrame_cls"
 ::attribute cyHscroll get class external     "LIBRARY oodialog sm_cyHScroll_cls"
 ::attribute cyScreen get class external      "LIBRARY oodialog sm_cyScreen_cls"
+::attribute menuDropAlignment get class external "LIBRARY oodialog sm_menuDropAlignment_cls"
 
 ::class 'OS' public
 ::method is64bit class external "LIBRARY oodialog os_is64bit"
@@ -787,12 +792,7 @@
 -- This class shows a message window for a defined duration
 ::class 'TimedMessage' subclass UserDialog public
 
-::method init
-   expose message title sleeping earlyReply
-   use arg message, title, sleeping, earlyReply = .false
-   if \ earlyReply~datatype('O') then earlyReply = .false
-   if \ sleeping~datatype('W') then sleeping = 0
-   self~init:super("")
+::method init public external "LIBRARY oodialog timedmsg_init"
 
 ::method defineDialog
    expose message sx sy
@@ -802,13 +802,14 @@
    self~noAutoDetection
 
 ::method execute
-   expose message title sleeping earlyReply sx sy
+   expose message title sleeping earlyReply sx sy pos
 
    s = self~getTextSizeDu(message)
    sx = s~width
    sy = s~height
    self~createCenter(sx+20, sy + 20, title,"NOMENU", , , , 1)
    self~startIt
+   if pos \== .nil then self~moveTo(pos)
    self~show("SHOWTOP")
    if sleeping >= 0 then do
       if earlyReply then reply
@@ -1346,10 +1347,10 @@
 /*-------------------------- shortcut routines -------------------------------*/
 
 ::routine TimedMessage public
-   use arg msg, title, duration, earlyReply = .false
+   use arg msg, title, duration, earlyReply = .false, pos = .nil
    if \ duration~datatype('W') then return -1
    if \ earlyReply~datatype('O') then earlyReply = .false
-   dlg = .TimedMessage~new(msg,title,duration, earlyReply)
+   dlg = .TimedMessage~new(msg,title,duration, earlyReply, pos)
    dlg~execute
    if duration < 0 then return dlg
    if \ earlyReply then drop dlg

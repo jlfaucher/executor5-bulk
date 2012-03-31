@@ -1206,6 +1206,62 @@ RexxMethod2(RexxObjectPtr, spi_setDragWidth_cls, uint32_t, pixels, CSELF, pCSelf
 }
 
 
+/** SPI::menuAnimation  [class attribute get]
+ */
+RexxMethod0(logical_t, spi_getMenuAnimation_cls)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    logical_t on = FALSE;
+    if ( ! SystemParametersInfo(SPI_GETMENUANIMATION, 0, &on, 0) )
+    {
+        oodSetSysErrCode(context->threadContext);
+    }
+    return on;
+}
+
+/** SPI::menuAnimation  [class attribute set]
+ */
+RexxMethod2(RexxObjectPtr, spi_setMenuAnimation_cls, logical_t, on, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    if ( ! SystemParametersInfo(SPI_SETMENUANIMATION, (uint32_t)on, NULL, ((pCSpi)pCSelf)->fWinIni) )
+    {
+        oodSetSysErrCode(context->threadContext);
+    }
+    return NULLOBJECT;
+}
+
+
+/** SPI::menuFade  [class attribute get]
+ */
+RexxMethod0(logical_t, spi_getMenuFade_cls)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    logical_t on = FALSE;
+    if ( ! SystemParametersInfo(SPI_GETMENUFADE, 0, &on, 0) )
+    {
+        oodSetSysErrCode(context->threadContext);
+    }
+    return on;
+}
+
+/** SPI::menuFade  [class attribute set]
+ */
+RexxMethod2(RexxObjectPtr, spi_setMenuFade_cls, logical_t, on, CSELF, pCSelf)
+{
+    oodResetSysErrCode(context->threadContext);
+
+    if ( ! SystemParametersInfo(SPI_SETMENUFADE, (uint32_t)on, NULL, ((pCSpi)pCSelf)->fWinIni) )
+    {
+        oodSetSysErrCode(context->threadContext);
+    }
+    return NULLOBJECT;
+}
+
+
 /** SPI::mouseHoverHeight  [class attribute get]
  */
 RexxMethod0(uint32_t, spi_getMouseHoverHeight_cls)
@@ -1460,6 +1516,10 @@ RexxMethod0(int32_t, sm_cyHScroll_cls)
 RexxMethod0(int32_t, sm_cyScreen_cls)
 {
     return GetSystemMetrics(SM_CYSCREEN);
+}
+RexxMethod0(int32_t, sm_menuDropAlignment_cls)
+{
+    return GetSystemMetrics(SM_MENUDROPALIGNMENT);
 }
 
 /**
@@ -2157,4 +2217,38 @@ RexxMethod3(RexxObjectPtr, dss_quickDayStateBuffer, RexxObjectPtr, _ds1, RexxObj
     return makeQuickDayStateBuffer(context, _ds1, _ds2, _ds3, NULL);
 }
 
+
+/**
+ * Methods for the ooDialog .TimedMessage class.
+ */
+#define TIMEDMESSAGE_CLASS  "TimedMessage"
+
+
+RexxMethod7(RexxObjectPtr, timedmsg_init, RexxStringObject, msg, RexxStringObject, title, int32_t, duration,
+            OPTIONAL_logical_t, earlyReply, OPTIONAL_RexxObjectPtr, pos, SUPER, super, OSELF, self)
+{
+    if ( argumentExists(5) )
+    {
+        if ( pos != TheNilObj && ! context->IsOfType(pos, "POINT"))
+        {
+            wrongArgValueException(context->threadContext, 5, "a Point object or the Nil object", pos);
+            return NULLOBJECT;
+        }
+        context->SetObjectVariable("POS", pos);
+    }
+    else
+    {
+        context->SetObjectVariable("POS", TheNilObj);
+    }
+
+    RexxArrayObject args = context->NewArray(0);
+    RexxObjectPtr result = context->ForwardMessage(NULL, NULL, super, args);
+
+    context->SetObjectVariable("MESSAGE", msg);
+    context->SetObjectVariable("TITLE", title);
+    context->SetObjectVariable("SLEEPING", context->Int32(duration));
+    context->SetObjectVariable("EARLYREPLY", context->Logical(earlyReply));
+
+    return TheZeroObj;
+}
 

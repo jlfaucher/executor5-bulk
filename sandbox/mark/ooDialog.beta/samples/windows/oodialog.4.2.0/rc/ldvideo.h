@@ -1,6 +1,5 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
@@ -35,35 +34,23 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/****************************************************************************
 
-ootree.rc
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
 
-produced by IBM Object REXX Resource Workshop
-
-*****************************************************************************/
-
-#include <windows.h>
-
-#define IDD_TREE_DLG    100
-#define IDC_PB_NEW      110
-#define IDC_PB_DELETE   111
-#define IDC_PB_EXP_ALL  112
-#define IDC_PB_COL_ALL  113
-#define IDC_PB_INFO     114
-#define IDC_TREE        120
-
-IDD_TREE_DLG DIALOG 40, 60, 266, 302
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
-CAPTION "Contents"
-FONT 8, "MS Sans Serif"
-{
- PUSHBUTTON "New", IDC_PB_NEW, 10, 249, 50, 14, WS_GROUP | WS_TABSTOP
- PUSHBUTTON "Delete", IDC_PB_DELETE, 72, 249, 50, 14
- PUSHBUTTON "Cancel", IDCANCEL, 141, 249, 50, 14
- PUSHBUTTON "Help", IDHELP, 203, 249, 50, 14
- PUSHBUTTON "Expand All", IDC_PB_EXP_ALL, 11, 276, 50, 14
- PUSHBUTTON "Collapse All", IDC_PB_COL_ALL, 72, 276, 50, 14
- PUSHBUTTON "Info", IDC_PB_INFO, 141, 276, 50, 14
- CONTROL "Tree", IDC_TREE, "SysTreeView32", TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_EDITLABELS | TVS_SHOWSELALWAYS | WS_CHILD | WS_VISIBLE | WS_BORDER, 4, 8, 253, 231
-}
+#define IDD_VIDEO_DLG                           102
+#define IDC_EDIT_TAPE_NO                        1000
+#define IDC_EDIT_TAPE_LABEL                     3002
+#define IDC_EDIT_FILM1                          3003
+#define IDC_EDIT_FILM2                          3004
+#define IDC_EDIT_FILM3                          3005
+#define IDC_EDIT_FILM4                          3006
+#define IDC_CB_LOCATION                         3007
+#define IDC_LB_LENT_TO                          3008
+#define IDC_CK_LONGPLAY                         3009
+#define IDC_CK_HIFI                             3010
+#define IDC_CK_WRITEPROTECT                     3011
+#define IDC_RB_C120                             3012
+#define IDC_RB_C180                             3013
+#define IDC_RB_C240                             3014

@@ -6,6 +6,52 @@ That section is the start of the real release notes for 4.2.0.  Just a stub
 for now, but starting to get filled in.
 
 
+                     switch_ooDialog420_410-4.2.0.7718
+                     =================================
+
+Changes since switch_ooDialog420_410-4.2.0.7603
+----------------------------------------------------------------------------
+
+  Documentation:
+  --------------
+
+  The documentation is almost complete.  Only one chapter is not finished,
+  "Chapter 5.  PropertySheet and Control Dialogs."  Other than that, the
+  reference manual is finished.
+
+
+Samples:
+--------------
+
+  The old oopet.rex example has been updated to use buttons with an image
+  list.  This gives the example a more modern appearance, especially on
+  Windows 7.  The example is renamed to AnimalGame.rex.
+
+  Many of the examples have been refactored to remove common code, which has
+  been placed a a '::required' file, samplesSetup.rex.  More of the examples
+  have been reviewed and updated to better show the features of ooDialog.
+
+
+Bugs:
+----
+  Some bugs and inconsistencies, found internally in the menu classes, were
+  fixed.
+
+
+Enhancements:
+-------------
+
+  When connecting the SIZE event, the programmer can specify that the
+  interpreter wait in the window message progcessing loop for the return
+  from the event handler. This greater improves the behavior of applications
+  that handle the SIZE event.  For an example of this improvement, execute
+  the dlgAreaUDemo.rex example.
+
+
+
+Cumulative Changes:
+===================
+
                      switch_ooDialog420_410-4.2.0.7603
                      =================================
 
@@ -40,9 +86,6 @@ Enhancements:
   (SystemParametersInfo) class.
 
 
-
-Cumulative Changes:
-===================
 
                      switch_ooDialog420_410-4.2.0.7280
                      =================================

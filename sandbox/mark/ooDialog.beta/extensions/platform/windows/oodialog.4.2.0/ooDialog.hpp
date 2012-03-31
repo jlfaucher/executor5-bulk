@@ -190,6 +190,12 @@
 // TRUE and we need some way for the user to change that default.
 #define TAG_REPLYFALSE            0x04000000
 
+// Envoke the event handler directly, which means that the interprete will wait
+// for the event handler to return, but do not enforce that a value is returned
+// from the event handler. This is for backwards compatibility where it is
+// expected that existing programs have event handlers but don't return values.
+#define TAG_SYNC                  0x08000000
+
 // Describes how a message searched for in the message table should be handled.
 typedef enum
 {
@@ -198,6 +204,15 @@ typedef enum
     ReplyTrue            = 2,    // Message matched and handled return TRUE to the system from RexxDlgProc()
     ContinueSearching    = 3     // Continue searching message table before returning to RexxDlgProc()
 } MsgReplyType;
+
+
+// Enum for the type of bitmap used for bitmap buttons
+typedef enum
+{
+    InMemoryBmp    = 1,
+    IntResourceBmp = 2,
+    FromFileBmp    = 3,
+} BitmapButtonBMPType;
 
 
 // Identifies an error, that should never happen, discovered in RexxDlgProc(),
