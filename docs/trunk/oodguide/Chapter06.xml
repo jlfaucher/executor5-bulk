@@ -330,7 +330,7 @@
     by double-clicking an icon in the Order Management window is discussed.
   </para>
 
-<section id="chap06-popups-start"><title>Starting a Popup Dialog</title>  <!-- Section 6.2.2 -->
+<section id="chap06-popups-start"><title>Starting a Popup Dialog</title>  <!-- Section 6.2.1 -->
   <indexterm><primary>Popups</primary><secondary>Parents</secondary></indexterm>
   <indexterm><primary>Parents</primary><secondary>Popups</secondary></indexterm>
   <para>In previous chapters, dialogs have been started using the statement
@@ -357,9 +357,8 @@
         argument for <emphasis role="italic">~popupAsChild(parentDlg)</emphasis> is the parent dialog.</para>
       </listitem>
     </itemizedlist>
-    <!-- if startupcustomerlist, if open a customer, then close list, cust also closes. But if use startup, it doesn't. -->
-          <indexterm><primary>Popups</primary><secondary>PopupAsChild</secondary></indexterm>
-          <indexterm><primary>PopupAsChild</primary></indexterm>
+    <indexterm><primary>Popups</primary><secondary>PopupAsChild</secondary></indexterm>
+    <indexterm><primary>PopupAsChild</primary></indexterm>
   </para>
   <para>
     It is the latter - <emphasis role="italic">~popupAsChild</emphasis> -
@@ -501,38 +500,32 @@
     </para>
   </section>  <!-- End of Section 6.2.2 -->
 
-  <section id="chap06-popups-interpret"><title>Use of Interpret</title>  <!-- Section 6.2.3 -->
+  <section id="chap06-popups-interpret"><title id="interpret.title">Use of Interpret</title>  <!-- Section 6.2.3 -->
     <para>When an icon in the Order Management dialog is double-clicked, a child dialog is surfaced.
-      This is handled by two methods in the <computeroutput>OrderMgrView</computeroutput> class.
-      First, the event-handling method <emphasis>onDoubleClick</emphasis> catches the double-click,
-      works out which icon (or "record" - see <xref linkend="chap06-lviews"/> below) was double-clicked,
-      and then calls the <emphasis role="italic">showModel</emphasis> method.
-      This method uses an
-      <emphasis role="italic">interpret</emphasis> instruction to launch a view of the
-      component represented by chosen icon, as follows:
-      <programlisting>
+          This is handled by two methods in the <computeroutput>OrderMgrView</computeroutput> class.
+          First, the event-handling method <emphasis>onDoubleClick</emphasis> catches the
+          double-click, works out which icon (or "record" - see <xref linkend="chap06-lviews"/>
+          below) was double-clicked, and then calls the <emphasis role="italic">showModel</emphasis>
+          method. This method uses an <emphasis role="italic">interpret</emphasis> instruction to
+          launch a view of the component represented by chosen icon, as follows: <programlisting>
       <![CDATA[
         use arg record
         className = record~ID
         viewClassName = className||"View"
         interpret "."||viewClassName||"~newInstance(self)"
       ]]>
-      </programlisting>
-      Thus in principle icons for additional components can be added
-      without changing the code. An arguably better approach could have been to hold the
-      class object in the record, and to invoke
-      <emphasis role="italic">newInstance</emphasis> directly on the class object.
-      However, in the next exercise, the mechanics of invoking the various components will be moved
-      to a support class called <computeroutput>ObjectMgr</computeroutput>, where use of
-      <emphasis>interpret</emphasis> will not be optional.
-    </para>
-    <para>
-      Finally, a separate file - <computeroutput>RequiresList.rex</computeroutput> - is used
-      to contains the set of <emphasis role="italic">::requires</emphasis> statements corresponding
-      to the components that might be surfaced. This is why the first executable statement in
-      the file <computeroutput>OrderMgrView.rex</computeroutput> is
-      <emphasis role="italic">call "OrderMgr\RequiresList.rex"</emphasis>.
-    </para>
+      </programlisting>Thus in principle icons for additional components can be added
+          without changing the code. An arguably better approach could have been to hold the class
+          object in the record, and to invoke <emphasis role="italic">newInstance</emphasis>
+          directly on the class object. However, in the next exercise, the mechanics of invoking the
+          various components will be moved to a support class called
+            <computeroutput>ObjectMgr</computeroutput> which will require use of the
+            <emphasis>interpret</emphasis> instruction. </para>
+    <para>Finally, a separate file - <computeroutput>RequiresList.rex</computeroutput> - is used to
+          contains the set of <emphasis role="italic">::requires</emphasis> statements corresponding
+          to the components that might be surfaced. This is why the first executable statement in
+          the file <computeroutput>OrderMgrView.rex</computeroutput> is <emphasis role="italic">call
+            "OrderMgr\RequiresList.rex"</emphasis>. </para>
   </section>  <!-- End of Section 6.2.3 -->
 
 </section>  <!-- End of Section 6.2 -->
@@ -571,7 +564,6 @@
 
   <section id="chap06-lviews-icon"><title>The Icon View</title>  <!-- Section 6.3.1 -->
     <!--
-
       6.3.1    The Icon View
       - List Views - normal icon view - a "workplace" for Order Management..
       - Auto-resizing when window sized by user
@@ -650,7 +642,7 @@
     </listitem>
 
     <listitem>  <!-- 4 -->
-    <para><emphasis role="bold"></emphasis>Create Records</para>
+      <para><emphasis role="bold"><emphasis role="italic">Create Records</emphasis></emphasis></para>
     <para>Records are typically created in the <emphasis role="italic">init</emphasis> method (or in a method
       invoked from there). In <computeroutput>OrderMgrView</computeroutput> the records are created in the
       <emphasis role="italic">initRecords</emphasis>) method which is invoked from
@@ -893,14 +885,8 @@
 </section>  <!-- End of section 6.4 -->
 
 <section id="chap06-icons"><title id="icons.title">Creating Icons</title>  <!-- Section 6.5 -->
-  <!--
-    6.5    Creating and Using Icons
-    - Icons - making them, getting 'em into the program. -
-    (3) In the ~execute statement, I need to provide an ID. Does this mean I must have a *.rc file?
-    Or can I invent an ID programmatically somehow - perhaps along the same lines as creating an ImageList?
-    (4) I want to assign my own icon as the dialog icon (that is, the icon at the extreme top left of a dialog).
-    This is done (I understand) in the ~execute(..., <icon_ID> ) method (ooDialog Reference section 3.10.3).
-  -->
+  <para>This section discusses first the creation of icons and bitmaps, and secondly how the icons in the
+  Order Management dialog are loaded into its icon-style List view.</para>
   <para>Various questions arise when creating icons for the first time - especially since the
     whole area of images in Windows is not, on first glance, simple.
     This section lists some of the main points about creating icons.</para>
@@ -927,27 +913,19 @@
   <para>Finally, the "icons" in the Order Management dialog are bitmaps of size 64x64. These are not shrunk;
     a smaller icon will look smaller. These bitmaps are loaded into the ListView programmatically.
     (As mentioned above, the ListView control is created in the <computeroutput>OrderMgrBaseView</computeroutput>
-    class and is stored as an attribute of that class; its name is <emphasis role="italic">lv</emphasis>.
-    The cod that loads the bitmaps into the ListView is as follows.
+    class and is stored as an attribute of that class; its name is <emphasis role="italic">lv</emphasis>.)
+    The code that loads the bitmaps into the ListView is as follows (with repetitive statements removed):
     <programlisting>
     <![CDATA[
   ::METHOD createIconList PRIVATE
-    -- called from init.
     expose iconList
+    imgCustList  = .Image~getImage("customer\bmp\CustList.bmp")
     ...
-    imgProdList  = .Image~getImage("product\res\ProdList.bmp")
-    ...
-
     iconList = .ImageList~create(.Size~new(64, 64), .Image~toID(ILC_COLOR4), 4, 0)
-
-    iconList~add(imgCustList)   -- item 0 in iconList (item 1 in records)
-    iconList~add(imgProdList)   -- item 1 in iconList (item 2 in records)
-    iconList~add(imgOrderList)  -- item 2 in iconList (item 3 in records)
-    iconList~add(imgOrderForm)  -- item 3 in iconList (item 4 in records)
+    iconList~add(imgCustList)
+    ...
     imgCustList~release
-    imgProdList~release
-    imgOrderList~release
-    imgOrderForm~release
+    ...
     return
 
   ::METHOD initRecords PRIVATE
@@ -962,25 +940,72 @@
     ...
     return records
 
-
   ::METHOD initDialog
     expose records iconList
     self~initDialog:super
-    -- Add the Image List to the ListView:
     self~lv~setImageList(iconList, .Image~toID(LVSIL_NORMAL))
-    -- Add icons (i.e. records) to the ListView:
     do i=1 to records~items
       self~lv~addRow(, i-1, records[i]~name)
     end
     ]]>
     </programlisting>
-    First, each bitmap is loaded
-    from disk into an instance of the <computeroutput>.Image</computeroutput> class using the
-    <emphasis role="italic">getImage</emphasis> method. . Then an instance of the
-    <computeroutput>ImageList</computeroutput> class is created, with the . each instance is Imagethe icon data is loaded
-    into an ImageList, 'iconList' which is an 'ImageList' as
-    -- required by the ListView control.
+    The icon view requires icons to be loaded from an "image list" - that is, an instance
+    of the <computeroutput>ImageList</computeroutput> class. It is the function of the
+    <emphasis role="italic">createIconList</emphasis> method (invoked
+    from <emphasis role="italic">init</emphasis>) to produce such an image list.
+    To build the image list - called <emphasis role="italic">iconList</emphasis> in the above -
+    each bitmap is first loaded from disk into an instance of the <computeroutput>.Image</computeroutput>
+    class using the <emphasis role="italic">getImage</emphasis> method. Then the statement
+    <emphasis role="italic">iconList=.ImageList~create(...)</emphasis> creates an empty image list,
+    into which each of the four images is loaded using the <emphasis role="italic">add </emphasis> method.
+    Finally, each separate image is released. By the end of this method, an image list has been created,
+    but has not yet been loaded into the list view.
   </para>
+  <para>
+    As with the "Record View" used for the Customer List component, items in an "Icon View" are loaded as "records".
+    In this case, each record consists of an icon and a text label for that icon.
+    The <emphasis role="italic">initRecords</emphasis> method does just that - sets up the records in an array
+    called <emphasis role="italic">records</emphasis>. The record id is used to hold the class name
+    (e.g. "ProductList") of the component to be launched when the user double-clicks an icon.
+  </para>
+  <para>Finally, in the <emphasis role="italic">initDialog</emphasis> method, the image list
+    (<emphasis role="italic">lv</emphasis>) is first set into (added to) the list view, follwoing which
+    the records are added. It is a user responsibility to make sure the sequence of icons in the icon list
+    matches the sequence of text data in the records array.
+  </para>
+  <para>To complete the behavior of the Order Management component, there remains the task,
+    when the user double-clicks on an icon, of surfacing the required component. This is done by the following
+    code in <computeroutput>OrderMgrView</computeroutput>:
+  <programlisting>
+    <![CDATA[
+    ::METHOD onDoubleClick UNGUARDED
+      expose records
+      index = self~lv~focused		-- lv is an attribute of the superclass.
+      record = records[index+1]
+      self~showModel(record)
+
+    ::METHOD showModel UNGUARDED
+      use arg record
+      className = record~ID
+      viewClassName = className||"View"
+      interpret "."||viewClassName||"~newInstance(self)"
+      say "OrderMgrView-showModel-02:"
+  ]]>
+  </programlisting>
+    The <emphasis role="italic">onDoubleClick</emphasis> is the event handler method defined for the list view, and
+    is defined in the <computeroutput>OrderMgrBaseView</computeroutput> superclass. The first statement (after
+    <emphasis role="italic">expose records</emphasis>) finds which icon has focus - that is, which was double-clicked.
+    The second retrieves the corresponding record, and then <emphasis>showModel</emphasis> is invoked with the appropriate
+    record. In <emphasis>showModel</emphasis> an appropriate view is created and surfaced using the
+    <emphasis role="italic">interpet</emphasis> instruction in much the same way that CustomerList did for individual
+    Customer views (see <link linkend="chap06-popups-interpret" endterm="interpret.title"></link>).
+  </para>
+  <para>It remains only to mention that the above code will allow as many lists to be created and surfaced as
+  the user wishes. This may or may not be what's required. In the next exercise, only a single list for
+  each of Customers, Products and Orders will be allowed. When the user double-clicks on an icon, the
+  appropriate list will be "surfaced" in the proper sense of the word - that is, created and shown as the
+  top-level dialog, or, if already created, will have focus put on it so that, if hidden under other
+  dialogs, will pop to the "surface" - that is, become the topmost window on the screen.</para>
 </section>  <!-- End of section 6.5 -->
 
 <section id="chap06-utildlgs"><title id="utildlgs.title">Utility Dialogs</title>   <!-- Section 6.6 -->
