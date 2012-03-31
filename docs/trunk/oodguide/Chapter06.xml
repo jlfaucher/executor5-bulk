@@ -113,7 +113,7 @@
         </listitem>
       </itemizedlist>
       Test of xref only: 1: blah <xref linkend="chapFour"/> blah. 2: blah <xref linkend="chapFour">
-      blah. 3: blah <xref linkend="chapFour"></xref> blah.
+      blah. 3: blah <xref linkend="chapFour"> blah.
     </para>
 
 <section id="chap06-struc"><title id="progstruc.title">Program Structure</title>  <!-- Section 6.1 -->
@@ -436,10 +436,10 @@
     (with an error check in case <emphasis role="italic">~getItemInfo</emphasis> returns
     <computeroutput>.false</computeroutput>). The next statements (<emphasis role="italic">.local~my...</emphasis>)
     create instances of the <computeroutput>CustomerModel</computeroutput> and <computeroutput>CustomerData</computeroutput>
-    classes that are required by <computeroutput>CustomerView</computeroutput> (see <xref linkend="chap03-cplg"/>.
-    Then an instance of <computeroutput>CustomerView</computeroutput> is created by the statement
-    <emphasis role="italic">.CustomerView~newInstance(rootDlg,"CU003")</emphasis>. Finally, the "Show Customer"
-    pushbutton is disabled.
+    classes that are required by <computeroutput>CustomerView</computeroutput> (see <link linkend="chap03-cplg">Reducing
+    Coupling</link>. Then an instance of <computeroutput>CustomerView</computeroutput> is created by the
+    statement <emphasis role="italic">.CustomerView~newInstance(rootDlg,"CU003")</emphasis>. Finally, the "Show
+    Customer" pushbutton is disabled.
   </para>
   <para>
     The approach to establishing the model and data objects shown here is not ideal. Indeed, the above code
@@ -489,7 +489,7 @@
     <!--
       Starting a dialog from a dialog (incl interpret statement - pointer to later)
       Use of "interpret", better would be to have a class object - but later we'll need interpret (won't we?) for the ObjectMgr.
-      Leave "interpret" in but mention it - say class object would be better - show how can be fixed in later exercise – where
+      Leave "interpret" in but mention it - say class object would be better - show how can be fixed in later exercise - where
       this will be moved to a support class (ObjectMgr).
     -->
     <para>
