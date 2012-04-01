@@ -301,3 +301,22 @@ return testResult
     self~assertSame(.false, arg(3, 'o'))
     return
 
+::method "test_external_calls"
+    call ARG_TEST.rex
+    self~assertSame(result, 0)
+
+    call ARG_TEST.rex "one"
+    self~assertSame(result, 1)
+
+    call ARG_TEST.rex "one" "two"
+    self~assertSame(result, 1)
+
+    'rexx -e "return arg()"'
+    self~assertSame(RC, 0)
+
+    'rexx -e "return arg()" "one"'
+    self~assertSame(RC, 1)
+
+    'rexx -e "return arg()" "one" "two"'
+    self~assertSame(RC, 1)
+
