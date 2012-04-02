@@ -302,13 +302,13 @@ return testResult
     return
 
 ::method "test_external_calls"
-    call ARG_TEST.rex
+    call "ARG_TEST.rex"
     self~assertSame(result, 0)
 
-    call ARG_TEST.rex "one"
+    call "ARG_TEST.rex" "one"
     self~assertSame(result, 1)
 
-    call ARG_TEST.rex "one" "two"
+    call "ARG_TEST.rex" "one" "two"
     self~assertSame(result, 1)
 
     'rexx -e "return arg()"'
