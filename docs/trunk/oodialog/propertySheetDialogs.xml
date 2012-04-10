@@ -53,8 +53,8 @@
 <para>
   Windows has a style for dialogs that allows the dialog to work well as a dialog within a top-level dialog. The
   ooDialog framework has support for this type of dialog and calls them <emphasis role="italic">control</emphasis>
-  dialogs because they function like a control within the top-level dialog. These dialogs work well as the content for
-  tab control pages. The implementation for control dialogs is primarily through the <link
+  dialogs because they function like a dialog control within the top-level dialog. These dialogs work well as the
+  content for tab control pages. The implementation for control dialogs is primarily through the <link
   linkend="clsControlDialog">ControlDialog</link> mixin class and the subclasses that inherit the
   <computeroutput>ContolDialog</computeroutput> class.
 </para>
@@ -64,7 +64,22 @@
 <indexterm><primary>Control Dialogs</primary></indexterm>
 <para>
   Windows supports a style for dialogs that allow the dialog to work well as a dialog within a top-level dialog. In
-  essence a dialog with this style functions as a dialog control within the top-level dialog.
+  essence a dialog with this style functions as a dialog control within the top-level dialog. Much of the behaviour and
+  appearance and of these dialogs is controlled automatically by the operating system. The Windows programmer does not
+  need to do much other than assign the proper style to the dialog. The ooDialog framework assigns the correct style to
+  the control dialog and does not allow the Rexx programmer to change that.
+</para>
+<para>
+  The <computeroutput>ControlDialog</computeroutput> class is a mixin class that signals to the ooDialog framework that
+  the <link linkend="ovvUnderlying">underlying</link> Windows dialog is to have the control dialog style. To use a
+  control dialog in an ooDialog program, the programmer simply subclasses one of the 3 provided dialog classes that
+  inherit the <computeroutput>ControlDialog</computeroutput> mixin class. These are the <link
+  linkend="clsRcControlDialog">RcControlDialog</link>, the <link linkend="clsResControlDialog">ResControlDialog</link>
+  and the <link linkend="clsUserControlDialog">UserControlDialog</link>. The 3 classes allow the programmer to base the
+  dialog subclass on any one of the 3 basic ooDialog dialogs, a dialog based on a resource <link
+  linkend="defResourceScript">script</link> file, dialog based on a binary compiled resource file, or a dialog where the
+  programmer manually defines the dialog template in the program code. Because of this a control dialog is programmed in
+  the same basic way as any other ooDialog dialog.
 </para>
 
 <section id="clsControlDialog"><title>ControlDialog Class</title>
@@ -73,6 +88,132 @@
 <para>
   xxx
 </para>
+
+<section id="mthEndExecution"><title>endExecution</title>
+<indexterm><primary>endExecution</primary></indexterm>
+<indexterm><primary>ControlDialog class</primary><secondary>endExecution</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--endExecution(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ControlDialog::endExecution() -->
+
+<section id="mthExecute"><title>execute</title>
+<indexterm><primary>execute</primary></indexterm>
+<indexterm><primary>ControlDialog class</primary><secondary>execute</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--execute(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ControlDialog::execute() -->
 
 <section id="mthInitUpdateListView"><title>initUpdateListView</title>
 <indexterm><primary>initUpdateListView</primary></indexterm>
@@ -136,6 +277,69 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ControlDialog::initUpdateListView() -->
+
+<section id="mthWasActivated"><title>wasActivated</title>
+<indexterm><primary>wasActivated</primary></indexterm>
+<indexterm><primary>ControlDialog class</primary><secondary>wasActivated</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--wasActivated(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ControlDialog::wasActivated() -->
 
 </section>
 
