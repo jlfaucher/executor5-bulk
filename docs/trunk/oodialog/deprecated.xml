@@ -60,7 +60,7 @@
 </para>
 <para>
   There are a number of reasons why classes or methods have been deprecated. Many methods, probably the majority have
-  been deprectated due to the effort to <link linkend="termMethodNameUnification">unify</link> the naming of methods.
+  been deprecated due to the effort to <link linkend="termMethodNameUnification">unify</link> the naming of methods.
   The deprecated classes are primarily classes that overcomplicated the programming task, for no good reason. There
   should be no need to inherit the <emphasis role="italic">AdvancedControls</emphasis> mixin class in order to use some
   controls in a dialog, but not have to inherit the class for other controls. Some few methods are deprecated because
@@ -72,7 +72,7 @@
   migrate existing code away from deprecated classes and methods. Deprecated methods usually forward to their
   replacement methods. Programmers can eliminate this level of redirection by removing the deprecated methods.
   Deprecated methods and classes are <emphasis role="italic">not</emphasis> documented in the ooDialog reference,
-  except as listed in this section. If the programmer needs to look up the documentation for a deprected class or
+  except as listed in this section. If the programmer needs to look up the documentation for a deprecated class or
   method, he should simply replace that class or method in his code.
 </para>
 
@@ -92,7 +92,7 @@
   controls. I.e., the programmer no longer needs to inherit a special class to use some of the dialog controls. All the
   methods of the AdvancedControls have been moved into the appropriate dialog class. Therefore the programmer does not
   need to do anything to use any dialog control in any dialog. In new code simply omit inheriting AdvancedControls. In
-  old code, <emphasis role="italic">inherit AdvancedContorls</emphasis> can be deleted from any dialog class declaration
+  old code, <emphasis role="italic">inherit AdvancedControls</emphasis> can be deleted from any dialog class declaration
   and the program will behave the same.
 </para>
 </section>
@@ -595,7 +595,7 @@
   This method is <link linkend="apxDeprecated">deprecated</link>. It does nothing except sit in a loop burning up CPU.
 </para>
 <para>
-  Although this method was documented previously, it is the author's opion that it was intended for internal use only.
+  Although this method was documented previously, it is the author's opinion that it was intended for internal use only.
   Unfortunately, earlier versions of ooDialog documented a number of internal use only methods, which was a mistake.
   Internal use only methods should not be documented.
 </para>
@@ -1051,7 +1051,7 @@
 <section><title>connectButton</title>
 <para>
   This method is <link linkend="apxDeprecated">deprecated</link>. Replace this method using the <link
-  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method in this maner:
+  linkend="mthConnectButtonEvent">connectButtonEvent</link>() method in this manner:
 <programlisting>
 <![CDATA[
   -- Change the following code:
@@ -1235,9 +1235,9 @@
 </para>
 <para>
   The reason for this is simple, the external functions have been removed. Prior to 4.0.0, ooDialog was
-  implemented using the original external naitve API. This API was useful, but somewhat limiting.
-  Particularly when used with the object-orientated paradigm. ooRexx 4.0.0 introduces a new native API
-  that is much more robust and flexible. Using this new API makes writing exernal packages like ooDialog
+  implemented using the original external native API. This API was useful, but somewhat limiting.
+  Particularly when used with the object-oriented paradigm. ooRexx 4.0.0 introduces a new native API
+  that is much more robust and flexible. Using this new API makes writing external packages like ooDialog
   much easier.
 </para>
 <para>
@@ -1317,7 +1317,7 @@
 
 <section><title>sleepMS</title>
 <para>
-  This fucntion is <link linkend="apxDeprecated">deprecated</link>. Use the public routine <link
+  This function is <link linkend="apxDeprecated">deprecated</link>. Use the public routine <link
   linkend="rtnMSSleep">msSleep</link>.
 </para>
 </section>
@@ -1705,7 +1705,7 @@
   The <link linkend="clsWindowBase">WindowBase</link> class is inherited by both the dialog <link
   linkend="chpDialogObject">object</link> and the dialog control <link linkend="chpDialogControlObject">object</link>.
   Therefore, depending on the point of view of the reader, these deprecated methods may be thought of as either
-  deprecated dialog mehods or deprecated dialog control methods.
+  deprecated dialog methods or deprecated dialog control methods.
 </para>
 <para>
   The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
@@ -1717,7 +1717,7 @@
   This method is deprecated and always returns 0, <emphasis role="italic">the assignment failed</emphasis>. To work with
   a dialog or dialog control object, construct the proper ooDialog object. This ensures that the object has the correct
   methods. To control a window not owned by your program use the <emphasis role="italic">find</emphasis>() method of the
-  <emphasis role="italic">WindowsManger</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
+  <emphasis role="italic">WindowsManager</emphasis> class. The <emphasis role="italic">WindowsManager</emphasis>is part
   of the <emphasis role="italic">WinSystm.cls</emphasis> package. In certain cases it may be desirable to invoke a
   method common to all windows when only the window <link linkend="defHandle">handle</link> is known.  For these cases
   use a <link linkend="clsWindow">Window</link> object.
@@ -1741,7 +1741,7 @@
   The <link linkend="clsWindowExtensions">WindowExtensions</link> class is inherited by both the dialog <link
   linkend="chpDialogObject">object</link> and the dialog control <link linkend="chpDialogControlObject">object</link>.
   Therefore, depending on the point of view of the reader, these deprecated methods may be thought of as either
-  deprecated dialog mehods or deprecated dialog control methods.
+  deprecated dialog methods or deprecated dialog control methods.
 </para>
 <para>
   The following lists the <link linkend="apxDeprecated">deprecated</link> methods of the <emphasis
