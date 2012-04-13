@@ -6,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                                         */
+/* http://www.oorexx.org/license.html                          */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -35,33 +35,48 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/****************************************************************************
 
-persdata.rc
+/**
+ * Name: textScroll.rex
+ * Type: Open Object REXX Script
+ *
+ * Description:  Scrolling text example.
+ */
 
-produced by VisualAge Resource Workshop
+signal on any name CleanUp
 
-*****************************************************************************/
+dlg = .MyDialogClass~new("textScroll.rc", 100)
+if dlg~initCode <> 0 then return 99
+dlg~execute("SHOWTOP")
 
-#define DIALOG_1	1
+return 0
 
-100 DIALOG 6, 15, 242, 130
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Employees"
-FONT 8, "System"
-{
- CONTROL "Name", 21, "EDIT", WS_BORDER | WS_TABSTOP, 50, 11, 177, 12
- CONTROL "City", 22, "COMBOBOX", CBS_DROPDOWNLIST | WS_TABSTOP, 50, 30, 174, 55
- CONTROL "Profession", 23, "LISTBOX", LBS_STANDARD, 73, 52, 156, 50
- AUTORADIOBUTTON "&Male", 31, 12, 71, 28, 12
- AUTOCHECKBOX "M&arried", 41, 12, 99, 37, 12
- DEFPUSHBUTTON "OK", IDOK, 76, 111, 50, 14
- PUSHBUTTON "Cancel", IDCANCEL, 132, 111, 50, 14
- PUSHBUTTON "Help", IDHELP, 187, 111, 50, 14
- LTEXT "Person:", -1, 10, 12, 34, 8
- LTEXT "City:", -1, 10, 32, 34, 8
- LTEXT "Profession:", -1, 10, 53, 42, 8
- CONTROL "", -1, "static", SS_BLACKFRAME | WS_CHILD | WS_VISIBLE, 9, 68, 47, 45
- AUTORADIOBUTTON "&Female", 32, 12, 84, 39, 12
-}
+
+::requires "ooDialog.cls"
+
+::class 'MyDialogClass' subclass RcDialog
+
+::method init
+
+    forward class (super) continue
+    if self~initCode <> 0 then return self~initCode
+
+    self~data13 = "Arial"
+    self~text = "This is a goofy scrolling text demonstration"
+    self~data14 = 24
+    self~connectButtonEvent(11, "CLICKED", "Display")
+
+    return self~initCode
+
+
+::method initDialog
+
+   -- Set the background color of the button to the backgroud color of a button.
+   COLOR_BTNFACE = 15
+   self~setControlSysColor(10, COLOR_BTNFACE)
+
+
+::method display
+    self~getData
+    self~scrollInControl(10, self~text, self~data13, self~data14, "BOLD")
 

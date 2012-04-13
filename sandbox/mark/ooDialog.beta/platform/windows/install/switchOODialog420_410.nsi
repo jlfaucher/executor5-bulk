@@ -842,6 +842,15 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\rc\oopet.rc
     Delete $INSTDIR\samples\oodialog\rc\propdemo.rc
     Delete $INSTDIR\samples\oodialog\rc\ticket.rc
+    Delete $INSTDIR\samples\oodialog\res\oopet.dll
+    Delete $INSTDIR\samples\oodialog\tutorial\em_categ.rc
+    Delete $INSTDIR\samples\oodialog\tutorial\em_categ.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\emp_mend.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\emp_menu.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\empvalid.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\persdata.rc
+    Delete $INSTDIR\samples\oodialog\tutorial\textscrl.rc
+    Delete $INSTDIR\samples\oodialog\tutorial: textscrl.rex
   ${Else}
     DetailPrint "Removing files not present in ooDialog 4.1.0"
     DetailPrint ""
@@ -899,14 +908,29 @@ Function RemoveFiles
     Delete $INSTDIR\samples\oodialog\rc\TabOwnerDemo.rc
     Delete $INSTDIR\samples\oodialog\rc\ticketWizard.h
     Delete $INSTDIR\samples\oodialog\rc\ticketWizard.rc
+    Delete $INSTDIR\samples\oodialog\res\AnimalGame.dll
+    Delete $INSTDIR\samples\oodialog\res\PropertySheetDemo.dll
+    Delete $INSTDIR\samples\oodialog\res\TabOwnerDemo.dll
     Delete $INSTDIR\samples\oodialog\samplesSetup.rex
     RMDir /r $INSTDIR\samples\oodialog\simple
     Delete $INSTDIR\samples\oodialog\sysinfo\sysInfo.h
     Delete $INSTDIR\samples\oodialog\TabDemo.rex
     Delete $INSTDIR\samples\oodialog\TabOwnerDemo.rex
     Delete $INSTDIR\samples\oodialog\ticketWizard.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\employe4validate.rex
     Delete $INSTDIR\samples\oodialog\tutorial\employe7.h
+    Delete $INSTDIR\samples\oodialog\tutorial\employe9menuDyn.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\employee10menuRc.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\employee11tab.db
+    Delete $INSTDIR\samples\oodialog\tutorial\employee11tab.h
+    Delete $INSTDIR\samples\oodialog\tutorial\employee11tab.rc
+    Delete $INSTDIR\samples\oodialog\tutorial\employee11tab.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\textScroll.rc
+    Delete $INSTDIR\samples\oodialog\tutorial\textScroll.rex
     RMDir /r $INSTDIR\samples\oodialog\userGuide
+    Delete $INSTDIR\samples\oodialog\UserTabDemo.h
+    Delete $INSTDIR\samples\oodialog\UserTabDemo.rc
+    Delete $INSTDIR\samples\oodialog\UserTabDemo.rex
   ${Endif}
 
   DetailPrint ""

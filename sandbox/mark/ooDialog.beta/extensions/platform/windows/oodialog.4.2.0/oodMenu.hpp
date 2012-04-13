@@ -145,7 +145,7 @@ public:
     RexxDirectoryObject autoConnectionStatus();
     bool setAutoConnection(logical_t on, CSTRING methodName);
     BOOL maybeConnectItem(uint32_t id, CSTRING text, logical_t connect, CSTRING methodName);
-    logical_t attachToDlg(RexxObjectPtr dialog);
+    logical_t attachToDlg(RexxObjectPtr dialog, uint32_t countRows);
     RexxObjectPtr replace(RexxObjectPtr newMenu);
     logical_t assignToDlg(RexxObjectPtr dialog, logical_t autoConnect, CSTRING methodName);
     bool addToConnectionQ(uint32_t id, CSTRING methodName);
@@ -188,7 +188,7 @@ protected:
    RexxObjectPtr dlg;
    HWND dlgHwnd;
 
-   HANDLE hTemplateMemory;        // Handle to allocated template memory. ("MEMHANDLE")
+   DWORD *hTemplateMemory;        // Handle to allocated template memory. ("MEMHANDLE")
    DWORD *pTemplate;              // Pointer to aligned, start of template. ("BASEPTR")
    DWORD *pCurrentTemplatePos;    // Pointer template offset for next item addition.  ("CURRENTPTR")
    byte  *endOfTemplate;          // Last allocated byte of template memory
