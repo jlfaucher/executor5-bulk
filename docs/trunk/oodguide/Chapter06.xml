@@ -38,7 +38,7 @@
     #########################################################################
 -->
 
-<!-- Chapter06 - List Views, Re-Sizing, and PopUps 		  v00-06 31Mar12
+<!-- Chapter06 - List Views, Re-Sizing, and PopUps 		  v00-07 15Apr12
 
     Changes:
      v00-01 25Aug11: First version
@@ -47,6 +47,7 @@
      v00-04 ??Feb12
      v00-05 31Mar12: Almost completed.
      v00-06 31Mar12: Corrected to chapter 6.2.2 title (title link  missing)
+     v00-07 15Apr12: Corrections (minor) after reading PDF version.
 
     6     "An Application Workplace"      chapSix
     6.1     Program Structure             chap06-struc
@@ -67,20 +68,18 @@
     6.5     Creating and Using Icons      chap06-icons
     6.6     Utility Dialogs               chap06-utildlgs
 
-    Questions:
-    - - - - - -
-    1. Is OrderMgr vs OrderMgrBaseView handled properly?
-    2. Show an example of ReportView with small icons in Ex 7. Have say 3 different ones in a single bitmap.
--->
-<!--  is the following useful??
-  - the OrderManagerView
-  We demonstrate/discuss:
-  - programmatic layout (can only use userDialog)
-  - modal sub-window
-  - Handling icons and showing them.
-  - Icons that when dbl-clicked startup other views
-  - Most menu items on OrderMgmgt dialog not implemented.
-  - e.g. no function for "New Order"
+    To Do:
+    1. 07Apr12 - Change "main class" to "distributed component" passim.
+       It's this component that communicates through method invocation with other
+       DCs. BC is made up from DCs. DCs made up from classes. One of these classes
+       (the main class ) will implement the business core of the DC. A DC instance
+       is sometimes referred to as an "object" where the meaning is clear.
+       (Finalise terminology here - may need to mention BC System.) Dweal also with nameing for
+       BC such as Customer that contains two BCs - Cust & CustList - e.g. extend meaning of BC.
+       (Thought - from icon in OrderMgmt right-click to get popup menu/list that enables either
+       custlist or a cust find dialog to pop up. The icon belongs in the Customer BC, as does
+       the popup.)
+
 -->
 
 <chapter id="chapSix"><title>An Application Workplace</title>
@@ -94,7 +93,7 @@
       consists mainly of a List View containing four icons. Move the icons around; double-click them
       and if a Customer, Product, or Order List appears then double-click a list item; re-size the
       Order Management window; check out the menu items and the pushbuttons. As you see, while much
-      of the application function is absent, and the data is hard-coded, and there is some
+      of the application function is absent, the data is hard-coded, and there is some
       redundancy (e.g. every time you double-click on an item in a list view a new Model and Data
       object is created), the essential parts of the Order Management application mentioned in
       <xref linkend="chapFour"/> are visible. This chapter addresses the following topics in the context
@@ -128,7 +127,7 @@
     to the same components introduced in Exercises 4 and 5.
     Placing each business component into a separate folder
     helps promote high cohesion and low coupling in the software,
-    since the internals of each business component are opaque to other business components.
+    since the internals of each business component should be opaque to other business components.
     Thus another application (e.g. Customer Relationship
     Management) might be able to make use of the Customer business component without change.
     The Order Management business component is unlikely to be re-used in other applications as it is
@@ -137,19 +136,21 @@
     required - creating an Order Form (used to assemble the customer order), searching for and selecting a
     specific Customer, searching for and selecting one or more Products, recording the quantities ordered,
     and producing a Sales Order that is the "contract" between supplier and customer. Of course, the OrderManagement
-    component could be used by "higher-level" components such as business processes or workflows. In systems
+    component could be used by "higher-level" components such as business processes or workflows (for example
+    a fulfilment process). In systems
     organized according to these principles, invocation of components takes the form of a directed acyclic graph.
   </para>
   <para>
-    Within each business component are one or more component groups and components. For example, the Customer
-    business component contains two component groups: CustomerList and Customer. In turn,
-    each of these consists of one View component and one Model component. Both model components
-    share a single Data component. The Customer and Product
-    component groups are essentially identical to those introduced in Exercises 4 and 5 respectively.
+    Within each business component are one or more component groups and components (main clases).
+    For example, the Customer
+    business component contains two components: CustomerList and Customer. In turn,
+    each of these consists of one View main class and one Model main class. Both model main classes
+    share a single Data main class. The Customer and Product
+    components are essentially identical to those introduced in Exercises 4 and 5 respectively.
   </para>
-  <para>The Order Management business component is, in this Exercise, implemented by a view class
-    only. In fact, there are two view classes, each in its own .rex file:
-    <computeroutput>OrderMgmtBaseView</computeroutput> and its subclass <computeroutput>OrderMgmtView</computeroutput>.
+  <para>The Order Management business component is, in this Exercise, implemented by a view main class
+    only. In fact, there are two classes in the main class, each in its own .rex file:
+    <computeroutput>OrderMgmtView</computeroutput> and its superclass <computeroutput>OrderMgmtBaseView</computeroutput>.
     <computeroutput>OrderMgmtBaseView</computeroutput> contains the code for handling a
     re-sizable dialog, and is a subclass of <computeroutput>UserDialog</computeroutput> which
     is required for any dialog that is dynamically re-sizable (see <xref linkend="chap06-resize"/>).
