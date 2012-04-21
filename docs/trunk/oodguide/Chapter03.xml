@@ -38,47 +38,81 @@
     #########################################################################
 -->
 
-<!-- Chapter03 - Re-Structuring the Code			  v00-05 02Apr12
+<!-- Chapter03 - Re-Structuring the Code			  v00-06 21Apr12
 
      v00-04 12Aug11: Changed names of rex files and view classes in the code;
                      text changed to match, plus some minor corrections.
      v00-05 02Apr12: Minor corrections.
-     v00-06 20Apr12: Change book ref.
+     v00-06 21Apr12: Change book ref. Also add stuff on "components".
 -->
-
 <chapter id="chapThree"><title>Re-Structuring the Code</title>
 <indexterm><primary>code structure</primary></indexterm>
 <para>The current code is not good. It works - but only because it's very simple. The problem is its
-      design - its structure. There are three quite different concerns that must be separated: the
+      design - its structure. There are three quite different concerns which, for
+      all but he simplest of programs, should be separated. These are: the
       user interface (aka UI or GUI) including both presentation and user action; the data (in our
       case a set of text strings); and the "business" concept that we're implementing. And the
       "business" of this code is picking a single text string from a set of "words of wisdom"
       strings. The code in the <computeroutput>Exercise03</computeroutput> folder separates these
       concerns, with no change as far as the user's concerned. </para>
-<para>The three areas of concern have a relationship with the Model-View-Controller (MVC) concept -
-      see <ulink url="http://en.wikipedia.org/wiki/model-view-controller"
-          ><citetitle>Model-View-Controller</citetitle></ulink>. However, the role of the Controller
+<para>The three areas of concern have a relationship with the Model-View-Controller or MVC
+      concept (see
+  <ulink url="http://en.wikipedia.org/wiki/model-view-controller"><citetitle>Model-View-Controller</citetitle></ulink>).
+      However, the role of the Controller
       in classic MVC is handled largely by ooDialog and the underlying Windows UI platform. This
       leaves us with the View and the Model, where the Model is the "business" - that is, an
-      implementation of the relevant part of the real business. But these two concepts - View and
-      Model - to say nothing about the data (that is, data-on-disk aka "persistent data"). So three
-      areas of concern are required: View, Model, and Data. This scheme works well for the
-      PC-resident single-user applications introduced in this Guide, but does not scale to
-      distributed systems with multiple concurrent users where, aside from anything else, the
-      data is on a remote server. For such systems, additional architectural
-      concepts are required (see, for example, chapters 1 and 2 of "Enterprise Service Oriented
-      Architectures" by McGovern, Sims, Jain &amp; Little; or "Business Component Factory" by Herzum
-      &amp; Sims).<indexterm><primary>Component concepts</primary><secondary>Reference</secondary></indexterm>
+      implementation of the relevant part of the real business - and the View is the part
+      that provides for user interaction. But these two concepts - View and
+      Model - are insufficient. To these two must be added data - that is, data-on-disk
+      (aka "persistent data"). So three areas of concern are required: View, Model, and Data.
+</para>
+   <para>
+      <emphasis role="italic">At this point, the reader may wish to skip the next
+      three paragraphs which
+      provide a rationale for the View-Model-Data terminology, and introduce the
+      concept of software "components". However, please come back here if later the
+      use of the term "component" is not obvious.</emphasis>
       </para>
-<para>In summary, a Model component implements the essence of the required application. The View
-      enables the user to take action and see the result. The Data component knows where the data
-      is, and handles the mechanics of reading and writing data to disk. (For distributed multi-user
+  <para>While the model-view-data scheme works well for the
+      PC-resident single-user applications introduced in this Guide, it does not scale to
+      distributed systems with multiple concurrent users where, aside from anything else, the
+      data is on a remote server or available from a remote service. For such systems,
+      additional architectural concepts are required. See, for example, chapters
+      1 and 2 of "Enterprise Service Oriented Architectures" by McGovern, Sims,
+      Jain &amp; Little; or "Business Component Factory" by Herzum &amp; Sims.
+      <indexterm><primary>Component concepts</primary><secondary>Reference</secondary></indexterm>
+      Dealing with large-scale distributed systems, both of these references use
+      the terms "user", "workspace" and "workspace-resource" instead of "view",
+      "model" and "data". Although the semantics are identical, this document uses
+      the latter terms since they are both simpler and shorter.
+    </para>
+<para>Model components implement the essence of an application. Views
+      enable the user to take action and see the result. Data components know where the data
+      is, and handle the mechanics of reading and writing to disk. (For distributed multi-user
       applications, the Model would invoke some service on a back-end server, where there would
       probably be another kind of Model component which in turn would use a separate Data component
-      that accesses a corporate database). </para>
-<para>Let's now look at the implementation of each of these three areas of concern. In the second
-      part of this chapter, we'll further reduce coupling (the rule is: low/loose coupling, high
-      cohesion). </para>
+      that accesses a corporate database or remote service).</para>
+<para>But why use the term "component" instead of "class"? The answer is (as will be seen in later
+      exercises) that for industrial-strength apps, a component always consists of a number of
+      classes. And a single class cannot be independently "plugged in" to a runtime environment
+      without the other classes required fully to implement a single business concept in its View,
+      Model or Data role. A component, however, is intended to be "pluggable" into the runtime,
+      since it is all and only the implementation of one of the "view", "model", or "data" aspect of
+      a business concept. This distinction between class and component is not so obvious using
+      ooRexx as it is with compiled languages, where classes are seen by the developer in source
+      code, but the artifact that is loaded into the runtime is a compiled *.exe or *.dll. Thus one
+      of the purposes of a component is to extend the concept of low coupling and high cohesion into
+      the runtime. Finally, the name given to the set of "view", "model" and "data" components that
+      implement a given business concept such as "Customer" is "Business Component". The interface
+      of a Business Component is defined as the interface of the "model" component. <indexterm>
+        <primary>Business Component</primary>
+      </indexterm>
+      <indexterm>
+        <primary>Component concepts</primary>
+      </indexterm>
+    </para>
+<para>Let's now look at the implementation of each of these three areas of concern.
+    In the second part of this chapter, we'll further reduce coupling.</para>
 
 <section id="chap03-struc"><title>Fixing the Structure</title><!-- section 3.1 -->
 <para>First, re-run <computeroutput>Wow2.rex</computeroutput> in the
@@ -99,19 +133,21 @@
               <imagedata fileref="Chapter03-Image1.jpg" scale="70">
             </imageobject>
           </mediaobject>
-        </figure>Now look at the <computeroutput>Wow3.rex</computeroutput> code. It's split into the
-        three classes shown in the diagram: <computeroutput>WowView</computeroutput>,
+        </figure>Now look at the <computeroutput>Wow3.rex</computeroutput> code. It
+        consists of the three classes shown in the diagram: <computeroutput>WowView</computeroutput>,
           <computeroutput>WowPicker</computeroutput>, and <computeroutput>WowData</computeroutput>.
         "Wow" in the names is short for "words of wisdom". </para>
 
-<section id="chap03-struc-ui"><title>The "View" Area of Concern</title><!-- section 3.1.1 -->
-<para>The <computeroutput>WowView</computeroutput> class implements the UI area of
-          concern. Its <emphasis role="italic">init</emphasis> method is identical to that of
+<section id="chap03-struc-ui"><title>The "View" Component</title><!-- section 3.1.1 -->
+  <para>The <computeroutput>WowView</computeroutput> class implements the UI area of
+          concern (it's a single-class component). The <emphasis role="italic">init</emphasis>
+          method is identical to that of
           Exercise02's <computeroutput>Wow2</computeroutput> except that it also creates an instance
           of <computeroutput>WowPicker</computeroutput> called (unsurprisingly) <emphasis
-            role="italic">wowPicker</emphasis>". There's also an <emphasis role="italic"
-            >expose</emphasis> statement to make the <emphasis role="italic">wowPicker</emphasis>
-          object available to other methods. </para>
+            role="italic">wowPicker</emphasis>". There's also an
+            <emphasis role="italic">expose</emphasis> statement to make the
+            <emphasis role="italic">wowPicker</emphasis> object available to other methods.
+        </para>
 <para>
   The <emphasis role="italic">defineDialog</emphasis> method has not changed. But the
   <emphasis role="italic">okClicked</emphasis> method is different - and much shorter:
@@ -141,8 +177,8 @@ To get the "words of wisdom" to display, it now merely asks
 
 </section>
 
-<section id="chap03-struc-bus"><title>The "Model" Area of Concern</title><!-- section 3.1.2 -->
-<para> The class implementing the model area of concern - <computeroutput>WowPicker</computeroutput>
+<section id="chap03-struc-bus"><title>The "Model" Component</title><!-- section 3.1.2 -->
+<para> The class implementing the model component - <computeroutput>WowPicker</computeroutput>
           - is very simple: <programlisting>
     <![CDATA[
     ::METHOD init
@@ -164,7 +200,7 @@ To get the "words of wisdom" to display, it now merely asks
             role="italic">arrWowSet</emphasis> and returned. </para>
 </section>
 
-<section id="chap03-struc-dat"><title>The "Data" Area of Concern</title><!-- section 3.1.3 -->
+<section id="chap03-struc-dat"><title>The "Data" Component</title><!-- section 3.1.3 -->
 <para>The last (extremely simple) class in <computeroutput>Wow3.rex</computeroutput> is
             <computeroutput>WowData</computeroutput>. In its <emphasis role="italic">init</emphasis>
           method, it loads up an array of seven text strings into the instance variable <emphasis
@@ -184,29 +220,29 @@ To get the "words of wisdom" to display, it now merely asks
           (<computeroutput>WowPicker</computeroutput> and <computeroutput>WowData</computeroutput>
         respectively) in order to invoke them. Each of these three classes can be called a "main"
         class, since each is the main (and in this case only) class implementing a separate area of
-        responsibility. In more complex applications, each area will have one main class and a
+        responsibility. In more complex applications, each component (area of responsibility)
+        will have one main class and a
         number of subsidiary classes - for example, a (main) SalesOrder class with subsidiary
-        OrderLine and DeliveryInstructions classes. Such collections of classes, implementing an
-        important concept in the application (and in the corresponding real world), are called
-        "components". The intent of a component is to be, as much as possible, a self-contained unit
-        of business function. <indexterm>
+        OrderLine and DeliveryInstructions classes. The intent of a component is to be,
+        as much as possible, a self-contained unit of business function. <indexterm>
           <primary>Component</primary>
         </indexterm>
       </para>
 <para>Now, when considering more complex applications, it is arguable that it is not the
         responsibility of either class to know about the creation of instances of other classes.
         Later we will see that, for each important business concept (such as SalesOrder, Customer,
-        or Product), each area of responsibility (view, model, and data) will have a number of
-        classes, each area having one main class for the business concept. If these three areas are
-        to be as independent as possible, then each should know as little as possible about the
-        others. Such independence is usefully enhanced if a way is found to move the knowledge of
+        or Product), each component (view, model, and data) will have a number of
+        classes, and each will have one main class expressing the core of the business concept.
+        If these three kinds of component are to be as independent as possible, then
+        each should know as little as possible about the others. Such independence
+        is usefully enhanced if a way is found to move the knowledge of
         how to get references to the main classes to a fourth area. And there is just such an area -
         the application. </para>
   <para>In ooDialog programs, there is often a block of code at the beginning of the program file
         that kicks off a dialog by instantiating an ooDialog class. From there, all the behavior is
         in the dialog classes. This "kick-off" block of code can be used to reduce coupling by
         pre-instantiating the main classes, and storing the object references in
-          <computeroutput>.local</computeroutput>. Thus no main class has to know how to instantiate
+        <computeroutput>.local</computeroutput>. Thus no main class has to know how to instantiate
         any other main class. But, when a main class gets the object reference for another main
         class instance, doesn't the first class have to know the correct name of the object
         reference in <computeroutput>.local</computeroutput>? Well, yes, but even that could be
@@ -237,7 +273,8 @@ To get the "words of wisdom" to display, it now merely asks
         first two being stored in <computeroutput>.local</computeroutput>. Creation of the dialog is
         done by the third statement (<computeroutput>dlg = .WowView~new</computeroutput>). The next
         three statements send an <emphasis role="italic">activate</emphasis> message to each of the
-        three classes. This is because when dealing with complex applications with "main" classes,
+        three classes. This is because when dealing with complex applications with "main" classes
+        (each in their own component),
         it is very useful to distinguish between two kinds of class setups: firstly the
         technical creation of a class (done by invoking the <emphasis role="italic">init</emphasis>
         method), and secondly the setup of various required application-related things (done by
@@ -281,8 +318,8 @@ To get the "words of wisdom" to display, it now merely asks
   has the <emphasis role="italic">unguarded</emphasis> option specified on its
   method statement. Try commenting "UNGUARDED" out and running the exercise without it.
   </para>
-  <para> As a general rule, event handling methods such as <emphasis role="italic"
-    >okClicked</emphasis> should be unguarded. Indeed, <computeroutput>WowView</computeroutput> runs happily if the "unguarded"
+  <para> As a general rule, event handling methods such as
+    <emphasis role="italic">okClicked</emphasis> should be unguarded. Indeed, <computeroutput>WowView</computeroutput> runs happily if the "unguarded"
         option is moved to the <emphasis role="italic">okClicked</emphasis> method statement - or
         indeed if it's on both method statements. </para>
   <para>
@@ -291,3 +328,4 @@ To get the "words of wisdom" to display, it now merely asks
 </section>
 
 </chapter>
+
