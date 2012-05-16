@@ -1,0 +1,119 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Reference SGML file.
+    #
+    # Copyright (c) 2005-2009, Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+<appendix id="mig"><title>Migration</title>
+<para>This appendix lists some differences between Object Rexx and
+earlier versions of Rexx, and between Object Rexx for OS/2 and Open Object
+Rexx for Windows NT and *nix environments.</para>
+
+<section id="ecrc"><title>Error Codes and Return Codes</title>
+<para>Some error codes have changed and some have been added. Also, for most
+errors you now receive two error messages. The first should be similar or
+identical to the message you would have seen previously. The second provides
+additional and more detailed information. So, for example, where you formerly
+received &quot;Invalid Call to Routine&quot;, you now get further information
+on what is wrong with the call.</para>
+<para>Also, the return codes of host commands might be different.</para>
+</section>
+
+<section id="errordetect"><title>Error Detection and Reporting</title>
+<para>Some errors are now detected earlier. Formerly, Rexx would wait until it
+encountered an error during execution to report it to you. Now, some errors
+are reported before the first instruction in your Rexx script is executed.
+In particular, syntax errors are reported after you have invoked the program,
+but before it starts execution.</para>
+</section>
+
+<section id="envvar"><title>Environment Variables</title>
+<para>Environment variables set within an Object Rexx program by the VALUE
+function or "SET"  are not kept after the program termination.</para>
+</section>
+
+<section id="stemsvcoll"><title>Stems versus Collections</title>
+<para>Stems are a general data structure that are powerful but abstract.
+In earlier
+releases of Rexx, you could use stems to create data structures of all types,
+such as arrays, stacks, and queues. These data structures were semantically
+neutral. Because stems were the basis for all of them, the code itself gave
+no hint of which structure was implemented and for what purpose.</para>
+<para>The best data structure job is not always the most powerful and abstract
+but the most specific and restrictive. Object Rexx provides a variety of data
+structures in the collection classes. This helps reduce errors because you
+can select the data structure that best meets your requirements. It also helps
+eliminate the misuse of data structures and adds a semantic context that makes
+programs easier to maintain.</para>
+</section>
+
+<section id="ioufm"><title>Input and Output Using Functions and Methods</title>
+<para>Do not use a mixture of methods and functions for input and output because
+it can cause unpredictable results. For example, using the LINEOUT method
+and the LINEOUT function on the same persistent stream object can cause overlays.
+</para>
+<para>When a Rexx I/O function creates a stream object, the language processor
+stores the reference to the stream object in an internal table.
+When an I/O method creates a stream object, it
+is returned to the program to be maintained. Therefore, these two stream objects
+are separate stream objects with different read and write pointers. The program
+needs to synchronize the read and write pointers of both stream objects.
+Otherwise, overlays would occur.</para>
+</section>
+
+<section id="envdir"><title>.Environment</title>
+<para>The .Environment directory is local and not system-global
+as in OS/2. This means that there is no difference between
+the scope of the .Local and .Environment directories.</para>
+</section>
+
+<section id="delenvvar"><title>Deleting Environment Variables</title>
+<para>Value(envvar,&quot;&quot;,&quot;ENVIRONMENT&quot;) does not delete an
+environment variable but sets the environment variable's value to &quot;&quot;.
+Use Value(envvar,.nil,&quot;ENVIRONMENT&quot;)
+to delete an environment variable.</para>
+</section>
+
+<section id="traceinmacrospace"><title>Trace in Macrospace</title>
+<para>Functions in macrospace cannot be traced using the TRACE keyword. These
+functions are stored in an optimized format without source code. If you want
+to trace functions, do not load them into macrospace.</para>
+</section>
+</appendix>
