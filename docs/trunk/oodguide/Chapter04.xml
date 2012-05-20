@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter04 - Using Resource Dialogs			          v00-12 10Apr12
+<!-- Chapter04 - Using Resource Dialogs			          v00-13 20May12
      4.1   Naming and Coding Conventions
      4.1.1 Naming Conventions
      4.1.2 Coding Conventions
@@ -60,6 +60,9 @@
      v00-10 01Apr12: Corrected text about create menubar (last param now not there).
      v00-11 02Apr12: Minor mods after seeing the PDF.
      v00-12 10Apr12: Tag corrected by M. Miesfeld.
+     v00-13 20May12: Took out ref to appendix about Connections (this
+                     well-covered now in the ooDialog Reference). Added some text
+                     about event handlers having to be Public methods.
 -->
 <chapter id="chapFour">
   <title>Using Resource Dialogs</title>
@@ -488,6 +491,7 @@
   self~connectButtonEvent("IDC_CUST_BTN_RECORDCHANGES","CLICKED",recordChanges)
 ]]>
 </programlisting>This is an example of specifying an "event handler" (inbound active behavior).
+     <indexerm><primary>Event handler</primary></indexerm>
           Suppose the user presses the "Record Changes" button. The Windows runtime signals the
           event, which ooDialog picks up. The above statement declares that this event - i.e.that
           the pushbutton identified in the <computeroutput>.h</computeroutput> file as
@@ -502,7 +506,10 @@
             <computeroutput>UNGUARDED</computeroutput>. In general, an event handler should be
           unguarded to preclude the possibility that some guarded method in the dialog object is
           executing at the time the event notification is generated. For further information, see
-          the ooDialog Reference.
+          the ooDialog Reference. Note also that event-handling methods must be PUBLIC,
+          since they are invoked from outside the ooRexx dialog class by the underlying
+          ooDialog code (and of course an ooRexx method is public unless PRIVATE is specified).
+          <indexerm><primary>Event handler</primary><secondary>Public method</secondary></indexerm>
           <indexterm><primary>Unguarded method</primary></indexterm></para>
 <para>Specification of active controls is generally done in the <emphasis role="italic"
             >initDialog</emphasis> method. Indeed, in the
@@ -510,7 +517,8 @@
           occupies most of this method. </para>
 <para> Note that menubar actions are not specified. This is because the menu items in
             <computeroutput>CustomerView.rex</computeroutput> are "auto-connected" (see
-            <link linkend="apx-connections" endterm="connections.title"></link>). Auto-connection is specified
+            "Menu Command Event Connections" in the ooDialog Reference).
+            Auto-connection is specified
           in the last parameter of the following <emphasis role="italic">.ScriptMenuBar~new</emphasis>
           statement in the <emphasis role="italic">createMenuBar</emphasis> method:
           <indexterm<primary>Autoconnection</primary></indexterm>
