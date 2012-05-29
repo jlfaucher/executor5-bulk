@@ -447,11 +447,19 @@ flushed.</para>
 ]]>
 </programlisting>
 
-<para>Retrieves the data and type for a named value of a given key. The result
-is a compound variable with suffixes data and type. If
-<emphasis role="italic">key_handle</emphasis> is
-omitted, CURRENT_KEY is used. If named <emphasis role="italic">value</emphasis>
-is blank or omitted, the default value is retrieved. Example: </para>
+<para>
+  Retrieves the data and type for a named value of a given key. The result is a compound variable with suffixes data and
+  type. If <emphasis role="italic">key_handle</emphasis> is omitted, CURRENT_KEY is used. If named <emphasis
+  role="italic">value</emphasis> is blank or omitted, the default value is retrieved.
+</para>
+<para>
+  On error 0 is returned.  Errors can occur, for instance, if a non-existent key is queried or if the user does not have
+  sufficient privileges to query the key.
+</para>
+
+<para>
+  Example:
+</para>
 <programlisting>
 myval. = rg~getvalue(,"filesystem")        /* current key */
 say "Type is" myval.type
@@ -461,8 +469,23 @@ say "my default value is:" myval.data
 myval. = rg~getvalue(mykey,"")
 say "my default value is:" myval.data
 </programlisting>
-<para>Possible types: NORMAL, EXPAND, MULTI, NUMBER, BINARY, NONE,
-OTHER.</para>
+<para>
+  On success, possible types are: NORMAL, EXPAND, MULTI, NUMBER, BINARY, NONE, OTHER.
+</para>
+<para>
+  Since errors are possible, it may be best to test that the return is a stem before assigning the return to a stem.
+  Something like this:
+</para>
+<programlisting>
+
+  retVal = rg~getvalue(,"filesystem")        /* current key */
+  if retVal~isA(.Stem) then do
+    say "Type is" myval.type
+    if myval.type = "NORMAL" then say "Value is" myval.data
+  else do
+    say "Error getting registery value."
+  end
+</programlisting>
 </section>
 
 <section id="wrlist"><title>list</title>
