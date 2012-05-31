@@ -38,16 +38,13 @@
     #########################################################################
 -->
 
-<!-- Chapter03 - Re-Structuring the Code			  v00-07 21Apr12
+<!-- Chapter03 - Re-Structuring the Code			  v01-00 31May12
 
-     v00-04 12Aug11: Changed names of rex files and view classes in the code;
-                     text changed to match, plus some minor corrections.
-     v00-05 02Apr12: Minor corrections.
-     v00-06 21Apr12: Change book ref. Also add stuff on "components".
-     v00-07 21Apr12: Added a title link ("reduce-cplg")
+     Changes:
+     v01-00 31May12: First version.
 -->
 <chapter id="chapThree"><title>Re-Structuring the Code</title>
-<indexterm><primary>code structure</primary></indexterm>
+<indexterm><primary>Code structure</primary></indexterm>
 <para>The current code is not good. It works - but only because it's very simple. The problem is its
       design - its structure. There are three quite different concerns which, for
       all but he simplest of programs, should be separated. These are: the
@@ -94,8 +91,8 @@
       probably be another kind of Model component which in turn would use a separate Data component
       that accesses a corporate database or remote service).</para>
 <para>But why use the term "component" instead of "class"? The answer is (as will be seen in later
-      exercises) that for industrial-strength apps, a component always consists of a number of
-      classes. And a single class cannot be independently "plugged in" to a runtime environment
+      exercises) that for industrial-strength apps, a component generally consists of a number of
+      classes. And a single class can seldom be independently "plugged in" to a runtime environment
       without the other classes required fully to implement a single business concept in its View,
       Model or Data role. A component, however, is intended to be "pluggable" into the runtime,
       since it is all and only the implementation of one of the "view", "model", or "data" aspect of
@@ -145,7 +142,7 @@
           method is identical to that of
           Exercise02's <computeroutput>Wow2</computeroutput> except that it also creates an instance
           of <computeroutput>WowPicker</computeroutput> called (unsurprisingly) <emphasis
-            role="italic">wowPicker</emphasis>". There's also an
+            role="italic">wowPicker</emphasis>. There's also an
             <emphasis role="italic">expose</emphasis> statement to make the
             <emphasis role="italic">wowPicker</emphasis> object available to other methods.
         </para>
@@ -167,9 +164,9 @@ To get the "words of wisdom" to display, it now merely asks
 <para>One other change is that instead of creating a new static text control every time the button
           is pressed, the control is created once in the new <emphasis role="italic"
             >initDialog</emphasis> method and re-used in the <emphasis role="italic"
-            >okClicked"</emphasis> method. The <emphasis role="italic">initDialog</emphasis> method
+            >okClicked</emphasis> method. The <emphasis role="italic">initDialog</emphasis> method
           is called automatically by ooDialog after the dialog has been created in order to allow
-          controls to be initialized.</para>
+          controls to be initialized (the "init" in "initDialog" stands for "initialize").</para>
 <para>In summary, all knowledge of picking a string, and of the set from which to pick, has been
           exported elsewhere. The <computeroutput>WowView</computeroutput> class now addresses only
           the areas of GUI display and GUI interaction. This is crucially important. A good way to
@@ -183,22 +180,22 @@ To get the "words of wisdom" to display, it now merely asks
           - is very simple: <programlisting>
     <![CDATA[
     ::METHOD init
-      expose arrWowSet
+      expose wowSet
       dataSource = .WowData~new
-      arrWowSet = dataSource~readWowSet
+      wowSet = dataSource~readWowSet
       return
 
     ::METHOD pickWow
-      expose arrWowSet
+      expose wowSet
       i = random(1,7)
-      return arrWowSet[i]
+      return wowSet[i]
     ]]>
   </programlisting>The <emphasis role="italic">init</emphasis>method gets a reference to an
           instance of the class <computeroutput>WowData</computeroutput> - which handles the data
           area of concern - and then gets a set of Words of Wisdom into the array variable <emphasis
-            role="italic">arrWowSet</emphasis>. Then in the method <emphasis role="italic"
+            role="italic">wowSet</emphasis>. Then in the method <emphasis role="italic"
             >pickWow</emphasis> a Words of Wisdom string is picked randomly from <emphasis
-            role="italic">arrWowSet</emphasis> and returned. </para>
+            role="italic">wowSet</emphasis> and returned. </para>
 </section>
 
 <section id="chap03-struc-dat"><title>The "Data" Component</title><!-- section 3.1.3 -->
@@ -294,7 +291,7 @@ To get the "words of wisdom" to display, it now merely asks
   when the dialog is closed (although, as will be discussed later, there are ways
   to return control much sooner).
   </para>
-  <para>But why move the <emphasis role="italic">self~execute("SHOWTOP"...</emphasis> statement into
+  <para>But why move the <emphasis role="italic">self~execute("SHOWTOP"...)</emphasis> statement into
         the <emphasis role="italic">activate</emphasis> method of the
           <computeroutput>MyDialog</computeroutput> class? After all, it would work just as well if
         it were the last statement in the Startup file. The reason is that the business of surfacing
@@ -313,12 +310,15 @@ To get the "words of wisdom" to display, it now merely asks
           >okClicked</emphasis> method can not run until the <emphasis role="italic"
           >activate</emphasis> method ends - that is, until the user closes the dialog window - a
         real catch 22, where the result is that no words of wisdom will appear. </para>
+        <indexterm><primary>Concurrency issue</primary></indexterm>
+        <indexterm><primary>Blocking</primary><secondary>concurrency issue</secondary></indexterm>
   <para>
   The reason <computeroutput>WowView</computeroutput> works is because its
   <emphasis role="italic">activate</emphasis> method
   has the <emphasis role="italic">unguarded</emphasis> option specified on its
   method statement. Try commenting "UNGUARDED" out and running the exercise without it.
   </para>
+  <indexterm><primary>Unguarded</primary></indexterm>
   <para> As a general rule, event handling methods such as
     <emphasis role="italic">okClicked</emphasis> should be unguarded. Indeed, <computeroutput>WowView</computeroutput> runs happily if the "unguarded"
         option is moved to the <emphasis role="italic">okClicked</emphasis> method statement - or

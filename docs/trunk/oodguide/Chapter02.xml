@@ -38,13 +38,10 @@
     #########################################################################
 -->
 
-<!-- Chapter02 - In The Beginning				  v00-08 02Apr12
-     v00-04 26Jly11
-     v00-05 11Aug11: Minor corrections to match exercise numbers.
-     v00-06 06Feb12: Code change - resource number -1 changed to 101.
-     v00-07 31Mar12: Correction to role=italic (no quotes).
-     v00-08 02Apr12: Add para on windows vs dialogs; change all uses of "window"
-                     to "dialog".
+<!-- Chapter02 - In The Beginning				  v01-00 31May12
+
+     Changes:
+     v01-00 31May12: First version.
 -->
 
 <chapter id="chapTwo"><title>In The Beginning</title>
@@ -56,7 +53,7 @@
   boxes, and so forth. The user keys data into controls (e.g. types into an edit
   control) or manipulates controls with a mouse (e.g. selects an item in a
   listbox). Some of these actions invoke application code which in turn
-  makes some change to the window or dialog, causes some other action such as
+  makes some change to the window or dialog, or causes some other action such as
   data access, or both.
 </para>
 <para>
@@ -65,11 +62,11 @@ A dialog is a stylized form of window that is familiar to most users. As dialogs
 have evolved they have become more useful, and can now provide the user interface
 function for many applications. Also, a dialog is drawn by the operating system,
 while drawing a normal window is mostly the programmer's responsibility. Thus
-producing an application needs much less programming work because the Rexx
+producing an application needs much less programming work because the ooRexx
 programmer doesn't need to know or understand the low-level mechanics of drawing
 to the screen. In summary, dialogs now have many window functions, and are much
 easier to produce. And it's this that makes ooDialog a particularly useful
-extension to a Rexx interpreter.
+extension to ooRexx.
 </para>
 <para>
   There are three general areas of concern in designing an ooDialog application:
@@ -101,15 +98,17 @@ extension to a Rexx interpreter.
   ensure that your installation works properly.
 </para>
 <para><emphasis role="bold"><emphasis role="italic">And please do use the
-  ooDialog Reference manual for the details on any ooDialog class, method
+  ooDialog Reference for details on any ooDialog class, method
   or function mentioned in this Guide.</emphasis></emphasis>
 </para>
 <section id="sctGettingStarted"><title>Getting Started</title>
 <para>
   The first exercise creates and displays a blank dialog with the title "Hello World!".
-  Try running it - it's the file <computeroutput>HelloWorld.rex</computeroutput> in
-  the <computeroutput>Exercises\Exercise02</computeroutput> folder (exercise folder
-  numbers map to chapter numbers). <xref linkend="fig01"> shows what you should see.
+  Try running it - it's the file <computeroutput>HelloWorld.rex</computeroutput> in the folder
+  <computeroutput>C:\Program Files\ooRexx\samples\oodialog\userGuide\exercises\Exercise02</computeroutput>
+  (exercise numbers map to chapter numbers). <xref linkend="fig01"> shows what you should see.
+  <indexterm><primary>Exercise location</primary></indexterm>
+  <indexterm><primary>Location</primary><secondary>of Exercises></secondary></indexterm>
 </para>
 <para>
   The Command Prompt window that appears with the <emphasis role="italic">Hello World</emphasis>
@@ -139,10 +138,10 @@ extension to a Rexx interpreter.
     The second statement invokes the <emphasis role="italic">execute</emphasis> method of
     <computeroutput>HelloWorld</computeroutput>, and it is this that displays the dialog.
     The first parameter <emphasis role="italic">SHOWTOP</emphasis> is one of several ways of defining
-    how the dialog is surfaced (see the ooDialog reference for details).
+    how the dialog is surfaced (see the ooDialog Reference for details).
     The second parameter states that the icon at the extreme top left of the dialog should be the
     normal ooRexx icon. This graphic is termed a "resource" in ooDialog, and there are a number
-    of such predefined constants (again, see the ooDialog reference for details).
+    of such predefined constants (again, see the ooDialog Reference for details).
     </para>
     <para>
     Note that the usual naming conventions are observed: upper camel case for classes
@@ -156,7 +155,7 @@ extension to a Rexx interpreter.
       ::REQUIRES "ooDialog.cls"
       ]]>
     </programlisting>
-    This one directive allows all the classes defined by ooDialog to be accessible to our program.
+    This directive allows all the classes defined by ooDialog to be accessible to our program.
     If this statement is absent, then the following error appears on the initiating command prompt:
     <programlisting>
       <![CDATA[
@@ -170,8 +169,6 @@ extension to a Rexx interpreter.
     This is because the <emphasis role="italic">::requires ooDialog.cls</emphasis> statement
     not only says we're using ooDialog, but also provides
     access to all the classes provided <emphasis role="italic">by</emphasis> ooDialog.
-    Later, we'll see a further use
-    for the <emphasis role="italic">::requires</emphasis> directive.
 </para>
 <para>
   Finally, there's the definition of the class <computeroutput>HelloWorld</computeroutput>:
@@ -185,7 +182,7 @@ extension to a Rexx interpreter.
   </programlisting>
   The first line defines a class called <computeroutput>HelloWorld</computeroutput> as a subclass of
   the ooDialog-provided class <computeroutput>UserDialog</computeroutput>
-  (and yet again but finally, see the ooDialog Reference for full details).
+  (and yet again, but finally, see the ooDialog Reference for full details).
   Among other things, <computeroutput>UserDialog</computeroutput> enables the programmer to define
   the dialog layout in code. This can get cumbersome in more complex dialogs, and later we'll
   meet a simpler way of defining the dialog layout.
@@ -223,8 +220,8 @@ extension to a Rexx interpreter.
       parameter (and its preceding comma of course) and see what happens.
       Then replace the <computeroutput>CENTER</computeroutput> parameter, and
       (just to make sure that you've replaced it correctly) run the program again,
-      and this time try to size the dialog. You can't. Then replace
-      <computeroutput>CENTER</computeroutput> by <computeroutput>CENTER THICKFRAME</computeroutput>
+      and this time try to re-size the dialog. You can't. Then replace
+      <computeroutput>"CENTER"</computeroutput> by <computeroutput>"CENTER THICKFRAME"</computeroutput>
       and re-run the program. The dialog now has a sizable border. Thus styles
       not only affect appearance, they can also define behavior.
     </para></listitem>
@@ -264,7 +261,7 @@ we both add to the way dialogs are populated with controls, and also show how us
 </para>
 <para>
   Now let's look at the code.
-  The first seven lines (excluding comments)
+  The first seven lines (excluding comments and blank lines)
   are essentially the same as the first seven in <computeroutput>HelloWorld.rex</computeroutput>:
   <programlisting>
     <![CDATA[
@@ -366,7 +363,7 @@ we both add to the way dialogs are populated with controls, and also show how us
   And, since a pushbutton control provides for just such an approach, that's what we'll do here.
   The first lines of code in <computeroutput>Wow2.rex</computeroutput> - down to the
   <emphasis role="italic">defineDialog</emphasis> method - are almost identical to those of
-  <computeroutput>wow.rex</computeroutput>, with only one significant change.
+  <computeroutput>wow.rex</computeroutput>, with two significant changes.
   The method is as follows:
   <programlisting>
   <![CDATA[
@@ -378,8 +375,8 @@ we both add to the way dialogs are populated with controls, and also show how us
   </programlisting>
 </para>
 <para>
-  There are two significant changes. Firstly, the statement
-  - <emphasis role="italic">self~createPushButton</emphasis> -
+  The two significant changes are as follows. Firstly, the statement
+  <emphasis role="italic">self~createPushButton</emphasis>
   has an additional parameter <emphasis role="italic">okClicked</emphasis>.
   This is the name of the method that is automatically invoked by ooDialog when the user
   clicks on the <emphasis role="italic">More wisdom</emphasis> pushbutton. Secondly,
@@ -418,7 +415,8 @@ we both add to the way dialogs are populated with controls, and also show how us
   And this is arguably the most important thing for any application - especially one with a GUI.
   There are three important areas of design concern - UI display and interaction, the
   "business" that the dialog performs (here the business of selecting the text),
-  and the provision of persistent data. But we'll start to fix this in the next chapter.
+  and the provision of persistent data (here the seven strings comprising the "words of wisdom").
+  But we'll start to fix this in the next chapter.
 </para>
 
 </section>
