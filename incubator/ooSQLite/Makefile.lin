@@ -1,0 +1,128 @@
+#/*----------------------------------------------------------------------------*/
+#/*                                                                            */
+#/* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
+#/*                                                                            */
+#/* This program and the accompanying materials are made available under       */
+#/* the terms of the Common Public License v1.0 which accompanies this         */
+#/* distribution. A copy is also available at the following address:           */
+#/* http://www.oorexx.org/license.html                                         */
+#/*                                                                            */
+#/* Redistribution and use in source and binary forms, with or                 */
+#/* without modification, are permitted provided that the following            */
+#/* conditions are met:                                                        */
+#/*                                                                            */
+#/* Redistributions of source code must retain the above copyright             */
+#/* notice, this list of conditions and the following disclaimer.              */
+#/* Redistributions in binary form must reproduce the above copyright          */
+#/* notice, this list of conditions and the following disclaimer in            */
+#/* the documentation and/or other materials provided with the distribution.   */
+#/*                                                                            */
+#/* Neither the name of Rexx Language Association nor the names                */
+#/* of its contributors may be used to endorse or promote products             */
+#/* derived from this software without specific prior written permission.      */
+#/*                                                                            */
+#/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+#/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+#/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+#/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+#/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+#/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+#/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+#/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+#/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+#/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+#/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+#/*                                                                            */
+#/*----------------------------------------------------------------------------*/
+
+
+# Makefile for ooSQLite on Linux.  Hoping the make file also works on Mac and
+# other unixes.
+#
+# Note that the ooSQLite3 executable is named oosqlite3 here rather than
+# ooSQlite3 as it is on Windows.
+#
+
+# Not sure this will work ...
+ifndef SVN_REV
+#./src/platform/unix/generateVersionFile.sh
+include src/ooSQLite.ver.incl
+endif
+
+# These definitions come from the Makefile produced by running configure in the
+# ooSQLite/src/platform/unix/sqlite-autoconf directory.  The DEFS =
+# comes directly from the DEFS define in the Makefle, minus the things like
+# -DPACKAGE_NAME=, etc. that we don't need for our build.
+#
+# The GEFS = comes from capturing the output of the build and taking the -D
+# options, minus the same -D options as above.  The only extra thing that we
+# might need is -D_REENTRANT=1 -DSQLITE_THREADSAFE=1  SQLITE_THREADSAFE defaults
+# to 1 in sqlite3.c, so we just add _REENTRANT to the CONFFLAGS.
+#
+# If SQLITE_THREAD was going to be changed it should be addes to SQLITEFLAGS
+# anyway.  There is also in GEFS: -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE
+# Again, those would be added to SQLITEFLAGS if we want them.  From examining
+# these 2 defines, we come up with CONFFLAGS, which we use.  The rest is for
+# reference.
+#
+# Note that the -D_REENTRANT is also in the link flags in the Makefile.  Not
+# sure that is really needed, but I've added it anyway.
+#
+# DEFS = -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_FDATASYNC=1 -DHAVE_USLEEP=1 -DHAVE_LOCALTIME_R=1 -DHAVE_GMTIME_R=1 -DHAVE_DECL_STRERROR_R=1 -DHAVE_STRERROR_R=1 -DHAVE_POSIX_FALLOCATE=1
+# GEFS = -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_FDATASYNC=1 -DHAVE_USLEEP=1 -DHAVE_LOCALTIME_R=1 -DHAVE_GMTIME_R=1 -DHAVE_DECL_STRERROR_R=1 -DHAVE_STRERROR_R=1 -DHAVE_POSIX_FALLOCATE=1 -I. -I. -D_REENTRANT=1 -DSQLITE_THREADSAFE=1 -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE
+CONFFLAGS = -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_FDATASYNC=1 -DHAVE_USLEEP=1 -DHAVE_LOCALTIME_R=1 -DHAVE_GMTIME_R=1 -DHAVE_DECL_STRERROR_R=1 -DHAVE_STRERROR_R=1 -DHAVE_POSIX_FALLOCATE=1 -D_REENTRANT=1
+
+WARNINGFLAGS=
+VERDEFS=-DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) -DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) -DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) -DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) -DOOSQLITE_VER_STRING=$(OOSQLITE_VER_STR) -DOOSQLITE_COPYRIGHT_YEAR=$(OOSQLITE_COPY_YEAR)
+EXTRAINCLUDE=-I src/sqlite
+
+SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT
+BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS) $(CONFFLAGS)
+
+OUT_DIR=build/release
+BIN_DIR=bin
+
+
+SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles -ldl -lpthread  -lrexx -lrexxapi -L.
+EXE_LFLAGS=-D_REENTRANT=1 -L$(OUT_DIR) -ldl -lpthread
+CFLAGS=-c -fPIC $(BASEFLAGS)
+
+
+# What we want to build.
+all: $(BIN_DIR)/liboosqlite.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls
+
+
+$(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.hpp Makefile.lin
+	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/sqlite3.o src/sqlite/sqlite3.c
+
+$(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.hpp Makefile.lin
+	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/shell.o src/sqlite/shell.c
+
+$(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/sqlite/sqlite3.hpp Makefile.lin
+	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/ooSQLite.o src/ooSQLite.cpp
+
+$(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.lin
+	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
+
+$(OUT_DIR)/liboosqlite.so: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o
+	gcc $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.so $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o
+
+$(OUT_DIR)/oosqlite3: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o
+	gcc $(EXE_LFLAGS) -o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o
+
+$(BIN_DIR)/liboosqlite.so: $(OUT_DIR)/liboosqlite.so
+	cp $(OUT_DIR)/liboosqlite.so $(BIN_DIR) 1>/dev/null 2>&1
+
+$(BIN_DIR)/oosqlite3: $(OUT_DIR)/oosqlite3
+	cp $(OUT_DIR)/oosqlite3 $(BIN_DIR) 1>/dev/null 2>&1
+
+$(BIN_DIR)/ooSQLite.cls: src/rexx/ooSQLite.cls
+	cp src/rexx/ooSQLite.cls $(BIN_DIR) 1>/dev/null 2>&1
+
+clean_all:
+	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/*.o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/cls
+	rm -f $(BIN_DIR)/*.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/*.cls
+
+clean:
+	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o
+
