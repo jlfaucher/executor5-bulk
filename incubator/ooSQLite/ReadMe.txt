@@ -1,0 +1,16 @@
+                             foodsPristine.rdbx
+                             ------------------
+
+The binary database file, foodsPristine.rdbx, located in the misc directory,
+was created from a database definition file, foods.sql, included in the
+example code that accompanies the book:
+
+"Definitive Guide to SQLite", Second Edition, by Grant Allen and Mike Owens,
+published by Apress.
+
+Apress and the authors have okayed the use and inlcusion of the binary file
+in the ooRexx project.
+
+foodsPristine.rdbx is then copied into both the testing and examples
+directories, as ooFoods.rdbx.  ooFoods.rdbx is used in some of the testing
+and example programs.
