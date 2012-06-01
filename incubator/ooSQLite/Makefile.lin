@@ -45,7 +45,7 @@
 
 # Not sure this will work ...
 ifndef SVN_REV
-#./src/platform/unix/generateVersionFile.sh
+./src/platform/unix/generateVersionFile.sh
 include src/ooSQLite.ver.incl
 endif
 
@@ -80,7 +80,7 @@ SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS) $(CONFFLAGS)
 
 OUT_DIR=build/release
-BIN_DIR=bin
+BIN_DIR=bin/linux
 
 
 SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles -ldl -lpthread  -lrexx -lrexxapi -L.
@@ -118,6 +118,10 @@ $(BIN_DIR)/oosqlite3: $(OUT_DIR)/oosqlite3
 
 $(BIN_DIR)/ooSQLite.cls: src/rexx/ooSQLite.cls
 	cp src/rexx/ooSQLite.cls $(BIN_DIR) 1>/dev/null 2>&1
+
+dist: all
+	echo Create distribution file
+	rexx src\rexx\makeDistLin.rex $(OOSQLITE_VER_STR)
 
 clean_all:
 	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/*.o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/cls
