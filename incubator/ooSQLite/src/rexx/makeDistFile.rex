@@ -42,24 +42,26 @@ use arg cmdLine
   os = getOSName()
 
   if os == "WINDOWS" then do
-    cpCmd  = 'copy'
-    mdCmd  = 'md'
-    rmCmd  = 'del'
-    rmDir  = 'rd /q /s'
-    toNull = '> nul 2>&1'
-    sl     = '\'
-    zipCmd = 'zip -X9r'
-    ext    = 'win.zip'
+    cpCmd      = 'copy'
+    mdCmd      = 'md'
+    rmCmd      = 'del'
+    rmDir      = 'rd /q /s'
+    toNull     = '> nul 2>&1'
+    sl         = '\'
+    zipCmd     = 'zip -X9r'
+    ext        = 'win.zip'
+    setEnvFile = 'setOOSQLiteEnv.bat'
   end
   else do
-    cpCmd  = 'cp'
-    mdCmd  = 'mkdir -p'
-    rmCmd  = 'rm -f'
-    rmDir  = 'rm -rf'
-    toNull = '> /dev/null 2>&1'
-    sl     = '/'
-    zipCmd = 'tar -czvf'
-    ext    = '_lin.tgz'
+    cpCmd      = 'cp'
+    mdCmd      = 'mkdir -p'
+    rmCmd      = 'rm -f'
+    rmDir      = 'rm -rf'
+    toNull     = '> /dev/null 2>&1'
+    sl         = '/'
+    zipCmd     = 'tar -czvf'
+    ext        = '_lin.tgz'
+    setEnvFile = 'setOOSQLiteEnv.sh'
   end
 
   svn_rev = cmdLine~strip('B', '"')
@@ -88,7 +90,7 @@ use arg cmdLine
   cpCmd 'NOTICE' outDir
   cpCmd 'ReadMe.txt' outDir
   cpCmd 'ReleaseNotes' outDir
-  cpCmd 'setOOSQLiteEnv.bat' outDir
+  cpCmd setEnvFile outDir
 
   cpCmd 'bin'sl'linux'sl'*'  outDir'bin'
   cpCmd 'doc'sl'*'           outDir'doc'
