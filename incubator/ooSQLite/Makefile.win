@@ -112,7 +112,7 @@ BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS)
 !IF DEFINED(RELEASE)
 
 OUT_DIR = build\release
-BIN_DIR = bin
+BIN_DIR = bin\windows
 
 MISCDEFS = /D:_X86_ /DWIN32 /DNDEBUG /DNULL=0
 CFLAGS = /nologo /EHsc /O2 /Gr /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) $(MISCDEFS) /c
@@ -164,13 +164,17 @@ $(BIN_DIR)\ooSQLite3.exe: $(OUT_DIR)\ooSQLite3.exe
 $(BIN_DIR)\ooSQLite.cls: src\rexx\ooSQLite.cls
     copy src\rexx\ooSQLite.cls $(BIN_DIR) 1>nul 2>&1
 
+dist: all
+    echo Create distribution file
+    rexx src\rexx\makeDistWin.rex $(OOSQLITE_VER_STR)
+
 clean:
     del /Q $(BIN_DIR)\*.dll $(BIN_DIR)\*exe $(BIN_DIR)\*.cls 1>nul 2>&1
 	  del /Q $(OUT_DIR)\* 1>nul 2>&1
 
 clean_all:
-    del /Q bin\*.dll bin\*exe bin\*.cls 1>nul 2>&1
-    del /Q bin.dbg\*.dll bin.dbg\*exe bin.dbg\*.cls 1>nul 2>&1
+    del /Q bin\windows\*.dll bin\windows\*exe bin\windows\*.cls 1>nul 2>&1
+    del /Q bin\linux\*.dll bin\linux\*exe bin\linux\*.cls 1>nul 2>&1
 
 	  del /Q build\release\* 1>nul 2>&1
 	  del /Q build\debug\* 1>nul 2>&1

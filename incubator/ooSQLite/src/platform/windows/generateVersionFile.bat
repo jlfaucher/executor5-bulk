@@ -47,7 +47,6 @@ REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 pushd src
 cd
-rem goto DONE_ERR
 
 REM  First parse ooSQLite.ver to get the existing version numbers.
 for /F "eol=# delims== tokens=1,2,3*" %%i in (ooSQLite.ver) do (
@@ -59,26 +58,17 @@ for /F "eol=# delims== tokens=1,2,3*" %%i in (ooSQLite.ver) do (
 
 if not exist .svn\nul goto NOSVN
 
-REM  TEMP TEMP TEMP
-pushd ..\..\
-cd
-
 for /F "usebackq tokens=1,2,3,4*" %%i in (`svn info`) do if (%%i) == (Revision:) set SVN_REV=%%j
-rem echo SVN_REV %SVN_REV%
+echo SVN_REV %SVN_REV%
 
 if %SVN_REV%x == x (
   echo Executing in a svn working copy, but could not determine the svn revision
   echo number.
   echo Do NOT use this environment for a release build.
   echo.
-REM TEMP TEMP TEMP
-  popd
 
   goto NOSVN
 )
-
-REM TEMP TEMP TEMP
-popd
 
 REM  Now write out ooSQLite.ver.incl
 if exist ooSQLite.ver.incl del /F /Q ooSQLite.ver.incl
