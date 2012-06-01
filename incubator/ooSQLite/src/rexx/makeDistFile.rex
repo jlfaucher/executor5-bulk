@@ -98,7 +98,7 @@ use arg cmdLine
   cpCmd 'misc'sl'*'          outDir'misc'
   cpCmd 'testing'sl'*'       outDir'testing'
 
-  'tar -czvf' outFile outDir
+  zipCmd outFile outDir
 
 
 ::routine getOSName
