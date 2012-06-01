@@ -54,7 +54,7 @@ SVN_REV := $(subst $(letter),$(empty),$(SVN_REV))
 
 # Include the ooSQLite version numbers, etc., then fix them up with the svn
 # revision.
-include src/ooSQLite.ver.incl
+include src/ooSQLite.ver
 
 OOSQLITE_BLD_LVL:= $(SVN_REV)
 OOSQLITE_VER_STR:= "$(OOSQLITE_MAJOR).$(OOSQLITE_MINOR).$(OOSQLITE_MOD_LVL).$(OOSQLITE_BLD_LVL)"
@@ -134,7 +134,7 @@ $(BIN_DIR)/ooSQLite.cls: src/rexx/ooSQLite.cls
 
 dist: all
 	echo Create distribution file
-	rexx src/rexx/makeDistLin.rex $(OOSQLITE_VER_STR)
+	rexx src/rexx/makeDistFile.rex $(OOSQLITE_VER_STR)
 
 dist_clean: clean_all
 
