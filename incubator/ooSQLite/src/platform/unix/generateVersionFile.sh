@@ -38,6 +38,9 @@
 
 SVN_VER=`svnversion`
 
+SVN_VER=${SVN_VER//M/}
+
+
 . src/ooSQLite.ver
 
 echo OOSQLITE_MAJOR=$OOSQLITE_MAJOR > src/ooSQLite.ver.incl
@@ -48,3 +51,5 @@ echo OOSQLITE_VER_STR="${OOSQLITE_MAJOR}.${OOSQLITE_MINOR}.${OOSQLITE_MOD_LVL}.$
 echo OOSQLITE_COPY_YEAR=$OOSQLITE_COPY_YEAR >> src/ooSQLite.ver.incl
 echo SVN_VER=$SVN_VER >> src/ooSQLite.ver.incl
 
+echo $SVN_VER
+#return $SVN_VER

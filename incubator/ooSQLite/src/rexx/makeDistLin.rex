@@ -39,37 +39,86 @@
 
 use arg cmdLine
 
+  os = getOSName()
+
+  if os == "WINDOWS" then do
+    cpCmd  = 'copy'
+    mdCmd  = 'md'
+    rmCmd  = 'del'
+    rmDir  = 'rd /q /s'
+    toNull = '> nul 2>&1'
+    sl     = '\'
+    zipCmd = 'zip -X9r'
+    ext    = 'win.zip'
+  end
+  else do
+    cpCmd  = 'cp'
+    mdCmd  = 'mkdir -p'
+    rmCmd  = 'rm -f'
+    rmDir  = 'rm -rf'
+    toNull = '> /dev/null 2>&1'
+    sl     = '/'
+    zipCmd = 'tar -czvf'
+    ext    = '_lin.tgz'
+  end
+
   svn_rev = cmdLine~strip('B', '"')
-  bitness = getBitnes()
+
+  bitness = 'x86_32'
+  if getBitness() == 64 then bitness = 'x86_64'
 
   parse var svn_rev major '.' minor '.' lvl '.' svn
 
-  outDir = 'ooSQLite.' || svn_rev
-  outFile = 'ooSQLite_'major'_'minor'_'lvl'_'svn'_' || bitness'_lin.tgz'
+  outDir = 'ooSQLite.'svn_rev || sl
+  outFile = 'ooSQLite_'major'_'minor'_'lvl'_'svn'_' || bitness || ext
 
   say 'outDir:' outDir
   say 'outFile:' outFile
 
-  'rm -rf' outDir '> dev/null 2>&1'
-  'rm -f' outFile '> dev/null 2>&1'
+  rmDir outDir toNull
+  rmCmd outFile toNull
 
-  'md' outDir'/bin'
-  'md' outDir'/doc'
-  'md' outDir'/examples'
-  'md' outDir'/misc'
-  'md' outDir'/testing'
+  mdCmd outDir'bin'
+  mdCmd outDir'doc'
+  mdCmd outDir'examples'
+  mdCmd outDir'misc'
+  mdCmd outDir'testing'
 
-  'copy CPLv1.0.txt' outDir
-  'copy NOTICE' outDir
-  'copy ReadMe.txt' outDir
-  'copy ReleaseNotes' outDir
-  'copy setOOSQLiteEnv.bat' outDir
+  cpCmd 'CPLv1.0.txt' outDir
+  cpCmd 'NOTICE' outDir
+  cpCmd 'ReadMe.txt' outDir
+  cpCmd 'ReleaseNotes' outDir
+  cpCmd 'setOOSQLiteEnv.bat' outDir
 
-  'copy bin/linux/*' outDir'/bin'
-  'copy doc/*' outDir'/doc'
-  'copy examples/*' outDir'/examples'
-  'copy misc/*' outDir'/misc'
-  'copy testing/*' outDir'/testing'
+  cpCmd 'bin'sl'linux'sl'*'  outDir'bin'
+  cpCmd 'doc'sl'*'           outDir'doc'
+  cpCmd 'examples'sl'*'      outDir'examples'
+  cpCmd 'misc'sl'*'          outDir'misc'
+  cpCmd 'testing'sl'*'       outDir'testing'
 
   'tar -czvf' outFile outDir
 
+
+::routine getOSName
+
+  parse upper source os .
+  if os~abbrev("WIN") then os = "WINDOWS"
+  return os
+
+
+::routine getBitness
+
+  tmpOutFile = 'tmpXXX_delete.me'
+
+  'rexx -v >' tmpOutFile '2>&1'
+
+  fsObj = .stream~new(tmpOutFile)
+  tmpArray = fsObj~arrayin
+  parse value tmpArray[3] with . . mode
+  fsObj~close
+
+  j = SysFileDelete(tmpOutFile)
+
+  say 'mode is:' mode
+
+return mode
