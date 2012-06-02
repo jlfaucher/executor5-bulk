@@ -37,32 +37,20 @@
     #
     #########################################################################
 -->
-<!-- Chapter04 - Using Resource Dialogs			          v00-13 20May12
+<!-- Chapter04 - Using Resource Dialogs			          v01-00 02Jun12
      4.1   Naming and Coding Conventions
      4.1.1 Naming Conventions
      4.1.2 Coding Conventions
      4.2   Resource Scripts and a Resource File Editors
      4.3   Coding an RcDialog Class
-     4.3.1 Setting Up the Dialog
-     4.3.2 Handling User Events
+     4.3.1 Setting Up the Dialog Window
+     4.3.2 Specifying the Active Controls
      4.3.3 Application Data and Function
+     4.3.3.1 The getData and showData Methods
+     4.3.3.2 The update and recordChanges Methods
 
      Changes:
-     v00-02: Various, including use of .application.
-     v00-03: Various, including changes in symbolic IDs.
-     v00-04: Added a couple of index terms
-     v00-05: Minor corrections after reading the pdf. Addition of Figure 3.
-     v00-06 15Aug11: correceted two <link> tags.
-     v00-07 17Aug11: Updated to reflect use of new .Application~setDefaults
-                     in CustomerView code.
-     v00-08 25Jan12: A number of individually minor corrections.
-     v00-09 25Jan12: Oops - forgot about hitting Esc and disappearing the dialog.
-     v00-10 01Apr12: Corrected text about create menubar (last param now not there).
-     v00-11 02Apr12: Minor mods after seeing the PDF.
-     v00-12 10Apr12: Tag corrected by M. Miesfeld.
-     v00-13 20May12: Took out ref to appendix about Connections (this
-                     well-covered now in the ooDialog Reference). Added some text
-                     about event handlers having to be Public methods.
+     v01-00 02Jun12: First version.
 -->
 <chapter id="chapFour">
   <title>Using Resource Dialogs</title>
@@ -95,7 +83,7 @@
   <para>ooDialog provides two classes that read their dialog template from a resource file:
         <computeroutput>RcDialog</computeroutput> and <computeroutput>ResDialog</computeroutput>.
       The former gets its resource template from a resource script file, the latter from a compiled
-      binary resource file. This chapter addresses the use of
+      binary resource file (a dll). This chapter addresses the use of
         <computeroutput>RcDialog</computeroutput>; the next chapter discusses
         <computeroutput>ResDialog</computeroutput>. </para>
 <para>The easiest and arguably the best way to define the layout of a dialog template is to use a
@@ -108,7 +96,7 @@
 <para>The vehicles for exploring resource files will be the Customer View and (in the next chapter)
       the Product View parts of the sample application. Although simplistic, these parts of
       the eventual order management application are sufficiently complex for some naming and coding
-      conventions to be useful, and the first section of this chapter describes these conventions.
+      conventions to be useful, and the next section describes these conventions.
       Then the use of a resource script is introduced in the context of the "CustomerView" dialog.
       Finally, the three major parts of a dialog are discussed. </para>
 
@@ -137,7 +125,7 @@
           The name given to the group of main classes
           that contribute to a single important business concept such as "customer" is "business
           component". Thus in the sample application, CustomerView, CustomerModel and CustomerData
-          are the three "main" component parts of the "Customer Business Component". (By the way, the
+          are three "main" component parts of the "Customer Business Component". (By the way, the
           interface of a business component is generally the interface of the Model main class).
           So - components can be made up of other components.</para>
 <para>Normally, each main class (plus any subsidiary classes) would be in its own file. However,
@@ -183,20 +171,21 @@
         editors available on the web. The author of this Guide happened to use a freeware product
         called "ResEdit", available from this link:
 </para>
-<para>http://www.resedit.net/</para>
+<para><ulink url="http://www.resedit.net/"><citetitle>ResEdit Home Page</citetitle></ulink></para>
 <para>Occasional hints about ResEdit usage will appear from time to time. In addition, comments
         about the use of resource file editors will assume ResEdit, and may well be inapplicable to
         other resource editors. If you plan to use ResEdit, please be aware that a number of
         Microsoft header files are required. These can be obtained at no charge from Microsoft
         Windows SDK under "Developer Tools" at this link: </para>
-<para>http://msdn.microsoft.com/en-us/windows/bb980924</para>
+<para><ulink url="http://msdn.microsoft.com/en-us/windows/bb980924"><citetitle>Microsoft
+        Windows Software Development</citetitle></ulink></para>
 <para>Or do a web search for "microsoft windows sdk". The header files should be downloaded into a
         folder, and the full path name of that folder must be specified to ResEdit in "Options -
         Preferences - General - Include paths". </para>
 <para>A resource file editor outputs a window layout to a "resource file", which ooDialog can then
   use to lay out controls on a dialog automatically. There are two kinds of resource file:
   a human-readable file with the extension ".rc" (and sometimes ".dlg"), and a binary (compiled)
-  file with the extension ".res".
+  file with the extension ".dll".
 </para>
 <para>Locate the folder <computeroutput>Exercise04</computeroutput>, and run
           <computeroutput>Startup.rex</computeroutput>. You see a "Customer" dialog. Explore the
@@ -284,7 +273,7 @@
 <para>Now look at <computeroutput>CustomerView.rex</computeroutput> in an editor. Look for the
           <computeroutput>CLASS</computeroutput> statement: <programlisting>
     <![CDATA[
-    ::CLASS 'CustomerView' SUBCLASS RcDialog PUBLIC
+    ::CLASS "CustomerView" SUBCLASS RcDialog PUBLIC
     ]]>
   </programlisting><computeroutput>CustomerView</computeroutput> is a subclass of the
         ooDialog built-in class <computeroutput>RcDialog</computeroutput>, which gets its dialog
@@ -323,8 +312,9 @@
       to set application defaults in the statement <emphasis role="italic">.Application~setDefaults(...)</emphasis>.
       <indexterm><primary>.Application</primary><secondary>setDefaults</secondary></indexterm>
       <indexterm><primary>setDefaults</primary></indexterm>
-      The first parameter - "O" for "only" - specifies that only the *.h file provided as the second paramter is to be
-      used for symbolic IDs. The IDs in this file are added to the application's global constants directory
+      The first parameter - "O" for "only" - specifies that only the *.h file provided
+      as the second parameter is to be used for symbolic IDs. The IDs in this file
+      are added to the application's global constants directory
       (aka "globalConstDir").
       <indexterm><primary>globalConstDir</primary></indexterm>
       The third (optional) parameter turns autoDetection off. Try commenting out this
@@ -372,16 +362,17 @@
             </listitem>
             <listitem>
               <para>The <emphasis role="italic">initDialog</emphasis> method attaches the menubar to
-                itself (that is, to the dialog instance). The remainder of the method is concerned
-                with specifying the active controls, which is addressed in the next section, and
-                finally invoking the <emphasis role="italic">getData</emphasis> and
+                itself (that is, to the dialog instance). The remainder of the method
+                specifies the active controls (addressed in the next section), and
+                finally invokes the <emphasis role="italic">getData</emphasis> and
                 <emphasis role="italic">showData</emphasis> methods. </para>
             </listitem>
           </orderedlist>
         </para>
-<para>The above sequence may seems a little heavy just to show a dialog. But much of the above
-          concerns not only getting the data to show in the dialog's controls, but also providing
-          for the user to modify it. Focusing only on what is required to display the dialog with no
+<para>The above sequence may seems a little heavy just to show a dialog. But much of it
+          is concerned not only with getting the data to show in the dialog's controls,
+          but also with providing
+          for the user to modify that data. Focusing only on what is required to display the dialog with no
           data, then the process requires only four methods and a total of 20 ooRexx statements
           including the <computeroutput>::Method</computeroutput> statements but excluding the
             <emphasis role="italic">say</emphasis> instructions. And if we didn't care too much for
@@ -389,8 +380,9 @@
           instructions as follows: <programlisting>
     <![CDATA[
     ::ROUTINE startCustomerView PUBLIC
-      .application~setDefaults("O", "CustomerView.h", .false)
+      .Application~setDefaults("O", "CustomerView.h", .false)
       dlg = .CustomerView~new("customerView.rc", IDD_CUST_DIALOG)
+      dlg~activate
     ::CLASS CustomerView SUBCLASS RcDialog PUBLIC
       ::METHOD init
         forward class (super) continue
@@ -416,7 +408,7 @@
 <para>An "active control" is a control that requires behavior to be programmed, while a "passive"
           control (such as text that never changes) appears only in the resource file, and is of
           no concern to the program. The behavior associated with an active control is of two kinds:
-          outbound or program-to-screen - i.e. providing the user with information, and inbound or
+          outbound or program-to-screen - i.e. providing the user with information; and inbound or
           keyboard/mouse-to-program - i.e. signaling the program about a user event. Outbound behavior means
           changing the state of a control - for example, disabling a pushbutton, or displaying text
           in an edit control. Inbound behavior is a user event that requires the program to take
@@ -428,7 +420,7 @@
           each control being created and managed by facilities built into the Windows operating
           system. However, the ooRexx programmer accesses controls via instances of ooDialog
           classes, so that each control on a window is represented by an ooRexx object
-          in the ooRexx dialog code that is really a proxy<indexterm>
+          in the ooRexx dialog code that serves as a proxy<indexterm>
             <primary>Proxy for controls</primary>
           </indexterm> for the underlying Windows control. And it is ooDialog that creates the
           required link between such ooRexx objects and the underlying Windows controls - and hence
@@ -447,7 +439,7 @@
           controls A' and B'. This is known as the "underlying dialog" (see the ooDialog Reference).
           Windows then displays this dialog on the screen (A Dialog''), where
           the controls (A'' and B'') are visible to the user. From then, any user interaction with
-          the visible dialog goes between the screen and the underling dialog. Of course, ooDialog
+          the visible dialog goes between the screen and the underlying dialog. Of course, ooDialog
           hooks into these interactions, and makes them available to the ooRexx dialog (e.g. by
           invoking its event handler methods). By the way, and rather obviously (but we'll
           say it anyway), this means that ooDialog cannot provide any GUI function that is not
@@ -466,14 +458,14 @@
   <![CDATA[
     custControls[ecCustNo] = self~newEdit("IDC_CUST_EDT_CUSTNO")
   ]]>
-  </programlisting> The variable <emphasis role="italic">ecCustNo</emphasis> (i.e. the
-          directory entry with index 'ecCustNo') is the proxy ooRexx object for the Windows edit
+  </programlisting> The item associated with the index <emphasis role="italic">ecCustNo</emphasis>
+    is the proxy ooRexx object for the Windows edit
           control that will contain the customer number; <emphasis role="italic">self</emphasis> is
           the dialog instance; <emphasis role="italic">newEdit</emphasis> is the method of the
           Dialog Object (see the ooDialog Reference) that creates the ooRexx proxy for
           the underlying Windows control; and <emphasis role="italic">IDC_CUST_EDT_CUSTNO</emphasis>
           is the control's symbolic ID from the <computeroutput>.h</computeroutput> file. After
-          execution of the statement, <emphasis role="italic">ecCustNo</emphasis> is an instance of
+          execution of the statement, <emphasis role="italic">custControls[ecCustNo]</emphasis> is an instance of
           the ooDialog <computeroutput>Edit</computeroutput> class (that is, an instance of the
           proxy edit control), and ooDialog has made sure, in the instance's creation, that it is
           internally linked via the underlying dialog to the edit control on the screen identified
@@ -672,7 +664,7 @@
 </para>
 </section> <!-- end of section 4.3.3.1 -->
 
-<section><title>The Update and Record Changes Methods</title><!-- section 4.3.3.2 -->
+<section><title>The update and recordChanges Methods</title><!-- section 4.3.3.2 -->
         <para>The <emphasis role="italic">update</emphasis> method "enables" the edit controls and
             the "Record Changes" button so that the user can make changes and then make the changes
             permanent (i.e. "record" them). Enabling edit controls is done by sending them the
@@ -682,17 +674,18 @@
     custControls[ecCustName]~setReadOnly(.false)
     ]]>
   </programlisting>
+  <indexterm></indexterm>
   </para>
   <para>Pushbuttons are enabled by invoking <emphasis role="italic">enableControl</emphasis>
-    on the dialog, the parameter being the control's symbolic ID
-    as shown in the first statement below. The second statement below puts focus on the
-    push-button - in this case by invoking the <emphasis role="italic">state</emphasis>
-    method of the control instance. Finally, the cursor is placed in the Customer Name edit
+    on the dialog with the control's symbolic ID as the single parameter, as shown
+    in the first statement below. The second statement below puts focus on the
+    push-button - in this case by invoking the button's <emphasis role="italic">state</emphasis>
+    method. Finally, the cursor is placed in the Customer Name edit
     control by invoking the dialog's <emphasis role="italic">focusControl</emphasis> method.
     <programlisting>
     <![CDATA[
     self~enableControl("IDC_CUST_BTN_RECORDCHANGES")
-    custControls[btnRecordChanges]~state = "FOCUS"  -- Put focus on the button
+    custControls[btnRecordChanges]~state = "FOCUS"     -- Put focus on the button
     self~focusControl("IDC_CUST_EDT_CUSTNAME")         -- place cursor in the CustName edit control.
     ]]>
     </programlisting>
