@@ -50,8 +50,6 @@
 #include <windows.h>
 #include <shlwapi.h>
 
-#define DllExport   __declspec( dllexport )
-
 #define snprintf _snprintf
 
 CRITICAL_SECTION     crit_sec = {0};

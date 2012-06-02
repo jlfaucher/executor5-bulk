@@ -40,12 +40,6 @@
 
 #include <ctype.h>
 
-/*
- * DllExport is used in the declaration of RexxGetPackage().  It is a Windows
- * only thing.
- */
-#define DllExport
-
 #define TRUE   1
 #define FALSE  0
 

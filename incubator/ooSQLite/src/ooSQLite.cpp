@@ -7422,10 +7422,4 @@ RexxPackageEntry ooSQLite_package_entry =
     ooSQLite_methods                     // the exported methods
 };
 
-// The package loading stub.  On Windows, the compiler optimizations for a
-// release build remove the stub.  So, we use DllExport to generate an export
-// directive in the object file for RexxGetPackage() to prevent that.
-// (DllExport is an empty macro on unixes.)
-BEGIN_EXTERN_C()
-    DllExport RexxPackageEntry *RexxEntry RexxGetPackage(void) { return &ooSQLite_package_entry; }
-END_EXTERN_C()
+OOREXX_GET_PACKAGE(ooSQLite);
