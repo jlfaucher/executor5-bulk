@@ -51,6 +51,7 @@ use arg cmdLine
     zipCmd     = 'zip -X9r'
     ext        = 'win.zip'
     setEnvFile = 'setOOSQLiteEnv.bat'
+    osBinFiles = 'bin\windows\*'
   end
   else do
     cpCmd      = 'cp'
@@ -62,6 +63,7 @@ use arg cmdLine
     zipCmd     = 'tar -czvf'
     ext        = '_lin.tgz'
     setEnvFile = 'setOOSQLiteEnv.sh'
+    osBinFiles = 'bin/linux/*'
   end
 
   svn_rev = cmdLine~strip('B', '"')
@@ -92,11 +94,11 @@ use arg cmdLine
   cpCmd 'ReleaseNotes' outDir
   cpCmd setEnvFile outDir
 
-  cpCmd 'bin'sl'linux'sl'*'  outDir'bin'
-  cpCmd 'doc'sl'*'           outDir'doc'
-  cpCmd 'examples'sl'*'      outDir'examples'
-  cpCmd 'misc'sl'*'          outDir'misc'
-  cpCmd 'testing'sl'*'       outDir'testing'
+  cpCmd osBinFiles        outDir'bin'
+  cpCmd 'doc'sl'*'        outDir'doc'
+  cpCmd 'examples'sl'*'   outDir'examples'
+  cpCmd 'misc'sl'*'       outDir'misc'
+  cpCmd 'testing'sl'*'    outDir'testing'
 
   zipCmd outFile outDir
 
