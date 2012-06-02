@@ -93,7 +93,10 @@ RexxObjectPtr       TheHiddenHelper       = NULLOBJECT;
 void RexxEntry ooSQLiteLoad(RexxThreadContext *c)
 {
     int rc = sqlite3_initialize();
+
+#ifdef OOSQLDBG
     printf("\nooSQLiteLoad() entered sqlite3_initialize() rc=%d\n\n", rc);
+#endif
 
     TheTrueObj    = c->True();
     TheFalseObj   = c->False();
@@ -135,7 +138,9 @@ void RexxEntry ooSQLiteLoad(RexxThreadContext *c)
  */
 void RexxEntry ooSQLiteUnload(RexxThreadContext *c)
 {
+#ifdef OOSQLDBG
     printf("\nooSQLiteUnload() entered\n\n");
+#endif
 
 #ifndef _WIN32
     sqlite3_mutex_free(crit_sec);
@@ -2432,7 +2437,7 @@ RexxMethod1(RexxObjectPtr, oosqldb_uninit, CSELF, pCSelf)
     {
         pCooSQLiteDB pCdb = (pCooSQLiteDB)pCSelf;
 
-#if 1
+#ifdef OOSQLDBG
         printf("ooSQLiteDB::uninit() database connection=%p closed=%d\n", pCdb->db, pCdb->closed);
 #endif
         if ( ! pCdb->closed && pCdb->db != NULL )
@@ -2445,7 +2450,9 @@ RexxMethod1(RexxObjectPtr, oosqldb_uninit, CSELF, pCSelf)
 
             if ( rc == SQLITE_OK )
             {
+#ifdef OOSQLDBG
                 printf("ooSQLiteDB::uninit() did close database first try\n");
+#endif
 
                 pCdb->db = NULL;
                 pCdb->closed = true;
@@ -3681,7 +3688,7 @@ RexxMethod1(RexxObjectPtr, oosqlstmt_uninit, CSELF, pCSelf)
     {
         pCooSQLiteStmt pCstmt = (pCooSQLiteStmt)pCSelf;
 
-#if 1
+#ifdef OOSQLDBG
         printf("ooSQLiteStmt::uninit() prepared statement=%p finalized=%d\n", pCstmt->stmt, pCstmt->finalized);
 #endif
 
@@ -4624,7 +4631,7 @@ RexxMethod1(RexxObjectPtr, oosqlmtx_uninit, CSELF, pCSelf)
     {
         pCooSQLiteMutex pCmtx = (pCooSQLiteMutex)pCSelf;
 
-#if 1
+#ifdef OOSQLDBG
         printf("ooSQLiteMutex::uninit() mutex=%p closed=%d\n", pCmtx->mutex, pCmtx->closed);
 #endif
 
