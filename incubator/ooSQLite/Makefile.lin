@@ -96,8 +96,12 @@ OUT_DIR=build/release
 BIN_DIR=bin/linux
 
 
-SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles -ldl -lpthread  -lrexx -lrexxapi -L.
-EXE_LFLAGS=-D_REENTRANT=1 -L$(OUT_DIR) -ldl -lpthread
+SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles
+EXE_LFLAGS=-D_REENTRANT=1
+
+SO_LLIBS=-ldl -lpthread  -lrexx -lrexxapi -L.
+EXE_LLIBS=-L$(OUT_DIR) -ldl -lpthread
+
 CFLAGS=-c -fPIC $(BASEFLAGS)
 
 
@@ -118,10 +122,10 @@ $(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.lin
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
 
 $(OUT_DIR)/liboosqlite.so: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o
-	gcc $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.so $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o
+	gcc $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.so $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(EXE_LLIBS)
 
 $(OUT_DIR)/oosqlite3: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o
-	gcc $(EXE_LFLAGS) -o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o
+	gcc $(EXE_LFLAGS) -o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o $(EXE_LLIBS)
 
 $(BIN_DIR)/liboosqlite.so: $(OUT_DIR)/liboosqlite.so
 	cp $(OUT_DIR)/liboosqlite.so $(BIN_DIR) 1>/dev/null 2>&1
