@@ -37,58 +37,49 @@
     #
     #########################################################################
 -->
-<!-- Chapter05 - Using Binary Resource Dialogs	               	  v00-10 03Apr12
+<!-- Chapter05 - Using Binary Resource Dialogs	               	  v01-00 03Jun12
      5.1 - Dialog Initiation - using the newInstance class method.
-     5.2 - Compiling a binary resource file
-     5.3 - Differences between RcDialog and ResDialog
-     5.4 - New controls (radio buttons, menu items with underscores, ... )
-     5.5 - New Structures
-     5.6 - Dialog Design
+     5.2 - Using a binary resource file
+     5.3 - Dialog Controls
+     5.4 - Code Structure
+     5.5 - Dialog Design
+     5.6 - Controlling Cancel
 
      Changes:
-     v00-01: First version
-     v00-02 08Aug11: Completed the chapter.
-     v00-03 13Aug11: Minor mods after pdf printed.
-     v00-04 15Aug11: Corrected error - modal because of ~execute, not 'showtop'.
-     v00-05 17Aug11: Updated to reflect change to using .application~setdefaults.
-     v00-06 29Nov11: Updated to discuss disabling close (or doing something to
-                     over-ride normal Windows behaviour).
-     v00-07 26Jan12: Various minor updates to wording.
-     v00-08 21Feb12: Added section 5.3.5 about Min/Max buttons on a dialog.
-     v00-09 31Mar12: Correction to an xref tag.
-     v00-10 03Apr12: Corrections after reading the Guide PDF.
+     v01-00 03Jun12: First version
 -->
 
 <chapter id="chapFive">
     <title>Using Binary Resource Dialogs</title>
-    <indexterm>
-      <primary>Binary Resource Dialogs</primary>
-    </indexterm>
-    <indexterm>
-      <primary>ProductView component</primary>
-    </indexterm>
-    <indexterm>
-      <primary>ResDialog</primary>
-    </indexterm>
-    <para>This chapter uses a "Product View" class as the context for discussing several topics:
-      first, dialog initiation, second the use of binary resource file (that is, *.dll files) and
-      the differences in using binary resource files as opposed to script resource files, third
-      several dialog controls not used in previous exercises, fourth some changes to program
-      structure, and fifth a brief visit to some dialog design considerations. </para>
-    <para>First, run <computeroutput>Startup.rex</computeroutput> in the
+    <indexterm><primary>Binary Resource Dialogs</primary></indexterm>
+    <indexterm><primary>ProductView component</primary></indexterm>
+    <indexterm><primary>ResDialog</primary></indexterm>
+    <para>This chapter uses a "Product View" class as the context for discussing
+      the following topics:
+      first, <link linkend="chap05-initdialog">dialog initiation</link>;
+      second <link linkend="chap05-resfile">the use of binary resource files</link>
+      (that is, *.dll files) and the differences in using these as opposed to script resource files;
+      third <link linkend="chap05-dlgcontrols">dialog controls</link> not met in previous exercises;
+      fourth some changes to <link linkend="chap05-codestructure">program structure</link>;
+      fifth a brief visit to some <link linkend="chap05-dlgdesign">dialog design considerations</link>;
+      and sixth, <link linkend="chap05-cancel">controlling cancel</link>.
+    </para>
+    <para>But first, run <computeroutput>Startup.rex</computeroutput> in the
         <computeroutput>Exercise05</computeroutput> folder. A ProductView dialog appears. Check out
       the behavior of the dialog - there are several new behaviors compared to
         <computeroutput>CustomerView</computeroutput>. In particular, aside from controls not used
       in previous exercises, the behavior includes more realistic application-level edit checks -
       that is, implementation of some (fairly trivial) "business rules". For example,
-      try changing the UOM (Unit of Measure) from 6 to 20.</para>
+      menu-select "Actions - "Update Product", then change the UOM (Unit of Measure) from 6 to 20,
+      and then press the "Save Changes" button.</para>
+
   <section id="chap05-initdialog">
       <title>Dialog Initiation</title>
       <!-- section 5.1 -->
       <para>Previous exercise have used either the "application" or "startup" program, or a separate
         ooRexx routine, for dialog initiation. By "initiation" is meant the two statements
           "<computeroutput>dlg=.[DialogClassName]~new</computeroutput>" and
-          "<computeroutput>dlg~execute(...)</computeroutput>". In other words, the responsibility
+          "<computeroutput>dlg~execute(�)</computeroutput>". In other words, the responsibility
         for issuing these two initiation statements - which are essential for the creation of the
         dialog - have previously been outside the dialog class. If they could be moved
           <emphasis role="italic">within</emphasis> the class, then encapsulation would be enhanced
@@ -121,6 +112,7 @@
           to be specified.</para>
   </section>
     <!-- End of section 5.1 -->
+
     <!-- section 5.2 -->
   <section id="chap05-resfile"><title>Using a Binary Resource File</title>
       <indexterm><primary>Binary resource files</primary></indexterm>
@@ -157,31 +149,29 @@
       <indexterm><primary>Resource files</primary><secondary>ResDialog</secondary></indexterm>
       <indexterm><primary>ResDialog</primary><secondary>Resource files needed</secondary></indexterm>
     </para>
-    <para>Finally, it's worth mentioning the freely-available Microsoft SDK
-      available at
-      <ulink url="http://msdn.microsoft.com/en-us/windows/desktop/bb980924">
-      <citetitle>Microsoft Windows Software Development</citetitle></ulink>
-      which can also be used for compiling resource-only DLLs. The resource compiler
-      is called <computeroutput>RC.exe</computeroutput>, and outputs a *.res file.
-      This is them linked using <computeroutput>link.exe</computeroutput> to produce
-      the DLL. For example, the following
-      illustrates <computeroutput>ProductView.rc</computeroutput> being compiled
-      then linked to produce <computeroutput>ProductView.dll</computeroutput>:
-      <programlisting>
+    <para>Finally, it's worth mentioning the freely-available Microsoft SDK available at <ulink
+            url="http://msdn.microsoft.com/en-us/windows/desktop/bb980924">
+            <citetitle>Microsoft Windows Software Development</citetitle></ulink> which can also be
+          used for compiling resource-only DLLs. The resource compiler is called
+            <computeroutput>RC.exe</computeroutput>, and outputs a *.res file. This is them linked
+          using <computeroutput>link.exe</computeroutput> to produce the DLL. For example, the
+          following illustrates <computeroutput>ProductView.rc</computeroutput> being compiled then
+          linked to produce <computeroutput>ProductView.dll</computeroutput>: <programlisting>
       <![CDATA[
-        C:...>rc ProductView.rc
+        C:�>rc ProductView.rc
         Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
         Copyright (C) Microsoft Corporation.  All rights reserved.
 
-        C:...>link ProductView.res /NOENTRY /DLL /MACHINE:X86 /OUT:ProductView.dll
+        C:�>link ProductView.res /NOENTRY /DLL /MACHINE:X86 /OUT:ProductView.dll
         Microsoft (R) Incremental Linker Version 10.00.30319.01
         Copyright (C) Microsoft Corporation.  All rights reserved.
       ]]>
-      </programlisting>
-      Sucessful compilation depends on both the PATH and "INCLUDE" environment variable
-      containing the appropriate settings, as follows (at the time of writing and assuming
-      everything is on the C: drive):
-      <programlisting>
+      </programlisting> Successful compilation depends on both the PATH and the "INCLUDE"
+          environment variable containing the appropriate settings, as follows (at the time of
+          writing and assuming everything is on the C: drive): <indexterm>
+            <primary>Compiling a resource file</primary>
+          </indexterm>
+          <programlisting>
       <![CDATA[
         PATHS
           C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin;
@@ -192,11 +182,9 @@
           INCLUDE=C:\Program Files\Microsoft SDKs\Windows\v7.0A\Include;
           C:\Program Files\Microsoft Visual Studio 10.0\VC\include
       ]]>
-      </programlisting>
-      The first two paths should be added automatically when the SDK is installed.
-      If the third (or any of the other two) is/are missing, then add it/them using
-      the PATH command, e.g.:
-    </para>
+      </programlisting> The first two paths should be added automatically when the SDK is
+          installed. If the third (or any of the other two) is/are missing, then add it/them using
+          the PATH command, e.g.: </para>
     <para>
       <computeroutput>path=%PATH%;C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE
       </computeroutput>
@@ -211,17 +199,15 @@
         C:\>set INCLUDE=C:\Program Files\Microsoft SDKs\Windows\v7.0A\Include;C:\Program Files\Microsoft
 Visual Studio 10.0\VC\include</computeroutput>
       </para>
-  </section>
+  </section>      <!-- End of section 5.2.1 -->
 
-      <!-- End of section 5.2.1 -->
-      <section>
-        <title>Differences between RcDialog and ResDialog</title>
-        <!-- section 5.2.2 -->
+  <section><title>Differences between RcDialog and ResDialog</title>  <!-- section 5.2.2 -->
         <para>The Exercise05 folder contains a Product View component, the main class
             <computeroutput>ProductView</computeroutput> being a subclass of the ooDialog
             <computeroutput>ResDialog</computeroutput> class. The difference between
             <computeroutput>ResDialog</computeroutput> and <computeroutput>RcDialog</computeroutput>
-          is mainly in the handling of the menubar. Console outputs from dialog creation for
+          (aside from the resource file) is mainly in the handling of the menubar.
+          Console outputs from dialog creation for
             <computeroutput>CustomerView</computeroutput> (an
             <computeroutput>RcDialog</computeroutput> subclass) and ProductView (a
             <computeroutput>ResDialog</computeroutput> subclass) are as follows:
@@ -246,10 +232,10 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
             <computeroutput>CustomerView</computeroutput> - the menu could have been created in the
             <emphasis role="italic">init</emphasis> or the
             <emphasis role="italic">initDialog</emphasis> methods.
-            See <link linkend="apx-dlgsequences" endterm="dlgsequences.title"></link> for a
+            (See <link linkend="apx-dlgsequences" endterm="dlgsequences.title"></link> for a
           comparison of dialog startup methods in an <computeroutput>RcDialog</computeroutput>,
           a <computeroutput>ResDialog</computeroutput> and a
-          <computeroutput>UserDialog</computeroutput>.
+          <computeroutput>UserDialog</computeroutput>.)
         </para>
         <para>A third and less visible difference is that when a dialog has multiple resources such
           as bitmaps and/or icons, the number of files required for an RcDialog class can result in
@@ -257,14 +243,19 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           other hand, needs only two files: the *.dll and the *.h. </para>
       </section>
       <!-- End of section 5.2.2 -->
+
     </section>
     <!-- End of section 5.2 -->
+
     <section>
-      <title>Dialog Controls</title>
+      <title id="chap05-dlgcontrols">Dialog Controls</title>
       <!-- section 5.3 -->
-      <para>There are four features of <computeroutput>ProductView</computeroutput>'s controls that
+      <para>There are five features of <computeroutput>ProductView</computeroutput>'s controls that
         have not yet been introduced in this Guide. They are: radio buttons, a numeric-only edit
-        field, menu accelerators, and an image control (in the "About" dialog). </para>
+        field, menu accelerators, an image control (in the "About" dialog), and
+        providing the dialog with minimize and maximize buttons (not really controls,
+        but useful to discuss here). </para>
+
       <section>
         <title>Radiobuttons</title>
         <!-- section 5.3.1 -->
@@ -294,6 +285,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           done in the <emphasis role="italic">showData</emphasis> method. </para>
       </section>
       <!-- end of section 5.3.1 -->
+
       <section id="chap05-numedit">
         <title>The Numeric Edit Control</title>
         <!-- section 5.3.2 -->
@@ -363,6 +355,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
         </para>
       </section>
       <!-- end of section 5.3.2 -->
+
       <section id="chap05-accels">
         <title>Menu Accelerators</title>
         <!-- Section 5.3.3 -->
@@ -373,7 +366,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           item is "Update Product" - with an underscore
           beneath the "U". Pressing the "U" key will then initiate the Update Product behavior. The
           underlined letter is known as an "accelerator" key. It is produced by placing an ampersand
-          (&amp;) immediately before the letter that's to be the accelerator key on the *.rc file.
+          (&amp;) immediately before the letter that's to be the accelerator key in the *.rc file.
           In <computeroutput>ProductView.rc</computeroutput>, you'll see the Update menu item
           defined as <computeroutput>MENUITEM "&amp;Update Product",
             IDM_PROD_UPDATE</computeroutput>. </para>
@@ -384,41 +377,40 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           mouse-opened). </para>
       </section>
       <!-- End of section 5.3.3 -->
-      <section id="chap05-about">
-        <title>The "About" Dialog</title>
-        <!-- section 5.3.4 -->
-        <para>Product View has a "Help" menu with one entry: "About...". Clicking this menu item
+
+      <section id="chap05-about"><title>The "About" Dialog</title>  <!-- section 5.3.4 -->
+        <para>Product View has a "Help" menu with one entry: "About�". Clicking this menu item
           surfaces a simple "about" dialog, containing an image of a well-wrapped product.
           Double-clicking the image results in a message box acknowledging the action. This section
           discusses firstly how the image is created, and second making the image "active". The code
           for the About dialog is in the class <computeroutput>AboutDialog</computeroutput> towards the end of the
             <computeroutput>ProductView.rex</computeroutput> file.</para>
-        <section id="chap05-imagecontrol">
-          <title>Creating the Image</title>
-          <!-- section 5.3.4.1 -->
+
+        <section id="chap05-imagecontrol"><title>Creating the Image</title> <!-- section 5.3.4.1 -->
           <indexterm><primary>Image</primary><secondary>creating</secondary></indexterm>
           <indexterm><primary>Creating an Image</primary></indexterm>
           <para>An image is created by placing a bitmap (a file of type "*.bmp") into a "Picture
             Control". The bitmap and Picture control are both defined in the *.rc file, but placing
-            the image into the picture control is done in code. </para>
-          <section id="chap05-defimage">
-            <title id="defimage.title">Defining the Image</title>
+            the image into the picture control is done in code. The following sections provide more
+            detail. </para>
+
+        <section id="chap05-defimage"><title id="defimage.title">Defining the Image</title>
             <!-- section 5.3.4.1.1 -->
             <para>Assuming the bitmap image is already created as a bitmap file (a *.bmp file),
               then, using ResEdit, the *.rc file is created as follows (assuming you've already
               created a ResEdit project): <orderedlist>
                 <listitem>
-                  <para>Select File --> Add a resource... --> Bitmap. Two options are presented:
+                  <para>Select File --> Add a resource� --> Bitmap. Two options are presented:
                     "create from an existing file", or "create a new resource". Click the former,
                     which results in a File Open dialog.</para>
                 </listitem>
                 <listitem>
                   <para>Select the bitmap file and click "Open". This produces a "Path designation"
                     messagebox with two options: "Absolute path" or "Relative path". It is usually
-                    best to choose "relative path". On clicking "OK" ...</para>
+                    best to choose "relative path". On clicking "OK" �</para>
                 </listitem>
                 <listitem>
-                  <para>...a bitmap resource (called "IDB_BITMAP1" or some such) is added to the
+                  <para>�a bitmap resource (named "IDB_BITMAP1" or some such) is added to the
                     project and the bitmap image is displayed. If you want to change the name, then
                     right-click on the bitmap in the Resources pane and select "Rename". Note that
                     the bitmap file is shown in the bitmap resource's "Path" property</para>
@@ -434,30 +426,21 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
                     Static Control - text, graphics, image, and owner-drawn. In the *.rc file, these
                     are defined by their "styles". A "style" is an essential and basic concept in
                     Windows. While many styles are shown in the ooDialog Reference, the full
-                    authoritative list of styles is found in the <ulink
-                      url="http://msdn.microsoft.com/en-us/library/bb773169%28v=VS.85%29.aspx">
+                    authoritative list of styles is found in the
+                    <ulink url="http://msdn.microsoft.com/en-us/library/bb773169%28v=VS.85%29.aspx">
                       <citetitle>Microsoft Control Library</citetitle></ulink>. Look up the Static
-                    Control, and you'll find around thirty different styles. <indexterm>
-                      <primary>Controls</primary>
-                      <secondary>Styles</secondary>
-                    </indexterm>
-                    <indexterm>
-                      <primary>Styles</primary>
-                      <secondary>Controls</secondary>
-                    </indexterm>
-                    <indexterm>
-                      <primary>Microsoft</primary>
-                      <secondary>Controls Library</secondary>
-                    </indexterm>
-                    <indexterm>
-                      <primary>Controls Library</primary>
-                    </indexterm>
+                    Control, and you'll find around thirty different styles.
+                    <indexterm><primary>Controls</primary><secondary>Styles</secondary></indexterm>
+                    <indexterm><primary>Styles</primary><secondary>Controls</secondary></indexterm>
+                    <indexterm><primary>Microsoft</primary><secondary>Controls Library</secondary></indexterm>
+                    <indexterm><primary>Controls Library</primary></indexterm>
                   </para>
                 </listitem>
               </orderedlist>
             </para>
           </section>
           <!-- end of section 5.3.4.1.1 -->
+
           <section>
             <title>Mapping an Image to a Picture Control</title>
             <!-- section 5.3.4.1.2 -->
@@ -476,37 +459,40 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
                 The second statement uses the ResourceImages's <emphasis role="italic"
                 >getImage</emphasis> method to return an instance of
               the <computeroutput>Image</computeroutput> class. The last statement creates a static
-              control proxy and sets the image in it. </para>
+              control proxy and sets the image in it. (And the following two statements
+              in the method create a font and apply it to the static text in the dialog). </para>
           </section>
           <!-- end of section 5.3.4.1.2 -->
+
         </section>
         <!-- End of section 5.3.4.1 -->
+
         <section>
           <title>Making the Image "Active"</title>
           <!-- Section 5.3.4.2 -->
           <para>Making the image respond to mouse clicks is merely a matter of defining the
             image-static control in the *.rc file as having the style "SS_NOTIFY" which, using
-            ResEdit (and as mentioned in <xref linkend="chap05-defimage">), merely requires the
+            ResEdit (and as mentioned in <link linkend="chap05-defimage">Defining the Image</link>), merely requires the
             "Notify" attribute to be set to "True". When the image is double-clicked, the dialog is
             sent an event. This event is connected to the
-            <emphasis role="italic">showMsgBox</emphasis> method by the statement
-            <emphasis role="italic">self~connectStaticNotify( ... showMsgBox)</emphasis>.
-            The <emphasis role="italic">showMsgBox</emphasis> method then displays a messagebox. </para>
-          <para>You may notice the <emphasis role="italic">leaving</emphasis> method. <indexterm>
-              <primary>leaving</primary>
-              <secondary>method</secondary>
-            </indexterm>
-            <indexterm>
-              <primary>methods</primary>
-              <secondary>leaving</secondary>
-            </indexterm> This is invoked automatically when the underlying Windows dialog is being
-            closed. Its purpose is to allow for clean-up. In the case
-            of the About dialog, the two resources used (an image and a font) are let go. This is
-            not really necessary in this simple application, but is a good habit to get into.</para>
+            <emphasis role="italic">showMsgBox</emphasis> event-handler method by the statement
+            <emphasis role="italic">self~connectStaticNotify( � showMsgBox)</emphasis>.
+            The <emphasis role="italic">showMsgBox</emphasis>
+            method then displays a messagebox.
+            </para>
+          <para>You may notice the <emphasis role="italic">leaving</emphasis> method.
+          <indexterm><primary>leaving</primary><secondary>method</secondary></indexterm>
+          <indexterm><primary>methods</primary><secondary>leaving</secondary></indexterm>
+          This is invoked automatically when the underlying Windows dialog is being
+          closed. Its purpose is to allow for clean-up. In the case
+          of the About dialog, the two resources used (an image and a font) are released. This is
+          not really necessary in this simple application, but is a good habit to get into.</para>
         </section>
         <!-- End of section 5.3.4.2 -->
+
       </section>
       <!-- End of section 5.3.4 -->
+
       <section><title>Minimize and Maximize Buttons</title>  <!-- Section 5.3.5 -->
       <indexterm><primary>Minimize Button</primary></indexterm>
       <indexterm><primary>Maximize Button</primary></indexterm>
@@ -542,19 +528,18 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
         the minimize and/or maximize buttons.
       </para>
       </section> <!-- End of section 5.3.5 -->
-    </section>
-    <!-- End of section 5.3 -->
+      </section> <!-- End of section 5.3   -->
 
-<section><title>Code Structure</title>  <!-- section 5.4 -->
+<section id="chap05-codestructure"><title>Code Structure</title>  <!-- section 5.4 -->
 <para>Although broadly similar to the code structure in Exercise04, Exercise05
   introduces several new structural concepts (at least new in this Guide). These are: the use of "data
   types", differentiation between view data and application data, more than one dialog in a file,
-  externalized strings, and a more complex dialog design. Finally, there is a brief discussion on closing dialogs.</para>
+  externalized strings, and a more complex dialog design. </para>
 
 <section><title>Data Types</title>  <!-- Section 5.4.1 -->
 <para>Most non-trivial software systems consist of a number of components.
-  Each of these could in principle be written in a different programming language - assuming of course that all
-  the languages are supported by common invocation mechanisms. Within each component there are typically some number of
+  Each of these could in principle be written in a different programming language (assuming of course that all
+  the languages share are supported by common invocation mechanisms). Within each component there are typically some number of
   classes, and these interact privately. Because interaction between components tends to
   be "data-heavy",
   it is usual to define specific "data-only" classes, so that everyone can be sure of using the same data structures.
@@ -587,12 +572,13 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           application code across the system can use the same normative data formats.) Following
           this principle, the first thing the event handler method <emphasis role="italic"
             >saveChanges</emphasis> does is to invoke the dialog's method <emphasis role="italics"
-            >xformView2App</emphasis> (transform view to app format). For example, price data may
-          have been entered with one or no decimal digits. Conversely, reformatting for display is
+            >xformView2App</emphasis> (transform view to app format). For example, a new price may
+          have been entered with one or zero decimal digits, and so needs to be converted
+          correctly to a whole number of cents. Conversely, reformatting for display is
           handled in the <emphasis>showData</emphasis> method. The end result is that all other
           methods in <computeroutput>ProductView</computeroutput> can assume that data is in the
           format defined by the data type. And this simplifies things a great deal - especially
-          given that one never wants to confuse 10000 for ten thousand dollars when it's really 100! </para>
+          given that one never wants to confuse 10000 for ten thousand dollars when it's really 100 dollars! </para>
 </section>  <!-- End of section 5.4.2 -->
 
 <section><title>Multiple Dialogs per File</title>  <!-- Section 5.4.3 -->
@@ -630,11 +616,12 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           While not good practice, this is done in the Exercises for code readability reasons - the
           alternative being to add more code to the dialogs. </para>
 </section>  <!-- End of section 5.4.4 -->
+</section>  <!-- End of section 5.4 -->
 
-<section><title>Dialog Design</title>  <!-- Section 5.4.5 -->
+<section><title id="chap05-dlgdesign">Designing a Dialog</title>  <!-- Section 5.5 -->
   <para>A program does only what its programmer specifies. But a user could do anything. This is why
           designing dialogs is often quite complicated. What could the user do? What must the dialog
-          do? These are two questions that sometimes seem to intertwine in an irresolvable mess. In
+          do? These are two questions that sometimes seem to intertwine into an irresolvable mess. In
             <computeroutput>ProductView</computeroutput>, the most complex piece of behavior is when
           the user chooses the <emphasis role="italic">update</emphasis> menu item. A useful way to
           plot the possible interactions is to use a UML Activity Diagram, with user actions on one
@@ -653,13 +640,14 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           affecting what the code needs to do. This is helped a great deal by providing a "refresh"
           function, so that if the user gets mixed up in entering data, s/he can go back to the
           beginning and start again. </para>
-</section>  <!-- End of section 5.4.5 -->
+</section>  <!-- End of section 5.5 -->
 
-<section id="chap05-cancel"><title id="chap05-cancel.title">Controlling Dialog Cancel</title>  <!-- Section 5.4.6 -->
-<para>Windows provides for three ways for the user to cancel a dialog: by pressing the Esc key,
+<section id="chap05-cancel"><title id="chap05-cancel.title">Controlling Dialog Cancel</title>
+<!-- Section 5.6 -->
+<para>Windows provides three ways for the user to cancel a dialog: by pressing the Esc key,
       by clicking on the "close" icon at the extreme top right of the dialog, or by clicking
       the "close" action on the system menu (click the icon at the extreme top left of the window).
-      All three of these actions result in a "cancel" message being sent to the dialog code, and
+      All three of these actions result in a "cancel" message being sent to the dialog, and
       the default superclass behavior is silently to close the dialog.
       In general, since these default
       actions are standard for all Windows dialogs, they should not be over-ridden except perhaps
@@ -705,8 +693,7 @@ CustomerView-initDialog-01.                         ProductView-initDialog-01
           </orderedlist>
         </para>
 
-</section>  <!-- End of section 5.4.6 -->
-
-</section>   <!-- end of section 5.4 -->
+</section>  <!-- End of section 5.6 -->
 
 </chapter>
+
