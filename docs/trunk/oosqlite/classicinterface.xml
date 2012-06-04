@@ -1,27 +1,6 @@
-<?xml version="1.0" standalone="no">
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN"
-[
-<!ENTITY legalstuff              SYSTEM "legalstuff.xml">
-<!ENTITY preface                 SYSTEM "preface.xml">
-<!ENTITY overview                SYSTEM "overview.xml">
-<!ENTITY OOInterface             SYSTEM "oointerface.xml">
-<!ENTITY ooSQLite                SYSTEM "oosqliteClass.xml">
-<!ENTITY ooSQLiteDB              SYSTEM "oosqliteDB.xml">
-<!ENTITY ooSQLiteStmt            SYSTEM "oosqliteStmt.xml">
-<!ENTITY ooSQLiteMutex           SYSTEM "oosqliteMutex.xml">
-<!ENTITY ooSQL                   SYSTEM "oosqlClass.xml">
-<!ENTITY classicInterface        SYSTEM "classicinterface.xml">
-<!ENTITY oosqlFunctions          SYSTEM "oosqlFunctions.xml">
-<!ENTITY notices                 SYSTEM "../shared/notices.xml">
-<!ENTITY cpl                     SYSTEM "../shared/CPLv1.0.xml">
-<!ENTITY gethelp                 SYSTEM "../shared/gethelp.xml">
-<!ENTITY genindex                SYSTEM "genindex.xml">
-<!ENTITY svnrev                  SYSTEM "svnrev.tmp">
-<!ENTITY datepub                 SYSTEM "datepub.tmp">
-]>
 <!--#########################################################################
     #
-    # Description: Open Object Rexx: ooSQLite Reference SGML file.
+    # Description: Open Object Rexx: ooDialog Reference SGML file.
     #
     # Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.
     #
@@ -58,32 +37,37 @@
     #
     #########################################################################
 -->
-<book>
-<bookinfo>
-<title>Open Object Rexx&trade;</title>
-<subtitle>ooSQLite Reference</subtitle>
-<titleabbrev>ooRexx ooSQLite Reference</titleabbrev>
+<chapter id="chpClassicInteface"><title>The Functional Interface to SQLite</title>
+<indexterm><primary>Classic Rexx Interface</primary></indexterm>
+<para>
+  some text
+</para>
+<para>
+  more text
+</para>
+<para>
+  The following table lists the routines used in the functional (classic Rexx) interface of the ooSQLite package:
+</para>
+<table id="tblOOSQLiteRoutines" frame="all"> <title>ooSQLite Routine Listing</title>
+<tgroup cols="2">
+<colspec colwidth="1.75in">
+<thead>
+<row>
+<entry>Routine</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry><link linkend="rtnOosqlDataCount">oosqlDataCount()</link></entry>
+<entry>description</entry>
+</row>
+</tbody></tgroup>
+</table>
 
-&legalstuff;
+<!-- oosqlFunctions.xml file with all functions  START -->
+&oosqlFunctions
+<!-- oosqlFunctions.xml file with all functions    END   -->
 
-</bookinfo>
 
-
-&preface;                <!-- About This Book -->
-<!-- start of body -->
-&overview;               <!-- Brief overview -->
-&OOInterface;            <!-- Object Orientated interface start -->
-&ooSQLite;               <!-- ooSQLite Class -->
-&ooSQLiteDB;             <!-- ooSQLite Db Connection class -->
-&ooSQLiteStmt;           <!-- ooSQLite prepared statement Class -->
-&ooSQL;                  <!-- ooSQLite Constant Class -->
-&classicInterface;       <!-- Classic Rexx interface start -->
-&oosqlFunctions;         <!-- The classic Rexx functions -->
-<!-- start of appendix -->
-&notices;                <!-- Notices -->
-&cpl;                    <!-- CPL -->
-
-<!-- start of index -->
-&genindex;               <!-- Index -->
-
-</book>
+</chapter>

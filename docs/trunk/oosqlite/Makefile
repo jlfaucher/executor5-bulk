@@ -46,10 +46,18 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 
 xml_FILES = oosqlite.xml \
+	     classicinterface.xml \
+	     legalstuff.xml \
+	     oointerface.xml \
+	     oosqlClass.xml \
+	     oosqlFunctions.xml \
+	     oosqliteClass.xml \
+	     oosqliteDB.xml \
+	     oosqliteMutex.xml \
+	     oosqliteStmt.xml \
 	     overview.xml \
 	     preface.xml \
 	     ../shared/notices.xml \
-	     legalstuff.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
 
@@ -71,10 +79,10 @@ all: pdf html
 
 pdf: oosqlite.pdf
 
-html: oosqlit-html.zip
+html: oosqlite-html.zip
 
 oosqlite.pdf: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp datepub.tmp
-	docbook2pdf -d ../shared/oorexx.print.dsl oodialog.xml
+	docbook2pdf -d ../shared/oorexx.print.dsl oosqlite.xml
 
 book1.htm:  $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp datepub.tmp
 	docbook2html -d ../shared/oorexx.html.dsl oosqlite.xml
@@ -99,5 +107,5 @@ datepub.tmp:
 
 
 clean:
-	rm -f *.log *.aux *.out *.fmt oodialog.pdf genindex.xml *.htm *.zip HTML.index *.tmp
+	rm -f *.log *.aux *.out *.fmt oosqlite.pdf genindex.xml *.htm *.zip HTML.index *.tmp
 
