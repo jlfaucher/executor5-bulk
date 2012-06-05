@@ -45,7 +45,6 @@ HTML_STYLESHEET = /usr/share/sgml/docbook/dsssl-stylesheets/html/docbook.dsl \
 
 
 xml_FILES = oodguide.xml \
-	     appendix01.xml \
 	     appendix02.xml \
 	     appendix03.xml \
 	     appendix04.xml \

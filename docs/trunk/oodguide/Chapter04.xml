@@ -37,7 +37,7 @@
     #
     #########################################################################
 -->
-<!-- Chapter04 - Using Resource Dialogs			          v01-00 02Jun12
+<!-- Chapter04 - Using Resource Dialogs			          v01-00 05Jun12
      4.1   Naming and Coding Conventions
      4.1.1 Naming Conventions
      4.1.2 Coding Conventions
@@ -50,7 +50,7 @@
      4.3.3.2 The update and recordChanges Methods
 
      Changes:
-     v01-00 02Jun12: First version.
+     v01-00 05Jun12: First version.
 -->
 <chapter id="chapFour">
   <title>Using Resource Dialogs</title>
@@ -483,7 +483,7 @@
   self~connectButtonEvent("IDC_CUST_BTN_RECORDCHANGES","CLICKED",recordChanges)
 ]]>
 </programlisting>This is an example of specifying an "event handler" (inbound active behavior).
-     <indexerm><primary>Event handler</primary></indexerm>
+     <indexterm><primary>Event handler</primary></indexterm>
           Suppose the user presses the "Record Changes" button. The Windows runtime signals the
           event, which ooDialog picks up. The above statement declares that this event - i.e.that
           the pushbutton identified in the <computeroutput>.h</computeroutput> file as
@@ -501,7 +501,7 @@
           the ooDialog Reference. Note also that event-handling methods must be PUBLIC,
           since they are invoked from outside the ooRexx dialog class by the underlying
           ooDialog code (and of course an ooRexx method is public unless PRIVATE is specified).
-          <indexerm><primary>Event handler</primary><secondary>Public method</secondary></indexerm>
+          <indexterm><primary>Event handler</primary><secondary>Public method</secondary></indexterm>
           <indexterm><primary>Unguarded method</primary></indexterm></para>
 <para>Specification of active controls is generally done in the <emphasis role="italic"
             >initDialog</emphasis> method. Indeed, in the
@@ -674,7 +674,6 @@
     custControls[ecCustName]~setReadOnly(.false)
     ]]>
   </programlisting>
-  <indexterm></indexterm>
   </para>
   <para>Pushbuttons are enabled by invoking <emphasis role="italic">enableControl</emphasis>
     on the dialog with the control's symbolic ID as the single parameter, as shown
