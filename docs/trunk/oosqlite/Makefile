@@ -50,9 +50,9 @@ xml_FILES = oosqlite.xml \
 	     legalstuff.xml \
 	     oointerface.xml \
 	     oosqlClass.xml \
+	     oosqliteConnection.xml \
 	     oosqlFunctions.xml \
 	     oosqliteClass.xml \
-	     oosqliteDB.xml \
 	     oosqliteMutex.xml \
 	     oosqliteStmt.xml \
 	     overview.xml \
