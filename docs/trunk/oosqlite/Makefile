@@ -49,8 +49,8 @@ xml_FILES = oosqlite.xml \
 	     classicinterface.xml \
 	     legalstuff.xml \
 	     oointerface.xml \
-	     oosqlClass.xml \
 	     oosqliteConnection.xml \
+	     oosqliteConstants.xml \
 	     oosqlFunctions.xml \
 	     oosqliteClass.xml \
 	     oosqliteMutex.xml \
