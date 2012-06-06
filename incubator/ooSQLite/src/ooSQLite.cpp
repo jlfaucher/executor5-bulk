@@ -294,6 +294,47 @@ static inline RexxStringObject ooSQLiteErr(RexxThreadContext *c, wholenumber_t r
 
 
 /**
+ * Returns an upper-cased copy of the string.
+ *
+ * @param str   The string to copy and upper case.
+ *
+ * @return      A pointer to a new string, or null on a memory allocation
+ *              failure.
+ *
+ * The caller is responsible for freeing the returned string.  Memory is
+ * malloc'd using the SQLite malloc so the the SQLite free must be used to
+ * release the memory.
+ */
+char *strdupupr(const char *str)
+{
+    char *retStr = NULL;
+    if ( str )
+    {
+        size_t l = strlen(str);
+        l++;
+
+        retStr = (char *) sqlite3_malloc((int)l);
+        if ( retStr )
+        {
+            char *p;
+            for ( p = retStr; *str; ++str )
+            {
+                if ( ('a' <= *str) && (*str <= 'z') )
+                {
+                    *p++ = *str - ('a' - 'A');
+                }
+                else
+                {
+                    *p++ = *str;
+                }
+            }
+            *p = '\0';
+        }
+    }
+    return retStr;
+}
+
+/**
  * Returns a result set in the form of an array of 'records.'
  *
  * Each record is an array of the column valuess for that record, except for the
@@ -429,7 +470,7 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
  * makes no check that the numbers provided are actually SQLite defines.
  *
  * This is not part of the SQLite library, it is an ooSQLite only interface.
- * Used by both the object orientated (.ooSQL) and classic Rexx interfaces.
+ * Used by both the object orientated (.ooSQLiteConstants) and classic Rexx interfaces.
  *
  * @param c
  * @param args
@@ -1112,7 +1153,7 @@ static int execCallBack(void *data, int ncols, char **values, char **headers)
 
 
 /**
- * Retrieves the CSelf pointer for a ooSQLiteDB object when the database object
+ * Retrieves the CSelf pointer for a ooSQLiteConnection object when the database object
  * is not the direct object the method was invoked on.  This performs a scoped
  * CSelf lookup.
  *
@@ -1121,14 +1162,14 @@ static int execCallBack(void *data, int ncols, char **values, char **headers)
  *
  * @return A pointer to the CSelf of the database object.
  *
- * @assumes  The caller has ensured db is in fact an ooSQLiteDB Rexx database
+ * @assumes  The caller has ensured db is in fact an ooSQLiteConnection Rexx database
  *           object.
  */
-inline pCooSQLiteDB dbToCSelf(RexxThreadContext *c, RexxObjectPtr db)
+inline pCooSQLiteConn dbToCSelf(RexxThreadContext *c, RexxObjectPtr db)
 {
-    return (pCooSQLiteDB)c->ObjectToCSelf(db, TheOOSQLiteDBClass);
+    return (pCooSQLiteConn)c->ObjectToCSelf(db, TheOOSQLiteDBClass);
 }
-inline pCooSQLiteDB dbToCSelf(RexxMethodContext *c, RexxObjectPtr db)
+inline pCooSQLiteConn dbToCSelf(RexxMethodContext *c, RexxObjectPtr db)
 {
     return dbToCSelf(c->threadContext, db);
 }
@@ -1157,12 +1198,12 @@ inline pCooSQLiteStmt stmtToCSelf(RexxMethodContext *c, RexxObjectPtr stmt)
 }
 
 
-void noOpenDBException(RexxThreadContext *context, pCooSQLiteDB pCdb)
+void noOpenDBException(RexxThreadContext *context, pCooSQLiteConn pConn)
 {
     char buffer[256];
-    if ( pCdb->fileName != NULL )
+    if ( pConn->fileName != NULL )
     {
-        snprintf(buffer, sizeof(buffer), "The %s data base is not open", pCdb->fileName);
+        snprintf(buffer, sizeof(buffer), "The %s data base is not open", pConn->fileName);
     }
     else
     {
@@ -1210,42 +1251,42 @@ void invalidMutexException(RexxThreadContext *context, pCooSQLiteMutex pCmtx)
  * Need to revisit this thinking.
  *
  * @param c            Method context we are operating in.
- * @param pCdb         Pointer to the CSelf for an ooSQLiteDB object.
+ * @param pConn         Pointer to the CSelf for an ooSQLiteConnection object.
  * @param rc           SQLITE error code.
  * @param isSQLiteErr  True if this is an error code returned from the SQLite
  *                     API, false if it is our own ooRexx extension error.
  */
-static RexxStringObject ooSQLiteErr(RexxMethodContext *c, pCooSQLiteDB pCdb, int rc, CSTRING msg, bool isSQLiteErr)
+static RexxStringObject ooSQLiteErr(RexxMethodContext *c, pCooSQLiteConn pConn, int rc, CSTRING msg, bool isSQLiteErr)
 {
-    pCdb->lastErrMsg  = ooSQLiteErr(c->threadContext, rc, msg, isSQLiteErr);
-    pCdb->lastErrCode = rc;
+    pConn->lastErrMsg  = ooSQLiteErr(c->threadContext, rc, msg, isSQLiteErr);
+    pConn->lastErrCode = rc;
 
-    c->SetObjectVariable("rxLastErrMsg", pCdb->lastErrMsg);
+    c->SetObjectVariable("rxLastErrMsg", pConn->lastErrMsg);
 
-    return pCdb->lastErrMsg;
+    return pConn->lastErrMsg;
 }
 
-static inline pCooSQLiteDB requiredDBCSelf(RexxMethodContext *c, void *pCSelf)
+static inline pCooSQLiteConn requiredDBCSelf(RexxMethodContext *c, void *pCSelf)
 {
     if ( pCSelf == NULL )
     {
-        baseClassIntializationException(c, "ooSQLiteDB");
+        baseClassIntializationException(c, "ooSQLiteConnection");
     }
-    return (pCooSQLiteDB)pCSelf;
+    return (pCooSQLiteConn)pCSelf;
 }
 
-static inline pCooSQLiteDB requiredDB(RexxMethodContext *c, void *pCSelf)
+static inline pCooSQLiteConn requiredDB(RexxMethodContext *c, void *pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDBCSelf(c, pCSelf);
-    if ( pCdb != NULL )
+    pCooSQLiteConn pConn = requiredDBCSelf(c, pCSelf);
+    if ( pConn != NULL )
     {
-        if ( pCdb->db == NULL )
+        if ( pConn->db == NULL )
         {
-            noOpenDBException(c->threadContext, pCdb);
-            pCdb = NULL;
+            noOpenDBException(c->threadContext, pConn);
+            pConn = NULL;
         }
     }
-    return pCdb;
+    return pConn;
 }
 
 static inline pCooSQLiteMutex requiredMtxCSelf(RexxMethodContext *c, void *pCSelf)
@@ -1346,7 +1387,7 @@ inline static void setCallbackVar(RexxMethodContext *c, RexxBufferObject buf, Ca
  * which should be released so it will be garbage collected, if needed.
  *
  * @param c   Rexx method context we are operating in.  Assumed to be, and
- *            should be, an ooSQLiteDB method.
+ *            should be, an ooSQLiteConnection method.
  *
  * @param cb  Identifies the callback type so that the object variable can be
  *            retrieved.
@@ -1375,7 +1416,7 @@ static void cleanupCallback(RexxMethodContext *c, CallbackType cb)
  * the database connection is closed, or at uninit()
  *
  * @param c Rexx method context we are operating in.  Assumed to be, and should
- *          be, an ooSQLiteDB method.
+ *          be, an ooSQLiteConnection method.
  */
 static void cleanupCallbacks(RexxMethodContext *c)
 {
@@ -1413,11 +1454,11 @@ static void cleanupThisCallback(RexxThreadContext *c, RexxBufferObject buf)
 
 
 /**
- *  Methods for the .ooSQL class.
+ *  Methods for the .ooSQLiteConstants class.
  */
-#define OOSQL_CLASS    "ooSQL"
+#define OOSQL_CLASS    "ooSQLiteConstants"
 
-/** ooSQL::merge()  [Class method]
+/** ooSQLiteConstants::merge()  [Class method]
  *
  *
  */
@@ -1660,9 +1701,9 @@ RexxMethod1(POINTER, oosql_test_cls, POINTER, db)
 
 
 /**
- *  Methods for the .ooSQLiteDB class.
+ *  Methods for the .ooSQLiteConnection class.
  */
-#define OOSQLITEDB_CLASS    "ooSQLiteDB"
+#define OOSQLITEDB_CLASS    "ooSQLiteConnection"
 #define STMTSET_ATTRIBUTE   "ooSQLiteDBStmtBag"
 
 
@@ -1675,18 +1716,18 @@ RexxMethod1(POINTER, oosql_test_cls, POINTER, db)
  *
  * ooSQLite keeps track of all prepared statements, that have not been
  * finalized, for any open database connection.  During the uninit() method for
- * an ooSQLiteDB object, if the connection has not been closed, it is closed.
+ * an ooSQLiteConnection object, if the connection has not been closed, it is closed.
  * At this time, if there are any unfinalized prepared statements, they are
  * finalized so that the database connection will close.
  *
  * @param c
- * @param pCdb
+ * @param pConn
  */
-static void ensureFinalized(RexxMethodContext *c, pCooSQLiteDB pCdb)
+static void ensureFinalized(RexxMethodContext *c, pCooSQLiteConn pConn)
 {
     CRITICAL_SECTION_ENTER
 
-    RexxArrayObject stmts = (RexxArrayObject)c->SendMessage0(pCdb->stmtBag, "ALLITEMS");
+    RexxArrayObject stmts = (RexxArrayObject)c->SendMessage0(pConn->stmtBag, "ALLITEMS");
     size_t          count = c->ArrayItems(stmts);
 
     for ( size_t i = 1; i <= count; i++ )
@@ -1701,7 +1742,7 @@ static void ensureFinalized(RexxMethodContext *c, pCooSQLiteDB pCdb)
         pCstmt->tail      = NULL;
         pCstmt->finalized = true;
 
-        c->SendMessage1(pCdb->stmtBag, "REMOVE", stmt);
+        c->SendMessage1(pConn->stmtBag, "REMOVE", stmt);
     }
 
     CRITICAL_SECTION_LEAVE
@@ -1713,17 +1754,17 @@ static void ensureFinalized(RexxMethodContext *c, pCooSQLiteDB pCdb)
  * it.  Returns .nil if not found.
  *
  * @param c
- * @param pCdb
+ * @param pConn
  * @param stmt
  *
  * @return RexxObjectPtr
  */
-static RexxObjectPtr findStatement(RexxMethodContext *c, pCooSQLiteDB pCdb, sqlite3_stmt *stmt)
+static RexxObjectPtr findStatement(RexxMethodContext *c, pCooSQLiteConn pConn, sqlite3_stmt *stmt)
 {
     CRITICAL_SECTION_ENTER
 
     RexxObjectPtr   result = TheNilObj;
-    RexxArrayObject stmts  = (RexxArrayObject)c->SendMessage0(pCdb->stmtBag, "ALLITEMS");
+    RexxArrayObject stmts  = (RexxArrayObject)c->SendMessage0(pConn->stmtBag, "ALLITEMS");
     size_t          count  = c->ArrayItems(stmts);
 
     for ( size_t i = 1; i <= count; i++ )
@@ -1745,64 +1786,64 @@ static RexxObjectPtr findStatement(RexxMethodContext *c, pCooSQLiteDB pCdb, sqli
 
 
 /**
- * Saves the database file name in an object variable of an ooSQLiteDB object
+ * Saves the database file name in an object variable of an ooSQLiteConnection object
  * when the object is instantiated.
  *
  * @param c
- * @param pCdb
+ * @param pConn
  * @param file
  */
-static void setDBInitStatusFile(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING file)
+static void setDBInitStatusFile(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING file)
 {
     RexxStringObject rxName = c->String(file);
     c->SetObjectVariable("rxFileName", rxName);
 
-    pCdb->rxFileName = rxName;
-    pCdb->fileName   = file;
+    pConn->rxFileName = rxName;
+    pConn->fileName   = file;
 }
 
 /**
- * Provides the final initialization of an ooSQLiteDB object during
+ * Provides the final initialization of an ooSQLiteConnection object during
  * instantiation.  This initialization is dependent on whether the underlying
  * SQLite database connection was opened with or without error.
  *
  * @param c
- * @param pCdb
+ * @param pConn
  * @param db
  * @param rc
  * @param self
  *
  * @return bool
  */
-static bool setDBInitStatus(RexxMethodContext *c, pCooSQLiteDB pCdb, sqlite3 *db, int rc, RexxObjectPtr self)
+static bool setDBInitStatus(RexxMethodContext *c, pCooSQLiteConn pConn, sqlite3 *db, int rc, RexxObjectPtr self)
 {
     bool result = true;
     if ( rc )
     {
-        pCdb->lastErrCode = sqlite3_errcode(db);
-        pCdb->lastErrMsg  = c->String(sqlite3_errmsg(db));
-        pCdb->initCode    = rc;
+        pConn->lastErrCode = sqlite3_errcode(db);
+        pConn->lastErrMsg  = c->String(sqlite3_errmsg(db));
+        pConn->initCode    = rc;
 
-        sqlite3_close(pCdb->db);
-        pCdb->db = NULL;
+        sqlite3_close(pConn->db);
+        pConn->db = NULL;
 
         result = false;
     }
     else
     {
-        pCdb->lastErrMsg  = c->String("No error");
-        pCdb->rexxSelf    = self;
+        pConn->lastErrMsg  = c->String("No error");
+        pConn->rexxSelf    = self;
 
         RexxObjectPtr set = rxNewSet(c);
-        pCdb->stmtBag = set;
+        pConn->stmtBag = set;
         c->SendMessage1(self, "OOSQLITEDBSTMTBAG=", set);
 
         // Here we enable things that are enabled / disabled on a per database
         // connection basis that are set by default for ooSQLite.
-        sqlite3_extended_result_codes(pCdb->db, 1);
+        sqlite3_extended_result_codes(pConn->db, 1);
     }
 
-    c->SetObjectVariable("rxLastErrMsg", pCdb->lastErrMsg);
+    c->SetObjectVariable("rxLastErrMsg", pConn->lastErrMsg);
 
     return result;
 }
@@ -2097,17 +2138,17 @@ PragmaType getPragmaType(RexxThreadContext *c, CSTRING name)
  * walCheckpoint  -> Returns a result set array that has a single row.
  *
  * @param c
- * @param pCdb
+ * @param pConn
  * @param name
  * @param pragma
  *
  * @return A Rexx object as described above on success, or an error return code
  *         with message.
  */
-RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, RexxObjectPtr value, PragmaType pragma)
+RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name, RexxObjectPtr value, PragmaType pragma)
 {
     char     buf[256];
-    sqlite3 *db = pCdb->db;
+    sqlite3 *db = pConn->db;
 
     if ( value == NULLOBJECT )
     {
@@ -2134,7 +2175,7 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING nam
             }
             else
             {
-                result = ooSQLiteErr(c, pCdb, rc, sqlite3_errmsg(db), true);
+                result = ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
             }
 
         }
@@ -2145,7 +2186,7 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING nam
     }
     else
     {
-        result = ooSQLiteErr(c, pCdb, rc, sqlite3_errmsg(db), true);
+        result = ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
     }
 
     sqlite3_finalize(stmt);
@@ -2157,7 +2198,7 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING nam
  * Processes a query only pragma that returns an array of records.
  *
  * @param c
- * @param pCdb
+ * @param pConn
  * @param name
  * @param value
  * @param pragma
@@ -2167,10 +2208,10 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING nam
  * @note  If there are no rows returned by the pragma statement, then an empty
  *        array is returned.
  */
-RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, RexxObjectPtr value, PragmaType pragma)
+RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name, RexxObjectPtr value, PragmaType pragma)
 {
     char     buf[256];
-    sqlite3 *db = pCdb->db;
+    sqlite3 *db = pConn->db;
 
     if ( pragma == collationList || pragma == databaseList || pragma == compileOptions )
     {
@@ -2195,7 +2236,7 @@ RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, 
     }
     else
     {
-        result = ooSQLiteErr(c, pCdb, rc, sqlite3_errmsg(db), true);
+        result = ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
     }
 
     sqlite3_finalize(stmt);
@@ -2207,25 +2248,25 @@ RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, 
  * Processes a pragma that is expected to return a single value.
  *
  * @param c
- * @param pCdb
+ * @param pConn
  * @param name
  * @param pragma
  *
  * @return RexxObjectPtr
  */
-RexxObjectPtr pragmaGet(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, PragmaType pragma)
+RexxObjectPtr pragmaGet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name, PragmaType pragma)
 {
     char buf[128];
     snprintf(buf, sizeof(buf), "PRAGMA %s;", name);
 
     sqlite3_stmt *stmt;
-    sqlite3      *db = pCdb->db;
+    sqlite3      *db = pConn->db;
 
     int rc = sqlite3_prepare_v2(db, buf, (int)strlen(buf) + 1, &stmt, NULL);
 
     if ( rc != SQLITE_OK )
     {
-        return ooSQLiteErr(c, pCdb, rc, sqlite3_errmsg(db), true);
+        return ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
     }
 
     RexxObjectPtr result;
@@ -2239,7 +2280,7 @@ RexxObjectPtr pragmaGet(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, P
     else
     {
         snprintf(buf, sizeof(buf), "Unexpected result, no data returned from pragma %s", name);
-        result = ooSQLiteErr(c, pCdb, OO_UNEXPECTED_RESULT, buf, false);
+        result = ooSQLiteErr(c, pConn, OO_UNEXPECTED_RESULT, buf, false);
     }
 
     sqlite3_finalize(stmt);
@@ -2252,7 +2293,7 @@ RexxObjectPtr pragmaGet(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, P
  * Processes a pragma that is setting a value
  *
  * @param c
- * @param pCdb
+ * @param pConn
  * @param name
  * @param value
  * @param pragma
@@ -2262,10 +2303,10 @@ RexxObjectPtr pragmaGet(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, P
  * @note  We are only called internally, so we know for sure that 'value' is not
  *        the NULLOBJECT.
  */
-RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, RexxObjectPtr value, PragmaType pragma)
+RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name, RexxObjectPtr value, PragmaType pragma)
 {
     char     buf[256];
-    sqlite3 *db = pCdb->db;
+    sqlite3 *db = pConn->db;
 
     snprintf(buf, sizeof(buf), "PRAGMA %s(%s);", name, c->ObjectToStringValue(value));
 
@@ -2274,7 +2315,7 @@ RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, R
     int rc = sqlite3_prepare_v2(db, buf, (int)strlen(buf) + 1, &stmt, NULL);
     if ( rc != SQLITE_OK )
     {
-        return ooSQLiteErr(c, pCdb, rc, sqlite3_errmsg(db), true);
+        return ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
     }
 
     RexxObjectPtr result = TheZeroObj;
@@ -2287,11 +2328,11 @@ RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, R
         {
             // This is unexpected to me, but maybe it is okay?
             snprintf(buf, sizeof(buf), "Unexpected result, data returned from pragma %s", name);
-            result = ooSQLiteErr(c, pCdb, OO_UNEXPECTED_RESULT, buf, false);
+            result = ooSQLiteErr(c, pConn, OO_UNEXPECTED_RESULT, buf, false);
         }
         else
         {
-            return ooSQLiteErr(c, pCdb, rc, sqlite3_errmsg(db), true);
+            return ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
         }
     }
 
@@ -2301,9 +2342,9 @@ RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteDB pCdb, CSTRING name, R
 
 }
 
-/** ooSQLiteDB:Class::init()
+/** ooSQLiteConnection:Class::init()
  */
-RexxMethod1(RexxObjectPtr, oosqldb_init_cls, OSELF, self)
+RexxMethod1(RexxObjectPtr, oosqlconn_init_cls, OSELF, self)
 {
     if ( isOfClassType(context, self, OOSQLITEDB_CLASS) )
     {
@@ -2314,72 +2355,72 @@ RexxMethod1(RexxObjectPtr, oosqldb_init_cls, OSELF, self)
 }
 
 
-/** ooSQLiteDB::closed  [attribute get]
+/** ooSQLiteConnection::closed  [attribute get]
  */
-RexxMethod1(logical_t, oosqldb_getClosed_atr, CSELF, pCSelf)
+RexxMethod1(logical_t, oosqlconn_getClosed_atr, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDBCSelf(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
     {
         return 1;
     }
-    return pCdb->closed;
+    return pConn->closed;
 }
 
-/** ooSQLiteDB::fileName  [attribute get]
+/** ooSQLiteConnection::fileName  [attribute get]
  */
-RexxMethod1(RexxStringObject, oosqldb_getFileName_atr, CSELF, pCSelf)
+RexxMethod1(RexxStringObject, oosqlconn_getFileName_atr, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDBCSelf(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
     {
         return NULLOBJECT;
     }
-    return pCdb->rxFileName;
+    return pConn->rxFileName;
 }
 
-/** ooSQLiteDB::initCode  [attribute get]
+/** ooSQLiteConnection::initCode  [attribute get]
  */
-RexxMethod1(int, oosqldb_getInitCode_atr, CSELF, pCSelf)
+RexxMethod1(int, oosqlconn_getInitCode_atr, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDBCSelf(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
     {
         return -1;
     }
-    return pCdb->initCode;
+    return pConn->initCode;
 }
 
-/** ooSQLiteDB::lastErrCode  [attribute get]
+/** ooSQLiteConnection::lastErrCode  [attribute get]
  */
-RexxMethod1(int, oosqldb_getLastErrCode_atr, CSELF, pCSelf)
+RexxMethod1(int, oosqlconn_getLastErrCode_atr, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDBCSelf(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
     {
         return -1;
     }
-    return pCdb->lastErrCode;
+    return pConn->lastErrCode;
 }
 
-/** ooSQLiteDB::lastErrMsg  [attribute get]
+/** ooSQLiteConnection::lastErrMsg  [attribute get]
  */
-RexxMethod1(RexxStringObject, oosqldb_getLastErrMsg_atr, CSELF, pCSelf)
+RexxMethod1(RexxStringObject, oosqlconn_getLastErrMsg_atr, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDBCSelf(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
     {
         return NULLOBJECT;
     }
-    return pCdb->lastErrMsg;
+    return pConn->lastErrMsg;
 }
 
-/** ooSQLiteDB::init()
+/** ooSQLiteConnection::init()
  *
  *  @param file     [required]  Name of the database for this sqlite database
  *                              connection.
  *
- *  @param flags    [optional]  Flags for opening the database.  Use the .ooSQL
+ *  @param flags    [optional]  Flags for opening the database.  Use the .ooSQLiteConstants
  *                              constants.
  *
  *  @param vfsName  [optional]  The name of the sqlite3_vfs object that defines
@@ -2389,11 +2430,11 @@ RexxMethod1(RexxStringObject, oosqldb_getLastErrMsg_atr, CSELF, pCSelf)
  *
  *
  */
-RexxMethod4(RexxObjectPtr, oosqldb_init, CSTRING, file, OPTIONAL_int32_t, _flags, OPTIONAL_CSTRING, vfsName, OSELF, self)
+RexxMethod4(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _flags, OPTIONAL_CSTRING, vfsName, OSELF, self)
 {
 
-    // Get a buffer for the ooSQLiteDB CSelf.
-    RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLiteDB));
+    // Get a buffer for the ooSQLiteConnection CSelf.
+    RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLiteConn));
     if ( cselfBuffer == NULLOBJECT )
     {
         outOfMemoryException(context->threadContext);
@@ -2402,8 +2443,8 @@ RexxMethod4(RexxObjectPtr, oosqldb_init, CSTRING, file, OPTIONAL_int32_t, _flags
 
     context->SetObjectVariable("CSELF", cselfBuffer);
 
-    pCooSQLiteDB pCdb = (pCooSQLiteDB)context->BufferData(cselfBuffer);
-    memset(pCdb, 0, sizeof(CooSQLiteDB));
+    pCooSQLiteConn pConn = (pCooSQLiteConn)context->BufferData(cselfBuffer);
+    memset(pConn, 0, sizeof(CooSQLiteConn));
 
     int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
     if ( argumentExists(2) )
@@ -2411,75 +2452,75 @@ RexxMethod4(RexxObjectPtr, oosqldb_init, CSTRING, file, OPTIONAL_int32_t, _flags
         flags = _flags;
     }
 
-    setDBInitStatusFile(context, pCdb, file);
+    setDBInitStatusFile(context, pConn, file);
 
-    int rc = sqlite3_open_v2(file, &pCdb->db, flags, NULL);
+    int rc = sqlite3_open_v2(file, &pConn->db, flags, NULL);
 
-    setDBInitStatus(context, pCdb, pCdb->db, rc, self);
+    setDBInitStatus(context, pConn, pConn->db, rc, self);
 
     return NULLOBJECT;
 }
 
-/** ooSQLiteDB::uninit()
+/** ooSQLiteConnection::uninit()
  *
  *  At this point, the only purpose of uninit() is to ensure that an open
  *  database connection is closed.  There is no allocated memory in the
- *  CooSQLiteDB struct that needs to be freed, which could change in the future.
+ *  CooSQLiteConn struct that needs to be freed, which could change in the future.
  *
  *  If we attempt to close the connection and get the busy return, we call
  *  interrupt().  The SQLite doc makes this sound a little dangerous if the
  *  database should close on another thread before the call to interrupt
  *  returns, something to keep in mind.
  */
-RexxMethod1(RexxObjectPtr, oosqldb_uninit, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, oosqlconn_uninit, CSELF, pCSelf)
 {
     if ( pCSelf != NULLOBJECT )
     {
-        pCooSQLiteDB pCdb = (pCooSQLiteDB)pCSelf;
+        pCooSQLiteConn pConn = (pCooSQLiteConn)pCSelf;
 
 #ifdef OOSQLDBG
-        printf("ooSQLiteDB::uninit() database connection=%p closed=%d\n", pCdb->db, pCdb->closed);
+        printf("ooSQLiteConnection::uninit() database connection=%p closed=%d\n", pConn->db, pConn->closed);
 #endif
-        if ( ! pCdb->closed && pCdb->db != NULL )
+        if ( ! pConn->closed && pConn->db != NULL )
         {
             cleanupCallbacks(context);
 
-            ensureFinalized(context, pCdb);
+            ensureFinalized(context, pConn);
 
-            int rc = sqlite3_close(pCdb->db);
+            int rc = sqlite3_close(pConn->db);
 
             if ( rc == SQLITE_OK )
             {
 #ifdef OOSQLDBG
-                printf("ooSQLiteDB::uninit() did close database first try\n");
+                printf("ooSQLiteConnection::uninit() did close database first try\n");
 #endif
 
-                pCdb->db = NULL;
-                pCdb->closed = true;
+                pConn->db = NULL;
+                pConn->closed = true;
                 return TheZeroObj;
             }
 
             // Not sure what to do if rc != SQLITE_BUSY ...
             if ( rc == SQLITE_BUSY )
             {
-                sqlite3_interrupt(pCdb->db);
+                sqlite3_interrupt(pConn->db);
 
                 size_t i = 0;
                 do
                 {
                     sqlite3_sleep(100);
-                    rc = sqlite3_close(pCdb->db);
+                    rc = sqlite3_close(pConn->db);
                 } while ( rc == SQLITE_BUSY && ++i <= 10);
             }
 
             if ( rc == SQLITE_OK )
             {
-                pCdb->db = NULL;
-                pCdb->closed = true;
+                pConn->db = NULL;
+                pConn->closed = true;
             }
             else
             {
-                printf("ooSQLiteDB::uninit() database connection not closed successfully. rc=%d\n", rc);
+                printf("ooSQLiteConnection::uninit() database connection not closed successfully. rc=%d\n", rc);
             }
         }
     }
@@ -2488,7 +2529,7 @@ RexxMethod1(RexxObjectPtr, oosqldb_uninit, CSELF, pCSelf)
 }
 
 
-/** ooSQLiteDB::busyHandler()
+/** ooSQLiteConnection::busyHandler()
  *
  *  Installs a user defined busy handler.
  *
@@ -2521,7 +2562,7 @@ RexxMethod1(RexxObjectPtr, oosqldb_uninit, CSELF, pCSelf)
  *
  *          There can only be one busy handler installed.  Setting a new busy
  *          handler automatically clears any previously installed handler.  Note
- *          that invoking ooSQLiteDB::busyTimeOut() can also set or clear the
+ *          that invoking ooSQLiteConnection::busyTimeOut() can also set or clear the
  *          busy handler.
  *
  *          The busy handler should not take any actions which modify the
@@ -2531,59 +2572,59 @@ RexxMethod1(RexxObjectPtr, oosqldb_uninit, CSELF, pCSelf)
  *          A busy handler must not close the database connection or prepared
  *          statement that invoked the busy handler.
  */
-RexxMethod4(RexxObjectPtr, oosqldb_busyHandler, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
+RexxMethod4(RexxObjectPtr, oosqlconn_busyHandler, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
             OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pCdb->db, callbackObj, mthName, userData, busyHandler, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, busyHandler, 0);
 }
 
-/** ooSQLiteDB::busyTimeOut()
+/** ooSQLiteConnection::busyTimeOut()
  *
  *  @remarks sqlite3_busy_timeout() installs a SQLite timeout handler.  This has
  *           the side effect of removing any existing handler, which could have
  *           been a user registered handler.  So, we need to clean up a possible
  *           user registered handler.
  */
-RexxMethod2(int, oosqldb_busyTimeOut, int, ms, CSELF, pCSelf)
+RexxMethod2(int, oosqlconn_busyTimeOut, int, ms, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    int rc = sqlite3_busy_timeout(pCdb->db, ms);
+    int rc = sqlite3_busy_timeout(pConn->db, ms);
     cleanupCallback(context, busyHandler);
 
     return rc;
 }
 
 
-/** ooSQLiteDB::changes()
+/** ooSQLiteConnection::changes()
  *
  *
  */
-RexxMethod1(int, oosqldb_changes, CSELF, pCSelf)
+RexxMethod1(int, oosqlconn_changes, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return sqlite3_changes(pCdb->db);
+    return sqlite3_changes(pConn->db);
 }
 
 
-/** ooSQLiteDB::close()
+/** ooSQLiteConnection::close()
  *
- *  Closes the database connection for this ooSQLiteDB object.
+ *  Closes the database connection for this ooSQLiteConnection object.
  *
  *
  *
@@ -2593,21 +2634,21 @@ RexxMethod1(int, oosqldb_changes, CSELF, pCSelf)
  *            we don't call it an error if the user calls close when the
  *            connection has already been closed.
  */
-RexxMethod1(int, oosqldb_close, CSELF, pCSelf)
+RexxMethod1(int, oosqlconn_close, CSELF, pCSelf)
 {
     int rc = SQLITE_MISUSE;
 
-    pCooSQLiteDB pCdb = requiredDBCSelf(context, pCSelf);
-    if ( pCdb != NULL )
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn != NULL )
     {
         cleanupCallbacks(context);
 
-        rc = sqlite3_close(pCdb->db);
+        rc = sqlite3_close(pConn->db);
 
         if ( rc == SQLITE_OK )
         {
-            pCdb->db     = NULL;
-            pCdb->closed = true;
+            pConn->db     = NULL;
+            pConn->closed = true;
         }
         else if ( rc == SQLITE_BUSY )
         {
@@ -2619,7 +2660,7 @@ RexxMethod1(int, oosqldb_close, CSELF, pCSelf)
 }
 
 
-/** ooSQLiteDB::commitHook()
+/** ooSQLiteConnection::commitHook()
  *
  *  Registers a callback method to be invoked whenever a transaction is
  *  committed.
@@ -2651,49 +2692,49 @@ RexxMethod1(int, oosqldb_close, CSELF, pCSelf)
  *          callback returns non-zero, then the COMMIT is converted into a
  *          ROLLBACK.  The Rexx method *must* return a whole number.
  */
-RexxMethod4(RexxObjectPtr, oosqldb_commitHook, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
+RexxMethod4(RexxObjectPtr, oosqlconn_commitHook, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
             OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pCdb->db, callbackObj, mthName, userData, commitHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, commitHook, 0);
 }
 
 
-/** ooSQLiteDB::dbFileName()
+/** ooSQLiteConnection::dbFileName()
  *
  *
  */
-RexxMethod2(RexxObjectPtr, oosqldb_dbFileName, CSTRING, name, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, oosqlconn_dbFileName, CSTRING, name, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->UnsignedInt32(SQLITE_MISUSE);
     }
 
-    return safeRexxStringRx(context->threadContext, sqlite3_db_filename(pCdb->db, name));
+    return safeRexxStringRx(context->threadContext, sqlite3_db_filename(pConn->db, name));
 }
 
 
-/** ooSQLiteDB::dbMutex()
+/** ooSQLiteConnection::dbMutex()
  *
  *
  *
  */
-RexxMethod1(RexxObjectPtr, oosqldb_dbMutex, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, oosqlconn_dbMutex, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    sqlite3_mutex *mtx = sqlite3_db_mutex(pCdb->db);
+    sqlite3_mutex *mtx = sqlite3_db_mutex(pConn->db);
 
     // mtx could be null, but we just let the ooSQLiteMutex class take care of it.
     RexxArrayObject args = context->ArrayOfThree(context->WholeNumber(SQLITE_MUTEX_RECURSIVE_DB),
@@ -2704,90 +2745,90 @@ RexxMethod1(RexxObjectPtr, oosqldb_dbMutex, CSELF, pCSelf)
 }
 
 
-/** ooSQLiteDB::dbReadOnly()
+/** ooSQLiteConnection::dbReadOnly()
  *
  *
  */
-RexxMethod2(int, oosqldb_dbReadOnly, CSTRING, name, CSELF, pCSelf)
+RexxMethod2(int, oosqlconn_dbReadOnly, CSTRING, name, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return sqlite3_db_readonly(pCdb->db, name);
+    return sqlite3_db_readonly(pConn->db, name);
 }
 
 
-/** ooSQLiteDB::dbReleaseMemory()
+/** ooSQLiteConnection::dbReleaseMemory()
  *
  *
  *
  */
-RexxMethod1(int, oosqldb_dbReleaseMemory, CSELF, pCSelf)
+RexxMethod1(int, oosqlconn_dbReleaseMemory, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return sqlite3_db_release_memory(pCdb->db);
+    return sqlite3_db_release_memory(pConn->db);
 }
 
 
-/** ooSQLiteDB::dbStatus()
+/** ooSQLiteConnection::dbStatus()
  *
  *
  *
  */
-RexxMethod4(int, oosqldb_dbStatus, int, param, RexxObjectPtr, _result, OPTIONAL_logical_t, reset, CSELF, pCSelf)
+RexxMethod4(int, oosqlconn_dbStatus, int, param, RexxObjectPtr, _result, OPTIONAL_logical_t, reset, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return genDbStatus(context->threadContext, pCdb->db, param, _result, reset, 2);
+    return genDbStatus(context->threadContext, pConn->db, param, _result, reset, 2);
 }
 
 
-/** ooSQLiteDB::errCode()
- *  ooSQLiteDB::extendedErrCode()
+/** ooSQLiteConnection::errCode()
+ *  ooSQLiteConnection::extendedErrCode()
  *
  *
  */
-RexxMethod1(int, oosqldb_errCode, CSELF, pCSelf)
+RexxMethod1(int, oosqlconn_errCode, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return sqlite3_extended_errcode(pCdb->db);
+    return sqlite3_extended_errcode(pConn->db);
 }
 
 
-/** ooSQLiteDB::errMsg()
+/** ooSQLiteConnection::errMsg()
  *
  *
  */
-RexxMethod1(RexxObjectPtr, oosqldb_errMsg, CSELF, pCSelf)
+RexxMethod1(RexxObjectPtr, oosqlconn_errMsg, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->UnsignedInt32(SQLITE_MISUSE);
     }
 
-    return context->String(sqlite3_errmsg(pCdb->db));
+    return context->String(sqlite3_errmsg(pConn->db));
 }
 
 
-/** ooSQLiteDB::exec()
+/** ooSQLiteConnection::exec()
  *
  *  Executes the specified SQL statement(s).
  *
@@ -2827,17 +2868,17 @@ RexxMethod1(RexxObjectPtr, oosqldb_errMsg, CSELF, pCSelf)
  *                       to the callback method when it is invoked.  This
  *                       argument is ignored when doCallBack is false.
  *
- *  @return  A result code, one of the .ooSQL constants, or a result set as
+ *  @return  A result code, one of the .ooSQLiteConstants constants, or a result set as
  *           described above.
  */
-RexxMethod6(RexxObjectPtr, oosqldb_exec, CSTRING, sql, OPTIONAL_logical_t, doCallback,
+RexxMethod6(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doCallback,
             OPTIONAL_RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName, OPTIONAL_RexxObjectPtr, userData,
             CSELF, pCSelf)
 {
     int rc = SQLITE_ERROR;
 
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(rc);
     }
@@ -2873,11 +2914,11 @@ RexxMethod6(RexxObjectPtr, oosqldb_exec, CSTRING, sql, OPTIONAL_logical_t, doCal
             cbc.records  = context->NewArray(10);
         }
 
-        rc = sqlite3_exec(pCdb->db, sql, execCallBack, (void *)&cbc, &errMsg);
+        rc = sqlite3_exec(pConn->db, sql, execCallBack, (void *)&cbc, &errMsg);
     }
     else
     {
-        rc = sqlite3_exec(pCdb->db, sql, NULL, NULL, &errMsg);
+        rc = sqlite3_exec(pConn->db, sql, NULL, NULL, &errMsg);
     }
 
     if ( rc != SQLITE_OK )
@@ -2885,12 +2926,12 @@ RexxMethod6(RexxObjectPtr, oosqldb_exec, CSTRING, sql, OPTIONAL_logical_t, doCal
         if ( errMsg != NULL )
         {
             printf("SQL error: %s\n", errMsg);
-            ooSQLiteErr(context, pCdb, rc, errMsg, true);
+            ooSQLiteErr(context, pConn, rc, errMsg, true);
             sqlite3_free(errMsg);
         }
         else
         {
-            ooSQLiteErr(context, pCdb, rc, "error code, but sqlite3 did not set an error message", true);
+            ooSQLiteErr(context, pConn, rc, "error code, but sqlite3 did not set an error message", true);
         }
     }
 
@@ -2903,92 +2944,92 @@ RexxMethod6(RexxObjectPtr, oosqldb_exec, CSTRING, sql, OPTIONAL_logical_t, doCal
 }
 
 
-/** ooSQLiteDB::extendedResultCodes()
+/** ooSQLiteConnection::extendedResultCodes()
  *
  *  This is a noop, for the ooSQLite object orientated interface.  Extended
  *  result codes are always turned on in the init() method for each database
  *  connection.
  */
-RexxMethod0(int, oosqldb_extendedResultCodes)
+RexxMethod0(int, oosqlconn_extendedResultCodes)
 {
     return SQLITE_OK;
 }
 
 
-/** ooSQLiteDB::getAutoCommit()
+/** ooSQLiteConnection::getAutoCommit()
  *
  *
  */
-RexxMethod1(logical_t, oosqldb_getAutoCommit, CSELF, pCSelf)
+RexxMethod1(logical_t, oosqlconn_getAutoCommit, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return sqlite3_get_autocommit(pCdb->db);
+    return sqlite3_get_autocommit(pConn->db);
 }
 
 
-/** ooSQLiteDB::interrupt()
+/** ooSQLiteConnection::interrupt()
  *
  *
  */
-RexxMethod1(int, oosqldb_interrupt, CSELF, pCSelf)
+RexxMethod1(int, oosqlconn_interrupt, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    sqlite3_interrupt(pCdb->db);
+    sqlite3_interrupt(pConn->db);
 
     return SQLITE_OK;
 }
 
 
-/** ooSQLiteDB::lastInsertRowID()
+/** ooSQLiteConnection::lastInsertRowID()
  *
  *
  */
-RexxMethod1(int64_t, oosqldb_lastInsertRowID, CSELF, pCSelf)
+RexxMethod1(int64_t, oosqlconn_lastInsertRowID, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return sqlite3_last_insert_rowid(pCdb->db);
+    return sqlite3_last_insert_rowid(pConn->db);
 }
 
 
-/** ooSQLiteDB::limit()
+/** ooSQLiteConnection::limit()
  *
  *
  */
-RexxMethod3(int, oosqldb_limit, int, id, int, value, CSELF, pCSelf)
+RexxMethod3(int, oosqlconn_limit, int, id, int, value, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return sqlite3_limit(pCdb->db, id, value);
+    return sqlite3_limit(pConn->db, id, value);
 }
 
 
-/** ooSQLiteDB::nextStmt()
+/** ooSQLiteConnection::nextStmt()
  *
  *
  */
-RexxMethod2(RexxObjectPtr, oosqldb_nextStmt, OPTIONAL_RexxObjectPtr, _stmt, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, oosqlconn_nextStmt, OPTIONAL_RexxObjectPtr, _stmt, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
@@ -3014,12 +3055,12 @@ RexxMethod2(RexxObjectPtr, oosqldb_nextStmt, OPTIONAL_RexxObjectPtr, _stmt, CSEL
         }
     }
 
-    sqlite3_stmt *nextStmt = sqlite3_next_stmt(pCdb->db, stmt);
+    sqlite3_stmt *nextStmt = sqlite3_next_stmt(pConn->db, stmt);
 
     RexxObjectPtr result = TheNilObj;
     if ( nextStmt != NULL )
     {
-        result = findStatement(context, pCdb, nextStmt);
+        result = findStatement(context, pConn, nextStmt);
         if ( result == TheNilObj )
         {
             // This should never happen.  SQLite thinks there is a prepared
@@ -3032,7 +3073,7 @@ RexxMethod2(RexxObjectPtr, oosqldb_nextStmt, OPTIONAL_RexxObjectPtr, _stmt, CSEL
 }
 
 
-/** ooSQLiteDB::pragma()
+/** ooSQLiteConnection::pragma()
  *
  *  Executes a pragma statement.  A 'PRAGMA' statement is a SQLite specific SQL
  *  extension, probably unknown to any other database engine.
@@ -3043,13 +3084,13 @@ RexxMethod2(RexxObjectPtr, oosqldb_nextStmt, OPTIONAL_RexxObjectPtr, _stmt, CSEL
  *  @param  name  The name of the pragma.  The user needs to supply the correct
  *                name as documented in the SQLite documentation.
  */
-RexxMethod3(RexxObjectPtr, oosqldb_pragma, RexxStringObject, _name, OPTIONAL_RexxObjectPtr, value, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, oosqlconn_pragma, RexxStringObject, _name, OPTIONAL_RexxObjectPtr, value, CSELF, pCSelf)
 {
     RexxObjectPtr result = ooSQLiteErr(context->threadContext, SQLITE_MISUSE, true);
     wholenumber_t rc     = SQLITE_ERROR;
 
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return result;
     }
@@ -3071,20 +3112,20 @@ RexxMethod3(RexxObjectPtr, oosqldb_pragma, RexxStringObject, _name, OPTIONAL_Rex
         case indexInfo      :
         case indexList      :
         case tableInfo      :
-            return pragmaList(context, pCdb, name, value, pragma);
+            return pragmaList(context, pConn, name, value, pragma);
 
         case integrityCheck :
         case quickCheck     :
         case shrinkMemory   :
         case walCheckpoint  :
-            return pragmaTrigger(context, pCdb, name, value, pragma);
+            return pragmaTrigger(context, pConn, name, value, pragma);
 
         case caseSensitiveLike :
             if ( argumentOmitted(2) )
             {
                 return missingArgException(context->threadContext, 2);
             }
-            return pragmaSet(context, pCdb, name, value, pragma);
+            return pragmaSet(context, pConn, name, value, pragma);
 
         case incrementalVacuum :
             if (argumentOmitted(2) )
@@ -3093,7 +3134,7 @@ RexxMethod3(RexxObjectPtr, oosqldb_pragma, RexxStringObject, _name, OPTIONAL_Rex
                 // produces the same effect in SQLite as omitting the argumen.
                 value = TheZeroObj;
             }
-            return pragmaSet(context, pCdb, name, value, pragma);
+            return pragmaSet(context, pConn, name, value, pragma);
 
         default :
             break;
@@ -3102,16 +3143,16 @@ RexxMethod3(RexxObjectPtr, oosqldb_pragma, RexxStringObject, _name, OPTIONAL_Rex
 
     if ( argumentExists(2) )
     {
-        return pragmaSet(context, pCdb, name, value, pragma);
+        return pragmaSet(context, pConn, name, value, pragma);
     }
     else
     {
-        return pragmaGet(context, pCdb, name, pragma);
+        return pragmaGet(context, pConn, name, pragma);
     }
 }
 
 
-/** ooSQLiteDB::profile()
+/** ooSQLiteConnection::profile()
  *
  *  Registers an user callback method used for profiling
  *
@@ -3155,23 +3196,23 @@ RexxMethod3(RexxObjectPtr, oosqldb_pragma, RexxStringObject, _name, OPTIONAL_Rex
  *          profiler callback. The sqlite3_profile() function is considered
  *          experimental and is subject to change in future versions of SQLite.
  */
-RexxMethod4(RexxObjectPtr, oosqldb_profile, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
+RexxMethod4(RexxObjectPtr, oosqlconn_profile, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
             OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pCdb->db, callbackObj, mthName, userData, profileHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, profileHook, 0);
 }
 
 
-/** ooSQLiteDB::progressHandler()
+/** ooSQLiteConnection::progressHandler()
  *
  *  Registers an user callback method that is invoked periodically during long
- *  running calls to ooSQLiteDB::exec(), and ooSQLiteStmt::step() for this
+ *  running calls to ooSQLiteConnection::exec(), and ooSQLiteStmt::step() for this
  *  database connection. An example use for this interface is to keep a GUI
  *  updated during a large query.
  *
@@ -3216,11 +3257,11 @@ RexxMethod4(RexxObjectPtr, oosqldb_profile, RexxObjectPtr, callbackObj, OPTIONAL
  *          interrupted.  This could be used to implement a Cancel button in a
  *          GUI application.
  */
-RexxMethod5(RexxObjectPtr, oosqldb_progressHandler, RexxObjectPtr, callbackObj, int, instructions,
+RexxMethod5(RexxObjectPtr, oosqlconn_progressHandler, RexxObjectPtr, callbackObj, int, instructions,
             OPTIONAL_CSTRING, mthName, OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
@@ -3230,11 +3271,11 @@ RexxMethod5(RexxObjectPtr, oosqldb_progressHandler, RexxObjectPtr, callbackObj, 
         callbackObj = TheNilObj;
     }
 
-    return doCallbackSetup(context, pCdb->db, callbackObj, mthName, userData, progressHandler, instructions);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, progressHandler, instructions);
 }
 
 
-/** ooSQLiteDB::rollbackHook()
+/** ooSQLiteConnection::rollbackHook()
  *
  *  Registers a callback method to be invoked whenever a transaction is rolled
  *  back.
@@ -3264,20 +3305,20 @@ RexxMethod5(RexxObjectPtr, oosqldb_progressHandler, RexxObjectPtr, callbackObj, 
  *  @note    The Rexx callback method *must* return a whole number, but that
  *           return is ignored by SQLite.
  */
-RexxMethod4(RexxObjectPtr, oosqldb_rollbackHook, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
+RexxMethod4(RexxObjectPtr, oosqlconn_rollbackHook, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
             OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pCdb->db, callbackObj, mthName, userData, rollbackHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, rollbackHook, 0);
 }
 
 
-/** ooSQLiteDB::setAuthorizer()
+/** ooSQLiteConnection::setAuthorizer()
  *
  *  Registers an user callback method that is invoked as SQL statements are
  *  being compiled by ooSQLStmt::Prepare().  At various points during the
@@ -3342,53 +3383,53 @@ RexxMethod4(RexxObjectPtr, oosqldb_rollbackHook, RexxObjectPtr, callbackObj, OPT
  *          Any other return causes the ooSQLStmt::prepare() call that triggered
  *          the authorizer to fail with an error message.
  */
-RexxMethod4(RexxObjectPtr, oosqldb_setAuthorizer, RexxObjectPtr, callbackObj,
+RexxMethod4(RexxObjectPtr, oosqlconn_setAuthorizer, RexxObjectPtr, callbackObj,
             OPTIONAL_CSTRING, mthName, OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pCdb->db, callbackObj, mthName, userData, authorizer, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, authorizer, 0);
 }
 
 
-/** ooSQLiteDB::tableColumnMetadata()
+/** ooSQLiteConnection::tableColumnMetadata()
  *
  *
  */
-RexxMethod5(int, oosqldb_tableColumnMetadata, CSTRING, dbName, CSTRING, tableName, CSTRING, colName,
+RexxMethod5(int, oosqlconn_tableColumnMetadata, CSTRING, dbName, CSTRING, tableName, CSTRING, colName,
             RexxObjectPtr, results, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return genTableColumnMetadata(context->threadContext, pCdb->db, dbName, tableName, colName, results, 4);
+    return genTableColumnMetadata(context->threadContext, pConn->db, dbName, tableName, colName, results, 4);
 }
 
 
-/** ooSQLiteDB::totalChanges()
+/** ooSQLiteConnection::totalChanges()
  *
  *
  */
-RexxMethod1(int, oosqldb_totalChanges, CSELF, pCSelf)
+RexxMethod1(int, oosqlconn_totalChanges, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return SQLITE_MISUSE;
     }
 
-    return sqlite3_total_changes(pCdb->db);
+    return sqlite3_total_changes(pConn->db);
 }
 
 
-/** ooSQLiteDB::trace()
+/** ooSQLiteConnection::trace()
  *
  *  Registers an user callback method used for tracing.
  *
@@ -3430,20 +3471,20 @@ RexxMethod1(int, oosqldb_totalChanges, CSELF, pCSelf)
  *          The second arugment is the userData argument to this method, if not
  *          omitted.  If userData is omitted then the third argument is .nil.
  */
-RexxMethod4(RexxObjectPtr, oosqldb_trace, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
+RexxMethod4(RexxObjectPtr, oosqlconn_trace, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
             OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pCdb->db, callbackObj, mthName, userData, traceHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, traceHook, 0);
 }
 
 
-/** ooSQLiteDB::updateHook()
+/** ooSQLiteConnection::updateHook()
  *
  *  Registers a callback method to be invoked whenever a row is updated,
  *  inserted or deleted.
@@ -3486,16 +3527,16 @@ RexxMethod4(RexxObjectPtr, oosqldb_trace, RexxObjectPtr, callbackObj, OPTIONAL_C
  *           4.) The affected row's rowID. In the case of an update, this is the
  *           rowID after the update takes place.
  */
-RexxMethod4(RexxObjectPtr, oosqldb_updateHook, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
+RexxMethod4(RexxObjectPtr, oosqlconn_updateHook, RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
             OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDB(context, pCSelf);
-    if ( pCdb == NULL )
+    pCooSQLiteConn pConn = requiredDB(context, pCSelf);
+    if ( pConn == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pCdb->db, callbackObj, mthName, userData, updateHook, 0);
+    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, updateHook, 0);
 }
 
 
@@ -3503,12 +3544,12 @@ RexxMethod4(RexxObjectPtr, oosqldb_updateHook, RexxObjectPtr, callbackObj, OPTIO
  * Internal use only method.
  *
  */
-RexxMethod2(RexxObjectPtr, oosqldb_putStmt, RexxObjectPtr, stmt, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, oosqlconn_putStmt, RexxObjectPtr, stmt, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDBCSelf(context, pCSelf);
-    if ( pCdb != NULL )
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn != NULL )
     {
-        context->SendMessage1(pCdb->stmtBag, "PUT", stmt);
+        context->SendMessage1(pConn->stmtBag, "PUT", stmt);
     }
 
     return TheNilObj;
@@ -3518,12 +3559,12 @@ RexxMethod2(RexxObjectPtr, oosqldb_putStmt, RexxObjectPtr, stmt, CSELF, pCSelf)
  * Internal use only method.
  *
  */
-RexxMethod2(RexxObjectPtr, oosqldb_delStmt, RexxObjectPtr, stmt, CSELF, pCSelf)
+RexxMethod2(RexxObjectPtr, oosqlconn_delStmt, RexxObjectPtr, stmt, CSELF, pCSelf)
 {
-    pCooSQLiteDB pCdb = requiredDBCSelf(context, pCSelf);
-    if ( pCdb != NULLOBJECT )
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn != NULLOBJECT )
     {
-        return context->SendMessage1(pCdb->stmtBag, "REMOVE", stmt);
+        return context->SendMessage1(pConn->stmtBag, "REMOVE", stmt);
     }
 
     return TheNilObj;
@@ -3598,7 +3639,7 @@ RexxMethod1(int, oosqlstmt_getInitCode_atr, CSELF, pCSelf)
 
 /** ooSQLiteStmt::init()
  *
- *  @param db  [required]  The ooSQLiteDB object the statement is for.
+ *  @param db  [required]  The ooSQLiteConnection object the statement is for.
  *
  *  @param sql [required]  The SQL statement(s) used by this ooSQLiteStmt.
  *
@@ -3608,7 +3649,7 @@ RexxMethod3(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OSEL
 {
     const char    *msg    = "no error";
     const char    *tail   = NULL;
-    pCooSQLiteDB  pCdb    = NULL;
+    pCooSQLiteConn  pConn    = NULL;
     pCooSQLiteStmt pCstmt = NULL;
     int            rc     = SQLITE_MISUSE;
 
@@ -3630,26 +3671,26 @@ RexxMethod3(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OSEL
         goto done_out;
     }
 
-    pCdb = dbToCSelf(context, db);
+    pConn = dbToCSelf(context, db);
 
-    if ( pCdb == NULL )
+    if ( pConn == NULL )
     {
         baseClassIntializationException(context, OOSQLITEDB_CLASS);
         goto done_out;
     }
 
-    if ( pCdb->db == NULL )
+    if ( pConn->db == NULL )
     {
-        noOpenDBException(context->threadContext, pCdb);
+        noOpenDBException(context->threadContext, pConn);
         goto done_out;
     }
 
-    rc = sqlite3_prepare_v2(pCdb->db, sql, (int)strlen(sql) + 1, &pCstmt->stmt, &tail);
+    rc = sqlite3_prepare_v2(pConn->db, sql, (int)strlen(sql) + 1, &pCstmt->stmt, &tail);
 
     if ( rc == SQLITE_OK )
     {
         pCstmt->db       = db;
-        pCstmt->pCdb     = pCdb;
+        pCstmt->pConn     = pConn;
         pCstmt->rexxSelf = self;
         pCstmt->tail     = safeRexxStringRx(context->threadContext, tail);
 
@@ -3659,7 +3700,7 @@ RexxMethod3(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OSEL
     }
     else
     {
-        msg = sqlite3_errmsg(pCdb->db);
+        msg = sqlite3_errmsg(pConn->db);
         if ( msg == NULL )
         {
             msg = "not available";
@@ -4089,6 +4130,89 @@ RexxMethod2(double, oosqlstmt_columnDouble, int32_t, col, CSELF, pCSelf)
 }
 
 
+/** ooSQLiteStmt::columnIndex()
+ *
+ *  Returns the index of the column with the specified column name in the result
+ *  set of a SELECT statement.
+ *
+ *  @param colName  [required]  The name of a column that is a column in a
+ *                          select statement.
+ *
+ *  @return  Returns the 1 based column index, or 0 if there is no column with
+ *           the specified name.
+ *
+ *  @note    The name comparison is case insensitive.  I think this is correct,
+ *           because as far as I can tell SQLite does not allow column names
+ *           that differ only in case.  Not sure if this is SQLite specific or
+ *           not.
+ *
+ *  @note    This is not method that maps to a SQLite API.  It is an ooSQLite
+ *           enhancement.
+ *
+ *  @note    sqlite3_free() is a harmless nop for a null pointer.
+ */
+RexxMethod2(int, oosqlstmt_columnIndex, CSTRING, _colName, CSELF, pCSelf)
+{
+    pCooSQLiteStmt pCstmt = requiredStmt(context, pCSelf);
+    if ( pCstmt == NULL )
+    {
+        return 0;
+    }
+
+    char *colName     = NULL;
+    char *currentName = NULL;
+    int   result      = 0;
+
+    colName = strdupupr(_colName);
+    if ( colName == NULL )
+    {
+        goto err_out;
+    }
+
+    int count = sqlite3_column_count(pCstmt->stmt);
+    if ( count == 0 )
+    {
+        // Not an error, statement may not be a SELECT.
+        goto done_out;
+    }
+
+    int col = -1;
+
+    for ( int i = 0; i < count; i++)
+    {
+        CSTRING _currentName = sqlite3_column_name(pCstmt->stmt, i);
+        if ( _currentName == NULL )
+        {
+            goto err_out;
+        }
+
+        char *currentName = strdupupr(_currentName);
+        if ( currentName == NULL )
+        {
+            goto err_out;
+        }
+
+        if ( strcmp(colName, currentName) == 0 )
+        {
+            result = i + 1;
+            goto done_out;
+        }
+
+        sqlite3_free(currentName);
+    }
+
+    goto done_out;
+
+err_out:
+    outOfMemoryException(context->threadContext);
+
+done_out:
+    sqlite3_free(colName);
+    sqlite3_free(currentName);
+    return result;
+}
+
+
 /** ooSQLiteStmt::columnInt()
  *
  *
@@ -4315,10 +4439,10 @@ RexxMethod1(RexxObjectPtr, oosqlstmt_dbHandle, CSELF, pCSelf)
     // We should get the same handle as we already know. What to do if we don't?
     sqlite3 *handle = sqlite3_db_handle(pCstmt->stmt);
 
-    if ( handle != pCstmt->pCdb->db )
+    if ( handle != pCstmt->pConn->db )
     {
         printf("Internal consistency check fails.\nSQLite db handle (%p) does not match known db handle (%p)\n",
-               handle, pCstmt->pCdb->db);
+               handle, pCstmt->pConn->db);
         result = TheNilObj;
     }
 
@@ -5955,7 +6079,7 @@ RexxRoutine1(RexxObjectPtr, oosqlErrMsg_rtn, POINTER, _db)
  *                       is ignored unless doCallBack is not omitted and is
  *                       true.
  *
- *  @return  A result code, one of the .ooSQL constants, or a result set as
+ *  @return  A result code, one of the .ooSQLiteConstants constants, or a result set as
  *           described above.
  */
 RexxRoutine4(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_logical_t, doCallback,
@@ -6274,14 +6398,14 @@ RexxRoutine1(int, oosqlMutexTry_rtn, POINTER, _mtx)
  *
  *  @note    The connection is (almost) always returned, even on error.  The
  *           programmer should immediately use oosqlErrCode() to check for
- *           error.  If oosqlErrCode() does not return .ooSQL~OK then the
+ *           error.  If oosqlErrCode() does not return .ooSQLiteConstants~OK then the
  *           database was not opened properly and the connection should not be
  *           used and must be closed.
  *
  *           oosqlClose() must always be called to properly close the database,
  *           even if it was opened with an error.
  *
- *           The only exception to this is if the error code is .ooSQL~NOMEM, in
+ *           The only exception to this is if the error code is .ooSQLiteConstants~NOMEM, in
  *           which case no connection was created.  The returned Pointer is null
  *           and should not be passed to oosqlClose().
  */
@@ -6799,7 +6923,7 @@ RexxRoutine1(int, oosqlTotalChanges_rtn, POINTER, _db)
     return sqlite3_total_changes(db);
 }
 
-/** ooSQLiteDB::trace()
+/** ooSQLiteConnection::trace()
  *
  *  Registers an user callback routine used for tracing.
  *
@@ -7144,7 +7268,7 @@ RexxRoutineEntry ooSQLite_functions[] =
 
 
 
-// .ooSQL
+// .ooSQLiteConstants
 REXX_METHOD_PROTOTYPE(oosqlC_merge_cls);
 
 // .ooSQLite
@@ -7165,49 +7289,49 @@ REXX_METHOD_PROTOTYPE(oosql_version_cls);
 
 REXX_METHOD_PROTOTYPE(oosql_test_cls);
 
-// .ooSQLiteDB
-REXX_METHOD_PROTOTYPE(oosqldb_init_cls);
+// .ooSQLiteConnection
+REXX_METHOD_PROTOTYPE(oosqlconn_init_cls);
 
-REXX_METHOD_PROTOTYPE(oosqldb_getClosed_atr);
-REXX_METHOD_PROTOTYPE(oosqldb_getFileName_atr);
-REXX_METHOD_PROTOTYPE(oosqldb_getInitCode_atr);
-REXX_METHOD_PROTOTYPE(oosqldb_getLastErrCode_atr);
-REXX_METHOD_PROTOTYPE(oosqldb_getLastErrMsg_atr);
+REXX_METHOD_PROTOTYPE(oosqlconn_getClosed_atr);
+REXX_METHOD_PROTOTYPE(oosqlconn_getFileName_atr);
+REXX_METHOD_PROTOTYPE(oosqlconn_getInitCode_atr);
+REXX_METHOD_PROTOTYPE(oosqlconn_getLastErrCode_atr);
+REXX_METHOD_PROTOTYPE(oosqlconn_getLastErrMsg_atr);
 
-REXX_METHOD_PROTOTYPE(oosqldb_init);
-REXX_METHOD_PROTOTYPE(oosqldb_uninit);
+REXX_METHOD_PROTOTYPE(oosqlconn_init);
+REXX_METHOD_PROTOTYPE(oosqlconn_uninit);
 
-REXX_METHOD_PROTOTYPE(oosqldb_busyHandler);
-REXX_METHOD_PROTOTYPE(oosqldb_busyTimeOut);
-REXX_METHOD_PROTOTYPE(oosqldb_changes);
-REXX_METHOD_PROTOTYPE(oosqldb_close);
-REXX_METHOD_PROTOTYPE(oosqldb_commitHook);
-REXX_METHOD_PROTOTYPE(oosqldb_dbFileName);
-REXX_METHOD_PROTOTYPE(oosqldb_dbMutex);
-REXX_METHOD_PROTOTYPE(oosqldb_dbReadOnly);
-REXX_METHOD_PROTOTYPE(oosqldb_dbReleaseMemory);
-REXX_METHOD_PROTOTYPE(oosqldb_dbStatus);
-REXX_METHOD_PROTOTYPE(oosqldb_errCode);
-REXX_METHOD_PROTOTYPE(oosqldb_errMsg);
-REXX_METHOD_PROTOTYPE(oosqldb_exec);
-REXX_METHOD_PROTOTYPE(oosqldb_extendedResultCodes);
-REXX_METHOD_PROTOTYPE(oosqldb_getAutoCommit);
-REXX_METHOD_PROTOTYPE(oosqldb_interrupt);
-REXX_METHOD_PROTOTYPE(oosqldb_lastInsertRowID);
-REXX_METHOD_PROTOTYPE(oosqldb_limit);
-REXX_METHOD_PROTOTYPE(oosqldb_nextStmt);
-REXX_METHOD_PROTOTYPE(oosqldb_pragma);
-REXX_METHOD_PROTOTYPE(oosqldb_profile);
-REXX_METHOD_PROTOTYPE(oosqldb_progressHandler);
-REXX_METHOD_PROTOTYPE(oosqldb_rollbackHook);
-REXX_METHOD_PROTOTYPE(oosqldb_setAuthorizer);
-REXX_METHOD_PROTOTYPE(oosqldb_tableColumnMetadata);
-REXX_METHOD_PROTOTYPE(oosqldb_totalChanges);
-REXX_METHOD_PROTOTYPE(oosqldb_trace);
-REXX_METHOD_PROTOTYPE(oosqldb_updateHook);
+REXX_METHOD_PROTOTYPE(oosqlconn_busyHandler);
+REXX_METHOD_PROTOTYPE(oosqlconn_busyTimeOut);
+REXX_METHOD_PROTOTYPE(oosqlconn_changes);
+REXX_METHOD_PROTOTYPE(oosqlconn_close);
+REXX_METHOD_PROTOTYPE(oosqlconn_commitHook);
+REXX_METHOD_PROTOTYPE(oosqlconn_dbFileName);
+REXX_METHOD_PROTOTYPE(oosqlconn_dbMutex);
+REXX_METHOD_PROTOTYPE(oosqlconn_dbReadOnly);
+REXX_METHOD_PROTOTYPE(oosqlconn_dbReleaseMemory);
+REXX_METHOD_PROTOTYPE(oosqlconn_dbStatus);
+REXX_METHOD_PROTOTYPE(oosqlconn_errCode);
+REXX_METHOD_PROTOTYPE(oosqlconn_errMsg);
+REXX_METHOD_PROTOTYPE(oosqlconn_exec);
+REXX_METHOD_PROTOTYPE(oosqlconn_extendedResultCodes);
+REXX_METHOD_PROTOTYPE(oosqlconn_getAutoCommit);
+REXX_METHOD_PROTOTYPE(oosqlconn_interrupt);
+REXX_METHOD_PROTOTYPE(oosqlconn_lastInsertRowID);
+REXX_METHOD_PROTOTYPE(oosqlconn_limit);
+REXX_METHOD_PROTOTYPE(oosqlconn_nextStmt);
+REXX_METHOD_PROTOTYPE(oosqlconn_pragma);
+REXX_METHOD_PROTOTYPE(oosqlconn_profile);
+REXX_METHOD_PROTOTYPE(oosqlconn_progressHandler);
+REXX_METHOD_PROTOTYPE(oosqlconn_rollbackHook);
+REXX_METHOD_PROTOTYPE(oosqlconn_setAuthorizer);
+REXX_METHOD_PROTOTYPE(oosqlconn_tableColumnMetadata);
+REXX_METHOD_PROTOTYPE(oosqlconn_totalChanges);
+REXX_METHOD_PROTOTYPE(oosqlconn_trace);
+REXX_METHOD_PROTOTYPE(oosqlconn_updateHook);
 
-REXX_METHOD_PROTOTYPE(oosqldb_putStmt);
-REXX_METHOD_PROTOTYPE(oosqldb_delStmt);
+REXX_METHOD_PROTOTYPE(oosqlconn_putStmt);
+REXX_METHOD_PROTOTYPE(oosqlconn_delStmt);
 
 // .ooSQLiteStmt
 REXX_METHOD_PROTOTYPE(oosqlstmt_init_cls);
@@ -7237,6 +7361,7 @@ REXX_METHOD_PROTOTYPE(oosqlstmt_columnCount);
 REXX_METHOD_PROTOTYPE(oosqlstmt_columnDatabaseName);
 REXX_METHOD_PROTOTYPE(oosqlstmt_columnDeclType);
 REXX_METHOD_PROTOTYPE(oosqlstmt_columnDouble);
+REXX_METHOD_PROTOTYPE(oosqlstmt_columnIndex);
 REXX_METHOD_PROTOTYPE(oosqlstmt_columnInt);
 REXX_METHOD_PROTOTYPE(oosqlstmt_columnInt64);
 REXX_METHOD_PROTOTYPE(oosqlstmt_columnName);
@@ -7277,7 +7402,7 @@ REXX_METHOD_PROTOTYPE(db_cb_releaseBuffer);
 
 
 RexxMethodEntry ooSQLite_methods[] = {
-    // .ooSQL
+    // .ooSQLiteConstants
     REXX_METHOD(oosqlC_merge_cls,      oosqlC_merge_cls),
 
     // .ooSQLite
@@ -7298,49 +7423,49 @@ RexxMethodEntry ooSQLite_methods[] = {
 
     REXX_METHOD(oosql_test_cls,                oosql_test_cls),
 
-    // .ooSQLiteDB
-    REXX_METHOD(oosqldb_init_cls,              oosqldb_init_cls),
+    // .ooSQLiteConnection
+    REXX_METHOD(oosqlconn_init_cls,              oosqlconn_init_cls),
 
-    REXX_METHOD(oosqldb_getClosed_atr,         oosqldb_getClosed_atr),
-    REXX_METHOD(oosqldb_getFileName_atr,       oosqldb_getFileName_atr),
-    REXX_METHOD(oosqldb_getInitCode_atr,       oosqldb_getInitCode_atr),
-    REXX_METHOD(oosqldb_getLastErrCode_atr,    oosqldb_getLastErrCode_atr),
-    REXX_METHOD(oosqldb_getLastErrMsg_atr,     oosqldb_getLastErrMsg_atr),
+    REXX_METHOD(oosqlconn_getClosed_atr,         oosqlconn_getClosed_atr),
+    REXX_METHOD(oosqlconn_getFileName_atr,       oosqlconn_getFileName_atr),
+    REXX_METHOD(oosqlconn_getInitCode_atr,       oosqlconn_getInitCode_atr),
+    REXX_METHOD(oosqlconn_getLastErrCode_atr,    oosqlconn_getLastErrCode_atr),
+    REXX_METHOD(oosqlconn_getLastErrMsg_atr,     oosqlconn_getLastErrMsg_atr),
 
-    REXX_METHOD(oosqldb_init,                  oosqldb_init),
-    REXX_METHOD(oosqldb_uninit,                oosqldb_uninit),
+    REXX_METHOD(oosqlconn_init,                  oosqlconn_init),
+    REXX_METHOD(oosqlconn_uninit,                oosqlconn_uninit),
 
-    REXX_METHOD(oosqldb_busyHandler,           oosqldb_busyHandler),
-    REXX_METHOD(oosqldb_busyTimeOut,           oosqldb_busyTimeOut),
-    REXX_METHOD(oosqldb_changes,               oosqldb_changes),
-    REXX_METHOD(oosqldb_close,                 oosqldb_close),
-    REXX_METHOD(oosqldb_commitHook,            oosqldb_commitHook),
-    REXX_METHOD(oosqldb_dbFileName,            oosqldb_dbFileName),
-    REXX_METHOD(oosqldb_dbMutex,               oosqldb_dbMutex),
-    REXX_METHOD(oosqldb_dbReadOnly,            oosqldb_dbReadOnly),
-    REXX_METHOD(oosqldb_dbReleaseMemory,       oosqldb_dbReleaseMemory),
-    REXX_METHOD(oosqldb_dbStatus,              oosqldb_dbStatus),
-    REXX_METHOD(oosqldb_errCode,               oosqldb_errCode),
-    REXX_METHOD(oosqldb_errMsg,                oosqldb_errMsg),
-    REXX_METHOD(oosqldb_exec,                  oosqldb_exec),
-    REXX_METHOD(oosqldb_extendedResultCodes,   oosqldb_extendedResultCodes),
-    REXX_METHOD(oosqldb_getAutoCommit,         oosqldb_getAutoCommit),
-    REXX_METHOD(oosqldb_interrupt,             oosqldb_interrupt),
-    REXX_METHOD(oosqldb_lastInsertRowID,       oosqldb_lastInsertRowID),
-    REXX_METHOD(oosqldb_limit,                 oosqldb_limit),
-    REXX_METHOD(oosqldb_nextStmt,              oosqldb_nextStmt),
-    REXX_METHOD(oosqldb_pragma,                oosqldb_pragma),
-    REXX_METHOD(oosqldb_profile,               oosqldb_profile),
-    REXX_METHOD(oosqldb_progressHandler,       oosqldb_progressHandler),
-    REXX_METHOD(oosqldb_rollbackHook,          oosqldb_rollbackHook),
-    REXX_METHOD(oosqldb_setAuthorizer,         oosqldb_setAuthorizer),
-    REXX_METHOD(oosqldb_tableColumnMetadata,   oosqldb_tableColumnMetadata),
-    REXX_METHOD(oosqldb_totalChanges,          oosqldb_totalChanges),
-    REXX_METHOD(oosqldb_trace,                 oosqldb_trace),
-    REXX_METHOD(oosqldb_updateHook,            oosqldb_updateHook),
+    REXX_METHOD(oosqlconn_busyHandler,           oosqlconn_busyHandler),
+    REXX_METHOD(oosqlconn_busyTimeOut,           oosqlconn_busyTimeOut),
+    REXX_METHOD(oosqlconn_changes,               oosqlconn_changes),
+    REXX_METHOD(oosqlconn_close,                 oosqlconn_close),
+    REXX_METHOD(oosqlconn_commitHook,            oosqlconn_commitHook),
+    REXX_METHOD(oosqlconn_dbFileName,            oosqlconn_dbFileName),
+    REXX_METHOD(oosqlconn_dbMutex,               oosqlconn_dbMutex),
+    REXX_METHOD(oosqlconn_dbReadOnly,            oosqlconn_dbReadOnly),
+    REXX_METHOD(oosqlconn_dbReleaseMemory,       oosqlconn_dbReleaseMemory),
+    REXX_METHOD(oosqlconn_dbStatus,              oosqlconn_dbStatus),
+    REXX_METHOD(oosqlconn_errCode,               oosqlconn_errCode),
+    REXX_METHOD(oosqlconn_errMsg,                oosqlconn_errMsg),
+    REXX_METHOD(oosqlconn_exec,                  oosqlconn_exec),
+    REXX_METHOD(oosqlconn_extendedResultCodes,   oosqlconn_extendedResultCodes),
+    REXX_METHOD(oosqlconn_getAutoCommit,         oosqlconn_getAutoCommit),
+    REXX_METHOD(oosqlconn_interrupt,             oosqlconn_interrupt),
+    REXX_METHOD(oosqlconn_lastInsertRowID,       oosqlconn_lastInsertRowID),
+    REXX_METHOD(oosqlconn_limit,                 oosqlconn_limit),
+    REXX_METHOD(oosqlconn_nextStmt,              oosqlconn_nextStmt),
+    REXX_METHOD(oosqlconn_pragma,                oosqlconn_pragma),
+    REXX_METHOD(oosqlconn_profile,               oosqlconn_profile),
+    REXX_METHOD(oosqlconn_progressHandler,       oosqlconn_progressHandler),
+    REXX_METHOD(oosqlconn_rollbackHook,          oosqlconn_rollbackHook),
+    REXX_METHOD(oosqlconn_setAuthorizer,         oosqlconn_setAuthorizer),
+    REXX_METHOD(oosqlconn_tableColumnMetadata,   oosqlconn_tableColumnMetadata),
+    REXX_METHOD(oosqlconn_totalChanges,          oosqlconn_totalChanges),
+    REXX_METHOD(oosqlconn_trace,                 oosqlconn_trace),
+    REXX_METHOD(oosqlconn_updateHook,            oosqlconn_updateHook),
 
-    REXX_METHOD(oosqldb_putStmt,               oosqldb_putStmt),
-    REXX_METHOD(oosqldb_delStmt,               oosqldb_delStmt),
+    REXX_METHOD(oosqlconn_putStmt,               oosqlconn_putStmt),
+    REXX_METHOD(oosqlconn_delStmt,               oosqlconn_delStmt),
 
     // .ooSQLiteStmt
     REXX_METHOD(oosqlstmt_init_cls,            oosqlstmt_init_cls),
@@ -7370,6 +7495,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlstmt_columnDatabaseName,  oosqlstmt_columnDatabaseName),
     REXX_METHOD(oosqlstmt_columnDeclType,      oosqlstmt_columnDeclType),
     REXX_METHOD(oosqlstmt_columnDouble,        oosqlstmt_columnDouble),
+    REXX_METHOD(oosqlstmt_columnIndex,         oosqlstmt_columnIndex),
     REXX_METHOD(oosqlstmt_columnInt,           oosqlstmt_columnInt),
     REXX_METHOD(oosqlstmt_columnInt64,         oosqlstmt_columnInt64),
     REXX_METHOD(oosqlstmt_columnName,          oosqlstmt_columnName),

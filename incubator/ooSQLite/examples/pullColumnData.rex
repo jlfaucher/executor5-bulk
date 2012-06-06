@@ -36,72 +36,28 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  preparedStmtTest.rex
+ *  pullColumnData.rex
  *
- *  Opens the ooFoods database, creates a prepared statement that queries the
- *  database and steps through the result set printing the rows returned.
+ * This program shows how to get the data for a specific column name in a SELECT
+ * query.
+ *
+ * Once you have a ooSQLiteStmt object you can get the column index using the
+ * name of the column.  You can then use that in any other columnXXXX method
+ * that takes a column number.
+ *
  */
 
-	dbName = 'ooFoods.rdbx'
 
-  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
+  dbConn = .ooSQLiteConnection~new('ooFoods.rdbx')
 
-  if dbConn~initCode <> 0 then do
-    errRC  = dbConn~lastErrCode
-    errMsg = dbConn~lastErrMsg
+  stmt = .ooSQLiteStmt~new(dbConn, "SELECT * FROM foods")
+  index = stmt~columnIndex('name')
 
-    say 'ooSQLiteConnection initialization error:' dbConn~initCode
-    say '  Error code:' errRC '('errMsg')'
-    if errRC == dbConn~CANTOPEN then do
-      say '  Database file name:' dbName '(Is this the correct database?)'
-    end
-
-    dbConn~close
-    return 99
+  do while stmt~step == stmt~ROW
+    say stmt~columnText(index)
   end
 
-  stmt = .ooSQLiteStmt~new(dbConn, 'SELECT * FROM foods ORDER BY name;')
-  if stmt~initCode <> 0 then do
-    say 'ooSQLiteStmt initialization error:' stmt~initCode
-    say '  Error code:' stmt~initCode '('stmt~errMsg')'
-
-    stmt~finialize
-    dbConn~close
-    return 99
-  end
-
-  stepRC = stmt~step
-
-  if stepRC == stmt~ROW then do
-    colCount = stmt~columnCount
-
-    header = ''
-    do i = 1 to colCount
-      header ||= stmt~columnName(i)~left(20)
-    end
-    say header
-    say '='~copies(80)
-
-    do while stepRC == stmt~ROW
-      row = ''
-      do i = 1 to colCount
-        row ||= stmt~columnText(i)~left(20)
-      end
-      say row
-
-      stepRC = stmt~step
-    end
-  end
-  else do
-    say 'Unexpected error running query "SELECT * FROM foods ORDER BY name;"'
-    say 'Error code:' stepRC
-  end
-  say
-
-  stmt~finalize
-
-  ret = dbConn~close
-
-  return ret
 
 ::requires 'ooSQLite.cls'
+
+--::class 'ooSQL' inherit ooSQLConstants

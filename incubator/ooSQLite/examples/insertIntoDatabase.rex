@@ -64,7 +64,7 @@
   -- defined in this example.  It is used to make the code more modular
   dbHelper = .DatabaseAssistant~new
 
-  db = .ooSQLiteDB~new('phoneBook.rdbx')
+  db = .ooSQLiteConnection~new('phoneBook.rdbx')
   if db~initCode <> 0 then return dbHelper~openDbErr(db)
 
   -- We set a busy handler of 3 seconds, which is more than enough for this
@@ -78,12 +78,12 @@
     return 99
   end
 
-  if dbHelper~addAddressTypeRecords(db) \== .ooSQL~ok then return 99
+  if dbHelper~addAddressTypeRecords(db) \== db~OK then return 99
 
-  if dbHelper~addContacts(db) \== .ooSQL~ok then return 99
+  if dbHelper~addContacts(db) \== db~OK then return 99
 
   ret = db~close
-  if ret == .ooSQL~busy then do
+  if ret == db~BUSY then do
     say 'Database busy return from close.'
   end
 
@@ -107,12 +107,12 @@
     if stmt~initCode <> 0 then return dbHelp~stmtError(stmt, db, 'PREPARE', 'contacts')
 
     ret = stmt~step
-    if ret <> .ooSQL~done then return dbHelper~stmtError(stmt, db, 'INSERT', 'contacts')
+    if ret <> db~DONE then return dbHelper~stmtError(stmt, db, 'INSERT', 'contacts')
 
     stmt~finalize
   end
 
-  return .ooSQL~ok
+  return db~OK
 
 
 ::method getContacts private
@@ -141,17 +141,17 @@
 
   do i = 1 to vals~items
     ret = stmt~bindText(1, vals[i])
-    if ret <> .ooSQL~ok then return dbHelper~bindError(db, stmt, ret, vals[i])
+    if ret <> db~OK then return dbHelper~bindError(db, stmt, ret, vals[i])
 
     ret = stmt~step
-    if ret <> .ooSQL~done then return dbHelper~stmtError(stmt, db, 'INSERT', 'addr_type')
+    if ret <> db~DONE then return dbHelper~stmtError(stmt, db, 'INSERT', 'addr_type')
 
     ret = stmt~reset
-    if ret <> .ooSQL~ok then return dbHelper~resetError(db, stmt, ret, vals[i])
+    if ret <> db~OK then return dbHelper~resetError(db, stmt, ret, vals[i])
   end
 
   ret = stmt~finalize
-  if ret == .ooSQL~busy then do
+  if ret == db~BUSY then do
     say 'Database busy after last statement finalize.' ret
     db~close
   end
@@ -171,11 +171,11 @@
     return .false
   end
 
-  -- If there are no records then the return should be .ooSQL~done
+  -- If there are no records then the return should be db~DONE
   ret = stmt~step
   stmt~finalize
 
-  if ret <> .ooSQL~done then do
+  if ret <> db~DONE then do
     say 'This example program requires the database to be created, but'
     say 'empty of records.'
     say
@@ -241,7 +241,7 @@
   errRC  = db~lastErrCode
   errMsg = db~lastErrMsg
 
-  say 'ooSQLiteDB initialization error:' db~initCode
+  say 'ooSQLiteConnection initialization error:' db~initCode
   say '  Error code:' errRC '('errMsg')'
 
   db~close

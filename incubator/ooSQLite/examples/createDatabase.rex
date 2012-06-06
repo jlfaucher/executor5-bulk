@@ -58,7 +58,7 @@
     end
   end
 
-  db = .ooSQLiteDB~new('phoneBook.rdbx')
+  db = .ooSQLiteConnection~new('phoneBook.rdbx')
 
   if db~initCode <> 0 then return .ErrorHandler~openDb(db)
 
@@ -75,7 +75,7 @@
   if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'contacts')
 
   ret = stmt~step
-  if ret <> .ooSQL~done then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'contacts')
+  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'contacts')
 
   stmt~finalize
 
@@ -94,7 +94,7 @@
   if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'addresses')
 
   ret = stmt~step
-  if ret <> .ooSQL~done then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'addresses')
+  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'addresses')
 
   stmt~finalize
 
@@ -111,7 +111,7 @@
   if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'phone_num')
 
   ret = stmt~step
-  if ret <> .ooSQL~done then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'phone_num')
+  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'phone_num')
 
   stmt~finalize
 
@@ -126,7 +126,7 @@
   if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'inet_addr')
 
   ret = stmt~step
-  if ret <> .ooSQL~done then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'inet_addr')
+  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'inet_addr')
 
   stmt~finalize
 
@@ -139,7 +139,7 @@
   if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'addr_type')
 
   ret = stmt~step
-  if ret <> .ooSQL~done then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'addr_type')
+  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'addr_type')
 
   stmt~finalize
 
@@ -177,7 +177,7 @@
   errRC  = db~lastErrCode
   errMsg = db~lastErrMsg
 
-  say 'ooSQLiteDB initialization error:' db~initCode
+  say 'ooSQLiteConnection initialization error:' db~initCode
   say '  Error code:' errRC '('errMsg')'
   say
 

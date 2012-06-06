@@ -149,7 +149,7 @@ void *baseClassIntializationException(RexxMethodContext *c)
  *
  *  900 User message.
  *
- *  The ooSQLiteDB base class has not been initialized correctly
+ *  The ooSQLiteConnection base class has not been initialized correctly
  *
  * @param c         The method context we are operating under.
  * @param clsName   The name of the base class.

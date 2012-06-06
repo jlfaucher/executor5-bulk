@@ -46,7 +46,7 @@
 
   dbName = 'ooFoods.rdbx'
 
-  dbConn = oosqlOpen(dbName, .ooSQL~OPEN_READWRITE)
+  dbConn = oosqlOpen(dbName, .ooSQLite~OPEN_READWRITE)
 
   if oosqlErrCode(dbConn) <> 0 then do
     errRC   = oosqlErrCode(dbConn)
@@ -54,7 +54,7 @@
 
     say 'Open database error'
     say '  Error code:' errRC '('errMsg')'
-    if errRC == .ooSQL~CANTOPEN then do
+    if errRC == .ooSQLite~CANTOPEN then do
       say '  Database file name:' dbName '(Is this the correct database?)'
     end
 
@@ -85,7 +85,7 @@
 
   stepRC = oosqlStep(stmt)
 
-  if stepRC == .ooSQL~row then do
+  if stepRC == .ooSQLite~ROW then do
     colCount = oosqlColumnCount(stmt)
 
     header = ''
@@ -95,7 +95,7 @@
     say header
     say '='~copies(80)
 
-    do while stepRC == .ooSQL~row
+    do while stepRC == .ooSQLite~ROW
       row = ''
       do i = 1 to colCount
         row ||= oosqlColumnText(stmt, i)~left(20)

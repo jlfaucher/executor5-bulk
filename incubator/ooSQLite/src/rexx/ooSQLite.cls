@@ -52,7 +52,7 @@
  * ...
  *
  */
-::class 'ooSQLite' public
+::class 'ooSQLite' public inherit ooSQLiteConstants
 ::method compileOptionGet class external "LIBRARY oosqlite oosql_compileOptionGet_cls"
 ::method compileOptionUsed class external "LIBRARY oosqlite oosql_compileOptionUsed_cls"
 ::method complete class external "LIBRARY oosqlite oosql_complete_cls"
@@ -71,54 +71,54 @@
 ::method test class external "LIBRARY oosqlite oosql_test_cls"                  -- Do not document
 
 
-/** class: ooSQLiteDB
+/** class: ooSQLiteConnection
  * ...
  *
  */
-::class 'ooSQLiteDB' public
+::class 'ooSQLiteConnection' public inherit ooSQLiteConstants
 
-::method init class external "LIBRARY oosqlite oosqldb_init_cls"
+::method init class external "LIBRARY oosqlite oosqlconn_init_cls"
 
-::attribute closed get external "LIBRARY oosqlite oosqldb_getClosed_atr"
-::attribute fileName get external "LIBRARY oosqlite oosqldb_getFileName_atr"
-::attribute initCode get external "LIBRARY oosqlite oosqldb_getInitCode_atr"
-::attribute lastErrCode get external "LIBRARY oosqlite oosqldb_getLastErrCode_atr"
-::attribute lastErrMsg get external "LIBRARY oosqlite oosqldb_getLastErrMsg_atr"
+::attribute closed get external "LIBRARY oosqlite oosqlconn_getClosed_atr"
+::attribute fileName get external "LIBRARY oosqlite oosqlconn_getFileName_atr"
+::attribute initCode get external "LIBRARY oosqlite oosqlconn_getInitCode_atr"
+::attribute lastErrCode get external "LIBRARY oosqlite oosqlconn_getLastErrCode_atr"
+::attribute lastErrMsg get external "LIBRARY oosqlite oosqlconn_getLastErrMsg_atr"
 
-::method init external "LIBRARY oosqlite oosqldb_init"
-::method uninit external "LIBRARY oosqlite oosqldb_uninit"
+::method init external "LIBRARY oosqlite oosqlconn_init"
+::method uninit external "LIBRARY oosqlite oosqlconn_uninit"
 
-::method busyHandler external "LIBRARY oosqlite oosqldb_busyHandler"
-::method busyTimeOut external "LIBRARY oosqlite oosqldb_busyTimeOut"
-::method changes external "LIBRARY oosqlite oosqldb_changes"
-::method close external "LIBRARY oosqlite oosqldb_close"
-::method commitHook external "LIBRARY oosqlite oosqldb_commitHook"
-::method dbFileName external "LIBRARY oosqlite oosqldb_dbFileName"
-::method dbMutex external "LIBRARY oosqlite oosqldb_dbMutex"
-::method dbReadOnly external "LIBRARY oosqlite oosqldb_dbReadOnly"
-::method dbReleaseMemory external "LIBRARY oosqlite oosqldb_dbReleaseMemory"
-::method dbStatus external "LIBRARY oosqlite oosqldb_dbStatus"
-::method errCode external "LIBRARY oosqlite oosqldb_errCode"
-::method errMsg external "LIBRARY oosqlite oosqldb_errMsg"
-::method exec external "LIBRARY oosqlite oosqldb_exec"
-::method extendedErrCode external "LIBRARY oosqlite oosqldb_errCode"
-::method extendedResultCodes external "LIBRARY oosqlite oosqldb_extendedResultCodes"
-::method getAutocommit external "LIBRARY oosqlite oosqldb_getAutocommit"
-::method interrupt external "LIBRARY oosqlite oosqldb_interrupt"
-::method lastInsertRowID external "LIBRARY oosqlite oosqldb_lastInsertRowID"
-::method limit external "LIBRARY oosqlite oosqldb_limit"
-::method nextStmt external "LIBRARY oosqlite oosqldb_nextStmt"
-::method profile external "LIBRARY oosqlite oosqldb_profile"
-::method progressHandler external "LIBRARY oosqlite oosqldb_progressHandler"
-::method pragma external "LIBRARY oosqlite oosqldb_pragma"
-::method rollbackHook external "LIBRARY oosqlite oosqldb_rollbackHook"
-::method setAuthorizer external "LIBRARY oosqlite oosqldb_setAuthorizer"
-::method tableColumnMetadata external "LIBRARY oosqlite oosqldb_tableColumnMetadata"
-::method trace external "LIBRARY oosqlite oosqldb_trace"
-::method updateHook external "LIBRARY oosqlite oosqldb_updateHook"
+::method busyHandler external "LIBRARY oosqlite oosqlconn_busyHandler"
+::method busyTimeOut external "LIBRARY oosqlite oosqlconn_busyTimeOut"
+::method changes external "LIBRARY oosqlite oosqlconn_changes"
+::method close external "LIBRARY oosqlite oosqlconn_close"
+::method commitHook external "LIBRARY oosqlite oosqlconn_commitHook"
+::method dbFileName external "LIBRARY oosqlite oosqlconn_dbFileName"
+::method dbMutex external "LIBRARY oosqlite oosqlconn_dbMutex"
+::method dbReadOnly external "LIBRARY oosqlite oosqlconn_dbReadOnly"
+::method dbReleaseMemory external "LIBRARY oosqlite oosqlconn_dbReleaseMemory"
+::method dbStatus external "LIBRARY oosqlite oosqlconn_dbStatus"
+::method errCode external "LIBRARY oosqlite oosqlconn_errCode"
+::method errMsg external "LIBRARY oosqlite oosqlconn_errMsg"
+::method exec external "LIBRARY oosqlite oosqlconn_exec"
+::method extendedErrCode external "LIBRARY oosqlite oosqlconn_errCode"
+::method extendedResultCodes external "LIBRARY oosqlite oosqlconn_extendedResultCodes"
+::method getAutocommit external "LIBRARY oosqlite oosqlconn_getAutocommit"
+::method interrupt external "LIBRARY oosqlite oosqlconn_interrupt"
+::method lastInsertRowID external "LIBRARY oosqlite oosqlconn_lastInsertRowID"
+::method limit external "LIBRARY oosqlite oosqlconn_limit"
+::method nextStmt external "LIBRARY oosqlite oosqlconn_nextStmt"
+::method profile external "LIBRARY oosqlite oosqlconn_profile"
+::method progressHandler external "LIBRARY oosqlite oosqlconn_progressHandler"
+::method pragma external "LIBRARY oosqlite oosqlconn_pragma"
+::method rollbackHook external "LIBRARY oosqlite oosqlconn_rollbackHook"
+::method setAuthorizer external "LIBRARY oosqlite oosqlconn_setAuthorizer"
+::method tableColumnMetadata external "LIBRARY oosqlite oosqlconn_tableColumnMetadata"
+::method trace external "LIBRARY oosqlite oosqlconn_trace"
+::method updateHook external "LIBRARY oosqlite oosqlconn_updateHook"
 
-::method    putStmt external "LIBRARY oosqlite oosqldb_putStmt"                    -- Internal use only
-::method    delStmt external "LIBRARY oosqlite oosqldb_delStmt"                    -- Internal use only
+::method    putStmt external "LIBRARY oosqlite oosqlconn_putStmt"                    -- Internal use only
+::method    delStmt external "LIBRARY oosqlite oosqlconn_delStmt"                    -- Internal use only
 ::attribute ooSQLiteDBStmtBag private                                              -- Internal use only
 
 
@@ -126,7 +126,7 @@
  * ...
  *
  */
-::class 'ooSQLiteStmt' public
+::class 'ooSQLiteStmt' public inherit ooSQLiteConstants
 
 ::method init class external "LIBRARY oosqlite oosqlstmt_init_cls"
 
@@ -155,6 +155,7 @@
 ::method columnDataBaseName external "LIBRARY oosqlite oosqlstmt_columnDatabaseName"
 ::method columnDeclType external "LIBRARY oosqlite oosqlstmt_columnDeclType"
 ::method columnDouble external "LIBRARY oosqlite oosqlstmt_columnDouble"
+::method columnIndex external "LIBRARY oosqlite oosqlstmt_columnIndex"
 ::method columnInt external "LIBRARY oosqlite oosqlstmt_columnInt"
 ::method columnInt64 external "LIBRARY oosqlite oosqlstmt_columnInt64"
 ::method columnName external "LIBRARY oosqlite oosqlstmt_columnName"
@@ -178,7 +179,7 @@
  * ...
  *
  */
-::class 'ooSQLiteMutex' public
+::class 'ooSQLiteMutex' public inherit ooSQLiteConstants
 
 
 ::attribute closed get unguarded external "LIBRARY oosqlite oosqlmtx_getClosed_atr"
@@ -295,26 +296,25 @@
 
 
 /**
-    The ooSQL class contains all Constant values defined by the SQLite C API
-    interface, except for a few marked as not to be used by applications.
+    The ooSQLiteConstants class contains all Constant values defined by the
+    SQLite C API interface, except for a few marked as not to be used by
+    applications.
 
     Each constant is named the same as the SQLITE_x constant, minus the SQLITE_
-    part and is intended to be used as:  .ooSQL~x  That is:
+    part and is intended to be used as:  .ooSQLiteConstants~x  That is:
 
-    .ooSQL~OK     ->  is the value of SQLITE_OK
-    .ooSQL~ERROR  ->  is the value of SQLITE_ERROR
+    .ooSQLiteConstants~OK     ->  is the value of SQLITE_OK
+    .ooSQLiteConstants~ERROR  ->  is the value of SQLITE_ERROR
 
     Since some of these constants are flags, where several flags can be | (or'd)
     together, the merge() method is provided to do that.
 
     The constant values should be used with either the object orientated
     interface or the classic Rexx interface.
-
-    Question:  Should this be a mixin class?
  */
-::class 'ooSQL' public
+::class 'ooSQLiteConstants' public mixinclass Object
 
--- TODO we need a constant value to string method, something like const2string(.ooSQL~INTERNAL) -> "INTERNAL"
+-- TODO we need a constant value to string method, something like const2string(.ooSQLiteConstants~INTERNAL) -> "INTERNAL"
 ::method merge class external "LIBRARY oosqlite oosqlC_merge_cls"
 
 ::constant OO_WRONG_ARG_TYPE    1000

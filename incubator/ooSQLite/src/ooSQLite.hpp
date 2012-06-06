@@ -107,28 +107,28 @@ typedef enum
 } CallbackType;
 
 
-/* Struct for the ooSQLiteDB object CSelf. */
-typedef struct _oosqldbCSelf {
-    sqlite3            *db;               // The actual database.
+/* Struct for the ooSQLiteConnection object CSelf. */
+typedef struct _oosqlConnCSelf {
+    sqlite3            *db;               // The actual database connection.
     const char         *fileName;         // The database file name.
-    RexxObjectPtr       rexxSelf;         // The Rexx ooSQLiteDB object.
+    RexxObjectPtr       rexxSelf;         // The Rexx ooSQLiteConnection object.
     RexxObjectPtr       stmtBag;          // The bag holding prepared statments (which is really a set.)
     RexxStringObject    rxFileName;       // The Rexx string object database file name.
     RexxStringObject    lastErrMsg;       // sqlite3_errmsg()
     int                 lastErrCode;      // sqlite3_errcode()
 
-    // Set during .ooSQLiteDB~new(), never changed.  If not 0, database
+    // Set during .ooSQLiteConnection~new(), never changed.  If not 0, database
     // operations will fail.
     int                 initCode;
     bool                closed;           // The database was closed.
-} CooSQLiteDB;
-typedef CooSQLiteDB *pCooSQLiteDB;
+} CooSQLiteConn;
+typedef CooSQLiteConn *pCooSQLiteConn;
 
 /* Struct for the ooSQLiteStmt object CSelf. */
 typedef struct _oosqlstmtCSelf {
     sqlite3_stmt       *stmt;              // The actual statement.
     RexxObjectPtr       db;                // The Rexx database connection used with the statement.
-    pCooSQLiteDB        pCdb;              // The CSelf database connection used with the statement.
+    pCooSQLiteConn      pConn;             // The CSelf database connection used with the statement.
     RexxObjectPtr       rexxSelf;          // The Rexx ooSQLiteStmt object.
     RexxStringObject    tail;              // The tail pointer returned from SQLite.
     RexxStringObject    errMsg;            // Set during .ooSQLiteStmt~new(), never changed. Uses sqlite3_errmsg() for the msg
@@ -141,7 +141,7 @@ typedef CooSQLiteStmt *pCooSQLiteStmt;
 /* Struct for the ooSQLiteMutex object CSelf. */
 typedef struct _oosqlmutexCSelf {
     sqlite3_mutex      *mutex;             // The SQLite mutex handle
-    RexxObjectPtr       rexxSelf;          // The Rexx ooSQLiteDB object.
+    RexxObjectPtr       rexxSelf;          // The Rexx ooSQLiteConnection object.
     int                 type;              // The SQLite mutex type.
                                            // Should we reference count if the type is recursive?
     bool                initializationErr; // sqlite3_mutex_alloc failed.
