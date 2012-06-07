@@ -38,14 +38,11 @@
     #########################################################################
 -->
 
-<!-- Appendix 04 - Dialog Sequences				  v00-04 23Apr12
+<!-- Appendix 04 - Dialog Sequences				  v01-00 07Jun12
      Shows the methods invoked during dialog creation.
 
      Changes:
-     v00-01 08Jan12: First version
-     v00-02 19Jan12: minor additions/corrections.
-     v00-03 23Feb12: Decrease table width so it's not off the edge of the page(!).
-     v00-04 23Apr12: Table still off edge of page - try again.
+     v01-00 07Jun12: First version.
 -->
 
 <appendix id="apx-dlgsequences">
@@ -56,7 +53,8 @@
       set up a dialog using one of the more usual superclasses -
         <computeroutput>UserDialog</computeroutput>, <computeroutput>RcDialog</computeroutput> or
         <computeroutput>ResDialog</computeroutput>. Menu creation is included even though this is
-      technically quite separate from dialog creation.</para>
+      technically quite separate from dialog creation, and does not have to be done
+      in the <emphasis role="italic">init</emphasis> method.</para>
       <para>The following table shows, for each of the three main dialog types, the method
       invocations that the programmer must code and the methods (invoked by ooDialog-provided
       superclasses as part of the dialog creation framework) that the programmer must provide. </para>
@@ -179,10 +177,10 @@
         >init</emphasis> using <emphasis role="italic">forward class (super) continue</emphasis>.
       For <computeroutput>RcDialog</computeroutput> subclasses, a menubar could be created in this
       method, but could also be created later.</para>
-  <para>The <emphasis role="italic">defineDialog</emphasis> method (see section 8.7 of the ooDialog
+  <para>The <emphasis role="italic">defineDialog</emphasis> method (see the ooDialog
       Reference) is invoked automatically by the superclass' <emphasis role="italic">init</emphasis>
-      method. This method provides for the creation of the "Dialog Template" (see ooDialog Reference
-      section 2.3.2) - that is, the layout of controls on the dialog. For a
+      method. This method provides for the creation of the "Dialog Template"
+      (see the ooDialog Reference) - that is, the layout of controls on the dialog. For a
         <computeroutput>UserDialog</computeroutput> the dialog template must be created using
       self~create(...) instructions. For an <computeroutput>RcDialog</computeroutput> the dialog
       template is normally fully-defined by the *.rc file, but can optionally be enhanced here.
@@ -192,12 +190,13 @@
         <computeroutput>ResDialog</computeroutput>.</para>
     <para>On exit from the <emphasis role="italic">defineDialog</emphasis> method, the dialog
       template is established. </para>
-    <para>The "underlying dialog" (see ooDialog Reference section 2.3.11) is then created and
-      surfaced (made visible to the user) by invoking the superclass' <emphasis role="italic"
-        >execute</emphasis> method (see ooDialog Reference section 3.7.5).  </para>
-    <para>The last method in the table - <emphasis role="italic">initDialog</emphasis> (see ooDialog
-      Reference section 3.7.7) - is provided for the programmer to initialize the various controls -
-      e.g. set an edit control to its initial data value, or pre-select a radio button. This is done
+    <para>The "underlying dialog" (see the ooDialog Reference) is then created and
+      surfaced (made visible to the user) by invoking the superclass'
+      <emphasis role="italic">execute</emphasis> method.</para>
+    <para>The last method in the table - <emphasis role="italic">initDialog</emphasis> - is
+      provided for the programmer to initialize the various controls,
+      e.g. setting an edit control to its initial data value, or pre-selecting a radio button.
+      This is done
       by creating "proxies" for those controls that need to be manipulated within the program,
       typically using <emphasis role="italic">proxy = self~new...(...)</emphasis> statements. It's
       worth remembering that the "init" in <emphasis role="italic">initDialog</emphasis> means

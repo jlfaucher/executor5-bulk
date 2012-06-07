@@ -38,20 +38,13 @@
     #########################################################################
 -->
 
-<!-- Appendix 02 - Dialog Data and AutoDetection		  v00-03 15Aug11
+<!-- Appendix 02 - Dialog Data and AutoDetection		  v01-00 07Jun12
      This is an illustration, through sample code, of the use of Dialog Data,
      including AutoDetection.
 
      Changes:
-     v00-01: First version (??0711)
-     v00-02 11Aug11: Added bit about -1 for static text.
-     v00-03 15Aug11: Changed title (added "AutoDetection").
+       v01-00 07Jun12: First version.
 
-     *********  INCLUDE Res ID of -1 for Static Text - not auto-detected.
-     		Mark's email of 11Aug11  *********
-
-     13Aug11 - Decided not do do this - so no change to committed file
-               - i.e. committed file is and should be at v00-01.
 -->
 <appendix id="apx-dlgdata">
   <title id="dlgdata.title">Dialog Attributes and AutoDetection</title>
@@ -73,8 +66,7 @@
   <para>This function is still supported by ooDialog. The compound symbol is often referred to
     as "dialog data", and the process of automatically moving data between the ooRexx dialog
     and the underlying Windows constructs is called "automatic data detection" or
-    "auto detection" for short. A full
-    description of this capability is provided in section 3.6 of the ooDialog Reference. The aim of this appendix
+    "auto detection" for short. The aim of this appendix
     is to illustrate, through a simple example, how automatic data detection is coded.
     The example, <computeroutput>ASimpleDialog.rex</computeroutput>, can be found
     in the <computeroutput>Samples\DlgData</computeroutput> folder. When executed, the dialog looks like this:
@@ -144,16 +136,17 @@ ret = MessageDialog(msg, 0, title, 'OK', icon, 'TOPMOST')
       parameter - <emphasis role="italic">dlgData.</emphasis> - is the stem variable that contains
       the data - that is the attribute values - to be placed in the dialog's controls. Finally, the
       fourth parameter is the header file, which can be omitted if the statement
-        <computeroutput>.application~useGlobalConstDir("O","ASimpleDialog.h")</computeroutput> is
+      <computeroutput>.application~useGlobalConstDir("O", "ASimpleDialog.h")</computeroutput> is
       placed at the start of the program. </para>
   <para>The class <computeroutput>ASimpleDialog</computeroutput> is defined at the end
     of the program. Note the extreme simplicity of coding a
-  simple form-filling dialog class. No methods are needed; the superclass,
+  simple form-filling dialog class. No methods are needed - the dialog consists
+  of a single <computeroutput>::CLASS</computeroutput> statement. The superclass,
   <computeroutput>RcDialog</computeroutput>, provides all the function needed.
 </para>
 <para>Section (3) of the code shows how data is retrieved from the controls via <emphasis
-        role="italic">dlgData.</emphasis> after the dialog has been closed by the user. Note that a
-      mixture numeric and symbolic IDs can be used, as illustrated by statements such as <emphasis
+        role="italic">dlgData</emphasis> after the dialog has been closed by the user. Note that a
+      mixture of numeric and symbolic IDs can be used, as illustrated by statements such as <emphasis
         role="italic">disagree = dlgData.1004</emphasis>. Indeed, a control can be referenced by its
       symbolic ID in one place and by its numeric ID in another, as illustrated by the use of both
         <computeroutput>IDC_EDIT1</computeroutput> and <computeroutput>1002</computeroutput> to
@@ -166,25 +159,22 @@ ret = MessageDialog(msg, 0, title, 'OK', icon, 'TOPMOST')
       program <computeroutput>ASimpleDialog2.rex</computeroutput> is included in the
       <computeroutput>samples\DlgData</computeroutput> folder together with its *.dll file. </para>
 
-<para>Finally, when desired, auto detection can be turned off. <indexterm>
-        <primary>AutoDetection</primary>
-      </indexterm>
-      <indexterm>
-        <primary>Automatic data detection</primary>
-        <secondary>turning off</secondary>
-      </indexterm> The Dialog Object (see ooDialog Reference chapter 3) sends itself an <emphasis
-        role="italic">initAutoDetection</emphasis> message when a dialog is instantiated. By
-      default, auto detection is turned on. If desired, a subclass can turn it off by intercepting
-      the message and issuing a <emphasis role="italic">noAutoDetection</emphasis> message to
-        <emphasis role="italic">self</emphasis>. Try adding the following method to <emphasis
-        role="bold">ASimpleDialog</emphasis>
-      <programlisting>
+<para>Finally, when desired, there are two ways to turn auto detection off (by default it is turned on).
+  <indexterm><primary>AutoDetection</primary><secondary>turning off</secondary></indexterm>
+  First, by the Application Manager (see the ooDialog Reference), and second programmatically
+  by intercepting the <emphasis role="italic">initAutoDetection</emphasis> message.
+  This is automatically sent to the dialog by the ooDialoog framework when the dialog
+  is instantiated. To turn auto detection off, just invoke <emphasis role="italic">noAutoDetection</emphasis>
+  on <emphasis role="italic">self</emphasis>. Try adding the following method to
+  <emphasis role="bold">ASimpleDialog</emphasis>
+  <programlisting>
     <![CDATA[
     ::CLASS ASimpleDialog SUBCLASS RcDialog
       ::method initAutoDetection
         self~noAutoDetection
     ]]>
-  </programlisting>When the program is run, the edit control is blank. On pressing "OK", the
+  </programlisting>
+      When the program is run, the edit control is blank. On pressing "OK", the
       dialog closes and an error is reported on the console. The error occurs because the radio
       button "data" (i.e. a boolean) is not returned, and so an "if" statement fails because it's
       expecting a boolean value to be tested. </para>
