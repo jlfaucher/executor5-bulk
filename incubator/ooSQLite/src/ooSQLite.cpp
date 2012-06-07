@@ -67,12 +67,13 @@ RexxObjectPtr       TheTwoObj         = NULLOBJECT;
 RexxObjectPtr       TheNegativeOneObj = NULLOBJECT;
 
 // Initialized in the class init methods.
-RexxClassObject     TheOOSQLiteDBClass    = NULLOBJECT;
-RexxClassObject     TheOOSQLiteStmtClass  = NULLOBJECT;
-RexxClassObject     TheOOSQLiteMutexClass = NULLOBJECT;
+RexxClassObject     TheOOSQLiteClass            = NULLOBJECT;
+RexxClassObject     TheOOSQLiteConnectionClass  = NULLOBJECT;
+RexxClassObject     TheOOSQLiteStmtClass        = NULLOBJECT;
+RexxClassObject     TheOOSQLiteMutexClass       = NULLOBJECT;
 
-// The class object is initialized in the class init method.  The hidden helper
-// object is only initialized when / if needed.
+// The RoutineHelper class object is initialized in the class init method.  The
+// hidden helper object is only initialized when / if needed.
 RexxClassObject     TheRoutineHelperClass = NULLOBJECT;
 RexxObjectPtr       TheHiddenHelper       = NULLOBJECT;
 
@@ -270,10 +271,7 @@ static inline RexxStringObject ooSQLiteErr(RexxThreadContext *c, wholenumber_t r
 }
 
 /**
- * There are cases where the return to Rexx can be a number, or an error code.
- * The user can not distinguish if the number is an error or not.
- *
- * For now, this error string is returned.
+ * Same as above but includes an error message along with the error code.
  *
  * Need to revisit this thinking.
  *
@@ -294,6 +292,50 @@ static inline RexxStringObject ooSQLiteErr(RexxThreadContext *c, wholenumber_t r
 
 
 /**
+ * Similar to the other ooSQLiteErr() functions above, but the primary purpose
+ * is to set the databas connection last error message and last error code.
+ *
+ * Note that this is the ooSQLiteConnection last error *attributes* which are
+ * separate from the SQLite last error functions.  The attributes can be set to
+ * the same values as the SQLite APIs produce, but need not be.
+ *
+ * @param c            Method context we are operating in.
+ * @param pConn        Pointer to the CSelf for an ooSQLiteConnection object.
+ * @param rc           SQLITE error code.
+ * @param isSQLiteErr  True if this is an error code returned from the SQLite
+ *                     API, false if it is our own ooRexx extension error.
+ *
+ * @return  For convenience the lastErrMsg attribute value is returned.
+ */
+static RexxStringObject ooSQLiteErr(RexxMethodContext *c, pCooSQLiteConn pConn, int rc, CSTRING msg, bool isSQLiteErr)
+{
+    pConn->lastErrMsg  = ooSQLiteErr(c->threadContext, rc, msg, isSQLiteErr);
+    pConn->lastErrCode = rc;
+
+    c->SetObjectVariable("rxLastErrMsg", pConn->lastErrMsg);
+
+    return pConn->lastErrMsg;
+}
+
+/**
+ * The reverse of the ooSQLiteErr() function above.  This is used to set the
+ * last error to no error.
+ *
+ * @param c            Method context we are operating in.
+ * @param pConn        Pointer to the CSelf for an ooSQLiteConnection object.
+ * @return  For convenience the lastErrMsg attribute value is returned.
+ */
+static RexxStringObject ooSQLiteNoErr(RexxMethodContext *c, pCooSQLiteConn pConn)
+{
+    pConn->lastErrMsg  = c->String("No error");
+    pConn->lastErrCode = SQLITE_OK;
+
+    c->SetObjectVariable("rxLastErrMsg", pConn->lastErrMsg);
+
+    return pConn->lastErrMsg;
+}
+
+/**
  * Returns an upper-cased copy of the string.
  *
  * @param str   The string to copy and upper case.
@@ -305,7 +347,7 @@ static inline RexxStringObject ooSQLiteErr(RexxThreadContext *c, wholenumber_t r
  * malloc'd using the SQLite malloc so the the SQLite free must be used to
  * release the memory.
  */
-char *strdupupr(const char *str)
+static char *strdupupr(const char *str)
 {
     char *retStr = NULL;
     if ( str )
@@ -335,12 +377,24 @@ char *strdupupr(const char *str)
 }
 
 /**
- * Returns a result set in the form of an array of 'records.'
+ * Uppercase a memory location.  Taken from rexxutil.cpp.
  *
- * Each record is an array of the column valuess for that record, except for the
- * first array in the records.  The first array object in the records array
- * contains the column names, making the first data record the object at index
- * 2.
+ * @param location  Memory location
+ * @param length    Length to uppercase.
+ */
+static void  strupper(char *location, size_t length)
+{
+    // Loop through entire string:
+  for (; length--; location++)
+  {
+      // Uppercase in place.
+      *location = toupper(*location);
+  }
+}
+
+
+/**
+ * Returns a result set in the "array of arrays" format
  *
  * @param c     Thread context we are operating in.
  * @param stmt  A prepared sqlite3 statemnt.
@@ -354,7 +408,7 @@ char *strdupupr(const char *str)
  * @note  If there are no rows returned by stepping the statement, then an empty
  *        array is returned.
  */
-RexxArrayObject getRecords(RexxThreadContext *c, sqlite3_stmt *stmt)
+static RexxArrayObject getRecordsArray(RexxThreadContext *c, sqlite3_stmt *stmt)
 {
     RexxArrayObject a = c->NewArray(10);  // An array of records
     RexxArrayObject r;                    // A single record
@@ -398,6 +452,113 @@ RexxArrayObject getRecords(RexxThreadContext *c, sqlite3_stmt *stmt)
     }
 
     return a;
+}
+
+
+/**
+ * Returns a result set in the "array of directories" format
+ *
+ * @param c     Thread context we are operating in.
+ * @param stmt  A prepared sqlite3 statemnt.
+ *
+ * @return An array of the records produced by the statement.  Each record is a
+ *         directory object.
+ *
+ * @assumes  The specified statement is valid, that the return from
+ *           sqlite3_prepare_v2() has already been checked.  Also assumes that
+ *           sqlite3_step() has not been called yet.
+ *
+ * @note  If there are no rows returned by stepping the statement, then an empty
+ *        array is returned.
+ */
+static RexxArrayObject getRecordsDirectory(RexxThreadContext *c, sqlite3_stmt *stmt)
+{
+    RexxDirectoryObject record;                      // A single record
+    RexxArrayObject     records = c->NewArray(100);  // An array of records
+    size_t              item = 1;                    // Current record index
+
+    int count = sqlite3_column_count(stmt);
+
+    while ( sqlite3_step(stmt) == SQLITE_ROW )
+    {
+        record = c->NewDirectory();
+
+        for ( int i = 0; i < count; i++ )
+        {
+            CSTRING index = sqlite3_column_name(stmt, i);
+            if ( index == NULL )
+            {
+                outOfMemoryException(c);
+                return records;
+            }
+
+            strupper((char *)index, strlen(index));
+
+            CSTRING       data  = (CSTRING)sqlite3_column_text(stmt, i);
+            RexxObjectPtr value = (data == NULL) ? TheNilObj : c->String(data);
+
+            c->DirectoryPut(record, value, index);
+        }
+
+        c->ArrayPut(records, record, item++);
+    }
+
+    return records;
+}
+
+
+/**
+ * Returns a result set in the "stem of stems" format
+ *
+ * @param c     Thread context we are operating in.
+ * @param stmt  A prepared sqlite3 statemnt.
+ *
+ * @return A stem containing the records produced by the statement.  Each record
+ *         is a stem object.
+ *
+ * @assumes  The specified statement is valid, that the return from
+ *           sqlite3_prepare_v2() has already been checked.  Also assumes that
+ *           sqlite3_step() has not been called yet.
+ *
+ * @note  If there are no rows returned by stepping the statement, then a stem
+ *        with stem.0 equal to zero is returned.
+ */
+static RexxStemObject getRecordsStem(RexxThreadContext *c, sqlite3_stmt *stmt)
+{
+    RexxStemObject record;                           // A single record.
+    RexxStemObject records = c->NewStem("records");  // A stem containing records.
+    c->SetStemArrayElement(records, 0, TheZeroObj);
+
+
+    int    count = sqlite3_column_count(stmt);
+    size_t item = 1;                                 // Current record index.
+
+    while ( sqlite3_step(stmt) == SQLITE_ROW )
+    {
+        record = c->NewStem("record");
+
+        for ( int i = 0; i < count; i++ )
+        {
+            CSTRING index = sqlite3_column_name(stmt, i);
+            if ( index == NULL )
+            {
+                outOfMemoryException(c);
+                return records;
+            }
+
+            strupper((char *)index, strlen(index));
+
+            CSTRING       data  = (CSTRING)sqlite3_column_text(stmt, i);
+            RexxObjectPtr value = (data == NULL) ? TheNilObj : c->String(data);
+
+            c->SetStemElement(record, index, value);
+        }
+
+        c->SetStemArrayElement(records, 0, c->StringSize(item));  // Update number of records in the stem.
+        c->SetStemArrayElement(records, item++, record);          // Add the record.
+    }
+
+    return records;
 }
 
 
@@ -1053,8 +1214,59 @@ static void updateHookCallback(void *data, int op, const char *dbName, const cha
     replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod);
 }
 
+
 /**
- * The call back function for sqlite3_exec()
+ * A generic call back into Rexx used to send a record from sqlite3_exec() to
+ * the user.  This call turns out to be the same whether the format of single
+ * record is a stem or a diretory.
+ *
+ * @param d
+ * @param record
+ *
+ * @return wholenumber_t
+ */
+wholenumber_t genExecCall2Rexx(pCGenericCallback d, RexxObjectPtr record)
+{
+    RexxThreadContext *c  = d->callbackContext;
+    wholenumber_t      rc = SQLITE_OK;
+
+    d->count++;
+
+    RexxArrayObject args;
+    RexxObjectPtr   reply    = NULLOBJECT;
+    bool            isMethod = (d->callbackObj == NULLOBJECT) ? false : true;
+    RexxObjectPtr   count    = c->WholeNumber(d->count);
+
+    if ( d->userData == NULL )
+    {
+        args = c->ArrayOfTwo(record, count);
+    }
+    else
+    {
+        args = c->ArrayOfThree(record, count, d->userData);
+    }
+
+    if ( isMethod )
+    {
+        reply = c->SendMessage(d->callbackObj, d->callbackMethod, args);
+    }
+    else
+    {
+        reply = c->CallRoutine(d->callbackRtn, args);
+    }
+
+    if ( ! replyIsGood(c, reply, &rc, d->callbackMethod, d->routineName, isMethod) )
+    {
+        rc = SQLITE_ABORT;
+    }
+
+    return rc;
+}
+
+
+/**
+ * The call back function for sqlite3_exec() when the format of a record is an
+ * array.
  *
  *
  * @param data
@@ -1064,7 +1276,7 @@ static void updateHookCallback(void *data, int op, const char *dbName, const cha
  *
  * @return int
  */
-static int execCallBack(void *data, int ncols, char **values, char **headers)
+static int execCallBackArray(void *data, int ncols, char **values, char **headers)
 {
     pCGenericCallback  d = (pCGenericCallback)data;
     RexxThreadContext *c = d->callbackContext;
@@ -1076,7 +1288,7 @@ static int execCallBack(void *data, int ncols, char **values, char **headers)
     {
         if ( values[i] == NULL )
         {
-            c->ArrayAppendString(record, "NULL", 4);
+            c->ArrayPut(record, TheNilObj, i + 1);
         }
         else
         {
@@ -1086,7 +1298,7 @@ static int execCallBack(void *data, int ncols, char **values, char **headers)
 
     wholenumber_t rc = SQLITE_OK;
 
-    if ( d->useArray )
+    if ( d->createRS )
     {
         if ( d->count == 0 )
         {
@@ -1095,12 +1307,12 @@ static int execCallBack(void *data, int ncols, char **values, char **headers)
                 c->ArrayAppendString(header, headers[i], strlen(headers[i]));
             }
 
-            c->ArrayPut(d->records, header, 1);
+            c->ArrayPut(d->rsArray, header, 1);
             d->count = 1;
         }
 
         d->count++;
-        c->ArrayPut(d->records, record, d->count);
+        c->ArrayPut(d->rsArray, record, d->count);
     }
     else
     {
@@ -1149,29 +1361,119 @@ static int execCallBack(void *data, int ncols, char **values, char **headers)
 }
 
 
+/**
+ * The call back function for sqlite3_exec() when the format of a record is a
+ * directory.
+ *
+ *
+ * @param data
+ * @param ncols
+ * @param values
+ * @param headers
+ *
+ * @return int
+ */
+static int execCallBackDirectory(void *data, int ncols, char **values, char **headers)
+{
+    pCGenericCallback  d = (pCGenericCallback)data;
+    RexxThreadContext *c = d->callbackContext;
+
+    RexxDirectoryObject record = c->NewDirectory();
+
+    for ( int i = 0; i < ncols; i++ )
+    {
+        strupper(headers[i], strlen(headers[i]));
+
+        CSTRING       index = headers[i];
+        RexxObjectPtr value = (values[i] == NULL) ? TheNilObj : c->String(values[i]);
+
+        c->DirectoryPut(record, value, index);
+    }
+
+    wholenumber_t rc = SQLITE_OK;
+
+    if ( d->createRS )
+    {
+        d->count++;
+        c->ArrayPut(d->rsArray, record, d->count);
+    }
+    else
+    {
+        rc = genExecCall2Rexx(d, record);
+    }
+
+    return (int)rc;
+}
+
+
+/**
+ * The call back function for sqlite3_exec() when the format of a record is a
+ * stem.
+ *
+ *
+ * @param data
+ * @param ncols
+ * @param values
+ * @param headers
+ *
+ * @return int
+ */
+static int execCallBackStem(void *data, int ncols, char **values, char **headers)
+{
+    pCGenericCallback  d = (pCGenericCallback)data;
+    RexxThreadContext *c = d->callbackContext;
+
+    RexxStemObject record = c->NewStem("record");
+
+    for ( int i = 0; i < ncols; i++ )
+    {
+        strupper(headers[i], strlen(headers[i]));
+
+        CSTRING       index = headers[i];
+        RexxObjectPtr value = (values[i] == NULL) ? TheNilObj : c->String(values[i]);
+
+        c->SetStemElement(record, index, value);
+    }
+
+    wholenumber_t rc = SQLITE_OK;
+
+    if ( d->createRS )
+    {
+        d->count++;
+        c->SetStemArrayElement(d->rsStem, d->count, record);
+        c->SetStemArrayElement(d->rsStem, 0, c->UnsignedInt32(d->count));
+    }
+    else
+    {
+        rc = genExecCall2Rexx(d, record);
+    }
+
+    return (int)rc;
+}
+
 #define ooSQLite_Methods_Section  1
 
 
 /**
- * Retrieves the CSelf pointer for a ooSQLiteConnection object when the database object
- * is not the direct object the method was invoked on.  This performs a scoped
- * CSelf lookup.
+ * Retrieves the CSelf pointer for a ooSQLiteConnection object when the
+ * connection object is not the direct object the method was invoked on.  This
+ * performs a scoped CSelf lookup.
  *
  * @param c    The method context we are operating in.
- * @param db   The database object whose CSelf pointer is needed.
+ * @param conn The database connection object whose CSelf pointer is needed.
  *
- * @return A pointer to the CSelf of the database object.
+ * @return A pointer to the CSelf of the connection object.
  *
- * @assumes  The caller has ensured db is in fact an ooSQLiteConnection Rexx database
- *           object.
+ * @assumes  The caller has ensured conn is in fact an ooSQLiteConnection Rexx
+ *           connection object.
  */
-inline pCooSQLiteConn dbToCSelf(RexxThreadContext *c, RexxObjectPtr db)
+inline pCooSQLiteConn dbToCSelf(RexxThreadContext *c, RexxObjectPtr conn)
 {
-    return (pCooSQLiteConn)c->ObjectToCSelf(db, TheOOSQLiteDBClass);
+    return (pCooSQLiteConn)c->ObjectToCSelf(conn, TheOOSQLiteConnectionClass);
 }
-inline pCooSQLiteConn dbToCSelf(RexxMethodContext *c, RexxObjectPtr db)
+inline pCooSQLiteConn dbToCSelf(RexxMethodContext *c, RexxObjectPtr conn)
 {
-    return dbToCSelf(c->threadContext, db);
+    return dbToCSelf(c->threadContext, conn);
 }
 
 
@@ -1242,29 +1544,6 @@ void invalidMutexException(RexxThreadContext *context, pCooSQLiteMutex pCmtx)
     executionErrorException(context, buffer);
 }
 
-
-/**
- * Produces
- *
- * For now, this error string is returned.
- *
- * Need to revisit this thinking.
- *
- * @param c            Method context we are operating in.
- * @param pConn         Pointer to the CSelf for an ooSQLiteConnection object.
- * @param rc           SQLITE error code.
- * @param isSQLiteErr  True if this is an error code returned from the SQLite
- *                     API, false if it is our own ooRexx extension error.
- */
-static RexxStringObject ooSQLiteErr(RexxMethodContext *c, pCooSQLiteConn pConn, int rc, CSTRING msg, bool isSQLiteErr)
-{
-    pConn->lastErrMsg  = ooSQLiteErr(c->threadContext, rc, msg, isSQLiteErr);
-    pConn->lastErrCode = rc;
-
-    c->SetObjectVariable("rxLastErrMsg", pConn->lastErrMsg);
-
-    return pConn->lastErrMsg;
-}
 
 static inline pCooSQLiteConn requiredDBCSelf(RexxMethodContext *c, void *pCSelf)
 {
@@ -1456,7 +1735,7 @@ static void cleanupThisCallback(RexxThreadContext *c, RexxBufferObject buf)
 /**
  *  Methods for the .ooSQLiteConstants class.
  */
-#define OOSQL_CLASS    "ooSQLiteConstants"
+#define OOSQLCONSTANTS_CLASS    "ooSQLiteConstants"
 
 /** ooSQLiteConstants::merge()  [Class method]
  *
@@ -1472,6 +1751,57 @@ RexxMethod1(wholenumber_t, oosqlC_merge_cls, ARGLIST, args)
  *  Methods for the .ooSQLite class.
  */
 #define OOSQLITE_CLASS    "ooSQLite"
+
+
+/** ooSQLite::init()
+ */
+RexxMethod1(RexxObjectPtr, oosql_init_cls, OSELF, self)
+{
+    if ( isOfClassType(context, self, OOSQLITE_CLASS) )
+    {
+        TheOOSQLiteClass = (RexxClassObject)self;
+        context->RequestGlobalReference(TheOOSQLiteClass);
+
+        // Get a buffer for the CSelf.
+        RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLiteClass));
+        if ( cselfBuffer == NULLOBJECT )
+        {
+            outOfMemoryException(context->threadContext);
+            return NULLOBJECT;
+        }
+
+        context->SetObjectVariable("CSELF", cselfBuffer);
+
+        pCooSQLiteClass pCoosql = (pCooSQLiteClass)context->BufferData(cselfBuffer);
+        memset(pCoosql, 0, sizeof(CooSQLiteClass));
+
+        pCoosql->format = anArrayOfDirectories;
+    }
+    return NULLOBJECT;
+}
+
+
+/** ooSQLite::recordFormat  [attribute get]
+ */
+RexxMethod1(uint32_t, oosql_getRecordFormat_atr_cls, CSELF, pCSelf)
+{
+    return ((pCooSQLiteClass)pCSelf)->format;
+}
+/** ooSQLite::recordFormat  [attribute get]
+ */
+RexxMethod2(RexxObjectPtr, oosql_setRecordFormat_atr_cls, uint32_t, format, CSELF, pCSelf)
+{
+    if ( format < anArrayOfArrays || format > aStemOfStems )
+    {
+        wrongArgValueException(context->threadContext, 1, RECORD_FORMATS_LIST, context->UnsignedInt32(format));
+    }
+    else
+    {
+        ((pCooSQLiteClass)pCSelf)->format = (ResultSetType)format;
+    }
+    return NULLOBJECT;
+}
+
 
 /** ooSQLite::version  [class method]
  *
@@ -1703,8 +2033,8 @@ RexxMethod1(POINTER, oosql_test_cls, POINTER, db)
 /**
  *  Methods for the .ooSQLiteConnection class.
  */
-#define OOSQLITEDB_CLASS    "ooSQLiteConnection"
-#define STMTSET_ATTRIBUTE   "ooSQLiteDBStmtBag"
+#define OOSQLITECONNECTION_CLASS    "ooSQLiteConnection"
+#define STMTSET_ATTRIBUTE           "ooSQLiteConnectionStmtBag"
 
 
 /**
@@ -1836,7 +2166,7 @@ static bool setDBInitStatus(RexxMethodContext *c, pCooSQLiteConn pConn, sqlite3 
 
         RexxObjectPtr set = rxNewSet(c);
         pConn->stmtBag = set;
-        c->SendMessage1(self, "OOSQLITEDBSTMTBAG=", set);
+        c->SendMessage1(self, "OOSQLITECONNECTIONSTMTBAG=", set);
 
         // Here we enable things that are enabled / disabled on a per database
         // connection basis that are set by default for ooSQLite.
@@ -2166,6 +2496,8 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
 
     if ( rc == SQLITE_OK )
     {
+        ooSQLiteNoErr(c, pConn);
+
         if ( pragma == shrinkMemory )
         {
             rc = sqlite3_step(stmt);
@@ -2177,16 +2509,43 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
             {
                 result = ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
             }
-
         }
         else
         {
-            result = getRecords(c->threadContext, stmt);
+            switch ( pConn->format )
+            {
+                case anArrayOfArrays :
+                    result = getRecordsArray(c->threadContext, stmt);
+                    break;
+                case anArrayOfDirectories :
+                    result = getRecordsDirectory(c->threadContext, stmt);
+                    break;
+                default :
+                    result = getRecordsStem(c->threadContext, stmt);
+                    break;
+            }
         }
     }
     else
     {
+        // This sets the last error attributes.
         result = ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
+
+        if ( pragma != shrinkMemory )
+        {
+            // But, if not shrinkMemory we want to return an empty result set:
+            if ( pConn->format == aStemOfStems )
+            {
+                RexxStemObject r = c->NewStem("records");
+                c->SetStemArrayElement(r, 0, TheZeroObj);
+
+                result = r;
+            }
+            else
+            {
+                result = c->NewArray(0);
+            }
+        }
     }
 
     sqlite3_finalize(stmt);
@@ -2195,7 +2554,8 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
 }
 
 /**
- * Processes a query only pragma that returns an array of records.
+ * Processes a query only pragma that returns the records in the default result
+ * set format for the database connection..
  *
  * @param c
  * @param pConn
@@ -2203,10 +2563,10 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
  * @param value
  * @param pragma
  *
- * @return An array of records.
+ * @return A result set containing the records returned by the pragma statement.
  *
  * @note  If there are no rows returned by the pragma statement, then an empty
- *        array is returned.
+ *        result set is returned.
  */
 RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name, RexxObjectPtr value, PragmaType pragma)
 {
@@ -2232,11 +2592,38 @@ RexxObjectPtr pragmaList(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING nam
     int rc = sqlite3_prepare_v2(db, buf, (int)strlen(buf) + 1, &stmt, NULL);
     if ( rc == SQLITE_OK )
     {
-        result = getRecords(c->threadContext, stmt);
+        ooSQLiteNoErr(c, pConn);
+
+        switch ( pConn->format )
+        {
+            case anArrayOfArrays :
+                result = getRecordsArray(c->threadContext, stmt);
+                break;
+            case anArrayOfDirectories :
+                result = getRecordsDirectory(c->threadContext, stmt);
+                break;
+            default :
+                result = getRecordsStem(c->threadContext, stmt);
+                break;
+        }
     }
     else
     {
-        result = ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
+        // Set the last error attributes of the connections.
+        ooSQLiteErr(c, pConn, rc, sqlite3_errmsg(db), true);
+
+        // Return an empty result set.
+        if ( pConn->format == aStemOfStems )
+        {
+            RexxStemObject r = c->NewStem("records");
+            c->SetStemArrayElement(r, 0, TheZeroObj);
+
+            result = r;
+        }
+        else
+        {
+            result = c->NewArray(0);
+        }
     }
 
     sqlite3_finalize(stmt);
@@ -2272,7 +2659,6 @@ RexxObjectPtr pragmaGet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
     RexxObjectPtr result;
 
     rc = sqlite3_step(stmt);
-    printf("pragma=%s rc=%d col count=%d\n", name, rc, sqlite3_column_count(stmt));
     if ( rc == SQLITE_ROW && sqlite3_column_count(stmt) == 1 )
     {
         result = c->String(safeColumnText(stmt, 0));
@@ -2321,7 +2707,7 @@ RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
     RexxObjectPtr result = TheZeroObj;
 
     rc = sqlite3_step(stmt);
-    printf("pragma=%s rc=%d col count=%d\n", name, rc, sqlite3_column_count(stmt));
+
     if ( rc != SQLITE_DONE )
     {
         if ( rc == SQLITE_ROW )
@@ -2346,10 +2732,10 @@ RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
  */
 RexxMethod1(RexxObjectPtr, oosqlconn_init_cls, OSELF, self)
 {
-    if ( isOfClassType(context, self, OOSQLITEDB_CLASS) )
+    if ( isOfClassType(context, self, OOSQLITECONNECTION_CLASS) )
     {
-        TheOOSQLiteDBClass = (RexxClassObject)self;
-        context->RequestGlobalReference(TheOOSQLiteDBClass);
+        TheOOSQLiteConnectionClass = (RexxClassObject)self;
+        context->RequestGlobalReference(TheOOSQLiteConnectionClass);
     }
     return NULLOBJECT;
 }
@@ -2415,22 +2801,59 @@ RexxMethod1(RexxStringObject, oosqlconn_getLastErrMsg_atr, CSELF, pCSelf)
     return pConn->lastErrMsg;
 }
 
+/** ooSQLiteConnection::recordFormat  [attribute get]
+ */
+RexxMethod1(uint32_t, oosqlconn_getRecordFormat_atr, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return 0;
+    }
+    return pConn->format;
+}
+/** ooSQLite::recordFormat  [attribute get]
+ */
+RexxMethod2(RexxObjectPtr, oosqlconn_setRecordFormat_atr, uint32_t, format, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return NULLOBJECT;
+    }
+    else if ( format < anArrayOfArrays || format > aStemOfStems )
+    {
+        wrongArgValueException(context->threadContext, 1, RECORD_FORMATS_LIST, context->UnsignedInt32(format));
+    }
+    else
+    {
+        pConn->format = (ResultSetType)format;
+    }
+    return NULLOBJECT;
+}
+
+
 /** ooSQLiteConnection::init()
  *
- *  @param file     [required]  Name of the database for this sqlite database
- *                              connection.
+ *  @param file     [required]   Name of the database for this sqlite database
+ *                               connection.
  *
- *  @param flags    [optional]  Flags for opening the database.  Use the .ooSQLiteConstants
- *                              constants.
+ *  @param flags    [optional]   Flags for opening the database.  Use the
+ *                               .ooSQLiteConstants constants.
  *
- *  @param vfsName  [optional]  The name of the sqlite3_vfs object that defines
- *                              the operating system interface that the new
- *                              database connection should use.  We don't check
- *                              this yet, so the sqlitee default is always used.
+ *  @param defFormat [optional]  An OO constant defining the default format for
+ *                               a record set returned.  The default if this
+ *                               argument is omitted is the process default
+ *                               format, (.ooSQLite~recordFormat.)
  *
- *
+ *  @param vfsName  [optional]   The name of the sqlite3_vfs object that defines
+ *                               the operating system interface that the new
+ *                               database connection should use.  We don't check
+ *                               this yet. so the sqlitee default is always
+ *                               used.
  */
-RexxMethod4(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _flags, OPTIONAL_CSTRING, vfsName, OSELF, self)
+RexxMethod5(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _flags, OPTIONAL_uint32_t, defFormat,
+            OPTIONAL_CSTRING, vfsName, OSELF, self)
 {
 
     // Get a buffer for the ooSQLiteConnection CSelf.
@@ -2456,7 +2879,28 @@ RexxMethod4(RexxObjectPtr, oosqlconn_init, CSTRING, file, OPTIONAL_int32_t, _fla
 
     int rc = sqlite3_open_v2(file, &pConn->db, flags, NULL);
 
-    setDBInitStatus(context, pConn, pConn->db, rc, self);
+    bool success = setDBInitStatus(context, pConn, pConn->db, rc, self);
+
+    if ( success )
+    {
+        if ( argumentExists(3) )
+        {
+            if ( defFormat < anArrayOfArrays || defFormat > aStemOfStems )
+            {
+                wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
+                                       context->UnsignedInt32(defFormat));
+            }
+            else
+            {
+                pConn->format = (ResultSetType)defFormat;
+            }
+        }
+        else
+        {
+            pCooSQLiteClass pCsc = (pCooSQLiteClass)context->ObjectToCSelf(TheOOSQLiteClass);
+            pConn->format = pCsc->format;
+        }
+    }
 
     return NULLOBJECT;
 }
@@ -2840,16 +3284,27 @@ RexxMethod1(RexxObjectPtr, oosqlconn_errMsg, CSELF, pCSelf)
  *  @param  doCallback   [optional]  Whether to use the call back feature of
  *                       sqlite3_exec(). If false, then the remaining arguments
  *                       are ignored, and the return from exec() is a return
- *                       code.
+ *                       code. The defualt if this argument is omitted is false.
  *
  *                       If true *and* the callBackObj arg is omitted then a
  *                       result set is returned, which could be empty if the sql
- *                       does not produce a result set.
+ *                       does not produce a result set.  The format for the
+ *                       returned result set will the format specified by the
+ *                       recordFomat attribute of this database connection.
+ *                       However, the default format can be overridden for this
+ *                       invocation of exec() through the optional format
+ *                       argument.
  *
  *                       Otherwise, if callBackObj is not omitted, then the call
  *                       back method of that object is invoked for each result
  *                       row coming out of the evaluated SQL statements.  In
  *                       this case the return is a return code
+ *
+ *  @param  format       [optional]  Specifies the format of the returned result
+ *                       set or single record.  If this argument is omitted, the
+ *                       format specified by the recordFomat attribute of this
+ *                       database connection is used.  This argument is ignored
+ *                       if doCallback is false.
  *
  *  @param  callbackObj  [optional]  An instantiated class object with a method
  *                       that is invoked for each result row produced by the
@@ -2868,12 +3323,20 @@ RexxMethod1(RexxObjectPtr, oosqlconn_errMsg, CSELF, pCSelf)
  *                       to the callback method when it is invoked.  This
  *                       argument is ignored when doCallBack is false.
  *
- *  @return  A result code, one of the .ooSQLiteConstants constants, or a result set as
- *           described above.
+ *  @return  A result code, or a result set as described above.
+ *
+ *  @note  If the user requests a result set be returned, then we alway return
+ *         the result set, even if there was an error.  On error, the
+ *         lastErrCode and lastErrMsg get set.  If there was no error, they are
+ *         cleared.  This way the user can determine if there was an error, but
+ *         still get a partial result set (if a partial result set was created.)
+ *
+ *         In addition, if the user specifies a callback object they could end
+ *         the exec processing once they got all the data they needed.
  */
-RexxMethod6(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doCallback,
-            OPTIONAL_RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName, OPTIONAL_RexxObjectPtr, userData,
-            CSELF, pCSelf)
+RexxMethod7(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doCallback,
+            OPTIONAL_uint32_t, format, OPTIONAL_RexxObjectPtr, callbackObj, OPTIONAL_CSTRING, mthName,
+            OPTIONAL_RexxObjectPtr, userData, CSELF, pCSelf)
 {
     int rc = SQLITE_ERROR;
 
@@ -2888,13 +3351,31 @@ RexxMethod6(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
 
     if ( doCallback )
     {
+        if ( argumentExists(3) )
+        {
+            if ( format < anArrayOfArrays || format > aStemOfStems )
+            {
+                wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
+                                       context->UnsignedInt32(format));
+                return NULLOBJECT;
+            }
+            else
+            {
+                cbc.format = (ResultSetType)format;
+            }
+        }
+        else
+        {
+            cbc.format = pConn->format;
+        }
+
         cbc.callbackContext = context->threadContext;
 
-        if ( argumentExists(3) )
+        if ( argumentExists(4) )
         {
             cbc.callbackObj = callbackObj;
 
-            if ( argumentExists(4) )
+            if ( argumentExists(5) )
             {
                 cbc.callbackMethod = mthName;
             }
@@ -2903,18 +3384,43 @@ RexxMethod6(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
                 cbc.callbackMethod = "EXECCALLBACK"; // execCallback()
             }
 
-            if ( argumentExists(5) )
+            if ( argumentExists(6) )
             {
                 cbc.userData = userData;
             }
         }
         else
         {
-            cbc.useArray = true;
-            cbc.records  = context->NewArray(10);
+            cbc.createRS = true;
+
+            if ( cbc.format == aStemOfStems )
+            {
+                RexxStemObject st = context->NewStem("records");
+                context->SetStemArrayElement(st, 0, TheZeroObj);  // No records to start with.
+
+                cbc.rsStem = st;
+            }
+            else
+            {
+                cbc.rsArray = context->NewArray(100);  // What is a good initial size?
+            }
         }
 
-        rc = sqlite3_exec(pConn->db, sql, execCallBack, (void *)&cbc, &errMsg);
+        switch ( cbc.format )
+        {
+            case anArrayOfArrays :
+                rc = sqlite3_exec(pConn->db, sql, execCallBackArray, (void *)&cbc, &errMsg);
+                break;
+
+            case anArrayOfDirectories :
+                rc = sqlite3_exec(pConn->db, sql, execCallBackDirectory, (void *)&cbc, &errMsg);
+                break;
+
+            default :
+                rc = sqlite3_exec(pConn->db, sql, execCallBackStem, (void *)&cbc, &errMsg);
+                break;
+
+        }
     }
     else
     {
@@ -2934,10 +3440,21 @@ RexxMethod6(RexxObjectPtr, oosqlconn_exec, CSTRING, sql, OPTIONAL_logical_t, doC
             ooSQLiteErr(context, pConn, rc, "error code, but sqlite3 did not set an error message", true);
         }
     }
-
-    if ( cbc.useArray )
+    else
     {
-        return cbc.records;
+        ooSQLiteNoErr(context, pConn);
+    }
+
+    if ( cbc.createRS )
+    {
+        if ( cbc.format == aStemOfStems )
+        {
+            return cbc.rsStem;
+        }
+        else
+        {
+            return cbc.rsArray;
+        }
     }
 
     return context->WholeNumber(rc);
@@ -3637,19 +4154,55 @@ RexxMethod1(int, oosqlstmt_getInitCode_atr, CSELF, pCSelf)
     return pCstmt->initCode;
 }
 
+/** ooSQLiteStmt::recordFormat  [attribute get]
+ */
+RexxMethod1(uint32_t, oosqlstmt_getRecordFormat_atr, CSELF, pCSelf)
+{
+    pCooSQLiteStmt pCstmt = requiredStmtCSelf(context, pCSelf);
+    if ( pCstmt == NULL )
+    {
+        return 0;
+    }
+    return pCstmt->format;
+}
+/** ooSQLiteStmt::recordFormat  [attribute get]
+ */
+RexxMethod2(RexxObjectPtr, oosqlstmt_setRecordFormat_atr, uint32_t, format, CSELF, pCSelf)
+{
+    pCooSQLiteStmt pCstmt = requiredStmtCSelf(context, pCSelf);
+    if ( pCstmt == NULL )
+    {
+        return NULLOBJECT;
+    }
+    else if ( format < anArrayOfArrays || format > aStemOfStems )
+    {
+        wrongArgValueException(context->threadContext, 1, RECORD_FORMATS_LIST, context->UnsignedInt32(format));
+    }
+    else
+    {
+        pCstmt->format = (ResultSetType)format;
+    }
+    return NULLOBJECT;
+}
+
+
 /** ooSQLiteStmt::init()
  *
- *  @param db  [required]  The ooSQLiteConnection object the statement is for.
+ *  @param db        [required]  The ooSQLiteConnection object the statement is
+ *                               for.
  *
- *  @param sql [required]  The SQL statement(s) used by this ooSQLiteStmt.
+ *  @param sql       [required]  The SQL statement(s) used by this ooSQLiteStmt.
  *
- *
+ *  @param defFormat [optional]  An OO constant defining the default format for
+ *                               a record set returned.  The default if this
+ *                               argument is omitted is the default format of
+ *                               the database connection.
  */
-RexxMethod3(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OSELF, self)
+RexxMethod4(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OPTIONAL_uint32_t, defFormat, OSELF, self)
 {
     const char    *msg    = "no error";
     const char    *tail   = NULL;
-    pCooSQLiteConn  pConn    = NULL;
+    pCooSQLiteConn pConn  = NULL;
     pCooSQLiteStmt pCstmt = NULL;
     int            rc     = SQLITE_MISUSE;
 
@@ -3665,9 +4218,9 @@ RexxMethod3(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OSEL
     pCstmt = (pCooSQLiteStmt)context->BufferData(cselfBuffer);
     memset(pCstmt, 0, sizeof(CooSQLiteStmt));
 
-    if ( ! context->IsOfType(db, OOSQLITEDB_CLASS) )
+    if ( ! context->IsOfType(db, OOSQLITECONNECTION_CLASS) )
     {
-        wrongClassException(context->threadContext, 1, OOSQLITEDB_CLASS);
+        wrongClassException(context->threadContext, 1, OOSQLITECONNECTION_CLASS, db);
         goto done_out;
     }
 
@@ -3675,7 +4228,7 @@ RexxMethod3(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OSEL
 
     if ( pConn == NULL )
     {
-        baseClassIntializationException(context, OOSQLITEDB_CLASS);
+        baseClassIntializationException(context, OOSQLITECONNECTION_CLASS);
         goto done_out;
     }
 
@@ -3683,6 +4236,23 @@ RexxMethod3(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OSEL
     {
         noOpenDBException(context->threadContext, pConn);
         goto done_out;
+    }
+
+    if ( argumentExists(3) )
+    {
+        if ( defFormat < anArrayOfArrays || defFormat > aStemOfStems )
+        {
+            wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
+                                   context->UnsignedInt32(defFormat));
+        }
+        else
+        {
+            pCstmt->format = (ResultSetType)defFormat;
+        }
+    }
+    else
+    {
+        pCstmt->format = pConn->format;
     }
 
     rc = sqlite3_prepare_v2(pConn->db, sql, (int)strlen(sql) + 1, &pCstmt->stmt, &tail);
@@ -3716,7 +4286,6 @@ RexxMethod3(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OSEL
     pCstmt->errMsg   = context->String(msg);
 
     context->SetObjectVariable("__rxErrMsg", pCstmt->errMsg);
-
 
 done_out:
     return NULLOBJECT;
@@ -6074,6 +6643,14 @@ RexxRoutine1(RexxObjectPtr, oosqlErrMsg_rtn, POINTER, _db)
  *                       out of the evaluated SQL statements.  This exactly
  *                       mimics how sqlite3_exec() works.
  *
+ *  @param  format       [optional]  By default for the 'classic Rexx'
+ *                       interface, a result set is returned as a stem of stems.
+ *                       However, for programmers that are trying to ease their
+ *                       way into the use of objects, this argument can be used
+ *                       to change the result set returned to be an array of
+ *                       arrays or an array of directories. This argument is
+ *                       ignored if doCallback is false.
+ *
  *  @param  mthName      The routine name in the Rexx progarm that will be
  *                       called each time the SQL produces a row.  This argument
  *                       is ignored unless doCallBack is not omitted and is
@@ -6082,8 +6659,8 @@ RexxRoutine1(RexxObjectPtr, oosqlErrMsg_rtn, POINTER, _db)
  *  @return  A result code, one of the .ooSQLiteConstants constants, or a result set as
  *           described above.
  */
-RexxRoutine4(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_logical_t, doCallback,
-             OPTIONAL_CSTRING, rtnName)
+RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_logical_t, doCallback,
+             OPTIONAL_uint32_t, format, OPTIONAL_CSTRING, rtnName)
 {
     sqlite3 *db = routineDB(context, _db);
     if ( db == NULL )
@@ -6097,6 +6674,24 @@ RexxRoutine4(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
 
     if ( doCallback )
     {
+        if ( argumentExists(3) )
+        {
+            if ( format < anArrayOfArrays || format > aStemOfStems )
+            {
+                wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
+                                       context->UnsignedInt32(format));
+                return NULLOBJECT;
+            }
+            else
+            {
+                cbc.format = (ResultSetType)format;
+            }
+        }
+        else
+        {
+            cbc.format = aStemOfStems;
+        }
+
         cbc.callbackContext = context->threadContext;
 
         if ( argumentExists(4) )
@@ -6109,11 +6704,36 @@ RexxRoutine4(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
         }
         else
         {
-            cbc.useArray = true;
-            cbc.records  = context->NewArray(10);
+            cbc.createRS = true;
+
+            if ( cbc.format == aStemOfStems )
+            {
+                RexxStemObject st = context->NewStem("records");
+                context->SetStemArrayElement(st, 0, TheZeroObj);  // No records to start with.
+
+                cbc.rsStem = st;
+            }
+            else
+            {
+                cbc.rsArray = context->NewArray(100);  // What is a good initial size?
+            }
         }
 
-        rc = sqlite3_exec(db, sql, execCallBack, (void *)&cbc, &errMsg);
+        switch ( cbc.format )
+        {
+            case anArrayOfArrays :
+                rc = sqlite3_exec(db, sql, execCallBackArray, (void *)&cbc, &errMsg);
+                break;
+
+            case anArrayOfDirectories :
+                rc = sqlite3_exec(db, sql, execCallBackDirectory, (void *)&cbc, &errMsg);
+                break;
+
+            default :
+                rc = sqlite3_exec(db, sql, execCallBackStem, (void *)&cbc, &errMsg);
+                break;
+
+        }
     }
     else
     {
@@ -6136,9 +6756,16 @@ RexxRoutine4(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_
         return result;
     }
 
-    if ( cbc.useArray )
+    if ( cbc.createRS )
     {
-        return cbc.records;
+        if ( cbc.format == aStemOfStems )
+        {
+            return cbc.rsStem;
+        }
+        else
+        {
+            return cbc.rsArray;
+        }
     }
 
     return context->WholeNumber(rc);
@@ -6513,7 +7140,7 @@ RexxRoutine3(POINTER, oosqlPrepare_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_Rex
     {
         if ( ! context->IsOfType(_tail, "MutableBuffer") )
         {
-            wrongClassException(context->threadContext, 1, OOSQLITEDB_CLASS);
+            wrongClassException(context->threadContext, 1, "MutableBuffer");
             goto done_out;
         }
 
@@ -7272,6 +7899,9 @@ RexxRoutineEntry ooSQLite_functions[] =
 REXX_METHOD_PROTOTYPE(oosqlC_merge_cls);
 
 // .ooSQLite
+REXX_METHOD_PROTOTYPE(oosql_init_cls);
+REXX_METHOD_PROTOTYPE(oosql_getRecordFormat_atr_cls);
+REXX_METHOD_PROTOTYPE(oosql_setRecordFormat_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionGet_cls);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionUsed_cls);
 REXX_METHOD_PROTOTYPE(oosql_complete_cls);
@@ -7297,6 +7927,8 @@ REXX_METHOD_PROTOTYPE(oosqlconn_getFileName_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getInitCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getLastErrCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getLastErrMsg_atr);
+REXX_METHOD_PROTOTYPE(oosqlconn_getRecordFormat_atr);
+REXX_METHOD_PROTOTYPE(oosqlconn_setRecordFormat_atr);
 
 REXX_METHOD_PROTOTYPE(oosqlconn_init);
 REXX_METHOD_PROTOTYPE(oosqlconn_uninit);
@@ -7340,6 +7972,8 @@ REXX_METHOD_PROTOTYPE(oosqlstmt_getErrMsg_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_getErrMsg_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_getInitCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_getFinalize_atr);
+REXX_METHOD_PROTOTYPE(oosqlstmt_getRecordFormat_atr);
+REXX_METHOD_PROTOTYPE(oosqlstmt_setRecordFormat_atr);
 
 REXX_METHOD_PROTOTYPE(oosqlstmt_init);
 REXX_METHOD_PROTOTYPE(oosqlstmt_uninit);
@@ -7406,6 +8040,9 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlC_merge_cls,      oosqlC_merge_cls),
 
     // .ooSQLite
+    REXX_METHOD(oosql_init_cls,                oosql_init_cls),
+    REXX_METHOD(oosql_getRecordFormat_atr_cls, oosql_getRecordFormat_atr_cls),
+    REXX_METHOD(oosql_setRecordFormat_atr_cls, oosql_setRecordFormat_atr_cls),
     REXX_METHOD(oosql_compileOptionGet_cls,    oosql_compileOptionGet_cls),
     REXX_METHOD(oosql_compileOptionUsed_cls,   oosql_compileOptionUsed_cls),
     REXX_METHOD(oosql_complete_cls,            oosql_complete_cls),
@@ -7431,6 +8068,8 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlconn_getInitCode_atr,       oosqlconn_getInitCode_atr),
     REXX_METHOD(oosqlconn_getLastErrCode_atr,    oosqlconn_getLastErrCode_atr),
     REXX_METHOD(oosqlconn_getLastErrMsg_atr,     oosqlconn_getLastErrMsg_atr),
+    REXX_METHOD(oosqlconn_getRecordFormat_atr,   oosqlconn_getRecordFormat_atr),
+    REXX_METHOD(oosqlconn_setRecordFormat_atr,   oosqlconn_setRecordFormat_atr),
 
     REXX_METHOD(oosqlconn_init,                  oosqlconn_init),
     REXX_METHOD(oosqlconn_uninit,                oosqlconn_uninit),
@@ -7468,70 +8107,72 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlconn_delStmt,               oosqlconn_delStmt),
 
     // .ooSQLiteStmt
-    REXX_METHOD(oosqlstmt_init_cls,            oosqlstmt_init_cls),
+    REXX_METHOD(oosqlstmt_init_cls,              oosqlstmt_init_cls),
 
-    REXX_METHOD(oosqlstmt_getErrMsg_atr,       oosqlstmt_getErrMsg_atr),
-    REXX_METHOD(oosqlstmt_getInitCode_atr,     oosqlstmt_getInitCode_atr),
-    REXX_METHOD(oosqlstmt_getFinalized_atr,    oosqlstmt_getFinalized_atr),
+    REXX_METHOD(oosqlstmt_getErrMsg_atr,         oosqlstmt_getErrMsg_atr),
+    REXX_METHOD(oosqlstmt_getInitCode_atr,       oosqlstmt_getInitCode_atr),
+    REXX_METHOD(oosqlstmt_getFinalized_atr,      oosqlstmt_getFinalized_atr),
+    REXX_METHOD(oosqlstmt_getRecordFormat_atr,   oosqlconn_getRecordFormat_atr),
+    REXX_METHOD(oosqlstmt_setRecordFormat_atr,   oosqlconn_setRecordFormat_atr),
 
-    REXX_METHOD(oosqlstmt_init,                oosqlstmt_init),
-    REXX_METHOD(oosqlstmt_uninit,              oosqlstmt_uninit),
+    REXX_METHOD(oosqlstmt_init,                  oosqlstmt_init),
+    REXX_METHOD(oosqlstmt_uninit,                oosqlstmt_uninit),
 
-    REXX_METHOD(oosqlstmt_bindBlob,            oosqlstmt_bindBlob),
-    REXX_METHOD(oosqlstmt_bindDouble,          oosqlstmt_bindDouble),
-    REXX_METHOD(oosqlstmt_bindInt,             oosqlstmt_bindInt),
-    REXX_METHOD(oosqlstmt_bindInt64,           oosqlstmt_bindInt64),
-    REXX_METHOD(oosqlstmt_bindNull,            oosqlstmt_bindNull),
-    REXX_METHOD(oosqlstmt_bindParameterCount,  oosqlstmt_bindParameterCount),
-    REXX_METHOD(oosqlstmt_bindParameterIndex,  oosqlstmt_bindParameterIndex),
-    REXX_METHOD(oosqlstmt_bindParameterName,   oosqlstmt_bindParameterName),
-    REXX_METHOD(oosqlstmt_bindText,            oosqlstmt_bindText),
-    REXX_METHOD(oosqlstmt_bindValue,           oosqlstmt_bindValue),
-    REXX_METHOD(oosqlstmt_bindZeroBlob,        oosqlstmt_bindZeroBlob),
-    REXX_METHOD(oosqlstmt_clearBindings,       oosqlstmt_clearBindings),
-    REXX_METHOD(oosqlstmt_columnBlob,          oosqlstmt_columnBlob),
-    REXX_METHOD(oosqlstmt_columnBytes,         oosqlstmt_columnBytes),
-    REXX_METHOD(oosqlstmt_columnCount,         oosqlstmt_columnCount),
-    REXX_METHOD(oosqlstmt_columnDatabaseName,  oosqlstmt_columnDatabaseName),
-    REXX_METHOD(oosqlstmt_columnDeclType,      oosqlstmt_columnDeclType),
-    REXX_METHOD(oosqlstmt_columnDouble,        oosqlstmt_columnDouble),
-    REXX_METHOD(oosqlstmt_columnIndex,         oosqlstmt_columnIndex),
-    REXX_METHOD(oosqlstmt_columnInt,           oosqlstmt_columnInt),
-    REXX_METHOD(oosqlstmt_columnInt64,         oosqlstmt_columnInt64),
-    REXX_METHOD(oosqlstmt_columnName,          oosqlstmt_columnName),
-    REXX_METHOD(oosqlstmt_columnOriginName,    oosqlstmt_columnOriginName),
-    REXX_METHOD(oosqlstmt_columnTableName,     oosqlstmt_columnTableName),
-    REXX_METHOD(oosqlstmt_columnText,          oosqlstmt_columnText),
-    REXX_METHOD(oosqlstmt_columnType,          oosqlstmt_columnType),
-    REXX_METHOD(oosqlstmt_columnValue,         oosqlstmt_columnValue),
-    REXX_METHOD(oosqlstmt_dataCount,           oosqlstmt_dataCount),
-    REXX_METHOD(oosqlstmt_dbHandle,            oosqlstmt_dbHandle),
-    REXX_METHOD(oosqlstmt_finalize,            oosqlstmt_finalize),
-    REXX_METHOD(oosqlstmt_reset,               oosqlstmt_reset),
-    REXX_METHOD(oosqlstmt_sql,                 oosqlstmt_sql),
-    REXX_METHOD(oosqlstmt_step,                oosqlstmt_step),
-    REXX_METHOD(oosqlstmt_stmtBusy,            oosqlstmt_stmtBusy),
-    REXX_METHOD(oosqlstmt_stmtReadonly,        oosqlstmt_stmtReadonly),
-    REXX_METHOD(oosqlstmt_stmtStatus,          oosqlstmt_stmtStatus),
-    REXX_METHOD(oosqlstmt_value,               oosqlstmt_value),
+    REXX_METHOD(oosqlstmt_bindBlob,              oosqlstmt_bindBlob),
+    REXX_METHOD(oosqlstmt_bindDouble,            oosqlstmt_bindDouble),
+    REXX_METHOD(oosqlstmt_bindInt,               oosqlstmt_bindInt),
+    REXX_METHOD(oosqlstmt_bindInt64,             oosqlstmt_bindInt64),
+    REXX_METHOD(oosqlstmt_bindNull,              oosqlstmt_bindNull),
+    REXX_METHOD(oosqlstmt_bindParameterCount,    oosqlstmt_bindParameterCount),
+    REXX_METHOD(oosqlstmt_bindParameterIndex,    oosqlstmt_bindParameterIndex),
+    REXX_METHOD(oosqlstmt_bindParameterName,     oosqlstmt_bindParameterName),
+    REXX_METHOD(oosqlstmt_bindText,              oosqlstmt_bindText),
+    REXX_METHOD(oosqlstmt_bindValue,             oosqlstmt_bindValue),
+    REXX_METHOD(oosqlstmt_bindZeroBlob,          oosqlstmt_bindZeroBlob),
+    REXX_METHOD(oosqlstmt_clearBindings,         oosqlstmt_clearBindings),
+    REXX_METHOD(oosqlstmt_columnBlob,            oosqlstmt_columnBlob),
+    REXX_METHOD(oosqlstmt_columnBytes,           oosqlstmt_columnBytes),
+    REXX_METHOD(oosqlstmt_columnCount,           oosqlstmt_columnCount),
+    REXX_METHOD(oosqlstmt_columnDatabaseName,    oosqlstmt_columnDatabaseName),
+    REXX_METHOD(oosqlstmt_columnDeclType,        oosqlstmt_columnDeclType),
+    REXX_METHOD(oosqlstmt_columnDouble,          oosqlstmt_columnDouble),
+    REXX_METHOD(oosqlstmt_columnIndex,           oosqlstmt_columnIndex),
+    REXX_METHOD(oosqlstmt_columnInt,             oosqlstmt_columnInt),
+    REXX_METHOD(oosqlstmt_columnInt64,           oosqlstmt_columnInt64),
+    REXX_METHOD(oosqlstmt_columnName,            oosqlstmt_columnName),
+    REXX_METHOD(oosqlstmt_columnOriginName,      oosqlstmt_columnOriginName),
+    REXX_METHOD(oosqlstmt_columnTableName,       oosqlstmt_columnTableName),
+    REXX_METHOD(oosqlstmt_columnText,            oosqlstmt_columnText),
+    REXX_METHOD(oosqlstmt_columnType,            oosqlstmt_columnType),
+    REXX_METHOD(oosqlstmt_columnValue,           oosqlstmt_columnValue),
+    REXX_METHOD(oosqlstmt_dataCount,             oosqlstmt_dataCount),
+    REXX_METHOD(oosqlstmt_dbHandle,              oosqlstmt_dbHandle),
+    REXX_METHOD(oosqlstmt_finalize,              oosqlstmt_finalize),
+    REXX_METHOD(oosqlstmt_reset,                 oosqlstmt_reset),
+    REXX_METHOD(oosqlstmt_sql,                   oosqlstmt_sql),
+    REXX_METHOD(oosqlstmt_step,                  oosqlstmt_step),
+    REXX_METHOD(oosqlstmt_stmtBusy,              oosqlstmt_stmtBusy),
+    REXX_METHOD(oosqlstmt_stmtReadonly,          oosqlstmt_stmtReadonly),
+    REXX_METHOD(oosqlstmt_stmtStatus,            oosqlstmt_stmtStatus),
+    REXX_METHOD(oosqlstmt_value,                 oosqlstmt_value),
 
     // .ooSQLiteMutex
-    REXX_METHOD(oosqlmtx_getClosed_atr,        oosqlmtx_getClosed_atr),
-    REXX_METHOD(oosqlmtx_getIsNull_atr,        oosqlmtx_getIsNull_atr),
+    REXX_METHOD(oosqlmtx_getClosed_atr,          oosqlmtx_getClosed_atr),
+    REXX_METHOD(oosqlmtx_getIsNull_atr,          oosqlmtx_getIsNull_atr),
 
-    REXX_METHOD(oosqlmtx_init,                 oosqlmtx_init),
-    REXX_METHOD(oosqlmtx_uninit,               oosqlmtx_uninit),
+    REXX_METHOD(oosqlmtx_init,                   oosqlmtx_init),
+    REXX_METHOD(oosqlmtx_uninit,                 oosqlmtx_uninit),
 
-    REXX_METHOD(oosqlmtx_enter,                oosqlmtx_enter),
-    REXX_METHOD(oosqlmtx_free,                 oosqlmtx_free),
-    REXX_METHOD(oosqlmtx_leave,                oosqlmtx_leave),
-    REXX_METHOD(oosqlmtx_try,                  oosqlmtx_try),
+    REXX_METHOD(oosqlmtx_enter,                  oosqlmtx_enter),
+    REXX_METHOD(oosqlmtx_free,                   oosqlmtx_free),
+    REXX_METHOD(oosqlmtx_leave,                  oosqlmtx_leave),
+    REXX_METHOD(oosqlmtx_try,                    oosqlmtx_try),
 
     // __rtn_helper_class
-    REXX_METHOD(hlpr_init_cls,                hlpr_init_cls),
+    REXX_METHOD(hlpr_init_cls,                   hlpr_init_cls),
 
     // __rtn_db_callback_class
-    REXX_METHOD(db_cb_releaseBuffer,          db_cb_releaseBuffer),
+    REXX_METHOD(db_cb_releaseBuffer,             db_cb_releaseBuffer),
 
     REXX_LAST_METHOD()
 };

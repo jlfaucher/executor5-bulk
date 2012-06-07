@@ -44,7 +44,7 @@
 #define OO_UNEXPECTED_RESULT             1002
 
 #define VALID_VERSION_TYPES "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
-
+#define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, or OO_STEM_OF_STEMS"
 
 // Enum for the pragma commands in SQLite3.
 typedef enum
@@ -107,6 +107,21 @@ typedef enum
 } CallbackType;
 
 
+// Enum for the different result set formats in SQLite.
+typedef enum
+{
+    anArrayOfArrays      = 1,
+    anArrayOfDirectories = 2,
+    aStemOfStems         = 3
+} ResultSetType;
+
+
+/* Struct for the ooSQLite class object CSelf. */
+typedef struct _oosqlclassCSelf {
+    ResultSetType      format;             // The default format of a result set for the current process.
+} CooSQLiteClass;
+typedef CooSQLiteClass *pCooSQLiteClass;
+
 /* Struct for the ooSQLiteConnection object CSelf. */
 typedef struct _oosqlConnCSelf {
     sqlite3            *db;               // The actual database connection.
@@ -115,6 +130,7 @@ typedef struct _oosqlConnCSelf {
     RexxObjectPtr       stmtBag;          // The bag holding prepared statments (which is really a set.)
     RexxStringObject    rxFileName;       // The Rexx string object database file name.
     RexxStringObject    lastErrMsg;       // sqlite3_errmsg()
+    ResultSetType       format;           // The default format of a result set for this database.
     int                 lastErrCode;      // sqlite3_errcode()
 
     // Set during .ooSQLiteConnection~new(), never changed.  If not 0, database
@@ -132,6 +148,7 @@ typedef struct _oosqlstmtCSelf {
     RexxObjectPtr       rexxSelf;          // The Rexx ooSQLiteStmt object.
     RexxStringObject    tail;              // The tail pointer returned from SQLite.
     RexxStringObject    errMsg;            // Set during .ooSQLiteStmt~new(), never changed. Uses sqlite3_errmsg() for the msg
+    ResultSetType       format;            // The default format of a result set for this statment.
     int                 initCode;          // Set during .ooSQLiteStmt~new(), never changed
     bool                initializationErr; // sqlite3_prepare_v2 failed.
     bool                finalized;         // finalize() was called, or not initalized ok.
@@ -160,9 +177,11 @@ typedef struct _genericCallback {
     RexxThreadContext   *callbackContext;
     CSTRING              callbackMethod;
     CSTRING              routineName;     // The name of the Rexx routine, needed for exception messages.
-    RexxArrayObject      records;         // records, count, and useArray are for execCallBack() only.
+    RexxArrayObject      rsArray;         // When creating a result set and format is arrayOfArrays or arrayOfDirectories
+    RexxStemObject       rsStem;          // When creating a result set and format is stemOfStems
+    ResultSetType        format;          // Format of a record, array, stem, or directory.
     uint32_t             count;
-    bool                 useArray;
+    bool                 createRS;        // Determines if we are creating a record set or invoking a Rexx callback.
 } CGenericCallback;
 typedef CGenericCallback *pCGenericCallback;
 

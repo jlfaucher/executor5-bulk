@@ -36,96 +36,48 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  preparedStmtTestRtn.rex
+ *  execTestS.rex
  *
- *  Tests the classic Rexx interface to ooSQLite.
+ *  Uses the exec() method of the database connection object to query the foods
+ *  table in the ooFoods.rdbx database.  Then print out the results.
  *
- *  Opens the ooFoods database, creates a prepared statement that queries the
- *  database and steps through the result set printing the rows returned.
+ *  Here the result set format is specified to be a stem of stems.
  *
- *  This program does the error checking that is missing in some of the other
- *  test programs.
  */
 
-  dbName = 'ooFoods.rdbx'
+  -- Set the result set format to a stem of stems
+  .ooSQLite~recordFormat = .ooSQLite~OO_STEM_OF_STEMS
 
-  dbConn = oosqlOpen(dbName, .ooSQLite~OPEN_READWRITE)
+	dbName = 'ooFoods.rdbx'
 
-  if oosqlErrCode(dbConn) <> 0 then do
-    errRC   = oosqlErrCode(dbConn)
-    errMsg  = oosqlErrMsg(dbConn)
+  dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
 
-    say 'Open database error'
-    say '  Error code:' errRC '('errMsg')'
-    if errRC == .ooSQLite~CANTOPEN then do
-      say '  Database file name:' dbName '(Is this the correct database?)'
-    end
+  sql = 'SELECT * FROM foods ORDER BY name;'
+  resultSet = dbConn~exec(sql, .true)
 
-    oosqlClose(dbConn)
-    return 99
-  end
+  z = printResultSet(resultSet)
 
-  -- The third argument to oosqlPrepare() can be a mutable buffer in which any
-  -- unused portion of the sql sting is returned.
-  --
-  -- The string to initialize the mutable buffer is meaningless.  It is used to
-  -- see what SQLite does with the buffer when there is text in it.  Both under
-  -- normal conditions and under an error.  Stick a syntax error in the SQL to
-  -- see an error condition.
-  --
-  -- Note also that first implementation of ooSQLite uses the dreaded "Objects"
-  -- of ooRexx in only a few places, like here.  These uses are likely to be
-  -- changed to use stems instead.
-  buf = .MutableBuffer~new('There is no help, for you.' , 100)
-
-  -- Note the added space at the end of the SQL.  This space will be returned.
-  stmt = oosqlPrepare(dbConn, 'SELECT * FROM my foods ORDER BY name; ', buf)
-  if stmt~isNull then do
-    say 'Prepared statment initialization error:'
-    say '  Error code:' oosqlErrCode(dbConn) '('oosqlErrMsg(dbConn)')'
-
-    str = buf~string; say 'buf string:' str 'buf string length:' str~length
-
-    ret = oosqlFinalize(stmt); say 'Error finalize ret:' ret
-    ret = oosqlClose(dbConn) ; say 'Error close    ret:' ret
-    return 99
-  end
-  else do
-    say 'Unused portion of sql:'
-    say '  string: ' buf~string
-    say '  length: ' buf~string~length
-  end
-
-  stepRC = oosqlStep(stmt)
-
-  if stepRC == .ooSQLite~ROW then do
-    colCount = oosqlColumnCount(stmt)
-
-    header = ''
-    do i = 1 to colCount
-      header ||= oosqlColumnName(stmt, i)~left(20)
-    end
-    say header
-    say '='~copies(80)
-
-    do while stepRC == .ooSQLite~ROW
-      row = ''
-      do i = 1 to colCount
-        row ||= oosqlColumnText(stmt, i)~left(20)
-      end
-      say row
-
-      stepRC = oosqlStep(stmt)
-    end
-  end
-  else do
-    say 'Unexpected error running query "SELECT * FROM foods ORDER BY name;"'
-    say 'Error code:' stepRC
-  end
+  say 'Result Set:      ' resultSet
+  say 'Result Set Class:' resultSet~class
   say
 
-  ret = oosqlFinalize(stmt); say 'No err finalize ret:' ret
-  ret = oosqlClose(dbConn) ; say 'No err close    ret:' ret
+  ret = dbConn~close
+
   return ret
 
 ::requires 'ooSQLite.cls'
+
+
+::routine printResultSet
+  use arg rs.
+
+  say 'id'~left(25) || 'type_id'~left(25) || 'name'~left(25)
+  say '='~copies(80)
+
+  do i = 1 to rs.0
+    rec. = rs.i
+    say rec.id~left(25) || rec.type_id~left(25)  || rec.name~left(25)
+  end
+  say
+
+  return 0

@@ -53,6 +53,11 @@
  *
  */
 ::class 'ooSQLite' public inherit ooSQLiteConstants
+
+::attribute recordFormat get class external "LIBRARY oosqlite oosql_getRecordFormat_atr_cls"
+::attribute recordFormat set class external "LIBRARY oosqlite oosql_setRecordFormat_atr_cls"
+
+::method init class external "LIBRARY oosqlite oosql_init_cls"                                -- Do not document, internal use only
 ::method compileOptionGet class external "LIBRARY oosqlite oosql_compileOptionGet_cls"
 ::method compileOptionUsed class external "LIBRARY oosqlite oosql_compileOptionUsed_cls"
 ::method complete class external "LIBRARY oosqlite oosql_complete_cls"
@@ -68,7 +73,7 @@
 ::method threadSafe class external "LIBRARY oosqlite oosql_threadSafe_cls"
 ::method version class external "LIBRARY oosqlite oosql_version_cls"
 
-::method test class external "LIBRARY oosqlite oosql_test_cls"                  -- Do not document
+::method test class external "LIBRARY oosqlite oosql_test_cls"                                -- Do not document, internal use only
 
 
 /** class: ooSQLiteConnection
@@ -84,6 +89,8 @@
 ::attribute initCode get external "LIBRARY oosqlite oosqlconn_getInitCode_atr"
 ::attribute lastErrCode get external "LIBRARY oosqlite oosqlconn_getLastErrCode_atr"
 ::attribute lastErrMsg get external "LIBRARY oosqlite oosqlconn_getLastErrMsg_atr"
+::attribute recordFormat get external "LIBRARY oosqlite oosqlconn_getRecordFormat_atr"
+::attribute recordFormat set external "LIBRARY oosqlite oosqlconn_setRecordFormat_atr"
 
 ::method init external "LIBRARY oosqlite oosqlconn_init"
 ::method uninit external "LIBRARY oosqlite oosqlconn_uninit"
@@ -119,7 +126,7 @@
 
 ::method    putStmt external "LIBRARY oosqlite oosqlconn_putStmt"                    -- Internal use only
 ::method    delStmt external "LIBRARY oosqlite oosqlconn_delStmt"                    -- Internal use only
-::attribute ooSQLiteDBStmtBag private                                              -- Internal use only
+::attribute ooSQLiteConnectionStmtBag private                                        -- Internal use only
 
 
 /** class: ooSQLiteStmt
@@ -128,11 +135,13 @@
  */
 ::class 'ooSQLiteStmt' public inherit ooSQLiteConstants
 
-::method init class external "LIBRARY oosqlite oosqlstmt_init_cls"
+::method init class external "LIBRARY oosqlite oosqlstmt_init_cls"                   -- Internal use only
 
 ::attribute errMsg get external "LIBRARY oosqlite oosqlstmt_getErrMsg_atr"
 ::attribute initCode get external "LIBRARY oosqlite oosqlstmt_getInitCode_atr"
 ::attribute finalized get external "LIBRARY oosqlite oosqlstmt_getFinalized_atr"
+::attribute recordFormat get external "LIBRARY oosqlite oosqlconn_getRecordFormat_atr"
+::attribute recordFormat set external "LIBRARY oosqlite oosqlconn_setRecordFormat_atr"
 
 ::method init external "LIBRARY oosqlite oosqlstmt_init"
 ::method uninit external "LIBRARY oosqlite oosqlstmt_uninit"
@@ -317,7 +326,18 @@
 -- TODO we need a constant value to string method, something like const2string(.ooSQLiteConstants~INTERNAL) -> "INTERNAL"
 ::method merge class external "LIBRARY oosqlite oosqlC_merge_cls"
 
-::constant OO_WRONG_ARG_TYPE    1000
+-- OO_ prefix indicates constant is not from the SQLite library.
+-- Result codes
+::constant OO_INTERNAL_ERR                  1000
+::constant OO_WRONG_ARG_TYPE                1001
+::constant OO_UNEXPECTED_RESULT             1002
+
+::constant OO_ARRAY_OF_ARRAYS               1
+::constant OO_ARRAY_OF_DIRECTORIES          2
+::constant OO_STEM_OF_STEMS                 3
+
+
+-- Beginning of SQLite constants
 
 ::constant OK           0   /* Successful result */
 /* beginning-of-error-codes */
@@ -589,9 +609,9 @@
 -- migrating to a newer version of SQLite.  This would allow users of the
 -- extension to check that ooSQLite.cls matches the oosqlite library.
 -- (oosqlite.dll / oosqlite.so depending on platform.)
-::constant VERSION        "3.7.11"
-::constant VERSION_NUMBER 3007011
-::constant SOURCE_ID      "2012-03-20 11:35:50 00bb9c9ce4f465e6ac321ced2a9d0062dc364669"
+::constant VERSION        "3.7.12.1"
+::constant VERSION_NUMBER 3007012
+::constant SOURCE_ID      "2012-05-22 02:45:53 6d326d44fd1d626aae0e8456e5fa2049f1ce0789"
 
 
 /* Constants Defining Special Destructor Behavior */

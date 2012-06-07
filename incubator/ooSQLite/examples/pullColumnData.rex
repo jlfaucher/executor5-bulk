@@ -60,4 +60,3 @@
 
 ::requires 'ooSQLite.cls'
 
---::class 'ooSQL' inherit ooSQLConstants

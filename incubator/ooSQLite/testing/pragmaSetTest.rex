@@ -36,96 +36,91 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  preparedStmtTestRtn.rex
+ *  pragmaSetTest.rex
  *
- *  Tests the classic Rexx interface to ooSQLite.
+ *  One of the non-standard SQL features of SQLitet is the PRAGMA statement.
  *
- *  Opens the ooFoods database, creates a prepared statement that queries the
- *  database and steps through the result set printing the rows returned.
+ *  "The pragma command is specific to SQLite and is very unlikely to be
+ *   compatible with any other SQL database engine."
  *
- *  This program does the error checking that is missing in some of the other
- *  test programs.
+ *  PRAGMA statements are executed like any other SQL.  Some pragmas return
+ *  tables, some do not.  Unknown pragmas are ignored by SQLite.  Some pragmas
+ *  set values, some return a single value.
+ *
+ *  Because of these differences, ooSQLite wraps the execution of a pragma in
+ *  the pragma() method. You would not have to use the pragma() method, you
+ *  could instantiate an ooSQLiteStmt and execute the SQL like any other SQL.
+ *
+ *  This test checks some of the pragmas that set a value.  It gets the current
+ *  value of a pragma, sets the value of that pragma, then gets the current
+ *  value again.
  */
 
-  dbName = 'ooFoods.rdbx'
+  dbFile = 'ooFoods.rdbx'
 
-  dbConn = oosqlOpen(dbName, .ooSQLite~OPEN_READWRITE)
-
-  if oosqlErrCode(dbConn) <> 0 then do
-    errRC   = oosqlErrCode(dbConn)
-    errMsg  = oosqlErrMsg(dbConn)
-
-    say 'Open database error'
-    say '  Error code:' errRC '('errMsg')'
-    if errRC == .ooSQLite~CANTOPEN then do
-      say '  Database file name:' dbName '(Is this the correct database?)'
+  db = .ooSQLiteConnection~new(dbFiLe, .ooSQLite~OPEN_READWRITE)
+  if db~initCode <> 0 then do
+    say 'ooSQLiteConnection initialization err:' db~initCode
+    say '  Error code:' db~lastErrCode '('db~lastErrMsg')'
+    if db~initCode == 14 then do
+    say '  Database file name:' db~fileName '(Is this the correct database?)'
     end
-
-    oosqlClose(dbConn)
     return 99
   end
 
-  -- The third argument to oosqlPrepare() can be a mutable buffer in which any
-  -- unused portion of the sql sting is returned.
-  --
-  -- The string to initialize the mutable buffer is meaningless.  It is used to
-  -- see what SQLite does with the buffer when there is text in it.  Both under
-  -- normal conditions and under an error.  Stick a syntax error in the SQL to
-  -- see an error condition.
-  --
-  -- Note also that first implementation of ooSQLite uses the dreaded "Objects"
-  -- of ooRexx in only a few places, like here.  These uses are likely to be
-  -- changed to use stems instead.
-  buf = .MutableBuffer~new('There is no help, for you.' , 100)
+  ret = db~pragma(ignore_check_constraints)
+  say 'Pragma: get ignore_check_constraints ret:' ret
 
-  -- Note the added space at the end of the SQL.  This space will be returned.
-  stmt = oosqlPrepare(dbConn, 'SELECT * FROM my foods ORDER BY name; ', buf)
-  if stmt~isNull then do
-    say 'Prepared statment initialization error:'
-    say '  Error code:' oosqlErrCode(dbConn) '('oosqlErrMsg(dbConn)')'
+  ret = db~pragma(ignore_check_constraints, .true)
+  say 'Pragma: set ignore_check_constraints(.true) ret:' ret
 
-    str = buf~string; say 'buf string:' str 'buf string length:' str~length
+  ret = db~pragma(ignore_check_constraints)
+  say 'Pragma: get ignore_check_constraints ret:' ret
 
-    ret = oosqlFinalize(stmt); say 'Error finalize ret:' ret
-    ret = oosqlClose(dbConn) ; say 'Error close    ret:' ret
-    return 99
+/*
+  names = getPragmaNames()
+
+  do n over names
+    ret = db~pragma(n)
+    say 'Pragma:' n':' ret
+    say; say; say
   end
-  else do
-    say 'Unused portion of sql:'
-    say '  string: ' buf~string
-    say '  length: ' buf~string~length
-  end
+*/
 
-  stepRC = oosqlStep(stmt)
-
-  if stepRC == .ooSQLite~ROW then do
-    colCount = oosqlColumnCount(stmt)
-
-    header = ''
-    do i = 1 to colCount
-      header ||= oosqlColumnName(stmt, i)~left(20)
-    end
-    say header
-    say '='~copies(80)
-
-    do while stepRC == .ooSQLite~ROW
-      row = ''
-      do i = 1 to colCount
-        row ||= oosqlColumnText(stmt, i)~left(20)
-      end
-      say row
-
-      stepRC = oosqlStep(stmt)
-    end
-  end
-  else do
-    say 'Unexpected error running query "SELECT * FROM foods ORDER BY name;"'
-    say 'Error code:' stepRC
-  end
-  say
-
-  ret = oosqlFinalize(stmt); say 'No err finalize ret:' ret
-  ret = oosqlClose(dbConn) ; say 'No err close    ret:' ret
-  return ret
+  db~close
 
 ::requires 'ooSQLite.cls'
+
+::routine getPragmaNames
+
+  n = .array~of( -
+    "auto_vacuum",  -
+    "automatic_index",  -
+    "cache_size",  -
+    "checkpoint_fullfsync",  -
+    "encoding",  -
+    "foreign_keys",  -
+    "freelist_count",  -
+    "fullfsync",  -
+    "ignore_check_constraints",  -
+    "journal_mode",  -
+    "journal_size_limit",  -
+    "legacy_file_format",  -
+    "locking_mode",  -
+    "max_page_count",  -
+    "page_count",  -
+    "page_size",  -
+    "read_uncommitted",  -
+    "recursive_triggers",  -
+    "reverse_unordered_selects",  -
+    "schema_version",  -
+    "secure_delete",  -
+    "synchronous",  -
+    "temp_store",  -
+    "user_version",  -
+    "wal_autocheckpoint",  -
+    "writable_schema")
+
+    --"incremental_vacuum",  -            -- See if doc is wrong, set only ??
+
+    return n

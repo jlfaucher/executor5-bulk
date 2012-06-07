@@ -40,6 +40,9 @@
  *
  *  Opens the ooFoods database, creates a prepared statement that queries the
  *  database and steps through the result set printing the rows returned.
+ *
+ *  This program does the error checking that is missing in some of the other
+ *  test programs.
  */
 
 	dbName = 'ooFoods.rdbx'

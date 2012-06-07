@@ -46,6 +46,11 @@
  * back it up by renaming it.  If this fails, we just proceed.  The example will
  * then return an error, which is part of the example.  In that case, delete the
  * database file manually to see the example work as designed.
+ *
+ * Note that the author has little to no previous experience with SQL and
+ * relational databases.  This example is not intended to show the "best" way
+ * to use SQL or to deal with a relational database in general.  It is meant to
+ * help someone get started using ooSQLite.
  */
 
   dbFile = .File~new('phoneBook.rdbx')

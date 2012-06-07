@@ -47,6 +47,11 @@
  * The various task involved in inserting the data are carried out by methods of
  * the DatabaseAssistant class.  The DatabaseAssistant class is not a part of
  * the ooSQLite extension.
+ *
+ * Note that the author has little to no previous experience with SQL and
+ * relational databases.  This example is not intended to show the "best" way
+ * to use SQL or to deal with a relational database in general.  It is meant to
+ * help someone get started using ooSQLite.
  */
 
   dbFile = .File~new('phoneBook.rdbx')
