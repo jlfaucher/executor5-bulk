@@ -79,7 +79,7 @@
   buf = .MutableBuffer~new('There is no help, for you.' , 100)
 
   -- Note the added space at the end of the SQL.  This space will be returned.
-  stmt = oosqlPrepare(dbConn, 'SELECT * FROM my foods ORDER BY name; ', buf)
+  stmt = oosqlPrepare(dbConn, 'SELECT * FROM foods ORDER BY name; ', buf)
   if stmt~isNull then do
     say 'Prepared statment initialization error:'
     say '  Error code:' oosqlErrCode(dbConn) '('oosqlErrMsg(dbConn)')'

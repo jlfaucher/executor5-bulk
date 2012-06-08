@@ -35,6 +35,7 @@ r/*----------------------------------------------------------------------------*
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+  .ooSQLite~recordFormat = .ooSQLite~OO_ARRAY_OF_ARRAYS
   dbName = 'ooFoods.rdbx'
 
   dbConn = .ooSQLiteConnection~new(dbName, .ooSQLite~OPEN_READWRITE)
