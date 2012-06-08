@@ -4731,6 +4731,7 @@ RexxMethod2(int, oosqlstmt_columnIndex, CSTRING, _colName, CSELF, pCSelf)
     char *colName     = NULL;
     char *currentName = NULL;
     int   result      = 0;
+    int   count       = 0;
 
     colName = strdupupr(_colName);
     if ( colName == NULL )
@@ -4738,14 +4739,12 @@ RexxMethod2(int, oosqlstmt_columnIndex, CSTRING, _colName, CSELF, pCSelf)
         goto err_out;
     }
 
-    int count = sqlite3_column_count(pCstmt->stmt);
+    count = sqlite3_column_count(pCstmt->stmt);
     if ( count == 0 )
     {
         // Not an error, statement may not be a SELECT.
         goto done_out;
     }
-
-    int col = -1;
 
     for ( int i = 0; i < count; i++)
     {
