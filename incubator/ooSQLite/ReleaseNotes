@@ -33,6 +33,11 @@ should be implemented.  Some class and method names are likely to
 change.  Classes and / or methods may be removed, and / or added.
 Arguments to methods may be changed.
 
+Note:
+-----
+
+Cumulative changes are located towards the bottom of this file.
+
 
 To use ooSQLite in an ooRexx program:
 -------------------------------------
@@ -199,3 +204,106 @@ users, RexxLa, the developers list, etc., but the user list is the one
 place that all users of ooRexx can access.  This makes it the ideal
 place to carry out discussions of things related to ooRexx, that include
 the entire user community.
+
+
+                          Cumulative Changes:
+                          ===================
+
+
+
+Changes since ooSQLite Version 1.0.0.7833 (Preview)
+------------------------------------------------------------------------
+
+  Documentation:
+  --------------
+
+  A rough draft of the ooSQLite Reference manual is now available in the
+  doc directory.  The reference lists all classes, methods, constants,
+  and public routines in ooSQLite.  The entries are almost all
+  "template" entries, not yet filled in.
+
+
+  Examples (examples directory):
+  -----------------------------
+
+  * The pullColumnData.rex example is added.
+
+
+  Examples (testing directory):
+  -----------------------------
+
+  The examples in the testing directory have been used by the developers
+  during implementation.  A few of these programs are made available to
+  help people get started with ooSQLite.  In general these are not well
+  documented and will eventually be removed from the distribution as
+  more examples are added to the examples directory.
+
+  The following programs have been added to the testing directory:
+
+  * execTestA.rex
+
+  * execTestD.rex
+
+  * execTestNoExec.rex
+
+  * execTestS.rex
+
+  * pragmaGetTest.rex
+
+  * pragmaSetTest.rex
+
+  * pragmaSpecialTest.rex
+
+  * pragmaTriggerTest.rex
+
+  * statusTest.rex
+
+  * versionTest.rex
+
+
+  Bugs:
+  ----
+
+  No bugs found in this cycle.
+
+
+  Changes in implementation:
+  --------------------------
+
+  * The ooSQLiteDB class is renamed to the ooSQLiteConnection class.
+
+  * The ooSQL class is renamed to the ooSQLiteConstants class.
+
+
+  Enhancements:
+  -------------
+
+  * The ooSQLiteConstants class is made a mixin class and is inherited
+  by the ooSQLite, ooSQLiteConnection, ooSQLiteStmt, and ooSQLiteMutex
+  classes.
+
+  * Functionality is added that allows the programmer to specify the
+  format of the result set returned from a SELECT query.  These 3
+  formats are currently available: an Array of Directories, an Array of
+  Arrays, or a Stem of Stems.
+
+  The default is an Array of Directories.  The programmer can change the
+  default format on a process-wide, database-wide, or prepared-statement
+  wide basis.
+
+  The default format can be over-ridden using an argument to the
+  ooSQLiteConnection::exec() method and by an argument to the
+  oosqlExec() public routine.
+
+  * The ooSQLiteStmt::columnIndex() has been added
+
+
+
+                 ooSQLite Version 1.0.0.7833 (Preview)
+                 =====================================
+
+
+Changes ... No changes, 1.0.0.7833 was first available version.
+------------------------------------------------------------------------
+
+
