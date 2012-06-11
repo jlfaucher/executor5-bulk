@@ -42,6 +42,8 @@
 #define OO_INTERNAL_ERR                  1000
 #define OO_WRONG_ARG_TYPE                1001
 #define OO_UNEXPECTED_RESULT             1002
+#define OO_BACKUP_IN_PROGRESS            1003
+#define OO_BACKUP_DB_ERRSTATE            1004
 
 #define VALID_VERSION_TYPES "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
 #define RECORD_FORMATS_LIST "OO_ARRAY_OF_ARRAYS, OO_ARRAY_OF_DIRECTORIES, or OO_STEM_OF_STEMS"
@@ -137,6 +139,7 @@ typedef struct _oosqlConnCSelf {
     // operations will fail.
     int                 initCode;
     bool                closed;           // The database was closed.
+    bool                isDestinationBU;  // The database is the destination of a backup, in progress
 } CooSQLiteConn;
 typedef CooSQLiteConn *pCooSQLiteConn;
 
@@ -147,18 +150,37 @@ typedef struct _oosqlstmtCSelf {
     pCooSQLiteConn      pConn;             // The CSelf database connection used with the statement.
     RexxObjectPtr       rexxSelf;          // The Rexx ooSQLiteStmt object.
     RexxStringObject    tail;              // The tail pointer returned from SQLite.
-    RexxStringObject    errMsg;            // Set during .ooSQLiteStmt~new(), never changed. Uses sqlite3_errmsg() for the msg
+    RexxStringObject    lastErrMsg;        // Set during .ooSQLiteStmt~new(), maybe never changed. Uses sqlite3_errmsg() for the msg
     ResultSetType       format;            // The default format of a result set for this statment.
+    int                 lastErrCode;       // Set during .ooSQLiteStmt~new(), maybe never changed
     int                 initCode;          // Set during .ooSQLiteStmt~new(), never changed
     bool                initializationErr; // sqlite3_prepare_v2 failed.
     bool                finalized;         // finalize() was called, or not initalized ok.
 } CooSQLiteStmt;
 typedef CooSQLiteStmt *pCooSQLiteStmt;
 
+/* Struct for the ooSQLiteBackup object CSelf. */
+typedef struct _oosqlbuCSelf {
+    sqlite3_backup     *backup;            // The SQLite backup handle
+    RexxObjectPtr       rexxSelf;          // The Rexx ooSQLiteBackup object.
+    pCooSQLiteConn      dstCSelf;          // The destination CSelf of the database connection.
+    RexxObjectPtr       dstRexxSelf;       // The destination Rexx database connection.
+    pCooSQLiteConn      srcCSelf;          // The source CSelf of the database connection.
+    RexxObjectPtr       srcRexxSelf;       // The source Rexx database connection.
+    RexxStringObject    lastErrMsg;        // Set during .ooSQLiteBackup~new() and updated after every step(), and finish()
+    int                 lastErrCode;       // Set during .ooSQLiteBackup~new() and updated after every step(), and finish()
+    int                 initCode;          // Set during .ooSQLiteBackup~new() and never changed.
+    bool                initializationErr; // sqlite3_backup_init failed.
+    bool                finished;          // Finish has been called on the back up object.
+    bool                dstDbWasName;      // In new() the destination DB was a file name, not a connection object
+    bool                saveDest;          // Indicates that if the destionation connection was opened, it should not be closed.
+} CooSQLiteBackup;
+typedef CooSQLiteBackup *pCooSQLiteBackup;
+
 /* Struct for the ooSQLiteMutex object CSelf. */
 typedef struct _oosqlmutexCSelf {
     sqlite3_mutex      *mutex;             // The SQLite mutex handle
-    RexxObjectPtr       rexxSelf;          // The Rexx ooSQLiteConnection object.
+    RexxObjectPtr       rexxSelf;          // The Rexx ooSQLiteMutex object.
     int                 type;              // The SQLite mutex type.
                                            // Should we reference count if the type is recursive?
     bool                initializationErr; // sqlite3_mutex_alloc failed.

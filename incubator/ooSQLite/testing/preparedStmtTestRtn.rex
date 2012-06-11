@@ -65,26 +65,23 @@
     return 99
   end
 
-  -- The third argument to oosqlPrepare() can be a mutable buffer in which any
-  -- unused portion of the sql sting is returned.
-  --
-  -- The string to initialize the mutable buffer is meaningless.  It is used to
-  -- see what SQLite does with the buffer when there is text in it.  Both under
-  -- normal conditions and under an error.  Stick a syntax error in the SQL to
-  -- see an error condition.
-  --
-  -- Note also that first implementation of ooSQLite uses the dreaded "Objects"
-  -- of ooRexx in only a few places, like here.  These uses are likely to be
-  -- changed to use stems instead.
-  buf = .MutableBuffer~new('There is no help, for you.' , 100)
+  -- The third argument to oosqlPrepare() can be a stem.  If not omitted, the
+  -- stem will have a tail added to the stem that is set to the unused portion
+  -- of the sql string.  Note that SQLite calls this string the tail, and the
+  -- ooSQLite implementation has choose to keep the SQLite name, even though it
+  -- may sound a bit confusing with the tail of a stem.  The tail name will be:
+  -- OOSQLITE_SQLTAIL
 
-  -- Note the added space at the end of the SQL.  This space will be returned.
-  stmt = oosqlPrepare(dbConn, 'SELECT * FROM foods ORDER BY name; ', buf)
+  -- Note the nonsense at the end of the first SQL statement.  This string will
+  -- be returned in the stem.  Further note that the stem is not set if there is
+  -- an error return from oosqlPrepare().  (You can generate an error by adding
+  -- a syntax error to the SELECT statement.)
+  stmt = oosqlPrepare(dbConn, 'SELECT * FROM foods ORDER BY name; INSERT nonsense INTO foodes', unused.)
   if stmt~isNull then do
     say 'Prepared statment initialization error:'
     say '  Error code:' oosqlErrCode(dbConn) '('oosqlErrMsg(dbConn)')'
 
-    str = buf~string; say 'buf string:' str 'buf string length:' str~length
+    str = unused.oosqlite_sqlTail; say 'unused SQL:' str 'unused SQL length:' length(str)
 
     ret = oosqlFinalize(stmt); say 'Error finalize ret:' ret
     ret = oosqlClose(dbConn) ; say 'Error close    ret:' ret
@@ -92,8 +89,9 @@
   end
   else do
     say 'Unused portion of sql:'
-    say '  string: ' buf~string
-    say '  length: ' buf~string~length
+    str = unused.oosqlite_sqlTail
+    say '  string: ' str
+    say '  length: ' length(str)
   end
 
   stepRC = oosqlStep(stmt)

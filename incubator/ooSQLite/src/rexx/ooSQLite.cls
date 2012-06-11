@@ -137,9 +137,10 @@
 
 ::method init class external "LIBRARY oosqlite oosqlstmt_init_cls"                   -- Internal use only
 
-::attribute errMsg get external "LIBRARY oosqlite oosqlstmt_getErrMsg_atr"
-::attribute initCode get external "LIBRARY oosqlite oosqlstmt_getInitCode_atr"
 ::attribute finalized get external "LIBRARY oosqlite oosqlstmt_getFinalized_atr"
+::attribute initCode get external "LIBRARY oosqlite oosqlstmt_getInitCode_atr"
+::attribute lastErrCode get external "LIBRARY oosqlite oosqlstmt_getLastErrCode_atr"
+::attribute lastErrMsg get external "LIBRARY oosqlite oosqlstmt_getLastErrMsg_atr"
 ::attribute recordFormat get external "LIBRARY oosqlite oosqlconn_getRecordFormat_atr"
 ::attribute recordFormat set external "LIBRARY oosqlite oosqlconn_setRecordFormat_atr"
 
@@ -184,12 +185,31 @@
 ::method value external "LIBRARY oosqlite oosqlstmt_value"
 
 
+/** class: ooSQLiteBackup
+ * ...
+ *
+ */
+::class 'ooSQLiteBackup' public inherit ooSQLiteConstants
+
+::attribute finished get external "LIBRARY oosqlite oosqlbu_getFinished_atr"
+::attribute initCode get external "LIBRARY oosqlite oosqlbu_getInitCode_atr"
+::attribute lastErrCode get external "LIBRARY oosqlite oosqlbu_getLastErrCode_atr"
+::attribute lastErrMsg get external "LIBRARY oosqlite oosqlbu_getLastErrMsg_atr"
+::attribute pageCount get unguarded external "LIBRARY oosqlite oosqlbu_getPageCount_atr"
+::attribute remaining get unguarded external "LIBRARY oosqlite oosqlbu_getRemaining_atr"
+
+::method init external "LIBRARY oosqlite oosqlbu_init"
+::method uninit external "LIBRARY oosqlite oosqlbu_uninit"
+
+::method finish external "LIBRARY oosqlite oosqlbu_finish"
+::method step external "LIBRARY oosqlite oosqlbu_step"
+
+
 /** class: ooSQLiteMutex
  * ...
  *
  */
 ::class 'ooSQLiteMutex' public inherit ooSQLiteConstants
-
 
 ::attribute closed get unguarded external "LIBRARY oosqlite oosqlmtx_getClosed_atr"
 ::attribute isNull get unguarded external "LIBRARY oosqlite oosqlmtx_getIsNull_atr"
@@ -331,6 +351,8 @@
 ::constant OO_INTERNAL_ERR                  1000
 ::constant OO_WRONG_ARG_TYPE                1001
 ::constant OO_UNEXPECTED_RESULT             1002
+::constant OO_BACKUP_IN_PROGRESS            1003
+::constant OO_BACKUP_DB_ERRSTATE            1004
 
 ::constant OO_ARRAY_OF_ARRAYS               1
 ::constant OO_ARRAY_OF_DIRECTORIES          2

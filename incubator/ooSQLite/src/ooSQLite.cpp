@@ -242,9 +242,46 @@ inline RexxStringObject safeRexxString(RexxThreadContext *c, CSTRING str)
  * @return The converted Rexx string for str, or the empty string if str is
  *         null.
  */
-inline RexxStringObject safeRexxStringRx(RexxThreadContext *c, CSTRING str)
+static inline RexxStringObject safeRexxStringRx(RexxThreadContext *c, CSTRING str)
 {
     return (str == NULL ? c->NullString() : c->String(str));
+}
+
+/**
+ * Returns the sqlite3_errmsg string from the specified database as a Rexx
+ * string.
+ *
+ * @param c   Thread context we are operating in.
+ * @param db  sqlite3 database connection pointer.
+ *
+ * @return The err msg as a Rexx String object.
+ *
+ * @remarks  Originally I thought it was possible for sqlite3_errmsg() to return
+ *           null.  But it looks like that can not happen.  So the check for
+ *           null is dropped.
+ */
+static inline RexxStringObject dbErrStringRx(RexxThreadContext *c, sqlite3 *db)
+{
+    return c->String(sqlite3_errmsg(db));
+}
+static inline RexxStringObject dbErrStringRx(RexxMethodContext *c, sqlite3 *db)
+{
+    return dbErrStringRx(c->threadContext, db);
+}
+
+/**
+ * Returns the sqlite3_errcode from the specified database.
+ *
+ * @param db  sqlite3 database connection pointer.
+ *
+ * @return The err code.
+ *
+ * @remarks The only real purpose of this inline is to provide a matching
+ *          function to dbErrStringRx(), making it easier to remember.
+ */
+static inline int dbErrCode(sqlite3 *db)
+{
+    return sqlite3_errcode(db);
 }
 
 /**
@@ -1515,6 +1552,21 @@ void noOpenDBException(RexxThreadContext *context, pCooSQLiteConn pConn)
 }
 
 
+void dbNotOpenException(RexxThreadContext *context, pCooSQLiteConn pConn, size_t pos)
+{
+    char buffer[256];
+    if ( pConn->fileName != NULL )
+    {
+        snprintf(buffer, sizeof(buffer), "Argument %d, the %s data base connection, is not open", pos, pConn->fileName);
+    }
+    else
+    {
+        snprintf(buffer, sizeof(buffer), "Argument %d, the data base connection, is not open", pos);
+    }
+    executionErrorException(context, buffer);
+}
+
+
 void invalidStmtException(RexxThreadContext *context, pCooSQLiteStmt pCstmt)
 {
     char buffer[256];
@@ -1525,6 +1577,21 @@ void invalidStmtException(RexxThreadContext *context, pCooSQLiteStmt pCstmt)
     else
     {
         snprintf(buffer, sizeof(buffer), "The ooSQLite statement is not valid, it was not prepared without error");
+    }
+    executionErrorException(context, buffer);
+}
+
+
+void invalidBuException(RexxThreadContext *context, pCooSQLiteBackup pCbu)
+{
+    char buffer[256];
+    if ( pCbu->finished && ! pCbu->initializationErr )
+    {
+        snprintf(buffer, sizeof(buffer), "The ooSQLite backup object is not valid, it has been finished");
+    }
+    else
+    {
+        snprintf(buffer, sizeof(buffer), "The ooSQLite backup object is not valid, it was not opened without error");
     }
     executionErrorException(context, buffer);
 }
@@ -1613,6 +1680,58 @@ static inline pCooSQLiteStmt requiredStmt(RexxMethodContext *c, void *pCSelf)
         }
     }
     return pCstmt;
+}
+
+static inline pCooSQLiteBackup requiredBuCSelf(RexxMethodContext *c, void *pCSelf)
+{
+    if ( pCSelf == NULL )
+    {
+        baseClassIntializationException(c, "ooSQLiteBackup");
+    }
+    return (pCooSQLiteBackup)pCSelf;
+}
+
+
+static inline pCooSQLiteBackup requiredBackup(RexxMethodContext *c, void *pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBuCSelf(c, pCSelf);
+    if ( pCbu != NULL )
+    {
+        if ( pCbu->backup == NULL )
+        {
+            invalidBuException(c->threadContext, pCbu);
+            pCbu = NULL;
+        }
+    }
+    return pCbu;
+}
+
+static pCooSQLiteConn requiredOpenConnection(RexxMethodContext *c, RexxObjectPtr dbConn, size_t pos)
+{
+    pCooSQLiteConn pConn = dbToCSelf(c, dbConn);
+
+    if ( pConn == NULL )
+    {
+        baseClassIntializationException(c, "ooSQLiteConnection");
+        return NULLOBJECT;
+    }
+
+    if ( pConn->db == NULL )
+    {
+        dbNotOpenException(c->threadContext, pConn, pos);
+        return NULL;
+    }
+    return pConn;
+}
+
+static pCooSQLiteConn requiredDBConnectionArg(RexxMethodContext *c, RexxObjectPtr dbConn, size_t pos)
+{
+    if ( ! c->IsOfType(dbConn, "ooSQLiteConnection") )
+    {
+        wrongClassException(c->threadContext, pos, "ooSQLiteConnection", dbConn);
+        return NULL;
+    }
+    return requiredOpenConnection(c, dbConn, pos);
 }
 
 static inline CSTRING getCallbackVarName(CallbackType cb)
@@ -4106,22 +4225,6 @@ RexxMethod1(RexxObjectPtr, oosqlstmt_init_cls, OSELF, self)
 }
 
 
-/** ooSQLiteStmt::errMsg  [attribute get]
- *
- *  Note that errMsg, finalized and initCode attributes have to be accessible
- *  even if stmt is null.  So we just check for a NULL pCSelf, a null stmt is
- *  okay.
- */
-RexxMethod1(RexxStringObject, oosqlstmt_getErrMsg_atr, CSELF, pCSelf)
-{
-    pCooSQLiteStmt pCstmt = requiredStmtCSelf(context, pCSelf);
-    if ( pCstmt == NULL )
-    {
-        return NULLOBJECT;
-    }
-    return pCstmt->errMsg;
-}
-
 /** ooSQLiteStmt::finalized  [attribute get]
  *
  *  Note that errMsg, finalized, and initCode attributes have to be accessible
@@ -4152,6 +4255,38 @@ RexxMethod1(int, oosqlstmt_getInitCode_atr, CSELF, pCSelf)
         return -1;
     }
     return pCstmt->initCode;
+}
+
+/** ooSQLiteStmt::lastErrCode  [attribute get]
+ *
+ *  Note that lastErrMsg, lastErrCode, finalized and initCode attributes have to
+ *  be accessible even if stmt is null.  So we just check for a NULL pCSelf, a
+ *  null stmt is okay.
+ */
+RexxMethod1(int, oosqlstmt_getLastErrCode_atr, CSELF, pCSelf)
+{
+    pCooSQLiteStmt pCstmt = requiredStmtCSelf(context, pCSelf);
+    if ( pCstmt == NULL )
+    {
+        return NULLOBJECT;
+    }
+    return pCstmt->lastErrCode;
+}
+
+/** ooSQLiteStmt::lastErrMsg  [attribute get]
+ *
+ *  Note that lastErrMsg, lastErrCode, finalized and initCode attributes have to
+ *  be accessible even if stmt is null.  So we just check for a NULL pCSelf, a
+ *  null stmt is okay.
+ */
+RexxMethod1(RexxStringObject, oosqlstmt_getLastErrMsg_atr, CSELF, pCSelf)
+{
+    pCooSQLiteStmt pCstmt = requiredStmtCSelf(context, pCSelf);
+    if ( pCstmt == NULL )
+    {
+        return NULLOBJECT;
+    }
+    return pCstmt->lastErrMsg;
 }
 
 /** ooSQLiteStmt::recordFormat  [attribute get]
@@ -4200,42 +4335,22 @@ RexxMethod2(RexxObjectPtr, oosqlstmt_setRecordFormat_atr, uint32_t, format, CSEL
  */
 RexxMethod4(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OPTIONAL_uint32_t, defFormat, OSELF, self)
 {
-    const char    *msg    = "no error";
-    const char    *tail   = NULL;
-    pCooSQLiteConn pConn  = NULL;
-    pCooSQLiteStmt pCstmt = NULL;
-    int            rc     = SQLITE_MISUSE;
-
     // Get a buffer for the ooSQLiteStmt CSelf.
     RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLiteStmt));
     if ( cselfBuffer == NULLOBJECT )
     {
-        goto done_out;
+        return NULLOBJECT;
     }
 
     context->SetObjectVariable("CSELF", cselfBuffer);
 
-    pCstmt = (pCooSQLiteStmt)context->BufferData(cselfBuffer);
+    pCooSQLiteStmt pCstmt = (pCooSQLiteStmt)context->BufferData(cselfBuffer);
     memset(pCstmt, 0, sizeof(CooSQLiteStmt));
 
-    if ( ! context->IsOfType(db, OOSQLITECONNECTION_CLASS) )
-    {
-        wrongClassException(context->threadContext, 1, OOSQLITECONNECTION_CLASS, db);
-        goto done_out;
-    }
-
-    pConn = dbToCSelf(context, db);
-
+    pCooSQLiteConn pConn = requiredDBConnectionArg(context, db, 1);
     if ( pConn == NULL )
     {
-        baseClassIntializationException(context, OOSQLITECONNECTION_CLASS);
-        goto done_out;
-    }
-
-    if ( pConn->db == NULL )
-    {
-        noOpenDBException(context->threadContext, pConn);
-        goto done_out;
+        return NULLOBJECT;
     }
 
     if ( argumentExists(3) )
@@ -4244,6 +4359,7 @@ RexxMethod4(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OPTI
         {
             wrongArgValueException(context->threadContext, 3, RECORD_FORMATS_LIST,
                                    context->UnsignedInt32(defFormat));
+            return NULLOBJECT;
         }
         else
         {
@@ -4255,12 +4371,15 @@ RexxMethod4(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OPTI
         pCstmt->format = pConn->format;
     }
 
-    rc = sqlite3_prepare_v2(pConn->db, sql, (int)strlen(sql) + 1, &pCstmt->stmt, &tail);
+    CSTRING msg  = "no error";
+    CSTRING tail = NULL;
+
+    int rc = sqlite3_prepare_v2(pConn->db, sql, (int)strlen(sql) + 1, &pCstmt->stmt, &tail);
 
     if ( rc == SQLITE_OK )
     {
         pCstmt->db       = db;
-        pCstmt->pConn     = pConn;
+        pCstmt->pConn    = pConn;
         pCstmt->rexxSelf = self;
         pCstmt->tail     = safeRexxStringRx(context->threadContext, tail);
 
@@ -4282,12 +4401,12 @@ RexxMethod4(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OPTI
         pCstmt->initializationErr = true;
     }
 
-    pCstmt->initCode = rc;
-    pCstmt->errMsg   = context->String(msg);
+    pCstmt->initCode    = rc;
+    pCstmt->lastErrCode = rc;
+    pCstmt->lastErrMsg  = context->String(msg);
 
-    context->SetObjectVariable("__rxErrMsg", pCstmt->errMsg);
+    context->SetObjectVariable("__rxErrMsg", pCstmt->lastErrMsg);
 
-done_out:
     return NULLOBJECT;
 }
 
@@ -5191,6 +5310,607 @@ RexxMethod1(RexxObjectPtr, oosqlstmt_value, CSELF, pCSelf)
 
 
 /**
+ *  Methods for the .ooSQLiteBackup class.
+ */
+#define OOSQLITEBACKUP_CLASS    "ooSQLiteBackup"
+
+
+static pCooSQLiteConn buGetCSelfDB(RexxMethodContext *context, pCooSQLiteBackup pCbu, RexxObjectPtr rxDB,
+                                   CSTRING *dbName, size_t pos)
+{
+    bool isSrcDB = (pos == 1);
+
+    pCooSQLiteConn pConn = requiredDBConnectionArg(context, rxDB, pos);
+    if ( pConn == NULL )
+    {
+        return NULL;
+    }
+
+    CSTRING errMsg;
+    if ( pos == 1 )
+    {
+        errMsg = "The source database for the backup is in an error state";
+        if ( argumentOmitted(4) )
+        {
+            *dbName = "main";
+        }
+    }
+    else
+    {
+        errMsg = "The destination database for the backup is in an error state";
+        if ( argumentOmitted(5) )
+        {
+            *dbName = "main";
+        }
+    }
+
+    int dbRC = sqlite3_errcode(pConn->db);
+    if ( dbRC != 0 )
+    {
+        pCbu->initializationErr = true;
+        pCbu->finished          = true;
+        pCbu->initCode          = OO_BACKUP_DB_ERRSTATE;
+        pCbu->lastErrCode       = dbRC;
+        pCbu->lastErrMsg        = context->String(errMsg);
+
+        context->SetObjectVariable("__rxLastErrMsg", pCbu->lastErrMsg);
+        return NULL;
+    }
+
+    return pConn;
+}
+
+
+/**
+ * Checks if the destination database is in memory, and if so sets the page size
+ * of the in memory database to the same page size as the destination database.
+ *
+ * This is a special purpose function called to protect against one of the
+ * possible reasons for a backup to fail, backing up to an in memory database
+ * with the wrong page size.
+ *
+ * When called for that purpose, the in memory database will be empty and its
+ * page size can be changed to match the source database.
+ *
+ * @param dbDst
+ * @param dbSrc
+ * @param dstName
+ *
+ * @return bool
+ *
+ * @remarks  Rather than get the page size from both databases, we just get the
+ *           destination database page size and unconditionally set the in
+ *           memory database page size to that value.  Setting an in memory,
+ *           empty, database page size should be very quick and error proof.
+ *
+ *           This should not fail, unless the engine can not get a lock on the
+ *           source database to query its page size.  The Rexx user has to be
+ *           the responsible party for the source database and should have set a
+ *           busy handler.  But, we'll try a couple of times if we get busy and
+ *           then give up.
+ *
+ *           If this does fail, i.e., false is returned, then the error should
+ *           be with the source database and dbSrc can be used to get the error
+ *           message and code.
+ */
+bool buCheckPageSize(sqlite3 *dbDst, sqlite3* dbSrc, CSTRING dstName)
+{
+    if ( strcmp(dstName, ":memory") )
+    {
+        return true;
+    }
+
+    sqlite3_stmt *stmt;
+    int           srcSize = 0;
+
+    int rc = sqlite3_prepare_v2(dbSrc, "PRAGMA page_size;", -1, &stmt, NULL);
+    if ( rc != SQLITE_OK )
+    {
+        return false;
+    }
+
+    rc = sqlite3_step(stmt);
+    if ( rc == SQLITE_ROW )
+    {
+        srcSize = sqlite3_column_bytes(stmt, 0);
+    }
+    else if ( rc == SQLITE_BUSY)
+    {
+        for ( int i = 0; i < 4; i++ )
+        {
+            sqlite3_reset(stmt);
+            sqlite3_sleep(250);
+
+            rc = sqlite3_step(stmt);
+            if ( rc == SQLITE_ROW )
+            {
+                srcSize = sqlite3_column_bytes(stmt, 0);
+                break;
+            }
+            else if ( rc != SQLITE_BUSY )
+            {
+                break;
+            }
+        }
+    }
+
+    sqlite3_finalize(stmt);
+    if ( srcSize == 0 )
+    {
+        return false;
+    }
+
+    char buf[256];
+    snprintf(buf, sizeof(buf), "PRAGMA page_size = %d;", srcSize);
+
+    if ( rc != SQLITE_OK )
+    {
+        return false;
+    }
+
+    // We're going to just assume this works.  The only reason it wouldn't, as
+    // far as I can tell would be that the SQL was malformed.  Since it is hard
+    // coded, once it is debugged, it should always be correct.
+    sqlite3_prepare_v2(dbDst, buf, -1, &stmt, NULL);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    return true;
+}
+
+/**
+ * When the ooSQLiteBackup::init() fails, sets the common failure state
+ * variables in the ooSQLiteBackup CSelf.
+ *
+ * @param c
+ * @param pCbu
+ * @param msg
+ * @param rc
+ */
+void buSetInitErr(RexxMethodContext *c, pCooSQLiteBackup pCbu, RexxStringObject msg, int rc)
+{
+    pCbu->initializationErr = true;
+    pCbu->lastErrMsg        = msg;
+    pCbu->lastErrCode       = rc;
+    pCbu->initCode          = rc;
+    pCbu->finished          = true;
+
+    c->SetObjectVariable("__rxLastErrMsg", pCbu->lastErrMsg);
+}
+
+/** ooSQLiteBackup::destinationConnection  [attribute get]
+ *
+ *  Holds the saved destination database connection object, iff the destination
+ *  database was specified as a file name *and* the user set the saveDestConn
+ *  attribute to true, *and* the backup has been finished.  Otherwise returns
+ *  .nil.
+ */
+RexxMethod1(RexxObjectPtr, oosqlbu_getDestinationConnection_atr, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    if ( pCbu->dstDbWasName && pCbu->finished && pCbu->saveDest )
+    {
+        return pCbu->dstRexxSelf;
+    }
+    return TheNilObj;
+}
+
+/** ooSQLiteBackup::finished  [attribute get]
+ *
+ *  Note that errMsg, finished, and initCode attributes have to be accessible
+ *  even if the backup struct is null.  So we just check for a NULL pCSelf, a
+ *  null backup pointer is okay.
+ */
+RexxMethod1(logical_t, oosqlbu_getFinished_atr, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return 1;
+    }
+    return pCbu->finished;
+}
+
+/** ooSQLiteBackup::initCode  [attribute get]
+ *
+ *  Note that errMsg, finished, and initCode attributes have to be accessible
+ *  even if the backup struct is null.  So we just check for a NULL pCSelf, a
+ *  null backup pointer is okay.
+ */
+RexxMethod1(int, oosqlbu_getInitCode_atr, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return -1;
+    }
+    return pCbu->initCode;
+}
+
+/** ooSQLiteBackup::lastErrCode  [attribute get]
+ *
+ *  Note that lastErrMsg, lastErrCode, finished, and initCode attributes have to
+ *  be accessible even if the backup struct is null.  So we just check for a
+ *  NULL pCSelf, a null backup pointer is okay.
+ */
+RexxMethod1(int, oosqlbu_getLastErrCode_atr, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return NULLOBJECT;
+    }
+    return pCbu->lastErrCode;
+}
+
+/** ooSQLiteBackup::lastErrMsg  [attribute get]
+ *
+ *  Note that lastErrMsg, lastErrCode, finished, and initCode attributes have to
+ *  be accessible even if the backup struct is null.  So we just check for a
+ *  NULL pCSelf, a null backup pointer is okay.
+ */
+RexxMethod1(RexxStringObject, oosqlbu_getLastErrMsg_atr, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return NULLOBJECT;
+    }
+    return pCbu->lastErrMsg;
+}
+
+/** ooSQLiteBackup::pageCount  [attribute get]
+ *
+ */
+RexxMethod1(int, oosqlbu_getPageCount_atr, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBackup(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+    return sqlite3_backup_pagecount(pCbu->backup);
+}
+
+/** ooSQLiteBackup::remaining  [attribute get]
+ *
+ */
+RexxMethod1(int, oosqlbu_getRemaining_atr, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBackup(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+    return sqlite3_backup_remaining(pCbu->backup);
+}
+
+/** ooSQLiteBackup::saveDestConn  [attribute get]
+ *
+ */
+RexxMethod1(logical_t, oosqlbu_getSaveDestConn_atr, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return 0;
+    }
+    return pCbu->saveDest;
+}
+/** ooSQLiteBackup::saveDestConn  [attribute set]
+ *
+ *  We don't require that the backup be not finished here, although changing the
+ *  value of the attribute will have no effect if the backup is finished.
+ */
+RexxMethod2(RexxObjectPtr, oosqlbu_setSaveDestConn_atr, logical_t, save, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return NULLOBJECT;
+    }
+    pCbu->saveDest = save ? true : false;
+    return NULLOBJECT;
+}
+
+/** ooSQLiteBackup::init()
+ *
+ *  @param srcDB   [required]  The source SQLite database connection object.
+ *                             Must be opened already.
+ *
+ *  @param dstDB   [required]  Specifies the database to back up to.  This can
+ *                             either be an .ooSQLiteConnection object, in which
+ *                             case it must already be opened.  Or it can be the
+ *                             database file name, in which case the
+ *                             ooSQliteConnection object is instantiated.
+ *
+ *                             Normally, when this argument is a file name, the
+ *                             connection object is closed during the finish()
+ *                             method.  This behavior can be changed either by
+ *                             setting the saveDestConn argument to true, or by
+ *                             setting the saveDestConn attribute to true at any
+ *                             time prior to invoking finish.  Both the argument
+ *                             and the attribute default to false.
+ *
+ *  @param save    [optional]  If true, set the saveDestConn attributre to true.
+ *                             Defaults to false.
+ *
+ *  @param srcName [optional]  The source database name.  This is not the
+ *                             database file name, but rather the "main",
+ *                             "temp", etc., name.  Defaults to "main"
+ *
+ *  @param dstName [optional]  The destinationdatabase name.  This is not the
+ *                             database file name, but rather the "main",
+ *                             "temp", etc., name.  Defaults to "main."  If the
+ *                             destination DB is a file name this argument is
+ *                             ignored because a new database connection is
+ *                             created and this has to be "main".
+ *
+ *  @notes  The save argument is only checked when dstDB is a file name,
+ *          otherwise it is completely ignored.
+ *
+ *          Both the source and destination databases can not be in an error
+ *          state.  If either database has its last error code set,
+ *          ooSQLiteBackup will not initialize the backup.  initCode will be set
+ *          to OO_BACKUP_DB_ERRSTATE, lastErrMsg will specify which database is
+ *          in the error state, and lastErrCode will be the database errCode.
+ *
+ *  @remarks  The SQLite doc says:
+ *
+ *  The application must guarantee that the destination database connection is
+ *  not passed to any other API (by any thread) after sqlite3_backup_init() is
+ *  called and before the corresponding call to sqlite3_backup_finish(). SQLite
+ *  does not currently check to see if the application incorrectly accesses the
+ *  destination database connection and so no error code is reported, but the
+ *  operations may malfunction nevertheless. Use of the destination database
+ *  connection while a backup is in progress might also also cause a mutex
+ *  deadlock.
+ *
+ *  So - we set a flag in the CSelf of the destination database.  If this flag
+ *  is set, invocation of any method of that database connection will abort with
+ *  an error, OO_BACKUP_IN_PROGRESS.
+ */
+RexxMethod6(RexxObjectPtr, oosqlbu_init, RexxObjectPtr, srcDB, RexxObjectPtr, dstDB,
+            OPTIONAL_logical_t, save, OPTIONAL_CSTRING, srcName, OPTIONAL_CSTRING, dstName, OSELF, self)
+{
+    // Get a buffer for the ooSQLiteBackup CSelf.
+    RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooSQLiteBackup));
+    if ( cselfBuffer == NULLOBJECT )
+    {
+        outOfMemoryException(context->threadContext);
+        return NULLOBJECT;
+    }
+    RexxMethodContext *c = context;
+    context->SetObjectVariable("CSELF", cselfBuffer);
+
+    pCooSQLiteBackup pCbu = (pCooSQLiteBackup)context->BufferData(cselfBuffer);
+    memset(pCbu, 0, sizeof(CooSQLiteBackup));
+
+    pCooSQLiteConn pConnSrc = buGetCSelfDB(context, pCbu, srcDB, &srcName, 1);
+    if ( pConnSrc == NULL )
+    {
+        return NULLOBJECT;
+    }
+    pCooSQLiteConn pConnDst = NULL;
+
+    if ( context->IsOfType(dstDB, OOSQLITECONNECTION_CLASS) )
+    {
+        pConnDst = buGetCSelfDB(context, pCbu, dstDB, &dstName, 5);
+        if ( pConnDst == NULL )
+        {
+            return NULLOBJECT;
+        }
+    }
+    else
+    {
+        CSTRING dstFileName = c->ObjectToStringValue(dstDB);
+        pCbu->dstDbWasName  = true;
+        dstName             = "main";
+
+        RexxObjectPtr dstTemp = c->SendMessage1(TheOOSQLiteConnectionClass, "NEW", dstDB);
+
+        if ( c->CheckCondition() )
+        {
+            // The only condition this could be is out of memory.  The user
+            // should not trap this, nothing will work  ... so we don't set up
+            // the backup CSelf with the error stuff.
+            return NULLOBJECT;
+        }
+
+        if ( dstTemp == NULLOBJECT )
+        {
+            // I don't think this is possible, but we'll set up the error stuff.
+            buSetInitErr(context, pCbu,
+                         context->String("Message \"new\" did not return a result for the destionation database"),
+                         OO_UNEXPECTED_RESULT);
+
+            return NULLOBJECT;
+        }
+
+        pConnDst = dbToCSelf(context, dstTemp);
+
+        // Highly unlikely the database was not opened, but we need to check ...
+        if ( pConnDst->db == NULL )
+        {
+            buSetInitErr(context, pCbu, pConnDst->lastErrMsg, pConnDst->lastErrCode);
+            return NULLOBJECT;
+        }
+
+        if ( ! buCheckPageSize(pConnDst->db, pConnSrc->db, dstFileName) )
+        {
+            buSetInitErr(context, pCbu, dbErrStringRx(context, pConnSrc->db), dbErrCode(pConnSrc->db));
+            return NULLOBJECT;
+        }
+
+        pCbu->saveDest = save ? true : false;  // Will be false if omitted anyway.
+    }
+
+    CRITICAL_SECTION_ENTER
+
+    pConnDst->isDestinationBU = true;
+
+    CRITICAL_SECTION_LEAVE
+
+    pCbu->backup = sqlite3_backup_init(pConnDst->db, dstName, pConnSrc->db, srcName);
+    if ( pCbu->backup == NULL )
+    {
+        buSetInitErr(context, pCbu, dbErrStringRx(context, pConnDst->db), dbErrCode(pConnDst->db));
+
+        CRITICAL_SECTION_ENTER
+
+        pConnDst->isDestinationBU = false;
+
+        CRITICAL_SECTION_LEAVE
+
+        if ( pCbu->dstDbWasName )
+        {
+            context->SendMessage0(pConnDst->rexxSelf, "CLOSE");
+        }
+    }
+    else
+    {
+        pCbu->dstCSelf = pConnDst;
+        pCbu->srcCSelf = pConnSrc;
+
+        pCbu->dstRexxSelf = c->RequestGlobalReference(pConnDst->rexxSelf);
+        pCbu->srcRexxSelf = c->RequestGlobalReference(pConnSrc->rexxSelf);
+
+        pCbu->lastErrMsg = context->String("no error");
+        context->SetObjectVariable("__rxErrMsg", pCbu->lastErrMsg);
+    }
+
+    return NULLOBJECT;
+}
+
+
+RexxMethod1(RexxObjectPtr, oosqlbu_uninit, CSELF, pCSelf)
+{
+    if ( pCSelf != NULLOBJECT )
+    {
+        pCooSQLiteBackup pCbu = (pCooSQLiteBackup)pCSelf;
+
+#if 0
+
+#ifdef OOSQLDBG
+        // Start HERE
+        printf("ooSQLiteBackup::uninit() backup=%p finished=%d\n", pCbu->backup, pCbu->finished);
+#endif
+
+        CRITICAL_SECTION_ENTER
+
+        if ( pCbu->backup != NULL && pCstmt->db != NULL )
+        {
+            context->SendMessage1(pCstmt->db, "DELSTMT", pCstmt->rexxSelf);
+
+            sqlite3_finalize(pCstmt->stmt);
+
+            pCstmt->stmt      = NULL;
+            pCstmt->db        = NULL;
+            pCstmt->tail      = NULL;
+            pCstmt->finalized = true;
+        }
+
+        CRITICAL_SECTION_LEAVE
+#endif
+    }
+
+    return TheZeroObj;
+}
+
+
+/** ooSQLiteBackup::finish()
+ *
+ */
+RexxMethod1(int, oosqlbu_finish, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBackup(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    int rc = sqlite3_backup_finish(pCbu->backup);
+
+    return SQLITE_OK;
+}
+
+
+/** ooSQLiteBackup::step()
+ *
+ *  @param  pages  [optional]  The number of pages to copy.  If omitted, 5 pages
+ *                             is used.
+ *
+ *  @return  The SQLITE result code.
+ *
+ *  @remarks  When SQLITE_DONE is returned, or an unrecoverable error code, then
+ *            step() automatically invokes the finish() method for the user.
+ *
+ *            If OK, BUSY, or LOCKED is returned the user can retry the step. A
+ *            syntax condition is rasied if the user invokes finish() when
+ *            finish has already been invoked.  Because of this, the user only
+ *            needs to / should only invoke finish() when she wants to abandon
+ *            the backup.  If needed, the user can check the finished attribute
+ *            to determine if the backup is still viable.
+ *
+ *            As far as the internal code here goes, it turns out that we do the
+ *            same thing if the return from step is DONE, or some other fatal
+ *            error.  So we don't check what the return code is.
+ */
+RexxMethod2(int, oosqlbu_step, int, pages, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBackup(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    int rc = sqlite3_backup_step(pCbu->backup, argumentOmitted(1) ? 5 : pages);
+
+    if ( rc == SQLITE_OK || rc == SQLITE_BUSY || rc == SQLITE_LOCKED  )
+    {
+        pCbu->lastErrMsg  = dbErrStringRx(context, pCbu->dstCSelf->db);
+        pCbu->lastErrCode = dbErrCode(pCbu->dstCSelf->db);
+
+        context->SetObjectVariable("__rxLastErrMsg", pCbu->lastErrMsg);
+
+        return rc;
+    }
+    else
+    {
+        sqlite3_backup_finish(pCbu->backup);
+
+        pCbu->backup      = NULL;
+        pCbu->finished    = true;
+        pCbu->lastErrMsg  = dbErrStringRx(context, pCbu->dstCSelf->db);
+        pCbu->lastErrCode = dbErrCode(pCbu->dstCSelf->db);
+
+        context->SetObjectVariable("__rxLastErrMsg", pCbu->lastErrMsg);
+
+        CRITICAL_SECTION_ENTER
+
+        pCbu->dstCSelf->isDestinationBU = false;
+
+        CRITICAL_SECTION_LEAVE
+
+        if ( pCbu->dstDbWasName && ! pCbu->saveDest )
+        {
+            context->SendMessage0(pCbu->dstRexxSelf, "CLOSE");
+        }
+
+        context->ReleaseGlobalReference(pCbu->dstRexxSelf);
+        context->ReleaseGlobalReference(pCbu->srcRexxSelf);
+    }
+
+    return rc;
+}
+
+
+/**
  *  Methods for the .ooSQLiteMutex class.
  */
 #define OOSQLITEMUTEX_CLASS    "ooSQLiteMutex"
@@ -5254,7 +5974,7 @@ RexxMethod4(RexxObjectPtr, oosqlmtx_init, int, type, OPTIONAL_POINTER, magic, OP
 
     if ( argumentExists(2) || argumentExists(3) )
     {
-        if ( argumentOmitted(1) || magic != (POINTER)MutexMagic )
+        if ( argumentOmitted(3) || magic != (POINTER)MutexMagic )
         {
             return tooManyArgsException(context->threadContext, 1);
         }
@@ -7113,10 +7833,21 @@ RexxRoutine2(RexxObjectPtr, oosqlNextStmt_rtn, POINTER, _db, OPTIONAL_RexxObject
 
 /** oosqlPrepare()
  *
- *  @param db  [required]  The database connection the statement is for.
  *
- *  @param sql [required]  The SQL statement(s) used for this prepared
- *                         statement.
+ *  @param db     [required] The database connection the statement is for.
+ *
+ *  @param sql    [required] The SQL statement(s) used for this prepared
+ *                           statement.
+ *
+ *  @param _tail  [optional] A stem object in which the unused port of the sql
+ *                           is returned. If sqlTail. is not omitted then
+ *                           sqlTail.oosqlite_sqlTail is set the first character
+ *                           past the end of the first SQL statement in sql.
+ *
+ *                           SQLite only compiles the first statement in sql, so
+ *                           sqlTail.oosqlite_sqlTail is set pointing to what
+ *                           remains uncompiled.  I.e. the portion past the
+ *                           first ';'
  *
  *
  *  @remarks  Testing has shown that if ppTail is not null when passed into
@@ -7137,21 +7868,20 @@ RexxRoutine3(POINTER, oosqlPrepare_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_Rex
 
     if ( argumentExists(3) )
     {
-        if ( ! context->IsOfType(_tail, "MutableBuffer") )
+        if ( ! context->IsOfType(_tail, "Stem") )
         {
-            wrongClassException(context->threadContext, 1, "MutableBuffer");
+            wrongClassException(context->threadContext, 3, "Stem");
             goto done_out;
         }
 
         ppTail = &tail;
-        context->SendMessage1(_tail, "SETBUFFERSIZE", TheZeroObj);
     }
 
     if ( sqlite3_prepare_v2(db, sql, (int)strlen(sql) + 1, &stmt, ppTail) == SQLITE_OK )
     {
         if ( tail != NULL )
         {
-            context->SendMessage1(_tail, "APPEND", context->String(tail));
+            context->SetStemElement((RexxStemObject)_tail, "OOSQLITE_SQLTAIL", context->String(tail));
         }
     }
 
@@ -7967,10 +8697,10 @@ REXX_METHOD_PROTOTYPE(oosqlconn_delStmt);
 // .ooSQLiteStmt
 REXX_METHOD_PROTOTYPE(oosqlstmt_init_cls);
 
-REXX_METHOD_PROTOTYPE(oosqlstmt_getErrMsg_atr);
-REXX_METHOD_PROTOTYPE(oosqlstmt_getErrMsg_atr);
-REXX_METHOD_PROTOTYPE(oosqlstmt_getInitCode_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_getFinalize_atr);
+REXX_METHOD_PROTOTYPE(oosqlstmt_getInitCode_atr);
+REXX_METHOD_PROTOTYPE(oosqlstmt_getLastErrCode_atr);
+REXX_METHOD_PROTOTYPE(oosqlstmt_getLastErrMsg_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_getRecordFormat_atr);
 REXX_METHOD_PROTOTYPE(oosqlstmt_setRecordFormat_atr);
 
@@ -8108,9 +8838,10 @@ RexxMethodEntry ooSQLite_methods[] = {
     // .ooSQLiteStmt
     REXX_METHOD(oosqlstmt_init_cls,              oosqlstmt_init_cls),
 
-    REXX_METHOD(oosqlstmt_getErrMsg_atr,         oosqlstmt_getErrMsg_atr),
-    REXX_METHOD(oosqlstmt_getInitCode_atr,       oosqlstmt_getInitCode_atr),
     REXX_METHOD(oosqlstmt_getFinalized_atr,      oosqlstmt_getFinalized_atr),
+    REXX_METHOD(oosqlstmt_getInitCode_atr,       oosqlstmt_getInitCode_atr),
+    REXX_METHOD(oosqlstmt_getLastErrCode_atr,    oosqlstmt_getLastErrCode_atr),
+    REXX_METHOD(oosqlstmt_getLastErrMsg_atr,     oosqlstmt_getLastErrMsg_atr),
     REXX_METHOD(oosqlstmt_getRecordFormat_atr,   oosqlconn_getRecordFormat_atr),
     REXX_METHOD(oosqlstmt_setRecordFormat_atr,   oosqlconn_setRecordFormat_atr),
 
