@@ -197,11 +197,14 @@
 ::attribute lastErrMsg get external "LIBRARY oosqlite oosqlbu_getLastErrMsg_atr"
 ::attribute pageCount get unguarded external "LIBRARY oosqlite oosqlbu_getPageCount_atr"
 ::attribute remaining get unguarded external "LIBRARY oosqlite oosqlbu_getRemaining_atr"
+::attribute saveDestConn get unguarded external "LIBRARY oosqlite oosqlbu_getSaveDestConn_atr"
+::attribute saveDestConn set unguarded external "LIBRARY oosqlite oosqlbu_setSaveDestConn_atr"
 
 ::method init external "LIBRARY oosqlite oosqlbu_init"
 ::method uninit external "LIBRARY oosqlite oosqlbu_uninit"
 
 ::method finish external "LIBRARY oosqlite oosqlbu_finish"
+::method getDestConn external "LIBRARY oosqlite oosqlbu_getDestConn"
 ::method step external "LIBRARY oosqlite oosqlbu_step"
 
 

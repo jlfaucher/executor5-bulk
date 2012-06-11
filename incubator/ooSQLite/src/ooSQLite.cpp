@@ -285,6 +285,29 @@ static inline int dbErrCode(sqlite3 *db)
 }
 
 /**
+ * Checks if the Rexx object is the number SQLITE_OK, which is 0.
+ *
+ * @param c
+ * @param _rc
+ *
+ * @return True if _rc is the nubmer 0, otherwise false.
+ */
+static inline bool objIsSqliteOK(RexxThreadContext *c, RexxObjectPtr _rc)
+{
+    int rc = SQLITE_MISUSE;
+    if ( c->Int32(_rc, &rc) )
+    {
+        return (rc == SQLITE_OK) ? true : false;
+    }
+    return false;
+}
+static inline bool objIsSqliteOK(RexxMethodContext *c, RexxObjectPtr _rc)
+{
+    return objIsSqliteOK(c->threadContext, _rc);
+}
+
+
+/**
  * There are cases where the return to Rexx can be a number, or an error code.
  * The user can not distinguish if the number is an error or not.
  *
@@ -1692,6 +1715,19 @@ static inline pCooSQLiteBackup requiredBuCSelf(RexxMethodContext *c, void *pCSel
 }
 
 
+/**
+ * Returns the backup object's CSelf or null.  If the backup has been finished
+ * or the backup ojbect has not been properly instantiated then a syntax
+ * condition is raised.
+ *
+ * @param c
+ * @param pCSelf
+ *
+ * @return pCooSQLiteBackup
+ *
+ * @note  We don't check pCbu->finished here because at finish pCbu->backup is
+ *        set to null.
+ */
 static inline pCooSQLiteBackup requiredBackup(RexxMethodContext *c, void *pCSelf)
 {
     pCooSQLiteBackup pCbu = requiredBuCSelf(c, pCSelf);
@@ -3144,7 +3180,14 @@ RexxMethod4(RexxObjectPtr, oosqlconn_busyHandler, RexxObjectPtr, callbackObj, OP
         return context->WholeNumber(SQLITE_MISUSE);
     }
 
-    return doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, busyHandler, 0);
+    RexxObjectPtr rc = doCallbackSetup(context, pConn->db, callbackObj, mthName, userData, busyHandler, 0);
+
+    if ( objIsSqliteOK(context, rc) )
+    {
+        pConn->hasBusyHandler = (callbackObj == TheNilObj) ? false : true;
+    }
+
+    return rc;
 }
 
 /** ooSQLiteConnection::busyTimeOut()
@@ -3164,6 +3207,8 @@ RexxMethod2(int, oosqlconn_busyTimeOut, int, ms, CSELF, pCSelf)
 
     int rc = sqlite3_busy_timeout(pConn->db, ms);
     cleanupCallback(context, busyHandler);
+
+    pConn->hasBusyHandler = (ms > 0) ? true : false;
 
     return rc;
 }
@@ -5315,11 +5360,169 @@ RexxMethod1(RexxObjectPtr, oosqlstmt_value, CSELF, pCSelf)
 #define OOSQLITEBACKUP_CLASS    "ooSQLiteBackup"
 
 
+/**
+ * Checks if the destination database is in memory, and if so sets the page size
+ * of the in memory database to the same page size as the destination database.
+ *
+ * This is a special purpose function called to protect against one of the
+ * possible reasons for a backup to fail, backing up to an in memory database
+ * with the wrong page size.
+ *
+ * When called for that purpose, the in memory database will be empty and its
+ * page size can be changed to match the source database.
+ *
+ * @param dbDst
+ * @param dbSrc
+ * @param dstName
+ *
+ * @return bool
+ *
+ * @remarks  Rather than get the page size from both databases, we just get the
+ *           destination database page size and unconditionally set the in
+ *           memory database page size to that value.  Setting an in memory,
+ *           empty, database page size should be very quick and error proof.
+ *
+ *           This should not fail, unless the engine can not get a lock on the
+ *           source database to query its page size.  The Rexx user has to be
+ *           the responsible party for the source database and should have set a
+ *           busy handler.  If there is not a busy hancler, we'll try a couple
+ *           of times if we get busy and then give up.
+ *
+ *           If this does fail, i.e., false is returned, then the error should
+ *           be with the source database and dbSrc can be used to get the error
+ *           message and code.
+ */
+bool buCheckPageSize(pCooSQLiteConn dstConn, pCooSQLiteConn srcConn, CSTRING dstName)
+{
+    if ( strcmp(dstName, ":memory:") )
+    {
+        return true;
+    }
+
+    sqlite3_stmt *stmt;
+    int           srcSize = 0;
+
+    int rc = sqlite3_prepare_v2(srcConn->db, "PRAGMA page_size;", -1, &stmt, NULL);
+    if ( rc != SQLITE_OK )
+    {
+        return false;
+    }
+
+    rc = sqlite3_step(stmt);
+    if ( rc == SQLITE_ROW )
+    {
+        srcSize = sqlite3_column_bytes(stmt, 0);
+    }
+    else if ( rc == SQLITE_BUSY && ! srcConn->hasBusyHandler)
+    {
+        for ( int i = 0; i < 4; i++ )
+        {
+            sqlite3_reset(stmt);
+            sqlite3_sleep(250);
+
+            rc = sqlite3_step(stmt);
+            if ( rc == SQLITE_ROW )
+            {
+                srcSize = sqlite3_column_bytes(stmt, 0);
+                break;
+            }
+            else if ( rc != SQLITE_BUSY )
+            {
+                break;
+            }
+        }
+    }
+
+    sqlite3_finalize(stmt);
+    if ( srcSize == 0 )
+    {
+        return false;
+    }
+
+    char buf[256];
+    snprintf(buf, sizeof(buf), "PRAGMA page_size = %d;", srcSize);
+
+    // We're going to just assume this works.  The only reason it wouldn't, as
+    // far as I can tell would be that the SQL was malformed.  Since it is hard
+    // coded, once it is debugged, it should always be correct.
+    sqlite3_prepare_v2(dstConn->db, buf, -1, &stmt, NULL);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    return true;
+}
+
+/**
+ * Takes care of the internal details of doing a finish.  This is used for both
+ * the finish() method and when finish is done automatically for the user from
+ * the step() method.
+ *
+ * @param c
+ * @param pCbu
+ *
+ * @return int
+ *
+ * @remarks  Note that a global reference is held on the Rexx self of the
+ *           destination database connection.  We can't release that reference
+ *           here if saveDest is true.  Instead it must be released in uninit,
+ *           or when the user requests it.
+ *
+ *           On the other hand, until the global reference is released we can be
+ *           sure the destionation object, (and its CSelf,) is valid.
+ */
+int buFinish(RexxMethodContext *c, pCooSQLiteBackup pCbu)
+{
+    int rc = sqlite3_backup_finish(pCbu->backup);
+
+    pCbu->backup      = NULL;
+    pCbu->finished    = true;
+    pCbu->lastErrMsg  = dbErrStringRx(c, pCbu->dstCSelf->db);
+    pCbu->lastErrCode = dbErrCode(pCbu->dstCSelf->db);
+
+    c->SetObjectVariable("__rxLastErrMsg", pCbu->lastErrMsg);
+
+    CRITICAL_SECTION_ENTER
+
+    pCbu->dstCSelf->isDestinationBU = false;
+
+    CRITICAL_SECTION_LEAVE
+
+    if ( pCbu->dstDbWasName && ! pCbu->saveDest )
+    {
+        c->SendMessage0(pCbu->dstRexxSelf, "CLOSE");
+
+        c->ReleaseGlobalReference(pCbu->dstRexxSelf);
+        pCbu->dstRexxSelf = NULLOBJECT;
+    }
+
+    c->ReleaseGlobalReference(pCbu->srcRexxSelf);
+
+    return rc;
+}
+
+
+/**
+ * Helper function for ooSQLiteBackup::init().  Takes care of the details of
+ * getting the database connection CSelf for either the detination of source
+ * databases for the backup.
+ *
+ * @author Administrator (6/11/2012)
+ *
+ * @param context
+ * @param pCbu
+ * @param rxDB
+ * @param dbName
+ * @param pos
+ *
+ * @return pCooSQLiteConn
+ *
+ * @remarks  We derive which database is called for, destionation or source,
+ *           from the 'pos' argument.  The source database argument is the first
+ *           arg.
+ */
 static pCooSQLiteConn buGetCSelfDB(RexxMethodContext *context, pCooSQLiteBackup pCbu, RexxObjectPtr rxDB,
                                    CSTRING *dbName, size_t pos)
 {
-    bool isSrcDB = (pos == 1);
-
     pCooSQLiteConn pConn = requiredDBConnectionArg(context, rxDB, pos);
     if ( pConn == NULL )
     {
@@ -5362,105 +5565,8 @@ static pCooSQLiteConn buGetCSelfDB(RexxMethodContext *context, pCooSQLiteBackup 
 
 
 /**
- * Checks if the destination database is in memory, and if so sets the page size
- * of the in memory database to the same page size as the destination database.
- *
- * This is a special purpose function called to protect against one of the
- * possible reasons for a backup to fail, backing up to an in memory database
- * with the wrong page size.
- *
- * When called for that purpose, the in memory database will be empty and its
- * page size can be changed to match the source database.
- *
- * @param dbDst
- * @param dbSrc
- * @param dstName
- *
- * @return bool
- *
- * @remarks  Rather than get the page size from both databases, we just get the
- *           destination database page size and unconditionally set the in
- *           memory database page size to that value.  Setting an in memory,
- *           empty, database page size should be very quick and error proof.
- *
- *           This should not fail, unless the engine can not get a lock on the
- *           source database to query its page size.  The Rexx user has to be
- *           the responsible party for the source database and should have set a
- *           busy handler.  But, we'll try a couple of times if we get busy and
- *           then give up.
- *
- *           If this does fail, i.e., false is returned, then the error should
- *           be with the source database and dbSrc can be used to get the error
- *           message and code.
- */
-bool buCheckPageSize(sqlite3 *dbDst, sqlite3* dbSrc, CSTRING dstName)
-{
-    if ( strcmp(dstName, ":memory") )
-    {
-        return true;
-    }
-
-    sqlite3_stmt *stmt;
-    int           srcSize = 0;
-
-    int rc = sqlite3_prepare_v2(dbSrc, "PRAGMA page_size;", -1, &stmt, NULL);
-    if ( rc != SQLITE_OK )
-    {
-        return false;
-    }
-
-    rc = sqlite3_step(stmt);
-    if ( rc == SQLITE_ROW )
-    {
-        srcSize = sqlite3_column_bytes(stmt, 0);
-    }
-    else if ( rc == SQLITE_BUSY)
-    {
-        for ( int i = 0; i < 4; i++ )
-        {
-            sqlite3_reset(stmt);
-            sqlite3_sleep(250);
-
-            rc = sqlite3_step(stmt);
-            if ( rc == SQLITE_ROW )
-            {
-                srcSize = sqlite3_column_bytes(stmt, 0);
-                break;
-            }
-            else if ( rc != SQLITE_BUSY )
-            {
-                break;
-            }
-        }
-    }
-
-    sqlite3_finalize(stmt);
-    if ( srcSize == 0 )
-    {
-        return false;
-    }
-
-    char buf[256];
-    snprintf(buf, sizeof(buf), "PRAGMA page_size = %d;", srcSize);
-
-    if ( rc != SQLITE_OK )
-    {
-        return false;
-    }
-
-    // We're going to just assume this works.  The only reason it wouldn't, as
-    // far as I can tell would be that the SQL was malformed.  Since it is hard
-    // coded, once it is debugged, it should always be correct.
-    sqlite3_prepare_v2(dbDst, buf, -1, &stmt, NULL);
-    sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
-
-    return true;
-}
-
-/**
- * When the ooSQLiteBackup::init() fails, sets the common failure state
- * variables in the ooSQLiteBackup CSelf.
+ * Sets the common failure state variables in the ooSQLiteBackup CSelf when
+ * ooSQLiteBackup::init() fails.
  *
  * @param c
  * @param pCbu
@@ -5478,27 +5584,6 @@ void buSetInitErr(RexxMethodContext *c, pCooSQLiteBackup pCbu, RexxStringObject 
     c->SetObjectVariable("__rxLastErrMsg", pCbu->lastErrMsg);
 }
 
-/** ooSQLiteBackup::destinationConnection  [attribute get]
- *
- *  Holds the saved destination database connection object, iff the destination
- *  database was specified as a file name *and* the user set the saveDestConn
- *  attribute to true, *and* the backup has been finished.  Otherwise returns
- *  .nil.
- */
-RexxMethod1(RexxObjectPtr, oosqlbu_getDestinationConnection_atr, CSELF, pCSelf)
-{
-    pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
-    if ( pCbu == NULL )
-    {
-        return NULLOBJECT;
-    }
-
-    if ( pCbu->dstDbWasName && pCbu->finished && pCbu->saveDest )
-    {
-        return pCbu->dstRexxSelf;
-    }
-    return TheNilObj;
-}
 
 /** ooSQLiteBackup::finished  [attribute get]
  *
@@ -5741,7 +5826,11 @@ RexxMethod6(RexxObjectPtr, oosqlbu_init, RexxObjectPtr, srcDB, RexxObjectPtr, ds
             return NULLOBJECT;
         }
 
-        if ( ! buCheckPageSize(pConnDst->db, pConnSrc->db, dstFileName) )
+        // We want a busy timout on the database connection we just instantiated.
+        sqlite3_busy_timeout(pConnDst->db, 3000);
+        pConnDst->hasBusyHandler = true;
+
+        if ( ! buCheckPageSize(pConnDst, pConnSrc, dstFileName) )
         {
             buSetInitErr(context, pCbu, dbErrStringRx(context, pConnSrc->db), dbErrCode(pConnSrc->db));
             return NULLOBJECT;
@@ -5777,8 +5866,8 @@ RexxMethod6(RexxObjectPtr, oosqlbu_init, RexxObjectPtr, srcDB, RexxObjectPtr, ds
         pCbu->dstCSelf = pConnDst;
         pCbu->srcCSelf = pConnSrc;
 
-        pCbu->dstRexxSelf = c->RequestGlobalReference(pConnDst->rexxSelf);
         pCbu->srcRexxSelf = c->RequestGlobalReference(pConnSrc->rexxSelf);
+        pCbu->dstRexxSelf = c->RequestGlobalReference(pConnDst->rexxSelf);
 
         pCbu->lastErrMsg = context->String("no error");
         context->SetObjectVariable("__rxErrMsg", pCbu->lastErrMsg);
@@ -5794,29 +5883,29 @@ RexxMethod1(RexxObjectPtr, oosqlbu_uninit, CSELF, pCSelf)
     {
         pCooSQLiteBackup pCbu = (pCooSQLiteBackup)pCSelf;
 
-#if 0
-
 #ifdef OOSQLDBG
-        // Start HERE
-        printf("ooSQLiteBackup::uninit() backup=%p finished=%d\n", pCbu->backup, pCbu->finished);
+        printf("ooSQLiteBackup::uninit() backup=%p finished=%d dstRexxSelf=%p\n",
+               pCbu->backup, pCbu->finished, pCbu->dstRexxSelf);
 #endif
 
-        CRITICAL_SECTION_ENTER
-
-        if ( pCbu->backup != NULL && pCstmt->db != NULL )
+        if ( pCbu->backup != NULL )
         {
-            context->SendMessage1(pCstmt->db, "DELSTMT", pCstmt->rexxSelf);
+            sqlite3_backup_finish(pCbu->backup);
 
-            sqlite3_finalize(pCstmt->stmt);
+            if ( ! pCbu->finished )
+            {
+                context->ReleaseGlobalReference(pCbu->dstRexxSelf);
+                context->ReleaseGlobalReference(pCbu->srcRexxSelf);
+            }
 
-            pCstmt->stmt      = NULL;
-            pCstmt->db        = NULL;
-            pCstmt->tail      = NULL;
-            pCstmt->finalized = true;
+            pCbu->backup   = NULL;
+            pCbu->finished = true;
         }
-
-        CRITICAL_SECTION_LEAVE
-#endif
+        else if ( pCbu->dstRexxSelf != NULLOBJECT )
+        {
+            context->ReleaseGlobalReference(pCbu->dstRexxSelf);
+            pCbu->dstRexxSelf = NULLOBJECT;
+        }
     }
 
     return TheZeroObj;
@@ -5834,11 +5923,31 @@ RexxMethod1(int, oosqlbu_finish, CSELF, pCSelf)
         return SQLITE_MISUSE;
     }
 
-    int rc = sqlite3_backup_finish(pCbu->backup);
-
-    return SQLITE_OK;
+    return buFinish(context, pCbu);
 }
 
+
+/** ooSQLiteBackup::getDestinationConnection
+ *
+ *  Holds the saved destination database connection object, iff the destination
+ *  database was specified as a file name *and* the user set the saveDestConn
+ *  attribute to true, *and* the backup has been finished. Otherwise returns
+ *  .nil.
+ */
+RexxMethod1(RexxObjectPtr, oosqlbu_getDestConn, CSELF, pCSelf)
+{
+    pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
+    if ( pCbu == NULL )
+    {
+        return NULLOBJECT;
+    }
+
+    if ( pCbu->dstDbWasName && pCbu->finished && pCbu->saveDest )
+    {
+        return pCbu->dstRexxSelf;
+    }
+    return TheNilObj;
+}
 
 /** ooSQLiteBackup::step()
  *
@@ -5882,32 +5991,12 @@ RexxMethod2(int, oosqlbu_step, int, pages, CSELF, pCSelf)
     }
     else
     {
-        sqlite3_backup_finish(pCbu->backup);
-
-        pCbu->backup      = NULL;
-        pCbu->finished    = true;
-        pCbu->lastErrMsg  = dbErrStringRx(context, pCbu->dstCSelf->db);
-        pCbu->lastErrCode = dbErrCode(pCbu->dstCSelf->db);
-
-        context->SetObjectVariable("__rxLastErrMsg", pCbu->lastErrMsg);
-
-        CRITICAL_SECTION_ENTER
-
-        pCbu->dstCSelf->isDestinationBU = false;
-
-        CRITICAL_SECTION_LEAVE
-
-        if ( pCbu->dstDbWasName && ! pCbu->saveDest )
-        {
-            context->SendMessage0(pCbu->dstRexxSelf, "CLOSE");
-        }
-
-        context->ReleaseGlobalReference(pCbu->dstRexxSelf);
-        context->ReleaseGlobalReference(pCbu->srcRexxSelf);
+        buFinish(context, pCbu);
     }
 
     return rc;
 }
+
 
 
 /**
@@ -8744,6 +8833,23 @@ REXX_METHOD_PROTOTYPE(oosqlstmt_stmtReadonly);
 REXX_METHOD_PROTOTYPE(oosqlstmt_stmtStatus);
 REXX_METHOD_PROTOTYPE(oosqlstmt_value);
 
+// .ooSQLiteBackup
+REXX_METHOD_PROTOTYPE(oosqlbu_getFinished_atr);
+REXX_METHOD_PROTOTYPE(oosqlbu_getInitCode_atr);
+REXX_METHOD_PROTOTYPE(oosqlbu_getLastErrCode_atr);
+REXX_METHOD_PROTOTYPE(oosqlbu_getLastErrMsg_atr);
+REXX_METHOD_PROTOTYPE(oosqlbu_getPageCount_atr);
+REXX_METHOD_PROTOTYPE(oosqlbu_getRemaining_atr);
+REXX_METHOD_PROTOTYPE(oosqlbu_getSaveDestConn_atr);
+REXX_METHOD_PROTOTYPE(oosqlbu_setSaveDestConn_atr);
+
+REXX_METHOD_PROTOTYPE(oosqlbu_init);
+REXX_METHOD_PROTOTYPE(oosqlbu_uninit);
+
+REXX_METHOD_PROTOTYPE(oosqlbu_finish);
+REXX_METHOD_PROTOTYPE(oosqlbu_getDestConn);
+REXX_METHOD_PROTOTYPE(oosqlbu_step);
+
 // .ooSQLiteMutex
 REXX_METHOD_PROTOTYPE(oosqlmtx_getClosed_atr);
 REXX_METHOD_PROTOTYPE(oosqlmtx_getIsNull_atr);
@@ -8769,140 +8875,157 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosqlC_merge_cls,      oosqlC_merge_cls),
 
     // .ooSQLite
-    REXX_METHOD(oosql_init_cls,                oosql_init_cls),
-    REXX_METHOD(oosql_getRecordFormat_atr_cls, oosql_getRecordFormat_atr_cls),
-    REXX_METHOD(oosql_setRecordFormat_atr_cls, oosql_setRecordFormat_atr_cls),
-    REXX_METHOD(oosql_compileOptionGet_cls,    oosql_compileOptionGet_cls),
-    REXX_METHOD(oosql_compileOptionUsed_cls,   oosql_compileOptionUsed_cls),
-    REXX_METHOD(oosql_complete_cls,            oosql_complete_cls),
-    REXX_METHOD(oosql_libVersion_cls,          oosql_libVersion_cls),
-    REXX_METHOD(oosql_libVersionNumber_cls,    oosql_libVersionNumber_cls),
-    REXX_METHOD(oosql_memoryUsed_cls,          oosql_memoryUsed_cls),
-    REXX_METHOD(oosql_memoryHighWater_cls,     oosql_memoryHighWater_cls),
-    REXX_METHOD(oosql_releaseMemory_cls,       oosql_releaseMemory_cls),
-    REXX_METHOD(oosql_softHeapLimit64_cls,     oosql_softHeapLimit64_cls),
-    REXX_METHOD(oosql_sourceID_cls,            oosql_sourceID_cls),
-    REXX_METHOD(oosql_sqlite3Version_cls,      oosql_sqlite3Version_cls),
-    REXX_METHOD(oosql_status_cls,              oosql_status_cls),
-    REXX_METHOD(oosql_threadSafe_cls,          oosql_threadSafe_cls),
-    REXX_METHOD(oosql_version_cls,             oosql_version_cls),
+    REXX_METHOD(oosql_init_cls,                       oosql_init_cls),
+    REXX_METHOD(oosql_getRecordFormat_atr_cls,        oosql_getRecordFormat_atr_cls),
+    REXX_METHOD(oosql_setRecordFormat_atr_cls,        oosql_setRecordFormat_atr_cls),
+    REXX_METHOD(oosql_compileOptionGet_cls,           oosql_compileOptionGet_cls),
+    REXX_METHOD(oosql_compileOptionUsed_cls,          oosql_compileOptionUsed_cls),
+    REXX_METHOD(oosql_complete_cls,                   oosql_complete_cls),
+    REXX_METHOD(oosql_libVersion_cls,                 oosql_libVersion_cls),
+    REXX_METHOD(oosql_libVersionNumber_cls,           oosql_libVersionNumber_cls),
+    REXX_METHOD(oosql_memoryUsed_cls,                 oosql_memoryUsed_cls),
+    REXX_METHOD(oosql_memoryHighWater_cls,            oosql_memoryHighWater_cls),
+    REXX_METHOD(oosql_releaseMemory_cls,              oosql_releaseMemory_cls),
+    REXX_METHOD(oosql_softHeapLimit64_cls,            oosql_softHeapLimit64_cls),
+    REXX_METHOD(oosql_sourceID_cls,                   oosql_sourceID_cls),
+    REXX_METHOD(oosql_sqlite3Version_cls,             oosql_sqlite3Version_cls),
+    REXX_METHOD(oosql_status_cls,                     oosql_status_cls),
+    REXX_METHOD(oosql_threadSafe_cls,                 oosql_threadSafe_cls),
+    REXX_METHOD(oosql_version_cls,                    oosql_version_cls),
 
-    REXX_METHOD(oosql_test_cls,                oosql_test_cls),
+    REXX_METHOD(oosql_test_cls,                       oosql_test_cls),
 
     // .ooSQLiteConnection
-    REXX_METHOD(oosqlconn_init_cls,              oosqlconn_init_cls),
+    REXX_METHOD(oosqlconn_init_cls,                   oosqlconn_init_cls),
 
-    REXX_METHOD(oosqlconn_getClosed_atr,         oosqlconn_getClosed_atr),
-    REXX_METHOD(oosqlconn_getFileName_atr,       oosqlconn_getFileName_atr),
-    REXX_METHOD(oosqlconn_getInitCode_atr,       oosqlconn_getInitCode_atr),
-    REXX_METHOD(oosqlconn_getLastErrCode_atr,    oosqlconn_getLastErrCode_atr),
-    REXX_METHOD(oosqlconn_getLastErrMsg_atr,     oosqlconn_getLastErrMsg_atr),
-    REXX_METHOD(oosqlconn_getRecordFormat_atr,   oosqlconn_getRecordFormat_atr),
-    REXX_METHOD(oosqlconn_setRecordFormat_atr,   oosqlconn_setRecordFormat_atr),
+    REXX_METHOD(oosqlconn_getClosed_atr,              oosqlconn_getClosed_atr),
+    REXX_METHOD(oosqlconn_getFileName_atr,            oosqlconn_getFileName_atr),
+    REXX_METHOD(oosqlconn_getInitCode_atr,            oosqlconn_getInitCode_atr),
+    REXX_METHOD(oosqlconn_getLastErrCode_atr,         oosqlconn_getLastErrCode_atr),
+    REXX_METHOD(oosqlconn_getLastErrMsg_atr,          oosqlconn_getLastErrMsg_atr),
+    REXX_METHOD(oosqlconn_getRecordFormat_atr,        oosqlconn_getRecordFormat_atr),
+    REXX_METHOD(oosqlconn_setRecordFormat_atr,        oosqlconn_setRecordFormat_atr),
 
-    REXX_METHOD(oosqlconn_init,                  oosqlconn_init),
-    REXX_METHOD(oosqlconn_uninit,                oosqlconn_uninit),
+    REXX_METHOD(oosqlconn_init,                       oosqlconn_init),
+    REXX_METHOD(oosqlconn_uninit,                     oosqlconn_uninit),
 
-    REXX_METHOD(oosqlconn_busyHandler,           oosqlconn_busyHandler),
-    REXX_METHOD(oosqlconn_busyTimeOut,           oosqlconn_busyTimeOut),
-    REXX_METHOD(oosqlconn_changes,               oosqlconn_changes),
-    REXX_METHOD(oosqlconn_close,                 oosqlconn_close),
-    REXX_METHOD(oosqlconn_commitHook,            oosqlconn_commitHook),
-    REXX_METHOD(oosqlconn_dbFileName,            oosqlconn_dbFileName),
-    REXX_METHOD(oosqlconn_dbMutex,               oosqlconn_dbMutex),
-    REXX_METHOD(oosqlconn_dbReadOnly,            oosqlconn_dbReadOnly),
-    REXX_METHOD(oosqlconn_dbReleaseMemory,       oosqlconn_dbReleaseMemory),
-    REXX_METHOD(oosqlconn_dbStatus,              oosqlconn_dbStatus),
-    REXX_METHOD(oosqlconn_errCode,               oosqlconn_errCode),
-    REXX_METHOD(oosqlconn_errMsg,                oosqlconn_errMsg),
-    REXX_METHOD(oosqlconn_exec,                  oosqlconn_exec),
-    REXX_METHOD(oosqlconn_extendedResultCodes,   oosqlconn_extendedResultCodes),
-    REXX_METHOD(oosqlconn_getAutoCommit,         oosqlconn_getAutoCommit),
-    REXX_METHOD(oosqlconn_interrupt,             oosqlconn_interrupt),
-    REXX_METHOD(oosqlconn_lastInsertRowID,       oosqlconn_lastInsertRowID),
-    REXX_METHOD(oosqlconn_limit,                 oosqlconn_limit),
-    REXX_METHOD(oosqlconn_nextStmt,              oosqlconn_nextStmt),
-    REXX_METHOD(oosqlconn_pragma,                oosqlconn_pragma),
-    REXX_METHOD(oosqlconn_profile,               oosqlconn_profile),
-    REXX_METHOD(oosqlconn_progressHandler,       oosqlconn_progressHandler),
-    REXX_METHOD(oosqlconn_rollbackHook,          oosqlconn_rollbackHook),
-    REXX_METHOD(oosqlconn_setAuthorizer,         oosqlconn_setAuthorizer),
-    REXX_METHOD(oosqlconn_tableColumnMetadata,   oosqlconn_tableColumnMetadata),
-    REXX_METHOD(oosqlconn_totalChanges,          oosqlconn_totalChanges),
-    REXX_METHOD(oosqlconn_trace,                 oosqlconn_trace),
-    REXX_METHOD(oosqlconn_updateHook,            oosqlconn_updateHook),
+    REXX_METHOD(oosqlconn_busyHandler,                oosqlconn_busyHandler),
+    REXX_METHOD(oosqlconn_busyTimeOut,                oosqlconn_busyTimeOut),
+    REXX_METHOD(oosqlconn_changes,                    oosqlconn_changes),
+    REXX_METHOD(oosqlconn_close,                      oosqlconn_close),
+    REXX_METHOD(oosqlconn_commitHook,                 oosqlconn_commitHook),
+    REXX_METHOD(oosqlconn_dbFileName,                 oosqlconn_dbFileName),
+    REXX_METHOD(oosqlconn_dbMutex,                    oosqlconn_dbMutex),
+    REXX_METHOD(oosqlconn_dbReadOnly,                 oosqlconn_dbReadOnly),
+    REXX_METHOD(oosqlconn_dbReleaseMemory,            oosqlconn_dbReleaseMemory),
+    REXX_METHOD(oosqlconn_dbStatus,                   oosqlconn_dbStatus),
+    REXX_METHOD(oosqlconn_errCode,                    oosqlconn_errCode),
+    REXX_METHOD(oosqlconn_errMsg,                     oosqlconn_errMsg),
+    REXX_METHOD(oosqlconn_exec,                       oosqlconn_exec),
+    REXX_METHOD(oosqlconn_extendedResultCodes,        oosqlconn_extendedResultCodes),
+    REXX_METHOD(oosqlconn_getAutoCommit,              oosqlconn_getAutoCommit),
+    REXX_METHOD(oosqlconn_interrupt,                  oosqlconn_interrupt),
+    REXX_METHOD(oosqlconn_lastInsertRowID,            oosqlconn_lastInsertRowID),
+    REXX_METHOD(oosqlconn_limit,                      oosqlconn_limit),
+    REXX_METHOD(oosqlconn_nextStmt,                   oosqlconn_nextStmt),
+    REXX_METHOD(oosqlconn_pragma,                     oosqlconn_pragma),
+    REXX_METHOD(oosqlconn_profile,                    oosqlconn_profile),
+    REXX_METHOD(oosqlconn_progressHandler,            oosqlconn_progressHandler),
+    REXX_METHOD(oosqlconn_rollbackHook,               oosqlconn_rollbackHook),
+    REXX_METHOD(oosqlconn_setAuthorizer,              oosqlconn_setAuthorizer),
+    REXX_METHOD(oosqlconn_tableColumnMetadata,        oosqlconn_tableColumnMetadata),
+    REXX_METHOD(oosqlconn_totalChanges,               oosqlconn_totalChanges),
+    REXX_METHOD(oosqlconn_trace,                      oosqlconn_trace),
+    REXX_METHOD(oosqlconn_updateHook,                 oosqlconn_updateHook),
 
-    REXX_METHOD(oosqlconn_putStmt,               oosqlconn_putStmt),
-    REXX_METHOD(oosqlconn_delStmt,               oosqlconn_delStmt),
+    REXX_METHOD(oosqlconn_putStmt,                    oosqlconn_putStmt),
+    REXX_METHOD(oosqlconn_delStmt,                    oosqlconn_delStmt),
 
     // .ooSQLiteStmt
-    REXX_METHOD(oosqlstmt_init_cls,              oosqlstmt_init_cls),
+    REXX_METHOD(oosqlstmt_init_cls,                   oosqlstmt_init_cls),
 
-    REXX_METHOD(oosqlstmt_getFinalized_atr,      oosqlstmt_getFinalized_atr),
-    REXX_METHOD(oosqlstmt_getInitCode_atr,       oosqlstmt_getInitCode_atr),
-    REXX_METHOD(oosqlstmt_getLastErrCode_atr,    oosqlstmt_getLastErrCode_atr),
-    REXX_METHOD(oosqlstmt_getLastErrMsg_atr,     oosqlstmt_getLastErrMsg_atr),
-    REXX_METHOD(oosqlstmt_getRecordFormat_atr,   oosqlconn_getRecordFormat_atr),
-    REXX_METHOD(oosqlstmt_setRecordFormat_atr,   oosqlconn_setRecordFormat_atr),
+    REXX_METHOD(oosqlstmt_getFinalized_atr,           oosqlstmt_getFinalized_atr),
+    REXX_METHOD(oosqlstmt_getInitCode_atr,            oosqlstmt_getInitCode_atr),
+    REXX_METHOD(oosqlstmt_getLastErrCode_atr,         oosqlstmt_getLastErrCode_atr),
+    REXX_METHOD(oosqlstmt_getLastErrMsg_atr,          oosqlstmt_getLastErrMsg_atr),
+    REXX_METHOD(oosqlstmt_getRecordFormat_atr,        oosqlconn_getRecordFormat_atr),
+    REXX_METHOD(oosqlstmt_setRecordFormat_atr,        oosqlconn_setRecordFormat_atr),
 
-    REXX_METHOD(oosqlstmt_init,                  oosqlstmt_init),
-    REXX_METHOD(oosqlstmt_uninit,                oosqlstmt_uninit),
+    REXX_METHOD(oosqlstmt_init,                       oosqlstmt_init),
+    REXX_METHOD(oosqlstmt_uninit,                     oosqlstmt_uninit),
 
-    REXX_METHOD(oosqlstmt_bindBlob,              oosqlstmt_bindBlob),
-    REXX_METHOD(oosqlstmt_bindDouble,            oosqlstmt_bindDouble),
-    REXX_METHOD(oosqlstmt_bindInt,               oosqlstmt_bindInt),
-    REXX_METHOD(oosqlstmt_bindInt64,             oosqlstmt_bindInt64),
-    REXX_METHOD(oosqlstmt_bindNull,              oosqlstmt_bindNull),
-    REXX_METHOD(oosqlstmt_bindParameterCount,    oosqlstmt_bindParameterCount),
-    REXX_METHOD(oosqlstmt_bindParameterIndex,    oosqlstmt_bindParameterIndex),
-    REXX_METHOD(oosqlstmt_bindParameterName,     oosqlstmt_bindParameterName),
-    REXX_METHOD(oosqlstmt_bindText,              oosqlstmt_bindText),
-    REXX_METHOD(oosqlstmt_bindValue,             oosqlstmt_bindValue),
-    REXX_METHOD(oosqlstmt_bindZeroBlob,          oosqlstmt_bindZeroBlob),
-    REXX_METHOD(oosqlstmt_clearBindings,         oosqlstmt_clearBindings),
-    REXX_METHOD(oosqlstmt_columnBlob,            oosqlstmt_columnBlob),
-    REXX_METHOD(oosqlstmt_columnBytes,           oosqlstmt_columnBytes),
-    REXX_METHOD(oosqlstmt_columnCount,           oosqlstmt_columnCount),
-    REXX_METHOD(oosqlstmt_columnDatabaseName,    oosqlstmt_columnDatabaseName),
-    REXX_METHOD(oosqlstmt_columnDeclType,        oosqlstmt_columnDeclType),
-    REXX_METHOD(oosqlstmt_columnDouble,          oosqlstmt_columnDouble),
-    REXX_METHOD(oosqlstmt_columnIndex,           oosqlstmt_columnIndex),
-    REXX_METHOD(oosqlstmt_columnInt,             oosqlstmt_columnInt),
-    REXX_METHOD(oosqlstmt_columnInt64,           oosqlstmt_columnInt64),
-    REXX_METHOD(oosqlstmt_columnName,            oosqlstmt_columnName),
-    REXX_METHOD(oosqlstmt_columnOriginName,      oosqlstmt_columnOriginName),
-    REXX_METHOD(oosqlstmt_columnTableName,       oosqlstmt_columnTableName),
-    REXX_METHOD(oosqlstmt_columnText,            oosqlstmt_columnText),
-    REXX_METHOD(oosqlstmt_columnType,            oosqlstmt_columnType),
-    REXX_METHOD(oosqlstmt_columnValue,           oosqlstmt_columnValue),
-    REXX_METHOD(oosqlstmt_dataCount,             oosqlstmt_dataCount),
-    REXX_METHOD(oosqlstmt_dbHandle,              oosqlstmt_dbHandle),
-    REXX_METHOD(oosqlstmt_finalize,              oosqlstmt_finalize),
-    REXX_METHOD(oosqlstmt_reset,                 oosqlstmt_reset),
-    REXX_METHOD(oosqlstmt_sql,                   oosqlstmt_sql),
-    REXX_METHOD(oosqlstmt_step,                  oosqlstmt_step),
-    REXX_METHOD(oosqlstmt_stmtBusy,              oosqlstmt_stmtBusy),
-    REXX_METHOD(oosqlstmt_stmtReadonly,          oosqlstmt_stmtReadonly),
-    REXX_METHOD(oosqlstmt_stmtStatus,            oosqlstmt_stmtStatus),
-    REXX_METHOD(oosqlstmt_value,                 oosqlstmt_value),
+    REXX_METHOD(oosqlstmt_bindBlob,                   oosqlstmt_bindBlob),
+    REXX_METHOD(oosqlstmt_bindDouble,                 oosqlstmt_bindDouble),
+    REXX_METHOD(oosqlstmt_bindInt,                    oosqlstmt_bindInt),
+    REXX_METHOD(oosqlstmt_bindInt64,                  oosqlstmt_bindInt64),
+    REXX_METHOD(oosqlstmt_bindNull,                   oosqlstmt_bindNull),
+    REXX_METHOD(oosqlstmt_bindParameterCount,         oosqlstmt_bindParameterCount),
+    REXX_METHOD(oosqlstmt_bindParameterIndex,         oosqlstmt_bindParameterIndex),
+    REXX_METHOD(oosqlstmt_bindParameterName,          oosqlstmt_bindParameterName),
+    REXX_METHOD(oosqlstmt_bindText,                   oosqlstmt_bindText),
+    REXX_METHOD(oosqlstmt_bindValue,                  oosqlstmt_bindValue),
+    REXX_METHOD(oosqlstmt_bindZeroBlob,               oosqlstmt_bindZeroBlob),
+    REXX_METHOD(oosqlstmt_clearBindings,              oosqlstmt_clearBindings),
+    REXX_METHOD(oosqlstmt_columnBlob,                 oosqlstmt_columnBlob),
+    REXX_METHOD(oosqlstmt_columnBytes,                oosqlstmt_columnBytes),
+    REXX_METHOD(oosqlstmt_columnCount,                oosqlstmt_columnCount),
+    REXX_METHOD(oosqlstmt_columnDatabaseName,         oosqlstmt_columnDatabaseName),
+    REXX_METHOD(oosqlstmt_columnDeclType,             oosqlstmt_columnDeclType),
+    REXX_METHOD(oosqlstmt_columnDouble,               oosqlstmt_columnDouble),
+    REXX_METHOD(oosqlstmt_columnIndex,                oosqlstmt_columnIndex),
+    REXX_METHOD(oosqlstmt_columnInt,                  oosqlstmt_columnInt),
+    REXX_METHOD(oosqlstmt_columnInt64,                oosqlstmt_columnInt64),
+    REXX_METHOD(oosqlstmt_columnName,                 oosqlstmt_columnName),
+    REXX_METHOD(oosqlstmt_columnOriginName,           oosqlstmt_columnOriginName),
+    REXX_METHOD(oosqlstmt_columnTableName,            oosqlstmt_columnTableName),
+    REXX_METHOD(oosqlstmt_columnText,                 oosqlstmt_columnText),
+    REXX_METHOD(oosqlstmt_columnType,                 oosqlstmt_columnType),
+    REXX_METHOD(oosqlstmt_columnValue,                oosqlstmt_columnValue),
+    REXX_METHOD(oosqlstmt_dataCount,                  oosqlstmt_dataCount),
+    REXX_METHOD(oosqlstmt_dbHandle,                   oosqlstmt_dbHandle),
+    REXX_METHOD(oosqlstmt_finalize,                   oosqlstmt_finalize),
+    REXX_METHOD(oosqlstmt_reset,                      oosqlstmt_reset),
+    REXX_METHOD(oosqlstmt_sql,                        oosqlstmt_sql),
+    REXX_METHOD(oosqlstmt_step,                       oosqlstmt_step),
+    REXX_METHOD(oosqlstmt_stmtBusy,                   oosqlstmt_stmtBusy),
+    REXX_METHOD(oosqlstmt_stmtReadonly,               oosqlstmt_stmtReadonly),
+    REXX_METHOD(oosqlstmt_stmtStatus,                 oosqlstmt_stmtStatus),
+    REXX_METHOD(oosqlstmt_value,                      oosqlstmt_value),
+
+    // .ooSQLiteBackup
+    REXX_METHOD(oosqlbu_getFinished_atr,              oosqlbu_getFinished_atr),
+    REXX_METHOD(oosqlbu_getInitCode_atr,              oosqlbu_getInitCode_atr),
+    REXX_METHOD(oosqlbu_getLastErrCode_atr,           oosqlbu_getLastErrCode_atr),
+    REXX_METHOD(oosqlbu_getLastErrMsg_atr,            oosqlbu_getLastErrMsg_atr),
+    REXX_METHOD(oosqlbu_getPageCount_atr,             oosqlbu_getPageCount_atr),
+    REXX_METHOD(oosqlbu_getRemaining_atr,             oosqlbu_getRemaining_atr),
+    REXX_METHOD(oosqlbu_getSaveDestConn_atr,          oosqlbu_getSaveDestConn_atr),
+    REXX_METHOD(oosqlbu_setSaveDestConn_atr,          oosqlbu_setSaveDestConn_atr),
+
+    REXX_METHOD(oosqlbu_init,                         oosqlbu_init),
+    REXX_METHOD(oosqlbu_uninit,                       oosqlbu_uninit),
+
+    REXX_METHOD(oosqlbu_finish,                       oosqlbu_finish),
+    REXX_METHOD(oosqlbu_getDestConn,                  oosqlbu_getDestConn),
+    REXX_METHOD(oosqlbu_step,                         oosqlbu_step),
 
     // .ooSQLiteMutex
-    REXX_METHOD(oosqlmtx_getClosed_atr,          oosqlmtx_getClosed_atr),
-    REXX_METHOD(oosqlmtx_getIsNull_atr,          oosqlmtx_getIsNull_atr),
+    REXX_METHOD(oosqlmtx_getClosed_atr,               oosqlmtx_getClosed_atr),
+    REXX_METHOD(oosqlmtx_getIsNull_atr,               oosqlmtx_getIsNull_atr),
 
-    REXX_METHOD(oosqlmtx_init,                   oosqlmtx_init),
-    REXX_METHOD(oosqlmtx_uninit,                 oosqlmtx_uninit),
+    REXX_METHOD(oosqlmtx_init,                        oosqlmtx_init),
+    REXX_METHOD(oosqlmtx_uninit,                      oosqlmtx_uninit),
 
-    REXX_METHOD(oosqlmtx_enter,                  oosqlmtx_enter),
-    REXX_METHOD(oosqlmtx_free,                   oosqlmtx_free),
-    REXX_METHOD(oosqlmtx_leave,                  oosqlmtx_leave),
-    REXX_METHOD(oosqlmtx_try,                    oosqlmtx_try),
+    REXX_METHOD(oosqlmtx_enter,                       oosqlmtx_enter),
+    REXX_METHOD(oosqlmtx_free,                        oosqlmtx_free),
+    REXX_METHOD(oosqlmtx_leave,                       oosqlmtx_leave),
+    REXX_METHOD(oosqlmtx_try,                         oosqlmtx_try),
 
     // __rtn_helper_class
-    REXX_METHOD(hlpr_init_cls,                   hlpr_init_cls),
+    REXX_METHOD(hlpr_init_cls,                        hlpr_init_cls),
 
     // __rtn_db_callback_class
-    REXX_METHOD(db_cb_releaseBuffer,             db_cb_releaseBuffer),
+    REXX_METHOD(db_cb_releaseBuffer,                  db_cb_releaseBuffer),
 
     REXX_LAST_METHOD()
 };

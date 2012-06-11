@@ -126,20 +126,21 @@ typedef CooSQLiteClass *pCooSQLiteClass;
 
 /* Struct for the ooSQLiteConnection object CSelf. */
 typedef struct _oosqlConnCSelf {
-    sqlite3            *db;               // The actual database connection.
-    const char         *fileName;         // The database file name.
-    RexxObjectPtr       rexxSelf;         // The Rexx ooSQLiteConnection object.
-    RexxObjectPtr       stmtBag;          // The bag holding prepared statments (which is really a set.)
-    RexxStringObject    rxFileName;       // The Rexx string object database file name.
-    RexxStringObject    lastErrMsg;       // sqlite3_errmsg()
-    ResultSetType       format;           // The default format of a result set for this database.
-    int                 lastErrCode;      // sqlite3_errcode()
+    sqlite3            *db;                 // The actual database connection.
+    const char         *fileName;           // The database file name.
+    RexxObjectPtr       rexxSelf;           // The Rexx ooSQLiteConnection object.
+    RexxObjectPtr       stmtBag;            // The bag holding prepared statments (which is really a set.)
+    RexxStringObject    rxFileName;         // The Rexx string object database file name.
+    RexxStringObject    lastErrMsg;         // sqlite3_errmsg()
+    ResultSetType       format;             // The default format of a result set for this database.
+    int                 lastErrCode;        // sqlite3_errcode()
 
     // Set during .ooSQLiteConnection~new(), never changed.  If not 0, database
     // operations will fail.
     int                 initCode;
-    bool                closed;           // The database was closed.
-    bool                isDestinationBU;  // The database is the destination of a backup, in progress
+    bool                closed;             // The database was closed.
+    bool                isDestinationBU;    // The database is the destination of a backup, in progress.
+    bool                hasBusyHandler;     // The database has a busy handler installed.
 } CooSQLiteConn;
 typedef CooSQLiteConn *pCooSQLiteConn;
 
