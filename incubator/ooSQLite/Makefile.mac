@@ -99,7 +99,7 @@ OUT_DIR=build/release
 BIN_DIR=bin/linux
 
 
-SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles
+SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles  -lstdc++
 EXE_LFLAGS=-D_REENTRANT=1
 
 SO_LLIBS=-ldl -lpthread  -lrexx -lrexxapi -L.
@@ -125,7 +125,7 @@ $(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.lin
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
 
 $(OUT_DIR)/liboosqlite.so: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o
-	gcc $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.so $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(EXE_LLIBS)
+	gcc -o $(OUT_DIR)/liboosqlite.so $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(SO_LLIBS)
 
 $(OUT_DIR)/oosqlite3: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o
 	gcc $(EXE_LFLAGS) -o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o $(EXE_LLIBS)
