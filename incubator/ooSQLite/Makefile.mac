@@ -57,7 +57,7 @@ include src/ooSQLite.ver
 OOSQLITE_BLD_LVL:= $(SVN_REV)
 OOSQLITE_VER_STR:= "$(OOSQLITE_MAJOR).$(OOSQLITE_MINOR).$(OOSQLITE_MOD_LVL).$(OOSQLITE_BLD_LVL)"
 
-# Note that this make file is mostly a copy of Makefile.lin.  The notes below
+# Note that this make file is mostly a copy of Makefile.mac.  The notes below
 # come from Linux.  A few edits to this file come from trial and error on a Mac.
 #
 # For OS X -DHAVE_POSIX_FALLOCATE=1  is removed, and -DHAVE_READLINE=1 added.
@@ -100,7 +100,7 @@ OUT_DIR=build/release
 BIN_DIR=bin/linux
 
 
-SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles  -lstdc++
+SO_LFLAGS=-D_REENTRANT=1 -shared -nostartfiles -lstdc++
 EXE_LFLAGS=-D_REENTRANT=1
 
 SO_LLIBS=-ldl -lpthread  -L/usr/lib/ooRexx -lrexx -lrexxapi -L.
@@ -113,16 +113,16 @@ CFLAGS=-c -fPIC $(BASEFLAGS)
 all: $(BIN_DIR)/liboosqlite.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls
 
 
-$(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.hpp Makefile.lin
+$(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.hpp Makefile.mac
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/sqlite3.o src/sqlite/sqlite3.c
 
-$(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.hpp Makefile.lin
+$(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.hpp Makefile.mac
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/shell.o src/sqlite/shell.c
 
-$(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/sqlite/sqlite3.hpp Makefile.lin
+$(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/sqlite/sqlite3.hpp Makefile.mac
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/ooSQLite.o src/ooSQLite.cpp
 
-$(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.lin
+$(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.mac
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
 
 $(OUT_DIR)/liboosqlite.so: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o
