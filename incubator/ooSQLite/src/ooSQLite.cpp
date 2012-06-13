@@ -4392,7 +4392,7 @@ RexxMethod1(int, oosqlstmt_getLastErrCode_atr, CSELF, pCSelf)
     pCooSQLiteStmt pCstmt = requiredStmtCSelf(context, pCSelf);
     if ( pCstmt == NULL )
     {
-        return NULLOBJECT;
+        return SQLITE_MISUSE;
     }
     return pCstmt->lastErrCode;
 }
@@ -5707,7 +5707,7 @@ RexxMethod1(int, oosqlbu_getLastErrCode_atr, CSELF, pCSelf)
     pCooSQLiteBackup pCbu = requiredBuCSelf(context, pCSelf);
     if ( pCbu == NULL )
     {
-        return NULLOBJECT;
+        return SQLITE_MISUSE;
     }
     return pCbu->lastErrCode;
 }
