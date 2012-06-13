@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
@@ -38,22 +39,39 @@
 /**
  *  preparedStmtTestRtn.rex
  *
- *  Tests the classic Rexx interface to ooSQLite.
+ *  This example program demonstrates the classic Rexx interface to ooSQLite.
  *
- *  Opens the ooFoods database, creates a prepared statement that queries the
+ *  It opens the ooFoods database, creates a prepared statement that queries the
  *  database and steps through the result set printing the rows returned.
  *
- *  This program does the error checking that is missing in some of the other
- *  test programs.
+ *  This example also demonstrates more of the error checking that is missing in
+ *  some of the simple example programs.
  */
 
   dbName = 'ooFoods.rdbx'
 
-  dbConn = oosqlOpen(dbName, .ooSQLite~OPEN_READWRITE)
+  -- dbConn will be set to the handle to the database connection.  We do not
+  -- need to explicitly set the variable first.  We could just name the variable
+  -- in the oosqlOpen() function and the result would be the same.  But, for an
+  -- example program we do this to better show what is happening.
 
-  if oosqlErrCode(dbConn) <> 0 then do
-    errRC   = oosqlErrCode(dbConn)
-    errMsg  = oosqlErrMsg(dbConn)
+  dbConn = ''
+  ret = oosqlOpen(dbName, 'dbConn', .ooSQLite~OPEN_READWRITE)
+
+  if ret <> .ooSQLite~OK then do
+    -- dbConn could be a null handle, if and only if the return code is NOMEM.
+    -- In this simple program, I would say that is impossible.  But, you can not
+    -- pass in a null handle to any ooSQLite function.  So, here we show how to
+    -- properly deal with this.
+
+    if ret == .ooSQLite~NOMEM then do
+      errRC  = .ooSQLite~NOMEM
+      errMsg = 'memory allocation failed'
+    end
+    else do
+      errRC  = oosqlErrCode(dbConn)
+      errMsg = oosqlErrMsg(dbConn)
+    end
 
     say 'Open database error'
     say '  Error code:' errRC '('errMsg')'
@@ -61,27 +79,44 @@
       say '  Database file name:' dbName '(Is this the correct database?)'
     end
 
-    oosqlClose(dbConn)
+    -- The statement that you can not pass in a null handle to any ooSQLite
+    -- function is not 100% accurate.  Using null handles for oosqlClose() and
+    -- oosqlFinalize() are harmles nops.  So, we don't check here.  If dbConn is
+    -- a null handle, it doesn't need to be closed.  In all other cases it does.
+
+    ret = oosqlClose(dbConn)
     return 99
   end
 
-  -- The third argument to oosqlPrepare() can be a stem.  If not omitted, the
-  -- stem will have a tail added to the stem that is set to the unused portion
-  -- of the sql string.  Note that SQLite calls this string the tail, and the
-  -- ooSQLite implementation has choose to keep the SQLite name, even though it
-  -- may sound a bit confusing with the tail of a stem.  The tail name will be:
-  -- OOSQLITE_SQLTAIL
-
+  -- The third argument to oosqlPrepare(), below, is the name of the variable
+  -- that the handle to the prepared statement is set to.  Similar to
+  -- oosqlOpen() explained above.  Here we do not explicity set the stmt
+  -- variable, we just name it in the call to oosqlPrepare()
+  --
+  -- The fourth argument is the name of a variable whose value will be set to
+  -- the 'tail' of the SQL statement.  SQLite only prepares the first statement
+  -- in the SQL, that is up to and including the first semi-colon ';'.  SQLite
+  -- calls the unused portion of the SQL string the tail and will return the
+  -- tail if asked.  The fourth argument is opitonal.  If not omitted, the named
+  -- varible will have its value set to the unused portion of the SQL string.
+  -- This value will be the empty string if there is no tail.  Again, this
+  -- argument is optional.
+  --
   -- Note the nonsense at the end of the first SQL statement.  This string will
-  -- be returned in the stem.  Further note that the stem is not set if there is
-  -- an error return from oosqlPrepare().  (You can generate an error by adding
-  -- a syntax error to the SELECT statement.)
-  stmt = oosqlPrepare(dbConn, 'SELECT * FROM foods ORDER BY name; INSERT nonsense INTO foodes', unused.)
-  if stmt~isNull then do
+  -- be returned by setting the value of the variable unusedTail to the string
+  -- following the first semi-colon.  Further note that the stmt variable is
+  -- always set, but the unusedTail variable is never set on error.  If the
+  -- return code from oosqlPrepare() is an error code, stmt will always be a
+  -- null handle and unusedTail will never be set.
+
+  sqlStatement = 'SELECT * FROM foods ORDER BY name; INSERT nonsense INTO foodes'
+
+  ret = oosqlPrepare(dbConn, sqlStatement, 'stmt', 'unusedTail')
+
+  if ret <> .ooSQLite~OK then do
     say 'Prepared statment initialization error:'
     say '  Error code:' oosqlErrCode(dbConn) '('oosqlErrMsg(dbConn)')'
-
-    str = unused.oosqlite_sqlTail; say 'unused SQL:' str 'unused SQL length:' length(str)
+    say '  Is stmt a null handle?' oosqlIsHandleNull(stmt)
 
     ret = oosqlFinalize(stmt); say 'Error finalize ret:' ret
     ret = oosqlClose(dbConn) ; say 'Error close    ret:' ret
@@ -89,9 +124,10 @@
   end
   else do
     say 'Unused portion of sql:'
-    str = unused.oosqlite_sqlTail
+    str = unusedTail
     say '  string: ' str
     say '  length: ' length(str)
+    say
   end
 
   stepRC = oosqlStep(stmt)

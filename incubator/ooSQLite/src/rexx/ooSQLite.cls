@@ -268,6 +268,7 @@
 ::routine oosqlColumnDatabaseName public external "LIBRARY oosqlite oosqlColumnDatabaseName_rtn"
 ::routine oosqlColumnDeclType public external "LIBRARY oosqlite oosqlColumnDeclType_rtn"
 ::routine oosqlColumnDouble public external "LIBRARY oosqlite oosqlColumnDouble_rtn"
+::routine oosqlColumnIndex public external "LIBRARY oosqlite oosqlColumnIndex_rtn"
 ::routine oosqlColumnInt public external "LIBRARY oosqlite oosqlColumnInt_rtn"
 ::routine oosqlColumnInt64 public external "LIBRARY oosqlite oosqlColumnInt64_rtn"
 ::routine oosqlColumnName public external "LIBRARY oosqlite oosqlColumnName_rtn"

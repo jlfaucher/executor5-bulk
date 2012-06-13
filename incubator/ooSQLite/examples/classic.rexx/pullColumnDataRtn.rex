@@ -40,25 +40,43 @@
  *  pullColumnData.rex
  *
  * This program shows how to get the data for a specific column name in a SELECT
- * query.
+ * query.  It uses the 'classic Rexx' interface to SQLite.
  *
- * Once you have a ooSQLiteStmt object you can get the column index using the
- * name of the column.  You can then use that in any other columnXXXX method
- * that takes a column number.
+ * Once you have the handle to a prepared statementm you can get the column
+ * index using the name of the column.  You can then use that in any other
+ * columnXXXX method that takes a column number.
  *
+ * Columns are 1-indexed in ooSQLite as would be expected.  Note that when
+ * reading the SQLite documentation, columns are actually 0-indexed in SQLite.
+ *
+ * The second argument in ooSQLOpen() is the *name* of the variable that will be
+ * set to the handle of the database connection.  Likewise the third argument in
+ * oosqlPrepare() is the *name* of the variable that will be set to the handle
+ * of the prepared statement.  Note here that you can explicitly name the
+ * variable by setting it to some value beforehand, as in: dbConn = ''
+ *
+ * But that is not necessary.  You can simply name it in the argument list as is
+ * done in the call to oosqlPrepare().
+ *
+ * Lastly, no return codes are checked here because this simple program won't
+ * fail.  But, wait.  What if someone moves the database file?  What if someone
+ * overwrites the file with an non-database file?  What if someone manipulates
+ * the database file and removes the foods table, or removes the name column?
+ *
+ * The fact is that there are a lot of ways this program could fail, we just
+ * don't expect it to.
  */
 
+  dbConn = ''
+  ret = oosqlOpen('ooFoods.rdbx', 'dbConn')
 
-  dbConn = .ooSQLiteConnection~new('ooFoods.rdbx')
+  ret = oosqlPrepare(dbConn, "SELECT * FROM foods", 'stmt')
+  index = oosqlColumnIndex(stmt, 'name')
 
-  stmt = .ooSQLiteStmt~new(dbConn, "SELECT * FROM foods")
-  index = stmt~columnIndex('name')
-
-  do while stmt~step == stmt~ROW
-    say stmt~columnText(index)
+  do while oosqlStep(stmt) == .ooSQLite~ROW
+    say oosqlColumnText(stmt, index)
   end
   say
-
 
 ::requires 'ooSQLite.cls'
 

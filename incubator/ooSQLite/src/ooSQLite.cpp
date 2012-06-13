@@ -686,12 +686,13 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
 
 
 /**
- * Generic function to do a bitwise or (|) together a series of numbers.
- * Intended to allow the ooSQLite programmer to combine SQLite bit flags, but it
- * makes no check that the numbers provided are actually SQLite defines.
+ * Generic function to do a bitwise or (|) of a series of numbers. Intended to
+ * allow the ooSQLite programmer to combine SQLite bit flags, but it makes no
+ * check that the numbers provided are actually SQLite defines.
  *
  * This is not part of the SQLite library, it is an ooSQLite only interface.
- * Used by both the object orientated (.ooSQLiteConstants) and classic Rexx interfaces.
+ * Used by both the object orientated (.ooSQLiteConstants) and classic Rexx
+ * interfaces.
  *
  * @param c
  * @param args
@@ -6699,14 +6700,14 @@ RexxRoutine1(int, oosqlBackupFinish_rtn, POINTER, _bu)
  *  @param dstConn  [required]  An open database connection.  This database is
  *                  used as the destination of the backup.
  *
+ *  @param srcConn  [required]  An open database connection.  This database is
+ *                  used as the source of the backup.
+ *
  *  @param dstName  [optional]  The name of the destination backup.  This is not
  *                  the file name but rather the 'main', 'temp', or attached as
  *                  name.  If omitted, 'main' is used.
  *
- *  @param srcConn  [required]  An open database connection.  This database is
- *                  used as the source of the backup.
- *
- *  @param dstName  [optional]  The name of the source backup.  This is not the
+ *  @param srcName  [optional]  The name of the source backup.  This is not the
  *                  file name but rather the 'main', 'temp', or attached as
  *                  name.  If omitted, 'main' is used.
  *
@@ -6715,8 +6716,11 @@ RexxRoutine1(int, oosqlBackupFinish_rtn, POINTER, _bu)
  *           this handle is null.  To test if the handle is null use the
  *           oosqlIsHandleNull() function.
  *
+ *  @note  The parameter order is different from the order in
+ *         sqlite3_backup_init() so that the optional parameters are last
+ *
  */
-RexxRoutine4(POINTER, oosqlBackupInit_rtn, POINTER, dstConn, OPTIONAL_CSTRING, dstName, POINTER, srcConn,
+RexxRoutine4(POINTER, oosqlBackupInit_rtn, POINTER, dstConn, POINTER, srcConn, OPTIONAL_CSTRING, dstName,
              OPTIONAL_CSTRING, srcName)
 {
     sqlite3 *dst = routineDB(context, dstConn, 1);
@@ -7236,6 +7240,90 @@ RexxRoutine2(double, oosqlColumnDouble_rtn, POINTER, _stmt, int32_t, col)
     return sqlite3_column_double(stmt, col);
 }
 
+/** oosqlColumnIndex()
+ *
+ *  Returns the index of the column with the specified column name in the result
+ *  set of a SELECT statement.
+ *
+ *  @param stmt     [required]  Handle to the prepared statement whose result
+ *                              set will contain the specified column.
+ *
+ *  @param colName  [required]  The name of a column that is a column in a
+ *                              SELECT statement.
+ *
+ *  @return  Returns the 1 based column index, or 0 if there is no column with
+ *           the specified name.
+ *
+ *  @note    The name comparison is case insensitive.  I think this is correct,
+ *           because as far as I can tell SQLite does not allow column names
+ *           that differ only in case.  Not sure if this is SQLite specific or
+ *           not.
+ *
+ *  @note    This is not method that maps to a SQLite API.  It is an ooSQLite
+ *           enhancement.
+ *
+ *  @note    sqlite3_free() is a harmless nop for a null pointer.
+ */
+RexxRoutine2(int, oosqlColumnIndex_rtn, POINTER, _stmt, CSTRING, _colName)
+{
+    sqlite3_stmt *stmt = routineStmt(context, _stmt);
+    if ( stmt == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    char *colName     = NULL;
+    char *currentName = NULL;
+    int   result      = 0;
+    int   count       = 0;
+
+    colName = strdupupr(_colName);
+    if ( colName == NULL )
+    {
+        goto err_out;
+    }
+
+    count = sqlite3_column_count(stmt);
+    if ( count == 0 )
+    {
+        // Not an error, statement may not be a SELECT.
+        goto done_out;
+    }
+
+    for ( int i = 0; i < count; i++)
+    {
+        CSTRING _currentName = sqlite3_column_name(stmt, i);
+        if ( _currentName == NULL )
+        {
+            goto err_out;
+        }
+
+        char *currentName = strdupupr(_currentName);
+        if ( currentName == NULL )
+        {
+            goto err_out;
+        }
+
+        if ( strcmp(colName, currentName) == 0 )
+        {
+            result = i + 1;
+            goto done_out;
+        }
+
+        sqlite3_free(currentName);
+    }
+
+    goto done_out;
+
+err_out:
+    outOfMemoryException(context->threadContext);
+
+done_out:
+    sqlite3_free(colName);
+    sqlite3_free(currentName);
+    return result;
+}
+
 /** oosqlColumnInt()
  *
  *
@@ -7585,7 +7673,8 @@ RexxRoutine1(int, oosqlDbReleaseMemory_rtn, POINTER, _db)
 /** oosqlDbStatus()
  *
  */
-RexxRoutine4(int, oosqlDbStatus_rtn, POINTER, _db, int, param, RexxObjectPtr, _result, OPTIONAL_logical_t, reset)
+RexxRoutine5(int, oosqlDbStatus_rtn, POINTER, _db, int, param, OPTIONAL_CSTRING, _cur, OPTIONAL_CSTRING, _hiwtr,
+             OPTIONAL_logical_t, reset)
 {
     sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
@@ -7593,7 +7682,21 @@ RexxRoutine4(int, oosqlDbStatus_rtn, POINTER, _db, int, param, RexxObjectPtr, _r
         return SQLITE_MISUSE;
     }
 
-    return genDbStatus(context->threadContext, db, param, _result, reset, 2);
+    int cur;
+    int hiwtr;
+
+    if ( argumentOmitted(3) ) _cur   = "__current";
+    if ( argumentOmitted(4) ) _hiwtr = "__highWater";
+
+    int rc = sqlite3_db_status(db, param, &cur, &hiwtr, (int)reset);
+
+    if ( rc == SQLITE_OK )
+    {
+        context->SetContextVariable(_cur, context->WholeNumber(cur));
+        context->SetContextVariable(_hiwtr, context->WholeNumber(hiwtr));
+    }
+
+    return rc;
 }
 
 /** oosqlErrCode()
@@ -8057,7 +8160,6 @@ RexxRoutine1(int, oosqlMutexTry_rtn, POINTER, _mtx)
  *          the first prepared statement associated with the database
  *          connection.  If no prepared statement satisfies the conditions,
  *          returns .nil.
- *
  */
 RexxRoutine2(RexxObjectPtr, oosqlNextStmt_rtn, POINTER, _db, OPTIONAL_RexxObjectPtr, _stmt)
 {
@@ -8100,20 +8202,28 @@ RexxRoutine2(RexxObjectPtr, oosqlNextStmt_rtn, POINTER, _db, OPTIONAL_RexxObject
  *
  *  Open a database connection.
  *
- *  @param file     The file name of the database to open.
+ *  @param file    [required] The file name of the database to open.
  *
- *  @param flags    Flags that control how the database is opened.
+ *  @param dbConn  [required] The *name* of a variable in your Rexx program
+ *                            that will be set to the handle to the database
+ *                            connection.  Note that this is the string name of
+ *                            the variable, not the variable itself. The
+ *                            variable can or can not already exist in your
+ *                            program.
  *
- *  @param vfsName  The name of the alternative operating system interface to
- *                  use.  This option is ignored by ooSQLite at this time.
+ *  @param flags   [optional] Flags that control how the database is opened.
  *
- *  @return  On success returns a handle to the database connection that can be
- *           used as an argument in any other function that requires a database
- *           connection handle. The handle is an opaque datatype.
+ *  @param vfsName [optional] The name of the alternative operating system
+ *                            interface to use.  This option is ignored by
+ *                            ooSQLite at this time.
  *
- *           On error, this handle is null. To test if the handle is null use
- *           the oosqlIsHandleNull() function.  Do not use a null handle in any
- *           other function.
+ *  @return  On success returns OK, otherwise returns an error code.
+ *
+ *           On error, this handle could be null. To test if the handle is null
+ *           the oosqlIsHandleNull() function can be used.  However testing the
+ *           return code is sufficient.  If the return code is NOMEM, the handle
+ *           is always null, otherwise, it is never null. Do not use a null
+ *           handle in any other function.
  *
  *  @note    The connection is (almost) always returned, even on error.  The
  *           programmer should immediately use oosqlErrCode() to check for
@@ -8126,14 +8236,15 @@ RexxRoutine2(RexxObjectPtr, oosqlNextStmt_rtn, POINTER, _db, OPTIONAL_RexxObject
  *
  *           The only exception to this is if the returned handle is null, in
  *           which case no connection was created.  A null handle should never
- *           be used in any ooSQLite function.
+ *           be used in any ooSQLite function, with this exception.  A null
+ *           handle passed to oosqlClose() is a harmles nop.
  */
-RexxRoutine3(POINTER, oosqlOpen_rtn, CSTRING, file, OPTIONAL_int32_t, _flags, OPTIONAL_CSTRING, vfsName)
+RexxRoutine4(int, oosqlOpen_rtn, CSTRING, file, CSTRING, dbConn, OPTIONAL_int32_t, _flags, OPTIONAL_CSTRING, vfsName)
 {
     sqlite3 *db;
 
     int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
-    if ( argumentExists(2) )
+    if ( argumentExists(3) )
     {
         flags = _flags;
     }
@@ -8147,10 +8258,19 @@ RexxRoutine3(POINTER, oosqlOpen_rtn, CSTRING, file, OPTIONAL_int32_t, _flags, OP
         sqlite3_extended_result_codes(db, 1);
     }
 
-    return db;
+    context->SetContextVariable(dbConn, context->NewPointer(db));
+
+    return rc;
 }
 
 /** oosqlPrepare()
+ *
+ *  Prepares a SQL statement to be executed by SQLite and returns a handle to
+ *  that prepared statement.
+ *
+ *  To execute a SQL statement, SQLite first compiles the statement into a
+ *  byte-code program.  This code be thought of as preparing, or initializing
+ *  the statement.
  *
  *
  *  @param db     [required] The database connection the statement is for.
@@ -8158,29 +8278,45 @@ RexxRoutine3(POINTER, oosqlOpen_rtn, CSTRING, file, OPTIONAL_int32_t, _flags, OP
  *  @param sql    [required] The SQL statement(s) used for this prepared
  *                           statement.
  *
- *  @param _tail  [optional] A stem object in which the unused port of the sql
- *                           is returned. If sqlTail. is not omitted then
- *                           sqlTail.oosqlite_sqlTail is set the first character
- *                           past the end of the first SQL statement in sql.
+ *  @param _stmt  [required]  The *name* of a variable in your Rexx program that
+ *                            will be set to the handle to the prepared
+ *                            statement.  Note that this is the string name of
+ *                            the variable, not the variable itself.  The
+ *                            variable can or can not already exist in your
+ *                            program.
  *
- *                           SQLite only compiles the first statement in sql, so
- *                           sqlTail.oosqlite_sqlTail is set pointing to what
- *                           remains uncompiled.  I.e. the portion past the
- *                           first ';'
+ *  @param _tail  [optional] The *name* of a variable in your Rexx program that
+ *                           will be set to the 'tail' of the SQL statement.
  *
- *  @return  On success returns a handle to the prepared statement that can be
- *           used as an argument in any other function that requires a prepared
- *           statement handle. The handle is an opaque datatype.
+ *                           SQLite only compiles the first statement in sql.
+ *                           The 'tail' is the portion, if any, of the sql
+ *                           string past the first ';', or the empty string.
  *
- *           On error, this handle is null. To test if the handle is null use
- *           the oosqlIsHandleNull() function.  Do not use a null handle in any
- *           other function.
+ *                           When the optional tail argument is used, the
+ *                           variable of that name is set to the unused portion
+ *                           of the sql string.  If there is no unused portion
+ *                           the variable is set to the empty string.  When this
+ *                           argument is omitted, the tail, if any, is ignored.
+ *
+ *  @return  Returns one of the SQLite status code constants.  On success this
+ *           will be OK and the _stmt variable in the Rexx program will be set
+ *           to the handle to the prepared statement.
+ *
+ *           On error, an error status code is returned, and the handle to the
+ *           prepared statement will be a null handle.
+ *
+ *           Note that the _stmt variable is always set to a handle.  To test if
+ *           the handle is null use the oosqlIsHandleNull() function.  However,
+ *           checking the return code is sufficient.  If the return code is not
+ *           OK, then the handle will be null.  Do not use a null handle in any
+ *           other function, except it is a harmless nop to use a null handle in
+ *           oosqlFinalize().
  *
  *  @remarks  Testing has shown that if ppTail is not null when passed into
  *            sqlite3_prepare_v2() it is always set to a zero-terminated string.
- *            Even when there is not 'tail', i.e. it is set to an empty string.
+ *            I.e. even when there is no 'tail', it is set to an empty string.
  */
-RexxRoutine3(POINTER, oosqlPrepare_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_RexxObjectPtr, _tail)
+RexxRoutine4(int, oosqlPrepare_rtn, POINTER, _db, CSTRING, sql, CSTRING, _stmt, OPTIONAL_CSTRING, _tail)
 {
     sqlite3_stmt *stmt   = NULL;
     const char   *tail   = NULL;
@@ -8189,30 +8325,24 @@ RexxRoutine3(POINTER, oosqlPrepare_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_Rex
     sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
-        goto done_out;
+        return SQLITE_MISUSE;
     }
 
-    if ( argumentExists(3) )
+    if ( argumentExists(4) )
     {
-        if ( ! context->IsOfType(_tail, "Stem") )
-        {
-            wrongClassException(context->threadContext, 3, "Stem");
-            goto done_out;
-        }
-
         ppTail = &tail;
     }
 
-    if ( sqlite3_prepare_v2(db, sql, (int)strlen(sql) + 1, &stmt, ppTail) == SQLITE_OK )
+    int rc = sqlite3_prepare_v2(db, sql, (int)strlen(sql) + 1, &stmt, ppTail);
+
+    if ( rc == SQLITE_OK && argumentExists(4) && tail != NULL )
     {
-        if ( tail != NULL )
-        {
-            context->SetStemElement((RexxStemObject)_tail, "OOSQLITE_SQLTAIL", context->String(tail));
-        }
+        context->SetContextVariable(_tail, context->String(tail));
     }
 
-done_out:
-    return stmt;
+    context->SetContextVariable(_stmt, context->NewPointer(stmt));
+
+    return rc;
 }
 
 /** oosqlProfile()
@@ -8494,10 +8624,26 @@ RexxRoutine1(RexxObjectPtr, oosqlSql_rtn, POINTER, _stmt)
 
 /** oosqlStatus()
  *
+ *  Retrieves runtime status information about the performance of SQLite, and
+ *  optionally resets various highwater marks.
  */
-RexxRoutine3(int, oosqlStatus_rtn, int, param, RexxObjectPtr, _result, OPTIONAL_logical_t, reset)
+RexxRoutine4(int, oosqlStatus_rtn, int, param, OPTIONAL_CSTRING, _cur, OPTIONAL_CSTRING, _hiwtr, OPTIONAL_logical_t, reset)
 {
-    return genStatus(context->threadContext, param, _result, reset);
+    int cur    = -1;
+    int hiwtr  = -1;
+
+    if ( argumentOmitted(2) ) _cur   = "__current";
+    if ( argumentOmitted(3) ) _hiwtr = "__highWater";
+
+    int rc = sqlite3_status(param, &cur, &hiwtr, (int)reset);
+
+    if ( rc == SQLITE_OK )
+    {
+        context->SetContextVariable(_cur, context->WholeNumber(cur));
+        context->SetContextVariable(_hiwtr, context->WholeNumber(hiwtr));
+    }
+
+    return rc;
 }
 
 /** oosqlStep()
@@ -8568,9 +8714,13 @@ RexxRoutine3(int, oosqlStmtStatus_rtn, POINTER, _stmt, int, param, OPTIONAL_logi
 /** oosqlTableColumnMetadata()
  *
  *
+ *  @note The parameter order here is slightly switched from
+ *        sqlite3_table_column_metadata() to put the opitonal dbName after
+ *        colName so that all the optional parameters are placed at the end.
  */
-RexxRoutine5(int, oosqlTableColumnMetadata_rtn, POINTER, _db, CSTRING, dbName, CSTRING, tableName,
-             CSTRING, colName, RexxObjectPtr, results)
+RexxRoutine9(int, oosqlTableColumnMetadata_rtn, POINTER, _db, CSTRING, tableName, CSTRING, colName,
+             OPTIONAL_CSTRING, dbName, OPTIONAL_CSTRING, _dataType, OPTIONAL_CSTRING, _collationSequence,
+             OPTIONAL_CSTRING, _notNull, OPTIONAL_CSTRING, _primaryKey, OPTIONAL_CSTRING, _autoIncrement)
 {
     sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
@@ -8578,7 +8728,46 @@ RexxRoutine5(int, oosqlTableColumnMetadata_rtn, POINTER, _db, CSTRING, dbName, C
         return SQLITE_MISUSE;
     }
 
-    return genTableColumnMetadata(context->threadContext, db, dbName, tableName, colName, results, 5);
+    if ( argumentOmitted(4) || strlen(dbName) < 1 )
+    {
+        dbName = NULL;
+    }
+
+    char const *dataType;
+    char const *collSeq;
+    int         notNull;
+    int         primaryKey;
+    int         autoInc;
+
+    int rc = sqlite3_table_column_metadata(
+      db,           /* Connection handle */
+      dbName,       /* Database name or NULL */
+      tableName,    /* Table name */
+      colName,      /* Column name */
+      &dataType,    /* OUTPUT: Declared data type */
+      &collSeq,     /* OUTPUT: Collation sequence name */
+      &notNull,     /* OUTPUT: True if NOT NULL constraint exists */
+      &primaryKey,  /* OUTPUT: True if column part of PK */
+      &autoInc      /* OUTPUT: True if column is auto-increment */
+    );
+
+
+    if ( rc == SQLITE_OK )
+    {
+        if ( argumentOmitted(5) ) _dataType          = "__dataType";
+        if ( argumentOmitted(6) ) _collationSequence = "__collationSequence";
+        if ( argumentOmitted(7) ) _notNull           = "__notNull";
+        if ( argumentOmitted(8) ) _primaryKey        = "__primaryKey";
+        if ( argumentOmitted(9) ) _autoIncrement     = "__autoIncrement";
+
+        context->SetContextVariable(_dataType         , context->String(dataType)   );
+        context->SetContextVariable(_collationSequence, context->String(collSeq)    );
+        context->SetContextVariable(_notNull          , context->Logical(notNull)   );
+        context->SetContextVariable(_primaryKey       , context->Logical(primaryKey));
+        context->SetContextVariable(_autoIncrement    , context->Logical(autoInc)   );
+    }
+
+    return rc;
 }
 
 /** oosqlThreadSafe()
@@ -8718,18 +8907,11 @@ RexxRoutine0(RexxStringObject, oosqlVersion_rtn)
  *
  *  Private routine to use for quick tests.  Code varies as to what it does.
  */
-RexxRoutine1(RexxObjectPtr, oosqlTest_rtn, CSTRING, callBack)
+RexxRoutine1(int, oosqlTest_rtn, CSTRING, varName)
 {
-    RexxObjectPtr result = TheZeroObj;
+    context->SetContextVariable(varName, context->NewPointer(NULL));
 
-    RexxRoutineObject rtn = getCallerRoutine(context, callBack);
-    if ( rtn != NULLOBJECT )
-    {
-        RexxArrayObject args = context->ArrayOfOne(context->String("Got me"));
-        result = context->CallRoutine(rtn, args);
-    }
-
-    return result;
+    return SQLITE_OK;
 }
 
 
@@ -8803,6 +8985,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnCount_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnDatabaseName_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnDeclType_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnDouble_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnIndex_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnInt_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnInt64_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlColumnName_rtn);
@@ -8895,6 +9078,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlColumnDatabaseName_rtn,   oosqlColumnDatabaseName_rtn),
     REXX_TYPED_ROUTINE(oosqlColumnDeclType_rtn,       oosqlColumnDeclType_rtn),
     REXX_TYPED_ROUTINE(oosqlColumnDouble_rtn,         oosqlColumnDouble_rtn),
+    REXX_TYPED_ROUTINE(oosqlColumnIndex_rtn,          oosqlColumnIndex_rtn),
     REXX_TYPED_ROUTINE(oosqlColumnInt_rtn,            oosqlColumnInt_rtn),
     REXX_TYPED_ROUTINE(oosqlColumnInt64_rtn,          oosqlColumnInt64_rtn),
     REXX_TYPED_ROUTINE(oosqlColumnName_rtn,           oosqlColumnName_rtn),

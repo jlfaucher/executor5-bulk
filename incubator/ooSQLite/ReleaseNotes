@@ -223,7 +223,16 @@ Changes since ooSQLite Version 1.0.0.7864 (Preview)
   Examples (examples directory):
   -----------------------------
 
-  *
+  * The classic.rexx subdirectory was added to contain examples of using
+  the 'classic Rexx' interface to SQLite.
+
+  * The preparedStmtTestRtn.rex program in the testing directory was
+  renamed to preparedStmtRtn.rex and moved from the testing subdirectory
+  to the examples\classic.rexx subdirectory.  The program was enhanced
+  with many comments.
+
+  * The pullColumnDataRtn.rex example was added to the
+  examples\classic.rexx subdirectory.
 
 
   Examples (testing directory):
@@ -235,24 +244,65 @@ Changes since ooSQLite Version 1.0.0.7864 (Preview)
   documented and will eventually be removed from the distribution as
   more examples are added to the examples directory.
 
-  The following programs have been added to the testing directory:
+  The following programs have been added to the testing subdirectory:
 
   *
+
+  The following changes were made to the testing subdirectory:
+
+  * The preparedStmtTestRtn.rex program was enhanced, renamed, and moved
+  to the examples\classic.rex subdirectoy with the name of
+  preparedStmtRtn.rex.
 
 
 
   Bugs:
   ----
 
-  No bugs found in this cycle.
+  * Two trivial bugs bugs were found internally and fixed.
+
+  * No bugs were reported on SourceForge in this cycle.
 
 
   Changes in implementation:
   --------------------------
 
-  * The third optional argument to oosqlPrepare() was a .MutableBuffer
-  object.  This has been changed to use a stem instead, as is more
-  fitting for the 'classic Rexx' interface.
+  * The 'classic Rexx' interface is intended for use by Rexx programmers
+  that are uncomfortable with 'objects.'  However, in a very few cases
+  an object such as a .Directory object was used as an IN/OUT parameter
+  for functions that needed to return multiple values.
+
+  This has been fixed in all cases to use a purely 'classic Rexx'
+  paradigm.  Since these functions were not documented yet, and there
+  were no examples of their usage, this change should be invisible.
+
+  * The oosqlPrepare() method has been changed to return a result code
+  rather than a handle to the prepared statement.  The arguments to the
+  function are also changed.  This makes the function totally 'classic
+  Rexx.'  The usage of this function was visible in the program:
+
+  testing\preparedStmtTestRtn.rex
+
+  To understand the new usage examine the programs:
+
+  examples\classic.rex\preparedStmtRtn.rex
+  examples\classic.rex\pullColumnDataRtn.rex
+
+  both of which are heavily commented.
+
+  * The oosqlOpen() method has been changed to return a result code
+  rather than a handle to the database connection.  The arguments to the
+  function are also changed.  This makes the function totally 'classic
+  Rexx.' The usage of this function was visible in the program:
+
+  testing\preparedStmtTestRtn.rex
+
+  To understand the new usage examine the programs:
+
+  examples\classic.rex\preparedStmtRtn.rex
+  examples\classic.rex\pullColumnDataRtn.rex
+
+  both of which are heavily commented.
 
   * The first argument to ooSQLitleMutex::new(), the mutex type
   argument, was required.  This has changed to be optional, with
@@ -260,19 +310,25 @@ Changes since ooSQLite Version 1.0.0.7864 (Preview)
 
   * The ooSQLiteStmt::errMsg attribute has been renamed to lastErrMsg.
 
+
   Enhancements:
   -------------
 
   * The .ooSQLiteBackup class has been added.
 
-  * The oosqlBackupInit(), oosqlBackupFinish(), oosqlBackupPageCount(),
-  oosqlRemaining(), and oosqlBackupStep() functions have been added.
-
-  * The oosqlIsHandleNull() function has been added.
-
   * The ooSQLiteConnection::backupDestination attribute has been added.
 
   * The ooSQLiteStmt::lastErrCode attribute has been added.
+
+  * The oosqlBackupInit(), oosqlBackupFinish(), oosqlBackupPageCount(),
+  oosqlRemaining(), and oosqlBackupStep() functions have been added.
+  This gives the Rexx programmer using the 'classic Rexx' interface
+  complete access to the SQLite online backup API.
+
+  * The oosqlIsHandleNull() function has been added.
+
+  * The oosqlColumnIndex() function has been added.
+
 
 
 Changes since ooSQLite Version 1.0.0.7833 (Preview)
