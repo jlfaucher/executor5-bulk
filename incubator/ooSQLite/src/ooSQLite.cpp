@@ -1575,7 +1575,7 @@ void noOpenDBException(RexxThreadContext *context, pCooSQLiteConn pConn)
 }
 
 
-void dbNotOpenException(RexxThreadContext *context, pCooSQLiteConn pConn, size_t pos)
+void dbNotOpenException(RexxMethodContext *c, pCooSQLiteConn pConn, size_t pos)
 {
     char buffer[256];
     if ( pConn->fileName != NULL )
@@ -1586,7 +1586,37 @@ void dbNotOpenException(RexxThreadContext *context, pCooSQLiteConn pConn, size_t
     {
         snprintf(buffer, sizeof(buffer), "Argument %d, the data base connection, is not open", pos);
     }
-    executionErrorException(context, buffer);
+    executionErrorException(c->threadContext, buffer);
+}
+
+
+void invalidDbStateException(RexxMethodContext *c, pCooSQLiteConn pConn, size_t pos)
+{
+    char buffer[256];
+    if ( pConn->fileName != NULL )
+    {
+        if ( pos == 0 )
+        {
+            snprintf(buffer, sizeof(buffer), "The %s data base is a backup destination target", pConn->fileName);
+        }
+        else
+        {
+            snprintf(buffer, sizeof(buffer), "Argument %d, the %s data base connection, is a backup destination target",
+                     pos, pConn->fileName);
+        }
+    }
+    else
+    {
+        if ( pos == 0 )
+        {
+            snprintf(buffer, sizeof(buffer), "The data base is a backup destination target");
+        }
+        else
+        {
+            snprintf(buffer, sizeof(buffer), "Argument %d, the data base connection, is a backup destination target", pos);
+        }
+    }
+    executionErrorException(c->threadContext, buffer);
 }
 
 
@@ -1644,6 +1674,16 @@ static inline pCooSQLiteConn requiredDBCSelf(RexxMethodContext *c, void *pCSelf)
     return (pCooSQLiteConn)pCSelf;
 }
 
+/**
+ * Checks both that the database connection CSelf is not null and that the
+ * connection is open and usable.  Usable means that the database is not the
+ * target of a back up.
+ *
+ * @param c
+ * @param pCSelf
+ *
+ * @return pCooSQLiteConn
+ */
 static inline pCooSQLiteConn requiredDB(RexxMethodContext *c, void *pCSelf)
 {
     pCooSQLiteConn pConn = requiredDBCSelf(c, pCSelf);
@@ -1653,6 +1693,10 @@ static inline pCooSQLiteConn requiredDB(RexxMethodContext *c, void *pCSelf)
         {
             noOpenDBException(c->threadContext, pConn);
             pConn = NULL;
+        }
+        else if ( pConn->isDestinationBU )
+        {
+            invalidDbStateException(c, pConn, 0);
         }
     }
     return pConn;
@@ -1742,6 +1786,18 @@ static inline pCooSQLiteBackup requiredBackup(RexxMethodContext *c, void *pCSelf
     return pCbu;
 }
 
+/**
+ * Returns the CSelf struct from an ooSQLiteConnection object.  The database
+ * connection must be open and usable or a condition is raised.  Usable means
+ * that the database can not be the destination target of a running backup
+ * operation.
+ *
+ * @param c
+ * @param dbConn
+ * @param pos
+ *
+ * @return pCooSQLiteConn
+ */
 static pCooSQLiteConn requiredOpenConnection(RexxMethodContext *c, RexxObjectPtr dbConn, size_t pos)
 {
     pCooSQLiteConn pConn = dbToCSelf(c, dbConn);
@@ -1749,12 +1805,18 @@ static pCooSQLiteConn requiredOpenConnection(RexxMethodContext *c, RexxObjectPtr
     if ( pConn == NULL )
     {
         baseClassIntializationException(c, "ooSQLiteConnection");
-        return NULLOBJECT;
+        return NULL;
     }
 
     if ( pConn->db == NULL )
     {
-        dbNotOpenException(c->threadContext, pConn, pos);
+        dbNotOpenException(c, pConn, pos);
+        return NULL;
+    }
+
+    if ( pConn->isDestinationBU )
+    {
+        invalidDbStateException(c, pConn, pos);
         return NULL;
     }
     return pConn;
@@ -2896,6 +2958,18 @@ RexxMethod1(RexxObjectPtr, oosqlconn_init_cls, OSELF, self)
 }
 
 
+/** ooSQLiteConnection::backupDestination  [attribute get]
+ */
+RexxMethod1(logical_t, oosqlconn_getBackupDestination_atr, CSELF, pCSelf)
+{
+    pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
+    if ( pConn == NULL )
+    {
+        return 1;
+    }
+    return pConn->isDestinationBU;
+}
+
 /** ooSQLiteConnection::closed  [attribute get]
  */
 RexxMethod1(logical_t, oosqlconn_getClosed_atr, CSELF, pCSelf)
@@ -3235,7 +3309,6 @@ RexxMethod1(int, oosqlconn_changes, CSELF, pCSelf)
  *  Closes the database connection for this ooSQLiteConnection object.
  *
  *
- *
  *  @remarks  The SQLite doc says that the sqlite3 pointer can be null or a
  *            pointer that has not been previously closed.  Calling close with a
  *            NULL is a harmless no-op.  We want to maintain that behaviour, so
@@ -3249,6 +3322,12 @@ RexxMethod1(int, oosqlconn_close, CSELF, pCSelf)
     pCooSQLiteConn pConn = requiredDBCSelf(context, pCSelf);
     if ( pConn != NULL )
     {
+        if ( pConn->isDestinationBU )
+        {
+            invalidDbStateException(context, pConn, 0);
+            return rc;
+        }
+
         cleanupCallbacks(context);
 
         rc = sqlite3_close(pConn->db);
@@ -3322,7 +3401,7 @@ RexxMethod2(RexxObjectPtr, oosqlconn_dbFileName, CSTRING, name, CSELF, pCSelf)
     pCooSQLiteConn pConn = requiredDB(context, pCSelf);
     if ( pConn == NULL )
     {
-        return context->UnsignedInt32(SQLITE_MISUSE);
+        return context->WholeNumber(SQLITE_MISUSE);
     }
 
     return safeRexxStringRx(context->threadContext, sqlite3_db_filename(pConn->db, name));
@@ -3429,7 +3508,7 @@ RexxMethod1(RexxObjectPtr, oosqlconn_errMsg, CSELF, pCSelf)
     pCooSQLiteConn pConn = requiredDB(context, pCSelf);
     if ( pConn == NULL )
     {
-        return context->UnsignedInt32(SQLITE_MISUSE);
+        return context->WholeNumber(SQLITE_MISUSE);
     }
 
     return context->String(sqlite3_errmsg(pConn->db));
@@ -4416,7 +4495,7 @@ RexxMethod4(RexxObjectPtr, oosqlstmt_init, RexxObjectPtr, db, CSTRING, sql, OPTI
         pCstmt->format = pConn->format;
     }
 
-    CSTRING msg  = "no error";
+    CSTRING msg  = "not and error";
     CSTRING tail = NULL;
 
     int rc = sqlite3_prepare_v2(pConn->db, sql, (int)strlen(sql) + 1, &pCstmt->stmt, &tail);
@@ -5869,7 +5948,7 @@ RexxMethod6(RexxObjectPtr, oosqlbu_init, RexxObjectPtr, srcDB, RexxObjectPtr, ds
         pCbu->srcRexxSelf = c->RequestGlobalReference(pConnSrc->rexxSelf);
         pCbu->dstRexxSelf = c->RequestGlobalReference(pConnDst->rexxSelf);
 
-        pCbu->lastErrMsg = context->String("no error");
+        pCbu->lastErrMsg = context->String("not an error");
         context->SetObjectVariable("__rxErrMsg", pCbu->lastErrMsg);
     }
 
@@ -6044,8 +6123,9 @@ RexxMethod1(logical_t, oosqlmtx_getIsNull_atr, CSELF, pCSelf)
 
 /** ooSQLiteMutex::init()
  *
- *  @param type  [required]  The SQLite muxtex type.  Can only be:
- *               SQLITE_MUTEX_RECURSIVE or SQLITE_MUTEX_FAST.
+ *  @param type  [optional]  The SQLite muxtex type.  Can only be:
+ *               SQLITE_MUTEX_RECURSIVE or SQLITE_MUTEX_FAST, defaults to
+ *               SQLITE_MUTEX_FAST.
  *
  *
  *  @remarks  The magic and mtx arguments are to allow a special case, internal
@@ -6057,7 +6137,7 @@ RexxMethod1(logical_t, oosqlmtx_getIsNull_atr, CSELF, pCSelf)
  *            impossible for the Rexx programmer to accidently get magic right,
  *            so that is all that is tested.
  */
-RexxMethod4(RexxObjectPtr, oosqlmtx_init, int, type, OPTIONAL_POINTER, magic, OPTIONAL_POINTER, mtx, OSELF, self)
+RexxMethod4(RexxObjectPtr, oosqlmtx_init, OPTIONAL_int, type, OPTIONAL_POINTER, magic, OPTIONAL_POINTER, mtx, OSELF, self)
 {
     bool isDbMutex = false;
 
@@ -6073,6 +6153,11 @@ RexxMethod4(RexxObjectPtr, oosqlmtx_init, int, type, OPTIONAL_POINTER, magic, OP
     if ( ! isDbMutex )
     {
         // We assume if we called this internally we passed the right type.
+
+        if ( argumentOmitted(1) )
+        {
+            type = SQLITE_MUTEX_FAST;
+        }
         if ( ! (type == SQLITE_MUTEX_FAST || type == SQLITE_MUTEX_RECURSIVE)  )
         {
             return wrongArgValueException(context->threadContext, 1, "MUTEX_RECURSIVE or MUTEX_FAST",
@@ -6239,12 +6324,22 @@ RexxMethod1(int, oosqlmtx_try, CSELF, pCSelf)
 #define ooSQLite_Routines_Section
 
 
-static inline sqlite3 *routineDB(RexxCallContext *c, void *_db)
+static inline sqlite3_backup *routineBu(RexxCallContext *c, void *_bu, size_t pos)
+{
+    sqlite3_backup *bu = (sqlite3_backup *)_bu;
+    if ( bu == NULL )
+    {
+        nullObjectException(c->threadContext, "backup handle", pos);
+    }
+    return bu;
+}
+
+static inline sqlite3 *routineDB(RexxCallContext *c, void *_db, size_t pos)
 {
     sqlite3 *db = (sqlite3 *)_db;
     if ( db == NULL )
     {
-        nullObjectException(c->threadContext, "database connection", 1);
+        nullObjectException(c->threadContext, "database connection", pos);
     }
     return db;
 }
@@ -6584,6 +6679,111 @@ RexxRoutine1(wholenumber_t, ooSQLiteMerge_rtn, ARGLIST, args)
 }
 
 
+/** oosqlBackupFinish()
+ *
+ *
+ */
+RexxRoutine1(int, oosqlBackupFinish_rtn, POINTER, _bu)
+{
+    sqlite3_backup *bu = routineBu(context, _bu, 1);
+    if ( bu == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_backup_finish(bu);
+}
+
+/** oosqlBackupInit()
+ *
+ *  @param dstConn  [required]  An open database connection.  This database is
+ *                  used as the destination of the backup.
+ *
+ *  @param dstName  [optional]  The name of the destination backup.  This is not
+ *                  the file name but rather the 'main', 'temp', or attached as
+ *                  name.  If omitted, 'main' is used.
+ *
+ *  @param srcConn  [required]  An open database connection.  This database is
+ *                  used as the source of the backup.
+ *
+ *  @param dstName  [optional]  The name of the source backup.  This is not the
+ *                  file name but rather the 'main', 'temp', or attached as
+ *                  name.  If omitted, 'main' is used.
+ *
+ *  @return  On success returns a backup handle that is used in the other online
+ *           backup functions.  The handle is an opaque datatype.  On error,
+ *           this handle is null.  To test if the handle is null use the
+ *           oosqlIsHandleNull() function.
+ *
+ */
+RexxRoutine4(POINTER, oosqlBackupInit_rtn, POINTER, dstConn, OPTIONAL_CSTRING, dstName, POINTER, srcConn,
+             OPTIONAL_CSTRING, srcName)
+{
+    sqlite3 *dst = routineDB(context, dstConn, 1);
+    sqlite3 *src = routineDB(context, srcConn, 3);
+
+    if ( dst == NULL || src == NULL )
+    {
+        return NULL;
+    }
+
+    if ( argumentOmitted(2) )
+    {
+        dstName = "main";
+    }
+    if ( argumentOmitted(4) )
+    {
+        srcName = "main";
+    }
+
+    return sqlite3_backup_init(dst, dstName, src, srcName);
+}
+
+/** oosqlBackupPageCount()
+ *
+ *
+ */
+RexxRoutine1(int, oosqlBackupPageCount_rtn, POINTER, _bu)
+{
+    sqlite3_backup *bu = routineBu(context, _bu, 1);
+    if ( bu == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_backup_pagecount(bu);
+}
+
+/** oosqlBackupRemaining()
+ *
+ *
+ */
+RexxRoutine1(int, oosqlBackupRemaining_rtn, POINTER, _bu)
+{
+    sqlite3_backup *bu = routineBu(context, _bu, 1);
+    if ( bu == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_backup_remaining(bu);
+}
+
+/** oosqlBackupStep()
+ *
+ *
+ */
+RexxRoutine2(int, oosqlBackupStep_rtn, POINTER, _bu, int, pageCount)
+{
+    sqlite3_backup *bu = routineBu(context, _bu, 1);
+    if ( bu == NULL )
+    {
+        return SQLITE_MISUSE;
+    }
+
+    return sqlite3_backup_step(bu, pageCount);
+}
+
 /** oosqlBindBlob()
  *
  *
@@ -6826,7 +7026,7 @@ RexxRoutine3(int, oosqlBindZeroBlob_rtn, POINTER, _stmt, int32_t, index, int, le
  */
 RexxRoutine3(RexxObjectPtr, oosqlBusyHandler_rtn, POINTER, _db, CSTRING, rtnName, OPTIONAL_RexxObjectPtr, userData)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
@@ -6841,7 +7041,7 @@ RexxRoutine3(RexxObjectPtr, oosqlBusyHandler_rtn, POINTER, _db, CSTRING, rtnName
  */
 RexxRoutine2(int, oosqlBusyTimeOut_rtn, POINTER, _db, int, ms)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -6859,7 +7059,7 @@ RexxRoutine2(int, oosqlBusyTimeOut_rtn, POINTER, _db, int, ms)
  */
 RexxRoutine1(int, oosqlChanges_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -6887,7 +7087,7 @@ RexxRoutine1(int, oosqlClearBindings_rtn, POINTER, _stmt)
  */
 RexxRoutine1(int, oosqlClose_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -7255,7 +7455,7 @@ RexxRoutine2(int, oosqlColumnValue_rtn, POINTER, _stmt, int32_t, index)
  */
 RexxRoutine3(RexxObjectPtr, oosqlCommitHook_rtn, POINTER, _db, CSTRING, rtnName, OPTIONAL_RexxObjectPtr, userData)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
@@ -7312,7 +7512,7 @@ RexxRoutine1(int, oosqlDataCount_rtn, POINTER, _stmt)
  */
 RexxRoutine2(RexxObjectPtr, oosqlDbFileName_rtn, POINTER, _db, CSTRING, name)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->UnsignedInt32(SQLITE_MISUSE);
@@ -7342,7 +7542,7 @@ RexxRoutine1(POINTER, oosqlDbHandle_rtn, POINTER, _stmt)
  */
 RexxRoutine1(POINTER, oosqlDbMutex_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->UnsignedInt32(SQLITE_MISUSE);
@@ -7358,7 +7558,7 @@ RexxRoutine1(POINTER, oosqlDbMutex_rtn, POINTER, _db)
  */
 RexxRoutine2(int, oosqlDbReadOnly_rtn, POINTER, _db, CSTRING, name)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -7373,7 +7573,7 @@ RexxRoutine2(int, oosqlDbReadOnly_rtn, POINTER, _db, CSTRING, name)
  */
 RexxRoutine1(int, oosqlDbReleaseMemory_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -7387,7 +7587,7 @@ RexxRoutine1(int, oosqlDbReleaseMemory_rtn, POINTER, _db)
  */
 RexxRoutine4(int, oosqlDbStatus_rtn, POINTER, _db, int, param, RexxObjectPtr, _result, OPTIONAL_logical_t, reset)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -7402,7 +7602,7 @@ RexxRoutine4(int, oosqlDbStatus_rtn, POINTER, _db, int, param, RexxObjectPtr, _r
  */
 RexxRoutine1(int, oosqlErrCode_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -7416,7 +7616,7 @@ RexxRoutine1(int, oosqlErrCode_rtn, POINTER, _db)
  */
 RexxRoutine1(RexxObjectPtr, oosqlErrMsg_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->UnsignedInt32(SQLITE_MISUSE);
@@ -7470,7 +7670,7 @@ RexxRoutine1(RexxObjectPtr, oosqlErrMsg_rtn, POINTER, _db)
 RexxRoutine5(RexxObjectPtr, oosqlExec_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_logical_t, doCallback,
              OPTIONAL_uint32_t, format, OPTIONAL_CSTRING, rtnName)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->UnsignedInt32(SQLITE_MISUSE);
@@ -7617,7 +7817,7 @@ RexxRoutine1(int, oosqlFinalize_rtn, POINTER, stmt)
  */
 RexxRoutine1(logical_t, oosqlGetAutocommit_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return 0;
@@ -7632,7 +7832,7 @@ RexxRoutine1(logical_t, oosqlGetAutocommit_rtn, POINTER, _db)
  */
 RexxRoutine1(int, oosqlInterrupt_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -7643,13 +7843,32 @@ RexxRoutine1(int, oosqlInterrupt_rtn, POINTER, _db)
     return SQLITE_OK;
 }
 
+/** oosqlIsHandleNull()
+ *
+ *  A convenience function that the classic Rexx programmer can use as an
+ *  alternative to handle~isNull.
+ *
+ *  @param  [required]  The handle to test.
+ *
+ *  @returns  True if the specified handle is null, otherwise false.
+ *
+ */
+RexxRoutine1(logical_t, oosqlIsHandleNull_rtn, POINTER, handle)
+{
+    if ( handle == NULL )
+    {
+        return 1;
+    }
+    return 0;
+}
+
 /** oosqlLastInsertRowID()
  *
  *
  */
 RexxRoutine1(int64_t, oosqlLastInsertRowID_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -7692,7 +7911,7 @@ RexxRoutine1(RexxObjectPtr, oosqlLibVersion_rtn, NAME, name)
  */
 RexxRoutine3(int, oosqlLimit_rtn, POINTER, _db, int, id, int, value)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -7724,7 +7943,13 @@ RexxRoutine0(int64_t, oosqlMemoryUsed_rtn)
  *  @param type  [required]  The SQLite muxtex type.  Can only be:
  *               SQLITE_MUTEX_RECURSIVE or SQLITE_MUTEX_FAST.
  *
+ *  @return  On success returns a handle to the mutex that can be used as an
+ *           argument in any other function that requires a mutex handle. The
+ *           handle is an opaque datatype.
  *
+ *           On error, this handle is null. To test if the handle is null use
+ *           the oosqlIsHandleNull() function.  Do not use a null handle in any
+ *           other function.
  */
 RexxRoutine1(POINTER, oosqlMutexAlloc_rtn, int, type)
 {
@@ -7735,7 +7960,7 @@ RexxRoutine1(POINTER, oosqlMutexAlloc_rtn, int, type)
         return NULL;
     }
 
-    return sqlite3_mutex_alloc(type);;
+    return sqlite3_mutex_alloc(type);
 }
 
 /** oosqlMutexEnter()
@@ -7817,55 +8042,6 @@ RexxRoutine1(int, oosqlMutexTry_rtn, POINTER, _mtx)
 }
 
 
-/** oosqlOpen()
- *
- *  Open a database connection.
- *
- *  @param file     The file name of the database to open.
- *
- *  @param flags    Flags that control how the database is opened..
- *
- *  @param vfsName  The name of the alternative operating system interface to
- *                  use.  This option is ignored by ooSQLite at this time.
- *
- *  @return  The connection to the database.  The connection is an opaque handle
- *           returned to the ooSQLite programmer as a Rexx Pointer object.
- *
- *  @note    The connection is (almost) always returned, even on error.  The
- *           programmer should immediately use oosqlErrCode() to check for
- *           error.  If oosqlErrCode() does not return .ooSQLiteConstants~OK then the
- *           database was not opened properly and the connection should not be
- *           used and must be closed.
- *
- *           oosqlClose() must always be called to properly close the database,
- *           even if it was opened with an error.
- *
- *           The only exception to this is if the error code is .ooSQLiteConstants~NOMEM, in
- *           which case no connection was created.  The returned Pointer is null
- *           and should not be passed to oosqlClose().
- */
-RexxRoutine3(POINTER, oosqlOpen_rtn, CSTRING, file, OPTIONAL_int32_t, _flags, OPTIONAL_CSTRING, vfsName)
-{
-    sqlite3 *db;
-
-    int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
-    if ( argumentExists(2) )
-    {
-        flags = _flags;
-    }
-
-    int rc = sqlite3_open_v2(file, &db, flags, NULL);
-
-    if ( rc == SQLITE_OK )
-    {
-        // Here we enable things that are enabled / disabled on a per database
-        // connection basis that are set by default for ooSQLite.
-        sqlite3_extended_result_codes(db, 1);
-    }
-
-    return db;
-}
-
 /** oosqlNextStmt()
  *
  *  Finds the next prepared statement associated with the specified database
@@ -7885,7 +8061,7 @@ RexxRoutine3(POINTER, oosqlOpen_rtn, CSTRING, file, OPTIONAL_int32_t, _flags, OP
  */
 RexxRoutine2(RexxObjectPtr, oosqlNextStmt_rtn, POINTER, _db, OPTIONAL_RexxObjectPtr, _stmt)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return NULLOBJECT;
@@ -7920,6 +8096,60 @@ RexxRoutine2(RexxObjectPtr, oosqlNextStmt_rtn, POINTER, _db, OPTIONAL_RexxObject
     return result;
 }
 
+/** oosqlOpen()
+ *
+ *  Open a database connection.
+ *
+ *  @param file     The file name of the database to open.
+ *
+ *  @param flags    Flags that control how the database is opened.
+ *
+ *  @param vfsName  The name of the alternative operating system interface to
+ *                  use.  This option is ignored by ooSQLite at this time.
+ *
+ *  @return  On success returns a handle to the database connection that can be
+ *           used as an argument in any other function that requires a database
+ *           connection handle. The handle is an opaque datatype.
+ *
+ *           On error, this handle is null. To test if the handle is null use
+ *           the oosqlIsHandleNull() function.  Do not use a null handle in any
+ *           other function.
+ *
+ *  @note    The connection is (almost) always returned, even on error.  The
+ *           programmer should immediately use oosqlErrCode() to check for
+ *           error.  If oosqlErrCode() does not return .ooSQLiteConstants~OK
+ *           then the database was not opened properly and the connection should
+ *           not be used and must be closed.
+ *
+ *           oosqlClose() must always be called to properly close the database,
+ *           even if it was opened with an error.
+ *
+ *           The only exception to this is if the returned handle is null, in
+ *           which case no connection was created.  A null handle should never
+ *           be used in any ooSQLite function.
+ */
+RexxRoutine3(POINTER, oosqlOpen_rtn, CSTRING, file, OPTIONAL_int32_t, _flags, OPTIONAL_CSTRING, vfsName)
+{
+    sqlite3 *db;
+
+    int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+    if ( argumentExists(2) )
+    {
+        flags = _flags;
+    }
+
+    int rc = sqlite3_open_v2(file, &db, flags, NULL);
+
+    if ( rc == SQLITE_OK )
+    {
+        // Here we enable things that are enabled / disabled on a per database
+        // connection basis that are set by default for ooSQLite.
+        sqlite3_extended_result_codes(db, 1);
+    }
+
+    return db;
+}
+
 /** oosqlPrepare()
  *
  *
@@ -7938,6 +8168,13 @@ RexxRoutine2(RexxObjectPtr, oosqlNextStmt_rtn, POINTER, _db, OPTIONAL_RexxObject
  *                           remains uncompiled.  I.e. the portion past the
  *                           first ';'
  *
+ *  @return  On success returns a handle to the prepared statement that can be
+ *           used as an argument in any other function that requires a prepared
+ *           statement handle. The handle is an opaque datatype.
+ *
+ *           On error, this handle is null. To test if the handle is null use
+ *           the oosqlIsHandleNull() function.  Do not use a null handle in any
+ *           other function.
  *
  *  @remarks  Testing has shown that if ppTail is not null when passed into
  *            sqlite3_prepare_v2() it is always set to a zero-terminated string.
@@ -7949,7 +8186,7 @@ RexxRoutine3(POINTER, oosqlPrepare_rtn, POINTER, _db, CSTRING, sql, OPTIONAL_Rex
     const char   *tail   = NULL;
     const char  **ppTail = NULL;
 
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         goto done_out;
@@ -8021,7 +8258,7 @@ done_out:
  */
 RexxRoutine3(RexxObjectPtr, oosqlProfile_rtn, POINTER, _db, CSTRING, rtnName, OPTIONAL_RexxObjectPtr, userData)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
@@ -8077,7 +8314,7 @@ RexxRoutine3(RexxObjectPtr, oosqlProfile_rtn, POINTER, _db, CSTRING, rtnName, OP
 RexxRoutine4(RexxObjectPtr, oosqlProgressHandler_rtn, POINTER, _db, CSTRING, rtnName, int, instructions,
              OPTIONAL_RexxObjectPtr, userData)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
@@ -8142,7 +8379,7 @@ RexxRoutine1(int, oosqlReset_rtn, POINTER, _stmt)
  */
 RexxRoutine3(RexxObjectPtr, oosqlRollbackHook_rtn, POINTER, _db, CSTRING, rtnName, OPTIONAL_RexxObjectPtr, userData)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
@@ -8212,7 +8449,7 @@ RexxRoutine3(RexxObjectPtr, oosqlRollbackHook_rtn, POINTER, _db, CSTRING, rtnNam
  */
 RexxRoutine3(RexxObjectPtr, oosqlSetAuthorizer_rtn, POINTER, _db, CSTRING, rtnName, OPTIONAL_RexxObjectPtr, userData)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
@@ -8335,7 +8572,7 @@ RexxRoutine3(int, oosqlStmtStatus_rtn, POINTER, _stmt, int, param, OPTIONAL_logi
 RexxRoutine5(int, oosqlTableColumnMetadata_rtn, POINTER, _db, CSTRING, dbName, CSTRING, tableName,
              CSTRING, colName, RexxObjectPtr, results)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -8359,7 +8596,7 @@ RexxRoutine0(logical_t, oosqlThreadSafe_rtn)
  */
 RexxRoutine1(int, oosqlTotalChanges_rtn, POINTER, _db)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return SQLITE_MISUSE;
@@ -8404,7 +8641,7 @@ RexxRoutine1(int, oosqlTotalChanges_rtn, POINTER, _db)
  */
 RexxRoutine3(RexxObjectPtr, oosqlTrace_rtn, POINTER, _db, CSTRING, rtnName, OPTIONAL_RexxObjectPtr, userData)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
@@ -8456,7 +8693,7 @@ RexxRoutine3(RexxObjectPtr, oosqlTrace_rtn, POINTER, _db, CSTRING, rtnName, OPTI
  */
 RexxRoutine3(RexxObjectPtr, oosqlUpdateHook_rtn, POINTER, _db, CSTRING, rtnName, OPTIONAL_RexxObjectPtr, userData)
 {
-    sqlite3 *db = routineDB(context, _db);
+    sqlite3 *db = routineDB(context, _db, 1);
     if ( db == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
@@ -8539,6 +8776,11 @@ RexxMethod1(int, db_cb_releaseBuffer, RexxObjectPtr, buffer)
 REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteVersion_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteMerge_rtn);
 
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupFinish_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupInit_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupPageCount_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupRemaining_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupStep_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBindBlob_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBindDouble_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBindInt_rtn);
@@ -8587,6 +8829,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlExtendedResultCodes_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlFinalize_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlGetAutocommit_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlInterrupt_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oosqlIsHandleNull_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLastInsertRowID_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLibVersion_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlLimit_rtn);
@@ -8625,6 +8868,11 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(ooSQLiteVersion_rtn,           ooSQLiteVersion_rtn),
     REXX_TYPED_ROUTINE(ooSQLiteMerge_rtn,             ooSQLiteMerge_rtn),
 
+    REXX_TYPED_ROUTINE(oosqlBackupFinish_rtn,         oosqlBackupFinish_rtn),
+    REXX_TYPED_ROUTINE(oosqlBackupInit_rtn,           oosqlBackupInit_rtn),
+    REXX_TYPED_ROUTINE(oosqlBackupPageCount_rtn,      oosqlBackupRemaining_rtn),
+    REXX_TYPED_ROUTINE(oosqlBackupRemaining_rtn,      oosqlBackupPageCount_rtn),
+    REXX_TYPED_ROUTINE(oosqlBackupStep_rtn,           oosqlBackupStep_rtn),
     REXX_TYPED_ROUTINE(oosqlBindBlob_rtn,             oosqlBindBlob_rtn),
     REXX_TYPED_ROUTINE(oosqlBindDouble_rtn,           oosqlBindDouble_rtn),
     REXX_TYPED_ROUTINE(oosqlBindInt_rtn,              oosqlBindInt_rtn),
@@ -8673,6 +8921,7 @@ RexxRoutineEntry ooSQLite_functions[] =
     REXX_TYPED_ROUTINE(oosqlFinalize_rtn,             oosqlFinalize_rtn),
     REXX_TYPED_ROUTINE(oosqlGetAutocommit_rtn,        oosqlGetAutocommit_rtn),
     REXX_TYPED_ROUTINE(oosqlInterrupt_rtn,            oosqlInterrupt_rtn),
+    REXX_TYPED_ROUTINE(oosqlIsHandleNull_rtn,         oosqlIsHandleNull_rtn),
     REXX_TYPED_ROUTINE(oosqlLastInsertRowID_rtn,      oosqlLastInsertRowID_rtn),
     REXX_TYPED_ROUTINE(oosqlLibVersion_rtn,           oosqlLibVersion_rtn),
     REXX_TYPED_ROUTINE(oosqlLimit_rtn,                oosqlLimit_rtn),
@@ -8740,6 +8989,7 @@ REXX_METHOD_PROTOTYPE(oosql_test_cls);
 // .ooSQLiteConnection
 REXX_METHOD_PROTOTYPE(oosqlconn_init_cls);
 
+REXX_METHOD_PROTOTYPE(oosqlconn_getBackupDestination_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getClosed_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getFileName_atr);
 REXX_METHOD_PROTOTYPE(oosqlconn_getInitCode_atr);
@@ -8898,6 +9148,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     // .ooSQLiteConnection
     REXX_METHOD(oosqlconn_init_cls,                   oosqlconn_init_cls),
 
+    REXX_METHOD(oosqlconn_getBackupDestination_atr,   oosqlconn_getBackupDestination_atr),
     REXX_METHOD(oosqlconn_getClosed_atr,              oosqlconn_getClosed_atr),
     REXX_METHOD(oosqlconn_getFileName_atr,            oosqlconn_getFileName_atr),
     REXX_METHOD(oosqlconn_getInitCode_atr,            oosqlconn_getInitCode_atr),

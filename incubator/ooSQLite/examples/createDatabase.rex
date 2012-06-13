@@ -162,7 +162,7 @@
 
   if id == 'INIT' then do
     say 'ooSQLiteStmt initialization error (create' tableName 'table):'
-    say '  Error:' stmt~initCode '('stmt~errMsg')'
+    say '  Error:' stmt~initCode '('stmt~lastErrMsg')'
   end
   else if id == 'TABLE' then do
     say "Unexpected return from creating" tableName "table:"

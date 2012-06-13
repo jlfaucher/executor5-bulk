@@ -219,7 +219,7 @@
 
   if id == 'INIT' then do
     say 'ooSQLiteStmt initialization error (create' tablenName 'table):'
-    say '  Error:' stmt~initCode '('stmt~errMsg')'
+    say '  Error:' stmt~initCode '('stmt~lastErrMsg')'
   end
   else if id == 'TABLE' then do
     say "Unexpected return from creating" tableName "table:"
@@ -227,11 +227,11 @@
   end
   else if id == 'PREPARE' then do
     say 'ooSQLiteStmt initialization error (insert into' tablenName 'table):'
-    say '  Error:' stmt~initCode '('stmt~errMsg')'
+    say '  Error:' stmt~initCode '('stmt~lastErrMsg')'
   end
   else if id == 'INSERT' then do
     say 'Unexpected return from inserting record into' tablenName 'table):'
-    say '  Error:' stmt~initCode '('stmt~errMsg')'
+    say '  Error:' stmt~initCode '('stmt~lastErrMsg')'
   end
 
   say "Aborting example program ..."

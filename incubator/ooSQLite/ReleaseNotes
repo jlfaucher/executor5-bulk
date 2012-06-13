@@ -251,18 +251,28 @@ Changes since ooSQLite Version 1.0.0.7864 (Preview)
   --------------------------
 
   * The third optional argument to oosqlPrepare() was a .MutableBuffer
-  object. This has been changed to use a stem instead, as is more fitting
-  for the 'classic Rexx' interface.
+  object.  This has been changed to use a stem instead, as is more
+  fitting for the 'classic Rexx' interface.
 
-  *
+  * The first argument to ooSQLitleMutex::new(), the mutex type
+  argument, was required.  This has changed to be optional, with
+  MUTEX_FAST being the default.
 
+  * The ooSQLiteStmt::errMsg attribute has been renamed to lastErrMsg.
 
   Enhancements:
   -------------
 
   * The .ooSQLiteBackup class has been added.
 
+  * The oosqlBackupInit(), oosqlBackupFinish(), oosqlBackupPageCount(),
+  oosqlRemaining(), and oosqlBackupStep() functions have been added.
 
+  * The oosqlIsHandleNull() function has been added.
+
+  * The ooSQLiteConnection::backupDestination attribute has been added.
+
+  * The ooSQLiteStmt::lastErrCode attribute has been added.
 
 
 Changes since ooSQLite Version 1.0.0.7833 (Preview)

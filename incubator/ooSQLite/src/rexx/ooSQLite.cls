@@ -84,6 +84,7 @@
 
 ::method init class external "LIBRARY oosqlite oosqlconn_init_cls"
 
+::attribute backupDestination get external "LIBRARY oosqlite oosqlconn_getBackupDestination_atr"
 ::attribute closed get external "LIBRARY oosqlite oosqlconn_getClosed_atr"
 ::attribute fileName get external "LIBRARY oosqlite oosqlconn_getFileName_atr"
 ::attribute initCode get external "LIBRARY oosqlite oosqlconn_getInitCode_atr"
@@ -240,6 +241,11 @@
 ::routine ooSQLiteVersion public external "LIBRARY oosqlite ooSQLiteVersion_rtn"
 ::routine ooSQLiteMerge public external "LIBRARY oosqlite ooSQLiteMerge_rtn"
 
+::routine oosqlBackupFinish public external "LIBRARY oosqlite oosqlBackupFinish_rtn"
+::routine oosqlBackupInit public external "LIBRARY oosqlite oosqlBackupInit_rtn"
+::routine oosqlBackupPageCount public external "LIBRARY oosqlite oosqlBackupPageCount_rtn"
+::routine oosqlBackupRemaining public external "LIBRARY oosqlite oosqlBackupRemaining_rtn"
+::routine oosqlBackupStep public external "LIBRARY oosqlite oosqlBackupStep_rtn"
 ::routine oosqlBindBlob public external "LIBRARY oosqlite oosqlBindBlob_rtn"
 ::routine oosqlBindDouble public external "LIBRARY oosqlite oosqlBindDouble_rtn"
 ::routine oosqlBindInt public external "LIBRARY oosqlite oosqlBindInt_rtn"
@@ -289,6 +295,7 @@
 ::routine oosqlFinalize public external "LIBRARY oosqlite oosqlFinalize_rtn"
 ::routine oosqlGetAutocommit public external "LIBRARY oosqlite oosqlGetAutocommit_rtn"
 ::routine oosqlInterrupt public external "LIBRARY oosqlite oosqlInterrupt_rtn"
+::routine oosqlIsHandleNull public external "LIBRARY oosqlite oosqlIsHandleNull_rtn"
 ::routine oosqlLastInsertRowID public external "LIBRARY oosqlite oosqlLastInsertRowID_rtn"
 ::routine oosqlLibVersion public external "LIBRARY oosqlite oosqlLibVersion_rtn"
 ::routine oosqlLibVersionNumber public external "LIBRARY oosqlite oosqlLibVersion_rtn"

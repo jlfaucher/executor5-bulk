@@ -39,7 +39,9 @@
  *  loadDatabase.rex
  *
  * This example loads the ooFoodsrdbx database from disk into an in memory
- * database using the ooSQLiteBackup object.
+ * database using the ooSQLiteBackup object.  It does a few things to check that
+ * the in memory database is okay and then writes out the in memory database to
+ * a new database on disk using the ooSQLiteBackup object.
  */
 
 
@@ -62,6 +64,18 @@
   -- the 3rd argument is whether to SAVE the destination or not.  If true, the
   -- open connection can be retrieved using the getDestConn() method.  That is
   -- what we do here.
+  --
+  -- The source database connection and the destionation database connection
+  -- should have a busy handler installed.  By default there is no busy handler
+  -- whe a connection is opened.  When the destination database connection is
+  -- opened automatically from a database name, the backup object automatically
+  -- adds a busy timeout handler of 3 seconds.  But, the backup object never
+  -- changes anything in a user supplied connection, (i.e., the srcConn in this
+  -- example.)  In this simple program we probably would never need a busy
+  -- handler because there is no concurrent access going on.  But, it is
+  -- probably a good practice to have one.
+
+  srcConn~busyTimeout(3000)  -- 3 seconds.
 
   bu = .ooSQLiteBackup~new(srcConn, ":memory:", .true)
   if bu~initCode <> bu~OK then do
@@ -103,27 +117,26 @@
 
   memConn = bu~getDestConn
 
-  -- Do a query to show we have good results for the database in memory.
-  sql = "SELECT * FROM foods WHERE name LIKE '%Bobka%';"
-  stmt = .ooSQLiteStmt~new(memConn, sql)
-  if stmt~initCode <> 0 then do
-    say 'ooSQLiteStmt initialization error:' stmt~initCode
-    say '  Error code:' stmt~initCode '('stmt~errMsg')'
+  -- Do a query to show we have good results for the database in memory.  The
+  -- query is put in a function below because we use it several times.
 
-    stmt~finalize
-    memConn~close
+  if queryDB(memConn) == 99 then return 99
+
+  -- We can also use a pragma to test the integrity of the in memory database.
+
+  memConn~recordFormat = memConn~OO_ARRAY_OF_ARRAYS
+  rs = memConn~pragma('integrity_check')
+  say rs[1]~at(1)
+  say '='~copies(80)
+  say rs[2]~at(1)
+  say
+
+  if rs[2]~at(1) \== 'ok' then do
+    say 'Backup to in memory database was corrupted, quitting'
+    memConn~close  -- No real need, this will just disapear when the interpreter closes.
     return 99
   end
 
-  say stmt~columnName(1)~left(25) || stmt~columnName(2)~left(25) || stmt~columnName(3)~left(25)
-  say '='~copies(80)
-
-  do while stmt~step == stmt~ROW
-    say stmt~columnText(1)~left(25) || stmt~columnText(2)~left(25) || stmt~columnText(3)~left(25)
-  end
-  say
-
-  stmt~finalize
 
   -- Now write the in memory database to disk using a different database name.
   bu = .ooSQLiteBackup~new(memConn, 'ooFoodsCopy.rdbx')
@@ -145,7 +158,7 @@
         leave
       end
       when ret == bu~OK then do
-        say 'Copied 2 pages from the in memeory database to the disk database.'
+        say 'Copied 2 pages from the in memory database to the disk database.'
       end
       when ret == bu~BUSY then do
         say 'Database engine could not get required file system lock.'
@@ -172,4 +185,59 @@
 
   memConn~close
 
+  -- If there was no error, connect to the copied database and run the same
+  -- query as before.  You should see the same output as when the query was run
+  -- on the in memory database.
+
+  if bu~lastErrCode == bu~OK then do
+    diskConn = .ooSQLiteConnection~new('ooFoodsCopy.rdbx')
+
+    -- Test the integrity of the backed up copy on disk
+    diskConn~recordFormat = diskConn~OO_ARRAY_OF_ARRAYS
+    rs = diskConn~pragma('integrity_check')
+    say rs[1]~at(1)
+    say '='~copies(80)
+    say rs[2]~at(1)
+    say
+
+    if rs[2]~at(1) \== 'ok' then do
+      say 'Backup from in memory database to disk was corrupted, quitting'
+      diskConn~close
+      return 99
+    end
+
+    if queryDB(diskConn) == 99 then return 99
+  end
+
+  -- Quit
+  diskConn~close
+  return 0
+
 ::requires 'ooSQLite.cls'
+
+::routine queryDB
+  use strict arg dbConn
+
+  sql = "SELECT * FROM foods WHERE name LIKE '%Bobka%';"
+  stmt = .ooSQLiteStmt~new(dbConn, sql)
+  if stmt~initCode <> 0 then do
+    say 'ooSQLiteStmt initialization error:' stmt~initCode
+    say '  Error code:' stmt~initCode '('stmt~lastErrMsg')'
+
+    stmt~finalize
+    memConn~close
+    return 99
+  end
+
+  say stmt~columnName(1)~left(25) || stmt~columnName(2)~left(25) || stmt~columnName(3)~left(25)
+  say '='~copies(80)
+
+  do while stmt~step == stmt~ROW
+    say stmt~columnText(1)~left(25) || stmt~columnText(2)~left(25) || stmt~columnText(3)~left(25)
+  end
+  say
+
+  stmt~finalize
+
+  return stmt~OK
+

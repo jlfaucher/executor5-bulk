@@ -63,12 +63,12 @@
     return 99
   end
 
-  stmt = .ooSQLiteStmt~new(dbConn, 'SELECT * FROM foods ORDER BY name;')
+  stmt = .ooSQLiteStmt~new(dbConn, 'SELECT * FROM fooods ORDER BY name;')
   if stmt~initCode <> 0 then do
     say 'ooSQLiteStmt initialization error:' stmt~initCode
-    say '  Error code:' stmt~initCode '('stmt~errMsg')'
+    say '  Error code:' stmt~initCode '('stmt~lastErrMsg')'
 
-    stmt~finialize
+    stmt~finalize
     dbConn~close
     return 99
   end
