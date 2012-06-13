@@ -49,6 +49,7 @@ xml_FILES = oosqlite.xml \
 	     classicinterface.xml \
 	     legalstuff.xml \
 	     oointerface.xml \
+	     oosqliteBackup.xml \
 	     oosqliteConnection.xml \
 	     oosqliteConstants.xml \
 	     oosqlFunctions.xml \

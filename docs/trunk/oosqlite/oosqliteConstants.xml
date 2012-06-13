@@ -334,21 +334,21 @@
 <entry></entry>
 </row>
 
-<row>
+<row id="rowFileOpen">
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 <entry align="center"><emphasis role="bold">File Open Constants</emphasis></entry>
 </row>
 <row>
 <entry>OPEN_READONLY</entry>
-<entry>Ok for sqlite3_open_v2()</entry>
+<entry>Ok for sqlite3_open_v2(). The database is opened in read-only mode. If the database does not already exist, an error is returned.</entry>
 </row>
 <row>
 <entry>OPEN_READWRITE</entry>
-<entry>Ok for sqlite3_open_v2()</entry>
+<entry>Ok for sqlite3_open_v2(). The database is opened for reading and writing if possible, or reading only if the file is write protected by the operating system. In either case the database must already exist, otherwise an error is returned</entry>
 </row>
 <row>
 <entry>OPEN_CREATE</entry>
-<entry>Ok for sqlite3_open_v2()</entry>
+<entry>Ok for sqlite3_open_v2(). When merged with OPEN_READWRITE, the database is opened for reading and writing, and is created if it does not already exist.</entry>
 </row>
 <row>
 <entry>OPEN_DELETEONCLOSE</entry>
@@ -947,7 +947,7 @@
 <entry></entry>
 </row>
 
-<row>
+<row id="rowMutexType">
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 <entry align="center"><emphasis role="bold">Mutex Type Constants</emphasis></entry>
 </row>

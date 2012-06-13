@@ -144,6 +144,64 @@
 </variablelist>
 </section>  <!-- End ooSQLiteConnection::new() -->
 
+<section id="atrbackupDestination"><title>backupDestination (Attribute)</title>
+<indexterm><primary>backupDestination</primary></indexterm>
+<indexterm><primary>ooSQLiteConnection class</primary><secondary>backupDestination</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--backupDestination----------------------------><
+
+>>--backupDestination-=-varName------------------><
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">backupDestination</emphasis> attribute reflects whether this database connection is
+  currently in use as the destination for an online backup.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">backupDestination get:</emphasis></term>
+  <listitem>
+  <para>
+    When the value of this attribute is true, this database connection is currently in use as the destination database
+    of an online backup. At al other times, the value is false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">backupDestination set:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer can not set the value of this attribute. Its value is set internally by ooSQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The destination database connection can not be used, by any thread, after the backup is initialized and before the
+    backup is <link linkend="mthFinish">finished</link>. Becasue SQLite does not currently check to see if the
+    application incorrectly accesses the destination database connection, no error code is reported, but the operations
+    may malfunction nevertheless. Use of the destination database connection while a backup is in progress might also
+    cause a mutex deadlock.
+  </para>
+  <para>
+    To prevent this situation, if this database connection is currently in use as the destination for an online backup,
+    this object is locked. Any invocation of any <emphasis role="bold">method</emphasis> of this object will raise an
+    error condition. Note that all <emphasis role="bold">attributes</emphasis> of this object are still accessible.
+  </para>
+  <para>
+    Normally, the programmer would be fully aware of which database connection is currently in use as a destionation
+    database. However, in the event the programmer is not sure of the state of this database connection, the <emphasis
+    role="italic">backupDestination</emphasis> attribute can be used to determine the state.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    This attribute is an ehancement provided by ooSQLite, there is no applicable API provied by SQLite.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteConnection::backupDestination() [attribute]  -->
+
 
 <section id="atrClosedClsConnection"><title>closed (Attribute)</title>
 <indexterm><primary>closed</primary></indexterm>
@@ -376,7 +434,23 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The last error message attribute is similar to the <link linkend="atrLastErrCodeClsStmt">lastErrCode</link>
+    attribute. Its value is the last status message recorded by ooSQLite. The <emphasis
+    role="italic">lastErrCode</emphasis> and the <emphasis role="italic">lastErrMsg</emphasis> attributes are always
+    updated together. The error message is always the message that goes with the error code.
+  </para>
+  <para>
+    Each of the three major ooSQLite objects, an <link linkend="clsooSQLiteConnection">ooSQLiteConnection</link>, an
+    <link linkend="clsooSQLiteStmt">ooSQLiteStmt</link>, and an <link
+    linkend="clsooSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
+    a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
+    hold the last error message and code recorded by ooSQLite.
+  </para>
+  <para>
+    The attributes are most useful when the invocation of <emphasis role="italic">new</emphasis> fails to initialize the
+    object correctly due to an error. The <emphasis role="italic">lastErrMsg</emphasis> and <emphasis
+    role="italic">lastErrCode</emphasis> attributes are always updated during <emphasis role="italic">new</emphasis>.
+    In general, these objects do not update the attributes after every method invocation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

@@ -63,9 +63,14 @@
   familiar to the average Rexx programmer.
 </para>
 
-<section id="defSomeTerm"><title>SomeTerm</title>
+<section id="defHandle"><title>Handle</title>
 <para>
-  Text
+  A unique reference to a data structure assigned by the SQLite database engine to manage its databases. It can be a
+  reference to a database connection, a prepared statement, an online backup, etc.. Handles are used in the <link
+  linkend="chpClassicInteface">classic</link> Rexx interface and are required as arguments for certain functions. A
+  handle is an opaque type, the Rexx programmer need not be aware of the specific format of a handle. The ooSQLite
+  package provides functions that return handles. When a function requires a handle as an argument, the Rexx programmer
+  needs to obtain the handle from one of those provided functions.
 </para>
 </section>
 

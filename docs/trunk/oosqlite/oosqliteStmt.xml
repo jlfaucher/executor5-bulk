@@ -69,7 +69,7 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsOOSQLiteStmt">new</link></entry>
+<entry><link linkend="mthNewClsStmt">new</link></entry>
 <entry>Instantiates a new ooSQLite prepared statement.</entry>
 </row>
 <row>
@@ -84,7 +84,7 @@
 </table>
 </section>
 
-<section id="mthNewClsOOSQLiteStmt"><title>new (Class method)</title>
+<section id="mthNewClsStmt"><title>new (Class method)</title>
 <indexterm><primary>new</primary></indexterm>
 <indexterm><primary>ooSQLiteStmt class</primary><secondary>new</secondary></indexterm>
 <programlisting>
@@ -143,62 +143,6 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ooSQLiteStmt::new() -->
-
-
-<section id="atrErrMsg"><title>errMsg (Attribute)</title>
-<indexterm><primary>errMsg</primary></indexterm>
-<indexterm><primary>ooSQLiteStmt class</primary><secondary>errMsg</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--errMsg-----------------------------------------------------><
-
->>--errMsg-=-varName-------------------------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  xx
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">errMsg get:</emphasis></term>
-  <listitem>
-  <para>
-    details about get
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">errMsg set:</emphasis></term>
-  <listitem>
-  <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Anything?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>  <!-- End ooSQLiteStmt::errMsg() [attribute]  -->
 
 
 <section id="atrInitCodeClsStmt"><title>initCode (Attribute)</title>
@@ -311,6 +255,164 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ooSQLiteStmt::finalized() [attribute]  -->
+
+
+<section id="atrLastErrCode"><title>lastErrCode (Attribute)</title>
+<indexterm><primary>lastErrCode</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>lastErrCode</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lastErrCode-----------------------------------------------------><
+
+>>--lastErrCode-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">lastErrCode</emphasis> attribute reflects the last error code recorded by ooSQLite.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">lastErrCode get:</emphasis></term>
+  <listitem>
+  <para>
+    The value of this attribute is the last error code recorded by ooSQLite for this prepared statement.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">lastErrCode set:</emphasis></term>
+  <listitem>
+  <para>
+    The Rexx programmer can not set the value of the last error code, it is set internally by ooSQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+    <para>
+      The last error code attribute is similar to the <link linkend="atrLastErrMsgClsStmt">lastErrMsg</link> attribute.
+      Its value is the last status code recorded by ooSQLite. The <emphasis role="italic">lastErrCode</emphasis> and the
+      <emphasis role="italic">lastErrMsg</emphasis> attributes are always updated together. The error message is always
+      the message that goes with the error code.
+    </para>
+    <para>
+      Each of the three major ooSQLite objects, an <link linkend="clsooSQLiteConnection">ooSQLiteConnection</link>, an
+      <link linkend="clsooSQLiteStmt">ooSQLiteStmt</link>, and an <link
+      linkend="clsooSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
+      a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
+      hold the last error message and code recorded by ooSQLite.
+    </para>
+    <para>
+      The attributes are most useful when the invocation of <emphasis role="italic">new</emphasis> fails to initialize the
+      object correctly due to an error. The <emphasis role="italic">lastErrMsg</emphasis> and <emphasis
+      role="italic">lastErrCode</emphasis> attributes are always updated during <emphasis role="italic">new</emphasis>.
+      In general, these objects do not update the attributes after every method invocation.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Anything?
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::lastErrCode() [attribute]  -->
+
+
+<section id="atrLastErrMsgClsStmt"><title>lastErrMsg (Attribute)</title>
+<indexterm><primary>lastErrMsg</primary></indexterm>
+<indexterm><primary>ooSQLiteStmt class</primary><secondary>lastErrMsg</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--lastErrMsg-----------------------------------><
+
+>>--lastErrMsg-=-varName-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">errMsg get:</emphasis></term>
+  <listitem>
+  <para>
+    This attribute holds the value of the last error message recorded by ooSQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">errMsg set:</emphasis></term>
+  <listitem>
+  <para>
+    The programmer can not set the value of this attribute. It is set internally by ooSQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The last error message attribute is similar to the <link linkend="atrLastErrCodeClsStmt">lastErrCode</link>
+    attribute. Its value is the last status message recorded by ooSQLite. The <emphasis
+    role="italic">lastErrCode</emphasis> and the <emphasis role="italic">lastErrMsg</emphasis> attributes are always
+    updated together. The error message is always the message that goes with the error code.
+  </para>
+  <para>
+    Each of the three major ooSQLite objects, an <link linkend="clsooSQLiteConnection">ooSQLiteConnection</link>, an
+    <link linkend="clsooSQLiteStmt">ooSQLiteStmt</link>, and an <link
+    linkend="clsooSQLiteBackup">ooSQLiteBackup</link> object have a <emphasis role="italic">lastErrMsg</emphasis> and
+    a <emphasis role="italic">lastErrCode</emphasis> attribute. These attributes all serve the same basic purpose, to
+    hold the last error message and code recorded by ooSQLite.
+  </para>
+  <para>
+    The attributes are most useful when the invocation of <emphasis role="italic">new</emphasis> fails to initialize the
+    object correctly due to an error. The <emphasis role="italic">lastErrMsg</emphasis> and <emphasis
+    role="italic">lastErrCode</emphasis> attributes are always updated during <emphasis role="italic">new</emphasis>.
+    In general, these objects do not update the attributes after every method invocation.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    In some circumstances, the error message from the SQLite API, <ulink
+    url="http://www.sqlite.org/c3ref/errcode.html">sqlite3_errmsg()</ulink> is copied into the <emphasis
+    role="italic">lastErrMsg</emphasis>. At other times the error message is specific to ooSQLite.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example initializes a new ooSQLiteStmt object. When the <link linkend="atrInitCodeClsStmt">initCode</link>
+    attribute is checked, it is seen that an error ocurred, and the last error message is printed to the screen:
+<programlisting>
+<![CDATA[
+
+
+  stmt = .ooSQLiteStmt~new(dbConn, 'SELECT * FROM fooods ORDER BY name;')
+  if stmt~initCode <> 0 then do
+    say 'ooSQLiteStmt initialization error:' stmt~initCode
+    say '  Error code:' stmt~initCode '('stmt~lastErrMsg')'
+
+  /*  output would be similar to:
+
+  ooSQLiteStmt initialization error: 1
+    Error code: 1 (no such table: fooods)
+
+  */
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteStmt::lastErrMsg() [attribute]  -->
 
 
 <section id="atrRecordFormatClsStmt"><title>recordFormat (Attribute)</title>
