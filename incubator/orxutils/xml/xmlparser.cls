@@ -95,11 +95,11 @@
 /*----------------------------------------------------------------------------*/
 
 ::constant parserver '0.5'             -- the version of this parser
-::method src         attribute private -- the array of xml lines to be parsed
-::method lineidx     attribute private -- the index into the array of xml lines
-::method charidx     attribute private -- the index into a xml line
-::method errortxt    attribute private -- error text
-::method eof         attribute private -- done parsing?
+::attribute src         private -- the array of xml lines to be parsed
+::attribute lineidx     private -- the index into the array of xml lines
+::attribute charidx     private -- the index into a xml line
+::attribute errortxt    private -- error text
+::attribute eof         private -- done parsing?
 
 
 /*----------------------------------------------------------------------------*/
@@ -124,6 +124,9 @@ return xmlerror
 
 ::method xlatetext private
 use strict arg text
+
+-- NOTE:  This works fine for both strings and mutablebuffer.  Care should be
+-- taken to ensure it remains that way.
 text = text~changestr('&gt;', '>')
 text = text~changestr('&lt;', '<')
 text = text~changestr('&amp;', '&') -- always do this one last!
@@ -139,7 +142,7 @@ return text
 expose src lineidx charidx
 use strict arg
 if lineidx > src~items then return .nil
-return src[lineidx]~substr(charidx, 1)
+return src[lineidx]~subChar(charidx)
 
 
 /*----------------------------------------------------------------------------*/
@@ -150,10 +153,10 @@ return src[lineidx]~substr(charidx, 1)
 ::method getchar private
 expose src lineidx charidx eof
 use strict arg
-character = src[lineidx]~substr(charidx, 1)
-charidx = charidx + 1
+character = src[lineidx]~subchar(charidx)
+charidx += 1
 if charidx > src[lineidx]~length then do
-   lineidx = lineidx + 1
+   lineidx += 1
    charidx = 1
    end
 if lineidx > src~items then do
@@ -176,27 +179,27 @@ errcharidx = charidx
 chunk = .xmlchunk~new
 if self~currentchar() <> '<' then do
    /* we found some CDATA */
-   chunk~text = ''
+   text = .mutablebuffer~new
    curline = lineidx
    do while eof = .false & self~currentchar() <> '<'
       -- Do NOT collapse the white space and newlines out of the chunk!
       -- We leave that task up to the client of this class.
       -- Instead, we return a chunk with .endofline stuck in between
       -- at the linebreaks.
-      chunk~text = chunk~text || self~getchar()
+      text~append(self~getchar())
       if curline <> lineidx then do
-         chunk~text = chunk~text || .endofline
+         text~append(.endofline)
          curline = lineidx
          end
       end
-   chunk~text = self~xlatetext(chunk~text)
-   if chunk~text~strip <> '' then ,
-    self~text(chunk) -- call the public override method
+   chunk~text = self~xlatetext(text)~string~strip
+   if chunk~text <> '' then
+      self~text(chunk) -- call the public override method
    return chunk
    end
 /* we found an XML tag, process it */
 character = self~getchar() -- skip the '<'
-element = ''
+element = .mutablebuffer~new
 curline = lineidx
 nestlevel = 0
 do while eof = .false
@@ -208,9 +211,9 @@ do while eof = .false
       if self~currentchar() = '<' then nestlevel = nestlevel + 1
       if self~currentchar() = '>' & level > 0 then nestlevel = nestlevel - 1
       end
-   element = element || self~getchar()
+   element~append(self~getchar())
    if curline <> lineidx then do
-      element = element || ' '
+      element~append(' ')
       curline = lineidx
       end
    if self~currentchar() = '>' & nestlevel = 0 then leave
@@ -220,13 +223,14 @@ if eof = .true then do
    self~error(self~create_error(errortxt, errlineidx, errcharidx)) -- call the public override method
    return .nil
    end
-element = element~strip()
+-- element is now a string value
+element = element~string~strip()
 select
-   when element~substr(1, 1) = '/' then do
+   when element~subchar(1) = '/' then do
       chunk~tag = element~substr(2)
       self~end_element(chunk) -- call the public override method
       end
-   when pos('?', element~substr(1, 1)) > 0 then do
+   when pos('?', element~subchar(1)) > 0 then do
       chunk~tag = ''
       chunk~text = element
       self~passthrough(chunk) -- call the public override method
@@ -236,12 +240,12 @@ select
       chunk~text = element
       self~passthrough(chunk) -- call the public override method
       end
-   when pos('!', element~substr(1, 1)) > 0 then do
+   when pos('!', element~subchar(1)) > 0 then do
       chunk~tag = ''
       chunk~text = element
       self~passthrough(chunk) -- call the public override method
       end
-   when pos(element~substr(1, 1), xrange('a', 'z') || xrange('A', 'Z')) > 0 then do
+   when element~matchChar(1, xrange('a', 'z') || xrange('A', 'Z')) then do
       parse var element tag element
       -- the following is needed in case the '/' immediately follows the tag
       if tag~pos('/') > 0 then do
@@ -253,16 +257,12 @@ select
       if element~length > 0 then chunk~attr = .directory~new
       do while element~length() > 0
          if pos('="', element~word(1)) > 0 then do
-            parse var element attrname '="' attrvalue '"' element
-            attrname = attrname~strip()
-            attrvalue = attrvalue~strip()
+            parse var element attrname . '="' attrvalue . '"' element
             attrvalue = self~xlatetext(attrvalue)
             chunk~attr[attrname] = attrvalue
             end
          else if pos("='", element~word(1)) > 0 then do
-            parse var element attrname "='" attrvalue "'" element
-            attrname = attrname~strip()
-            attrvalue = attrvalue~strip()
+            parse var element attrname . "='" attrvalue . "'" element
             attrvalue = self~xlatetext(attrvalue)
             chunk~attr[attrname] = attrvalue
             end
@@ -305,7 +305,7 @@ return chunk
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method xmlfile attribute private -- the XML file name, if known
+::attribute xmlfile private -- the XML file name, if known
 
 
 /*----------------------------------------------------------------------------*/
@@ -425,6 +425,21 @@ return errortxt
 
 
 /*----------------------------------------------------------------------------*/
+/* Method: parse_stream                                                       */
+/* Description: parse the specified stream of XML code                        */
+/*              The stream should be opened, and will not be closed at the end*/
+/*----------------------------------------------------------------------------*/
+
+::method parse_stream
+expose errortxt
+use strict arg tfile
+lines = tfile~arrayin()
+
+errortxt = self~parse_array(lines)
+return errortxt
+
+
+/*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Class: XMLCHUNK                                                            */
 /*----------------------------------------------------------------------------*/
@@ -447,10 +462,9 @@ return errortxt
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method text        attribute         -- the text
-::method tag         attribute         -- the xml tag name
-::method attr        attribute         -- the tag attributes
-
+::attribute text                 -- the text
+::attribute tag                  -- the xml tag name
+::attribute attr                 -- the tag attributes
 
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
@@ -495,10 +509,10 @@ return
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method text        attribute         -- the error message text, if any
-::method filename    attribute         -- the xml file name, if known
-::method line        attribute         -- the error line number
-::method charpos     attribute         -- the error character position
+::attribute text                -- the error message text, if any
+::attribute filename            -- the xml file name, if known
+::attribute line                -- the error line number
+::attribute charpos             -- the error character position
 
 
 /*----------------------------------------------------------------------------*/
