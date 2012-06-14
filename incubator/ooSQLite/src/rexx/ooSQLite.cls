@@ -642,9 +642,9 @@
 -- migrating to a newer version of SQLite.  This would allow users of the
 -- extension to check that ooSQLite.cls matches the oosqlite library.
 -- (oosqlite.dll / oosqlite.so depending on platform.)
-::constant VERSION        "3.7.12.1"
-::constant VERSION_NUMBER 3007012
-::constant SOURCE_ID      "2012-05-22 02:45:53 6d326d44fd1d626aae0e8456e5fa2049f1ce0789"
+::constant VERSION        "3.7.13"
+::constant VERSION_NUMBER 3007013
+::constant SOURCE_ID      "2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc"
 
 
 /* Constants Defining Special Destructor Behavior */

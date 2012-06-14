@@ -5583,10 +5583,8 @@ int buFinish(RexxMethodContext *c, pCooSQLiteBackup pCbu)
 
 /**
  * Helper function for ooSQLiteBackup::init().  Takes care of the details of
- * getting the database connection CSelf for either the detination of source
+ * getting the database connection CSelf for either the detination or source
  * databases for the backup.
- *
- * @author Administrator (6/11/2012)
  *
  * @param context
  * @param pCbu
@@ -5731,6 +5729,7 @@ RexxMethod1(RexxStringObject, oosqlbu_getLastErrMsg_atr, CSELF, pCSelf)
 
 /** ooSQLiteBackup::pageCount  [attribute get]
  *
+ *  The attribute can not be accessed after finish() has been invoked.
  */
 RexxMethod1(int, oosqlbu_getPageCount_atr, CSELF, pCSelf)
 {
@@ -5744,6 +5743,7 @@ RexxMethod1(int, oosqlbu_getPageCount_atr, CSELF, pCSelf)
 
 /** ooSQLiteBackup::remaining  [attribute get]
  *
+ *  The attribute can not be accessed after finish() has been invoked.
  */
 RexxMethod1(int, oosqlbu_getRemaining_atr, CSELF, pCSelf)
 {
