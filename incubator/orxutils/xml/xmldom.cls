@@ -66,8 +66,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::method ver     private
-
+::attribute ver get private
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -83,11 +82,10 @@
 /*----------------------------------------------------------------------------*/
 
 ::method init
-use strict arg
-self~ver = .directory~new
-self~ver['1.0'] = .directory~new
-return
-
+  expose ver
+  use strict arg
+  ver = .directory~new
+  ver['1.0'] = .directory~new
 
 /*----------------------------------------------------------------------------*/
 /* Method: hasFeature                                                         */
@@ -95,16 +93,17 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method hasFeature
-use strict arg feature, version = (.nil)
-if version = .nil then do featureset over self~ver
-   if featureset[feature] <> .nil then return .true
-      end
-   end
-else do
-   featureset = self~feature[version]
-   if self~featureset[feature] <> .nil then return .true
-   end
-return .false
+  expose ver
+  use strict arg feature, version = (.nil)
+  if version = .nil then do featureset over ver
+     if featureset[feature] <> .nil then return .true
+        end
+     end
+  else do
+     featureset = self~feature[version]
+     if featureset <> .nil, featureset[feature] <> .nil then return .true
+     end
+  return .false
 
 
 /*----------------------------------------------------------------------------*/
@@ -121,7 +120,7 @@ return .false
   use strict arg nodes = .nil
   -- this is an empty node list if no list given
   if nodes == .nil then do
-      nodes = .array~new(0)
+      nodes = .array~new
   end
   else do
       -- make a copy of this
@@ -173,34 +172,6 @@ return .false
   return message("ITEM")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Class: DocumentFragment                                                    */
@@ -232,9 +203,8 @@ return .false
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() > 0 then raise syntax 93.902 array (0)
-self~nodeType = 11
-return
+  use strict arg
+  self~nodeType = 11
 
 
 /*----------------------------------------------------------------------------*/
@@ -294,7 +264,7 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method documentElement
-return self~children[0]
+  return self~children[0]
 
 
 /*----------------------------------------------------------------------------*/
@@ -429,14 +399,10 @@ return self~children[0]
 
 /*----------------------------------------------------------------------------*/
 /* Method: specified=                                                         */
-/* Description: return the specified indicator.                               */
+/* Description: only the set method is private                                */
 /*----------------------------------------------------------------------------*/
 
-::method specified
-expose specified
-use arg specified
-return
-
+::attribute specified private set
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -452,24 +418,20 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-self~nodeName = name
-self~nodeType = 2
-self~nodeValue = ''
-self~specified = .false
-return
-
+  use strict arg name
+  self~nodeName = name
+  self~nodeType = 2
+  self~nodeValue = ''
+  self~specified = .false
 
 /*----------------------------------------------------------------------------*/
 /* Method: name                                                               */
 /* Description: return the node name.                                         */
 /*----------------------------------------------------------------------------*/
 
-::method name
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~nodeName
+::attribute name get
+  use strict arg
+  return self~nodeName
 
 
 /*----------------------------------------------------------------------------*/
@@ -477,20 +439,16 @@ return self~nodeName
 /* Description: return the specified indicator.                               */
 /*----------------------------------------------------------------------------*/
 
-::method specified
-expose specified
-if arg() > 0 then raise syntax 93.902 array (0)
-return specified
-
+::attribute specified get
 
 /*----------------------------------------------------------------------------*/
 /* Method: value                                                              */
 /* Description: return the node value.                                        */
 /*----------------------------------------------------------------------------*/
 
-::method value
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~nodeValue
+::attribute value get
+  use strict arg
+  return self~nodeValue
 
 
 /*----------------------------------------------------------------------------*/
@@ -498,12 +456,10 @@ return self~nodeValue
 /* Description: set the node value.                                           */
 /*----------------------------------------------------------------------------*/
 
-::method 'value='
-use arg newval
-self~nodeValue = newval
-self~specified = .true
-return
-
+::attribute value set
+  use arg newval
+  self~nodeValue = newval
+  self~specified = .true
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -536,24 +492,20 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg tagname
-self~nodeName = tagname
-self~nodeType = 1
-self~nodeValue = .nil
-self~attr = .NamedNodeList~new
-return
-
+  use strict arg tagname
+  self~nodeName = tagname
+  self~nodeType = 1
+  self~nodeValue = .nil
+  self~attr = .NamedNodeList~new
 
 /*----------------------------------------------------------------------------*/
 /* Method: tagname                                                            */
 /* Description: return the node name.                                         */
 /*----------------------------------------------------------------------------*/
 
-::method tagname
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~nodeName
+::attribute tagname get
+  use strict arg
+  return self~nodeName
 
 
 /*----------------------------------------------------------------------------*/
@@ -562,10 +514,8 @@ return self~nodeName
 /*----------------------------------------------------------------------------*/
 
 ::method getAttribute
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-return self~attributes[name]~nodeValue
+  use strict arg name
+  return self~attributes[name]~nodeValue
 
 
 /*----------------------------------------------------------------------------*/
@@ -574,12 +524,8 @@ return self~attributes[name]~nodeValue
 /*----------------------------------------------------------------------------*/
 
 ::method setAttribute
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg name, value
-self~attributes[name]~nodeValue = value
-return
-
+  use strict arg name, value
+  self~attributes[name]~nodeValue = value
 
 /*----------------------------------------------------------------------------*/
 /* Method: removeAttribute                                                    */
@@ -587,12 +533,8 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method removeAttribute
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-x = self~attributes[name]~nodeValue = ''
-return
-
+  use strict arg name
+  self~attributes[name]~nodeValue = ''
 
 /*----------------------------------------------------------------------------*/
 /* Method: getAttributeNode                                                   */
@@ -600,10 +542,8 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method getAttributeNode
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-return self~attribute[name]
+  use strict arg name
+  return self~attributes[name]
 
 
 /*----------------------------------------------------------------------------*/
@@ -612,11 +552,9 @@ return self~attribute[name]
 /*----------------------------------------------------------------------------*/
 
 ::method setAttributeNode
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg newAttr
-self~attributes[newAttr~nodeName] = newAttr
-return newAttr
+  use strict arg newAttr
+  self~attributes[newAttr~nodeName] = newAttr
+  return newAttr
 
 
 /*----------------------------------------------------------------------------*/
@@ -625,11 +563,9 @@ return newAttr
 /*----------------------------------------------------------------------------*/
 
 ::method removeAttributeNode
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg oldAttr
-self~attributes~remove(oldAttr~nodeName)
-return oldAttr
+  use strict arg oldAttr
+  self~attributes~remove(oldAttr~nodeName)
+  return oldAttr
 
 
 /*----------------------------------------------------------------------------*/
@@ -638,10 +574,8 @@ return oldAttr
 /*----------------------------------------------------------------------------*/
 
 ::method getElementsByTagName
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-return self~getElementsByName(name)
+  use strict arg name
+  return self~getElementsByName(name)
 
 
 /*----------------------------------------------------------------------------*/
@@ -650,9 +584,9 @@ return self~getElementsByName(name)
 /*----------------------------------------------------------------------------*/
 
 ::method normalize
-if arg() > 0 then raise syntax 93.902 array (0)
--- TODO: a lot of work to do here, see the spec
-return
+  use strict arg
+  -- TODO: a lot of work to do here, see the spec
+  return
 
 
 /*----------------------------------------------------------------------------*/
@@ -686,13 +620,10 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg data
-self~nodeName = '#text'
-self~nodeType = 3
-self~nodeValue = data
-return
+  use strict arg data
+  self~nodeName = '#text'
+  self~nodeType = 3
+  self~nodeValue = data
 
 
 /*----------------------------------------------------------------------------*/
@@ -726,14 +657,10 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg data
-self~nodeName = '#comment'
-self~nodeType = 8
-self~nodeValue = data
-return
-
+  use strict arg data
+  self~nodeName = '#comment'
+  self~nodeType = 8
+  self~nodeValue = data
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -766,14 +693,10 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg data
-self~nodeName = '#cdata-section'
-self~nodeType = 4
-self~nodeValue = data
-return
-
+  use strict arg data
+  self~nodeName = '#cdata-section'
+  self~nodeType = 4
+  self~nodeValue = data
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -806,14 +729,10 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg target, data
-self~nodeName = target
-self~nodeType = 7
-self~nodeValue = data
-return
-
+  use strict arg target, data
+  self~nodeName = target
+  self~nodeType = 7
+  self~nodeValue = data
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -846,14 +765,10 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-self~nodeName = name
-self~nodeType = 5
-self~nodeValue = .nil
-return
-
+  use strict arg name
+  self~nodeName = name
+  self~nodeType = 5
+  self~nodeValue = .nil
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -886,18 +801,16 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() > 0 then raise syntax 93.902 array (0)
-return
-
+  use strict arg
 
 /*----------------------------------------------------------------------------*/
 /* Method: data                                                               */
 /* Description: return the node value.                                        */
 /*----------------------------------------------------------------------------*/
 
-::method data
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~nodeValue
+::attribute data get
+  use strict arg
+  return self~nodeValue
 
 
 /*----------------------------------------------------------------------------*/
@@ -905,13 +818,9 @@ return self~nodeValue
 /* Description: set the node value.                                           */
 /*----------------------------------------------------------------------------*/
 
-::method 'data='
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg data
-self~nodeValue = data
-return
-
+::attribute data set
+  use strict arg data
+  self~nodeValue = data
 
 /*----------------------------------------------------------------------------*/
 /* Method: length                                                             */
@@ -919,8 +828,8 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method length
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~nodeValue~length
+  use strict arg
+  return self~nodeValue~length
 
 
 /*----------------------------------------------------------------------------*/
@@ -929,10 +838,8 @@ return self~nodeValue~length
 /*----------------------------------------------------------------------------*/
 
 ::method substringData
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg offset, count
-return self~nodeValue~substr(offset, count)
+  use strict arg offset, count
+  return self~nodeValue~substr(offset, count)
 
 
 /*----------------------------------------------------------------------------*/
@@ -941,12 +848,8 @@ return self~nodeValue~substr(offset, count)
 /*----------------------------------------------------------------------------*/
 
 ::method appendData
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg data
-self~nodeValue = self~nodeValue || data
-return
-
+  use strict arg data
+  self~nodeValue = self~nodeValue || data
 
 /*----------------------------------------------------------------------------*/
 /* Method: insertData                                                         */
@@ -954,12 +857,8 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method insertData
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg offset, data
-self~nodeValue~insert(data, offset - 1)
-return
-
+  use strict arg offset, data
+  self~nodeValue~insert(data, offset - 1)
 
 /*----------------------------------------------------------------------------*/
 /* Method: deleteData                                                         */
@@ -967,12 +866,8 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method deleteData
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg offset, count
-x = self~nodeValue~delstr(offset, count)
-return
-
+  use strict arg offset, count
+  self~nodeValue~delstr(offset, count)
 
 /*----------------------------------------------------------------------------*/
 /* Method: replaceData                                                        */
@@ -980,12 +875,9 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method replaceData
-if arg() < 3 then raise syntax 93.901 array (3)
-if arg() > 3 then raise syntax 93.902 array (3)
-use arg offset, count, data
-x = self~nodeValue~delstr(offset, count)
-self~nodeValue~insert(data, offset - 1)
-return
+  use strict arg offset, count, data
+  self~nodeValue~delstr(offset, count)
+  self~nodeValue~insert(data, offset - 1)
 
 
 /*----------------------------------------------------------------------------*/
@@ -1019,14 +911,11 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg data
-self~nodeName = '#text'
-self~nodeType = 3
-self~nodeValue = data
-return
-
+  use strict arg data
+  self~nodeName = '#text'
+  self~nodeType = 3
+  self~nodeValue = data
+  return
 
 /*----------------------------------------------------------------------------*/
 /* Method: splitText                                                          */
@@ -1034,18 +923,16 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method splitText
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg offset
-siblings = self~parentNode~childNodes
-newnode = .Text~new(self~nodeValue~substr(offset + 1)
-self~nodeValue = self~nodeValue~substr(1, offset)
--- find ourselves in the siblings
-do i = 1 to siblings~items
-   if self = siblings[i] then leave
-   end
-siblings~insert(newnode, i)
-return newNode
+  use strict arg offset
+  siblings = self~parentNode~childNodes
+  newnode = .Text~new(self~nodeValue~substr(offset + 1)
+  self~nodeValue = self~nodeValue~substr(1, offset)
+  -- find ourselves in the siblings
+  do i = 1 to siblings~items
+     if self = siblings[i] then leave
+  end
+  siblings~insert(newnode, i)
+  return newNode
 
 
 /*----------------------------------------------------------------------------*/
@@ -1079,16 +966,12 @@ return newNode
 /*----------------------------------------------------------------------------*/
 
 ::method init
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg name
-self~nodeName = name
-self~nodeType = 10
-self~nodeValue = .nil
-self~entities = .NamedNodeMap~new
-self~notations = .NamedNodeMap~new
-return
-
+  use strict arg name
+  self~nodeName = name
+  self~nodeType = 10
+  self~nodeValue = .nil
+  self~entities = .NamedNodeMap~new
+  self~notations = .NamedNodeMap~new
 
 /*----------------------------------------------------------------------------*/
 /* Method: name                                                               */
@@ -1096,8 +979,8 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method name
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~nodeName
+  use strict arg
+  return self~nodeName
 
 
 /*----------------------------------------------------------------------------*/
@@ -1106,9 +989,9 @@ return self~nodeName
 /*----------------------------------------------------------------------------*/
 
 ::method entities
-expose entities
-if arg() > 0 then raise syntax 93.902 array (0)
-return entities
+  expose entities
+  use strict arg
+  return entities
 
 
 /*----------------------------------------------------------------------------*/
@@ -1117,9 +1000,9 @@ return entities
 /*----------------------------------------------------------------------------*/
 
 ::method notations
-expose notations
-if arg() > 0 then raise syntax 93.902 array (0)
-return notations
+  expose notations
+  use strict arg
+  return notations
 
 
 /*----------------------------------------------------------------------------*/
@@ -1153,39 +1036,24 @@ return notations
 /*----------------------------------------------------------------------------*/
 
 ::method init
-expose publicId systemId
-if arg() > 2 then raise syntax 93.902 array (2)
-if arg() = 1 then do
-   use arg publicId
-   systemId = .nil
-   end
-else use arg publicId, systemId
-self~nodeType = 12
-self~nodeValue = .nil
-return
-
+  expose publicId systemId
+  use strict arg publicId, systemId = .nil
+  self~nodeType = 12
+  self~nodeValue = .nil
 
 /*----------------------------------------------------------------------------*/
 /* Method: publicId                                                           */
 /* Description: return the publicId.                                          */
 /*----------------------------------------------------------------------------*/
 
-::method publicId
-expose publicId
-if arg() > 0 then raise syntax 93.902 array (0)
-return publicId
-
+::attribute publicId get
 
 /*----------------------------------------------------------------------------*/
 /* Method: systemId                                                           */
 /* Description: return the systemId.                                          */
 /*----------------------------------------------------------------------------*/
 
-::method systemId
-expose systemId
-if arg() > 0 then raise syntax 93.902 array (0)
-return systemId
-
+::attribute systemId get
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -1218,44 +1086,24 @@ return systemId
 /*----------------------------------------------------------------------------*/
 
 ::method init
-expose NodeName, publicId systemId
-if arg() > 3 then raise syntax 93.902 array (3)
-if arg() = 1 then do
-   use arg nodeName
-   publicId = .nil
-   systemId = .nil
-   end
-if arg() = 2 then do
-   use arg nodeName, publicId
-   systemId = .nil
-   end
-else use arg nodeName, publicId, systemId
-self~nodeType = 6
-self~nodeValue = .nil
-return
-
+  expose nodeName publicId systemId
+  use strict arg nodeName, publicId = .nil, systemId = .nil
+  self~nodeType = 6
+  self~nodeValue = .nil
 
 /*----------------------------------------------------------------------------*/
 /* Method: publicId                                                           */
 /* Description: return the publicId.                                          */
 /*----------------------------------------------------------------------------*/
 
-::method publicId
-expose publicId
-if arg() > 0 then raise syntax 93.902 array (0)
-return publicId
-
+::attribute publicId get
 
 /*----------------------------------------------------------------------------*/
 /* Method: systemId                                                           */
 /* Description: return the systemId.                                          */
 /*----------------------------------------------------------------------------*/
 
-::method systemId
-expose systemId
-if arg() > 0 then raise syntax 93.902 array (0)
-return systemId
-
+::attribute systemId get
 
 /*----------------------------------------------------------------------------*/
 /* Method: notationName                                                       */
@@ -1263,8 +1111,8 @@ return systemId
 /*----------------------------------------------------------------------------*/
 
 ::method notationName
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~nodeName
+  use strict arg
+  return self~nodeName
 
 
 /*----------------------------------------------------------------------------*/
@@ -1298,14 +1146,10 @@ return self~nodeName
 /*----------------------------------------------------------------------------*/
 
 ::method init
-expose nodeName
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg nodeName
-self~nodeType = 5
-self~nodeValue = .nil
-return
-
+  expose nodeName
+  use strict arg nodeName
+  self~nodeType = 5
+  self~nodeValue = .nil
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -1338,13 +1182,9 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-expose nodeName nodeValue
-if arg() < 2 then raise syntax 93.901 array (2)
-if arg() > 2 then raise syntax 93.902 array (2)
-use arg nodeName, nodeValue
-self~nodeType = 7
-return
-
+  expose nodeName nodeValue
+  use strict arg nodeName, nodeValue
+  self~nodeType = 7
 
 /*----------------------------------------------------------------------------*/
 /* Method: target                                                             */
@@ -1352,8 +1192,8 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method target
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~nodeName
+  use strict arg
+  return self~nodeName
 
 
 /*----------------------------------------------------------------------------*/
@@ -1361,9 +1201,9 @@ return self~nodeName
 /* Description: return the node value.                                        */
 /*----------------------------------------------------------------------------*/
 
-::method data
-if arg() > 0 then raise syntax 93.902 array (0)
-return self~nodeValue
+::attribute data get
+  use strict arg
+  return self~nodeValue
 
 
 /*----------------------------------------------------------------------------*/
@@ -1371,12 +1211,8 @@ return self~nodeValue
 /* Description: set the node value.                                           */
 /*----------------------------------------------------------------------------*/
 
-::method 'data='
-expose nodeValue
-if arg() < 1 then raise syntax 93.901 array (1)
-if arg() > 1 then raise syntax 93.902 array (1)
-use arg nodeValue
-return
-
+::attribute data set
+  expose nodeValue
+  use strict arg nodeValue
 
 
