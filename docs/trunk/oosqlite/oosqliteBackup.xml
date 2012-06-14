@@ -41,17 +41,72 @@
 <section id="clsOOSQLiteBackup"><title>The ooSQLiteBackup Class</title>
 <indexterm><primary>ooSQLiteBackup class</primary></indexterm>
 <para>
-  text
+  One feature of SQLite is an online backup API. The <emphasis role="italic">online</emphasis> part means that a
+  database can be backed up while it is in use. The backup API copies the content of the source database into the
+  destination database, overwriting the original contents of the destination database. It is useful either for creating
+  backups of databases or for copying in-memory databases to or from persistent files.
 </para>
-
 <para>
-  text
+  The copy operation may be done incrementally, in which case the source database does not need to be locked for the
+  duration of the copy, only for the brief periods of time when it is actually being read from. This allows other
+  database users to continue uninterrupted while a backup of an online database is made.
+</para>
+<para>
+  The <computeroutput>ooSQLiteBackup</computeroutput> class provides a complete interface to the SQLite backup API. The
+  authoritive <ulink url="http://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupinit">documentation</ulink> for
+  using the online backup API is the SQLite documentation. The basic process to perform a backup using the
+  <computeroutput>ooSQLiteBackup</computeroutput> object is as follows:
+</para>
+<itemizedlist>
+<listitem>
+<para>
+  Initialize the backup by <link linkend="mthNewClsOOSQLiteBackup">instantiating</link> a new backup object with the
+  source and destionation databases.
+</para>
+</listitem>
+<listitem>
+<para>
+  Use the<link linkend="mthStepClsBackup">step</link> method to copy some or all of the pages of the source database to
+  the destination database.
+</para>
+</listitem>
+<listitem>
+<para>
+  Repeat invocations of the <emphasis role="italic">step</emphasis> method until all pages are copied, or it is
+  determined the backup should be abandoned.
+</para>
+</listitem>
+<listitem>
+<para>
+  Invoke the <link linkend="mthFinish">finish</link> method to release the system resources used for the backup.
+</para>
+</listitem>
+</itemizedlist>
+<para>
+  By using a backup object, ooSQLite is able to optimize this process a little for the Rexx programmer. During the
+  <emphasis role="italic">step</emphasis> method, when it is determined that all the pages have been copied
+  successfully, or that a fatal error has ocurred, the <emphasis role="italic">finish</emphasis> method is invvoked
+  automatically. This means the programmer only needs to use <emphasis role="italic">finish()</emphasis> when it is
+  determined that the backup should be abandoned before it is done.
+</para>
+<para>
+  The source database can be accessed while the backup is in progress. It is only locked while the backup is reading
+  from the database, it is not locked continuously for the entire backup operation. This implies that the source
+  database is more acessible when a smaller number of pages are copied during each <emphasis
+  role="italic">step</emphasis>.
+</para>
+<para>
+  When the source database is in use while the backup is in progress, if the database is written to, the database engine
+  may restart the backup. Whether or not the backup process is restarted as a result of writes to the source database
+  mid-backup, the user can be sure that when the backup operation is completed the backup database contains a consistent
+  and up-to-date snapshot of the original. However, if the source database is big and the backup gets restarted often,
+  it is possible that the backup will never finish. This would be a case where it might be needed to abandon the backup.
 </para>
 
 <section id="sctMethodsOOSQLiteBackup"><title>Method Table</title>
 <para>
   The following table provides links to the documentation for the primary methods and attributes used in working
-  with backup objects using the ooSQLiteBackup class.
+  with backup objects using the <computeroutput>ooSQLiteBackup</computeroutput> class.
 </para>
 <table id="tblOOSQLiteBackupMethods" frame="all">
 <title>ooSQLiteBackup Methods and Attributes</title>
@@ -70,15 +125,51 @@
 </row>
 <row>
 <entry><link linkend="mthNewClsOOSQLiteBackup">new</link></entry>
-<entry>Instantiates a new ooSQLite backup</entry>
+<entry>Instantiates a new ooSQLite backup object.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="atrFinished">finished</link></entry>
+<entry>Reflects the finished state of the backup, that is, if <link linkend="mthFinish">finish</link> has been invoked.</entry>
+</row>
+<row>
+<entry><link linkend="atrInitCodeClsBackup">initCode</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrLastErrCodeClsBackup">lastErrCode</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrLastErrMsgClsBackup">lastErrmsg</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrPageCount">pageCount</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrRemaining">remaining</link></entry>
+<entry>.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthFinish"></link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetDestConn"></link>getDestConn</entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthStepClsBackup"></link>step</entry>
+<entry>.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -89,13 +180,13 @@
 <indexterm><primary>ooSQLiteBackup class</primary><secondary>new</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--new(--srcDB-,-dstDB--+---------+-+-----------+-+-----------+--)------------><
+                         +-,-save--+ +-,-srcName-+ +-,-dstName-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Instantiates and initializes a new backup object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -103,10 +194,64 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>srcDb [required]</term>
       <listitem>
       <para>
-        xx
+        Specifies the source database for the backup. This argument must be a database <link
+        linkend="clsOOSQLiteConnection">connection</link> object that is open and not in an error state.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>dstDb [required]</term>
+      <listitem>
+      <para>
+        Specifies the destination database. This argument can either be an open database <emphasis
+        role="italic">connection</emphasis> or the file name for the database. If the argument is a database connection,
+        it must be an open connection that is not in an error state. If the argument is a file name, then the
+        destination then a database <link linkend="clsOOSQLiteConnection">connection</link> object is instantiated.
+      </para>
+      <para>
+        Normally, when this argument is a file name, the connection object is closed during the <link
+        linkend="mthFinish">finish</link> method.  This behavior can be changed either by setting the <emphasis
+        role="italic">save</emphasis> argument to true, or by setting the <link
+        linkend="atrSaveDestConn">saveDestConn</link> attribute to true at any time prior to invoking <link
+        linkend="mthFinish">finish</link>. Both the argument and the attribute default to false.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>save [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">save</emphasis> is true <emphasis role="bold">and</emphasis> <emphasis
+        role="italic">dstDB</emphasis> is a file name, then the destination database <emphasis
+        role="italic">connection</emphasis> will not be closed during <emphasis role="italic">finish</emphasis>.
+        Normally when the destination database is specified by a file name, the connection is closed during <emphasis
+        role="italic">finish</emphasis>.
+      </para>
+      <para>
+        If the <emphasis role="italic">dstDb</emphasis> argument is a database connection, this argument is ignored
+        completely. The programmer is responsible for closing the connection.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>srcName [optional]</term>
+      <listitem>
+      <para>
+        The source database name. This is not the database <emphasis role="italic">file</emphasis> name, but rather the
+        <emphasis role="italic">main</emphasis>, <emphasis role="italic">temp</emphasis>, or <emphasis
+        role="italic">attached as</emphasis>, name. If this argument is omitted, the name is set to <emphasis
+        role="italic">main</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>dstName [opitonal]</term>
+      <listitem>
+      <para>
+        The destination database name. Again, this is not the database <emphasis role="italic">file</emphasis> name, but
+        rather the <emphasis role="italic">main</emphasis>, <emphasis role="italic">temp</emphasis>, or <emphasis
+        role="italic">attached as</emphasis>, name. If this argument is omitted, the name is set to <emphasis
+        role="italic">main</emphasis>.
+      </para>
+      <para>
+        If the <emphasis role="italic">dstDb</emphasis> argument is a file name rather than a database connection, this
+        argument is ignored completely. In this case the only possible name is <emphasis role="italic">main</emphasis>
+        and ooSQLite sets that internally when it instantiates the database connection object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -115,27 +260,79 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
+    Returns the newly instatiated backup object. If an error occurs during initialization, the <link
+    linkend="mthFinish">finish</link> method will have been invoked and the object can not be used to perform a backup.
+    Check the <link linkend="atrInitCodeClsBackup">initCode</link>, <link
+    linkend="atrLastErrCodeClsBackup">lastErrCode</link>, or <link linkend="atrLastErrMsgClsBackup">lastErrMsg</link>
+    attributes to determine if errors have ocurred.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The SQLite doc says: <emphasis role="italic"> The application must guarantee that the destination database
+    connection is not passed to any other API (by any thread) after sqlite3_backup_init() is called and before the
+    corresponding call to sqlite3_backup_finish(). SQLite does not currently check to see if the application incorrectly
+    accesses the destination database connection and so no error code is reported, but the operations may malfunction
+    nevertheless. Use of the destination database connection while a backup is in progress might also also cause a mutex
+    deadlock.</emphasis>
+  </para>
+  <para>
+    In ooSQLite, the destination database <link linkend="clsOOSQLiteConnection">connection</link> object will raise a
+    syntax condition if any of the methods of the object are invoked between the time the <emphasis
+    role="italic">new</emphasis> method of the <computeroutput>ooSQLiteBackup</computeroutput> object is invoked and the
+    <link linkend="mthFinish">finish</link> method is invoked. This prevents malfunctions and deadlock.
+  </para>
+  <para>
+    For the backup to work effectively the source and destination database connections should have a busy <link
+    linkend="mthBusyHandler">handler</link> or a busy <link linkend="mthBusyTimeout">timeout</link> handler. This
+    prevents a possible cause of failure of the backup. With an argument to <emphasis role="italic">new</emphasis> that
+    is a database <emphasis role="italic">connection</emphasis>, the programmer is responsible for configuring the
+    connection correctly, the backup object does not fiddle with the connection. When the <emphasis
+    role="italic">dstDb</emphasis> argument is a file name, the database <emphasis role="italic">connection</emphasis>
+    object is instantiated internally by ooSQLite. In this case, ooSQLite will add a busy timeout handler of 3 seconds.
+  </para>
+  <para>
+    Usually, it does not matter if the page-sizes of the source database and the destination database are different
+    before the contents of the destination are overwritten. The page-size of the destination database is simply changed
+    as part of the backup operation. The exception is if the destination database happens to be an in-memory database.
+    In this case, if the page sizes are not the same at the start of the backup operation, then the operation fails with
+    a SQLITE_READONLY error.
+  </para>
+  <para>
+    This second possible cause of failure can be prevented by setting the page-size of the in-memory database to the
+    same size as that of the sourec database. When the <emphasis role="italic">dstDB</emphasis> argument is <emphasis
+    role="italic">:memory:</emphasis> then ooSQLite will read the page-size of the source database, open a new in-memory
+    database connection, and set its page size to match the source database page-size. Page size can only be changed in
+    a database before anything is put in it. If <emphasis role="italic">dstDB</emphasis> is passed in as a connection
+    to an in-memory database, then the programmer is responsible for correctly setting the page.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    The <emphasis role="italic">new</emphasis> method is equivalent to the SQLite
+    <ulink url="http://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupinit">sqlite3_backup_init</ulink> API. Note,
+    however that the arguments to <emphasis role="italic">new</emphasis> have been re-ordered so that the optional
+    arugments come last.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example loads a database from disk into an in-memory database and exits if there is an error in initialization:
 <programlisting>
 <![CDATA[
+
+  srcConn = .ooSQLiteConnection~new("contacts.rdbx")
+
+  srcConn~busyTimeout(3000)  -- 3 seconds.
+
+  bu = .ooSQLiteBackup~new(srcConn, ":memory:", .true)
+  if bu~initCode <> bu~OK then do
+    say 'Error opening backup object:' bu~lastErrCode bu~lastErrMsg
+    srcConn~close
+    return 99
+  end
 
 ]]>
 </programlisting>
@@ -149,51 +346,39 @@
 <indexterm><primary>ooSQLiteBackup class</primary><secondary>finished</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--finished-----------------------------------------------------><
+>>--finished-------------------------------------><
 
->>--finished-=-varName-------------------------------------------><
+>>--finished-=-varName---------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  This attribute can be used to determine if <link linkend="mthFinish">finish</link> has been invoked on the backup
+  object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">finished get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    If <emphasis role="italic">finished</emphasis> is true the backup is finished and its resourced have been released.
+    If false the backup is still in progress.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">finished set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The programmer can not set the <emphasis role="italic">finished</emphasis> attribute. It is set internally by
+    ooSQLite.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Anything?
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    If <emphasis role="italic">finished</emphasis> is true, other methods of the backup object that access the database
+    engine can not be invoked. Those are the <link linkend="mthFinish">finish</link> and <link
+    linkend="mthStepClsBackup">step</link> methods, and the <link linkend="atrPageCount">pageCount</link> and <link
+    linkend="atrRemaining">remaining</link> attributes.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -204,15 +389,16 @@
 <indexterm><primary>ooSQLiteBackup class</primary><secondary>initCode</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--initCode-----------------------------------------------------><
+>>--initCode-------------------------------------><
 
->>--initCode-=-varName-------------------------------------------><
+>>--initCode-=-varName---------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">initCode</emphasis> attribute is used to check if the backup object is initialized
+  correctly during <link linkend="mthNewClsOOSQLiteBackup">new</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">initCode get:</emphasis></term>
@@ -224,7 +410,8 @@
   <varlistentry><term><emphasis role="bold">initCode set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The programmer can not set the <emphasis role="italic">finished</emphasis> attribute. It is set internally by
+    ooSQLite.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>

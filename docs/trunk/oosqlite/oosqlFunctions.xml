@@ -1854,10 +1854,24 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example uses the <emphasis role="italic">oosqlColumnIndex</emphasis> function to get the index of the <emphasis
+    role="italic">name</emphasis> column in the <emphasis role="italic">foods</emphasis> table:
 <programlisting>
 <![CDATA[
 
+  dbConn = ''
+  ret = oosqlOpen('ooFoods.rdbx', 'dbConn')
+
+  stmt = ''
+  ret = oosqlPrepare(dbConn, "SELECT * FROM foods", 'stmt')
+  index = oosqlColumnIndex(stmt, 'name')
+
+  do while oosqlStep(stmt) == .ooSQLite~ROW
+    say oosqlColumnText(stmt, index)
+  end
+
+  dbConn~close
+  stmt~finalize
 ]]>
 </programlisting>
   </para>
