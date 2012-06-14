@@ -8269,7 +8269,7 @@ RexxRoutine4(int, oosqlOpen_rtn, CSTRING, file, CSTRING, dbConn, OPTIONAL_int32_
  *  that prepared statement.
  *
  *  To execute a SQL statement, SQLite first compiles the statement into a
- *  byte-code program.  This code be thought of as preparing, or initializing
+ *  byte-code program.  This can be thought of as preparing, or initializing
  *  the statement.
  *
  *
