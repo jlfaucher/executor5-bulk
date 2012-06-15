@@ -206,8 +206,9 @@
       <para>
         Specifies the destination database. This argument can either be an open database <emphasis
         role="italic">connection</emphasis> or the file name for the database. If the argument is a database connection,
-        it must be an open connection that is not in an error state. If the argument is a file name, then the
-        destination then a database <link linkend="clsOOSQLiteConnection">connection</link> object is instantiated.
+        it must be an open connection that is not in an error state. If the argument is a file name, then a destination
+        database <link linkend="clsOOSQLiteConnection">connection</link> object is instantiated using the specified
+        name.
       </para>
       <para>
         Normally, when this argument is a file name, the connection object is closed during the <link
@@ -404,7 +405,8 @@
   <varlistentry><term><emphasis role="bold">initCode get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">initCode</emphasis> attribute reflects the state of the initialization of
+    the backup object. It is set during <emphasis role="italic">new</emphasis> and is not changed afterwards.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">initCode set:</emphasis></term>
