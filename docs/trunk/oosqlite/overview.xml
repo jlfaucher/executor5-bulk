@@ -79,6 +79,22 @@
 
 <section id="sctGeneralOOSQLite"><title>Common Concepts</title>
 <para>
+  The ooSQLite package <emphasis role="italic">embedds</emphasis> the SQLite <emphasis role="italic">database
+  engine</emphasis> within the package. <emphasis role="italic">Embedding</emphasis> indicates that the SQLite software
+  code is compiled directly into the ooSQLite library. This in turn means that ooSQLite does not need any external piece
+  to work. There is no need for a SQLite library to be installed on the system. There is no reason why a SQLite library
+  can not be installed on the system, but if there is one, ooSQLite will not access it.
+</para>
+<para>
+  <emphasis role="italic">Database engine</emphasis> refers to the code that carries out the actual database function.
+  For example, MySQL comes with a database engine, but it also comes with components that allow a server to server up
+  connections to the database engine, allow a client to contact the server, etc.. These components are not a part of the
+  database engine of MySQL. ooSQLite works by making calls into the SQLite database engine, (which is embedded within
+  ooSQLite.) Within this documentation, a reference to <emphasis role="italic">the database engine</emphasis> means the
+  SQLite database engine. In places in the documentation the SQLite database engine is stated explictly. In places where
+  the SQLite part is left off, the SQLite part is implicit.
+</para>
+<para>
   Some common concepts in ooSQLite text text
 </para>
 

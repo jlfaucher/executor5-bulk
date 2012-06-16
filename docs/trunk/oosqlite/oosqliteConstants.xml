@@ -55,7 +55,7 @@
 <table id="tblOOSQLiteConstants" frame="all">
 <title>The ooSQLite Constants</title>
 <tgroup cols="2">
-<colspec colwidth="1.75in">
+<colspec colwidth="2.05in">
 <thead>
 <row>
 <entry>Constant</entry>
@@ -63,33 +63,67 @@
 </row>
 </thead>
 <tbody>
-<row>
+<!-- NOTE these 3 constants must be updated each time a new version of the SQLite database engine is embedded in ooSQLite -->
+<row id="CompileTimeVersion">
 <entry align="center"><emphasis role="bold"></emphasis></entry>
-<entry align="center"><emphasis role="bold">ooSQLite specific contstants</emphasis>c</entry>
+<entry align="center"><emphasis role="bold">Compile-Time Version Constants</emphasis></entry>
+</row>
+<row>
+<entry>VERSION</entry>
+<entry>"3.7.13"</entry>
+</row>
+<row>
+<entry>VERSION_NUMBER</entry>
+<entry>3007013</entry>
+</row>
+<row>
+<entry>SOURCE_ID</entry>
+<entry>"2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc"</entry>
+</row>
+
+<row id="rowOOSQLiteSpecific">
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">ooSQLite Specific Constants</emphasis></entry>
+</row>
+<row id="rowOOSQLiteResultCode">
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">ooSQLite Result Code Constants</emphasis></entry>
 </row>
 <row>
 <entry>OO_INTERNAL_ERR</entry>
-<entry></entry>
+<entry>The ooSQLite framework encountered an error internally that it is unprepared to handle. It was not considered possible for the error to happen.</entry>
 </row>
 <row>
 <entry>OO_WRONG_ARG_TYPE</entry>
-<entry></entry>
+<entry>An argument to a method or function is not the correct type. For instance the argument requires a number, but the supplied argument is not a number.</entry>
 </row>
 <row>
 <entry>OO_UNEXPECTED_RESULT</entry>
-<entry></entry>
+<entry>The SQLite database engine returned a result that was considered to be impossible to produce.</entry>
+</row>
+<row>
+<entry>OO_BACKUP_IN_PROGRESS</entry>
+<entry>A method was invoked on this database connection object when the database is the destionaion of a backup in progress.</entry>
+</row>
+<row>
+<entry>OO_BACKUP_DB_ERRSTATE</entry>
+<entry>The specified source or destination database for a backup operation is in an error state.</entry>
+</row>
+<row id="rowOOSQLiteResultSetFormat">
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+<entry align="center"><emphasis role="bold">ooSQLite Result Set Format Constants</emphasis></entry>
 </row>
 <row>
 <entry>OO_ARRAY_OF_ARRAYS</entry>
-<entry></entry>
+<entry>Result sets are returned as an array where each item in the array is an array. The array at item 1 is an array of the column names. The following items are the records of the result set.</entry>
 </row>
 <row>
 <entry>OO_ARRAY_OF_DIRECTORIES</entry>
-<entry></entry>
+<entry>Result sets are returned as an array where each item in the array is a Directory object. Each directory in the array contains the values of the columns in a row, where the indexes are the names of the columns.</entry>
 </row>
 <row>
 <entry>OO_STEM_OF_STEMS</entry>
-<entry></entry>
+<entry>Result sets are returned as a stem withe tails 0 through the number of rows. Tail 0 contains the number rows and tails 1 through n contain a stem for each row. The tails of stem of a row are the column names for the rows.</entry>
 </row>
 
 <row id="rowResultCode">
@@ -552,7 +586,7 @@
 
 <row>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
-<entry align="center"><emphasis role="bold">Authorizer Return Codes</emphasis></entry>
+<entry align="center"><emphasis role="bold">Authorizer Return Code Constants</emphasis></entry>
 </row>
 <row>
 <entry>ACCESS_EXISTS</entry>
@@ -569,7 +603,7 @@
 
 <row>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
-<entry align="center"><emphasis role="bold">Checkpoint operation parameters</emphasis></entry>
+<entry align="center"><emphasis role="bold">Checkpoint Operation Parameter Constants</emphasis></entry>
 </row>
 <row>
 <entry>CHECKPOINT_PASSIVE</entry>
@@ -586,7 +620,7 @@
 
 <row>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
-<entry align="center"><emphasis role="bold">Configuration Options</emphasis></entry>
+<entry align="center"><emphasis role="bold">Configuration Option Constants</emphasis></entry>
 </row>
 <row>
 <entry>CONFIG_SINGLETHREAD</entry>
@@ -1005,23 +1039,6 @@
 <row>
 <entry>SHM_EXCLUSIVE</entry>
 <entry></entry>
-</row>
-
-<row>
-<entry align="center"><emphasis role="bold"></emphasis></entry>
-<entry align="center"><emphasis role="bold">Compile-Time Version Constants</emphasis></entry>
-</row>
-<row>
-<entry>VERSION</entry>
-<entry>"3.7.13"</entry>
-</row>
-<row>
-<entry>VERSION_NUMBER</entry>
-<entry>3007013</entry>
-</row>
-<row>
-<entry>SOURCE_ID</entry>
-<entry>"2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc"</entry>
 </row>
 
 <row>
