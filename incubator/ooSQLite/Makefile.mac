@@ -110,7 +110,7 @@ CFLAGS=-c -fPIC $(BASEFLAGS)
 
 
 # What we want to build.
-all: $(BIN_DIR)/liboosqlite.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls
+all: $(BIN_DIR)/liboosqlite.dylib $(BIN_DIR)/oosqlite3 $(BIN_DIR)/ooSQLite.cls
 
 
 $(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.hpp Makefile.mac
@@ -125,14 +125,14 @@ $(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/s
 $(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.mac
 	gcc $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
 
-$(OUT_DIR)/liboosqlite.so: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o
-	gcc -o $(OUT_DIR)/liboosqlite.so $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(SO_LLIBS)
+$(OUT_DIR)/liboosqlite.dylib: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o
+	gcc $(SO_LFLAGS) -o $(OUT_DIR)/liboosqlite.dylib $(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(SO_LLIBS)
 
 $(OUT_DIR)/oosqlite3: $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o
 	gcc $(EXE_LFLAGS) -o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/sqlite3.o $(OUT_DIR)/shell.o $(EXE_LLIBS)
 
-$(BIN_DIR)/liboosqlite.so: $(OUT_DIR)/liboosqlite.so
-	cp $(OUT_DIR)/liboosqlite.so $(BIN_DIR) 1>/dev/null 2>&1
+$(BIN_DIR)/liboosqlite.dylib: $(OUT_DIR)/liboosqlite.dylib
+	cp $(OUT_DIR)/liboosqlite.dylib $(BIN_DIR) 1>/dev/null 2>&1
 
 $(BIN_DIR)/oosqlite3: $(OUT_DIR)/oosqlite3
 	cp $(OUT_DIR)/oosqlite3 $(BIN_DIR) 1>/dev/null 2>&1
@@ -147,10 +147,10 @@ dist: all
 dist_clean: clean_all
 
 clean_all:
-	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/*.o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/cls
-	rm -f $(BIN_DIR)/*.so $(BIN_DIR)/oosqlite3 $(BIN_DIR)/*.cls
+	rm -f $(OUT_DIR)/*.dylib $(OUT_DIR)/*.o $(OUT_DIR)/oosqlite3 $(OUT_DIR)/cls
+	rm -f $(BIN_DIR)/*.dylib $(BIN_DIR)/oosqlite3 $(BIN_DIR)/*.cls
 	rm -f src/ooSQLite.ver.incl
 
 clean:
-	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/oosqlite3
+	rm -f $(OUT_DIR)/*.dylib $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/oosqlite3
 
