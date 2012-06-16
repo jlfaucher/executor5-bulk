@@ -3,7 +3,7 @@
 /* Class: NodeFilter                                                          */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "NodeIterator" mixinclass Object
+::class "NodeFilter" mixinclass Object
 -- constants returned by acceptNode
 ::constant FILTER_ACCEPT 1
 ::constant FILTER_REJECT 2
