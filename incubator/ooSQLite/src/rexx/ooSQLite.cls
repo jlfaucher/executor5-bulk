@@ -357,7 +357,18 @@
 -- TODO we need a constant value to string method, something like const2string(.ooSQLiteConstants~INTERNAL) -> "INTERNAL"
 ::method merge class external "LIBRARY oosqlite oosqlC_merge_cls"
 
+/* Compile-Time Library Version Numbers */
+-- These constants should be updated by the ooSQLite extension developers when
+-- migrating to a newer version of SQLite.  This would allow users of the
+-- extension to check that ooSQLite.cls matches the oosqlite library.
+-- (oosqlite.dll / oosqlite.so depending on platform.)
+::constant VERSION        "3.7.13"
+::constant VERSION_NUMBER 3007013
+::constant SOURCE_ID      "2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc"
+
+
 -- OO_ prefix indicates constant is not from the SQLite library.
+
 -- Result codes
 ::constant OO_INTERNAL_ERR                  1000
 ::constant OO_WRONG_ARG_TYPE                1001
@@ -365,6 +376,7 @@
 ::constant OO_BACKUP_IN_PROGRESS            1003
 ::constant OO_BACKUP_DB_ERRSTATE            1004
 
+-- Specifies how a result set is returned to Rexx
 ::constant OO_ARRAY_OF_ARRAYS               1
 ::constant OO_ARRAY_OF_DIRECTORIES          2
 ::constant OO_STEM_OF_STEMS                 3
@@ -635,16 +647,6 @@
 ::constant SHM_LOCK         2
 ::constant SHM_SHARED       4
 ::constant SHM_EXCLUSIVE    8
-
-
-/* Compile-Time Library Version Numbers */
--- These constants should be updated by the ooSQLite extension developers when
--- migrating to a newer version of SQLite.  This would allow users of the
--- extension to check that ooSQLite.cls matches the oosqlite library.
--- (oosqlite.dll / oosqlite.so depending on platform.)
-::constant VERSION        "3.7.13"
-::constant VERSION_NUMBER 3007013
-::constant SOURCE_ID      "2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc"
 
 
 /* Constants Defining Special Destructor Behavior */

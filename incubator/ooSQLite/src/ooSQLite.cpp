@@ -6007,12 +6007,12 @@ RexxMethod1(int, oosqlbu_finish, CSELF, pCSelf)
 }
 
 
-/** ooSQLiteBackup::getDestinationConnection
+/** ooSQLiteBackup::getDestConn
  *
- *  Holds the saved destination database connection object, iff the destination
- *  database was specified as a file name *and* the user set the saveDestConn
- *  attribute to true, *and* the backup has been finished. Otherwise returns
- *  .nil.
+ *  Returns the saved destination database connection object, iff the
+ *  destination database was specified as a file name *and* the user set the
+ *  saveDestConn attribute to true, *and* the backup has been finished.
+ *  Otherwise returns .nil.
  */
 RexxMethod1(RexxObjectPtr, oosqlbu_getDestConn, CSELF, pCSelf)
 {
@@ -6050,7 +6050,7 @@ RexxMethod1(RexxObjectPtr, oosqlbu_getDestConn, CSELF, pCSelf)
  *            same thing if the return from step is DONE, or some other fatal
  *            error.  So we don't check what the return code is.
  */
-RexxMethod2(int, oosqlbu_step, int, pages, CSELF, pCSelf)
+RexxMethod2(int, oosqlbu_step, OPTIONAL_int, pages, CSELF, pCSelf)
 {
     pCooSQLiteBackup pCbu = requiredBackup(context, pCSelf);
     if ( pCbu == NULL )
