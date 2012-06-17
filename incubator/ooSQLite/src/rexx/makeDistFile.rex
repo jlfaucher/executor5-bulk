@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
@@ -84,7 +85,7 @@ use arg cmdLine
 
   mdCmd outDir'bin'
   mdCmd outDir'doc'
-  mdCmd outDir'examples'
+  mdCmd outDir'examples\classic.rexx'
   mdCmd outDir'misc'
   mdCmd outDir'testing'
 
@@ -94,11 +95,12 @@ use arg cmdLine
   cpCmd 'ReleaseNotes' outDir
   cpCmd setEnvFile outDir
 
-  cpCmd osBinFiles        outDir'bin'
-  cpCmd 'doc'sl'*'        outDir'doc'
-  cpCmd 'examples'sl'*'   outDir'examples'
-  cpCmd 'misc'sl'*'       outDir'misc'
-  cpCmd 'testing'sl'*'    outDir'testing'
+  cpCmd osBinFiles                      outDir'bin'
+  cpCmd 'doc'sl'*'                      outDir'doc'
+  cpCmd 'examples'sl'*'                 outDir'examples'
+  cpCmd 'examples'sl'classic.rexx'sl'*' outDir'examples''sl'classic.rexx'
+  cpCmd 'misc'sl'*'                     outDir'misc'
+  cpCmd 'testing'sl'*'                  outDir'testing'
 
   zipCmd outFile outDir
 
