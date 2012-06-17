@@ -62,3 +62,18 @@ return testResult
 
   element = doc~createElement("FOO")
 
+  self~assertTrue(element~isA(.Element))
+  self~assertTrue(element~isA(.Node))
+  self~assertNull(element~namespaceURI)
+--  self~assertEquals("FOO", element~localName)
+  self~assertEquals(.node~ELEMENT_NODE, element~nodeType)
+  self~assertEquals("FOO", element~nodeName)
+  self~assertEquals("FOO", element~tagName)
+  self~assertNull(element~baseURI)
+  self~assertEquals("", element~getAttribute("XYZ"))
+  self~assertNull(element~getAttributeNode("XYZ"))
+  self~assertFalse(element~hasAttributes)
+  self~assertFalse(element~hasAttribute("XYZ"))
+  self~assertEquals(0, element~childElementCount)
+
+
