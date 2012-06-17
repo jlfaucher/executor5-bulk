@@ -243,8 +243,8 @@
 
 ::routine oosqlBackupFinish public external "LIBRARY oosqlite oosqlBackupFinish_rtn"
 ::routine oosqlBackupInit public external "LIBRARY oosqlite oosqlBackupInit_rtn"
-::routine oosqlBackupPageCount public external "LIBRARY oosqlite oosqlBackupPageCount_rtn"
-::routine oosqlBackupRemaining public external "LIBRARY oosqlite oosqlBackupRemaining_rtn"
+::routine oosqlBackupPageCount public external "LIBRARY oosqlite oosqlBackupRemaining_rtn"
+::routine oosqlBackupRemaining public external "LIBRARY oosqlite oosqlBackupPageCount_rtn"
 ::routine oosqlBackupStep public external "LIBRARY oosqlite oosqlBackupStep_rtn"
 ::routine oosqlBindBlob public external "LIBRARY oosqlite oosqlBindBlob_rtn"
 ::routine oosqlBindDouble public external "LIBRARY oosqlite oosqlBindDouble_rtn"

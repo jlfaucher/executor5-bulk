@@ -6731,7 +6731,7 @@ RexxRoutine4(POINTER, oosqlBackupInit_rtn, POINTER, dstConn, POINTER, srcConn, O
         return NULL;
     }
 
-    if ( argumentOmitted(2) )
+    if ( argumentOmitted(3) )
     {
         dstName = "main";
     }
@@ -6777,7 +6777,7 @@ RexxRoutine1(int, oosqlBackupRemaining_rtn, POINTER, _bu)
  *
  *
  */
-RexxRoutine2(int, oosqlBackupStep_rtn, POINTER, _bu, int, pageCount)
+RexxRoutine2(int, oosqlBackupStep_rtn, POINTER, _bu, OPTIONAL_int, pageCount)
 {
     sqlite3_backup *bu = routineBu(context, _bu, 1);
     if ( bu == NULL )
@@ -6785,7 +6785,7 @@ RexxRoutine2(int, oosqlBackupStep_rtn, POINTER, _bu, int, pageCount)
         return SQLITE_MISUSE;
     }
 
-    return sqlite3_backup_step(bu, pageCount);
+    return sqlite3_backup_step(bu, argumentOmitted(2) ? 5 : pageCount);
 }
 
 /** oosqlBindBlob()
