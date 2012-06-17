@@ -65,6 +65,51 @@
 </tbody></tgroup>
 </table>
 
+<section id="sct-onlineBackUp"><title>Online Backup Feature</title>
+<indexterm><primary>online backup</primary><secondary>Classic Rexx Interface</secondary></indexterm>
+<indexterm><primary>Classic Rexx Interface</primary><secondary>online backup</secondary></indexterm>
+<para>
+  SQLite provides an online backup feature and the classic Rexx interface of ooSQLite provides the functions neccessary
+  to make complete use of this feature. To effectively use the online backup feature with the classic Rexx interface,
+  the Rexx programmer should read the SQLite <ulink
+  url="http://www.sqlite.org/c3ref/backup_finish.html">documentation</ulink> for the <emphasis role="italic">Online
+  Backup API.</emphasis>. SQLite also provides an <ulink url="http://www.sqlite.org/backup.html">article</ulink> with
+  two examples and commentary showing how to use the online backup API. Readers may also find useful the information in
+  the object orientated interface's <link linkend="clsOOSQLiteBackup">support</link> for this feature.
+</para>
+<para>
+  These functions in ooSQLite provide the access to the online backup feature of SQLite:
+  <itemizedlist>
+  <listitem>
+  <para>
+    <link linkend="rtn-oosqlBackupFinish">oosqlBackupFinish</link>.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <link linkend="rtn-oosqlBackupPageCount">oosqlPageCount</link>.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <link linkend="rtn-oosqlBackupRemaining">oosqlBackupRemaining</link>.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    <link linkend="rtn-oosqlBackupStep">oosqlBackupStep</link>.
+  </para>
+  </listitem>
+  </itemizedlist>
+</para>
+</section>  <!-- End Online Backup Feature -->
+
+
 <!-- oosqlFunctions.xml file with all functions  START -->
 &oosqlFunctions
 <!-- oosqlFunctions.xml file with all functions    END   -->

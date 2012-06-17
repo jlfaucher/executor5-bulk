@@ -165,13 +165,14 @@
 <indexterm><primary>Classic Rexx Interface</primary><secondary>oosqlBackupFinish</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--oosqlBackupFinish(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--oosqlBackupFinish(--buHandle--)--------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Called to release all resources associated with the backup operation. This function is part of the <link
+  linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -179,10 +180,10 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>buHandle [required]</term>
       <listitem>
       <para>
-        xx
+        The non-null handle to the backup returned from <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -191,27 +192,75 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns .ooSQLite~OK if no errors occurred during a call to <link
+    linkend="rtn-oosqlBackupStep">oosqlBackupStep</link>, whether or not the backup operation completed. If
+    an out-of-memory condition or IO error occurred during any prior call of <emphasis
+    role="italic">oosqlBackupStep</emphasis> using the <emphasis role="italic">buHandle</emphasis> argument, then
+    <emphasis role="italic">oosqlBackupFinish</emphasis> returns the corresponding <link
+    linkend="rowResultCode">error</link> code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    There should be exactly one call to <emphasis role="italic">oosqlBackupFinish</emphasis> for each successful call of
+    <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>. Once <emphasis
+    role="italic">oosqlBackupFinish</emphasis> has been called, <emphasis role="italic">buHandle</emphasis> is no longer
+    valid and must not be used in any other call to a function.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Additional details
+    The functionality of the <emphasis role="italic">oosqlBackupFinish</emphasis> routine is similar to that of the
+  <ulink url="">sqlite3_backup_finish</ulink> SQLite API
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows part of the code that performs an online backup of a very large database which is concurrently in
+    heavy use. If the backup does not finish in four hours, the application abandons the backup and reschedules it to a
+    different time:
 <programlisting>
 <![CDATA[
+
+-- This function will return DONE if completed and BUSY if abandoned.  Any other
+-- return would be a fatal error.
+::routine backupWithTimeLimit
+  use strict arg buHandle, limit
+
+  count = 0
+  do while .true
+    ret = oosqlBackupStep(buHandle, 2)
+    if ret == .ooSQLite~DONE then do
+      say 'Backup finished with no error.'
+      outcome = .ooSQLite~DONE
+      leave
+    end
+
+    if ret <> .ooSQLite~OK, ret <> .ooSQLite~BUSY, ret <> .ooSQLite~LOCKED then do
+      say 'Fatal error during back up.'
+      outcome = ret
+      leave
+    end
+
+    if count * 2 > limit then do
+      say
+      say "Backup has not completed within the time limit, going to abandon the operation."
+      say
+      outcome = .ooSQLite~BUSY
+      leave
+    end
+
+    j = SysSleep(.5)
+    count += 1
+
+  end
+
+  ret = oosqlBackupFinish(buHandle)
+
+  return outcome
 
 ]]>
 </programlisting>
@@ -225,13 +274,14 @@
 <indexterm><primary>Classic Rexx Interface</primary><secondary>oosqlBackupInit</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--oosqlBackupInit(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--oosqlBackupInit(--dstConn-,-srcConn--+------------+--+-----------+--)------><
+                                         +-,-dstName--+  +-,srcName--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Called once to initialize an online backup. This function is part of the <link
+  linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -239,10 +289,34 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>dstConn [required]</term>
       <listitem>
       <para>
-        xx
+        An open database <link linkend="rtn-oosqlOpen">connection</link>.  This database is used as the destination of
+        the backup.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>srcConn [required]</term>
+      <listitem>
+      <para>
+        An open database <link linkend="rtn-oosqlOpen">connection</link>.  This database is used as the source of the
+        backup.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>dstName [optional]</term>
+      <listitem>
+      <para>
+        The name of the destination backup. This is not the file name but rather the <emphasis
+        role="italic">main</emphasis>, <emphasis role="italic">temp</emphasis>, or attached as name. If omitted,
+        <emphasis role="italic">main</emphasis> is used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>srcName [optional]</term>
+      <listitem>
+      <para>
+        The name of the source backup. Again, this is not the file name but rather the <emphasis
+        role="italic">main</emphasis>, <emphasis role="italic">temp</emphasis>, or attached as name.  If omitted,
+        <emphasis role="italic">main</emphasis> is used.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -251,27 +325,46 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns a <link linkend="defHandle">handle</link> that is used in the calls to other functions that are part of the
+    online backup feature. This handle may be null if an error ocurred. See the remarks for a discussion on this.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If an error occurs within the call to <emphasis role="italic">oosqlBackupInit</emphasis>, then the handle returned
+    will be null. Use the <link linkend="rtn-oosqlIsHandleNull">oosqlIsHandleNull</link> routine to check for this. On
+    error, an error code and error message are stored in the destination database connection. This error code and
+    message can be retrieved using the <link linkend="rtn-oosqlErrCode">oosqlErrCode</link> and <link
+    linkend="rtn-oosqlErrMsg">oosqlErrMsg</link> functions A successful call to <emphasis
+    role="italic">oosqlBackupInit</emphasis> returns a non-null handle. The handle may be used with the <link
+    linkend="rtn-oosqlBackupStep">oosqlBackupStep</link> and <link
+    linkend="rtn-oosqlBackupFinish">oosqlBackupFinish</link>, functions to perform the specified backup operation. The
+    non-null handle is also used in the <link linkend="rtn-oosqlBackupPageCount">oosqlBackupPageCount</link> and <link
+    linkend="rtn-oosqlBackupRemaining">oosqlBackupRemaining</link> functions.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Additional details
+    The functionality of the <emphasis role="italic">oosqlBackupInit</emphasis> routine is similar to that of the
+    <ulink url="http://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupinit">sqlite3_backup_init</ulink> SQLite API
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example initializes a backup and checks for error:
 <programlisting>
 <![CDATA[
+
+    buHandle = oosqlBackupInit(destDB, srcDB)
+    if oosqlIsHandleNull(buHandle) then do
+      say 'Error initializing backup. Error code:' oosqlErrCode(destDB) oosqlErrMsg(destDB)
+      r = oosqlClose(srcDB)
+      r = oosqlClose(destDB)
+      return 99.
+    end
 
 ]]>
 </programlisting>
@@ -285,24 +378,25 @@
 <indexterm><primary>Classic Rexx Interface</primary><secondary>oosqlBackupPageCount</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--oosqlBackupPageCount(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--oosqlBackupPageCount(--buHandle--)-----------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the total number of pages in the source database file. This function is part of the <link
+  linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>buHandle [required]</term>
       <listitem>
       <para>
-        xx
+        The non-null handle to the backup returned from <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -311,58 +405,45 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The total number of pages in the source database file.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Additional details
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The functionality of the <emphasis role="italic">oosqlBackupPageCount</emphasis> routine is similar to that of the
+    <ulink url="http://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupfinish">sqlite3_backup_pagecount</ulink>
+    SQLite API.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End oosqlBackupPageCount() -->
+
 
 <section id="rtn-oosqlBackupRemaining"><title>oosqlBackupRemaining</title>
 <indexterm><primary>oosqlBackupRemaining</primary></indexterm>
 <indexterm><primary>Classic Rexx Interface</primary><secondary>oosqlBackupRemaining</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--oosqlBackupRemaining(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--oosqlBackupRemaining(--buHandle--)-----------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the number of pages still to be backed up in the source database file. This function is part of the <link
+  linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>buHandle [required]</term>
       <listitem>
       <para>
-        xx
+        The non-null handle to the backup returned from <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -371,27 +452,42 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The number of pages in the source database file that still need to be backed up.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Additional details
+    The functionality of the <emphasis role="italic">oosqlBackupRemaining</emphasis> routine is similar to that of the
+    <ulink url="http://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupfinish">sqlite3_backup_remaining</ulink>
+    SQLite API .
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows how to calculate the percentage complete of a backup. The code snippet would be executed after a
+    call to oosqlBackupStep().  Maybe every call, or every 5th call, ...
 <programlisting>
 <![CDATA[
+
+  remain = oosqlBackupRemaining(buHandle)
+  pages  = oosqlBackupPageCount(buHandle)
+
+  percentComplete = 100 * (pages - remain) / pages
+
+  say "Backup" percentComplete "percent complete..."
+
+  /* Output might be:
+
+  Backup 8 percent complete...
+  Backup 16 percent complete...
+  Backup 24 percent complete...
+  Backup 32 percent complete...
+  Backup 40 percent complete...
+  Backup 48 percent complete...
+
+  */
 
 ]]>
 </programlisting>
@@ -400,18 +496,21 @@
 </variablelist>
 </section>  <!-- End oosqlBackupRemaining() -->
 
+
  <section id="rtn-oosqlBackupStep"><title>oosqlBackupStep</title>
  <indexterm><primary>oosqlBackupStep</primary></indexterm>
  <indexterm><primary>Classic Rexx Interface</primary><secondary>oosqlBackupStep</secondary></indexterm>
  <programlisting>
  <![CDATA[
- >>--oosqlBackupStep(--+--------+--)---------------------------------------------><
-                  +--type--+
+ >>--oosqlBackupStep(--buHandle--,--count--)-----><
+
  ]]>
  </programlisting>
 
  <para>
-   xx
+   Copies up to <emphasis role="italic">count</emphasis> pages between the source and destination databases specified by
+   the <emphasis role="italic">buHandle</emphasis> argument. This function is part of the <link
+   linkend="sct-onlineBackup">support</link> for the online backup feature of SQLite.
  </para>
  <variablelist>
    <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -419,10 +518,17 @@
    <para>
      The arguments are:
      <variablelist>
-       <varlistentry><term>TERM</term>
+       <varlistentry><term>buHandle [required]</term>
        <listitem>
        <para>
-         xx
+         The non-null handle to the backup returned from <link linkend="rtn-oosqlBackupInit">oosqlBackupInit</link>.
+       </para>
+       </listitem></varlistentry>
+       <varlistentry><term>count</term>
+       <listitem>
+       <para>
+         The whole number count of database pages to copy. If count is negative, all of the remaining pages are copied.
+         If <emphasis role="italic">count</emphasis> is omitted it defaults to 5.
        </para>
        </listitem></varlistentry>
      </variablelist>
@@ -431,27 +537,63 @@
    <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
    <listitem>
    <para>
-     xx
+    If <emphasis role="italic">count</emphasis> pages are successfully copied, and there are still more pages to
+    be copied, then OK (.ooSQLite~OK) is returned. If <emphasis role="italic">oosqlBackupStep</emphasis> successfully
+    finishes copying all pages from source to destination, then DONE (.ooSQLite~DONE) is returned. Otherwise an error
+    code is returned. Some errors are fatal and some are not. The remarks section further discusses this.
    </para>
    </listitem></varlistentry>
    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
    <listitem>
    <para>
-     Additional comments.
+     If the database engine can not obtain a required lock then <emphasis role="italic">oosqlBackupStep</emphasis>
+     returns BUSY (.ooSQLite~BUSY.) If the source database connection is being used to write to the source database when
+     <emphasis role="italic">oosqlBackupStep</emphasis> is called, then LOCKED is returned. The return code can also be
+     NOMEM, READONLY, or one of the IO_ERR_XXX codes. After BUSY or LOCKED, <emphasis
+     role="italic">oosqlBackupStep</emphasis> can be tried again. But NOMEM, READONLY, and IO_ERR_XXX are considered
+     fatal. There is no point in retrying if any of those codes are returned. The application must accept that the
+     backup operation has failed and call <link linkend="rtn-oosqlBackupFinish">finish</link> to release associated
+     resources.
    </para>
    </listitem></varlistentry>
    <varlistentry><term><emphasis role="bold">Details</emphasis></term>
    <listitem>
    <para>
-     Additional details
+     The functionality of the <emphasis role="italic">oosqlStep</emphasis> routine is similar to that of the <ulink
+     url="http://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupfinish">sqlite3_backup_step</ulink> SQLite API.
    </para>
    </listitem></varlistentry>
    <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
    <listitem>
    <para>
-     This example ...
+     This example initializes a backup, copies everything in one step, checks for error, and cleans up:
  <programlisting>
  <![CDATA[
+
+   ...
+
+   buObj = oosqlBackupInit(srcConn, dstConn)
+
+   if oosqlIsHandleNull(buObj) then do
+     -- handle error
+     ...
+   end
+
+   ret = oosqlBackupStep(buObj, -1)
+
+   if ret \== .ooSQLite~DONE then do
+     -- back up failed, handle error
+     ret = oosqlBackupFinish(buObj)
+     ...
+   end
+
+   -- Backup okay, we are done with the connections
+   -- and the backup handle, close everything ...
+   ret = oosqlBackupFinish(buObj)
+   ret = oosqlClose(dstConn)
+   ret = oosqlClose(srcConn)
+
+   return 0
 
  ]]>
  </programlisting>
@@ -4443,7 +4585,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    The functionality of the oosqlOpen() function is similar to that of the <ulink
+    The functionality of the <emphasis role="italic">oosqlOpen()</emphasis> routine is similar to that of the <ulink
     url="http://www.sqlite.org/c3ref/open.html">sqlite3_open_v2</ulink> SQLite API
   </para>
   </listitem></varlistentry>
@@ -4572,7 +4714,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    The functionality of the oosqlPrepare() function is similar to that of the <ulink
+    The functionality of the <emphasis role="italic">oosqlPrepare()</emphasis> routine is similar to that of the <ulink
     url="http://www.sqlite.org/c3ref/prepare.html">sqlite3_prepare_v2</ulink> SQLite API.
   </para>
   </listitem></varlistentry>
