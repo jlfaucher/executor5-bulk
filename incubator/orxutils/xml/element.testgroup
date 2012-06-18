@@ -55,25 +55,40 @@ return testResult
 ::requires "xmldom.cls"
 
 ::class "element.testGroup" subclass ooTestCase public
+::method init
+  expose dom document
+  forward class(super) continue
+  dom = .DomImplementation~implementation
+  document = dom~createDocument
+
+::attribute dom
+::attribute document
 
 ::method testBaseElement
-  dom = .DomImplementation~implementation
-  doc = dom~createDocument
+  doc = self~document
 
   element = doc~createElement("FOO")
 
   self~assertTrue(element~isA(.Element))
   self~assertTrue(element~isA(.Node))
   self~assertNull(element~namespaceURI)
---  self~assertEquals("FOO", element~localName)
+  self~assertEquals("FOO", element~localName)
   self~assertEquals(.node~ELEMENT_NODE, element~nodeType)
   self~assertEquals("FOO", element~nodeName)
   self~assertEquals("FOO", element~tagName)
   self~assertNull(element~baseURI)
+  self~assertNull(element~prefix)
   self~assertEquals("", element~getAttribute("XYZ"))
   self~assertNull(element~getAttributeNode("XYZ"))
   self~assertFalse(element~hasAttributes)
   self~assertFalse(element~hasAttribute("XYZ"))
   self~assertEquals(0, element~childElementCount)
+  self~assertNull(element~firstElementChild)
+  self~assertNull(element~lastElementChild)
+  attrs = element~attributes
+  self~assertEquals(0, attrs~length)
+  self~assertEquals(0, attrs~items)
+  self~assertNull(element~nextElementSibling)
+  self~assertNull(element~previousElementSibling)
 
 

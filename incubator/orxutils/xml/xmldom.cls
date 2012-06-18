@@ -110,8 +110,12 @@
   use strict arg
   return nodes~copy   -- make sure this is a copy
 
+-- some compatibility methods to make nodelist feel like a Rexx collection
 ::method "[]"
-  return message("ITEM")
+  forward message("ITEM")
+
+::method items
+  forward message("LENGTH")
 
 
 /*----------------------------------------------------------------------------*/
@@ -550,6 +554,9 @@
       return 0;
   end
 
+::attribute attributes PRIVATE
+
+-- some convience methods for Rexx collection appearances
 ::method makearray
   expose attributes
   use strict arg
@@ -558,7 +565,8 @@
 ::method "[]"
   forward message("ITEM")
 
-::attribute attributes PRIVATE
+::method items
+  forward message("LENGTH")
 
 
 /*----------------------------------------------------------------------------*/
@@ -571,7 +579,7 @@
 ::class "AttributeMap" subclass NamedNodeMap public
 ::method init
   expose hasDefaults
-  use strict arg ownerNode, defaults = . nil
+  use strict arg ownerNode, defaults = .nil
 
   self~init:super(ownerNode)
   hasDefaults = .false
@@ -586,7 +594,7 @@
 
 ::method setNamedItem
   use strict arg attribute
-  -- replaceing an attribute with itself does nothing
+  -- replacing an attribute with itself does nothing
   if attribute~isOwned then do
       return attribute
   end
@@ -775,7 +783,7 @@
   use strict arg ownerNode = .nil
   nodeId = self~class~getId
   childNodes = .NodeList~new
-  self~owned = .false   -- unowned until we are added as a child
+  self~isowned = .false  -- unowned until we are added as a child
   self~readonly = .false -- newly created nodes can be altered
   self~isFirstChild = .false -- not the first child until added to something.
 
@@ -815,7 +823,7 @@
   expose ownerDocument ownerNode
 
   -- if we're a child node, then ask our owner for the information
-  if self~owned then do
+  if self~isowned then do
       return ownerNode~ownerDocument
   end
   else do
@@ -827,7 +835,7 @@
   expose ownerNode
 
   use strict arg doc
-  if \self~owned then do
+  if \self~isowned then do
       ownerNode = doc
   end
 
@@ -848,7 +856,7 @@
   return .nil
 
 -- private attributes used for the implementation
-::ATTRIBUTE owned PRIVATE
+::ATTRIBUTE isowned PRIVATE
 ::ATTRIBUTE readonly PRIVATE
 ::ATTRIBUTE isFirstChild PRIVATE
 
@@ -863,7 +871,7 @@
   -- make a copy of ourselves
   newNode = self~copy
   -- neither owned or readonly
-  newNode~owned = .false
+  newNode~isowned = .false
   newNode~readOnly = .false
 
   return newNode
@@ -2676,19 +2684,26 @@ syntax:
   if arg() == 2 then do
       use strict arg ownerDoc, nodeName
       self~init:super(ownerDoc)
+      -- these are the same if not provided
+      localName = nodeName
   end
   else if arg() == 3 then do
       use strict arg ownerDoc, namespaceURI, nodeName
       self~init:super(ownerDoc)
-      if nodeName \= .nil then do
-          self~setName(nodeName)
-      end
+      -- decode the name to see if there is a prefix
+      self~setName(namespaceURI, nodeName)
   end
   else do
-      use strict arg ownerDoc, namespaceURI, nodeName, localName
+      use strict arg ownerDoc, namespaceURI, nodeName, temp
       self~init:super(ownerDoc)
+      -- decode the name to see if there is a prefix
+      self~setName(namespaceURI, nodeName)
+      -- the provided version overrides anything decoded from the qname
+      localName = temp
+
   end
 
+-- decode a qualified name into its elements
 ::method setName private
   expose namespaceURI localName
   use arg qname
@@ -2705,7 +2720,8 @@ syntax:
       localName = qname
   end
   else do
-      parse var qname localName (colon1) (colon2 + 1) localName
+      parse var qname prefix (colon1) (colon2 + 1) localName
+      -- TODO:  validate the name information with the ownerdoc
   end
 
 -- support for the Document renameNode method
@@ -3123,6 +3139,7 @@ syntax:
       end
       node = node~nextLogicalSibling(node)
   end
+  return .nil
 
 
 ::attribute previousElementSibling GET
@@ -3141,6 +3158,7 @@ syntax:
       end
       node = node~previousLogicalSibling(node)
   end
+  return .nil
 
 ::method getFirstElementChild private
   use strict arg node
@@ -3194,7 +3212,7 @@ syntax:
   end
   return .nil
 
-::method getNextLogicalSibling private
+::method nextLogicalSibling private
   use arg node
 
   next = node~nextSibling
@@ -3212,7 +3230,7 @@ syntax:
 
   return next
 
-::method getPreviousLogicalSibling private
+::method previousLogicalSibling private
   use arg node
 
   previous = node~previousSibling
