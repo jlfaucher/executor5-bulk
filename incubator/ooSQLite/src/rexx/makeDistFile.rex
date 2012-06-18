@@ -98,7 +98,7 @@ use arg cmdLine
   cpCmd osBinFiles                      outDir'bin'
   cpCmd 'doc'sl'*'                      outDir'doc'
   cpCmd 'examples'sl'*'                 outDir'examples'
-  cpCmd 'examples'sl'classic.rexx'sl'*' outDir'examples''sl'classic.rexx'
+  cpCmd 'examples'sl'classic.rexx'sl'*' outDir'examples'sl'classic.rexx'
   cpCmd 'misc'sl'*'                     outDir'misc'
   cpCmd 'testing'sl'*'                  outDir'testing'
 
