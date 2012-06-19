@@ -834,30 +834,6 @@ int genDbStatus(RexxThreadContext *c, sqlite3 *db, int param, RexxObjectPtr _res
     return rc;
 }
 
-int genStatus(RexxThreadContext *c, int param, RexxObjectPtr _result, logical_t reset)
-{
-    if ( ! c->IsDirectory(_result) )
-    {
-        wrongClassException(c, 2, "Directory", _result);
-        return SQLITE_MISUSE;
-    }
-
-    RexxDirectoryObject result = (RexxDirectoryObject)_result;
-
-    int cur    = -1;
-    int hiwtr  = -1;
-
-    int rc = sqlite3_status(param, &cur, &hiwtr, (int)reset);
-
-    if ( rc == SQLITE_OK )
-    {
-        c->DirectoryPut(result, c->WholeNumber(cur), "CURRENT");
-        c->DirectoryPut(result, c->WholeNumber(hiwtr), "HIGHWATER");
-    }
-
-    return rc;
-}
-
 int genTableColumnMetadata(RexxThreadContext *c, sqlite3 *db, CSTRING dbName, CSTRING tableName,
                            CSTRING colName, RexxObjectPtr _results, size_t pos)
 {
@@ -2103,71 +2079,16 @@ RexxMethod2(RexxObjectPtr, oosql_setRecordFormat_atr_cls, uint32_t, format, CSEL
 }
 
 
-/** ooSQLite::version  [class method]
- *
- *  @param type  [optional]  The style of the version output returned.  Keywords
- *               are, but only 1st letter is required:
- *
- *                 Compact
- *                 Full
- *                 OneLine
- *
- *                 LibVersion
- *                 Number (for libversion number)
- *                 SourceID
- *
- *               The defualt is OneLine
- *
- */
-RexxMethod1(RexxObjectPtr, oosql_version_cls, OPTIONAL_CSTRING, type)
-{
-    if ( argumentExists(1) )
-    {
-        switch ( toupper(*type) )
-        {
-
-            case 'O' :
-                return genGetVersion(context->threadContext, FALSE, FALSE);
-                break;
-
-            case 'L' :
-                return context->String(sqlite3_libversion());
-                break;
-
-            case 'N' :
-                return context->Int32(sqlite3_libversion_number());
-                break;
-
-            case 'S' :
-                return context->String(sqlite3_sourceid());
-                break;
-
-            case 'F' :
-                return genGetVersion(context->threadContext, TRUE, FALSE);
-                break;
-
-            case 'C' :
-                return genGetVersion(context->threadContext, FALSE, TRUE);
-                break;
-
-            default :
-                wrongArgOptionException(context->threadContext, 1, VALID_VERSION_TYPES, type);
-                return TheZeroObj;
-                break;
-        }
-    }
-
-    return genGetVersion(context->threadContext, FALSE, FALSE);
-}
-
-
 /** ooSQLite::compileOptionGet  [class method]
  *
+ *  sqlite3_compileoption_get() uses 0 through N - 1  to get the Nth compile
+ *  option.  We adjust for using 1 through N in Rexx.
  *
  *  @note  Returns "NULL" for the the null pointer return from sqlite.
  */
 RexxMethod1(RexxObjectPtr, oosql_compileOptionGet_cls, int, index)
 {
+    index--;
     return safeRexxString(context->threadContext, sqlite3_compileoption_get(index));
 }
 
@@ -2213,7 +2134,7 @@ RexxMethod0(RexxObjectPtr, oosql_libVersionNumber_cls)
  *
  *
  */
-RexxMethod1(int64_t, oosql_memoryHighWater_cls, logical_t, reset)
+RexxMethod1(int64_t, oosql_memoryHighWater_cls, OPTIONAL_logical_t, reset)
 {
     return sqlite3_memory_highwater((int)reset);
 }
@@ -2280,16 +2201,93 @@ RexxMethod0(RexxStringObject, oosql_sqlite3Version_cls)
  */
 RexxMethod3(int, oosql_status_cls, int, param, RexxObjectPtr, _result, OPTIONAL_logical_t, reset)
 {
-    return genStatus(context->threadContext, param, _result, reset);
+    if ( ! context->IsDirectory(_result) )
+    {
+        wrongClassException(context->threadContext, 2, "Directory", _result);
+        return SQLITE_MISUSE;
+    }
+
+    RexxDirectoryObject result = (RexxDirectoryObject)_result;
+
+    int cur    = -1;
+    int hiwtr  = -1;
+
+    int rc = sqlite3_status(param, &cur, &hiwtr, (int)reset);
+
+    if ( rc == SQLITE_OK )
+    {
+        context->DirectoryPut(result, context->WholeNumber(cur), "CURRENT");
+        context->DirectoryPut(result, context->WholeNumber(hiwtr), "HIGHWATER");
+    }
+
+    return rc;
 }
 
 /** ooSQLite::threadSafe()
  *
  *
  */
-RexxMethod0(logical_t, oosql_threadSafe_cls)
+RexxMethod0(int, oosql_threadSafe_cls)
 {
     return sqlite3_threadsafe();
+}
+
+
+/** ooSQLite::version  [class method]
+ *
+ *  @param type  [optional]  The style of the version output returned.  Keywords
+ *               are, but only 1st letter is required:
+ *
+ *                 Compact
+ *                 Full
+ *                 OneLine
+ *
+ *                 LibVersion
+ *                 Number (for libversion number)
+ *                 SourceID
+ *
+ *               The defualt is OneLine
+ *
+ */
+RexxMethod1(RexxObjectPtr, oosql_version_cls, OPTIONAL_CSTRING, type)
+{
+    if ( argumentExists(1) )
+    {
+        switch ( toupper(*type) )
+        {
+
+            case 'O' :
+                return genGetVersion(context->threadContext, FALSE, FALSE);
+                break;
+
+            case 'L' :
+                return context->String(sqlite3_libversion());
+                break;
+
+            case 'N' :
+                return context->Int32(sqlite3_libversion_number());
+                break;
+
+            case 'S' :
+                return context->String(sqlite3_sourceid());
+                break;
+
+            case 'F' :
+                return genGetVersion(context->threadContext, TRUE, FALSE);
+                break;
+
+            case 'C' :
+                return genGetVersion(context->threadContext, FALSE, TRUE);
+                break;
+
+            default :
+                wrongArgOptionException(context->threadContext, 1, VALID_VERSION_TYPES, type);
+                return TheZeroObj;
+                break;
+        }
+    }
+
+    return genGetVersion(context->threadContext, FALSE, FALSE);
 }
 
 
@@ -8110,7 +8108,7 @@ RexxRoutine3(int, oosqlLimit_rtn, POINTER, _db, int, id, int, value)
  *
  *
  */
-RexxRoutine1(int64_t, oosqlMemoryHighWater_rtn, logical_t, reset)
+RexxRoutine1(int64_t, oosqlMemoryHighWater_rtn, OPTIONAL_logical_t, reset)
 {
     return sqlite3_memory_highwater((int)reset);
 }
@@ -8857,7 +8855,7 @@ RexxRoutine9(int, oosqlTableColumnMetadata_rtn, POINTER, _db, CSTRING, tableName
  *
  *
  */
-RexxRoutine0(logical_t, oosqlThreadSafe_rtn)
+RexxRoutine0(int, oosqlThreadSafe_rtn)
 {
     return sqlite3_threadsafe();
 }

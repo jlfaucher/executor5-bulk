@@ -118,6 +118,8 @@ ooSQLite.1.0.0.xxxx
    *---doc
    |
    *---examples
+   |     |
+   |     *---classic.rexx
    |
    *---misc
    |
@@ -208,6 +210,80 @@ the entire user community.
 
                           Cumulative Changes:
                           ===================
+
+
+
+Changes since ooSQLite Version 1.0.0.7925 (Preview)
+------------------------------------------------------------------------
+
+  *
+
+  Documentation:
+  --------------
+
+  * The first chapter, About This Book, is finished.
+
+  * The second chapter, Brief Overview, is finished.
+
+  * The documentation for the .ooSQLite class is finished.
+
+
+  Examples (examples directory):
+  -----------------------------
+
+  *
+
+
+
+  Examples (testing directory):
+  -----------------------------
+
+  The examples in the testing directory have been used by the developers
+  during implementation.  A few of these programs are made available to
+  help people get started with ooSQLite.  In general these are not well
+  documented and will eventually be removed from the distribution as
+  more examples are added to the examples directory.
+
+  The following programs have been added to the testing subdirectory:
+
+  * (none)
+
+  The following changes were made to the testing subdirectory:
+
+  * (none)
+
+
+
+  Bugs:
+  ----
+
+  *
+
+
+  * No bugs were reported on SourceForge in this cycle.
+
+
+  Changes in implementation:
+  --------------------------
+
+  * The argument to ooSQLite::memoryHighWater was intended to be
+  optional, but it was not.  The argument has been changed to be
+  optional.
+
+  * The argument to the oosqlMemoryHighWater() function was intended to
+  be optional, but it was not.  The argument has been changed to be
+  optional.
+
+  * Both ooSQLite::threadSafe() and oosqlThreadSafe() were returning
+  true or false, but they actually should return one of 0, 1, or 2.
+  Forcing the return to a logical prevented 2 from being returned.  This
+  was changed to return a number.
+
+  Enhancements:
+  -------------
+
+  *
+
 
 
 
