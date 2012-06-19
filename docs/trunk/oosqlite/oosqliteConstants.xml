@@ -1192,18 +1192,18 @@
 </row>
 </thead>
 <tbody>
-<!-- NOTE these 3 constants ... -->
+<!-- NOTE these 3 constants should maybe be updated each time a new version of SQLite is used? ... -->
 <row>
 <entry>VERSION</entry>
-<entry>"3.7.13"</entry>
+<entry>"3.7.13" The value of this constant will vary depending on the exact version of the SQLite database enging embedded in ooSQLite.</entry>
 </row>
 <row>
 <entry>VERSION_NUMBER</entry>
-<entry>3007013</entry>
+<entry>3007013 The value of this constant will vary depending on the exact version of the SQLite database enging embedded in ooSQLite.</entry>
 </row>
 <row>
 <entry>SOURCE_ID</entry>
-<entry>"2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc"</entry>
+<entry>"2012-06-11 02:05:22 f5b5a13f7394dc143aa136f1d4faba6839eaa6dc" The value of this constant will vary depending on the exact version of the SQLite database enging embedded in ooSQLite.</entry>
 </row>
 
 </tbody></tgroup>
@@ -2484,7 +2484,8 @@
 <tbody>
 <row>
 <entry>STATUS_MEMORY_USED</entry>
-<entry></entry>
+<entry>This parameter is the current amount of memory checked out using the SQLite malloc routine, either directly or indirectly. The figure includes calls made to the routine by the application and internal memory usage by the SQLite library. Scratch memory controlled by CONFIG_SCRATCH and auxiliary page-cache memory controlled by
+  CONFIG_PAGECACHE is not included in this parameter. The amount returned is the sum of the allocation sizes as reported by the xSize method in sqlite3_mem_methods.</entry>
 </row>
 <row>
 <entry>STATUS_PAGECACHE_USED</entry>
