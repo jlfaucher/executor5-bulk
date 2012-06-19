@@ -91,4 +91,77 @@ return testResult
   self~assertNull(element~nextElementSibling)
   self~assertNull(element~previousElementSibling)
 
+  element~rename("BAR")
+  self~assertEquals("BAR", element~localName)
+  self~assertEquals("BAR", element~nodeName)
+  self~assertEquals("BAR", element~tagName)
+  element~prefix = "foo"
+  self~assertEquals("BAR", element~localName)
+  self~assertEquals("foo:BAR", element~nodeName)
+  self~assertEquals("foo:BAR", element~tagName)
+
+::method testBaseAttribute
+
+  doc = self~document
+
+  element = doc~createElement("FOO")
+
+  self~assertEquals("", element~getAttribute("XYZ"))
+  self~assertNull(element~getAttributeNode("XYZ"))
+  -- just make sure a remove on an empty list doesn't cause an error
+  element~removeAttribute("XYZ")
+
+  element~setAttribute("ABC", "123")
+  -- the attribute list is created lazily...ensure the unknown
+  -- attributes are still unknown
+
+  self~assertEquals("", element~getAttribute("XYZ"))
+  self~assertNull(element~getAttributeNode("XYZ"))
+
+  -- now check the added attribute
+  self~assertEquals("123", element~getAttribute("ABC"))
+  self~assertEquals("123", element~getAttributeNode("ABC")~value)
+
+  -- remove the added attribute
+  element~removeAttribute("ABC")
+  -- make sure it is really gone
+  self~assertEquals("", element~getAttribute("ABC"))
+  self~assertNull(element~getAttributeNode("ABC"))
+  -- set to a new value
+  element~setAttribute("ABC", "456")
+
+  self~assertEquals("456", element~getAttribute("ABC"))
+  -- get the attribute node
+  attr = element~getAttributeNode("ABC")
+
+  -- verify the parent child relationship
+  self~assertSame(element, attr~element)
+  self~assertSame(element, attr~ownerelement)
+
+  -- change the attribute node value...this should show up
+  -- in the element
+  attr~value = "789"
+
+  self~assertEquals("789", element~getAttribute("ABC"))
+  -- remove the attribute by the node
+  element~removeAttributeNode(attr)
+  -- should be done now
+  self~assertEquals("", element~getAttribute("ABC"))
+  -- this should not be owned now
+  self~assertNull(attr~element)
+  self~assertNull(attr~ownerelement)
+  -- add this back directly using the attribute node
+  element~setAttributeNode(attr)
+  self~assertEquals("789", element~getAttribute("ABC"))
+
+  -- rename the attribute
+  attr~rename("DEF")
+  -- verify this renamed correctly
+  self~assertEquals("", element~getAttribute("ABC"))
+  self~assertEquals("789", element~getAttribute("DEF"))
+
+  -- verify the parent child relationship
+  self~assertSame(element, attr~element)
+  self~assertSame(element, attr~ownerelement)
+
 

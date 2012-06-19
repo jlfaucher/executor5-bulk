@@ -290,9 +290,12 @@
 
 ::class 'NamedNodeMap' public
 ::method init
-  expose ownerNode attributes
+  expose ownerNode attributes hasDefaults changed readonly
   use strict arg ownerNode
   attributes = .nil
+  hasDefaults = .false
+  changed = .false
+  readonly = .false
 
 
 /*----------------------------------------------------------------------------*/
@@ -301,6 +304,24 @@
 /*        Private methods                                                     */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+::method findItemPoint private
+  expose attributes
+  use arg item
+
+  if attributes == .nil then do
+      return .nil
+  end
+
+  s = attributes~supplier
+  do while s~available
+      attr = s~item
+      if attr == item then do
+          return s~index
+      end
+  end
+
+  return .nil
+
 
 ::method findNamePoint private
   expose attributes
@@ -349,6 +370,11 @@
   end
 
   return .nil
+
+::attribute ownerNode
+::attribute hasDefaults
+::attribute changed
+::attribute readonly
 
 
 /*----------------------------------------------------------------------------*/
@@ -639,7 +665,7 @@
   if index \= .nil then do
       previous = attributes[i]
       attributes[i] = attribute
-      previous~ownerNode = self~ownerNode~ownerDocument
+      previous~ownerNode = ownerNode~ownerDocument
       previous~isOwned = .false
       previous~isSpecified = .true
   end
@@ -662,7 +688,7 @@
       return .nil
   end
 
-  return self~remove(self~attributes[index], index, true)
+  return self~remove(self~attributes[index], index, .true)
 
 ::method removeNamedItemNS
   use strict arg namespaceURI, name
@@ -672,15 +698,25 @@
       return .nil
   end
 
-  return self~remove(self~attributes[index], index, true)
+  return self~remove(self~attributes[index], index, .true)
+
+::method removeItem
+  use strict arg attr, addDefault
+
+  index = self~findItemPoint(attr)
+  if index == .nil then do
+      return .nil
+  end
+
+  return self~remove(attr, index, addDefault)
 
 ::method remove private
   use strict arg attr, index, addDefault = .false
 
-  ownerDocument = self~ownerNode~ownderDocument
+  ownerDocument = self~ownerNode~ownerDocument
   name = attr~nodeName
-  if attr~isIdAttribue then do
-      ownerDocument~removeIdentifier(attr~value)
+  if attr~isId then do
+      self~ownerDocument~removeIdentifier(attr~value)
   end
 
   attributes = self~attributes
@@ -699,15 +735,15 @@
               if newAttr~localName \== .nil then do
                   newAttr~namespaceURI = attr~namespaceURI
               end
-              newAttr~ownerNode = ownerNode
-              newAttr~isOwned = true
+              newAttr~ownerNode = self~ownerNode
+              newAttr~isOwned = .true
               -- mark this as a default value
-              newAttr~isSpecified = false
+              newAttr~isSpecified = .false
               attributes[index] = newAttr
               setdefault = .true
               -- if this is the id attribute, make sure the document knows
               -- about this mapping
-              if attr~isIdAttribute then do
+              if attr~isId then do
                   ownerDocument~putIdentifier(newAttr~nodeValue, ownerNode)
               end
           end
@@ -721,10 +757,10 @@
   attr~ownerNode = .nil
   attr~isOwned = .false
   attr~isSpecified = .true
-  attr~isIdAttribute = false
+  attr~idAttribute = .false
 
   -- notify the document
-  ownerDocument~removedAttrNode(attr, ownerNode, name)
+  ownerDocument~removedAttrNode(attr, self~ownerNode, name)
   return attr
 
 ::method cloneContent
@@ -739,7 +775,6 @@
          self~attributes~append(newNode)
      end
   end
-
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -786,6 +821,7 @@
   self~isowned = .false  -- unowned until we are added as a child
   self~readonly = .false -- newly created nodes can be altered
   self~isFirstChild = .false -- not the first child until added to something.
+  self~isOwned = .false      -- not owned until attached
 
 ::ATTRIBUTE nodeName GET
 -- superclasses overrid
@@ -818,6 +854,8 @@
 ::METHOD hasAttributes
   use strict arg
   return .false
+
+::attribute ownerNode
 
 ::ATTRIBUTE ownerDocument GET
   expose ownerDocument ownerNode
@@ -856,9 +894,9 @@
   return .nil
 
 -- private attributes used for the implementation
-::ATTRIBUTE isowned PRIVATE
-::ATTRIBUTE readonly PRIVATE
-::ATTRIBUTE isFirstChild PRIVATE
+::ATTRIBUTE isowned
+::ATTRIBUTE readonly
+::ATTRIBUTE isFirstChild
 
 -- default implementations designed to be overridden
 ::METHOD hasChildNodes
@@ -967,6 +1005,13 @@
 ::METHOD getUserData
   use strict arg key
   raise syntax 93.963 -- not supported
+
+-- handle mutation events
+::method changed
+  self~ownerdocument~changed
+
+::method changes
+  return self~ownerdocument~changes
 
 
 /*----------------------------------------------------------------------------*/
@@ -1123,7 +1168,7 @@
   end
 
   -- inform the owner that this is happening
-  ownerDocument~insertingNode(this, replace)
+  ownerDocument~insertingNode(self, replace)
 
   -- make sure we've detached this node from any previous
   -- parent node.
@@ -1225,10 +1270,10 @@
 
   self~insertBefore(newChild, oldChild, .true)
   if newChild !== oldChild then do
-      removeChild(oldChild, true)
+      removeChild(oldChild, .true)
   end
 
-  ownerDocument.replacedNode(this)
+  ownerDocument.replacedNode(self)
   return oldChild
 
 ::method textContent
@@ -1370,13 +1415,14 @@
 /*----------------------------------------------------------------------------*/
 ::class "Document" subclass ParentNode public
 ::method init
-  expose iterators ranges eventListeners grammarAccess doctype
+  expose iterators ranges eventListeners grammarAccess doctype hasMutationEvents
   use arg doctype = .nil, grammarAccess = .false
 
   self~init:super
   iterators = .nil
   ranges = .nil
   eventListeners = .nil
+  hasMutationEvents = .false
 
 ::method cloneNode
   use strict arg deep = .false
@@ -1487,7 +1533,7 @@
       .DomErrors~raiseError(.DomErrors~NOT_SUPPORTED_ERR)
   end
 
-::attribute mutationEvents
+::attribute hasMutationEvents
 
 ::method setEventListeners
   expose eventListeners
@@ -1500,12 +1546,12 @@
   if listeners == .nil then do
       eventListeners~remove(node)
       if eventListeners~isEmpty then do
-          self~mutationEvents = .false
+          self~hasMutationEvents = .false
       end
   end
   else do
       eventListeners[node] = listeners
-      self~mutationEvents = .true
+      self~hasMutationEvents = .true
   end
 
 ::method getEventListeners
@@ -1821,22 +1867,22 @@
   end
 
 ::method modifyingCharacterData
-  expose mutationEvents
+  expose hasMutationEvents
 
   use strict arg node, replace
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       if \replace then do
           self~saveEnclosingAttr(node)
       end
   end
 
 ::method modifiedCharacterData
-  expose mutationEvents savedEnclosingAttr
+  expose hasMutationEvents savedEnclosingAttr
 
   use strict arg node, oldValue, value, replace
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       self~mutationEventsModifiedCharacterData(node, oldValue, value, replace)
   end
 
@@ -1860,20 +1906,20 @@
   self~modifiedCharacterData(node, oldvalue, value, .false)
 
 ::method insertingNode
-  expose mutationEvents
+  expose hasMutationEvents
 
   use strict arg node, replace
-  if mutationEvents then do
+  if hasMutationEvents then do
       if \replace then do
           self~saveEnclosingAttr(node)
       end
   end
 
 ::method insertedNode
-  expose mutationEvents ranges
+  expose hasMutationEvents ranges
   use strict arg node, newInternal, replace
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       self~mutationEventsInsertedNode(node, newInternal, replace)
   end
 
@@ -1931,7 +1977,7 @@
   end
 
 ::method removingNode
-  expose iterators ranges mutationEvents
+  expose iterators ranges hasMutationEvents
   use strict arg node, oldChild, replace
 
   if iterators \= .nil then do
@@ -1942,7 +1988,7 @@
       self~notifyRangesRemovingNode(oldChild)
   end
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       self~mutationEventsRemovingNode(node, oldChild, replace)
   end
 
@@ -2000,51 +2046,51 @@
   end
 
 ::method removedNode
-  expose mutationEvents savedEnclosingAttr
+  expose hasMutationEvents savedEnclosingAttr
   use strict arg node, replace
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       if \replace then do
           self~dispatchAggregateEvents(node, savedEnclosingAttr~node, savedEnclosingAttr~oldValue)
       end
   end
 
 ::method replacingNode
-  expose mutationEvents
+  expose hasMutationEvents
   use strict arg node
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       self~saveEnclosingAttr(node)
   end
 
 ::method replacingData
-  expose mutationEvents
+  expose hasMutationEvents
   use strict arg node
-  if mutationEvents then do
+  if hasMutationEvents then do
       self~saveEnclosingAttr(node)
   end
 
 ::method replacedNode
-  expose mutationEvents savedEnclosingAttr
+  expose hasMutationEvents savedEnclosingAttr
   use strict arg node
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       self~dispatchAggregateEvents(node, savedEnclosingAttr~node, saveEnclosingAttr~oldValue)
   end
 
 ::method modifiedAttrValue
-  expose mutationEvents
+  expose hasMutationEvents
   use strict arg attr, oldValue
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       self~dispatchAggregateEvents(attr, attr, oldvalue, .MutationEvent~MODIFICATION)
   end
 
 ::method setAttrNode
-  expose mutationEvents
+  expose hasMutationEvents
   use strict arg attr, previous
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       if previous == .nil then do
           self~dispatchAggregateEvents(attr~ownerNode, attr, .nil, .MutationEvent~ADDITION)
       end
@@ -2054,10 +2100,10 @@
   end
 
 ::method removeAttrNode
-  expose mutationEvents
+  expose hasMutationEvents
   use strict arg attr, oldOwner, name
 
-  if mutationEvents then do
+  if hasMutationEvents then do
       self~mutationEventRemovedAttrNode(attr, oldOwner, name)
   end
 
@@ -2157,12 +2203,13 @@ syntax:
 
 ::class "Attr" subclass Node public
 ::method init
-  expose value name textNode namespaceURI localName type
+  expose value name textNode namespaceURI localName type idAttribute
   value = .nil
   type = .nil
   textNode = .nil
   namespaceURI = .nil
   localName = .nil
+  idAttribute = .false
   if arg() == 2 then do
       use strict arg ownerDocument, name
       self~init:super(ownerDoc)
@@ -2201,14 +2248,13 @@ syntax:
 
 -- support for the Document renameNode method
 ::method rename
-  expose nodeName namespaceURI
   use strict arg uri, name = .nil
   if name == .nil then do
-      nodeName = uri
+      self~nodeName = uri
   end
   else do
-      nodeName = name
-      namespaceURI = uri
+      self~nodeName = name
+      self~namespaceURI = uri
       self~setName(name)
   end
 
@@ -2253,12 +2299,10 @@ syntax:
   end
 
 ::attribute idAttribute SET
-  use strict arg value
-  self~isIdAttribute = value
 
 ::method isId
-  use strict arg
-  return self~isIdAttribute
+  expose idAttribute
+  return idAttribute
 
 ::method cloneNode
   expose value
@@ -2286,6 +2330,10 @@ syntax:
   expose name
   use strict arg
   return name
+
+::attribute nodeName SET
+  expose name
+  use strict arg name
 
 ::attribute nodeValue SET
   forward message("VALUE=")
@@ -2348,7 +2396,7 @@ syntax:
 
   -- we might need to process an old value if it's a serious of text nodes
   if value \= .nil then do
-      if self~ownerDocument~mutationEvents then do
+      if self~ownerDocument~hasMutationEvents then do
           if self~hasMutationEvents then do
               -- if we have a string value and we need to
               -- broadcast mutation events, then we need to
@@ -2365,7 +2413,7 @@ syntax:
                   value = textNode
                   textNode~ownerNode = this
                   textNode~isOwned = .true
-                  self~removeChild(textNode, true)
+                  self~removeChild(textNode, .true)
               end
               else do
                   oldValue = self~value
@@ -2391,17 +2439,17 @@ syntax:
   end
 
   self~isSpecified = .true
-  if self~ownerDocument~mutationEvents then do
+  if self~ownerDocument~hasMutationEvents then do
       self~insertBefore(self~ownerDocument~createTextNode(newValue), .nil, .true)
       self~hasStringValue = .false
-      self~ownerDocument~modifiedAttrValue(this, oldvalue)
+      self~ownerDocument~modifiedAttrValue(self, oldvalue)
   end
   else do
       value = newValue
-      self~changed()
+      self~changed
   end
 
-  if self~isIdAttribute & self~ownderElement \= .nil then do
+  if self~isId & self~ownerElement \= .nil then do
       self~ownerDocument~putIdentifier(newvalue, ownerElement)
   end
 
@@ -2412,7 +2460,7 @@ syntax:
   if value == .nil then do
       return ""
   end
-  -- if already a string, then set it directly
+  -- if already a string, then return it directly
   if value~isA(.String) then do
       return value
   end
@@ -2467,10 +2515,9 @@ syntax:
 ::attribute ownerElement GET
   forward message("ELEMENT")
 
-::attribute specified GET
-  forward message("ISSPECIFIED")
-::attribute specified SET
-  forward message("ISSPECIFIED=")
+-- some attribute properties
+::attribute hasStringValue
+::attribute isSpecified
 
 ::method hasChildNodes
   expose value
@@ -2528,7 +2575,7 @@ syntax:
   -- node
   self~makeChildNode
 
-  self~ownerDocument~insertingNode(this, replace)
+  self~ownerDocument~insertingNode(self, replace)
   -- detach from any existing parent node
   oldParent = newChild~parentNode
 
@@ -2572,7 +2619,7 @@ syntax:
   -- record the change
   self~changed
 
-  self~ownerDocument~insertedNode(this, newNode, replace)
+  self~ownerDocument~insertedNode(self, newNode, replace)
 
   return newChild
 
@@ -2584,7 +2631,7 @@ syntax:
       return .nil
   end
 
-  self~ownerDocument~removingNode(this, oldNode, replace)
+  self~ownerDocument~removingNode(self, oldNode, replace)
 
   -- removing the first?
   if oldNode == value then do
@@ -2609,7 +2656,7 @@ syntax:
 
   self~changed
 
-  ownerDocument~removedNode(this, replace)
+  ownerDocument~removedNode(self, replace)
 
   return oldNode
 
@@ -2620,7 +2667,7 @@ syntax:
   self~ownerDocument~replacingNode(self)
   self~insertBefore(newChild, oldChild, .true)
   if newChild \= oldChild then do
-      self~removeChild(oldChild, true)
+      self~removeChild(oldChild, .true)
   end
 
   self~ownerDocument~repacingNode(self)
@@ -2730,6 +2777,7 @@ syntax:
   use strict arg uri, name = .nil
   if name == .nil then do
       nodeName = uri
+      self~setName(nodeName)
   end
   else do
       nodeName = name
@@ -2775,7 +2823,7 @@ syntax:
   use strict arg
 
   if attributes == .nil then do
-      attributes = .AttributeMap~new(this, .nil)
+      attributes = .AttributeMap~new(self, .nil)
   end
 
   return attributes
@@ -2805,10 +2853,10 @@ syntax:
   forward class(super) continue
   -- also set this for all of the attributes
   if attributes \= .nil  then do
-      attributes~ownderDocument = doc
+      attributes~ownerDocument = doc
   end
 
-
+-- retrieve the value of a named attribute
 ::method getAttribute
   expose attributes
 
@@ -2825,7 +2873,7 @@ syntax:
       return attr~value
   end
 
-
+-- get the node associated with a specific named attribute
 ::method getAttributeNode
   expose attributes
 
@@ -2839,7 +2887,7 @@ syntax:
 ::method getElementsByTagName
   use strict arg tagname
   -- this version does a lazy search
-  return .DeepNodeList~new(this, tagname)
+  return .DeepNodeList~new(self, tagname)
 
 -- this is the same as the nodename for an element
 ::attribute tagname GET
@@ -2848,48 +2896,43 @@ syntax:
 
 ::method removeAttribute
   expose attributes
-  ust strict arg name
+  use strict arg name
 
-  if attrbutes \= .nil  then do
+  if attributes \= .nil  then do
       attributes~removeNamedItem(name)
   end
 
 ::method removeAttributeNode
   expose attributes
-  ust strict arg oldAttr
+  use strict arg oldAttr
 
   if attrbutes \= .nil  then do
-      attributes~removItem(oldAttr, .true)
+      attributes~removeItem(oldAttr, .true)
   end
 
 ::method setAttribute
-  expose attributes
-
   use strict arg name, value
 
-  attr = self~getAttributeName(name)
+  newAttr = self~getAttributeNode(name)
   if newAttr == .nil then do
-      newAttr = getOwnerDocument().createAttribute(name)
+      -- get the attribute map.  This also creates it if
+      -- we don't have one yet
+      attributes = self~attributes
+      newAttr = self~ownerDocument~createAttribute(name)
 
-      if attributes =- .nil  then do
-          attributes = .AttributeMap~new(this)
-      end
-
-      newAttr~nodeValue = value
+      newAttr~value = value
       attributes~setNamedItem(newAttr)
   end
   else do
-      newAttr~nodeValue = value
+      newAttr~value = value
   end
 
 ::method setAttributeNode
-  expose attributes
-
   use strict arg newAttr
 
-  if attributes == .nil then do
-      attributes = .AttributeMap~new(this)
-  end
+  -- get the attribute map.  This also creates it if
+  -- we don't have one yet
+  attributes = self~attributes
 
   return attributes~setNamedItem(newAttr)
 
@@ -2924,13 +2967,12 @@ syntax:
       localName = qualifiedName
   end
 
-  newAttr = getAttributeNodeNS(namespaceURI, localName)
+  newAttr = self~getAttributeNodeNS(namespaceURI, localName)
   if newAttr == .nil then do
-      newAttr = self~getOwnerDocument ~createAttributeNS(namespaceURI, qualifiedName)
-
-      if attributes == .nil then do
-          attributes = .AttributeMap~new(this)
-      end
+      newAttr = self~ownerDocument~createAttributeNS(namespaceURI, qualifiedName)
+      -- get the attribute map.  This also creates it if
+      -- we don't have one yet
+      attributes = self~attributes
 
       newAttr~nodeValue = value
       attributes~setNameItemNS(newAttr)
@@ -2951,7 +2993,6 @@ syntax:
   attributes~removeNamedItemNS(namespaceURI, localName)
 
 ::method getAttributeNodeNS
-  expose attributes
   use strict arg namespaceURI, localName
 
   if attributes == .nil then do
@@ -2964,9 +3005,9 @@ syntax:
   expose attributes
   use strict arg newAttr
 
-  if attributes == .nil then do
-      return
-  end
+  -- get the attribute map.  This also creates it if
+  -- we don't have one yet
+  attributes = self~attributes
 
   return attributes~setNamedItemNS(newAttr)
 
@@ -2991,12 +3032,12 @@ syntax:
 ::method getElementsByTagNameNS
   use strict arg namespaceURI, localName
 
-  return .DeepNodeList~new(this, localName, namespaceURI)
+  return .DeepNodeList~new(self, localName, namespaceURI)
 
 ::method setIdAttributeNode
   use strict arg at, makeId
 
-  at~isIdAttribute = makeId
+  at~idAttribute = makeId
   if makeId then do
       self~ownerDocument~putIdentifier(at~value, this)
   end
@@ -3012,7 +3053,7 @@ syntax:
       return
   end
 
-  at~isIdAttribute makeId
+  at~idAttribute = makeId
   if makeId then do
       self~ownerDocument~putIdentifier(at~value, this)
   end
@@ -3028,7 +3069,7 @@ syntax:
       return
   end
 
-  at~isIdAttribute makeId
+  at~idAttribute = makeId
   if makeId then do
       self~ownerDocument~putIdentifier(at~value, this)
   end
@@ -5417,7 +5458,7 @@ syntax:
   node = b
   do while node \= .nil
       if node == a then do
-          return true
+          return .true
       end
       node = node~parentNode
   end
@@ -6205,7 +6246,7 @@ syntax:
           end
           -- this is now specified, since it's no longer
           -- derived from a default associated with an element
-          source~specified = .true
+          source~isspecified = .true
           -- change the owner
           source~ownerDocument = self
       end
