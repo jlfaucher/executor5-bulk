@@ -48,5 +48,5 @@ REM    ooSQLite3.exe, ooSQLite.cls, or oosqlite.dll, it is probably easier to
 REM    just copy the 3 files from the bin directory to your ooRexx directory.
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-set PATH=%PATH%;%CD%\bin
+set PATH=%CD%\bin;%PATH%
 
