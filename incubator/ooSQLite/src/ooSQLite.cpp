@@ -454,6 +454,93 @@ static void  strupper(char *location, size_t length)
 
 
 /**
+ * Returns an array of pointer to strings consisting of the column names for the
+ * specified prepared statement, upper-cased.
+ *
+ * @param c       Thread context we are operating in.  Used for out-of-memory
+ *                errors.
+ *
+ * @param stmt    The prepared statement in use.
+ *
+ * @param _count  [IN/OUT] The column count is returned here.
+ *
+ * @return An array of the column names, all upper-cased on success.  Null on
+ *         error.  On error an exception has been raised.
+ *
+ * @remarks  Assumes the statement is valid.  The caller is repsonisible for
+ *           freeing memory in the returned array, which inlcudes freeing the
+ *           strings in the array.
+ *
+ *           Memory is allocated using sqlite3_malloc() so the returned array
+ *           must be freed with sqlite3_free().  Note that it is safe to pass a
+ *           null pointer to sqlite3_free().
+ */
+static char **getHeadersUpper(RexxThreadContext *c, sqlite3_stmt *stmt, int *_count)
+{
+    int    count = sqlite3_column_count(stmt);
+    int    i     = 0;
+
+    char **headers = (char **)sqlite3_malloc(count * sizeof(char *));
+    if ( headers == NULL )
+    {
+        outOfMemoryException(c);
+        return NULL;
+    }
+
+    for ( i = 0; i < count; i++ )
+    {
+        CSTRING index = sqlite3_column_name(stmt, i);
+        if ( index == NULL )
+        {
+            goto err_out;
+        }
+
+        headers[i] = strdupupr(index);
+        if ( headers[i] == NULL )
+        {
+            goto err_out;
+        }
+    }
+
+    *_count = count;
+    return headers;
+
+err_out:
+    outOfMemoryException(c);
+
+    for ( i = 0; i < count; i++ )
+    {
+        sqlite3_free(headers[i]);
+    }
+    sqlite3_free(headers);
+    return NULL;
+}
+
+/**
+ * Convenience function to free the memory allocated during getHeadersUpper().
+ * Ensures the memory is freed correctly.
+ *
+ * @param headers  An array of strings, presumably the array returned from
+ *                 getHeadersUpper().
+ *
+ * @param count    The count of strings in headers.
+ *
+ * @note  Note that is safe to pass a null pointer to sqlite3_free().
+ */
+static void freeHeadersUpper(char **headers, int count)
+{
+    if ( headers != NULL )
+    {
+        for ( int i = 0; i < count; i++ )
+        {
+            sqlite3_free(headers[i]);
+        }
+        sqlite3_free(headers);
+    }
+}
+
+
+/**
  * Returns a result set in the "array of arrays" format
  *
  * @param c     Thread context we are operating in.
@@ -537,7 +624,12 @@ static RexxArrayObject getRecordsDirectory(RexxThreadContext *c, sqlite3_stmt *s
     RexxArrayObject     records = c->NewArray(100);  // An array of records
     size_t              item = 1;                    // Current record index
 
-    int count = sqlite3_column_count(stmt);
+    int    count;
+    char **headers = getHeadersUpper(c, stmt, &count);
+    if ( headers == NULL )
+    {
+        return records;
+    }
 
     while ( sqlite3_step(stmt) == SQLITE_ROW )
     {
@@ -545,23 +637,16 @@ static RexxArrayObject getRecordsDirectory(RexxThreadContext *c, sqlite3_stmt *s
 
         for ( int i = 0; i < count; i++ )
         {
-            CSTRING index = sqlite3_column_name(stmt, i);
-            if ( index == NULL )
-            {
-                outOfMemoryException(c);
-                return records;
-            }
-
-            strupper((char *)index, strlen(index));
-
             CSTRING       data  = (CSTRING)sqlite3_column_text(stmt, i);
             RexxObjectPtr value = (data == NULL) ? TheNilObj : c->String(data);
 
-            c->DirectoryPut(record, value, index);
+            c->DirectoryPut(record, value, headers[i]);
         }
 
         c->ArrayPut(records, record, item++);
     }
+
+    freeHeadersUpper(headers, count);
 
     return records;
 }
@@ -589,8 +674,13 @@ static RexxStemObject getRecordsStem(RexxThreadContext *c, sqlite3_stmt *stmt)
     RexxStemObject records = c->NewStem("records");  // A stem containing records.
     c->SetStemArrayElement(records, 0, TheZeroObj);
 
+    int    count;
+    char **headers = getHeadersUpper(c, stmt, &count);
+    if ( headers == NULL )
+    {
+        return records;
+    }
 
-    int    count = sqlite3_column_count(stmt);
     size_t item = 1;                                 // Current record index.
 
     while ( sqlite3_step(stmt) == SQLITE_ROW )
@@ -599,25 +689,17 @@ static RexxStemObject getRecordsStem(RexxThreadContext *c, sqlite3_stmt *stmt)
 
         for ( int i = 0; i < count; i++ )
         {
-            CSTRING index = sqlite3_column_name(stmt, i);
-            if ( index == NULL )
-            {
-                outOfMemoryException(c);
-                return records;
-            }
-
-            strupper((char *)index, strlen(index));
-
             CSTRING       data  = (CSTRING)sqlite3_column_text(stmt, i);
             RexxObjectPtr value = (data == NULL) ? TheNilObj : c->String(data);
 
-            c->SetStemElement(record, index, value);
+            c->SetStemElement(record, headers[i], value);
         }
 
         c->SetStemArrayElement(records, 0, c->StringSize(item));  // Update number of records in the stem.
         c->SetStemArrayElement(records, item++, record);          // Add the record.
     }
 
+    freeHeadersUpper(headers, count);
     return records;
 }
 
@@ -2736,6 +2818,7 @@ RexxObjectPtr pragmaTrigger(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
                     result = getRecordsArray(c->threadContext, stmt);
                     break;
                 case anArrayOfDirectories :
+                    printf("Executing pragmaTrigger() using array of directories\n");
                     result = getRecordsDirectory(c->threadContext, stmt);
                     break;
                 default :

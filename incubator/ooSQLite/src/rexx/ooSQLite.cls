@@ -506,8 +506,12 @@
 ::constant SAVEPOINT            32   /* Operation       Savepoint Name  */
 --::constant COPY                  0   /* No longer used */
 
-
 /* Authorizer Return Codes */
+::constant DENY   1   /* Abort the SQL statement with an error */
+::constant IGNORE 2   /* Don't allow access, but don't generate an error */
+
+
+/* xAccess VFS method flags */
 ::constant ACCESS_EXISTS    0
 ::constant ACCESS_READWRITE 1   /* Used by PRAGMA temp_store_directory */
 ::constant ACCESS_READ      2   /* Unused */
@@ -559,11 +563,6 @@
 ::constant DBSTATUS_CACHE_MISS           8
 ::constant DBSTATUS_CACHE_WRITE          9
 ::constant DBSTATUS_MAX                  9   /* Largest defined DBSTATUS */
-
-
-/* Authorizer Return Codes */
-::constant DENY   1   /* Abort the SQL statement with an error */
-::constant IGNORE 2   /* Don't allow access, but don't generate an error */
 
 
 /* Standard File Control Opcodes */
