@@ -143,7 +143,7 @@
 </row>
 <row>
 <entry><link linkend="atrLastErrCodeClsBackup">lastErrCode</link></entry>
-<entry>Reflects the value of the last recorded SQLite <link linkend="rowResultCode">result</link> code.</entry>
+<entry>Reflects the value of the last recorded SQLite <link linkend="sctResultCode">result</link> code.</entry>
 </row>
 <row>
 <entry><link linkend="atrLastErrMsgClsBackup">lastErrmsg</link></entry>
@@ -436,9 +436,9 @@
   </para>
   <para>
     In most cases the <emphasis role="italic">initCode</emphasis> value will be a SQLite <link
-    linkend="rowResultCode">result</link> code and the same as the <link
+    linkend="sctResultCode">result</link> code and the same as the <link
     linkend="atrLastErrCodeClsBackup">lastErrCode</link> attribute. However it also could be one of the ooSQLite
-    specific <link linkend="rowOOSQLiteResultCode">result</link> codes, either OO_UNEXPECTED_RESULT or
+    specific <link linkend="sctOOSQLiteSpecific">result</link> codes, either OO_UNEXPECTED_RESULT or
     OO_BACKUP_DB_ERRSTATE.
   </para>
   <para>
@@ -484,7 +484,7 @@
 
 <para>
   The <emphasis role="italic">lastErrCode</emphasis> reflects the value of the last recorded SQLite <link
-  linkend="rowResultCode">result</link> code.
+  linkend="sctResultCode">result</link> code.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">lastErrCode get:</emphasis></term>
@@ -837,7 +837,7 @@ Completion = 100% * (buObj~pagecount - buObj~remaining) / buObj~pagecount
     or not the backup operation completed. If an out-of-memory condition or IO error occurred during
     any prior invocation of <emphasis role="italic">step</emphasis> on this
     <computeroutput>ooSQLiteBackup</computeroutput> object, then <emphasis role="italic">finish</emphasis> returns the
-    corresponding <link linkend="rowResultCode">error</link> code.
+    corresponding <link linkend="sctResultCode">error</link> code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>

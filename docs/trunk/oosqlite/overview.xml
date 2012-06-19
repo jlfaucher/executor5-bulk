@@ -40,19 +40,60 @@
 <chapter id="chapOverview"><title>Brief Overview</title>
 <indexterm><primary>overview</primary></indexterm>
 <para>
-  ooSQLite is a
+  ooSQLite is a direct interface to SQLite. SQLite is an in-process library that implements a self-contained,
+  serverless, zero-configuration, transactional SQL database <link linkend="ovvDatabaseEngine">engine</link>.
 </para>
 <para>
+  SQLite is an <link linkend="ovvEmbedded">embedded</link> SQL database engine. Unlike most other SQL databases, SQLite
+  does not have a separate server process. SQLite reads and writes directly to ordinary disk files. A complete SQL
+  database with multiple tables, indices, triggers, and views, is contained in a single disk file. The database file
+  format is cross-platform - you can freely copy a database between 32-bit and 64-bit systems or between big-endian and
+  little-endian architectures.
+</para>
+<para>
+  ooSQLite provides both an object-orientated <link linkend="chpOOInteface">interface</link> and a classic Rexx <link
+  linkend="chpClassicInteface">interface</link> to SQLite. Some people refer to this as a <emphasis
+  role="italic">binding</emphasis>. The binding allows a programmer to write applicaions using the Rexx programming
+  language that access and use databases through the SQLite database engine.
 </para>
 
 <section id="sctGettingStarted"><title>Getting Started</title>
 <para>
-  Text
+  If the user of ooSQLite is unfamilar with SQLite itself, the best way to get started is to browse the SQLite <ulink
+  url="http://www.sqlite.org/index.html">website</ulink> to get a basic feel for what SQLite is.
 </para>
 <para>
-  Text
-  In addition the <link
-  linkend="helpGettingHelp">getting help </link> section of this reference lists a number of resources for the
+  To actually use the ooSQLite package in an ooRexx program, simply <emphasis role="italic">require</emphasis> the
+  <computeroutput>ooSQLite.cls</computeroutput> in the progam and ensure that
+  <computeroutput>ooSQLite.cls</computeroutput> is in a location where the operating system can find it:
+
+<programlisting>
+<![CDATA[
+::requires 'ooSQLite.cls'
+]]>
+</programlisting>
+
+  This is no different than using any other external package in ooRexx, such as
+  <computeroutput>ooDialog.cls</computeroutput>, <computeroutput>rxftp.cls</computeroutput>,
+  <computeroutput>cvsStream.cls</computeroutput>, etc..
+</para>
+<para>
+  Next, the user should familarize herself with the example programs provided by the ooSQLite package. In the
+  installation location of ooSQLite are the <computeroutput>examples</computeroutput> and
+  <computeroutput>testing</computeroutput> subdirectories. These direcories contain examples meant to be run from the
+  command line. The user should run the examples after reading through the source code. The examples are meant to be
+  played with. That is, the user should make small changes to the samples and observe what happens. As in any activity,
+  experience is the best teacher.
+</para>
+<para>
+  Using the examples should be done in conjunction with reading this reference manual. The best advice would be to read
+  the source code in an example and look up each class and method in the example in the reference. Or each function call
+  in the example if the reader is more interested in the classic Rexx interface.
+</para>
+<para>
+  If things are unclear, then post a question to the ooRexx user's list. The list is easy to <ulink
+  url="http://sourceforge.net/mail/?group_id=119701">subscribe</ulink> to. In addition the <link
+  linkend="helpGettingHelp">getting help </link> section of this reference lists a number of other resources for the
   programmer with questions about ooSQLite.
 </para>
 </section>
@@ -74,10 +115,16 @@
 </para>
 </section>
 
-
 </section> <!-- End: Definition of Terms -->
 
 <section id="sctGeneralOOSQLite"><title>Common Concepts</title>
+<para>
+  There are some common concepts shared throughout ooSQLite whether the programmer is using the object-orientated <link
+  linkend="chpOOInteface">interface</link> or the classic Rexx <link linkend="chpClassicInteface">interface</link>. Some
+  of these concepts are briefly discussed here.
+</para>
+
+<section id="ovvEmbedded"><title>Embedded</title>
 <para>
   The ooSQLite package <emphasis role="italic">embedds</emphasis> the SQLite <emphasis role="italic">database
   engine</emphasis> within the package. <emphasis role="italic">Embedding</emphasis> indicates that the SQLite software
@@ -85,178 +132,195 @@
   to work. There is no need for a SQLite library to be installed on the system. There is no reason why a SQLite library
   can not be installed on the system, but if there is one, ooSQLite will not access it.
 </para>
+</section>
+
+<section id="ovvDatabaseEngine"><title>Database Engine</title>
 <para>
   <emphasis role="italic">Database engine</emphasis> refers to the code that carries out the actual database function.
-  For example, MySQL comes with a database engine, but it also comes with components that allow a server to server up
+  For example, MySQL comes with a database engine, but it also comes with components that allow a server to serve up
   connections to the database engine, allow a client to contact the server, etc.. These components are not a part of the
   database engine of MySQL. ooSQLite works by making calls into the SQLite database engine, (which is embedded within
   ooSQLite.) Within this documentation, a reference to <emphasis role="italic">the database engine</emphasis> means the
-  SQLite database engine. In places in the documentation the SQLite database engine is stated explictly. In places where
-  the SQLite part is left off, the SQLite part is implicit.
-</para>
-<para>
-  Some common concepts in ooSQLite text text
-</para>
-
-<section id="ovvSomeConcept"><title>SomeConcept</title>
-<para>
-  PROVIDE TEXT
+  SQLite database engine. In places in the documentation, <emphasis role="italic">the SQLite </emphasis> database
+  engine is stated explictly. In places where the SQLite part is left off, the SQLite part is implicit.
 </para>
 </section>
-
 
 </section> <!-- End: Common Concepts -->
 
 
-<section id="sctSomeSection"><title>SomeSection</title>
+<section id="sctSQLiteFeatues"><title>SQLite Features</title>
 <para>
-  text
+  SQLite has some characteristics and features that are distinct from other database engines. Many of these features
+  seem suitable for the types of applications ooRexx programmers want to write.
 </para>
-<para>
-  IBM announced and released several successive versions of Object Rexx for Windows over the following years. For
-  instance, Object REXX for Windows V2R1 was announced March 2001.  In May 2004, IBM announced its intention to
-  contribute the source code for Object Rexx to RexxLA, and the ooRexx project was born. It took the best part of a year
-  to work out the details and for the ooRexx developers to get the first version of ooRexx built and released. ooRexx
-  3.0, the first ooRexx release, took place on March 25th 2005.
-</para>
-<para>
-  From that point, the ooRexx team began regularly releasing new versions of ooRexx, up through the release of ooRexx
-  3.2.0 on November 5, 2007. After the release of 3.2.0, the ooRexx team concentrated on refactoring the interpreter and
-  on adding a new set of native APIs used to write extensions to the ooRexx interpreter.  The new APIs allowed the
-  passing ooRexx objects to the routines and methods used in extensions.  Previously, only strings could be passed to
-  external libraries. The refactored ooRexx interpreter and the new native APIs were introduced in ooRexx 4.0.0,
-  released in August 2009.
-</para>
-<para>
-  Up until that release in the middle of 2009, ooDialog remained virtually unchanged. The evolution of the Windows
-  operating system had passed it by. ooDialog was designed for Windows 3.1, or at the latest Windows 95. It still
-  referred to dialog controls such as the list-view as "new" controls. Despite the fact that the list-view control had
-  been in use for over a decade. Some controls were considered "advanced" in ooDialog, while in Windows itself they were
-  considered old news.
-</para>
-<para>
-  Much of the design of ooDialog was based on constraints that existed in Windows 3.1 and Windows 95 that no longer
-  existed in modern operating systems. For instance, the reason for having three separate ooDialog class files,
-  <computeroutput>OODPLAIN.CLS, OODIALOG.CLS, and OODWIN32.CLS</computeroutput>, and for providing the simpler
-  <computeroutput>PlainUserDialog</computeroutput> class was to have a smaller package that required less system
-  resources for ordinary user interfaces like the standard dialogs.  That reason is not as valid in modern times as it
-  was when ooDialog was being developed to run on Windows 3.1. Many of the programming techniques in the ooDialog
-  implementation were also outdated. The conversion of dialog units to pixels and vice versa in ooDialog is a good
-  example. While the technique must have worked in very early versions of Windows, it is completely wrong in Windows XP
-  and later.
-</para>
-<para>
-  The release of the new C++ native APIs in ooRexx 4.0.0 allowed much richer extensions to the Rexx interpreter to be
-  written. Extensions could be implemented that had access to the actual objects instantiated within the
-  interpreter. During the release of ooRexx 4.0.0, the internal work was started to convert ooDialog to use the C++
-  APIs. This work lead to the complete refactoring of the ooDialog code, and the effort to bring ooDialog up to the
-  level of Windows Vista and Windows 7 got started. New dialog controls were added along with new dialog objects and
-  methods. However, this work was done in the internal development source tree and was not ready for the 4.0.0, 4.0.1,
-  and 4.1.0 releases of ooRexx. Although ooDialog in those releases had some improvements and enhancements, they were
-  minor.
-</para>
-<para>
-  ooRexx 4.1.0 was released in December 2010. At that time, the internal work to convert ooDialog to the C++ APIs and
-  the refactoring of the ooDialog source code was complete, but the refactored ooDialog was not ready for release,
-  primarily because the documentation was not complete. The ooDialog distributed with ooRexx 4.1.0 was essentially the
-  same as the ooDialog distributed with ooRexx 4.0.0, with bug fixes and some small enhancements. A small bug fix
-  version of ooRexx 4.1.1 was released in March 2012. The ooDialog distributed in 4.1.1 is identical to the 4.1.0
-  ooDialog.
-</para>
-<para>
-  When the work of getting ooRexx 4.1.0 out the door was finished, some observations about ooDialog were made. One was
-  that previously no real versioning of ooDialog was done. The second was that each of the ooDialogs shipped with ooRexx
-  4.0.0, 4.0.1, and 4.1.0 only required an ooRexx 4.0.0 interpreter to work, while the refactored ooDialog in the
-  internal development source tree required an ooRexx 4.1.0 interpreter. The third observation was that, since ooDialog
-  is an extension to the Rexx interpreter, there is no reason why it could not be distributed independently of the
-  ooRexx interpreter. Finally, it had been observed from some comments made in bugs opened up against ooDialog, that
-  there were a few people who seemed to prefer to remain with an ooDialog that was designed for Windows 95, in essence
-  an ooDialog unchanged from the ooDialog shipped with ooRexx 3.2.0.
-</para>
-<para>
-  This lead to the decision to define a more formal versioning scheme for ooDialog and also to implement a means to
-  distribute ooDialog independently of the ooRexx distribution. The version string of ooDialog had already been defined
-  to be the version string of the ooRexx interpreter ooDialog was built under. A second part of the ooDialog version was
-  to be the ooDialog level. This is similar to the language level of the Rexx interpreter. The initial ooDialog levels
-  are listed in this table:
-</para>
-<table id="tblOODialogLevels" frame="all" pgwide='1'>
-<title>ooDialog Levels</title>
-<tgroup cols="3">
-<colspec align='left' colwidth='1*'>
-<colspec align='left' colwidth='1*'>
-<colspec align='left' colwidth='6*'>
-<thead>
-<row>
-<entry>Level</entry>
-<entry>Required Interpreter</entry>
-<entry>Description</entry>
-</row>
-</thead>
-<tbody>
-<row>
-<entry>3.2.0</entry>
-<entry>4.0.0</entry>
-<entry>ooDialog implementation using Rexx classic external routines.</entry>
-</row>
-<row>
-<entry>4.1.0</entry>
-<entry>4.0.0</entry>
-<entry>ooDialog as shipped with ooRexx 4.0.0 with all bug fixes through ooRexx 4.1.1.</entry>
-</row>
-<row>
-<entry>4.2.0</entry>
-<entry>4.1.0</entry>
-<entry>Refactored ooDialog completely implemented with the C++ native API.</entry>
-</row>
-</tbody>
-</tgroup>
-</table>
 
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Level 3.2.0</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Zero-Configuration:</emphasis></term>
   <listitem>
   <para>
-    The ooDialog code at level 3.2.0 is frozen. Since the implementing code uses the classic external routines and the
-    code itself is unchanged from the ooDialog shipped with ooRexx 3.2.0, ooDialog programs should behave
-    exactly as they did under the ooDialog shipped with ooRexx 3.2.0. No fixes, enhancements, or changes will be made to
-    the code.
+    SQLite does not need to be "installed" before it is used. There is no "setup" procedure. There is no server process
+    that needs to be started, stopped, or configured. There is no need for an administrator to create a new database
+    instance or assign access permissions to users. SQLite uses no configuration files. Nothing needs to be done to tell
+    the system that SQLite is running. No actions are required to recover after a system crash or power failure. There
+    is nothing to troubleshoot.
   </para>
   <para>
-    It is available as a separate download from SourceForge using the <emphasis role="italic">Switch ooDialog</emphasis>
-    technology for users who would like to replace their installed ooDialog with a 3.2.0 level ooDialog. It requires
-    that the installed ooRexx is 4.0.0 or later. Although the code is frozen, if a user can demonstrate an ooDialog
-    program behaves differently using a 3.2.0 level ooDialog than it did under an actual ooRexx 3.2.0 installation, a
-    fix will be considered.
+    SQLite just works.
+  </para>
+  <para>
+    Other more familiar database engines run great once you get them going. But doing the initial installation and
+    configuration can be intimidatingly complex.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Level 4.1.0</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Serverless:</emphasis></term>
   <listitem>
   <para>
-    ooDialog at level 4.1.0 is the ooDialog that shipped with ooRexx 4.0.0, plus all bug fixes and changes up through
-    ooRexx 4.1.1. It is also provided as a separate download on SourceForge and also requires the installed ooRexx be
-    4.0.0 or later. This code is frozen, no changes will be made to the code. Bugs found in this code will be fixed in
-    upcoming releases of ooDialog.
+    Most SQL database engines are implemented as a separate server process. Programs that want to access the database
+    communicate with the server using some kind of interprocess communication (typically TCP/IP) to send requests to the
+    server and to receive back results. SQLite does not work this way. With SQLite, the process that wants to access the
+    database reads and writes directly from the database files on disk. There is no intermediary server process.
   </para>
   <para>
-    It allows users that have not upgraded their ooRexx from 4.0.0 or 4.0.1 to pick up the bug fixes in ooDialog
-    included in the ooRexx distributions up through ooRexx 4.1.1. However, its primary purpose is for users who may be
-    unhappy with the future direction of ooDialog. It will provide a way for users to upgrade to future versions of
-    ooRexx and yet retain an unchanged ooDialog.
+    There are advantages and disadvantages to being serverless. The main advantage is that there is no separate server
+    process to install, setup, configure, initialize, manage, and troubleshoot. This is one reason why SQLite is a
+    "zero-configuration" database engine. Programs that use SQLite require no administrative support for setting up the
+    database engine before they are run. Any program that is able to access the disk is able to use an SQLite database.
+  </para>
+  <para>
+    On the other hand, a database engine that uses a server can provide better protection from bugs in the client
+    application - stray pointers in a client cannot corrupt memory on the server. And because a server is a single
+    persistent process, it is able control database access with more precision, allowing for finer grain locking and
+    better concurrency.
+  </para>
+  <para>
+    Most SQL database engines are client/server based. Of those that are serverless, SQLite is probably the only one
+    that allows multiple applications to access the same database at the same time.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Level 4.2.0</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Single Database File:</emphasis></term>
   <listitem>
   <para>
-    This is the actively maintained ooDialog level. The level will be incremented in the future as circumstances
-    dictate. It requires an installed ooRexx of 4.1.0 or later. New versions of ooDialog at the 4.2.0 level will be
-    released as they become ready. It is available as a separate download from SourceForge and will also be the
-    ooDialog level shipped with future versions of ooRexx, (versions past ooRexx 4.1.1.)
+     A SQLite database is a single ordinary disk file that can be located anywhere in the directory hierarchy. If
+     SQLite can read the disk file then it can read anything in the database. If the disk file and its directory are
+     writable, then SQLite can change anything in the database. Database files can easily be copied onto a USB memory
+     stick or emailed for sharing.
+  </para>
+  <para>
+    Other SQL database engines tend to store data as a large collection of files. Often these files are in a standard
+    location that only the database engine itself can access. This makes the data more secure, but also makes it harder
+    to access. Some SQL database engines provide the option of writing directly to disk and bypassing the filesystem all
+    together. This provides added performance, but at the cost of considerable setup and maintenance complexity.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Cross-Platform Database File:</emphasis></term>
+  <listitem>
+  <para>
+    The SQLite file format is cross-platform. A database file written on one machine can be copied to and used on a
+    different machine with a different architecture. Big-endian or little-endian, 32-bit or 64-bit does not matter. All
+    machines use the same file format. Furthermore, the developers have pledged to keep the file format stable and
+    backwards compatible, so newer versions of SQLite can read and write older database files.
+  </para>
+  <para>
+    Most other SQL database engines require you to dump and restore the database when moving from one platform to
+    another and often when upgrading to a newer version of the software.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Compact:</emphasis></term>
+  <listitem>
+  <para>
+    When optimized for size, the whole SQLite library with everything enabled is [footprint | less than 350KiB in size]
+    (as measured on an ix86 using the "size" utility from the GNU compiler suite.) Unneeded features can be disabled at
+    compile-time to further reduce the size of the library to under 190KiB if desired.
+  </para>
+  <para>
+    Most other SQL database engines are much larger than this. IBM boasts that its recently released CloudScape database
+    engine is "only" a 2MiB jar file - an order of magnitude larger than SQLite even after it is compressed! Firebird
+    boasts that its client-side library is only 350KiB. That's as big as SQLite and does not even contain the database
+    engine. The Berkeley DB library from Oracle is 450KiB and it omits SQL support, providing the programmer with only
+    simple key/value pairs.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Manifest typing:</emphasis></term>
+  <listitem>
+  <para>
+    Most SQL database engines use static typing. A datatype is associated with each column in a table and only values
+    of that particular datatype are allowed to be stored in that column. SQLite relaxes this restriction by using
+    manifest typing. In manifest typing, the datatype is a property of the value itself, not of the column in which the
+    value is stored. SQLite thus allows the user to store any value of any datatype into any column regardless of the
+    declared type of that column. (There are some exceptions to this rule: An INTEGER PRIMARY KEY column may only store
+    integers. And SQLite attempts to coerce values into the declared datatype of the column when it can.)
+  </para>
+  <para>
+    As far as the authors of SQLite can tell, the SQL language specification allows the use of manifest typing.
+    Nevertheless, most other SQL database engines are statically typed and so some people feel that the use of manifest
+    typing is a bug in SQLite. But the authors of SQLite feel very strongly that this is a feature. The use of manifest
+    typing in SQLite is a deliberate design decision which has proven in practice to make SQLite more reliable and
+    easier to use, especially when used in combination with dynamically typed programming languages such as Tcl and
+    Python. This feature should go very well with ooRexx.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Variable-length records:</emphasis></term>
+  <listitem>
+  <para>
+    Most other SQL database engines allocated a fixed amount of disk space for each row in most tables. They play
+    special tricks for handling BLOBs and CLOBs which can be of wildly varying length. But for most tables, if you
+    declare a column to be a VARCHAR(100) then the database engine will allocate 100 bytes of disk space regardless of
+    how much information you actually store in that column.
+  </para>
+  <para>
+    SQLite, in contrast, use only the amount of disk space actually needed to store the information in a row. If you
+    store a single character in a VARCHAR(100) column, then only a single byte of disk space is consumed. (Actually two
+    bytes - there is some overhead at the beginning of each column to record its datatype and length.)
+  </para>
+  <para>
+    The use of variable-length records by SQLite has a number of advantages. It results in smaller database files,
+    obviously. It also makes the database run faster, since there is less information to move to and from disk. And, the
+    use of variable-length records makes it possible for SQLite to employ manifest typing instead of static typing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Public domain</emphasis></term>
+  <listitem>
+  <para>
+    The source code for SQLite is in the public domain. No claim of copyright is made on any part of the core source
+    code. (The documentation and test code is a different matter - some sections of documentation and test logic are
+    governed by open-source licenses.) All contributors to the SQLite core software have signed affidavits specifically
+    disavowing any copyright interest in the code. This means that anybody is able to legally do anything they want with
+    the SQLite source code. This allows ooRexx to directly embedd the database engine in the ooSQLite package.
+  </para>
+  <para>
+    There are other SQL database engines with liberal licenses that allow the code to be broadly and freely used. But
+    those other engines are still governed by copyright law. SQLite is different in that copyright law simply does not
+    apply.
+  </para>
+  <para>
+    The source code files for other SQL database engines typically begin with a comment describing your license rights
+    to view and copy that file. The SQLite source code contains no license since it is not governed by copyright.
+    Instead of a license, the SQLite source code offers a blessing:
+  </para>
+  <para>
+    <emphasis role="italic">May you do good and not evil</emphasis>
+  </para>
+  <para>
+    <emphasis role="italic">May you find forgiveness for yourself and forgive others</emphasis>
+  </para>
+  <para>
+    <emphasis role="italic">May you share freely, never taking more than you give.</emphasis>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">SQL language extensions:</emphasis></term>
+  <listitem>
+  <para>
+    SQLite provides a number of enhancements to the SQL language not normally found in other database engines. The
+    EXPLAIN keyword and manifest typing have already been mentioned above. SQLite also provides statements such as
+    REPLACE and the ON CONFLICT clause that allow for added control over the resolution of constraint conflicts. SQLite
+    supports ATTACH and DETACH commands that allow multiple independent databases to be used together in the same query.
+    And SQLite defines APIs that allows the user to add new SQL functions and collating sequences.
   </para>
   </listitem></varlistentry>
 </variablelist>
 
-</section>
+</section> <!-- End: SQLite Features -->
 
 
 </chapter>

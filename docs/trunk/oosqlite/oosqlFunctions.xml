@@ -197,7 +197,7 @@
     an out-of-memory condition or IO error occurred during any prior call of <emphasis
     role="italic">oosqlBackupStep</emphasis> using the <emphasis role="italic">buHandle</emphasis> argument, then
     <emphasis role="italic">oosqlBackupFinish</emphasis> returns the corresponding <link
-    linkend="rowResultCode">error</link> code.
+    linkend="sctResultCode">error</link> code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -4524,7 +4524,7 @@
       <varlistentry><term>openFlags [optional]</term>
       <listitem>
       <para>
-        One or more of the file <link linkend="rowFileOpen">open</link> constants. This flag controls how the database
+        One or more of the file <link linkend="sctFileOpen">open</link> constants. This flag controls how the database
         is opened. Do not use any constant marked as <emphasis role="italic">VFS only</emphasis>.  Use <link
         linkend="rtn-ooSQLiteMerge">ooSQLiteMerge()</link> to merge two or more of the constant values to together, if
         needed.
@@ -4546,7 +4546,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns one of the SQLite <link linkend="rowResultCode">result</link> codes.  OK on success, otherwise an error
+    Returns one of the SQLite <link linkend="sctResultCode">result</link> codes.  OK on success, otherwise an error
     code.
   </para>
   <para>
@@ -4681,8 +4681,8 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns one of the SQLite <link linkend="rowResultCode">result</link> codes.  OK on success, otherwise an error
-    code.
+    Returns one of the SQLite <link linkend="sctResultCode">result</link> codes.  OK on success, otherwise an error
+  code.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>

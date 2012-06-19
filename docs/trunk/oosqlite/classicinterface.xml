@@ -40,13 +40,23 @@
 <chapter id="chpClassicInteface"><title>The Functional Interface to SQLite</title>
 <indexterm><primary>Classic Rexx Interface</primary></indexterm>
 <para>
-  some text
+  The classic Rexx interface to SQLite provides a complete functional inteface to SQLite. This allows the Rexx
+  programmer who prefers to not program with objects the same access to the SQLite database <link
+  linkend="ovvDatabaseEngine">engine</link> as the object-orientated Rexx programmer.
 </para>
 <para>
-  more text
+  The intent is for the classic Rexx interface to allow access to the complete functionality and feature set of
+  SQLite. The first release of ooSQLite will not meet, and is not intended to meet, that goal. Lesser used functionality
+  will be added over time.
 </para>
 <para>
-  The following table lists the routines used in the functional (classic Rexx) interface of the ooSQLite package:
+  The <link linkend="chpOOInterface">object-orientated</link> and classic Rexx interfaces are developed in tandem. As
+  each new feature or functionality of SQLite is added to ooSQLite, access to the feature is added to both interfaces at
+  the same time. There is no SQLite functionality in the classic Rexx interface that can not be accessed through the
+  object-orientated  interface. And, vice versa.
+</para>
+<para>
+  The following table lists all of the routines used in the functional (classic Rexx) interface of the ooSQLite package:
 </para>
 <table id="tblOOSQLiteRoutines" frame="all"> <title>ooSQLite Routine Listing</title>
 <tgroup cols="2">
@@ -59,6 +69,34 @@
 </thead>
 <tbody>
 <row>
+<entry><link linkend="rtn-ooSQLiteMerge">ooSQLiteMerge()</link></entry>
+<entry>description</entry>
+</row>
+<row>
+<entry><link linkend="rtn-ooSQLiteVersion">ooSQLiteVersion()</link></entry>
+<entry>description</entry>
+</row>
+<row>
+<entry><link linkend="rtn-oosqlBackupFinish">oosqlBackupFinish()</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<row>
+<entry><link linkend="rtn-oosqlBackupInit">oosqlBackupInit()</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="rtn-oosqlBackupPageCount">oosqlBackupPageCount()</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="rtn-oosqlBackupRemaining">oosqlBackupRemaining()</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="rtn-oosqlBackupStep">oosqlBackupStep()</link></entry>
+<entry>.</entry>
+</row>
 <entry><link linkend="rtn-oosqlDataCount">oosqlDataCount()</link></entry>
 <entry>description</entry>
 </row>
