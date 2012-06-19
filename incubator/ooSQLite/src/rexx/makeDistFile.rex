@@ -85,7 +85,7 @@ use arg cmdLine
 
   mdCmd outDir'bin'
   mdCmd outDir'doc'
-  mdCmd outDir'examples\classic.rexx'
+  mdCmd outDir'examples'sl'classic.rexx'
   mdCmd outDir'misc'
   mdCmd outDir'testing'
 
