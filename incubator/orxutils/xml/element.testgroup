@@ -103,7 +103,6 @@ return testResult
 ::method testBaseAttribute
 
   doc = self~document
-
   element = doc~createElement("FOO")
 
   self~assertEquals("", element~getAttribute("XYZ"))
@@ -165,3 +164,22 @@ return testResult
   self~assertSame(element, attr~ownerelement)
 
 
+-- various tests for child nodes
+::method testChildren
+
+  doc = self~document
+  element = doc~createElement("FOO")
+
+  -- should be zero initially
+  self~assertEquals("", element~textContent)
+
+  element~textContent = 123
+  self~assertEquals(123, element~textContent)
+
+  text = element~firstChild
+
+  -- this should be a text node as the first child now
+  self~assertTrue(text~isA(.Text))
+  self~assertTrue(text~isA(.Node))
+  self~assertEquals(.node~TEXT_NODE, text~nodeType)
+  self~assertEquals(123, text~textContent)

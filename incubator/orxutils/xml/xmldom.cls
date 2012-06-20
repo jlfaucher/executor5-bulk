@@ -54,7 +54,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class 'NodeList' public
+::class "NodeList" public
 ::method init
   expose nodes
   -- we're a read-only list...the owning node returns the list, we work off
@@ -125,7 +125,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-::class DeepNodeList subclass NodeList public
+::class "DeepNodeList" subclass NodeList public
 ::method init
   expose rootNode tagName changes nodes nsName
 
@@ -288,7 +288,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class 'NamedNodeMap' public
+::class "NamedNodeMap" public
 ::method init
   expose ownerNode attributes hasDefaults changed readonly
   use strict arg ownerNode
@@ -782,7 +782,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::CLASS 'Node' public
+::CLASS "Node" public
 ::CONSTANT ELEMENT_NODE 1
 ::CONSTANT ATTRIBUTE_NODE 2
 ::CONSTANT TEXT_NODE 3
@@ -797,12 +797,12 @@
 ::CONSTANT NOTATION_NODE 12
 
 -- initialize a counter to give new nodes a unique id
-::METHOD init class
+::method init class
   expose ctr
   ctr = 0
 
 -- get the next id for new nodes
-::METHOD getId class private
+::method getId class private
   expose ctr
   ctr += 1
   return ctr
@@ -813,7 +813,7 @@
 /* Description: instance initialization.                                      */
 /*----------------------------------------------------------------------------*/
 
-::METHOD init
+::method init
   expose ownerNode childNodes nodeId
   use strict arg ownerNode = .nil
   nodeId = self~class~getId
@@ -822,42 +822,45 @@
   self~readonly = .false -- newly created nodes can be altered
   self~isFirstChild = .false -- not the first child until added to something.
   self~isOwned = .false      -- not owned until attached
+  self~isIgnorableWhitespace = .false  -- only text nodes have this
 
-::ATTRIBUTE nodeName GET
--- superclasses overrid
-::ATTRIBUTE nodeValue GET
-  return .nil
-::ATTRIBUTE nodeValue SET
-  return -- default behavior is to do nothing...superclasses override this
-::ATTRIBUTE nodeType GET
+::attribute isIgnorableWhitespace
+
+::attribute nodeName GET
 -- superclasses override
-::ATTRIBUTE parentNode GET
+::attribute nodeValue GET
   return .nil
-::ATTRIBUTE childNodes GET
+::attribute nodeValue SET
+  return -- default behavior is to do nothing...superclasses override this
+::attribute nodeType GET
+-- superclasses override
+::attribute parentNode GET
+  return .nil
+::attribute childNodes GET
   use strict arg
   -- the nodes implement the NodeList methods directly, so
   -- all we need to do is return ourself
   return self
-::ATTRIBUTE firstChild GET
+::attribute firstChild GET
   return .nil
 -- superclasses override
-::ATTRIBUTE lastChild GET
+::attribute lastChild GET
   return .nil
 -- superclasses override
-::ATTRIBUTE previousSibling GET
+::attribute previousSibling GET
 -- superclasses override
-::ATTRIBUTE nextSibling GET
+::attribute nextSibling GET
 -- superclasses override
-::ATTRIBUTE attributes GET
+::attribute attributes GET
   return .nil
 
-::METHOD hasAttributes
+::method hasAttributes
   use strict arg
   return .false
 
 ::attribute ownerNode
 
-::ATTRIBUTE ownerDocument GET
+::attribute ownerDocument GET
   expose ownerDocument ownerNode
 
   -- if we're a child node, then ask our owner for the information
@@ -869,7 +872,7 @@
       return ownerNode
   end
 
-::ATTRIBUTE ownerDocument SET PRIVATE
+::attribute ownerDocument SET PRIVATE
   expose ownerNode
 
   use strict arg doc
@@ -877,34 +880,34 @@
       ownerNode = doc
   end
 
-::ATTRIBUTE namespaceURI GET
+::attribute namespaceURI GET
   use strict arg
   return .nil
-::ATTRIBUTE prefix GET
+::attribute prefix GET
   use strict arg
   return .nil
-::ATTRIBUTE prefix SET
+::attribute prefix SET
   -- this is an error by default
   .DomErrors~raiseError(.DomErrors~NAMESPACE_ERR)
-::ATTRIBUTE localName GET
+::attribute localName GET
   use strict arg
   return .nil
-::ATTRIBUTE baseURI GET
+::attribute baseURI GET
   use strict arg
   return .nil
 
 -- private attributes used for the implementation
-::ATTRIBUTE isowned
-::ATTRIBUTE readonly
-::ATTRIBUTE isFirstChild
+::attribute isowned
+::attribute readonly
+::attribute isFirstChild
 
 -- default implementations designed to be overridden
-::METHOD hasChildNodes
+::method hasChildNodes
   use strict arg
   return .false;
 
 -- base cloning method
-::METHOD cloneNode
+::method cloneNode
   use strict arg deep = .false
   -- make a copy of ourselves
   newNode = self~copy
@@ -914,56 +917,56 @@
 
   return newNode
 
-::METHOD isSupported
+::method isSupported
   use strict arg feature, version
   return .false
 
-::METHOD insertBefore
+::method insertBefore
   use strict arg newChild, refChild
   -- not implemented in the base node
   .DomErrors~raiseError(.DomErrors~Hierarchy_request_err)
 
-::METHOD replaceChild
+::method replaceChild
   use strict arg newChild, oldChild
   -- not implemented in the base node
   .DomErrors~raiseError(.DomErrors~Hierarchy_request_err)
 
-::METHOD removeChild
+::method removeChild
   use strict arg oldChild
   -- not implemented in the base node
   .DomErrors~raiseError(.DomErrors~Not_found_err)
 
-::METHOD appendChild
+::method appendChild
   use strict arg newChild
   return self~insertBefore(newChild, .nil)
 
-::METHOD compareDocumentPosition
+::method compareDocumentPosition
   use strict arg other
   raise syntax 93.963 -- not supported
 
-::ATTRIBUTE textContent GET
+::attribute textContent GET
   forward message("NODEVALUE")
 
-::ATTRIBUTE textContent SET
+::attribute textContent SET
   forward message("NODEVALUE=")
 
-::METHOD isSameNode
+::method isSameNode
   use strict arg other
   return self~identityHash = other~identityHash
 
-::METHOD lookupPrefix
+::method lookupPrefix
   use strict arg uri
   raise syntax 93.963 -- not supported
 
-::METHOD isDefaultNamespace
+::method isDefaultNamespace
   use strict arg uri
   raise syntax 93.963 -- not supported
 
-::METHOD lookupNamespaceURI
+::method lookupNamespaceURI
   use strict arg prefix
   raise syntax 93.963 -- not supported
 
-::METHOD isEqualNode
+::method isEqualNode
   use strict arg other
 
   if self == other then do
@@ -994,15 +997,15 @@
       return .false
   end
 
-::METHOD getFeature
+::method getFeature
   use strict arg feature, version
   return .nil
 
-::METHOD setUserData
+::method setUserData
   use strict arg key, date, handler
   raise syntax 93.963 -- not supported
 
-::METHOD getUserData
+::method getUserData
   use strict arg key
   raise syntax 93.963 -- not supported
 
@@ -1053,7 +1056,7 @@
   return .array~new(0)
 
 ::method "[]"
-  return message("ITEM")
+  forward message("ITEM")
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -1276,7 +1279,7 @@
   ownerDocument.replacedNode(self)
   return oldChild
 
-::method textContent
+::attribute textContent GET
   use strict arg
 
   child = self~firstChild
@@ -1308,16 +1311,16 @@
       child = child~nextSibling
   end
 
-::method hasTextContext private
+::method hasTextContent private
   use arg child
   type = child~nodeType
-  if type \= .Node~COMMENT_NODE && -
-      child \= .Node~PROCESSING_INSTRUCTION_NODE && -
-      child \= .Node~TEXT_NODE then do
+  if type \= .Node~COMMENT_NODE & -
+      type \= .Node~PROCESSING_INSTRUCTION_NODE & -
+      type \= .Node~TEXT_NODE then do
       return .false
   end
 
-  return \child~isIgnorableWhilespace
+  return \child~isIgnorableWhitespace
 
 ::attribute textContent SET
   use strict arg text
@@ -1371,7 +1374,7 @@
 /* Class: DocumentFragment                                                    */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class 'DocumentFragment' public subclass ParentNode
+::class "DocumentFragment" public subclass ParentNode
 
 ::attribute nodeType GET
   return .Node~DOCUMENT_FRAGMENT_NODE
@@ -2123,7 +2126,7 @@
 ::method renamedAttrNode
 ::method renamedElement
 
-::class EventListener public
+::class "EventListener" public
 ::method init
   expose type useCapture listener
   use strict arg type, listener, useCapture
@@ -2153,7 +2156,7 @@ syntax:
   return   -- all errors are just ignored
 
 
-::class EventTracker public
+::class "EventTracker" public
 ::method init
   expose captures total bubble total
 
@@ -2187,7 +2190,7 @@ syntax:
       bubbles -= 1
   end
 
-::class enclosingAttr public
+::class "EnclosingAttr" public
 ::method init
   expose node oldValue
   use strict arg node, oldValue
@@ -3399,7 +3402,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class Text subclass CharacterData public
+::class "Text" subclass CharacterData public
 
 ::attribute nodeType GET
   use strict arg
@@ -3603,7 +3606,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class DocumentType subclass Node public
+::class "DocumentType" subclass Node public
 
 
 /*----------------------------------------------------------------------------*/
@@ -3941,7 +3944,7 @@ syntax:
   return .nil
 
 
-::class DOMErrors public
+::class "DOMErrors" public
 ::constant HIERARCHY_REQUEST_ERR  "An attempt was made to insert a node where it is not permitted."
 ::constant INDEX_SIZE_ERR         "The index or size is negative, or greater than the allowed value."
 ::constant INUSE_ATTRIBUTE_ERR    "An attempt is made to add an attribute that is already in use elsewhere."
@@ -3973,7 +3976,7 @@ syntax:
 /* Class: DOMEvent                                                            */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class DOMEvent public
+::class "DOMEvent" public
 ::method init
   expose initialized target eventPhase currentTarget timeStamp stopPropagation preventDefault
   initialized = .false
@@ -4006,7 +4009,7 @@ syntax:
   use strict arg
   preventDefault = .true
 
-::class MutationEvent subclass DOMEvent public
+::class "MutationEvent" subclass DOMEvent public
 ::constant DOM_SUBTREE_MODIFIED "DOMSubtreeModified"
 ::constant DOM_NODE_INSERTED "DOMNodeInserted"
 ::constant DOM_NODE_REMOVED "DOMNodeRemoved"
