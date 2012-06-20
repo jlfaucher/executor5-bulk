@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
@@ -51,6 +52,10 @@
  * relational databases.  This example is not intended to show the "best" way
  * to use SQL or to deal with a relational database in general.  It is meant to
  * help someone get started using ooSQLite.
+ *
+ * In the create table sql strings, .endOfLine is not needed for the SQL, but
+ * rather it is used to format the output when the .schema command is used with
+ * command line shell: ooSQLite3
  */
 
   dbFile = .File~new('phoneBook.rdbx')
@@ -65,97 +70,129 @@
 
   db = .ooSQLiteConnection~new('phoneBook.rdbx')
 
-  if db~initCode <> 0 then return .ErrorHandler~openDb(db)
+  if db~initCode <> 0 then return .ErrorPrint~openDb(db)
 
-  sql = "CREATE TABLE contacts ("                   || .endOfLine || -
-        "  id integer primary key,"                 || .endOfLine || -
-        "  fName text not null default '',"         || .endOfLine || -
-        "  lName text not null default '',"         || .endOfLine || -
-        "  mName text not null default '',"         || .endOfLine || -
-        "  nickName text not null default '',"      || .endOfLine || -
-        "  title text not null default 'Ms.'"       || .endOfLine || -
+  say 'Created database: phoneBook'
+
+  -- Create table contacts
+  sql = "CREATE TABLE contacts ("                           || .endOfLine || -
+        "  id INTEGER PRIMARY KEY,"                         || .endOfLine || -
+        "  lName TEXT NOT NULL,"                            || .endOfLine || -
+        "  fName TEXT NOT NULL DEFAULT '',"                 || .endOfLine || -
+        "  mName TEXT NOT NULL DEFAULT '',"                 || .endOfLine || -
+        "  nickName TEXT NOT NULL DEFAULT '',"              || .endOfLine || -
+        "  title TEXT NOT NULL DEFAULT 'Ms.'"               || .endOfLine || -
         ");"
 
   stmt = .ooSQLiteStmt~new(db, sql)
-  if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'contacts')
+  if stmt~initCode <> 0 then return .ErrorPrint~stmtError(stmt, db, 'INIT', 'contacts')
 
   ret = stmt~step
-  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'contacts')
+  if ret <> stmt~DONE then return .ErrorPrint~stmtError(stmt, db, 'TABLE', 'contacts')
 
   stmt~finalize
 
-  sql = "CREATE TABLE addresses ("              || .endOfLine || -
-        "  addr_id integer primary key,"        || .endOfLine || -
-        "  street1 text not null default '',"   || .endOfLine || -
-        "  street2 text not null default '',"   || .endOfLine || -
-        "  city text not null default '',"      || .endOfLine || -
-        "  state text not null default '',"     || .endOfLine || -
-        "  zip text not null default '',"       || .endOfLine || -
-        "  contact_id integer not null,"        || .endOfLine || -
-        "  type_id integer not null"            || .endOfLine || -
+  say 'Added TABLE: contacts    to database: phoneBook'
+
+  -- Create table address types
+  sql = "CREATE TABLE addr_type ("                          || .endOfLine || -
+        "  id INTEGER PRIMARY KEY,"                         || .endOfLine || -
+        "  type TEXT NOT NULL DEFAULT 'Home'"               || .endOfLine || -
         ");"
 
   stmt = .ooSQLiteStmt~new(db, sql)
-  if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'addresses')
+  if stmt~initCode <> 0 then return .ErrorPrint~stmtError(stmt, db, 'INIT', 'addr_type')
 
   ret = stmt~step
-  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'addresses')
+  if ret <> stmt~DONE then return .ErrorPrint~stmtError(stmt, db, 'TABLE', 'addr_type')
 
   stmt~finalize
 
-  sql = "CREATE TABLE phone_num ("                    || .endOfLine || -
-        "  phone_num_id integer primary key,"         || .endOfLine || -
-        "  area_code text not null default '',"       || .endOfLine || -
-        "  number text not null default '',"          || .endOfLine || -
-        "  extension text not null default '',"       || .endOfLine || -
-        "  contact_id integer not null,"              || .endOfLine || -
-        "  type_id integer not null"                  || .endOfLine || -
+  say 'Added TABLE: addr_type   to database: phoneBook'
+
+  -- Create table street addresses
+  sql = "CREATE TABLE street_addr ("                        || .endOfLine || -
+        "  street_id INTEGER PRIMARY KEY,"                  || .endOfLine || -
+        "  street1 TEXT NOT NULL,"                          || .endOfLine || -
+        "  street2 TEXT NOT NULL DEFAULT '',"               || .endOfLine || -
+        "  city TEXT NOT NULL DEFAULT '',"                  || .endOfLine || -
+        "  state TEXT NOT NULL DEFAULT '',"                 || .endOfLine || -
+        "  zip TEXT NOT NULL DEFAULT '',"                   || .endOfLine || -
+        "  contact_id INTEGER NOT NULL,"                    || .endOfLine || -
+        "  type_id INTEGER NOT NULL,"                       || .endOfLine || -
+        "  FOREIGN KEY(contact_id) REFERENCES contacts(id)" || .endOfLine || -
+        "  ON UPDATE CASCADE ON DELETE RESTRICT,"           || .endOfLine || -
+        "  FOREIGN KEY(type_id) REFERENCES addr_type(id)"   || .endOfLine || -
+        "  ON UPDATE CASCADE ON DELETE RESTRICT"            || .endOfLine || -
         ");"
 
   stmt = .ooSQLiteStmt~new(db, sql)
-  if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'phone_num')
+  if stmt~initCode <> 0 then return .ErrorPrint~stmtError(stmt, db, 'INIT', 'street_addr')
 
   ret = stmt~step
-  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'phone_num')
+  if ret <> stmt~DONE then return .ErrorPrint~stmtError(stmt, db, 'TABLE', 'street_addr')
 
   stmt~finalize
 
-  sql = "CREATE TABLE inet_addr ("                    || .endOfLine || -
-        "  inet_addr_id integer primary key,"         || .endOfLine || -
-        "  inet_addr text not null default '',"       || .endOfLine || -
-        "  contact_id integer not null,"              || .endOfLine || -
-        "  type_id integer not null"                  || .endOfLine || -
+  say 'Added TABLE: street_addr to database: phoneBook'
+
+  -- Create table phone addresses
+  sql = "CREATE TABLE phone_addr ("                         || .endOfLine || -
+        "  phone_id INTEGER PRIMARY KEY,"                   || .endOfLine || -
+        "  number TEXT NOT NULL,"                           || .endOfLine || -
+        "  area_code TEXT NOT NULL DEFAULT '',"             || .endOfLine || -
+        "  extension TEXT NOT NULL DEFAULT '',"             || .endOfLine || -
+        "  contact_id INTEGER NOT NULL,"                    || .endOfLine || -
+        "  type_id INTEGER NOT NULL,"                       || .endOfLine || -
+        "  FOREIGN KEY(contact_id) REFERENCES contacts(id)" || .endOfLine || -
+        "  ON UPDATE CASCADE ON DELETE RESTRICT,"           || .endOfLine || -
+        "  FOREIGN KEY(type_id) REFERENCES addr_type(id)"   || .endOfLine || -
+        "  ON UPDATE CASCADE ON DELETE RESTRICT"            || .endOfLine || -
         ");"
 
   stmt = .ooSQLiteStmt~new(db, sql)
-  if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'inet_addr')
+  if stmt~initCode <> 0 then return .ErrorPrint~stmtError(stmt, db, 'INIT', 'phone_addr')
 
   ret = stmt~step
-  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'inet_addr')
+  if ret <> stmt~DONE then return .ErrorPrint~stmtError(stmt, db, 'TABLE', 'phone_addr')
 
   stmt~finalize
 
-  sql = "CREATE TABLE addr_type ("              || .endOfLine || -
-        "  addr_type_id integer primary key,"   || .endOfLine || -
-        "  type text not null default 'Home'"   || .endOfLine || -
+  say 'Added TABLE: phone_addr  to database: phoneBook'
+
+  -- Create table internet addresses
+  sql = "CREATE TABLE inet_addr ("                          || .endOfLine || -
+        "  inet_id INTEGER PRIMARY KEY,"                    || .endOfLine || -
+        "  inet_addr TEXT NOT NULL,"                        || .endOfLine || -
+        "  contact_id INTEGER NOT NULL,"                    || .endOfLine || -
+        "  type_id INTEGER NOT NULL,"                       || .endOfLine || -
+        "  FOREIGN KEY(contact_id) REFERENCES contacts(id)" || .endOfLine || -
+        "  ON UPDATE CASCADE ON DELETE RESTRICT,"           || .endOfLine || -
+        "  FOREIGN KEY(type_id) REFERENCES addr_type(id)"   || .endOfLine || -
+        "  ON UPDATE CASCADE ON DELETE RESTRICT"            || .endOfLine || -
         ");"
 
   stmt = .ooSQLiteStmt~new(db, sql)
-  if stmt~initCode <> 0 then return .ErrorHandler~stmtError(stmt, db, 'INIT', 'addr_type')
+  if stmt~initCode <> 0 then return .ErrorPrint~stmtError(stmt, db, 'INIT', 'inet_addr')
 
   ret = stmt~step
-  if ret <> stmt~DONE then return .ErrorHandler~stmtError(stmt, db, 'TABLE', 'addr_type')
+  if ret <> stmt~DONE then return .ErrorPrint~stmtError(stmt, db, 'TABLE', 'inet_addr')
 
   stmt~finalize
+
+  say 'Added TABLE: inet_addr   to database: phoneBook'
 
   db~close
+
+  say 'Finished.'
+  say
 
   return 0
 
 ::requires 'ooSQLite.cls'
 
 
-::class ErrorHandler
+::class 'ErrorPrint'
 
 ::method stmtError class
   use strict arg stmt, db, id, tableName = ''

@@ -158,43 +158,13 @@ void RexxEntry ooSQLiteUnload(RexxThreadContext *c)
  * @param db        Database connection.
  * @param function  Name of SQLite API.
  */
-void sqliteErrorException(RexxThreadContext *c, sqlite3 *db, const char *function)
+static void sqliteErrorException(RexxThreadContext *c, sqlite3 *db, const char *function)
 {
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "SQLite API error:  API(%s) rc(%d) msg(%s)",
              function, sqlite3_errcode(db), sqlite3_errmsg(db) ? sqlite3_errmsg(db) : "none");
     systemServiceException(c, buffer);
 }
-
-/**
- * Instantiates a new 2-dimensional array.  This is not used anywhere, seemed
- * like it would be useful, but not so sure about that now.
- *
- * @param c
- * @param size
- *
- * @return RexxArrayObject
- */
-RexxArrayObject newTwoDimensionArray(RexxThreadContext *c, size_t size)
-{
-    RexxClassObject arrayCls = c->FindClass("ARRAY");
-    RexxArrayObject result   = NULLOBJECT;
-
-    if ( arrayCls != NULLOBJECT )
-    {
-        if ( size < 1 )
-        {
-            size = 5;
-        }
-        RexxObjectPtr s = c->WholeNumber(size);
-
-        RexxArrayObject args = c->ArrayOfTwo(s, s);
-
-        result = (RexxArrayObject)c->SendMessage(arrayCls, "NEW", args);
-    }
-    return result;
-}
-
 
 /**
  * If the value in the database for the requested field is NULL, the
@@ -208,7 +178,7 @@ RexxArrayObject newTwoDimensionArray(RexxThreadContext *c, size_t size)
  *
  * @return a non-null string.
  */
-inline CSTRING safeColumnText(sqlite3_stmt *stmt, int col)
+static inline CSTRING safeColumnText(sqlite3_stmt *stmt, int col)
 {
     CSTRING data = (CSTRING)sqlite3_column_text(stmt, col);
     return (data == NULL ? "NULL" : data);
@@ -225,7 +195,7 @@ inline CSTRING safeColumnText(sqlite3_stmt *stmt, int col)
  * @return "str" converted to a Rexx string, using the word "NULL" if str is
  *         null.
  */
-inline RexxStringObject safeRexxString(RexxThreadContext *c, CSTRING str)
+static inline RexxStringObject safeRexxString(RexxThreadContext *c, CSTRING str)
 {
     return c->String(str == NULL ? "NULL" : str);
 }
@@ -350,6 +320,34 @@ static inline RexxStringObject ooSQLiteErr(RexxThreadContext *c, wholenumber_t r
     return c->String(buf);
 }
 
+/**
+ * Enables foreign key support in the specified database connection.
+ *
+ * Foreign key support is disabled by default in SQLite 3.7.13 and must be
+ * explicitly enabled on each database connection.  In ooSQLite, foreign key
+ * support is enabled by default - this function is called for each opened
+ * database.
+ *
+ * @param db
+ *
+ * @return bool
+ */
+static bool enableForeignKeys(sqlite3 *db)
+{
+    sqlite3_stmt *stmt;
+    const char    sql[] = "PRAGMA foreign_keys = ON;";
+
+    int rc = sqlite3_prepare_v2(db, sql, (int)strlen(sql) + 1, &stmt, NULL);
+    if ( rc != SQLITE_OK )
+    {
+        return false;
+    }
+
+    rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    return rc == SQLITE_DONE;
+}
 
 /**
  * Similar to the other ooSQLiteErr() functions above, but the primary purpose
@@ -451,7 +449,6 @@ static void  strupper(char *location, size_t length)
       *location = toupper(*location);
   }
 }
-
 
 /**
  * Returns an array of pointer to strings consisting of the column names for the
@@ -2413,70 +2410,6 @@ static RexxObjectPtr findStatement(RexxMethodContext *c, pCooSQLiteConn pConn, s
 }
 
 
-/**
- * Saves the database file name in an object variable of an ooSQLiteConnection object
- * when the object is instantiated.
- *
- * @param c
- * @param pConn
- * @param file
- */
-static void setDBInitStatusFile(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING file)
-{
-    RexxStringObject rxName = c->String(file);
-    c->SetObjectVariable("rxFileName", rxName);
-
-    pConn->rxFileName = rxName;
-    pConn->fileName   = file;
-}
-
-/**
- * Provides the final initialization of an ooSQLiteConnection object during
- * instantiation.  This initialization is dependent on whether the underlying
- * SQLite database connection was opened with or without error.
- *
- * @param c
- * @param pConn
- * @param db
- * @param rc
- * @param self
- *
- * @return bool
- */
-static bool setDBInitStatus(RexxMethodContext *c, pCooSQLiteConn pConn, sqlite3 *db, int rc, RexxObjectPtr self)
-{
-    bool result = true;
-    if ( rc )
-    {
-        pConn->lastErrCode = sqlite3_errcode(db);
-        pConn->lastErrMsg  = c->String(sqlite3_errmsg(db));
-        pConn->initCode    = rc;
-
-        sqlite3_close(pConn->db);
-        pConn->db = NULL;
-
-        result = false;
-    }
-    else
-    {
-        pConn->lastErrMsg  = c->String("No error");
-        pConn->rexxSelf    = self;
-
-        RexxObjectPtr set = rxNewSet(c);
-        pConn->stmtBag = set;
-        c->SendMessage1(self, "OOSQLITECONNECTIONSTMTBAG=", set);
-
-        // Here we enable things that are enabled / disabled on a per database
-        // connection basis that are set by default for ooSQLite.
-        sqlite3_extended_result_codes(pConn->db, 1);
-    }
-
-    c->SetObjectVariable("rxLastErrMsg", pConn->lastErrMsg);
-
-    return result;
-}
-
-
 static CSTRING defaultCallbackMethod(CallbackType cbt)
 {
     if ( cbt == authorizer )
@@ -2973,7 +2906,6 @@ RexxObjectPtr pragmaGet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
     return result;
 }
 
-
 /**
  * Processes a pragma that is setting a value
  *
@@ -3026,6 +2958,72 @@ RexxObjectPtr pragmaSet(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING name
     return result;
 
 }
+
+
+/**
+ * Saves the database file name in an object variable of an ooSQLiteConnection object
+ * when the object is instantiated.
+ *
+ * @param c
+ * @param pConn
+ * @param file
+ */
+static void setDBInitStatusFile(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING file)
+{
+    RexxStringObject rxName = c->String(file);
+    c->SetObjectVariable("rxFileName", rxName);
+
+    pConn->rxFileName = rxName;
+    pConn->fileName   = file;
+}
+
+/**
+ * Provides the final initialization of an ooSQLiteConnection object during
+ * instantiation.  This initialization is dependent on whether the underlying
+ * SQLite database connection was opened with or without error.
+ *
+ * @param c
+ * @param pConn
+ * @param db
+ * @param rc
+ * @param self
+ *
+ * @return bool
+ */
+static bool setDBInitStatus(RexxMethodContext *c, pCooSQLiteConn pConn, sqlite3 *db, int rc, RexxObjectPtr self)
+{
+    bool result = true;
+    if ( rc )
+    {
+        pConn->lastErrCode = sqlite3_errcode(db);
+        pConn->lastErrMsg  = c->String(sqlite3_errmsg(db));
+        pConn->initCode    = rc;
+
+        sqlite3_close(pConn->db);
+        pConn->db = NULL;
+
+        result = false;
+    }
+    else
+    {
+        pConn->lastErrMsg  = c->String("No error");
+        pConn->rexxSelf    = self;
+
+        RexxObjectPtr set = rxNewSet(c);
+        pConn->stmtBag = set;
+        c->SendMessage1(self, "OOSQLITECONNECTIONSTMTBAG=", set);
+
+        // Here we enable things that are enabled / disabled on a per database
+        // connection basis that are set by default for ooSQLite.
+        sqlite3_extended_result_codes(pConn->db, 1);
+        enableForeignKeys(db);
+    }
+
+    c->SetObjectVariable("rxLastErrMsg", pConn->lastErrMsg);
+
+    return result;
+}
+
 
 /** ooSQLiteConnection:Class::init()
  */
@@ -8337,6 +8335,7 @@ RexxRoutine4(int, oosqlOpen_rtn, CSTRING, file, CSTRING, dbConn, OPTIONAL_int32_
         // Here we enable things that are enabled / disabled on a per database
         // connection basis that are set by default for ooSQLite.
         sqlite3_extended_result_codes(db, 1);
+        enableForeignKeys(db);
     }
 
     context->SetContextVariable(dbConn, context->NewPointer(db));

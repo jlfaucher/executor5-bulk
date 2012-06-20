@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
@@ -45,13 +46,24 @@
  *
  * This example inserts data into the various tables in the phoneBook database.
  * The various task involved in inserting the data are carried out by methods of
- * the DatabaseAssistant class.  The DatabaseAssistant class is not a part of
+ * the ProgramAssistant class.  The ProgramAssistant class is not a part of
  * the ooSQLite extension.
  *
  * Note that the author has little to no previous experience with SQL and
  * relational databases.  This example is not intended to show the "best" way
  * to use SQL or to deal with a relational database in general.  It is meant to
  * help someone get started using ooSQLite.
+ *
+ * A note on SQL Injection Flaws
+ *
+ * SQL Injection flaws are introduced when software developers create dynamic
+ * database queries that include user supplied input.
+ *
+ * In this program dynamic SQL INSERT statements are constructed, however, the
+ * input to the construction does not come from user input.  The input comes
+ * from within this program.  The input should be trustworthy in this case.  Do
+ * not blindly copy code from this example without giving some thought to SQL
+ * Injection flaws.
  */
 
   dbFile = .File~new('phoneBook.rdbx')
@@ -65,12 +77,15 @@
     return 99
   end
 
-  -- DatabaseAssistant is not a part of ooSQLite.  It is a private classe
-  -- defined in this example.  It is used to make the code more modular
-  dbHelper = .DatabaseAssistant~new
+  -- ProgramAssistant is not a part of ooSQLite.  It is a private class defined
+  -- in this example.  It is used to make the code more modular.  The
+  -- ProgramAssistant has 6 main methods. 1 method to check that the database is
+  -- empty of records and 1 method to insert the records into each of the 5
+  -- tables of the database.
+  helper = .ProgramAssistant~new
 
   db = .ooSQLiteConnection~new('phoneBook.rdbx')
-  if db~initCode <> 0 then return dbHelper~openDbErr(db)
+  if db~initCode <> 0 then return helper~openDbErr(db)
 
   -- We set a busy handler of 3 seconds, which is more than enough for this
   -- simple program.  If we get busy timeouts with this value, it would indicate
@@ -78,93 +93,57 @@
   db~busyTimeout(3000)
 
   -- This checks that the database is empty of records.
-  if \ dbHelper~okayToContinue(db) then do
+  if \ helper~okayToContinue(db) then do
     db~close
     return 99
   end
 
-  if dbHelper~addAddressTypeRecords(db) \== db~OK then return 99
+  if helper~addContacts(db) \== db~OK then return 99
 
-  if dbHelper~addContacts(db) \== db~OK then return 99
+  if helper~addAddressTypes(db) \== db~OK then return 99
+
+  if helper~addStreetAddresses(db) \== db~OK then return 99
+
+  if helper~addPhones(db) \== db~OK then return 99
+
+  if helper~addInternet(db) \== db~OK then return 99
 
   ret = db~close
   if ret == db~BUSY then do
     say 'Database busy return from close.'
   end
+  say
+
+  say 'The phoneBook database is now populated with records.'
+  say
 
   return 0
 
 ::requires 'ooSQLite.cls'
 
 
-::class 'DatabaseAssistant'
+::class 'ProgramAssistant'
 
-::method addContacts
+/* Simple method to print an error message if there is an error trying to open
+ * the database.
+ */
+::method openDbErr
   use strict arg db
 
-  contacts = self~getContacts
+  errRC  = db~lastErrCode
+  errMsg = db~lastErrMsg
 
-  do c over contacts
-    sql = "INSERT INTO contacts (fName, mName, lName, nickname, title)"   || -
-          " VALUES('"c[1]"', '"c[2]"', '"c[3]"', '"c[4]"', '"c[5]"');"
+  say 'ooSQLiteConnection initialization error:' db~initCode
+  say '  Error code:' errRC '('errMsg')'
 
-    stmt = .ooSQLiteStmt~new(db, sql)
-    if stmt~initCode <> 0 then return dbHelp~stmtError(stmt, db, 'PREPARE', 'contacts')
-
-    ret = stmt~step
-    if ret <> db~DONE then return dbHelper~stmtError(stmt, db, 'INSERT', 'contacts')
-
-    stmt~finalize
-  end
-
-  return db~OK
+  db~close
+  return 99
 
 
-::method getContacts private
-
-  contacts = .array~new(10)
-
-  contacts[ 1] = .array~of('Tom',    'Sawyer', '',         '',           ''    )
-  contacts[ 2] = .array~of('Howard', 'Martin', 'Pat',      'Howie',      'Mr.' )
-  contacts[ 3] = .array~of('Mary',   'Lyle',   'Beth',     'Mary Beth',  'Mrs.')
-  contacts[ 4] = .array~of('Frank',  'Lyle',   'Richard',  '',           'Mr.' )
-
-  return contacts
-
-
-::method addAddressTypeRecords
-  use strict arg db
-
-  vals = .array~of('Home', 'Mobile', 'Work', 'Business', 'Office', 'Home e-mail',         -
-                   'Alternate e-mail', 'Work e-mail', 'Business e-mail', 'Office e-mail', -
-                   'Business website', 'Personal website')
-
-  sql = "INSERT INTO addr_type (type) VALUES(?1);"
-
-  stmt = .ooSQLiteStmt~new(db, sql)
-  if stmt~initCode <> 0 then return dbHelp~stmtError(stmt, db, 'PREPARE', 'addr_type')
-
-  do i = 1 to vals~items
-    ret = stmt~bindText(1, vals[i])
-    if ret <> db~OK then return dbHelper~bindError(db, stmt, ret, vals[i])
-
-    ret = stmt~step
-    if ret <> db~DONE then return dbHelper~stmtError(stmt, db, 'INSERT', 'addr_type')
-
-    ret = stmt~reset
-    if ret <> db~OK then return dbHelper~resetError(db, stmt, ret, vals[i])
-  end
-
-  ret = stmt~finalize
-  if ret == db~BUSY then do
-    say 'Database busy after last statement finalize.' ret
-    db~close
-  end
-
-  return ret
-
-
-
+/* Checks that the database is empty, that there are no records in it yet.
+ * Inserting records when they already exist causes an error. To run this
+ * program properly, createDatabase.rex needs to be run first.
+ */
 ::method okayToContinue
   use strict arg db
 
@@ -193,7 +172,244 @@
   return .true
 
 
-::method bindError
+/* Adds the initial records to the contacts table */
+::method addContacts
+  use strict arg db
+
+  contacts = self~getContacts
+
+  do c over contacts
+    sql = "INSERT INTO contacts (fName, lName, mName, nickname, title)"   || -
+          " VALUES('"c[1]"', '"c[2]"', '"c[3]"', '"c[4]"', '"c[5]"');"
+
+    stmt = .ooSQLiteStmt~new(db, sql)
+    if stmt~initCode <> 0 then return self~stmtError(stmt, db, 'PREPARE', 'contacts')
+
+    ret = stmt~step
+    if ret <> db~DONE then return self~stmtError(stmt, db, 'INSERT', 'contacts')
+
+    stmt~finalize
+  end
+
+  say 'Added contact records'
+
+  return db~OK
+
+
+/* Adds the initial records to the addr_type table */
+::method addAddressTypes
+  use strict arg db
+
+  vals = .array~of('Home', 'Mobile', 'Work', 'Business', 'Office', 'Home e-mail',         -
+                   'Alternate e-mail', 'Work e-mail', 'Business e-mail', 'Office e-mail', -
+                   'Business website', 'Personal website')
+
+  sql = "INSERT INTO addr_type (type) VALUES(?1);"
+
+  stmt = .ooSQLiteStmt~new(db, sql)
+  if stmt~initCode <> 0 then return self~stmtError(stmt, db, 'PREPARE', 'addr_type')
+
+  do i = 1 to vals~items
+    ret = stmt~bindText(1, vals[i])
+    if ret <> db~OK then return self~bindError(db, stmt, ret, vals[i])
+
+    ret = stmt~step
+    if ret <> db~DONE then return self~stmtError(stmt, db, 'INSERT', 'addr_type')
+
+    ret = stmt~reset
+    if ret <> db~OK then return self~resetError(db, stmt, ret, vals[i])
+  end
+
+  ret = stmt~finalize
+  if ret == db~BUSY then do
+    say 'Database busy after last statement finalize.' ret
+    db~close
+  end
+
+  say 'Added address type records'
+
+  return ret
+
+
+/* Adds the initial records to the street_addr table */
+::method addStreetAddresses
+  use strict arg db
+
+  sql = "INSERT INTO street_addr (street1, street2, city, state, zip, contact_id, type_id)" -
+        "VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7);"
+
+  stmt = .ooSQLiteStmt~new(db, sql)
+  if stmt~initCode <> 0 then return self~stmtError(stmt, db, 'PREPARE', 'street_addr')
+
+  -- Tom Sawyer
+  vals = .Array~of('61 Mud St', '', 'St. Petersburg', 'Missouri', '62264', 1, 1)
+  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('raft', '', 'Mississippi River', 'Missouri', '62264', 1, 5)
+  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  if ret == 99 then return ret
+
+  -- Howard Martin
+  vals = .Array~of('505 Dellwood Ave', 'Apt. #23', 'Boulder', 'Colorado', '80301', 2, 1)
+  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('928 Perl St', '', 'Boulder', 'Colorado', '80302', 2, 3)
+  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  if ret == 99 then return ret
+
+  -- Mary Lyle
+  vals = .Array~of('4325 NE Knott St', '', 'Portland', 'Oregon', '97266', 3, 1)
+  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('5555 N Channel Ave', '#71', 'Portland', 'Oregon', '97603', 3, 4)
+  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  if ret == 99 then return ret
+
+  -- Frank Lyle
+  vals = .Array~of('7633 SE Garrett Dr', '', 'Portland', 'Oregon', '97222', 4, 1)
+  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('3900 Northeast 158th Ave', '', 'Portland', 'Oregon', '97603', 4, 3)
+  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  if ret == 99 then return ret
+
+  stmt~finalize
+
+  say 'Added address records'
+
+  return 0
+
+
+/* Adds the initial records to the phone_addr table */
+::method addPhones
+  use strict arg db
+
+  sql = "INSERT INTO phone_addr (number, area_code, extension, contact_id, type_id)" -
+        "VALUES(?1, ?2, ?3, ?4, ?5);"
+
+  stmt = .ooSQLiteStmt~new(db, sql)
+  if stmt~initCode <> 0 then return self~stmtError(stmt, db, 'PREPARE', 'phone_addr')
+
+  -- Howard Martin
+  vals = .Array~of('543-3892', '303', '', 2, 1)
+  ret = self~addRecord(db, stmt, vals, 5, 'phone_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('667-8392', '970', '', 2, 2)
+  ret = self~addRecord(db, stmt, vals, 5, 'phone_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('935-6911', '720', '', 2, 3)
+  ret = self~addRecord(db, stmt, vals, 5, 'phone_adr')
+  if ret == 99 then return ret
+
+  -- Mary Lyle
+  vals = .Array~of('713-2398', '503', '', 3, 1)
+  ret = self~addRecord(db, stmt, vals, 5, 'phone_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('771-6651', '503', '55', 3, 4)
+  ret = self~addRecord(db, stmt, vals, 5, 'phone_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('833-0523', '360', '', 3, 3)
+  ret = self~addRecord(db, stmt, vals, 5, 'phone_adr')
+  if ret == 99 then return ret
+
+  -- Frank Lyle
+  vals = .Array~of('713-2398', '503', '', 4, 1)
+  ret = self~addRecord(db, stmt, vals, 5, 'phone_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('887-4106', '360', '', 4, 2)
+  ret = self~addRecord(db, stmt, vals, 5, 'phone_adr')
+  if ret == 99 then return ret
+
+  stmt~finalize
+
+  say 'Added phone records'
+
+  return 0
+
+
+/* Adds the initial records to the inet_addr table */
+::method addInternet
+  use strict arg db
+
+  sql = "INSERT INTO inet_addr (inet_addr, contact_id, type_id)" -
+        "VALUES(?1, ?2, ?3);"
+
+  stmt = .ooSQLiteStmt~new(db, sql)
+  if stmt~initCode <> 0 then return self~stmtError(stmt, db, 'PREPARE', 'inet_addr')
+
+  -- Howard Martin
+  vals = .Array~of('hmartin@san.rr.com', 2, 6)
+  ret = self~addRecord(db, stmt, vals, 3, 'inet_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('hmarabcd@manta.com', 2, 3)
+  ret = self~addRecord(db, stmt, vals, 3, 'inet_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('http://www.manta.com/', 2, 11)
+  ret = self~addRecord(db, stmt, vals, 3, 'inet_adr')
+  if ret == 99 then return ret
+
+  vals = .Array~of('http://www.howard.martin.name/', 2, 12)
+  ret = self~addRecord(db, stmt, vals, 3, 'inet_adr')
+  if ret == 99 then return ret
+
+  -- Mary Lyle
+  vals = .Array~of('marylyle@gmail.com', 3, 6)
+  ret = self~addRecord(db, stmt, vals, 3, 'inet_adr')
+  if ret == 99 then return ret
+
+  -- Frank Lyle
+  vals = .Array~of('franklyle@gmail.com', 4, 6)
+  ret = self~addRecord(db, stmt, vals, 3, 'inet_adr')
+  if ret == 99 then return ret
+
+  stmt~finalize
+
+  say 'Added Internet records'
+
+  return 0
+
+
+::method addRecord private
+  use strict arg db, stmt, vals, count, tableName
+
+  do i = 1 to count
+    ret = stmt~bindText(i, vals[i])
+    if ret <> db~OK then return self~bindError(db, stmt, ret, vals[i])
+  end
+
+  ret = stmt~step
+  if ret <> db~DONE then return self~stmtError(stmt, db, 'INSERT', tableName)
+
+  ret = stmt~reset
+  if ret <> db~OK then return self~resetError(db, stmt, ret, vals[i])
+
+  return 0
+
+::method getContacts private
+
+  contacts = .array~new(10)
+
+  contacts[ 1] = .array~of('Tom',    'Sawyer', '',         '',           ''    )
+  contacts[ 2] = .array~of('Howard', 'Martin', 'Pat',      'Howie',      'Mr.' )
+  contacts[ 3] = .array~of('Mary',   'Lyle',   'Beth',     'Mary Beth',  'Mrs.')
+  contacts[ 4] = .array~of('Frank',  'Lyle',   'Richard',  '',           'Mr.' )
+
+  return contacts
+
+
+
+::method bindError private
   use strict arg db, stmt, ret, val
 
   say 'Error binding "'val'".  RC:' ret
@@ -237,18 +453,6 @@
   say "Aborting example program ..."
 
   stmt~finalize
-  db~close
-  return 99
-
-::method openDbErr
-  use strict arg db
-
-  errRC  = db~lastErrCode
-  errMsg = db~lastErrMsg
-
-  say 'ooSQLiteConnection initialization error:' db~initCode
-  say '  Error code:' errRC '('errMsg')'
-
   db~close
   return 99
 
