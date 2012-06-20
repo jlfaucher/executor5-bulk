@@ -1234,7 +1234,9 @@
   -- removing the first child
   if oldChild == firstChild then do
       firstChild = firstChild~nextSibling
-      firstChild~previousSibling = .nil
+      if firstChild \= .nil then do
+          firstChild~previousSibling = .nil
+      end
       -- if this was the only child, then clear out everything
       if lastChild == oldChild then do
           lastChild = .nil
@@ -1264,7 +1266,7 @@
   -- note the change update
   self~changed
 
-  ownerDocument~removeNode(self, replace)
+  ownerDocument~removedNode(self, replace)
   return oldChild
 
 ::method replaceChild
@@ -1295,18 +1297,22 @@
       end
       else do
           buffer = .mutablebuffer~new
-          buildTextContent(buffer)
+          self~buildTextContent(buffer)
           return buffer~string
       end
   end
   return ""
 
+-- private method to build up text content from multiple nodes
 ::method buildTextContent private
   use arg buffer
   child = self~firstChild
   do while child \= .nil
       if self~hasTextContent(child) then do
-          child~buildTextContext(buffer)
+          content = child~nodeValue
+          if nodeValue \= .nil then do
+              buffer~append(content)
+          end
       end
       child = child~nextSibling
   end
@@ -1327,6 +1333,7 @@
   child = self~firstChild
   do while child \= .nil
       self~removeChild(child)
+      child = self~firstChild
   end
 
   -- create a text node and append

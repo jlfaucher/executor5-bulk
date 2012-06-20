@@ -183,3 +183,23 @@ return testResult
   self~assertTrue(text~isA(.Node))
   self~assertEquals(.node~TEXT_NODE, text~nodeType)
   self~assertEquals(123, text~textContent)
+
+  newText = doc~createTextNode("ABC")
+  element~appendChild(newText)
+
+  -- should be two text nodes now, and the text content
+  -- should concatenate the values
+  self~assertEquals("123ABC", element~textContent)
+
+  -- this should remove all of the text nodes
+  element~textContent = ""
+  self~assertEquals("", element~textContent)
+
+  -- now add back in and delete by assigning to .nil
+  element~textContent = "DEF"
+  self~assertEquals("DEF", element~textContent)
+
+  -- this should remove all of the text nodes again
+  element~textContent = .nil
+  self~assertEquals("", element~textContent)
+
