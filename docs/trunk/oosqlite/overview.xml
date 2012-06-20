@@ -96,7 +96,91 @@
   linkend="helpGettingHelp">getting help </link> section of this reference lists a number of other resources for the
   programmer with questions about ooSQLite.
 </para>
+
+<section id="sctCommandLineShell"><title>Command Line Shell</title>
+<indexterm><primary>command line shell</primary></indexterm>
+<indexterm><primary>ooSQLite package</primary><secondary>command line shell</secondary></indexterm>
+<para>
+  ooSQLite comes with a command line shell executable. <computeroutput>ooSQLite3.exe</computeroutput> on Windows and
+  <computeroutput>oosqlite3</computeroutput> on Unix-like systems. This documentation will refer to the command line
+  shell as <emphasis role="italic">ooSQLite3.exe</emphasis> as opposed to <emphasis role="italic">oosqlite3</emphasis>
+  because it is easy to distinguish that ooSQLite3.exe is an executable. In all cases, ooSQLite3.exe refers to both the
+  Windows <emphasis role="italic">and</emphasis> Unix-like command line shell.
+</para>
+<para>
+  The command line shell is a simple program to use and will read any SQLite database file. It is extremely useful when
+  first starting out with ooSQLite. Indeed, it is probably very useful at any time for anyone working with SQLite
+  databases.
+</para>
+<para>
+  The executable is installed alongside the <computeroutput>ooSQLite.cls</computeroutput> file and the implementation
+  library. The installation directory is normally added to the path, putting the command line shell also in the path. As
+  long as it is in the path the command line shell can be executed from anywhere on the system.
+</para>
+<para>
+  <emphasis role="bold">Note</emphasis> that the ooSQLite command line shell is the same as the command line shell
+  provided by SQLite. The shell source code is simply compiled as part of the ooSQLite build process and renamed. The
+  source code is virtually unchanged, so ooSQLite3.exe behaves exactly the same as sqlite3.exe. At this time, the only
+  change in ooSQLite3.exe is a few of the startup defaults.
+</para>
+<para>
+  Typically a command line shell is started up and presents some type of a prompt. The user then enters commands, the
+  shell executes the command, and then returns to the prompt to await the next command.  ooSQLite3.exe is no different.
+  To start it type <emphasis role="italic">ooSQLite3</emphasis>, or <emphasis role="italic">oosqlite3</emphasis> at a
+  command prompt:
+
+<programlisting>
+<![CDATA[
+
+C:\>ooSQLite3
+SQLite version 3.7.13 2012-06-11 02:05:22
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite>
+
+]]>
+</programlisting>
+
+  The <emphasis role="italic">.help</emphasis> command gives help on how to use the shell.  Typically, the shell is
+  started with the name of a database and the shell opens that database:
+
+<programlisting>
+<![CDATA[
+
+C:\>ooSQLite3 phoneBook.rdbx
+SQLite version 3.7.13 2012-06-11 02:05:22
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> .tables
+addr_type    contacts     inet_addr    phone_addr   street_addr
+sqlite>
+
+]]>
+</programlisting>
+
+  To exit the shell type <emphasis role="italic">.exit</emphasis>, or just <emphasis role="italic">.e</emphasis>
+
+<programlisting>
+<![CDATA[
+
+sqlite> .e
+
+C:\>
+
+]]>
+</programlisting>
+
+</para>
+<para>
+  As noted, ooSQLite3.exe is the same as the sqlite3.exe command line shell that can be downloaded from <ulink
+  url="http://www.sqlite.org/download.html">SQLite</ulink>. There is a wealth of information on the Internet regarding
+  the SQLite command shell program. Anything said about sqlite3.exe applies to ooSQLite3.exe. Have fun with
+  ooSQLite3.exe, it is an useful tool.
+</para>
+
 </section>
+
+</section> <!-- End: Getting Started -->
 
 <section id="sctTermDefs"><title>Definition of Terms</title>
 <para>
