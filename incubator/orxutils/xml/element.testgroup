@@ -105,6 +105,8 @@ return testResult
   doc = self~document
   element = doc~createElement("FOO")
 
+  self~assertFalse(element~hasAttributes)
+  self~assertFalse(element~hasAttribute("XYZ"))
   self~assertEquals("", element~getAttribute("XYZ"))
   self~assertNull(element~getAttributeNode("XYZ"))
   -- just make sure a remove on an empty list doesn't cause an error
@@ -114,16 +116,21 @@ return testResult
   -- the attribute list is created lazily...ensure the unknown
   -- attributes are still unknown
 
+  self~assertTrue(element~hasAttributes)
+  self~assertFalse(element~hasAttribute("XYZ"))
   self~assertEquals("", element~getAttribute("XYZ"))
   self~assertNull(element~getAttributeNode("XYZ"))
 
   -- now check the added attribute
+  self~assertTrue(element~hasAttribute("ABC"))
   self~assertEquals("123", element~getAttribute("ABC"))
   self~assertEquals("123", element~getAttributeNode("ABC")~value)
 
   -- remove the added attribute
   element~removeAttribute("ABC")
   -- make sure it is really gone
+  self~assertFalse(element~hasAttributes)
+  self~assertFalse(element~hasAttribute("ABC"))
   self~assertEquals("", element~getAttribute("ABC"))
   self~assertNull(element~getAttributeNode("ABC"))
   -- set to a new value
@@ -164,8 +171,8 @@ return testResult
   self~assertSame(element, attr~ownerelement)
 
 
--- various tests for child nodes
-::method testChildren
+-- various tests for text content
+::method testTextContent
 
   doc = self~document
   element = doc~createElement("FOO")
@@ -202,4 +209,49 @@ return testResult
   -- this should remove all of the text nodes again
   element~textContent = .nil
   self~assertEquals("", element~textContent)
+
+
+::method testChildren
+
+  doc = self~document
+  -- this is the parent node we'll be adding everything else to
+  element = doc~createElement("PARENT")
+
+  self~assertNull(element~firstChild)
+  self~assertNull(element~lastChild)
+  self~assertFalse(element~hasChildNodes)
+  self~assertEquals(0, element~length)
+  self~assertNull(element~item(0))
+  self~assertNull(element[0])
+
+  nodeList = element~childNodes
+
+  self~assertEquals(0, nodeList~length)
+  self~assertNull(nodeList~item(0))
+  self~assertNull(nodeList[0])
+  self~assertEquals(0, nodeList~items)
+
+  -- validate the makearray results with no children
+  array = element~makearray
+  self~assertEquals(0, array~items)
+
+  -- time to start adding children to see how things change
+  child1 = doc~createElement("CHILD1")
+  element~appendChild(child1)
+
+  self~assertSame(child1, element~firstChild)
+  self~assertSame(child1, element~lastChild)
+  self~assertTrue(element~hasChildNodes)
+  self~assertEquals(1, element~length)
+  self~assertSame(child1, element~item(0))
+  self~assertSame(child1, element[0])
+  self~assertNull(element~item(1))
+
+  -- we don't request a new nodelist...this should see the
+  -- updates using the existing reference
+
+  self~assertEquals(1, nodeList~length)
+  self~assertSame(child1, nodeList~item(0))
+  self~assertSame(child1, nodeList[0])
+  self~assertEquals(1, nodeList~items)
 

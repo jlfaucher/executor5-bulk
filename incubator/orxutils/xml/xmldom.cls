@@ -1050,13 +1050,17 @@
   -- always returns 0
   return 0
 
+-- some useful compatibility items
 ::method makearray
   use strict arg
-  -- just an empty array
+  -- just an empty array here
   return .array~new(0)
 
 ::method "[]"
   forward message("ITEM")
+
+::method items
+  forward message("LENGTH")
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -1149,7 +1153,8 @@
       child = child.nextSibling
   end
 
-::method hasChildren
+-- returns true if the node currently has child nodes
+::method hasChildNodes
   expose firstChild
   use strict arg
   return firstChild \= .nil
@@ -1348,22 +1353,22 @@
   return childNodes
 
 ::attribute item GET
-  expose firstNode childNodes
+  expose firstChild childNodes
   use strict arg index
 
   if index < 0 || index >= childNodes then do
       return .nil
   end
+
   child = firstChild
-  do while index > 0
+  loop index
       child = child~nextSibling
-      index -= 1
   end
 
   return child
 
 ::method makearray
-  expose firstNode childNodes
+  expose firstChild childNodes
   use strict arg
 
   result = .array~new(childNodes)
