@@ -190,6 +190,7 @@ return testResult
   self~assertTrue(text~isA(.Node))
   self~assertEquals(.node~TEXT_NODE, text~nodeType)
   self~assertEquals(123, text~textContent)
+  self~assertSame(element, text~parentNode)
 
   newText = doc~createTextNode("ABC")
   element~appendChild(newText)
@@ -237,10 +238,19 @@ return testResult
 
   -- time to start adding children to see how things change
   child1 = doc~createElement("CHILD1")
+  -- quick check of some of the node relationship values before
+  -- we insert this
+  self~assertNull(child1~parentNode)
+  self~assertNull(child1~nextSibling)
+  self~assertNull(child1~previousSibling)
+
   element~appendChild(child1)
 
   self~assertSame(child1, element~firstChild)
   self~assertSame(child1, element~lastChild)
+  self~assertSame(element, child1~parentNode)
+  self~assertNull(child1~nextSibling)
+  self~assertNull(child1~previousSibling)
   self~assertTrue(element~hasChildNodes)
   self~assertEquals(1, element~length)
   self~assertSame(child1, element~item(0))
@@ -255,3 +265,70 @@ return testResult
   self~assertSame(child1, nodeList[0])
   self~assertEquals(1, nodeList~items)
 
+  -- check the make array result
+  array = element~makearray
+  self~assertEquals(1, array~items)
+  self~assertSame(child1, array[1])
+
+  -- add a second node, and check everything is still ok
+  child2 = doc~createElement("CHILD2")
+  element~appendChild(child2)
+
+  self~assertSame(child1, element~firstChild)
+  self~assertSame(child2, element~lastChild)
+  self~assertEquals(2, element~length)
+  self~assertSame(child1, element~item(0))
+  self~assertSame(child2, element~item(1))
+
+  self~assertSame(child2, child1~nextSibling)
+  self~assertNull(child1~previousSibling)
+
+  self~assertSame(child1, child2~previousSibling)
+  self~assertNull(child2~nextSibling)
+
+  -- check the make array result
+  array = element~makearray
+  self~assertEquals(2, array~items)
+  self~assertSame(child1, array[1])
+  self~assertSame(child2, array[2])
+
+  -- Now some insertions.  We'll insert several here, and check the
+  -- results at the end
+  child3 = doc~createElement("CHILD3")
+  -- new first element
+  element~insertBefore(child3, child1)
+  child4 = doc~createElement("CHILD4")
+  -- between 1 and 2
+  element~insertBefore(child4, child2)
+
+  child5 = doc~createElement("CHILD5")
+  -- between appended to the end
+  element~insertBefore(child5, .nil)
+
+  -- we should have 5 elements now, in the
+  -- order 3, 1, 4, 2, 5
+  self~assertEquals(5, element~length)
+  self~assertSame(child3, nodeList[0])
+  self~assertSame(child1, nodeList[1])
+  self~assertSame(child4, nodeList[2])
+  self~assertSame(child2, nodeList[3])
+  self~assertSame(child5, nodeList[4])
+
+  -- ok, now this gets fun.  The DOM spec says
+  -- an inserted element will be removed from its current
+  -- parent, so we'll use insert to move things around a little
+
+  -- now 1, 4, 2, 5, 3
+  element~insertBefore(child3)
+  -- now 1, 2, 4, 5, 3
+  element~insertBefore(child2, child4)
+  -- now 1, 2, 3, 4, 5
+  element~insertBefore(child3, child4)
+
+  -- now verify the order
+  self~assertEquals(5, element~length)
+  self~assertSame(child1, nodeList[0])
+  self~assertSame(child2, nodeList[1])
+  self~assertSame(child3, nodeList[2])
+  self~assertSame(child4, nodeList[3])
+  self~assertSame(child5, nodeList[4])

@@ -50,11 +50,51 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: NodeList                                                            */
+/* Class: NodeList -- Abstract NodeList mixin                                 */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "NodeList" public
+::class "NodeList" public mixinclass Object
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: NodeList                                                            */
+/*        Public methods                                                      */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------*/
+/* Method: item                                                               */
+/* Description: get a list item.                                              */
+/*----------------------------------------------------------------------------*/
+
+::method item abstract
+
+/*----------------------------------------------------------------------------*/
+/* Method: length                                                             */
+/* Description: get the number of items in the list.                          */
+/*----------------------------------------------------------------------------*/
+::method length abstract
+
+
+-- some compatibility methods to make nodelist feel like a Rexx collection
+
+::method makearray abstract
+
+::method "[]"
+  forward message("ITEM")
+
+::method items
+  forward message("LENGTH")
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: NodeListImpl -- concrete NodeList class                             */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "NodeListImpl" public inherit NodeList
 ::method init
   expose nodes
   -- we're a read-only list...the owning node returns the list, we work off
@@ -105,18 +145,11 @@
   use strict arg
   return nodes~items
 
+-- some compatibility methods to make nodelist feel like a Rexx collection
 ::method makearray
   expose nodes
   use strict arg
   return nodes~copy   -- make sure this is a copy
-
--- some compatibility methods to make nodelist feel like a Rexx collection
-::method "[]"
-  forward message("ITEM")
-
-::method items
-  forward message("LENGTH")
-
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -124,8 +157,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-
-::class "DeepNodeList" subclass NodeList public
+::class "DeepNodeList" subclass NodeListImpl public
 ::method init
   expose rootNode tagName changes nodes nsName
 
@@ -817,7 +849,7 @@
   expose ownerNode childNodes nodeId
   use strict arg ownerNode = .nil
   nodeId = self~class~getId
-  childNodes = .NodeList~new
+  childNodes = .NodeListImpl~new
   self~isowned = .false  -- unowned until we are added as a child
   self~readonly = .false -- newly created nodes can be altered
   self~isFirstChild = .false -- not the first child until added to something.
@@ -1164,7 +1196,7 @@
 
 ::method insertBefore
   expose firstChild lastChild ownerDocument childNodes
-  use arg newChild, refChild, replace = .false
+  use arg newChild, refChild = .nil, replace = .false
 
   -- this case is really a no-op, but we need to go through the steps
   -- in case we need to signal events.
@@ -1207,20 +1239,21 @@
   else do
       -- insertion at the beginning, need to adjust
       if refChild == firstChild then do
-          newChild~firstSibling = firstChild
+          newChild~nextSibling = firstChild
           newChild~previousSibling = .nil
           firstChild~previousSibling = newChild
           firstChild = newChild
       end
       -- insertion in the middle
       else do
-          previousNode = refNode~previousSibling
+          previousNode = refChild~previousSibling
           previousNode~nextSibling = newChild
           newChild~previousSibling = previousNode
-          newChild~nextSibling = refNode
-          refNode~previousSibling = newChild
+          newChild~nextSibling = refChild
+          refChild~previousSibling = newChild
       end
   end
+
   -- bump the count of nodes
   childNodes += 1
 
@@ -1371,14 +1404,14 @@
   expose firstChild childNodes
   use strict arg
 
-  result = .array~new(childNodes)
+  array = .array~new(childNodes)
   child = firstChild
-  do while child \= .nil
-      result~append(child)
+  do i = 1 while child \= .nil
+      array[i] = child
       child = child~nextSibling
   end
 
-  return result
+  return array
 
 
 /*----------------------------------------------------------------------------*/
@@ -2735,7 +2768,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "Element" subclass ParentNode public
+::class "Element" subclass ParentNode public inherit NodeList
 ::method init
   expose nodeName attributes namespaceURI localName type
   attributes = .nil
@@ -3321,7 +3354,7 @@ syntax:
 ::attribute childNodes GET
   use strict arg
   -- always returns an empty node list
-  return .NodeList~new
+  return .NodeListImpl~new
 
 ::attribute nodeValue GET
   expose data
