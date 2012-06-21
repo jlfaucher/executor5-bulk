@@ -253,14 +253,21 @@ Section  doSwitch
     SetOutPath $INSTDIR\samples\oodialog\propertySheet.tabs
     ; Add the files ...
     File "${SamplesDir420}\propertySheet.tabs\*.cls"
-    File "${SamplesDir420}\propertySheet.tabs\*.rex"
+    File "${SamplesDir420}\propertySheet.tabs\oodListViews.rex"
+    File "${SamplesDir420}\propertySheet.tabs\PropertySheetDemo.rex"
+    File "${SamplesDir420}\propertySheet.tabs\TabDemo.rex"
+    ; File "${SamplesDir420}\propertySheet.tabs\TabOwnerDemo.rex" ; Do not expose this example yet
+    File "${SamplesDir420}\propertySheet.tabs\ticketWizard.rex"
+    File "${SamplesDir420}\propertySheet.tabs\UserTabDemo.rex"
+
 
     SetOutPath $INSTDIR\samples\oodialog\propertySheet.tabs\rc
     ; Add the files ...
-    File "${SamplesDir420}\propertySheet.tabs\rc\*.bmp"
-    File "${SamplesDir420}\propertySheet.tabs\rc\*.dll"
-    File "${SamplesDir420}\propertySheet.tabs\rc\*.h"
-    File "${SamplesDir420}\propertySheet.tabs\rc\*.rc"
+    File "${SamplesDir420}\propertySheet.tabs\rc\oodListViews*"
+    File "${SamplesDir420}\propertySheet.tabs\rc\PropertySheetDemo*"
+    ; File "${SamplesDir420}\propertySheet.tabs\rc\TabOwnerDemo*" ; Do not expose this example yet
+    File "${SamplesDir420}\propertySheet.tabs\rc\ticketWizard*"
+    File "${SamplesDir420}\propertySheet.tabs\rc\UserTabDemo*"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\rc
