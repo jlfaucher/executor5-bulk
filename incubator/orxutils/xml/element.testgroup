@@ -227,6 +227,7 @@ return testResult
 
   nodeList = element~childNodes
 
+  self~assertTrue(nodeList~isA(.NodeList))
   self~assertEquals(0, nodeList~length)
   self~assertNull(nodeList~item(0))
   self~assertNull(nodeList[0])
@@ -332,3 +333,28 @@ return testResult
   self~assertSame(child3, nodeList[2])
   self~assertSame(child4, nodeList[3])
   self~assertSame(child5, nodeList[4])
+
+  -- now some removals/replacements
+  self~assertSame(child1, element~replaceChild(child5, child1))
+  self~assertEquals(4, element~length)
+  self~assertSame(child5, element~firstChild)
+  self~assertSame(child4, element~lastChild)
+
+  -- remove from the middle
+  self~assertSame(child2, element~removeChild(child2))
+  self~assertEquals(3, element~length)
+
+  -- the end
+  self~assertSame(child4, element~removeChild(child4))
+  self~assertEquals(2, element~length)
+
+  -- the beginning
+  self~assertSame(child5, element~removeChild(child5))
+  self~assertEquals(1, element~length)
+
+  -- and the last one
+  self~assertSame(child3, element~removeChild(child3))
+  self~assertEquals(0, element~length)
+
+  self~assertNull(element~firstChild)
+  self~assertNull(element~lastChild)

@@ -1005,27 +1005,27 @@
       return .true
   end
 
-  if self~nodetype != other~nodetype then do
+  if self~nodetype \= other~nodetype then do
       return .false
   end
 
-  if self~nodename != other~nodename then do
+  if self~nodename \= other~nodename then do
       return .false
   end
 
-  if self~localname != other~localname then do
+  if self~localname \= other~localname then do
       return .false
   end
 
-  if self~namespaceURI != other~namespaceURI then do
+  if self~namespaceURI \= other~namespaceURI then do
       return .false
   end
 
-  if self~prefix != other~prefix then do
+  if self~prefix \= other~prefix then do
       return .false
   end
 
-  if self~nodevalue != other~nodevalue then do
+  if self~nodevalue \= other~nodevalue then do
       return .false
   end
 
@@ -1312,11 +1312,11 @@
   use strict arg newChild, oldChild
 
   self~insertBefore(newChild, oldChild, .true)
-  if newChild !== oldChild then do
-      removeChild(oldChild, .true)
+  if newChild \== oldChild then do
+      self~removeChild(oldChild, .true)
   end
 
-  ownerDocument.replacedNode(self)
+  ownerDocument~replacedNode(self)
   return oldChild
 
 ::attribute textContent GET
@@ -4787,7 +4787,7 @@ syntax:
       realEnd = endContainer~parentNode
   end
 
-  if realStart != realEnd then do
+  if realStart \= realEnd then do
       DomErrors~raiseError(.DomErrors~BAD_BOUNDARY_POINTS_ERR)
   end
 
@@ -4998,9 +4998,9 @@ syntax:
   expose removeChild
   use strict arg parent, child
   removeChild = child
-  result parent~removeChild(child)
+  old = parent~removeChild(child)
   removeChild = .nil
-  return result
+  return old
 
 
 ::method removeNode
