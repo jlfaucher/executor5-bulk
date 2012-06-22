@@ -407,3 +407,46 @@ return testResult
   self~assertEquals("foo", attr~localname)
   self~assertEquals("oorexx", attr~prefix)
   self~assertEquals("http://www.oorexx.org/xml/unittest.xml", attr~namespaceURI)
+
+  -- this should be locateable via the fully qualified name, but not
+  -- by the local name
+  self~assertEquals("bar", element~getAttribute("oorexx:foo"))
+  self~assertEquals("", element~getAttribute("foo"))
+  self~assertSame(attr, element~getAttributeNode("oorexx:foo"))
+  self~assertNull(element~getAttributeNode("foo"))
+  -- now search by the NS version
+
+  self~assertTrue(element~hasAttribute("oorexx:foo"))
+  self~assertTrue(element~hasAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+  self~assertEquals("bar", element~getAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+  self~assertSame(attr, element~getAttributeNodeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+
+  -- get the attribute list and retry these queries
+  attributes = element~attributes
+  self~assertSame(attr, attributes~getNamedItem("oorexx:foo"))
+  self~assertSame(attr, attributes~getNamedItemNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+
+  self~assertSame(attr, element~removeAttribute("oorexx:foo"))
+  self~assertEquals("", element~getAttribute("oorexx:foo"))
+
+  -- add back in
+  self~assertNull(element~setAttributeNodeNS(attr))
+  self~assertEquals("bar", element~getAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+
+  -- create a replacement attribute
+  attr2 = doc~createAttributeNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:foo")
+  attr2~value = "123"
+  -- and replace
+  self~assertSame(attr, element~setAttributeNodeNS(attr2))
+
+  self~assertEquals("123", element~getAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+
+  -- remove using the namespace
+  self~assertSame(attr2, element~removeAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+  self~assertEquals("", element~getAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+  -- now test sets and removes using the attribute list
+
+  self~assertNull(attributes~setNamedItemNS(attr))
+  self~assertEquals("bar", element~getAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+  self~assertSame(attr, attributes~removeNamedItemNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+  self~assertEquals("", element~getAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))

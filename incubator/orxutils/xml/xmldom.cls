@@ -373,10 +373,10 @@
 
   return .nil
 
-
+ -- locate the index of a given namespace/localname pair
 ::method findNamePointNS private
   expose attributes
-  use arg name, namespace
+  use arg namespace, name
 
   if attributes == .nil then do
       return .nil
@@ -399,6 +399,7 @@
               return s~index
           end
       end
+      s~next
   end
 
   return .nil
@@ -445,14 +446,14 @@
 
 ::method getNamedItemNS
   expose attributes
-  use strict arg name, namespace
+  use strict arg namespace, name
 
   if attributes == .nil then do
       return .nil
   end
 
   do attribute over attributes
-      if attribute~name == name & attribute~namespaceURI == namespace then do
+      if attribute~localname == name & attribute~namespaceURI == namespace then do
           return attribute
       end
   end
@@ -494,7 +495,7 @@
   expose attributes
   use strict arg node
 
-  index = self~findNamePointNS(node~localName, node~namespaceURI)
+  index = self~findNamePointNS(node~namespaceURI, node~localName)
   previous = .nil
 
   if index \= .nil then do
@@ -547,7 +548,7 @@
   expose attributes
   use strict arg namespace, name
 
-  index = self~findNamePointNS(name, namespace)
+  index = self~findNamePointNS(namespace, name)
   previous = .nil
 
   if index \= .nil then do
@@ -683,7 +684,7 @@
 
 ::method setNamedItemNS
   use strict arg attribute
-  -- replaceing an attribute with itself does nothing
+  -- replacing an attribute with itself does nothing
   if attribute~isOwned then do
       return attribute
   end
@@ -691,13 +692,13 @@
   attribute~ownerNode = self~ownerNode
   attribute~isOwned = .true
 
-  index = self~findNamePointNS(attribute~namespaceURI, attribute~nodeName)
+  index = self~findNamePointNS(attribute~namespaceURI, attribute~localName)
   attributes = self~attributes
   previous = .nil
   if index \= .nil then do
-      previous = attributes[i]
-      attributes[i] = attribute
-      previous~ownerNode = ownerNode~ownerDocument
+      previous = attributes[index]
+      attributes[index] = attribute
+      previous~ownerNode = self~ownerNode~ownerDocument
       previous~isOwned = .false
       previous~isSpecified = .true
   end
@@ -725,7 +726,7 @@
 ::method removeNamedItemNS
   use strict arg namespaceURI, name
 
-  index = self~findNamePointNS(namspaceURI, name)
+  index = self~findNamePointNS(namespaceURI, name)
   if index == .nil then do
       return .nil
   end
@@ -2996,7 +2997,7 @@ syntax:
 
   -- set an attribute using a namespace URI and a qualified name
 ::method setAttributeNS
-  espose attributes
+  expose attributes
   use strict arg namespaceURI, qualifiedName, value
 
   index = qualifiedName~pos(":")
@@ -3029,10 +3030,10 @@ syntax:
   use strict arg namespaceURI, localName
 
   if attributes == .nil then do
-      return
+      return .nil
   end
 
-  attributes~removeNamedItemNS(namespaceURI, localName)
+  return attributes~removeNamedItemNS(namespaceURI, localName)
 
 ::method getAttributeNodeNS
   expose attributes
