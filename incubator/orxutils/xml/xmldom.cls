@@ -2251,32 +2251,25 @@ syntax:
 
 ::class "Attr" subclass Node public
 ::method init
-  expose value name textNode namespaceURI localName type idAttribute
+  expose value nodeName textNode namespaceURI localName type idAttribute prefix
   value = .nil
   type = .nil
   textNode = .nil
   namespaceURI = .nil
   localName = .nil
+  prefix = .nil
   idAttribute = .false
-  if arg() == 2 then do
-      use strict arg ownerDocument, name
-      self~init:super(ownerDoc)
+  use strict arg ownerDoc, nodeName, namespaceURI = .nil, explicitLocalName = .nil
+  self~init:super(ownerDoc)
+  self~setName(nodeName)
+  if explicitLocalName \= .nil then do
+      localName = explicitLocalName
   end
-  else if arg() == 3 then do
-      use strict arg ownerDoc, namespaceURI, nodeName
-      self~init:super(ownerDoc)
-      self~setName(nodeName)
-  end
-  else do
-      use strict arg ownerDoc, namespaceURI, nodeName, localName
-      self~init:super(ownerDoc)
-  end
-  self~init:super(ownerDocument)
   self~isSpecified = .false
   self~hasStringValue = .true
 
 ::method setName private
-  expose namespaceURI localName
+  expose namespaceURI localName prefix
   use arg qname
   -- null string is the same as not there
   if namspaceURI == "" then do
@@ -2291,7 +2284,7 @@ syntax:
       localName = qname
   end
   else do
-      parse var qname localName (colon1) (colon2 + 1) localName
+      parse var qname prefix =(colon1) =(colon2 + 1) localName
   end
 
 -- support for the Document renameNode method
@@ -2374,20 +2367,12 @@ syntax:
   use strict arg
   return .Node~ATTRIBUTE_NODE
 
-::attribute nodeName GET
-  expose name
-  use strict arg
-  return name
-
-::attribute nodeName SET
-  expose name
-  use strict arg name
+::attribute nodeName
 
 ::attribute nodeValue SET
   forward message("VALUE=")
 ::attribute nodeValue GET
   forward message("VALUE")
-
 
 ::attribute typeName GET
   expose type
@@ -2433,13 +2418,17 @@ syntax:
   -- we provide all of our own type information directly
   return this
 
+
+-- name is the same as nodename
 ::attribute name GET
+  forward message("NODENAME")
+::attribute name SET
+  forward message("NODENAME=")
 
 ::attribute value SET
   expose value textNode
   use strict arg newValue
 
-  self~ownerElement
   oldvalue = ""
 
   -- we might need to process an old value if it's a serious of text nodes
@@ -2786,13 +2775,13 @@ syntax:
       use strict arg ownerDoc, namespaceURI, nodeName
       self~init:super(ownerDoc)
       -- decode the name to see if there is a prefix
-      self~setName(namespaceURI, nodeName)
+      self~setName(nodeName)
   end
   else do
       use strict arg ownerDoc, namespaceURI, nodeName, temp
       self~init:super(ownerDoc)
       -- decode the name to see if there is a prefix
-      self~setName(namespaceURI, nodeName)
+      self~setName(nodeName)
       -- the provided version overrides anything decoded from the qname
       localName = temp
 
@@ -2803,7 +2792,7 @@ syntax:
   expose namespaceURI localName
   use arg qname
   -- null string is the same as not there
-  if namspaceURI == "" then do
+  if namespaceURI == "" then do
       namespaceURI = .nil
   end
 
@@ -2815,7 +2804,7 @@ syntax:
       localName = qname
   end
   else do
-      parse var qname prefix (colon1) (colon2 + 1) localName
+      parse var qname prefix =(colon1) =(colon2 + 1) localName
       -- TODO:  validate the name information with the ownerdoc
   end
 
@@ -2947,16 +2936,18 @@ syntax:
   use strict arg name
 
   if attributes \= .nil  then do
-      attributes~removeNamedItem(name)
+      return attributes~removeNamedItem(name)
   end
+  return .nil
 
 ::method removeAttributeNode
   expose attributes
   use strict arg oldAttr
 
   if attrbutes \= .nil  then do
-      attributes~removeItem(oldAttr, .true)
+      return attributes~removeItem(oldAttr, .true)
   end
+  return .nil
 
 ::method setAttribute
   use strict arg name, value
@@ -2974,6 +2965,7 @@ syntax:
   else do
       newAttr~value = value
   end
+  return newAttr
 
 ::method setAttributeNode
   use strict arg newAttr
@@ -3002,6 +2994,7 @@ syntax:
   end
 
 
+  -- set an attribute using a namespace URI and a qualified name
 ::method setAttributeNS
   espose attributes
   use strict arg namespaceURI, qualifiedName, value
@@ -3023,12 +3016,13 @@ syntax:
       attributes = self~attributes
 
       newAttr~nodeValue = value
-      attributes~setNameItemNS(newAttr)
+      attributes~setNamedItemNS(newAttr)
   end
   else do
       newAttr~name = qualifiedName
       newAttr~nodeValue = value
   end
+  return newAttr
 
 ::method removeAttributeNS
   expose attributes
@@ -3041,16 +3035,16 @@ syntax:
   attributes~removeNamedItemNS(namespaceURI, localName)
 
 ::method getAttributeNodeNS
+  expose attributes
   use strict arg namespaceURI, localName
 
   if attributes == .nil then do
-      return
+      return .nil
   end
 
   return attributes~getNamedItemNS(namespaceURI, localName)
 
 ::method setAttributeNodeNS
-  expose attributes
   use strict arg newAttr
 
   -- get the attribute map.  This also creates it if
@@ -6050,11 +6044,11 @@ syntax:
 ::method createAttributeNS
   if arg() == 2 then do
       use strict arg namespaceURI, qualifiedName
-      return .Attr~new(self, namespaceURI, qualifiedName)
+      return .Attr~new(self, qualifiedName, namespaceURI)
   end
   else do
       use strict arg namespaceURI, qualifiedName, localName
-      return .Attr~new(self, namespaceURI, qualifiedName, localName)
+      return .Attr~new(self, qualifiedName, namespaceURI, localName)
   end
 
 ::method createCDATASection

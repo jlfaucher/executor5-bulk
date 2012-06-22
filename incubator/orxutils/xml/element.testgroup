@@ -112,7 +112,10 @@ return testResult
   -- just make sure a remove on an empty list doesn't cause an error
   element~removeAttribute("XYZ")
 
-  element~setAttribute("ABC", "123")
+  attr = element~setAttribute("ABC", "123")
+
+  -- verify we got a good attribute node back
+  self~assertTrue(attr~isA(.attr))
   -- the attribute list is created lazily...ensure the unknown
   -- attributes are still unknown
 
@@ -126,8 +129,11 @@ return testResult
   self~assertEquals("123", element~getAttribute("ABC"))
   self~assertEquals("123", element~getAttributeNode("ABC")~value)
 
-  -- remove the added attribute
-  element~removeAttribute("ABC")
+  -- remove the added attribute (should return the node)
+  attr = element~removeAttribute("ABC")
+  -- verify we got a good attribute node back
+  self~assertTrue(attr~isA(.attr))
+
   -- make sure it is really gone
   self~assertFalse(element~hasAttributes)
   self~assertFalse(element~hasAttribute("ABC"))
@@ -159,6 +165,9 @@ return testResult
   -- add this back directly using the attribute node
   element~setAttributeNode(attr)
   self~assertEquals("789", element~getAttribute("ABC"))
+  -- verify the parent/child relationship
+  self~assertSame(element, attr~element)
+  self~assertSame(element, attr~ownerelement)
 
   -- rename the attribute
   attr~rename("DEF")
@@ -358,3 +367,43 @@ return testResult
 
   self~assertNull(element~firstChild)
   self~assertNull(element~lastChild)
+
+::method testElementNamespace
+
+  doc = self~document
+  -- this is the parent node we'll be adding everything else to
+  element = doc~createElement("FOO")
+
+  child1 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:foo")
+
+  self~assertEquals("http://www.oorexx.org/xml/unittest.xml", child1~namespaceURI)
+  self~assertEquals("oorexx:foo", child1~nodeName)
+  self~assertEquals("oorexx:foo", child1~tagName)
+  self~assertEquals("foo", child1~localName)
+  self~assertEquals("oorexx", child1~prefix)
+
+  -- DOM 3 allows the prefix to be explicitly set
+  child1~prefix = "rexx"
+
+  self~assertEquals("rexx:foo", child1~nodeName)
+  self~assertEquals("rexx:foo", child1~tagName)
+  self~assertEquals("foo", child1~localName)
+  self~assertEquals("rexx", child1~prefix)
+
+::method testAttributeNamespace
+
+  doc = self~document
+  -- this is the parent node we'll be adding everything else to
+  element = doc~createElement("FOO")
+
+  attr = element~setAttributeNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:foo", "bar")
+
+  self~assertTrue(attr~isa(.attr))
+  self~assertEquals("bar", attr~value)
+  self~assertEquals("bar", attr~nodevalue)
+  self~assertEquals("oorexx:foo", attr~nodename)
+  -- NB:  attributes support name, but not tagname
+  self~assertEquals("oorexx:foo", attr~name)
+  self~assertEquals("foo", attr~localname)
+  self~assertEquals("oorexx", attr~prefix)
+  self~assertEquals("http://www.oorexx.org/xml/unittest.xml", attr~namespaceURI)
