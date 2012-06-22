@@ -86,7 +86,33 @@
 <indexterm><primary>Control Dialogs</primary><secondary>ControlDialog class</secondary></indexterm>
 <indexterm><primary>ControlDialog Class</primary></indexterm>
 <para>
-  xxx
+  The <computeroutput>ControlDialog</computeroutput> class is the mixin class that allows dialogs in ooDialog to be used
+  as a dialog control. It is inherited by the <computeroutput>RcControlDialog</computeroutput>,
+  <computeroutput>ResControlDialog</computeroutput>, and the <computeroutput>UserControlDialog</computeroutput> classes.
+  To use a dialog as a control in a Rexx program, the programmer should pick one of the three basic types of control
+  dialogs and write a subclass of that dialog:
+</para>
+<para>
+  <itemizedlist>
+  <listitem>
+  <para>
+     Subclass the <link linkend="clsRcControlDialog">RcControlDialog</link> when the dialog template will be defined in
+     a resource <link linkend="defResourceScript">script</link> file.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Subclass the <link linkend="clsResControlDialog">ResControlDialog</link> when the dialog template will be loaded
+    from a <link linkend="ovvDialogTemplate">binary</link> resource file.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Subclass the <link linkend="clsUserControlDialog">UserControlDialog</link> when the dialog template will be defined
+    using the <link linkend="sctCreateMethods">create</link> methods.
+  </para>
+  </listitem>
+  </itemizedlist>
 </para>
 
 <section id="mthEndExecution"><title>endExecution</title>
@@ -94,24 +120,30 @@
 <indexterm><primary>ControlDialog class</primary><secondary>endExecution</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--endExecution(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--endExecution(--+-------------+--)------------><
+                   +--endLikeOk--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">endExecution</emphasis> method must be used to finish the execution of all
+  <computeroutput>ControlDialog</computeroutput> objects. Do not use any other mechanism to end the execution of any
+  <computeroutput>ControlDialog</computeroutput> objects.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>endLikeOk [optional]</term>
       <listitem>
       <para>
-        xx
+        This argument specifies if the dialog is ending as though the user pressed the <emphasis
+        role="italic">Ok</emphasis> button or the <emphasis role="italic">Cancel</emphasis> button. By default <emphasis
+        role="italic">endLikeOk</emphasis> is false and the dialog is ended as though the user canceled the dialog. If
+        <emphasis role="italic">endLikOk</emphasis> is true, the dialog is ended as though the user pressed the
+        <emphasis role="italic">Ok</emphasis> button.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -120,31 +152,46 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the <link linkend="tblConstantsDlgObject">IDOK</link> constant if the dialog was <link
+    linkend="atrWasActivated">activated</link> and is closed as though the user pressed the <emphasis
+    role="italic">Ok</emphasis> button.  Otherwise, the IDCANCEL constant is returned.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When a dialog is used as a control in another dialog there are some operating system differences in how the <link
+    linkend="ovvUnderlying">underlying</link> dialog behaves. The ooDialog framework ensures that the Rexx dialog object
+    used as a dialog control behaves consistently with other dialogs in ooDialog. Closing a control dialog through some
+    other mechanism than the <emphasis role="italic">endExecution</emphasis> method will bypass the internal processing
+    used by the framework. This makes it likely that at some point the control dialog will not behave consistently with
+    other dialogs.
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
   <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    Control dialogs are most useful as the pages in a <link linkend="clsTab">tab</link> control. In Windows applications
+    it is common practice to not create the underlying dialog for a tab page unless the user actually visits that page.
+    If the Rexx control dialog, never has its underlying dialog created, then <emphasis
+    role="italic">endExecution</emphasis> always returns the IDCANCEL constant and the Rexx dialog object is always
+    ended as though the user had canceled the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the <emphasis role="italic">ok</emphasis> method of a main dialog that uses control dialogs as
+    the pages of a tab control. If the user closes the main dialog with <emphasis role="italic">ok</emphasis> then all
+    the control dialogs used as pages are ended useing <emphasis role="italic">endExecution</emphasis> with an argument
+    of true:
 <programlisting>
 <![CDATA[
 
+::method ok
+    expose pages
+
+    do page over pages
+      if page \== .nil then page~endExecution(.true)
+    end
+    return self~ok:super
 ]]>
 </programlisting>
   </para>
@@ -157,56 +204,59 @@
 <indexterm><primary>ControlDialog class</primary><secondary>execute</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--execute(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--execute--------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  All <computeroutput>ControlDialog</computeroutput> objects must be started through the <emphasis
+  role="italic">execute</emphasis> method. This method causes the <link linkend="ovvUnderlying">dialog</link> to be
+  created. Do not use any other method to start control dialogs.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no argument to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Execute does not return any value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    In order to ensure that dialogs used as controls in main dialogs behave consistently, the programmer is required to
+    start execution of all controld dialogs using the <emphasis role="italic">execute</emphasis> method and to end the
+    dialog using the <link linkend="mthEndExecution">endExecution</link> method. Failure to do so is not guarenteed to
+    work.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example has a control dialog of the <computeroutput>.HistoryDlg</computeroutput> subclass used as a page in a
+    tab control. The dialog object is not instantiated until the user actually visits the page in the tab control. At
+    that time, the dialog object is instantiated and then started executing throught the <emphasis
+    role="italic">execute</emphasis> method:
 <programlisting>
 <![CDATA[
+
+::method activateHistory private unguarded
+    expose historyDlg dlgRect pages
+
+    reply
+
+    historyDlg = .HistoryDlg~new(dlgRect, self)
+    historyDlg~execute
+
+    pages[4] = historyDlg
+
+    self~postOnSelChange(10)
 
 ]]>
 </programlisting>
@@ -220,13 +270,14 @@
 <indexterm><primary>ControlDialog class</primary><secondary>initUpdateListView</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--initUpdateListView(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--initUpdateListView(--listViewID--+-----------+--)-----------><
+                                     +--seconds--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Causes the ooDialog framework to use an internal work around for a known Windows problem when a <link
+  linkend="clsListView">list-view</link> control is used in the page of a <link linkend="clsTab">tab</link> control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -234,10 +285,19 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>listViewID [required]</term>
       <listitem>
       <para>
-        xx
+        The resource ID of the list-view control in a page of a tab control, may be numeric or <link
+        linkend="defSymbolicId">symbolic</link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>seconds [optional]</term>
+      <listitem>
+      <para>
+        The positive number of seconds to pause before the list-view is redrawn. This should be a very small period
+        expressed in decimal notation. Whole numbers are acceptable, but the pause will be too long to be of good use.
+        The default value if this argument is omitted is .005.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -246,13 +306,29 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    This method does not return a value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    There is a known problem in Windows when a list-view in used in the page of a tab control. If an item in the
+    list-view is selected and the user selects another tab, then goes back to the first tab, the list-view sometimes
+    does not redraw properly.
+  </para>
+  <para>
+    There is a work around for this problem and the ooDialog framework implements the work around internally so the Rexx
+    programmer does not need to remember, or know, the details of the work around. If an application exhibits this
+    problem, then use this method to fix it. The <link linkend="mthInitDialog">initDialog</link> is the best place to
+    invoke the method.
+  </para>
+  <para>
+    The solution to the problem is to have the list-view control redraw itself after the tab has been selected. The
+    <emphasis role="italic">seconds</emphasis> argument can be used by the programmer to control the pause between the
+    tab being selected and the list-view being redrawn. If the pause is too short, the list-view still may not redraw
+    correctly. If the pause is too long, the user will notice the list-view being drawn twice. The <emphasis
+    role="italic">seconds</emphasis> argument is only needed if the programmer is not satisfied with the appearance in a
+    specific application.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -260,16 +336,19 @@
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example activates the internal work around for a list-view with the symbolic ID of IDC_LV_MAIN:
 <programlisting>
 <![CDATA[
+
+::method initDialog
+
+  -- Initialize the internal fix for the list-view redrawing problem when a
+  -- list-view is used in a tab control.
+  self~initUpdateListView(IDC_LV_MAIN)
 
 ]]>
 </programlisting>
@@ -278,68 +357,51 @@
 </variablelist>
 </section>  <!-- End ControlDialog::initUpdateListView() -->
 
-<section id="mthWasActivated"><title>wasActivated</title>
+<section id="atrWasActivated"><title>wasActivated (Attribute)</title>
 <indexterm><primary>wasActivated</primary></indexterm>
 <indexterm><primary>ControlDialog class</primary><secondary>wasActivated</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wasActivated(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--wasActivated-----------------------------------------------------><
+
+>>--wasActivated-=-varName-------------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects whether the <link linkend="ovvUnderlying">underlying</link> dialog for this control dialog was ever created.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">wasActivated get:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    The value of this attribute is true if the underlying dialog was created, otherwise it is false.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">wasActivated set:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The programmer can not set the value of this attribute, it is set internally by the ooDialog framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Dialogs used as controls in other dialogs are most commonly used as a page in a tab control. In Windows it is a
+    common practice to defer the creation of the dialog for the page until the tab page is actually visited by the user.
+    This attribute allows the Rexx programmer to determine whether or not the underlying dialog has been created yet or
+    not.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Raises syntax errors when incorrect arguments are detected.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ControlDialog::wasActivated() -->
+</section>  <!-- End ControlDialog::wasActivated() [attribute]  -->
 
 </section>
 
@@ -347,15 +409,74 @@
 <indexterm><primary>Control Dialogs</primary><secondary>RcControlDialog class</secondary></indexterm>
 <indexterm><primary>RcControlDialog Class</primary></indexterm>
 <para>
-  xxx
+  The <computeroutput>RcControlDialog</computeroutput> should be subclassed when the programmer wants to use a resource
+  <link linkend="defResourceScript">script</link> to create the dialog <link linkend="ovvDialogTemplate">template</link>
+  for his control dialog.
 </para>
+
+<section id="sctMethodsRcControlDialog"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the few methods and attributes used in working
+  with <computeroutput>RcControlDialog</computeroutput> objects that differ from working with regular dialogs:
+</para>
+<table id="tblRcControlDialogMethods" frame="all">
+<title>Important RcControlDialog Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsUserControlDialog">new</link></entry>
+<entry>Instantiates a new user control dialog.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrOwnerDialog">ownerDialog</link></entry>
+<entry>Reflects the dialog that owns this control dialog.</entry>
+</row>
+<row>
+<entry><link linkend="atrWasActivated">wasActivated</link></entry>
+<entry>Reflects whether the <link linkend="ovvUnderlying">underlying</link> dialog for this control dialog was ever created.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthEndExecution">endExecution</link></entry>
+<entry>Must be used to finish the execution of all <computeroutput>RcControlDialog</computeroutput> objects.</entry>
+</row>
+<row>
+<entry><link linkend="mthExecuteClsControlDialog">execute</link></entry>
+<entry>All <computeroutput>RcControlDialog</computeroutput> objects must be started through the <emphasis role="italic">execute</emphasis> method.</entry>
+</row>
+<row>
+<entry><link linkend="mthInitUpdateListView">initUpdateListView</link></entry>
+<entry>Initializes an internal work around for a problem with list-views that are used in a page of a tab control.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
 
 <section id="mthNewClsRcControlDialog"><title>new (Class method)</title>
 <indexterm><primary>new</primary><secondary>RcControlDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
-
+>>--init(-scrpt-,-id-+---------+-+-----+-+--------+-+---------+-+---------+-)--><
+                     +-,-data.-+ +-,-h-+ +-,-opts-+ +-,-xpect-+ +-,-oData-+
 ]]>
 </programlisting>
 
@@ -368,10 +489,98 @@
   <para>
     The arguments when creating a new dialog instance of this class are:
     <variablelist>
-      <varlistentry><term>XXX [required]</term>
+      <varlistentry><term>scrpt [required]</term>
       <listitem>
       <para>
-        xx
+        The file name of the resource script containing the dialog template.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog template. This may be numeric or <link linkend="defSymbolicId">symbolic </link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>data. [optional]</term>
+      <listitem>
+      <para>
+        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        contains data used to initialize the underlying dialog's controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>h [optional]</term>
+      <listitem>
+      <para>
+        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>opts [optional]</term>
+      <listitem>
+      <para>
+        Zero or more of the following keywords, separated by blanks:
+        <variablelist>
+        <varlistentry><term>CENTER</term>
+        <listitem>
+        <para>
+          The dialog is to be positioned in the center of the screen.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CONNECTBUTTONS</term>
+        <listitem>
+        <para>
+          Each push <link linkend="clsButton">button</link> in the underlying dialog has the CLICKED <link
+          linkend="ovvEvents">event</link> notification connected automatically to a method in the Rexx dialog object.
+          This is the same as using the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the
+          CLICKED notification. The name for the method is generated automatically by the ooDialog framework. The method
+          name is the button label with all spaces, ampersands, colons, and trailing <emphasis
+          role="italic">...</emphasis> characters removed.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CONNECTRADIOS</term>
+        <listitem>
+        <para>
+          Similar to CONNECTBUTTONS, this option connects the CLICKED event notification from each <link
+          linkend="clsRadioButton">radio</link> button to a method in the Rexx dialog object. Again, this is the same as
+          using the <emphasis role="italic">connectButtonEvent</emphasis> method.  For radio buttons, the generated
+
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CONNECTCHECKS</term>
+        <listitem>
+        <para>
+          Exactly the same as CONNECTRADIOS, for <link linkend="clsCheckBox">check box</link> controls. The object
+          method name is generated in the same way as it is for radio buttons. That is, the method name is the button
+          label, with all spaces, ampersands, colons, and trailing <emphasis role="italic">...</emphasis> characters
+          removed. Which is then <emphasis role="bold"> prepended</emphasis> with the text
+          <computeroutput>ID</computeroutput>.
+        </para>
+        </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>xpect [optional]</term>
+      <listitem>
+      <para>
+        This is the maximum number of dialog controls expected in the dialog template. It serves the same purpose as the
+        <emphasis role="italic">expected</emphasis> argument in the <link linkend="mthCreate">create</link>() method of
+        the <computeroutput>UserDialog</computeroutput>. The default value for this argument is 200.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>oData [optional]</term>
+      <listitem>
+      <para>
+        Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this <link
+        linkend="clsControlDialog">ControlDialog</link>. All control dialogs <emphasis role="italic">must</emphasis>
+        have the <link linkend="atrOwnerDialog">ownerDialog</link> attribute set to the Rexx dialog that owns the
+        control dialog, before the <link linkend="ovvUnderlying">underlying</link> control dialog is created. In
+        addition, the underlying owner dialog must be created before the underlying control dialog can be created.
+      </para>
+      <para>
+        The <emphasis role="italic">oData</emphasis> argument can be used to set the <emphasis
+        role="italic">ownerDialog</emphasis> attribute when this control dialog object is instantiated. The Rexx owner
+        dialog's underlying dialog does not have to be created when the attribute is set. The programmer just needs to
+        ensure that the underlying dialog <emphasis role="italic">has</emphasis> been created when the <link
+        linkend="mthExecuteClsControlDialog">execute</link> method is invoked.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -380,17 +589,39 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    xxx
+    Normally a programmer does not instantiate a <computeroutput>RcControlDialog</computeroutput> directly, but rather
+    creates a subclass of a <computeroutput>RcControlDialog</computeroutput> and instantiates the subclass. Recall that
+    in ooRexx, when a new object is instantiated, the <emphasis role="italic">new</emphasis> method invokes the
+    <emphasis role="italic">init</emphasis> method of the object using the arguments passed to the <emphasis
+    role="italic">new</emphasis> method. So, the arguments of the <emphasis role="italic">new</emphasis> method are
+    also the arguments of the <emphasis role="italic">init</emphasis> method.
+  </para>
+  <para>
+    If the programmer over-rides the <emphasis role="italic">init</emphasis> method in the subclass of the
+    <computeroutput>RcControlDialog</computeroutput>, care must be taken to invoke the superclass <emphasis
+    role="italic">init</emphasis> method with the correct arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This sample xxxx
+    This example shows the instantiation of a <computeroutput>RcControlDialog</computeroutput> subclass, (which is
+    really no different than instantiating a <link linkend="clsRcDialog">RcDialog</link> subclass.) Note that the
+    <emphasis role="italic">ownerDialog</emphasis> attribute is set after the invocation of the <emphasis
+    role="italic">new</emphasis> method. This is sometimes easier than using a lot of omitted arguments for a
+    <computeroutput>RcControlDialog</computeroutput>.
 
 <programlisting>
 <![CDATA[
+
   ...
+
+  dlg3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG)
+
+  -- Create the main dialog.
+  dlg = .NewControlsDialog~new('rc\PropertySheetDemo.dll', IDD_NEWCONTROLS_DLG)
+
+  dlg3~ownerDialog = dlg
 
 ::requires "ooDialog.cls"
 
@@ -414,77 +645,13 @@
   xxx
 </para>
 
-<section id="mthNewClsResControlDialog"><title>new (Class method)</title>
-<indexterm><primary>new</primary><secondary>ResControlDialog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
-
-]]>
-</programlisting>
-
-<para>
-  Instantiates a new <computeroutput>ResControlDialog</computeroutput> object.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments when creating a new dialog instance of this class are:
-    <variablelist>
-      <varlistentry><term>XXX [required]</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    xxx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This sample xxxx
-
-<programlisting>
-<![CDATA[
-  ...
-
-::requires "ooDialog.cls"
-
-...
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-
-</section><!-- End ResControlDialog::new() -->
-
-</section><!-- End ResControlDialog Class -->
-
-<section id="clsUserControlDialog"><title>UserControlDialog Class</title>
-<indexterm><primary>Control Dialogs</primary><secondary>UserControlDialog class</secondary></indexterm>
-<indexterm><primary>UserControlDialog Class</primary></indexterm>
-<para>
-  xxx
-</para>
-
-
-<section id="sctMethodsUserControlDialog"><title>Method Table</title>
+<section id="sctMethodsResControlDialog"><title>Method Table</title>
 <para>
   The following table provides links to the documentation for the few methods and attributes used in working
-  with <computeroutput>UserControlDialog</computeroutput> objects that differ from working with regular dialogs:
+  with <computeroutput>ResControlDialog</computeroutput> objects that differ from working with regular dialogs:
 </para>
-<table id="tblUserControlDialogMethods" frame="all">
-<title>Important UpDown Methods</title>
+<table id="tblResControlDialogMethods" frame="all">
+<title>Important ResControlDialog Methods</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in">
 <thead>
@@ -507,8 +674,23 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="atrOwnerDialog">ownerDialog</link></entry>
+<entry>Reflects the dialog that owns this control dialog.</entry>
+</row>
+<row>
+<entry><link linkend="atrWasActivated">wasActivated</link></entry>
+<entry>Reflects whether the <link linkend="ovvUnderlying">underlying</link> dialog for this control dialog was ever created..</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
+<row>
+<entry><link linkend="mthEndExecution">endExecution</link></entry>
+<entry>Must be used to finish the execution of all <computeroutput>ResControlDialog</computeroutput> objects.</entry>
+</row>
+<row>
+<entry><link linkend="mthExecuteClsControlDialog">execute</link></entry>
+<entry>All <computeroutput>ResControlDialog</computeroutput> objects must be started through the <emphasis role="italic">execute</emphasis> method.</entry>
 </row>
 <row>
 <entry><link linkend="mthInitUpdateListView">initUpdateListView</link></entry>
@@ -519,12 +701,203 @@
 </section>
 
 
+<section id="mthNewClsResControlDialog"><title>new (Class method)</title>
+<indexterm><primary>new</primary><secondary>ResControlDialog class</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--module--,--id--+-------------+--+----------+--+-------------+--)-----><
+                         +-,--dlgData.-+  +-,--hFile-+  +-,-ownerData-+
+
+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>ResControlDialog</computeroutput> object. The dialog template for the object is
+  taken from the specified module, which is usually a resource only DLL.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments when creating a new dialog instance of this class are:
+    <variablelist>
+      <varlistentry><term>module [required]</term>
+      <listitem>
+      <para>
+        The file name of the executable module (a DLL or EXE) in which the resource (the compiled dialog template) is
+        located.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog template.  This may be numeric or <link linkend="defSymbolicId">symbolic</link>.
+        The resource ID is assigned to the dialog template when it was compiled.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>dlgData. [optional]</term>
+      <listitem>
+      <para>
+        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        contains data used to initialize the underlying dialog's controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hFile [optional]</term>
+      <listitem>
+      <para>
+        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ownerData [optional]</term>
+      <listitem>
+      <para>
+        Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this <link
+        linkend="clsControlDialog">ControlDialog</link>. All control dialogs <emphasis role="italic">must</emphasis>
+        have the <link linkend="atrOwnerDialog">ownerDialog</link> attribute set to the Rexx dialog that owns the
+        control dialog, before the <link linkend="ovvUnderlying">underlying</link> control dialog is created. In
+        addition, the underlying owner dialog must be created before the underlying control dialog can be created.
+      </para>
+      <para>
+        The <emphasis role="italic">ownerData</emphasis> argument can be used to set the <emphasis
+        role="italic">ownerDialog</emphasis> attribute when this control dialog object is instantiated. The Rexx owner
+        dialog's underlying dialog does not have to be created when the attribute is set. The programmer just needs to
+        ensure that the underlying dialog <emphasis role="italic">has</emphasis> been created when the <link
+        linkend="mthExecuteClsControlDialog">execute</link> method is invoked.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Normally a programmer does not instantiate a <computeroutput>ResControlDialog</computeroutput> directly, but rather
+    creates a subclass of a <computeroutput>ResControlDialog</computeroutput> and instantiates the subclass. Recall that
+    in ooRexx, when a new object is instantiated, the <emphasis role="italic">new</emphasis> method invokes the
+    <emphasis role="italic">init</emphasis>() method of the object, using the method arguments of the <emphasis
+    role="italic">new</emphasis>() method. So, the arguments of the <emphasis role="italic">new</emphasis> method are
+    also the arguments of the <emphasis role="italic">init</emphasis> method.
+  </para>
+  <para>
+    Therefore, if the programmer over-rides the <emphasis role="italic">init</emphasis> method in the subclass of the
+    <computeroutput>ResControlDialog</computeroutput>, care must be taken to invoke the superclass <emphasis
+    role="italic">init</emphasis> method with the correct arguments.
+  </para>
+  <para>
+    When a <computeroutput>ResControlDialog</computeroutput>, or subclass, is instantiated, and the file specified in
+    the <emphasis role="italic">module</emphasis> argument can not be found, or can not be loaded as an executable
+    module, a message box will pop up informing the user of the problem.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows the instantiation of a <computeroutput>ResControlDialog</computeroutput> subclass, (which is
+    really no different than instantiating a <link linkend="clsResDialog">ResDialog</link> subclass.) Note that the
+    <emphasis role="italic">ownerDialog</emphasis> attribute is set after the invocation of the <emphasis
+    role="italic">new</emphasis> method. This is sometimes easier than using a lot of omitted arguments for a
+    <computeroutput>ResControlDialog</computeroutput>.
+
+<programlisting>
+<![CDATA[
+
+  ...
+
+  dlg4 = .TrackBarDlg~new("rc\PropertySheetDemo.dll", IDD_TRACKBAR_DLG)
+
+  -- Create the main dialog.
+  dlg = .NewControlsDialog~new('rc\PropertySheetDemo.dll', IDD_NEWCONTROLS_DLG)
+
+  dlg4~ownerDialog = dlg
+
+::requires "ooDialog.cls"
+
+...
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section><!-- End ResControlDialog::new() -->
+
+</section><!-- End ResControlDialog Class -->
+
+<section id="clsUserControlDialog"><title>UserControlDialog Class</title>
+<indexterm><primary>Control Dialogs</primary><secondary>UserControlDialog class</secondary></indexterm>
+<indexterm><primary>UserControlDialog Class</primary></indexterm>
+<para>
+  The <computeroutput>UserControlDialog</computeroutput> should be used when the programmer wants to define the dialog
+  <link linkend="ovvDialogTemplate">template</link> for the control dialog by  using the <link
+  linkend="sctCreateMethods">create</link> methods.
+</para>
+
+
+<section id="sctMethodsUserControlDialog"><title>Method Table</title>
+<para>
+  The following table provides links to the documentation for the few methods and attributes used in working
+  with <computeroutput>UserControlDialog</computeroutput> objects that differ from working with regular dialogs:
+</para>
+<table id="tblUserControlDialogMethods" frame="all">
+<title>Important UserControlDialog Methods</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsUserControlDialog">new</link></entry>
+<entry>Instantiates a new user control dialog.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="atrOwnerDialog">ownerDialog</link></entry>
+<entry>Reflects the dialog that owns this control dialog.</entry>
+</row>
+<row>
+<entry><link linkend="atrWasActivated">wasActivated</link></entry>
+<entry>Reflects whether the <link linkend="ovvUnderlying">underlying</link> dialog for this control dialog was ever created..</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthEndExecution">endExecution</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthExecuteClsControlDialog">execute</link></entry>
+<entry></entry>
+</row>
+<row>
+<entry><link linkend="mthInitUpdateListView">initUpdateListView</link></entry>
+<entry>Initializes an internal work around for a problem with list-views that are used in a page of a tab control.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</section>
+
 
 <section id="mthNewClsUserControlDialog"><title>new (Class method)</title>
 <indexterm><primary>new</primary><secondary>UserControlDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
+>>--new(--+----------+--+---------------+--+-------------+--)---><
+          +-dlgData.-+  +-,--headerFile-+  +-,-ownerData-+
 
 ]]>
 </programlisting>
@@ -536,35 +909,86 @@
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments when creating a new dialog instance of this class are:
-    <variablelist>
-      <varlistentry><term>XXX [required]</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>dlgData. [optional]</term>
+    <listitem>
+    <para>
+      A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+      contains data used to initialize the underlying dialog's controls.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hFile [optional]</term>
+    <listitem>
+    <para>
+      The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ownerData [optional]</term>
+    <listitem>
+    <para>
+      Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this <link
+      linkend="clsControlDialog">ControlDialog</link>. All control dialogs <emphasis role="italic">must</emphasis>
+      have the <link linkend="atrOwnerDialog">ownerDialog</link> attribute set to the Rexx dialog that owns the
+      control dialog, before the <link linkend="ovvUnderlying">underlying</link> control dialog is created. In
+      addition, the underlying owner dialog must be created before the underlying control dialog can be created.
+    </para>
+    <para>
+      The <emphasis role="italic">ownerData</emphasis> argument can be used to set the <emphasis
+      role="italic">ownerDialog</emphasis> attribute when this control dialog object is instantiated. The Rexx owner
+      dialog's underlying dialog does not have to be created when the attribute is set. The programmer just needs to
+      ensure that the underlying dialog <emphasis role="italic">has</emphasis> been created when the <link
+      linkend="mthExecuteClsControlDialog">execute</link> method is invoked.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    xxx
+    Normally a programmer does not instantiate a <computeroutput>UserDialog</computeroutput> directly, but rather
+    creates a subclass of a <computeroutput>UserDialog</computeroutput> and instantiates the subclass. Recall that in
+    ooRexx, when a new object is instantiated, the <emphasis role="italic">new</emphasis> method invokes the <emphasis
+    role="italic">init</emphasis>() method of the object, using the arguments of the <emphasis
+    role="italic">new</emphasis>() method. Therefore, the arguments of the <emphasis role="italic">new</emphasis> method
+    are also the arguments of the <emphasis role="italic">init</emphasis> method.
+  </para>
+  <para>
+    If the programmer over-rides the <emphasis role="italic">init</emphasis> method in the subclass of the
+    <computeroutput>UserDialog</computeroutput>, care must be taken to invoke the superclass <emphasis
+    role="italic">init</emphasis> method with the correct arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This sample xxxx
+    This sample shows a method in the main dialog that instantiates a subclass of a
+    <computeroutput>UserControlDialog</computeroutput> and shows the init() method of that subclass. Note the proper way
+    that the <computeroutput>PatientDlg</computeroutput> object initializes its superclass.
 
 <programlisting>
 <![CDATA[
-  ...
 
-::requires "ooDialog.cls"
+::method activatePatient private unguarded
+    expose patientDlg dlgRect pages
 
-...
+    patientDlg = .PatientDlg~new(dlgRect, self)
+    patientDlg~execute
+
+    pages[1] = patientdlg
+
+    ...
+
+
+::class 'PatientDlg' subclass UserControlDialog
+
+::method init
+    use arg r, parent
+
+    self~init:super( , , parent)
+    self~create(r~left, r~top, r~right, r~bottom)
+    ...
 
 ]]>
 </programlisting>
@@ -642,8 +1066,56 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="atrAppIcon">appIcon</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrCaption">caption</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrHeader">header</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrImageList"></link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrPages">pages</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrResourcesClsPSD">resources</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrStartPage">startPage</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrWatermark">watermark</link></entry>
+<entry>.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthAddPage"></link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthApplyClsPSD">apply</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthCancelToClose">cancelToClose</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthChanged">changed</link></entry>
+<entry>.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -703,7 +1175,7 @@
 </variablelist>
 </section>
 
-<section id="atrappIcon"><title>appIcon (Attribute)</title>
+<section id="atrAppIcon"><title>appIcon (Attribute)</title>
 <indexterm><primary>appIcon</primary></indexterm>
 <indexterm><primary>PropertySheetDialog class</primary><secondary>appIcon</secondary></indexterm>
 <programlisting>
