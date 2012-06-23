@@ -35,8 +35,6 @@
 /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
-/* Author: W. David Ashley                                                    */
-/*                                                                            */
 /*----------------------------------------------------------------------------*/
 
 
@@ -50,18 +48,17 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+/* Section:  Abstract DOM interface class definitions                         */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 /* Class: NodeList -- Abstract NodeList mixin                                 */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
 ::class "NodeList" public mixinclass Object
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: NodeList                                                            */
-/*        Public methods                                                      */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------*/
 /* Method: item                                                               */
@@ -78,14 +75,184 @@
 
 
 -- some compatibility methods to make nodelist feel like a Rexx collection
-
 ::method makearray abstract
-
 ::method "[]"
   forward message("ITEM")
-
 ::method items
   forward message("LENGTH")
+
+-- DOM Node interface class
+::class "Node" public mixinclass Object
+-- various type definitions
+::constant ELEMENT_NODE 1
+::constant ATTRIBUTE_NODE 2
+::constant TEXT_NODE 3
+::constant CDATA_SECTION_NODE 4
+::constant ENTITY_REFERENCE_NODE 5
+::constant ENTITY_NODE 6
+::constant PROCESSING_INSTRUCTION_NODE 7
+::constant COMMENT_NODE 8
+::constant DOCUMENT_NODE 9
+::constant DOCUMENT_TYPE_NODE 10
+::constant DOCUMENT_FRAGMENT_NODE 11
+::constant NOTATION_NODE 12
+
+::method appendNode abstract
+::method cloneNode abstract
+::method attributes abstract
+::method childNodes abstract
+::method firstChild abstract
+::method lastChild abstract
+::method localName abstract
+::method namespaceUri abstract
+::method nextSibling abstract
+::method nodeName abstract
+::method nodeType abstract
+::method nodeValue abstract
+::method "nodeValue=" abstract
+::method ownerDocument abstract
+::method parentNode abstract
+::method prefix abstract
+::method "prefix=" abstract
+::method previousSibling abstract
+::method hasAttributes abstract
+::method hasChildNodes abstract
+::method insertBefore abstract
+::method isSupported abstract
+::method normalize abstract
+::method removeChild abstract
+::method replaceChild abstract
+
+-- an abstract attribute interface definition
+::class "Attr" mixinclass Node public
+::method name abstract
+::method ownerElement abstract
+::method isSpecified abstract
+::method value abstract
+::method "value=" abstract
+
+-- an abstract characterdata interface definition
+::class "CharacterData" mixinclass Node public
+::method appendData abstract
+::method deleteData abstract
+::method data abstract
+::method "data=" abstract
+::method length abstract
+::method insertData abstract
+::method replaceData abstract
+::method substringData abstract
+
+-- abstract text definition
+::class "Text" mixinclass CharacterData public
+::method splitText
+
+-- abstract CDATA section definition
+::class "CDATASection" mixinclass Text public
+-- no additional methods defined on this interface
+
+-- abstract Comment definition
+::class "Comment" mixinclass CharacterData public
+-- no additional methods defined on this interface
+
+-- abstract document interface
+::class "Document" mixinclass Node public
+::method createAttribute abstract
+::method createAttributeNS abstract
+::method createCDATASection abstract
+::method createComment abstract
+::method createDocumentFragment abstract
+::method createElement abstract
+::method createElementNS abstract
+::method createEntityReference abstract
+::method createProcessinginstruction abstract
+::method createTextNode abstract
+::method doctype abstract
+::method documentElement abstract
+::method getElementByID abstract
+::method getElementsByTagName abstract
+::method getElementsByTagNameNS abstract
+::method implementation abstract
+::method version abstract
+::method importNode abstract
+::method "encoding=" abstract
+
+-- abstract documentfragment definition
+::class "DocumentFragment" mixinclass Node public
+-- no additional methods defined on this interface
+
+-- abstract documenttype definition
+::class "DocumentType" mixinclass Node public
+::method entities abstract
+::method internalSubset abstract
+::method name abstract
+::method notations abstract
+::method publicID abstract
+::method systemID abstract
+
+-- abstract DOMImplementation definiton
+::class "DOMImplementation" mixinclass Object public
+::method createDocument abstract
+::method createDocumentType abstract
+::method hasFeature abstract
+
+-- abstract Element definition
+::class "Element" mixinclass Node public
+::method getAttribute abstract
+::method getAttributeNode abstract
+::method getAttributeNS abstract
+::method getAttributeNodeNS abstract
+::method getElementsByTagName abstract
+::method getElementsByTagNameNS abstract
+::method tagName abstract
+::method "tagName=" abstract
+::method hasAttribute abstract
+::method hasAttributeNS abstract
+::method removeAttribute abstract
+::method removeAttributeNode abstract
+::method removeAttributeNS abstract
+::method setAttribute abstract
+::method setAttributeNode abstract
+::method setAttributeNodeNS abstract
+::method setAttributeNS abstract
+
+-- abstract Entity definition
+::class "Entity" mixinclass Node public
+::method encoding abstract
+::method notationName abstract
+::method systemId abstract
+::method version abstract
+
+-- abstract entityreference definition
+::class "EntityReference" mixinclass Node public
+-- no additional methods defined on this interface
+
+-- abstract NameNodeMap definition
+::class "NamedNodeMap" mixinclass Object public
+::method length abstract
+::method getNamedItem abstract
+::method getNamedItemNS abstract
+::method item abstract
+::method removeNamedItem abstract
+::method removeNamedItemNS abstract
+::method setNamedItem abstract
+::method setNamedItemNS abstract
+
+-- abstract notation definition
+::class "Notation" mixinclass Node public
+::method publicID abstract
+::method systemID abstract
+
+-- abstract processinginstruction definition
+::class "ProcessingInstruction" mixinclass Node public
+::method data abstract
+::method target abstract
+::method "data=" abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Section:  Concrete implementation of the DOM classes                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 
 /*----------------------------------------------------------------------------*/
@@ -320,7 +487,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "NamedNodeMap" public
+::class "NamedNodeMapImpl" public
 ::method init
   expose ownerNode attributes hasDefaults changed readonly
   use strict arg ownerNode
@@ -635,7 +802,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "AttributeMap" subclass NamedNodeMap public
+::class "AttributeMap" subclass NamedNodeMapImpl public
 ::method init
   expose hasDefaults
   use strict arg ownerNode, defaults = .nil
@@ -815,19 +982,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::CLASS "Node" public
-::CONSTANT ELEMENT_NODE 1
-::CONSTANT ATTRIBUTE_NODE 2
-::CONSTANT TEXT_NODE 3
-::CONSTANT CDATA_SECTION_NODE 4
-::CONSTANT ENTITY_REFERENCE_NODE 5
-::CONSTANT ENTITY_NODE 6
-::CONSTANT PROCESSING_INSTRUCTION_NODE 7
-::CONSTANT COMMENT_NODE 8
-::CONSTANT DOCUMENT_NODE 9
-::CONSTANT DOCUMENT_TYPE_NODE 10
-::CONSTANT DOCUMENT_FRAGMENT_NODE 11
-::CONSTANT NOTATION_NODE 12
+::CLASS "NodeImpl" public inherit Node
 
 -- initialize a counter to give new nodes a unique id
 ::method init class
@@ -1101,7 +1256,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "ChildNode" subclass Node public
+::class "ChildNode" subclass NodeImpl public
 ::method init
   expose previousSibling nextSibling
   forward class(super) continue
@@ -1420,7 +1575,7 @@
 /* Class: DocumentFragment                                                    */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "DocumentFragment" public subclass ParentNode
+::class "DocumentFragmentImpl" public subclass ParentNode
 
 ::attribute nodeType GET
   return .Node~DOCUMENT_FRAGMENT_NODE
@@ -1462,7 +1617,7 @@
 /* Class: Document                                                            */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "Document" subclass ParentNode public
+::class "DocumentImpl" subclass ParentNode public
 ::method init
   expose iterators ranges eventListeners grammarAccess doctype hasMutationEvents
   use arg doctype = .nil, grammarAccess = .false
@@ -1476,13 +1631,13 @@
 ::method cloneNode
   use strict arg deep = .false
 
-  newDoc = .Document~new
+  newDoc = self~class~new
   self~cloneDocument(newDoc, deep)
   return newDoc
 
 ::method implementation
   -- this is a singleton
-  return .DOMImplementation~implementation
+  return .ooRexxDOM~implementation
 
 ::method createNodeIterator
   expose iterators
@@ -2172,7 +2327,7 @@
 ::method renamedAttrNode
 ::method renamedElement
 
-::class "EventListener" public
+::class "EventListenerImpl" public
 ::method init
   expose type useCapture listener
   use strict arg type, listener, useCapture
@@ -2202,7 +2357,7 @@ syntax:
   return   -- all errors are just ignored
 
 
-::class "EventTracker" public
+::class "EventTrackerImpl" public
 ::method init
   expose captures total bubble total
 
@@ -2250,7 +2405,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "Attr" subclass Node public
+::class "AttrImpl" public subclass NodeImpl inherit Attr
 ::method init
   expose value nodeName textNode namespaceURI localName type idAttribute prefix
   value = .nil
@@ -2758,7 +2913,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "Element" subclass ParentNode public inherit NodeList
+::class "ElementImpl" subclass ParentNode public inherit Element NodeList
 ::method init
   expose nodeName attributes namespaceURI localName type
   attributes = .nil
@@ -3340,7 +3495,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "CharacterData" subclass ChildNode public
+::class "CharacterDataImpl" public subclass ChildNode inherit CharacterData
 ::method init
   expose data
   use strict arg ownerDocument, data
@@ -3442,7 +3597,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "Text" subclass CharacterData public
+::class "TextImpl" public subclass CharacterDataImpl inherit Text
 
 ::attribute nodeType GET
   use strict arg
@@ -3630,7 +3785,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "CDATASection" subclass Text PUBLIC
+::class "CDATASectionImpl" public subclass TextImpl inherit CDATASection
 ::attribute nodeType GET
   use strict arg
   return .Node~CDATA_SECTION_NODE
@@ -3646,7 +3801,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "DocumentType" subclass Node public
+::class "DocumentTypeImpl" public subclass NodeImpl inherit DocumentType
 
 
 /*----------------------------------------------------------------------------*/
@@ -3675,8 +3830,8 @@ syntax:
   self~nodeName = name
   self~nodeType = 10
   self~nodeValue = .nil
-  self~entities = .NamedNodeMap~new
-  self~notations = .NamedNodeMap~new
+  self~entities = .NamedNodeMapImpl~new
+  self~notations = .NamedNodeMapImpl~new
 
 /*----------------------------------------------------------------------------*/
 /* Method: name                                                               */
@@ -3715,7 +3870,7 @@ syntax:
 /* Class: Notation                                                            */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "Notation" subclass Node PUBLIC
+::class "NotationImpl" public subclass NodeImpl inherit Notation
 ::method init
   expose name publicId systemId baseURI
   use strict arg ownerDoc, name
@@ -3745,7 +3900,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "Entity" subclass ParentNode PUBLIC
+::class "EntityImpl" public subclass ParentNode inherit Entity
 ::method init
   expose name publicId systemId XmlEncoding inputEncoding XMLversion notationName baseURI
   use strict arg ownerDoc, name
@@ -3782,7 +3937,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "EntityReference" subclass ParentNode public
+::class "EntityReferenceImpl" public subclass ParentNode inherit EntityReference
 ::method init
   expose name baseURI
   use strict arg ownerDoc, name
@@ -3843,7 +3998,7 @@ syntax:
 /* Class: ProcessingInstruction                                               */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "ProcessingInstruction" subclass CharacterData PUBLIC
+::class "ProcessingInstructionImpl" public subclass CharacterDataImpl inherit ProcessingInstruction
 ::method init
   expose target
   use strict arg ownerDocument, target, data
@@ -3870,11 +4025,11 @@ syntax:
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: DOMImplementation                                                   */
+/* Class:  ooRexxDOM                                                          */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "DOMImplementation" public
+::class "ooRexxDOM" public inherit DOMImplementation
 ::method init class
   expose singleton
   singleton = .nil
@@ -3883,7 +4038,7 @@ syntax:
   expose singleton
   use strict arg
   if singleton == .nil then do
-      singleton = .DOMImplementation~new
+      singleton = self~new
   end
 
   return singleton
@@ -5879,7 +6034,7 @@ syntax:
 /* Class: CoreDocument                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "CoreDocument" subclass Document public
+::class "CoreDocument" subclass DocumentImpl public
 ::method init
   expose docType docElement encoding actualEncoding version standalone documentURI -
          userdata identifiers domNormalizer configuration xpathEvaluator changes   -
@@ -5942,6 +6097,7 @@ syntax:
           sup = identifiers~supplier
           do while sup~available
               reversedIdentifiers[sup~item] = sup~index
+              sup~next
           end
       end
 
@@ -6040,55 +6196,55 @@ syntax:
 
 ::method createAttribute
   use strict arg name
-  return .Attr~new(self, name)
+  return .AttrImpl~new(self, name)
 
 ::method createAttributeNS
   if arg() == 2 then do
       use strict arg namespaceURI, qualifiedName
-      return .Attr~new(self, qualifiedName, namespaceURI)
+      return .AttrImpl~new(self, qualifiedName, namespaceURI)
   end
   else do
       use strict arg namespaceURI, qualifiedName, localName
-      return .Attr~new(self, qualifiedName, namespaceURI, localName)
+      return .AttrImpl~new(self, qualifiedName, namespaceURI, localName)
   end
 
 ::method createCDATASection
   use strict arg data
-  return .CDATASection~new(self, data)
+  return .CDATASectionImpl~new(self, data)
 
 ::method createComment
   use strict arg data
-  return .Comment~new(self, data)
+  return .CommentImpl~new(self, data)
 
 ::method createDocumentFragment
   use strict arg
-  return .DocumentFragment~new(self)
+  return .DocumentFragmentImpl~new(self)
 
 ::method createElement
   use strict arg tagname
-  return .Element~new(self, tagname)
+  return .ElementImpl~new(self, tagname)
 
 ::method createElementNS
   if arg() == 2 then do
       use strict arg namespaceURI, qualifiedName
-      return .Element~new(self, namespaceURI, qualifiedName)
+      return .ElementImpl~new(self, namespaceURI, qualifiedName)
   end
   else do
       use strict arg namespaceURI, qualifiedName, localName
-      return .Element~new(self, namespaceURI, qualifiedName, localName)
+      return .ElementImpl~new(self, namespaceURI, qualifiedName, localName)
   end
 
 ::method createEntityReference
   use strict arg name
-  return .EntityReference~new(self, name)
+  return .EntityReferenceImpl~new(self, name)
 
 ::method createProcessingInstruction
   use strict arg target, data
-  return .ProcessingInstruction~new(self, target, data)
+  return .ProcessingInstructionImpl~new(self, target, data)
 
 ::method createTextNode
   use strict arg data
-  return .Text~new(self, data)
+  return .TextImpl~new(self, data)
 
 ::attribute docType GET
 ::attribute documentElement GET
@@ -6120,15 +6276,15 @@ syntax:
 ::method createDocumentType
   use strict arg qualifiedName, publicID, systemID
 
-  return .DocumentType~new(self, qualifiedName, publicID, systemID)
+  return .DocumentTypeImpl~new(self, qualifiedName, publicID, systemID)
 
 ::method createEntity
   use strict arg name
-  return .Entity~new(self, name)
+  return .EntityImpl~new(self, name)
 
 ::method createNotation
   use strict arg name
-  return .Notation~new(self, name)
+  return .NotationImpl~new(self, name)
 
 ::method importNode
   use strict arg source, deep = .false
