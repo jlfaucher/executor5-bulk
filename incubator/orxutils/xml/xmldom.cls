@@ -318,6 +318,9 @@
   use strict arg
   return nodes~copy   -- make sure this is a copy
 
+-- access to the set of nodes
+::attribute nodes
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Class: DeepNodeList                                                        */
@@ -326,26 +329,27 @@
 
 ::class "DeepNodeList" subclass NodeListImpl public
 ::method init
-  expose rootNode tagName changes nodes nsName
-
+  expose rootNode tagName changes nsName
   use strict arg rootNode, tagName, nsName = .nil
-  nodes = .Array~new
+
+  self~init:super
   changes = 0
 
 -- lazy search for the matching nodes.  This only fills in the cache
 -- as far as the last valid requested position
 ::method item
-  expose rootNode changes nodes
+  expose rootNode changes
   use strict arg index
+
   -- if the tree has changed, we need to restart this
   if rootNode~changes \= changes then do
-      nodes = .array~new
+      self~nodes = .array~new
       changes = rootNode~changes
   end
 
-  currentSize = nodes~items
+  currentSize = self~nodes~items
   if index < currentSize then do
-      return nodes[index + 1]
+      return self~nodes[index + 1]
   end
   else do
       -- we need to continue the traversal from the last node added
@@ -353,14 +357,14 @@
           thisNode = rootNode
       end
       else do
-          thisNode = nodes[currentSize]
+          thisNode = self~nodes[currentSize]
       end
       -- keep adding up to the one we're looking for
 
       do while index > currentSize
-          thisNode = self~nexMatchingElementAfter(thisNode)
+          thisNode = self~nextMatchingElementAfter(thisNode)
           if thisNode \= .nil then do
-              nodes~append(thisNode)
+              self~nodes~append(thisNode)
               currentSize += currentSize
           end
           else do
@@ -377,42 +381,37 @@
   use strict arg
   -- this forces everything to be initialized
   self~item(999999999)
-  return nodes~items
+  return self~nodes~items
 
 ::method makearray
   expose nodes
   use strict arg
   -- this forces everything to be initialized
   self~item(999999999)
-  return nodes~copy
+  return self~nodes~copy
 
 ::method nextMatchingElementAfter private
   expose rootNode tagName nsName
   use arg current
 
-  do while current \= nil
+  do while current \= .nil
       -- go down to the first child if it has one
       if current~hasChildNodes then do
           current = current~firstChild
       end
-      -- no children and we're at the rootnode, so we
-      -- don't go up or to any siblings
-      else if current == rootNode then do
-          return .nil
-      end
-      -- now try for a sibling of our current position
-      next = current~nextSibling
-      -- if we found one, then this is our next candidate
-      if next \= .nil  then do
+      -- if not the root, then check for a sibling
+      else if current \= rootNode, current~nextSibling \= .nil then do
+          next = current~nextSibling
           current = next
       end
       else do
           next = .nil
           -- now we step "up and to the right" for as many attempts as needed
           -- or utnil we pop back to the root node
-          do while current \= rootNode
+          loop while current \= rootNode
               current = current~parentNode
               next = current~nextSibling
+              -- we have a next, so quit
               if next \= .nil then do
                   leave
               end
@@ -6272,6 +6271,7 @@ syntax:
 ::attribute xmlEncoding
 
 ::attribute documentURI
+::attribute changes GET
 
 ::method createDocumentType
   use strict arg qualifiedName, publicID, systemID

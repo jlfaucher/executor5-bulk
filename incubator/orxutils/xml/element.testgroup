@@ -450,3 +450,59 @@ return testResult
   self~assertEquals("bar", element~getAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
   self~assertSame(attr, attributes~removeNamedItemNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
   self~assertEquals("", element~getAttributeNS("http://www.oorexx.org/xml/unittest.xml", "foo"))
+
+::method testGetElements
+
+  doc = self~document
+  -- this is the parent node we'll be adding everything else to
+  element = doc~createElement("FOO")
+  -- now create a bunch of children that we can arrange in different order to search
+  child1 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:foo")
+  child2 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:foo")
+  child3 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:foo")
+  child4 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:foo")
+  child5 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:foo")
+  child6 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:foo")
+
+  -- and a few that won't match
+  nomatch1 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:bar")
+  nomatch2 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:bar")
+  nomatch3 = doc~createElementNS("http://www.oorexx.org/xml/unittest.xml", "oorexx:bar")
+
+  element~appendChild(child1)
+  element~appendChild(nomatch1)
+  element~appendChild(child2)
+  element~appendChild(nomatch2)
+  element~appendChild(child3)
+  element~appendChild(nomatch3)
+  element~appendChild(child3)
+
+  list = element~getElementsByTagName("oorexx:foo")
+  self~validateNodeList(.array~of(child1, child2, child3), list)
+  list = element~getElementsByTagNameNS("http://www.oorexx.org/xml/unittest.xml", "foo")
+  self~validateNodeList(.array~of(child1, child2, child3), list)
+  -- get a new element to add to
+  element = doc~createElement("FOO")
+  element~appendChild(nomatch1)
+  element~appendChild(nomatch2)
+  element~appendChild(nomatch3)
+
+  nomatch1~appendChild(child1)
+  nomatch1~appendChild(child2)
+  nomatch2~appendChild(child3)
+  nomatch3~appendChild(child4)
+  child4~appendChild(child5)
+  child4~appendChild(child6)
+  list = element~getElementsByTagName("oorexx:foo")
+  self~validateNodeList(.array~of(child1, child2, child3, child4, child5, child6), list)
+  list = element~getElementsByTagNameNS("http://www.oorexx.org/xml/unittest.xml", "foo")
+  self~validateNodeList(.array~of(child1, child2, child3, child4, child5, child6), list)
+
+::method validateNodelist
+  use arg expected, source
+
+  self~assertEquals(expected~items, source~length)
+
+  loop i = 1 to expected~items
+      self~assertSame(expected[i], source[i - 1], "Element" i)
+  end
