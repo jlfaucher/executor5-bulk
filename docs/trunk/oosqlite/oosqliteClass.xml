@@ -87,6 +87,10 @@
 <entry>Determines if the specified text seems to be a complete SQL statement.</entry>
 </row>
 <row>
+<entry><link linkend="mthEnquote">enquote</link></entry>
+<entry>Converts the supplied Rexx value(s) into SQL literals.</entry>
+</row>
+<row>
 <entry><link linkend="mthLibVersion">libVersion</link></entry>
 <entry>Returns the embedded SQLite library version as a string.</entry>
 </row>
@@ -499,6 +503,115 @@ Value of NOMEM constant: 7
 </variablelist>
 </section>  <!-- End ooSQLite::complete() -->
 
+<section id="mthEnquote"><title>enquote</title>
+<indexterm><primary>enquote</primary></indexterm>
+<indexterm><primary>ooSQLite class</primary><secondary>enquote</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--enquote(--+----------+--)--------------------><
+              +--values--+
+]]>
+</programlisting>
+
+<para>
+  Converts the supplied Rexx value(s) into SQL literals. This method is useful to help construct SQL statements. The
+  specified Rexx object(s) are converted to SQL literals by adding single quotes to the beginning and end of the value,
+  escaping single quotes within the value, and changing the <computeroutput>.nil</computeroutput> object to SQL NULL.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>values [optional]</term>
+      <listitem>
+      <para>
+        A Rexx object, or an array of Rexx objects to be converted to SQL literals. If this argument is omitted then
+        <emphasis role="italic">NULL</emphasis> is returned.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The string value of the specified object(s) as a SQL literal or comma separated list of SQL literals.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">enquote</emphasis> methods accepts a single argument, <emphasis
+    role="italic">values</emphasis>. If <emphasis role="italic">values</emphasis> is an array whose <emphasis
+    role="italic">size</emphasis> is N, then each item at index 1 through N is converted to a SQL literal. Any index 1
+    through N that is not assigned an item is converted to SQL NULL. Likewise, if an item 1 through N is the
+    <computeroutput>.nil</computeroutput> object, that item is converted to SQL NULL. All other items are converted to
+    the string value of the item with a single quote added to the front and end of the string. If the string value
+    contains any single quotes, those single quotes are escaped. If N is greater than 1, then each converted value is
+    added to the returned string with a comma used as a separator.
+  </para>
+  <para>
+    If <emphasis role="italic">values</emphasis> is not an array, then it is taken to be a single value to be converted,
+    and is converted in the same manner as a single item in an array is converted, as described above. This implies that
+    if <emphasis role="italic">values</emphasis> is omitted altogether, it is converted to SQL NULL.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The functionality of the <emphasis role="italic">enquote</emphasis> method is similar to that of the SQLite
+    <ulink url="">sqlite3_mprintf</ulink> API.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows how the enquote method can be used to create SQL INSERT statements that are not prone to SQL
+    Injection flaws:
+<programlisting>
+<![CDATA[
+
+  r1 = .array~new(4)
+  r1[1] = "Tom"
+  r1[2] = "Hanks"
+  r1[4] = "male"
+
+  r2 = .array~of("Mike", , "555-9988", .nil)
+
+  sql1 = "INSERT INTO my_table (fName, lName, phone, gender) VALUES("ooSQLite~enquote(r1)");"
+  sql2 = "INSERT INTO my_table (fName, lName, phone, gender) VALUES("ooSQLite~enquote(r2)");"
+
+  say sql1
+  say sql2
+
+/*  Output would be:
+
+INSERT INTO my_table (fName, lName, phone, gender) VALUES('Tom', 'Hanks', NULL, 'male');
+INSERT INTO my_table (fName, lName, phone, gender) VALUES('Mike', NULL, '555-9988', NULL);
+
+*/
+]]>
+</programlisting>
+    This example shows a conversion for a single string that has an apostrophe within it:
+<programlisting>
+<![CDATA[
+
+str = "It's a happy day!"
+say .ooSQLite~Enquote(str)
+
+/*  Output would be:
+
+'It''s a happy day!'
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLite::enquote() -->
 
 <section id="mthLibVersion"><title>libVersion</title>
 <indexterm><primary>libVersion</primary></indexterm>

@@ -39,29 +39,32 @@
     #########################################################################
 -->
 
-<section id="rtn-ooSQLiteVersion"><title>ooSQLiteVersion</title>
-<indexterm><primary>ooSQLiteVersion</primary></indexterm>
-<indexterm><primary>Classic Rexx Interface</primary><secondary>ooSQLiteVersion</secondary></indexterm>
+<section id="rtn-ooSQLiteEnquote"><title>ooSQLiteEnquote</title>
+<indexterm><primary>ooSQLiteEnquote</primary></indexterm>
+<indexterm><primary>Classic Rexx Interface</primary><secondary>ooSQLiteEnquote</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--ooSQLiteVersion(--+--------+--)---------------------------------------------><
-                 +--type--+
+>>--ooSQLiteEnquote(--+----------+--)------------><
+                      +--values--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Converts the supplied Rexx value(s) into SQL literals. This function is useful to help construct SQL statements. The
+  specified Rexx object(s) are converted to SQL literals by adding single quotes to the beginning and end of the value,
+  escaping single quotes within the value, and changing the <computeroutput>.nil</computeroutput> object to SQL NULL.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>values [optional]</term>
       <listitem>
       <para>
-        xx
+        A Rexx object, or an array-like stem of Rexx objects to be converted to SQL literals. If this argument is
+        omitted then <emphasis role="italic">NULL</emphasis> is returned.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -70,35 +73,85 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The string value of the specified object(s) as a SQL literal or comma separated list of SQL literals.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">ooSQLiteEnquote</emphasis> function accepts a single argument <emphasis
+    role="italic">values</emphasis>. If <emphasis role="italic">values</emphasis> is a stem, then it must be a stem
+    containing tails that are positive whole number indexes. The stem can contain tails 1 through N where N is the count
+    of values to convert, and <emphasis role="italic">must</emphasis> contain the tail 0 whose value is N. Any tail 1
+    through N that is not assigned a value is converted to SQL NULL. Any tail 1 through N whose assigned value is the
+    <computeroutput>.nil</computeroutput> object is also converted to SQL NULL. For all other tails 1 through N, the
+    value assigned to the tail is converted to a string enclosed in single quotes. If the string contains single quotes,
+    those single quotes are escaped. If the stem contains any other tails, other than 0 through N, those tails are
+    ignored. If N is greater than 1, then each converted value is added to the string with a comma used as a separator.
+  </para>
+  <para>
+    If <emphasis role="italic">values</emphasis> is not a stem, then it is taken to be a single value to be converted,
+    and is converted in the same manner as a single tail of a stem is converted, as described above. This implies that
+    if <emphasis role="italic">values</emphasis> is omitted altogether, it is converted to SQL NULL.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Additional details
+    The functionality of the <emphasis role="italic">ooSQLiteEnQuote</emphasis> function is similar to that of the
+    <ulink url="http://www.sqlite.org/c3ref/mprintf.html">sqlite3_mprintf</ulink> SQLite API
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows how the enquote function can be ussed to create SQL INSERT statements that are not prone to SQL
+    Injection flaws:
 <programlisting>
 <![CDATA[
 
+  r1.0 = 4
+  r1.1 = "Tom"
+  r1.2 = "Hanks"
+  r1.4 = "male"
+
+  r2.0 = 4
+  r2.1 = "Mike"
+  r2.3 = "555-9988"
+  r2.4 = .nil
+
+  sql1 = "INSERT INTO my_table (fName, lName, phone, gender) VALUES("ooSQLiteEnquote(r1.)");"
+  sql2 = "INSERT INTO my_table (fName, lName, phone, gender) VALUES("ooSQLiteEnquote(r2.)");"
+
+  say sql1
+  say sql2
+
+/*  Output would be:
+
+INSERT INTO my_table (fName, lName, phone, gender) VALUES('Tom', 'Hanks', NULL, 'male');
+INSERT INTO my_table (fName, lName, phone, gender) VALUES('Mike', NULL, '555-9988', NULL);
+
+*/
+]]>
+</programlisting>
+    This example shows a conversion for a single string that has an apostrophe within it:
+<programlisting>
+<![CDATA[
+
+str = "It's a happy day!"
+say ooSQLiteEnquote(str)
+
+/*  Output would be:
+
+'It''s a happy day!'
+
+*/
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End ooSQLiteVersion() -->
-
+</section>  <!-- End ooSQLiteEnquote() -->
 
 <section id="rtn-ooSQLiteMerge"><title>ooSQLiteMerge</title>
 <indexterm><primary>ooSQLiteMerge</primary></indexterm>
@@ -159,6 +212,67 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ooSQLiteMerge() -->
+
+<section id="rtn-ooSQLiteVersion"><title>ooSQLiteVersion</title>
+<indexterm><primary>ooSQLiteVersion</primary></indexterm>
+<indexterm><primary>Classic Rexx Interface</primary><secondary>ooSQLiteVersion</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--ooSQLiteVersion(--+--------+--)---------------------------------------------><
+                 +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Additional details
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ooSQLiteVersion() -->
+
 
 <section id="rtn-oosqlBackupFinish"><title>oosqlBackupFinish</title>
 <indexterm><primary>oosqlBackupFinish</primary></indexterm>
