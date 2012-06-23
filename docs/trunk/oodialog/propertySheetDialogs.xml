@@ -1181,47 +1181,66 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>appIcon</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--appIcon-----------------------------------------------------><
+>>--appIcon--------------------------------------><
 
->>--appIcon=varName---------------------------------------------><
+>>--appIcon=varName------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the value of the dialog <link linkend="defDialogIcon">icon</link> for the property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">appIcon get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">appIcon</emphasis> attribute will be the
+    <computeroutput>.nil</computeroutput> object if the programmer has not specified a dialog icon. Otherwise the value
+    is that specified.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">appIcon set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The <emphasis role="italic">appIcon</emphasis> can be set either using an <link linkend="clsImage">Image</link>
+    object, or a resource ID, numeric or <link linkend="defSymbolicId">symbolic</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    When the <emphasis role="italic">appIcon</emphasis> is specified as an <computeroutput>Image</computeroutput>
+    object, then the image must actually be an icon. It can not be a bitmap, or cursor, etc..
+  </para>
+  <para>
+    When the <emphasis role="italic">appIcon</emphasis> attribute is specified as a resource ID, then the image must be
+    a resource in the resource <link linkend="clsResourceImage">image</link> specified by the <link
+    linkend="atrResourcesClsPSD">resources</link> attribute. When the property sheet dialog is shown, if an icon can not
+    be loaded from the resource image, the the property sheet dialog will not have a dialog icon.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage in setting the attribute is detected. If the <emphasis
+    role="italic">appIcon</emphasis> attribute is set to a numeric value, the ooDialog framework can not detect whether
+    the number is correct or not. If the number, (or if the number a symbolic ID resolves to,) is not a resource ID of a
+    resource in the <emphasis role="italic">resources</emphasis> resource image, the the property sheet dialog will not
+    have a dialog icon when it is shown.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example sets the dialog icon for a property sheet dialog:
 <programlisting>
 <![CDATA[
+
+  -- For the appliation icon of the dialog we will use the ooRexx icon which is
+  -- available for general use from oodialog.dll.
+  propDlg~resources = .ResourceImage~new("oodialog.dll", propDlg)
+  propDlg~appIcon = "IDI_DLG_OOREXX"
 
 
 ]]>
@@ -1236,51 +1255,46 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>caption</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--caption-----------------------------------------------------><
+>>--caption--------------------------------------><
 
->>--caption=varName---------------------------------------------><
+>>--caption=varName------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the caption, or title, of the property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">caption get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the string to be used for the property sheet dialog, or the <computeroutput>.nil</computeroutput> object if
+    no caption has been set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">caption set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Sets the value the property sheet dialog will use for its title bar when the <link
+    linkend="ovvUnderlying">underlying</link> dialog is created.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This is not a <emphasis role="italic">dynamic</emphasis> attribute. I.e., if the underlying property sheet has its
+    title bar caption changed, say through the <link linkend="mthSetTitle">setTitle</link> method, the value of the
+    <emphasis role="italic">caption</emphasis> attribute will not change. Likewise, if the programmer were to change the
+    value of this attribute after the underlying dialog was created, it would not change the title bar of the dialog. At
+    the time the underlying dialog is created, this attribute is used to set the dialog's title bar. Other than that,
+    the attribute does nothing.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
