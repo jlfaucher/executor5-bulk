@@ -61,6 +61,7 @@
 ::method compileOptionGet class external "LIBRARY oosqlite oosql_compileOptionGet_cls"
 ::method compileOptionUsed class external "LIBRARY oosqlite oosql_compileOptionUsed_cls"
 ::method complete class external "LIBRARY oosqlite oosql_complete_cls"
+::method enquote class external "LIBRARY oosqlite oosql_enquote_cls"
 ::method libVersion class external "LIBRARY oosqlite oosql_libVersion_cls"
 ::method libVersionNumber class external "LIBRARY oosqlite oosql_libVersionNumber_cls"
 ::method memoryHighWater class external "LIBRARY oosqlite oosql_memoryHighWater_cls"
@@ -238,8 +239,9 @@
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
-::routine ooSQLiteVersion public external "LIBRARY oosqlite ooSQLiteVersion_rtn"
+::routine ooSQLiteEnquote public external "LIBRARY oosqlite ooSQLiteEnquote_rtn"
 ::routine ooSQLiteMerge public external "LIBRARY oosqlite ooSQLiteMerge_rtn"
+::routine ooSQLiteVersion public external "LIBRARY oosqlite ooSQLiteVersion_rtn"
 
 ::routine oosqlBackupFinish public external "LIBRARY oosqlite oosqlBackupFinish_rtn"
 ::routine oosqlBackupInit public external "LIBRARY oosqlite oosqlBackupInit_rtn"

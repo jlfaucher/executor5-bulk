@@ -451,6 +451,157 @@ static void  strupper(char *location, size_t length)
 }
 
 /**
+ * Convert any Rexx object to its string value. If the specified object is the
+ * NULLOBJECT or the .nil object then a null pointer is returned.
+ *
+ * @param c
+ * @param o
+ *
+ * @return CSTRING
+ */
+static inline CSTRING obj2str(RexxThreadContext *c, RexxObjectPtr o)
+{
+    return ( o == NULLOBJECT || o == TheNilObj ) ? NULL : c->ObjectToStringValue(o);
+}
+
+/**
+ * Convenience function to return sqlite3_mprintf() result as a Rexx string.
+ *
+ * sqlite3_mprintf() can return null if the database engine can not malloc
+ * memory.  So, if s is null, an out of memory exception is appropriate.
+ *
+ * @param c
+ * @param s
+ *
+ * @return RexxObjectPtr
+ */
+static RexxObjectPtr enquoteResult(RexxThreadContext *c, char *s)
+{
+    if ( s == NULL )
+    {
+        outOfMemoryException(c);
+        return c->NullString();
+    }
+
+    RexxObjectPtr result = c->String(s);
+    sqlite3_free(s);
+
+    return result;
+}
+
+static inline RexxObjectPtr enquote1(RexxThreadContext *c, RexxArrayObject v)
+{
+    char *s = sqlite3_mprintf("%Q", obj2str(c, c->ArrayAt(v, 1)));
+    return enquoteResult(c, s);
+}
+
+static inline RexxObjectPtr enquote2(RexxThreadContext *c, RexxArrayObject v)
+{
+    char *s = sqlite3_mprintf("%Q, %Q",
+                              obj2str(c, c->ArrayAt(v, 1)),
+                              obj2str(c, c->ArrayAt(v, 2)));
+
+    return enquoteResult(c, s);
+}
+
+static inline RexxObjectPtr enquote3(RexxThreadContext *c, RexxArrayObject v)
+{
+    char *s = sqlite3_mprintf("%Q, %Q, %Q",
+                              obj2str(c, c->ArrayAt(v, 1)),
+                              obj2str(c, c->ArrayAt(v, 2)),
+                              obj2str(c, c->ArrayAt(v, 3)));
+
+    return enquoteResult(c, s);
+}
+
+static inline RexxObjectPtr enquote4(RexxThreadContext *c, RexxArrayObject v)
+{
+    char *s = sqlite3_mprintf("%Q, %Q, %Q, %Q",
+                              obj2str(c, c->ArrayAt(v, 1)),
+                              obj2str(c, c->ArrayAt(v, 2)),
+                              obj2str(c, c->ArrayAt(v, 3)),
+                              obj2str(c, c->ArrayAt(v, 4)));
+
+    return enquoteResult(c, s);
+}
+
+static inline RexxObjectPtr enquote5(RexxThreadContext *c, RexxArrayObject v)
+{
+    char *s = sqlite3_mprintf("%Q, %Q, %Q, %Q, %Q",
+                              obj2str(c, c->ArrayAt(v, 1)),
+                              obj2str(c, c->ArrayAt(v, 2)),
+                              obj2str(c, c->ArrayAt(v, 3)),
+                              obj2str(c, c->ArrayAt(v, 4)),
+                              obj2str(c, c->ArrayAt(v, 5)));
+
+    return enquoteResult(c, s);
+}
+
+static inline RexxObjectPtr enquote6(RexxThreadContext *c, RexxArrayObject v)
+{
+    char *s = sqlite3_mprintf("%Q, %Q, %Q, %Q, %Q, %Q",
+                              obj2str(c, c->ArrayAt(v, 1)),
+                              obj2str(c, c->ArrayAt(v, 2)),
+                              obj2str(c, c->ArrayAt(v, 3)),
+                              obj2str(c, c->ArrayAt(v, 4)),
+                              obj2str(c, c->ArrayAt(v, 5)),
+                              obj2str(c, c->ArrayAt(v, 6)));
+
+    return enquoteResult(c, s);
+}
+
+/**
+ * Uses sqlite3_mprintf on an number of items in the supplied array.
+ *
+ * The returned string has an upper bound on its length, currently 4095.  A Rexx
+ * string is always returned, produced from a zero terminated string.
+ *
+ * @author Administrator (6/23/2012)
+ *
+ * @param c
+ * @param v
+ * @param size
+ *
+ * @return RexxObjectPtr
+ *
+ * @assumes  That the caller has checked the size of the array and it is at
+ *           least 7 in size.
+ */
+static RexxObjectPtr enquoteN(RexxThreadContext *c, RexxArrayObject v, size_t size)
+{
+    char *s = sqlite3_mprintf("%Q, %Q, %Q, %Q, %Q, %Q",
+                              obj2str(c, c->ArrayAt(v, 1)),
+                              obj2str(c, c->ArrayAt(v, 2)),
+                              obj2str(c, c->ArrayAt(v, 3)),
+                              obj2str(c, c->ArrayAt(v, 4)),
+                              obj2str(c, c->ArrayAt(v, 5)),
+                              obj2str(c, c->ArrayAt(v, 6)));
+
+    if ( s == NULL )
+    {
+        outOfMemoryException(c);
+        return c->NullString();
+    }
+
+    char  buf[MAX_ENQUOTE_STRING + 1];
+    char *lead = s;
+
+    for ( size_t i = 7; i <= size; i++)
+    {
+        lead = sqlite3_snprintf(sizeof(buf), buf, "%s, %Q", lead, obj2str(c, c->ArrayAt(v, i)));
+
+        if ( i < size && strlen(lead) == MAX_ENQUOTE_STRING )
+        {
+            stringTooLongException(c, "enquote", true, MAX_ENQUOTE_STRING);
+            break;
+        }
+    }
+
+    sqlite3_free(s);
+    return c->String(buf);
+}
+
+/**
  * Returns an array of pointer to strings consisting of the column names for the
  * specified prepared statement, upper-cased.
  *
@@ -2109,6 +2260,51 @@ RexxMethod1(logical_t, oosql_complete_cls, CSTRING, sql)
     return sqlite3_complete(sql);
 }
 
+/** ooSQLite::enquote  [class method]
+ *
+ *  @param values  [optional]
+ *
+ */
+RexxMethod1(RexxObjectPtr, oosql_enquote_cls, OPTIONAL_RexxObjectPtr, values)
+{
+    if ( argumentOmitted(1) )
+    {
+        return context->String("NULL");
+    }
+    else if ( ! context->IsArray(values) )
+    {
+        char *s = sqlite3_mprintf("%Q", obj2str(context->threadContext, values));
+        return enquoteResult(context->threadContext, s);
+    }
+    else
+    {
+        RexxArrayObject a = (RexxArrayObject)values;
+        size_t          s = context->ArraySize(a);
+
+        switch ( s )
+        {
+            case 0 :
+                return context->String("NULL");
+            case 1 :
+                return enquote1(context->threadContext, a);
+            case 2 :
+                return enquote2(context->threadContext, a);
+            case 3 :
+                return enquote3(context->threadContext, a);
+            case 4 :
+                return enquote4(context->threadContext, a);
+            case 5 :
+                return enquote5(context->threadContext, a);
+            case 6 :
+                return enquote6(context->threadContext, a);
+            default :
+                return enquoteN(context->threadContext, a, s);
+
+        }
+    }
+}
+
+
 /** ooSQLite::libVersion()  [class method]
  *
  *
@@ -2287,41 +2483,19 @@ RexxMethod1(RexxObjectPtr, oosql_version_cls, OPTIONAL_CSTRING, type)
     return genGetVersion(context->threadContext, FALSE, FALSE);
 }
 
-
 /**
  * Transitory method used to test various things as they come up.
  *
  */
-RexxMethod1(POINTER, oosql_test_cls, POINTER, db)
+RexxMethod1(int, oosql_test_cls, ARGLIST, args)
 {
-    sqlite3_mutex *mtx = sqlite3_db_mutex((sqlite3 *)db);
-    printf("db            mutex=%p\n", mtx);
+    RexxMethodContext *c = context;
 
-    mtx = sqlite3_mutex_alloc(SQLITE_MUTEX_STATIC_MASTER);
-    printf("static master mutex=%p\n", mtx);
+    size_t size = c->ArraySize(args);
 
-    mtx = sqlite3_mutex_alloc(SQLITE_MUTEX_STATIC_MEM);
-    printf("static mem    mutex=%p\n", mtx);
+    printf("Arg list: size=%d\n", size);
 
-    mtx = sqlite3_mutex_alloc(SQLITE_MUTEX_STATIC_MEM2);
-    printf("static mem2   mutex=%p\n", mtx);
-
-    mtx = sqlite3_mutex_alloc(SQLITE_MUTEX_STATIC_LRU);
-    printf("static lru    mutex=%p\n", mtx);
-
-    mtx = sqlite3_mutex_alloc(SQLITE_MUTEX_STATIC_LRU2);
-    printf("static lru2   mutex=%p\n", mtx);
-
-    mtx = sqlite3_mutex_alloc(SQLITE_MUTEX_STATIC_PRNG);
-    printf("static prng   mutex=%p\n", mtx);
-
-    mtx = sqlite3_mutex_alloc(SQLITE_MUTEX_STATIC_PMEM);
-    printf("static pmem   mutex=%p\n", mtx);
-
-    mtx = sqlite3_db_mutex((sqlite3 *)db);
-    printf("db            mutex=%p\n", mtx);
-
-    return db;
+    return 0;
 }
 
 
@@ -6697,6 +6871,87 @@ static RexxObjectPtr doCallbackSetupRtn(RexxCallContext *c, sqlite3 *db, CSTRING
 
 
 
+/** ooSQLiteMerge()
+ *
+ *  Performs a bitwise or ( a | b ) on the arguments provided.
+ *
+ *  @args  Each argument is or'd together.  Any number of arguments can be
+ *         supplied.  If no arguments are supplied, 0 is returned.  If 1
+ *         argument is provided, then that argument is returned.
+ *
+ *         Each argument must be a whole number and arguments can not be omitted
+ *         within the series of arguments.  That is, if argument N exists, then
+ *         arguments 1 through (N - 1) arguments must all exist.
+ *
+ *  @return  The value of a bitwise or of every argument.
+ *
+ */
+RexxRoutine1(wholenumber_t, ooSQLiteMerge_rtn, ARGLIST, args)
+{
+    return genMerge(context->threadContext, args);
+}
+
+
+/** ooSQLiteEnquote()
+ *
+ *  @param values  [optional]
+ *
+ *  @remarks We need a thread context for some of the helper functions called
+ *           here, so we just convert context to that and use it through out.
+ */
+RexxRoutine1(RexxObjectPtr, ooSQLiteEnquote_rtn, OPTIONAL_RexxObjectPtr, values)
+{
+    RexxThreadContext *c = context->threadContext;
+
+    if ( argumentOmitted(1) )
+    {
+        return c->String("NULL");
+    }
+    else if ( ! c->IsStem(values) )
+    {
+        char *s = sqlite3_mprintf("%Q", obj2str(c, values));
+        return enquoteResult(c, s);
+    }
+    else
+    {
+        RexxStemObject stem   = (RexxStemObject)values;
+        RexxObjectPtr  _count = c->GetStemArrayElement(stem, 0);
+
+        size_t count;
+        if ( _count == NULLOBJECT || ! c->ObjectToStringSize(_count, &count) )
+        {
+            invalidTypeException(context->threadContext, 1, "stem in 'array' format with the count of tails at tail \"0\"");
+            return NULLOBJECT;
+        }
+
+        char *s = sqlite3_mprintf("%Q", obj2str(c, c->GetStemArrayElement(stem, 1)));
+
+        if ( s == NULL )
+        {
+            outOfMemoryException(c);
+            return NULLOBJECT;
+        }
+
+        char  buf[MAX_ENQUOTE_STRING + 1];
+        char *lead = s;
+
+        for ( size_t i = 2; i <= count; i++)
+        {
+            lead = sqlite3_snprintf(sizeof(buf), buf, "%s, %Q", lead, obj2str(c, c->GetStemArrayElement(stem, i)));
+
+            if ( i < count && strlen(lead) == MAX_ENQUOTE_STRING )
+            {
+                stringTooLongException(c, "ooSQLiteEnquote", false, MAX_ENQUOTE_STRING);
+                break;
+            }
+        }
+
+        sqlite3_free(s);
+        return c->String(buf);
+    }
+}
+
+
 /** ooSQLiteVersion()
  *
  *  Returns the ooSQLite version string
@@ -6746,16 +7001,6 @@ RexxRoutine1(RexxObjectPtr, ooSQLiteVersion_rtn, OPTIONAL_CSTRING, type)
     }
 
     return genGetVersion(context->threadContext, FALSE, FALSE);
-}
-
-
-/** ooSQLiteMerge()
- *
- *
- */
-RexxRoutine1(wholenumber_t, ooSQLiteMerge_rtn, ARGLIST, args)
-{
-    return genMerge(context->threadContext, args);
 }
 
 
@@ -9035,8 +9280,9 @@ RexxMethod1(int, db_cb_releaseBuffer, RexxObjectPtr, buffer)
 
 
 
-REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteVersion_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteEnquote_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteMerge_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(ooSQLiteVersion_rtn);
 
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupFinish_rtn);
 REXX_TYPED_ROUTINE_PROTOTYPE(oosqlBackupInit_rtn);
@@ -9128,8 +9374,9 @@ REXX_TYPED_ROUTINE_PROTOTYPE(oosqlTest_rtn);
 
 RexxRoutineEntry ooSQLite_functions[] =
 {
-    REXX_TYPED_ROUTINE(ooSQLiteVersion_rtn,           ooSQLiteVersion_rtn),
+    REXX_TYPED_ROUTINE(ooSQLiteEnquote_rtn,           ooSQLiteEnquote_rtn),
     REXX_TYPED_ROUTINE(ooSQLiteMerge_rtn,             ooSQLiteMerge_rtn),
+    REXX_TYPED_ROUTINE(ooSQLiteVersion_rtn,           ooSQLiteVersion_rtn),
 
     REXX_TYPED_ROUTINE(oosqlBackupFinish_rtn,         oosqlBackupFinish_rtn),
     REXX_TYPED_ROUTINE(oosqlBackupInit_rtn,           oosqlBackupInit_rtn),
@@ -9236,6 +9483,7 @@ REXX_METHOD_PROTOTYPE(oosql_setRecordFormat_atr_cls);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionGet_cls);
 REXX_METHOD_PROTOTYPE(oosql_compileOptionUsed_cls);
 REXX_METHOD_PROTOTYPE(oosql_complete_cls);
+REXX_METHOD_PROTOTYPE(oosql_enquote_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersion_cls);
 REXX_METHOD_PROTOTYPE(oosql_libVersionNumber_cls);
 REXX_METHOD_PROTOTYPE(oosql_memoryHighWater_cls);
@@ -9395,6 +9643,7 @@ RexxMethodEntry ooSQLite_methods[] = {
     REXX_METHOD(oosql_compileOptionGet_cls,           oosql_compileOptionGet_cls),
     REXX_METHOD(oosql_compileOptionUsed_cls,          oosql_compileOptionUsed_cls),
     REXX_METHOD(oosql_complete_cls,                   oosql_complete_cls),
+    REXX_METHOD(oosql_enquote_cls,                    oosql_enquote_cls),
     REXX_METHOD(oosql_libVersion_cls,                 oosql_libVersion_cls),
     REXX_METHOD(oosql_libVersionNumber_cls,           oosql_libVersionNumber_cls),
     REXX_METHOD(oosql_memoryUsed_cls,                 oosql_memoryUsed_cls),

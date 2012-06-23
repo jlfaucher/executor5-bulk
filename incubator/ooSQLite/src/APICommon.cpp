@@ -362,6 +362,26 @@ void stringTooLongException(RexxThreadContext *c, size_t pos, size_t len, size_t
 }
 
 /**
+ * String produced by the <name> <type> is longer than allowed; (max == <max>)
+ *
+ * String produced by the enquote method is longer than allowed; (max == 2048)
+ *
+ * Raises 88.900
+ *
+ * @param c        Thread context we are executing in.
+ * @param pos      Argumet position
+ * @param len      Fixed length
+ * @param realLen  Actual length
+ */
+void stringTooLongException(RexxThreadContext *c, CSTRING name, bool isMethod, size_t max)
+{
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "String produced by the %s %s is longer than allowed; (max == %d)",
+             name, isMethod ? "method" : "function", max);
+    userDefinedMsgException(c, buffer);
+}
+
+/**
  * Argument <argPos> must be a whole number greater than <min>; found <actual>
  *
  * Argument 10 must be a whole number greater than 5; found 0

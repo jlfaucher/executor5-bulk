@@ -62,6 +62,7 @@ extern void  userDefinedMsgException(RexxMethodContext *c, CSTRING msg);
 extern void  userDefinedMsgException(RexxMethodContext *c, size_t pos, CSTRING msg);
 extern void  invalidImageException(RexxThreadContext *c, size_t pos, CSTRING type, CSTRING actual);
 extern void  stringTooLongException(RexxThreadContext *c, size_t pos, size_t len, size_t realLen);
+extern void  stringTooLongException(RexxThreadContext *c, CSTRING name, bool isMethod, size_t max);
 extern void  numberTooSmallException(RexxThreadContext *c, int pos, int min, RexxObjectPtr actual);
 extern void  notNonNegativeException(RexxThreadContext *c, size_t pos, RexxObjectPtr actual);
 extern void  notPositiveException(RexxThreadContext *c, size_t pos, RexxObjectPtr actual);
