@@ -1076,9 +1076,11 @@
 ::attribute prefix SET
   -- this is an error by default
   .DomErrors~raiseError(.DomErrors~NAMESPACE_ERR)
+-- for node types that don't support a real localname,
+-- this is the same as nodeName
 ::attribute localName GET
   use strict arg
-  return .nil
+  return self~nodeName
 ::attribute baseURI GET
   use strict arg
   return .nil
