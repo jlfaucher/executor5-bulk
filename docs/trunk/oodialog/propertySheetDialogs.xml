@@ -362,9 +362,9 @@
 <indexterm><primary>ControlDialog class</primary><secondary>wasActivated</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wasActivated-----------------------------------------------------><
+>>--wasActivated---------------------------------><
 
->>--wasActivated-=-varName-------------------------------------------><
+>>--wasActivated-=-varName-----------------------><
 
 ]]>
 </programlisting>
@@ -1051,6 +1051,14 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry>ID_PSREBOOTSYSTEM</entry>
+<entry>Possible return value from the <link linkend="mthExecuteClsPSD">execute</link> or <link linkend="mthGetResult">getResult</link> methods. Indicates a page sent the reboot system message to the property sheet. The computer must be restarted for the user's changes to take effect. The application is responsible for rebooting the  computer.</entry>
+</row>
+<row>
+<entry>ID_PSRESTARTWINDOWS</entry>
+<entry>Possible return value from the <link linkend="mthExecuteClsPSD">execute</link> or <link linkend="mthGetResult">getResult</link> methods. Indicates a page sent the restart Window message to the property sheet. Microsoft Windwos must be restarted for the user's changes to take effect. The application is responsible for restarting Windows.</entry>
+</row>
+<row>
 <entry>MAXPROPPAGES</entry>
 <entry>The maximun number of pages a property sheet dialog can have. This is an operating system restriction.</entry>
 </row>
@@ -1068,35 +1076,35 @@
 </row>
 <row>
 <entry><link linkend="atrAppIcon">appIcon</link></entry>
-<entry>.</entry>
+<entry>Reflects the value of the dialog <link linkend="defDialogIcon">icon</link> for the property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="atrCaption">caption</link></entry>
-<entry>.</entry>
+<entry>Reflects the caption, or title, of the property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="atrHeader">header</link></entry>
-<entry>.</entry>
+<entry>Specifies the bitmap that will be placed at the right side of an interior page's header area in a Wizard dialog. The attribute is only used for the Wizard style property sheet dialogs.</entry>
 </row>
 <row>
 <entry><link linkend="atrImageList"></link></entry>
-<entry>.</entry>
+<entry>Used to assign icons for the tabs of the tab control in a property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="atrPages">pages</link></entry>
-<entry>.</entry>
+<entry>Reflects the dialog objects used as the pages of this property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="atrResourcesClsPSD">resources</link></entry>
-<entry>.</entry>
+<entry>Can be set to a <link linkend="clsResourceImage">ResourceImage</link> object to supply some or all of the resources used by the property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="atrStartPage">startPage</link></entry>
-<entry>.</entry>
+<entry>Reflects the index of the page that will be selected and visible when the property sheet dialog is first shown on the screen.</entry>
 </row>
 <row>
 <entry><link linkend="atrWatermark">watermark</link></entry>
-<entry>.</entry>
+<entry>Reflects the watermark bitmap image that will be used with a Wizard97 property sheet dialog.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -1104,18 +1112,130 @@
 </row>
 <row>
 <entry><link linkend="mthAddPage"></link></entry>
-<entry>.</entry>
+<entry>rAdds a page to the property sheet at the end of the current pages.</entry>
 </row>
 <row>
 <entry><link linkend="mthApplyClsPSD">apply</link></entry>
-<entry>.</entry>
+<entry>Simulates the selection of the Apply button, indicating that one or more  pages have changed and the changes need to be validated and recorded.</entry>
 </row>
 <row>
 <entry><link linkend="mthCancelToClose">cancelToClose</link></entry>
-<entry>.</entry>
+<entry>Used when changes made since the most recent PSN_APPLY notification cannot be canceled.</entry>
 </row>
 <row>
 <entry><link linkend="mthChanged">changed</link></entry>
+<entry>Informs the underlying property sheet dialog that information in a page has changed.</entry>
+</row>
+<row>
+<entry><link linkend="mthExecuteClsPSD">execute</link></entry>
+<entry>Starts the execution of the underlying, <link linkend="defModalModeless">modal</link>, property sheet dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetCurrentPageHwnd">getCurrentPageHwnd</link></entry>
+<entry>Retrieves the window <link linkend="defHandle">handle</link> of the <link linkend="ovvUnderlying">underlying</link> dialog of the current page in this property sheet dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetPage">getPage</link></entry>
+<entry>Gets the Rexx dialog object for the page specified by <emphasis role="italic">index</emphasis>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetResult">getResult</link></entry>
+<entry>Returns a keyword indicating the result of executing the <computeroutput>PropertySheetDialog</computeroutput>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetTabControl">getTabControl</link></entry>
+<entry>Retrieves the Rexx tab control object for the tab control of the property sheet dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthHwndToIndex">hwndToIndex</link></entry>
+<entry>Returns the one-based index of the property sheet page specified by its window handle.</entry>
+</row>
+<row>
+<entry><link linkend="mthIdToIndex">idToIndex</link></entry>
+<entry>Takes a property sheet page ID and returns its one-based page index.</entry>
+</row>
+<row>
+<entry><link linkend="mthIndexToHwnd">indexToHwnd</link></entry>
+<entry>Given the one-based index to a page, returns the window handle of the underlying page dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthIndexToID">indexToID</link></entry>
+<entry>Given the index of a page, returns its ID.</entry>
+</row>
+<row>
+<entry><link linkend="mthIndexToPage">indexToPage</link></entry>
+<entry>Returns the PROPSHEETPAGE <link linkend="defHandle">handle</link> for the specified page index.</entry>
+</row>
+<row>
+<entry><link linkend="mthInitDialogClsPSD">initDialog</link></entry>
+<entry>Invoked by the ooDialog framework when the underlying property sheet dialog has first been created.</entry>
+</row>
+<row>
+<entry><link linkend="mthInsertPage">insertPage</link></entry>
+<entry>Inserts a new page into the property sheet dialog at the specified index.</entry>
+</row>
+<row>
+<entry><link linkend="mthPageToIndex">pageToIndex</link></entry>
+<entry>Takes the handle of a <link linkend="mthIndesToPage">PROPSHEETPAGE</link> and returns the one-based index of the page.</entry>
+</row>
+<row>
+<entry><link linkend="mthPopupClsPSD">popup</link></entry>
+<entry>Begins the execution of a modeless property sheet dialog and returns immediately.</entry>
+</row>
+<row>
+<entry><link linkend="mthPressButton">pressButton</link></entry>
+<entry>Pushes the specified property sheet button programmatically.</entry>
+</row>
+<row>
+<entry><link linkend="mthQuerySiblings">querySiblings</link></entry>
+<entry>Causes the underlying property sheet dialog to send the <link linkend="mthQueryFromSibling">queryFromSibling</link> notification, with the specified arguments to each page of the of the property sheet dialog.</entry>
+</row>
+<row>
+<entry><link linkend="mthRebootSystem">rebootSystem</link></entry>
+<entry>Invoked to notify the property sheet dialog that the system needs to be rebooted for changes to take effect.</entry>
+</row>
+<row>
+<entry><link linkend="mthRecalcPageSizes">recalcPageSizes</link></entry>
+<entry>Recalculates the page size of a standard or wizard property sheet after pages have been added or removed.</entry>
+</row>
+<row>
+<entry><link linkend="mthRestartWindows">restartWindows</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthRemovePage">removePage</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCurSel">setCurSel</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetFinishText">setFinishText</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetHeaderSubTitle">setHeaderSubTitle</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetHeaderTitle">setHeaderTitle</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetNextText">setNextText</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetTitleClsPSD">setTitle</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetWizButtons">setWizButtons</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthUnchanged">unchanged</link></entry>
 <entry>.</entry>
 </row>
 </tbody></tgroup>
@@ -1127,8 +1247,8 @@
 <indexterm><primary>new</primary><secondary>ResDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
-
+>>--new(--pages--+--------+--+---------+--+---------+--)--------><
+                 +-,-opts-+  +-,-title-+  +-,-hFile-+
 ]]>
 </programlisting>
 
@@ -1141,10 +1261,154 @@
   <para>
     The arguments when creating a new dialog instance of this class are:
     <variablelist>
-      <varlistentry><term>XXX [required]</term>
+      <varlistentry><term>pages [required]</term>
       <listitem>
       <para>
-        xx
+        An array of <link linkend="clsPropertySheetPage">PropertySheetPage</link> dialogs to be used as the pages of the
+        property sheet. The number of the property sheet page dialogs and the order of the dialogs determines the number
+        and order of the pages in the property sheet.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>opts [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>AEROWIZARD       </member>
+          <member>HASHELP          </member>
+          <member>NOAPPLYNOW       </member>
+          <member>NOCONTEXTHELP    </member>
+          <member>NOMARGIN         </member>
+          <member>PROPTITLE        </member>
+          <member>RESIZABLE        </member>
+          <member>RTLREADING       </member>
+          <member>USEPAGELANG      </member>
+          <member>WIZARD97         </member>
+          <member>WIZARDCONTEXTHELP</member>
+          <member>WIZARDHASFINISH  </member>
+          <member>WIZARDLITE       </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>AEROWIZARD</term>
+          <listitem>
+          <para>
+            Creates a wizard property sheet that uses the newer Aero style. This keyword is not valid if the operating
+            system is not Vista or later. A syntax condition is raised if this keyword is used on Windows XP or earlier.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HASHELP</term>
+          <listitem>
+          <para>
+            Permits property sheet pages (<link linkend="clsPropertySheetPage">PropertySheetPage</link>) to display a
+            <emphasis role="italic">Help</emphasis> button. The HASHELP keyword must also be used in the page's
+            <emphasis role="italic">opts</emphasis> argument when the page is instantiated. If any of the
+            initial property sheet pages enable a Help button, the operating system will automatically enables this
+            feature in the property sheet dialog. If none of the initial pages enable a Help button, the HASHELP keyword
+            must be explicitly set in order to have Help buttons on any pages that might be added later. This keyword is
+            not supported if the AEROWIZARD style is used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOAPPLYNOW</term>
+          <listitem>
+          <para>
+            Removes the Apply button. This flag is not supported with the AEROWIZARD style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOCONTEXTHELP</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOMARGIN</term>
+          <listitem>
+          <para>
+            Removes the context-sensitive Help button ("?"), which is usually present on the caption bar of property
+            sheets. This flag is not valid for wizards.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PROPTITLE</term>
+          <listitem>
+          <para>
+            Adjusts the title in the title bar of the property sheet. The title takes the appropriate form for the
+            Microsoft Windows version. In more recent versions of Windows, the title is the string specified by the
+            <link linkend="atrCaption">caption</link> attribute followed by the string <emphasis
+            role="italic">Properties</emphasis>. In older versions of Windows, the title is the string <emphasis
+            role="italic">Properties for</emphasis>, followed by the string specified by the <emphasis
+            role="italic">caption</emphasis> attribute This keyword is not supported with the AEROWIZARD style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RESIZABLE</term>
+          <listitem>
+          <para>
+            Allows the wizard to be resized by the user. Maximize and minimize buttons appear in the wizard's frame and
+            the frame is sizable. To use this keyword, the AEROWIZARD keyword must also be set.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RTLREADING</term>
+          <listitem>
+          <para>
+            Reverses the direction in which the tile of the property dialog is displayed. Normal windows display all
+            text, including the title, left-to-right (LTR). For languages such as Hebrew or Arabic that read
+            right-to-left (RTL), a window can be mirrored and all text will be displayed RTL. RTLREADING is set, the
+            title will instead read RTL in a normal parent window and LTR in a mirrored parent window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEPAGELANG</term>
+          <listitem>
+          <para>
+            Specifies that the language for the property sheet dialog will be taken from the first page's resource. That
+            page must be specified by resource identifier. This keyword is included for completeness, it will have no
+            effect in the current ooDialog implementation. It is possible that a future enhancement to ooDialog will
+            make this keyword relevant
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WIZARD97</term>
+          <listitem>
+          <para>
+            Creates a Wizard97-style property sheet that allows a header and/or watermark bitmap to be displayed in the
+            background. This keyword is not supported with the AEROWIZARD style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WIZARDCONTEXTHELP</term>
+          <listitem>
+          <para>
+            Adds a context-sensitive Help button ("?"), which is usually absent from the caption bar of a wizard. This
+            keyword is not supported with the AEROWIZARD style.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WIZARDHASFINISH</term>
+          <listitem>
+          <para>
+            Always displays the Finish button on the wizard. One of the other WIZARDxx keywords must also be used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>WIZARDLITE</term>
+          <listitem>
+          <para>
+            Uses the Wizard-lite style. This style is similar in appearance to WIZARD97. There are few restrictions on
+            how the pages are formatted. For instance, there are no enforced borders, and the WIZARDLITE style does not
+            paint the watermark and header bitmaps the way WIZARD97 does. This keyword is not supported with the
+            AEROWIZARD style.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>title [optional]</term>
+      <listitem>
+      <para>
+        Sets the <link linkend="atrCaption">caption</link> attribute to the text specified.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hFile [optional]</term>
+      <listitem>
+      <para>
+        A file, (often called a <link linkend="defHeaderFile">header</link> file,) defining <link
+        linkend="defSymbolicID">symbolic IDs</link> for resources. The symbolic IDs defined within the file will be
+        added to the <link linkend="atrConstDir">constDir</link> directory.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1153,19 +1417,38 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    xxx
+    <computeroutput>PropertySheetDialog</computeroutput> dialogs are a little different than most ooDialog dialogs in
+    that their life-cycle is controlled by the operating system rather than the ooDialog framework. In general the
+    programmer customizes these dialogs by using the proper keywords in the <emphasis role="italic">opts</emphasis>
+    argument and by setting the attributes of the dialog object, then starting the dialog through <link
+    linkend="mthExecuteClsPSD">execute</link> or <link linkend="mthPopupClsPSD">popup</link>. Most of the programming
+    work for a property sheet dialog is in the dialogs that are used as the pages for the property sheet.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This sample xxxx
+    This example sets up the 5 dialogs to be used as the pages of the property sheet dialog and then instantiates that
+    dialog:
 
 <programlisting>
 <![CDATA[
-  ...
 
-::requires "ooDialog.cls"
+  -- Create the 5 dialog pages.
+  p1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
+  p2 = .TreeViewDlg~new("rc\PropertySheetDemo.rc", IDD_TREEVIEW_DLG)
+  p3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG)
+  p4 = .TrackBarDlg~new("rc\PropertySheetDemo.rc", IDD_TRACKBAR_DLG)
+  p5 = .TabDlg~new("rc\PropertySheetDemo.rc", IDD_TAB_DLG)
+
+  -- Create the PropertySheetDialog using an array of the 5 dialog pages.  The
+  -- order of the pages in the array will be the order of the pages in the tab
+  -- control of the property sheet.
+  pages = .array~of(p1, p2, p3, p4, p5)
+  propDlg = .PropertySheetDemoDlg~new(pages, "NOAPPLYNOW", "ooRexx Property Sheet with Controls")
+
+  -- Do any customization of the property sheet dialog by setting the values of
+  -- the appropriate attributes.
 
 ...
 
@@ -1305,33 +1588,44 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>header</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--header-----------------------------------------------------><
+>>--header---------------------------------------><
 
->>--header=varName---------------------------------------------><
+>>--header=varName-------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">header</emphasis> attribute specifies the bitmap that will be placed at the right side of
+  an interior page's header area in a Wizard dialog. The <emphasis role="italic">header</emphasis> attribute is only
+  used for the Wizard style property sheet dialogs.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">header get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">header</emphasis> attribute is the <computeroutput>.nil</computeroutput>
+    object until it has been set by the programmer. Unless the dialog is a Wizard property sheet dialog, it will always
+    be the <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">header set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The <emphasis role="italic">header</emphasis> attribute should be set either to an <link
+    linkend="clsImage">Image</link> object of the bitmap to display in the header area of a Wizard dialog, or to the
+    resource ID of the bitmap to be used. Do not set the <emphasis role="italic">header</emphasis> attribute if the
+    dialog is not a Wizard.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The bitmap for the header area can either be a stand alone bitmap loaded as an
+    <computeroutput>Image</computeroutput> object, or it can be a compiled binary image located in the resource section
+    of an executable file. If the bitmap is within the resource section of an executable module, then the <link
+    linkend="atrResourcesClsPSD">resources</link> attribute of this dialog object is set to the executable and the
+    <emphasis role="italic">header</emphasis> attribute is set to the resource ID of the bitmap.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1343,9 +1637,16 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the header attribute of a Wizard dialog being set to an <computeroutput>Image</computeroutput>
+    object containing the desired bitmap to be used in the header area of the Wizard:
 <programlisting>
 <![CDATA[
+
+  -- Create the property sheet using the dialog pages and set its attributes.
+  wizDlg = .TicketWizard97~new(pages, "Wizard97", "Let's Go To The Movies")
+
+  wizDlg~header = .Image~getImage("rc\ticketWizardTheater.bmp")
+  wizDlg~watermark = .Image~getImage("rc\ticketWizardRexxLA.bmp")
 
 
 ]]>
@@ -1360,51 +1661,50 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>imageList</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--imageList-----------------------------------------------------><
+>>--imageList------------------------------------><
 
->>--imageList=varName---------------------------------------------><
+>>--imageList=varName----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">imagelist</emphasis> attribute is used to assign icons for the tabs of the tab control in
+  a property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">imageList get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">imageList</emphasis> attribute is an <link
+    linkend="clsImageList">Imagelist</link> object if one has been assigned, otherwise it is the
+    <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">imageList set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    When an <link linkend="clsImageList">ImageList</link> object is assigned to the <emphasis
+    role="italic">imageList</emphasis> attribute, the icons in the imagelist are used as the icons in the tabs of the
+    pages in the property sheet. The icons are assigned in order to the pages, the first icon in the imagelist is
+    assigned to the first page, the second icon to the second page, etc..
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    An icon for the tab of a page can also be assigned through the <link linkend="atrTabIcon">tabIcon</link> attribute
+    of the <link linkend="clsPropertySheetPage">PropertySheetPage</link> dialog object for each page in a property sheet
+    dialog. However, assigning an image list to the <emphasis role="italic">imageList</emphasis> attribute takes
+    precedence over the <emphasis role="italic">tabIcon</emphasis> attribute of a property sheet page dialog. If an
+    image list is asigned to the <emphasis role="italic">imageList</emphasis> attribute of the property sheet dialog,
+    the <emphasis role="italic">tabIcon</emphasis> attribute of the property sheet page dialog is not checked.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1415,51 +1715,39 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>pages</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--pages-----------------------------------------------------><
+>>--pages----------------------------------------><
 
->>--pages=varName---------------------------------------------><
+>>--pages=varName--------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the dialog objects used as the pages of this property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">pages get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns an array of the dialog objects used for the pages of the property sheet dialog. The dialog object at index 1
+    is the dialog for the first page in the property sheet. The dialog object at index 2 is the the dialog for the
+    second page, etc..
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pages set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The programmer can not set this attribute, it is set by the ooDialog framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    The programmer can not manipulate the pages in the property sheet dialog by manipulating the array that is the value
+    of this attrbiute. I.e., if the programmer removes an index of the array, it does not remove that page in the
+    property sheet, if the programmer adds an index to the array, it does not add a page to the property sheet dialog.
+    Page manipulation must be done through the instance methods of the property sheet dialog, for instance, the <link
+    linkend="mthInsertPage">insertPage</link> or <link linkend="mthRemovePage">removePage</link> methods.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1470,33 +1758,46 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>resources</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--resources-----------------------------------------------------><
+>>--resources------------------------------------><
 
->>--resources=varName---------------------------------------------><
+>>--resources=varName----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">resources</emphasis> attribute can be set to a <link
+  linkend="clsResourceImage">ResourceImage</link> object to supply some or all of the resources used by the
+  <computeroutput>PropertySheetDialog</computeroutput>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">resources get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the <computeroutput>ResourceImage</computeroutput> object if this attribute has been set by the programmer
+    or the <computeroutput>.nil</computeroutput> object if the attrbute has not been set.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">resources set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    This attribute can only be set to a <link linkend="clsResourceImage">ResourceImage</link> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Many of the resources used by a property sheet dialog can be located within the resource section of an executable
+    module. (Recall that in Windows both an executable file and a DLL are executable modules.) Resources such as the
+    <link linkend="atrAppIcon">appIcon</link>, <link linkend="atrHeader">header</link>, <link
+    linkend="atrImageList">imageList</link>, etc.. can all be located in the
+    <computeroutput>ResourceImage</computeroutput> that is the value of the <emphasis role="italic">resources</emphasis>
+    attribute.
+  </para>
+  <para>
+    These resources are then all specified by their resource ID in the resource image. Since the <emphasis
+    role="italic">resources</emphasis> attribute can only have one value, this implies that all resources specified by
+    resource ID must reside within the same resource image.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1508,9 +1809,17 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the assignment of a <computeroutput>ResourceImage</computeroutput> object to the <emphasis
+    role="italic">resources</emphasis> attribute and specifing the resource ID to use for the appIcon of the property
+    sheet dialog:
 <programlisting>
 <![CDATA[
+
+  -- For the appliation icon of the dialog we will use the ooRexx icon which is
+  -- available for general use from oodialog.dll.
+
+  propDlg~resources = .ResourceImage~new("oodialog.dll", propDlg)
+  propDlg~appIcon = IDI_DLG_OOREXX
 
 
 ]]>
@@ -1525,33 +1834,39 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>startPage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--startPage-----------------------------------------------------><
+>>--startPage------------------------------------><
 
->>--startPage=varName---------------------------------------------><
+>>--startPage=varName----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the index of the page that will be selected and visible when the property sheet dialog is first shown on the
+  screen.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">startPage get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the one-based index of the page that will be visible when the property sheet dialog is started.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">startPage set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    By default the <emphasis role="italic">startPage</emphasis> attribute is set to 1 so that the first page in the
+    property sheet is shown first. The first page to be shown can be changed by setting this attribute to the index of
+    some other page.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">startPage</emphasis> attribute must be set within the range of 1 to <link
+    linkend="tblPropertySheetDialogMethods">MAXPROPPAGES</link> or a syntax condition will be raised. If <emphasis
+    role="italic">startPage</emphasis> is set to an index larger than the number of pages, then the first page will be
+    shown.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1563,10 +1878,11 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example changes the first page to be shown from the default to page 3:
 <programlisting>
 <![CDATA[
 
+  propDlg~startPage = 3
 
 ]]>
 </programlisting>
@@ -1580,33 +1896,42 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>watermark</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--watermark-----------------------------------------------------><
+>>--watermark------------------------------------><
 
->>--watermark=varName---------------------------------------------><
+>>--watermark=varName----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the watermark bitmap image that will be used with a Wizard97 property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">watermark get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the bitmap image, or resource ID of the bitmap image, that will be used for the watermark. The value of this
+    attribute is the <computeroutput>.ni</computeroutput> object if the attrbute has not been set or the property sheet
+    dialog is not a Wizard97 property sheet dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">watermark set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The <emphasis role="italic">watermark</emphasis> attribute should be set either to an <link
+    linkend="clsImage">Image</link> object of the bitmap to display as the warermark of a Wizard dialog, or to the
+    resource ID of the bitmap to be used. Do not set the <emphasis role="italic">watermakr</emphasis> attribute if the
+    dialog is not a Wizard97 property sheet dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The bitmap for the watermark can either be a stand alone bitmap loaded as an <computeroutput>Image</computeroutput>
+    object, or it can be a compiled binary image located in the resource section
+    of an executable file. If the bitmap is within the resource section of an executable module, then the <link
+    linkend="atrResourcesClsPSD">resources</link> attribute of this dialog object is set to the executable and the
+    <emphasis role="italic">watermark</emphasis> attribute is set to the resource ID of the bitmap.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1618,10 +1943,16 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a Wizard97 property sheet dialog and sets the watermark bitmap to an
+    <computeroutput>Image</computeroutput> object. The bitmap will be loaded from the
+    <computeroutput>tickerWizardRexxLA.bmp</computeroutput> bitmap file:
 <programlisting>
 <![CDATA[
 
+  wizDlg = .TicketWizard97~new(pages, "Wizard97", "Let's Go To The Movies")
+
+  wizDlg~header = .Image~getImage("rc\ticketWizardTheater.bmp")
+  wizDlg~watermark = .Image~getImage("rc\ticketWizardRexxLA.bmp")
 
 ]]>
 </programlisting>
@@ -1635,13 +1966,13 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>addPage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--addPage(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--addPage(--pageDlg--+---------------+--)------><
+                       +-,-isExterior--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Adds a page to the property sheet at the end of the current pages.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1649,10 +1980,17 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>pageDlg [required]</term>
       <listitem>
       <para>
-        xx
+        The Rexx dialog object to use as the page being added.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>isExterior [optional]</term>
+      <listitem>
+      <para>
+        Specifies if the added page is an exterior page of a wizard property sheet dialog. If the property sheet dialog
+        is not a wizard, this argument is ignored.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1661,33 +1999,40 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
+    Syntax conditions are raised if the <emphasis role="italic">page</emphasis> argument is not correct. The argument
+    must be a <link linkend="clsPropertySheetPage">PropertySheetPage</link> dialog object.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    This method must not be invoked from within the event handling methods, <link linkend="mthApplyClsPSP">apply</link>,
+    <link linkend="mthKillActive">killActive</link>, <link linkend="mthReset">reset</link>, or <link
+    linkend="mthSetActive">setActive</link> of the <link linkend="clsPropertySheetPage">PropertySheetPage</link>
+    class. However, you can add or remove pages during the <link linkend="mthWizBack">wizBack</link> or <link
+    linkend="mthWizNext">wizNext</link> event handling methods, provided the correct index to specify the new page is
+    returned from those event handlers.
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
   <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The dialog object must not have already been <emphasis role="italic">used</emphasis> as a property sheet page. In
+    addition to adding or inserting pages in a property sheet, pages can be removed from a property sheet.  When the
+    page is removed, the operating system destroys the underlying Windows dialog.  Although the Rexx dialog object is
+    still active, that object can not be reinserted into a property sheet as a page.
+  </para>
+  <para>
+    It is possible that the user never <emphasis role="italic">visited</emphasis> a page before it was removed. In this
+    case the Rexx dialog object could be used to add or insert a new page at some later point, because the underlying
+    Windows dialog would never have been created. The <link linkend="atrWasActivatedClsPSP">wasActivated</link>
+    attribute can be used to test for this condition.  However, it
+    is probably simplier to always instantiate a new Rexx dialog object for each page added to a property sheet.
+  </para>
+  <para>
+    The Windows operating system restricts the maximum number of pages that a property sheet can hold. The MAXPROPPAGES
+    constant of the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link> reflects this number.  If the
+    programer tries to insert or add a page past this number, a condition is raised.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1698,59 +2043,26 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>apply</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--apply(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--apply----------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Simulates the selection of the Apply button, indicating that one or more  pages have changed and the changes need to
+  be validated and recorded.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1761,59 +2073,32 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>cancelToClose</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--cancelToClose(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--cancelToClose--------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Used when changes made since the most recent PSN_APPLY notification cannot be canceled.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    <emphasis role="italic">cancelToClose</emphasis> disables the <emphasis role="italic">Cancel</emphasis> button and
+    changes the text of the OK button to <emphasis role="italic">Close</emphasis>.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1824,24 +2109,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>changed</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--changed(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--changed(--pageDlg--)-------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Informs the underlying property sheet dialog that information in a page has changed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>pageDlg</term>
       <listitem>
       <para>
-        xx
+        The Rexx dialog object that is the page that is changed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1850,33 +2135,19 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The underlying property sheet enables the <emphasis role="italic">Apply</emphasis> button.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1887,24 +2158,26 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>execute</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--execute(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--execute(--+---------+--)---------------------><
+              +--owner--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Starts the execution of the underlying, <link linkend="defModalModeless">modal</link>, property sheet dialog. This
+  method does not return until the user has closed the property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>owner [optional]</term>
       <listitem>
       <para>
-        xx
+        The Rexx dialog object whose underlying dialog is the owner dialog of this property sheet dialog. Typically
+        modal dialogs have an owner dialog. If this argument is omitted, then no owner dialog is set.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1913,13 +2186,8 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns a positive number if successful and -1 on error. It is possible that the return will be either one of the
+    <link linkend="tblPropertySheetDialogMethods">constants</link> ID_PSRESTARTWINDOWS or ID_PSREBOOTSYSTEM.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1929,17 +2197,6 @@
   </para>
   <para>
     Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1950,59 +2207,26 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>getCurrentPageHwnd</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getCurrentPageHwnd(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getCurrentPageHwnd---------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the window <link linkend="defHandle">handle</link> of the <link linkend="ovvUnderlying">underlying</link>
+  dialog of the current page in this property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns the current pages window handel.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2013,24 +2237,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>getPage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getPage(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getPage(--index--)---------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Gets the Rexx dialog object for the page specified by <emphasis role="italic">index</emphasis>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The one-based index of the page in the property sheet whose Rexx dialog object should be retrieved.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2039,33 +2263,13 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    The Rexx dialog object for the page specified
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2076,59 +2280,71 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>getResult</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getResult(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getResult------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns a keyword indicating the result of executing the <computeroutput>PropertySheetDialog</computeroutput>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns one of the following keywords to indicate the result of executing the property sheet dialog:
+  <variablelist>
+    <varlistentry><term>NotFinished</term>
+    <listitem>
+    <para>
+      The property sheet dialog has not been closed yet.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ExecutionErr</term>
+    <listitem>
+    <para>
+      The property sheet dialog did not execute because of an error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>RebootSystem</term>
+    <listitem>
+    <para>
+      A page sent the reboot system message to the property sheet. The computer must be restarted for the user's
+      changes to take effect.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>RestartWindows</term>
+    <listitem>
+    <para>
+      A page sent restart Windows message to the property sheet. Microsoft Windows must be restarted for the user's
+      changes to take effect.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ClosedCancel</term>
+    <listitem>
+    <para>
+      The user canceled the dialog
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ClosedOk</term>
+    <listitem>
+    <para>
+      The user closed the dialog with ok.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>Unknown</term>
+    <listitem>
+    <para>
+      This return should never happen. It would indicate the internal state of the ooDialog framework is inconsistent.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2139,59 +2355,26 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>getTabControl</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getTabControl(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getTabControl--------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the Rexx tab control object for the tab control of the property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no argument for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns the Rexx <link linkend="clsTab">tab</link> control for the underlying Windows tab control in the property
+    sheet dialog
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2202,24 +2385,25 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>hwndToIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--hwndToIndex(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--hwndToIndex(--hwnd--)------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the one-based index of the property sheet page specified by <emphasis role="italic">hwnd</emphasis>, its
+  window handle.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>hwnd [required]</term>
       <listitem>
       <para>
-        xx
+        The <link linkend="atrHwnd">window</link><link linkend="defHandle">handle</link> whose page index is needed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2228,33 +2412,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns the one-based index of the page on success, otherwise zero.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2265,24 +2423,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>idToIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--idToIndex(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--idToIndex(--id--)----------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Takes a property sheet page ID and returns its one-based page index.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>ID [required]</term>
       <listitem>
       <para>
-        xx
+        The property sheet page <link linkend="mthIndexToID">ID</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2291,33 +2449,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The one-based index of the page on success, or 0 on error.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2328,24 +2460,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>indexToHwnd</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--indexToHwnd(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--indexToHwnd(--index--)-----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Given the one-based index to a page, returns the window handle of the underlying page dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The one-based page index.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2354,33 +2486,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    The window handle for the page.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2391,24 +2497,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>indexToID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--indexToID(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--indexToID(--index--)-------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Given the index of a page, returns its ID.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is :
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The one-based index of the page.  The special values 0 and -1  are also acceptable.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2417,33 +2523,28 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The proper page ID for the index.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Page IDs are different depending on the type of the dialog page, <link linkend="clsUserPSPDialog">UserPSPDialog</link>,
+    <link linkend="clsResPSPDialog">ResPSPDialog</link>, etc..  In order to get the correct ID, the Rexx programmer
+    must use this method.
+  </para>
+  <para>
+    There are also two special case values for <emphasis role="italic">index</emphasis>. The page ID would most
+    commonly be used in the <link linkend="mthSetActive">setActive</link>, <link linkend="mthWizBack">wizBack</link>, or
+    <link linkend="mthWizNext">wizNext</link> event notification methods that signal a page is being changed.  To accept
+    the page change, the event handler returns 0, and to cancel the page change the event handler returns -1. So, 0 and
+    -1 are acceptable here and return the proper value for those methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2454,24 +2555,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>indexToPage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--indexToPage(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--indexToPage(--index--)-----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the PROPSHEETPAGE <link linkend="defHandle">handle</link> for the specified page index.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The one-based page index.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2480,33 +2581,21 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The PROPSHEETPAGE handle for the specified page.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The PROPSHEETPAGE handle is not the same as the window handle of the page. This method is added for completeness. In
+    the current implementation of ooDialog, the returned handle will not be of much use to the programmer. However,
+    future version of ooDialog may have enhancements that require a PROPSHEETPAGE handle.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2517,59 +2606,35 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>initDialog</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--initDialog(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--initDialog-----------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Invoked by the ooDialog framework when the underlying property sheet dialog has first been created. This is the same
+  point in the life-cycle of the property sheet dialog as the <link linkend="mthInitDialog">initDialog</link> method is
+  invoked for the normal dialog <link linkend="chpDialogObect">object</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There  are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Any return from this method is ignored.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    This method is available for the programmer to over-ride for any purpose the programmer deems useful. However, since
+    the operating system manages the property sheet dialog, this method will not be as useful as it is in the typical
+    ooDialog dialog.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2580,13 +2645,13 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>insertPage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--insertPage(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--insertPage(--pageDlg--,--index--+---------------+--)--------><
+                                    +-,-isExterior--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Inserts a new page into the property sheet dialog at the specified index.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2594,10 +2659,23 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>pageDlg [required]</term>
       <listitem>
       <para>
-        xx
+        The Rexx dialog object to use as the page being inserted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>index</term>
+      <listitem>
+      <para>
+        The one-based index where the page is to be inserted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>isExterior [optional]</term>
+      <listitem>
+      <para>
+        Specifies if the inserted page is an exterior page of a wizard property sheet dialog. If the property sheet
+        dialog is not a wizard, this argument is ignored.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2606,33 +2684,49 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Syntax conditions are raised if the <emphasis role="italic">page</emphasis> argument is not correct. The argument
+    must be a <link linkend="clsPropertySheetPage">PropertySheetPage</link> dialog object.
+  </para>
+  <para>
+    The pages after the insertion point are shifted to the right to accommodate the new page.
+  </para>
+  <para>
+    This method must not be invoked from within the event handling methods, <link linkend="mthApplyClsPSP">apply</link>,
+    <link linkend="mthKillActive">killActive</link>, <link linkend="mthReset">reset</link>, or <link
+    linkend="mthSetActive">setActive</link> of the <link linkend="clsPropertySheetPage">PropertySheetPage</link>
+    class. However, you can add or remove pages during the <link linkend="mthWizBack">wizBack</link> or <link
+    linkend="mthWizNext">wizNext</link> event handling methods, provided the correct index to specify the new page is
+    returned from those event handlers.
+  </para>
+  <para>
+    The dialog object must not have already been <emphasis role="italic">used</emphasis> as a property sheet page. In
+    addition to adding or inserting pages in a property sheet, pages can be removed from a property sheet.  When the
+    page is removed, the operating system destroys the underlying Windows dialog. Although the Rexx dialog object is
+    still active, that object can not be reinserted into a property sheet as a page.
+  </para>
+  <para>
+    It is possible that the user never <emphasis role="italic">visited</emphasis> a page before it was removed. In this
+    case the Rexx dialog object could be used to add or insert a new page at some later point, because the underlying
+    Windows dialog would never have been created. The <link linkend="atrWasActivatedClsPSP">wasActivated</link>
+    attribute can be used to test for this condition.  However, it
+    is probably simplier to always instantiate a new Rexx dialog object for each page added to a property sheet.
+  </para>
+  <para>
+    The Windows operating system restricts the maximum number of pages that a property sheet can hold. The MAXPROPPAGES
+    constant of the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link> reflects this number.  If the
+    programer tries to insert or add a page past this number, a condition is raised.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2643,24 +2737,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>pageToIndex</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--pageToIndex(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--pageToIndex(--hPage--)-----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Takes the handle of a <link linkend="mthIndesToPage">PROPSHEETPAGE</link> and returns the one-based index of the page.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>hPage</term>
       <listitem>
       <para>
-        xx
+        The handle to the PROPSHEETPAGE whose index is needed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2669,33 +2763,21 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The one-based index of the page specified by <emphasis role="italic">hPage</emphasis>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The PROPSHEETPAGE handle is not the same as the window handle of the page. This method is added for completeness. In
+    the current implementation of ooDialog, the PROPESHEET handle is not of much use to the programmer. However, future
+    version of ooDialog may have enhancements that require a PROPSHEETPAGE handle.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2706,59 +2788,34 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>popup</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--popup(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--popup----------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Begins the execution of a modeless property sheet dialog and returns immediately.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments to this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    All <computeroutput>PropertySheetDialog</computeroutput> objects must be executed through either the <emphasis
+    role="italic">popup</emphasis> or <link linkend="mthExecuteClsPSD">execute</link> methods. However, a property sheet
+    with the Aero Wizard style can not be exeucted modeless. Do not use the <emphasis role="italic">popup</emphasis>
+    method with an Aero Wizard.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2769,24 +2826,71 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>pressButton</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--pressButton(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--pressButton(--button--)---------------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Pushes the specified property sheet button programmatically.
 </para>
 <variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <varlistentry><term>button [required]</term>
   <listitem>
   <para>
-    The arguments are:
+    Exactly one of the following keywords, case is not significant:
+  </para>
+  <para>
+    <simplelist type='vert' columns='3'>
+      <member>APPLYNOW</member>
+      <member>BACK    </member>
+      <member>CANCEL  </member>
+      <member>FINISH  </member>
+      <member>HELP    </member>
+      <member>NEXT    </member>
+      <member>OK      </member>
+    </simplelist>
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>APPLYNOW</term>
       <listitem>
       <para>
-        xx
+        The ApplyNow button is pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BACK</term>
+      <listitem>
+      <para>
+        The Back button is pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Cancel</term>
+      <listitem>
+      <para>
+        The Cancel button is pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Finish</term>
+      <listitem>
+      <para>
+        The Finish button is pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Help</term>
+      <listitem>
+      <para>
+        The Help button is pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>Next</term>
+      <listitem>
+      <para>
+        The Next button is pushed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>OK</term>
+      <listitem>
+      <para>
+        The Ok button is pushed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2795,33 +2899,13 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2832,56 +2916,59 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>querySiblings</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--querySiblings(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--querySiblings(--arg1--,--arg2--)-------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">querySiblings</emphasis> method causes the underlying property sheet dialog to send the
+  <link linkend="mthQueryFromSibling">queryFromSibling</link> notification, with the specified arguments to each page of
+  the of the property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    The two arguments are sent in the QUERYFROMSIBLING notification exactly as specified. These arguments can be any
+    Rexx object desired.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the nonzero value from a page in the property sheet, or zero if no page returns a nonzero value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
+    If a page returns a nonzero value, the property sheet does not send the message to subsequent pages.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    The <emphasis role="italic">querySiblings</emphasis> method provides a way for the different page dialogs in a
+    property sheet dialog to communicate with one another. The uses for this ability are certainly unlimited.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    In this example, when one of the pages in a wizard becomes active it sends an empty table to each of the other pages
+    in the property sheet combined with the command SELECTED. Each page then adds information to the table passed the
+    command. The information is specific to the application:
 <programlisting>
 <![CDATA[
+
+::method setActive unguarded
+  expose filmArray movieTheaters selectedMovies movieCombo
+  use arg propSheet
+
+  propSheet~setWizButtons("BACK NEXT")
+
+  selected = .table~new
+  selectedMovies~empty
+  propSheet~querySiblings(selected, "SELECTED")
+
 
 ]]>
 </programlisting>
@@ -2895,59 +2982,37 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>rebootSystem</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--rebootSystem(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--rebootSystem---------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">rebootSystem</emphasis> method is invoked to notify the property sheet dialog that the
+  system needs to be rebooted for changes to take effect.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
+    An application should invoke the <emphasis role="italic">rebootSystem</emphasis> method only in response to the
+    APPLY or KILLACTIVE notifications.  Invoking the method causes the <link linkend="mthExecuteClsPSD">execute</link>
+    method to return the ID_PSREBOOTSYSTEM value, or for the <link linkend="mthGetResult">getResult</link> method to
+    return <emphasis role="italic">RebootSystem</emphasis>. But only if the user clicks the OK button to close the
+    property sheet. It is the application's responsibility to reboot the system.
 
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2958,59 +3023,38 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>recalcPageSizes</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--recalcPageSizes(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--recalcPageSizes------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Recalculates the page size of a standard or wizard property sheet after pages have been added or removed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if successful, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    When a property sheet is created, it is sized to fit its initial collection of pages. To maintain compatibility with
+    previous versions of the common controls, property sheets and wizards do not automatically resize themselves when
+    pages are subsequently added or removed. Applications would use the <emphasis
+    role="italic">recalcPageSizes</emphasis> method after adding or removing pages to ensure that the property sheet is
+    properly sized for its current collection of pages. <emphasis role="italic">Note</emphasis> however that the
+    ooDialog automatically invokes this method during the <link linkend="mthAddPage">addPage</link>, <link
+    linkend="mthInsertPage">insertPage</link>, and <link linkend="mthRemovePage">removePage</link> methods. Therefore
+    the programmer will normally not need to invoke this method explicitly in most cases.
   </para>
   </listitem></varlistentry>
 </variablelist>
