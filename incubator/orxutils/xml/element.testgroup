@@ -55,9 +55,8 @@ return testResult
 ::requires "xmldom.cls"
 
 ::class "element.testGroup" subclass ooTestCase public
-::method init
+::method setup
   expose dom document
-  forward class(super) continue
   dom = .ooRexxDOM~implementation
   document = dom~createDocument
 

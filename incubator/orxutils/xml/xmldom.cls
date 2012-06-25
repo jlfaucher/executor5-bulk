@@ -3524,6 +3524,9 @@ syntax:
   self~ownerDocument~modifiedCharacterData(self, oldValue, value, replace)
 
 ::attribute data GET
+  forward message("NODEVALUE")
+::attribute data SET
+  forward message("NODEVALUE=")
 ::attribute length GET
   expose data
   use strict arg
@@ -3536,7 +3539,7 @@ syntax:
       return
   end
 
-  self~setNodeValue(data||newData)
+  self~nodeValue = data||newData
 
 ::method deleteData
   expose data
@@ -3550,7 +3553,7 @@ syntax:
       newData = data~delstr(offset + 1, count)
   end
   -- set the node value to the adjusted version
-  self~nodeValue = newData
+  data = newData
 
   self~ownerDocument~deletedText(self, offset, count)
 
@@ -3558,14 +3561,13 @@ syntax:
   expose data
   use strict arg offset, newData, replace = .false
 
-  if offset >= data~length then do
-      newValue = data
-  end
-  else do
-      newValue = date~insert(newData, offset +1)
-  end
+  -- NB:  In this case, we don't add one to the offset because
+  -- the Rexx insert function inserts after the given offset, not
+  -- before.  This actually works to our advantage.
+  newValue = data~insert(newData, offset)
+  data = newValue
 
-  self~ownerDocument~deletedText(self, offset, data~length)
+  self~ownerDocument~insertedText(self, offset, newData~length)
 
 ::method replaceData
   expose data
@@ -3582,14 +3584,27 @@ syntax:
 
   self~ownerDocument~replacedCharacterData(self, oldvalue, data)
 
-::method setData
-  forward message("NODEVALUE=")
-
 ::method substringData
   expose data
   use strict arg offset, count
 
-  return data~substring(offset + 1, count)
+  return data~substr(offset + 1, count)
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Text -- a DOM comment node                                          */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "CommentImpl" public subclass CharacterDataImpl inherit Comment
+::attribute nodeType GET
+  use strict arg
+  return .Node~COMMENT_NODE
+
+::attribute nodeName GET
+  use strict arg
+  return "#comment"
 
 
 /*----------------------------------------------------------------------------*/
@@ -3765,16 +3780,15 @@ syntax:
   return currentNode
 
 ::method splitText
-  expose data
   use strict arg offset
 
-  newText = self~ownerDocument~createTextNode(data~substr(offset + 1))
-  self~nodeValue = data~substr(1, offset)
+  newText = self~ownerDocument~createTextNode(self~data~substr(offset + 1))
+  self~nodeValue = self~data~substr(1, offset)
 
   -- now insert the new text node
   parent = self~parentNode
-  if parentNode \= .nil then do
-      parentNode~insertBefore(newText, self~nextSibling)
+  if parent \= .nil then do
+      parent~insertBefore(newText, self~nextSibling)
   end
 
   return newText

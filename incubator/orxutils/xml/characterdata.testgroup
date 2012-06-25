@@ -43,6 +43,8 @@
 
   group = .TestGroup~new(fileSpec)
   group~add(.text.testGroup)
+  group~add(.comment.testGroup)
+  group~add(.processinginstruction.testGroup)
 
   if group~isAutomatedTest then return group
 
@@ -100,6 +102,78 @@ return testResult
   -- the text content does not change the element nodeValue
   self~assertEquals(.nil, root~nodeValue)
 
+::method testCommonStringMethods
+
+  node = self~createNode("xyz")
+  -- appending
+  node~appendData("abc")
+  self~assertEquals("xyzabc", node~data)
+  node~appendData("")
+  self~assertEquals("xyzabc", node~data)
+
+  -- deleting
+  node~deleteData(0, 1)
+  self~assertEquals("yzabc", node~data)
+  node~deleteData(1, 2)
+  self~assertEquals("ybc", node~data)
+  node~deleteData(2, 10)
+  self~assertEquals("yb", node~data)
+
+  -- inserting
+  node~insertData(0, "123")
+  self~assertEquals("123yb", node~data)
+  node~insertData(3, "")
+  self~assertEquals("123yb", node~data)
+  node~insertData(4, "456")
+  self~assertEquals("123y456b", node~data)
+  node~insertData(8, "789")
+  self~assertEquals("123y456b789", node~data)
+
+-- replacing
+  node~replaceData(3, 1, "xxxx")
+  self~assertEquals("123xxxx456b789", node~data)
+  node~replaceData(0, 1, "")
+  self~assertEquals("23xxxx456b789", node~data)
+  node~replaceData(6, 20, "000")
+  self~assertEquals("23xxxx000", node~data)
+
+-- setting
+  node~data = ""
+  self~assertEquals("", node~data)
+  self~assertEquals("", node~nodeValue)
+  node~data = "abc"
+  self~assertEquals("abc", node~data)
+  self~assertEquals("abc", node~nodeValue)
+
+-- substring
+  self~assertEquals("ab", node~substringData(0, 2))
+  self~assertEquals("", node~substringData(0, 0))
+  -- NB uses Rexx padding rules
+  self~assertEquals("abc ", node~substringData(0, 4))
+
+
+::class "comment.testgroup" subclass characterdata.testgroup public
+::method setup
+  forward class(super) continue
+  self~nodeName = "#comment"
+  self~nodeClass = .Comment
+  self~nodeType = .Node~COMMENT_NODE
+
+::method createNode
+  use arg text
+  return self~document~createComment(text)
+
+::class "processinginstruction.testgroup" subclass characterdata.testgroup public
+::method setup
+  forward class(super) continue
+  self~nodeName = "TARGET"
+  self~nodeClass = .ProcessingInstruction
+  self~nodeType = .Node~PROCESSING_INSTRUCTION_NODE
+
+::method createNode
+  use arg text
+  return self~document~createProcessingInstruction("TARGET", text)
+
 ::class "text.testgroup" subclass characterdata.testgroup public
 ::method setup
   forward class(super) continue
@@ -111,4 +185,45 @@ return testResult
   use arg text
   return self~document~createTextNode(text)
 
+-- this method only applies to the Text node type
+::method testSplitText
 
+  -- a root element to ensure the split node gets added as a child
+  root = self~document~createElement("root")
+  node = self~createNode("1234567890")
+  root~appendChild(node)
+
+  self~assertEquals("67890", node~splitText(5)~data)
+  self~assertEquals(2, root~length)
+  self~assertEquals("12345", node~data)
+  -- there should be a following sibling with the remainder of the data
+  self~assertEquals("67890", node~nextSibling~data)
+
+  root = self~document~createElement("root")
+  node = self~createNode("1234567890")
+  root~appendChild(node)
+
+  -- split before the first character
+  self~assertEquals("1234567890", node~splitText(0)~data)
+  self~assertEquals("", node~data)
+  self~assertEquals("1234567890", node~nextSibling~data)
+
+  root = self~document~createElement("root")
+  node = self~createNode("1234567890")
+  root~appendChild(node)
+
+  -- split after the last character
+  self~assertEquals("", node~splitText(10)~data)
+  self~assertEquals("1234567890", node~data)
+  self~assertEquals("", node~nextSibling~data)
+
+
+  -- this text node has no parent element...this should return an
+  -- "orphan" node
+  node = self~createNode("1234567890")
+
+  newNode = node~splitText(5)
+  self~assertEquals("67890", newNode~data)
+  self~assertEquals("12345", node~data)
+  self~assertNull(node~nextSibling)
+  self~assertNull(node~previousSibling)
