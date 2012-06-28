@@ -642,7 +642,8 @@
 <indexterm><primary>Control Dialogs</primary><secondary>ResControlDialog class</secondary></indexterm>
 <indexterm><primary>ResControlDialog Class</primary></indexterm>
 <para>
-  xxx
+  Subclass the <computeroutput>ResControlDialog</computeroutput> to use a control dialog in an application where the
+  dialog <link linkend="ovvDialogTemplate">template</link> comes from a compiled binary resource file.
 </para>
 
 <section id="sctMethodsResControlDialog"><title>Method Table</title>
@@ -1038,7 +1039,7 @@
 <table id="tblPropertySheetDialogMethods" frame="all">
 <title>PropertySheetDialog Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in">
+<colspec colwidth="1.9in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -1087,7 +1088,7 @@
 <entry>Specifies the bitmap that will be placed at the right side of an interior page's header area in a Wizard dialog. The attribute is only used for the Wizard style property sheet dialogs.</entry>
 </row>
 <row>
-<entry><link linkend="atrImageList"></link></entry>
+<entry><link linkend="atrImageList">imageList</link></entry>
 <entry>Used to assign icons for the tabs of the tab control in a property sheet dialog.</entry>
 </row>
 <row>
@@ -1111,8 +1112,8 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthAddPage"></link></entry>
-<entry>rAdds a page to the property sheet at the end of the current pages.</entry>
+<entry><link linkend="mthAddPage">addPage</link></entry>
+<entry>Adds a page to the property sheet at the end of the current pages.</entry>
 </row>
 <row>
 <entry><link linkend="mthApplyClsPSD">apply</link></entry>
@@ -1120,7 +1121,7 @@
 </row>
 <row>
 <entry><link linkend="mthCancelToClose">cancelToClose</link></entry>
-<entry>Used when changes made since the most recent PSN_APPLY notification cannot be canceled.</entry>
+<entry>Used when changes made since the most recent APPLY notification cannot be canceled.</entry>
 </row>
 <row>
 <entry><link linkend="mthChanged">changed</link></entry>
@@ -1313,20 +1314,21 @@
           <varlistentry><term>NOAPPLYNOW</term>
           <listitem>
           <para>
-            Removes the Apply button. This flag is not supported with the AEROWIZARD style.
+            Removes the Apply button. This keyword is not supported with the AEROWIZARD style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOCONTEXTHELP</term>
           <listitem>
           <para>
-            text
+            Removes the context-sensitive Help button ("?"), which is usually present on the caption bar of property
+            sheets. This flag is not valid for wizards.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NOMARGIN</term>
           <listitem>
           <para>
-            Removes the context-sensitive Help button ("?"), which is usually present on the caption bar of property
-            sheets. This flag is not valid for wizards.
+            Specifies that no margin is inserted between the page and the frame. Must be used in combination with
+            AEROWIZARD.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>PROPTITLE</term>
@@ -1352,7 +1354,7 @@
           <para>
             Reverses the direction in which the tile of the property dialog is displayed. Normal windows display all
             text, including the title, left-to-right (LTR). For languages such as Hebrew or Arabic that read
-            right-to-left (RTL), a window can be mirrored and all text will be displayed RTL. RTLREADING is set, the
+            right-to-left (RTL), a window can be mirrored and all text will be displayed RTL. If RTLREADING is set, the
             title will instead read RTL in a normal parent window and LTR in a mirrored parent window.
           </para>
           </listitem></varlistentry>
@@ -2079,7 +2081,7 @@
 </programlisting>
 
 <para>
-  Used when changes made since the most recent PSN_APPLY notification cannot be canceled.
+  Used when changes made since the most recent APPLY notification cannot be canceled.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2814,8 +2816,8 @@
   <para>
     All <computeroutput>PropertySheetDialog</computeroutput> objects must be executed through either the <emphasis
     role="italic">popup</emphasis> or <link linkend="mthExecuteClsPSD">execute</link> methods. However, a property sheet
-    with the Aero Wizard style can not be exeucted modeless. Do not use the <emphasis role="italic">popup</emphasis>
-    method with an Aero Wizard.
+    with the Aero Wizard style can not be executed as a modeless dialog. Do not use the <emphasis
+    role="italic">popup</emphasis> method with an Aero Wizard.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3012,7 +3014,6 @@
     method to return the ID_PSREBOOTSYSTEM value, or for the <link linkend="mthGetResult">getResult</link> method to
     return <emphasis role="italic">RebootSystem</emphasis>. But only if the user clicks the OK button to close the
     property sheet. It is the application's responsibility to reboot the system.
-
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3029,7 +3030,8 @@
 </programlisting>
 
 <para>
-  Recalculates the page size of a standard or wizard property sheet after pages have been added or removed.
+  Causes a standard or wizard property sheet to recalculate the page size of all its pages. The <emphasis
+  role="italic">recalcPageSizes</emphasis> method would normally be invoked after pages have been added or removed.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3051,10 +3053,10 @@
     previous versions of the common controls, property sheets and wizards do not automatically resize themselves when
     pages are subsequently added or removed. Applications would use the <emphasis
     role="italic">recalcPageSizes</emphasis> method after adding or removing pages to ensure that the property sheet is
-    properly sized for its current collection of pages. <emphasis role="italic">Note</emphasis> however that the
-    ooDialog automatically invokes this method during the <link linkend="mthAddPage">addPage</link>, <link
+    properly sized for its current collection of pages. <emphasis role="bold">Note</emphasis> however that the ooDialog
+    framework automatically invokes this method during the <link linkend="mthAddPage">addPage</link>, <link
     linkend="mthInsertPage">insertPage</link>, and <link linkend="mthRemovePage">removePage</link> methods. Therefore
-    the programmer will normally not need to invoke this method explicitly in most cases.
+    the programmer will normally not need to explicitly invoke this method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3065,59 +3067,36 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>restartWindows</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--restartWindows(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--restartWindows-------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">restartWindows</emphasis> method is invoked to notify the property sheet dialog that
+  Microsof Windows needs to be restarted for changes to take effect.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    This method has no arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    An application should invoke the <emphasis role="italic">restartWindows</emphasis> method only in response to the
+    APPLY or KILLACTIVE notifications.  Invoking the method causes the <link linkend="mthExecuteClsPSD">execute</link>
+    method to return the ID_PSRESTARTWINDOWS value, or for the <link linkend="mthGetResult">getResult</link> method to
+    return <emphasis role="italic">RestartWindows</emphasis>. But only if the user clicks the OK button to close the
+    property sheet. It is the application's responsibility to restart Windows.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3128,13 +3107,13 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>removePage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--removePage(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--removePage(--+---------+--)------------------><
+                 +--index--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Removes a page from this property sheet.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3142,10 +3121,10 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [optional]</term>
       <listitem>
       <para>
-        xx
+        The one-based index of the page to remove. If this argument is omitted then the last page is removed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3154,33 +3133,24 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method must not be invoked from within the event handling methods, <link linkend="mthApplyClsPSP">apply</link>,
+    <link linkend="mthKillActive">killActive</link>, <link linkend="mthReset">reset</link>, or <link
+    linkend="mthSetActive">setActive</link> of the <link linkend="clsPropertySheetPage">PropertySheetPage</link>
+    class. However, you can add or remove pages during the <link linkend="mthWizBack">wizBack</link> or <link
+    linkend="mthWizNext">wizNext</link> event handling methods, provided the correct index to specify the new page is
+    returned from those event handlers.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3191,13 +3161,13 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>setCurSel</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setCurSel(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setCurSel(--+------------------+--+----------+--)-----------><
+                +--hPropSheetPage--+  +-,-index--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Activates the specified page in a property sheet.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3205,10 +3175,19 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>hPropSheetPage [optional]</term>
       <listitem>
       <para>
-        xx
+        A <link linkend="mthIndexToPage">PROPSHEETPAGE</link> <link linkend="defHandle">handle</link> for the page to be
+        removed. If this argument is omitted, then the <emphasis role="italic">index</emphasis> argument can not be
+        omitted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>index [optional]</term>
+      <listitem>
+      <para>
+        The one-based index of the page to be removed. If this argument is omitted, then the <emphasis
+        role="italic">hPropSheetPage</emphasis> argument can not be omitted.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3217,33 +3196,25 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, othewise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The property sheet page to activate can be specified by either the property sheet page handle, or the page index, or
+    both. If both are specified, the property sheet page handle takes precedence.
+  </para>
+  <para>
+     Although both arguments are optional, they are optional individually. At least one of the arguments must be
+     specified or a condition is raised. In addition, if the index argument is used to specify the page is not a valid
+     index, a condition is raised.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3254,24 +3225,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>setCurSelByID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setCurSelByID(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setCurSelByID(--id--)------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Activates the page specified by <emphasis role="italic">id</emphasis> in this property sheet.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>id</term>
       <listitem>
       <para>
-        xx
+        The page ID of the page to activate.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3280,33 +3251,21 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success, false on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The property sheet page ID can be obtained using the <link linkend="mthIndexToID">indexToID</link> method.  Do not
+    confuse a page ID with a page handle, they are 2 separate things.  The only way for the Rexx programmer to obtain
+    the page ID is through <emphasis role="italic">indexToID</emphasis>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3317,24 +3276,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>setFinishText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setFinishText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setFinishText(--text--)----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the text of the Finish button in a wizard, shows and enables the button, and hides the Next and Back buttons.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>text [required]</term>
       <listitem>
       <para>
-        xx
+        The text to display on the Finish button.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3343,33 +3302,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    Returns 0 always.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3380,13 +3313,13 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>setHeaderSubTitle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setHeaderSubTitle(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setHeaderSubTitle(--index--,--text--)--------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets or resets the text for the header subtitle in a wizard property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3394,10 +3327,16 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The one-based index of the page whose header subtitle is to be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text for the header subtitle.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3406,33 +3345,20 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method is not available for Aero-style wizards. If the page specified is the current page, it will immediately
+    be repainted to display the new subtitle.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3443,13 +3369,13 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>setHeaderTitle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setHeaderTitle(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setHeaderTitle(--index--,--text--)-----------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets or resets the text for the header in a wizard property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3457,10 +3383,16 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>index [required]</term>
       <listitem>
       <para>
-        xx
+        The one-based index of the page whose header text is to be set.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text for the header.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3469,33 +3401,20 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Always returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    This method is not available for Aero-style wizards. If the page specified is the current page, it will immediately
+    be repainted to display the new header.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3506,24 +3425,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>setNextText</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setNextText(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setNextText(--text--)------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the text of the Next button in a wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>text [required]</term>
       <listitem>
       <para>
-        xx
+        The text to display on the Next button.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3532,33 +3451,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    This method always returns 0.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3569,13 +3462,14 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>setTitle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setTitle(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setTitle(--text--+---------------------+--)-----------------><
+                     +-,-addPropertiesFor--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sets the title for a property sheet dialog.  This method is not available  for Aero wizards, and does nothing in
+  other wizards
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3583,10 +3477,17 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>text [required]</term>
       <listitem>
       <para>
-        xx
+        The text for the property sheet title.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>addPropertiesFor [optional]</term>
+      <listitem>
+      <para>
+        If true, the operating system includes the prefix <emphasis role="italic">Properties for</emphasis> with the
+        specified title text. Otherwise, the prefix is not used. The default is false.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3595,13 +3496,14 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The MSDN documentation seems to indicate that this is valid for wizards, but experimentation shows it does not work
+    for any wizard.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3609,21 +3511,6 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PropertySheetDialog::setTitle() -->
 
@@ -3632,24 +3519,58 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>setWizButtons</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--setWizButtons(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--setWizButtons(--+--------+--)----------------><
+                    +--opts--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Enables or disables the Back, Next, and Finish buttons in a wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is.
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>opts [optional]</term>
       <listitem>
       <para>
-        xx
+        A list of 0 or more of the following keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BACK         </member>
+          <member>DISABLEFINISH</member>
+          <member>FINISH       </member>
+          <member>NEXT         </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BACK</term>
+          <listitem>
+          <para>
+            Enables the Back button. If this keyword is missing, the Back button is displayed as disabled.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLEFINISH</term>
+          <listitem>
+          <para>
+            Displays a disabled Finish button
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FINISH</term>
+          <listitem>
+          <para>
+            Displays an enabled Finish button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NEXT</term>
+          <listitem>
+          <para>
+            Enables the Next button. If this keyword is missing, the Next button is displayed as disabled.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3658,31 +3579,40 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if the property sheet dialog is a wizard, otherwise returns false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
+    Wizards display either three or four buttons below each page. This method is used to specify which buttons are
+    enabled. Wizards normally display Back, Cancel, and either a Next or Finish button.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+     Typically, the application enables only the Next button for the welcome page, enables the Next and Back buttons for
+     the interior pages, and enables the Back and Finish buttons for the completion page.  The Cancel button is always
+     enabled. Normally, setting FINISH or DISABLEDFINISH replaces the Next button with a Finish button. To changes this
+     to display both Next and Finish buttons simultaneously, set the WIZARDHASFINISH keyword in the options when the
+     <link linkend="mthNewClsPropertySheetDialog">PropertySheetDialog</link> is instantiated. With that option, every
+     page will then display all four buttons.
+  </para>
+  <para>
+    If this property sheet is not a Wizard, this method has no effect.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the SETACTIVE event handler in one of the interior page dialogs for a wizard property sheet
+    dialog:
 <programlisting>
 <![CDATA[
 
+::method setActive unguarded
+  use arg propSheet
+
+  propSheet~setWizButtons("BACK NEXT")
+  return 0
 ]]>
 </programlisting>
   </para>
@@ -3695,13 +3625,13 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>showWizButtons</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--showWizButtons(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--showWizButtons(--+--------+--+----------------+--)----------><
+                     +--opts--+  +-,-optsButtons--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Shows or hides buttons in an aero wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3709,6 +3639,46 @@
   <para>
     The arguments are:
     <variablelist>
+      <varlistentry><term>opts [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BACK         </member>
+          <member>CANCEL</member>
+          <member>FINISH       </member>
+          <member>NEXT         </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BACK</term>
+          <listitem>
+          <para>
+            Enables the Back button. If this keyword is missing, the Back button is displayed as disabled.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>DISABLEFINISH</term>
+          <listitem>
+          <para>
+            Displays a disabled Finish button
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FINISH</term>
+          <listitem>
+          <para>
+            Displays an enabled Finish button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NEXT</term>
+          <listitem>
+          <para>
+            Enables the Next button. If this keyword is missing, the Next button is displayed as disabled.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>TERM</term>
       <listitem>
       <para>
@@ -3727,7 +3697,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
