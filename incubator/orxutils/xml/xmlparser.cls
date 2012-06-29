@@ -95,12 +95,25 @@
 /*----------------------------------------------------------------------------*/
 
 ::constant parserver '0.5'             -- the version of this parser
+::constant eol '0a'x                   -- newline character used for XML
+::constant tab '09'x
 ::attribute src         private -- the array of xml lines to be parsed
 ::attribute lineidx     private -- the index into the array of xml lines
 ::attribute charidx     private -- the index into a xml line
 ::attribute errortxt    private -- error text
 ::attribute eof         private -- done parsing?
+::attribute xmlerror    private -- the last error
 
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: setErrorPoint                                                      */
+/* Description: record current position for error reporting                   */
+/*----------------------------------------------------------------------------*/
+::method setErrorPoint
+  expose errlineidx errcharidx lineidx charidx
+  errlineidx = lineidx
+  errcharidx = charidx
 
 /*----------------------------------------------------------------------------*/
 /* Method: create_error                                                       */
@@ -108,13 +121,16 @@
 /*----------------------------------------------------------------------------*/
 
 ::method create_error private
-use strict arg msg, errline, errpos
-xmlerror = .xmlerror~new
-xmlerror~text = msg
-xmlerror~filename = self~xmlfile
-xmlerror~line = errline
-xmlerror~charpos = errpos
-return xmlerror
+  expose errlineidx errcharidx xmlerror eof
+  use strict arg msg
+  xmlerror = .xmlerror~new
+  xmlerror~text = 'Error on line' errlineidx', column' errcharidx':' msg
+  xmlerror~filename = self~xmlfile
+  xmlerror~line = errline
+  xmlerror~charpos = errpos
+  -- turn on the eof indicator so nothing else gets processed
+  eof = .true
+  self~error(xmlerror)   -- pass this to the processing routine
 
 
 /*----------------------------------------------------------------------------*/
@@ -127,6 +143,8 @@ use strict arg text
 
 -- NOTE:  This works fine for both strings and mutablebuffer.  Care should be
 -- taken to ensure it remains that way.
+text = text~changestr('&apos;', "'")
+text = text~changestr('&quot;', '"')
 text = text~changestr('&gt;', '>')
 text = text~changestr('&lt;', '<')
 text = text~changestr('&amp;', '&') -- always do this one last!
@@ -139,11 +157,29 @@ return text
 /*----------------------------------------------------------------------------*/
 
 ::method currentchar private
-expose src lineidx charidx
-use strict arg
-if lineidx > src~items then return .nil
-return src[lineidx]~subChar(charidx)
+  expose src lineidx charidx
+  use strict arg
+  if lineidx > src~items then return .nil
+  -- report eol as the currennt char if the index is zero
+  if charidx == 0 then do
+      return self~eof
+  end
+  return src[lineidx]~subChar(charidx)
 
+/*----------------------------------------------------------------------------*/
+/* Method: checkeol                                                           */
+/* Description: handle end of line situations                                 */
+/*----------------------------------------------------------------------------*/
+
+::method checkeol private
+  expose src lineidx charidx eof
+  if charidx > src[lineidx]~length then do
+     lineidx += 1
+     charidx = 0    -- this indicates we just crossed a boundary
+  end
+  if lineidx > src~items then do
+     eof = .true
+  end
 
 /*----------------------------------------------------------------------------*/
 /* Method: getchar                                                            */
@@ -151,19 +187,48 @@ return src[lineidx]~subChar(charidx)
 /*----------------------------------------------------------------------------*/
 
 ::method getchar private
-expose src lineidx charidx eof
-use strict arg
-character = src[lineidx]~subchar(charidx)
-charidx += 1
-if charidx > src[lineidx]~length then do
-   lineidx += 1
-   charidx = 1
-   end
-if lineidx > src~items then do
-   eof = .true
-   return ''
-   end
-return character
+  expose src lineidx charidx eof
+  use strict arg eol = .false
+
+  -- we set to zero if the last character crossed a line boundary
+  -- we might want this, we might not want this...
+  if charidx == 0 then do
+     -- advance to the first real character
+     charidx = 1
+     -- if newlines are requested, then return it now
+     if eol then do
+        return self~eol
+     end
+  end
+
+  character = src[lineidx]~subchar(charidx)
+  charidx += 1
+  self~checkeol
+  return character
+
+/*----------------------------------------------------------------------------*/
+/* Method: checkchar                                                          */
+/* Description: check ahead to see if a given string are the next characters  */
+/* up in the sequence.  If there is a match, then the read pointer is         */
+/* advanced past the matching characters, otherwise the position remains      */
+/* unchanged.  Matches will not cross line boundaries                         */
+/*----------------------------------------------------------------------------*/
+
+::method checkChar private
+  expose charidx lineidx src
+  use strict arg string
+  -- if we are at a linened boundary, this is always false
+  if charidx == 0 then do
+     return .false
+  end
+  -- check for a match
+  if src[lineidx]~match(charidx, string) then do
+     -- advance the position if it matches
+     charidx += string~length
+     self~checkeol
+     return .true
+  end
+  return .false
 
 
 /*----------------------------------------------------------------------------*/
@@ -172,130 +237,321 @@ return character
 /*----------------------------------------------------------------------------*/
 
 ::method getchunk private
-expose src lineidx charidx errortxt eof
-use strict arg
-errlineidx = lineidx
-errcharidx = charidx
-chunk = .xmlchunk~new
-if self~currentchar() <> '<' then do
-   /* we found some CDATA */
+  expose src lineidx charidx errortxt eof
+  use strict arg
+  -- remember the position for error reporting
+  self~setErrorPoint
+  -- something other than a tag?
+  if \self~checkChar('<') then do
+     -- handle the text part of an element
+     return self~parseText
+  end
+
+  -- closing element tag?
+  if self~checkChar("/") then do
+     return self~parseEndElement
+  end
+  -- is this CDATA?
+  else if self~checkchar("![CDATA[") then do
+     return self~parseCData
+  end
+  -- is this a comment?
+  else if self~checkchar("!--") then do
+     return self~parseComment
+  end
+  -- is this a !DOCTYPE declaration?
+  else if self~checkChar('!DOCTYPE') then do
+     return self~parseDocType
+  end
+  -- a processing instruction like <?xml >?
+  else if self~checkChar('?') then do
+     return self~parseProcessingInstruction
+  end
+  -- some sort of processing instruction.  Of particular importance are CDATA tags
+  else do
+     -- handle an element tag
+     return self~parseElement
+  end
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: scanToTagEnd                                                       */
+/* Description: scan to the end of an element tag, returning all of the       */
+/*              characters between                                            */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+::method scanToTagEnd
+  expose eof
+  element = .mutablebuffer~new
+  -- scan until we find the closing > of the element.  This
+  -- may span lines...if we find a line break, then replace it
+  -- with a blank
+  do while \eof
+     char = self~getChar(.true)
+     -- if we've hit a line break, replace with a space instead
+     if char == self~eol then char = ' '
+     element~append(char)
+     -- we're done once we hit the end
+     if self~checkChar('>') then leave
+  end
+  return element
+
+/*----------------------------------------------------------------------------*/
+/* Method: scanToTagEndNested                                                 */
+/* Description: scan to the end of an element tag, returning all of the       */
+/*              characters between.  This allows for nested elements          */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+::method scanToTagEndNested
+  expose eof
+  instruction = .mutablebuffer~new
+  -- scan until we find the closing > of the element.  This
+  -- may span lines...if we find a line break, then replace it
+  -- with a blank
+  nestlevel = 0
+  do while \eof
+     -- It is possible for tags to be contained within other tags in XML
+     -- processing tags. The next two IF statements take care of that nesting
+     -- possibility. It will be up to the user to parse out the contained
+     -- tags.  This also includes lineends unmodified
+     if self~currentchar() = '<' then nestlevel += 1
+     if self~currentchar() = '>' then do
+        -- if we're still nested, just reduce the nesting level
+        if nestlevel > 0 then nestlevel -= 1
+        -- done parsing this
+        else do
+           self~getChar
+           leave
+        end
+     end
+     instruction~append(self~getchar(.true))
+  end
+
+  return instruction
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseText                                                          */
+/* Description: parse out element text, maintaining line breaks               */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+::method parseText
+  expose eof
+   chunk = .xmlchunk~new
+   -- we found some text data
    text = .mutablebuffer~new
-   curline = lineidx
-   do while eof = .false & self~currentchar() <> '<'
+   do while eof = .false, self~currentchar() <> '<'
       -- Do NOT collapse the white space and newlines out of the chunk!
       -- We leave that task up to the client of this class.
       -- Instead, we return a chunk with .endofline stuck in between
       -- at the linebreaks.
-      text~append(self~getchar())
-      if curline <> lineidx then do
-         text~append(.endofline)
-         curline = lineidx
-         end
-      end
+      text~append(self~getchar(.true))
+   end
    chunk~text = self~xlatetext(text)~string~strip
-   if chunk~text <> '' then
+   -- if this chunk if just whitespace characters (including lineneds), just
+   -- ignore it.
+   if chunk~text~verify(' '||self~tab||self~eol) \= 0 then
       self~text(chunk) -- call the public override method
    return chunk
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseCData                                                         */
+/* Description: parse out CDATA test, maintaining line breaks                 */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+::method parseCData
+  expose eof
+  chunk = .xmlchunk~new
+  -- we found some text data
+  data = .mutablebuffer~new
+  do while eof = .false
+     char = self~getchar(.true)
+     -- potential ending marker?
+     if char == ']' then do
+        -- test for the rest of the marker
+        if self~checkChar(']>') then leave
+     end
+
+     -- Do NOT collapse the white space and newlines out of the chunk!
+     -- We leave that task up to the client of this class.
+     -- Instead, we return a chunk with .eol stuck in between
+     -- at the linebreaks.
+     data~append(char)
+  end
+
+  -- cdata information does not recognize entities.
+  chunk~text = data~string
+  self~cdata(chunk) -- call the public override method
+  return chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseComment                                                       */
+/* Description: parse out Comment data, maintaining line breaks               */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+::method parseComment
+  expose eof
+   chunk = .xmlchunk~new
+   -- we found some text data
+   data = .mutablebuffer~new
+   do while eof = .false
+      char = self~getchar(.true)
+      -- potential ending marker?
+      if char == '-' then do
+         -- test for the rest of the marker
+         if self~checkChar('->') then leave
+      end
+
+      -- Do NOT collapse the white space and newlines out of the chunk!
+      -- We leave that task up to the client of this class.
+      -- Instead, we return a chunk with .eol stuck in between
+      -- at the linebreaks.
+      data~append(char)
    end
-/* we found an XML tag, process it */
-character = self~getchar() -- skip the '<'
-element = .mutablebuffer~new
-curline = lineidx
-nestlevel = 0
-do while eof = .false
-   if element~substr(1, 1) = '!' then do
-      -- It is possible for tags to be contained within other tags in XML
-      -- processing tags. The next two IF statements take care of that nesting
-      -- possibility. It will be up to the user to parse out the contained
-      -- tags.
-      if self~currentchar() = '<' then nestlevel = nestlevel + 1
-      if self~currentchar() = '>' & level > 0 then nestlevel = nestlevel - 1
+
+   -- comment information does not recognize entities.
+   chunk~text = data~string
+   self~comment(chunk) -- call the public override method
+   return chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseEndElement                                                    */
+/* Description: parse out a closing element tag, calling the handlers         */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+::method parseEndElement
+  element = self~scanToTagEnd
+  chunk = .xmlchunk~new
+  chunk~tag = element
+  self~end_element(chunk) -- call the public override method
+  return chunk
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseAttributes                                                    */
+/* Description: parse attribute values from a string                          */
+/* Arguments:   the attribute string                                          */
+/*----------------------------------------------------------------------------*/
+::method parseAttributes
+  use arg element
+
+  -- Note:  this is the "=" form, which will ignore the whitespace
+  if element = '' then return .nil
+  attr = .directory~new
+  loop while element \= ''
+      -- attribute values must be quoted strings, but either single or
+      -- double quotes can be used...
+      assignment = element~pos('=')
+      -- hmmm, no assignment found, this is invalid
+      if assignment = 0 then do
+         -- do not allow attributes without values!
+         errortxt = 'Error line' errlineidx 'column' errcharidx || ,
+                    ': Invalid tag attribute' element'.'
+         -- create the error message and handle termination
+         self~create_error('Invalid tag attribute' element'.')
+         return .nil
       end
-   element~append(self~getchar())
-   if curline <> lineidx then do
-      element~append(' ')
-      curline = lineidx
+      -- pull off the attribute name and see what sort of
+      -- value we have
+      parse var element attrname =(assignment) +1 element
+      if element~match(1, "'") then do
+         parse var element "'" value "'" element
       end
-   if self~currentchar() = '>' & nestlevel = 0 then leave
-   end
-if eof = .true then do
-   errortxt = 'Error line' errlineidx': EOF within an XML tag.'
-   self~error(self~create_error(errortxt, errlineidx, errcharidx)) -- call the public override method
-   return .nil
-   end
--- element is now a string value
-element = element~string~strip()
-select
-   when element~subchar(1) = '/' then do
-      chunk~tag = element~substr(2)
-      self~end_element(chunk) -- call the public override method
+      else if element~match(1, '"') then do
+         parse var element '"' value '"' element
       end
-   when pos('?', element~subchar(1)) > 0 then do
-      chunk~tag = ''
-      chunk~text = element
-      self~passthrough(chunk) -- call the public override method
+      else do
+        -- do not allow attributes without values!
+        self~create_error('Invalid attribute value' element'.') -- call the public override method
+        return .nil
       end
-   when pos('!--', element~substr(1, 3)) > 0 then do
-      chunk~tag = ''
-      chunk~text = element
-      self~passthrough(chunk) -- call the public override method
-      end
-   when pos('!', element~subchar(1)) > 0 then do
-      chunk~tag = ''
-      chunk~text = element
-      self~passthrough(chunk) -- call the public override method
-      end
-   when element~matchChar(1, xrange('a', 'z') || xrange('A', 'Z')) then do
-      parse var element tag element
-      -- the following is needed in case the '/' immediately follows the tag
-      if tag~pos('/') > 0 then do
-         tag = tag~substr(1, tag~length - 1)
-         element = '/' element
-         end
-      chunk~tag = tag
-      /* process the attributes */
-      if element~length > 0 then chunk~attr = .directory~new
-      do while element~length() > 0
-         if pos('="', element~word(1)) > 0 then do
-            parse var element attrname . '="' attrvalue . '"' element
-            attrvalue = self~xlatetext(attrvalue)
-            chunk~attr[attrname] = attrvalue
-            end
-         else if pos("='", element~word(1)) > 0 then do
-            parse var element attrname . "='" attrvalue . "'" element
-            attrvalue = self~xlatetext(attrvalue)
-            chunk~attr[attrname] = attrvalue
-            end
-         else do
-            parse var element attrname element
-            if attrname <> '/' then do
-               -- do not allow attributes without values!
-               errortxt = 'Error line' errlineidx 'column' errcharidx || ,
-                          ': Invalid tag attribute' attrname'.'
-               self~error(self~create_error(errortxt, errlineidx, errcharidx)) -- call the public override method
-               /* stop parsing */
-               eof = .true
-               return .nil
-               end
-            end
-         end
-      self~start_element(chunk) -- call the public override method
-      if attrname = '/' then do
-         endchunk = .xmlchunk~new
-         endchunk~tag = tag
-         self~end_element(endchunk) -- call the public override method
-         end
-      end
-   otherwise do
-      errortxt = 'Error line' errlineidx 'column 'errcharidx': Invalid tag name.'
-      self~error(self~create_error(errortxt, errlineidx, errcharidx)) -- call the public override method
-      /* stop parsing */
-      eof = .true
-      return .nil
-      end
-   end
-character = self~getchar() -- skip the '>'
-return chunk
+      -- these have the entities translated out
+      attr[attrname] = self~xlatetext(value)
+  end
+  return attr
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseElement                                                       */
+/* Description: parse out an element tag, calling the handlers                */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+
+::method parseElement
+  element = self~scanToTagEnd
+  chunk = .xmlchunk~new
+  -- assume this is not a complete tag element
+  endTag = .false
+  -- if the close is here, then truncate and remember to send
+  -- the end element notification
+  if element~match(element~length, '/') then do
+     element~setBufferSize(element~length - 1)
+     endTag = .true
+  end
+  -- convert to a string and strip now
+  element = element~string~strip
+
+  -- ok, now process the attributes, if any
+
+  -- strip off the tag and parse off each of the attributes
+  parse var element chunk~tag element
+
+  -- now parse out the attributes
+  chunk~attr = self~parseAttributes(element)
+
+  self~start_element(chunk) -- call the public override method
+  -- self terminating element?
+  if endTag then do
+     endchunk = .xmlchunk~new
+     endchunk~tag = chunk~tag
+     self~end_element(endchunk) -- call the public override method
+  end
+
+  return chunk
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseProcessingInstruction                                         */
+/* Description: parse out a processing instruction tag                        */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+::method parseProcessingInstruction
+  expose eof
+
+  chunk = .xmlchunk~new
+  instruction = self~scanToTagEnd
+  if eof then do
+     self~create_error('EOF within an XML tag.') -- call the public override method
+     return .nil
+  end
+  -- instruction is now a string value
+  instruction = instruction~string~strip
+
+  -- strip off the target name and parse off each of the attributes
+  parse var instruction chunk~tag chunk~text '?'
+  self~processingInstruction(chunk) -- call the public override method
+  return chunk
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseDoctype                                                       */
+/* Description: parse out a complex doctype tag.  No attempt is made to       */
+/*              interpret the information, including the nested parts         */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+::method parseDoctype
+  expose eof
+
+  chunk = .xmlchunk~new
+  chunk~text = self~scanToTagEndNested~string~strip
+  if eof then do
+     self~create_error('EOF within a DOCTYPE tag.') -- call the public override method
+     return .nil
+  end
+  chunk~tag = ''
+  self~doctypeDecl(chunk) -- call the public override method
+  return chunk
 
 
 /*----------------------------------------------------------------------------*/
@@ -307,6 +563,25 @@ return chunk
 
 ::attribute xmlfile private -- the XML file name, if known
 
+/*----------------------------------------------------------------------------*/
+/* Method: start_document                                                     */
+/* Description: called before the start of document processing                */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+
+::method start_document
+/* this method is designed to be overridden by a subclass */
+  use strict arg
+
+/*----------------------------------------------------------------------------*/
+/* Method: end_document                                                       */
+/* Description: called after all parsing has completed                        */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+
+::method end_document
+/* this method is designed to be overridden by a subclass */
+  use strict arg
 
 /*----------------------------------------------------------------------------*/
 /* Method: start_element                                                      */
@@ -316,9 +591,7 @@ return chunk
 
 ::method start_element
 /* this method is designed to be overridden by a subclass */
-use strict arg chunk
-return
-
+  use strict arg chunk
 
 /*----------------------------------------------------------------------------*/
 /* Method: end_element                                                        */
@@ -328,9 +601,7 @@ return
 
 ::method end_element
 /* this method is designed to be overridden by a subclass */
-use strict arg chunk
-return
-
+  use strict arg chunk
 
 /*----------------------------------------------------------------------------*/
 /* Method: text                                                               */
@@ -340,22 +611,43 @@ return
 
 ::method text
 /* this method is designed to be overridden by a subclass */
-use strict arg chunk
-return
-
+  use strict arg chunk
 
 /*----------------------------------------------------------------------------*/
-/* Method: passthrough                                                        */
-/* Description: called when comment tag or a processing instruction has been  */
-/*              encountered.                                                  */
+/* Method: called when a comment tag has been encountered                     */
 /* Arguments:   an xmlchunk instance.                                         */
 /*----------------------------------------------------------------------------*/
 
-::method passthrough
+::method comment
 /* this method is designed to be overridden by a subclass */
-use strict arg chunk
-return
+  use strict arg chunk
 
+/*----------------------------------------------------------------------------*/
+/* Method: called when a CDATA tag has been encountered                       */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method cdata
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: called when a processing instruction has been encountered          */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method processingInstruction
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: called when a CDATA tag has been encountered                       */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method doctypeDecl
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
 
 /*----------------------------------------------------------------------------*/
 /* Method: error                                                              */
@@ -365,17 +657,15 @@ return
 
 ::method error
 /* this method is designed to be overridden by a subclass */
-use strict arg xmlerror
-return
-
+  use strict arg xmlerror
 
 /*----------------------------------------------------------------------------*/
 /* Method: getversion                                                         */
 /* Description: return the version of this class.                             */
 /*----------------------------------------------------------------------------*/
 
-::method getversion
-return self~parserver
+::method version
+  return self~parserver
 
 
 /*----------------------------------------------------------------------------*/
@@ -384,23 +674,31 @@ return self~parserver
 /*----------------------------------------------------------------------------*/
 
 ::method parse_array
-expose src lineidx charidx errortxt eof
-use strict arg src
-eof = .false
-/* make sure this is an xml document */
-if src[1]~pos('<?xml') <> 1 then do
-   errortxt = 'Error: Invalid XML document.'
-   self~error(self~create_error(errortxt, 1, 1))
-   return
-   end
-/* parse the xml array */
-lineidx = 1
-charidx = 1
-errortxt = ''
-do while eof = .false
-   chunk = self~getchunk()
-   end
-return errortxt
+  expose src lineidx charidx eof xmlerror
+  use strict arg src
+  eof = .false
+  /* parse the xml array */
+  lineidx = 1
+  charidx = 1
+  xmlerror = .nil
+  -- set the initial error point
+  self~setErrorPoint
+  /* make sure this is an xml document */
+  if src[1]~pos('<?xml') <> 1 then do
+     self~create_error('Invalid XML document.')
+     return xmlerror~text
+  end
+  self~start_document
+  do while \eof
+     self~getchunk
+  end
+  -- we send the end_document even if there is an error
+  self~end_document
+  -- if we had an error, return the message as a return value
+  if xmlerror \= .nil then do
+     return xmlerror~text
+  end
+  return ''
 
 
 /*----------------------------------------------------------------------------*/
@@ -409,19 +707,18 @@ return errortxt
 /*----------------------------------------------------------------------------*/
 
 ::method parse_file
-expose errortxt xmlfile
-use strict arg xmlfile
-tfile = .stream~new(xmlfile)
-errortxt = tfile~open('read')
-if errortxt <> 'READY:' then do
-   tfile~close()
-   return errortxt
-   end
-lines = tfile~arrayin()
-tfile~close()
+  expose xmlfile
+  use strict arg xmlfile
+  tfile = .stream~new(xmlfile)
+  errortxt = tfile~open('read')
+  if errortxt <> 'READY:' then do
+     tfile~close()
+     return errortxt
+     end
+  lines = tfile~arrayin()
+  tfile~close()
 
-errortxt = self~parse_array(lines)
-return errortxt
+  return self~parse_array(lines)
 
 
 /*----------------------------------------------------------------------------*/
@@ -431,12 +728,10 @@ return errortxt
 /*----------------------------------------------------------------------------*/
 
 ::method parse_stream
-expose errortxt
-use strict arg tfile
-lines = tfile~arrayin()
+  use strict arg tfile
+  lines = tfile~arrayin()
 
-errortxt = self~parse_array(lines)
-return errortxt
+  return self~parse_array(lines)
 
 
 /*----------------------------------------------------------------------------*/
@@ -473,18 +768,16 @@ return errortxt
 
 ::method init
 use strict arg
-self~text = .nil  -- For the start_element and passthrough methods this contains
-                  -- the entire text string enclosed within the '<' and '>'
-                  -- brackets. For the text method it contains a single line
-                  -- of CDATA text.
-self~tag = .nil   -- For  the start_element and end_element methods this is
-                  -- the XML element (tag) name. For the end_element method the
-                  -- leading '/' character is not a part of this string.
-self~attr = .nil  -- For the start_element method this is an ooRexx directory
-                  -- class instance. Each attribute and value is contained in
-                  -- the ooRexx directory instance.
-return
-
+  self~text = .nil  -- For the start_element and passthrough methods this contains
+                    -- the entire text string enclosed within the '<' and '>'
+                    -- brackets. For the text method it contains a single line
+                    -- of CDATA text.
+  self~tag = .nil   -- For  the start_element and end_element methods this is
+                    -- the XML element (tag) name. For the end_element method the
+                    -- leading '/' character is not a part of this string.
+  self~attr = .nil  -- For the start_element method this is an ooRexx directory
+                    -- class instance. Each attribute and value is contained in
+                    -- the ooRexx directory instance.
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -521,10 +814,9 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method init
-use strict arg
-self~text = ''
-self~filename = ''
-self~line = 0
-self~charpos = 0
-return
+  use strict arg
+  self~text = ''
+  self~filename = ''
+  self~line = 0
+  self~charpos = 0
 

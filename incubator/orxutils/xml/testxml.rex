@@ -53,7 +53,7 @@ return
 use arg chunk
 call charout , '<'chunk~tag
 if chunk~attr <> .nil then do f over chunk~attr
-   call charout , ' 'f'="'self~textxlate(chunk~attr[f])'"'
+   call charout , ' 'f'="'chunk~attr[f]'"'
    end
 say '>'
 return
@@ -63,14 +63,29 @@ use arg chunk
 say '</'chunk~tag'>'
 return
 
-::method passthrough
+::method doctypeDecl
 use arg chunk
 say '<'chunk~text'>'
+return
+
+::method comment
+use arg chunk
+say '<!--'chunk~text'-->'
+return
+
+::method processingInstruction
+use arg chunk
+say '<?'chunk~tag chunk~text'?>'
 return
 
 ::method text
 use arg chunk
 say chunk~text
+return
+
+::method cdata
+use arg chunk
+say "<![CDATA["chunk~text"]]>"
 return
 
 ::method error
