@@ -1477,6 +1477,9 @@ return str
 ::method init        -- constructor
   expose fName fCountTestCases    -- name of Testcase (method) to carry out
   parse arg fName
+  if fname == "" & self~class~id == "text.testgroup" then do
+    say 1/0
+  end
 
   fCountTestCases=1  -- default: individual test
   self~caseInfo=.directory~new -- directory to contain information on test

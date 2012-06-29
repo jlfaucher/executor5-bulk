@@ -1018,7 +1018,7 @@ return testResult
 ::method test_arrayOut_syntax_4
 
   fileName = "delMe.arrayOut_syntaxdd"
-  a = 'cat'
+  a = .object
 
   f = .stream~new(fileName)
   self~assertTrue(f~isA(.stream))
@@ -1797,7 +1797,7 @@ notready:
   self~assertSame(0, ret)
   ret = fsObj~close
   self~assertSame("READY:", ret)
-  
+
 ::method test_open_write_only_3274050_f
 
   if .ooRexxUnit.OSName \== "WINDOWS" then do
