@@ -5320,10 +5320,14 @@ returns its handle.</para>
 <section id="clsOs"><title>OS Class</title>
 <indexterm><primary>OS class</primary></indexterm>
 <para>
-  The <computeroutput>OS</computeroutput> class provides methods for extracting information about the operating system a
-  program is currently executing on. All the methods of the OS class are class methods.  In general these methods are
-  easy to use, returning true or false about a specific piece of information. See the <link
-  linkend="mthIsAtLeastVista">isAtLeastVista</link>() method for an example of usage.
+  The <computeroutput>OS</computeroutput> class provides methods for interacting with the operating system a program is
+  currently executing on. Many of the methods extract information from or about the operating system. Other methods set
+  operating system wide information or notify the operating system of changes.
+</para>
+<para>
+  All the methods of the OS class are class methods. In general these methods are easy to use, returning true or false
+  about a specific piece of information. See the <link linkend="mthIsAtLeastVista">isAtLeastVista</link>() method for an
+  example of usage.
 </para>
 
 
@@ -5411,6 +5415,14 @@ returns its handle.</para>
 <row>
 <entry><link linkend="mthIsXP64">isXP64</link></entry>
 <entry>Tests if operating system is 64-bit Windows XP</entry>
+</row>
+<row>
+<entry><link linkend="mthSettingsChanged">settingsChanged</link></entry>
+<entry>Notifies the operating system that environment settings have changed.</entry>
+</row>
+<row>
+<entry><link linkend="mthShellChangeNotify">shellChangeNotify</link></entry>
+<entry>Notifies the operating system that the application has performed an action that may affect the Shell.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -5732,6 +5744,264 @@ returns its handle.</para>
   Returns true if the currently executing program is running on 64-bit Windows XP, otherwise false.
 </para>
 </section>  <!-- End OS::isXP64() [class method] -->
+
+<section id="mthSettingChanged"><title>settingChanged</title>
+<indexterm><primary>settingChanged</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>settingChanged</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--settingChanged(--+-----------+--+---------+--+--------+--)----------------><
+                     +--timeOut--+  +-,-opts--+  +-,-area-+
+]]>
+</programlisting>
+
+<para>
+  Sends the WM_SETTINGCHANGE to all top-level windows. Applications should invoke this method when they make changes to
+  system environment parameters.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>timeOut [optional]</term>
+      <listitem>
+      <para>
+        Specifies a period in milliseconds to wait when a windows does not respond. The default <emphasis
+        role="italic">timeOut</emphasis> is 5,000. If the <emphasis role="italic">timeOut</emphasis> is the special
+        value of 0, the the message is sent in a way that does not wait for any window to acknowledge the message and
+        the method returns immediately.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>style [optional]</term>
+      <listitem>
+      <para>
+        Specifies how the WM_SETTINGCHANGE message is sent. This should be one or more of the following keywords
+        separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>ABORTIFHUNG       </member>
+          <member>BLOCK             </member>
+          <member>NORMAL            </member>
+          <member>NOTIMEOUTIFNOTHUNG</member>
+          <member>ERRORONEXIT       </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>ABORTIFHUNG</term>
+          <listitem>
+          <para>
+            Returns without waiting for the time-out period to elapse if the receiving thread appears to not respond or
+            to be <emphasis role="italic">hung.</emphasis> This is the default if this argument is omitted.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>BLOCK</term>
+          <listitem>
+          <para>
+            Prevents the calling thread from processing any other requests until the function returns
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NORMAL</term>
+          <listitem>
+          <para>
+             The calling thread is not prevented from processing other requests while waiting for the function to
+             return.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NOTIMEOUTIFNOTHUNG</term>
+          <listitem>
+          <para>
+             Do not enforce the time-out period as long as the receiving thread is processing messages.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>ERRONONEXIT</term>
+          <listitem>
+          <para>
+            <emphasis role="bold">Vista or later only.</emphasis> The broadcast function should return 0 if the
+            receiving window is destroyed or its owning thread dies while the message is being processed.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>area [optional]</term>
+      <listitem>
+      <para>
+        This argument indicates the area of change. The default is <emphasis role="italic">Environment</emphasis> which
+        is correct to indicate the system or user environment variables have changed. The arugment can also be the name
+        of a registry key or the name of a section in the Win.ini file. When the string is a registry name, it typically
+        indicates only the leaf node in the registry, not the full path.
+      </para>
+      <para>
+        It is suggested that the programmer should not change this from the default, unless the programmer understands
+        the usage of this argument in the WM_SETTINGCHANGED window message.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method would typically be used to notify the operating system that one of the environment variables, such as
+    the PATH variable, has been changed in the registry. This allows, for instance, updating the path without rebooting
+    the system.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example updates the user PATH variable and then notifies the system so that the new path takes effect
+    immediately:
+<programlisting>
+<![CDATA[
+
+  reg = .WindowsRegistry~new
+  envKey = reg~open(reg~current_user, 'Environment', 'WRITE QUERY')
+
+  -- Error checking code, code that creates the new path string, the data
+  -- type for the registry value, etc..
+
+  reg~setValue(envKey, pathName, newPath, valueType)
+
+  reg~close(envKey)
+
+
+  .OS~settingChanged(2000);
+
+::requires 'ooDialog.cls'
+::requires 'winsystm.cls'
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End OS::settingChanged() -->
+
+<section id="mthShellChangeNotify"><title>shellChangeNotify</title>
+<indexterm><primary>shellChangeNotify</primary></indexterm>
+<indexterm><primary>OS class</primary><secondary>shellChangeNotify</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--shellChangeNotify(--+---------+-+--------+-+--------+-+--------+--)--------><
+                        +-eventID-+ +-,-opt-+ +-,-val1-+ +-,-val2-+
+]]>
+</programlisting>
+
+<para>
+  Notifies the system of an event that an application has performed. An application should use this function if it
+  performs an action that may affect the Shell. Currently this method can only be used to notify the system that a file
+  type association has changed.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>eventID [reserved optional]</term>
+      <listitem>
+      <para>
+        Identifies the event that has occurred. Typically, only one event is specified at a time. If more than one event
+        is specified, the values contained in the <emphasis role="italic">val!</emphasis> and <emphasis
+        role="italic">val2</emphasis> arguments must be the same, respectively, for all specified events.
+      </para>
+      <para>
+        In the current implementation the programmer can not specify the id, it is set to SHCNE_ASSOCCHANGED. If this
+        argument is specified, the method fails.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>opts [reserved optional]</term>
+      <listitem>
+      <para>
+        A single flag that indicates the meaning of the values contained in the <emphasis role="italic">val1</emphasis>
+        and <emphasis role="italic">val2</emphasis> arguments.
+      </para>
+      <para>
+        In the current implementation the programmer can not specify the flag, it is set to SHCNF_IDLIST. If this
+        argument is specified, the method fails.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>val1 [reserved optional]</term>
+      <listitem>
+      <para>
+        First event-dependent value.
+      </para>
+      <para>
+        In the current implementation the programmer can not specify the <emphasis role="italic">val1</emphasis> value,
+        it is set correctly by the ooDialog framework. If this argument is specified, the method fails.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>val [reserved optional]</term>
+      <listitem>
+      <para>
+        Second event-dependent value.
+      </para>
+      <para>
+        In the current implementation the programmer can not specify the <emphasis role="italic">val1</emphasis> value,
+        it is set correctly by the ooDialog framework. If this argument is specified, the method fails.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    In the current implementation, returns false if the programmer specifies any of the reserved arguments, otherwise it
+    returns true.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This function notifies the system that a file type association has changed. This allows an application to add, or
+    modify the file type values in the registry and have the changes take effect immediately without rebooting the
+    system. The underlying Windows API that is used in the implementation provides more functionality than this specific
+    notification. Future versions of ooDialog may add that functionality to this method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example writes to the registry to add a file type association and then invokes <emphasis
+    role="italic">shellChangeNotify</emphasis> to have the new file association take place immediately:
+<programlisting>
+<![CDATA[
+
+  reg = .WindowsRegistry~new
+
+  -- Code that adds the file type infomation to the registry
+  ...
+
+  .OS~shellChangeNotify
+
+::requires 'ooDialog.cls'
+::requires 'winsystm.cls'
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End OS::shellChangeNotify() -->
 
 </section> <!-- End OS Class -->
 
