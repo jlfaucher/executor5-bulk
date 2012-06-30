@@ -176,6 +176,37 @@
 
   return name~verify(self~name) \= 0
 
+-- strip all XML white space charactes from a string.  The source
+-- string can be either a string or mutablebuffer.
+::method stripWhiteSpace
+  use strict arg source
+
+  -- find the first non-white space character
+  firstNonWhite = source~verify(self~space)
+  if firstNonWhite == 0 then
+      -- NB:  We could just return "", but doing it this way
+      -- will also work with mutablebuffers.
+      return source~delstr(1)
+
+  -- if there are leading white space characters, delete them now.
+  -- again, doing this in two steps will work appropriately with
+  -- mutablebuffers too.
+  if firstNonWhite > 1 then do
+      source = source~delstr(1, firstNonWhite - 1)
+  end
+
+  loop i = source~length by -1
+      -- find a non-whitespace char?, then delete
+      -- tail now.  Note that since we have detected
+      -- a non-whitespace char already, we will always
+      -- terminate
+      if \source~matchChar(i, self~space) then do
+          source = source~delstr(i + 1)
+          -- done
+          return source
+      end
+  end
+
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
