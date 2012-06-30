@@ -1128,6 +1128,10 @@
 <entry>Informs the underlying property sheet dialog that information in a page has changed.</entry>
 </row>
 <row>
+<entry><link linkend="mthEnableWizButtons">enableWizButtons</link></entry>
+<entry>Enables or disables buttons in an Aero wizard.</entry>
+</row>
+<row>
 <entry><link linkend="mthExecuteClsPSD">execute</link></entry>
 <entry>Starts the execution of the underlying, <link linkend="defModalModeless">modal</link>, property sheet dialog.</entry>
 </row>
@@ -1201,43 +1205,55 @@
 </row>
 <row>
 <entry><link linkend="mthRestartWindows">restartWindows</link></entry>
-<entry>.</entry>
+<entry>Invoked to notify the property sheet dialog that Microsoft Windows needs to be restarted for changes to take effect.</entry>
 </row>
 <row>
 <entry><link linkend="mthRemovePage">removePage</link></entry>
-<entry>.</entry>
+<entry>Removes a page from this property sheet.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetButtonText">setButtonText</link></entry>
+<entry>Sets the text of the specified button in an Aero wizard.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetCurSel">setCurSel</link></entry>
-<entry>.</entry>
+<entry>Activates the specified page in a property sheet.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetCurSelByID">setCurSelByID</link></entry>
+<entry>Activates the page specified by <emphasis role="italic">id</emphasis> in this property sheet.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetFinishText">setFinishText</link></entry>
-<entry>.</entry>
+<entry>Sets the text of the Finish button in a wizard, shows and enables the button, and hides the Next and Back buttons.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetHeaderSubTitle">setHeaderSubTitle</link></entry>
-<entry>.</entry>
+<entry>Sets or resets the text for the header subtitle in a wizard property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetHeaderTitle">setHeaderTitle</link></entry>
-<entry>.</entry>
+<entry>Sets or resets the text for the header in a wizard property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetNextText">setNextText</link></entry>
-<entry>.</entry>
+<entry>Sets the text of the Next button in an Aero wizard.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetTitleClsPSD">setTitle</link></entry>
-<entry>.</entry>
+<entry>Sets the title for a property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetWizButtons">setWizButtons</link></entry>
-<entry>.</entry>
+<entry>Enables or disables the Back, Next, and Finish buttons in a wizard.</entry>
+</row>
+<row>
+<entry><link linkend="mthShowWizButtons">shwoWizButtons</link></entry>
+<entry>Shows or hides buttons in an Aero wizard.</entry>
 </row>
 <row>
 <entry><link linkend="mthUnchanged">unchanged</link></entry>
-<entry>.</entry>
+<entry>Informs this property sheet that information in a page has reverted to the previously saved state.</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2154,6 +2170,135 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PropertySheetDialog::changed() -->
+
+<section id="mthEnableWizButtons"><title>enableWizButtons</title>
+<indexterm><primary>enableWizButtons</primary></indexterm>
+<indexterm><primary>PropertySheetDialog class</primary><secondary>enableWizButtons</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--enableWizButtons(--+--------+--+----------------+--)--------><
+                       +--opts--+  +-,-optsButtons--+
+]]>
+</programlisting>
+
+<para>
+  Enables or disables buttons in an Aero wizard. <emphasis role="italic">Vista</emphasis> or later only. This method
+  does nothing if this property sheet is not an Aero wizard.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>opts [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. These specify which
+        property sheet buttons are to be enabled. If a button value is included in both this argument and <emphasis
+        role="italic">optsButton</emphasis> then it is enabled.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BACK  </member>
+          <member>CANCEL</member>
+          <member>FINISH</member>
+          <member>NEXT  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BACK</term>
+          <listitem>
+          <para>
+            The Back button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CANCEL</term>
+          <listitem>
+          <para>
+           The Cancel button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FINISH</term>
+          <listitem>
+          <para>
+            The Finish button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NEXT</term>
+          <listitem>
+          <para>
+            The Next button.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>opts [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. These specify which
+        property sheet buttons are affected by this method invocation. If a button value appears in this parameter but
+        not in <emphasis role="italic">opts</emphasis>, the button is disabled.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BACK  </member>
+          <member>CANCEL</member>
+          <member>FINISH</member>
+          <member>NEXT  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BACK</term>
+          <listitem>
+          <para>
+            The Back button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CANCEL</term>
+          <listitem>
+          <para>
+           The Cancel button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FINISH</term>
+          <listitem>
+          <para>
+            The Finish button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NEXT</term>
+          <listitem>
+          <para>
+            The Next button.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true if this is an Aero Wizard property sheet on Vista on later, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method only works for Aero Wizards. This method requires Vista or later, a condition is raised if the OS is
+    not Vista or later. This method has no effect if the property sheet is not an Aero wizard.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PropertySheetDialog::enableWizButtons() -->
 
 <section id="mthExecuteClsPSD"><title>execute</title>
 <indexterm><primary>execute</primary><secondary>PropertySheetDialog class</secondary></indexterm>
@@ -3074,7 +3219,7 @@
 
 <para>
   The <emphasis role="italic">restartWindows</emphasis> method is invoked to notify the property sheet dialog that
-  Microsof Windows needs to be restarted for changes to take effect.
+  Microsoft Windows needs to be restarted for changes to take effect.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3155,6 +3300,91 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PropertySheetDialog::removePage() -->
+
+<section id="mthSetButtonText"><title>setButtonText</title>
+<indexterm><primary>setButtonText</primary></indexterm>
+<indexterm><primary>PropertySheetDialog class</primary><secondary>setButtonText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setButtonText(--button--,--text--)-----------><
+
+]]>
+</programlisting>
+
+<para>
+  Sets the text of the specified button in an Aero wizard. <emphasis role="italic">Vista</emphasis> or later only. This method does
+  nothing if this property sheet is not an Aero wizard.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>button [required]</term>
+      <listitem>
+      <para>
+        Exactly one of the following keyword, case is not significant. This specifies which property sheet button's text
+        will be set.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BACK  </member>
+          <member>CANCEL</member>
+          <member>FINISH</member>
+          <member>NEXT  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BACK</term>
+          <listitem>
+          <para>
+            The Back button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CANCEL</term>
+          <listitem>
+          <para>
+           The Cancel button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FINISH</term>
+          <listitem>
+          <para>
+            The Finish button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NEXT</term>
+          <listitem>
+          <para>
+            The Next button.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        The text, the label, for the specified button.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    True if the property sheet is an Aero wizard and the label for the button was allocated, otherwise false.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End PropertySheetDialog::setButtonText() -->
 
 <section id="mthSetCurSel"><title>setCurSel</title>
 <indexterm><primary>setCurSel</primary></indexterm>
@@ -3431,7 +3661,8 @@
 </programlisting>
 
 <para>
-  Sets the text of the Next button in a wizard.
+  Sets the text of the Next button in an Aero wizard. <emphasis role="italic">Vista</emphasis> or later only. This
+  method does nothing if this property sheet is not an Aero wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3468,8 +3699,8 @@
 </programlisting>
 
 <para>
-  Sets the title for a property sheet dialog.  This method is not available  for Aero wizards, and does nothing in
-  other wizards
+  Sets the title for a property sheet dialog.  Testing has shown that this method does nothing for any property sheet
+  that is a wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3604,8 +3835,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example shows the SETACTIVE event handler in one of the interior page dialogs for a wizard property sheet
-    dialog:
+    This example shows the <link linkend="mthSetActive">setActive</link> event handler in one of the interior page
+    dialogs for a wizard property sheet dialog:
 <programlisting>
 <![CDATA[
 
@@ -3632,7 +3863,8 @@
 </programlisting>
 
 <para>
-  Shows or hides buttons in an aero wizard.
+  Shows or hides buttons in an Aero wizard. <emphasis role="italic">Vista</emphasis> or later only. This method does
+  nothing if this property sheet is not an Aero wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3643,47 +3875,85 @@
       <varlistentry><term>opts [optional]</term>
       <listitem>
       <para>
-        A list of 0 or more of the following keywords separated by spaces, case is not significant:
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. These specify which
+        property sheet buttons are to be shown. If a button value is included in both this argument and <emphasis
+        role="italic">optsButton</emphasis> then it is shown.
       </para>
       <para>
         <simplelist type='vert' columns='3'>
-          <member>BACK         </member>
+          <member>BACK  </member>
           <member>CANCEL</member>
-          <member>FINISH       </member>
-          <member>NEXT         </member>
+          <member>FINISH</member>
+          <member>NEXT  </member>
         </simplelist>
         <variablelist>
           <varlistentry><term>BACK</term>
           <listitem>
           <para>
-            Enables the Back button. If this keyword is missing, the Back button is displayed as disabled.
+            The Back button.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>DISABLEFINISH</term>
+          <varlistentry><term>CANCEL</term>
           <listitem>
           <para>
-            Displays a disabled Finish button
+           The Cancel button.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>FINISH</term>
           <listitem>
           <para>
-            Displays an enabled Finish button.
+            The Finish button.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>NEXT</term>
           <listitem>
           <para>
-            Enables the Next button. If this keyword is missing, the Next button is displayed as disabled.
+            The Next button.
           </para>
           </listitem></varlistentry>
         </variablelist>
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>opts [optional]</term>
       <listitem>
       <para>
-        xx
+        A list of 0 or more of the following keywords separated by spaces, case is not significant. these specify which
+        property sheet buttons are to be shown or hidden. If a button value appears in this parameter but not in dwFlag,
+        it indicates that the button should be hidden.
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>BACK  </member>
+          <member>CANCEL</member>
+          <member>FINISH</member>
+          <member>NEXT  </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>BACK</term>
+          <listitem>
+          <para>
+            The Back button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>CANCEL</term>
+          <listitem>
+          <para>
+           The Cancel button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>FINISH</term>
+          <listitem>
+          <para>
+            The Finish button.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>NEXT</term>
+          <listitem>
+          <para>
+            The Next button.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3692,13 +3962,31 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true if this is an Aero Wizard property sheet on Vista on later, otherwise false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    The order of <emphasis role="italic">showWizButtons</emphasis> and <link
+    linkend="mthSetWizButtons">setWizButtons</link> is important. This works:
+<programlisting>
+<![CDATA[
 
+      propSheet~setWizButtons("NEXT")
+      propSheet~showWizButtons("NEXT", "BACK NEXT")
+
+]]>
+</programlisting>
+    This does not work:
+<programlisting>
+<![CDATA[
+
+      propSheet~showWizButtons("NEXT", "BACK NEXT")
+      propSheet~setWizButtons("NEXT")
+
+]]>
+</programlisting>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3706,16 +3994,22 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows the <link linkend="mthSetActive">setActive</link> event handler for the first page in an Aero
+    wizard. It removes the Back button from the page, (since it is impossible to go back from the first page.)
 <programlisting>
 <![CDATA[
+
+::method setActive
+  use arg propSheet
+
+  propSheet~setWizButtons("NEXT")
+  propSheet~showWizButtons("NEXT", "BACK NEXT")
+
+  return 0
 
 ]]>
 </programlisting>
@@ -3729,24 +4023,24 @@
 <indexterm><primary>PropertySheetDialog class</primary><secondary>unchanged</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--unchanged(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--unchanged(--pspDlg--)------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Informs this property sheet that information in a page has reverted to the previously saved state.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>pspDlg</term>
       <listitem>
       <para>
-        xx
+        The Rexx property sheet page object whose data has been reverted.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3755,33 +4049,21 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns zero, always.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The property sheet disables the Apply Now button if no other pages have registered changes with the property sheet.
+    The MSDN documentation specifically states that this message does not apply to Aero wizards, it probably does
+    nothing in all wizards.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3793,7 +4075,35 @@
 <section id="sctPropertySheetPages"><title>Property Sheet Pages</title>
 <indexterm><primary>Property Sheet Pages</primary></indexterm>
 <para>
-  Text here
+  Each property sheet <link linkend="clsPropertySheetDialog">dialog</link> must contain one or more property sheet
+  <emphasis role="italic">pages</emphasis>. To instantiate a <computeroutput>PropertySheetDialog</computeroutput> the
+  programmer passes in an array of one or more <computeroutput>PropertySheetPage</computeroutput> objects. In ooDialog
+  each property sheet page is represented by one of the concrete property sheet page dialogs that inherit from the
+  <computeroutput>PropertySheetPage</computeroutput> mixin class.
+</para>
+<para>
+  To create a page for a <computeroutput>PropertySheetDialog</computeroutput> the programmer defines a dialog subclass
+  using one of these three property sheet page dialogs:
+  <itemizedlist>
+  <listitem>
+  <para>
+     Subclass the <link linkend="clsRcPSPDialog">RcPSPDialog</link> when the page dialog template will be defined in
+     a resource <link linkend="defResourceScript">script</link> file.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Subclass the <link linkend="clsResPSPDialog">ResPSPDialog</link> when the dialog template will be loaded from a
+    <link linkend="ovvDialogTemplate">binary</link> resource file.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Subclass the <link linkend="clsUserPSPDialog">UserControlDialog</link> when the dialog template will be defined
+    using the <link linkend="sctCreateMethods">create</link> methods.
+  </para>
+  </listitem>
+  </itemizedlist>
 </para>
 
 
@@ -3801,7 +4111,14 @@
 <indexterm><primary>Property Sheet Pages</primary><secondary>PropertySheetPage class</secondary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary></indexterm>
 <para>
-  xxx
+  The <computeroutput>PropertySheetPage</computeroutput> class is a mixin class that contains the methods of a property
+  sheet page dialog object. Other than the individual <emphasis role="italic">new</emphasis> methods for each of the
+  three types of property sheet page dialogs, (<link linkend="mthNewClsRcPSPDialog">Rc</link>, <link
+  linkend="mthNewClsResPSPDialog">Res</link>, and <link linkend="mthNewClsUserPSPDialog">User</link>,) all page methods
+  come from the <computeroutput>PropertySheetPage</computeroutput> class. Of course, each property sheet page dialog has
+  all the methods of the dialog <link linkend="chpDialogObject">object</link> and the methods of its parent class,
+  respectively the <link linkend="clsRcDialog">RcDialog</link>, <link linkend="clsResDialog">ResDialog</link>, or <link
+  linkend="clsUserDialog">UserDialog</link>.
 </para>
 
 <section id="sctMethodsPropertySheetPage"><title>Method Table</title>
@@ -3825,20 +4142,77 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry>PSNRET_NOERROR</entry>
+<entry>.</entry>
+</row>
+<row>
+<entry>PSNRET_INVALID</entry>
+<entry>.</entry>
+</row>
+<row>
+<entry>PSNRET_INVALID_NOCHANGEPAGE</entry>
+<entry>.</entry>
+</row>
+<row>
+<entry>PSNRET_MESSAGEHANDLED</entry>
+<entry>.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="clsRcPSPDialog">new</link> (RcPSPDialog)</entry>
+<entry>Instantiates a new property sheet page whose dialog template is created from a <link linkend="defResourceScript">resource</link>script.</entry>
+</row>
+<row>
+<entry><link linkend="clsResPSPDialog">new</link> (ResPSPDialog)</entry>
+<entry>Instantiates a new property sheet page whose dialog template is comes from a compiled <link linkend="ovvDialogTemplate">binary</link>resource file.</entry>
+</row>
+<row>
+<entry><link linkend="clsUserPSPDialog">new</link> (UserPSPDialog)</entry>
+<entry>Instantiates a new property sheet page whose dialog template is created using the <link linkend="sctCreateMethods">create</link> methods of the <computeroutput>UserDialog</computeroutput> class.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
+<entry><link linkend="atrCX">cx</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrCY">cx</link></entry>
+<entry>.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthApplyClsPSP">apply</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthGetObject">getObject</link></entry>
+<entry>.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </section>
+
+
+<section id="sctPageEventHandlers"><title>Page Event Handlers</title>
+<indexterm><primary>event notification</primary>property sheet page event handlers</indexterm>
+<indexterm><primary>PropertySheetPage class</primary><secondary>event handlers</secondary></indexterm>
+
+<para>
+  The process for connecting event handlers for the property sheet page dialogs takes a slightly different approach than
+  that of other dialog classes in the ooDialog framework. The property sheet page class provides a default event handler
+  for all property sheet page specifc events.
+</para>
+</section>  <!-- End Page Event Handlers  -->
+
 
 <section id="atrCX"><title>cx (Attribute)</title>
 <indexterm><primary>cx</primary></indexterm>
