@@ -178,7 +178,7 @@
 
 -- strip all XML white space charactes from a string.  The source
 -- string can be either a string or mutablebuffer.
-::method stripWhiteSpace
+::method stripWhiteSpace class
   use strict arg source
 
   -- find the first non-white space character
@@ -477,7 +477,10 @@ return text
       -- at the linebreaks.
       text~append(self~getchar(.true))
    end
-   chunk~text = self~xlatetext(text)~string~strip
+   -- remove the whitespace from the parsed text
+   .xmlchar~stripWhiteSpace(text)
+   -- translate any entities and convert to string form
+   chunk~text = self~xlatetext(text)~string
    -- if this chunk if just whitespace characters (including lineneds), just
    -- ignore it.
    if chunk~text~verify(' '||self~tab||self~eol) \= 0 then
@@ -620,7 +623,7 @@ return text
      endTag = .true
   end
   -- convert to a string and strip now
-  element = element~string~strip
+  element = .xmlchar~stripWhiteSpace(element)~string
 
   -- ok, now process the attributes, if any
 
@@ -656,7 +659,7 @@ return text
      return .nil
   end
   -- instruction is now a string value
-  instruction = instruction~string~strip
+  instruction = .xmlchar~stripWhiteSpace(instruction)~string
 
   -- strip off the target name and parse off each of the attributes
   parse var instruction chunk~tag chunk~text '?'
@@ -674,7 +677,7 @@ return text
   expose eof
 
   chunk = .xmlchunk~new
-  chunk~text = self~scanToTagEndNested~string~strip
+  chunk~text = .xmlchar~stripWhiteSpace(self~scanToTagEndNested)~string
   if eof then do
      self~create_error('EOF within a DOCTYPE tag.') -- call the public override method
      return .nil
