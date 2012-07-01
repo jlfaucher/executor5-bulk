@@ -65,7 +65,7 @@ return
 
 ::method doctypeDecl
 use arg chunk
-say '<'chunk~text'>'
+say '<!DOCTYPE'chunk~text'>'
 return
 
 ::method comment

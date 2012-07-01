@@ -261,6 +261,8 @@
   -- turn on the eof indicator so nothing else gets processed
   eof = .true
   self~error(xmlerror)   -- pass this to the processing routine
+  -- now raise this as a syntax error to get back to the base
+  raise syntax 93.900 array(msg, xmlerror)
 
 
 /*----------------------------------------------------------------------------*/
@@ -402,6 +404,66 @@ return text
      -- handle an element tag
      return self~parseElement
   end
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseName                                                          */
+/* Description: parse out a valid XML name.  This will update the source      */
+/*              mutable buffer to remove the parsed out name.                 */
+/* Arguments:   A source mutablebuffer                                        */
+/*----------------------------------------------------------------------------*/
+::method parseName
+  use strict arg buffer
+
+  -- if not at a namestart character, this is invalid.  Return an error
+  -- indicator
+  if \buffer~matchChar(1, .xmlchar~namestart) then return .nil
+  -- scan for the end character
+  nameend = buffer~verify(.xmlchar~name,,2)
+  if nameend = 0 then nameend = buffer~length + 1
+  -- extract the name
+  name = buffer~substr(1, nameend - 1)
+  -- remove this from the buffer
+  buffer~delstr(1, nameend - 1)
+  return name
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parseQuotedValue                                                   */
+/* Description: parse out a valid quoted XML value string.  This will update  */
+/*              the source buffer to remove the parsed out string.            */
+/* Arguments:   A source mutablebuffer                                        */
+/*----------------------------------------------------------------------------*/
+::method parseQuotedValue
+  use strict arg buffer
+
+  -- We must be at a quoted string value now...return .nil if not found
+  if \buffer~matchChar(1, '''"') then return .nil
+  delimiter = buffer~subchar(1)
+  -- scan for the end character
+  nameend = buffer~pos(delimiter, 2)
+  -- missing closing quote
+  if nameend = 0 then return .nil
+  -- extract the name
+  name = buffer~substr(2, nameend - 2)
+  -- remove this from the buffer
+  buffer~delstr(1, nameend + 1)
+  return name
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: skipWhiteSpace                                                     */
+/* Description: skip over whitespace in a buffer.  This will update           */
+/*              the source buffer to remove the leading whitespace            */
+/* Arguments:   A source mutablebuffer                                        */
+/*----------------------------------------------------------------------------*/
+::method skipWhiteSpace
+  use strict arg buffer
+
+  firstNonBlank = buffer~verify(.xmlchar~space)
+  -- this is either all whitespace or we delete up to the first non-blank
+  if firstNonBlank = 0 then buffer~setBufferSize(0)
+  else buffer~delstr(1, firstNonBlank - 1)
 
 
 /*----------------------------------------------------------------------------*/
@@ -556,7 +618,9 @@ return text
 ::method parseEndElement
   element = self~scanToTagEnd
   chunk = .xmlchunk~new
-  chunk~tag = element
+  chunk~tag = self~parseName(element)
+  if chunk~tag == .nil then self~check_error("Invalid element end tag" element".")
+  if element~string \= '' then self~check_error("Invalid element end tag" element".")
   self~end_element(chunk) -- call the public override method
   return chunk
 
@@ -569,38 +633,25 @@ return text
 ::method parseAttributes
   use arg element
 
+  -- skip over any leading white space
+  self~skipWhiteSpace(element)
   -- Note:  this is the "=" form, which will ignore the whitespace
-  if element = '' then return .nil
+  if element~length = '' then return .nil
   attr = .directory~new
-  loop while element \= ''
-      -- attribute values must be quoted strings, but either single or
-      -- double quotes can be used...
-      assignment = element~pos('=')
-      -- hmmm, no assignment found, this is invalid
-      if assignment = 0 then do
-         -- do not allow attributes without values!
-         errortxt = 'Error line' errlineidx 'column' errcharidx || ,
-                    ': Invalid tag attribute' element'.'
-         -- create the error message and handle termination
-         self~create_error('Invalid tag attribute' element'.')
-         return .nil
-      end
-      -- pull off the attribute name and see what sort of
-      -- value we have
-      parse var element attrname =(assignment) +1 element
-      if element~match(1, "'") then do
-         parse var element "'" value "'" element
-      end
-      else if element~match(1, '"') then do
-         parse var element '"' value '"' element
-      end
-      else do
-        -- do not allow attributes without values!
-        self~create_error('Invalid attribute value' element'.') -- call the public override method
-        return .nil
-      end
+  loop while element~length \= 0
+      -- parse off the name
+      attrname = self~parseName(element)
+      if attrname == .nil then self~create_error("Invalid attribute name" element".")
+      -- there must be an equal sign here
+      if \element~match(1, '=') then self~create_error("Invalid element attribute" element".")
+      -- step over the '='
+      element~delstr(1, 1)
+      value = self~parseQuotedValue(element)
+      if value == .nil then self~create_error("Invalid attribute value" element".")
       -- these have the entities translated out
       attr[attrname] = self~xlatetext(value)
+      -- skip over any leading white space
+      self~skipWhiteSpace(element)
   end
   return attr
 
@@ -622,13 +673,10 @@ return text
      element~setBufferSize(element~length - 1)
      endTag = .true
   end
-  -- convert to a string and strip now
-  element = .xmlchar~stripWhiteSpace(element)~string
-
-  -- ok, now process the attributes, if any
 
   -- strip off the tag and parse off each of the attributes
-  parse var element chunk~tag element
+  chunk~tag = self~parseName(element)
+  if chunk~tag == .nil then self~create_error('Invalid element name.')
 
   -- now parse out the attributes
   chunk~attr = self~parseAttributes(element)
@@ -654,15 +702,18 @@ return text
 
   chunk = .xmlchunk~new
   instruction = self~scanToTagEnd
+  if \instruction~match(instruction~length, '?') then self~create_error('Invalid processing instruction close tag.')
+  -- remove the ? from the end of the data
+  instruction~delstr(instruction~length)
+
   if eof then do
      self~create_error('EOF within an XML tag.') -- call the public override method
-     return .nil
   end
-  -- instruction is now a string value
-  instruction = .xmlchar~stripWhiteSpace(instruction)~string
+  -- parse off the target name
+  chunk~tag = self~parseName(instruction)
+  if chunk~tag == .nil then self~create_error('Invalid processing instruction name.')
+  chunk~text = instruction~string
 
-  -- strip off the target name and parse off each of the attributes
-  parse var instruction chunk~tag chunk~text '?'
   self~processingInstruction(chunk) -- call the public override method
   return chunk
 
@@ -680,7 +731,6 @@ return text
   chunk~text = .xmlchar~stripWhiteSpace(self~scanToTagEndNested)~string
   if eof then do
      self~create_error('EOF within a DOCTYPE tag.') -- call the public override method
-     return .nil
   end
   chunk~tag = ''
   self~doctypeDecl(chunk) -- call the public override method
@@ -814,12 +864,12 @@ return text
   lineidx = 1
   charidx = 1
   xmlerror = .nil
+  signal on syntax
   -- set the initial error point
   self~setErrorPoint
   /* make sure this is an xml document */
   if src[1]~pos('<?xml') <> 1 then do
      self~create_error('Invalid XML document.')
-     return xmlerror~text
   end
   self~start_document
   do while \eof
@@ -827,11 +877,14 @@ return text
   end
   -- we send the end_document even if there is an error
   self~end_document
+  return ''
+syntax:
   -- if we had an error, return the message as a return value
   if xmlerror \= .nil then do
      return xmlerror~text
   end
-  return ''
+  -- reraise any real syntax errors
+  raise propagate
 
 
 /*----------------------------------------------------------------------------*/
