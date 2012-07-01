@@ -702,13 +702,14 @@ return text
 
   chunk = .xmlchunk~new
   instruction = self~scanToTagEnd
-  if \instruction~match(instruction~length, '?') then self~create_error('Invalid processing instruction close tag.')
-  -- remove the ? from the end of the data
-  instruction~delstr(instruction~length)
 
   if eof then do
      self~create_error('EOF within an XML tag.') -- call the public override method
   end
+
+  if \instruction~match(instruction~length, '?') then self~create_error('Invalid processing instruction close tag.')
+  -- remove the ? from the end of the data
+  instruction~delstr(instruction~length)
   -- parse off the target name
   chunk~tag = self~parseName(instruction)
   if chunk~tag == .nil then self~create_error('Invalid processing instruction name.')
@@ -824,7 +825,7 @@ return text
   use strict arg chunk
 
 /*----------------------------------------------------------------------------*/
-/* Method: called when a CDATA tag has been encountered                       */
+/* Method: called when a <!DOCTYPE tag has been encountered                   */
 /* Arguments:   an xmlchunk instance.                                         */
 /*----------------------------------------------------------------------------*/
 

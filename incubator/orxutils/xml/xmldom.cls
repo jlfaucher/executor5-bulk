@@ -2,7 +2,7 @@
 /*                                                                            */
 /* Description: An implementation of the Document Object Model in ooRexx.     */
 /*                                                                            */
-/* Copyright (c) 2006 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2012 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -34,15 +34,6 @@
 /* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
 /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
-
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* NOTE!!!!!!!!!!!                                                            */
-/* This class file does not yet work! It is under development!                */
-/* It is VERY incomplete!                                                     */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
