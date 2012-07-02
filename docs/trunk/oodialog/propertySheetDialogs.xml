@@ -364,7 +364,7 @@
 <![CDATA[
 >>--wasActivated---------------------------------><
 
->>--wasActivated-=-varName-----------------------><
+>>--wasActivated-=-trueFalse---------------------><
 
 ]]>
 </programlisting>
@@ -1484,7 +1484,7 @@
 <![CDATA[
 >>--appIcon--------------------------------------><
 
->>--appIcon=varName------------------------------><
+>>--appIcon=icon---------------------------------><
 
 ]]>
 </programlisting>
@@ -3637,8 +3637,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method is not available for Aero-style wizards. If the page specified is the current page, it will immediately
-    be repainted to display the new header.
+    This method does not work for Aero-style wizards. If the page specified is the current page, it will immediately be
+    repainted to display the new header.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4182,7 +4182,51 @@
 <entry>.</entry>
 </row>
 <row>
-<entry><link linkend="atrCY">cx</link></entry>
+<entry><link linkend="atrCY">cy</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrHeaderSubtitle">headerSubtitle</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrHeaderTitle">headerTitle</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrPageID">pageID</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrPageNumber">pageNumber</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrPageTitle">pageTitle</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrPropSheet">propSheet</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrResourcesClsPSP">resourcesClsPSP</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrTabIcon">tabIcon</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrWasActivateClsPSP">wasActivated</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrWantAccelerators">wantAccelerators</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="atrWantGetObject">wantGetObject</link></entry>
 <entry>.</entry>
 </row>
 <row>
@@ -4197,6 +4241,66 @@
 <entry><link linkend="mthGetObject">getObject</link></entry>
 <entry>.</entry>
 </row>
+<row>
+<entry><link linkend="mthHelpClsPSP">help</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthKillActive">killActive</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthPageCreate">pageCreate</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthQueryCancel">queryCancel</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthQueryFromSibling">queryFromSibling</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthQueryInitialFocus">queryInitialFocus</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthReset">reset</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetActive">setActive</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthSetSizeClsPSP">setSize</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthTranslateAccelerator">translateAccelerator</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthWizBack">wizBack</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthWizFinish">wizFinish</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthWizNext">wizNext</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthValidateClsPSP">validate</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthValidatePage">pageValidate</link></entry>
+<entry>.</entry>
+</row>
 </tbody></tgroup>
 </table>
 </section>
@@ -4207,9 +4311,22 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>event handlers</secondary></indexterm>
 
 <para>
-  The process for connecting event handlers for the property sheet page dialogs takes a slightly different approach than
-  that of other dialog classes in the ooDialog framework. The property sheet page class provides a default event handler
-  for all property sheet page specifc events.
+  The process for connecting <link linkend="ovvEvents">event</link> handlers for the property sheet page
+  dialogs takes a slightly different approach than that of other dialog classes in the ooDialog framework. The property
+  sheet page class provides a default event handler for all property sheet page specifc events.
+</para>
+<para>
+  Rather than connecting a property sheet page event to a specified method in the Rexx dialog, the programmer over-rides
+  the default handler in the dialog. This is similiar to how the <link linkend="mthOk">ok</link> and <link
+  linkend="mthCancel">cancel</link> events are handled in the dialog <link linkend="chpDialogObject">object</link>. In
+  the property sheet page dialogs, all the methods are actually default event handlers. To act on an event in a manner
+  different from the default, the programmer over-rides the default handler and provides an implementation that handles
+  the event in the manner needed by the application. For example, to remove the back button from the first page of an
+  Aero wizard, the programmer would over-ride the <link linkend="mthSetActive">setActive</link> method in the page
+  dialog for the first page of the property sheet dialog. In the new implementation code for <emphasis
+  role="italic">setActive</emphasis>, the programmer would invoke the <link
+  linkend="mthShowWizButtons">showWizButtons</link> method of the property sheet dialog and specify that the Back button
+  was hidden. This same general technique is used for all property sheet page events.
 </para>
 </section>  <!-- End Page Event Handlers  -->
 
@@ -4219,21 +4336,22 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>cx</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--cx-----------------------------------------------------><
+>>--cx-------------------------------------------><
 
->>--cx=varName---------------------------------------------><
+>>--cx=width-------------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+ Reflects the width of the property page dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">cx get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">cx</emphasis> attribute is the width, in dialog <link
+    linkend="defDialogUnit">units</link>, of the page dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">cx set:</emphasis></term>
@@ -4329,15 +4447,15 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>headerSubtitle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--headerSubtitle-----------------------------------------------------><
+>>--headerSubtitle-------------------------------><
 
->>--headerSubtitle=varName---------------------------------------------><
+>>--headerSubtitle=text--------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the text for the subtitle of a non-Aeor wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">headerSubtitle get:</emphasis></term>
@@ -4494,51 +4612,29 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>pageNumber</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--pageNumber-----------------------------------------------------><
+>>--pageNumber-----------------------------------><
 
->>--pageNumber=varName---------------------------------------------><
+>>--pageNumber=varName---------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the page number of this property sheet page.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">pageNumber get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The property sheet page numbers are one-based and the <emphasis role="italic">pageNumber</emphasis> attribute is the
+    current page number in the property page dialog for this property sheet page.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pageNumber set:</emphasis></term>
   <listitem>
   <para>
-    details about set
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    The programmer can not set the <emphasis role="italic">pageNumber</emphasis> attribute, it is set correctly by the
+    ooDialog framework.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4769,51 +4865,35 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>wasActivated</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wasActivated-----------------------------------------------------><
+>>--wasActivated---------------------------------><
 
->>--wasActivated=varName---------------------------------------------><
+>>--wasActivated-=-trueFalse---------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects whether the <link linkend="ovvUnderlying">underlying</link> property sheet page was created.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">wasActivated get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of this attribute is true if the underlying page was created, otherwise it is false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">wasActivated set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The programmer can not set the value of this attribute, it is set internally by the ooDialog framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    The property <link linkend="clsPropertySheetDialog">sheet</link> dialog creates the property sheet page dialogs as
+    they are needed, usually not until the page is visited. This attribute allows the Rexx programmer to determine
+    whether or not the underlying dialog was ever created.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4824,21 +4904,24 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>wantAccelerators</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wantAccelerators-----------------------------------------------------><
+>>--wantAccelerators-----------------------------><
 
->>--wantAccelerators=varName---------------------------------------------><
+>>--wantAccelerators-=-trueFalse-----------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if the TRANSLATEACCELERATOR event notification is passed on to the page dialog by invoking its <link
+  linkend="mthTranslateAccelerator">translateAccelerator</link> method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">wantAccelerators get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    If the <emphasis role="italic">wantAccelerators</emphasis> attrbiute is true, the <link
+    linkend="mthTranslateAccelerator">translateAccelerator</link> method will be invoked for each TRANSLATEACCELERATOR
+    event notification. By default this attribute is false and TRANSLATEACCELERATOR notifications are ignored.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">wantAccelerators set:</emphasis></term>
@@ -4879,51 +4962,37 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>wantGetObject</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wantGetObject-----------------------------------------------------><
+>>--wantGetObject--------------------------------><
 
->>--wantGetObject=varName---------------------------------------------><
+>>--wantGetObject=trueFalse----------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Determines if this page should receive the GETOBJECT event notification message.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">wantGetObject get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    Returns the value of the <emphasis role="italic">wantGetObject</emphasis> attribute. By default the value is false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">wantGetObject set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    Set the value of <emphasis role="italic">wantGetObject</emphasis> to true to have the GETOBJECT event notification
+    passed on to this page.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    This attribute and the <link linkend="mthGetObject">getObject</link> event handler are provided for completeness.
+    The ooDialog framework does not currently have a way to allow the programmer to handle the get object event. The
+    <emphasis role="italic">wantGetObject</emphasis> attribute is set to false by default. Future versions of ooDialog
+    may be enhanced to take advantage of this attribute.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4934,13 +5003,14 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>apply</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--apply(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--apply(--isOkBtn-,-pageNum-,-rexxPage-,-propSheet--)---------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sent to every page in the property sheet to indicate that the user has clicked the OK, Close, or Apply button and
+  wants all changes to take effect. This is the event handler for the APPLY event.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4948,10 +5018,31 @@
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>isOkBtn</term>
       <listitem>
       <para>
-        xx
+        This argument is true if the user clicked the OK button. It is also set to true if the <link
+        linkend="mthCancelToClose">cancelToClose</link> methods had inovked on the propertery sheet and the user clicked
+        the Close button. It is set to false if the user clicked the Apply button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>pageNum</term>
+      <listitem>
+      <para>
+        This argument is set to the page number of the page that had the focus when the user clicked the button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rexxPage</term>
+      <listitem>
+      <para>
+        This argument is set to the Rexx property sheet page object that had the focuse when the user clicked the
+        button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>propSheet</term>
+      <listitem>
+      <para>
+        This argument is set to the Rexx property sheet dialog object that owns this property sheet page.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -4960,33 +5051,45 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    One of the following values must be returned:
+  <variablelist>
+    <varlistentry><term>PSNRET_NOERROR</term>
+    <listitem>
+    <para>
+      Return the PSNRET_NOERROR <link linkend="tblPropertySheetPageMethods">constant</link> to indicate that the
+      changes made to this page are valid and have been applied.  If all pages return PSNRET_NOERROR, the property sheet
+      dialog can be destroyed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>PSNRET_INVALID</term>
+    <listitem>
+    <para>
+      Return the PSNRET_INVALID <link linkend="tblPropertySheetPageMethods">constant</link> to prevent the property
+      sheet dialog from being destroyed. The focus will be returned to this page.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>PSNRET_INVALID_NOCHANGEPAGE</term>
+    <listitem>
+    <para>
+      Return the PSNRET_INVALID_NOCHANGEPAGE <link linkend="tblPropertySheetPageMethods">constant</link> to prevent the
+      property sheet dialog from being destroyed. The focus will be returned to the page that had the focus when the
+      button was pressed.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The default <emphasis role="italic">apply</emphasis> implementation returns PSNRET_NOERROR. When over-riding this
+    method the programmer must return one of the three listed return values.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4997,24 +5100,27 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>getObject</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getObject(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getObject(--propSheet--)---------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Sent by a property sheet dialog to request a drop target object when the cursor passes over one of the tab control's
+  buttons. This event handler is provided for completeness. The method is currently a no-op. The ooDialog framework
+  currently has no way for the programmer to respond to this notification. Future versions of ooDialog may be enhanced
+  to allow an application to respond to this notification.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>propSheet</term>
       <listitem>
       <para>
-        xx
+        This argument is set to the Rexx property sheet dialog object that owns this property sheet page.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5023,33 +5129,15 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Any return from <emphasis role="italic">getObject</emphasis> is ignored. The default implementation returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
+    By default, the GETOBJECT notification is completely ignored. This is controlled by the <link
+    linkend="atrWantGetObject">wantGetObject</link> attribute. If that attribute is set to true, the <emphasis
+    role="italic">getObject</emphasis> event handler will be invoked.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -5060,24 +5148,24 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>help</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--help(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--help(--propSheet--)---------------------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Notifies a page that the user has clicked the Help button.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>propSheet</term>
       <listitem>
       <para>
-        xx
+        This argument is set to the Rexx property sheet dialog object that owns this property sheet page.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -5086,33 +5174,21 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The default implementation of the <emphasis role="italic">help</emphasis> event handler returns 0. When the
+    programmer over-rides this method, the method must return a value, but the value itself is ignored.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    If the application provides a help button, then the application should display help if this notification is
+    received.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
