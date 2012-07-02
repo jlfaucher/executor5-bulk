@@ -1320,12 +1320,12 @@
   end
   return newNode
 
-::attribute ownerDocument GET
 ::attribute ownerDocument SET private
-  expose ownerDocument firstChild
+  expose firstChild
+
   use strict arg doc
   -- we need to set this at the higher levels too
-  self~"OWNERDOCUMENT":super(doc)
+  forward class(super) continue
   -- set this in each of the children too
   child = firstChild
   do while child \= .nil
@@ -1343,7 +1343,7 @@
 ::attribute lastChild GET
 
 ::method insertBefore
-  expose firstChild lastChild ownerDocument childNodes
+  expose firstChild lastChild childNodes
   use arg newChild, refChild = .nil, replace = .false
 
   -- this case is really a no-op, but we need to go through the steps
@@ -1356,7 +1356,7 @@
   end
 
   -- inform the owner that this is happening
-  ownerDocument~insertingNode(self, replace)
+  self~ownerDocument~insertingNode(self, replace)
 
   -- make sure we've detached this node from any previous
   -- parent node.
@@ -1408,14 +1408,14 @@
   -- broadcast a change event
   self~changed
   -- inform the document of this update
-  ownerDocument~insertedNode(self, newChild, replace)
+  self~ownerDocument~insertedNode(self, newChild, replace)
   return newChild
 
 ::method removeChild
-  expose firstChild lastChild ownerDocument childNodes
+  expose firstChild lastChild childNodes
   use strict arg oldChild, replace = .false
 
-  ownerDocument~removingNode(self, oldChild, replace)
+  self~ownerDocument~removingNode(self, oldChild, replace)
 
   -- removing the first child
   if oldChild == firstChild then do
@@ -1452,11 +1452,10 @@
   -- note the change update
   self~changed
 
-  ownerDocument~removedNode(self, replace)
+  self~ownerDocument~removedNode(self, replace)
   return oldChild
 
 ::method replaceChild
-  expose ownerDocument
   use strict arg newChild, oldChild
 
   self~insertBefore(newChild, oldChild, .true)
@@ -1464,7 +1463,7 @@
       self~removeChild(oldChild, .true)
   end
 
-  ownerDocument~replacedNode(self)
+  self~ownerDocument~replacedNode(self)
   return oldChild
 
 ::attribute textContent GET
@@ -6047,6 +6046,7 @@ syntax:
          allowGrammerAccess errorChecking documentNumber nodeCounter nodeTable
   use strict arg docType = .nil, grammarAccess = .false
   self~init:super(.nil)
+  -- we are our own owning document for purposes of child appends
   self~ownerDocument = self
 
   docElement = .nil
@@ -6071,11 +6071,6 @@ syntax:
       docType~ownerDocument = self
       appendChild(docType)
   end
-
-::attribute ownerDocument GET
-  use strict arg
-  -- documents don't have an owner
-  return .nil
 
 ::attribute nodeType GET
   use strict arg

@@ -876,7 +876,7 @@ return text
 /*----------------------------------------------------------------------------*/
 
 ::method parse_array
-  expose src lineidx charidx eof xmlerror
+  expose src lineidx charidx eof xmlerror contentHandler
   use strict arg src
   eof = .false
   /* parse the xml array */
@@ -890,12 +890,12 @@ return text
   if src[1]~pos('<?xml') <> 1 then do
      self~create_error('Invalid XML document.')
   end
-  self~start_document
+  contentHandler~start_document
   do while \eof
      self~getchunk
   end
   -- we send the end_document even if there is an error
-  self~end_document
+  contentHandler~end_document
   return ''
 syntax:
   -- if we had an error, return the message as a return value

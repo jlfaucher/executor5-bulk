@@ -43,11 +43,14 @@
 /*----------------------------------------------------------------------------*/
 
 
-::class "DomParser" inherit xmlcontenthandler
+::class "DomParser" public inherit xmlcontenthandler
 ::method init
   expose parser
   -- create a parser instance with this parser as the content handler
   parser = .xmlparser~new(self)
+
+-- the document currently being constructed
+::attribute doc
 
 
 /*----------------------------------------------------------------------------*/
@@ -112,7 +115,7 @@
 
   -- we're live...get the DOM and create a document instance
   dom = .ooRexxDOM~implementation
-  document = dom~createDocument
+  doc = dom~createDocument
 
 /*----------------------------------------------------------------------------*/
 /* Method: end_document                                                       */
@@ -137,13 +140,13 @@
 
   -- create a new context for the new element, inheriting the namespace
   -- definitions from the parents.
-  newElement = .ElementContext~new(self, chunk currentElement)
+  newElement = .ElementContext~new(self, chunk, currentElement)
 
   -- set the root element if this is the first one
   if rootElement == .nil then do
      rootElement = newElement
      -- add this as the root element of the document
-     doc~appendChild(newElement)
+     doc~appendChild(newElement~element)
   end
   -- this is the top of the stack
   currentElement = newElement
@@ -177,7 +180,7 @@
   -- an element may have multiple text nodes, so we need to
   -- explicitly create the node and append it as a child to the current element
   text = doc~createTextNode(chunk~text)
-  currentElement~appendChild(text)
+  currentElement~element~appendChild(text)
 
 /*----------------------------------------------------------------------------*/
 /* Method: called when a comment tag has been encountered                     */
@@ -188,8 +191,16 @@
   expose doc currentElement
   use strict arg chunk
 
-  -- just create the node and add to the current element
-  currentElement~appendChild(doc~createComment(chunk~text))
+  -- comments can appear anywhere...even before the first element
+  -- if we have a current element being processed, then add this to that
+  if currentElement \= .nil then do
+     -- just create the node and add to the current element
+     currentElement~element~appendChild(doc~createComment(chunk~text))
+  end
+  else do
+     -- add the comment to the document as a child
+     doc~appendChild(doc~createComment(chunk~text))
+  end
 
 /*----------------------------------------------------------------------------*/
 /* Method: called when a CDATA tag has been encountered                       */
@@ -201,7 +212,7 @@
   use strict arg chunk
 
   -- just create the node and add to the current element
-  currentElement~appendChild(doc~createCDataSection(chunk~text))
+  currentElement~element~appendChild(doc~createCDataSection(chunk~text))
 
 /*----------------------------------------------------------------------------*/
 /* Method: called when a processing instruction has been encountered          */
@@ -212,8 +223,15 @@
   expose doc currentElement
   use strict arg chunk
 
-  -- just create the node and add to the current element
-  currentElement~appendChild(doc~createProcessingInstruction(chunk~tag, chunk~text))
+  -- if we have a current element being processed, then add this to that
+  if currentElement \= .nil then do
+     -- just create the node and add to the current element
+     currentElement~element~appendChild(doc~createProcessingInstruction(chunk~tag, chunk~text))
+  end
+  else do
+     -- add the processing instruction to the document as a child
+     doc~appendChild(doc~createProcessingInstruction(chunk~tag, chunk~text))
+  end
 
 /*----------------------------------------------------------------------------*/
 /* Method: called when a <!DOCTYPE tag has been encountered                   */
