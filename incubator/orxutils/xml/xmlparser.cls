@@ -208,13 +208,120 @@
   end
 
 
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XMLCONTENTHANDLER                                                   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- class for plugging in a content handler for parsing events
+::class "XmlContentHandler" mixinclass Object public
+
+/*----------------------------------------------------------------------------*/
+/* Method: start_document                                                     */
+/* Description: called before the start of document processing                */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+
+::method start_document
+/* this method is designed to be overridden by a subclass */
+  use strict arg
+
+/*----------------------------------------------------------------------------*/
+/* Method: end_document                                                       */
+/* Description: called after all parsing has completed                        */
+/* Arguments:   none                                                          */
+/*----------------------------------------------------------------------------*/
+
+::method end_document
+/* this method is designed to be overridden by a subclass */
+  use strict arg
+
+/*----------------------------------------------------------------------------*/
+/* Method: start_element                                                      */
+/* Description: called when a start element tag has been encountered.         */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method start_element
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: end_element                                                        */
+/* Description: called when an end element tag has been encountered.          */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method end_element
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: text                                                               */
+/* Description: called when character data has been encountered.              */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method text
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: called when a comment tag has been encountered                     */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method comment
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: called when a CDATA tag has been encountered                       */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method cdata
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: called when a processing instruction has been encountered          */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method processingInstruction
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: called when a <!DOCTYPE tag has been encountered                   */
+/* Arguments:   an xmlchunk instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method doctypeDecl
+/* this method is designed to be overridden by a subclass */
+  use strict arg chunk
+
+/*----------------------------------------------------------------------------*/
+/* Method: error                                                              */
+/* Description: called on an error.                                           */
+/* Arguments:   an xmlerror instance.                                         */
+/*----------------------------------------------------------------------------*/
+
+::method error
+/* this method is designed to be overridden by a subclass */
+  use strict arg xmlerror
+
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Class: XMLPARSER                                                           */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class xmlparser subclass object public
+::class xmlparser subclass object public inherit xmlcontenthandler
 
 
 /*----------------------------------------------------------------------------*/
@@ -223,6 +330,11 @@
 /*        Private methods                                                     */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+
+::method init
+  expose contentHandler
+  -- the default content handler is to redirect to ourselves...useful for subclassing
+  use strict arg contentHandler = (self)
 
 ::constant parserver '0.5'             -- the version of this parser
 ::constant eol '0a'x                   -- newline character used for XML
@@ -251,7 +363,7 @@
 /*----------------------------------------------------------------------------*/
 
 ::method create_error private
-  expose errlineidx errcharidx xmlerror eof
+  expose errlineidx errcharidx xmlerror eof contentHandler
   use strict arg msg
   xmlerror = .xmlerror~new
   xmlerror~text = 'Error on line' errlineidx', column' errcharidx':' msg
@@ -260,7 +372,7 @@
   xmlerror~charpos = errpos
   -- turn on the eof indicator so nothing else gets processed
   eof = .true
-  self~error(xmlerror)   -- pass this to the processing routine
+  contentHandler~error(xmlerror)   -- pass this to the processing routine
   -- now raise this as a syntax error to get back to the base
   raise syntax 93.900 array(msg, xmlerror)
 
@@ -528,7 +640,7 @@ return text
 /* Arguments:   none                                                          */
 /*----------------------------------------------------------------------------*/
 ::method parseText
-  expose eof
+  expose eof contentHandler
    chunk = .xmlchunk~new
    -- we found some text data
    text = .mutablebuffer~new
@@ -546,7 +658,7 @@ return text
    -- if this chunk if just whitespace characters (including lineneds), just
    -- ignore it.
    if chunk~text~verify(' '||self~tab||self~eol) \= 0 then
-      self~text(chunk) -- call the public override method
+      contentHandler~text(chunk) -- call the public override method
    return chunk
 
 
@@ -556,7 +668,7 @@ return text
 /* Arguments:   none                                                          */
 /*----------------------------------------------------------------------------*/
 ::method parseCData
-  expose eof
+  expose eof contentHandler
   chunk = .xmlchunk~new
   -- we found some text data
   data = .mutablebuffer~new
@@ -577,7 +689,7 @@ return text
 
   -- cdata information does not recognize entities.
   chunk~text = data~string
-  self~cdata(chunk) -- call the public override method
+  contentHandler~cdata(chunk) -- call the public override method
   return chunk
 
 /*----------------------------------------------------------------------------*/
@@ -586,7 +698,7 @@ return text
 /* Arguments:   none                                                          */
 /*----------------------------------------------------------------------------*/
 ::method parseComment
-  expose eof
+  expose eof contentHandler
    chunk = .xmlchunk~new
    -- we found some text data
    data = .mutablebuffer~new
@@ -607,7 +719,7 @@ return text
 
    -- comment information does not recognize entities.
    chunk~text = data~string
-   self~comment(chunk) -- call the public override method
+   contentHandler~comment(chunk) -- call the public override method
    return chunk
 
 /*----------------------------------------------------------------------------*/
@@ -616,12 +728,13 @@ return text
 /* Arguments:   none                                                          */
 /*----------------------------------------------------------------------------*/
 ::method parseEndElement
+  expose contentHandler
   element = self~scanToTagEnd
   chunk = .xmlchunk~new
   chunk~tag = self~parseName(element)
   if chunk~tag == .nil then self~check_error("Invalid element end tag" element".")
   if element~string \= '' then self~check_error("Invalid element end tag" element".")
-  self~end_element(chunk) -- call the public override method
+  contentHandler~end_element(chunk) -- call the public override method
   return chunk
 
 
@@ -663,6 +776,7 @@ return text
 /*----------------------------------------------------------------------------*/
 
 ::method parseElement
+  expose contentHandler
   element = self~scanToTagEnd
   chunk = .xmlchunk~new
   -- assume this is not a complete tag element
@@ -681,12 +795,12 @@ return text
   -- now parse out the attributes
   chunk~attr = self~parseAttributes(element)
 
-  self~start_element(chunk) -- call the public override method
+  contentHandler~start_element(chunk) -- call the public override method
   -- self terminating element?
   if endTag then do
      endchunk = .xmlchunk~new
      endchunk~tag = chunk~tag
-     self~end_element(endchunk) -- call the public override method
+     contentHandler~end_element(endchunk) -- call the public override method
   end
 
   return chunk
@@ -698,7 +812,7 @@ return text
 /* Arguments:   none                                                          */
 /*----------------------------------------------------------------------------*/
 ::method parseProcessingInstruction
-  expose eof
+  expose eof contentHandler
 
   chunk = .xmlchunk~new
   instruction = self~scanToTagEnd
@@ -715,7 +829,7 @@ return text
   if chunk~tag == .nil then self~create_error('Invalid processing instruction name.')
   chunk~text = instruction~string
 
-  self~processingInstruction(chunk) -- call the public override method
+  contentHandler~processingInstruction(chunk) -- call the public override method
   return chunk
 
 
@@ -726,7 +840,7 @@ return text
 /* Arguments:   none                                                          */
 /*----------------------------------------------------------------------------*/
 ::method parseDoctype
-  expose eof
+  expose eof contentHandler
 
   chunk = .xmlchunk~new
   chunk~text = .xmlchar~stripWhiteSpace(self~scanToTagEndNested)~string
@@ -734,7 +848,7 @@ return text
      self~create_error('EOF within a DOCTYPE tag.') -- call the public override method
   end
   chunk~tag = ''
-  self~doctypeDecl(chunk) -- call the public override method
+  contentHandler~doctypeDecl(chunk) -- call the public override method
   return chunk
 
 
@@ -746,102 +860,6 @@ return text
 /*----------------------------------------------------------------------------*/
 
 ::attribute xmlfile private -- the XML file name, if known
-
-/*----------------------------------------------------------------------------*/
-/* Method: start_document                                                     */
-/* Description: called before the start of document processing                */
-/* Arguments:   none                                                          */
-/*----------------------------------------------------------------------------*/
-
-::method start_document
-/* this method is designed to be overridden by a subclass */
-  use strict arg
-
-/*----------------------------------------------------------------------------*/
-/* Method: end_document                                                       */
-/* Description: called after all parsing has completed                        */
-/* Arguments:   none                                                          */
-/*----------------------------------------------------------------------------*/
-
-::method end_document
-/* this method is designed to be overridden by a subclass */
-  use strict arg
-
-/*----------------------------------------------------------------------------*/
-/* Method: start_element                                                      */
-/* Description: called when a start element tag has been encountered.         */
-/* Arguments:   an xmlchunk instance.                                         */
-/*----------------------------------------------------------------------------*/
-
-::method start_element
-/* this method is designed to be overridden by a subclass */
-  use strict arg chunk
-
-/*----------------------------------------------------------------------------*/
-/* Method: end_element                                                        */
-/* Description: called when an end element tag has been encountered.          */
-/* Arguments:   an xmlchunk instance.                                         */
-/*----------------------------------------------------------------------------*/
-
-::method end_element
-/* this method is designed to be overridden by a subclass */
-  use strict arg chunk
-
-/*----------------------------------------------------------------------------*/
-/* Method: text                                                               */
-/* Description: called when character data has been encountered.              */
-/* Arguments:   an xmlchunk instance.                                         */
-/*----------------------------------------------------------------------------*/
-
-::method text
-/* this method is designed to be overridden by a subclass */
-  use strict arg chunk
-
-/*----------------------------------------------------------------------------*/
-/* Method: called when a comment tag has been encountered                     */
-/* Arguments:   an xmlchunk instance.                                         */
-/*----------------------------------------------------------------------------*/
-
-::method comment
-/* this method is designed to be overridden by a subclass */
-  use strict arg chunk
-
-/*----------------------------------------------------------------------------*/
-/* Method: called when a CDATA tag has been encountered                       */
-/* Arguments:   an xmlchunk instance.                                         */
-/*----------------------------------------------------------------------------*/
-
-::method cdata
-/* this method is designed to be overridden by a subclass */
-  use strict arg chunk
-
-/*----------------------------------------------------------------------------*/
-/* Method: called when a processing instruction has been encountered          */
-/* Arguments:   an xmlchunk instance.                                         */
-/*----------------------------------------------------------------------------*/
-
-::method processingInstruction
-/* this method is designed to be overridden by a subclass */
-  use strict arg chunk
-
-/*----------------------------------------------------------------------------*/
-/* Method: called when a <!DOCTYPE tag has been encountered                   */
-/* Arguments:   an xmlchunk instance.                                         */
-/*----------------------------------------------------------------------------*/
-
-::method doctypeDecl
-/* this method is designed to be overridden by a subclass */
-  use strict arg chunk
-
-/*----------------------------------------------------------------------------*/
-/* Method: error                                                              */
-/* Description: called on an error.                                           */
-/* Arguments:   an xmlerror instance.                                         */
-/*----------------------------------------------------------------------------*/
-
-::method error
-/* this method is designed to be overridden by a subclass */
-  use strict arg xmlerror
 
 /*----------------------------------------------------------------------------*/
 /* Method: getversion                                                         */

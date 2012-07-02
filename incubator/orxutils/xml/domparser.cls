@@ -35,9 +35,6 @@
 /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
-/* Author: W. David Ashley                                                    */
-/* Contributors: Ruurd Idenburg                                               */
-/*                                                                            */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -46,7 +43,57 @@
 /*----------------------------------------------------------------------------*/
 
 
-::class "DomParser" subclass XMLParser
+::class "DomParser" inherit xmlcontenthandler
+::method init
+  expose parser
+  -- create a parser instance with this parser as the content handler
+  parser = .xmlparser~new(self)
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parse_array                                                        */
+/* Description: parse the specified array of XML code.                        */
+/*----------------------------------------------------------------------------*/
+
+::method parse_array
+  expose doc parser
+
+  -- have the parser process this
+  forward to(parser) continue
+  -- return the doc instance.  If this failed, then the
+  -- error can be retrieved after the fact
+  return doc
+
+
+/*----------------------------------------------------------------------------*/
+/* Method: parse_file                                                         */
+/* Description: parse the specified file of XML code.                         */
+/*----------------------------------------------------------------------------*/
+
+::method parse_file
+  expose doc parser
+
+  -- have the parser process this
+  forward to(parser) continue
+  -- return the doc instance.  If this failed, then the
+  -- error can be retrieved after the fact
+  return doc
+
+/*----------------------------------------------------------------------------*/
+/* Method: parse_stream                                                       */
+/* Description: parse the specified stream of XML code                        */
+/*              The stream should be opened, and will not be closed at the end*/
+/*----------------------------------------------------------------------------*/
+
+::method parse_stream
+  expose doc parser
+
+  -- have the parser process this
+  forward to(parser) continue
+  -- return the doc instance.  If this failed, then the
+  -- error can be retrieved after the fact
+  return doc
+
 
 /*----------------------------------------------------------------------------*/
 /* Method: start_document                                                     */
@@ -55,8 +102,17 @@
 /*----------------------------------------------------------------------------*/
 
 ::method start_document
-/* this method is designed to be overridden by a subclass */
+  expose doc dom xmlerror currentElement rootElement
   use strict arg
+
+  -- clear parsing state
+  xmlerror = .nil
+  currentElement = .nil
+  rootElement = .nil
+
+  -- we're live...get the DOM and create a document instance
+  dom = .ooRexxDOM~implementation
+  document = dom~createDocument
 
 /*----------------------------------------------------------------------------*/
 /* Method: end_document                                                       */
@@ -75,8 +131,22 @@
 /*----------------------------------------------------------------------------*/
 
 ::method start_element
-/* this method is designed to be overridden by a subclass */
+  expose currentElement rootElement doc
+
   use strict arg chunk
+
+  -- create a new context for the new element, inheriting the namespace
+  -- definitions from the parents.
+  newElement = .ElementContext~new(self, chunk currentElement)
+
+  -- set the root element if this is the first one
+  if rootElement == .nil then do
+     rootElement = newElement
+     -- add this as the root element of the document
+     doc~appendChild(newElement)
+  end
+  -- this is the top of the stack
+  currentElement = newElement
 
 /*----------------------------------------------------------------------------*/
 /* Method: end_element                                                        */
@@ -85,8 +155,14 @@
 /*----------------------------------------------------------------------------*/
 
 ::method end_element
-/* this method is designed to be overridden by a subclass */
+  expose currentElement
   use strict arg chunk
+
+  -- this must be an exact match
+  if chunk~tag \== currentElement~element~tagName then
+     self~create_error("End tag" chunk~tag "does not match current element" element~tagName)
+  -- pop this off the stack and make it the new current
+  currentElement = currentElement~parent
 
 /*----------------------------------------------------------------------------*/
 /* Method: text                                                               */
@@ -95,8 +171,13 @@
 /*----------------------------------------------------------------------------*/
 
 ::method text
-/* this method is designed to be overridden by a subclass */
+  expose doc currentElement
   use strict arg chunk
+
+  -- an element may have multiple text nodes, so we need to
+  -- explicitly create the node and append it as a child to the current element
+  text = doc~createTextNode(chunk~text)
+  currentElement~appendChild(text)
 
 /*----------------------------------------------------------------------------*/
 /* Method: called when a comment tag has been encountered                     */
@@ -104,8 +185,11 @@
 /*----------------------------------------------------------------------------*/
 
 ::method comment
-/* this method is designed to be overridden by a subclass */
+  expose doc currentElement
   use strict arg chunk
+
+  -- just create the node and add to the current element
+  currentElement~appendChild(doc~createComment(chunk~text))
 
 /*----------------------------------------------------------------------------*/
 /* Method: called when a CDATA tag has been encountered                       */
@@ -113,8 +197,11 @@
 /*----------------------------------------------------------------------------*/
 
 ::method cdata
-/* this method is designed to be overridden by a subclass */
+  expose doc currentElement
   use strict arg chunk
+
+  -- just create the node and add to the current element
+  currentElement~appendChild(doc~createCDataSection(chunk~text))
 
 /*----------------------------------------------------------------------------*/
 /* Method: called when a processing instruction has been encountered          */
@@ -122,8 +209,11 @@
 /*----------------------------------------------------------------------------*/
 
 ::method processingInstruction
-/* this method is designed to be overridden by a subclass */
+  expose doc currentElement
   use strict arg chunk
+
+  -- just create the node and add to the current element
+  currentElement~appendChild(doc~createProcessingInstruction(chunk~tag, chunk~text))
 
 /*----------------------------------------------------------------------------*/
 /* Method: called when a <!DOCTYPE tag has been encountered                   */
@@ -131,8 +221,9 @@
 /*----------------------------------------------------------------------------*/
 
 ::method doctypeDecl
-/* this method is designed to be overridden by a subclass */
   use strict arg chunk
+
+  -- not handled currently
 
 /*----------------------------------------------------------------------------*/
 /* Method: error                                                              */
@@ -141,8 +232,12 @@
 /*----------------------------------------------------------------------------*/
 
 ::method error
-/* this method is designed to be overridden by a subclass */
+  expose xmlerror doc
   use strict arg xmlerror
+  -- no document to return if there's an error
+  doc = .nil
+
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Class: ElementContext                                                      */

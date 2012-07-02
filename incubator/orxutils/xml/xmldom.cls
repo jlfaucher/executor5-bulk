@@ -155,7 +155,7 @@
 ::method createElement abstract
 ::method createElementNS abstract
 ::method createEntityReference abstract
-::method createProcessinginstruction abstract
+::method createProcessingInstruction abstract
 ::method createTextNode abstract
 ::method doctype abstract
 ::method documentElement abstract
