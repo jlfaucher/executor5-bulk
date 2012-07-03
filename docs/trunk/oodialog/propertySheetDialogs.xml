@@ -4218,7 +4218,7 @@
 <entry>.</entry>
 </row>
 <row>
-<entry><link linkend="atrWasActivateClsPSP">wasActivated</link></entry>
+<entry><link linkend="atrWasActivatedClsPSP">wasActivated</link></entry>
 <entry>.</entry>
 </row>
 <row>
@@ -6090,7 +6090,8 @@
 <indexterm><primary>new</primary><secondary>RcPSPDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
+>>-init(--rc--,--id-+---------+-+---------+-+---------+-+---------+-+---------+-)--><
+                    +-,-data.-+ +-,-hFile-+ +-,-pOpts-+ +-,-cOpts-+ +-,-exptd-+
 
 ]]>
 </programlisting>
@@ -6104,10 +6105,110 @@
   <para>
     The arguments when creating a new dialog instance of this class are:
     <variablelist>
-      <varlistentry><term>XXX [required]</term>
+      <varlistentry><term>rc [required]</term>
       <listitem>
       <para>
-        xx
+        The file name of the resource script containing the dialog template.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog template. This may be numeric or <link linkend="defSymbolicId">symbolic </link>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>data. [optional]</term>
+      <listitem>
+      <para>
+        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        contains data used to initialize the underlying dialog's controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hFile [optional]</term>
+      <listitem>
+      <para>
+        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>pOpts [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following page option keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>T1   </member>
+          <member>T2    </member>
+          <member>T3   </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>T1</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>T2</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>T3</term>
+          <listitem>
+          <para>
+            text
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>cOpts [optional]</term>
+      <listitem>
+      <para>
+        Zero or more of the following connect option keywords, separated by blanks:
+        <variablelist>
+        <varlistentry><term>CONNECTBUTTONS</term>
+        <listitem>
+        <para>
+          Each push <link linkend="clsButton">button</link> in the underlying dialog has the CLICKED <link
+          linkend="ovvEvents">event</link> notification connected automatically to a method in the Rexx dialog object.
+          This is the same as using the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the
+          CLICKED notification. The name for the method is generated automatically by the ooDialog framework. The method
+          name is the button label with all spaces, ampersands, colons, and trailing <emphasis
+          role="italic">...</emphasis> characters removed.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CONNECTRADIOS</term>
+        <listitem>
+        <para>
+          Similar to CONNECTBUTTONS, this option connects the CLICKED event notification from each <link
+          linkend="clsRadioButton">radio</link> button to a method in the Rexx dialog object. Again, this is the same as
+          using the <emphasis role="italic">connectButtonEvent</emphasis> method.  For radio buttons, the generated
+          method name is the button label with all spaces, ampersands, colons, and trailing <emphasis
+          role="italic">...</emphasis> characters removed. The resulting text is then <emphasis
+          role="bold">prepened</emphasis> with the text <computeroutput>ID</computeroutput>.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>CONNECTCHECKS</term>
+        <listitem>
+        <para>
+          Exactly the same as CONNECTRADIOS, for <link linkend="clsCheckBox">check box</link> controls. The object
+          method name is generated in the same way as it is for radio buttons. That is, the method name is the button
+          label, with all spaces, ampersands, colons, and trailing <emphasis role="italic">...</emphasis> characters
+          removed. Which is then <emphasis role="bold"> prepended</emphasis> with the text
+          <computeroutput>ID</computeroutput>.
+        </para>
+        </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>expected [optional]</term>
+      <listitem>
+      <para>
+        This is the maximum number of dialog controls expected in the dialog template. It serves the same purpose as the
+        <emphasis role="italic">expected</emphasis> argument in the <link linkend="mthCreate">create</link>() method of
+        the <computeroutput>UserDialog</computeroutput>. The default value for this argument is 200.
       </para>
       </listitem></varlistentry>
     </variablelist>

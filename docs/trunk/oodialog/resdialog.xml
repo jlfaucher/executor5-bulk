@@ -298,7 +298,9 @@ end
           Similar to CONNECTBUTTONS, this option connects the CLICKED event notification from each <link
           linkend="clsRadioButton">radio</link> button to a method in the Rexx dialog object. Again, this is the same as
           using the <emphasis role="italic">connectButtonEvent</emphasis> method.  For radio buttons, the generated
-
+          method name is the button label with all spaces, ampersands, colons, and trailing <emphasis
+          role="italic">...</emphasis> characters removed. The resulting text is then <emphasis
+          role="bold">prepened</emphasis> with the text <computeroutput>ID</computeroutput>.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CONNECTCHECKS</term>
