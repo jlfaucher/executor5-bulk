@@ -4105,6 +4105,12 @@
   </listitem>
   </itemizedlist>
 </para>
+<para>
+  All property sheet page dialogs are managed more by the operating system than is typical for an ooDialog dialog. The
+  programmer does not <link linkend="mthExecute">execute</link> the page dialog to create the <link
+  linkend="ovvUnderlying">underlying</link> Windows dialog, or stop the dialog. The operating system creates and
+  destroys the underlying page dialogs.
+</para>
 
 
 <section id="clsPropertySheetPage"><title>PropertySheetPage Class</title>
@@ -6083,7 +6089,9 @@
 <indexterm><primary>Property Sheet Pages</primary><secondary>RcPSPDialog class</secondary></indexterm>
 <indexterm><primary>RcPSPDialog class</primary></indexterm>
 <para>
-  xxx
+  The <computeroutput>RcPSPDialog</computeroutput> class provides the basis for a page dialog where the dialog <link
+  linkend="ovvDialogTemplate">template</link> is defined within a resource <link
+  linkend="defResourceScript">script</link> file. It is a subclass of the <link linkend="clsRcDialog">RcDialog</link>.
 </para>
 
 <section id="mthNewClsRcPSPDialog"><title>new (Class method)</title>
@@ -6161,8 +6169,8 @@
           <listitem>
           <para>
             Specifies that the <link linkend="atrPageTitle">pageTitle</link> attribute will be used as the title of the
-            property sheet dialog box instead of the title stored in the dialog box template. This keyword is not
-            supported when using the Aero-style wizard.
+            page, rather than the title stored in the dialog template for the page. This keyword is not supported when
+            using the Aero-style wizard.
           </para>
           <para>
             In general, the ooDialog framework will set this flag correctly and the Rexx programmer does not need to
@@ -6193,9 +6201,9 @@
           <varlistentry><term>USEREFPARENT</term>
           <listitem>
           <para>
-            Maintains a reference count specified by the for the lifetime of the property sheet page. This keyword is
-            present for completeness. It will serve no purpose in the current implementation of ooDialog. Future
-            versions of ooDialog may be enhanced in a way where this keyword would have meaning.
+            Maintains a reference count for the lifetime of the property sheet page. This keyword is present for
+            completeness. It will serve no purpose in the current implementation of ooDialog. Future versions of
+            ooDialog may be enhanced in a way where this keyword would have meaning.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>PREMATURE</term>
@@ -6281,7 +6289,7 @@
         </variablelist>
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>expected [optional]</term>
+      <varlistentry><term>exptd [optional]</term>
       <listitem>
       <para>
         This is the maximum number of dialog controls expected in the dialog template. It serves the same purpose as the
@@ -6329,7 +6337,9 @@
 <indexterm><primary>Property Sheet Pages</primary><secondary>ResPSPDialog class</secondary></indexterm>
 <indexterm><primary>ResPSPDialog class</primary></indexterm>
 <para>
-  xxx
+  The <computeroutput>ResPSPDialog</computeroutput> class provides the basis for a page dialog where the dialog <link
+  linkend="ovvDialogTemplate">template</link> is loaded from a binary resource file. It is a subclass of the <link
+  linkend="clsResDialog">ResDialog</link>.
 </para>
 
 
@@ -6337,13 +6347,15 @@
 <indexterm><primary>new</primary><secondary>ResPSPDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
-
+>>--new(--module--,--id--+-------------+--+----------+--+------------+--)------><
+                         +-,--dlgData.-+  +-,--hFile-+  +-,-pageOpts-+
 ]]>
 </programlisting>
 
 <para>
-  Instantiates a new <computeroutput>ResPSPDialog</computeroutput> object.
+  Instantiates a new <computeroutput>ResPSPDialog</computeroutput> object. A
+  <computeroutput>ResPSPDialog</computeroutput> can be used as a page in a <link
+  linkend="clsPropertySheetDialog">PropertySheetDialog</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6351,33 +6363,166 @@
   <para>
     The arguments when creating a new dialog instance of this class are:
     <variablelist>
-      <varlistentry><term>XXX [required]</term>
+      <varlistentry><term>module [required]</term>
       <listitem>
       <para>
-        xx
+        The file name of the executable module (a DLL or EXE) in which the resource (the compiled dialog template) is
+        located.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>id [required]</term>
+      <listitem>
+      <para>
+        The resource ID of the dialog template.  This may be numeric or <link linkend="defSymbolicId">symbolic</link>.
+        The resource ID is assigned to the dialog template when it was compiled.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>dlgData. [optional]</term>
+      <listitem>
+      <para>
+        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        contains data used to initialize the underlying dialog's controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hFile [optional]</term>
+      <listitem>
+      <para>
+        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>pageOpts [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following page option keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>AEROPAGE         </member>
+          <member>HASHELP          </member>
+          <member>HIDEHEADER       </member>
+          <member>PREMATURE        </member>
+          <member>RTLREADING       </member>
+          <member>USEFUSIONCONTEXT </member>
+          <member>USEHEADERSUBTITLE</member>
+          <member>USEHEADERTITLE   </member>
+          <member>USEREFPARENT     </member>
+          <member>USETITLE         </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>AEROPAGE</term>
+          <listitem>
+          <para>
+            Specifies that this page is for use in an Aero wizard. All property sheet pages that are used in Aero wizard
+            dialogs need to specify this keyword to ensure that the page is initialized correctly.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HASHELP</term>
+          <listitem>
+          <para>
+            Enables the property sheet Help button when the page is active. This keyword is not supported when using the
+            Aero-style wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDEHEADER</term>
+          <listitem>
+          <para>
+            Causes the wizard property sheet to hide the header area when the page is selected. If a watermark has been
+            provided, it will be painted on the left side of the page. This flag should be set for welcome and
+            completion pages, and omitted for interior pages. This keyword is not supported when using the Aero-style
+            wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PREMATURE</term>
+          <listitem>
+          <para>
+            Causes the page to be created when the property sheet is created. If this flag is not specified, the page
+            will not be created until it is selected the first time. This keywork is not supported when using the
+            Aero-style wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RTLREADING</term>
+          <listitem>
+          <para>
+            Reverses the direction in which the page title is displayed. Normal windows display all text, including the
+            page title, left-to-right (LTR). For languages such as Hebrew or Arabic that read right-to-left (RTL), a
+            window can be mirrored and all text will be displayed RTL. If RTLREADING is set, the page title will instead
+            read RTL in a normal parent window, and LTR in a mirrored parent window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEFUSIONCONTEXT</term>
+          <listitem>
+          <para>
+            Use an activation context. This keyword is provided for completeness. In the current implementation of
+            ooDialog there is no way for the programmer to provide the activation context. Future versions of ooDialog
+            may be enhanced in a way that would give meaning to this keyword.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEHEADERSUBTITLE</term>
+          <listitem>
+          <para>
+            Displays the string value of the <link linkend="atrHeaderSubtitle">headerSubtitle</link> attribute as the
+            subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
+            keyword is used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEHEADERTITLE</term>
+          <listitem>
+          <para>
+            Displays the string value of the <link linkend="atrHeaderTitle">headerTitle</link> attribute as the title in
+            the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEREFPARENT</term>
+          <listitem>
+          <para>
+            Maintains a reference count for the lifetime of the property sheet page. This keyword is present for
+            completeness. It will serve no purpose in the current implementation of ooDialog. Future versions of
+            ooDialog may be enhanced in a way where this keyword would have meaning.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USETITLE</term>
+          <listitem>
+          <para>
+            Specifies that the <link linkend="atrPageTitle">pageTitle</link> attribute will be used as the title of the
+            page, rather than the title stored in the dialog template for the page. This keyword is not supported when
+            using the Aero-style wizard.
+          </para>
+          <para>
+            In general, the ooDialog framework will set this flag correctly and the Rexx programmer does not need to
+            worry about it. <emphasis role="italic">Except</emphasis>, for the <link
+            linkend="clsRcPSPDialog">RcPSPDialog</link> page object. In this case, the title for the page will be the
+            dialog title as specfied in the resource script, even if the <emphasis role="italic">pageTitle</emphasis>
+            attribute is set by the programmer. For <computeroutput>RcPSPDialog</computeroutput> pages, specify the
+            USETITLE keyword to use the <emphasis role="italic">pageTitle</emphasis> attribute as the title for the
+            page.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
       </para>
       </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    xxx
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This sample xxxx
+    This sample code snippet shows the instantiation of 5 <computeroutput>ResPSPDialog</computeroutput> objects. These
+    dialogs are then suitable to be used as the pages of a <computeroutput>PropertySheetDialog</computeroutput> object:
 
 <programlisting>
 <![CDATA[
-  ...
 
-::requires "ooDialog.cls"
+  t1 = .ListViewDlg~new("rc\PropertySheetDemo.dll", IDD_LISTVIEW_DLG)
+  t2 = .TreeViewDlg~new("rc\PropertySheetDemo.dll", IDD_TREEVIEW_DLG)
+  t3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG)
+  t4 = .TrackBarDlg~new("rc\PropertySheetDemo.dll", IDD_TRACKBAR_DLG)
+  t5 = .TabDlg~new("rc\PropertySheetDemo.dll", IDD_TAB_DLG)
+
+  pages = .array~of(t1, t2, t3, t4, t5)
 
 ...
+
+::requires "ooDialog.cls"
 
 ]]>
 </programlisting>
@@ -6393,7 +6538,10 @@
 <indexterm><primary>Property Sheet Pages</primary><secondary>UserPSPDialog class</secondary></indexterm>
 <indexterm><primary>UserPSPDialog class</primary></indexterm>
 <para>
-  xxx
+  The <computeroutput>UserPSPDialog</computeroutput> class provides the basis for a page dialog where the dialog <link
+  linkend="ovvDialogTemplate">template</link> is built dynamically in the program using the <link
+  linkend="sctCreateMethods">create</link> methods of the <link linkend="clsUserDialog">UserDialog</link>. It is a
+  subclass of the <computeroutput>UserDialog</computeroutput>.
 </para>
 
 
@@ -6401,13 +6549,17 @@
 <indexterm><primary>new</primary><secondary>UserPSPDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--new(--TODO NEEDs---TO---BE---DONE)-------------------------><
+>>--new(--+----------+--+---------------+--+------------+--+---------+--------->
+          +-dlgData.-+  +-,--headerFile-+  +-,-pageOpts-+  +-,-title-+
 
+>----+------------+--+------------+--+------------+--)-------------------------><
+     +-,-fontName-+  +-,-fontSize-+  +-,-expected-+
 ]]>
 </programlisting>
 
 <para>
-  Instantiates a new <computeroutput>ResPSPDialog</computeroutput> object.
+  Instantiates a new <computeroutput>UserPSPDialog</computeroutput> object. This dialog can then be used as a page in a
+  <link linkend="clsPropertySheetDialog">PropertySheetDialog</link>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6415,36 +6567,174 @@
   <para>
     The arguments when creating a new dialog instance of this class are:
     <variablelist>
-      <varlistentry><term>XXX [required]</term>
+      <varlistentry><term>dlgData. [optional]</term>
       <listitem>
       <para>
-        xx
+        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        contains data used to initialize the underlying dialog's controls.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>hFile [optional]</term>
+      <listitem>
+      <para>
+        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>pageOpts [optional]</term>
+      <listitem>
+      <para>
+        A list of 0 or more of the following page option keywords separated by spaces, case is not significant:
+      </para>
+      <para>
+        <simplelist type='vert' columns='3'>
+          <member>AEROPAGE         </member>
+          <member>HASHELP          </member>
+          <member>HIDEHEADER       </member>
+          <member>PREMATURE        </member>
+          <member>RTLREADING       </member>
+          <member>USEFUSIONCONTEXT </member>
+          <member>USEHEADERSUBTITLE</member>
+          <member>USEHEADERTITLE   </member>
+          <member>USEREFPARENT     </member>
+          <member>USETITLE         </member>
+        </simplelist>
+        <variablelist>
+          <varlistentry><term>AEROPAGE</term>
+          <listitem>
+          <para>
+            Specifies that this page is for use in an Aero wizard. All property sheet pages that are used in Aero wizard
+            dialogs need to specify this keyword to ensure that the page is initialized correctly.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HASHELP</term>
+          <listitem>
+          <para>
+            Enables the property sheet Help button when the page is active. This keyword is not supported when using the
+            Aero-style wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDEHEADER</term>
+          <listitem>
+          <para>
+            Causes the wizard property sheet to hide the header area when the page is selected. If a watermark has been
+            provided, it will be painted on the left side of the page. This flag should be set for welcome and
+            completion pages, and omitted for interior pages. This keyword is not supported when using the Aero-style
+            wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PREMATURE</term>
+          <listitem>
+          <para>
+            Causes the page to be created when the property sheet is created. If this flag is not specified, the page
+            will not be created until it is selected the first time. This keywork is not supported when using the
+            Aero-style wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RTLREADING</term>
+          <listitem>
+          <para>
+            Reverses the direction in which the page title is displayed. Normal windows display all text, including the
+            page title, left-to-right (LTR). For languages such as Hebrew or Arabic that read right-to-left (RTL), a
+            window can be mirrored and all text will be displayed RTL. If RTLREADING is set, the page title will instead
+            read RTL in a normal parent window, and LTR in a mirrored parent window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEFUSIONCONTEXT</term>
+          <listitem>
+          <para>
+            Use an activation context. This keyword is provided for completeness. In the current implementation of
+            ooDialog there is no way for the programmer to provide the activation context. Future versions of ooDialog
+            may be enhanced in a way that would give meaning to this keyword.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEHEADERSUBTITLE</term>
+          <listitem>
+          <para>
+            Displays the string value of the <link linkend="atrHeaderSubtitle">headerSubtitle</link> attribute as the
+            subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
+            keyword is used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEHEADERTITLE</term>
+          <listitem>
+          <para>
+            Displays the string value of the <link linkend="atrHeaderTitle">headerTitle</link> attribute as the title in
+            the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEREFPARENT</term>
+          <listitem>
+          <para>
+            Maintains a reference count for the lifetime of the property sheet page. This keyword is present for
+            completeness. It will serve no purpose in the current implementation of ooDialog. Future versions of
+            ooDialog may be enhanced in a way where this keyword would have meaning.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USETITLE</term>
+          <listitem>
+          <para>
+            Specifies that the <link linkend="atrPageTitle">pageTitle</link> attribute will be used as the title of the
+            page, rather than the title stored in the dialog template for the page. This keyword is not supported when
+            using the Aero-style wizard.
+          </para>
+          <para>
+            In general, the ooDialog framework will set this flag correctly and the Rexx programmer does not need to
+            worry about it. <emphasis role="italic">Except</emphasis>, for the <link
+            linkend="clsRcPSPDialog">RcPSPDialog</link> page object. In this case, the title for the page will be the
+            dialog title as specfied in the resource script, even if the <emphasis role="italic">pageTitle</emphasis>
+            attribute is set by the programmer. For <computeroutput>RcPSPDialog</computeroutput> pages, specify the
+            USETITLE keyword to use the <emphasis role="italic">pageTitle</emphasis> attribute as the title for the
+            page.
+          </para>
+          </listitem></varlistentry>
+        </variablelist>
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontName [optional]</term>
+      <listitem>
+      <para>
+        The name of the font to be used by the dialog for all text. If this argument is omitted, the default dialog font
+        is used.  The programmer can change this default by using the<link linkend="mthClsSetDefaultfont">
+        setDefaultFont</link>() class method. If the default font has not been changed, ooDialog uses a symbolic font
+        name provided by Microsoft. This symbolic name signals the operating system to use the appropriate dialog font
+        for the specific version of Windows in use. I.e., the dialog font under Windows 2000 might be different then the
+        font under Windows XP.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>fontSize [optional]</term>
+      <listitem>
+      <para>
+        The point size of the font used by the dialog.  When this argument is omitted, the default dialog font size is
+        used, in the same manner as the font name.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>expected [optional]</term>
+      <listitem>
+      <para>
+        This argument specifies the maximum number of dialog controls the dialog template is expected to contain. Since
+        the dialog template is constructed in memory, ooDialog needs to have some idea of the size of the system resources
+        to reserve for the template. The default value is 200.
+      </para>
+      <para>
+        This value is just a means of doing a rough estimate of the memory needed for the template. The amount of memory
+        for each dialog control varies depending on how much, if any, text is associated with the control. If your dialog
+        has more than 200 controls, you should probably set the expected value larger.
+      </para>
+      <para>
+        As the dialog template is being constructed, the ooDialog framework will detect if the template is about to extend
+        past its allocated storage. If so, an error condition is raised. The condition text will look similar to:
+
+  <programlisting>
+  <![CDATA[
+  Error 98 running C:\Program Files\ooDialog.cls line xxxx:  Execution error
+  Error 98.900:  the storage allocated for the dialog template is too small
+  ]]>
+  </programlisting>
+        If this condition is raised, the programmer needs to use a larger value for the <emphasis
+        role="italic">expected</emphasis> argument.
       </para>
       </listitem></varlistentry>
     </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    xxx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This sample xxxx
-
-<programlisting>
-<![CDATA[
-  ...
-
-::requires "ooDialog.cls"
-
-...
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
