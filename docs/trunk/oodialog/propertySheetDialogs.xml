@@ -4111,6 +4111,23 @@
   linkend="ovvUnderlying">underlying</link> Windows dialog, or stop the dialog. The operating system creates and
   destroys the underlying page dialogs.
 </para>
+<para>
+  Each page has a corresponding icon and label. The underlying property sheet, that is the operating system, creates a
+  tab for each page and displays the icon and label in the tab. Note that this does not apply to wizards. The minimum
+  size for a property sheet page is 212 dialog units horizontally and 114 dialog units vertically. If a page dialog is
+  smaller than this, the operating system will enlarge the page until it meets the minimum size.
+</para>
+<para>
+  Microsoft has three recommended sizes for pages and notes that using these recommended sizes will help ensure visual
+  consistency between your application and other Microsoft Windows applications. The three sizes are basically <emphasis
+  role="italic">small</emphasis>, <emphasis role="italic">medium</emphasis>, and <emphasis
+  role="italic">large</emphasis>. The <emphasis role="italic">pageOpts</emphasis> argument to the <emphasis
+  role="italic">new</emphasis> method of each of the three types of property sheet page dialogs provides the SMALL,
+  MEDIUM, and LARGE keywords to automatically set the size of the property sheet page to one of the recommended sizes.
+  The <computeroutput>PropertySheetPage</computeroutput> class provides <link
+  linkend="tblPropertySheetPageMethods">constant</link> values for the width and height of the three recommended sizes
+  for property sheet page dialogs.
+</para>
 
 
 <section id="clsPropertySheetPage"><title>PropertySheetPage Class</title>
@@ -4135,7 +4152,7 @@
 <table id="tblPropertySheetPageMethods" frame="all">
 <title>PropertySheetPage Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in">
+<colspec colwidth="2.1in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -4146,6 +4163,30 @@
 <row>
 <entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
+</row>
+<row>
+<entry>PROP_SM_CXDLG</entry>
+<entry>Width, in dialog units, of a small property sheet page. (Currently 212 dialog units.)</entry>
+</row>
+<row>
+<entry>PROP_SM_CYDLG</entry>
+<entry>Height, in dialog units, of a small property sheet page. (Currently 188 dialog units.)</entry>
+</row>
+<row>
+<entry>PROP_MED_CXDLG</entry>
+<entry>Width, in dialog units, of a medium property sheet page. (Currently 227 dialog units.)</entry>
+</row>
+<row>
+<entry>PROP_MED_CYDLG</entry>
+<entry>Height, in dialog units, of a medium property sheet page. (Currently 215 dialog units.)</entry>
+</row>
+<row>
+<entry>PROP_LG_CXDLG</entry>
+<entry>Width, in dialog units, of a large property sheet page. (Currently 252 dialog units.)</entry>
+</row>
+<row>
+<entry>PROP_LG_CYDLG</entry>
+<entry>Height, in dialog units, of a large property sheet page. (Currently 218 dialog units.)</entry>
 </row>
 <row>
 <entry>PSNRET_NOERROR</entry>
@@ -4350,7 +4391,7 @@
 </programlisting>
 
 <para>
- Reflects the width of the property page dialog.
+ Reflects the initial width of the property page dialog in dialog units.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">cx get:</emphasis></term>
@@ -4363,28 +4404,47 @@
   <varlistentry><term><emphasis role="bold">cx set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    When the page dialog is first instantiated, <emphasis role="italic">cx</emphasis> is set to one of the 3 recommended
+    page widths though the use of the SMALL, MEDIUM, or LARGE keywords of the <emphasis
+    role="italic">pageOpts</emphasis> argument to the <emphasis role="italic">new</emphasis> method of the page dialog.
+    Since the MEDIUM keyword is the default if the SMALL or LARGE keywords are not used, <emphasis
+    role="italic">cx</emphasis> is always set to a value. The programmer can reset the <emphasis
+    role="italic">cx</emphasis> value if desired.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Setting <emphasis role="italic">cx</emphasis> is really only of use for a <link
+    linkend="clsUserPSPDialog">UserPSPDialog</link>. And, indeed, for a <computeroutput>UserPSPDialog</computeroutput>
+    the programmer must set this attribute to obtain a dialog with a different width than one of the 3 recommended
+    widths. With a <link linkend="clsRcPSPDialog">RcPSPDialog</link>, <emphasis role="italic">cx</emphasis> is
+    over-written with the value in the resource script, and for a <link linkend="clsResPSPDialog">ResPSPDialog</link>,
+    the width is determined when the resource is compiled and can not changed.
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    With a <computeroutput>UserPSPDialog</computeroutput>, the underlying page dialog is created with the width
+    specified by the <emphasis role="italic">cx</emphasis> attribute. So, to have a different width than one of the
+    recommended widths, the programmer must set this attribute before the dialog template is created. Note that the
+    <link linkend="mthSetSizeClsPSP">setSize</link> method can be used to set both the <emphasis
+    role="italic">cx</emphasis> and <link linkend="atrCY">cy</link> attributes at one time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows an <computeroutput>UserPSPDialog</computeroutput> being instantiated for use as one of the pages
+    of a <link linkend="clsPropertySheetDialgo">property</link> sheet dialog. The size of the page dialog is set using
+    the <emphasis role="italic">cx</emphasis> and <emphasis role="italic">cy</emphasis> attributes;
 <programlisting>
 <![CDATA[
 
+  p3 = .DaysDlg~new( , , "", "Days" )
+  p3~cx = 267
+  p3~cy = 143
+  p3~headerTitle = "Choose a day to watch the movie(s)."
+  p3~headerSubtitle = "Use the drop down list to switch movies.  Pick the day most suitable for the movie."
+  ...
 
 ]]>
 </programlisting>
@@ -4398,48 +4458,68 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>cy</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--cy-----------------------------------------------------><
+>>--cy-------------------------------------------><
 
->>--cy=varName---------------------------------------------><
+>>--cy-=-height----------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the initial height of the property page dialog in dialog units.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">cy get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">cy</emphasis> attribute is the height, in dialog <link
+    linkend="defDialogUnit">units</link>, of the page dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">cy set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    When the page dialog is first instantiated, <emphasis role="italic">cy</emphasis> is set to one of the 3 recommended
+    page heights though the use of the SMALL, MEDIUM, or LARGE keywords of the <emphasis
+    role="italic">pageOpts</emphasis> argument to the <emphasis role="italic">new</emphasis> method of the page dialog.
+    Since the MEDIUM keyword is the default if the SMALL or LARGE keywords are not used, <emphasis
+    role="italic">cy</emphasis> is always set to a value. The programmer can reset the <emphasis
+    role="italic">cy</emphasis> value if desired.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Setting <emphasis role="italic">cy</emphasis> is really only of use for a <link
+    linkend="clsUserPSPDialog">UserPSPDialog</link>. And, indeed, for a <computeroutput>UserPSPDialog</computeroutput>
+    the programmer must set this attribute to obtain a dialog with a different height than one of the 3 recommended
+    heights. With a <link linkend="clsRcPSPDialog">RcPSPDialog</link>, <emphasis role="italic">cy</emphasis> is
+    over-written with the value in the resource script, and for a <link linkend="clsResPSPDialog">ResPSPDialog</link>,
+    the height is determined when the resource is compiled and can not changed.
   </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    With a <computeroutput>UserPSPDialog</computeroutput>, the underlying page dialog is created with the height
+    specified by the <emphasis role="italic">cy</emphasis> attribute. So, to have a different height than one of the
+    recommended heights, the programmer must set this attribute before the dialog template is created. Note that the
+    <link linkend="mthSetSizeClsPSP">setSize</link> method can be used to set both the <emphasis
+    role="italic">cy</emphasis> and <link linkend="atrCX">cx</link> attributes at one time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows an <computeroutput>UserPSPDialog</computeroutput> being instantiated for use as one of the pages
+    of a <link linkend="clsPropertySheetDialgo">property</link> sheet dialog. The size of the page dialog is set using
+    the <emphasis role="italic">cx</emphasis> and <emphasis role="italic">cy</emphasis> attributes;
 <programlisting>
 <![CDATA[
 
+  p3 = .DaysDlg~new( , , "", "Days" )
+  p3~cx = 267
+  p3~cy = 143
+  p3~headerTitle = "Choose a day to watch the movie(s)."
+  p3~headerSubtitle = "Use the drop down list to switch movies.  Pick the day most suitable for the movie."
+  ...
 
 ]]>
 </programlisting>
@@ -4455,49 +4535,41 @@
 <![CDATA[
 >>--headerSubtitle-------------------------------><
 
->>--headerSubtitle=text--------------------------><
+>>--headerSubtitle-=-text------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Reflects the text for the subtitle of a non-Aeor wizard.
+  Reflects the text for the subtitle of a non-Aero wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">headerSubtitle get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">headerSubtitle</emphasis> attribute is the text a wizard property sheet
+    page will use for the subtitle text in the header area of a wizard. If the programmer has not assigned a value to
+    this attribute, its value is the <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">headerSubtitle set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To display text for the subtitle in a wizard dialog page, the programmer can set the <emphasis
+    role="italic">headerSubtitle</emphasis> attribute to the text to be displayed. This text is used when the underlying
+    page is first created. Setting the attribute after the page has been created has no effect. Likewise, setting this
+    attribute to any text has no effect if the page is not in a wizard dialog. Aero-style wizards do not use subtitle
+    text.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    For non-aero wizards, the subtitle text can also be set dynamically by using the <link
+    linkend="mthSetHeaderSubTitle">setHeaderSubtitle</link> method of the <link
+    linkend="clsPropertySheetDialog">PropertySheetDialog</link>. For instance, setting the subtitle text could be done
+    in the <link linkend="mthSetActive">setActive</link> event handler when the page is about to become active but
+    before it is actually shown on the screen.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4508,51 +4580,42 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>headerTitle</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--headerTitle-----------------------------------------------------><
+>>--headerTitle----------------------------------><
 
->>--headerTitle=varName---------------------------------------------><
+>>--headerTitle-=-text---------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the text that will be displayed as the title in the header area of the page in a wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">headerTitle get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">headerTitle</emphasis> attribute is the text a wizard property sheet page
+    will use for the title text in the header area of a wizard. If the programmer has not assigned a value to this
+    attribute, its value is the <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">headerTitle set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    To display text for the header title in a wizard dialog page, the programmer can set the <emphasis
+    role="italic">headerTitle</emphasis> attribute to the text to be displayed. This text is used when the underlying
+    page is first created. Setting the attribute after the page has been created has no effect. Likewise, setting this
+    attribute to any text has no effect if the the page is a page in a non-wizard dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    For non-aero wizards, the header title text can also be set dynamically by using the <link
+    linkend="mthSetHeaderTitle">setHeaderTitle</link> method of the <link
+    linkend="clsPropertySheetDialog">PropertySheetDialog</link>. For instance, setting the title text could be done in
+    the <link linkend="mthSetActive">setActive</link> event handler when the page is about to become active but before
+    it is actually shown on the screen.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4563,51 +4626,44 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>pageID</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--pageID-----------------------------------------------------><
+>>--pageID---------------------------------------><
 
->>--pageID=varName---------------------------------------------><
+>>--pageID-=-val---------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the value of the page ID, which identifies the page to the <link linkend="ovvUnderlying">underlying</link>
+  property sheet dialog. The ID is essentially an opaque value to the Rexx programmer.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">pageID get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">pageID</emphasis> attribute is a value that uniquely identifies this page
+    to the underlying property sheet dialog that this page belongs to. In Rexx, the value is a
+    <computeroutput>Pointer</computeroutput> object. The value of the <computeroutput>Pointer</computeroutput> has no
+    meaning to the programmer.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pageID set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    The Rexx programmer can not set this value it is set internally by the ooDialog framework.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    Note that the page <emphasis role="italic">ID</emphasis> is different than the page <emphasis
+    role="italic">index</emphasis>. The <emphasis role="italic">index</emphasis> is the page number of the page, page 1,
+    page 2, etc.. A page ID can be returned from several of the page event handlers, such as <link
+    linkend="mthSetActive">setActive</link>, <link linkend="mthWizBack">wizBack</link>, and <link
+    linkend="mthWizNext">wizNext</link> to direct the property sheet dialog to display the page with that ID. The <link
+    linkend="mthIndexToID">indexToID</link> method of the <link
+    linkend="clsPropertySheetDialog">PropertySheetDialog</link> class can be used to translate the page number to that
+    page's ID.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4620,13 +4676,13 @@
 <![CDATA[
 >>--pageNumber-----------------------------------><
 
->>--pageNumber=varName---------------------------><
+>>--pageNumber-=-val-----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  Reflects the page number of this property sheet page.
+  Reflects the page number, or index, of this property sheet page.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">pageNumber get:</emphasis></term>
@@ -4761,15 +4817,15 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>resources</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--resources-----------------------------------------------------><
+>>--resources------------------------------------><
 
->>--resources=varName---------------------------------------------><
+>>--resources-=-image----------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Detemines if a <computeroutput>ResourceImage</computeroutput> object containing resources for this page is to be used.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">resources get:</emphasis></term>
@@ -4793,16 +4849,37 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a resource image from the <computeroutput>ooDialog.dll</computeroutput> file which has 4 icon
+    images within the DLL. It assigns the resource image to the <emphasis role="italic">resources</emphasis> attribute
+    so that it can use the icon images as the icons for the tabs of the pages:
+
 <programlisting>
 <![CDATA[
 
+  p1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
+  p2 = .TreeViewDlg~new("rc\PropertySheetDemo.rc", IDD_TREEVIEW_DLG)
+  p3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG)
+  p4 = .TrackBarDlg~new("rc\PropertySheetDemo.rc", IDD_TRACKBAR_DLG)
+
+  resourceImage = .ResourceImage~new("oodialog.dll", p1)
+
+  p1~resources = resourceImage
+  p1~tabIcon = IDI_DLG_OODIALOG
+
+  p2~resources = resourceImage
+  p2~tabIcon = IDI_DLG_APPICON
+
+  p3~resources = resourceImage
+  p3~tabIcon = IDI_DLG_APPICON2
+
+  p4~resources = resourceImage
+  p4~tabIcon = IDI_DLG_OOREXX
 
 ]]>
 </programlisting>
@@ -4816,48 +4893,80 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>tabIcon</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--tabIcon-----------------------------------------------------><
+>>--tabIcon--------------------------------------><
 
->>--tabIcon=varName---------------------------------------------><
+>>--tabIcon-=-icon-------------------------------><
 
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Reflects the icon to use as the icon in the tab of this property sheet page.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">tabIcon get:</emphasis></term>
   <listitem>
   <para>
-    details about get
+    The value of the <emphasis role="italic">tabIcon</emphasis> attribute if the programmer has set that value.
+    Otherwise, the value is the <computeroutput>.nil</computeroutput> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">tabIcon set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    This attribute can either be set to a stand alone icon <link linkend="clsImage">Image</link> object or to the
+    resource ID of the icon if the icon image is contained in a compiled resource file. If the attribute is set to a
+    resource ID, then the <link linkend="atrResourcesClsPSP">resources</link> attribute must be set to a <link
+    linkend="clsResourceImage">ResourceImage</link> object that contains the icon image. If the attribute is set to an
+    <computeroutput>Image</computeroutput> object, the the image has to be an actual icon image. It can not be a bitmap
+    or cursor.
+  </para>
+  <para>
+    When a resource ID is used it may be numeric or <link linkend="defSymbolicID">symbolic</link>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The tab icons for all pages in a <link linkend="clsPropertySheetDialog">property</link> sheet dialog can also be set
+    through the <link linkend="atrImageList">imageList</link> attribute. If both the <emphasis
+    role="italic">imageList</emphasis> attribute and the <emphasis role="italic">tabIcon</emphasis> attribute are set,
+    the icon for the tab is taken from the <emphasis role="italic">imageList</emphasis> attribute.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Raises syntax errors when incorrect arguments are detected.
+    Raises syntax errors when incorrect usage is detected.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example creates a resource image from the ooDialog.dll file which has 4 icon images within the resource section
+    of the DLL. It then assigns an icon from the resource image to the <emphasis role="italic">tabIcon</emphasis>
+    attribute of each page dialog:
 <programlisting>
 <![CDATA[
 
+  p1 = .ListViewDlg~new("rc\PropertySheetDemo.rc", IDD_LISTVIEW_DLG)
+  p2 = .TreeViewDlg~new("rc\PropertySheetDemo.rc", IDD_TREEVIEW_DLG)
+  p3 = .ProgressBarDlg~new("rc\PropertySheetDemo.rc", IDD_PROGRESSBAR_DLG)
+  p4 = .TrackBarDlg~new("rc\PropertySheetDemo.rc", IDD_TRACKBAR_DLG)
+
+  resourceImage = .ResourceImage~new("oodialog.dll", p1)
+
+  p1~resources = resourceImage
+  p1~tabIcon = IDI_DLG_OODIALOG
+
+  p2~resources = resourceImage
+  p2~tabIcon = IDI_DLG_APPICON
+
+  p3~resources = resourceImage
+  p3~tabIcon = IDI_DLG_APPICON2
+
+  p4~resources = resourceImage
+  p4~tabIcon = IDI_DLG_OOREXX
 
 ]]>
 </programlisting>
@@ -4933,31 +5042,19 @@
   <varlistentry><term><emphasis role="bold">wantAccelerators set:</emphasis></term>
   <listitem>
   <para>
-    details about set
+    By default, the ooDialog framework sets the <emphasis role="italic">wantAccelerators</emphasis> attribute to false.
+    If the programmer wants to process the TRANSLATEACCELERATOR notification then this attribute value can be set to
+    true.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-
-]]>
-</programlisting>
+    Setting the <emphasis role="italic">wantAccelerators</emphasis> attribute to true won't by itself give the
+    programmer notification of the translate accelerator event because the default <link
+    linkend="mthTranslateAccelerator">translateAccelerator</link> event handler just returns 0. The programmer must also
+    over-ride the <emphasis role="italic">translateAcclerator</emphasis> method in her subclass and process the
+    notification in the over-ride.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -4997,8 +5094,9 @@
   <para>
     This attribute and the <link linkend="mthGetObject">getObject</link> event handler are provided for completeness.
     The ooDialog framework does not currently have a way to allow the programmer to handle the get object event. The
-    <emphasis role="italic">wantGetObject</emphasis> attribute is set to false by default. Future versions of ooDialog
-    may be enhanced to take advantage of this attribute.
+    <emphasis role="italic">wantGetObject</emphasis> attribute is set to false by default. Changing it to true will not
+    be of any use int the current ooDialog implementation.. Future versions of ooDialog may be enhanced to take
+    advantage of this attribute.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -6147,15 +6245,18 @@
       <para>
         <simplelist type='vert' columns='3'>
           <member>AEROPAGE         </member>
-          <member>USETITLE         </member>
-          <member>RTLREADING       </member>
           <member>HASHELP          </member>
-          <member>USEREFPARENT     </member>
-          <member>PREMATURE        </member>
           <member>HIDEHEADER       </member>
-          <member>USEHEADERTITLE   </member>
-          <member>USEHEADERSUBTITLE</member>
+          <member>LARGE            </member>
+          <member>MEDIUM           </member>
+          <member>PREMATURE        </member>
+          <member>RTLREADING       </member>
+          <member>SMALL            </member>
           <member>USEFUSIONCONTEXT </member>
+          <member>USEHEADERSUBTITLE</member>
+          <member>USEHEADERTITLE   </member>
+          <member>USEREFPARENT     </member>
+          <member>USETITLE         </member>
         </simplelist>
         <variablelist>
           <varlistentry><term>AEROPAGE</term>
@@ -6163,6 +6264,122 @@
           <para>
             Specifies that this page is for use in an Aero wizard. All property sheet pages that are used in Aero wizard
             dialogs need to specify this keyword to ensure that the page is initialized correctly.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HASHELP</term>
+          <listitem>
+          <para>
+            Enables the property sheet Help button when the page is active. This keyword is not supported when using the
+            Aero-style wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>HIDEHEADER</term>
+          <listitem>
+          <para>
+            Causes the wizard property sheet to hide the header area when the page is selected. If a watermark has been
+            provided, it will be painted on the left side of the page. This flag should be set for welcome and
+            completion pages, and omitted for interior pages. This keyword is not supported when using the Aero-style
+            wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LARGE</term>
+          <listitem>
+          <para>
+            Specifies that the initial size of the page dialog is the Microsoft recommended size for a large property
+            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            PROP_LG_CXDLG and PROP_LG_CYDLG respectively.
+          </para>
+          <para>
+            Note that this keyword is really only relevant in a <computeroutput>UserPSPDialog</computeroutput>. In a
+            <computeroutput>RcPSPDialog</computeroutput> the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes are over-written with the width and height specified in the resource
+            script file. In a <computeroutput>ResPSPDialog</computeroutput> the size of the dialog template is set when
+            the resource is compiled and can not be changed so the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes have no meaning.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MEDIUM</term>
+          <listitem>
+          <para>
+            Specifies that the initial size of the page dialog is the Microsoft recommended size for a medium property
+            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            PROP_MED_CXDLG and PROP_MED_CYDLG respectively. This is the default if the SMALL or LARGE keywords are not
+            used.
+          </para>
+          <para>
+            Note that this keyword is really only relevant in a <computeroutput>UserPSPDialog</computeroutput>. In a
+            <computeroutput>RcPSPDialog</computeroutput> the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes are over-written with the width and height specified in the resource
+            script file. In a <computeroutput>ResPSPDialog</computeroutput> the size of the dialog template is set when
+            the resource is compiled and can not be changed so the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes have no meaning.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>PREMATURE</term>
+          <listitem>
+          <para>
+            Causes the page to be created when the property sheet is created. If this flag is not specified, the page
+            will not be created until it is selected the first time. This keywork is not supported when using the
+            Aero-style wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>RTLREADING</term>
+          <listitem>
+          <para>
+            Reverses the direction in which the page title is displayed. Normal windows display all text, including the
+            page title, left-to-right (LTR). For languages such as Hebrew or Arabic that read right-to-left (RTL), a
+            window can be mirrored and all text will be displayed RTL. If RTLREADING is set, the page title will instead
+            read RTL in a normal parent window, and LTR in a mirrored parent window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SMALL</term>
+          <listitem>
+          <para>
+            Specifies that the initial size of the page dialog is the Microsoft recommended size for a small property
+            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            PROP_SM_CXDLG and PROP_SM_CYDLG respectively.
+          </para>
+          <para>
+            Note that this keyword is really only relevant in a <computeroutput>UserPSPDialog</computeroutput>. In a
+            <computeroutput>RcPSPDialog</computeroutput> the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes are over-written with the width and height specified in the resource
+            script file. In a <computeroutput>ResPSPDialog</computeroutput> the size of the dialog template is set when
+            the resource is compiled and can not be changed so the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes have no meaning.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEFUSIONCONTEXT</term>
+          <listitem>
+          <para>
+            Use an activation context. This keyword is provided for completeness. In the current implementation of
+            ooDialog there is no way for the programmer to provide the activation context. Future versions of ooDialog
+            may be enhanced in a way that would give meaning to this keyword.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEHEADERSUBTITLE</term>
+          <listitem>
+          <para>
+            Displays the string value of the <link linkend="atrHeaderSubtitle">headerSubtitle</link> attribute as the
+            subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
+            keyword is used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEHEADERTITLE</term>
+          <listitem>
+          <para>
+            Displays the string value of the <link linkend="atrHeaderTitle">headerTitle</link> attribute as the title in
+            the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>USEREFPARENT</term>
+          <listitem>
+          <para>
+            Maintains a reference count for the lifetime of the property sheet page. This keyword is present for
+            completeness. It will serve no purpose in the current implementation of ooDialog. Future versions of
+            ooDialog may be enhanced in a way where this keyword would have meaning.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>USETITLE</term>
@@ -6180,70 +6397,6 @@
             attribute is set by the programmer. For <computeroutput>RcPSPDialog</computeroutput> pages, specify the
             USETITLE keyword to use the <emphasis role="italic">pageTitle</emphasis> attribute as the title for the
             page.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>RTLREADING</term>
-          <listitem>
-          <para>
-            Reverses the direction in which the page title is displayed. Normal windows display all text, including the
-            page title, left-to-right (LTR). For languages such as Hebrew or Arabic that read right-to-left (RTL), a
-            window can be mirrored and all text will be displayed RTL. If RTLREADING is set, the page title will instead
-            read RTL in a normal parent window, and LTR in a mirrored parent window.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HASHELP</term>
-          <listitem>
-          <para>
-            Enables the property sheet Help button when the page is active. This keyword is not supported when using the
-            Aero-style wizard.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>USEREFPARENT</term>
-          <listitem>
-          <para>
-            Maintains a reference count for the lifetime of the property sheet page. This keyword is present for
-            completeness. It will serve no purpose in the current implementation of ooDialog. Future versions of
-            ooDialog may be enhanced in a way where this keyword would have meaning.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>PREMATURE</term>
-          <listitem>
-          <para>
-            Causes the page to be created when the property sheet is created. If this flag is not specified, the page
-            will not be created until it is selected the first time. This keywork is not supported when using the
-            Aero-style wizard.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>HIDEHEADER</term>
-          <listitem>
-          <para>
-            Causes the wizard property sheet to hide the header area when the page is selected. If a watermark has been
-            provided, it will be painted on the left side of the page. This flag should be set for welcome and
-            completion pages, and omitted for interior pages. This keyword is not supported when using the Aero-style
-            wizard.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>USEHEADERTITLE</term>
-          <listitem>
-          <para>
-            Displays the string value of the <link linkend="atrHeaderTitle">headerTitle</link> attribute as the title in
-            the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>USEHEADERSUBTITLE</term>
-          <listitem>
-          <para>
-            Displays the string value of the <link linkend="atrHeaderSubtitle">headerSubtitle</link> attribute as the
-            subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
-            keyword is used.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>USEFUSIONCONTEXT</term>
-          <listitem>
-          <para>
-            Use an activation context. This keyword is provided for completeness. In the current implementation of
-            ooDialog there is no way for the programmer to provide the activation context. Future versions of ooDialog
-            may be enhanced in a way that would give meaning to this keyword.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -6400,8 +6553,11 @@
           <member>AEROPAGE         </member>
           <member>HASHELP          </member>
           <member>HIDEHEADER       </member>
+          <member>LARGE            </member>
+          <member>MEDIUM           </member>
           <member>PREMATURE        </member>
           <member>RTLREADING       </member>
+          <member>SMALL            </member>
           <member>USEFUSIONCONTEXT </member>
           <member>USEHEADERSUBTITLE</member>
           <member>USEHEADERTITLE   </member>
@@ -6432,6 +6588,41 @@
             wizard.
           </para>
           </listitem></varlistentry>
+          <varlistentry><term>LARGE</term>
+          <listitem>
+          <para>
+            Specifies that the initial size of the page dialog is the Microsoft recommended size for a large property
+            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            PROP_LG_CXDLG and PROP_LG_CYDLG respectively.
+          </para>
+          <para>
+            Note that this keyword is really only relevant in a <computeroutput>UserPSPDialog</computeroutput>. In a
+            <computeroutput>RcPSPDialog</computeroutput> the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes are over-written with the width and height specified in the resource
+            script file. In a <computeroutput>ResPSPDialog</computeroutput> the size of the dialog template is set when
+            the resource is compiled and can not be changed so the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes have no meaning.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MEDIUM</term>
+          <listitem>
+          <para>
+            Specifies that the initial size of the page dialog is the Microsoft recommended size for a medium property
+            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            PROP_MED_CXDLG and PROP_MED_CYDLG respectively. This is the default if the SMALL or LARGE keywords are not
+            used.
+          </para>
+          <para>
+            Note that this keyword is really only relevant in a <computeroutput>UserPSPDialog</computeroutput>. In a
+            <computeroutput>RcPSPDialog</computeroutput> the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes are over-written with the width and height specified in the resource
+            script file. In a <computeroutput>ResPSPDialog</computeroutput> the size of the dialog template is set when
+            the resource is compiled and can not be changed so the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes have no meaning.
+          </para>
+          </listitem></varlistentry>
           <varlistentry><term>PREMATURE</term>
           <listitem>
           <para>
@@ -6447,6 +6638,23 @@
             page title, left-to-right (LTR). For languages such as Hebrew or Arabic that read right-to-left (RTL), a
             window can be mirrored and all text will be displayed RTL. If RTLREADING is set, the page title will instead
             read RTL in a normal parent window, and LTR in a mirrored parent window.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SMALL</term>
+          <listitem>
+          <para>
+            Specifies that the initial size of the page dialog is the Microsoft recommended size for a small property
+            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            PROP_SM_CXDLG and PROP_SM_CYDLG respectively.
+          </para>
+          <para>
+            Note that this keyword is really only relevant in a <computeroutput>UserPSPDialog</computeroutput>. In a
+            <computeroutput>RcPSPDialog</computeroutput> the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes are over-written with the width and height specified in the resource
+            script file. In a <computeroutput>ResPSPDialog</computeroutput> the size of the dialog template is set when
+            the resource is compiled and can not be changed so the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes have no meaning.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>USEFUSIONCONTEXT</term>
@@ -6590,8 +6798,11 @@
           <member>AEROPAGE         </member>
           <member>HASHELP          </member>
           <member>HIDEHEADER       </member>
+          <member>LARGE            </member>
+          <member>MEDIUM           </member>
           <member>PREMATURE        </member>
-          <member>RTLREADING       </member>
+          <member>RTLREADING      </member>
+          <member>SMALL            </member>
           <member>USEFUSIONCONTEXT </member>
           <member>USEHEADERSUBTITLE</member>
           <member>USEHEADERTITLE   </member>
@@ -6620,6 +6831,58 @@
             provided, it will be painted on the left side of the page. This flag should be set for welcome and
             completion pages, and omitted for interior pages. This keyword is not supported when using the Aero-style
             wizard.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>LARGE</term>
+          <listitem>
+          <para>
+            Specifies that the initial size of the page dialog is the Microsoft recommended size for a large property
+            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            PROP_LG_CXDLG and PROP_LG_CYDLG respectively.
+          </para>
+          <para>
+            Note that this keyword is really only relevant in a <computeroutput>UserPSPDialog</computeroutput>. In a
+            <computeroutput>RcPSPDialog</computeroutput> the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes are over-written with the width and height specified in the resource
+            script file. In a <computeroutput>ResPSPDialog</computeroutput> the size of the dialog template is set when
+            the resource is compiled and can not be changed so the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes have no meaning.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>MEDIUM</term>
+          <listitem>
+          <para>
+            Specifies that the initial size of the page dialog is the Microsoft recommended size for a medium property
+            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            PROP_MED_CXDLG and PROP_MED_CYDLG respectively. This is the default if the SMALL or LARGE keywords are not
+            used.
+          </para>
+          <para>
+            Note that this keyword is really only relevant in a <computeroutput>UserPSPDialog</computeroutput>. In a
+            <computeroutput>RcPSPDialog</computeroutput> the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes are over-written with the width and height specified in the resource
+            script file. In a <computeroutput>ResPSPDialog</computeroutput> the size of the dialog template is set when
+            the resource is compiled and can not be changed so the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes have no meaning.
+          </para>
+          </listitem></varlistentry>
+          <varlistentry><term>SMALL</term>
+          <listitem>
+          <para>
+            Specifies that the initial size of the page dialog is the Microsoft recommended size for a small property
+            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            PROP_SM_CXDLG and PROP_SM_CYDLG respectively.
+          </para>
+          <para>
+            Note that this keyword is really only relevant in a <computeroutput>UserPSPDialog</computeroutput>. In a
+            <computeroutput>RcPSPDialog</computeroutput> the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes are over-written with the width and height specified in the resource
+            script file. In a <computeroutput>ResPSPDialog</computeroutput> the size of the dialog template is set when
+            the resource is compiled and can not be changed so the <emphasis role="italic">cx</emphasis> and <emphasis
+            role="italic">cy</emphasis> attributes have no meaning.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>PREMATURE</term>
