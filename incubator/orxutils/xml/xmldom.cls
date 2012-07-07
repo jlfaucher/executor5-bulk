@@ -37,6 +37,11 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+
+-- now that everything has been started up, poke the token class to create its
+-- initial tables
+.XPathToken~setup
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Section:  Abstract DOM interface class definitions                         */
@@ -75,6 +80,7 @@
 -- DOM Node interface class
 ::class "Node" public mixinclass Object
 -- various type definitions
+::constant ANY_NODE 0
 ::constant ELEMENT_NODE 1
 ::constant ATTRIBUTE_NODE 2
 ::constant TEXT_NODE 3
@@ -248,6 +254,40 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+/* Class: QName -- a qualified XML name                                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+::class "QName" public
+::method init
+  expose localName prefix namespaceURI
+
+  localName = ""
+  prefix = ""
+  namespaceURI = ""
+
+::attribute prefix
+::attribute localName
+::attribute namespaceURI
+
+-- get the fully constructed node name
+::attribute nodeName get
+  expose prefix localName
+  return prefix":"localName
+
+-- test for a match between a node and this qualified name
+::method matchesNode
+  expose localName namespaceURI
+  use strict arg node
+
+  return localName == node~localName & namespaceURI == node~namespaceURI
+
+-- handy string method
+::method string
+  return self~nodeName
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 /* Class: NodeListImpl -- concrete NodeList class                             */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -262,10 +302,11 @@
   if nodes == .nil then do
       nodes = .array~new
   end
-  else do
+  else if nodes~isA(.array) then
       -- make a copy of this
       nodes = nodes~copy
-  end
+  -- must be a nodelist...get the items array from the list
+  else nodes = nodes~makearray
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -311,6 +352,68 @@
 
 -- access to the set of nodes
 ::attribute nodes
+
+-- methods to support xpath/nodeset operations
+
+-- append an item to the list
+::method append
+  expose nodes
+  use strict arg item
+  nodes~append(item)
+
+-- merge two nodelists by adding all of the elements of the
+-- argument list to the target list.
+::method union
+  use strict arg other
+  loop node over other
+      self~append(node)
+  end
+  return self   -- always return self as a value
+
+-- return the index location of a given item.  Returns -1
+-- if the item is not found
+::method indexOf
+  expose nodes
+  use strict arg target
+
+  index = nodes~itemIndex(target)
+
+  if index == .nil then return -1
+  -- need to convert this to zero-based for
+  -- nodelists
+  return index - 1
+
+-- get the first item in the node list
+::method first
+  expose nodes
+  return nodes[1]
+
+-- get the last item in the node list
+::method last
+  expose nodes
+
+  if nodes~isEmpty then return .nil
+  return nodes[nodes~last]
+
+-- get the item previous to a given one
+::method previous
+  expose nodes
+  use strict arg target
+
+  index = nodes~itemIndex(target)
+  -- not found or the first one, return nothing
+  if index == .nil | index = 1 then return .nil
+  return nodes[index]
+
+-- get the item followinging a given one
+::method next
+  expose nodes
+  use strict arg target
+
+  index = nodes~itemIndex(target)
+  -- not found, return nothing
+  if index == .nil then return .nil
+  return nodes[index]
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -469,6 +572,304 @@
   end
   -- nothing found
   return .nil
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: NodeSet                                                             */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- a nodeset used in an xpath expression
+::class "NodeSet" public subclass NodeListImpl
+::method init
+  expose owner parent
+  use strict arg owner, parent, nodes
+  self~init:super(nodes)
+
+
+-- apply a selection criteria to a nodeset, returning
+-- a new nodeset with the selected nodes.
+::method selectNodeSet
+  expose owner
+  use strict arg step, context
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner, context)
+
+  -- loop over all of the nodes in this set and apply
+  -- the selection rules to each one, merging the result
+  -- into the set
+  loop node over self
+      nodeSet~union(step~evaluateNodeSet(node, self))
+  end
+  return nodeSet
+
+-- retrieve a named set of nodes from the set using a qualified name.
+::method getNamedItems
+  expose owner
+  use strict arg name
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  -- wild card on the namespace?  This is a complete wildcard request
+  if name~namespaceURI == '*' then do
+      nodeSet~union(self)
+  end
+  -- wild card request with an explicit namespace?, return
+  -- just URI matches
+  else if name~localName == "*" then do
+      loop node over self
+         if name~namespaceURI == node~namespaceURI then nodeSet~append(node)
+      end
+  end
+  -- no wild cards, so we're looking for explicit matches
+  else do
+      loop node over self
+          if name~matchesNode(node) then nodeSet~appendNode
+      end
+  end
+
+  return nodeSet
+
+-- extract the nodes of the indicated type
+::method getTypedItems
+  expose owner
+  use strict arg type
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      if type == 0 | node~nodeType == type then do
+          nodeSet~append(node)
+      end
+  end
+
+-- methods for axis manipulations on nodesets
+
+-- return the combined ancestor axis of the contents
+::method ancestorAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~ancestorAxis)
+  end
+  return nodeSet
+
+-- return the combined ancestor-or-self axis of the contents
+::method ancestorOrSelfAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~ancestorOrSelfAxis)
+  end
+  return nodeSet
+
+-- return the combined attribute axis of the contents
+::method attributeAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~attributeAxis)
+  end
+  return nodeSet
+
+-- return the combined child axis of the contents
+::method childAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~childAxis)
+  end
+  return nodeSet
+
+-- return the combined descendant axis of the contents
+::method descendantAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~descendantAxis)
+  end
+  return nodeSet
+
+-- return the combined reversed descendant axis of the contents
+::method reversedDescendantAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~reversedDescendantAxis)
+  end
+  return nodeSet
+
+-- return the combined descendant-or-self axis of the contents
+::method descendantOrSelfAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~descendantOrSelfAxis)
+  end
+  return nodeSet
+
+-- return the combined following axis of the contents
+::method followingAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~followingAxis)
+  end
+  return nodeSet
+
+-- return the combined following-sibling axis of the contents
+::method followingSiblingAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~followingSiblingAxis)
+  end
+  return nodeSet
+
+
+-- return the combined namespace axis of the contents
+::method namespaceAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~namespaceAxis)
+  end
+  return nodeSet
+
+-- return the combined parent axis of the contents
+::method parentAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~parentAxis)
+  end
+  return nodeSet
+
+-- return the combined preceding axis of the contents
+::method precedingAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~precedingAxis)
+  end
+  return nodeSet
+
+-- return the combined preceding-sibling axis of the contents
+::method precedingSiblineAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~precedingSiblingAxis)
+  end
+  return nodeSet
+
+-- return the combined self axis of the contents
+::method selfAxis
+  expose owner
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      nodeSet~union(node~selfAxis)
+  end
+  return nodeSet
+
+-- these are self containing
+::attribute containingNodeSet get
+  return self
+
+-- filter this node set based on an expression criteria, returning
+-- a new node set
+::method filter
+  expose owner
+  use strict arg context, predicate
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      -- evaluate the predicate expression against this node and container
+      -- context.
+      if  predicate.evaluatePredicate(node, self, s) then
+          nodeSet~append(node)
+  end
+
+  return nodeSet
+
+-- extract the nodes by qualified name, returning a new nodeset
+::method getElementsByQualifiedName
+  expose owner
+  use strict arg qname
+
+  -- get a result nodeset for the base
+  nodeSet = .nodeset~new(owner)
+
+  loop node over self
+      -- evaluate the predicate expression against this node and container
+      -- context.
+      if  qname~matchesNode(node) then
+          nodeSet~append(node)
+  end
+
+  return nodeSet
+
+-- determine the index position of a given node within the nodeset.
+-- returns -1 for not found
+::method positionOf
+  use strict arg target
+
+  loop i = 0 to self~length
+      if self~item(i) then return i
+  end
+  return -1  -- not found
+
+-- test if the node contains a give target node
+::method contains
+  use strict arg target
+  return self~positionOf(target) \= -1
 
 
 /*----------------------------------------------------------------------------*/
@@ -1193,8 +1594,26 @@
 ::method changed
   self~ownerdocument~changed
 
+-- return a change count for the node...this just returns
+-- the document change count
 ::method changes
   return self~ownerdocument~changes
+
+-- select a set of nodes using an xpath expression
+::method selectNodeSet
+  use strict arg path
+
+  -- any errors are just treated as selection failures and return an
+  -- empty node set
+  signal on syntax
+
+  -- parse the expression and execute using this node as the starting context
+  parser = .XpathParser~new(self~document, path)
+  expr = parse~parse
+  return expr~evaluate(self, .nil)
+
+  syntax:
+  -- just return an empty node set
 
 
 /*----------------------------------------------------------------------------*/
@@ -1207,9 +1626,137 @@
 ::attribute ctr class private
 ::attribute id       private
 
+-- retrieve the ancestor axis
+::attribute ancestorAxis get
+  parentNode = self~parentNode
+  -- if not at the top of the tree, have our parent handle this
+  if parentNode~nodeType \= self~DOCUMENT_NODE then
+      return parentNode~ancestorOrSelfAxis
+  -- at the top, so there are no ancestors.  Just return an empty
+  -- nodeset
+  else return .NodeSet~new(self~document, parentNode)
+
+-- retrieve the ancestor-or-self axis
+::attribute ancestorOrSelfAxis get
+  -- merge the self list with the ancestor
+  return self~selfAxis~union(self~ancestorAxis)
+
+-- retrieve the attribute axis
+::attribute attributeAxis get
+  -- node set of attributes
+
+  --TODO:  Make sure NodeImpl has an attributes method and attributes
+  -- returns the appropriate thing
+  return .nodeset~new(self~document, self~parentNode, self~attributes)
+
+-- retrieve the child axis
+::attribute childAxis get
+  return .nodeset~new(self~document, self~parentNode, self~childNodes)
+
+-- retrieve the descendant axis
+::attribute descendantAxis get
+  nodeSet = .nodeset~new(self~document, self~parentNode)
+  -- merge in all of the descendants
+  loop child over self~childNodes
+      nodeSet~union(child~descendantOrSelfAxis)
+  end
+  return nodeSet
+
+-- retrieve the reversed descendant axis.  This
+-- builds the list in reverse descenant order
+::attribute reversedDescendantAxis get
+  nodeSet = .nodeset~new(self~document, self~parentNode)
+
+  children = self~childNodes
+  -- merge in all of the descendants in reverse order
+  loop i = children~length to 1 by -1
+      nodeSet~union(children[i]~reversedDescendantOrSelfAxis)
+  end
+  return nodeSet
+
+-- descendant axis + self
+::attribute descendantOrSelfAxis get
+  return self~selfAxis~union(self~descendantAxis)
+
+-- and the reversed version of the descendant + self axis
+::attribute reversedDescendantOrSelfAxis get
+  return self~selfAxis~union(self~reversedDescendantAxis)
+
+-- The following axis...this is all of the following siblings +
+-- their descendants
+::attribute followingAxis get
+  nodeSet = .nodeSet~new(self~document, self~parentNode)
+
+  nextSibling = self~nextSibling
+  -- if we have a sibling, then get its descendant axis and
+  -- also get its following axis.
+  if nextSibling \== .nil then do
+      nodeSet~append(nextSibling)
+      nodeSet~union(nextSibling~descendantAxis)
+      nodeSet~union(nextSibling~followingAxis)
+  end
+
+-- following sibling axis is like the following axis, but omits the
+-- children of the siblings
+::attribute followingSiblingAxis get
+  nodeSet = .nodeSet~new(self~document, self~parentNode)
+
+  nextSibling = self~nextSibling
+  -- if we have a sibling, then get its descendant axis and
+  -- also get its following axis.
+  if nextSibling \== .nil then do
+      nodeSet~append(nextSibling)
+      nodeSet~union(nextSibling~followingSiblingAxis)
+  end
+
+-- the nodeset containing just the parent (if it exists)
+::attribute parentAxis get
+  nodeSet = .nodeSet~new(self~document, self~parentNode)
+
+  if self~parentNode \= .nil then nodeSet~append(self~parentNode)
+  return nodeSet
+
+-- The preceding axis...this is all of the preceding siblings +
+-- their descendants
+::attribute precedingAxis get
+  nodeSet = .nodeSet~new(self~document, self~parentNode)
+
+  previousSibling = self~previousSibling
+  -- if we have a sibling, then get its descendant axis and
+  -- also get its preceding axis.
+  if previousSibling \== .nil then do
+      nodeSet~append(previousSibling)
+      nodeSet~union(previousSibling~descendantAxis)
+      nodeSet~union(previousSibling~precedingAxis)
+  end
+
+-- preceding sibling axis is like the preceding axis, but omits the
+-- children of the siblings
+::attribute precedingSiblingAxis get
+  nodeSet = .nodeSet~new(self~document, self~parentNode)
+
+  nextSibling = self~nextSibling
+  -- if we have a sibling, then get its descendant axis and
+  -- also get its preceding axis.
+  if nextSibling \== .nil then do
+      nodeSet~append(previousSibling)
+      nodeSet~union(previousSibling~precedingSiblingAxis)
+  end
+
+-- the nodeset containing just this node
+::attribute selfAxis get
+  nodeSet = .nodeSet~new(self~document, self~parentNode)
+  nodeSet~append(self)
+  return nodeSet
+
+-- the nodeset containing the tree root
+::attribute rootAxis get
+  nodeSet = .nodeSet~new(self~document, self~parentNode)
+  nodeSet~append(self~document~documentElement)
+  return nodeSet
 
 -- methods of NodeList that the node implements directly.  superclasses will
--- implement this more full
+-- implement this more fully
 
 /*----------------------------------------------------------------------------*/
 /* Method: item                                                               */
@@ -6640,3 +7187,1956 @@ syntax:
 
 ::method renamedElement
   use strict arg oldElement, newElement
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Section:  XPath parser and evaluation engine                               */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+
+::class "XPath"
+::constant INVALID_OPERATOR_ERROR "Invalid XPath operator found"
+::constant INVALID_EXPRESSION_ERROR "Invalid XPath expression."
+::constant INVALID_VARIABLE_REFERENCE_ERROR "Variable references not supported"
+::constant MISSING_QUOTE_ERROR "Missing closing literal string quote"
+::constant MISSING_PAREN_ERROR "Missing closing parentheses"
+::constant INVALID_AXIS_NAME_ERROR "Invalid XPath axis name"
+::constant INVALID_TYPE_TEST_ERROR "Invalid node type."
+::constant INVALID_NAME_TEST_ERROR "Invalid node name type."
+::constant MISSING_ARGUMENT_ERROR "Missing function argument."
+::constant INCORRECT_FUNCTION_ARGUMENTS_ERROR "Incorrect function arguments."
+::constant NODESET_ERROR "Expression did not evaluate to a node set."
+::constant UNKNOWN_FUNCTION_ERROR "Unknown function name in expression."
+
+-- raise an error for an xpath problem
+::method xpathError class
+  use strict arg reason
+  raise syntax 93.900 array(reason)
+
+-- a queue of tokens
+::class "TokenQueue"
+::method init
+  expose queue currentToken
+  queue = .queue~new
+  -- this is used for reading the tokens
+  currentToken = 1
+
+-- add a token to the queue
+::method addToken
+  expose queue
+  use strict arg token
+  queue~queue(token)
+
+-- reset the token position to the beginning
+::method rewind
+  expose currentToken
+  currentToken = 1
+
+-- test if there are more tokens
+::method hasMore
+  expose queue currentToken
+  return currentToken <= queue~size
+
+-- get the next token, stepping the position
+::method nextToken
+  expose queue currentToken
+  item = queue[currentToken]
+  currentToken += 1
+  return item
+
+-- back up a token in the queue
+::method previousToken
+  expose currentToken
+
+  if currentToken > 1 then currentToken += 1
+
+-- peek at the next (current) token
+::method peekToken
+  expose queue currentToken
+  return queue[currentToken]
+
+-- remove the first token from the queue
+::method pop
+  expose queue
+  queue~pop
+
+
+-- a generic token value.  Most of the work here is done via class methods.
+-- the token itself is very general and very simple
+::class "XPathToken"
+
+-- set up all of the initial token types
+::method setup class
+  expose simpleOperators namedOpertors nodeTypes axisTypes
+  simpleOperators = .directory~new
+  namedOperators = .directory~new
+  nodeTypes = .directory~new
+  axisTypes = .directory~new
+
+  -- this is a dummy marker token used as the first one
+  self~dummy = .XPathToken~new('')
+  -- special terminator token function argument lists
+  self~function_arg = .XPathToken~new(',)')
+
+  -- create the various constant tokens
+  self~open_paren = .XPathToken~new('(')
+  self~close_paren = .XPathToken~new(')', .true)
+  self~open_bracket = .XPathToken~new('[')
+  self~close_bracket = .XPathToken~new(']', .true)
+  self~period = .XPathToken~new('.', .true)
+  self~double_period = .XPathToken~new('..', .true)
+  self~at_sign = .XPathToken~new('@')
+  self~comma = .XPathToken~new(',')
+  self~double_colon = .XPathToken~new('::')
+  self~slash = .XPathToken~new('/')
+  self~double_slash = .XPathToken~new('//')
+  self~union = .XPathOperatorToken~new('|', 0)
+  self~addition = .XPathOperatorToken~new('+', 6)
+  self~subtraction = .XPathOperatorToken~new('-', 6)
+  self~equal = .XPathOperatorToken~new('=', 3)
+  self~not_equal = .XPathOperatorToken~new('!=', 3)
+  self~less_than = .XPathOperatorToken~new('<', 4)
+  self~less_than_equal = .XPathOperatorToken~new('<=', 4)
+  self~greater_than = .XPathOperatorToken~new('>', 4)
+  self~greater_than_equal = .XPathOperatorToken~new('>=', 4)
+  self~multiply = .XPathOperatorToken~new('*', 5)
+  self~wildcard = .XPathToken~new('*', .true)
+
+  -- this is a subset of the operator tokens.  The ones
+  -- in this list can be resolved immediately just off of a
+  -- single character.  Others will need some additional processing
+  simpleOperators["open_paren"] =          self~open_paren
+  simpleOperators["close_paren"] =         self~close_paren
+  simpleOperators["open_bracket"] =        self~open_bracket
+  simpleOperators["close_bracket"] =       self~close_bracket
+  simpleOperators["at_sign"] =             self~at_sign
+  simpleOperators["comma"] =               self~comma
+  simpleOperators["union"] =               self~union
+  simpleOperators["addition"] =            self~addition
+  simpleOperators["subtraction"] =         self~subtraction
+  simpleOperators["equal"] =               self~equal
+
+  self~and = .XPathOperatorToken~new('and', 2)
+  self~or = .XPathOperatorToken~new('or', 1)
+  self~mod = .XPathOperatorToken~new('mod', 5)
+  self~div = .XPathOperatorToken~new('div', 5)
+
+  -- the named operators
+  namedoperators["and"] = self~and
+  namedoperators["or"] = self~or
+  namedoperators["mod"] = self~mod
+  namedoperators["div"] = self~div
+
+  self~comment = .XPathToken~new("NODETYPE", , 'comment')
+  self~text = .XPathToken~new("NODETYPE", , 'text')
+  self~processing_instruction = .XPathToken~new("NODETYPE", , 'processing_instruction')
+  self~node = .XPathToken~new("NODETYPE", , 'node')
+  self~element = .XPathToken~new("NODETYPE", , 'element')
+
+  -- quick resolution table for the node types
+  nodetypes["comment"] =                  self~comment
+  nodetypes["text"] =                     self~text
+  nodetypes["processing_instruction"] =   self~processing_instruction
+  nodetypes["node"] =                     self~node
+  nodetypes["element"] =                  self~element
+
+  self~ancestor = .XPathToken~new('ancestor')
+  self~ancestor_or_self = .XPathToken~new('ancestor_or_self')
+  self~attribute = .XPathToken~new('attribute')
+  self~child = .XPathToken~new('child')
+  self~descendant = .XPathToken~new('descendant')
+  self~descendant_or_self = .XPathToken~new('descendant_or_self')
+  self~following = .XPathToken~new('following')
+  self~following_sibling = .XPathToken~new('following_sibling')
+  self~namespace = .XPathToken~new('namespace')
+  self~parent = .XPathToken~new('parent')
+  self~preceding = .XPathToken~new('preceding')
+  self~preceding_sibling = .XPathToken~new('preceding_sibling')
+  self~self = .XPathToken~new('self')
+
+  -- build the axis table for quick parsing
+  axistypes["ancestor"] = self~ancestor
+  axistypes["ancestor_or_self"] = self~ancestor_or_self
+  axistypes["attribute"] = self~attribute
+  axistypes["child"] = self~child
+  axistypes["desendant"] = self~descendant
+  axistypes["desendant_or_self"] = self~descendant_or_self
+  axistypes["following"] = self~following
+  axistypes["following_sibling"] = self~following_sibling
+  axistypes["namespace"] = self~namespace
+  axistypes["parent"] = self~parent
+  axistypes["preceding"] = self~preceding
+  axistypes["preceding_sibling"] = self~preceding_sibling
+  axistypes["self"] = self~self
+
+
+-- singletons for the different imutable operator types
+::attribute dummy class
+::attribute function_arg class
+::attribute open_paren class
+::attribute close_paren class
+::attribute open_bracket class
+::attribute close_bracket class
+::attribute period class
+::attribute double_period class
+::attribute at_sign class
+::attribute comma class
+::attribute double_colon class
+::attribute slash class
+::attribute double_slash class
+::attribute union class
+::attribute addition class
+::attribute subtraction class
+::attribute equal class
+::attribute not_equal class
+::attribute less_than class
+::attribute less_than_equal class
+::attribute greater_than class
+::attribute greater_than_equal class
+::attribute multiply class
+::attribute wildcard class
+::attribute and class
+::attribute or class
+::attribute mod class
+::attribute div class
+::attribute node class
+::attribute text class
+::attribute element class
+::attribute processing_instruction class
+::attribute comment class
+::attribute ancestor class
+::attribute ancestor_or_self class
+::attribute attribute class
+::attribute child class
+::attribute descendant class
+::attribute descendant_or_self class
+::attribute following class
+::attribute following_sibling class
+::attribute namespace class
+::attribute parent class
+::attribute preceding class
+::attribute preceding_sibling class
+::attribute preceding_self class
+::attribute self class
+
+-- create a literal string token
+::method literalToken class
+  use strict arg value
+  return .XPathToken~new("LITERAL", .true, value)
+
+-- create a function token
+::method functionToken class
+  use strict arg prefix, name
+  return .XPathToken~new("FUNCTION", .false, name, prefix)
+
+-- create a namespace token
+::method nameToken class
+  use strict arg name
+  return .XPathToken~new("NCNAME", .true, name)
+
+-- create a qualified name token
+::method qualifiedNameToken class
+  use strict arg prefix, name
+  return .XPathToken~new("QNAME", .true, name, prefix)
+
+-- create a number token
+::method numberToken class
+  use strict arg value
+  return .XPathToken~new("NUMBER", .true, value)
+
+-- create a variable reference token
+::method variableReferenceToken class
+  use strict arg prefix, name
+  return .XPathToken~new("VARIABLE", .true, name, prefix)
+
+  -- resolve an operator token based on the character.
+  -- returns .nil if the operator is not simply resolvable
+::method resolveSimpleOperator class
+  expose simpleOperators
+  use strict arg op
+  return simpleOperators[op]
+
+  -- resolve an operator token based on the operator name.
+  -- returns .nil if the operator is not simply resolvable
+::method resolveNamedOperator class
+  expose namedOperators
+  use strict arg op
+  return namedOperators[op]
+
+  -- resolve a node type token based on the name.
+  -- returns .nil if the operator is not simply resolvable
+::method resolveNodeType class
+  expose nodeTypes
+  use strict arg op
+  return nodeTypes[op]
+
+
+  -- resolve a axis type token based on the name.
+  -- returns .nil if the operator is not simply resolvable
+::method resolveAxis class
+  expose axisTypes
+  use strict arg op
+  return axisTypes[op]
+
+::method init
+  expose isMultTarget name prefix
+  use strict arg type, isMultTarget = .false, name = .nil, prefix = .nil
+
+-- the identifier of the token.  For operators, this will be
+-- the operator type itself.  All operator tokens are singletons.
+-- This can also be STRING, NAME, QNAME, or NUMBER
+::attribute type GET
+-- indicates whether this token can be used as a multiply target
+::attribute isMultTarget GET
+::attribute prefix GET
+::attribute name GET
+
+-- special test for operator tokens -- default is always false
+::attribute isOperator GET
+
+-- special subclass for the operators
+::class "XPathOperatorToken" subclass XPathToken
+::method init
+  expose precedence
+  use strict arg type, precedence
+  -- operators use default values for everything else
+  self~init:super(type)
+
+-- Override of the operator test
+::attribute isOperator GET
+  return .true
+-- operator precedence value
+::attribute precedence GET
+
+-- a class to scan an xpath expression and break it up into its tokens.
+::class "XPathScanner"
+::method init class
+  expose nonascii namecharacters
+  nonascii = xrange('80'x, 'ff'x)
+  namecharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_' || nonascii
+
+::constant whitespace '090A0D20'x
+::constant other      '2325263F5C5E607B7D7E7F'x
+::constant quote      '''"'
+::constant digit      '0123456789'
+::constant letter     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+-- all characters above '80'x
+::attribute nonascii GET
+-- all characters valid at the start of an xpath name.  This is letters,
+-- underscore, and the nonascii characters
+::attribute namecharacters GET
+
+-- raise an error as the result of a scanning error
+::method error private
+  use strict arg currentOffset, msg
+  raise syntax 93.900 array('Error at offset' currentOffset':' msg, currentOffset)
+
+-- scan an expression string, breaking this up into a list of tokens.
+::method scanExpression
+  use strict arg data
+
+  currentOffset = 1
+  endOffset = data~length
+
+  -- create a queue for the tokens and make the first token a dummy marker
+  tokens = .tokenqueue~new
+  tokens~addqueue(.XPathToken~dummy)
+
+  loop name scan forever
+      -- skip over any blanks
+      currentOffset = data~verify(self~whitespace, currentOffset)
+      -- hit the end of what we're parsing?  Done
+      if currentOffset > endOffset then leave
+      -- skip over any blanks
+      currentOffset = data~verify(self~whitespace, currentOffset)
+      -- all whitespace left, we're done
+      if currentOffset = 0 then leave scan
+
+      ch = data~subchar(currentOffset)
+      -- some single character tokens can be resolved and handled
+      -- quickly if this is one of these, we can go around
+      token = .XPathToken~resolveSimpleOperator(ch)
+      if token \== .nil then do
+          tokens~addToken(token)
+          currentOffset += 1
+          iterate scan
+      end
+
+      -- something requiring a little more processing
+      select
+          -- potentially "::"
+          when ch == ':' then do
+             currentOffset += 1
+             ch = data~subchar(currentOffset)
+             -- this also catches eof-of-line because subchar will return
+             -- "" for out-of-range.
+             if ch \== ':' then self~error(currentOffset - 1, "Invalid token ':'")
+             tokens~addToken(.XPathToken~double_colon)
+             currentOffset += 1
+          end
+          -- can be either '/' or '//'
+          when ch == '/' then do
+             currentOffset += 1
+             -- single colon at the end is not valid
+             if currentOffset > endOffset then do
+                tokens~addToken(.XPathToken~slash)
+                leave scan
+             end
+             -- grab the next character and see if this is a
+             -- double or a single
+             ch = data~subchar(currentOffset)
+             if ch == '/' then do
+                tokens~addToken(.XPathToken~doubleslash)
+                currentOffset += 1
+             end
+             else do
+                tokens~addToken(.XPathToken~slash)
+             end
+          end
+          -- non-equality operator...potentially
+          when ch == '!' then do
+             currentOffset += 1
+             -- single bang at the end is not valid
+             ch = data~subchar(currentOffset)
+             -- only '=' is valid after a '!'
+             if ch \== '=' then self~error(currentOffset - 1, "Invalid token '!'")
+             tokens~addToken(.XPathToken~not_equal)
+             currentOffset += 1
+          end
+          -- the relative operators can be either "<" or "<="
+          when ch == '<' then do
+             currentOffset += 1
+             -- Just a less than
+             if currentOffset > endOffset then do
+                tokens~addToken(.XPathToken~less_than)
+                currentOffset += 1
+             end
+             else do
+                 ch = data~subchar(currentOffset)
+                 -- have the "="?
+                 if ch == '=' then do
+                     tokens~addToken(.XPathToken~less_than_equal)
+                     currentOffset += 1
+                 end
+                 else do
+                     -- just the single form
+                     tokens~addToken(.XPathToken~less_than)
+                 end
+             end
+          end
+          -- and the greater than forms
+          when ch == '>' then do
+             currentOffset += 1
+             -- Just a less than
+             if currentOffset > endOffset then do
+                tokens~addToken(.XPathToken~greater_than)
+                currentOffset += 1
+             end
+             else do
+                 ch = data~subchar(currentOffset)
+                 -- have the "="?
+                 if ch == '=' then do
+                     tokens~addToken(.XPathToken~greater_than_equal)
+                     currentOffset += 1
+                 end
+                 else do
+                     -- just the single form
+                     tokens~addToken(.XPathToken~greater_than)
+                 end
+             end
+          end
+          -- have a quoted string.  This is defined by the spec as
+          --
+          -- [29] Literal ::= '"' [^"]* '"' | "'" [^']* "'"
+          --
+          -- either-or on the delimiters and no escaping
+          when ch~matchChar(1, self~quote) then do
+              currentOffset += 1
+              -- find the closing point
+              endquote = data~pos(ch, currentOffset)
+              if endquote = 0 then self~error(currentOffset - 1, "Missing close quote on string")
+              value = data~substr(currentOffset, endQuote - (currentOffset))
+              -- add a literal token
+              tokens~addToken(.XPathToken~literalToken(value))
+              currentOffset = endquote + 1
+          end
+          -- this is potentially a number.  The xpath rule for numbers is:
+          -- [30] Number ::= Digits ('.' Digits?)? | '.' Digits
+          when ch == '.' then do
+              -- are we at the end?  This can't be a number so add a
+              -- period token and get out
+              if currentOffset = endOffset then do
+                 tokens~addToken(.XPathToken~period)
+                 currentOffset += 1
+                 leave scan
+              end
+              -- get the next character
+              ch = data~subchar(currentOffset + 1)
+              -- another period is a double period token
+              if ch == '.' then do
+                 tokens~addToken(.XPathToken~double_period)
+                 currentOffset += 2
+              end
+              -- period followed by '/' or '|' scans as a period token
+              else if ch == '/' then do
+                 tokens~addToken(.XPathToken~period)
+                 currentOffset += 1
+              end
+              else if ch == '|' then do
+                 tokens~addToken(.XPathToken~period)
+                 currentOffset += 1
+              end
+              -- have a digit...bingo, this is a number
+              else if ch~matchChar(1, self~digits) then do
+                  -- scan off a number
+                  currentOffset = self~scanNumber(tokens, data, currentOffset, endOffset);
+              end
+              -- a period followed by whitespace is only legal if this is the last token
+              -- OR the next token is a '|'.  This scans a single period in that case.
+              else if ch~matchChar(1, self~whitespace) then do
+                  nonblank = data~verify(self~whitespace, currentOffset + 1)
+                  if nonBlank = 0 then do
+                     tokens~addToken(.XPathToken~period)
+                     currentOffset = endOffset + 1
+                  end
+                  else if data~subchar(nonBlank) == '|' then do
+                     tokens~addToken(.XPathToken~period)
+                     currentOffset = nonBlank
+                  end
+                  else do
+                      -- this is an error
+                      self~xpathError("Invalid XPath expression")
+                  end
+              end
+          end
+          -- a number, as defined by the xpath spec
+          --
+          -- [30] Number ::= Digits ('.' Digits?)? | '.' Digits
+          -- [31] Digits ::= [0-9]+
+          --
+          when ch~matchChar(1, self~digit) then do
+              -- scan off a number
+              currentOffset = self~scanNumber(tokens, data, endOffset, currentOffset);
+          end
+          -- a * can be either a wildcard selector on a name or the multiply
+          -- operation, depending on what the previous token was
+          --
+          -- [37] NameTest ::= '*' | NCName ':' '*' | QName
+          -- [34] MultiplyOperator ::= '*'
+          --
+          --
+          -- 3.7 Lexical Structure
+          --
+          --  If there is a preceding token and the preceding token is not one of @, ::, (, [, , or
+          --  an Operator, then a * must be recognized as a MultiplyOperator.
+          --
+          -- Otherwise, the token must not be recognized as a MultiplyOperator.
+          --
+          when ch == '*' then do
+              if tokens~lastToken~isMultTarget then do
+                 tokens~addToken(.XPathToken~multiply)
+              end
+              else do
+                 tokens~addToken(.XPathToken~wildcard)
+              end
+              currentOffset += 1
+          end
+          -- a name of some sort.  These are complicated, because the meaning depends
+          -- both on the preceeding token AND the following tokens.  The spec definitions are:
+          --
+          -- 3.7 Lexical Structure
+          --
+          --  If there is a preceding token and the preceding token is not one of @, ::, (, [, , or
+          --  an Operator, then an NCName must be recognized as an OperatorName.
+          --
+          --  If the character following an NCName (possibly after intervening ExprWhitespace) is (,
+          --  then the token must be recognized as a NodeType or a FunctionName.
+          --
+          --  If the two characters following an NCName (possibly after intervening ExprWhitespace)
+          --  are ::, then the token must be recognized as an AxisName.
+          --
+          --  Otherwise, the token must not be recognized as an OperatorName, a NodeType, a
+          --  FunctionName, or an AxisName.
+          --
+          -- [33] OperatorName ::= 'and' | 'or' | 'mod' | 'div'
+          -- [38] NodeType ::= 'comment' | 'text' | 'processing-instruction' | 'node'
+          -- [35] FunctionName ::= QName - NodeType
+          -- [6] AxisName ::= (see above)
+          --
+          -- [37] NameTest ::= '*' | NCName ':' '*' | QName
+          -- [5] NCName ::= (Letter | '_') (NCNameChar)*
+          -- [?] NCNameChar ::= Letter | Digit | '.' | '-' | '_'  (ascii subset of 'NCNameChar')
+          -- [?] QName ::= (NCName ':')? NCName
+          -- [?] Letter ::= [A-Za-z]                              (ascii subset of 'Letter')
+          -- [?] Digit ::= [0-9]                                  (ascii subset of 'Digit')
+          --
+          when ch~matchChar(1, self~nameCharacters) then do
+              nameOffset = currentOffset
+              -- scan off the name
+              currentOffset = self~NCName(data, currentOffset, endOffset)
+              -- NB:  This will return a null string if we're past the end
+              -- of the string.  This is a convenient eol marker.
+              ch = data~subChar(currentOffset)
+              -- extract the name
+              name = data~substr(nameOffset, currentOffset - nameOffset)
+              -- no prefix yet
+              prefix = ""
+              -- potential qualified name form?  We need to look
+              -- ahead a little, then check out the previous token to
+              -- understand how this needs to be treated.
+              if ch == ':' then do
+                  -- this is just a standard name...so far.
+                  nametype = "NAME"
+                  currentOffset += 1
+                  -- invalid name if at the end
+                  if currentOffset > endOffset then self~error(currentOffset - 1, "Missing local name part for qualified name")
+                  ch = data~subchar(currentOffset)
+                  -- wildcarded qualified name?
+                  if ch == '*' then do
+                      currentOffset += 1
+                      ch = data~subchar(currentOffset)
+                      -- this is a more complicated name type
+                      nametype = "NCNAME"
+                  end
+                  -- double colon form is an axis name
+                  else if ch == ':' then do
+                      currentOffset += 1
+                      ch = data~subchar(currentOffset)
+                      -- the axis forms require special attention later
+                      nametype = "AXIS"
+                  end
+                  -- this is a qualified name form
+                  else do
+                     -- the previously parsed name is now the prefix
+                     prefix = name
+                     nameOffset = currentOffset
+                     -- scan off the trailing name
+                     currentOffset = self~scanNCName(data, currentOffset, endOffset)
+                     -- this is an error if not followed by a name
+                     if nameOffset = currentOffset then self~error(currentOffset - 1, "Missing local name part for qualified name")
+                     -- get the following character (note that ch will be '' if
+                     -- there isn't anything left
+                     ch = data~subchar(currentOffset)
+                     -- get the name part
+                     name = data~substr(nameOffset, currentOffset - nameOffset)
+                  end
+              end
+              -- whitespace is allowed here, so skip over it
+              currentOffset = self~skipWhiteSpace(data, currentOffset, endOffset)
+              ch = data~charAt(currentOffset)
+              --
+              --  If there is a preceding token and the preceding token is not one of @, ::, (, [, , or
+              --  an Operator, then an NCName must be recognized as an OperatorName.
+              --
+              if tokens~lastToken~isMultTarget then do
+                  -- resolve to a the appropriate operator
+                  token = .XPathToken~resolveNamedOperator(name)
+                  if token == .nil then self~error(currentOffset - 1, "invalid named operator" name)
+                  tokens~addToken(token)
+                  -- ok, this was an operator, but it might have been disguised as a
+                  -- complex name...diagnose that
+                  if nametype \= "NAME" then self~error(currentOffset - 1, "operator name used as a qualified name")
+              end
+              -- some sort of valid name expected here...but this might also be a
+              -- nodetype or function name if followed by a '('
+              else do
+                 -- if we have a simple name followed by a paren, this is special
+                 if ch == '(' & nametype == "NAME" then do
+                     nodetype = .XPathToken~resolveNodeType(name)
+                     if nodetype \= .nil then do
+                         tokens~addToken(nodetype)
+                     end
+                     else do
+                         tokens~addToken(.XPathToken~functionToken(prefix, name))
+                     end
+                     -- add the open paren that indicates the special nature
+                     tokens~addToken(.XPathToken~openParen)
+                     currentOffset += 1
+                 end
+                 -- ok, now check for axis names...We might already have detected this, but there could have
+                 -- been intervening whitespace before the double colon
+                 else if nametype == "AXIS" | (ch == ':' & data.subchar(currentOffset + 1) == ':') then do
+                     axis = .XPathToken~resolveAxis(name)
+                     if axis == .nil then self~error(currentOffset - 1, "Invalid axis name" name)
+                     tokens~addToken(axis)
+                     -- add the double colon marker
+                     tokens~addToken(.XPathToken~double_colon)
+                     -- if we detected this here, then step over the double colon
+                     if nametype \= "AXIS" then currentOffset += 1
+                 end
+                 else do
+                     if nametype == "NCNAME" then do
+                        -- get a namespace indicator
+                        tokens~addToken(.XPathToken~nameToken(name))
+                     end
+                     -- just a qualified name (finally!)
+                     else do
+                        -- get a qualified name indicator
+                        tokens~addToken(.XPathToken~qualifiedNameToken(prefix, name))
+                     end
+                 end
+              end
+          end
+          -- an external variable reference
+          --
+          -- [36] VariableReference ::= '$' QName
+          --
+          when ch == '$' then do
+             currentOffset += 1
+             -- invalid name if at the end
+             if currentOffset > endOffset then self~error(currentOffset - 1, "Missing variable reference name")
+             nameOffset = currentOffset
+             currentOffset = self~scanNCName(data, currentOffset, endOffset)
+             if nameOffset = currentOffset then self~error(currentOffset - 1, "Missing variable reference name")
+             ch = data~subchar(currentOffset)
+             name = data~substr(nameOffset, currentOffset - nameOffset)
+             prefix = ""
+             -- if this has the form of a qualified name, then the name we just scanned off is the
+             -- prefix
+             if ch == ':' then do
+                 prefix = name
+                 currentOffset += 1
+                 -- invalid name if at the end
+                 if currentOffset > endOffset then self~error(currentOffset - 1, "Invalid qualified name")
+                 nameOffset = currentOffset
+                 currentOffset = self~scanNCName(data, currentOffset, endOffset)
+                 if nameOffset = currentOffset then self~error(currentOffset - 1, "Invalid qualified name")
+                 name = data~substr(nameOffset, currentOffset - nameOffset)
+             end
+             tokens~addToken(.XPathToken~variableReferenceToken(prefix, name))
+          end
+          -- some sort of invalid token type
+          otherwise do
+              self~error(currentOffset - 1, "Invalid character in expression" ch)
+          end
+      end
+  end
+  -- everything is scanned, and we have a queue of tokens to process now
+  -- we need to pull the dummy token from the front
+  tokens~pull
+  return tokens
+
+-- scan an NCNAME from the expression.  A NCNAME is defined as:
+--
+--
+-- [5] NCName ::= (Letter | '_') (NCNameChar)*
+-- [6] NCNameChar ::= Letter | Digit | '.' | '-' | '_' | CombiningChar | Extender
+--
+::method scanNCName
+  use strict arg data, currentOffset, endOffset
+  ch = data~subchar(currentOffset)
+  -- use the XMLCHAR class to check this...
+  -- if not a valid first character, we're done
+  if \XMLChar~isNameStart(ch) then do
+      return currentOffset
+  end
+
+  currentOffset = data~verify(xmlchars~name, currentOffset + 1)
+  if currentOffset = 0 then currentOffset = endOffset + 1
+  return currentOffset
+
+-- scan off a number value, defined as
+--
+--
+-- [30] Number ::= Digits ('.' Digits?)? | '.' Digits
+-- [31] Digits ::= [0-9]+
+--
+::method scanNumber
+  use arg tokens, data, currentOffset, endOffset
+
+  start = currentOffset
+  -- we know we at least have a valid first character, which might be a period
+  -- scan over any leading digits
+  currentOffset = data~verify(self~digits, currentOffset)
+  -- are we at a period now?
+  if data~match(currentOffset, '.') then do
+      period = currentOffset
+      currentOffset = data~verify(self~digit, currentOffset)
+      if currentOffset = 0 then currentOffset = period + 1
+  end
+
+  number = data~substr(start, currentOffset - start)
+  tokens~addToken(.XPathToken~numbertoken(number))
+  return currentOffset;
+
+-- test for a node match
+::class "NodeTest"
+::method init
+  expose nameTest typeTest
+  use strict arg nameTest = .nil, typeTest = (.Node~ANY_NODE)
+
+-- apply the match logic
+::method apply
+  expose nameTest typeTest
+  use strict arg nodeset
+
+  if nameTest \= .nil then return nodeset~getNamedItems(nameTest)
+  else nodeset~getTypedItems(typeTest)
+
+-- base class for an xpath expression term
+::class XpathExpr
+-- evaluate the expression
+::method evaluate
+  use strict arg context, container
+  return .nil
+
+::method evaluateBoolean
+  use strict arg context, container
+
+  value = self~evaluate(context, container)
+
+  if \value~datatype('o') then XPath~error(.Xpath~BOOLEAN_ERROR)
+  return value
+
+::method evaluateString
+  use strict arg context, container
+
+  value = self~evaluate(context, container)
+
+  if \value~isA(.string) then XPath~error(.Xpath~STRING_VALUE_ERROR)
+  return value
+
+::method evaluateNumber
+  use strict arg context, container
+
+  value = self~evaluate(context, container)
+
+  if \value~datatype('Number') then XPath~error(.Xpath~NUMBER_VALUE_ERROR)
+  return value
+
+::method evaluateNodeSet
+  use strict arg context, container
+
+  value = self~evaluate(context, container)
+
+  if \value~isA(.NodeSet) then XPath~error(.Xpath~NODESET_VALUE_ERROR)
+  return value
+
+::method evaluatePredicate
+  use strict arg context, container, proximityPosition
+
+  value = self~evaluate(context, container)
+  if value~isA(.string), value~datatype('Number') then
+      return result = proximityPosition
+  -- xpath has funny rules for boolean true/false, so this requires
+  -- some inspection
+  return self~convertBoolean(result)
+
+-- Apply the xpath rules for boolean true/false to an expression result
+::method convertBoolean
+  use strict arg value
+
+  -- special rules for string values
+  if value~isA(.string), value~datatype('Number') then do
+      -- if this is a numberic value, then non-zero is true, zero is false
+      if value~datatype('Number') then
+         -- non-exact comparison here...
+         return value \= 0
+      -- the strings true and false are special
+      if value == "true" then return .true
+      if vallue == "false" then return .false
+      -- if this is a string value, then a null string is false, any other value
+      -- is true
+      return value \== ""
+  end
+  -- nodesets convert to boolean based on an empty test
+  else if value~isa(.NodeSet) then return value~length > 0
+  -- other than the 4 basic types is ambiguously defined by the standard,
+  -- so we'll just assume the answer is false for now.
+  return .false
+
+-- convert a value to a numeric value.  Things don't really map that
+-- well for Rexx values, so for strings that aren't numeric, we'll
+-- just return the final option of 0.
+::method convertNumber
+  use strict arg value
+  if value~isa(.String) then do
+      -- if numeric, then return it directly
+      if value~datatype('Number') then return value
+      -- the string true converts to the numeric version
+      if value == "true" then return .true
+      -- the default "not good value" result (which also handles
+      -- "false"
+      return 0
+  end
+  else if value~isa(.nodeset) then do
+      -- nodesets have a string value...convert this and then
+      -- try to convert to numeric form
+      return self~convertNumber(self~convertString(value))
+  end
+  return 0   -- unknown type...this is zero
+
+-- convert an object value to a string value.
+::method convertString
+  use strict arg value
+
+  -- already a string, then return directly.  Note that this also
+  -- handles the number category.  Strictly speaking, we should also
+  -- be returning "true" and "false", but this would mess up some
+  -- very common numeric values.
+  if value~isa(.string) then return value
+  -- if this is a node set, return the string value of the first
+  -- node.  If the set is empty, return a null string
+  if value~isa(.nodeset) then do
+      if value~length = 0 then return ""
+      else return value[0]~nodeValue
+  end
+  -- last option...just return the string form of the object
+  return value~string
+
+-- an axis evaluation step in an expression
+::class "XpathStep" subclass xpathexpr
+::method init
+  expose axis nodeTest predicates
+  use strict arg axis, nodeTest = (.NodeTest~new(.Node~ANY_NODE)), predicates = (.array~new)
+
+::method evaluate
+  expose axis nodeTest
+  use strict arg context, container
+
+  -- use the axis name to request our initial nodeset value
+  nodeSet = context~send(axis)
+  -- apply any type filtering
+  nodeSet = nodeTest~apply(nodeSet)
+  -- now filter by predicates
+  nodeSet = self~filterByPredicates(context, nodeSet)
+  return nodeSet
+
+-- apply and predicate filtering to this step
+::method filterByPredicates
+  expose predicates
+  -- apply each predicate in turn
+  loop predicate over predicates
+      nodeSet = nodeSet~filter(context, predicate)
+  end
+
+  return nodeSet
+
+-- a dyadic expression term
+::class "XPathDyadicOperator" subclass XPathExpr
+::method init
+  expose handler left right
+  -- the handler is the string name of the method to invoke
+  use strict arg handler, left, right
+
+::method evaluate
+  expose handler
+  -- just pass this along to the appropriate handler method using the
+  -- same arguments
+  forward message(handler)
+
+-- the operator methods
+::method operatorPlus
+  expose left right
+
+  return leftTerm~evaluateNumber(context) + rightTerm~evaluateNumber(context)
+
+::method operatorMinus
+  expose left right
+
+  return leftTerm~evaluateNumber(context) - rightTerm~evaluateNumber(context)
+
+::method operatorMultiply
+  expose left right
+
+  return leftTerm~evaluateNumber(context) * rightTerm~evaluateNumber(context)
+
+::method operatorDivide
+  expose left right
+
+  return leftTerm~evaluateNumber(context) / rightTerm~evaluateNumber(context)
+
+::method operatorMod
+  expose left right
+
+  return leftTerm~evaluateNumber(context) // rightTerm~evaluateNumber(context)
+
+::method operatorAnd
+  expose left right
+
+  return leftTerm~evaluateBoolean(context) & rightTerm~evaluateBoolean(context)
+
+::method operatorOr
+  expose left right
+
+  return leftTerm~evaluateBoolean(context) | rightTerm~evaluateBoolean(context)
+
+-- comparison methods
+::method compareEqual
+  use strict arg left, right
+  return left = right
+
+::method compareNotEqual
+  use strict arg left, right
+  return left \= right
+
+::method compareLessThan
+  use strict arg left, right
+  return left < right
+
+::method compareLessThanEqual
+  use strict arg left, right
+  return left <= right
+
+::method compareGreaterThan
+  use strict arg left, right
+  return left > right
+
+::method compareGreaterThanEqual
+  use strict arg left, right
+  return left >= right
+
+-- returns true if the string value of any two members of the nodesets are true
+-- using the comparison method
+::method compareNodeSets
+  use strict arg comparison, left, right
+
+  loop leftNode over left
+      loop rightNode over right
+          -- do the comparison method, and if true, return
+          if self~send(comparison, leftNode~nodeValue, rightNode~nodeValue) then
+             return .true
+      end
+  end
+
+  -- nothing compared true, so false
+  return .false
+
+::method compareNodeSetToValue
+  use strict arg comparison, left, right, converter
+
+  loop leftNode over left
+      if self~send(comparison, self~send(converter, left~nodeValue), right) then return .true
+  end
+
+  return .false
+
+-- the equality operator.  This is complicated by the different pairing
+-- types that can occur between left and right
+::method operatorEqual
+  expose left right
+  use strict arg context, container
+
+  leftValue = left~evaluate(context)
+  rightValue = right~evaluate(context)
+
+  -- handle booleans first, since the same comparison rules
+  -- apply to NodeSet values also.  Boolean in this context
+  -- is the string "true" or "false"
+  if leftVal == "true" | leftValue == "false" then
+      return self~convertBoolean(leftVal) == self~convertBoolean(rightVal)
+  else if rightVal == "true" | rightValue == "false" then
+      return self~convertBoolean(leftVal) == self~convertBoolean(rightVal)
+
+  -- nodeset comparisons
+  if leftVal~isA(.nodeset) then do
+      if rightVal~isA(.nodeset) then
+          return self~compareNodeSets("COMPAREEQUAL", leftVal, rightVal)
+      -- doing numeric comparisons?
+      if rightVal~isa(.string), rightVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPAREEQUAL", leftVal, rightVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPAREEQUAL", leftVal, rightVal, "CONVERTSTRING")
+  end
+  else if rightVal~isa(.nodeset) then do
+      -- doing numeric comparisons?
+      if leftVal~isa(.string), leftVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPAREEQUAL", rightVal, leftVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPAREEQUAL", rightVal, leftVal, "CONVERTSTRING")
+  end
+  else if leftVal~isa(.string), leftVal~datatype('Number') then
+      return leftVal = self~convertNumber(rightVal)
+  else if rightVal~isa(.string), rightVal~datatype('Number') then
+      return self~convertNumber(leftVal) = rightVal
+  else return leftVal == rightVal
+
+-- the inequality operator.  This is complicated by the different pairing
+-- types that can occur between left and right
+::method operatorNotEqual
+  expose left right
+  use strict arg context, container
+
+  leftValue = left~evaluate(context)
+  rightValue = right~evaluate(context)
+
+  -- handle booleans first, since the same comparison rules
+  -- apply to NodeSet values also.  Boolean in this context
+  -- is the string "true" or "false"
+  if leftVal == "true" | leftValue == "false" then
+      return self~convertBoolean(leftVal) \= self~convertBoolean(rightVal)
+  else if rightVal == "true" | rightValue == "false" then
+      return self~convertBoolean(leftVal) \= self~convertBoolean(rightVal)
+
+  -- nodeset comparisons
+  if leftVal~isA(.nodeset) then do
+      if rightVal~isA(.nodeset) then
+          return self~compareNodeSets("COMPARENOTEQUAL", leftVal, rightVal)
+      -- doing numeric comparisons?
+      if rightVal~isa(.string), rightVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPARENOTEQUAL", leftVal, rightVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPARENOTEQUAL", leftVal, rightVal, "CONVERTSTRING")
+  end
+  else if rightVal~isa(.nodeset) then do
+      -- doing numeric comparisons?
+      if leftVal~isa(.string), leftVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPARENOTEQUAL", rightVal, leftVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPARENOTEQUAL", rightVal, leftVal, "CONVERTSTRING")
+  end
+  else if leftVal~isa(.string), leftVal~datatype('Number') then
+      return leftVal \= self~convertNumber(rightVal)
+  else if rightVal~isa(.string), rightVal~datatype('Number') then
+      return self~convertNumber(leftVal) \= rightVal
+  else return leftVal \== rightVal
+
+-- the less than operator.  This is complicated by the different pairing
+-- types that can occur between left and right
+::method operatorLessThan
+  expose left right
+  use strict arg context, container
+
+  leftValue = left~evaluate(context)
+  rightValue = right~evaluate(context)
+
+  -- handle booleans first, since the same comparison rules
+  -- apply to NodeSet values also.  Boolean in this context
+  -- is the string "true" or "false"
+  if leftVal == "true" | leftValue == "false" then
+      return self~convertBoolean(leftVal) < self~convertBoolean(rightVal)
+  else if rightVal == "true" | rightValue == "false" then
+      return self~convertBoolean(leftVal) < self~convertBoolean(rightVal)
+
+  -- nodeset comparisons
+  if leftVal~isA(.nodeset) then do
+      if rightVal~isA(.nodeset) then
+          return self~compareNodeSets("COMPARELESSTHAN", leftVal, rightVal)
+      -- doing numeric comparisons?
+      if rightVal~isa(.string), rightVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPARELESSTHAN", leftVal, rightVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPARELESSTHAN", leftVal, rightVal, "CONVERTSTRING")
+  end
+  else if rightVal~isa(.nodeset) then do
+      -- NB:  Since we're reversing the order of the arguments here, the
+      -- comparison function used is the inverse of the actual operation.
+      -- In other words, we're using the equivalency of "left < right" and
+      -- "right >= left".
+      -- doing numeric comparisons?
+      if leftVal~isa(.string), leftVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPAREGREATERTHANEQUAL", rightVal, leftVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPAREGREATERTHANEQUAL", rightVal, leftVal, "CONVERTSTRING")
+  end
+  else if leftVal~isa(.string), leftVal~datatype('Number') then
+      return leftVal < self~convertNumber(rightVal)
+  else if rightVal~isa(.string), rightVal~datatype('Number') then
+      return self~convertNumber(leftVal) < rightVal
+  else return leftVal << rightVal
+
+-- the less than equal operator.  This is complicated by the different pairing
+-- types that can occur between left and right
+::method operatorLessThanEqual
+  expose left right
+  use strict arg context, container
+
+  leftValue = left~evaluate(context)
+  rightValue = right~evaluate(context)
+
+  -- handle booleans first, since the same comparison rules
+  -- apply to NodeSet values also.  Boolean in this context
+  -- is the string "true" or "false"
+  if leftVal == "true" | leftValue == "false" then
+      return self~convertBoolean(leftVal) <= self~convertBoolean(rightVal)
+  else if rightVal == "true" | rightValue == "false" then
+      return self~convertBoolean(leftVal) <= self~convertBoolean(rightVal)
+
+  -- nodeset comparisons
+  if leftVal~isA(.nodeset) then do
+      if rightVal~isA(.nodeset) then
+          return self~compareNodeSets("COMPARELESSTHANEQUAL", leftVal, rightVal)
+      -- doing numeric comparisons?
+      if rightVal~isa(.string), rightVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPARELESSTHANEQUAL", leftVal, rightVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPARELESSTHANEQUAL", leftVal, rightVal, "CONVERTSTRING")
+  end
+  else if rightVal~isa(.nodeset) then do
+      -- NB:  Since we're reversing the order of the arguments here, the
+      -- comparison function used is the inverse of the actual operation.
+      -- In other words, we're using the equivalency of "left < right" and
+      -- "right >= left".
+      -- doing numeric comparisons?
+      if leftVal~isa(.string), leftVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPAREGREATERTHAN", rightVal, leftVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPAREGREATERTHAN", rightVal, leftVal, "CONVERTSTRING")
+  end
+  else if leftVal~isa(.string), leftVal~datatype('Number') then
+      return leftVal <= self~convertNumber(rightVal)
+  else if rightVal~isa(.string), rightVal~datatype('Number') then
+      return self~convertNumber(leftVal) <= rightVal
+  else return leftVal <<= rightVal
+
+-- the greater than operator.  This is complicated by the different pairing
+-- types that can occur between left and right
+::method operatorGreaterThan
+  expose left right
+  use strict arg context, container
+
+  leftValue = left~evaluate(context)
+  rightValue = right~evaluate(context)
+
+  -- handle booleans first, since the same comparison rules
+  -- apply to NodeSet values also.  Boolean in this context
+  -- is the string "true" or "false"
+  if leftVal == "true" | leftValue == "false" then
+      return self~convertBoolean(leftVal) > self~convertBoolean(rightVal)
+  else if rightVal == "true" | rightValue == "false" then
+      return self~convertBoolean(leftVal) > self~convertBoolean(rightVal)
+
+  -- nodeset comparisons
+  if leftVal~isA(.nodeset) then do
+      if rightVal~isA(.nodeset) then
+          return self~compareNodeSets("COMPAREGREATERTHAN", leftVal, rightVal)
+      -- doing numeric comparisons?
+      if rightVal~isa(.string), rightVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPAREGREATERTHAN", leftVal, rightVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPAREGREATERTHAN", leftVal, rightVal, "CONVERTSTRING")
+  end
+  else if rightVal~isa(.nodeset) then do
+      -- NB:  Since we're reversing the order of the arguments here, the
+      -- comparison function used is the inverse of the actual operation.
+      -- In other words, we're using the equivalency of "left < right" and
+      -- "right >= left".
+      -- doing numeric comparisons?
+      if leftVal~isa(.string), leftVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPARELESSTHANEQUAL", rightVal, leftVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPARELESSTHANEQUAL", rightVal, leftVal, "CONVERTSTRING")
+  end
+  else if leftVal~isa(.string), leftVal~datatype('Number') then
+      return leftVal > self~convertNumber(rightVal)
+  else if rightVal~isa(.string), rightVal~datatype('Number') then
+      return self~convertNumber(leftVal) > rightVal
+  else return leftVal >> rightVal
+
+-- the greater than equal operator.  This is complicated by the different pairing
+-- types that can occur between left and right
+::method operatorGreaterThanEqual
+  expose left right
+  use strict arg context, container
+
+  leftValue = left~evaluate(context)
+  rightValue = right~evaluate(context)
+
+  -- handle booleans first, since the same comparison rules
+  -- apply to NodeSet values also.  Boolean in this context
+  -- is the string "true" or "false"
+  if leftVal == "true" | leftValue == "false" then
+      return self~convertBoolean(leftVal) >= self~convertBoolean(rightVal)
+  else if rightVal == "true" | rightValue == "false" then
+      return self~convertBoolean(leftVal) >= self~convertBoolean(rightVal)
+
+  -- nodeset comparisons
+  if leftVal~isA(.nodeset) then do
+      if rightVal~isA(.nodeset) then
+          return self~compareNodeSets("COMPAREGREATERTHANEQUAL", leftVal, rightVal)
+      -- doing numeric comparisons?
+      if rightVal~isa(.string), rightVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPAREGREATERTHANEQUAL", leftVal, rightVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPAREGREATERTHANEQUAL", leftVal, rightVal, "CONVERTSTRING")
+  end
+  else if rightVal~isa(.nodeset) then do
+      -- NB:  Since we're reversing the order of the arguments here, the
+      -- comparison function used is the inverse of the actual operation.
+      -- In other words, we're using the equivalency of "left < right" and
+      -- "right >= left".
+      -- doing numeric comparisons?
+      if leftVal~isa(.string), leftVal~datatype('Number') then
+          return self~compareNodeSetToValue("COMPARELESSTHAN", rightVal, leftVal, "CONVERTNUMBER")
+      -- string compare
+      return self~compareNodeSetToValue("COMPARELESSTHAN", rightVal, leftVal, "CONVERTSTRING")
+  end
+  else if leftVal~isa(.string), leftVal~datatype('Number') then
+      return leftVal >= self~convertNumber(rightVal)
+  else if rightVal~isa(.string), rightVal~datatype('Number') then
+      return self~convertNumber(leftVal) >= rightVal
+  else return leftVal >>= rightVal
+
+::method union
+  expose left right
+  use strict arg context, container
+
+  leftVal = left~evaluateNodeSet(context, container)
+  rightVal = right~evaluateNodeSet(context, container)
+
+  union = .nodeset~new(context~document, context)
+  union~union(leftVal)
+  union~union(rightVal)
+
+  return union
+
+-- a unary operator expression term
+::class "XPathUnaryOperator" subclass XPathExpr
+::method init
+  expose term
+  use strict arg term
+
+::method evaluate
+  expose term
+  use strict arg context, container
+
+  -- the only unary operator is negation, so
+  -- this is fairly simple.  Just negate the numeric
+  -- value
+  return - self~evaluateNumber(term)
+
+-- a literal value as an expression term
+::class "XPathLiteral" subclass XPathExpr
+::method init
+  expose value
+  use strict arg value
+
+::method evaluate
+  expose value
+  use strict arg context, container
+
+  -- just return this without evaluation
+  return value
+
+::class "XPathFunctionCall" subclass XPathExpr
+::method init
+  expose name arguments
+  use strict arg name, arguments
+
+-- evaluate the named function
+::method evaluate
+  expose name
+  use strict arg context, container
+
+  -- forward to the appropriate function implementation
+  return self~send(name"Function", context, container)
+
+-- check the number of arguments being passed
+::method checkArgs
+  expose arguments
+  use strict arg count
+
+  if count \= arguments~items then
+      self~xpathError(XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
+
+-- check the minimum number of arguments
+::method checkMinArgs
+  expose arguments
+  use strict arg count
+
+  if count > arguments~items then
+      self~xpathError(XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
+
+-- check the arguments fall in a given range
+::method checkMinMaxArgs
+  expose arguments
+use strict arg min, max
+
+  if arguments~items < min | arguments~items > max then
+      self~xpathError(XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
+
+-- start of the actual function implementation methods
+::method notFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(1)
+  return \arguments[1]~evaluateBoolean(context, container)
+
+::method lastFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(1)
+  return container~last
+
+::method positionFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(0)
+  return container~positionOf(context)
+
+::method localNameFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkMinMaxArgs(0, 1)
+  -- no node set to check on, just return the localname of the
+  -- context node
+  if arguments~isEmpty then return context~localName
+
+  -- get the target nodeset
+  nodeSet = arguments[0]~evaluateNodeSet(context, container)
+  -- no elements, no local name
+  if nodeSet~length == 0 then return ""
+
+  -- use the first item
+  return nodeSet~first~localName
+
+::method namespaceUriFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkMinMaxArgs(0, 1)
+  -- no node set to check on, just return the namespaceuri of the
+  -- context node
+  if arguments~isEmpty then return context~namespaceURI
+
+  -- get the target nodeset
+  nodeSet = arguments[1]~evaluateNodeSet(context, container)
+  -- no elements, no local name
+  if nodeSet~length == 0 then return ""
+
+  -- use the first item
+  return nodeSet~first~namespaceURI
+
+::method nameFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkMinMaxArgs(0, 1)
+  -- no node set to check on, just return the node name of the
+  -- context node
+  if arguments~isEmpty then return context~nodeName
+
+  -- get the target nodeset
+  nodeSet = arguments[1]~evaluateNodeSet(context, container)
+  -- no elements, no node name
+  if nodeSet~length == 0 then return ""
+
+  -- use the first item
+  return nodeSet~first~nodeName
+
+::method stringFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkMinMaxArgs(0, 1)
+  -- no node set to check on, just return the string value of the
+  -- context node
+  if arguments~isEmpty then return context~nodeValue
+
+  -- get the target nodeset
+  return arguments[0]~evaluateString(context, container)
+
+::method concatFunction
+  expose arguments
+  use strict arg context, container
+
+  -- variable number of arguments, but at least 2 are required
+  self~checkMinArgs(2)
+
+  base = .mutablebuffer~new(arguments[1]~evaluateString(context, container))
+  loop i = 2 to arguments~length
+      base~append(arguments[i]~evaluateString(context, container))
+  end
+
+  return base~string
+
+::method startsWithFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(2)
+
+  haystack = arguments[1]~evaluateString(context, container)
+  needle = arguments[2]~evaluateString(context, container)
+
+  return haystack~match(1, needle)
+
+::method containsFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(2)
+
+  haystack = arguments[1]~evaluateString(context, container)
+  needle = arguments[2]~evaluateString(context, container)
+
+  return haystack~pos(needle) \= 0
+
+::method substringBeforeFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(2)
+
+  haystack = arguments[1]~evaluateString(context, container)
+  needle = arguments[2]~evaluateString(context, container)
+
+  index = haystack~pos(needle)
+  if index = 0 then return ""
+  return haystack~substr(1, index - 1)
+
+::method substringAfterFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(2)
+
+  haystack = arguments[1]~evaluateString(context, container)
+  needle = arguments[2]~evaluateString(context, container)
+
+  index = haystack~pos(needle)
+  if index = 0 then return ""
+  return haystack~substr(index + needle~length)
+
+::method substringFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkMinMaxArgs(2, 3)
+
+  haystack = arguments[1]~evaluateString(context, container)
+  start = arguments[2]~evaluateNumber(context, container)
+
+  if arguments~length = 2 then
+      return haystack~substr(start)
+
+  length = arguments[3]~evaluateNumber(context, container)
+  return haystack~substr(start, length)
+
+::method stringLengthFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkMinMaxArgs(0, 1)
+
+  if arguments~length = 0 then return context~nodeValue~length
+  return arguments[1]~evaluateString(context, container)~length
+
+::method normalizeSpaceFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkMinMaxArgs(0, 1)
+
+  if arguments~length = 0 then return context~nodeValue~space
+  return arguments[1]~evaluateString(context, container)~space
+
+::method booleanFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(1)
+
+  return arguments[1]~evaluateBoolean(context, container)
+
+::method trueFunction
+  use strict arg context, container
+
+  self~checkArgs(0)
+  return .true
+
+::method falseFunction
+  use strict arg context, container
+
+  self~checkArgs(0)
+  return .false
+
+::method numberFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkMinMaxArgs(0, 1)
+
+  if arguments~length = 0 then self~convertNumber(context~nodeValue)
+  return arguments[1]~evaluateNumber(context, container)
+
+::method sumFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(0)
+
+  nodeSet = arguments[1]~evaluateNodeSet(context, container)
+  accum = 0
+
+  loop node over nodeset
+      accum += node~nodeValue
+  end
+
+  return accum
+
+::method floorFunction
+  expose arguments
+  use strict arg context, container
+
+  return self~floor(arguments[1]~evaluateNumber(context, container))
+
+::method ceilingFunction
+  expose arguments
+  use strict arg context, container
+
+  return self~ceiling(arguments[1]~evaluateNumber(context, container))
+
+::method roundFunction
+  expose arguments
+  use strict arg context, container
+
+  return self~round(arguments[1]~evaluateNumber(context, container))
+
+::method floor private
+  use strict arg value
+
+  -- use the ceiling/floor equivalancy to handle negative numbers
+  if value < 0 then return -self~ceiling(-value)
+  return value~trunc
+
+::method ceiling private
+  use strict arg value
+
+  -- use the ceiling/floor equivalancy to handle negative numbers
+  if value < 0 then return -self~floor(-value)
+  if value~datatype('Whole') then return value~trunc  -- trunc will normalize the value
+  else return (value + 1)~trunc  -- will step up and truncate down
+
+::method round private
+  use strict arg value
+  return self~floor(value + .5)
+
+-- a multi-step path to a given location
+::class "LocationPath"
+::method init
+  expose steps
+  use strict arg steps
+
+::method evaluate
+  expose steps
+  use strict arg context, container
+
+  -- evaluate the first step...all the rest are evaluated in the context of
+  -- the returned nodeset
+
+  nodeSet = steps[1]~evaluate(context, container)
+
+  loop i = 2 to steps~length
+      nodeset = nodeset~selectNodeSet(step, context)
+  end
+
+  return nodeSet
+
+-- the expression parser, which builds a location path that can be used to
+-- evaluate the xpath expression
+::class "XPathParser"
+::method init
+  expose termStack opStack document expr
+  use strict arg document, expr
+
+  -- create stacks for building up the semantic tree
+  termStack = .queue~new
+  opStack = .queue~new
+
+::method parse
+  expose termStack opStack document expr tokenQueue
+ use strict arg
+
+  -- scan off all of the expression tokens
+  scanner = .XPathScanner~new
+  tokenQueue = scanner~scanExpression(expr)
+  -- parse the tokens into a location path
+  return self~parseLocationPath
+
+-- Parse the main location path
+::method parseLocationPath
+  expose tokenQueue
+
+  steps = .array~new
+  token = tokenQueue~nextToken
+
+
+  -- if the path begins with a slash, then we need to start from
+  -- the root axis
+  if token == .XPathToken~slash then
+      steps~append(.xpathstep~new("rootAxis"))
+  -- probably the axis, so push it back on for processing.
+  else tokenqueue~previousToken
+
+  loop forever
+      -- get the next step in the chain
+      step = self~parseLocationStep
+      steps~append(step)
+      token = tokenQueue~nextToken
+      -- now check the next token to decide what to do
+      if token == .XPathToken~double_slash then do
+          -- a double slash is a axis shorthand.  This is used
+          -- by the next step parsing, so push it back
+      end
+      -- a slash is a true step delimiter, just keep parsing
+      else if token == .XPathToken~slash then do
+          iterate
+      end
+      -- something else, this is probably the end
+      else do
+          -- if we have a real token, push it back
+          if token \= .nil then tokenQueue~previousToken
+          -- and return the working location path
+          return .XPathLocationPath~new(steps)
+      end
+  end
+
+-- parse an individual step in an xpath expression
+::method parseLocationStep
+  expose tokenQueue
+
+  token = tokenQueue~nextToken
+  -- a period is just the self axis, we can return this quickly
+  if token == .XPathToken~period then return .XPathStep~new("selfAxis")
+  -- double period is the parent axis
+  else if token == .XPathToken~double_period then return .XPathStep~new("parentAxis")
+  -- back up...need to parse some other axis
+  tokenQueue~previousToken
+  -- get the axis
+  axis = self~parseAxis
+  -- any node test
+  test = self~parseNodeTest
+  -- selection predicates
+  predicates = self~parsePredicates
+  -- and combine this into a step
+  return .XPathStep~new(axis, test, predicates)
+
+-- parse an axis definition
+::method parseAxis
+  expose tokenQueue
+
+  token = tokenQueue~nextToken
+  -- the @ sign is short hand for the attribute axis
+  if token == .Token~at_sign then return "attributeAxis"
+  -- double slash is also short hand
+  else if token == .Token~double_slash then return "descendantOrSelfAxis"
+  -- ok, potentially an axis specifier (the tokenization process handles
+  -- the double colons following
+  if token~type == "AXIS" then do
+      -- these have already been validated, so we can get the name from
+      -- the token
+      return token~name||"Axis"
+  end
+  -- no explicit axis, so we default this to the child axis.  Put the
+  -- token back before we return
+  tokenQueue~previousToken
+  return "ChildAxis"
+
+-- parse the nodetest portion of an xpath expression
+::method parseNodeTest
+  expose tokenQueue
+
+  token = tokenQueue~nextToken
+  -- a wild card, this is easy
+  if token == .XPathToken~wildcard then do
+      -- looking for element nodes, matching anything
+      return .NodeTest~new(Node~ELEMENT_NODE, .QName~new("*", "*"))
+  end
+  -- some sort of node type test
+  else if token~type == "NODETYPE" then do
+      if token~value = "element" then return .NodeTest~new(.Node~ELEMENT_NODE)
+      if token~value = "text" then return .NodeTest~new(.Node~TEXT_NODE)
+      if token~value = "comment" then return .NodeTest~new(.Node~COMMENT_NODE)
+      if token~value = "node" then return .NodeTest~new(.Node~ANY_NODE)
+      if token~value = "processing-instruction" then return .NodeTest~new(.Node~PROCESSING_INSTRUCTION_NODE)
+  end
+  -- have a qualified name...all of the pieces are here already
+  else if token~type == "QNAME" then do
+      return .NodeTest~new(Node~ANY_NODE, .QName~new(token~prefix, token~name))
+  end
+  -- simple name token?
+  else if token~type == "NCNAME" then
+      return .NodeTest~new(Node~ANY_NODE, .QName~new("*", token~name))
+  -- this token is something else...push it back and just return an ANY_NODE selector
+  tokenqueue~previousToken
+  return .NodeTest~new(Node~ANY_NODE);
+
+-- parse out a predicate
+::method parsePredicate
+  expose tokenQueue
+
+  token = tokenQueue~nextToken
+  -- this is only a predicate if it is a bracket
+  if token == .XPathToken~open_bracket then do
+      return self~parseExpression(.XPathToken~close_bracket)
+  end
+
+  return .nil   -- no expression to return
+
+-- parse an expression upto the indicated terminator token
+::method parseExpression
+  use strict arg terminator
+
+  -- prepare for parsing a new expression
+  self~newExpression
+  -- parse off the expression
+  expr = self~parseSubexpression(terminator)
+  -- clean up the expression environment
+  self~endExpression
+
+  return expr
+
+-- parse function arguments
+::method parseFunctionArguments
+  expose tokenQueue
+
+  arguments = .array~new
+
+  loop forever
+      arg = self~parseSubexpression(.XPathToken~function_argument)
+      if arg \= .nil then arguments~append(arg)
+      else do
+          -- need to figure out why we didn't get anything
+          terminator = tokenQueue~nextToken
+          if terminator == .XPathToken~comma then
+              self~xpathError(.XPath~MISSING_ARGUMENT_ERROR)
+          -- this was the real end of the arguments
+          else if terminator == .XPathToken~close_paren then leave
+          else self~xpathError(.XPath~MISSING_PAREN_ERROR)
+      end
+  end
+
+  return arguments
+
+-- parse out a function call
+::method parseFunctionCall
+  expose tokenQueue
+  use strict arg functionName
+
+  -- function calls are always followed by a paren, so skip over it
+  tokenQueue~nextToken
+
+  return .XPathFunctionCall~new(functionName, self~parseFunctionArguments)
+
+-- parse an expression subterm. This will be an individual item, a parentheitcal
+-- expression or potentially a prefix operator.
+::method parseSubTerm
+  expose tokenQueue
+  use strict arg terminator
+
+  token = tokenQueue~nextToken
+  -- if this is an expected terminator, we're finished.
+  if self~isTerminator(token, terminator) then return .nil
+
+  select
+      -- potentially a prefix operation
+      when token = .XPathToken~subtraction then do
+          -- get the term this applies to
+          term = self~parseSubTerm(terminator)
+          if term == .nil then self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+          -- the term is the unary operator
+          return .XPathUnaryOperator~new(token, term)
+      end
+      -- literals are used directly
+      when token~type == "LITERAL" then return .XPathLiteral~new(token)
+      -- a parenthetical expression
+      when token == .XPathToken~open_paren then do
+          -- parse the sub expression
+          term = self~parseSubexpression(.XPathToken~close_paren)
+          if term == .nil then self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+          -- this term can be used directly
+          return term
+      end
+      -- variable references are not supported.
+      when token~type == "VARIABLE" then self~xpathError(XPath~INVALID_VARIABLE_REFERENCE_ERROR)
+      -- go parse the function call
+      when token~type == "FUNCTION" then return self~parseFunctionCall(token~name)
+      -- variable references are not supported.
+      when token~type == "VARIABLE" then self~xpathError(XPath~INVALID_VARIABLE_REFERENCE_ERROR)
+      -- various location names as a substep term.  This needs to be parsed recursively
+      when token~type == "AXIS" | token~type == "NCNAME" | -
+           token == .XPathToken~at_sign | token == .XPathToken~period | -
+           token == .XPathToken~double_period | token == .XPathToken~slash | -
+           token == .XPathToken~double_slash then do
+          -- push the token back
+          tokenQueue~previousToken
+          -- parse the location term
+          return self~parseLocation
+      end
+      -- probably a dyadic operator in an invalide location.  Invalid at this spot
+      otherwise self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+  end
+
+-- check for an expression terminator token
+::method isTerminator
+  use strict arg token, terminator
+
+  -- end of the queue is always a terminator
+  if token == .nil then return .true
+  -- exact match?  Also true
+  if token == terminator then return .true
+  -- function argument lists have multiple terminators
+  if terminator == .XPathToken~function_args, token == .XPathToken~comma | token == .XPathToken~close_paren then
+      return .true
+  -- not a terminator
+  return .false
+
+-- parse a subexpression, such as a function argument
+::method parseSubexpression
+  expose tokenQueue
+  use strict arg terminator
+
+  -- scan off the first term. If we don't get anything, we've hit
+  -- a terminator token and we're done
+  leftTerm = self~parseSubTerm(terminator)
+  if leftTerm == .nil then return .nil
+  -- make a mark on the operator stack so we know how far we can pop back.
+  self~newOperatorStack
+
+  -- now handle the following part, looping until we hit the
+  -- expected termination point
+  token = tokenQueue~nextToken
+
+  loop while \self~isTerminator(token, terminator)
+      -- is this a dyadic operator?  Need to handle
+      -- a more complex expression, applying precedence if necessary
+      if token~isOperator then do
+          loop forever
+              topOp = self~topOperator
+              -- we use the dummy token to mark the substack on the
+              -- operator stack
+              if topOp == .XPathToken~dummy then leave
+              -- if the current is higher precedence than the operator at the top
+              -- of the stack, we process it first.
+              if token~precedence > topOp~precedence then leave
+              right = self~popTerm
+              left = self~popTerm
+              -- replace the top of the stack with the operator term
+              self~pushTerm(.DyadicOperator~new(self~popOperator, left, right))
+              -- current operator goes to the top of the stack
+          end
+          self~pushOperator(token)
+          -- this must be followed by a valid subterm, so parse it off
+          -- and push it on to the term stack
+          right = self~parseSubTerm(terminator)
+          if right == .nil then self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+          self~pushTerm(right)
+      end
+      -- something we don't recognize
+      else self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+  end
+
+-- parse out all of the predicate modifiers for an xpath expresion
+::method parsePredicates
+
+  predicates = .array~new
+  loop forever
+      predicate = self~parsePredicate
+      if predicate == .nil then leave
+      predicates~append(predicate)
+  end
+  -- don't return anything if nothing was there
+  if predicates~isEmpty then return .nil
+  return predicates
+
+-- raise an XPATH error
+::method xpathError
+  use strict arg reason
+  .XPath~xpathError(reason)
