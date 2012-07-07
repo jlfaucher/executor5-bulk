@@ -1304,6 +1304,14 @@ return str
   -- Assertion holds.
   self~fAssertions += 1
 
+/** assertFail()
+ * Assert a failure explicitly.  Useful for situations where control is not expected
+ * to reach a particular point.
+ */
+::method assertFail
+  use strict arg msg = ""
+  self~assertTrue(.false, msg) -- just do this as a true assertion
+
 
 /** fail()
  * Raise an application definable syntax condition with code 93.964.  The
@@ -1635,7 +1643,27 @@ exceptionHandler:
 ::method tearDown
   NOP
 
+/** dataItem
+ * dataItem extracts an embedded set of data from the test classes.  The data
+ * is in the form of a method that embeds the data as comment in the method code.
+ * The first line of the method must be the line "return /*".  The last line must
+ * be the line "*/ return".  All lines between the two delimiters are returned as
+ * an array of data.
+ *
+ * The target method must begin with the characters "data" and is requested using
+ * the name without the modifier.  For example, a dataitem named "xml1" would be
+ * contained in an instance method named "dataxml1" and would be requested using
+ * lines = self~dataitem("xml1")
+ */
+::method dataItem
+  use strict arg name
 
+  method = self~instanceMethod("DATA"||name~upper)
+  self~assertNotNull(method, "Method DATA"||name~upper "not found")
+  source = method~source
+  self~assertTrue(source~size > 2, "Data item method does not contain correct data")
+  -- extract the middle section of the data and return as an array
+  return source~section(2, source~size - 2)
 
 /* *********************************************************************************** */
 /* *********************************************************************************** */

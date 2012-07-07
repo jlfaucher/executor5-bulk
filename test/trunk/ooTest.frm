@@ -446,6 +446,9 @@ return 0
     Each method of an ooTestCase class that starts with 'test' is considered
     an individual test case.
 
+    Each method of an ooTestCase class that starts with 'data' is considered
+    a data collection that can be retrieved as an array inside any test case
+
     Each ooTestCase has a class attribute defining the test type of the
     individual test cases the class contains.  (This list is still being
     defined)
