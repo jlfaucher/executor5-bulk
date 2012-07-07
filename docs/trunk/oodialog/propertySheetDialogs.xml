@@ -4152,7 +4152,7 @@
 <table id="tblPropertySheetPageMethods" frame="all">
 <title>PropertySheetPage Methods</title>
 <tgroup cols="2">
-<colspec colwidth="2.1in">
+<colspec colwidth="2.4in">
 <thead>
 <row>
 <entry>Method</entry>
@@ -4226,55 +4226,55 @@
 </row>
 <row>
 <entry><link linkend="atrCX">cx</link></entry>
-<entry>.</entry>
+<entry>Reflects the initial width of the property page dialog in dialog units.</entry>
 </row>
 <row>
 <entry><link linkend="atrCY">cy</link></entry>
-<entry>.</entry>
+<entry>Reflects the initial height of the property page dialog in dialog units.</entry>
 </row>
 <row>
 <entry><link linkend="atrHeaderSubtitle">headerSubtitle</link></entry>
-<entry>.</entry>
+<entry>Reflects the text for the subtitle of a non-Aero wizard.</entry>
 </row>
 <row>
 <entry><link linkend="atrHeaderTitle">headerTitle</link></entry>
-<entry>.</entry>
+<entry>Reflects the text that will be displayed as the title in the header area of the page in a wizard.</entry>
 </row>
 <row>
 <entry><link linkend="atrPageID">pageID</link></entry>
-<entry>.</entry>
+<entry>Reflects the value of the page ID, which identifies the page to the <link linkend="ovvUnderlying">underlying</link> property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="atrPageNumber">pageNumber</link></entry>
-<entry>.</entry>
+<entry>Reflects the page number, or index, of this property sheet page.</entry>
 </row>
 <row>
 <entry><link linkend="atrPageTitle">pageTitle</link></entry>
-<entry>.</entry>
+<entry>Reflects the title to use for this property sheet page.</entry>
 </row>
 <row>
 <entry><link linkend="atrPropSheet">propSheet</link></entry>
-<entry>.</entry>
+<entry>Reflects the Rexx <link linkend="clsPropertySheetDialog">PropertySheetDialog</link> object that this page belongs to.</entry>
 </row>
 <row>
 <entry><link linkend="atrResourcesClsPSP">resourcesClsPSP</link></entry>
-<entry>.</entry>
+<entry>The <emphasis role="italic">resources</emphasis> attribute is set to a <link linkend="clsResourceImage">ResourceImage</link> object containing resources used by this property sheet page.</entry>
 </row>
 <row>
 <entry><link linkend="atrTabIcon">tabIcon</link></entry>
-<entry>.</entry>
+<entry>Reflects the icon to use as the icon in the tab of this property sheet page.</entry>
 </row>
 <row>
 <entry><link linkend="atrWasActivatedClsPSP">wasActivated</link></entry>
-<entry>.</entry>
+<entry>Reflects whether the <link linkend="ovvUnderlying">underlying</link> property sheet page was created.</entry>
 </row>
 <row>
 <entry><link linkend="atrWantAccelerators">wantAccelerators</link></entry>
-<entry>.</entry>
+<entry>The value of this attribute determines if this page should receive the TRANSLATEACCELERATOR event notification.</entry>
 </row>
 <row>
 <entry><link linkend="atrWantGetObject">wantGetObject</link></entry>
-<entry>.</entry>
+<entry>The value of this attribute determines if this page should receive the GETOBJECT event notification message.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -4282,51 +4282,51 @@
 </row>
 <row>
 <entry><link linkend="mthApplyClsPSP">apply</link></entry>
-<entry>.</entry>
+<entry>Notifies every page in the property sheet that the user has clicked the OK, Close, or Apply button and wants all changes to take effect.</entry>
 </row>
 <row>
 <entry><link linkend="mthGetObject">getObject</link></entry>
-<entry>.</entry>
+<entry>Sent by a property sheet dialog to request a drop target object when the cursor passes over one of the tab control's buttons.</entry>
 </row>
 <row>
 <entry><link linkend="mthHelpClsPSP">help</link></entry>
-<entry>.</entry>
+<entry>Notifies a page that the user has clicked the Help button.</entry>
 </row>
 <row>
 <entry><link linkend="mthKillActive">killActive</link></entry>
-<entry>.</entry>
+<entry>Notifies a page that it is about to lose activation either because another page is being activated or the user has clicked the OK button.</entry>
 </row>
 <row>
 <entry><link linkend="mthPageCreate">pageCreate</link></entry>
-<entry>.</entry>
+<entry>Notifies the Rexx page dialog that the <link linkend="ovvUnderlying">underyling</link> page dialog is about to be created.</entry>
 </row>
 <row>
 <entry><link linkend="mthQueryCancel">queryCancel</link></entry>
-<entry>.</entry>
+<entry>Notifies a property sheet page that the user has canceled the property sheet dialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthQueryFromSibling">queryFromSibling</link></entry>
-<entry>.</entry>
+<entry>Notifies the page of a <link linkend="mthQuerySiblings"></link> messge.</entry>
 </row>
 <row>
 <entry><link linkend="mthQueryInitialFocus">queryInitialFocus</link></entry>
-<entry>.</entry>
+<entry>Provides a property sheet page an opportunity to specify which dialog box control should receive the initial focus.</entry>
 </row>
 <row>
 <entry><link linkend="mthReset">reset</link></entry>
-<entry>.</entry>
+<entry>Notifies a page that the property sheet is about to be destroyed.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetActive">setActive</link></entry>
-<entry>.</entry>
+<entry>Notifies a page that it is about to be activated.</entry>
 </row>
 <row>
 <entry><link linkend="mthSetSizeClsPSP">setSize</link></entry>
-<entry>.</entry>
+<entry>Used to set both the <link linkend="atrCX">cx</link> and <link linkend="atrCY">cy</link> attributes at one time.</entry>
 </row>
 <row>
 <entry><link linkend="mthTranslateAccelerator">translateAccelerator</link></entry>
-<entry>.</entry>
+<entry>Notifies a property sheet page that a keyboard message has been received. It provides the page an opportunity to do private keyboard accelerator translation.</entry>
 </row>
 <row>
 <entry><link linkend="mthWizBack">wizBack</link></entry>
@@ -4365,10 +4365,12 @@
 <para>
   Rather than connecting a property sheet page event to a specified method in the Rexx dialog, the programmer over-rides
   the default handler in the dialog. This is similiar to how the <link linkend="mthOk">ok</link> and <link
-  linkend="mthCancel">cancel</link> events are handled in the dialog <link linkend="chpDialogObject">object</link>. In
-  the property sheet page dialogs, all the methods are actually default event handlers. To act on an event in a manner
-  different from the default, the programmer over-rides the default handler and provides an implementation that handles
-  the event in the manner needed by the application. For example, to remove the back button from the first page of an
+  linkend="mthCancel">cancel</link> events are handled in the dialog <link linkend="chpDialogObject">object</link>.
+</para>
+<para>
+  In the property sheet page dialogs, most of the methods are actually default event handlers. To act on an event in a
+  manner different from the default, the programmer over-rides the default handler and provides an implementation that
+  handles the event as needed by the application. For example, to remove the back button from the first page of an
   Aero wizard, the programmer would over-ride the <link linkend="mthSetActive">setActive</link> method in the page
   dialog for the first page of the property sheet dialog. In the new implementation code for <emphasis
   role="italic">setActive</emphasis>, the programmer would invoke the <link
@@ -4385,7 +4387,7 @@
 <![CDATA[
 >>--cx-------------------------------------------><
 
->>--cx=width-------------------------------------><
+>>--cx-=-width-----------------------------------><
 
 ]]>
 </programlisting>
@@ -5079,7 +5081,8 @@
 </programlisting>
 
 <para>
-  Determines if the TRANSLATEACCELERATOR event notification is passed on to the page dialog by invoking its <link
+  The value of this attribute determines if this page should receive the TRANSLATEACCELERATOR event notification. The
+  notification is passed on to the page dialog by invoking its <link
   linkend="mthTranslateAccelerator">translateAccelerator</link> method.
 </para>
 <variablelist>
@@ -5125,7 +5128,7 @@
 </programlisting>
 
 <para>
-  Determines if this page should receive the GETOBJECT event notification message.
+  The value of this attribute determines if this page should receive the GETOBJECT event notification message.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">wantGetObject get:</emphasis></term>
@@ -5165,8 +5168,8 @@
 </programlisting>
 
 <para>
-  Sent to every page in the property sheet to indicate that the user has clicked the OK, Close, or Apply button and
-  wants all changes to take effect. This is the event handler for the APPLY event.
+  Notifies every page in the property sheet that the user has clicked the OK, Close, or Apply button and wants all
+  changes to take effect.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5178,7 +5181,7 @@
       <listitem>
       <para>
         This argument is true if the user clicked the OK button. It is also set to true if the <link
-        linkend="mthCancelToClose">cancelToClose</link> methods had inovked on the propertery sheet and the user clicked
+        linkend="mthCancelToClose">cancelToClose</link> method had inovked on the propertery sheet and the user clicked
         the Close button. It is set to false if the user clicked the Apply button.
       </para>
       </listitem></varlistentry>
@@ -5391,8 +5394,17 @@
   <listitem>
   <para>
     An application handles this notification to validate the information the user has entered. If the programmer returns
-    <computeroutput>.false</computeroutput> to prevent the page from losing activation,  it should display a message box
+    <computeroutput>.false</computeroutput> to prevent the page from losing activation, it should display a message box
     to explain the problem to the user.
+  </para>
+  <para>
+    The default implementation invokes the <link linkend="mthValidatePage">validatePage</link> method. Since the default
+    implementation of <emphasis role="italic">validatePage</emphasis> returns <computeroutput>.true</computeroutput>,
+    the default <emphasis role="italic">killActive</emphasis> returns <computeroutput>.true</computeroutput>. Rather
+    than over-ride <emphasis role="italic">killActive</emphasis>, the programmer could over-ride the <emphasis
+    role="italic">validatePage</emphasis> method and do page validation in the over-ride. Returning
+    <computeroutput>.false</computeroutput> from the over-ride will cause the default <emphasis
+    role="italic">killActive</emphasis> to return <computeroutput>.false</computeroutput>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5516,7 +5528,7 @@
 </programlisting>
 
 <para>
-  Indicates that the user has canceled the property sheet.
+  Notifies a property sheet page that the user has canceled the property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5681,7 +5693,7 @@
 </programlisting>
 
 <para>
-  Provide a property sheet page an opportunity to specify which dialog box control should receive the initial focus.
+  Provides a property sheet page an opportunity to specify which dialog box control should receive the initial focus.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5836,7 +5848,8 @@
   <listitem>
   <para>
     The Rexx programmer returns 0 to allow the page to become active, -1 to prevent a page change, and the page <link
-    linkend="atrPageNumber">number</link> or page <link linkend="atrPageID">ID</link>, to go to that specific page.
+    linkend="atrPageNumber">number</link> or page <link linkend="atrPageID">ID</link>, to go to that specific page. The
+    default implementation returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5899,7 +5912,7 @@ Generic form:
   <listitem>
   <para>
     The arguments are the width and height values, in dialog units, for the dialog template of this page. As noted in
-    the syntax diagram, the width and height can either be supplied through a single <link linkend="clsSize">size</link>
+    the syntax diagram, the width and height can either be supplied through a single <link linkend="clsSize">Size</link>
     object, or by specifying the width and height separately.
   </para>
   </listitem></varlistentry>
@@ -6216,24 +6229,24 @@ Alt held: 0 shift held: 0 control held: 0
 <indexterm><primary>PropertySheetPage class</primary><secondary>wizBack</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wizBack(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--wizBack(--propSheet--)-----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Notifies a page that the user has clicked the Back button in a wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>propSheet</term>
       <listitem>
       <para>
-        xx
+        This argument is set to the Rexx property sheet dialog object that owns this property sheet page.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -6242,30 +6255,40 @@ Alt held: 0 shift held: 0 control held: 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
+    The Rexx programmer returns 0 to allow the page to be changed to the previous page, -1 to prevent the page from
+    changing, and the page <link linkend="atrPageNumber">number</link> or page <link linkend="atrPageID">ID</link>, to
+    go to that specific page instead of the previous page. The default implementation returns 0.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example is from some exploratory code. When the user clicks the back button on page four of the wizard, instead
+    of going to page three, the dialog goes back to page one. I.e., the user starts over. There are some say statements
+    to print out information on the screen. The <link linkend="mthIndexToID">indexToID</link> method is used to test
+    that it works. It would have been just as good to simply return the page number (1.)
 <programlisting>
 <![CDATA[
+
+::method wizBack unguarded
+  use arg propSheet
+
+  say 'In wizBack page four'
+  ret = propSheet~indexToID(1)
+  say 'Got return from indexToID() ret:' ret
+  return ret
+
+/*  Output might be:
+
+In wizBack page four
+Got return from indexToID() ret: 0x00000000004EAF60
+
+*/
 
 ]]>
 </programlisting>
@@ -6342,24 +6365,24 @@ Alt held: 0 shift held: 0 control held: 0
 <indexterm><primary>PropertySheetPage class</primary><secondary>wizNext</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wizNext(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--wizNext(--propSheet--)-----------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Notifies a page that the user has clicked the Next button in a wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>propSheet</term>
       <listitem>
       <para>
-        xx
+        This argument is set to the Rexx property sheet dialog object that owns this property sheet page.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -6368,33 +6391,14 @@ Alt held: 0 shift held: 0 control held: 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
+    The Rexx programmer returns 0 to allow the page to be changed to the next page, -1 to prevent the page from
+    changing, and the page <link linkend="atrPageNumber">number</link> or page <link linkend="atrPageID">ID</link>, to
+    go to that specific page instead of the next page. The default implementation returns 0.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    This example ...
-<programlisting>
-<![CDATA[
-
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -6405,13 +6409,16 @@ Alt held: 0 shift held: 0 control held: 0
 <indexterm><primary>PropertySheetPage class</primary><secondary>validate</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--validate(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--validate(--isOkButton--,--propSheet--)-------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">validate</emphasis> method is invoked automatically by the ooDialog framework from the
+  default implementation of the <link linkend="mthApplyClsPSP">apply</link> event handler. It is meant to be over-ridden
+  by the Rexx progammer and provides a place to validate the data entered by the user in a page. It is similar in
+  purpose to the dialog <link linkend="chpDialog">object's</link> <link linkend="mthValidate">validate</link> method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6419,10 +6426,24 @@ Alt held: 0 shift held: 0 control held: 0
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>isOkButton</term>
       <listitem>
       <para>
-        xx
+        The <emphasis role="italic">validate</emphasis> method is meant to be invoked from the <link
+        linkend="mthApplyClsPSP">apply</link> event handler. The <emphasis role="italic">isOkButton</emphasis> argument
+        is the <emphasis role="italic">isOkBtn</emphasis> argument passed to the <emphasis
+        role="italic">apply</emphasis> event handler.
+      </para>
+      <para>
+        The argument is true if the user clicked the OK button. It is also set to true if the <link
+        linkend="mthCancelToClose">cancelToClose</link> method had inovked on the propertery sheet and the user clicked
+        the Close button. It is set to false if the user clicked the Apply button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>propSheet</term>
+      <listitem>
+      <para>
+        This argument is set to the Rexx property sheet dialog object that owns this property sheet page.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -6431,13 +6452,19 @@ Alt held: 0 shift held: 0 control held: 0
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
+    The <emphasis role="italic">validate</emphasis> method should return one of the 3 <link
+    linkend="tblPropertySheetPageMethods">constant</link> values: PSNRET_NOERROR, PSNRET_INVALID, or
+    PSNRET_INVALID_NOCHANGEPAGE. See the remarks section.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Recall that the <link linkend="mthApplyClsPSP">apply</link> method handles the notification sent to every page in
+    the property sheet that the user has clicked the OK, Close, or Apply button and wants all changes to take effect.
+    The purpose of that notification, and therefore the <emphasis role="italic">validate</emphasis> method is to give
+    the application a chance to check that any data entered by the user is of the right form and prevent the dialog from
+    closing if the user needs to correct any data. The default <emphasis role="italic">apply</emphasis> implementation
+    simply returns PSNRET_NOERROR
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
