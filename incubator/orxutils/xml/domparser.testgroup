@@ -61,12 +61,48 @@ return testResult
   parser = .domparser~new()
   doc = parser~parse_array(self~dataitem('01'))
 
+  -- a lot of very basic tests of some simple element
+  -- parsing
   self~assertNotNull(doc)
   self~assertTrue(doc~isa(.Document))
+  self~assertEquals(.Node~DOCUMENT_NODE, doc~nodetype)
+  self~assertNull(doc~parentNode)
+  self~assertNull(doc~nextSibling)
+  self~assertNull(doc~previousSibling)
   root = doc~documentElement
   self~assertNotNull(root)
   self~assertTrue(root~isa(.Element))
   self~assertEquals("book", root~nodeName)
+  self~assertEquals("book", root~localName)
+  self~assertEquals("book", root~tagName)
+  self~assertNull(root~prefix)
+  self~assertNull(root~namespaceURI)
+  self~assertSame(doc, root~ownerDocument)
+  -- the first child is the text node
+  text = root~firstChild
+  self~assertNotNull(text)
+  self~assertTrue(text~isa(.Text))
+  self~assertEquals(.Node~TEXT_NODE, text~nodeType)
+  self~assertEquals("#text", text~nodeName)
+  self~assertEquals("Some Text", text~data)
+  self~assertSame(text, root~lastChild)
+  self~assertSame(doc, root~parentNode)
+  self~assertEquals("Some Text", root~textContent)
+  self~assertEquals(.Node~ELEMENT_NODE, root~nodetype)
+  self~assertEquals("My Title", root~getAttribute("title"))
+  self~assertEquals("", root~getAttribute("Title"))
+
+  pi = doc~firstChild
+  self~assertTrue(pi~isA(.ProcessingInstruction))
+  -- the pi is a sibling to the root element
+  self~assertNull(root~nextSibling)
+  self~assertSame(pi, root~previousSibling)
+  self~assertNull(pi~previousSibling)
+  self~assertSame(root, doc~lastChild)
+  self~assertEquals(.Node~PROCESSING_INSTRUCTION_NODE, pi~nodetype)
+  self~assertEquals("xml", pi~target)
+  self~assertEquals('version="1.0"', pi~data)
+
 
 ::method data01
 return /*
