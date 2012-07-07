@@ -2155,7 +2155,7 @@
 /* Class: Document                                                            */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "DocumentImpl" subclass ParentNode public
+::class "DocumentImpl" subclass ParentNode public inherit Document
 ::method init
   expose iterators ranges eventListeners grammarAccess doctype hasMutationEvents
   use arg doctype = .nil, grammarAccess = .false
