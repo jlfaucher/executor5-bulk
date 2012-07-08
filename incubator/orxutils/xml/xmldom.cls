@@ -236,6 +236,9 @@
 ::method removeNamedItemNS abstract
 ::method setNamedItem abstract
 ::method setNamedItemNS abstract
+::method publicID abstract
+::method systemID abstract
+::method internalSubset abstract
 
 -- abstract notation definition
 ::class "Notation" mixinclass Node public
@@ -979,18 +982,30 @@
   end
   return .false
 
+-- compare two NamedNodeMaps for equality.  To be equal, each named item in
+-- each collection must be equal to the equivalent item in the other map.
+-- order is not important
+::method isEqual
+  expose attributes
+  use strict arg other
+
+  -- these can't be equal if they contain a different number of items
+  if self~length \= other~length then return .false
+
+  -- these are independent of order, so we need to look up by name
+  -- and compare the items.  Any mismatch is a failure
+  loop attr over attributes
+      otherAttr = other~getNamedItemNS(attr~namespaceURI, attr~name)
+      if otherAttr == .nil then return .false
+      if \attr~isEqualNode(otherAttr) then return .false
+  end
+  -- passed all of the tests...yay!
+  return .true
+
 ::attribute ownerNode
 ::attribute hasDefaults
 ::attribute changed
 ::attribute readonly
-
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: NamedNodeMap                                                        */
-/*        Public methods                                                      */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
 
 
 /*----------------------------------------------------------------------------*/
@@ -1832,33 +1847,40 @@
 
 ::method isEqualNode
   use strict arg other
+  -- a node is always equal to itself
+  if self == other then return .true
 
-  if self == other then do
-      return .true
+  -- the spec defines the following properties as required to be equal
+  -- in order to pass
+  if self~nodetype \= other~nodetype then return .false
+  if self~nodename \= other~nodename then return .false
+
+  if self~localname \= other~localname then return .false
+
+  if self~namespaceURI \= other~namespaceURI then return .false
+  if self~prefix \= other~prefix then return .false
+  if self~nodevalue \= other~nodevalue then return .false
+
+  -- the attributes, must be equivalent.  For attributes, they
+  -- must all exist on both nodes and have the same values.  Order
+  -- is not important.
+  thisAttr = self~attributes
+  otherAttr = other~attributes
+
+  -- if we have attributes, compare the sets
+  if thisAttr \== .nil then do
+      if otherAttr == .nil then return .false
+      if \thisAttr~isEqual(otherAttr) then return .false
   end
+  else if otherAttr \== .nil then return .false
 
-  if self~nodetype \= other~nodetype then do
-      return .false
-  end
+  thisChildren = self~children
+  otherChildren = other~children
 
-  if self~nodename \= other~nodename then do
-      return .false
-  end
-
-  if self~localname \= other~localname then do
-      return .false
-  end
-
-  if self~namespaceURI \= other~namespaceURI then do
-      return .false
-  end
-
-  if self~prefix \= other~prefix then do
-      return .false
-  end
-
-  if self~nodevalue \= other~nodevalue then do
-      return .false
+  if thisChildren~length \= otherChildren~length then return .false
+  -- the children must be equal at every position...order is dependent here.
+  loop i = 0 for this~children
+      if \thisChildren~item(i)~isEqualNode(otherChildren~item(i)) then return .false
   end
 
 ::method getFeature
@@ -4787,35 +4809,21 @@ syntax:
 
 ::class "DocumentTypeImpl" public subclass NodeImpl inherit DocumentType
 
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: DocumentType                                                        */
-/*        Private methods                                                     */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: DocumentType                                                        */
-/*        Public methods                                                      */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
 /* Description: instance initialization.                                      */
 /*----------------------------------------------------------------------------*/
 
 ::method init
-  use strict arg name
-  self~nodeName = name
-  self~nodeType = 10
+  expose publicID systemID
+  use strict arg self~nodename, publicID, systemID
+  self~nodeType = .Node~DOCUMENT_TYPE_NODE
   self~nodeValue = .nil
   self~entities = .NamedNodeMapImpl~new
   self~notations = .NamedNodeMapImpl~new
+  self~publicID = .nil
+  self~systemID = .nil
+  self~internalSubset = .nil
 
 /*----------------------------------------------------------------------------*/
 /* Method: name                                                               */
@@ -4858,6 +4866,25 @@ syntax:
 ::attribute textContent SET
   use strict arg value
   -- this is a NOP for nodes where this has no meaning.
+
+-- override for the default node isEqual method.  DocumentType nodes have
+-- different equality rules
+::method isEqualNode
+  use strict arg other
+
+  if other~nodeType \== self~nodeType then return .false
+  if self~publicId \= other~publicId then return .false
+  if self~systemId \= other~systemId then return .false
+  if self~internalSubset \= other~internalSubset then return .false
+
+  -- the notations and entities must be equal
+  if \self~notations~isEqual(other~notations) then return .false
+  return self~entities~isEqual(other~entities)
+
+-- general attributes
+::attribute internalSubset
+::attribute publicID
+::attribute systemID
 
 
 /*----------------------------------------------------------------------------*/
@@ -5106,7 +5133,7 @@ syntax:
 ::method createDocumentType
   use strict arg qualifiedName, publicID, systemID
   self~checkQName(qualifiedName)
-  return .DocumentType(.nil, qualifiedName, publicID, systemID)
+  return .DocumentTypeImpl(qualifiedName, publicID, systemID)
 
 ::method checkQName
   use strict arg qname
