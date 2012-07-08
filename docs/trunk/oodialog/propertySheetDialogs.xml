@@ -394,12 +394,6 @@
     not.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect arguments are detected.
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ControlDialog::wasActivated() [attribute]  -->
 
@@ -4190,19 +4184,19 @@
 </row>
 <row>
 <entry>PSNRET_NOERROR</entry>
-<entry>.</entry>
+<entry>A constant value that can be returned from a property sheet page event handler. The individual event handlers document the meaning of the PSNRET_xxx values for that handler.</entry>
 </row>
 <row>
 <entry>PSNRET_INVALID</entry>
-<entry>.</entry>
+<entry>A constant value that can be returned from a property sheet page event handler. The individual event handlers document the meaning of the PSNRET_xxx values for that handler.</entry>
 </row>
 <row>
 <entry>PSNRET_INVALID_NOCHANGEPAGE</entry>
-<entry>.</entry>
+<entry>A constant value that can be returned from a property sheet page event handler. The individual event handlers document the meaning of the PSNRET_xxx values for that handler.</entry>
 </row>
 <row>
 <entry>PSNRET_MESSAGEHANDLED</entry>
-<entry>.</entry>
+<entry>A constant value that can be returned from a property sheet page event handler. The individual event handlers document the meaning of the PSNRET_xxx values for that handler.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
@@ -4330,23 +4324,23 @@
 </row>
 <row>
 <entry><link linkend="mthWizBack">wizBack</link></entry>
-<entry>.</entry>
+<entry>Notifies a page that the user has clicked the Back button in a wizard.</entry>
 </row>
 <row>
 <entry><link linkend="mthWizFinish">wizFinish</link></entry>
-<entry>.</entry>
+<entry>Notifies a page that the user has clicked the Finish button in a wizard.</entry>
 </row>
 <row>
 <entry><link linkend="mthWizNext">wizNext</link></entry>
-<entry>.</entry>
+<entry>Notifies a page that the user has clicked the Next button in a wizard.</entry>
 </row>
 <row>
 <entry><link linkend="mthValidateClsPSP">validate</link></entry>
-<entry>.</entry>
+<entry>Provides a place to validate the data entered by the user in a page during the <emphasis role="italic">apply</emphasis> notification.</entry>
 </row>
 <row>
 <entry><link linkend="mthValidatePage">pageValidate</link></entry>
-<entry>.</entry>
+<entry>Provides a place to validate the data entered by the user in a page during the <emphasis role="italic">killActive</emphasis> notification</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -5245,6 +5239,23 @@
     method the programmer must return one of the three listed return values.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Over-riding apply():</emphasis></term>
+  <listitem>
+  <para>
+    The <emphasis role="italic">apply</emphasis> event handler can be over-ridden by the Rexx programmer, but there are
+    a few additional details the programmer needs to be aware of. First, the default implementation simply calls the
+    <link linkend="mthValidateClsPSP">validate</link> method and returns the value that <emphasis
+    role="italic">validate</emphasis> returns. Because of that, an appropriate strategy would be to over-ride <emphasis
+    role="italic">validate</emphasis> and leave the default implementation of <emphasis role="italic">apply</emphasis>
+    as is.
+  </para>
+  <para>
+    Second, when the return from <emphasis role="italic">apply</emphasis> is to be PSNRET_NOERROR, the programmer should
+    always invoke the private <link linkend="mthApplyNoError">applyNoError</link> method as the last step. Failure to
+    invoke <emphasis role="italic">applyNoError</emphasis> will likely introduce inconsistencies in the behaviour of the
+    page dialog as compared to the behaviour of other ooDialog dialogs.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -5253,6 +5264,56 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End PropertySheetPage::apply() -->
+
+<section id="mthApplyNoError"><title>applyNoError</title>
+<programlisting>
+<![CDATA[
+>>--applyNoError(--propSheet--)------------------><
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">applyNoError</emphasis> method is a <emphasis role="bold">private</emphasis> method that
+  is used by the ooDialog framework to keep the property sheet page dialogs behaviour consistent with the behaviour of
+  other ooDialog dialogs. It is intended to be <emphasis role="italic">invoked</emphasis> by the Rexx programmer, but
+  <emphasis role="bold">not</emphasis> over-ridden by the programmer.
+</para>
+<para>
+  The <emphasis role="italic">applyNoError</emphasis> should only be invoked from the <link
+  linkend="mthApplyClsPSP">apply</link> method as the last step when PSN_NOERROR is going to be returned from <emphasis
+  role="italic">apply</emphasis>. If the <emphasis role="italic">apply</emphasis> event handler is over-ridden by the
+  programmer, the <emphasis role="italic">applyNoError</emphasis> methods should <emphasis
+  role="italic">always</emphasis> be invoked as the final step when the return from <emphasis
+  role="italic">apply</emphasis> will be PSN_NOERROR and it should <emphasis role="italic">never</emphasis> be invoked
+  when the return is to be PSNRET_INVALID or PSNRET_PSNRET_INVALID_NOCHANGEPAGE.
+</para>
+<para>
+  The first and only argument to <emphasis role="italic">applyNoError</emphasis> should be the same <emphasis
+  role="italic">propSheet</emphasis> argument that is passed to <link linkend="mthApplyClsPSP">apply</link>. The return
+  from <emphasis role="italic">applyNoError</emphasis> is always PSNRET_NOERROR. The typical over-ride of the <emphasis
+  role="italic">apply</emphasis> method would always look similar to this:
+
+<programlisting>
+<![CDATA[
+
+::method apply unguarded
+  use arg isOkBtn, pageNum, rexxPage, propSheet
+
+  ...
+  -- Do all validation
+
+  ...
+
+  -- okay, everything is correct, return PSNRET_NOERROR
+
+  return self~applyNoError(propSheet)
+
+]]>
+</programlisting>
+
+</para>
+</section>  <!-- End PropertySheetPage::applyNoError() -->
 
 <section id="mthGetObject"><title>getObject</title>
 <indexterm><primary>getObject</primary></indexterm>
@@ -5387,7 +5448,8 @@
   <para>
     The Rexx programmer must return <computeroutput>.true</computeroutput> to allow the page to lose activation and
     <computeroutput>.false</computeroutput> to prevent the page from losing the activation. The default implementation
-    of this event handler returns <computeroutput>.true</computeroutput>.
+    of this event handler returns <link linkend="mthValidatePage">validatePage</link>. The default implementation of
+    <link linkend="mthValidatePage">validatePage</link> returns <computeroutput>.true</computeroutput>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -5405,6 +5467,13 @@
     role="italic">validatePage</emphasis> method and do page validation in the over-ride. Returning
     <computeroutput>.false</computeroutput> from the over-ride will cause the default <emphasis
     role="italic">killActive</emphasis> to return <computeroutput>.false</computeroutput>.
+  </para>
+  <para>
+    A common strategy might be to over-ride <emphasis role="italic">validatePage</emphasis>, do all page validation in
+    <emphasis role="italic">validatePage</emphasis>, return <computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput> from <emphasis role="italic">validatePage</emphasis> depending on the
+    outcome of the validation, and leave the default implementation of <emphasis role="italic">killActive</emphasis>
+    alone.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -6258,7 +6327,8 @@ Alt held: 0 shift held: 0 control held: 0
     The Rexx programmer returns 0 to allow the page to be changed to the previous page, -1 to prevent the page from
     changing, and the page <link linkend="atrPageNumber">number</link> or page <link linkend="atrPageID">ID</link>, to
     go to that specific page instead of the previous page. The default implementation returns 0.
-  </para> </listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -6302,24 +6372,24 @@ Got return from indexToID() ret: 0x00000000004EAF60
 <indexterm><primary>PropertySheetPage class</primary><secondary>wizFinish</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--wizFinish(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--wizFinish(--propSheet--)---------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Notifies a page that the user has clicked the Finish button in a wizard.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>propSheet</term>
       <listitem>
       <para>
-        xx
+        This argument is set to the Rexx property sheet dialog object that owns this property sheet page.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -6328,13 +6398,18 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The Rexx programmer returns 0 to allow the wizard to finish. To prevent the wizard from finishing, the programmer
+    should return -1 or the resource ID of a dialog control on the page. The default implementation returns 0.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    Typically, when the programmer wants to prevent the wizard from finishing it is because of some error in the data
+    the user entered on one of the wizard pages. In this case it is nice to set the focus to the first dialog control on
+    the page that needs correcting. If the <emphasis role="italic">wizFinish</emphasis> method returns -1, then the
+    programmer has no control over which dialog control will have the focus. It is recommended to always return the
+    resource ID of a dialog control when preventing the wizard from finishing.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -6342,16 +6417,39 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example shows part of a wizFinish() over-ride. The method does some checking and determines that the credit
+    card number entered (or not entered at all) is not valid. A message box will inform the user of the problem and then
+    returns the resource ID of the edit control where the user enters the credit card number. This prevents the wizard
+    from finishing and places the focus on the edit control so that the user can correct the number:
 <programlisting>
 <![CDATA[
+
+::method wizFinish unguarded
+  use arg propSheet
+
+  ...
+
+  chkCreditCard = self~newCheckBox(IDC_CK_CREDIT)
+  editCCNumber = self~newEdit(IDC_EDIT_CC_NUMBER)
+
+  ...
+
+  if chkCreditCard~checked then do
+    ...
+    ccNumber = editCCNumber~getText~strip
+    if ccNumber~length <> 12 then do
+      -- put up message box informing user
+      return IDC_EDIT_CC_NUMBER
+    end
+  end
+
+  ...
+
+  return 0
 
 ]]>
 </programlisting>
@@ -6462,27 +6560,44 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <para>
     Recall that the <link linkend="mthApplyClsPSP">apply</link> method handles the notification sent to every page in
     the property sheet that the user has clicked the OK, Close, or Apply button and wants all changes to take effect.
-    The purpose of that notification, and therefore the <emphasis role="italic">validate</emphasis> method is to give
+    The purpose of that notification, and therefore the <emphasis role="italic">validate</emphasis> method, is to give
     the application a chance to check that any data entered by the user is of the right form and prevent the dialog from
     closing if the user needs to correct any data. The default <emphasis role="italic">apply</emphasis> implementation
-    simply returns PSNRET_NOERROR
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
+    returns the value returned from this <emphasis role="italic">validate</emphasis> method. The default implementation
+    returns PSNRET_NOERROR.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Therefore, a better stategy than over-riding the <emphasis role="italic">apply</emphasis> method, might be to
+    over-ride the <emphasis role="italic">validate</emphasis> method. In the over-ride, return PSNRET_INVALID or
+    PSNRET_INVALID_NOCHANGEPAGE to prevent the dialog from closing and return PSNRET_NOERROR to allow the dialog to
+    close. The advantage to this is that the <link linkend="mthApplyClsPSP">apply</link> method also handles some
+    internal house keeping when the return is PNSRET_NOERROR. By over-riding <emphasis role="italic">validate</emphasis>
+    instead of <emphasis role="italic">apply</emphasis>, the Rexx programmer has fewer details to take care of.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example over-rides the <emphasis role="italic">validate</emphasis> method for the page and checks that the user
+    has filled in the last name field. If not, PSNRET_INVALID is returned to prevent the dialog from proceeding and to
+    have the focus returned to the page. If the user did fill in the last name and the other checks pass, PSNRET_NOERROR
+    is returned:
 <programlisting>
 <![CDATA[
+
+::method validate private unguarded
+  use arg isOkButton, propSheet
+
+  if self~newEdit(IDC_EDIT_LNAME)~getText~strip == "" then do
+    msg = "The last name field must be filled in"
+    title = "Job Application Error"
+    ret = MessageDialog(msg, self~hwnd, title, "OK", "WARNING")
+    return self~PSNRET_INVALID
+  end
+
+  ...
+
+  return self~PSNRET_NOERROR
 
 ]]>
 </programlisting>
@@ -6496,39 +6611,60 @@ Got return from indexToID() ret: 0x00000000004EAF60
 <indexterm><primary>PropertySheetPage class</primary><secondary>validatePage</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--validatePage(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--validatePage(--propSheet--)------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  The <emphasis role="italic">validatePage</emphasis> method is invoked automatically by the ooDialog framework from the
+  default implementation of the <link linkend="mthKillActive">killActive</link> event handler. It is meant to be
+  over-ridden by the Rexx progammer and provides a place to validate the data entered by the user in a page. It is
+  similar in purpose to the dialog <link linkend="chpDialogObject">object's</link> <link
+  linkend="mthValidate">validate</link> method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>propSheet</term>
       <listitem>
       <para>
-        xx
+        This argument is set to the Rexx property sheet dialog object that owns this property sheet page.
       </para>
       </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The Rexx programmer  should return <computeroutput>.true</computeroutput> to signal that the data entered for the
+    page is valid and <computeroutput>.false</computeroutput> to signal that the data on the page is not valid. The
+    default implementation of <link linkend="mthKillActive">killActive</link> directly returns <emphasis
+    role="italic">validatePage</emphasis>. Therefore, if <emphasis role="italic">killActive</emphasis> is not
+    over-ridden, the progammer must return <computeroutput>.true</computeroutput> to allow the page to lose activation
+    and <computeroutput>.false</computeroutput> to prevent the page from losing the activation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A common strategy might be to over-ride <emphasis role="italic">validatePage</emphasis> and do all page validation
+    there. When using this strategy, the default implementation of <link linkend="mthKillActive">killActive</link> would
+    be left alone. The programmer would be careful to return either <computeroutput>.true</computeroutput> or
+    <computeroutput>.false</computeroutput> from <emphasis role="italic">validatePage</emphasis>.
+  </para>
+  <para>
+    On the other hand, if the programmer were to over-ride <emphasis role="italic">killActive</emphasis>, the
+    implementation of <emphasis role="italic">killActive</emphasis> would be free to interpret the return from <emphasis
+    role="italic">validatePage</emphasis> as desired, or not invoke <emphasis role="italic">validatePage</emphasis> at
+    all.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -6536,16 +6672,31 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example over-rides the implementation of <emphasis role="italic">validatePage</emphasis> and returns
+    <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> to indicate if the page is valid
+    or invalid. The default implementation of <link linkend="mthKillActive">killActive</link> is left alone:
 <programlisting>
 <![CDATA[
+
+::method validatePage private unguarded
+  expose editLName
+  use arg propSheet
+
+  if editLName~getText~strip~length == 0 then do
+    msg   = "The last name field must be filled in."
+    title = "Acme Employment Application"
+
+    ret = MessageDialog(msg, self~hwnd, title, "OK", "WARNING")
+
+    editLName~assignFocus
+    return .false
+  end
+
+  return .true
 
 ]]>
 </programlisting>
