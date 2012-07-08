@@ -119,6 +119,8 @@
 ::method normalize abstract
 ::method removeChild abstract
 ::method replaceChild abstract
+::method lookupPrefix
+::method lookupNamespaceURI
 
 -- an abstract attribute interface definition
 ::class "Attr" mixinclass Node public
@@ -1535,16 +1537,44 @@
   use strict arg other
   return self~identityHash = other~identityHash
 
+-- resolve the prefix that a node is using for a given namespace URI
 ::method lookupPrefix
   use strict arg uri
-  raise syntax 93.963 -- not supported
+
+  -- this is the default behavior used for many nodes.  Other nodes
+  -- will override this to provide different behaviors.
+
+  -- see if we have an element ancestor.
+  -- if we have one, ask for this from the element
+  ancestor = self~getElementAncestor
+  if ancestor \== .nil then return ancestor~lookupPrefix(uri)
+  return .nil
+
+-- resolve the namespace uri that a node is using for a given prefix
+::method lookupNamespaceURI
+  use strict arg prefix
+
+  -- this is the default behavior used for many nodes.  Other nodes
+  -- will override this to provide different behaviors.
+
+  -- see if we have an element ancestor.
+  -- if we have one, ask for this from the element
+  ancestor = self~getElementAncestor
+  if ancestor \== .nil then return ancestor~lookupNamespaceURI(prefix)
+  return .nil
+
+-- find the first ancestor of this node that is an
+-- element node
+::method getElementAncestor
+  parent = self~parentNode
+  loop while parent \== .nil
+      if parent~nodeType == .Node~ELEMENT_NODE then return parent
+      parent = parent~parentNode
+  end
+  return .nil
 
 ::method isDefaultNamespace
   use strict arg uri
-  raise syntax 93.963 -- not supported
-
-::method lookupNamespaceURI
-  use strict arg prefix
   raise syntax 93.963 -- not supported
 
 ::method isEqualNode
@@ -2150,6 +2180,20 @@
 
   self~isNormalized = .true
 
+-- resolve the prefix that a node is using for a given namespace URI
+::method lookupPrefix
+  use strict arg uri
+
+  -- always returns .nil
+  return .nil
+
+-- resolve the namespace that a node is using for a given prefix
+::method lookupNamespaceURI
+  use strict arg uri
+
+  -- always returns .nil
+  return .nil
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Class: Document                                                            */
@@ -2358,7 +2402,23 @@
 
   self~setEventListeners(target, nodeListeners~copy)
 
+-- resolve the prefix that a node is using for a given namespace URI
+::method lookupPrefix
+  use strict arg uri
 
+  -- ask the root element for this (if we have one)
+  root = self~documentElement
+  if root \= .nil then return root~lookupPrefix(uri)
+  return .nil
+
+-- resolve the namespace that a node is using for a given prefix
+::method lookupNamespaceURI
+  use strict arg prefix
+
+  -- ask the root element for this (if we have one)
+  root = self~documentElement
+  if root \= .nil then return root~lookupNamespaceURI(prefix)
+  return .nil
 
 
 /**
@@ -3032,6 +3092,30 @@ syntax:
           child = child~nextSibling
       end
   end
+
+-- resolve the prefix that a node is using for a given namespace URI
+::method lookupPrefix
+  use strict arg uri
+
+  -- if this node is owned and the owner is an attribute, then
+  -- pass along the lookup
+  ownerNode = self~ownerNode
+  if ownerNode \== .nil, ownerNode~nodeType == .Node~ELEMENT_NODE then
+      return ownerNode~lookupPrefix(uri)
+
+  return .nil
+
+-- resolve the namespace that a node is using for a given prefix
+::method lookupNamespaceURI
+  use strict arg prefix
+
+  -- if this node is owned and the owner is an attribute, then
+  -- pass along the lookup
+  ownerNode = self~ownerNode
+  if ownerNode \== .nil, ownerNode~nodeType == .Node~ELEMENT_NODE then
+      return ownerNode~lookupNamespaceURI(prefix)
+
+  return .nil
 
 ::attribute idAttribute SET
 
@@ -4025,6 +4109,95 @@ syntax:
 
   return previous
 
+-- resolve the prefix that a node is using for a given namespace URI
+::method resolvePrefix
+  use strict arg uri
+
+  -- pass this along to the specialized lookup method
+  return self~lookupNamespacePrefix(uri, self)
+
+-- resolve the prefix that a node is using for a given namespace URI
+::method lookupNamespacePrefix private
+  use strict arg uri, originalElement
+
+  namespace = self~namespaceURI
+  prefix = self~prefix
+
+  -- the dom spec algorithm says that if the element has a namespace URI and
+  -- prefix, then perform the prefix lookup and see if that prefix actually
+  -- matches the uri.  If it does, that gets returned.
+  if namespace == uri then do
+      if prefix \== .nil then do
+          if namespace = originalElement~lookupNamespaceURI(prefix) then
+              return prefix
+      end
+  end
+
+  -- ok, no luck above, now check the attributes for the
+  -- appropriate definitions
+
+  if self~hasAttributes then do
+      loop attribute over self~attributes
+          prefix = attribute~prefix
+          value = attribute~nodeValue
+          namespace = attribute~namespaceURI
+          if namespace == "http://www.w3.org/2000/xmlns/" then do
+              if attribute~nodeName == "xmlns" || (prefix == "xmlns" & value == uri) then do
+                  localName = attribute~localName
+                  if uri == originalElement~lookupNamespaceUri(localName) then return localName
+              end
+          end
+      end
+  end
+
+  -- last chance...pass this up the element chain and ask again, using
+  -- the same original element
+  ancestor = self~getElementAncestor
+  if ancestor \= .nil then return ancestor~lookupNamespacePrefix(uri, originalElement)
+  -- unresolved
+  return .nil
+
+-- look up the namespace associate with a prefix
+::method lookupNamespace
+  use strict arg specifiedPrefix
+
+  namespace = self~namespaceURI
+  prefix = self~prefix
+  if namespace \== .nil then do
+      -- if the prefixes match, then return the namespace.  Note that
+      -- this works even if both prefixes are .nil
+      if prefix == specifiedPrefix then return namespace
+  end
+
+  -- ok, no luck above, now check the attributes for the
+  -- appropriate definitions
+
+  if self~hasAttributes then do
+      loop attribute over self~attributes
+          prefix = attribute~prefix
+          value = attribute~nodeValue
+          namespace = attribute~namespaceURI
+          if namespace == "http://www.w3.org/2000/xmlns/" then do
+              -- if asking for the default namespace and this is the xmlns
+              -- attribute, then return the value, if it has one
+              if specifiedPrefix == .nil & attribute~nodeName = "xmlns" then do
+                  if value \= "" then return value
+                  else return .nil
+              end
+              else if prefix == "xmlns" & attribute~localname == specifiedPrefix then do
+                  if value \= "" then return value
+                  else return .nil
+              end
+          end
+      end
+  end
+
+  -- last chance...pass this up the element chain and ask again, using
+  -- the same original element
+  ancestor = self~getElementAncestor
+  if ancestor \= .nil then return ancestor~lookupNamespaceURI(uri)
+  -- unresolved
+  return .nil
 
 
 /*----------------------------------------------------------------------------*/
@@ -4445,6 +4618,20 @@ syntax:
 ::attribute systemId
 ::attribute baseURI
 
+-- resolve the prefix that a node is using for a given namespace URI
+::method lookupPrefix
+  use strict arg uri
+
+  -- always returns .nil
+  return .nil
+
+-- resolve the namespace that a node is using for a given prefix
+::method lookupNamespaceURI
+  use strict arg prefix
+
+  -- always returns .nil
+  return .nil
+
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -4482,6 +4669,19 @@ syntax:
 ::attribute notationName
 ::attribute baseURI
 
+-- resolve the prefix that a node is using for a given namespace URI
+::method lookupPrefix
+  use strict arg uri
+
+  -- always returns .nil
+  return .nil
+
+-- resolve the namespace that a node is using for a given prefix
+::method lookupNamespaceURI
+  use strict arg prefix
+
+  -- always returns .nil
+  return .nil
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
