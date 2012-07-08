@@ -127,9 +127,10 @@
 ::class "Attr" mixinclass Node public
 ::method name abstract
 ::method ownerElement abstract
-::method isSpecified abstract
+::method specified abstract
 ::method value abstract
 ::method "value=" abstract
+::method isId abstract
 
 -- an abstract characterdata interface definition
 ::class "CharacterData" mixinclass Node public
@@ -174,6 +175,7 @@
 ::method implementation abstract
 ::method version abstract
 ::method importNode abstract
+::method adoptNode abstract
 ::method "encoding=" abstract
 
 -- abstract documentfragment definition
@@ -1259,7 +1261,7 @@
       attributes[i] = attribute
       previous~ownerNode = self~ownerNode~ownerDocument
       previous~isOwned = .false
-      previous~isSpecified = .true
+      previous~specified = .true
   end
   else do
       if attributes = .nil then do
@@ -1290,7 +1292,7 @@
       attributes[index] = attribute
       previous~ownerNode = self~ownerNode~ownerDocument
       previous~isOwned = .false
-      previous~isSpecified = .true
+      previous~specified = .true
   end
   else do
       if attributes = .nil then do
@@ -1361,7 +1363,7 @@
               newAttr~ownerNode = self~ownerNode
               newAttr~isOwned = .true
               -- mark this as a default value
-              newAttr~isSpecified = .false
+              newAttr~specified = .false
               attributes[index] = newAttr
               setdefault = .true
               -- if this is the id attribute, make sure the document knows
@@ -1379,8 +1381,8 @@
   -- detach from usage
   attr~ownerNode = .nil
   attr~isOwned = .false
-  attr~isSpecified = .true
-  attr~idAttribute = .false
+  attr~specified = .true
+  attr~isId = .false
 
   -- notify the document
   ownerDocument~removedAttrNode(attr, self~ownerNode, name)
@@ -3284,25 +3286,23 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "AttrImpl" public subclass NodeImpl inherit Attr
+::class "AttrImpl" public subclass ParentNode inherit Attr
 ::method init
-  expose value nodeName textNode namespaceURI localName type idAttribute prefix
-  value = .nil
+  expose nodeName textNode namespaceURI localName type isId prefix
   type = .nil
-  textNode = .nil
   namespaceURI = .nil
   localName = .nil
   prefix = .nil
-  idAttribute = .false
+  isId = .false
   use strict arg ownerDoc, nodeName, namespaceURI = .nil, explicitLocalName = .nil
   self~init:super(ownerDoc)
   self~setName(nodeName)
   if explicitLocalName \= .nil then do
       localName = explicitLocalName
   end
-  self~isSpecified = .false
-  self~hasStringValue = .true
+  self~specified = .false
 
+-- process a name change for this attribute
 ::method setName private
   expose namespaceURI localName prefix
   use arg qname
@@ -3362,18 +3362,6 @@ syntax:
 
 ::attribute localName GET
 
-::attribute ownerDocument SET private
-  expose value
-  use strict arg doc
-  forward class(super) continue
-  if \self~hasStringValue then do
-      child = value
-      do while child \= .nil
-          child~ownerDocument = doc
-          child = child~nextSibling
-      end
-  end
-
 -- resolve the prefix that a node is using for a given namespace URI
 ::method lookupPrefix
   use strict arg uri
@@ -3398,11 +3386,7 @@ syntax:
 
   return .nil
 
-::attribute idAttribute SET
-
-::method isId
-  expose idAttribute
-  return idAttribute
+::attribute isId
 
 ::method cloneNode
   expose value
@@ -3410,16 +3394,7 @@ syntax:
 
   newNode = self~cloneNode:super(deep)
 
-  if \self~hasStringValue then do
-      close~value = .nil
-      child = value
-      do while child \= .nil
-          newNode~appendChild(child~cloneNode(.true))
-          child = child~nextSibling
-      end
-  end
-
-  newNode~isSpecified = .true
+  newNode~specified = .true
   return newNode
 
 ::attribute nodeType GET
@@ -3477,126 +3452,61 @@ syntax:
   -- we provide all of our own type information directly
   return this
 
-
 -- name is the same as nodename
 ::attribute name GET
   forward message("NODENAME")
 ::attribute name SET
   forward message("NODENAME=")
 
+-- set the attribute value
 ::attribute value SET
-  expose value textNode
   use strict arg newValue
+  -- we might need to send mutation events, so get the old value
+  if self~ownerDocument~hasMutationEvents then
+      -- get the old value (normalized)
+      oldValue = self~textcontent:super
 
-  oldvalue = ""
+  -- this gets handled by normal text content removal/addition
+  forward message("TEXTCONTENT=") class(super) continue
 
-  -- we might need to process an old value if it's a serious of text nodes
-  if value \= .nil then do
-      if self~ownerDocument~hasMutationEvents then do
-          if self~hasMutationEvents then do
-              -- if we have a string value and we need to
-              -- broadcast mutation events, then we need to
-              -- convert this into a text node for the event
-              if self~hasStringValue then do
-                  oldValue = value
-                  if textNode == .nil then do
-                      textNode = self~ownerDocument~createTextNode(value)
-                  end
-                  else do
-                      textNode~data = value
-                  end
-                  -- set the value to be a text node rather than a string
-                  value = textNode
-                  textNode~ownerNode = this
-                  textNode~isOwned = .true
-                  self~removeChild(textNode, .true)
-              end
-              else do
-                  oldValue = self~value
-                  do while value \= .nil
-                      self~removeChild(value, .true)
-                  end
-              end
-          end
-      end
-      else do
-          if self~hasStringValue then do
-              oldValue = value
-          end
-          else do
-              -- discard any text children
-              oldValue = self~value
-              firstChild = value
-              firstChild ownerNode = self~ownerDocument
-          end
-          -- remove the existing value
-          value = .nil
-      end
-  end
-
-  self~isSpecified = .true
-  if self~ownerDocument~hasMutationEvents then do
-      self~insertBefore(self~ownerDocument~createTextNode(newValue), .nil, .true)
-      self~hasStringValue = .false
+  self~specified = .true
+  if self~ownerDocument~hasMutationEvents then
       self~ownerDocument~modifiedAttrValue(self, oldvalue)
-  end
-  else do
-      value = newValue
-      self~changed
-  end
+  else self~changed
 
   if self~isId & self~ownerElement \= .nil then do
       self~ownerDocument~putIdentifier(newvalue, ownerElement)
   end
 
+-- set the value of the attribute.  This adds a text node to the attribute
+-- node
 ::attribute value GET
-  expose value
   use strict arg
-  -- no set value is a null string
-  if value == .nil then do
-      return ""
-  end
-  -- if already a string, then return it directly
-  if value~isA(.String) then do
-      return value
-  end
+  -- this is the same as text content with the addition of the
+  -- buildTextContent override
+  forward message("TEXTCONTENT") class(super)
 
-  -- this is a potential chain of child nodes
-  firstChild = value
-
-  if firstChild~nodeType == .Node~ENTITY_REFERENCE_NODE then do
-      data = firstChild~entryRefValue
-  end
-  else do
-      data = firstChild~nodeValue
-  end
-  -- no data at this point, return a null string
-  if data == .nil then do
-      return ""
-  end
-
-  node = firstChild~nextSibling
-  -- if the only child node, we're done
-  if node == .nil then do
-      return data
-  end
-
-  buffer = .mutableBuffer~new(data)
-
-  do while node \= .nil
-      if firstChild~nodeType == .Node~ENTITY_REFERENCE_NODE then do
-          data = firstChild~entryRefValue
-          if data \= .nil then do
-              buffer~append(data)
-          end
+-- override to the Node buildTextContent method to include
+-- entity reference nodes in the mix
+::method buildTextContent private
+  use arg buffer
+  child = self~firstChild
+  do while child \= .nil
+      if child~nodeType == .Node~ENTITY_REFERENCE_NODE then
+          data = child~entryRefValue
+      else if self~hasTextContent(child) then
+          data = child~nodeValue
+      if data \== .nil then do
+          buffer~append(data)
       end
-      else do
-          buffer~append(firstChild~nodeValue)
-      end
-      node = node~nextSibling
+      child = child~nextSibling
   end
 
-  return buffer~string
+-- overrides to make sure this passes through the value attributes
+::attribute textContent GET
+  forward message("VALUE")
+::attribute textContent SET
+  forward message("VALUE=")
 
 ::attribute element GET
   use strict arg
@@ -3612,203 +3522,7 @@ syntax:
   forward message("ELEMENT")
 
 -- some attribute properties
-::attribute hasStringValue
-::attribute isSpecified
-
-::method hasChildNodes
-  expose value
-  use strict arg
-  return value \= .nil
-
-::method childNodes
-  -- we handle the node list methods directly
-  use strict arg
-  return self
-
-::method firstChild
-  expose value
-  use strict arg
-  self~makeChildNode
-  return value
-
-::method lastChild
-  expose value
-  use strict arg
-
-  self~makeChildNode
-
-  child = value
-  previous = .nil
-
-  do while child \= .nil
-      previous = child
-      child = child~nextSibling
-  end
-
-  return previous
-
-::method insertBefore
-  expose value
-  use strict arg newChild, refChild, replace = .false
-
-  -- if this is a fragment, transfer each of the
-  -- children from the fragment to ourselves
-  if newChild~nodeType == .Node~DOCUMENT_FRAGMENT_MODE then do
-      do while newChild~hasChildNodes
-          self~insertBefore(newChild~firstChild, refChild)
-      end
-      return newChild
-  end
-  -- already here?  This is a little silly, but the event model
-  -- requires us to remove it and the reinsert
-  if newChild == refChild then do
-      refChild = refChild~nextSibling
-      self~removeChild(newChild)
-      self~insertBefore(newChild, refChild)
-      return newChild
-  end
-  -- ensure if we just have a string value that it is converted into a text
-  -- node
-  self~makeChildNode
-
-  self~ownerDocument~insertingNode(self, replace)
-  -- detach from any existing parent node
-  oldParent = newChild~parentNode
-
-  if oldParent \= .nil then do
-      oldParent~removeChild(newNode)
-  end
-
-  newNode~ownerNode = this
-  newNode~isOwned = .true
-
-  firstChild = value
-  -- no existing value, this case is easy
-  if firstChild == .nil then do
-      value = newChild
-  end
-  else do
-      -- append operation?
-      if refNode == .nil then do
-          lastChild = self~lastChild
-          lastChild~nextSibling = newNode
-          newNode~previousSibling = lastChild
-      end
-      -- normal insertion
-      else do
-          if refChild == firstChild then do
-              newNode~nextSibling = firstChild
-              firstChild~previousSibling = newNode
-              newNode~previousSibling = .nil
-              value = newNode
-          end
-          else do
-              previous = refNode~previousSibling
-              newNode~nextSibling = refNode
-              previous~nextSibling = newNode
-              refNode~previousSibling = newNode
-              newNode~previousSibling = previous
-          end
-      end
-  end
-
-  -- record the change
-  self~changed
-
-  self~ownerDocument~insertedNode(self, newNode, replace)
-
-  return newChild
-
-::method removeChild
-  expose value
-  use strict arg oldChild, replace = .false
-
-  if value~isA(.string) then do
-      return .nil
-  end
-
-  self~ownerDocument~removingNode(self, oldNode, replace)
-
-  -- removing the first?
-  if oldNode == value then do
-      value = oldNode~nextSibling
-      if value \= .nil then do
-          value~previousSibling = .nil
-      end
-  end
-  else do
-      previous = oldNode~previousSibling
-      next = oldNode~nextSibling
-      previous~nextSibling = next
-      if next \= .nil then do
-          next~previousSibling = previous
-      end
-  end
-
-  oldNode~ownerNode = self~ownerDocument
-  oldNode~isOwned = .false
-  oldNode~nextSibling = .nil
-  oldNode~previousSibling = .nil
-
-  self~changed
-
-  ownerDocument~removedNode(self, replace)
-
-  return oldNode
-
-::method replaceChild
-  use strict arg newChild, oldChild
-
-  self~makeChildNode
-  self~ownerDocument~replacingNode(self)
-  self~insertBefore(newChild, oldChild, .true)
-  if newChild \= oldChild then do
-      self~removeChild(oldChild, .true)
-  end
-
-  self~ownerDocument~repacingNode(self)
-  return oldChild
-
--- NodeList methods
-::attribute length GET
-  expose value
-  use strict arg
-
-  if value~isA(.string) then do
-      return 1
-  end
-
-  child = value
-  length = 0
-  do while child \= .nil
-      length += 1
-      child = child~nextSibling
-  end
-
-  return length
-
-::method item
-  expose value
-  use strict arg index
-
-  if value~isA(.String) then do
-      if index \= 0 then do
-          return .nil
-      end
-      self~makeChildNode
-      return value
-  end
-  else do
-      if index < 0 then do
-          return .nil
-      end
-      node = value
-      do i = 0 to index while node \= .nil
-          node = node~nextSibling
-      end
-      return node
-  end
-
+::attribute specified
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -4138,7 +3852,7 @@ syntax:
 ::method setIdAttributeNode
   use strict arg at, makeId
 
-  at~idAttribute = makeId
+  at~isId = makeId
   if makeId then do
       self~ownerDocument~putIdentifier(at~value, this)
   end
@@ -4154,7 +3868,7 @@ syntax:
       return
   end
 
-  at~idAttribute = makeId
+  at~isID = makeId
   if makeId then do
       self~ownerDocument~putIdentifier(at~value, this)
   end
@@ -4170,7 +3884,7 @@ syntax:
       return
   end
 
-  at~idAttribute = makeId
+  at~isId = makeId
   if makeId then do
       self~ownerDocument~putIdentifier(at~value, this)
   end
@@ -7369,7 +7083,7 @@ syntax:
           sourceAttrs = source~attributes
           if sourceAttrs \= .nil then do
               do attr over sourceAttrs
-                  if attr~isSpecified | cloningDoc then do
+                  if attr~specified | cloningDoc then do
                       -- if we're just importing, ignore the default attributes.
                       newAttr = self~importNode(attr, .true, cloningDoc, reversedIdentifiers)
                       if attr~localName == .nil then do
@@ -7401,15 +7115,8 @@ syntax:
           else do
               newNode = self~createAttributeNS(source~namespaceURI, source~nodeName)
           end
-          -- we'll do a deep copy, unless this can be avoided in the simple
-          -- cases
+          -- we'll do a deep copy
           deep = .true
-          -- if we have a string value, we can just copy that and
-          -- avoid doing the deep copy
-          if attr~hasStringValue then do
-              newNode~value = attr~value
-              deep = .false
-          end
       end
       when type == .Node~TEXT_NODE then do
           newNode = self~createTextNode(source~nodeValue)
@@ -7487,6 +7194,9 @@ syntax:
   end
   return newNode
 
+-- adopt a node from another document.  This does not copy the
+-- tree, but rather removes from its existing owner and
+-- inserts into the new document.
 ::method adoptNode
   expose docType
   use strict arg source
@@ -7505,7 +7215,7 @@ syntax:
           end
           -- this is now specified, since it's no longer
           -- derived from a default associated with an element
-          source~isspecified = .true
+          source~specified = .true
           -- change the owner
           source~ownerDocument = self
       end
