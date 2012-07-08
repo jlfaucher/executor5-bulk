@@ -119,8 +119,9 @@
 ::method normalize abstract
 ::method removeChild abstract
 ::method replaceChild abstract
-::method lookupPrefix
-::method lookupNamespaceURI
+::method lookupPrefix abstract
+::method lookupNamespaceURI abstract
+::method textContent abstract
 
 -- an abstract attribute interface definition
 ::class "Attr" mixinclass Node public
@@ -892,7 +893,7 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: NamedNodeMap                                                        */
+/* Class: NamedNodeMapImpl                                                    */
 /*        Private methods                                                     */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -963,6 +964,20 @@
   end
 
   return .nil
+
+-- determine the relative ordering of two contained nodes.  If a
+-- precedes b, return true, otherwise return false
+::method precedes
+  expose attributes
+  use strict arg a, b
+
+  if attributes \= .nil then do
+      loop node over attributes
+          if node == a then return .true
+          if node == .b then return .false
+      end
+  end
+  return .false
 
 ::attribute ownerNode
 ::attribute hasDefaults
@@ -1377,6 +1392,14 @@
 
 ::CLASS "NodeImpl" public inherit Node
 
+-- DocumentPosition indicators
+::constant DOCUMENT_POSITION_DISCONNECTED 1
+::constant DOCUMENT_POSITION_PRECEDING 2
+::constant DOCUMENT_POSITION_FOLLOWING 4
+::constant DOCUMENT_POSITION_CONTAINS 8
+::constant DOCUMENT_POSITION_IS_CONTAINED 16
+::constant DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC 32
+
 -- initialize a counter to give new nodes a unique id
 ::method init class
   expose ctr
@@ -1525,14 +1548,244 @@
 
 ::method compareDocumentPosition
   use strict arg other
-  raise syntax 93.963 -- not supported
 
+  -- if comparing a node against itself, then this is always equal
+  if self == other then return 0
+
+  -- this must be from the same dom type
+  if other \== .nil, \other~isa(.NodeImpl) then
+     .DomErrors~raiseError(.DomErrors~Not_supported_err)
+
+  -- get the owners of the two nodes
+  if self~nodeType == .Node~DOCUMENT_NODE then
+      thisOwner = self
+  else thisOwner = self~ownerDocument
+  if other~nodeType == .Node~DOCUMENT_NODE then
+      otherOwner = other
+  else otherOwner = other~ownerDocument
+
+  -- just punt and return a disconnected indicator if these have
+  -- different owners
+  if thisOwner \= otherOwner then
+      return self~DOCUMENT_POSITION_DISCONNECTED
+
+  -- Find the ancestor of each node, and the distance each node is from
+  -- its ancestor.
+  -- During this traversal, look for ancestor/descendent relationships
+  -- between the 2 nodes in question.
+  -- We do this now, so that we get this info correct for attribute nodes
+  -- and their children.
+
+  thisAncestor = self
+  otherAncestor = other
+
+  thisDepth = 0
+  otherDepth = 0
+
+  node = self
+  loop while node \= .nil
+      thisDepth += 1
+      -- we're a descendant of other...this is an easy test.  Other precedes us
+      -- and also contains us
+      if node == other then
+          return self~DOCUMENT_POSITION_CONTAINS + DOCUMENT_POSITION_PRECEDING
+
+      thisAncestor = node
+      node = node~parentNode
+  end
+  -- we've reached the top without finding other.  Now repeat for other to see
+  -- if we can find ourself.
+  node = other
+  loop while node \= .nil
+      otherDepth += 1
+      -- we're a descendant of other...this is an easy test.  Other follows us
+      -- and also contains us
+      if node == self then
+          return self~DOCUMENT_POSITION_CONTAINS + DOCUMENT_POSITION_FOLLOWING
+
+      otherAncestor = node
+      node = node~parentNode
+  end
+
+  thisAncestorType = thisAncestor~nodeType
+  otherAncestorType = otherAncestor~nodeType
+  thisNode = self
+  otherNode = other
+
+  -- there's special casing for ENTITY, NOTATION, DOCTYPE and ATTRIBUTES, so
+  -- we need to pay attention to the types.  This occurs because the document
+  -- type is sort of a side chain to the document.
+
+  -- a child of a notation or entity...we need to step up a level and see
+  -- if we're decended from the other ancestor.
+  if thisAncestorType == .Node~NOTATION_NODE | thisAncestorType == .Node~ENTITY_NODE then do
+      container = thisOwner~doctype
+      if container = otherAncestor then
+          return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_PRECEDING
+      -- now look for the reverse relationship
+      if otherAncestorType == .Node~NOTATION_NODE | otherAncestorType == .Node~ENTITY_NODE then do
+          -- if the nodes are of different types, the order depends on the
+          -- type number
+          if thisAncestorType \= otherAncestorType then do
+              if thisAncestorType > otherAncestorType then
+                  return self~DOCUMENT_POSITION_PRECEDING
+              else return self~DOCUMENT_POSITION_FOLLOWING
+          end
+          else do
+              -- this is either part of the doctype notations or entities,
+              -- so query the appropriate list
+              if thisAncestorType == .Node~NOTATION_NODE then do
+                  if container~notations~precedes(otherAncestor, thisAncestor) then
+                      return self~DOCUMENT_POSITION_PRECEDING
+                  else
+                      return self~DOCUMENT_POSITION_FOLLOWING
+              end
+              else do
+                  if container~entities~precedes(otherAncestor, thisAncestor) then
+                      return self~DOCUMENT_POSITION_PRECEDING
+                  else
+                      return self~DOCUMENT_POSITION_FOLLOWING
+              end
+          end
+      end
+  end
+  -- owned by a document type
+  else if thisAncestorType == .Node~DOCUMENT_TYPE_NODE then do
+      if otherNode == thisOwner then
+          return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_PRECEDING
+      else if thisOwner \== .nil & thisOwner == otherOwner then
+          return self~DOCUMENT_POSITION_FOLLOWING
+  end
+  -- an attribute
+  else if thisAncestorType == .Node~ATTRIBUTE_NODE then do
+      thisNode = thisAncestor~ownerElement
+      if otherAncestorType == .Node~ATTRIBUTE_NODE then do
+          otherNode = otherAncestor~ownerElement
+          -- if these attributes are owned by the same element,
+          -- life is easy...just check the container
+          if otherNode == thisNode then do
+              if thisNode~attributes~precedes(other, this) then
+                  return self~DOCUMENT_POSITION_PRECEDING
+              else return self~DOCUMENT_POSITION_FOLLOWING
+          end
+
+          -- owned by different elements...see if one element is an ancestor of
+          -- the other
+          thisDepth = 0
+          node = thisNode
+          loop while node \= .nil
+              thisDepth += 1
+              -- the other node is an ancestor of the owning element, which
+              -- means it precedes this one
+              if node == otherNode then
+                  return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_PRECEDING
+              thisAncestor = node
+              node = node~parentNode
+          end
+      end
+  end
+  -- still unresolved...we need to repeat most of the above from the
+  -- perspective of the other node now
+  if otherAncestorType == .Node~NOTATION_NODE | otherAncestorType == .Node~ENTITY_NODE then do
+      container = thisOwner~doctype
+      if container = this then
+          return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_FOLLOWING
+      otherNode = thisOwner
+      otherAncestor = thisOwner
+  end
+  -- owned by a document type
+  else if otherAncestorType == .Node~DOCUMENT_TYPE_NODE then do
+      if thisNode == otherOwner then
+          return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_FOLLOWING
+      else if otherOwner \== .nil & thisOwner == otherOwner then
+          return self~DOCUMENT_POSITION_PRECEDING
+  end
+  -- an attribute.  We already know they are not both attributes
+  else if otherAncestorType == .Node~ATTRIBUTE_NODE then do
+      otherDepth = 0
+      otherNode = otherAncestor~ownerElement
+      node = otherNode
+      loop while node \= .nil
+          otherDepth += 1
+          -- the other node is an descendent of the reference node's element, which
+          -- means it follows this one
+          if node == otherNode then
+              return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_FOLLOWING
+          otherAncestor = node
+          node = node~parentNode
+      end
+  end
+
+  -- thisAncestor and otherAncestor must be the same at this point,
+  -- otherwise, the original nodes are disconnected
+  if thisAncestor \= otherAncestor then do
+      return self~DOCUMENT_POSITION_DISCONNECTED
+  end
+
+  -- Go up the parent chain of the deeper node, until we find a node
+  -- with the same depth as the shallower node
+  if thisDepth > otherDepth then do
+      loop for thisDepth - otherDepth
+          thisNode = thisNode~parentNode
+      end
+      -- Check if the node we have reached is in fact "otherNode". This can
+      -- happen in the case of attributes.  In this case, otherNode
+      -- "precedes" this.
+      if thisNode == otherNode then
+          return self~DOCUMENT_POSITION_PRECEDING;
+  end
+  -- moving up the way
+  else do
+      loop for otherDepth - thisDepth
+          otherNode = otherNode~parentNode
+      end
+      -- Check if the node we have reached is in fact "thisNode". This can
+      -- happen in the case of attributes.  In this case, otherNode
+      -- "follow" this.
+      if thisNode == otherNode then
+          return self~DOCUMENT_POSITION_PRECEDING;
+  end
+  -- We now have nodes at the same depth in the tree.  Find a common
+  -- ancestor.
+  thisNodeParent = thisNode~parentNode
+  otherNodeParent = otherNode~parentNode
+  loop while thisNodeParent \= otherNodeParent
+      thisNode = thisNodeParent
+      otherNode = otherNodeParent
+      thisNodeParent = thisNodeParent~parentNode
+      otherNodeParent = otherNodeParent~parentNode
+  end
+
+  -- At this point, thisNode and otherNode are direct children of
+  -- the common ancestor.
+  -- See whether thisNode or otherNode is the leftmost
+
+  current = thisNodeParent~firstChild
+  loop while current \= .nil
+      if current == otherNode then
+          return self~DOCUMENT_POSITION_PRECEDING
+      else if current == thisNode then
+          return self~DOCUMENT_POSITION_FOLLOWING
+      current = current~nextSibling
+  end
+
+  -- should never get here...throw up our hands and
+  -- say they are disconnected.
+  return self~DOCUMENT_POSITION_DISCONNECTED
+
+-- get the default text content for a node.  This is
+-- the same as the nodevalue for many node types
 ::attribute textContent GET
   forward message("NODEVALUE")
 
+-- default set text content operation.  For most nodes,
+-- this sets the nodevalue.
 ::attribute textContent SET
   forward message("NODEVALUE=")
 
+-- verify that two nodes are in fact the same node.
+-- since we use direct references rather than some sort of
+-- proxy, this is a very easy determination.
 ::method isSameNode
   use strict arg other
   return self~identityHash = other~identityHash
@@ -2043,6 +2296,9 @@
   self~ownerDocument~replacedNode(self)
   return oldChild
 
+-- default textContent behavior for most node types that
+-- allow children.  This concatenates all child text nodes into a
+-- single string
 ::attribute textContent GET
   use strict arg
 
@@ -2090,6 +2346,9 @@
 
   return \child~isIgnorableWhitespace
 
+-- default text content method for nodes that allow children.  This
+-- will remove ALL child nodes and replace them with a single text node
+-- with the new content
 ::attribute textContent SET
   use strict arg text
   child = self~firstChild
@@ -4589,6 +4848,17 @@ syntax:
   use strict arg
   return notations
 
+-- override for text content.  For this type, it always
+-- returns .nil
+::attribute textContent GET
+  use strict arg
+  return .nil
+
+-- override for setting text content.  For this type, it has no effect.
+::attribute textContent SET
+  use strict arg value
+  -- this is a NOP for nodes where this has no meaning.
+
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -4631,6 +4901,17 @@ syntax:
 
   -- always returns .nil
   return .nil
+
+-- override for text content.  For this type, it always
+-- returns .nil
+::attribute textContent GET
+  use strict arg
+  return .nil
+
+-- override for setting text content.  For this type, it has no effect.
+::attribute textContent SET
+  use strict arg value
+  -- this is a NOP for nodes where this has no meaning.
 
 
 /*----------------------------------------------------------------------------*/
@@ -6917,13 +7198,16 @@ syntax:
   end
   return oldChild
 
+-- document override for text content.  For this type, it always
+-- returns .nil
 ::attribute textContent GET
   use strict arg
   return .nil
 
+-- override for setting text content.  For this type, it has no effect.
 ::attribute textContent SET
   use strict arg value
-  -- this is a NOP
+  -- this is a NOP for nodes where this has no meaning.
 
 ::method getFeature
   expose xpathEvaluator
