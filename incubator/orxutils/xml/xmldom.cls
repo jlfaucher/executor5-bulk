@@ -94,6 +94,9 @@
 ::constant DOCUMENT_FRAGMENT_NODE 11
 ::constant NOTATION_NODE 12
 
+::method nodeName abstract
+::method nodeValue abstract
+::method "nodeValue=" abstract
 ::method appendNode abstract
 ::method cloneNode abstract
 ::method attributes abstract
@@ -103,10 +106,7 @@
 ::method localName abstract
 ::method namespaceUri abstract
 ::method nextSibling abstract
-::method nodeName abstract
 ::method nodeType abstract
-::method nodeValue abstract
-::method "nodeValue=" abstract
 ::method ownerDocument abstract
 ::method parentNode abstract
 ::method prefix abstract
@@ -219,13 +219,18 @@
 ::method setAttributeNode abstract
 ::method setAttributeNodeNS abstract
 ::method setAttributeNS abstract
+::method setIdAttribute abstract
+::method setIdAttributeNS abstract
+::method setIdAttributeNode abstract
 
 -- abstract Entity definition
 ::class "Entity" mixinclass Node public
-::method encoding abstract
+::method xmlEncoding abstract
 ::method notationName abstract
 ::method systemId abstract
-::method version abstract
+::method publicId abstract
+::method xmlVersion abstract
+::method inpugEncoding
 
 -- abstract entityreference definition
 ::class "EntityReference" mixinclass Node public
@@ -1527,7 +1532,7 @@
   return .nil
 ::attribute prefix SET
   -- this is an error by default
-  .DomErrors~raiseError(.DomErrors~NAMESPACE_ERR)
+  .DomErrors~raiseError(.DomException~NAMESPACE_ERR)
 -- for node types that don't support a real localname,
 -- this is the same as nodeName
 ::attribute localName GET
@@ -1564,17 +1569,17 @@
 ::method insertBefore
   use strict arg newChild, refChild
   -- not implemented in the base node
-  .DomErrors~raiseError(.DomErrors~Hierarchy_request_err)
+  .DomErrors~raiseError(.DomException~Hierarchy_request_err)
 
 ::method replaceChild
   use strict arg newChild, oldChild
   -- not implemented in the base node
-  .DomErrors~raiseError(.DomErrors~Hierarchy_request_err)
+  .DomErrors~raiseError(.DomException~Hierarchy_request_err)
 
 ::method removeChild
   use strict arg oldChild
   -- not implemented in the base node
-  .DomErrors~raiseError(.DomErrors~Not_found_err)
+  .DomErrors~raiseError(.DomException~Not_found_err)
 
 ::method appendChild
   use strict arg newChild
@@ -1588,7 +1593,7 @@
 
   -- this must be from the same dom type
   if other \== .nil, \other~isa(.NodeImpl) then
-     .DomErrors~raiseError(.DomErrors~Not_supported_err)
+     .DomErrors~raiseError(.DomException~Not_supported_err)
 
   -- get the owners of the two nodes
   if self~nodeType == .Node~DOCUMENT_NODE then
@@ -2638,7 +2643,7 @@
       return .MutationEvent~new
   end
   else do
-      .DomErrors~raiseError(.DomErrors~NOT_SUPPORTED_ERR)
+      .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
   end
 
 ::attribute hasMutationEvents
@@ -3525,7 +3530,7 @@ syntax:
       self~ownerDocument~modifiedAttrValue(self, oldvalue)
   else self~changed
 
-  if self~isId & self~ownerElement \= .nil then do
+  if self~isId & self~ownerElement \== .nil then do
       self~ownerDocument~putIdentifier(newvalue, ownerElement)
   end
 
@@ -3900,49 +3905,38 @@ syntax:
 
   return .DeepNodeList~new(self, localName, namespaceURI)
 
+-- set a node on the element as an id attribute
 ::method setIdAttributeNode
-  use strict arg at, makeId
+  use strict arg attr, makeId
 
-  at~isId = makeId
-  if makeId then do
-      self~ownerDocument~putIdentifier(at~value, this)
-  end
-  else do
-      self~ownerDocument~removeIdentifier(at~value)
-  end
+  self~makeAttributeId(attr, makeId)
 
+-- set a named attribute as an id value for the element
 ::method setIdAttribute
   use strict arg name, makeId
 
-  at = self~getAttributeNode(name)
-  if at == .nil then do
-      return
-  end
+  attr = self~getAttributeNode(name)
+  if attr == .nil then return
 
-  at~isID = makeId
-  if makeId then do
-      self~ownerDocument~putIdentifier(at~value, this)
-  end
-  else do
-      self~ownerDocument~removeIdentifier(at~value)
-  end
+  self~makeAttributeId(attr, makeId)
 
+-- set an attribute to be an id attribute by namespace/localname
 ::method setIdAttributeNS
   use strict arg namespaceURI, localname, makeId
 
-  at = self~getAttributeNodeNS(namspaceURI, localname)
-  if at == .nil then do
-      return
-  end
+  attr = self~getAttributeNodeNS(namspaceURI, localname)
+  if attr == .nil then return
+  self~makeAttributeId(attr, makeId)
 
-  at~isId = makeId
-  if makeId then do
-      self~ownerDocument~putIdentifier(at~value, this)
-  end
-  else do
-      self~ownerDocument~removeIdentifier(at~value)
-  end
+-- private method shared between the different setIdAttributeXXX methods
+::method makeAttributeId private
+  use strict arg attr, makeId
 
+  attr~isID = makeId
+  if makeId then self~ownerDocument~putIdentifier(attr~value, self)
+  else self~ownerDocument~removeIdentifier(attr~value)
+
+-- retrieve any schema typeName set on this element
 ::attribute typeName GET
   expose type
   use strict arg
@@ -4651,7 +4645,7 @@ syntax:
 
 ::class "EntityImpl" public subclass ParentNode inherit Entity
 ::method init
-  expose name publicId systemId XmlEncoding inputEncoding XMLversion notationName baseURI
+  expose name publicId systemId XmlEncoding inputEncoding XMLversion notationName
   use strict arg ownerDoc, name
   self~init:super(ownerDoc)
   publicId = .nil
@@ -4660,7 +4654,6 @@ syntax:
   inputEncoding = .nil
   XmlVersion = .nil
   notationName = .nil
-  baseURI = .nil
 
 ::attribute nodeType GET
   use strict arg
@@ -4673,11 +4666,10 @@ syntax:
 
 ::attribute publicId
 ::attribute systemId
-::attribute XmlVersion
-::attribute XmlEncoding
+::attribute xmlVersion
+::attribute xmlEncoding
 ::attribute inputEncoding
 ::attribute notationName
-::attribute baseURI
 
 -- resolve the prefix that a node is using for a given namespace URI
 ::method lookupPrefix
@@ -4863,29 +4855,29 @@ syntax:
   length = qname~length
 
   if index = 1 | index = length | lastIndex \= index then do
-      .DomErrors(.DomErrors~NAMESPACE_ERR)
+      .DomErrors~raiseError(.DomException~NAMESPACE_ERR)
   end
 
   start = 1
   if index > 1 then do
       if \.XMLChar~isNCNameStart(gname~subChar(start)) then do
-          .DomErrors~raiseError(.DomErrors~INVALID_CHARACTER_ERR)
+          .DomErrors~raiseError(.DomException~INVALID_CHARACTER_ERR)
       end
 
       do i = 2 to index
           if \.XMLChar~isNCName(gname~subChar(i)) then do
-              .DomErrors~raiseError(.DomErrors~INVALID_CHARACTER_ERR)
+              .DomErrors~raiseError(.DomException~INVALID_CHARACTER_ERR)
           end
       end
       start = index + 1
   end
 
   if \.XMLChar~isNCNameStart(gname~subChar(start)) then do
-      .DomErrors~raiseError(.DomErrors~INVALID_CHARACTER_ERR)
+      .DomErrors~raiseError(.DomException~INVALID_CHARACTER_ERR)
   end
   do i = start + 1 to length
       if \.XMLChar~isNCName(gname~subChar(i)) then do
-          .DomErrors~raiseError(.DomErrors~INVALID_CHARACTER_ERR)
+          .DomErrors~raiseError(.DomException~INVALID_CHARACTER_ERR)
       end
   end
 
@@ -4894,7 +4886,7 @@ syntax:
   use strict arg namespaceURI = .nil, qualifiedName = .nil, doctype = .nil
 
   if doctype \= .nil, doctype~ownerDocument \= .nil then do
-      .DomErrors~raiseError(.DomErrors~WRONG_DOCUMENT_ERR)
+      .DomErrors~raiseError(.DomException~WRONG_DOCUMENT_ERR)
   end
 
   doc = .CoreDocument~new(doctype)
@@ -4919,32 +4911,64 @@ syntax:
 
   return .nil
 
+::class "DOMException" public
+::constant INDEX_SIZE_ERR 1
+::constant DOMSTRING_SIZE_ERR 2
+::constant HIERARCHY_REQUEST_ERR 3
+::constant WRONG_DOCUMENT_ERR 4
+::constant INVALID_CHARACTER_ERR 5
+::constant NO_DATA_ALLOWED_ERR 6
+::constant NO_MODIFICATION_ALLOWED_ERR 7
+::constant NOT_FOUND_ERR 8
+::constant NOT_SUPPORTED_ERR 9
+::constant INUSE_ATTRIBUTE_ERR 10
+::constant INVALID_STATE_ERR 11
+::constant SYNTAX_ERR 12
+::constant INVALID_MODIFICATION_ERR 13
+::constant NAMESPACE_ERR 14
+::constant INVALID_ACCESS_ERR 15
+::constant VALIDATION_ERR 16
+::constant TYPE_MISMATCH_ERR 16
 
-::class "DOMErrors" public
-::constant HIERARCHY_REQUEST_ERR  "An attempt was made to insert a node where it is not permitted."
-::constant INDEX_SIZE_ERR         "The index or size is negative, or greater than the allowed value."
-::constant INUSE_ATTRIBUTE_ERR    "An attempt is made to add an attribute that is already in use elsewhere."
-::constant INVALID_ACCESS_ERR     "A parameter or an operation is not supported by the underlying object."
-::constant INVALID_CHARACTER_ERR  "An invalid or illegal XML character is specified."
-::constant INVALID_MODIFICATION_ERR "An attempt is made to modify the type of the underlying object."
-::constant INVALID_STATE_ERR        "An attempt is made to use an object that is not, or is no longer, usable."
-::constant NAMESPACE_ERR            "An attempt is made to create or change an object in a way which is incorrect with regard to namespaces."
-::constant NOT_FOUND_ERR            "An attempt is made to reference a node in a context where it does not exist."
-::constant NOT_SUPPORTED_ERR        "The implementation does not support the requested type of object or operation."
-::constant NO_DATA_ALLOWED_ERR      "Data is specified for a node which does not support data."
-::constant NO_MODIFICATION_ALLOWED_ERR "An attempt is made to modify an object where modifications are not allowed."
-::constant SYNTAX_ERR                  "An invalid or illegal string is specified."
-::constant VALIDATION_ERR              "A call to a method such as insertBefore or removeChild would make the Node invalid with respect to document grammar."
-::constant WRONG_DOCUMENT_ERR          "A node is used in a different document than the one that created it."
-::constant TYPE_MISMATCH_ERR           "The value type for this parameter name is incompatible with the expected value type."
+-- instance item for DOM errors.  This is attached to the condition information
+::method init
+  expose code message
+  use strict arg code, message
 
-::constant BAD_BOUNDARYPOINTS_ERR      "The boundary-points of a Range do not meet specific requirements."
-::constant INVALID_NODE_TYPE_ERR       "The container of a boundary-point of a Range is being set to either a node of an invalid type or a node with an ancestor of an invalid type."
+::method string
+  expose code message
+  return "DOM Error" code":" message
 
+
+-- central class for raising DOMException events.
+::class "DOMErrors" public subclass DomException
+::method init class
+  expose messageTable
+  messageTable = .array~new
+  messageTable[.DomException~HIERARCHY_REQUEST_ERR] =  "An attempt was made to insert a node where it is not permitted."
+  messageTable[.DomException~INDEX_SIZE_ERR] =         "The index or size is negative, or greater than the allowed value."
+  messageTable[.DomException~INUSE_ATTRIBUTE_ERR] =    "An attempt is made to add an attribute that is already in use elsewhere."
+  messageTable[.DomException~INVALID_ACCESS_ERR] =     "A parameter or an operation is not supported by the underlying object."
+  messageTable[.DomException~INVALID_CHARACTER_ERR] =  "An invalid or illegal XML character is specified."
+  messageTable[.DomException~INVALID_MODIFICATION_ERR] = "An attempt is made to modify the type of the underlying object."
+  messageTable[.DomException~INVALID_STATE_ERR] =        "An attempt is made to use an object that is not, or is no longer, usable."
+  messageTable[.DomException~NAMESPACE_ERR] =            "An attempt is made to create or change an object in a way which is incorrect with regard to namespaces."
+  messageTable[.DomException~NOT_FOUND_ERR] =            "An attempt is made to reference a node in a context where it does not exist."
+  messageTable[.DomException~NOT_SUPPORTED_ERR] =        "The implementation does not support the requested type of object or operation."
+  messageTable[.DomException~NO_DATA_ALLOWED_ERR] =      "Data is specified for a node which does not support data."
+  messageTable[.DomException~NO_MODIFICATION_ALLOWED_ERR] = "An attempt is made to modify an object where modifications are not allowed."
+  messageTable[.DomException~SYNTAX_ERR] =                  "An invalid or illegal string is specified."
+  messageTable[.DomException~VALIDATION_ERR] =              "A call to a method such as insertBefore or removeChild would make the Node invalid with respect to document grammar."
+  messageTable[.DomException~WRONG_DOCUMENT_ERR] =          "A node is used in a different document than the one that created it."
+  messageTable[.DomException~TYPE_MISMATCH_ERR] =           "The value type for this parameter name is incompatible with the expected value type."
+
+-- raise an error using the DOMException error numbers
 ::method raiseError class
-  use arg message
+  expose messageTable
+  use arg code
 
-  raise syntax 98.900 array(message)    -- just raise this as a user execution error
+
+  raise syntax 98.900 array(.DOMException~new(code, messageTable[code]))    -- just raise this as a user execution error
 
 
 /*----------------------------------------------------------------------------*/
@@ -5718,10 +5742,6 @@ syntax:
       realEnd = endContainer~parentNode
   end
 
-  if realStart \= realEnd then do
-      DomErrors~raiseError(.DomErrors~BAD_BOUNDARY_POINTS_ERR)
-  end
-
   frag = self~extractContents()
   self~insertNode(newParent)
   newParent~appendChild(frag)
@@ -6332,7 +6352,7 @@ syntax:
   use strict arg refNode, offset
 
   if offset < 0 then do
-      .DOMErrors~raiseError(.DOMErrors~INDEX_SIZE_ERR)
+      .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
   end
 
   type= refNode~nodeType
@@ -6340,12 +6360,12 @@ syntax:
   if nodeType == .Node~TEXT_NODE | nodeType == .Node~CDATA_SECTION_NODE | -
       nodeType == .Node~COMMENT_NODE | nodeType == .Node~PROCESSING_INSTRUCTION_NODE then do
       if offset > refNode~nodeValue~length then do
-          .DOMErrors~raiseError(.DOMErrors~INDEX_SIZE_ERR)
+          .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
       end
   end
   else do
       if offset > refNode~childNodes~length then do
-          .DOMErrors~raiseError(.DOMErrors~INDEX_SIZE_ERR)
+          .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
       end
   end
 
@@ -7170,10 +7190,10 @@ syntax:
           newNode~systemId = source~systemId
       end
       when type == .Node~DOCUMENT_NODE then do
-         .DomErrors~raiseError(.DomErrors~NOT_SUPPORTED_ERR)
+         .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
       end
       otherwise  do
-         .DomErrors~raiseError(.DomErrors~NOT_SUPPORTED_ERR)
+         .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
       end
   end
 
@@ -7216,10 +7236,10 @@ syntax:
           source~ownerDocument = self
       end
       when type == .Node~ENTITY_NODE | type == .Node~NOTATION_NODE then do
-          .DomErrors~raiseError(.DomErrors~NO_MODIFICATION_ALLOWED_ERR)
+          .DomErrors~raiseError(.DomException~NO_MODIFICATION_ALLOWED_ERR)
       end
       when type == .Node~DOCUMENT_NODE | type == .Node~DOCUMENT_TYPE_NODE then do
-          .DomErrors~raiseError(.DomErrors~NOT_SUPPORTED_ERR)
+          .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
       end
       when type == .Node~ENTITY_REFERENCE_NODE then do
           parent = source~parentNode
@@ -7265,31 +7285,6 @@ syntax:
   -- return the adopted node
   return source
 
-::method getElementById
-  use strict arg id
-
-  return self~getIdentifer(id)
-
-::method getIdentifier
-  expose identifers
-  use strict arg id
-  if identifers == .nil then do
-      return .nil
-  end
-
-  element = identifers[id]
-  if element \= .nil then do
-      parent = element~parentNode
-      do while parent \= .nil
-          if parent == self then do
-              return element
-          end
-          parent = parent~parentNode
-      end
-  end
-
-  return .nil
-
 -- rename a target node using the new namespaceURI and qualified name
 ::method renameNode
   use strict arg node, namespaceURI, name
@@ -7314,35 +7309,69 @@ syntax:
       self~renamedAttrNode(node, node)
   end
   else
-      self~domError(.DOMException~NOT_SUPPORTED_ERR)
+      .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
 
+-- clear our identifiers table
 ::method clearIdentifiers private
   expose identifers
-  if identifers \= .nil then do
+  if identifers \= .nil then
       identifiers~empty
+
+-- retrieve an element by an id attribute
+::method getElementById
+  use strict arg id
+
+  return self~getIdentifer(id)
+
+-- retrieve an element node by its identifier
+::method getIdentifier
+  expose identifers
+  use strict arg id
+
+  if identifers == .nil then return .nil
+
+  element = identifers[id]
+
+  if element \= .nil then do
+      parent = element~parentNode
+      do while parent \= .nil
+          if parent == self then do
+              return element
+          end
+          parent = parent~parentNode
+      end
   end
 
+  return .nil
+
+-- add an element as being identified using an ID attribute name
 ::method putIdentifier
   expose identifiers
   use strict arg name, element
 
-  if element == .nil then do
+  -- if no element given, this is a deletion for the name
+  if element == .nil then
       self~removeIdentifier(name)
-  end
+  -- add this to the global identifiers table
   else do
       if identifiers == .nil then
           identifiers = .directory~new
       identifers[name] = element
   end
 
+-- remove a name from the document identifier table
 ::method removeIdentifier
   expose identifiers
   use strict arg name
+
+  -- no identifiers?  removal is easy
   if identifiers == .nil then
       return
-
+  -- remove from the table...we don't really care if
+  -- there's anything there or not.
   identifers~remove(name)
 
+-- retrieve the identifiers name set as an array
 ::method identifiers
   if identifiers == .nil  then
       identifiers = .directory~new
