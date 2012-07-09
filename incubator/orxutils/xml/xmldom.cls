@@ -253,6 +253,22 @@
 ::method target abstract
 ::method "data=" abstract
 
+-- interface class for implementing a user data handler
+::class "UserDataHandler" mixinclass object
+::constant NODE_CLONED 1
+::constant NODE_IMPORTED 2
+::constant NODE_DELETED 3
+::constant NODE_RENAMED 4
+::constant NODE_ADOPTED 5
+
+-- called as handle(key, data, srcNode, destNode)
+::method handle
+
+-- interface class for implementing a DOM event handler
+::class "DOMEventListener" mixinclass object
+-- called as handleEvent(event)
+::method handleEvent
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Section:  Concrete implementation of the DOM classes                       */
@@ -1207,7 +1223,7 @@
 
 ::attribute attributes PRIVATE
 
--- some convience methods for Rexx collection appearances
+-- some convienence methods for Rexx collection appearances
 ::method makearray
   expose attributes
   use strict arg
@@ -1435,13 +1451,12 @@
 /*----------------------------------------------------------------------------*/
 
 ::method init
-  expose ownerNode childNodes nodeId
+  expose ownerNode nodeId userData
   use strict arg ownerNode = .nil
   nodeId = self~class~getId
-  childNodes = .NodeListImpl~new
+  userData = .nil        -- no userdata
   self~isowned = .false  -- unowned until we are added as a child
   self~readonly = .false -- newly created nodes can be altered
-  self~isFirstChild = .false -- not the first child until added to something.
   self~isOwned = .false      -- not owned until attached
   self~isIgnorableWhitespace = .false  -- only text nodes have this
 
@@ -1522,7 +1537,6 @@
 -- private attributes used for the implementation
 ::attribute isowned
 ::attribute readonly
-::attribute isFirstChild
 
 -- default implementations designed to be overridden
 ::method hasChildNodes
@@ -1889,13 +1903,15 @@
   use strict arg feature, version
   return .nil
 
+-- associate an object to a key on this node.
 ::method setUserData
-  use strict arg key, date, handler
-  raise syntax 93.963 -- not supported
+  use strict arg key, data, handler
+  return self~ownerDocument~setUserData(self, key, data, handler)
 
+-- retrieve userdata associated with this node for a given key
 ::method getUserData
   use strict arg key
-  raise syntax 93.963 -- not supported
+  return self~ownerDocument~setUserData(self, key)
 
 -- handle mutation events
 ::method changed
@@ -2118,7 +2134,6 @@
   -- detach the new instance from the context
   newNode~previousSibling = .nil
   newNode~nextSibling = .nil
-  newNode~isFirstChild = .false
 
   return newNode
 
@@ -2479,13 +2494,13 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: Document                                                            */
+/* Class: DocumentImpl                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 ::class "DocumentImpl" subclass ParentNode public inherit Document
 ::method init
-  expose iterators ranges eventListeners grammarAccess doctype hasMutationEvents
-  use arg doctype = .nil, grammarAccess = .false
+  expose iterators ranges eventListeners doctype hasMutationEvents
+  use arg doctype = .nil
 
   self~init:super
   iterators = .nil
@@ -2589,10 +2604,16 @@
       end
   end
 
+::method removedAttrNode
+  use strict arg attr, oldOwner, name
+
+::method renamedAttrNode
+  use strict arg oldAttr, newAttr
+
 
 ::method createEvent
   use strict arg type
-  if type~caselessEquals("Events") then do
+  if type~caselessEquals("Event") then do
       return .DOMEvent~new
   end
   else if type~caselessEquals("MutationEvent") then do
@@ -2609,7 +2630,7 @@
   use strict arg node, listeners
 
   if eventListeners == .nil then do
-      eventListeners = new table
+      eventListeners = .table~new
   end
 
   if listeners == .nil then do
@@ -3205,7 +3226,6 @@
 
   self~dispatchAggregateEvents(oldOwner)
 
-::method renamedAttrNode
 ::method renamedElement
 
 ::class "EventListenerImpl" public
@@ -3226,6 +3246,7 @@
 
   return phase == useCapture & type == eventType
 
+-- invoke an event handler with
 ::method invoke
   expose listener
   use strict arg event
@@ -3271,14 +3292,6 @@ syntax:
   else do
       bubbles -= 1
   end
-
-::class "EnclosingAttr" public
-::method init
-  expose node oldValue
-  use strict arg node, oldValue
-
-::attribute node GET
-::attribute oldValue GET
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -6810,27 +6823,21 @@ syntax:
 /*----------------------------------------------------------------------------*/
 ::class "CoreDocument" subclass DocumentImpl public
 ::method init
-  expose docType docElement encoding actualEncoding version standalone documentURI -
-         userdata identifiers domNormalizer configuration xpathEvaluator changes   -
-         allowGrammerAccess errorChecking documentNumber nodeCounter nodeTable
-  use strict arg docType = .nil, grammarAccess = .false
+  expose docType docElement version standalone documentURI -
+         userdata identifiers changes   -
+         documentNumber nodeCounter nodeTable
+  use strict arg docType = .nil
   self~init:super(.nil)
   -- we are our own owning document for purposes of child appends
   self~ownerDocument = self
 
   docElement = .nil
-  encoding = .nil
-  actualEncoding = .nil
   version = .nil
   standalone = .false
   documentURI = .false
   userData = .nil
   identifiers = .nil
-  domNormalizer = .nil
-  configuration = .nil
-  xpathEvaluator = .nil
   changes = 0
-  errorChecking = .true
   documentNumber = 0
   nodeCounter = 0
   nodeTable = .nil
@@ -6841,10 +6848,12 @@ syntax:
       appendChild(docType)
   end
 
+-- get the node type
 ::attribute nodeType GET
   use strict arg
   return .Node~DOCUMENT_NODE
 
+-- the node name is a constant for documents
 ::attribute nodeName GET
   use strict arg
   return "#document"
@@ -6878,9 +6887,7 @@ syntax:
       end
   end
 
-  newDoc~allowGrammarAccess = self~allowGrammarAccess
-  newDoc~errorChecking = self~errorChecking
-
+-- insert a node into the document
 ::method insertBefore
   expose docElement docType
   use strict arg newChild, refChild
@@ -6892,8 +6899,8 @@ syntax:
   end
   -- do a normal insert
   self~insertBefore:super(newChild, refChild)
-  -- we only have two types of children, so cache each of
-  -- type types
+  -- we have two special types of children, so cache each
+  -- type
   if type == .Node~ELEMENT_NODE then do
       docElement = newChild
   end
@@ -6902,6 +6909,7 @@ syntax:
   end
   return newChild
 
+-- override for a remove child
 ::method removeChild
   expose docElement docType
   use strict arg oldChild
@@ -7037,12 +7045,6 @@ syntax:
   use strict arg
 
   return .DomImplementation~getDOMImplementation
-
-::attribute errorChecking
-::attribute strictErrorChecking
-
-::attribute inputEncoding
-::attribute xmlEncoding
 
 ::attribute documentURI
 ::attribute changes GET
@@ -7294,6 +7296,32 @@ syntax:
 
   return .nil
 
+-- rename a target node using the new namespaceURI and qualified name
+::method renameNode
+  use strict arg node, namespaceURI, name
+
+  newNode = node
+  if node~nodeType == .Node~ELEMENT_NODE then do
+      node~rename(namespaceURI, name)
+      self~callUserDataHandlers(node, .nil, .UserDataHandler~NODE_RENAMED)
+      self~renamedElement(node, node)
+  end
+  else if node~nodeType == .Node~ATTRIBUTE_NODE then do
+      -- detach the attr from its owning element
+      owner = node~ownerElement
+      if owner \= .nil then
+          owner~removeAttributeNode(node)
+      -- rename and reattach, if we have an owner
+      node~rename(namespaceURI, name)
+      if owner \= .nil then
+          owner~setAttributeNodeNS(node)
+      self~callUserDataHandlers(node, .nil, UserDataHandler~NODE_RENAMED)
+      -- fire AttributeNameChanged event
+      self~renamedAttrNode(node, node)
+  end
+  else
+      self~domError(.DOMException~NOT_SUPPORTED_ERR)
+
 ::method clearIdentifiers private
   expose identifers
   if identifers \= .nil then do
@@ -7308,25 +7336,22 @@ syntax:
       self~removeIdentifier(name)
   end
   else do
-      if identifiers == .nil then do
+      if identifiers == .nil then
           identifiers = .directory~new
-      end
       identifers[name] = element
   end
 
 ::method removeIdentifier
   expose identifiers
   use strict arg name
-  if identifiers == .nil then do
+  if identifiers == .nil then
       return
-  end
 
   identifers~remove(name)
 
 ::method identifiers
-  if identifiers == .nil  then do
+  if identifiers == .nil  then
       identifiers = .directory~new
-  end
 
   return identifers~allIndexes
 
@@ -7342,73 +7367,101 @@ syntax:
   expose changes
   changes += 1
 
-::method addEventListener
-  use strict arg node, type, listener, useCapture
-  -- this is a nop
+-- call user data handlers when a node is deleted
+::method callUserDataHandlers
+  expose userData
+  use strict arg node, copyNode, operation
+  -- if no userdata, then this is easy
+  if userData == .nil then return
 
-::method removeEventListener
-  use strict arg node, type, listener, useCapture
+  -- get the userdata for this node
+  userData = node~userDataRecord
+  if userData == .nil then return
+  if userData~isempty then return
 
-::method copyEventListeners
-  use strict arg source, target
+  loop key over userData
+      dataRecord = userData[key]
+      if dataRecord~handler \== .nil then
+          dataRecord~handler~handle(operation, key, dataRecord~data, node, copyNode)
+  end
 
-::method dispatchEvent
-  use strict arg node, event
 
-::method replacedText
+-- associate an object to a key on this node
+::method setUserData
+  expose userdata
+  use strict arg node, key, data, handler
+
+  -- .nil for data means delete this key
+  if data == .nil then do
+      -- can only delete if we have data
+      if userdata \== .nil then do
+          -- this is keyed to the node instance
+          nodeData = userData[node]
+          if nodeData \== .nil then do
+              oldData = nodeData~remove(key)
+              if oldData \== .nil then return oldData~data
+          end
+      end
+      return .nil
+  end
+  else do
+      if userData == .nil then do
+          userData = .IdentityTable~new
+          nodeData = .Directory~new
+          userData[node] = nodeData
+      end
+      else do
+          nodeData = userData[node]
+          if nodeData = .nil then do
+              nodeData = .Directory~new
+              userData[node] = nodeData
+          end
+      end
+      -- just use a directory object for this
+      userRecord = .directory~new
+      userRecord~data = data
+      userRecord~handler = handler
+      oldData = nodeData[key]
+      nodeData[key] = userRecord
+      if oldData \== .nil then return oldData~data
+  end
+  return .nil
+
+-- retrieve the object associated to a key on this node
+::method getUserData
+  expose userData
+  use strict arg node, key
+
+  -- no user data registered, so nothing to return
+  if userData == .nil then return .nil
+  nodeData = userData[node]
+  if nodeData == .nil then return .nil
+
+  userRecord = nodeData[key]
+  if userRecord \== .nil then return userRecord~data
+  return .nil
+
+-- retrieve the userdata table for a given node
+::method getUserDataTable
+  expose userData
+
+  if userData == .nil then return .nil
+  return userData[null]
+
+-- remove a nodes user data table
+::method removeUserDataTable
+  expose userdata
   use strict arg node
 
-::method deletedText
-  use strict arg node, offset, count
+  if userData == .nil then return .nil
+  return userData~remove(node)
 
-::method insertedText
-  use strict arg node, offset, count
-
-::method modifyingCharacterData
-  use strict arg node, replace
-
-::method modifiedCharacterData
-  use strict arg node, oldValue, value, replace
-
-::method insertingNode
-  use strict arg node, replace
-
-::method insertedNode
-  use strict arg node, newInternal, replace
-
-::method removingNode
-  use strict arg node, oldChild, replace
-
-::method removedNode
-  use strict arg node, replace
-
-::method replacingNode
+-- set a user data table for a node.
+::method setUserDataTable
+  expose userData
   use strict arg node
-
-::method replacedNode
-  use strict arg node
-
-::method replacingData
-  use strict arg node
-
-::method replacedCharacterData
-  use strict arg node, oldValue, value
-
-::method modifiedAttrValue
-  use strict arg attr, oldValud
-
-::method setAttrNode
-  use strict arg attr, previous
-
-::method removedAttrNode
-  use strict arg attr, oldOwner, name
-
-::method renamedAttrNode
-  use strict arg oldAttr, newAttr
-
-::method renamedElement
-  use strict arg oldElement, newElement
-
+  if userData == .nil then userData = .IdentityTable~new
+  if data \== .nil then userData[node] = data
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
