@@ -277,6 +277,12 @@
 -- called as handleEvent(event)
 ::method handleEvent
 
+-- interface for the DOM objects that allow attaching of event listeners
+::class "DOMEventTarget" mixinclass object
+::method addEventListener abstract
+::method removeEventListener abstract
+::method dispatchEvent abstract
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Section:  Concrete implementation of the DOM classes                       */
@@ -1431,7 +1437,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::CLASS "NodeImpl" public inherit Node
+::CLASS "NodeImpl" public inherit Node DOMEventTarget
 
 -- DocumentPosition indicators
 ::constant DOCUMENT_POSITION_DISCONNECTED 1
@@ -1953,6 +1959,26 @@
 
   syntax:
   -- just return an empty node set
+
+-- methods for the DOMEventTracker interface
+
+-- add a listener to this node
+::method addEventListener
+  use strict arg type, listener, useCapture
+
+  self~ownerDocument~addEventListener(self, type, listener, useCapture)
+
+-- remove a listener attached to this node
+::method removeEventListener
+  use strict arg type, listener, useCapture
+
+  self~ownerDocument~removeEventListener(self, type, listener, useCapture)
+
+-- dispatch an event on this node context
+::method dispatchEvent
+  use strict arg event
+
+  self~ownerDocument~dispatchEvent(self, event)
 
 
 /*----------------------------------------------------------------------------*/
@@ -2640,7 +2666,7 @@
       return .DOMEvent~new
   end
   else if type~caselessEquals("MutationEvent") then do
-      return .MutationEvent~new
+      return .DOMMutationEvent~new
   end
   else do
       .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
@@ -2648,86 +2674,93 @@
 
 ::attribute hasMutationEvents
 
+-- set a set of event listeners for a given node
 ::method setEventListeners
   expose eventListeners
   use strict arg node, listeners
 
+  -- if this is the first listener request, create the
+  -- listener table
   if eventListeners == .nil then do
-      eventListeners = .table~new
+      eventListeners = .identitytable~new
   end
 
+  -- no listeners provided?  Just remove the listeners for this node
   if listeners == .nil then do
       eventListeners~remove(node)
-      if eventListeners~isEmpty then do
+      -- if there are no more listeners, turn off even checking
+      if eventListeners~isEmpty then
           self~hasMutationEvents = .false
-      end
   end
   else do
+      -- add this to the listener table and make sure the
+      -- event flag is turned on
       eventListeners[node] = listeners
       self~hasMutationEvents = .true
   end
 
+-- retrieve the event listeners for a target node
 ::method getEventListeners
   expose eventListeners
   use strict arg node
-  if eventListeners == .nil then do
-      return .nil
-  end
+
+  if eventListeners == .nil then return .nil
   return eventListeners[node]
 
 -- EventTarget support
 
+-- add an event listener for a node
 ::method addEventListener
-  use strict arg node, type, listener, useCapture
+  use strict arg node, eventName, listener, useCapture
 
-  if type == .nil | type == "" | listener == .nil then do
-      return
-  end
-
-  self~removeEventListener(node, type, listener, useCapture)
-
+  -- we need a good type and listener for this to work
+  if type == .nil | type == "" | listener == .nil then return
+  -- remove any existing event listener for this node and type
+  self~removeEventListener(node, eventName, listener, useCapture)
+  -- get the listener list for this node, creating one if needed
   nodeListeners = self~getEventListeners(node)
 
   if nodeListeners == .nil then do
-      nodeListeners = .List~new
+      nodeListeners = .list~new
       self~setEventListeners(node, nodeListeners)
   end
 
-  nodeListeners~append(.EventListener~new(type, listener, useCapture))
-
-  capture = self~lookupCapture(type)
+  nodeListeners~append(.EventListenerDescriptor~new(eventName, listener, useCapture))
+  -- look up the capture record for this eventName and record the fact
+  capture = self~lookupCapture(eventName)
   capture~addListener(useCapture)
 
+-- remove an event listener from the tables
 ::method removeEventListener
   use strict arg node, type, listener, useCapture
 
-  if type == .nil | type == "" | listener == .nil then do
-      return
-  end
+  if type == .nil | type == "" | listener == .nil then return
+
   nodeListeners = self~getEventListeners(node)
-  if nodeListeners == .nil then do
-      return
-  end
+  if nodeListeners == .nil then return
 
   do le over nodeListeners
       if le~equals(type, listener, useCapture) then do
           nodeListeners~removeItem(le)
           if nodeListeners~isEmpty then do
-              self~eventListeners(node, .nil)
+              self~setEventListeners(node, .nil)
           end
+          -- remove this from the capture tables as well
+          capture = self~lookupCapture(eventName)
+          capture~removeListener(useCapture)
           return
       end
   end
 
+-- copy event listeners to another node
 ::method copyEventListeners
-  use strict arg source, target
+  use strict arg sourceNode, targetNode
 
-  nodeListeners = self~getEventListeners(source)
-  if nodeListeners == .nil then do
-      return
-  end
-
-  self~setEventListeners(target, nodeListeners~copy)
+  nodeListeners = self~getEventListeners(sourceNode)
+  if nodeListeners == .nil then return
+  -- just copy the event listener table over to the new
+  -- node
+  self~setEventListeners(targetNode, nodeListeners~copy)
 
 -- resolve the prefix that a node is using for a given namespace URI
 ::method lookupPrefix
@@ -2811,22 +2844,21 @@
 ::method dispatchEvent private
   use strict arg node, event
 
-  -- don't do anything if there are no listeners
-  capture = lookupCapture(event~type)
-  if capture~total == 0 then do
-      return event~preventDefault
-  end
+  -- check the capture descriptors.  If there are no active listeners
+  -- for this event type, then we don't dispatch this
+  capture = self~lookupCapture(event~type)
+  if capture~total == 0 then return event~defaultPrevented
 
   -- initialize the events dispatch status
   event~target = node
-  event~stopPropagation = .false
-  event~preventDefault = .false
+  event~propagationStopped = .false
+  event~defaultPrevented = .false
 
   -- capture the event parentage chain
   parents = .array~new
   previous = node
   parent = previous~parentNode
-  loop while parent \= .nil
+  loop while parent \== .nil
       parents~append(parent)
       previous = parent
       parent = parent~parentNode
@@ -2834,37 +2866,44 @@
 
   -- capturing phase
   if capture~captures > 0 then do
-      event~eventPhase = .Event~CAPTURING_PHASE
-      do parentNode over parents
-          if event~stopPropagation then do
-              leave
-          end
+      event~eventPhase = .DOMEvent~CAPTURING_PHASE
+      -- we need to send this up the parent chain.  At any
+      -- point, a listener may turn on the propagation flag,
+      -- so we stop doing this at that poing
+      loop parentNode over parents
+          if event~propagationStopped then leave
 
           event~currentTarget = parentNode
+          -- for each ancestor node, dispatch a call if there
+          -- is a listener defined for this event type on the node
           listeners = self~getEventListeners(parentNode)
-          if nodeListeners \= .nil then do
+          if nodeListeners \== .nil then do
               -- NB:  Do over takes a snapshot copy, so
               -- this is thread safe
-              do listener over nodeListeners
+              loop listener over nodeListeners
                   if listener~matches(event~type, .true) then do
                       listener~invoke(event)
+                      -- if the immediate stop has been turned on, we're done dispatching
+                      if event~stoppedImmediatePropagation then return event~defaultPrevented
                   end
               end
           end
       end
   end
 
-  -- both AT_TARGET and BUGGLE use non-capturing listeners
+  -- both AT_TARGET and BUBBLE use non-capturing listeners
   if capture~bubbles > 0 then do
-      event~eventPhase = .Event~AT_TARGET
+      event~eventPhase = .DOMEvent~AT_TARGET
       event~currentTarget = node
       nodeListeners = self~getEventListeners(node)
-      if \event~stopPropagation & nodeListeners \= .nil then do
+      if \event~propagationStopped & nodeListeners \= .nil then do
           -- NB:  Do over takes a snapshot copy, so
           -- this is thread safe
-          do listener over nodeListeners
+          loop listener over nodeListeners
               if listener~matches(event~type, .false) then do
                   listener~invoke(event)
+                  -- if the immediate stop has been turned on, we're done dispatching
+                  if event~stoppedImmediatePropagation then return event~defaultPrevented
               end
           end
       end
@@ -2875,18 +2914,18 @@
       -- instead immediately advance to the default phase.
       -- Note that not all events bubble.
       if event~bubbles then do
-          event~eventPhase = .Event~BUBBLING_PHASE
+          event~eventPhase = .DOMEvent~BUBBLING_PHASE
           do parent over parents
-              if event~stopPropagation then do
-                  leave
-              end
+              if event~propagationStopped then leave
 
               event~currentTarget = parent
-              nodeListeners = self~getEventListeners(node)
+              nodeListeners = self~getEventListeners(parent)
               if nodeListeners \= .nil then do
                   do listener over nodeListener
                       if listener~matches(event~type, .false) then do
                           listener~invoke(event)
+                          -- if the immediate stop has been turned on, we're done dispatching
+                          if event~stoppedImmediatePropagation then return event~defaultPrevented
                       end
                   end
               end
@@ -2894,9 +2933,10 @@
       end
   end
 
-  return event~preventDefault
+  return event~defaultPevented
 
-::method lookupCapture PRIVATE
+-- look up the capture information for a given event type
+::method lookupCapture private
   expose captures
   use strict arg type
   if caputures == .nil then do
@@ -2904,8 +2944,9 @@
   end
 
   capture = captures[type]
+  -- create a tracker if this is the first request for this type
   if capture == .nil then do
-      capture = .EventTracer~new
+      capture = .EventTracker~new
       captures[type] = capture
   end
 
@@ -2942,12 +2983,12 @@
 
   owner = .nil
   if enclosingAttr \= .nil then do
-      capture = self~lookupCapture(.MutationEvent~DOM_ATTR_MODIFIED)
+      capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
       owner = enclosingAttr~ownerElement
       if capture~total then do
           if owner \= .nil then do
-              me = .MutationEvent~new
-              me.initMutationEvent(.MutationEvent~DOM_ATTR_MODIFIED, .true. -
+              me = .DOMMutationEvent~new
+              me.initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true. -
                   .false, enclosingAttr, oldvalue, enclosingAttr~nodeValue, -
                   enclosing~nodeName, change)
               owner~dispatchEvent(me)
@@ -2955,10 +2996,10 @@
       end
   end
 
-  capture = self~lookupCapture(.MutationEvent~DOM_SUBTREE_MODIFIED)
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_SUBTREE_MODIFIED)
   if capture~total > 0 then do
-      me = .MutationEvent~new
-      me.initMutationEvent(.MutationEvent~DOM_SUBTREE_MODIFIED, .true. -
+      me = .DOMMutationEvent~new
+      me.initMutationEvent(.DOMMutationEvent~DOM_SUBTREE_MODIFIED, .true. -
           .false, .nil, .nil, .nil, .nil, 0)
       owner~dispatchEvent(me)
 
@@ -2979,7 +3020,7 @@
 
   savedEnclosingAttr = .nil
 
-  capture = self~captureLookup(.MutationEvent~DOM_ATTR_MODIFIED)
+  capture = self~captureLookup(.DOMMutationEvent~DOM_ATTR_MODIFIED)
   if capture~total > 0 then do
       eventAncestor = .nil
       do forever
@@ -3028,10 +3069,10 @@
   use strict arg node, oldValue, value, replace
 
   if \replace then do
-      capture = self~lookupCapture(.MutationEvent.DOM_CHARACTER_DATA_MODIFIED)
+      capture = self~lookupCapture(.DOMMutationEvent.DOM_CHARACTER_DATA_MODIFIED)
       if capture~total > 0 then do
-          me = .MutationEvent~new
-          me~initMutationEvent(.MutationEvent~DOM_CHARACTER_DATA_MODIFIED, -
+          me = .DOMMutationEvent~new
+          me~initMutationEvent(.DOMMutationEvent~DOM_CHARACTER_DATA_MODIFIED, -
               .true, .false, .nil, oldValue, value, .nil, 0)
           self~dispatchEvent(node, me)
       end
@@ -3069,15 +3110,15 @@
   expose savedEnclosingAttr
   use strict arg node, newInternal, replace
 
-  capture = self~lookupCapture(.MutationEvent~DOM_NODE_INSERTED)
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_INSERTED)
   if capture~total > 0 then do
-      me = .MutationEvent~new
-      me~initMutationEvent(.MutationEvent~DOM_NODE_INSERTED, .true. .false, -
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_NODE_INSERTED, .true. .false, -
           node, .nil, .nil, .nil, 0)
       self~dispatchEvent(newInternal, me)
   end
 
-  capture = self~lookupCapture(.MutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT)
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT)
   if capture~total > 0 then do
       eventAncestor = .node
       if savedEnclosingAttr \= .nil then do
@@ -3094,8 +3135,8 @@
               end
           end
           if eventAncestor~nodeType == .Node~DOCUMENT_NODE then do
-              me = .MutationEvent~new
-              me~initMutationEvent(.MutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT, -
+              me = .DOMMutationEvent~new
+              me~initMutationEvent(.DOMMutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT, -
                   .false, .false, .nil, .nil, .nil, .nil, 0)
               self~dispatchEventToSubtree(newInternal, me)
           end
@@ -3154,15 +3195,15 @@
       self~saveEnclosingAttr(node)
   end
 
-  capture = self~lookupCapture(.MutationEvent~DOM_NODE_REMOVED)
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_REMOVED)
   if capture~total > 0 then do
-      me = .MutationEvent~new
-      me~initMutationEvent(.MutationEvent~DOM_NODE_REMOVED, .true, .false,
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_NODE_REMOVED, .true, .false,
           node, .nil, .nil, .nil, 0)
       self~dispatchEvent(oldChild, me)
   end
 
-  capture~captureLookup(.MutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT)
+  capture~captureLookup(.DOMMutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT)
   if capture~total then do
       eventAncestor = self
       if savedEnclosingAttr \= .nil then do
@@ -3176,8 +3217,8 @@
           end
       end
       if eventAncestor~nodeType == .Node~DOCUMENT_NODE then do
-          me = new .MutationEvent~new
-          me~initMutationEvent(.MutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT,
+          me = new .DOMMutationEvent~new
+          me~initMutationEvent(.DOMMutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT,
               .false, .false, .nil, .nil, .nil, .nil, 0)
           self~dispatchEventToSubtree(oldChild, me)
       end
@@ -3221,7 +3262,7 @@
   use strict arg attr, oldValue
 
   if hasMutationEvents then do
-      self~dispatchAggregateEvents(attr, attr, oldvalue, .MutationEvent~MODIFICATION)
+      self~dispatchAggregateEvents(attr, attr, oldvalue, .DOMMutationEvent~MODIFICATION)
   end
 
 ::method setAttrNode
@@ -3230,10 +3271,10 @@
 
   if hasMutationEvents then do
       if previous == .nil then do
-          self~dispatchAggregateEvents(attr~ownerNode, attr, .nil, .MutationEvent~ADDITION)
+          self~dispatchAggregateEvents(attr~ownerNode, attr, .nil, .DOMMutationEvent~ADDITION)
       end
       else do
-          self~dispatchAggregateEvents(attr~ownerNode, attr, previous~nodeValue, .MutationEvent~MODIFICATION)
+          self~dispatchAggregateEvents(attr~ownerNode, attr, previous~nodeValue, .DOMMutationEvent~MODIFICATION)
       end
   end
 
@@ -3248,11 +3289,11 @@
 ::method mutationEventsRemovedAttrNode
   use strict arg attr, oldOwner, name
 
-  capture = self~lookupCapture(.MutationEvent~DOM_ATTR_MODIFIED)
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
   if capture~total > 0 then do
-      me = .MutationEvent~new
-      me~initMutationEvent(.MutationEvent~DOM_ATTR_MODIFIED, .true, .false, attr,
-          attr~nodeValue, .nil, name, .MutationEvent~REMOVAL)
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true, .false, attr,
+          attr~nodeValue, .nil, name, .DOMMutationEvent~REMOVAL)
       self~dispatchEvent(oldOwner, me)
   end
 
@@ -3260,7 +3301,7 @@
 
 ::method renamedElement
 
-::class "EventListenerImpl" public
+::class "EventListenerDescriptor" public
 ::method init
   expose type useCapture listener
   use strict arg type, listener, useCapture
@@ -3291,7 +3332,8 @@ syntax:
   return   -- all errors are just ignored
 
 
-::class "EventTrackerImpl" public
+-- internal class for tracking named event trackers
+::class "EventTracker"
 ::method init
   expose captures total bubble total
 
@@ -3305,12 +3347,8 @@ syntax:
 
   total += 1
 
-  if useCapture then do
-      captures += 1
-  end
-  else do
-      bubbles += 1
-  end
+  if useCapture then captures += 1
+  else bubbles += 1
 
 ::method removeListener
   expose captures total bubbles
@@ -3318,12 +3356,8 @@ syntax:
 
   total -= 1
 
-  if useCapture then do
-      captures -= 1
-  end
-  else do
-      bubbles -= 1
-  end
+  if useCapture then captures -= 1
+  else bubbles -= 1
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -4967,7 +5001,6 @@ syntax:
   expose messageTable
   use arg code
 
-
   raise syntax 98.900 array(.DOMException~new(code, messageTable[code]))    -- just raise this as a user execution error
 
 
@@ -4977,17 +5010,28 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 ::class "DOMEvent" public
+::constant NONE 0
+::constant CAPTURING_PHASE 1
+::constant AT_TARGET 2
+::constant BUBBLING_PHASE 3
+
+
+
 ::method init
-  expose initialized target eventPhase currentTarget timeStamp stopPropagation preventDefault
+  expose type initialized cancelable target eventPhase currentTarget timeStamp propagationStopped defaultPrevented isTrusted immediatePropagationStopped
+  type = .nil
   initialized = .false
   currentTarget = .nil
   eventPhase = .nil
   timeStamp = .DateTime~new
-  stopPropagation = .false
-  preventDevault = .false
+  propagationStopped = .false
+  defaultPrevented = .false
+  cancelable = .false
+  isTrusted = .false  -- spec requires this initially be false
+  immediatePropagationStopped = .false
 
 ::method initEvent
-  expose type bubbles cancelable initialized target eventPhase currentTarget timeStamp stopPropagation preventDefault
+  expose type bubbles cancelable initialized
   use strict arg type, bubbles, cancelable
   initialized = .true
 
@@ -4998,18 +5042,31 @@ syntax:
 ::attribute target GET
 ::attribute type GET
 ::attribute timeStamp GET
-
-::method stopPropagation
-  expose stopPropagation
-  use strict arg
-  stopPropagation = .true
+::attribute defaultPrevented
+::attribute propagationStopped
+::attribute isTrusted GET
 
 ::method preventDefault
-  expose preventDefault
+  expose defaultPrevented
   use strict arg
-  preventDefault = .true
+  defaultPrevented = .true
 
-::class "MutationEvent" subclass DOMEvent public
+::method stopPropagation
+  expose propagationStopped
+  use strict arg
+  propagationStopped = .true
+
+::method stopImmediatePropagation
+  expose immediatePropagationStopped
+  use strict arg
+  immediatePropagationStopped = .true
+
+
+::class "DOMMutationEvent" subclass DOMEvent public
+::constant MODIFICATION 1
+::constant ADDITION 2
+::constant REMOVAL 3
+
 ::constant DOM_SUBTREE_MODIFIED "DOMSubtreeModified"
 ::constant DOM_NODE_INSERTED "DOMNodeInserted"
 ::constant DOM_NODE_REMOVED "DOMNodeRemoved"
