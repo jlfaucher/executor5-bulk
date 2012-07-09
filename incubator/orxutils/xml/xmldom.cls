@@ -146,7 +146,9 @@
 
 -- abstract text definition
 ::class "Text" mixinclass CharacterData public
-::method splitText
+::method splitText abstract
+::method wholeText abstract
+::method replaceWholeText abstract
 
 -- abstract CDATA section definition
 ::class "CDATASection" mixinclass Text public
@@ -4407,101 +4409,28 @@ syntax:
   use strict arg
   return "#text"
 
-::method getWholeText
+-- return the string created by merging the values of all logically adjacent
+-- text nodes.  This includes both Text and CData nodes.
+::method wholeText
   use strict arg
 
-  buffer = .mutablebuffer~new
-  data = self~data
-  if data \= .nil then do
-      buffer~append(data)
-  end
+  -- the parent node contains all of the siblings, so everything is done
+  -- relative to that
+  parent = self~parentNode
+  -- no parent means no siblings, so our value is all we have
+  if parent == .nil then return self~textContent
 
-  self~getWholeTextBackward(self~previousSibling, buffer, self~parentNode)
-  self~getWholeTextForward(self~nextSibling, buffer, self~parentNode)
+  buffer = .mutableBuffer~new
+  loop node over parent~children
+      if node~nodeType == .Node~TEXT_NODE | node~nodeType == .Node~CDATA_NODE then
+          buffer~append(node~nodeValue)
+      else if node~nodeType == .Node~ENTITY_REFERENCE_NODE then
+          buffer~append(node~entityRefValue)
+  end
 
   return buffer~string
 
-::method getWholeTextForward
-  use arg node, buffer, parent
-
-  processingEntity = .false
-  if parent \= .nil then do
-      processingEntity = parent~nodeType == .Node~ENTITY_REFERENCE_NODE
-  end
-
-  do while node \= .nil
-      type= node~nodeType
-      -- unwind the entity references as a unit
-      if type == .Node~ENTITY_REFERENCE_NODE then do
-          if self~getWholeTextForward(node~firstChild, buffer, node) then do
-              return .true
-          end
-      end
-      -- a text node, just add the text content to the buffer
-      else if type == .Node~TEXT_NODE | type = .Node~CDATA_SECTION_NODE then do
-          node~buildTextContent(buffer)
-      end
-      else do
-          -- we're finished if we found a non-text node
-          return .true
-      end
-      node = node~nextSibling
-  end
-
-  -- we've run through everything, but if we started with the child of an
-  -- entity reference, we need to check the siblings for additional logical
-  -- text nodes
-  if processingEntity then do
-      self~getWholeTextForward(parent~nextSibling, buffer, parent~parentNode)
-      return .true
-  end
-
-  return .false
-
-::method getWholeTextBackward
-  use strict arg node, buffer, parent
-
-  processingEntity = .false
-  if parent \= .nil then do
-      processingEntity = parent~nodeType == .Node~ENTITY_REFERENCE_NODE
-  end
-
-  do while node \= .nil
-      type= node~nodeType
-      -- unwind the entity references as a unit
-      if type == .Node~ENTITY_REFERENCE_NODE then do
-          if self~getWholeTextBackward(node~lastChild, buffer, node) then do
-              return .true
-          end
-      end
-      -- a text node, just add the text content to the buffer
-      else if type == .Node~TEXT_NODE | type = .Node~CDATA_SECTION_NODE then do
-          node~insertTextContent(buffer)
-      end
-      else do
-          -- we're finished if we found a non-text node
-          return .true
-      end
-      node = node~previousSibling
-  end
-
-  -- we've run through everything, but if we started with the child of an
-  -- entity reference, we need to check the siblings for additional logical
-  -- text nodes
-  if processingEntity then do
-      self~getWholeTextBackward(parent~previousSibling, buffer, parent~parentNode)
-      return .true
-  end
-
-  return .false
-
-::method insertTextContent private
-  use arg buffer
-  content = self~nodeValue
-  if content \= .nil then do
-      buffer~insert(1, content)
-  end
-
+-- replace all the text of a text node
 ::method replaceWholeText
   use strict arg content
 
@@ -4515,54 +4444,27 @@ syntax:
       return .nil
   end
 
-  self~data = content
-  currentNode = self
+  self~nodeValue = content
 
-  previous = currentNode~previousSibling
-  do while previous \= .nil
+  -- no parent, there's nothing to replace
+  if parent == .nil then return self
+
+  loop node over parent
+      -- leave our own node in the child list...just delete the siblings
+      if node == self then iterate
       -- remove any logically adjacent text or entity reference nodes
-      nodetype = previous~nodeType
+      nodetype = node~nodeType
       if nodeType = .Node~TEXT_NODE | -
-          nodeType = .Node~CDATA_SECTION_NODE | -
-          nodeType = .Node~ENTITY_REFERENCE_NODE
-          then do
+          nodeType = .Node~CDATA_SECTION_NODE
           -- remove the node from the parent
-          parent~removeChild(previous)
-      end
-      else do
-          -- non-text node found, time to quit
-          leave
-      end
-      -- we keep pulling the previous sibling of the current
-      -- until we find a non-text node
-      previous = currentNode~previousSibling
-  end
-
-  -- now remove the trailing siblings
-  next = currentNode~nextSibling
-
-  do while next \= .nil
-      -- remove any logically adjacent text or entity reference nodes
-      nodetype = next~nodeType
-      if nodeType = .Node~TEXT_NODE | -
-          nodeType = .Node~CDATA_SECTION_NODE | -
-          nodeType = .Node~ENTITY_REFERENCE_NODE
-          then do
-          -- remove the node from the parent
-          parent~removeChild(next)
-      end
-      else do
-          -- non-text node found, time to quit
-          leave
-      end
-      -- we keep pulling the previous sibling of the current
-      -- until we find a non-text node
-      next = currentNode~nextSibling
+          then parent~removeChild(node)
   end
 
   -- this is now the only text node
-  return currentNode
+  return self
 
+-- split the text at the indicated position, creating a new node with
+-- the split off text and updating the value of the target node
 ::method splitText
   use strict arg offset
 
@@ -4811,54 +4713,66 @@ syntax:
   self~init:super(ownerDoc)
   baseURI = .nil
 
+-- override for the nodetype
 ::attribute nodeType GET
   use strict arg
   return .Node~ENTITY_NODE
 
+-- entity references are created with a name
 ::attribute nodeName GET
   expose name
   use strict arg
   return name
 
+-- retrieve the value of the entity reference
 ::attribute entityRefValue GET
   use strict arg
 
-  value = ""
   firstChild = self~firstChild
-  if firstChild == .nil then do
-      return .nil
+  -- no value if there are no children
+  if firstChild == .nil then return ""
+
+  -- an entity reference may contain elements too...we only care about
+  -- the real text node children.  We can optimize this slightly for
+  -- the common case of just a single child node
+  if firstChild~nextSibling == .nil then do
+      -- get the value
+      if firstChild~nodeType == .Node~ENTITY_REFERENCE_NODE then
+          return firstChild~entityRefValue
+      else if firstChild~nodeType == .Node~TEXT_NODE then
+          return firstChild~nodeValue
+      else return .nil
   end
-  if firstChild~nodeType == .Node~ENTITY_REFERENCE_NODE then do
-      value = firstChild~entityRefValue
-  end
-  else if firstChild~nodeType == .Node~TEXT_NODE then do
-      value = firstChild~nodeValue
-  end
-  else do
-      return .nil
+  buffer = .mutablebuffer~new(value)
+  appended = .false
+  loop node over self
+      -- only entity references, text, and cdata nodes are of interest here
+      if node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+          buffer~append(next~entityRefValue)
+          appended = .true
+      end
+      else if next~nodeType == .Node~TEXT_NODE | next~nodeType == .Node~CDATA_SECTION_NODE then do
+          buffer~append(next~nodeValue)
+          appended = .true
+      end
   end
 
-  if firstChild~nextSibling == .nil then do
-      return value
+  -- if we actually found text nodes of some sort, return the value
+  return buffer~string
+
+-- test if modification or replacement of an entity reference is allowed.
+-- for this to be true, the children can only be text, cdata, or entity reference
+-- nodes
+::method isModificationAllowed
+  use strict arg
+
+  loop node over self
+      nodeType = node~nodeType
+      if nodeType == .Node~TEXT_NODE | nodType = .Node~CDATA_SECTION_NODE | .Node~ENTITY_REFERENCE_NODE then iterate
+      return .false
   end
-  else do
-      buffer = .mutablebuffer~new(value)
-      next = firstChild~nextSibling
-      do while next \= .nil
-          if next~nodeType == .Node~ENTITY_REFERENCE_NODE then do
-              value = next~entityRefValue
-          end
-          else if next~nodeType == .Node~TEXT_NODE then do
-              value = next~nodeValue
-          end
-          else do
-              return .nil
-          end
-          buffer~append(value)
-          next = next~nextSibling
-      end
-      return buffer~string
-  end
+
+  return .true
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
