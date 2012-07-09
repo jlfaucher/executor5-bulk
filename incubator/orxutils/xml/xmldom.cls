@@ -122,6 +122,7 @@
 ::method lookupPrefix abstract
 ::method lookupNamespaceURI abstract
 ::method textContent abstract
+::method isDefaultNamespace
 
 -- an abstract attribute interface definition
 ::class "Attr" mixinclass Node public
@@ -1847,6 +1848,18 @@
   if ancestor \== .nil then return ancestor~lookupNamespaceURI(prefix)
   return .nil
 
+-- test if the current node is using a given namespace as the default
+::method isDefaultNamespace
+  use strict arg uri
+  -- see if we have an element ancestor.
+  -- if we have one, ask for this from the element
+  ancestor = self~getElementAncestor
+  if ancestor \== .nil then return ancestor~isDefaultNamespace(uri)
+  return .false
+
+-- this is the default behavior used for many nodes.  Other nodes
+-- will override this to provide different behaviors.
+
 -- find the first ancestor of this node that is an
 -- element node
 ::method getElementAncestor
@@ -1856,10 +1869,6 @@
       parent = parent~parentNode
   end
   return .nil
-
-::method isDefaultNamespace
-  use strict arg uri
-  raise syntax 93.963 -- not supported
 
 ::method isEqualNode
   use strict arg other
@@ -2492,6 +2501,13 @@
   -- always returns .nil
   return .nil
 
+-- perform a default namespace test for a node
+::method isDefaultNamespace
+  use strict arg uri
+
+  -- always returns .false for this type
+  return .false
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Class: DocumentImpl                                                        */
@@ -2723,6 +2739,15 @@
   root = self~documentElement
   if root \= .nil then return root~lookupNamespaceURI(prefix)
   return .nil
+
+-- test if the current node is using a given namespace as the default
+::method isDefaultNamespace
+  use strict arg uri
+
+  -- ask the root element for this (if we have one)
+  root = self~documentElement
+  if root \= .nil then return root~isDefaultNamespace(uri)
+  return .false
 
 
 /**
@@ -3398,6 +3423,17 @@ syntax:
       return ownerNode~lookupNamespaceURI(prefix)
 
   return .nil
+
+-- test if the current node is using a given namespace as the default
+::method isDefaultNamespace
+  use strict arg uri
+
+  -- if this node is owned and the owner is an attribute, then
+  -- pass along the lookup
+  ownerNode = self~ownerNode
+  if ownerNode \== .nil, ownerNode~nodeType == .Node~ELEMENT_NODE then
+      return ownerNode~isDefaultNamespace(uri)
+  return .false
 
 ::attribute isId
 
@@ -4118,7 +4154,7 @@ syntax:
   return previous
 
 -- resolve the prefix that a node is using for a given namespace URI
-::method resolvePrefix
+::method lookupPrefix
   use strict arg uri
 
   -- pass this along to the specialized lookup method
@@ -4206,6 +4242,36 @@ syntax:
   if ancestor \= .nil then return ancestor~lookupNamespaceURI(uri)
   -- unresolved
   return .nil
+
+-- test if the current node is using a given namespace as the default
+::method isDefaultNamespace
+  use strict arg uri
+
+  namespace = self~namespaceURI
+  prefix = self~prefix
+
+  -- if there's no prefix in use, any namespace for this element
+  -- will be from a default, so just compare.  This also handles
+  -- the situation where any of these are .nil
+  if prefix == .nil | prefix == "" then do
+      return namespace == uri
+  end
+
+  -- if the node has attributes, then we need to look for an xmlns
+  -- attribute and compare that
+  if self~hasAttributes then do
+      attr = self~getAttributeNodeNS("http://www.w3.org/2000/xmlns/", "xmlns")
+      if attr \== .nil then return uri == attr~nodeValue
+  end
+
+  return .false
+
+  -- if this node is owned and the owner is an attribute, then
+  -- pass along the lookup
+  ownerNode = self~ownerNode
+  if ownerNode \== .nil, ownerNode~nodeType == .Node~ELEMENT_NODE then
+      return ownerNode~isDefaultNamespace(uri)
+  return .false
 
 
 /*----------------------------------------------------------------------------*/
@@ -4656,6 +4722,13 @@ syntax:
   -- always returns .nil
   return .nil
 
+-- perform a default namespace test for a node
+::method isDefaultNamespace
+  use strict arg uri
+
+  -- always returns .false for this type
+  return .false
+
 -- override for text content.  For this type, it always
 -- returns .nil
 ::attribute textContent GET
@@ -4717,6 +4790,13 @@ syntax:
 
   -- always returns .nil
   return .nil
+
+-- perform a default namespace test for a node
+::method isDefaultNamespace
+  use strict arg uri
+
+  -- always returns .false for this type
+  return .false
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
