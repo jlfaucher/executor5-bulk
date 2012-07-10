@@ -277,11 +277,27 @@
 -- called as handleEvent(event)
 ::method handleEvent
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DOMEventTarget                                                      */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- interface for the DOM objects that allow attaching of event listeners
 ::class "DOMEventTarget" public mixinclass object
 ::method addEventListener abstract
 ::method removeEventListener abstract
 ::method dispatchEvent abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DocumentEvent                                                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- interface for the document objects that support event creation
+::class "DocumentEvent" public mixinclass object
+::method createEvent abstract
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -1036,39 +1052,26 @@
 /*        Private methods                                                     */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+
+-- find the index position for a given attribute
 ::method findItemPoint private
   expose attributes
   use arg item
 
-  if attributes == .nil then do
-      return .nil
-  end
+  if attributes == .nil then return .nil
 
-  s = attributes~supplier
-  do while s~available
-      attr = s~item
-      if attr == item then do
-          return s~index
-      end
-  end
+  return attributes~itemIndex(item)
 
-  return .nil
-
-
+-- find the index position for a given attribute name
 ::method findNamePoint private
   expose attributes
   use arg name
 
-  if attributes == .nil then do
-      return .nil
-  end
+  if attributes == .nil then return .nil
 
-  s = attributes~supplier
-  do while s~available
-      attr = s~item
-      if attr~nodeName == name then do
-          return s~index
-      end
+  loop i = 1 to attributes~size
+      attr = attributes[i]
+      if attr~nodeName == name then return i
   end
 
   return .nil
@@ -1078,28 +1081,18 @@
   expose attributes
   use arg namespace, name
 
-  if attributes == .nil then do
-      return .nil
-  end
+  if attributes == .nil then return .nil
 
-  s = attributes~supplier
-  do while s~available
-      attr = s~item
+  loop i = 1 to attributes~size
+      attr = attributes[i]
       if namespace == .nil then do
-          if attr~namespaceURI == .nil & name == attr~localName then do
-              return s~index
-          end
-
-          if attr~localName == .nil & name == attr~nodeName then do
-              return s~index
-          end
+          if attr~namespaceURI == .nil & name == attr~localName then
+              return i
+          if attr~localName == .nil & name == attr~nodeName then
+              return i
       end
-      else do
-          if attr~namespaceURI == namespace & attr~localName == name then do
-              return s~index
-          end
-      end
-      s~next
+      else if attr~namespaceURI == namespace & attr~localName == name then
+          return i
   end
 
   return .nil
@@ -1113,7 +1106,7 @@
   if attributes \= .nil then do
       loop node over attributes
           if node == a then return .true
-          if node == .b then return .false
+          if node == b then return .false
       end
   end
   return .false
@@ -1153,14 +1146,11 @@
   expose attributes
   use strict arg name
 
-  if attributes == .nil then do
-      return .nil
-  end
+  if attributes == .nil then return .nil
 
   do attribute over attributes
-      if attribute~name == name then do
+      if attribute~name == name then
           return attribute
-      end
   end
   return .nil
 
@@ -1174,14 +1164,11 @@
   expose attributes
   use strict arg namespace, name
 
-  if attributes == .nil then do
-      return .nil
-  end
+  if attributes == .nil then return .nil
 
   do attribute over attributes
-      if attribute~localname == name & attribute~namespaceURI == namespace then do
+      if attribute~localname == name & attribute~namespaceURI == namespace then
           return attribute
-      end
   end
   return .nil
 
@@ -1203,9 +1190,7 @@
       attributes[index] = node
   end
   else do
-      if attributes == .nil then do
-          attributes = .list~new
-      end
+      if attributes == .nil then attributes = .list~new
       attributes~append(node)
   end
 
@@ -1236,9 +1221,7 @@
           attributes[index] = node
       end
       else do
-          if attributes == .nil then do
-              attributes = .list~new
-          end
+          if attributes == .nil then attributes = .list~new
           attributes~append(node)
       end
   end
@@ -1301,7 +1284,8 @@
   expose attributes
   use arg source
   if source \= .nil then do
-      attributes = .list~new
+      -- we use a queue because it can be addressed by relative position
+      attributes = .queue~new
       do attr over source
           attributes~append(attr~cloneNode(.true))
       end
@@ -1316,13 +1300,9 @@
 ::method item
   expose attributes
   use strict arg position
-  if attributes == .nil then do
-      return .nil
-  end
-  else do
-      return attributes~makearray[position + 1]
-  end
 
+  if attributes == .nil then return .nil
+  else return attributes[position + 1]
 
 /*----------------------------------------------------------------------------*/
 /* Method: length                                                             */
@@ -1332,12 +1312,8 @@
 ::method length
   expose attributes
   use strict arg
-  if attributes \== .nil then do
-      return attributes~items
-  end
-  else do
-      return 0;
-  end
+  if attributes \== .nil then return attributes~size
+  else return 0
 
 ::attribute attributes PRIVATE
 
@@ -1408,12 +1384,12 @@
   self~ownerNode~ownerDocument~setAttrNode(attribute, previous)
   return previous
 
+-- add an attribute to the list.  This also has effect of adding it to the
+-- owning element
 ::method setNamedItemNS
   use strict arg attribute
   -- replacing an attribute with itself does nothing
-  if attribute~isOwned then do
-      return attribute
-  end
+  if attribute~isOwned then return attribute
 
   attribute~ownerNode = self~ownerNode
   attribute~isOwned = .true
@@ -1439,44 +1415,42 @@
   self~ownerNode~ownerDocument~setAttrNode(attribute, previous)
   return previous
 
+-- remove an item from the attribute map
 ::method removeNamedItem
   use strict arg name
 
   index = self~findNamePoint(name)
-  if index == .nil then do
-      return .nil
-  end
+  if index == .nil then return .nil
 
   return self~remove(self~attributes[index], index, .true)
 
+-- remove an item from the attribute map
 ::method removeNamedItemNS
   use strict arg namespaceURI, name
 
   index = self~findNamePointNS(namespaceURI, name)
-  if index == .nil then do
-      return .nil
-  end
+  if index == .nil then return .nil
 
   return self~remove(self~attributes[index], index, .true)
 
+-- remove an item node
 ::method removeItem
   use strict arg attr, addDefault
 
   index = self~findItemPoint(attr)
-  if index == .nil then do
-      return .nil
-  end
+  if index == .nil then return .nil
 
   return self~remove(attr, index, addDefault)
 
+-- internal removal method used by the different update methods
 ::method remove private
   use strict arg attr, index, addDefault = .false
 
   ownerDocument = self~ownerNode~ownerDocument
   name = attr~nodeName
-  if attr~isId then do
-      self~ownerDocument~removeIdentifier(attr~value)
-  end
+  -- if this is an id attribute, make sure the document knows
+  -- this is going away
+  if attr~isId then self~ownerDocument~removeIdentifier(attr~value)
 
   attributes = self~attributes
 
@@ -1491,9 +1465,8 @@
               -- the namespace uri comes from the deleted node,
               -- not the default source value if the default
               -- does not have a local name
-              if newAttr~localName \== .nil then do
+              if newAttr~localName \== .nil then
                   newAttr~namespaceURI = attr~namespaceURI
-              end
               newAttr~ownerNode = self~ownerNode
               newAttr~isOwned = .true
               -- mark this as a default value
@@ -1502,16 +1475,13 @@
               setdefault = .true
               -- if this is the id attribute, make sure the document knows
               -- about this mapping
-              if attr~isId then do
+              if attr~isId then
                   ownerDocument~putIdentifier(newAttr~nodeValue, ownerNode)
-              end
           end
       end
   end
   -- if we didn't end up setting a default, remove the node
-  if \setDefault then do
-      attributes~remove(index)
-  end
+  if \setDefault then attributes~remove(index)
   -- detach from usage
   attr~ownerNode = .nil
   attr~isOwned = .false
@@ -1522,12 +1492,13 @@
   ownerDocument~removedAttrNode(attr, self~ownerNode, name)
   return attr
 
+-- clone the content of an attribue map
 ::method cloneContent
   use strict arg source
   srcnodes = source~attributes
   if srcnodes \= .nil then do
-     self~attributes = .List~new
-     do node over srcnodes
+     self~attributes = .Queue~new
+     loop node over srcnodes
          newNode = node~cloneNode(true)
          newNode~ownerNode = self~ownerNode
          newNode~isOwned = .true
@@ -2650,16 +2621,17 @@
 /* Class: DocumentImpl                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal
+::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal DocumentEvent
 ::method init
-  expose iterators ranges eventListeners doctype hasMutationEvents
+  expose iterators ranges eventListeners doctype haveMutationEventListeners savedEventContext
   use arg doctype = .nil
 
   self~init:super
   iterators = .nil
   ranges = .nil
   eventListeners = .nil
-  hasMutationEvents = .false
+  haveMutationEventListeners = .false
+  savedEventContext = .nil
 
 ::method cloneNode
   use strict arg deep = .false
@@ -2757,26 +2729,16 @@
       end
   end
 
-::method removedAttrNode
-  use strict arg attr, oldOwner, name
-
-::method renamedAttrNode
-  use strict arg oldAttr, newAttr
-
-
+-- create an event object.  Part of the DocumentEvent support
 ::method createEvent
   use strict arg type
-  if type~caselessEquals("Event") then do
-      return .DOMEvent~new
-  end
-  else if type~caselessEquals("MutationEvent") then do
-      return .DOMMutationEvent~new
-  end
-  else do
-      .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
-  end
+  if type~caselessEquals("Event") then return .DOMEvent~new
+  else if type~caselessEquals("MutationEvent") then return .DOMMutationEvent~new
+  else .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
 
-::attribute hasMutationEvents
+-- flag to indicate if there are any mutation event listeners in use.
+-- provides an optimization for the normal case of no listeners.
+::attribute haveMutationEventListeners
 
 -- set a set of event listeners for a given node
 ::method setEventListeners
@@ -2794,13 +2756,13 @@
       eventListeners~remove(node)
       -- if there are no more listeners, turn off even checking
       if eventListeners~isEmpty then
-          self~hasMutationEvents = .false
+          self~haveMutationEventListeners = .false
   end
   else do
       -- add this to the listener table and make sure the
       -- event flag is turned on
       eventListeners[node] = listeners
-      self~hasMutationEvents = .true
+      self~haveMutationEventListeners = .true
   end
 
 -- retrieve the event listeners for a target node
@@ -3043,9 +3005,7 @@
 ::method lookupCapture private
   expose captures
   use strict arg type
-  if caputures == .nil then do
-      captures = .directory~new
-  end
+  if captures == .nil then captures = .directory~new
 
   capture = captures[type]
   -- create a tracker if this is the first request for this type
@@ -3056,45 +3016,55 @@
 
   return capture
 
+-- dispatch an event to an entire subtree
 ::method dispatchEventToSubtree private
   use strict arg node, event
+
+  -- if this is an element type, we need to dispatch
+  -- the attribute nodes too
   if node~nodeType == .Node~ELEMENT_NODE then do
-      do attr over node~attributes
-          self~dispatchinggEventToSubtree(attr, event)
+      loop attr over node~attributes
+          self~dispatchingEventToSubtree(attr, event)
       end
   end
-  self~dispatchingEventToSubtree(node~firstChild(, event))
+  self~dispatchingEventToSubtree(node~firstChild, event)
 
+-- handle dispatch of an event to a subtree.  This will
+-- recursively hit the entire subtree
 ::method dispatchingEventToSubtree
   use strict arg node, event
 
-  if node == .nil then do
-      return
-  end
+  if node == .nil then return
 
+  -- dispatch the event to this node
   node~dispatchEvent(event)
+  -- if this is an element, dispatch on the attributes as well
   if node~nodeType == .Node~ELEMENT_NODE then do
-      do attr over node~attributes
+      loop attr over node~attributes
           self~dispatchingEventToSubtree(attr, event)
       end
   end
 
+  -- hit the first child, which will also propagate to the siblings
   self~dispatchingEventToSubtree(node~firstChild, event)
+  -- send down the sibling chain as well
   self~dispatchingEventToSubtree(node~nextSibling, event)
 
+-- dispatch an aggregate event
 ::method dispatchAggregateEvents
   use strict arg node, enclosingAttr = .nil, oldvalue = .nil, change = 0
 
   owner = .nil
-  if enclosingAttr \= .nil then do
+  if enclosingAttr \== .nil then do
       capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
-      owner = enclosingAttr~ownerElement
-      if capture~total then do
-          if owner \= .nil then do
+      attr = enclosingAttr[1]
+      if capture~total > 0 then do
+          owner = attr~ownerElement
+          if owner \== .nil then do
               me = .DOMMutationEvent~new
               me.initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true. -
-                  .false, enclosingAttr, oldvalue, enclosingAttr~nodeValue, -
-                  enclosing~nodeName, change)
+                  .false, attr, enclosingAttr[2], attr~nodeValue, -
+                  attr~nodeName, change)
               owner~dispatchEvent(me)
           end
       end
@@ -3118,58 +3088,72 @@
       end
   end
 
-::method saveEnclosingAttr
-  expose savedEnclosingAttr
+-- For some modification events, there is an event that says "we're modifying",
+-- Followed by an event that says "We modified".  These are dispatched at the same
+-- time following the actual modification.  However, the first event requires some of
+-- the pre-event state.  This caches the pre-event state needed for the first event
+-- so that it can be retrieved to dispatch the event.  The information is just
+-- cached in a simple array item.
+::method saveEventContext
+  expose savedEventContext
   use strict arg node
 
-  savedEnclosingAttr = .nil
+  -- clear any previous state...we might not actually be saving anything here
+  savedEventContext = .nil
 
+  -- First make sure we've got listeners for this type of event at all
   capture = self~captureLookup(.DOMMutationEvent~DOM_ATTR_MODIFIED)
   if capture~total > 0 then do
-      eventAncestor = .nil
-      do forever
-          if eventAncestor == .nil then do
-              return
-          end
+      eventAncestor = node
+      -- search for a target event ancestor.  We're looking for an
+      -- attribute node, but since the source event might be one of the
+      -- children of the attribute, we need to find the dispatch target.
+      loop forever
+          -- no attribute ancestor, done
+          if eventAncestor == .nil then return
           type = eventAncestor~nodeType
-          if type == .Node~ATTRIBUTE_NODe then do
-              retval = .EnclosingAttr(eventAncestor, eventAncestor~nodeValue)
-              savedEnclosingAttr = retval
+          -- found an attribute in the ancestry, this will be our target.  Save
+          -- the current attribute node value (which may be a composite) to
+          -- broadcast in the event.
+          if type == .Node~ATTRIBUTE_NODE then do
+              savedEventContext = .array~of(eventAncestor, eventAncestor~nodeValue)
               return
           end
-          else if type == .Node~ENTITY_REFERENCE_NODE then do
-              eventAncestor = eventAncestor~parentNode
-          end
-          else if type == .Node~TEXT_NODE then do
-              eventAncestor = eventAncestor~parentNode
-          end
-          else do
-              return
-          end
+          -- an entity reference...move up the chain
+          else if type == .Node~ENTITY_REFERENCE_NODE then eventAncestor = eventAncestor~parentNode
+          -- text nodes also go up
+          else if type == .Node~TEXT_NODE then eventAncestor = eventAncestor~parentNode
+          -- starting point was not an ancestor of an attribute...done
+          else return
       end
   end
 
+-- We're modifying character data on a node
+-- this does not dispatch an event now...this will be done as part of an
+-- aggregate later
 ::method modifyingCharacterData
-  expose hasMutationEvents
-
+  expose haveMutationEventListeners
   use strict arg node, replace
 
-  if hasMutationEvents then do
-      if \replace then do
-          self~saveEnclosingAttr(node)
-      end
+  if haveMutationEventListeners then do
+      -- if we're not replacing, check if this belongs to an attribute
+      -- and save that context for event dispatch later
+      if \replace then self~saveEventContext(node)
   end
 
+-- character data has been modified.
 ::method modifiedCharacterData
-  expose hasMutationEvents savedEnclosingAttr
-
+  expose haveMutationEventListeners
   use strict arg node, oldValue, value, replace
 
-  if hasMutationEvents then do
+  -- if we have listeners, dispatch the event
+  if haveMutationEventListeners then
       self~mutationEventsModifiedCharacterData(node, oldValue, value, replace)
-  end
 
+-- this dispatches multiple events for modified character data,
+-- using potential cached state
 ::method mutationEventsModifiedCharacterData
+  expose savedEventContext
   use strict arg node, oldValue, value, replace
 
   if \replace then do
@@ -3180,38 +3164,40 @@
               .true, .false, .nil, oldValue, value, .nil, 0)
           self~dispatchEvent(node, me)
       end
-
-      self~dispatchAggregateEvents(node, savedEnclosingAttr~node, oldValue)
+      -- now dispatch the aggregate event on the enclosing attribute
+      self~dispatchAggregateEvents(node, savedEventContext[1], oldValue)
   end
 
-::method replaceCharacterData
+-- character data replacement...handle as a modification
+::method replacedCharacterData
   use strict arg node, oldvalue, value
   self~modifiedCharacterData(node, oldvalue, value, .false)
 
+-- inserting a new node
 ::method insertingNode
-  expose hasMutationEvents
-
+  expose haveMutationEventListeners
   use strict arg node, replace
-  if hasMutationEvents then do
-      if \replace then do
-          self~saveEnclosingAttr(node)
-      end
-  end
 
+  -- no event dispatched at this time, but save the
+  -- context for later
+  if haveMutationEventListeners & \replace then self~saveEventContext(node)
+
+-- inserting a node
 ::method insertedNode
-  expose hasMutationEvents ranges
+  expose haveMutationEventListeners ranges
   use strict arg node, newInternal, replace
 
-  if hasMutationEvents then do
+  -- if we have listeners, dispatch the event
+  if haveMutationEventListeners then
       self~mutationEventsInsertedNode(node, newInternal, replace)
-  end
 
-  if ranges \= .nil then do
+  -- handle the range-related updates
+  if ranges \= .nil then
       self~notifyRangesInsertedNode(newInternal)
-  end
 
+-- process a node insertion event
 ::method mutationEventsInsertedNode private
-  expose savedEnclosingAttr
+  expose savedEventContext
   use strict arg node, newInternal, replace
 
   capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_INSERTED)
@@ -3222,22 +3208,27 @@
       self~dispatchEvent(newInternal, me)
   end
 
+  -- now see if anybody is watching at the document level
   capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT)
   if capture~total > 0 then do
-      eventAncestor = .node
-      if savedEnclosingAttr \= .nil then do
-          eventAncestor = savedEnclosingAttr~node~ownerElement
-      end
-      if eventAncestor \= .nil then do
+      eventAncestor = node
+      -- if we have an active saved context, then the ancestor is the
+      -- element that owns the attribute of the saved context.
+      if savedEventContext \== .nil then
+          eventAncestor = savedEventContext[1]~ownerElement
+      if eventAncestor \== .nil then do
           parent = eventAncestor
-          do while parent \= .nil
-              if parent~nodeType == .Node~ATTRIBUTE_NODE then do
-                  parent = parent~ownerDocument
-              end
-              else do
-                  parent = parent~parentNode
-              end
+          loop while parent \== .nil
+              -- save the last valid parent
+              eventAncestor = parent
+              -- if we've walked back up to an attribute, the parent
+              -- is the owning element
+              if parent~nodeType == .Node~ATTRIBUTE_NODE then
+                  parent = parent~ownerElement
+              -- get the parent
+              else parent = parent~parentNode
           end
+          -- did we eventually arrive at a document node?  dispatch this
           if eventAncestor~nodeType == .Node~DOCUMENT_NODE then do
               me = .DOMMutationEvent~new
               me~initMutationEvent(.DOMMutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT, -
@@ -3247,10 +3238,12 @@
       end
   end
 
-  if \replace then do
-      self~dispatchAggregateEvents(node, savedEnclosingAttr~node, saveEnclosingAttr~oldValue)
-  end
+  -- also transmit DOMAttrModified and DOMSubtreeModified
+  -- (Common to most kinds of mutation)
+  if \replace then
+      self~dispatchAggregateEvents(node, savedEventContext[1], savedEventContext[2])
 
+-- notify any ranges of a node insertion
 ::method notifyRangesInsertNode
   expose ranges
   use strict arg newInternal
@@ -3259,30 +3252,36 @@
       range~insertedNodeFromDOM(newInternal)
   end
 
+-- handle the pre-removal event processing.  This may involve
+-- notifying iterators and ranges of the event, allowing them
+-- to update their internal state before things change
 ::method removingNode
-  expose iterators ranges hasMutationEvents
+  expose iterators ranges haveMutationEventListeners
   use strict arg node, oldChild, replace
 
-  if iterators \= .nil then do
+  -- have iterators?  broadcast this to them
+  if iterators \= .nil then
       self~notifyIteratorsRemovingNode(oldChild)
-  end
 
-  if ranges \= .nil then do
+  -- ditto for the ranges
+  if ranges \= .nil then
       self~notifyRangesRemovingNode(oldChild)
-  end
 
-  if hasMutationEvents then do
+  -- if there are mutation event listeners, let them know too
+  if haveMutationEventListeners then
       self~mutationEventsRemovingNode(node, oldChild, replace)
-  end
 
+-- notify any attached iterators that we're moving a node
 ::method notityIteratorsRemovingNode
   expose iterators
   use strict arg oldChild
 
+  -- just tap each one on the shoulder
   do iterator over iterators
       iterator~removeNode(oldChild)
   end
 
+-- notify the rances of a removal
 ::method notifyRangesRemovingNode
   expose ranges
   use strict arg oldChild
@@ -3291,14 +3290,17 @@
       range~removeNode(oldChild)
   end
 
+-- handle a node removal mutation event
 ::method mutationEventsRemovingNode
-  expose savedEnclosingAttr
+  expose savedEventContext
   use strict arg node, oldChild, replace
 
-  if \replace then do
-      self~saveEnclosingAttr(node)
-  end
+  -- if not a replacement operation, save the
+  -- context for post-update event processing
+  if \replace then
+      self~saveEventContext(node)
 
+  -- do we have capture listeners for this event type?
   capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_REMOVED)
   if capture~total > 0 then do
       me = .DOMMutationEvent~new
@@ -3307,12 +3309,14 @@
       self~dispatchEvent(oldChild, me)
   end
 
+  -- If within Document, the child's subtree is informed that it's
+  -- being removed
   capture~captureLookup(.DOMMutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT)
-  if capture~total then do
+  if capture~total > 0 then do
       eventAncestor = self
-      if savedEnclosingAttr \= .nil then do
-          eventAncestor = savedEnclosingAttr~node~ownerElement
-      end
+      if savedEventContext \== .nil then
+          eventAncestor = savedEventContext[1]~ownerElement
+      -- find the last non-null ancestor
       if eventAncestor \= .nil then do
           parent = eventAncestor~parentNode
           do while parent \= .nil
@@ -3320,90 +3324,141 @@
               parent = parent~parentNode
           end
       end
+      -- this must stil be part of a document for this to go out
       if eventAncestor~nodeType == .Node~DOCUMENT_NODE then do
           me = new .DOMMutationEvent~new
           me~initMutationEvent(.DOMMutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT,
               .false, .false, .nil, .nil, .nil, .nil, 0)
+          -- and dispatch to the removed subtree
           self~dispatchEventToSubtree(oldChild, me)
       end
   end
 
+-- handle node removal notification.  This is the post-update
+-- event broadcast
 ::method removedNode
-  expose hasMutationEvents savedEnclosingAttr
+  expose haveMutationEventListeners savedEventContext
   use strict arg node, replace
 
-  if hasMutationEvents then do
+  if haveMutationEventListeners then do
       if \replace then do
-          self~dispatchAggregateEvents(node, savedEnclosingAttr~node, savedEnclosingAttr~oldValue)
+          self~dispatchAggregateEvents(node, savedEventContext~node, savedEventContext~oldValue)
       end
   end
 
+-- broadcast intention of node replacement to the appropriate listeners
 ::method replacingNode
-  expose hasMutationEvents
+  expose haveMutationEventListeners
   use strict arg node
 
-  if hasMutationEvents then do
-      self~saveEnclosingAttr(node)
-  end
+  -- if we have events to broadcast later, save the context of the
+  -- replacement
+  if haveMutationEventListeners then
+      self~saveEventContext(node)
 
+-- broadcast an impending data replacement
 ::method replacingData
-  expose hasMutationEvents
+  expose haveMutationEventListeners
   use strict arg node
-  if hasMutationEvents then do
-      self~saveEnclosingAttr(node)
-  end
 
+  -- if we have events to broadcast later, save the context of the
+  -- replacement
+  if haveMutationEventListeners then
+      self~saveEventContext(node)
+
+-- broadcast a node replacement
 ::method replacedNode
-  expose hasMutationEvents savedEnclosingAttr
+  expose haveMutationEventListeners savedEventContext
   use strict arg node
 
-  if hasMutationEvents then do
-      self~dispatchAggregateEvents(node, savedEnclosingAttr~node, saveEnclosingAttr~oldValue)
-  end
+  -- we've replaced a node...broadcast the update to the node listener and listeners on
+  -- the effected subtree
+  if haveMutationEventListeners then
+      self~dispatchAggregateEvents(node, savedEventContext[1], savedEventContext[2])
 
+-- handle attribute value notification
 ::method modifiedAttrValue
-  expose hasMutationEvents
+  expose haveMutationEventListeners
   use strict arg attr, oldValue
 
-  if hasMutationEvents then do
+  -- broadcast to all effected nodes
+  if haveMutationEventListeners then
       self~dispatchAggregateEvents(attr, attr, oldvalue, .DOMMutationEvent~MODIFICATION)
-  end
 
+-- handle an attribute set event
 ::method setAttrNode
-  expose hasMutationEvents
+  expose haveMutationEventListeners
   use strict arg attr, previous
 
-  if hasMutationEvents then do
-      if previous == .nil then do
+  if haveMutationEventListeners then do
+      -- new node event
+      if previous == .nil then
           self~dispatchAggregateEvents(attr~ownerNode, attr, .nil, .DOMMutationEvent~ADDITION)
-      end
-      else do
-          self~dispatchAggregateEvents(attr~ownerNode, attr, previous~nodeValue, .DOMMutationEvent~MODIFICATION)
-      end
+      -- replacing an existing node, this is a modification
+      else self~dispatchAggregateEvents(attr~ownerNode, attr, previous~nodeValue, .DOMMutationEvent~MODIFICATION)
   end
 
-::method removeAttrNode
-  expose hasMutationEvents
+-- handle notification of attribute node removal
+::method removedAttrNode
+  expose haveMutationEventListeners
   use strict arg attr, oldOwner, name
 
-  if hasMutationEvents then do
+  if haveMutationEventListeners then
       self~mutationEventRemovedAttrNode(attr, oldOwner, name)
-  end
 
-::method mutationEventsRemovedAttrNode
-  use strict arg attr, oldOwner, name
+-- real processing of attribute node removal
+::method mutationEventRemovedAttrNode
+  use strict arg attr, oldAttr, name
 
   capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
   if capture~total > 0 then do
       me = .DOMMutationEvent~new
       me~initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true, .false, attr,
-          attr~nodeValue, .nil, name, .DOMMutationEvent~REMOVAL)
-      self~dispatchEvent(oldOwner, me)
+          attr~nodeValue, .nil, name, .DOMMutationEvent~MODIFICATION)
+      self~dispatchEvent(oldAttr, me)
   end
 
+  -- we might need to dispatch events to the subtree as well
   self~dispatchAggregateEvents(oldOwner)
 
+-- handle notification of attribute node rename
+::method renamedAttrNode
+  use strict arg attr, oldName
+
+  if haveMutationEventListeners then
+      self~mutationEventRenamedAttrNode(newAttr, attr, oldName)
+
+-- real processing of attribute node rename
+::method mutationEventRenameAttrNode
+  use strict arg attr, oldName
+
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
+  if capture~total > 0 then do
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true, .false, attr,
+          attr~nodeName, .nil, oldName, .DOMMutationEvent~MODIFICATION)
+      self~dispatchEvent(attr, me)
+  end
+
+-- handle notification of element renames
 ::method renamedElement
+  -- old node and new node should be the same
+  use strict arg element, oldName
+
+  if haveMutationEventListeners then
+      self~mutationEventRenamedElementNode(element, oldName)
+
+-- real processing of element node rename
+::method mutationEventRenameElementNode
+  use strict arg element, oldName
+
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_ELEMENT_MODIFIED)
+  if capture~total > 0 then do
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_ELEMENT_MODIFIED, .true, .false, element,
+         element~nodeName, .nil, oldName, .DOMMutationEvent~MODIFICATION)
+      self~dispatchEvent(element, me)
+  end
 
 ::class "EventListenerDescriptor" public
 ::method init
@@ -3656,7 +3711,7 @@ syntax:
 ::attribute value SET
   use strict arg newValue
   -- we might need to send mutation events, so get the old value
-  if self~ownerDocument~hasMutationEvents then
+  if self~ownerDocument~haveMutationEventListeners then
       -- get the old value (normalized)
       oldValue = self~textcontent:super
 
@@ -3664,7 +3719,7 @@ syntax:
   forward message("TEXTCONTENT=") class(super) continue
 
   self~specified = .true
-  if self~ownerDocument~hasMutationEvents then
+  if self~ownerDocument~haveMutationEventListeners then
       self~ownerDocument~modifiedAttrValue(self, oldvalue)
   else self~changed
 
@@ -5176,6 +5231,7 @@ syntax:
 ::constant DOM_NODE_INSERTED_INTO_DOCUMENT "DOMNodeInsertedIntoDocument"
 ::constant DOM_ATTR_MODIFIED "DOMAttrModified"
 ::constant DOM_CHARACTER_DATA_MODIFIED "DOMCharacterDataModified"
+::constant DOM_ELEMENT_MODIFIED "DOMElementModified"
 
 
 ::method init
@@ -7289,11 +7345,13 @@ syntax:
 
   newNode = node
   if node~nodeType == .Node~ELEMENT_NODE then do
+      oldName = node~nodeName
       node~rename(namespaceURI, name)
       self~callUserDataHandlers(node, .nil, .UserDataHandler~NODE_RENAMED)
-      self~renamedElement(node, node)
+      self~renamedElement(node, oldName)
   end
   else if node~nodeType == .Node~ATTRIBUTE_NODE then do
+      oldName = node~nodeName
       -- detach the attr from its owning element
       owner = node~ownerElement
       if owner \= .nil then
@@ -7304,7 +7362,7 @@ syntax:
           owner~setAttributeNodeNS(node)
       self~callUserDataHandlers(node, .nil, UserDataHandler~NODE_RENAMED)
       -- fire AttributeNameChanged event
-      self~renamedAttrNode(node, node)
+      self~renamedAttrNode(node, nodeName)
   end
   else
       .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
