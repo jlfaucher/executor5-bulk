@@ -262,7 +262,7 @@
 ::method "data=" abstract
 
 -- interface class for implementing a user data handler
-::class "UserDataHandler" mixinclass object
+::class "UserDataHandler" public mixinclass object
 ::constant NODE_CLONED 1
 ::constant NODE_IMPORTED 2
 ::constant NODE_DELETED 3
@@ -273,15 +273,119 @@
 ::method handle
 
 -- interface class for implementing a DOM event handler
-::class "DOMEventListener" mixinclass object
+::class "DOMEventListener" public mixinclass object
 -- called as handleEvent(event)
 ::method handleEvent
 
 -- interface for the DOM objects that allow attaching of event listeners
-::class "DOMEventTarget" mixinclass object
+::class "DOMEventTarget" public mixinclass object
 ::method addEventListener abstract
 ::method removeEventListener abstract
 ::method dispatchEvent abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DocumentTraversal                                                   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- interface for supporting document traversal methods
+::class "DocumentTraversal" mixinclass object
+::method createNodeIterator abstract
+::method createTreeWalker abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: NodeIterator                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+::class "NodeIterator" public mixinclass object
+
+::method root abstract
+::method whatToShow abstract
+::method filter abstract
+::method expandEntityReferences abstract
+
+::method nextNode abstract
+::method previousNode abstract
+::method detach abstract
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: TreeWalker                                                          */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "TreeWalker" public mixinclass Object
+::method root abstract
+::method whatToShow abstract
+::method filter abstract
+::method expandEntityReferences abstract
+::method currentNode abstract
+::method "CURRENTNODE=" abstract
+
+::method parentNode
+::method firstChild
+::method lastChild
+::method previousSibling abstract
+::method nextSibling abstract
+::method previousNode abstract
+::method nextNode abstract
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: NodeFilter                                                          */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+::class "NodeFilter" mixinclass Object public
+-- constants returned by acceptNode
+::constant FILTER_ACCEPT 1
+::constant FILTER_REJECT 2
+::constant FILTER_SKIP   3
+
+-- whatToShow values
+::constant SHOW_ALL                     -1
+::constant SHOW_ELEMENT                  1
+::constant SHOW_ATTRIBUTE                2
+::constant SHOW_TEXT                     4
+::constant SHOW_CDATA_SECTION            8
+::constant SHOW_ENTITY_REFERENCE        16
+::constant SHOW_ENTITY                  32
+::constant SHOW_PROCESSING_INSTRUCTION  64
+::constant SHOW_COMMENT                128
+::constant SHOW_DOCUMENT               256
+::constant SHOW_DOCUMENT_TYPE          512
+::constant SHOW_DOCUMENT_FRAGMENT     1024
+::constant SHOW_NOTATION              2048
+
+-- use to filter the individual nodes
+::method acceptNode
+  use strict arg node
+  -- default implementation accepts everything
+  return self~FILTER_ACCEPT
+
+-- helper method to test a particular flag setting against
+-- a mask of what to show.  Return .true if this is in the mask,
+-- .false otherwise
+::method isShowing class
+  use strict arg whatToShow, test
+
+  -- this is easy
+  if whatToShow == .NodeFilter~SHOW_ALL then
+      return .true
+  -- convert both values to a binary string, then pad out to 11 digits for the
+  -- mapping
+  flagValues = whatToShow~d2x~x2b~right(12, 0)
+  testFlags = test~d2x~x2b~right(12, 0)
+
+  -- by bitanding these together, if there are position matches,
+  -- we'll end up with 1s in the matching locations, allowing us to
+  -- return .true
+  return flagValues~bitand(testFlags) \= 0
+
+
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -2546,7 +2650,7 @@
 /* Class: DocumentImpl                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "DocumentImpl" subclass ParentNode public inherit Document
+::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal
 ::method init
   expose iterators ranges eventListeners doctype hasMutationEvents
   use arg doctype = .nil
@@ -2568,32 +2672,32 @@
   -- this is a singleton
   return .ooRexxDOM~implementation
 
+-- create a NodeIterator instance for the DocumentTraversal interface
 ::method createNodeIterator
   expose iterators
   use strict arg root, whatToShow, filter, entityReferenceExpansion = .true
 
-  iterator = .NodeIterator~new(self, root, whatToShow, filter, entityReferenceExpansion)
+  iterator = .NodeIteratorImpl~new(self, root, whatToShow, filter, entityReferenceExpansion)
 
-  if iterators = .nil  then do
-      iterators = .list~new
-  end
+  -- we keep track of the iterators so we can dispatch update events to them
+  if iterators = .nil  then iterators = .list~new
 
   iterators~append(iterator)
   return iterator
 
+-- create a tree walker for moving through the nodes
 ::method createTreeWalker
   use strict arg root, whatToShow, filter, entityReferenceExpansion = .true
-  return .TreeWalker~new(root, whatToShow, filter, entityReferenceExpansion)
+  return .TreeWalkerImpl~new(root, whatToShow, filter, entityReferenceExpansion)
 
+-- remove an iterator from tracking as a result of a detach call
 ::method removeNodeIterator
   expose iterators
   use strict arg nodeIterator
 
-  if nodeIterator == .nil | iterators == .nil then do
-      return
-  end
+  if nodeIterator == .nil | iterators == .nil then return
 
-  iterators~remove(iterator)
+  iterators~removeItem(iterator)
 
 ::method createRange
   expose ranges
@@ -5015,8 +5119,6 @@ syntax:
 ::constant AT_TARGET 2
 ::constant BUBBLING_PHASE 3
 
-
-
 ::method init
   expose type initialized cancelable target eventPhase currentTarget timeStamp propagationStopped defaultPrevented isTrusted immediatePropagationStopped
   type = .nil
@@ -5095,136 +5197,52 @@ syntax:
   use strict arg type, bubble, cancelable, relatedNode, prevValue, newValue, attrName, attrChange
   self~initEvent(type, canBubble, cancelable)
 
-
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: NodeFilter                                                          */
+/* Class: NodeIteratorImpl                                                    */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "NodeFilter" mixinclass Object public
--- constants returned by acceptNode
-::constant FILTER_ACCEPT 1
-::constant FILTER_REJECT 2
-::constant FILTER_SKIP   3
-
--- whatToShow values
-::constant SHOW_ALL                     -1
-::constant SHOW_ELEMENT                  1
-::constant SHOW_ATTRIBUTE                2
-::constant SHOW_TEXT                     4
-::constant SHOW_CDATA_SECTION            8
-::constant SHOW_ENTITY_REFERENCE        16
-::constant SHOW_ENTITY                  32
-::constant SHOW_PROCESSING_INSTRUCTION  64
-::constant SHOW_COMMENT                128
-::constant SHOW_DOCUMENT               256
-::constant SHOW_DOCUMENT_TYPE          512
-::constant SHOW_DOCUMENT_FRAGMENT     1024
-::constant SHOW_NOTATION              2048
-
--- use to filter the individual nodes
-::method acceptNode
-  use strict arg node
-  -- default implementation accepts everything
-  return self~FILTER_ACCEPT
-
-::method isShowing
-  use strict arg whatToShow, test
-
-  if whatToShow == .NodeFilter~SHOW_ALL then do
-      flagValues = "11111111111"    -- we'll set all flags to true
-  end
-  else do
-      -- convert this to a binary string, then pad out to 11 digits for the
-      -- mapping
-      flagValues = whatToShow~d2x~x2b~right(11, 0)
-  end
-
-  whatToShowFlags = .directory~new
-  parse var flagValues whatToShowFlags[.Node~ELEMENT] +1 -
-                       whatToShowFlags[.Node~ATTRIBUTE] +1 -
-                       whatToShowFlags[.Node~TEXT] +1 -
-                       whatToShowFlags[.Node~CDATA_SECTION] +1 -
-                       whatToShowFlags[.Node~ENTITY_REFERENCE] +1 -
-                       whatToShowFlags[.Node~ENTITY] +1 -
-                       whatToShowFlags[.Node~PROCESSING_INSTRUCTION] +1 -
-                       whatToShowFlags[.Node~COMMENT] +1 -
-                       whatToShowFlags[.Node~DOCUMENT] +1 -
-                       whatToShowFlags[.Node~DOCUMENT_TYPE] +1 -
-                       whatToShowFlags[.Node~DOCUMENT_FRAGMENT] +1 -
-                       whatToShowFlags[.Node~NOTATION] +1
-
- return whatToShowFlags[test]
-
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: NodeIterator                                                        */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-::class "NodeIterator" public
+::class "NodeIteratorImpl" public inherit NodeIterator
 ::method init
   expose document root currentNode whatToShowFlags whatToShow nodeFilter entityReferenceExpansion forward
   use strict arg document, root, whatToShow = (.NodeFilter~SHOW_ALL), nodeFilter = .nil, entityReferenceExpansion = .false
 
-  if whatToShow == .NodeFilter~SHOW_ALL then do
-      flagValues = "11111111111"    -- we'll set all flags to true
-  end
-  else do
+  -- convert the whatToShow flags into a string of binary digits that can be
+  -- easily tested
+  if whatToShow == .NodeFilter~SHOW_ALL then
+      whatToShowFlags = "111111111111"    -- we'll set all flags to true
       -- convert this to a binary string, then pad out to 11 digits for the
       -- mapping
-      flagValues = whatToShow~d2x~x2b~right(11, 0)
-  end
-
-  whatToShowFlags = .directory~new
-  parse var flagValues whatToShowFlags[.Node~ELEMENT] +1 -
-                       whatToShowFlags[.Node~ATTRIBUTE] +1 -
-                       whatToShowFlags[.Node~TEXT] +1 -
-                       whatToShowFlags[.Node~CDATA_SECTION] +1 -
-                       whatToShowFlags[.Node~ENTITY_REFERENCE] +1 -
-                       whatToShowFlags[.Node~ENTITY] +1 -
-                       whatToShowFlags[.Node~PROCESSING_INSTRUCTION] +1 -
-                       whatToShowFlags[.Node~COMMENT] +1 -
-                       whatToShowFlags[.Node~DOCUMENT] +1 -
-                       whatToShowFlags[.Node~DOCUMENT_TYPE] +1 -
-                       whatToShowFlags[.Node~DOCUMENT_FRAGMENT] +1 -
-                       whatToShowFlags[.Node~NOTATION] +1
-
+  else whatToShowFlags = whatToShow~d2x~x2b~right(12, 0)
   forward = .true      -- we start iterating in a forward direction
 
+-- attributes defined by the interface
 ::attribute root GET
 ::attribute whatToShow GET
 ::attribute filter GET
 ::attribute expandEntityReferences GET
 
+-- retrieve the next node in the iteration sequence.  Returns .nil at
+-- the end
 ::method nextNode
   expose root currentNode forward
   use strict arg
 
-  if root == .nil then do
-      return .nil
-  end
-
+  -- a null root is unusual, but not illegal
+  if root == .nil then return .nil
   nextNode = currentNode
 
-  do forever
+  loop forever
       -- if we're backing up, repeat the current node
-      if \forward & nextNode \= .nil then do
-          nextNode = currentNode
-      end
+      if \forward & nextNode \== .nil then nextNode = currentNode
       else do
-          if \entityReferenceExpansion, nextNode \= .nil, nextNode~nodeType == .Node~ENTITY_REFERENCE_NODE then do
-              nextNode = self~nextNode(nextNode, .false)
-          end
-          else do
-              nextNode = self~nextNode(nextNode, .true)
-          end
+          if \entityReferenceExpansion, nextNode \= .nil, nextNode~nodeType == .Node~ENTITY_REFERENCE_NODE then
+              nextNode = self~locateNextNode(nextNode, .false)
+          else nextNode = self~locateNextNode(nextNode, .true)
       end
       forward = .true
       -- did not find a next node, return .nil
-      if nextNode = .nil then do
-          return .nil
-      end
+      if nextNode = .nil then return .nil
 
       -- now try the filters
       if self~acceptNode(nextNode) then do
@@ -5236,32 +5254,24 @@ syntax:
       -- keep looping until we find something good
   end
 
-  return .nil   -- no acceptable nodes found
-
+-- back up to the previous node
 ::method previousNode
   expose root currentNode forward
   use strict arg
 
-  if root == .nil | currentNode = .nil then do
-      return .nil
-  end
+  -- nothing to work from...we're done
+  if root == .nil | currentNode = .nil then return .nil
 
   previousNode = currentNode
 
-  do forever
-      if forward & previousNode \= .nil then do
-          previousNode = currentNode
-      end
-      else do
-          previousNode = self~previousNode(previousNode)
-      end
+  loop forever
+      if forward & previousNode \= .nil then previousNode = currentNode
+      else previousNode = self~previousNode(previousNode)
 
       -- this is going backwards
       forward = .false
 
-      if previousNode = .nil then do
-          return .nil
-      end
+      if previousNode = .nil then return .nil
 
       if self~acceptNode(previousNode) then do
           currentNode = previousNode
@@ -5269,100 +5279,88 @@ syntax:
       end
   end
 
-  return .nil
-
+-- a test to determine what should be accepted
 ::method acceptNode private
   expose nodeFilter whatToShowFlags
   use arg node
+  nodeFlag = (2**(node~nodetype - 1))~d2x~x2b~right(12, 0)
 
-  if nodeFilter == .nil then do
-      return whatToShowFlags[node~nodeType]
-  end
-  else do
-      return whatToShowFlags[node~nodeType] & nodeFilter~acceptNode(node) == .NodeFilter~FILTER_ACCEPT
-  end
+  -- test the flags first
+  if whatToShowFlags~bitxor(nodeflag) = 0 then return .false
+  -- then filter
+  if nodeFilter \= .nil then
+      return nodeFilter~acceptNode(node) == .NodeFilter~FILTER_ACCEPT
+  -- true based on the flags
+  return .true
 
+-- internal method to locate the next node
 ::method locateNextNode private
   expose root
   use strict arg node, visitChildren
 
-  if node == .nil then do
-      return .nil
-  end
+  -- might have already reached the end
+  if node == .nil then return .nil
 
   if visitChildren then do
-      if node~hasChildNodes then do
-          return node~firstChild
-      end
+      if node~hasChildNodes then return node~firstChild
   end
 
   -- back to the root?  We're done
-  if node == root then do
-      return .nil
-  end
+  if node == root then return .nil
 
   -- use the next sibling if it exists
   result = node~nextSibling
-  if result \= .nil then do
-      return result
-  end
+  if result \= .nil then return result
 
   -- go up to the parent
   parent = node~parentNode
-  do while parent \= .nil & parent \= root
+  loop while parent \== .nil & parent \== root
       result = parent~nextSibling
-      if result \= .nil then do
-          return result
-      end
+      if result \= .nil then return result
       parent = parent~parentNode
   end
+
   -- end of the nodes, return .nil
   return .nil
 
+-- internal node to locate a previous node
 ::method locatePreviousNode private
   expose root entityReferenceExpansion
   use strict arg node
 
   -- back to the root?  We're done
-  if node == root then do
-      return .nil
-  end
+  if node == root then return .nil
 
   -- use the next sibling if it exists
   result = node~previousSibling
-  if result == .nil then do
+  if result == .nil then
       -- if no previous sibling, then step up to the parent
       return node~parentNode
-  end
 
   -- if the sibling has children, drill down to the last last child
   if result~hasChildNodes & \(\entityReferenceExpansion & result~nodeType == .Node~ENTITY_REFERENCE_NODE) then do
-      do while result~hasChildNodes
+      loop while result~hasChildNodes
           result = result~lastChild
       end
   end
 
   return result
 
+-- remove a node from the iteration
 ::method removeNode
   expose forward currentNode
   use strict arg node
-  if node = .nil then do
-      return
-  end
 
-  delete = self~matchNodeOrParent(node)
+  if node = .nil then return
 
-  if forward then do
-      currentNode = self~locatePreviousNode(deleted)
-  end
+  deleted = self~matchNodeOrParent(node)
+
+  if forward then currentNode = self~locatePreviousNode(deleted)
   else do
       next = self~locateNextNode(deleted, .false)
-      if next \= .nil then do
-          currentNode = next
-      end
+      if next \= .nil then currentNode = next
       else do
-          currentNode = self~locatedPreviousNode(deleted)
+          currentNode = self~locatePreviousNode(deleted)
           forward = .true
       end
   end
@@ -5371,20 +5369,17 @@ syntax:
   expose currentNode root
   use strict arg node
 
-  if currentNode == .nil then do
-      return .nil
-  end
+  if currentNode == .nil then return .nil
 
   target = currentNode
-  do while target \= root
-      if node == target then do
-          return target
-      end
+  loop while target \= root
+      if node == target then return target
       target = target~parentNode
   end
 
   return .nil
 
+-- detach this iterator from the document
 ::method detach
   expose root currentNode document
 
@@ -6560,11 +6555,11 @@ syntax:
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: TreeWalker                                                          */
+/* Class: TreeWalkerImpl                                                      */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "TreeWalker" public
+::class "TreeWalkerImpl" inherit TreeWalker
 ::method init
   expose currentNode root whatToShow nodeFilter entityReferenceExpansion whatToShowFlags
   use strict arg root, self~whatToShow, nodeFilter, entityReferenceExpansion
@@ -6579,95 +6574,77 @@ syntax:
 ::attribute whatToShow SET
   expose whatToShow whatToShowFlags
   use strict arg whatToShow
-
-  if whatToShow == .NodeFilter~SHOW_ALL then do
-      flagValues = "11111111111"    -- we'll set all flags to true
-  end
-  else do
+  -- convert the whatToShow flags into a string of binary digits that can be
+  -- easily tested
+  if whatToShow == .NodeFilter~SHOW_ALL then
+      whatToShowFlags = "111111111111"    -- we'll set all flags to true
       -- convert this to a binary string, then pad out to 11 digits for the
       -- mapping
-      flagValues = whatToShow~d2x~x2b~right(11, 0)
-  end
+  else whatToShowFlags = whatToShow~d2x~x2b~right(12, 0)
 
-  whatToShowFlags = .directory~new
-  parse var flagValues whatToShowFlags[.Node~ELEMENT] +1 -
-                       whatToShowFlags[.Node~ATTRIBUTE] +1 -
-                       whatToShowFlags[.Node~TEXT] +1 -
-                       whatToShowFlags[.Node~CDATA_SECTION] +1 -
-                       whatToShowFlags[.Node~ENTITY_REFERENCE] +1 -
-                       whatToShowFlags[.Node~ENTITY] +1 -
-                       whatToShowFlags[.Node~PROCESSING_INSTRUCTION] +1 -
-                       whatToShowFlags[.Node~COMMENT] +1 -
-                       whatToShowFlags[.Node~DOCUMENT] +1 -
-                       whatToShowFlags[.Node~DOCUMENT_TYPE] +1 -
-                       whatToShowFlags[.Node~DOCUMENT_FRAGMENT] +1 -
-                       whatToShowFlags[.Node~NOTATION] +1
-
+-- retrieve the parent node of the
 ::attribute parentNode GET
   expose currentNode
-  if currentNode = .nil then do
-      return .nil
-  end
+  if currentNode = .nil then return .nil
+  -- if we have a parent, then that becomes the
+  -- new current node
+  node = currentNode~parentNode
+  if node \= .nil then currentNode = node
+  return node
 
+-- retrieve the last child of the current node position
 ::method lastChild
   expose currentNode
   use strict arg
 
-  if currentNode == .nil then do
-      return .nil
-  end
-
+  if currentNode == .nil then return .nil
+  -- skip forward to the last child
   node = self~getLastChild(currentNode)
-  if node \= .nil then do
-      currentNode = node
-  end
-
+  if node \= .nil then currentNode = node
   return node
 
+-- retrieve the previous sibling of the current node position
 ::method previousSibling
   expose currentNode
   use strict arg
 
-  node = self~getPreviousSibline(currentNode)
-  if node \= .nil then do
-      currentNode = node
-  end
-
+  -- locate the previous sibling
+  node = self~getPreviousSibling(currentNode)
+  if node \= .nil then currentNode = node
   return node
 
+-- get the next sibling of the current node
 ::method nextSibling
   expose currentNode
   use strict arg
 
   node = self~getNextSibling(currentNode)
-  if node \= .nil then do
-      currentNode = node
-  end
-
+  if node \= .nil then currentNode = node
   return node
 
+-- retrieve the previous node in the tree walking order
 ::method previousNode
   expose currentNode
   use strict arg
 
-  if currentNode == .nil then do
-      return .nil
-  end
+  if currentNode == .nil then return .nil
 
+  -- get the previous sibling.  If we don't have one,
+  -- then it's time to step up to the parent level
   node = self~getPreviousSibling(currentNode)
   if node == .nil then do
       node = self~getParentNode(currentNode)
-      if result \= .nil then do
-          currentNode = node
-          return node
-      end
-      return .nil
+      if node \= .nil then currentNode = node
+      return node
   end
 
+  -- in traversal order, we would be coming up from the depths,
+  -- so first we go the last child of that sibling, and keep
+  -- drilling down to the last child of each one in order
   lastChild = self~getLastChild(node)
-  previos = lastChild
+  previous = lastChild
 
-  do while lastChild \= .nil
+  loop while lastChild \= .nil
       previous = lastChild
       lastChild = self~getLastChild(previous)
   end
@@ -6679,28 +6656,26 @@ syntax:
       return lastChild
   end
 
-  if node \= .nil then do
-      currentNode = node
-      return currentNode
-  end
+  -- didn't find a last child, so we're returning the sibling,
+  -- which we know not to be .nil at this point
+  currentNode = node
+  return currentNode
 
-  return .nil
-
+-- get the next node in the sequence
 ::method nextNode
   expose currentNode
   use strict arg
 
-  if currentNode == .nil then do
-      return .nil
-  end
+  if currentNode == .nil then return .nil
 
+  -- first choice is a child of this node
   node = self~getFirstChild(currentNode)
 
   if node \= .nil then do
       currentNode = node
       return node
   end
-
+  -- ok, step to the next sibling node
   node = self~getNextSibling(currentNode)
 
   if node \= .nil then do
@@ -6708,6 +6683,7 @@ syntax:
       return node
   end
 
+  -- ok, up to the parent
   parent = self~getParentNode(currentNode)
   do while parent \= .nil
       node = self~getNextSibling(parent)
@@ -6715,177 +6691,142 @@ syntax:
           currentNode = node
           return node
       end
-
+      -- no siblings, try from its parent
       parent = self~getParentNode(parent)
   end
-
+  -- reached the root...we're finished
   return .nil
 
+-- special method to retrieve a parent node.  This also applies
+-- filtering logic to the process
 ::method getParentNode private
   expose currentNode
-  if node == .nil | node == root then do
-      return .nil
-  end
+  if node == .nil | node == root then return .nil
 
   newNode = node~parentNode
-  if newNode == .nil then do
-      return .nil
-  end
+  if newNode == .nil then return .nil
 
-  if self~acceptNode(newNode) == .NodeFilter~FILTER_ACCEPT then do
+  if self~acceptNode(newNode) == .NodeFilter~FILTER_ACCEPT then
       return newNode
-  end
 
-  -- if skipped or rejected, try for another parent
+  -- if skipped or rejected, recursively try for another parent
   return self~getParentNode(newNode)
 
+-- retrieve the next sibling node for the traversal, applying filtering logic
+-- to the retrieval
 ::method getNextSibling private
   expose root
   use strict arg node, startNode = (root)
 
-  if node == .nil | node == startNode then do
-      return .nil
-  end
+  if node == .nil | node == startNode then return .nil
 
   newNode = node~nextSibling
   if newNode == .nil then do
       newNode = node~parentNode
-      if newNode = .nil | newNode == startNode then do
-          return .nil
-      end
-
-      if self~acceptNode(newNode) == .NodeFilter~FILTER_SKIP then do
+      if newNode = .nil | newNode == startNode then return .nil
+      -- if filtered out, then try this recursively
+      if self~acceptNode(newNode) == .NodeFilter~FILTER_SKIP then
           return self~getNextSibling(newNode, startNode)
-      end
-
       return .nil
   end
 
+  -- filter the node here
   accept = self~acceptNode(newNode)
-  if accept == .NodeFilter~FILTER_ACCEPT then do
-      return newNode
-  end
+  -- accepted, return this
+  if accept == .NodeFilter~FILTER_ACCEPT then return newNode
+  -- told to skip...try for a child first, and if there
+  -- are no children, try for another sibling
   else if accept == .NodeFilter~FILTER_SKIP then do
       child = self~getFirstChild(newNode)
-      if child == .nil then do
-          return self~getNextSibling(newNode, startNode)
-      end
-      return child
-  end
-  else do
+      if child \== .nil then
+          return child
       return self~getNextSibling(newNode, startNode)
   end
+  -- rejection basically means pretend this doesn't exist
+  else return self~getNextSibling(newNode, startNode)
 
+-- retrieve the previous sibling, applying filtering logic
 ::method getPreviousSibling private
   expose root
   use strict arg node, startNode = (root)
 
-  if node == .nil | node == startNode then do
-      return .nil
-  end
+  if node == .nil | node == startNode then return .nil
 
   newNode = node~previousSibling
   if newNode == .nil then do
       newNode = node~parentNode
-      if newNode == .nil | newNode == startNode then do
-          return .nil
-      end
+      if newNode == .nil | newNode == startNode then return .nil
 
-      if self~acceptNode(newNode) == .NodeFilter~FILTER_SKIP then do
+      if self~acceptNode(newNode) == .NodeFilter~FILTER_SKIP then
           return self~getPreviousSibling(newNode, startNode)
-      end
       return .nil
   end
 
   accept = self~acceptNode(newNode)
-  if accept == .NodeFilter~FILTER_ACCEPT then do
-      return newNode
-  end
+  if accept == .NodeFilter~FILTER_ACCEPT then return newNode
   else if accept == .NodeFilter~FILTER_SKIP then do
       child = self~getLastChild(newNode)
-      if child == .nil then do
+      if child == .nil then
           return self~getPreviousSibling(newNode, startNode)
-      end
       return child
   end
-  else do
-      return self~getPreviousSibling(newNode, startNode)
-  end
+  else return self~getPreviousSibling(newNode, startNode)
 
+-- get the first child of a node, applying filtering logic
 ::method getFirstChild private
   expose entityReferenceExpansion
   use strict arg node
 
-  if entityReferenceExpansion & node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+  -- if we're on an entity reference and expansion is disabled, there are no children
+  if \entityReferenceExpansion & node~nodeType == .Node~ENTITY_REFERENCE_NODE then
       return .nil
-  end
 
   newNode = node~firstChild
-  if newNode == .nil then do
-      return .nil
-  end
+  if newNode == .nil then return .nil
 
   accept = self~acceptNode(newNode)
-  if accept == .NodeFilter~FILTER_ACCEPT then do
-      return newNode
-  end
+  if accept == .NodeFilter~FILTER_ACCEPT then return newNode
+  -- if skipping, then we drill down to that child node
   else if accept == .NodeFilter~FILTER_SKIP & newNode~hasChildNodes then do
       child = self~getFirstChild(newNode)
-      if child == .nil then do
-          return self~getNextSibling(newNode, node)
-      end
+      if child == .nil then return self~getNextSibling(newNode, node)
   end
-  else do
-      return self~getNextSibling(newNode, node)
-  end
+  else return self~getNextSibling(newNode, node)
 
+-- get the last child of a node, applying filtering rules
 ::method getLastChild private
   expose entityReferenceExpansion
   use strict arg node
 
-  if entityReferenceExpansion & node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
+  if \entityReferenceExpansion & node~nodeType == .Node~ENTITY_REFERENCE_NODE then
       return .nil
-  end
 
-  newNode = self~lastChild
-  if newNode == .nil then do
-      return .nil
-  end
+  newNode = nofr~lastChild
+  if newNode == .nil then return .nil
 
   accept = self~acceptNode(newNode)
-  if accept == .NodeFilter~FILTER_ACCEPT then do
-      return newNode
-  end
+  if accept == .NodeFilter~FILTER_ACCEPT then return newNode
   else if accept == .NodeFilter~FILTER_SKIP & newNode~hasChildNodes then do
       child = self~getLastChild(newNode)
-      if child == .nil then do
-          return self~getPreviousSibling(newNode, node)
-      end
+      if child == .nil then return self~getPreviousSibling(newNode, node)
   end
-  else do
-      return self~getPreviousSibling(newNode, node)
-  end
+  else return self~getPreviousSibling(newNode, node)
 
+-- do filtering logic on a node
 ::method acceptNode private
   expose nodeFilter whatToShowFlags
   use strict arg node
 
-  if nodeFilter == .nil then do
-      if whatToShowFlags[node~nodeType] then do
-          return .NodeFilter~FILTER_ACCEPT
-      end
-      else do
-          return .NodeFilter~FILTER_SKIP
-      end
-  end
-  else do
-      if whatToShowFlags[node~nodeType] then do
-          return nodeFilter~accept(node)
-      end
-      else do
-          return .NodeFilter~FILTER_SKIP
-      end
-  end
+  nodeFlag = (2**(node~nodetype - 1))~d2x~x2b~right(12, 0)
+  -- test the flags first...if bad, this is a skip
+  if whatToShowFlags~bitxor(nodeflag) \= 0 then
+      return .NodeFilter~FILTER_SKIP
+
+  if nodeFilter \== .nil then
+      return nodeFilter~accept(node)
+
+  -- passed the flag selection and no filter, this is good
+  return .NodeFilter~FILTER_ACCEPT
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
