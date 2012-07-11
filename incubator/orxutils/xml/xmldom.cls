@@ -42,6 +42,8 @@
 -- initial tables
 .XPathToken~setup
 
+::options trace c
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Section:  Abstract DOM interface class definitions                         */
@@ -312,6 +314,20 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+/* Class: ElementTraversal                                                    */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- interface for supporting element traversal methods
+::class "ElementTraversal" mixinclass object
+::method firstElementChild abstract
+::method lastElementChild abstract
+::method previousElementSibling abstract
+::method nextElementSibling abstract
+::method childElementCount abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 /* Class: NodeIterator                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -401,6 +417,52 @@
   -- return .true
   return flagValues~bitand(testFlags) \= 0
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DocumentRange                                                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "DocumentRange" public mixinclass Object
+::method createRange abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Range                                                               */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "Range" public mixinclass Object
+::constant START_TO_START 0
+::constant START_TO_END   1
+::constant END_TO_END     2
+::constant END_TO_START   3
+
+::method startContainer abstract
+::method startOffset abstract
+::method endContainer abstract
+::method endOffset abstract
+::method collapsed abstract
+::method commonAncestorContainer abstract
+
+::method setStart abstract
+::method setEnd abstract
+::method setStartBefore abstract
+::method setStartAfter abstract
+::method setEndBefore abstract
+::method setEndAfter abstract
+::method collapse abstract
+::method selectNode abstract
+::method selectNodeContents abstract
+::method compareBoundaryPoints abstract
+::method deleteContents abstract
+::method extractContents abstract
+::method cloneContents abstract
+::method insertNode abstract
+::method surroundContents abstract
+::method cloneRange abstract
+::method toString abstract
+::method detach abstract
 
 
 /*----------------------------------------------------------------------------*/
@@ -1619,6 +1681,8 @@
 ::attribute localName GET
   use strict arg
   return self~nodeName
+
+-- base URI is not supported yet
 ::attribute baseURI GET
   use strict arg
   return .nil
@@ -2621,7 +2685,7 @@
 /* Class: DocumentImpl                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal DocumentEvent
+::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal DocumentEvent DocumentRange
 ::method init
   expose iterators ranges eventListeners doctype haveMutationEventListeners savedEventContext
   use arg doctype = .nil
@@ -2633,13 +2697,18 @@
   haveMutationEventListeners = .false
   savedEventContext = .nil
 
+-- clone a document node
 ::method cloneNode
   use strict arg deep = .false
 
+  -- create an instance of the same class (we might be subclassed)
+  -- and go through the cloning logic
   newDoc = self~class~new
   self~cloneDocument(newDoc, deep)
   return newDoc
 
+-- retrieve the DOM implementation this is associated with.  This
+-- always returns the ooRexxDOM
 ::method implementation
   -- this is a singleton
   return .ooRexxDOM~implementation
@@ -2671,50 +2740,58 @@
 
   iterators~removeItem(iterator)
 
+
+-- create a range instance associated with this document
 ::method createRange
   expose ranges
-  if ranges == .nil then do
-      ranges = .list~new
-  end
+  use strict arg
 
-  range = .range~new(self)
+  -- if this is the first range, then create a list to track these
+  if ranges == .nil then ranges = .list~new
+
+  -- create an instance and add it to the tracking list
+  range = .rangeImpl~new(self)
   ranges~append(range)
   return range
 
+-- remove a range from the document
 ::method removeRange
   expose ranges
   use strict arg range
-  if range == .nil | ranges == .nil then do
-      return
-  end
+
+  if range == .nil | ranges == .nil then return
   ranges~removeItem(range)
 
+-- handle a replacedText event.  This will broadcast to all of the ranges
 ::method replacedText
   expose ranges
   use strict arg node
 
   if ranges \= .nil then do
-      do range over ranges
+      loop range over ranges
           range~receiveReplacedText(node)
       end
   end
 
+
+-- handle a deletedText event.  This will broadcast to all of the ranges
 ::method deletedText
   expose ranges
   use strict arg node, offset, count
 
   if ranges \= .nil then do
-      do range over ranges
+      loop range over ranges
           range~receiveDeletedText(node, offset, count)
       end
   end
 
+-- handle a insertedText event.  This will broadcast to all of the ranges
 ::method insertedText
   expose ranges
   use strict arg node, offset, count
 
   if ranges \= .nil then do
-      do range over ranges
+      loop range over ranges
           range~receiveInsertedText(node, offset, count)
       end
   end
@@ -2724,7 +2801,7 @@
   use strict arg node, newNode, offset
 
   if ranges \= .nil then do
-      do range over ranges
+      loop range over ranges
           range~receiveSplitData(node, newNode, offset)
       end
   end
@@ -2808,9 +2885,8 @@
   do le over nodeListeners
       if le~equals(type, listener, useCapture) then do
           nodeListeners~removeItem(le)
-          if nodeListeners~isEmpty then do
+          if nodeListeners~isEmpty then
               self~setEventListeners(node, .nil)
-          end
           -- remove this from the capture tables as well
           capture = self~lookupCapture(eventName)
           capture~removeListener(useCapture)
@@ -2895,17 +2971,7 @@
  * on the event which triggered them. Please be aware that this may
  * result in events arriving at listeners "out of order" relative
  * to the actual sequence of requests.
- * <p>
- * Note that our implementation resets the event's stop/prevent flags
- * when dispatch begins.
- * I believe the DOM's intent is that event objects be redispatchable,
- * though it isn't stated in those terms.
- * @param node node to dispatch to
- * @param event the event object to be dispatched to
- *              registered EventListeners
- * @return true if the event's <code>preventDefault()</code>
- *              method was invoked by an EventListener; otherwise false.
-*/
+ */
 
 ::method dispatchEvent private
   use strict arg node, event
@@ -3460,17 +3526,20 @@
       self~dispatchEvent(element, me)
   end
 
-::class "EventListenerDescriptor" public
+-- internal class for tracking event listeners
+::class "EventListenerDescriptor"
 ::method init
   expose type useCapture listener
   use strict arg type, listener, useCapture
 
+-- test if an event listener matches a given search criteria
 ::method equals
   expose type useCapture listener
   use strict arg eventType, eventlistener, phase
 
   return phase == useCapture & listener == eventListener & eventType == type
 
+-- tests if a handler should handle a given event phase
 ::method handlesEvent
   expose type useCapture
 
@@ -3478,7 +3547,7 @@
 
   return phase == useCapture & type == eventType
 
--- invoke an event handler with
+-- invoke an event handler with syntax error handling
 ::method invoke
   expose listener
   use strict arg event
@@ -3496,10 +3565,14 @@ syntax:
 ::method init
   expose captures total bubble total
 
+-- the number of capture phase listeners we have for this event
 ::attribute captures GET
+-- the total number of listeners we have for this event type
 ::attribute total    GET
+-- the total number of bubble phase listeners we have for this event type
 ::attribute bubbles  GET
 
+-- add another listener for a given event type
 ::method addListener
   expose captures total bubbles
   use arg useCapture
@@ -3509,6 +3582,7 @@ syntax:
   if useCapture then captures += 1
   else bubbles += 1
 
+-- remove a listener from the tracking for this event
 ::method removeListener
   expose captures total bubbles
   use arg useCapture
@@ -3520,7 +3594,7 @@ syntax:
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: Attr                                                                */
+/* Class: AttrImpl                                                            */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
@@ -3535,9 +3609,8 @@ syntax:
   use strict arg ownerDoc, nodeName, namespaceURI = .nil, explicitLocalName = .nil
   self~init:super(ownerDoc)
   self~setName(nodeName)
-  if explicitLocalName \= .nil then do
+  if explicitLocalName \= .nil then
       localName = explicitLocalName
-  end
   self~specified = .false
 
 -- process a name change for this attribute
@@ -3545,27 +3618,23 @@ syntax:
   expose namespaceURI localName prefix
   use arg qname
   -- null string is the same as not there
-  if namspaceURI == "" then do
+  if namspaceURI == "" then
       namespaceURI = .nil
-  end
 
   colon1 = qname~pos(":")
   colon2 = qname~lastPos(":")
   -- no prefix
-  if colon1 == 0 then do
+  if colon1 == 0 then
       -- local name and qualified name are the same
       localName = qname
-  end
-  else do
-      parse var qname prefix =(colon1) =(colon2 + 1) localName
-  end
+  else parse var qname prefix =(colon1) =(colon2 + 1) localName
 
 -- support for the Document renameNode method
 ::method rename
   use strict arg uri, name = .nil
-  if name == .nil then do
+
+  if name == .nil then
       self~nodeName = uri
-  end
   else do
       self~nodeName = name
       self~namespaceURI = uri
@@ -3578,26 +3647,21 @@ syntax:
 ::attribute prefix GET
   expose nodeName
   index = nodeName~pos(":")
-  if index > 0 then do
+  if index > 0 then
       return nodeName~substr(1, index - 1)
-  end
-  else do
-      return .nil
-  end
+  else return .nil
 
 ::attribute prefix SET
   expose nodeName localName
   use strict arg prefix
 
   -- we're either adding or replacing the prefix
-  if prefix \= "" then do
+  if prefix \= "" then
       nodeName = prefix":"localName
-  end
   -- or removing it entirely
-  else do
-      nodeName = localName
-  end
+  else nodeName = localName
 
+-- the localname part of the qualified name
 ::attribute localName GET
 
 -- resolve the prefix that a node is using for a given namespace URI
@@ -3635,63 +3699,64 @@ syntax:
       return ownerNode~isDefaultNamespace(uri)
   return .false
 
+-- indicates that this attribute has been marked as an id attribute
 ::attribute isId
 
+-- clone an attribute node
 ::method cloneNode
   expose value
   use strict arg deep = .false
 
+  -- do the node cloning first
   newNode = self~cloneNode:super(deep)
-
+  -- flip the specified flag
   newNode~specified = .true
   return newNode
 
+-- override to return the attribute node type
 ::attribute nodeType GET
   use strict arg
   return .Node~ATTRIBUTE_NODE
 
+-- node name attribute
 ::attribute nodeName
 
+-- remap nodevalue setter/getter to the value method
 ::attribute nodeValue SET
   forward message("VALUE=")
 ::attribute nodeValue GET
   forward message("VALUE")
 
+-- get the type name...this is the type information
+-- from a schema, which is not yet implemented
 ::attribute typeName GET
   expose type
   use strict arg
   if type \= .nil then do
-      if type~isA(.String) then do
-          return type
-      end
-      else do
-          return type~typeName
-      end
+      if type~isA(.String) then return type
+      else return type~typeName
   end
-  else do
-      return .nil
-  end
+  else return .nil
 
+-- return the type definition namespace.  Not yet really
+-- implemented since the parser doesn't have type support.
 ::attribute typeNamespace GET
   expose type
   use strict arg
   if type \= .nil then do
-      if \type~isA(.String) then do
-          return type~namespace
-      end
-      else do
-          return "http://www.w3.org/TR/REC-xml";
-      end
+      if \type~isA(.String) then return type~namespace
+      else return "http://www.w3.org/TR/REC-xml";
   end
   return .nil
 
+-- determine if an attribute is derived from a given type
 ::method isDerivedFrom
   expose type
   use strict arg typeNamespace, typeName, derivationMethod
-  if type \= .nil, \type~isA(.String) then do
+  if type \= .nil, \type~isA(.String) then
       return type~isDOMDerivedFrom(typeNamespace, typeName, derivationMethod)
-  end
   return .false
+
 
 -- set/retrieve type directly
 ::attribute type
@@ -3723,9 +3788,9 @@ syntax:
       self~ownerDocument~modifiedAttrValue(self, oldvalue)
   else self~changed
 
-  if self~isId & self~ownerElement \== .nil then do
+  if self~isId & self~ownerElement \== .nil then
       self~ownerDocument~putIdentifier(newvalue, ownerElement)
-  end
+
 
 -- set the value of the attribute.  This adds a text node to the attribute
 -- node
@@ -3740,14 +3805,13 @@ syntax:
 ::method buildTextContent private
   use arg buffer
   child = self~firstChild
-  do while child \= .nil
+  loop while child \= .nil
       if child~nodeType == .Node~ENTITY_REFERENCE_NODE then
           data = child~entryRefValue
       else if self~hasTextContent(child) then
           data = child~nodeValue
-      if data \== .nil then do
+      if data \== .nil then
           buffer~append(data)
-      end
       child = child~nextSibling
   end
 
@@ -3757,16 +3821,15 @@ syntax:
 ::attribute textContent SET
   forward message("VALUE=")
 
+-- get the element parent for this attribute
 ::attribute element GET
   use strict arg
 
-  if self~isOwned then do
+  if self~isOwned then
       return self~ownerNode
-  end
-  else do
-      return .nil
-  end
+  else return .nil
 
+-- same as element
 ::attribute ownerElement GET
   forward message("ELEMENT")
 
@@ -3779,7 +3842,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "ElementImpl" subclass ParentNode public inherit Element NodeList
+::class "ElementImpl" subclass ParentNode public inherit Element NodeList ElementTraversal
 ::method init
   expose nodeName attributes namespaceURI localName type
   attributes = .nil
@@ -3814,21 +3877,16 @@ syntax:
   expose namespaceURI localName
   use arg qname
   -- null string is the same as not there
-  if namespaceURI == "" then do
-      namespaceURI = .nil
-  end
+  if namespaceURI == "" then namespaceURI = .nil
 
   colon1 = qname~pos(":")
   colon2 = qname~lastPos(":")
   -- no prefix
-  if colon1 == 0 then do
+  if colon1 == 0 then
       -- local name and qualified name are the same
       localName = qname
-  end
-  else do
-      parse var qname prefix =(colon1) =(colon2 + 1) localName
-      -- TODO:  validate the name information with the ownerdoc
-  end
+  else parse var qname prefix =(colon1) =(colon2 + 1) localName
+
 
 -- support for the Document renameNode method
 ::method rename
@@ -3850,99 +3908,87 @@ syntax:
 ::attribute prefix GET
   expose nodeName
   index = nodeName~pos(":")
-  if index > 0 then do
-      return nodeName~substr(1, index - 1)
-  end
-  else do
-      return .nil
-  end
+  if index > 0 then return nodeName~substr(1, index - 1)
+  else return .nil
 
+-- set the prefix for the element name
 ::attribute prefix SET
   expose nodeName localName
   use strict arg prefix
 
   -- we're either adding or replacing the prefix
-  if prefix \= "" then do
+  if prefix \= "" then
       nodeName = prefix":"localName
-  end
   -- or removing it entirely
-  else do
-      nodeName = localName
-  end
+  else nodeName = localName
 
+-- retrieve the localName
 ::attribute localName GET
 
+-- standard nodetype override
 ::attribute nodeType GET
+  use strict arg
   return .node~ELEMENT_NODE
 
+-- the node name attribue
 ::attribute nodeName GET
 
+-- get the argument map holding the attributes
 ::attribute attributes GET
   expose attributes
   use strict arg
 
-  if attributes == .nil then do
-      attributes = .AttributeMap~new(self, .nil)
-  end
-
+  if attributes == .nil then attributes = .AttributeMap~new(self, .nil)
   return attributes
 
+-- set a new attribute set
 ::attribute attributes SET private
 
+-- clone an element node
 ::method cloneNode
   expose attributes
   use strict arg deep = .false
   newNode = self~cloneNode(deep)
 
   -- the attributes are always copied regardless of the deep flag
-  if attributes \= .nil then do
+  if attributes \= .nil then
       newNode~attributes = attributes~cloneMap(newNode)
-  end
-
   return newNode
 
+-- get the base URI for this element...not supported yet
 ::attribute baseURI GET
   use strict arg
   return .nil
 
+-- set the element owner document
 ::attribute ownerDocument SET private
   expose attributes
   use strict arg doc
 
   forward class(super) continue
   -- also set this for all of the attributes
-  if attributes \= .nil  then do
-      attributes~ownerDocument = doc
-  end
+  if attributes \= .nil  then attributes~ownerDocument = doc
 
 -- retrieve the value of a named attribute
 ::method getAttribute
   expose attributes
 
   use strict arg name
-  if attributes == .nil then do
-      return ""
-  end
+  if attributes == .nil then return ""
 
   attr = attributes~getNamedItem(name)
-  if attr == .nil then do
-      return ""
-  end
-  else do
-      return attr~value
-  end
+  if attr == .nil then return ""
+  else return attr~value
 
 -- get the node associated with a specific named attribute
 ::method getAttributeNode
   expose attributes
 
   use strict arg name
-  if attributes == .nil then do
-      return .nil
-  end
-
+  if attributes == .nil then return .nil
   return attributes~getNamedItem(name)
 
+-- return a list of all elements by tag name
 ::method getElementsByTagName
   use strict arg tagname
   -- this version does a lazy search
@@ -3953,24 +3999,24 @@ syntax:
   expose nodeName
   return nodeName
 
+-- remove an attribute from the element
 ::method removeAttribute
   expose attributes
   use strict arg name
 
-  if attributes \= .nil  then do
+  if attributes \= .nil  then
       return attributes~removeNamedItem(name)
-  end
   return .nil
 
+-- remove an attribute node from an element
 ::method removeAttributeNode
   expose attributes
   use strict arg oldAttr
 
-  if attrbutes \= .nil  then do
-      return attributes~removeItem(oldAttr, .true)
-  end
+  if attrbutes \= .nil then return attributes~removeItem(oldAttr, .true)
   return .nil
 
+-- set a new attribute value on an element
 ::method setAttribute
   use strict arg name, value
 
@@ -3984,37 +4030,28 @@ syntax:
       newAttr~value = value
       attributes~setNamedItem(newAttr)
   end
-  else do
-      newAttr~value = value
-  end
+  else newAttr~value = value
   return newAttr
 
+-- set an attribute on an element by node
 ::method setAttributeNode
   use strict arg newAttr
 
   -- get the attribute map.  This also creates it if
   -- we don't have one yet
   attributes = self~attributes
-
   return attributes~setNamedItem(newAttr)
 
-
+-- set an attribute by localname/namespace pair
 ::method getAttributeNS
   expose attributes
   use strict arg namespaceURI, localName
 
-  if attributes == .nil then do
-      return ""
-  end
+  if attributes == .nil then return ""
 
   attr = attributes~getNamedItemNS(namespaceURI, localName)
-  if attr == .nil then do
-      return ""
-  end
-  else do
-      return attr~value
-  end
-
+  if attr == .nil then return ""
+  else return attr~value
 
   -- set an attribute using a namespace URI and a qualified name
 ::method setAttributeNS
@@ -4022,9 +4059,7 @@ syntax:
   use strict arg namespaceURI, qualifiedName, value
 
   index = qualifiedName~pos(":")
-  if pos > 0 then do
-      parse var qualifiedName prefix ":" localName
-  end
+  if pos > 0 then parse var qualifiedName prefix ":" localName
   else do
       prefix = .nil
       localName = qualifiedName
@@ -4046,53 +4081,50 @@ syntax:
   end
   return newAttr
 
+-- remove an attribute by specified localname/namespace pair
 ::method removeAttributeNS
   expose attributes
   use strict arg namespaceURI, localName
 
-  if attributes == .nil then do
-      return .nil
-  end
-
+  if attributes == .nil then return .nil
   return attributes~removeNamedItemNS(namespaceURI, localName)
 
+
+-- retrieve an attribute node by specified localname/namespace pair
 ::method getAttributeNodeNS
   expose attributes
   use strict arg namespaceURI, localName
 
-  if attributes == .nil then do
-      return .nil
-  end
-
+  if attributes == .nil then return .nil
   return attributes~getNamedItemNS(namespaceURI, localName)
 
+-- set an attribute node by specified localname/namespace pair
 ::method setAttributeNodeNS
   use strict arg newAttr
 
   -- get the attribute map.  This also creates it if
   -- we don't have one yet
   attributes = self~attributes
-
   return attributes~setNamedItemNS(newAttr)
 
+-- test if an element has any attributes
 ::method hasAttributes
   expose attributes
 
-  if attributes == .nil then do
-      return .false
-  end
-
+  if attributes == .nil then return .false
   return attributes~length > 0
 
+-- test if an element has a given attribute
 ::method hasAttribute
   use strict arg name
   return self~getAttributeNode(name) \= .nil
 
+-- test if an element has a given attribute using a namespace qualified name
 ::method hasAttributeNS
   use strict arg namespaceURI, localName
-
   return self~getAttributeNodeNS(namespaceURI, localName) \= .nil
 
+-- get all elements using a namespace qualified name
 ::method getElementsByTagNameNS
   use strict arg namespaceURI, localName
 
@@ -4133,179 +4165,130 @@ syntax:
 ::attribute typeName GET
   expose type
   use strict arg
-  if type \= .nil then do
-      return type~typeName
-  end
-  else do
-      return .nil
-  end
+  if type \= .nil then return type~typeName
+  else return .nil
 
+-- retrieve the type namespace
 ::attribute typeNamespace GET
   expose type
   use strict arg
-  if type \= .nil then do
-      return type~namespace
-  end
-  else do
-      return .nil
-  end
+  if type \= .nil then return type~namespace
+  else return .nil
 
+-- test if a node is derived from a given type
 ::method isDerivedFrom
   expose type
   use strict arg typeNamespace, typeName, derivationMethod
-  if type \= .nil then do
+  if type \= .nil then
       return type~isDOMDerivedFrom(typeNamespace, typeName, derivationMethod)
-  end
-  else do
-      return .false
-  end
+  else return .false
 
 -- set/retrieve type directly
 ::attribute type
 
+-- retrieve the schema information
 ::attribute schemaTypeInfo GET
   use strict arg
   return self
 
 -- ElementTraversal methods
 
+-- return the count of child elements
 ::attribute childElementCount GET
   use strict arg
   count = 0
   child = self~firstElementChild
-  do while child \= .nil
+  loop while child \= .nil
       count += 1
       child = child~nextElementSibling
   end
 
   return count
 
+-- get the first element child of this node (skipping over non-element children)
 ::attribute firstElementChild GET
   use strict arg
   node = self~firstChild
 
-  do while node \= .nil
-      if node~nodeType == .Node~ELEMENT_NODE then do
-          return node
-      end
+  loop while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then return node
       else if node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
-          e = self~getFirstChildElement(node)
-          if e \= .nil  then do
-              return e
-          end
+          e = self~getFirstElementChild(node)
+          if e \= .nil  then return e
       end
       node = node~nextSibling
   end
   return .nil
 
+-- get the last elemet child of this element
 ::attribute lastElementChild GET
   use strict arg
   node = self~lastChild
 
-  do while node \= .nil
-      if node~nodeType == .Node~ELEMENT_NODE then do
-          return node
-      end
+  loop while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then return node
       else if node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
-          e = self~getFirstChildElement(node)
-          if e \= .nil  then do
-              return e
-          end
+          e = self~getLastChildElement(node)
+          if e \= .nil  then return e
       end
       node = node~previousSibling
   end
   return .nil
 
 
+-- get the next element sibling of this node
 ::attribute nextElementSibling GET
   use strict arg
   node = self~nextLogicalSibling(self)
 
-  do while node \= .nil
-      if node~nodeType == .Node~ELEMENT_NODE then do
-          return node
-      end
+  loop while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then return node
       else if node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
-          e = self~getFirstChildElement(node)
-          if e \= .nil  then do
-              return e
-          end
+          e = self~getFirstElementChild(node)
+          if e \= .nil  then return e
       end
       node = node~nextLogicalSibling(node)
   end
   return .nil
 
 
+-- get the previous element sibling
 ::attribute previousElementSibling GET
   use strict arg
   node = self~previousLogicalSibling(self)
 
-  do while node \= .nil
-      if node~nodeType == .Node~ELEMENT_NODE then do
-          return node
-      end
+  loop while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then return node
       else if node~nodeType == .Node~ENTITY_REFERENCE_NODE then do
-          e = self~getFirstChildElement(node)
-          if e \= .nil  then do
-              return e
-          end
+          e = self~getLastElementChild(node)
+          if e \= .nil  then return e
       end
       node = node~previousLogicalSibling(node)
   end
   return .nil
 
+-- get the first element child of this node
 ::method getFirstElementChild private
   use strict arg node
 
   top = node
 
-  do while node \= .nil
-      if node~nodeType == .Node~ELEMENT_NODE then do
-          return node
-      end
+  loop while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then return node
       next = node~firstChild
-      do while next \= .nil
-          if node == top then do
-              leave;
-          end
+      loop while next \= .nil
+          if node == top then leave
           next = node~nextSibling
           if next \= .nil then do
               node = node~parentNode
-              if node == .nil | node == top then do
-                  return .nil
-              end
+              if node == .nil | node == top then return .nil
           end
       end
       node = next
   end
   return .nil
 
-::method getLastElementChild private
-  use strict arg node
-
-  top = node
-
-  do while node \= .nil
-      if node~nodeType == .Node~ELEMENT_NODE then do
-          return node
-      end
-      next = node~lastChild
-      do while next \= .nil
-          if node == top then do
-              leave;
-          end
-          next = node~previousSibling
-          if next \= .nil then do
-              node = node~parentNode
-              if node == .nil | node == top then do
-                  return .nil
-              end
-          end
-      end
-      node = next
-  end
-  return .nil
-
+-- get the next logical sibling of this node
 ::method nextLogicalSibling private
   use arg node
 
@@ -4313,17 +4296,16 @@ syntax:
 
   if next == .nil then do
       parent = node~parentNode
-      do while parent \= .nil, parent~nodeType == .Node~ENTITY_REFERENCE_NODE
+      loop while parent \= .nil, parent~nodeType == .Node~ENTITY_REFERENCE_NODE
           next = parent~nextSibling
-          if next \= .nil then do
-              leave
-          end
+          if next \= .nil then leave
           parent = parent~parentNode
       end
   end
 
   return next
 
+-- get the previous logical sibling
 ::method previousLogicalSibling private
   use arg node
 
@@ -4333,14 +4315,33 @@ syntax:
       parent = node~parentNode
       do while parent \= .nil, parent~nodeType == .Node~ENTITY_REFERENCE_NODE
           previous = parent~previousSibling
-          if previous \= .nil then do
-              leave
-          end
+          if previous \= .nil then leave
           parent = parent~parentNode
       end
   end
 
   return previous
+
+-- Returns the first element node found from a
+-- non-recursive reverse order traversal of the given node.
+::method getLastElementChild private
+  use strict arg node
+
+  top = node
+  loop while node \= .nil
+      if node~nodeType == .Node~ELEMENT_NODE then return node
+      next = node~lastChild
+      loop while next \= .nil
+          if node == top then leave
+          next = node~previousSibling
+          if next \= .nil then do
+              node = node~parentNode
+              if node == .nil | node == top then return .nil
+          end
+      end
+      node = next
+  end
+  return .nil
 
 -- resolve the prefix that a node is using for a given namespace URI
 ::method lookupPrefix
@@ -4475,61 +4476,70 @@ syntax:
   use strict arg ownerDocument, data
   self~init:super(ownerDocument)
 
+-- character data nodes do not have children
 ::attribute childNodes GET
   use strict arg
   -- always returns an empty node list
   return .NodeListImpl~new
 
+-- retrieve the nodevalue, which is the same as the data
 ::attribute nodeValue GET
   expose data
   use strict arg
   return data
 
+-- set the nodeValue
 ::attribute nodeValue SET
   expose data
   use strict arg value, replace = .false
 
   oldValue = data
+  -- announce that we're modifying
   self~ownerDocument~modifyingCharacterData(self, replace)
 
   data = value
-
+  -- and say we're done
   self~ownerDocument~modifiedCharacterData(self, oldValue, value, replace)
 
+-- data is mapped to the node vale
 ::attribute data GET
   forward message("NODEVALUE")
 ::attribute data SET
   forward message("NODEVALUE=")
+
+-- retrieve the data length
 ::attribute length GET
   expose data
   use strict arg
   return data~length
 
+-- append a string to the node data
 ::method appendData
   expose data
   use strict arg newData
-  if newData == .nil then do
-      return
-  end
 
+  if newData == .nil then return
+
+  -- set the node value, which also handles events
   self~nodeValue = data||newData
 
+-- delete data from the node
 ::method deleteData
   expose data
   use strict arg offset, count, replace = .false
 
   tailLength = max(data~length - count - offset, 0)
-  if offset >= data~length  then do
-      newData = data
-  end
-  else do
-      newData = data~delstr(offset + 1, count)
-  end
+  if offset >= data~length  then newData = data
+  else newData = data~delstr(offset + 1, count)
   -- set the node value to the adjusted version
+  -- we do this directly since we don't want to
+  -- raise set events
   data = newData
 
+  -- indicate we deleted
   self~ownerDocument~deletedText(self, offset, count)
 
+-- insert data into the node
 ::method insertData
   expose data
   use strict arg offset, newData, replace = .false
@@ -4538,8 +4548,9 @@ syntax:
   -- the Rexx insert function inserts after the given offset, not
   -- before.  This actually works to our advantage.
   newValue = data~insert(newData, offset)
+  -- set directly to avoid set events
   data = newValue
-
+  -- send the insertion event
   self~ownerDocument~insertedText(self, offset, newData~length)
 
 ::method replaceData
@@ -5121,7 +5132,9 @@ syntax:
 ::constant NAMESPACE_ERR 14
 ::constant INVALID_ACCESS_ERR 15
 ::constant VALIDATION_ERR 16
-::constant TYPE_MISMATCH_ERR 16
+::constant TYPE_MISMATCH_ERR 17
+::constant BAD_BOUNDARYPOINTS_ERR 18
+::constant INVALID_NODE_TYPE_ERR 19
 
 -- instance item for DOM errors.  This is attached to the condition information
 ::method init
@@ -5154,6 +5167,8 @@ syntax:
   messageTable[.DomException~VALIDATION_ERR] =              "A call to a method such as insertBefore or removeChild would make the Node invalid with respect to document grammar."
   messageTable[.DomException~WRONG_DOCUMENT_ERR] =          "A node is used in a different document than the one that created it."
   messageTable[.DomException~TYPE_MISMATCH_ERR] =           "The value type for this parameter name is incompatible with the expected value type."
+  messageTable[.DomException~BAD_BOUNDARYPOINTS_ERR] =      "The boundary-points of a Range do not meet specific requirements."
+  messageTable[.DomException~INVALID_NODE_TYPE_ERR] =       "The container of a boundary-point of a Range is being set to either a node of an invalid type or a node with an ancestor of an invalid type."
 
 -- raise an error using the DOMException error numbers
 ::method raiseError class
@@ -5446,10 +5461,11 @@ syntax:
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: Range                                                               */
+/* Class: RangeImpl                                                           */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "Range" public
+
+::class "RangeImpl" public inherit Range
 ::constant START_TO_START 0
 ::constant START_TO_END   1
 ::constant END_TO_END     2
