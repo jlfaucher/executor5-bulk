@@ -2127,6 +2127,21 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
+-- retrieve the nodes complete ancestor chain
+::attribute ancestors get
+  use strict arg
+
+  -- NB:  We include the target node itself in this list...if you wish to exclude that,
+  -- start the request one level up
+  ancestors = .array~new
+  node = self
+  loop while node \= .nil
+      ancestors~append(node)
+      node = node~parentNode
+  end
+
+  return ancestors
+
 ::attribute ctr class private
 ::attribute id       private
 
@@ -2750,7 +2765,7 @@
   if ranges == .nil then ranges = .list~new
 
   -- create an instance and add it to the tracking list
-  range = .rangeImpl~new(self)
+  range = .RangeImpl~new(self)
   ranges~append(range)
   return range
 
@@ -5468,137 +5483,104 @@ syntax:
 ::attribute startOffset GET
 ::attribute endContainer GET
 ::attribute endOffset GET
+
+-- test if a range has been collapsed.  A collapsed range
+-- starts and ends in the same container and has the same offset
 ::attribute collapsed GET
   expose startContainer endContainer startOffset endOffset
   use strict arg
   return startContainer == endContainer & startOffset = endOffset
 
+-- locate the common ancestor of both the start and end containers
 ::attribute commonAncestorContainer GET
   expose startContainer
-  startV = .array~new
-  node = startContainer
-  do while node \= .nil
-      startV~append(node)
-      node = node~parentNode
-  end
 
-  endV = .array~new
-
-  node = endContainer
-  do while node \= .nil
-      endV~append(node)
-      node = node~parentNode
-  end
+  -- build a chain of the start containers ancestor chain
+  startAncestors = startContainer~ancestors
+  endAncestors = endContainer~ancestors
 
   -- this will give all of the common elements,
   -- retaining the order.  The last one is the
   -- element we want
-  common = startV~intersection(endV)
+  common = startAncestors~intersection(endV)
+  -- not really good if they have no common ancestor
+  if common~isEmpty then return .nil
+  -- the last item is the one we want
   return common[common~last]
 
+-- set the range start as a node and offset
 ::method setStart
-  expose startContainer startOffset endContainer endOffset
+  expose startContainer startOffset
   use strict arg refNode, offset
 
+  -- validate this is a valid starting point and set the start item
   self~checkIndex(refNode, offset)
   startContainer = refNode
   startOffset = offset
 
-  if self~commonAncestorContainer == .nil | -
-      (startContainer == endContainer & endOffset < startOffset) then do
-      self~collapse(.true)
-  end
+  self~checkCollapse    -- this new range may require collapsing
 
+-- set the end position
 ::method setEnd
-  expose startContainer startOffset endContainer endOffset
+  expose endContainer endOffset
   use strict arg refNode, offset
 
+  -- validate this is a valid ending point and set the end items
   self~checkIndex(refNode, offset)
   endContainer = refNode
   endOffset = offset
 
-  if self~commonAncestorContainer == .nil | -
-      (startContainer == endContainer & endOffset < startOffset) then do
-      self~collapse(.false)
-  end
+  self~checkCollapse    -- this new range may require collapsing
 
-
+-- set the start position as being before a target node
 ::method setStartBefore
-  expose startContainer startOffset endContainer endOffset
+  expose startContainer startOffset
   use strict arg refNode
 
   startContainer = refNode~parentNode
-  i = 0
-  node = refNode
-  do while node \= .nil
-      i += 1
-      node = node~previousSibling
-  end
+  -- the starting offset is one less than the node offset
+  startOffset = self~nodeOffset(startContainer) - 1
 
-  startOffset = i - 1
+  self~checkCollapse    -- this new range may require collapsing
 
-  -- now collapse this, if necessary
-  if self~commonAncestorContainer == .nil | -
-      (startContainer == endContainer & endOffset < startOffset) then do
-      self~collapse(.true)
-  end
-
-
+-- set the start position to immediately after a given node
 ::method setStartAfter
   expose startContainer startOffset endContainer endOffset
   use strict arg refNode
 
   startContainer = refNode~parentNode
-  i = 0
-  node = refNode
-  do while node \= .nil
-      i += 1
-      node = node~previousSibling
-  end
+  -- the starting offset is the node offset
+  startOffset = self~nodeOffset(startContainer)
 
-  startOffset = i
+  self~checkCollapse    -- this new range may require collapsing
 
-  -- now collapse this, if necessary
-  if self~commonAncestorContainer == .nil | -
-      (startContainer == endContainer & endOffset < startOffset) then do
-      self~collapse(.true)
-  end
-
-
+-- set the end position after a given node
 ::method setEndAfter
-  expose startContainer startOffset endContainer endOffset
+  expose endContainer endOffset
   use strict arg refNode
 
-  endContainer = refNode~parentNode
-  i = 0
-  node = refNode
-  do while node \= .nil
-      i += 1
-      node = node~previousSibling
-  end
+  -- the starting offset is the node offset
+  startOffset = self~nodeOffset(startContainer)
 
-  endOffset = i
+  self~checkCollapse    -- this new range may require collapsing
 
-  -- now collapse this, if necessary
-  if self~commonAncestorContainer == .nil | -
-      (startContainer == endContainer & endOffset < startOffset) then do
-      self~collapse(.false)
-  end
-
-
+-- collapse a range
 ::method collapse
   expose startContainer startOffset endContainer endOffset
   use strict arg toStart
 
+  -- collapsing to the start?  The end becomes same as the start
   if toStart then do
       endContainer = startContainer
       endOffset = startOffset
   end
+  -- collapsing to the end...the start becomes the end
   else do
       startContainer = endContainer
       startOffset = endOffset
   end
 
+-- select a node.  This node is both the start and end of the range.
 ::method selectNode
   expose startContainer startOffset endContainer endOffset
   use strict arg refnode
@@ -5607,16 +5589,12 @@ syntax:
   if parent == .nil then do
       startContainer = parent
       endContainer = parent
-      i = 0
-      node = refNode
-      do while node \= .nil
-          node = previousSibling
-          i += 1
-      end
-      startOffet = i - 1
-      endOffset = i
+      ennOffset = self~nodeOffset(refnode)
+      startOffset = endOffset - 1
   end
 
+-- select the contents of a node.  The start and end containers are
+-- the selected nodes, and the offsets cover all of the children
 ::method selectNodeContents
   expose startContainer startOffset endContainer endOffset
   use strict arg refnode
@@ -5624,36 +5602,37 @@ syntax:
   startContainer = refNode
   startOffset = 0
   endContainer = refNode
-  endOffset = 0
-  first = refNode~firstChild
-  do while first \= .nil
-      endOffset += 1
-      first = first~nextSibling
-  end
+  endOffset = self~nodeOffset(refNode~lastChild)
 
+-- compare some boundary points between this range and
+-- another range
 ::method compareBoundaryPoints
   expose startContainer startOffset endContainer endOffset
   use strict arg how, sourceRange
 
   select
+      -- comparing the start points
       when how == .Range~START_TO_START then do
           endPointA = sourceRange~startContainer
           endPointB = startContainer
           offsetA = sourceRange~startOffset
           offsetB = startOffset
       end
+      -- comparing the other start to our end
       when how == .Range~START_TO_END then do
           endPointA = sourceRange~startContainer
           endPointB = endContainer
           offsetA = sourceRange~startOffset
           offsetB = endOffset
       end
+      -- comparing the other end to our start
       when how == .Range~END_TO_START then do
           endPointA = sourceRange~endContainer
           endPointB = startContainer
           offsetA = sourceRange~endOffset
           offsetB = startOffset
       end
+      -- comparing the two end points
       when how == .Range~END_TO_END then do
           endPointA = sourceRange~endContainer
           endPointB = endContainer
@@ -5678,14 +5657,10 @@ syntax:
   --   case 2: Child C of container A is ancestor of B
   current = endPointB
   parent = current~parentNode
-  do while parent \= .nil
+  loop while parent \= .nil
       if parent == endPointA then do
-          if offsetA <= self~indexOf(current, endPointA) then do
-              return 1
-          end
-          else do
-              return -1
-          end
+          if offsetA <= self~indexOf(current, endPointA) then return 1
+          else return -1
       end
       current = parent
       parent = parent~parentNode
@@ -5694,168 +5669,173 @@ syntax:
   --   case 3: Child C of container B is ancestor of A
   current = endPointA
   parent = current~parentNode
-  do while parent \= .nil
+  loop while parent \= .nil
       if parent == endPointB then do
-          if self~indexOf(current, endPointB) < offsetB then do
-              return 1
-          end
-          else do
-              return -1
-          end
+          if self~indexOf(current, endPointB) < offsetB then return 1
+          else return -1
       end
       current = parent
       parent = parent~parentNode
   end
 
   --   case 4: preorder traversal of context tree.
-  depthDiff = 0
-  node = endPointA
-  do while node \= .nil
-      depthDiff += 1
-      node = node~parentNode
-  end
+  depthA = self~depthOf(endPointA)
+  depthB = self~depthOf(endPointB)
 
-  node = endPointB
-  do while node \= .nil
-      depthDiff -= 1
-      node = node~parentNode
-  end
+  depthDiff = depthA - depthB
 
-  do while depthDiff > 0
+  -- if A is deeper, back up
+  loop while depthDiff > 0
       endPointA = endPointA~parentNode
       depthDiff -= 1
   end
 
-  do while depthDiff < 0
+  -- or possible B is deeper
+  loop while depthDiff < 0
       endPointB = endPointB~parentNode
       depthDiff += 1
   end
 
+  -- we should be at equal depths now, so keep going up
+  -- until these merge
   parentA = endPointA~parentNode
   parentB = endPointB~parentNode
-  do while parentA \= parentB
+  loop while parentA \= parentB
       endPointA = parentA
       endPointB = parentB
       parentA = parentA~parentNode
       parentB = parentB~parentNode
   end
 
+  -- now see if B follows A.
   node = endPointA~nextSibling
-  do while node \= .nil
-      if node == endPointB then do
-          return 1
-      end
+  loop while node \= .nil
+      if node == endPointB then return 1
       node = node~nextSibling
   end
-
+  -- B must precede A
   return -1
 
+-- delete all of the range contents.
 ::method deleteContents
   use strict arg
   self~traverseContents(self~DELETE_CONTENTS)
 
+-- extract the contents and return
 ::method extractContents
   use strict arg
   return self~traverseContents(self~EXTRACT_CONTENTS)
 
+-- clone the contents in the range
 ::method cloneContents
   use strict arg
   return self~traverseContents(self~CLONE_CONTENTS)
 
+-- insert a node into the range
 ::method insertNode
   expose startContainer startOffset endContainer endOffset insertedFromRange
   use strict arg newNode
-  if newNode == .nil then do
-      return
-  end
+
+  if newNode == .nil then return
 
   type = newNode~nodeType
   currentChildren = 0
+  -- when we do inserts, our listeners will get called back to inform us of this.
+  -- this flag lets the listener know that we're the source of this callback.
   insertedFromRange = .true
 
+  -- if the start container is a text node. then the range
+  -- refers to the text within the node. This is a string insertion
   if startContainer == .Node~TEXT_NODE then do
       parent = startContainer~parentNode
       currentChildren = parent~childNodes~length
-      cloneCurrent = startContainer~cloneNode(.false)
-      cloneCurrent~nodeValue = cloneCurrent~nodeValue~substr(startOffset + 1)
-      startContainer~nodeValue = startContainer~nodeValue(1, startOffset)
-      next = startContainer~nextSibling
-      if next \= .nil then do
-          if parent \= .nil then do
-              parent~insertBefore(newNode, next)
-              paretn~insertBefore(cloneNode, next)
-          end
-      end
-      else do
-          if parent \= .nil then do
-              parent~appendChild(newNode)
-              parent~appendChild(cloneCurrent)
-          end
-      end
-      -- update the ranges
+      -- this will split the text into two nodes, making the
+      -- second node the next sibling of this one.  We insert the
+      -- new node between these two.
+      splitNode = startContainer~splitText(startOffset)
+      -- insert this between the container and the split node
+      parent~insertBefore(newNode, splitNode)
+      -- update the ranges.  If the range was inside the
+      -- same text node, then the end container is the node
+      -- that was split off and the offset is adjusted for the
+      -- amount that stayed with the original node
       if endContainer == startContainer then do
-          endContainer = cloneCurrent
+          endContainer = splitNode
           endOffset -= startOffset
       end
-      else if endContainer == parent then do
+      -- if the end was the parent node, then adjust by the number of
+      -- children added.
+      else if endContainer == parent then
           endOffset += parent~childNodes~length - currentChildren
-      end
-
+      -- broadcast a data split
       self~signalSplitdata(startContainer, cloneCurrent, startOffset)
   end
   else do
-      if endContainer == startContainer then do
+      -- not a text node, so we're inserting between nodes
+      -- in the same container, so the offsets refer to the container
+      children.  Remember how many there are
+      if endContainer == startContainer then
           currentChildren = endContainer~childNodes~length
-      end
       current = startContainer~firstChild
-      do i = 1 to startOffset while current \= .nil
+      -- skip forward to the target starting offset
+      loop for startOffset while current \= .nil
           current = current~nextSibling
       end
-      if current \= .nil then do
+
+      -- the offset might be at the end, so we may have to append
+      if current \= .nil then
           startContainer~insertBefore(newNode, current)
-      end
-      else do
+      else
           startContainer~appendChild(newNode)
-      end
-      if endContainer = startContainer & endOffset \= 0 then do
-          endOffset += endContainer~childNodes~length - currentNodes
-      end
+      -- if start and end are the same, then adjust the end offset by the
+      -- amount inserted.
+      if endContainer = startContainer & endOffset \== 0 then
+          endOffset += endContainer~childNodes~length - currentChildren
   end
+  -- as you were...
   insertedFromRange = .false
 
+-- surround the contents of a range with a node.  This basically
+-- makes the entire range a child of the provided node
 ::method surroundContents
   expose startContainer startOffset endContainer endOffset
   use strict arg newParent
 
-  if newParent == .nil then do
-      return
-  end
+  if newParent == .nil then return
 
   type = newParent~nodeType
   realStart = startContainer
   realEnd = endContainer
 
-  if startContainer~nodeType == .Node~TEXT_NODE then do
+  -- text nodes for start and end change things because the
+  -- offsets refer to positions inside the text content
+  if startContainer~nodeType == .Node~TEXT_NODE then
       realStart = startContainer~parentNode
-  end
 
-  if endContainer~nodeType == .Node~TEXT_NODE then do
+  if endContainer~nodeType == .Node~TEXT_NODE then
       realEnd = endContainer~parentNode
-  end
 
+  -- get the contents of the range as a document fragment
   frag = self~extractContents()
+  -- insert the new node into the range
   self~insertNode(newParent)
+  -- append the node to the parent
   newParent~appendChild(frag)
+  -- the range now is the new parent
   self~selectNode(newParent)
 
+-- clone the range, returning a new range covering the same positions
 ::method cloneRange
   expose document startContainer startOffset endContainer endOffset
 
+  -- get a new range from the document and set the same start/end values
   range = document~createRange
   range~setStart(startContainer, startOffset)
   range~setEnd(endContainer, endOffset)
   return range
 
+-- return the string value of the range. This is created by extracting the TEXT and CDATA
+-- and concatenating them together into a single string
 ::method string
   expose startContainer startOffset endContainer endOffset
 
@@ -5863,58 +5843,59 @@ syntax:
   stopNode = endContainer
 
   buffer = .mutablebuffer~new
+
+  -- if the start is a text node or cdata node, then the start offset is inside the character data
   if startContainer~nodeType == .Node~TEXT_NODE | startContainer~nodeType == .Node~CDATA_SECTION_NODE then do
-      if startContainer == endContainter then do
+      -- if the start and end are the same, we can just return the substring directly
+      if startContainer == endContainer then
           return startContainer~nodeValue~substr(startOffset + 1, endOffset - startOffset)
-      end
-      buffer~append(startContainer~nodeValue~substr(startOffset + 1))
+      -- append the covered section
+      buffer~append(startContaine~substringData(startOffset))
   end
   else do
+      -- step forward to the target offset
       node = node~firstChild
       if startOffset > 0 then do
-          counter = 0
-          do while counter < startOffset, node \= .nil
+          loop for startOffset while node \= .nil
               node = node~nextSibling
-              counter += 1
           end
       end
-      if nod == .nil then do
+      -- if we reached the end, then we need to step to the next logical node
+      if node == .nil then
           node = self~nextNode(startContainer, .false)
-      end
   end
-
+  -- if the end it not a text type, then we need to do the same thing
   if endContainer~nodeType \= .Node~TEXT_NODE & endContainer~nodeType \= .Node~CDATA_SECTION_NODE then do
-      counter = endOffset
       stopNode = endContainer~firstChild
-      do while counter > 0, stopNode \= .nil
-          counter -= 1
+      loop for endOffset while stopNode \= .nil
           stopNode = stopNode~nextSibling
       end
 
-      if stopNode == .nil then do
+      if stopNode == .nil then
           stopNode = self~nextNode(endContainer, .false)
-      end
   end
 
-  do while node \= stopNode, node \= .nil
-      if node~nodeType == .Node~TEXT_NODE | node~nodeType == .Node~CDATA_SECTION_NODE then do
+  -- step throug everything appending the contents of the text nodes
+  loop while node \= stopNode, node \= .nil
+      if node~nodeType == .Node~TEXT_NODE | node~nodeType == .Node~CDATA_SECTION_NODE then
           buffer~append(node~nodeValue)
-      end
       node = self~nextNode(node, .true)
   end
 
-  if endContainer~nodeType == .Node~TEXT_NODE | endContainer~nodeType == .Node~CDATA_SECTION_NODE then do
-      buffer~append(endContainer~nodeValue~substr(1, endOffset))
-  end
+  -- and finally, check for an end target of a text node and append just the subpiece of it
+  if endContainer~nodeType == .Node~TEXT_NODE | endContainer~nodeType == .Node~CDATA_SECTION_NODE then
+      buffer~append(endContainer~substringData(1, endOffset))
 
   return buffer~string
 
+-- detach a range from a document
 ::method detach
   expose document
   use strict arg
   document~removeRange(self)
   document = .nil
 
+-- broadcast a data splitting event to any other ranges
 ::method signalSplitData
   expose splitNode document
   use strict arg node, newNode, offset
@@ -5923,14 +5904,16 @@ syntax:
   document~splitData(node, newNode, offset)
   splitNode = .nil
 
+-- receive a split data notification from the document
 ::method receiveSplitData
   expose startContainer startOffset endContainer endOffset splitNode
   use strict arg node, newNode, offset
 
-  if node == .nil | newNode == .nil | splitNode == node then do
-      return
-  end
+  -- this could be one from us
+  if node == .nil | newNode == .nil | splitNode == node then return
 
+  -- a split to a text node that is our start container?  If the split offset
+  -- is before our start, we need to adjust the offset
   if node == startContainer & startContainer~nodeType == .Node~TEXT_NODE then do
       if startOffset > offset then do
           startOffset = startOffset - offset
@@ -5938,6 +5921,7 @@ syntax:
       end
   end
 
+  -- a similar check for the end
   if node == endContainer & endContainer~nodeType == .Node~TEXT_NODE then do
       if endtOffset > offset then do
           endOffset = endOffset - offset
@@ -5945,6 +5929,7 @@ syntax:
       end
   end
 
+-- broadcast a data deletiong event
 ::method deleteData
   expose deleteNode
   use strict arg node, offset, count
@@ -5953,31 +5938,27 @@ syntax:
   node~deleteData(offset, count)
   deleteNode = .nil
 
+-- and handle a text deletion event
 ::method receiveDeletedText
   expose startContainer startOffset endContainer endOffset deleteNode
   use strict arg node, offset, count
 
-  if node == .nil | deleteNode == node then do
-      return
-  end
+  -- nothing to do if this came from us
+  if node == .nil | deleteNode == node then return
 
+  -- if deleted from our start container, we need to adjust our starting offset
   if node == startContainer then do
-      if startOffset > offset + count then do
+      if startOffset > offset + count then
           startOffset = offset + (startOffset - (offset + count))
-      end
-      else if startOffset > offset then do
-          startOffset = offset
-      end
+      else if startOffset > offset then startOffset = offset
   end
   if node == endContainer then do
-      if endOffset > offset + count then do
+      if endOffset > offset + count then
           endOffset = offset + (endOffset - (offset + count))
-      end
-      else if endOffset > offset then do
-          endOffset = offset
-      end
+      else if endOffset > offset then endOffset = offset
   end
 
+-- broadcast a data insertion
 ::method insertData
   expose insertNode
   use strict arg node, index, insert
@@ -5986,66 +5967,59 @@ syntax:
   node~insertData(index, insert)
   insertNode = .nil
 
+-- handle a data insertion notification from the document
 ::method receiveInsertedText
   expose startContainer startOffset endContainer endOffset insertNode
   use strict arg node, index, len
 
-  if node == .nil | deleteNode == node then do
-      return
-  end
+  -- ignore if we triggered this
+  if node == .nil | deleteNode == node then return
 
-  if node == startContainer then do
-      if index < startContainer then do
-          startOffset += len
-      end
-  end
-  if node == endContainer then do
-      if index < endOffset then do
-          endOffset += len
-      end
-  end
+  -- adjust the start or end offset if the insertion occurred
+  -- in our end points
+  if node == startContainer then
+      if index < startContainer then startOffset += len
 
+  if node == endContainer then
+      if index < endOffset then endOffset += len
+
+-- handle a text replacement event
 ::method receiveReplacedText
   expose startContainer startOffset endContainer endOffset
   use strict arg node
 
-  if node == .nil then do
-      return
-  end
+  if node == .nil then return
 
-  if node == startContainer then do
-      startOffset = 0
-  end
+  -- if the replacement occurred in our nodes, then the offsets
+  -- go to zero.
+  if node == startContainer then startOffset = 0
+  if node == endContainer then endOffset = 0
 
-  if node == endContainer then do
-      endOffset = 0
-  end
-
+-- an insertion coming from the DOM ... we might have been the ones to trigger this.
 ::method insertedNodeFromDOM
   expose startContainer startOffset endContainer endOffset insertNode insertedFromRange
   use strict arg node
 
-  if node == .nil | insertNode == node | insertedFromRange then do
-      return
-  end
+  -- this was our update, ignore it
+  if node == .nil | insertNode == node | insertedFromRange then return
 
   parent = node~parentNode
 
+  -- is this node one of our children?  Find out its index and see
+  -- if this requires a range adjustment
   if parent == startContainer then do
       index = self~indexOf(node, startContainer)
-      if index < startOffset then do
-          startOffset += 1
-      end
+      if index < startOffset then startOffset += 1
   end
 
+  -- ditto for the end container
   if parent == endContainer then do
       index = self~indexOf(node, endContainer)
-      if index < endOffset then do
-          endOffset += 1
-      end
+      if index < endOffset then endOffset += 1
   end
 
 
+-- handle a child removal for this range.
 ::method removeChild private
   expose removeChild
   use strict arg parent, child
@@ -6054,30 +6028,27 @@ syntax:
   removeChild = .nil
   return old
 
-
+-- handle a node removal for the range
 ::method removeNode
   expose startContainer startOffset endContainer endOffset removeChild
   use strict arg node
 
-  if node == .nil | removeChild == node then do
-      return
-  end
+  -- This is a removal we already know about, so ignore
+  if node == .nil | removeChild == node then return
 
+  -- this may change the offsets, so check this out
   parent = node~parentNode
   if parent == startContainer then do
       index = self~indexOf(node, startContainer)
-      if index < startOffset then do
-          startOffset -= 1
-      end
+      if index < startOffset then startOffset -= 1
   end
 
   if parent == endContainer then do
       index = self~indexOf(node, endContainer)
-      if index < endOffset then do
-          endOffset--
-      end
+      if index < endOffset then endOffset -= 1
   end
 
+  -- there may be ancestor issues involved here
   if parent \= startContainer | parent \= endContainer then do
       if self~isAncestorOf(node, startContainer) then do
           startContainer = parent
@@ -6091,31 +6062,29 @@ syntax:
 
 
 -- utility functions
+
+-- traverse the range contents, applying the appropriate operation
 ::method traverseContents private
   expose startContainer startOffset endContainer endOffset
   use strict arg now
 
-  if startContainer == .nil | endContainer = .nil then do
-      return .nil
-  end
+  -- not valid bounds always returns null
+  if startContainer == .nil | endContainer = .nil then return .nil
 
   -- Case 1:  same container
-  if startContainer == endContainer then do
-      return self~traverseSameContainer(how)
-  end
+  if startContainer == endContainer then return self~traverseSameContainer(how)
 
-  -- Case 2:  Child C if start container is ancestor of end container.
+  -- Case 2:  Child C of start container is ancestor of end container.
   -- this can be quickly tested by walking the parent chain of the end
   -- container
   endContainerDepth = 0
   node = endContainer
   parent = node~parentNode
-  do while parent \= .nil
-      if p == startContainer then do
+  loop while parent \= .nil
+      if parent == startContainer then
           return self~traverseCommonStartContainer(node, how)
-      end
       node = parent
-      parent = p~parentNode
+      parent = parent~parentNode
       endContainerDepth += 1
   end
 
@@ -6124,12 +6093,11 @@ syntax:
   endContainerDepth = 0
   node = startContainer
   parent = node~parentNode
-  do while parent \= .nil
-      if p == endContainer then do
+  loop while parent \= .nil
+      if parent == endContainer then
           return self~traverseCommonEndContainer(node, how)
-      end
       node = parent
-      parent = p~parentNode
+      parent = parent~parentNode
       endContainerDepth += 1
   end
 
@@ -6139,14 +6107,15 @@ syntax:
   depthDiff = startContainerDept - endContainerDepth
   startNode = startContainer
 
-  do while depthDiff > 0
+  -- adjust these to be at the same depth
+  loop while depthDiff > 0
       startNode = startNode~parentNode
       depthDiff -= 1
   end
 
   endNode = endContainer
 
-  do while depthDiff < 0
+  loop while depthDiff < 0
       endNode = endNode~parentNode
       depthDiff += 1
   end
@@ -6154,50 +6123,51 @@ syntax:
   sp = startNode~parentNode
   ep = endNode~parentNode
 
-  do while sp \= ep
+  loop while sp \= ep
       startNode = sp
       endNode = sp
 
       sp = sp~parentNode
       ep = ep~parentNode
   end
+
   return self~traverseCommonAncestors(startNode, endNode, how)
 
+-- perform a traversal on the same container level
 ::method traverseSameContainer private
   expose document startContainer startOffset endContainer endOffset
   use strict arg how
 
   fragment = .nil
 
-  if how == self~DELETE_CONTENTS then do
+  -- if we're deleting the contents, then we need to create a document fragment
+  -- to receive the deleted nodes
+  if how \= self~DELETE_CONTENTS then
       fragment = document~createDocumentFragment
-  end
-
   nodeType = startContainer~nodeType
+  -- if the starting node is any of the text type nodes, then we need to split the node
+  -- and take the trailing section
   if nodeType == .Node~TEXT_NODe | nodeType == .Node~CDATA_SECTION_NODE | nodeType == .Node~COMMENT_NODE | nodeType == .Node~PROCESSING_INSTRUCTION_NODE then do
+      -- get the portion of the text from the start offset
       test = startContainer~nodeValue
       sub = s~substr(startOffset + 1, endOffset - startOffset)
 
+      -- if not cloning, then we need to delete the data and
+      -- collapse everything
       if how \= self~CLONE_CONTENTS then do
           startContainer~deleteData(startOffset, endOffset - startOffset)
           self~collapse(.true)
       end
 
-      if how == self~DELETE_CONTENTS then do
-          return .nil
-      end
-      if nodeType == .Node~TEXT_NODE then do
-          fragment~appendChild(document~createTestNode(sub))
-      end
-      else if nodeType == .Node~CDATA_SECTION_NODE then do
-          fragment~appendChild(document~createCDATASection(sub))
-      end
-      else if nodeType == .Node~COMMENT_NODE then do
-          fragment~appendChild(document~createComment(sub))
-      end
-      else do  -- .Node~PROCESSING_INSTRUCTION_NODE
-          fragment~appendChild(document~createProcessingInstruction(startContainer~nodeName, sub))
-      end
+      -- no document fragment to return for a deletion
+      if how == self~DELETE_CONTENTS then return .nil
+
+      -- create the appropriate node type and attach to the fragment
+      if nodeType == .Node~TEXT_NODE then fragment~appendChild(document~createTextNode(sub))
+      else if nodeType == .Node~CDATA_SECTION_NODE then fragment~appendChild(document~createCDATASection(sub))
+      else if nodeType == .Node~COMMENT_NODE then fragment~appendChild(document~createComment(sub))
+      else fragment~appendChild(document~createProcessingInstruction(startContainer~nodeName, sub))
+
       return fragment
   end
 
@@ -6205,40 +6175,40 @@ syntax:
   node = self~getSelectedNode(startContainer, startOffset)
   count = endOffset - startOffset
 
-  do count
+  loop count
       sibling = node~nextSibling
       xferNode = self~traverseFullySelected(node, how)
-      if fragment \= .nil then do
-          fragment~appendChild(xferNode)
-      end
+      -- if we're accumulating, add to the fragment
+      if fragment \= .nil then fragment~appendChild(xferNode)
       node = sibling
   end
 
-  if now \= self~CLONE_CONTENTS then do
+  -- if not just copying, collapse the existing range
+  if how \= self~CLONE_CONTENTS then
       self~collapse(.true)
-  end
-
+  -- return the fragment with the extracted nodes
   return fragment
 
+
+-- traverse over a range using a common start container
 ::method traverseCommonStartContainer private
   expose document startContainer startOffset endContainer endOffset
   use strict arg endAncestor, how
 
   fragment = .nil
-
-  if how == self~DELETE_CONTENTS then do
+  -- if not deleting, create a document fragment to accumulate
+  if how \= self~DELETE_CONTENTS then
       fragment = document~createDocumentFragment
-  end
 
+  -- traverse the boundary at the endAncestor side
   node = self~traverseRightBoundary(endAncestor, how)
-  if fragment \= .nil then do
-      fragment~appendChild(node)
-  end
+  if fragment \= .nil then fragment~appendChild(node)
 
   endIndex = self~indexOf(endAncestor, startContainer)
   count = endIndex - startOffset
 
   if count <= 0 then do
+      -- if not cloning, we're removing these nodes, so collapse things
       if how \= self~CLONE_CONTENTS then do
           self~setEndBefore(endAncestor)
           self~collapse(.false)
@@ -6246,70 +6216,66 @@ syntax:
       return fragment
   end
 
+  -- run through the sibling list getting the rest of the children
   node = endAncestor~previousSibling
-  do count
+  loop count
       sibling = node~previousSibling
       xferNode = self~traverseFullySelected(node, how)
-      if fragment \= .nil then do
+      if fragment \= .nil then
           fragment~insertBefore(xferNode, fragment~firstChild)
-      end
       node = sibling
   end
-
+  -- again, collapse if this was not a cloning operation
   if how \= self~CLONE_CONTENTS then do
       self~setEndBefore(endAncestor)
       self~collapse(.false)
   end
   return fragment
 
+-- traverse where there is a common end container
 ::method traverseCommonEndContainer private
   expose document startContainer endContainer
   use strict arg startAncestor, how
 
+  -- get an accumulator fragment if needed
   fragment = .nil
-
-  if how == self~DELETE_CONTENTS then do
+  if how == self~DELETE_CONTENTS then
       fragment = document~createDocumentFragment
-  end
 
+  -- do the left boundary of the range and add if needed
   node = self~traverseLeftBoundary(endAncestor, how)
-  if fragment \= .nil then do
-      fragment~appendChild(node)
-  end
+  if fragment \= .nil then fragment~appendChild(node)
 
+  -- get the rest of the siblings
   startIndex = self~indexOf(startAncestor, endContainer) + 1
   count = endOffset - startIndex
   node = startAncestor~nextSibling
 
-  do count
+  loop count
       sibling = node~nextSibling
       xferNode = self~traverseFullySelected(node, how)
-      if fragment \= .nil then do
-          fragment~appendChild(xferNode)
-      end
+      if fragment \= .nil then fragment~appendChild(xferNode)
       node = sibling
   end
 
+  -- collapse if needed
   if how \= self~CLONE_CONTENTS then do
       self~setStartAfter(startAncestor)
       self~collapse(.true)
   end
   return fragment
 
+-- traverse a range where there are common ancestors
 ::method traverseCommonAncestors private
   expose document startContainer endContainer
   use strict arg startAncestor, endAncestor, how
 
   fragment = .nil
-
-  if how == self~DELETE_CONTENTS then do
+  if how == self~DELETE_CONTENTS then
       fragment = document~createDocumentFragment
-  end
 
   node = self~traverseLeftBoundary(endAncestor, how)
-  if fragment \= .nil then do
-      fragment~appendChild(node)
-  end
+  if fragment \= .nil then fragment~appendChild(node)
 
   commonParent = startAncestor~parentNode
   startOffset = self~indexOf(startAncestor, commonParent) + 1
@@ -6318,19 +6284,15 @@ syntax:
   count = endOffset - startOffset
   sibling = startAncestor~nextSibling
 
-  do count
+  loop count
       nextSibling = sibling~nextSibling
       node = self~traverseFullySelected(sibling, now)
-      if fragment \= .nil then do
-          fragment~appendChild(node)
-      end
+      if fragment \= .nil then fragment~appendChild(node)
       sibling = nextSibling
   end
 
   node = self~traverseRightBoundary(endAncestor, how)
-  if fragment \= .nil then do
-      fragment~appendChild(node)
-  end
+  if fragment \= .nil then fragment~appendChild(node)
 
   if how \= self~CLONE_CONTENTS then do
       self~setStartAfter(startAncestor)
@@ -6338,6 +6300,7 @@ syntax:
   end
   return fragment
 
+-- traverse the right boundary of the range
 ::method traverseRightBoundary private
   expose document startContainer startOffset endContainer endOffset
   use strict arg root, how
@@ -6345,88 +6308,88 @@ syntax:
   next = self~getSelectedNode(endContainer, endOffset - 1)
   isFullySelected = next \= endContainer
 
-  if next == root then do
+  if next == root then
       return self~traverseNode(next, isFullySelected, .false, now)
-  end
 
   parent = next~parentNode
   clonedParent = self~traverseNode(parent, .false, .false, how)
 
-  do while parent \= .nil
-      do while next \= .nil
+  loop while parent \= .nil
+      loop while next \= .nil
           prevSibling = next~previousSibling
           clonedChild = self~traverseNode(next, isFullySelected, .false, how)
-          if how \= self~DELETE_CONTENTS then do
+          if how \= self~DELETE_CONTENTS then
               clonedParent~insertBefore(clonedChild, clonedParent~firstChild)
-          end
           isFullySelected = .true
           next = prevSibling
       end
-      if parent == root then do
-          return clonedParent
-      end
+      if parent == root then return clonedParent
 
       next = parent~previousSibling
       parent = parent~parentNode
       node clonedGrandParent = self~traverseNode(parent, .false, .false, how)
-      if how \= self~DELETE_CONTENTS then do
+      if how \= self~DELETE_CONTENTS then
           clonedGrandParent~appendChild(clonedParent)
-      end
       clonedParent = clonedGrandParent
   end
 
   return .nil
 
+-- traverse a single node
 ::method traverseNode private
   use strict arg node, isFullySelected, isLeft, how
 
-  if isFullySelected then do
-      return self~traverseFullySelected(node, how)
-  end
+  if isFullySelected then return self~traverseFullySelected(node, how)
 
   nodeType = node~nodeType
+  -- character data nodes get special handling
   if nodeType == .Node~TEXT_NODE | nodeType == .Node~CDATA_SECTION_NODE | -
-      nodeType == .Node~COMMENT_NODE | nodeType == .Node~PROCESSING_INSTRUCTION_NODE then do
+      nodeType == .Node~COMMENT_NODE | nodeType == .Node~PROCESSING_INSTRUCTION_NODE then
       return self~traverseCharacterDataNode(node, isLeft, how)
-  end
-
+  -- handle the partial selection
   return self~traversePartiallySelected(node, how)
 
+-- traverse a single node that is fully selected within the range
 ::method traverseFullySelected private
   use strict arg node, how
 
   select
-      when how == self~CLONE_CONTENTS then do
+      -- if cloning, do a deep copy of the node
+      when how == self~CLONE_CONTENTS then
           return node~cloneNode(.true)
-      end
-      when how == self~EXTRACT_CONTENTS then do
+      -- if we're extracting, just return the node as is
+      when how == self~EXTRACT_CONTENTS then
           return node
-      end
+      -- if deleting, remove the node and return .nil
       when how == self~DELETE_CONTENTS then do
           node~parentNode~removeChild(node)
           return .nil
       end
   end
 
+-- handling a partially selected node
 ::method traversePartiallySelected
   use strict arg node, how
 
   select
-      when how == self~CLONE_CONTENTS then do
+      -- if cloning, this is just a shallow copy
+      when how == self~CLONE_CONTENTS then
           return node~cloneNode(.false)
-      end
-      when how == self~EXTRACT_CONTENTS then do
+      -- extraction is a shallow copy
+      when how == self~EXTRACT_CONTENTS then
           return node~cloneNode(.false)
-      end
-      when how == self~DELETE_CONTENTS then do
+      -- deleting returns .nil
+      when how == self~DELETE_CONTENTS then
           return .nil
-      end
   end
 
+-- traverse a character node
 ::method traverseCharacterDataNode private
   use strict arg node, isLeft, how
 
   textValue = node~nodeValue
+  -- extract the section depending on direction (e.g., whether this
+  -- is a start or end node)
   if isLeft then do
       offset = self~startOffset
       newNodeValue = textValue~substr(offset + 1)
@@ -6438,167 +6401,189 @@ syntax:
       oldNodeValue = textValue~substr(offset + 1)
   end
 
-  if how \= self~CLONE_CONTENTS then do
-      node~nodeValue = oldNodeValue
-  end
-  if how == self~DELETE_CONTENTS then do
-      return .nil
-  end
-
+  -- if not cloning, then update the existing node
+  if how \= self~CLONE_CONTENTS then node~nodeValue = oldNodeValue
+  -- if deleting, we're done
+  if how == self~DELETE_CONTENTS then return .nil
+  -- clone the node and return the extracted bit
   newNode = node~cloneNode(.false)
   newNode~nodeValue = newNodeValue
   return newNode
 
+-- check an index value for validity
 ::method checkIndex private
   use strict arg refNode, offset
 
-  if offset < 0 then do
-      .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
-  end
+  if offset < 0 then .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
 
   type= refNode~nodeType
 
+  -- if on a text node, this must lie within the length of the character data
   if nodeType == .Node~TEXT_NODE | nodeType == .Node~CDATA_SECTION_NODE | -
       nodeType == .Node~COMMENT_NODE | nodeType == .Node~PROCESSING_INSTRUCTION_NODE then do
-      if offset > refNode~nodeValue~length then do
+      if offset > refNode~nodeValue~length then
           .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
-      end
   end
-  else do
-      if offset > refNode~childNodes~length then do
+  -- must lie with the range of children for the node
+  else if offset > refNode~childNodes~length then
           .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
-      end
-  end
 
+-- check the start and end positions and determine if the range
+-- needs to be collapsed
+::method checkCollapse private
+
+  -- if there is no common ancestor or the end precedes the start, then
+  -- this is a collapsed container
+  if self~commonAncestorContainer == .nil | -
+      (startContainer == endContainer & endOffset < startOffset) then self~collapse(.true)
+
+-- determine the relative offset of a node
+::method nodeOffset private
+  use strict arg node
+  -- count the offset of the reference node relative to its siblings
+  loop i = 0 while node \= .nil
+      node = node~previousSibling
+  end
+  -- the offset is one less than that
+  return i - 1
+
+-- get the root container of the node
 ::method getRootContainer private
   use strict arg node
 
-  do while node \= .nil
+  loop while node \= .nil
       node = node~parentNode
   end
 
   return node
 
+-- test if a node is a legal container for a range
 ::method isLegalContainer private
   use strict arg node
-  if node == .nil then do
-      return .false
-  end
 
-  do while node \= .nil
+  if node == .nil then return .false
+
+  -- check the entire ancestor chain for a non-allowed node type
+  loop while node \= .nil
       nodeType = node~nodeType
-      if nodeType == .Node~ENTITY_NODE | nodeType == .Node~NOTATION_NODE | nodeType == .Node~DOCUMENT_TYPE_NODE then do
+      -- these are invalid node types
+      if nodeType == .Node~ENTITY_NODE | nodeType == .Node~NOTATION_NODE | nodeType == .Node~DOCUMENT_TYPE_NODE then
           return .false
-      end
       node = node~parentNode
   end
 
   return .true
 
+-- check if a node has a legal root container
 ::method hasLegalRootContainer private
   use strict arg node
-  if node == .nil then do
-      return .false
-  end
+
+  if node == .nil then return .false
 
   rootContainer = self~getRootContainer(node)
-  nodeType = node~nodeType
-  if nodeType == .Node~ATTRIBUTE_NODE | nodeType == .Node~DOCUMENT_NODE | nodeType == .Node~DOCUMENT_FRAGMENT_NODE then do
+  nodeType = rootContainer~nodeType
+  -- attributes, documents, and document fragments are the only valid roots.
+  if nodeType == .Node~ATTRIBUTE_NODE | nodeType == .Node~DOCUMENT_NODE | nodeType == .Node~DOCUMENT_FRAGMENT_NODE then
       return .true
-  end
   return .false
 
+-- check if we have a legal contained node for a start or end point
 ::method isLegalContainedNode private
   use strict arg node
-  if node == .nil then do
-      return .false
-  end
 
+  if node == .nil then return .false
+
+  -- candidate nodes must be legal document tree nodes
   if nodeType == .Node~ATTRIBUTE_NODE | nodeType == .Node~DOCUMENT_NODE | nodeType == .Node~DOCUMENT_FRAGMENT_NODE | -
-          nodeType == .Node~ENTITY_NODE | nodeType == .Node~NOTATION_NODE then do
+          nodeType == .Node~ENTITY_NODE | nodeType == .Node~NOTATION_NODE then
       return .false
-  end
 
   return .true
 
+-- traverse to the next logical node
 ::method nextNode private
   expose document
   use strict arg node, visitChildren
-  if node == .nil then do
-      return .nil
-  end
 
+  if node == .nil then return .nil
+
+  -- if children are an option, then go to the first child if there is one
   if visitChildren then do
-      result = node~firstChild
-      if result \= .nil then do
-          return result
-      end
+      next = node~firstChild
+      if next \= .nil then return result
   end
 
-  result = node~nextSibling
-  if result \= .nil then do
-      return result
-  end
 
+  -- no children or skipping intentionally
+  -- try for a sibling
+  next = node~nextSibling
+  if next \== .nil then return result
+
+  -- go up the parent hierarchy looking for a sibling to a direct
+  -- ancestor node
   parent = node~parentNode
-  do while parent \= .nil, parent \= document
+  loop while parent \= .nil, parent \= document
       result = parent~nextSibling
-      if result \= .nil then do
-          return result
-      end
-      else do
-          parent = parent~parentNode
-      end
+      if next \== .nil then return result
+      else parent = parent~parentNode
   end
-
+  -- nothing found
   return .nil
 
+-- test if a node is an ancestor of another node
 ::method isAncestorOf private
   use strict arg a, b
+
   node = b
-  do while node \= .nil
-      if node == a then do
-          return .true
-      end
+  loop while node \= .nil
+      if node == a then return .true
       node = node~parentNode
   end
 
   return .false
 
+-- determine the tree depth of a node
+::method depthOf private
+  use strict arg node
+
+  loop depthDiff = 0 while node \= .nil
+      node = node~parentNode
+  end
+
+  return depthDiff
+
+-- find the index offset of a child node
 ::method indexOf private
   use strict arg child, parent
-  if child~parentNode \= parent then do
-      return -1
-  end
+
+  if child~parentNode \== parent then return -1
 
   node = parent~firstChild
-  do i = 0 while node \= child
+  loop i = 0 while node \= child
       node = node~nextSibling
   end
+
   return i
 
-
+-- get a selected node
 ::method getSelectedNode private
   use strict arg container, offset
 
-  if container~nodeType == .Node~TEXT_NODE then do
-      return container
-  end
+  -- if this is a text node, just return it directly.  The offset
+  -- is within the text of the node
+  if container~nodeType == .Node~TEXT_NODE then return container
 
-  if offset < 0 then do
-      return container
-  end
+  -- a negative offset means return the container
+  if offset < 0 then return container
 
+  -- skip ahead to the indicated child
   child = container~firstChild
-
-  do i = 1 to offset while child \= .nil
+  do offset while child \= .nil
       child = child~nextSibling
   end
 
-  if child \= null then do
-      return child
-  end
-
+  if child \== .nil then return child
+  -- can't get the child, return the container
   return container
 
 
