@@ -596,7 +596,7 @@
   expose nodes
   use strict arg target
 
-  index = nodes~itemIndex(target)
+  index = nodes~index(target)
 
   if index == .nil then return -1
   -- need to convert this to zero-based for
@@ -620,7 +620,7 @@
   expose nodes
   use strict arg target
 
-  index = nodes~itemIndex(target)
+  index = nodes~index(target)
   -- not found or the first one, return nothing
   if index == .nil | index = 1 then return .nil
   return nodes[index]
@@ -630,7 +630,7 @@
   expose nodes
   use strict arg target
 
-  index = nodes~itemIndex(target)
+  index = nodes~index(target)
   -- not found, return nothing
   if index == .nil then return .nil
   return nodes[index]
@@ -1122,7 +1122,7 @@
 
   if attributes == .nil then return .nil
 
-  return attributes~itemIndex(item)
+  return attributes~index(item)
 
 -- find the index position for a given attribute name
 ::method findNamePoint private
@@ -1131,7 +1131,7 @@
 
   if attributes == .nil then return .nil
 
-  loop i = 1 to attributes~size
+  loop i = 1 to attributes~items
       attr = attributes[i]
       if attr~nodeName == name then return i
   end
@@ -1145,7 +1145,7 @@
 
   if attributes == .nil then return .nil
 
-  loop i = 1 to attributes~size
+  loop i = 1 to attributes~items
       attr = attributes[i]
       if namespace == .nil then do
           if attr~namespaceURI == .nil & name == attr~localName then
@@ -1252,7 +1252,7 @@
       attributes[index] = node
   end
   else do
-      if attributes == .nil then attributes = .list~new
+      if attributes == .nil then attributes = .queue~new
       attributes~append(node)
   end
 
@@ -1283,7 +1283,7 @@
           attributes[index] = node
       end
       else do
-          if attributes == .nil then attributes = .list~new
+          if attributes == .nil then attributes = .queue~new
           attributes~append(node)
       end
   end
@@ -1374,7 +1374,7 @@
 ::method length
   expose attributes
   use strict arg
-  if attributes \== .nil then return attributes~size
+  if attributes \== .nil then return attributes~items
   else return 0
 
 ::attribute attributes PRIVATE
@@ -1437,7 +1437,7 @@
   end
   else do
       if attributes = .nil then do
-          attributes = .list~new
+          attributes = .queue~new
           self~attributes = attributes
       end
       attributes~append(attribute)
@@ -1468,7 +1468,7 @@
   end
   else do
       if attributes = .nil then do
-          attributes = .list~new
+          attributes = .queue~new
           self~attributes = attributes
       end
       attributes~append(attribute)
@@ -4553,6 +4553,7 @@ syntax:
   -- send the insertion event
   self~ownerDocument~insertedText(self, offset, newData~length)
 
+-- replace data in the node
 ::method replaceData
   expose data
   use strict arg offset, count, newData
@@ -4568,6 +4569,7 @@ syntax:
 
   self~ownerDocument~replacedCharacterData(self, oldvalue, data)
 
+-- extract a substring from the node
 ::method substringData
   expose data
   use strict arg offset, count
@@ -4636,9 +4638,7 @@ syntax:
   -- no content or a null string content, we just remove everything
   if content == .nil | content == "" then do
       -- just remove ourselves from the parent
-      if parent \= .nil then do
-          parent~removeChild(self)
-      end
+      if parent \= .nil then parent~removeChild(self)
       return .nil
   end
 
@@ -4652,8 +4652,7 @@ syntax:
       if node == self then iterate
       -- remove any logically adjacent text or entity reference nodes
       nodetype = node~nodeType
-      if nodeType = .Node~TEXT_NODE | -
-          nodeType = .Node~CDATA_SECTION_NODE
+      if nodeType = .Node~TEXT_NODE | nodeType = .Node~CDATA_SECTION_NODE
           -- remove the node from the parent
           then parent~removeChild(node)
   end
@@ -4671,9 +4670,7 @@ syntax:
 
   -- now insert the new text node
   parent = self~parentNode
-  if parent \= .nil then do
-      parent~insertBefore(newText, self~nextSibling)
-  end
+  if parent \= .nil then parent~insertBefore(newText, self~nextSibling)
 
   return newText
 
@@ -4733,21 +4730,14 @@ syntax:
 /* Description: return the list of entities.                                  */
 /*----------------------------------------------------------------------------*/
 
-::method entities
-  expose entities
-  use strict arg
-  return entities
-
+::attribute entities get
 
 /*----------------------------------------------------------------------------*/
 /* Method: notations                                                          */
 /* Description: return the list of notations                                  */
 /*----------------------------------------------------------------------------*/
 
-::method notations
-  expose notations
-  use strict arg
-  return notations
+::attribute notations get
 
 -- override for text content.  For this type, it always
 -- returns .nil
@@ -4849,14 +4839,14 @@ syntax:
 
 ::class "EntityImpl" public subclass ParentNode inherit Entity
 ::method init
-  expose name publicId systemId XmlEncoding inputEncoding XMLversion notationName
+  expose name publicId systemId xmlEncoding inputEncoding xmlVersion notationName
   use strict arg ownerDoc, name
   self~init:super(ownerDoc)
   publicId = .nil
   systemId = .nil
-  XmlEncoding = .nil
+  xmlEncoding = .nil
   inputEncoding = .nil
-  XmlVersion = .nil
+  xmlVersion = .nil
   notationName = .nil
 
 ::attribute nodeType GET
@@ -4912,7 +4902,7 @@ syntax:
 -- override for the nodetype
 ::attribute nodeType GET
   use strict arg
-  return .Node~ENTITY_NODE
+  return .Node~ENTITY_REFERENCE_NODE
 
 -- entity references are created with a name
 ::attribute nodeName GET
@@ -5047,51 +5037,25 @@ syntax:
       end
   end
 
+-- create a document type value
 ::method createDocumentType
   use strict arg qualifiedName, publicID, systemID
   self~checkQName(qualifiedName)
   return .DocumentTypeImpl(qualifiedName, publicID, systemID)
 
+-- validate a QName
 ::method checkQName
   use strict arg qname
-  index = qname~pos(":")
-  lastIndex = qname~lastPos(":")
-  length = qname~length
 
-  if index = 1 | index = length | lastIndex \= index then do
-      .DomErrors~raiseError(.DomException~NAMESPACE_ERR)
-  end
-
-  start = 1
-  if index > 1 then do
-      if \.XMLChar~isNCNameStart(gname~subChar(start)) then do
-          .DomErrors~raiseError(.DomException~INVALID_CHARACTER_ERR)
-      end
-
-      do i = 2 to index
-          if \.XMLChar~isNCName(gname~subChar(i)) then do
-              .DomErrors~raiseError(.DomException~INVALID_CHARACTER_ERR)
-          end
-      end
-      start = index + 1
-  end
-
-  if \.XMLChar~isNCNameStart(gname~subChar(start)) then do
+  if \.XMLChar~isValidQName(qname) then
       .DomErrors~raiseError(.DomException~INVALID_CHARACTER_ERR)
-  end
-  do i = start + 1 to length
-      if \.XMLChar~isNCName(gname~subChar(i)) then do
-          .DomErrors~raiseError(.DomException~INVALID_CHARACTER_ERR)
-      end
-  end
 
 -- create a document node
 ::method createDocument
   use strict arg namespaceURI = .nil, qualifiedName = .nil, doctype = .nil
 
-  if doctype \= .nil, doctype~ownerDocument \= .nil then do
+  if doctype \= .nil, doctype~ownerDocument \= .nil then
       .DomErrors~raiseError(.DomException~WRONG_DOCUMENT_ERR)
-  end
 
   doc = .CoreDocument~new(doctype)
 
@@ -5114,6 +5078,12 @@ syntax:
   end
 
   return .nil
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class:  DOMException                                                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 ::class "DOMException" public
 ::constant INDEX_SIZE_ERR 1
@@ -5144,6 +5114,12 @@ syntax:
 ::method string
   expose code message
   return "DOM Error" code":" message
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class:  DOMErrors                                                          */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 
 -- central class for raising DOMException events.
@@ -5233,6 +5209,11 @@ syntax:
   use strict arg
   immediatePropagationStopped = .true
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class:  DOMMutationEvent                                                   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 ::class "DOMMutationEvent" subclass DOMEvent public
 ::constant MODIFICATION 1
@@ -5466,10 +5447,6 @@ syntax:
 /*----------------------------------------------------------------------------*/
 
 ::class "RangeImpl" public inherit Range
-::constant START_TO_START 0
-::constant START_TO_END   1
-::constant END_TO_END     2
-::constant END_TO_START   3
 ::constant EXTRACT_CONTENTS 1
 ::constant CLONE_CONTENTS   2
 ::constant DELETE_CONTENTS  3
@@ -7606,7 +7583,7 @@ syntax:
 -- test if there are more tokens
 ::method hasMore
   expose queue currentToken
-  return currentToken <= queue~size
+  return currentToken <= queue~items
 
 -- get the next token, stepping the position
 ::method nextToken
@@ -8298,7 +8275,7 @@ syntax:
   ch = data~subchar(currentOffset)
   -- use the XMLCHAR class to check this...
   -- if not a valid first character, we're done
-  if \XMLChar~isNameStart(ch) then do
+  if \.XMLChar~isNameStart(ch) then do
       return currentOffset
   end
 
@@ -8356,7 +8333,7 @@ syntax:
 
   value = self~evaluate(context, container)
 
-  if \value~datatype('o') then XPath~error(.Xpath~BOOLEAN_ERROR)
+  if \value~datatype('o') then .XPath~error(.Xpath~BOOLEAN_ERROR)
   return value
 
 ::method evaluateString
@@ -8364,7 +8341,7 @@ syntax:
 
   value = self~evaluate(context, container)
 
-  if \value~isA(.string) then XPath~error(.Xpath~STRING_VALUE_ERROR)
+  if \value~isA(.string) then .XPath~error(.Xpath~STRING_VALUE_ERROR)
   return value
 
 ::method evaluateNumber
@@ -8372,7 +8349,7 @@ syntax:
 
   value = self~evaluate(context, container)
 
-  if \value~datatype('Number') then XPath~error(.Xpath~NUMBER_VALUE_ERROR)
+  if \value~datatype('Number') then .XPath~error(.Xpath~NUMBER_VALUE_ERROR)
   return value
 
 ::method evaluateNodeSet
@@ -8380,7 +8357,7 @@ syntax:
 
   value = self~evaluate(context, container)
 
-  if \value~isA(.NodeSet) then XPath~error(.Xpath~NODESET_VALUE_ERROR)
+  if \value~isA(.NodeSet) then .XPath~error(.Xpath~NODESET_VALUE_ERROR)
   return value
 
 ::method evaluatePredicate
@@ -8898,7 +8875,7 @@ syntax:
   use strict arg count
 
   if count \= arguments~items then
-      self~xpathError(XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
+      self~xpathError(.XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
 
 -- check the minimum number of arguments
 ::method checkMinArgs
@@ -8906,7 +8883,7 @@ syntax:
   use strict arg count
 
   if count > arguments~items then
-      self~xpathError(XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
+      self~xpathError(.XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
 
 -- check the arguments fall in a given range
 ::method checkMinMaxArgs
@@ -8914,7 +8891,7 @@ syntax:
 use strict arg min, max
 
   if arguments~items < min | arguments~items > max then
-      self~xpathError(XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
+      self~xpathError(.XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
 
 -- start of the actual function implementation methods
 ::method notFunction
@@ -9399,7 +9376,7 @@ use strict arg min, max
       when token = .XPathToken~subtraction then do
           -- get the term this applies to
           term = self~parseSubTerm(terminator)
-          if term == .nil then self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+          if term == .nil then self~xpathError(.XPath~INVALID_EXPRESSION_ERROR)
           -- the term is the unary operator
           return .XPathUnaryOperator~new(token, term)
       end
@@ -9409,16 +9386,16 @@ use strict arg min, max
       when token == .XPathToken~open_paren then do
           -- parse the sub expression
           term = self~parseSubexpression(.XPathToken~close_paren)
-          if term == .nil then self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+          if term == .nil then self~xpathError(.XPath~INVALID_EXPRESSION_ERROR)
           -- this term can be used directly
           return term
       end
       -- variable references are not supported.
-      when token~type == "VARIABLE" then self~xpathError(XPath~INVALID_VARIABLE_REFERENCE_ERROR)
+      when token~type == "VARIABLE" then self~xpathError(.XPath~INVALID_VARIABLE_REFERENCE_ERROR)
       -- go parse the function call
       when token~type == "FUNCTION" then return self~parseFunctionCall(token~name)
       -- variable references are not supported.
-      when token~type == "VARIABLE" then self~xpathError(XPath~INVALID_VARIABLE_REFERENCE_ERROR)
+      when token~type == "VARIABLE" then self~xpathError(.XPath~INVALID_VARIABLE_REFERENCE_ERROR)
       -- various location names as a substep term.  This needs to be parsed recursively
       when token~type == "AXIS" | token~type == "NCNAME" | -
            token == .XPathToken~at_sign | token == .XPathToken~period | -
@@ -9430,7 +9407,7 @@ use strict arg min, max
           return self~parseLocation
       end
       -- probably a dyadic operator in an invalide location.  Invalid at this spot
-      otherwise self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+      otherwise self~xpathError(.XPath~INVALID_EXPRESSION_ERROR)
   end
 
 -- check for an expression terminator token
@@ -9485,11 +9462,11 @@ use strict arg min, max
           -- this must be followed by a valid subterm, so parse it off
           -- and push it on to the term stack
           right = self~parseSubTerm(terminator)
-          if right == .nil then self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+          if right == .nil then self~xpathError(.XPath~INVALID_EXPRESSION_ERROR)
           self~pushTerm(right)
       end
       -- something we don't recognize
-      else self~xpathError(XPath~INVALID_EXPRESSION_ERROR)
+      else self~xpathError(.XPath~INVALID_EXPRESSION_ERROR)
   end
 
 -- parse out all of the predicate modifiers for an xpath expresion
@@ -9509,3 +9486,140 @@ use strict arg min, max
 ::method xpathError
   use strict arg reason
   .XPath~xpathError(reason)
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XMLCHAR                                                             */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- a class for identifying valid xml character values
+::class xmlchar public mixinclass object
+
+-- complete set of valid characters in 8-bit ascii
+::constant valid '090A0D202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF'x
+-- the characters considered space characters
+::constant space '090A0D20'x
+-- characters valid as the first characters of an XML name
+::constant namestart '3A4142434445464748494A4B4C4D4E4F505152535455565758595A5F6162636465666768696A6B6C6D6E6F707172737475767778797AC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F8F9FAFBFCFDFEFF'x
+-- characters valid at any position in an XML name
+::constant name '2D2E303132333435363738393A4142434445464748494A4B4C4D4E4F505152535455565758595A5F6162636465666768696A6B6C6D6E6F707172737475767778797AB7C0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F8F9FAFBFCFDFEFF'x
+-- characters valid in a pubid
+::constant pubid '0A0D20212324252728292A2B2C2D2E2F303132333435363738393A3B3D3F404142434445464748494A4B4C4D4E4F505152535455565758595A5F6162636465666768696A6B6C6D6E6F707172737475767778797A'x
+-- characters valid anywhere in content
+::constant content '092021222324252728292A2B2C2D2E2F303132333435363738393A3B3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF'x
+-- characters valid as first character of an ncname
+::constant ncnamestart '4142434445464748494A4B4C4D4E4F505152535455565758595A5F6162636465666768696A6B6C6D6E6F707172737475767778797AC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F8F9FAFBFCFDFEFF'x
+-- characters valid anywhere in an ncname
+::constant ncname '4142434445464748494A4B4C4D4E4F505152535455565758595A5F6162636465666768696A6B6C6D6E6F707172737475767778797AC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F8F9FAFBFCFDFEFF'x
+-- special markup characters
+::constant markup "<&%"
+
+-- test if a character is valid in xml encodings
+::method isValid class
+  use strict arg c
+  return c~matchChar(1, self~valid)
+
+-- test if a character is valid in xml content
+::method isContent class
+  use strict arg c
+  return c~matchChar(1, self~content)
+
+-- test if a character is a markup character
+::method isMarkup class
+  use strict arg c
+  return c~matchChar(1, self~markup)
+
+-- test if a character is a space character
+::method isSpace class
+  use strict arg c
+  return c~matchChar(1, self~space)
+
+-- test if a character is valid as the start of a name
+::method isNameStart class
+  use strict arg c
+  return c~matchChar(1, self~namestart)
+
+-- test if a character is valid in a name
+::method isName class
+  use strict arg c
+  return c~matchChar(1, self~name)
+
+-- test if a character is valid as the start of an ncname
+::method isNCNameStart class
+  use strict arg c
+  return c~matchChar(1, self~ncnamestart)
+
+-- test if a character is valid in an ncname
+::method isNCName class
+  use strict arg c
+  return c~matchChar(1, self~ncname)
+
+-- test if a character is valid in a pubid
+::method isPubID class
+  use strict arg c
+  return c~matchChar(1, self~pubid)
+
+-- test if a string is a valid XML name
+::method isValidName class
+  use strict arg name
+  if name = '' then return .false
+
+  if \name~matchchar(1, self~namestart) then return .false
+
+  return name~verify(self~name,,2) \= 0
+
+-- test if a string is a valid XML ncname
+::method isValidNCName class
+  use strict arg name
+  if name = '' then return .false
+
+  if \name~matchchar(1, self~ncnamestart) then return .false
+
+  return name~verify(self~ncname,,2) \= 0
+
+-- test if a string is a valid XML nmtoken
+::method isValidNMToken class
+  use strict arg name
+  if name = '' then return .false
+
+  return name~verify(self~name) \= 0
+
+-- test if a string is a valid XML qname
+::method isValidQName class
+  use strict arg name
+  if name = '' then return .false
+
+  parse var name prefix ':' localName
+  return self~isValidNCName(prefix) & self~isValidNCName(localName)
+
+-- strip all XML white space characters from a string.  The source
+-- string can be either a string or mutablebuffer.
+::method stripWhiteSpace class
+  use strict arg source
+
+  -- find the first non-white space character
+  firstNonWhite = source~verify(self~space)
+  if firstNonWhite == 0 then
+      -- NB:  We could just return "", but doing it this way
+      -- will also work with mutablebuffers.
+      return source~delstr(1)
+
+  -- if there are leading white space characters, delete them now.
+  -- again, doing this in two steps will work appropriately with
+  -- mutablebuffers too.
+  if firstNonWhite > 1 then do
+      source = source~delstr(1, firstNonWhite - 1)
+  end
+
+  loop i = source~length by -1
+      -- find a non-whitespace char?, then delete
+      -- tail now.  Note that since we have detected
+      -- a non-whitespace char already, we will always
+      -- terminate
+      if \source~matchChar(i, self~space) then do
+          source = source~delstr(i + 1)
+          -- done
+          return source
+      end
+  end
