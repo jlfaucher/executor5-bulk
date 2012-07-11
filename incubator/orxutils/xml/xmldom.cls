@@ -79,6 +79,113 @@
 ::method items
   forward message("LENGTH")
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DOMStringList                                                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "DOMStringList"
+-- initialize a string list from an array of strings
+::method init
+  expose array
+  -- default is to create an empty list
+  use strict arg array = (.array~new)
+
+-- retrieve an item from the list using a 0-based index
+::method item
+  expose array
+  use strict arg index
+  if index > 0 then return array[index]
+  -- defined as returning .nil for anything out of range
+  return .nil
+
+-- get the count of items in the array
+::attribute length get
+  expose array
+  return array~items
+
+-- returns true if this list contains the given string
+::method contains
+  expose array
+  use strict arg target
+  return array~hasItem(target)
+
+-- some compatibility methods to make nodelist feel like a Rexx collection
+::method makearray
+  expose array
+  return array~copy    -- return a copy of our array so this stays immutable
+
+::method "[]"
+  forward message("ITEM")
+::method items
+  forward message("LENGTH")
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: NameList                                                            */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "NameList"
+-- initialize an empty NameList
+::method init
+  expose names namespaces
+
+
+-- retrieve the indexed name item from the list (0-based index)
+::method getName
+  expose names
+  use strict arg index
+  if index > 0 then return names[index]
+  -- defined as returning .nil for anything out of range
+  return .nil
+
+
+-- retrieve the indexed name item from the list (0-based index)
+::method getNamespaceURI
+  expose namespaces
+  use strict arg index
+  if index > 0 then return namespace[index]
+  -- defined as returning .nil for anything out of range
+  return .nil
+
+-- get the count of items in the list
+::attribute length get
+  expose names
+  return names~items
+
+-- returns true if this list contains the given string
+::method contains
+  expose names
+  use strict arg target
+  return names~hasItem(target)
+
+-- returns true if this list contains the given string
+::method containsNS
+  expose names namespaces
+  use strict arg namespaceURI, name
+
+  loop i = 1 to names~items
+      if names[i] == name & namespaces[i] == namespaceURI then return .true
+  end
+  return .false
+
+-- internal method for adding items to this list
+::method addName
+  expose names namespaces
+  use strict arg namespaceURI, name
+
+  names~append(name)
+  namespaces~append(namespaceURI)
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Node                                                                */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+
 -- DOM Node interface class
 ::class "Node" public mixinclass Object
 -- various type definitions
@@ -95,6 +202,14 @@
 ::constant DOCUMENT_TYPE_NODE 10
 ::constant DOCUMENT_FRAGMENT_NODE 11
 ::constant NOTATION_NODE 12
+
+-- DocumentPosition indicators
+::constant DOCUMENT_POSITION_DISCONNECTED 1
+::constant DOCUMENT_POSITION_PRECEDING 2
+::constant DOCUMENT_POSITION_FOLLOWING 4
+::constant DOCUMENT_POSITION_CONTAINS 8
+::constant DOCUMENT_POSITION_IS_CONTAINED 16
+::constant DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC 32
 
 ::method nodeName abstract
 ::method nodeValue abstract
@@ -126,6 +241,12 @@
 ::method textContent abstract
 ::method isDefaultNamespace
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Attr                                                                */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- an abstract attribute interface definition
 ::class "Attr" mixinclass Node public
 ::method name abstract
@@ -134,6 +255,12 @@
 ::method value abstract
 ::method "value=" abstract
 ::method isId abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: CharacterData                                                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- an abstract characterdata interface definition
 ::class "CharacterData" mixinclass Node public
@@ -146,19 +273,43 @@
 ::method replaceData abstract
 ::method substringData abstract
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Text                                                                */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- abstract text definition
 ::class "Text" mixinclass CharacterData public
 ::method splitText abstract
 ::method wholeText abstract
 ::method replaceWholeText abstract
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: CDATASection                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- abstract CDATA section definition
 ::class "CDATASection" mixinclass Text public
 -- no additional methods defined on this interface
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Comment                                                             */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- abstract Comment definition
 ::class "Comment" mixinclass CharacterData public
 -- no additional methods defined on this interface
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Document                                                            */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- abstract document interface
 ::class "Document" mixinclass Node public
@@ -183,9 +334,21 @@
 ::method adoptNode abstract
 ::method "encoding=" abstract
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DocumentFragment                                                    */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- abstract documentfragment definition
 ::class "DocumentFragment" mixinclass Node public
 -- no additional methods defined on this interface
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DocumentType                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- abstract documenttype definition
 ::class "DocumentType" mixinclass Node public
@@ -196,11 +359,23 @@
 ::method publicID abstract
 ::method systemID abstract
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DOMImplementation                                                   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- abstract DOMImplementation definiton
 ::class "DOMImplementation" mixinclass Object public
 ::method createDocument abstract
 ::method createDocumentType abstract
 ::method hasFeature abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Element                                                             */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- abstract Element definition
 ::class "Element" mixinclass Node public
@@ -225,6 +400,12 @@
 ::method setIdAttributeNS abstract
 ::method setIdAttributeNode abstract
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Entity                                                              */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- abstract Entity definition
 ::class "Entity" mixinclass Node public
 ::method xmlEncoding abstract
@@ -234,11 +415,23 @@
 ::method xmlVersion abstract
 ::method inpugEncoding
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: EntityReference                                                     */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- abstract entityreference definition
 ::class "EntityReference" mixinclass Node public
 -- no additional methods defined on this interface
 
--- abstract NameNodeMap definition
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: NamedNodeMap                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- abstract NamedNodeMap definition
 ::class "NamedNodeMap" mixinclass Object public
 ::method length abstract
 ::method getNamedItem abstract
@@ -252,16 +445,34 @@
 ::method systemID abstract
 ::method internalSubset abstract
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: Notation                                                            */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- abstract notation definition
 ::class "Notation" mixinclass Node public
 ::method publicID abstract
 ::method systemID abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: ProcessingInstruction                                               */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- abstract processinginstruction definition
 ::class "ProcessingInstruction" mixinclass Node public
 ::method data abstract
 ::method target abstract
 ::method "data=" abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: UserDataHandler                                                     */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- interface class for implementing a user data handler
 ::class "UserDataHandler" public mixinclass object
@@ -273,6 +484,12 @@
 
 -- called as handle(key, data, srcNode, destNode)
 ::method handle
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DOMEventListener                                                    */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- interface class for implementing a DOM event handler
 ::class "DOMEventListener" public mixinclass object
@@ -467,13 +684,6 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Section:  Concrete implementation of the DOM classes                       */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
 /* Class: QName -- a qualified XML name                                       */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -504,6 +714,13 @@
 -- handy string method
 ::method string
   return self~nodeName
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Section:  Concrete implementation of the DOM classes                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 
 /*----------------------------------------------------------------------------*/
@@ -662,34 +879,26 @@
   end
 
   currentSize = self~nodes~items
-  if index < currentSize then do
-      return self~nodes[index + 1]
-  end
+  if index < currentSize then return self~nodes[index + 1]
   else do
       -- we need to continue the traversal from the last node added
-      if currentSize == 0 then do
-          thisNode = rootNode
-      end
-      else do
-          thisNode = self~nodes[currentSize]
-      end
+      if currentSize = 0 then thisNode = rootNode
+      else thisNode = self~nodes[currentSize]
       -- keep adding up to the one we're looking for
 
-      do while index > currentSize
+      loop while index > currentSize
           thisNode = self~nextMatchingElementAfter(thisNode)
           if thisNode \= .nil then do
               self~nodes~append(thisNode)
               currentSize += currentSize
           end
-          else do
-              -- no more nodes available
-              leave
-          end
+          else leave  -- no more nodes available
       end
       -- this is either the one we want or .nil
       return thisNode
   end
 
+-- get the length of the nodelist
 ::attribute length GET
   expose nodes
   use strict arg
@@ -697,6 +906,7 @@
   self~item(999999999)
   return self~nodes~items
 
+-- loop over the entire list
 ::method makearray
   expose nodes
   use strict arg
@@ -704,15 +914,14 @@
   self~item(999999999)
   return self~nodes~copy
 
+-- locate the next matching element after a starting node
 ::method nextMatchingElementAfter private
   expose rootNode tagName nsName
   use arg current
 
-  do while current \= .nil
+  loop while current \= .nil
       -- go down to the first child if it has one
-      if current~hasChildNodes then do
-          current = current~firstChild
-      end
+      if current~hasChildNodes then current = current~firstChild
       -- if not the root, then check for a sibling
       else if current \= rootNode, current~nextSibling \= .nil then do
           next = current~nextSibling
@@ -726,9 +935,7 @@
               current = current~parentNode
               next = current~nextSibling
               -- we have a next, so quit
-              if next \= .nil then do
-                  leave
-              end
+              if next \= .nil then leave
           end
           -- this is either a good node, or .nil
           current = next
@@ -737,29 +944,20 @@
      if current \= rootNode, current \= .nil, current~nodeType == .Node~ELEMENT_NODE then do
          -- no namespace checking?  We'll take any element node if the name is
          -- "*" or it matches directly
-         if nsName == .nil  then do
-             if tagName == "*" | current~tagName == tagName then do
-                 return current
-             end
-         end
+         if nsName == .nil  then
+             if tagName == "*" | current~tagName == tagName then return current
          -- namespace qualified (which might also be "*")
          else do
              -- wildcard match on the tagname, so just check the namespace name
              if tagName == "*" then do
                  -- wildcards on both, this is easy
-                 if nsName == "*" then do
-                     return current
-                 end
+                 if nsName == "*" then return current
                  else do
                      -- null string is a non-specific namepace request, which
                      -- matches only if the element does not have a namespace
-                     if nsName == "" & current~namespaceURI == .nil then do
-                         return current
-                     end
+                     if nsName == "" & current~namespaceURI == .nil then return current
                      -- requires an exact namespace match
-                     else if nsName == current~namespaceURI then do
-                         return current
-                     end
+                     else if nsName == current~namespaceURI then return current
                  end
              end
              -- non-wild card on the name
@@ -769,19 +967,13 @@
                  if current~localName == tagName then do
                      -- ok, the local name matches, the ns rules are the
                      -- same as above
-                     if nsName == "*" then do
-                         return current
-                     end
+                     if nsName == "*" then return current
                      else do
                          -- null string is a non-specific namepace request, which
                          -- matches only if the element does not have a namespace
-                         if nsName == "" & current~namespaceURI == .nil then do
-                             return current
-                         end
+                         if nsName == "" & current~namespaceURI == .nil then return current
                          -- requires an exact namespace match
-                         else if nsName == current~namespaceURI then do
-                             return current
-                         end
+                         else if nsName == current~namespaceURI then return current
                      end
                  end
              end
@@ -1094,7 +1286,7 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: NamedNodeMap                                                        */
+/* Class: NamedNodeMapImpl                                                    */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
@@ -1106,14 +1298,6 @@
   hasDefaults = .false
   changed = .false
   readonly = .false
-
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: NamedNodeMapImpl                                                    */
-/*        Private methods                                                     */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
 
 -- find the index position for a given attribute
 ::method findItemPoint private
@@ -1198,48 +1382,33 @@
 ::attribute changed
 ::attribute readonly
 
-
-/*----------------------------------------------------------------------------*/
-/* Method: getNamedItem                                                       */
-/* Description: get a named item.                                             */
-/*----------------------------------------------------------------------------*/
-
+-- get a named item
 ::method getNamedItem
   expose attributes
   use strict arg name
 
   if attributes == .nil then return .nil
 
-  do attribute over attributes
+  loop attribute over attributes
       if attribute~name == name then
           return attribute
   end
   return .nil
 
-
-/*----------------------------------------------------------------------------*/
-/* Method: getNamedItemNS                                                     */
-/* Description: get a named item by namespace                                 */
-/*----------------------------------------------------------------------------*/
-
+-- get a named item by namespace
 ::method getNamedItemNS
   expose attributes
   use strict arg namespace, name
 
   if attributes == .nil then return .nil
 
-  do attribute over attributes
+  loop attribute over attributes
       if attribute~localname == name & attribute~namespaceURI == namespace then
           return attribute
   end
   return .nil
 
-
-/*----------------------------------------------------------------------------*/
-/* Method: setNamedItem                                                       */
-/* Description: set a named item.                                             */
-/*----------------------------------------------------------------------------*/
-
+-- set a named item
 ::method setNamedItem
   expose attributes
   use strict arg node
@@ -1259,11 +1428,7 @@
   return previous
 
 
-/*----------------------------------------------------------------------------*/
-/* Method: setNamedItemNS                                                     */
-/* Description: set a named item.                                             */
-/*----------------------------------------------------------------------------*/
-
+-- set a named item
 ::method setNamedItemNS
   expose attributes
   use strict arg node
@@ -1291,11 +1456,7 @@
   return previous
 
 
-/*----------------------------------------------------------------------------*/
-/* Method: removeNamedItem                                                    */
-/* Description: remove a named item.                                          */
-/*----------------------------------------------------------------------------*/
-
+-- remove a named item
 ::method removeNamedItem
   expose attributes
   use strict arg name
@@ -1309,12 +1470,7 @@
   end
   return previous
 
-
-/*----------------------------------------------------------------------------*/
-/* Method: removeNamedItemNS                                                  */
-/* Description: remove a named item.                                          */
-/*----------------------------------------------------------------------------*/
-
+-- remove a named item
 ::method removeNamedItemNS
   expose attributes
   use strict arg namespace, name
@@ -1328,20 +1484,14 @@
   end
   return previous
 
-/*----------------------------------------------------------------------------*/
-/* Method: cloneMap                                                           */
-/* Description: perform a deep copy of this map object                        */
-/*----------------------------------------------------------------------------*/
+-- perform a deep copy of this map object
 ::method cloneMap
   expose attributes
   use strict arg owner
   newMap = .NamedNodeMap(owner)
   newMap~cloneContent(attributes)
 
-/*----------------------------------------------------------------------------*/
-/* Method: cloneContent                                                       */
-/* Description: initialize the content from another map                       */
-/*----------------------------------------------------------------------------*/
+-- initialize the content from another map
 ::method cloneContent
   expose attributes
   use arg source
@@ -1353,12 +1503,7 @@
       end
   end
 
-
-/*----------------------------------------------------------------------------*/
-/* Method: item                                                               */
-/* Description: return the named item.                                        */
-/*----------------------------------------------------------------------------*/
-
+-- return the named item
 ::method item
   expose attributes
   use strict arg position
@@ -1366,11 +1511,7 @@
   if attributes == .nil then return .nil
   else return attributes[position + 1]
 
-/*----------------------------------------------------------------------------*/
-/* Method: length                                                             */
-/* Description: return the number of named items.                             */
-/*----------------------------------------------------------------------------*/
-
+-- return the number of named items in the list
 ::method length
   expose attributes
   use strict arg
@@ -1415,6 +1556,7 @@
       end
   end
 
+-- set a named item
 ::method setNamedItem
   use strict arg attribute
   -- replacing an attribute with itself does nothing
@@ -1570,19 +1712,11 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: Node                                                                */
+/* Class: NodeImpl                                                            */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
 ::CLASS "NodeImpl" public inherit Node DOMEventTarget
-
--- DocumentPosition indicators
-::constant DOCUMENT_POSITION_DISCONNECTED 1
-::constant DOCUMENT_POSITION_PRECEDING 2
-::constant DOCUMENT_POSITION_FOLLOWING 4
-::constant DOCUMENT_POSITION_CONTAINS 8
-::constant DOCUMENT_POSITION_IS_CONTAINED 16
-::constant DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC 32
 
 -- initialize a counter to give new nodes a unique id
 ::method init class
@@ -1751,7 +1885,7 @@
   -- just punt and return a disconnected indicator if these have
   -- different owners
   if thisOwner \= otherOwner then
-      return self~DOCUMENT_POSITION_DISCONNECTED
+      return .Node~DOCUMENT_POSITION_DISCONNECTED
 
   -- Find the ancestor of each node, and the distance each node is from
   -- its ancestor.
@@ -1772,7 +1906,7 @@
       -- we're a descendant of other...this is an easy test.  Other precedes us
       -- and also contains us
       if node == other then
-          return self~DOCUMENT_POSITION_CONTAINS + DOCUMENT_POSITION_PRECEDING
+          return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_PRECEDING
 
       thisAncestor = node
       node = node~parentNode
@@ -1785,7 +1919,7 @@
       -- we're a descendant of other...this is an easy test.  Other follows us
       -- and also contains us
       if node == self then
-          return self~DOCUMENT_POSITION_CONTAINS + DOCUMENT_POSITION_FOLLOWING
+          return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_FOLLOWING
 
       otherAncestor = node
       node = node~parentNode
@@ -1805,30 +1939,30 @@
   if thisAncestorType == .Node~NOTATION_NODE | thisAncestorType == .Node~ENTITY_NODE then do
       container = thisOwner~doctype
       if container = otherAncestor then
-          return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_PRECEDING
+          return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_PRECEDING
       -- now look for the reverse relationship
       if otherAncestorType == .Node~NOTATION_NODE | otherAncestorType == .Node~ENTITY_NODE then do
           -- if the nodes are of different types, the order depends on the
           -- type number
           if thisAncestorType \= otherAncestorType then do
               if thisAncestorType > otherAncestorType then
-                  return self~DOCUMENT_POSITION_PRECEDING
-              else return self~DOCUMENT_POSITION_FOLLOWING
+                  return .Node~DOCUMENT_POSITION_PRECEDING
+              else return .Node~DOCUMENT_POSITION_FOLLOWING
           end
           else do
               -- this is either part of the doctype notations or entities,
               -- so query the appropriate list
               if thisAncestorType == .Node~NOTATION_NODE then do
                   if container~notations~precedes(otherAncestor, thisAncestor) then
-                      return self~DOCUMENT_POSITION_PRECEDING
+                      return .Node~DOCUMENT_POSITION_PRECEDING
                   else
-                      return self~DOCUMENT_POSITION_FOLLOWING
+                      return .Node~DOCUMENT_POSITION_FOLLOWING
               end
               else do
                   if container~entities~precedes(otherAncestor, thisAncestor) then
-                      return self~DOCUMENT_POSITION_PRECEDING
+                      return .Node~DOCUMENT_POSITION_PRECEDING
                   else
-                      return self~DOCUMENT_POSITION_FOLLOWING
+                      return .Node~DOCUMENT_POSITION_FOLLOWING
               end
           end
       end
@@ -1836,9 +1970,9 @@
   -- owned by a document type
   else if thisAncestorType == .Node~DOCUMENT_TYPE_NODE then do
       if otherNode == thisOwner then
-          return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_PRECEDING
+          return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_PRECEDING
       else if thisOwner \== .nil & thisOwner == otherOwner then
-          return self~DOCUMENT_POSITION_FOLLOWING
+          return .Node~DOCUMENT_POSITION_FOLLOWING
   end
   -- an attribute
   else if thisAncestorType == .Node~ATTRIBUTE_NODE then do
@@ -1849,8 +1983,8 @@
           -- life is easy...just check the container
           if otherNode == thisNode then do
               if thisNode~attributes~precedes(other, this) then
-                  return self~DOCUMENT_POSITION_PRECEDING
-              else return self~DOCUMENT_POSITION_FOLLOWING
+                  return .Node~DOCUMENT_POSITION_PRECEDING
+              else return .Node~DOCUMENT_POSITION_FOLLOWING
           end
 
           -- owned by different elements...see if one element is an ancestor of
@@ -1862,7 +1996,7 @@
               -- the other node is an ancestor of the owning element, which
               -- means it precedes this one
               if node == otherNode then
-                  return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_PRECEDING
+                  return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_PRECEDING
               thisAncestor = node
               node = node~parentNode
           end
@@ -1873,16 +2007,16 @@
   if otherAncestorType == .Node~NOTATION_NODE | otherAncestorType == .Node~ENTITY_NODE then do
       container = thisOwner~doctype
       if container = this then
-          return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_FOLLOWING
+          return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_FOLLOWING
       otherNode = thisOwner
       otherAncestor = thisOwner
   end
   -- owned by a document type
   else if otherAncestorType == .Node~DOCUMENT_TYPE_NODE then do
       if thisNode == otherOwner then
-          return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_FOLLOWING
+          return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_FOLLOWING
       else if otherOwner \== .nil & thisOwner == otherOwner then
-          return self~DOCUMENT_POSITION_PRECEDING
+          return .Node~DOCUMENT_POSITION_PRECEDING
   end
   -- an attribute.  We already know they are not both attributes
   else if otherAncestorType == .Node~ATTRIBUTE_NODE then do
@@ -1894,7 +2028,7 @@
           -- the other node is an descendent of the reference node's element, which
           -- means it follows this one
           if node == otherNode then
-              return self~DOCUMENT_POSITION_CONTAINS + self~DOCUMENT_POSITION_FOLLOWING
+              return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_FOLLOWING
           otherAncestor = node
           node = node~parentNode
       end
@@ -1903,7 +2037,7 @@
   -- thisAncestor and otherAncestor must be the same at this point,
   -- otherwise, the original nodes are disconnected
   if thisAncestor \= otherAncestor then do
-      return self~DOCUMENT_POSITION_DISCONNECTED
+      return .Node~DOCUMENT_POSITION_DISCONNECTED
   end
 
   -- Go up the parent chain of the deeper node, until we find a node
@@ -1916,7 +2050,7 @@
       -- happen in the case of attributes.  In this case, otherNode
       -- "precedes" this.
       if thisNode == otherNode then
-          return self~DOCUMENT_POSITION_PRECEDING;
+          return .Node~DOCUMENT_POSITION_PRECEDING;
   end
   -- moving up the way
   else do
@@ -1927,7 +2061,7 @@
       -- happen in the case of attributes.  In this case, otherNode
       -- "follow" this.
       if thisNode == otherNode then
-          return self~DOCUMENT_POSITION_PRECEDING;
+          return .Node~DOCUMENT_POSITION_PRECEDING;
   end
   -- We now have nodes at the same depth in the tree.  Find a common
   -- ancestor.
@@ -1947,15 +2081,15 @@
   current = thisNodeParent~firstChild
   loop while current \= .nil
       if current == otherNode then
-          return self~DOCUMENT_POSITION_PRECEDING
+          return .Node~DOCUMENT_POSITION_PRECEDING
       else if current == thisNode then
-          return self~DOCUMENT_POSITION_FOLLOWING
+          return .Node~DOCUMENT_POSITION_FOLLOWING
       current = current~nextSibling
   end
 
   -- should never get here...throw up our hands and
   -- say they are disconnected.
-  return self~DOCUMENT_POSITION_DISCONNECTED
+  return .Node~DOCUMENT_POSITION_DISCONNECTED
 
 -- get the default text content for a node.  This is
 -- the same as the nodevalue for many node types
