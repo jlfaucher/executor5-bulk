@@ -42,8 +42,6 @@
 -- initial tables
 .XPathToken~setup
 
-::options trace c
-
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Section:  Abstract DOM interface class definitions                         */
@@ -944,8 +942,9 @@
      if current \= rootNode, current \= .nil, current~nodeType == .Node~ELEMENT_NODE then do
          -- no namespace checking?  We'll take any element node if the name is
          -- "*" or it matches directly
-         if nsName == .nil  then
+         if nsName == .nil then do
              if tagName == "*" | current~tagName == tagName then return current
+         end
          -- namespace qualified (which might also be "*")
          else do
              -- wildcard match on the tagname, so just check the namespace name
