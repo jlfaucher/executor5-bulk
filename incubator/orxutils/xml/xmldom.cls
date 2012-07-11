@@ -69,7 +69,6 @@
 /*----------------------------------------------------------------------------*/
 ::method length abstract
 
-
 -- some compatibility methods to make nodelist feel like a Rexx collection
 ::method makearray abstract
 ::method "[]"
@@ -1808,7 +1807,7 @@
   return .nil
 ::attribute prefix SET
   -- this is an error by default
-  .DomErrors~raiseError(.DomException~NAMESPACE_ERR)
+  .DomException~raiseError(.DomException~NAMESPACE_ERR)
 -- for node types that don't support a real localname,
 -- this is the same as nodeName
 ::attribute localName GET
@@ -1847,17 +1846,17 @@
 ::method insertBefore
   use strict arg newChild, refChild
   -- not implemented in the base node
-  .DomErrors~raiseError(.DomException~Hierarchy_request_err)
+  .DomException~raiseError(.DomException~Hierarchy_request_err)
 
 ::method replaceChild
   use strict arg newChild, oldChild
   -- not implemented in the base node
-  .DomErrors~raiseError(.DomException~Hierarchy_request_err)
+  .DomException~raiseError(.DomException~Hierarchy_request_err)
 
 ::method removeChild
   use strict arg oldChild
   -- not implemented in the base node
-  .DomErrors~raiseError(.DomException~Not_found_err)
+  .DomException~raiseError(.DomException~Not_found_err)
 
 ::method appendChild
   use strict arg newChild
@@ -1871,7 +1870,7 @@
 
   -- this must be from the same dom type
   if other \== .nil, \other~isa(.NodeImpl) then
-     .DomErrors~raiseError(.DomException~Not_supported_err)
+     .DomException~raiseError(.DomException~Not_supported_err)
 
   -- get the owners of the two nodes
   if self~nodeType == .Node~DOCUMENT_NODE then
@@ -2959,7 +2958,7 @@
   use strict arg type
   if type~caselessEquals("Event") then return .DOMEvent~new
   else if type~caselessEquals("MutationEvent") then return .DOMMutationEvent~new
-  else .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
+  else .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
 
 -- flag to indicate if there are any mutation event listeners in use.
 -- provides an optimization for the normal case of no listeners.
@@ -5196,14 +5195,14 @@ syntax:
   use strict arg qname
 
   if \.XMLChar~isValidQName(qname) then
-      .DomErrors~raiseError(.DomException~INVALID_CHARACTER_ERR)
+      .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
 
 -- create a document node
 ::method createDocument
   use strict arg namespaceURI = .nil, qualifiedName = .nil, doctype = .nil
 
   if doctype \= .nil, doctype~ownerDocument \= .nil then
-      .DomErrors~raiseError(.DomException~WRONG_DOCUMENT_ERR)
+      .DomException~raiseError(.DomException~WRONG_DOCUMENT_ERR)
 
   doc = .CoreDocument~new(doctype)
 
@@ -5229,11 +5228,59 @@ syntax:
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+/* Class:  BaseDOMException                                                   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- this is the base framework for DOM exception classes.  This class does not define
+-- and message codes or error messages, but creates the base infrastructure
+::class "BaseDomException" public
+
+-- the message table used by the class instance.  This will be set with different
+-- values by each sub class
+::attribute messageTable class get
+  expose messageTable
+  -- deferred setup of the message table until first request
+  if messageTable == .nil then
+      messageTable = self~setupMessages
+  return messageTable
+
+-- class to initialize the message table to empty
+::method init class
+  expose messageTable
+  messageTable = .nil
+
+-- dummy method intended to be overridden by subclasses to provide their own messages
+::method setupMessages class
+  return .array~new
+
+-- raise an error using the error numbers for the particular exception
+::method raiseError class
+  use arg code
+
+  exception = self~new(code, self~messageTable[code])
+  -- this generates both the formatted error message and attaches the
+  -- exception object to the condition object
+  raise syntax 98.900 array(exception~string, exception)
+
+
+-- instance item for DOM errors.  This is attached to the condition information
+::method init
+  expose code message
+  use strict arg code, message
+
+-- string method to display the message value
+::method string
+  expose code message
+  return self~class~id "error" code":" message
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 /* Class:  DOMException                                                       */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "DOMException" public
+::class "DOMException" public subclass BaseDomException
 ::constant INDEX_SIZE_ERR 1
 ::constant DOMSTRING_SIZE_ERR 2
 ::constant HIERARCHY_REQUEST_ERR 3
@@ -5251,55 +5298,46 @@ syntax:
 ::constant INVALID_ACCESS_ERR 15
 ::constant VALIDATION_ERR 16
 ::constant TYPE_MISMATCH_ERR 17
-::constant BAD_BOUNDARYPOINTS_ERR 18
-::constant INVALID_NODE_TYPE_ERR 19
 
--- instance item for DOM errors.  This is attached to the condition information
-::method init
-  expose code message
-  use strict arg code, message
-
-::method string
-  expose code message
-  return "DOM Error" code":" message
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class:  DOMErrors                                                          */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-
--- central class for raising DOMException events.
-::class "DOMErrors" public subclass DomException
-::method init class
-  expose messageTable
+-- this needs to be overridden in each class to set up the tables
+::method setupMessages class
   messageTable = .array~new
-  messageTable[.DomException~HIERARCHY_REQUEST_ERR] =  "An attempt was made to insert a node where it is not permitted."
-  messageTable[.DomException~INDEX_SIZE_ERR] =         "The index or size is negative, or greater than the allowed value."
-  messageTable[.DomException~INUSE_ATTRIBUTE_ERR] =    "An attempt is made to add an attribute that is already in use elsewhere."
-  messageTable[.DomException~INVALID_ACCESS_ERR] =     "A parameter or an operation is not supported by the underlying object."
-  messageTable[.DomException~INVALID_CHARACTER_ERR] =  "An invalid or illegal XML character is specified."
-  messageTable[.DomException~INVALID_MODIFICATION_ERR] = "An attempt is made to modify the type of the underlying object."
-  messageTable[.DomException~INVALID_STATE_ERR] =        "An attempt is made to use an object that is not, or is no longer, usable."
-  messageTable[.DomException~NAMESPACE_ERR] =            "An attempt is made to create or change an object in a way which is incorrect with regard to namespaces."
-  messageTable[.DomException~NOT_FOUND_ERR] =            "An attempt is made to reference a node in a context where it does not exist."
-  messageTable[.DomException~NOT_SUPPORTED_ERR] =        "The implementation does not support the requested type of object or operation."
-  messageTable[.DomException~NO_DATA_ALLOWED_ERR] =      "Data is specified for a node which does not support data."
-  messageTable[.DomException~NO_MODIFICATION_ALLOWED_ERR] = "An attempt is made to modify an object where modifications are not allowed."
-  messageTable[.DomException~SYNTAX_ERR] =                  "An invalid or illegal string is specified."
-  messageTable[.DomException~VALIDATION_ERR] =              "A call to a method such as insertBefore or removeChild would make the Node invalid with respect to document grammar."
-  messageTable[.DomException~WRONG_DOCUMENT_ERR] =          "A node is used in a different document than the one that created it."
-  messageTable[.DomException~TYPE_MISMATCH_ERR] =           "The value type for this parameter name is incompatible with the expected value type."
-  messageTable[.DomException~BAD_BOUNDARYPOINTS_ERR] =      "The boundary-points of a Range do not meet specific requirements."
-  messageTable[.DomException~INVALID_NODE_TYPE_ERR] =       "The container of a boundary-point of a Range is being set to either a node of an invalid type or a node with an ancestor of an invalid type."
+  messageTable[self~HIERARCHY_REQUEST_ERR] =  "An attempt was made to insert a node where it is not permitted."
+  messageTable[self~INDEX_SIZE_ERR] =         "The index or size is negative, or greater than the allowed value."
+  messageTable[self~INUSE_ATTRIBUTE_ERR] =    "An attempt is made to add an attribute that is already in use elsewhere."
+  messageTable[self~INVALID_ACCESS_ERR] =     "A parameter or an operation is not supported by the underlying object."
+  messageTable[self~INVALID_CHARACTER_ERR] =  "An invalid or illegal XML character is specified."
+  messageTable[self~INVALID_MODIFICATION_ERR] = "An attempt is made to modify the type of the underlying object."
+  messageTable[self~INVALID_STATE_ERR] =        "An attempt is made to use an object that is not, or is no longer, usable."
+  messageTable[self~NAMESPACE_ERR] =            "An attempt is made to create or change an object in a way which is incorrect with regard to namespaces."
+  messageTable[self~NOT_FOUND_ERR] =            "An attempt is made to reference a node in a context where it does not exist."
+  messageTable[self~NOT_SUPPORTED_ERR] =        "The implementation does not support the requested type of object or operation."
+  messageTable[self~NO_DATA_ALLOWED_ERR] =      "Data is specified for a node which does not support data."
+  messageTable[self~NO_MODIFICATION_ALLOWED_ERR] = "An attempt is made to modify an object where modifications are not allowed."
+  messageTable[self~SYNTAX_ERR] =                  "An invalid or illegal string is specified."
+  messageTable[self~VALIDATION_ERR] =              "A call to a method such as insertBefore or removeChild would make the Node invalid with respect to document grammar."
+  messageTable[self~WRONG_DOCUMENT_ERR] =          "A node is used in a different document than the one that created it."
+  messageTable[self~TYPE_MISMATCH_ERR] =           "The value type for this parameter name is incompatible with the expected value type."
 
--- raise an error using the DOMException error numbers
-::method raiseError class
-  expose messageTable
-  use arg code
+  return messageTable
 
-  raise syntax 98.900 array(.DOMException~new(code, messageTable[code]))    -- just raise this as a user execution error
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class:  RangeException                                                     */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "RangeException" public subclass BaseDomException
+::constant BAD_BOUNDARYPOINTS_ERR 1
+::constant INVALID_NODE_TYPE_ERR 2
+
+-- setup messages. Designed to be overridden by subclass exception types
+::method setupMessages class
+  messageTable = .array~new
+  messageTable[self~BAD_BOUNDARYPOINTS_ERR] =      "The boundary-points of a Range do not meet specific requirements."
+  messageTable[self~INVALID_NODE_TYPE_ERR] =       "The container of a boundary-point of a Range is being set to either a node of an invalid type or a node with an ancestor of an invalid type."
+
+  return messageTable
 
 
 /*----------------------------------------------------------------------------*/
@@ -6547,7 +6585,7 @@ syntax:
 ::method checkIndex private
   use strict arg refNode, offset
 
-  if offset < 0 then .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
+  if offset < 0 then .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
 
   type= refNode~nodeType
 
@@ -6555,11 +6593,11 @@ syntax:
   if nodeType == .Node~TEXT_NODE | nodeType == .Node~CDATA_SECTION_NODE | -
       nodeType == .Node~COMMENT_NODE | nodeType == .Node~PROCESSING_INSTRUCTION_NODE then do
       if offset > refNode~nodeValue~length then
-          .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
+          .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
   end
   -- must lie with the range of children for the node
   else if offset > refNode~childNodes~length then
-          .DOMErrors~raiseError(.DomException~INDEX_SIZE_ERR)
+          .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
 
 -- check the start and end positions and determine if the range
 -- needs to be collapsed
@@ -7355,10 +7393,10 @@ syntax:
           newNode~systemId = source~systemId
       end
       when type == .Node~DOCUMENT_NODE then do
-         .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
+         .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
       end
       otherwise  do
-         .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
+         .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
       end
   end
 
@@ -7401,10 +7439,10 @@ syntax:
           source~ownerDocument = self
       end
       when type == .Node~ENTITY_NODE | type == .Node~NOTATION_NODE then do
-          .DomErrors~raiseError(.DomException~NO_MODIFICATION_ALLOWED_ERR)
+          .DomException~raiseError(.DomException~NO_MODIFICATION_ALLOWED_ERR)
       end
       when type == .Node~DOCUMENT_NODE | type == .Node~DOCUMENT_TYPE_NODE then do
-          .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
+          .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
       end
       when type == .Node~ENTITY_REFERENCE_NODE then do
           parent = source~parentNode
@@ -7476,7 +7514,7 @@ syntax:
       self~renamedAttrNode(node, nodeName)
   end
   else
-      .DomErrors~raiseError(.DomException~NOT_SUPPORTED_ERR)
+      .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
 
 -- clear our identifiers table
 ::method clearIdentifiers private
