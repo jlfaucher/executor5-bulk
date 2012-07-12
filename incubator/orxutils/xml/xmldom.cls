@@ -1794,9 +1794,6 @@
   nodeId = self~class~getId
   self~readonly = .false     -- newly created nodes can be altered
 
--- the node name
-::attribute nodeName GET
-
 -- superclasses override
 ::attribute nodeValue GET
   return .nil
@@ -1804,41 +1801,36 @@
 ::attribute nodeValue SET
   return -- default behavior is to do nothing...superclasses override this
 
-::attribute nodeType GET
--- superclasses override
-::attribute parentNode GET
-  return .nil
 ::attribute childNodes GET
   use strict arg
   -- the nodes implement the NodeList methods directly, so
   -- all we need to do is return ourself
   return self
-::attribute firstChild GET
-  return .nil
--- superclasses override
-::attribute lastChild GET
-  return .nil
--- superclasses override
-::attribute previousSibling GET
--- superclasses override
-::attribute nextSibling GET
--- superclasses override
+
+-- only Element has attributes and overrides this
 ::attribute attributes GET
   return .nil
 
+  -- only elements have attributes
 ::method hasAttributes
   use strict arg
   return .false
 
 ::attribute ownerNode
 
+-- retrieve the owner document
 ::attribute ownerDocument GET
-  expose ownerDocument ownerNode
+  expose ownerNode
 
-  -- if we're a child node, then ask our owner for the information
-  if ownerNode \= self then return ownerNode~ownerDocument
-  -- return the owner directly
-  else return ownerNode
+  -- document nodes always return .nil according to the spec
+  if self~nodeType == .Node~DOCUMENT_NODE then return .nil
+
+  -- we might be an unattached document type
+  if ownerNode == .nil then return .nil
+  -- if the owner is a doc, return it directly
+  if ownerNode~nodetype == .Node~DOCUMENT_NODE then return ownerNode
+  -- send up the chain
+  return ownerNode~ownerDocument
 
 -- set the owner document for a node
 ::attribute ownerDocument SET PRIVATE
@@ -1847,20 +1839,25 @@
   use strict arg doc
   if self~ownerNode == .nil then ownerNode = doc
 
+-- default namespaceURI method, just returns null for
+-- non-named items
 ::attribute namespaceURI GET
   use strict arg
   return .nil
+
+-- returns .nil by default
 ::attribute prefix GET
   use strict arg
   return .nil
+
+-- prefix set.  This is a NOP for any node that returns null normally
 ::attribute prefix SET
-  -- this is an error by default
-  .DomException~raiseError(.DomException~NAMESPACE_ERR)
--- for node types that don't support a real localname,
--- this is the same as nodeName
+  return
+
+-- default local name attribute
 ::attribute localName GET
   use strict arg
-  return self~nodeName
+  return return .nil    -- this always return .nil except for element and attr nodes
 
 -- base URI is not supported yet
 ::attribute baseURI GET
@@ -1882,6 +1879,7 @@
   newNode = self~copy
   -- neither owned or readonly
   newNode~readOnly = .false
+  newNode~ownerNode = .nil
 
   return newNode
 
@@ -1899,21 +1897,6 @@
 
   if self~isFeature(feature, version) then return self
   return .nil
-
-::method insertBefore
-  use strict arg newChild, refChild
-  -- not implemented in the base node
-  .DomException~raiseError(.DomException~Hierarchy_request_err)
-
-::method replaceChild
-  use strict arg newChild, oldChild
-  -- not implemented in the base node
-  .DomException~raiseError(.DomException~Hierarchy_request_err)
-
-::method removeChild
-  use strict arg oldChild
-  -- not implemented in the base node
-  .DomException~raiseError(.DomException~Not_found_err)
 
 ::method appendChild
   use strict arg newChild
@@ -2211,6 +2194,7 @@
   end
   return .nil
 
+-- compare if two nodes are equal
 ::method isEqualNode
   use strict arg other
   -- a node is always equal to itself
@@ -2304,13 +2288,6 @@
 
   self~ownerDocument~dispatchEvent(self, event)
 
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: Node                                                                */
-/*        Private methods                                                     */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
 
 -- retrieve the nodes complete ancestor chain
 ::attribute ancestors get
@@ -2459,28 +2436,6 @@
   nodeSet~append(self~document~documentElement)
   return nodeSet
 
--- methods of NodeList that the node implements directly.  superclasses will
--- implement this more fully
-
-/*----------------------------------------------------------------------------*/
-/* Method: item                                                               */
-/* Description: get a list item.                                              */
-/*----------------------------------------------------------------------------*/
-
-::method item
-  use strict arg index
-  -- always returns .nil
-  return .nil
-
-/*----------------------------------------------------------------------------*/
-/* Method: length                                                             */
-/* Description: get the number of items in the list.                          */
-/*----------------------------------------------------------------------------*/
-::method length
-  use strict arg
-  -- always returns 0
-  return 0
-
 -- some useful compatibility items
 ::method makearray
   use strict arg
@@ -2543,12 +2498,14 @@
   use strict arg ownerDocument = .nil
   self~clearChildren
 
+-- clear all child nodes
 ::method clearChildren private
   expose firstChild lastChild childNodes
   firstChild = .nil
   lastChild = .nil
   childNodes = 0
 
+-- clone a node, potentially cloning everything
 ::method cloneNode
   expose firstChild
   use strict arg deep = .false
@@ -2565,17 +2522,19 @@
   end
   return newNode
 
+-- set the owner document.  This also sets the owner for all
+-- children
 ::attribute ownerDocument SET private
   expose firstChild
-
   use strict arg doc
+
   -- we need to set this at the higher levels too
   forward class(super) continue
   -- set this in each of the children too
   child = firstChild
-  do while child \= .nil
+  loop while child \= .nil
       child~ownerDocument = doc
-      child = child.nextSibling
+      child = child~nextSibling
   end
 
 -- returns true if the node currently has child nodes
@@ -2584,6 +2543,7 @@
   use strict arg
   return firstChild \= .nil
 
+-- attributes for accessing first and last children
 ::attribute firstChild GET
 ::attribute lastChild GET
 
@@ -2653,6 +2613,7 @@
   self~ownerDocument~insertedNode(self, newChild, replace)
   return newChild
 
+-- remove a child node
 ::method removeChild
   expose firstChild lastChild childNodes
   use strict arg oldChild, replace = .false
@@ -4035,7 +3996,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "DocumentTypeImpl" public subclass NodeImpl inherit DocumentType
+::class "DocumentTypeImpl" public subclass ChildNode inherit DocumentType
 
 /*----------------------------------------------------------------------------*/
 /* Method: init                                                               */
@@ -4043,42 +4004,30 @@ syntax:
 /*----------------------------------------------------------------------------*/
 
 ::method init
-  expose publicID systemID
-  use strict arg self~nodename, publicID, systemID
+  expose name publicID systemID internalSubset notations entities
+  use strict arg name, publicID, systemID
 
   self~init:super  -- initialize superclass data
 
-  self~nodeType = .Node~DOCUMENT_TYPE_NODE
-  self~nodeValue = .nil
-  self~entities = .NamedNodeMapImpl~new
-  self~notations = .NamedNodeMapImpl~new
-  self~publicID = .nil
-  self~systemID = .nil
-  self~internalSubset = .nil
+  entities = .NamedNodeMapImpl~new
+  notations = .NamedNodeMapImpl~new
+  internalSubset = .nil
 
-/*----------------------------------------------------------------------------*/
-/* Method: name                                                               */
-/* Description: return the node name.                                         */
-/*----------------------------------------------------------------------------*/
+-- defined readonly attributes
+::attribute name GET
+::attribute internalSubset GET
+::attribute notations GET
+::attribute entities GET
 
-::method name
+-- type and node name overrides
+::attribute nodeType GET
   use strict arg
-  return self~nodeName
+  return .Node~DOCUMENT_TYPE_NODE
 
-
-/*----------------------------------------------------------------------------*/
-/* Method: entities                                                           */
-/* Description: return the list of entities.                                  */
-/*----------------------------------------------------------------------------*/
-
-::attribute entities get
-
-/*----------------------------------------------------------------------------*/
-/* Method: notations                                                          */
-/* Description: return the list of notations                                  */
-/*----------------------------------------------------------------------------*/
-
-::attribute notations get
+::attribute nodeName GET
+  expose name
+  use strict arg
+  return name
 
 -- override for text content.  For this type, it always
 -- returns .nil
@@ -4104,11 +4053,6 @@ syntax:
   -- the notations and entities must be equal
   if \self~notations~isEqual(other~notations) then return .false
   return self~entities~isEqual(other~entities)
-
--- general attributes
-::attribute internalSubset
-::attribute publicID
-::attribute systemID
 
 
 /*----------------------------------------------------------------------------*/
