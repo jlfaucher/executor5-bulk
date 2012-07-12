@@ -324,6 +324,7 @@
 ::method splitText abstract
 ::method wholeText abstract
 ::method replaceWholeText abstract
+::method isElementContentWhitespace abstract
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -1434,6 +1435,10 @@
 ::attribute hasDefaults
 ::attribute changed
 ::attribute readonly
+::attribute ownerDocument GET
+  expose ownerNode
+  use strict arg
+  return ownerNode~ownerDocument
 
 -- get a named item
 ::method getNamedItem
@@ -1612,13 +1617,12 @@
 -- set a named item
 ::method setNamedItem
   use strict arg attribute
+  -- we already own this one
   -- replacing an attribute with itself does nothing
-  if attribute~isOwned then do
+  if attribute~parentNode == self~ownerNode then
       return attribute
-  end
 
-  attribute~ownerNode = self~ownerNode
-  attribute~isOwned = .true
+  attribute~parentNode = self~ownerNode
 
   index = self~findNamePoint(attribute~nodeName, 0)
   attributes = self~attributes
@@ -1626,8 +1630,8 @@
   if index \= .nil then do
       previous = attributes[i]
       attributes[i] = attribute
-      previous~ownerNode = self~ownerNode~ownerDocument
-      previous~isOwned = .false
+      previous~ownerNode = self~ownerDocument
+      previous~parentNode = .nil
       previous~specified = .true
   end
   else do
@@ -1638,7 +1642,7 @@
       attributes~append(attribute)
   end
 
-  self~ownerNode~ownerDocument~setAttrNode(attribute, previous)
+  self~ownerDocument~setAttrNode(attribute, previous)
   return previous
 
 -- add an attribute to the list.  This also has effect of adding it to the
@@ -1646,10 +1650,11 @@
 ::method setNamedItemNS
   use strict arg attribute
   -- replacing an attribute with itself does nothing
-  if attribute~isOwned then return attribute
+  if attribute~parentNode == self then return attribute
 
+  -- set the owner relationship and the parent relationship
   attribute~ownerNode = self~ownerNode
-  attribute~isOwned = .true
+  attribute~parentNode = self~ownerNode
 
   index = self~findNamePointNS(attribute~namespaceURI, attribute~localName)
   attributes = self~attributes
@@ -1657,8 +1662,8 @@
   if index \= .nil then do
       previous = attributes[index]
       attributes[index] = attribute
-      previous~ownerNode = self~ownerNode~ownerDocument
-      previous~isOwned = .false
+      -- remove it from the parent
+      previous~parentNode = .nil
       previous~specified = .true
   end
   else do
@@ -1669,7 +1674,7 @@
       attributes~append(attribute)
   end
 
-  self~ownerNode~ownerDocument~setAttrNode(attribute, previous)
+  self~ownerDocument~setAttrNode(attribute, previous)
   return previous
 
 -- remove an item from the attribute map
@@ -1703,7 +1708,7 @@
 ::method remove private
   use strict arg attr, index, addDefault = .false
 
-  ownerDocument = self~ownerNode~ownerDocument
+  ownerDocument = self~ownerDocument
   name = attr~nodeName
   -- if this is an id attribute, make sure the document knows
   -- this is going away
@@ -1725,7 +1730,7 @@
               if newAttr~localName \== .nil then
                   newAttr~namespaceURI = attr~namespaceURI
               newAttr~ownerNode = self~ownerNode
-              newAttr~isOwned = .true
+              newAttr~parentNode = self
               -- mark this as a default value
               newAttr~specified = .false
               attributes[index] = newAttr
@@ -1741,15 +1746,15 @@
   if \setDefault then attributes~remove(index)
   -- detach from usage
   attr~ownerNode = .nil
-  attr~isOwned = .false
+  attr~parentNode = .nil
   attr~specified = .true
   attr~isId = .false
 
   -- notify the document
-  ownerDocument~removedAttrNode(attr, self~ownerNode, name)
+  self~ownerDocument~removedAttrNode(attr, self~ownerNode, name)
   return attr
 
--- clone the content of an attribue map
+-- clone the content of an attribute map
 ::method cloneContent
   use strict arg source
   srcnodes = source~attributes
@@ -1758,7 +1763,7 @@
      loop node over srcnodes
          newNode = node~cloneNode(true)
          newNode~ownerNode = self~ownerNode
-         newNode~isOwned = .true
+         newNode~parentNode = self
          self~attributes~append(newNode)
      end
   end
@@ -1782,30 +1787,23 @@
   ctr += 1
   return ctr
 
-
-/*----------------------------------------------------------------------------*/
-/* Method: init                                                               */
-/* Description: instance initialization.                                      */
-/*----------------------------------------------------------------------------*/
-
+-- the instance initializer
 ::method init
-  expose ownerNode nodeId userData
+  expose ownerNode nodeId
   use strict arg ownerNode = .nil
   nodeId = self~class~getId
-  userData = .nil        -- no userdata
-  self~isowned = .false  -- unowned until we are added as a child
-  self~readonly = .false -- newly created nodes can be altered
-  self~isOwned = .false      -- not owned until attached
-  self~isIgnorableWhitespace = .false  -- only text nodes have this
+  self~readonly = .false     -- newly created nodes can be altered
 
-::attribute isIgnorableWhitespace
-
+-- the node name
 ::attribute nodeName GET
+
 -- superclasses override
 ::attribute nodeValue GET
   return .nil
+
 ::attribute nodeValue SET
   return -- default behavior is to do nothing...superclasses override this
+
 ::attribute nodeType GET
 -- superclasses override
 ::attribute parentNode GET
@@ -1838,21 +1836,16 @@
   expose ownerDocument ownerNode
 
   -- if we're a child node, then ask our owner for the information
-  if self~isowned then do
-      return ownerNode~ownerDocument
-  end
-  else do
-      -- return the owner directly
-      return ownerNode
-  end
+  if ownerNode \= self then return ownerNode~ownerDocument
+  -- return the owner directly
+  else return ownerNode
 
+-- set the owner document for a node
 ::attribute ownerDocument SET PRIVATE
   expose ownerNode
 
   use strict arg doc
-  if \self~isowned then do
-      ownerNode = doc
-  end
+  if self~ownerNode == .nil then ownerNode = doc
 
 ::attribute namespaceURI GET
   use strict arg
@@ -1875,7 +1868,6 @@
   return .nil
 
 -- private attributes used for the implementation
-::attribute isowned
 ::attribute readonly
 
 -- default implementations designed to be overridden
@@ -1889,7 +1881,6 @@
   -- make a copy of ourselves
   newNode = self~copy
   -- neither owned or readonly
-  newNode~isowned = .false
   newNode~readOnly = .false
 
   return newNode
@@ -2510,11 +2501,12 @@
 
 ::class "ChildNode" subclass NodeImpl public
 ::method init
-  expose previousSibling nextSibling
+  expose previousSibling nextSibling parentNode
   forward class(super) continue
 
   previousSibling = .nil
   nextSibling = .nil
+  parentNode = .nil
 
 
 ::method cloneNode
@@ -2527,14 +2519,8 @@
 
   return newNode
 
-::attribute parentNode GET
-  if self~isOwned then do
-      return self~ownerNode
-  end
-  else do
-      return .nil
-  end
-
+-- get the parent node for any node that can be a child
+::attribute parentNode
 ::attribute nextSibling GET
 ::attribute nextSibling SET PRIVATE
 
@@ -2620,13 +2606,10 @@
   -- make sure we've detached this node from any previous
   -- parent node.
   oldParent = newChild~parentNode
-  if oldParent \= .nil then do
-      oldParent~removeChild(newChild)
-  end
+  if oldParent \= .nil then oldParent~removeChild(newChild)
 
   -- set the new owner
-  newChild~ownerNode = self
-  newChild~isOwned = .true
+  newChild~parentNode = self
 
   -- Now detach before and after
 
@@ -2703,8 +2686,7 @@
 
   childNodes -= 1
 
-  oldChild~ownerNode = ownerDocument
-  oldChild~isOwned = .false
+  oldChild~ownerNode = self~ownerDocument
   oldChild~nextSibling = .nil
   oldChild~previousSibling = .nil
 
@@ -2764,16 +2746,18 @@
       child = child~nextSibling
   end
 
+-- test if a child has real text content
 ::method hasTextContent private
   use arg child
   type = child~nodeType
-  if type \= .Node~COMMENT_NODE & -
-      type \= .Node~PROCESSING_INSTRUCTION_NODE & -
-      type \= .Node~TEXT_NODE then do
-      return .false
-  end
+  if type == .Node~TEXT_NODE then
+      -- this could just be garbage white space
+      return \child~isElementContentWhitespace
 
-  return \child~isIgnorableWhitespace
+  -- CDATA and entity references are also considered text
+  if type == .Node~CDATA_SECTION_NODE | type == .Node~ENTITY_REFERENCE_NODE then return .true
+  -- others need not apply
+  return .false
 
 -- default text content method for nodes that allow children.  This
 -- will remove ALL child nodes and replace them with a single text node
@@ -2963,17 +2947,16 @@ syntax:
 
 ::class "AttrImpl" public subclass ParentNode inherit Attr
 ::method init
-  expose nodeName textNode namespaceURI localName type isId prefix
+  expose nodeName textNode namespaceURI localName type isId prefix parentNode
+  use strict arg ownerDoc, nodeName, namespaceURI = .nil
+
+  self~init:super(ownerDoc)
   type = .nil
-  namespaceURI = .nil
   localName = .nil
   prefix = .nil
   isId = .false
-  use strict arg ownerDoc, nodeName, namespaceURI = .nil, explicitLocalName = .nil
-  self~init:super(ownerDoc)
+  parentNode = .false
   self~setName(nodeName)
-  if explicitLocalName \= .nil then
-      localName = explicitLocalName
   self~specified = .false
 
 -- process a name change for this attribute
@@ -3006,12 +2989,14 @@ syntax:
 
 -- override for default method
 ::attribute namespaceURI GET
+-- override for the default method
+::attribute parentNode
+
 -- get the prefix from the node name
 ::attribute prefix GET
   expose nodeName
   index = nodeName~pos(":")
-  if index > 0 then
-      return nodeName~substr(1, index - 1)
+  if index > 0 then return nodeName~substr(1, index - 1)
   else return .nil
 
 ::attribute prefix SET
@@ -3019,8 +3004,7 @@ syntax:
   use strict arg prefix
 
   -- we're either adding or replacing the prefix
-  if prefix \= "" then
-      nodeName = prefix":"localName
+  if prefix \= "" then nodeName = prefix":"localName
   -- or removing it entirely
   else nodeName = localName
 
@@ -3188,9 +3172,7 @@ syntax:
 ::attribute element GET
   use strict arg
 
-  if self~isOwned then
-      return self~ownerNode
-  else return .nil
+  return self~parentNode
 
 -- same as element
 ::attribute ownerElement GET
@@ -3208,12 +3190,12 @@ syntax:
 ::class "ElementImpl" subclass ParentNode public inherit Element NodeList ElementTraversal
 ::method init
   expose nodeName attributes namespaceURI localName type
+  use strict arg ownerDoc, namespaceURI = .nil, nodeName
+
+  self~init:super(ownerDoc)
   attributes = .nil
-  namespaceURI = .nil
   type = .nil
 
-  use strict arg ownerDoc, namespaceURI = .nil, nodeName
-  self~init:super(ownerDoc)
   -- decode the name to see if there is a prefix
   self~setName(nodeName)
 
@@ -3945,7 +3927,15 @@ syntax:
 /*----------------------------------------------------------------------------*/
 
 ::class "TextImpl" public subclass CharacterDataImpl inherit Text
+-- initializer
+::method init
 
+  forward class(super) continue
+
+  -- default is to return real stuff
+  self~isElementContentWhitespace = .false
+
+-- standard nodeType and nodeName overrides
 ::attribute nodeType GET
   use strict arg
   return .Node~TEXT_NODE
@@ -4019,6 +4009,9 @@ syntax:
 
   return newText
 
+-- attribute to make this as ignoreable whitespace
+::attribute isElementContentWhitespace
+
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -4052,6 +4045,9 @@ syntax:
 ::method init
   expose publicID systemID
   use strict arg self~nodename, publicID, systemID
+
+  self~init:super  -- initialize superclass data
+
   self~nodeType = .Node~DOCUMENT_TYPE_NODE
   self~nodeValue = .nil
   self~entities = .NamedNodeMapImpl~new
@@ -4186,6 +4182,7 @@ syntax:
 ::method init
   expose name publicId systemId xmlEncoding inputEncoding xmlVersion notationName
   use strict arg ownerDoc, name
+
   self~init:super(ownerDoc)
   publicId = .nil
   systemId = .nil
@@ -4241,6 +4238,7 @@ syntax:
 ::method init
   expose name baseURI
   use strict arg ownerDoc, name
+
   self~init:super(ownerDoc)
   baseURI = .nil
 
@@ -6132,7 +6130,7 @@ syntax:
       -- mapping
   else whatToShowFlags = whatToShow~d2x~x2b~right(12, 0)
 
--- retrieve the parent node of the
+-- retrieve the parent node of the current node
 ::attribute parentNode GET
   expose currentNode
   if currentNode = .nil then return .nil
@@ -6641,45 +6639,63 @@ syntax:
   use strict arg data
   return .TextImpl~new(self, data)
 
+-- the following creating methods are strangely not defined in any
+-- specification I can find.  Wrote these before I knew that, but I
+-- suspect they'll be needed eventually when I get to doctype and
+-- schema support
+
+-- create an entity object
+::method createEntity
+  expose errorChecking
+  use strict arg name
+
+  if errorChecking then
+      .XMLChar~validateName(target)
+
+  return .EntityImpl~new(self, name)
+
+-- create a notation object
+::method createNotation
+  expose errorChecking
+  use strict arg name
+
+  if errorChecking then
+      .XMLChar~validateName(target)
+
+  return .NotationImpl~new(self, name)
+
+-- retrieve the docType information
 ::attribute docType GET
+
+-- retrieve the root document element
 ::attribute documentElement GET
   expose docElement
   use strict arg
   return docElement
 
+-- retrieve document elements that match a given tag name
 ::method getElementsByTagName
   use strict arg tagName
   return .DeepNodeList~new(self, tagname)
 
+-- retrieve document elements that match a given namespace
+-- qualified tag name
 ::method getElementsByTagNameNS
   use strict arg namespaceURI, localName
   return .DeepNodeList~new(self, namespaceURI, localName)
 
-::method getImplementation
-  use strict arg
-
-  return .DomImplementation~getDOMImplementation
-
+-- get the document URI
 ::attribute documentURI
+-- get the current change type
 ::attribute changes GET
 
-::method createDocumentType
-  use strict arg qualifiedName, publicID, systemID
-
-  return .DocumentTypeImpl~new(self, qualifiedName, publicID, systemID)
-
-::method createEntity
-  use strict arg name
-  return .EntityImpl~new(self, name)
-
-::method createNotation
-  use strict arg name
-  return .NotationImpl~new(self, name)
-
+-- import a node into this document.  This will copy the contents
+-- of the node into this document
 ::method importNode
   use strict arg source, deep = .false
   return self~importDocNode(source, deep, .false, .nil)
 
+-- worker method for the import
 ::method importDocNode private
   expose identifiers
   use strict arg source, deep, cloningDoc, reversedIdentifiers
@@ -6688,26 +6704,24 @@ syntax:
   type = source~nodeType
   select
       when type == .Node~ELEMENT_NODE then do
-          if source~localName == .nil then do
+          -- create the appropriate element based on the current naming
+          if source~namespaceURI == .nil then
               newElement = self~createElement(source~nodeName)
-          end
-          else do
+          else
               newElement = self~createElementNS(source~namespaceURI, source~nodeName)
-          end
+
           -- we need to copy the attributes for the element here...other
           -- children are handled below
           sourceAttrs = source~attributes
           if sourceAttrs \= .nil then do
-              do attr over sourceAttrs
+              loop attr over sourceAttrs
                   if attr~specified | cloningDoc then do
                       -- if we're just importing, ignore the default attributes.
                       newAttr = self~importNode(attr, .true, cloningDoc, reversedIdentifiers)
-                      if attr~localName == .nil then do
+                      -- do the appropriate addition based on the attribute naming
+                      if attr~namespaceURI == .nil then
                           newElement~setAttributeNode(newAttr)
-                      end
-                      else do
-                          newElement~setAttributeNodeNS(newAttr)
-                      end
+                      else newElement~setAttributeNodeNS(newAttr)
                   end
               end
           end
@@ -6716,24 +6730,21 @@ syntax:
           if reversedIdentifiers \= .nil then do
               elementId = reversedIdentifers[source]
               if elementId \= .nil then do
-                  if identifiers == .nil then do
-                      identifers = .table~new
-                  end
+                  if identifiers == .nil then identifers = .table~new
                   identifiers[elementId] = newElement
               end
           end
           newNode = newElement
       end
+      -- copying an attribute node?  This also has special naming considerations
       when type == .Node~ATTRIBUTE_NODE then do
-          if source~localName == .nil then do
+          if source~namespaceURI == .nil then
               newNode = self~createAttribute(source~nodeName)
-          end
-          else do
-              newNode = self~createAttributeNS(source~namespaceURI, source~nodeName)
-          end
+          else newNode = self~createAttributeNS(source~namespaceURI, source~nodeName)
           -- we'll do a deep copy
           deep = .true
       end
+      -- character data nodes are easy
       when type == .Node~TEXT_NODE then do
           newNode = self~createTextNode(source~nodeValue)
       end
@@ -6761,6 +6772,7 @@ syntax:
       when type == .Node~COMMENT_NODE then do
           newNode = self~createComment(source~nodeValue)
       end
+      -- document type nodes require a little more work
       when type == .Node~DOCUMENT_TYPE_NODE then do
           newNode = self~createDocumentType(source~nodeName, source~publicId, source~systemId)
           newNode~internalSubset = source~internalSubset
@@ -6768,15 +6780,16 @@ syntax:
           newMap = newNode~entities
           -- copy all of the entities, if thee are any
           if sourceMap \= .nil then do
-              do item over sourceMap
+              loop item over sourceMap
                   newMap~setNamedItem(self~importNode(item, .true, .true, reversedIdentifers))
               end
           end
+
           sourceMap = source~notations
           newMap = newNode~notations
           -- copy all of the notations, if thee are any
           if sourceMap \= .nil then do
-              do item over sourceMap
+              loop item over sourceMap
                   newMap~setNamedItem(self~importNode(item, .true, .true, reversedIdentifers))
               end
           end
@@ -6800,15 +6813,14 @@ syntax:
   -- do we need to copy the child nodes too?
   if deep then do
       child = source~firstChild
-      do while child \= .nil
+      loop while child \= .nil
           newNode~appendChild(self~importNode(child, .true, cloningDoc, reversedIdentifiers))
       end
   end
 
-  if newNode~nodeType == .Node~ENTITY_NODE then do
-      newNode~readOnly = .true
-  end
+  if newNode~nodeType == .Node~ENTITY_NODE then newNode~readOnly = .true
   return newNode
+
 
 -- adopt a node from another document.  This does not copy the
 -- tree, but rather removes from its existing owner and
@@ -6817,18 +6829,15 @@ syntax:
   expose docType
   use strict arg source
 
-  if source == .nil then do
-      return .nil
-  end
+  if source == .nil then return .nil
 
   type = source~nodeType
 
   select
       when type == .Node~ATTRIBUTE_NODE then do
           -- detach from the owner if this is owned
-          if source~ownerDocument \= .nil then do
+          if source~ownerDocument \= .nil then
               source~ownerElement~removeAttributeNode(source)
-          end
           -- this is now specified, since it's no longer
           -- derived from a default associated with an element
           source~specified = .true
@@ -6843,12 +6852,10 @@ syntax:
       end
       when type == .Node~ENTITY_REFERENCE_NODE then do
           parent = source~parentNode
-          if parent \= .nil then do
-              parent~removeChild(source)
-          end
+          if parent \= .nil then parent~removeChild(source)
           -- remove the replacement value
           child = source~firstChild
-          do while child \= .nil
+          loop while child \= .nil
               source~removeChild(child)
               child = source~firstChild
           end
@@ -6859,7 +6866,7 @@ syntax:
               entityNode = entities~getNamedItem(source~nodeName)
               if entityNode \= .nil then do
                   child = entityNode~firstChild
-                  do while child \= .nil
+                  loop while child \= .nil
                       newChild = child~cloneNode(.true)
                       source~appendChild(newChild)
                       child = child~nextSibling
@@ -6869,35 +6876,49 @@ syntax:
       end
       when type == .Node~ELEMENT_NODE then do
           parent = source~parentNode
-          if parent \= .nil then do
-              parent~removeChild(source)
-          end
+          if parent \= .nil then parent~removeChild(source)
           source~ownerDocument = self
       end
       otherwise  do
           parent = source~parentNode
-          if parent \= .nil then do
-              parent~removeChild(source)
-          end
+          if parent \= .nil then parent~removeChild(source)
           source~ownerDocument = self
       end
   end
   -- return the adopted node
   return source
 
+-- verify that a node is owned by this document and raise an
+-- error if it fails
+::method checkOwner private
+  use strict arg node
+
+  if node~ownerDocument \== self then
+      .DomException~raiseError(.DomExcepton~WRONG_DOCUMENT_ERROR)
+
 -- rename a target node using the new namespaceURI and qualified name
 ::method renameNode
   use strict arg node, namespaceURI, name
 
+  -- make sure we actually own this node
+  self~checkOwner(node)
+
   newNode = node
   if node~nodeType == .Node~ELEMENT_NODE then do
+      -- make sure this is a valid name
+      .XMLChar~validateAttributeOrElementNameNS(namespaceURI, name)
       oldName = node~nodeName
+      oldNamespaceURI = node~namespaceURI
       node~rename(namespaceURI, name)
       self~callUserDataHandlers(node, .nil, .UserDataHandler~NODE_RENAMED)
-      self~renamedElement(node, oldName)
+      self~renamedElement(node, oldName, oldNamespaceURI)
   end
+
   else if node~nodeType == .Node~ATTRIBUTE_NODE then do
+      -- make sure this is a valid name
+      .XMLChar~validateAttributeOrElementNameNS(namespaceURI, name)
       oldName = node~nodeName
+      oldNamespaceURI = node~namespaceURI
       -- detach the attr from its owning element
       owner = node~ownerElement
       if owner \= .nil then
@@ -6908,16 +6929,14 @@ syntax:
           owner~setAttributeNodeNS(node)
       self~callUserDataHandlers(node, .nil, UserDataHandler~NODE_RENAMED)
       -- fire AttributeNameChanged event
-      self~renamedAttrNode(node, nodeName)
+      self~renamedAttrNode(node, oldName, oldNamespaceURI)
   end
-  else
-      .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
+  else .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
 
 -- clear our identifiers table
 ::method clearIdentifiers private
   expose identifers
-  if identifers \= .nil then
-      identifiers~empty
+  if identifers \= .nil then identifiers~empty
 
 -- retrieve an element by an id attribute
 ::method getElementById
@@ -6936,10 +6955,8 @@ syntax:
 
   if element \= .nil then do
       parent = element~parentNode
-      do while parent \= .nil
-          if parent == self then do
-              return element
-          end
+      loop while parent \= .nil
+          if parent == self then return element
           parent = parent~parentNode
       end
   end
@@ -6956,8 +6973,7 @@ syntax:
       self~removeIdentifier(name)
   -- add this to the global identifiers table
   else do
-      if identifiers == .nil then
-          identifiers = .directory~new
+      if identifiers == .nil then identifiers = .directory~new
       identifers[name] = element
   end
 
@@ -6975,19 +6991,20 @@ syntax:
 
 -- retrieve the identifiers name set as an array
 ::method identifiers
-  if identifiers == .nil  then
-      identifiers = .directory~new
+  if identifiers == .nil  then identifiers = .directory~new
 
   return identifers~allIndexes
 
+-- override of the ooRexx copy method
 ::method copy
   use strict arg
   newDoc = self~copy:super()
-
+  -- only copy the document node, not the doc/element bits
   newDoc~docType = .nil
   newDoc~docElement = .nil
   return newDoc
 
+-- record a change to the document
 ::method changed
   expose changes
   changes += 1
@@ -7200,9 +7217,7 @@ syntax:
 
   -- if this is the first listener request, create the
   -- listener table
-  if eventListeners == .nil then do
-      eventListeners = .identitytable~new
-  end
+  if eventListeners == .nil then eventListeners = .identitytable~new
 
   -- no listeners provided?  Just remove the listeners for this node
   if listeners == .nil then do
@@ -7423,13 +7438,13 @@ syntax:
       -- Note that not all events bubble.
       if event~bubbles then do
           event~eventPhase = .DOMEvent~BUBBLING_PHASE
-          do parent over parents
+          loop parent over parents
               if event~propagationStopped then leave
 
               event~currentTarget = parent
               nodeListeners = self~getEventListeners(parent)
               if nodeListeners \= .nil then do
-                  do listener over nodeListener
+                  loop listener over nodeListener
                       if listener~matches(event~type, .false) then do
                           listener~invoke(event)
                           -- if the immediate stop has been turned on, we're done dispatching
@@ -7690,7 +7705,7 @@ syntax:
   expose ranges
   use strict arg newInternal
 
-  do range over ranges
+  loop range over ranges
       range~insertedNodeFromDOM(newInternal)
   end
 
@@ -7719,7 +7734,7 @@ syntax:
   use strict arg oldChild
 
   -- just tap each one on the shoulder
-  do iterator over iterators
+  loop iterator over iterators
       iterator~removeNode(oldChild)
   end
 
@@ -7728,7 +7743,7 @@ syntax:
   expose ranges
   use strict arg oldChild
 
-  do range over ranges
+  loop range over ranges
       range~removeNode(oldChild)
   end
 
@@ -7761,7 +7776,7 @@ syntax:
       -- find the last non-null ancestor
       if eventAncestor \= .nil then do
           parent = eventAncestor~parentNode
-          do while parent \= .nil
+          loop while parent \= .nil
               eventAncestor = parent
               parent = parent~parentNode
           end
@@ -7783,9 +7798,8 @@ syntax:
   use strict arg node, replace
 
   if haveMutationEventListeners then do
-      if \replace then do
+      if \replace then
           self~dispatchAggregateEvents(node, savedEventContext~node, savedEventContext~oldValue)
-      end
   end
 
 -- broadcast intention of node replacement to the appropriate listeners
@@ -7865,20 +7879,19 @@ syntax:
 
 -- handle notification of attribute node rename
 ::method renamedAttrNode
-  use strict arg attr, oldName
+  use strict arg attr, oldName, oldNamespaceURI
 
   if haveMutationEventListeners then
-      self~mutationEventRenamedAttrNode(newAttr, attr, oldName)
+      self~mutationEventRenamedAttrNode(newAttr, attr, oldName, oldNamespaceURI)
 
 -- real processing of attribute node rename
-::method mutationEventRenameAttrNode
-  use strict arg attr, oldName
+::method mutationEventRenamedAttrNode
+  use strict arg attr, oldName, oldNamespaceURI
 
-  capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
+  capture = self~lookupCapture(.DOMMutationNameEvent~DOM_ATTR_NAME_CHANGED)
   if capture~total > 0 then do
-      me = .DOMMutationEvent~new
-      me~initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true, .false, attr,
-          attr~nodeName, .nil, oldName, .DOMMutationEvent~MODIFICATION)
+      me = .DOMMutationNameEvent~new
+      me~initMutationNameEvent(.DOMMutationNameEvent~DOM_ATTR_NAME_CHANGED, .true, .false, attr, oldNamespaceURI, oldName)
       self~dispatchEvent(attr, me)
   end
 
@@ -7891,14 +7904,13 @@ syntax:
       self~mutationEventRenamedElementNode(element, oldName)
 
 -- real processing of element node rename
-::method mutationEventRenameElementNode
-  use strict arg element, oldName
+::method mutationEventRenamedElementNode
+  use strict arg element, oldName, oldNamespaceURI
 
-  capture = self~lookupCapture(.DOMMutationEvent~DOM_ELEMENT_MODIFIED)
+  capture = self~lookupCapture(.DOMMutationNameEvent~DOM_ELEMENT_NAME_CHANGED)
   if capture~total > 0 then do
       me = .DOMMutationEvent~new
-      me~initMutationEvent(.DOMMutationEvent~DOM_ELEMENT_MODIFIED, .true, .false, element,
-         element~nodeName, .nil, oldName, .DOMMutationEvent~MODIFICATION)
+      me~initMutationNameEvent(.DOMMutationNameEvent~DOM_ELEMENT_NAME_CHANGED, .true, .false, element, oldNamespaceURI, oldName)
       self~dispatchEvent(element, me)
   end
 
