@@ -34,19 +34,25 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ******************************************************************************/
 
-# NOTE: If for some reason there is a problem with setting the compiler version
-# in this section, simply comment out everything except the setting of the
-# proper VCPPx macro for your system.
+# NOTE: This is a nMake include file specific to building ooDialog independent
+#       of the interpreter.  It is patterned on the orxwin32.mak from the
+#       interpreter build, but altered to fit the specific circumstances.
+#
+#       The idea was to keep the build of ooDialog the same as if it was built
+#       along side the interpreter.
 #
 # These compiler defines allow the support of different versions of Mircrosoft's
 # Visual C++ compiler.  The build has not necessarily been tested on all of the
 # following versions, so some of the !IFDEF statements may need to be adjusted.
+# VCPP10 == Visual C++ 2010
 # VCPP9 == Visual C++ 2008
 # VCPP8 == Visual C++ 2005
 # VCPP7 == Visual C++ 2003
 # VCPP6 == Visual C++ 6.0
 #
-!IF "$(MSVCVER)" == "9.0"
+!IF "$(MSVCVER)" == "10.0"
+VCPP10 = 1
+!ELSEIF "$(MSVCVER)" == "9.0"
 VCPP9 = 1
 !ELSEIF "$(MSVCVER)" == "8.0"
 VCPP8 = 1
@@ -58,18 +64,11 @@ VCPP6 = 1
 !ERROR MSVCVER does not appear to be set. Check windows-build.txt for details
 !ENDIF
 
-# include the version information
-!include "$(OR_MAINSRC)\oorexx.ver.incl"
+!message In ooDialogWin32.mak
 
-# Make file include for WIN32 stuff
-#
-# Include the WIN32 standard include file
 # Back out if no source/output dirs set
-!IFNDEF OR_OUTDIR
-!ERROR Build error, OR_OUTDIR not set
-!ENDIF
-!IFNDEF OR_ORYXINCL
-!ERROR Build error, OR_ORYXINCL not set
+!IFNDEF OOD_OUTDIR
+!ERROR Build error, ODD_OUTDIR not set
 !ENDIF
 
 !IF "$(MKASM)" == "1"
@@ -88,8 +87,10 @@ OR_LINK=link
 #
 OR_IMPLIB=lib
 
-# The ooRexx version definition for the compile flags.
-VER_DEF = -DORX_VER=$(ORX_MAJOR) -DORX_REL=$(ORX_MINOR) -DORX_MOD=$(ORX_MOD_LVL) -DOOREXX_BLD=$(ORX_BLD_LVL) -DOOREXX_COPY_YEAR=\"$(ORX_COPY_YEAR)\"
+# The ooRexx version definition for the compile flags. We don't use this
+# VER_DEF = -DOOD_VER=$(OOD_MAJOR) -DOOD_REL=$(OOD_MINOR) -DOOD_MOD=$(OOD_MOD_LVL) -DOOD_BLD=$(OOD_BLD_LVL) -DOOD_COPY_YEAR=\"$(OOD_COPY_YEAR)\"
+
+!message VER_DEF $(VER_DEF)
 
 # The start of the warning flags for the compile flags.
 WARNING_FLAGS = /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
@@ -115,7 +116,9 @@ WARNING_FLAGS = /W4 /wd4100 /wd4706 /wd4701 $(WARNING_FLAGS)
 WARNING_FLAGS = /W3 $(WARNING_FLAGS)
 !ENDIF
 
-!IFDEF VCPP9
+!IFDEF VCPP10
+Z_FLAGS =
+!ELSE IFDEF VCPP9
 Z_FLAGS =
 !ELSE IFDEF VCPP8
 Z_FLAGS =
@@ -137,6 +140,7 @@ cflags_noopt=/nologo /D:_X86_ /DWIN32 $(WARNING_FLAGS) -c $(my_cdebug) /DNULL=0
 !ENDIF
 
 cflags_common=/EHsc /nologo /D:_X86_ /DWIN32 $(VER_DEF) $(WARNING_FLAGS) -c $(my_cdebug) $(MK_ASM) $(RXDBG) /DNULL=0
+!message cflags_comman $(cflags_common)
 
 # ooRexx has always been using a statically linked CRT.
 !IFDEF NOCRTDLL
