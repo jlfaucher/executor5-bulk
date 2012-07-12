@@ -230,6 +230,7 @@
 ::method hasChildNodes abstract
 ::method insertBefore abstract
 ::method isSupported abstract
+::method getFeature abstract
 ::method normalize abstract
 ::method removeChild abstract
 ::method replaceChild abstract
@@ -1839,9 +1840,20 @@
 
   return newNode
 
+-- test if this node supports a given feature.  The owner document
+-- implementation really determines this
 ::method isSupported
   use strict arg feature, version
-  return .false
+  return self~ownerDocument~implementation~hasFeature(feature, version)
+
+-- return an instance of an object that implements a named feature.
+-- for use, this just means return the same node since the base
+-- node supports all of the features directly
+::method getFeature
+  use strict arg feature, version
+
+  if self~isFeature(feature, version) then return self
+  return .nil
 
 ::method insertBefore
   use strict arg newChild, refChild
@@ -2191,10 +2203,6 @@
   loop i = 0 for this~children
       if \thisChildren~item(i)~isEqualNode(otherChildren~item(i)) then return .false
   end
-
-::method getFeature
-  use strict arg feature, version
-  return .nil
 
 -- associate an object to a key on this node.
 ::method setUserData
@@ -2958,6 +2966,7 @@
   use strict arg type
   if type~caselessEquals("Event") then return .DOMEvent~new
   else if type~caselessEquals("MutationEvent") then return .DOMMutationEvent~new
+  else if type~caselessEquals("MutationNameEvent") then return .DOMMutationNameEvent~new
   else .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
 
 -- flag to indicate if there are any mutation event listeners in use.
@@ -3126,7 +3135,7 @@
   -- check the capture descriptors.  If there are no active listeners
   -- for this event type, then we don't dispatch this
   capture = self~lookupCapture(event~type)
-  if capture~total == 0 then return event~defaultPrevented
+  if capture~total == 0 then return event~isDefaultPrevented
 
   -- initialize the events dispatch status
   event~target = node
@@ -5148,41 +5157,77 @@ syntax:
   expose singleton
   singleton = .nil
 
+-- get the singleton instance for this dom
 ::attribute implementation GET class
   expose singleton
   use strict arg
-  if singleton == .nil then do
-      singleton = self~new
-  end
 
+  -- create the singleton if this is the first call
+  if singleton == .nil then
+      singleton = self~new
   return singleton
 
+-- indicate what features we support
 ::method hasFeature
   use strict arg feature, version = .nil
 
   anyVersion = version == .nil | version == ""
+  -- remove the plus here...we don't consider this here
+  if feature~subchar(1) == '+' then feature = feature~substr(2)
   feature = feature~upper
 
   select
       when feature = "CORE" then do
-          return anyVersion | version == 1.0 | verison == 2.0 | version == 3.0
+          return anyVersion | version == "1.0" | verison == "2.0" | version == "3.0"
       end
       when feature = "XML" then do
-          return anyVersion | version == 1.0 | verison == 2.0 | version == 3.0
+          return anyVersion | version == "1.0" | verison == "2.0" | version == "3.0"
       end
       when feature = "XMLVERSION" then do
-          return anyVersion | version == 1.0 | verison == 1.1
+          return anyVersion | version == "1.0" | verison == "1.1"
       end
-      when feature = "LS" then do
-          return anyVersion | version == 3.0
-      end
+-- not yet
+--      when feature = "LS" then do
+--          return anyVersion | version == "3.0"
+--      end
       when feature = "XPATH" then do
-          return anyVersion | version == 3.0
+          return anyVersion | version == "3.0"
       end
+      when feature == "EVENTS" then do
+          return anyVersion | version == "3.0"
+      end
+      when feature == "MUTATIONEVENTS" then do
+          return anyVersion | version == "3.0"
+      end
+-- still to be done
+--      when feature == "MUTATIONNAMEEVENTS" then do
+--          return anyVersion | version == "3.0"
+--      end
+      when feature == "TRAVERSAL" then do
+          return anyVersion | version == "3.0"
+      end
+      when feature == "RANGE" then do
+          return anyVersion | version == "3.0"
+      end
+      when feature == "ELEMENTTRAVERSAL" then do
+          return anyVersion | version == "3.0"
+      end
+      when feature == "RANGE" then do
+          return anyVersion | version == "3.0"
+      end
+
       otherwise  do
           return .false
       end
   end
+
+-- return an instance of an object that implements a named feature.
+-- for use, this just means return the singleton instance
+::method getFeature
+  use strict arg feature, version
+
+  if self~hasFeature(feature, version) then return self
+  return .nil
 
 -- create a document type value
 ::method createDocumentType
@@ -5213,18 +5258,7 @@ syntax:
 
   return doc
 
-::method getFeature
-  singleton = self~class~DOMImplementation
-  if singleton~hasFeature(feature, version) then do
-      if feature~upper = "XPATH" then do
-          return .XPathEvaluator~new
-      end
-      else do
-          return singleton
-      end
-  end
 
-  return .nil
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -5352,7 +5386,8 @@ syntax:
 ::constant BUBBLING_PHASE 3
 
 ::method init
-  expose type initialized cancelable target eventPhase currentTarget timeStamp propagationStopped defaultPrevented isTrusted immediatePropagationStopped
+  expose type initialized cancelable target eventPhase currentTarget timeStamp -
+      propagationStopped defaultPrevented isTrusted immediatePropagationStopped namespaceURI
   type = .nil
   initialized = .false
   currentTarget = .nil
@@ -5363,11 +5398,19 @@ syntax:
   cancelable = .false
   isTrusted = .false  -- spec requires this initially be false
   immediatePropagationStopped = .false
+  namespaceURI = .nil
 
+-- initialize the event
 ::method initEvent
   expose type bubbles cancelable initialized
   use strict arg type, bubbles, cancelable
   initialized = .true
+
+-- initialize the event
+::method initEventNS
+  expose namespaceURI
+  use strict arg namespaceURI, type, bubbles, cancelable
+  self~initEvent(type, bubbles, cancelable)
 
 ::attribute bubbles GET
 ::attribute cancelable GET
@@ -5376,9 +5419,20 @@ syntax:
 ::attribute target GET
 ::attribute type GET
 ::attribute timeStamp GET
-::attribute defaultPrevented
-::attribute propagationStopped
+::attribute isDefaultPrevented GET
+  expose defaultPrevented
+  return defaultPrevented
+::attribute isPropagationStopped GET
+  expose propagationStopped
+  return propagationStopped
+::attribute isImmediatePropagationStopped GET
+  expose immediatePropagationStopped
+  return immediatePropagationStopped
 ::attribute isTrusted GET
+::attribute namespaceURI GET
+-- no custom events supported
+::attribute isCustum GET
+  return .false
 
 ::method preventDefault
   expose defaultPrevented
@@ -5394,6 +5448,10 @@ syntax:
   expose immediatePropagationStopped
   use strict arg
   immediatePropagationStopped = .true
+
+-- internal attributes
+::attribute defaultPrevented
+::attribute propagationStopped
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -5434,6 +5492,44 @@ syntax:
   expose relatedNode prevValue newValue attrName attrChange
   use strict arg type, bubble, cancelable, relatedNode, prevValue, newValue, attrName, attrChange
   self~initEvent(type, canBubble, cancelable)
+
+::method initMutationEventNS
+  expose relatedNode prevValue newValue attrName attrChange
+  use strict arg namespaceURI, type, bubble, cancelable, relatedNode, prevValue, newValue, attrName, attrChange
+  self~initEvent(type, canBubble, cancelable)
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class:  DOMMutationNameEvent                                               */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "DOMMutationNameEvent" subclass DOMMutationEvent public
+::constant DOM_ATTR_NAME_CHANGED "DOMAttrNameChanged"
+::constant DOM_ELEMENT_NAME_CHANGED "DOMElementNameChanged"
+
+::method init
+  expose relatedNode prevValue newValue attrName
+  self~init:super
+  relatedNode = .nil
+  prevValue = .nil
+  newValue = .nil
+  attrName = .nil
+
+::attribute prevNamespaceURI GET
+::attribute prevNodeName GET
+
+-- initialized the mutation name event
+::method initMutationNameEvent
+  expose prevNamespaceURI prevNodeName
+  use strict arg type, bubble, cancelable, relatedNode, prevNamespaceURI, prevNodeName
+  self~initMutationEvent(type, canBubble, cancelable, relatedNode, .nil, .nil, .nil, .nil)
+
+-- initialized the mutation name event
+::method initMutationNameEventNS
+  expose prevNamespaceURI prevNodeName
+  use strict arg namespaceURI, type, bubble, cancelable, relatedNode, prevNamespaceURI, prevNodeName
+  self~initMutationEventNS(namespaceURI, type, canBubble, cancelable, relatedNode, .nil, .nil, .nil, .nil)
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
