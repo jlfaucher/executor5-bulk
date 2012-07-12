@@ -120,6 +120,48 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+/* Class: DOMImplementationList                                               */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "DOMImplementationList"
+-- initialize a string list from an array of strings
+::method init
+  expose array
+  -- default is to create an empty list
+  use strict arg array = (.array~new)
+
+-- retrieve an item from the list using a 0-based index
+::method item
+  expose array
+  use strict arg index
+  if index > 0 then return array[index]
+  -- defined as returning .nil for anything out of range
+  return .nil
+
+-- get the count of items in the array
+::attribute length get
+  expose array
+  return array~items
+
+-- returns true if this list contains the given string
+::method contains
+  expose array
+  use strict arg target
+  return array~hasItem(target)
+
+-- some compatibility methods to make nodelist feel like a Rexx collection
+::method makearray
+  expose array
+  return array~copy    -- return a copy of our array so this stays immutable
+
+::method "[]"
+  forward message("ITEM")
+::method items
+  forward message("LENGTH")
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 /* Class: NameList                                                            */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -540,6 +582,17 @@
 ::method previousElementSibling abstract
 ::method nextElementSibling abstract
 ::method childElementCount abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DOMImplementationSource                                             */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- interface for DOMImplementationSource
+::class "DOMImplementationSource" mixinclass object
+::method getDOMImplementation abstract
+::method getDOMImplementationList abstract
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -5152,7 +5205,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "ooRexxDOM" public inherit DOMImplementation
+::class "ooRexxDOM" public inherit DOMImplementation DOMImplementationSource
 ::method init class
   expose singleton
   singleton = .nil
@@ -5258,7 +5311,50 @@ syntax:
 
   return doc
 
+-- methods for DOMImplementationSource compatibility
 
+-- get an implementation that matches a specified list of features
+::method getDOMImplementation
+  use strict arg features
+
+  -- We only have one implementation, but we need to test this
+  -- against the feature list
+  impl = self~implementation
+  -- if we have all of the requested features, return this impl
+  if self~testImplFeatures(impl, features) then return impl
+
+  return .nil   -- no compatible implementation
+
+-- return a list of all implementations available for this DOM that
+-- match a set of features
+::method getDOMImplementationList
+  use strict arg features
+
+  -- we only have one implementation, so this either meets the
+  -- requirements, or we return an empty list
+  impl = self~getDOMImplmentations(features)
+
+  if impl = .nil then return .DOMImplementationList~new(.array~new)
+  else return .DOMImplementationList~new(.array~of(impl))
+
+-- test an implementation against a set of features
+::method testImplFeatures
+  use strict arg impl, features
+
+  loop while features \= ""
+      parse var features feature version features
+      -- if this is not a numeric version value, add it
+      -- back to the list and use a null version number
+      if \version~datatype('Number') then do
+          features = version features
+          version = .nil
+      end
+      -- fail on first missing feature
+      if \impl~hasFeature(feature, version) then return .false
+  end
+
+  -- has all of the features
+  return .true
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
