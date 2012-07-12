@@ -410,6 +410,7 @@
 ::method createDocument abstract
 ::method createDocumentType abstract
 ::method hasFeature abstract
+::method getFeature abstract
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -2888,853 +2889,6 @@
   -- always returns .false for this type
   return .false
 
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: DocumentImpl                                                        */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal DocumentEvent DocumentRange
-::method init
-  expose iterators ranges eventListeners doctype haveMutationEventListeners savedEventContext
-  use arg doctype = .nil
-
-  self~init:super
-  iterators = .nil
-  ranges = .nil
-  eventListeners = .nil
-  haveMutationEventListeners = .false
-  savedEventContext = .nil
-
--- clone a document node
-::method cloneNode
-  use strict arg deep = .false
-
-  -- create an instance of the same class (we might be subclassed)
-  -- and go through the cloning logic
-  newDoc = self~class~new
-  self~cloneDocument(newDoc, deep)
-  return newDoc
-
--- retrieve the DOM implementation this is associated with.  This
--- always returns the ooRexxDOM
-::method implementation
-  -- this is a singleton
-  return .ooRexxDOM~implementation
-
--- create a NodeIterator instance for the DocumentTraversal interface
-::method createNodeIterator
-  expose iterators
-  use strict arg root, whatToShow, filter, entityReferenceExpansion = .true
-
-  iterator = .NodeIteratorImpl~new(self, root, whatToShow, filter, entityReferenceExpansion)
-
-  -- we keep track of the iterators so we can dispatch update events to them
-  if iterators = .nil  then iterators = .list~new
-
-  iterators~append(iterator)
-  return iterator
-
--- create a tree walker for moving through the nodes
-::method createTreeWalker
-  use strict arg root, whatToShow, filter, entityReferenceExpansion = .true
-  return .TreeWalkerImpl~new(root, whatToShow, filter, entityReferenceExpansion)
-
--- remove an iterator from tracking as a result of a detach call
-::method removeNodeIterator
-  expose iterators
-  use strict arg nodeIterator
-
-  if nodeIterator == .nil | iterators == .nil then return
-
-  iterators~removeItem(iterator)
-
-
--- create a range instance associated with this document
-::method createRange
-  expose ranges
-  use strict arg
-
-  -- if this is the first range, then create a list to track these
-  if ranges == .nil then ranges = .list~new
-
-  -- create an instance and add it to the tracking list
-  range = .RangeImpl~new(self)
-  ranges~append(range)
-  return range
-
--- remove a range from the document
-::method removeRange
-  expose ranges
-  use strict arg range
-
-  if range == .nil | ranges == .nil then return
-  ranges~removeItem(range)
-
--- handle a replacedText event.  This will broadcast to all of the ranges
-::method replacedText
-  expose ranges
-  use strict arg node
-
-  if ranges \= .nil then do
-      loop range over ranges
-          range~receiveReplacedText(node)
-      end
-  end
-
-
--- handle a deletedText event.  This will broadcast to all of the ranges
-::method deletedText
-  expose ranges
-  use strict arg node, offset, count
-
-  if ranges \= .nil then do
-      loop range over ranges
-          range~receiveDeletedText(node, offset, count)
-      end
-  end
-
--- handle a insertedText event.  This will broadcast to all of the ranges
-::method insertedText
-  expose ranges
-  use strict arg node, offset, count
-
-  if ranges \= .nil then do
-      loop range over ranges
-          range~receiveInsertedText(node, offset, count)
-      end
-  end
-
-::method splitData
-  expose ranges
-  use strict arg node, newNode, offset
-
-  if ranges \= .nil then do
-      loop range over ranges
-          range~receiveSplitData(node, newNode, offset)
-      end
-  end
-
--- create an event object.  Part of the DocumentEvent support
-::method createEvent
-  use strict arg type
-  if type~caselessEquals("Event") then return .DOMEvent~new
-  else if type~caselessEquals("MutationEvent") then return .DOMMutationEvent~new
-  else if type~caselessEquals("MutationNameEvent") then return .DOMMutationNameEvent~new
-  else .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
-
--- flag to indicate if there are any mutation event listeners in use.
--- provides an optimization for the normal case of no listeners.
-::attribute haveMutationEventListeners
-
--- set a set of event listeners for a given node
-::method setEventListeners
-  expose eventListeners
-  use strict arg node, listeners
-
-  -- if this is the first listener request, create the
-  -- listener table
-  if eventListeners == .nil then do
-      eventListeners = .identitytable~new
-  end
-
-  -- no listeners provided?  Just remove the listeners for this node
-  if listeners == .nil then do
-      eventListeners~remove(node)
-      -- if there are no more listeners, turn off even checking
-      if eventListeners~isEmpty then
-          self~haveMutationEventListeners = .false
-  end
-  else do
-      -- add this to the listener table and make sure the
-      -- event flag is turned on
-      eventListeners[node] = listeners
-      self~haveMutationEventListeners = .true
-  end
-
--- retrieve the event listeners for a target node
-::method getEventListeners
-  expose eventListeners
-  use strict arg node
-
-  if eventListeners == .nil then return .nil
-  return eventListeners[node]
-
--- EventTarget support
-
--- add an event listener for a node
-::method addEventListener
-  use strict arg node, eventName, listener, useCapture
-
-  -- we need a good type and listener for this to work
-  if type == .nil | type == "" | listener == .nil then return
-  -- remove any existing event listener for this node and type
-  self~removeEventListener(node, eventName, listener, useCapture)
-  -- get the listener list for this node, creating one if needed
-  nodeListeners = self~getEventListeners(node)
-
-  if nodeListeners == .nil then do
-      nodeListeners = .list~new
-      self~setEventListeners(node, nodeListeners)
-  end
-
-  nodeListeners~append(.EventListenerDescriptor~new(eventName, listener, useCapture))
-  -- look up the capture record for this eventName and record the fact
-  capture = self~lookupCapture(eventName)
-  capture~addListener(useCapture)
-
--- remove an event listener from the tables
-::method removeEventListener
-  use strict arg node, type, listener, useCapture
-
-  if type == .nil | type == "" | listener == .nil then return
-
-  nodeListeners = self~getEventListeners(node)
-  if nodeListeners == .nil then return
-
-  do le over nodeListeners
-      if le~equals(type, listener, useCapture) then do
-          nodeListeners~removeItem(le)
-          if nodeListeners~isEmpty then
-              self~setEventListeners(node, .nil)
-          -- remove this from the capture tables as well
-          capture = self~lookupCapture(eventName)
-          capture~removeListener(useCapture)
-          return
-      end
-  end
-
--- copy event listeners to another node
-::method copyEventListeners
-  use strict arg sourceNode, targetNode
-
-  nodeListeners = self~getEventListeners(sourceNode)
-  if nodeListeners == .nil then return
-  -- just copy the event listener table over to the new
-  -- node
-  self~setEventListeners(targetNode, nodeListeners~copy)
-
--- resolve the prefix that a node is using for a given namespace URI
-::method lookupPrefix
-  use strict arg uri
-
-  -- ask the root element for this (if we have one)
-  root = self~documentElement
-  if root \= .nil then return root~lookupPrefix(uri)
-  return .nil
-
--- resolve the namespace that a node is using for a given prefix
-::method lookupNamespaceURI
-  use strict arg prefix
-
-  -- ask the root element for this (if we have one)
-  root = self~documentElement
-  if root \= .nil then return root~lookupNamespaceURI(prefix)
-  return .nil
-
--- test if the current node is using a given namespace as the default
-::method isDefaultNamespace
-  use strict arg uri
-
-  -- ask the root element for this (if we have one)
-  root = self~documentElement
-  if root \= .nil then return root~isDefaultNamespace(uri)
-  return .false
-
-
-/**
- * Introduced in DOM Level 2. <p>
- * Distribution engine for DOM Level 2 Events.
- * <p>
- * Event propagation runs as follows:
- * <ol>
- * <li>Event is dispatched to a particular target node, which invokes
- *   this code. Note that the event's stopPropagation flag is
- *   cleared when dispatch begins; thereafter, if it has
- *   been set before processing of a node commences, we instead
- *   immediately advance to the DEFAULT phase.
- * <li>The node's ancestors are established as destinations for events.
- *   For capture and bubble purposes, node ancestry is determined at
- *   the time dispatch starts. If an event handler alters the document
- *   tree, that does not change which nodes will be informed of the event.
- * <li>CAPTURING_PHASE: Ancestors are scanned, root to target, for
- *   Capturing listeners. If found, they are invoked (see below).
- * <li>AT_TARGET:
- *   Event is dispatched to NON-CAPTURING listeners on the
- *   target node. Note that capturing listeners on this node are _not_
- *   invoked.
- * <li>BUBBLING_PHASE: Ancestors are scanned, target to root, for
- *   non-capturing listeners.
- * <li>Default processing: Some DOMs have default behaviors bound to
- *   specific nodes. If this DOM does, and if the event's preventDefault
- *   flag has not been set, we now return to the target node and process
- *   its default handler for this event, if any.
- * </ol>
- * <p>
- * Note that registration of handlers during processing of an event does
- * not take effect during this phase of this event; they will not be called
- * until the next time this node is visited by dispatchEvent. On the other
- * hand, removals take effect immediately.
- * <p>
- * If an event handler itself causes events to be dispatched, they are
- * processed synchronously, before processing resumes
- * on the event which triggered them. Please be aware that this may
- * result in events arriving at listeners "out of order" relative
- * to the actual sequence of requests.
- */
-
-::method dispatchEvent private
-  use strict arg node, event
-
-  -- check the capture descriptors.  If there are no active listeners
-  -- for this event type, then we don't dispatch this
-  capture = self~lookupCapture(event~type)
-  if capture~total == 0 then return event~isDefaultPrevented
-
-  -- initialize the events dispatch status
-  event~target = node
-  event~propagationStopped = .false
-  event~defaultPrevented = .false
-
-  -- capture the event parentage chain
-  parents = .array~new
-  previous = node
-  parent = previous~parentNode
-  loop while parent \== .nil
-      parents~append(parent)
-      previous = parent
-      parent = parent~parentNode
-  end
-
-  -- capturing phase
-  if capture~captures > 0 then do
-      event~eventPhase = .DOMEvent~CAPTURING_PHASE
-      -- we need to send this up the parent chain.  At any
-      -- point, a listener may turn on the propagation flag,
-      -- so we stop doing this at that poing
-      loop parentNode over parents
-          if event~propagationStopped then leave
-
-          event~currentTarget = parentNode
-          -- for each ancestor node, dispatch a call if there
-          -- is a listener defined for this event type on the node
-          listeners = self~getEventListeners(parentNode)
-          if nodeListeners \== .nil then do
-              -- NB:  Do over takes a snapshot copy, so
-              -- this is thread safe
-              loop listener over nodeListeners
-                  if listener~matches(event~type, .true) then do
-                      listener~invoke(event)
-                      -- if the immediate stop has been turned on, we're done dispatching
-                      if event~stoppedImmediatePropagation then return event~defaultPrevented
-                  end
-              end
-          end
-      end
-  end
-
-  -- both AT_TARGET and BUBBLE use non-capturing listeners
-  if capture~bubbles > 0 then do
-      event~eventPhase = .DOMEvent~AT_TARGET
-      event~currentTarget = node
-      nodeListeners = self~getEventListeners(node)
-      if \event~propagationStopped & nodeListeners \= .nil then do
-          -- NB:  Do over takes a snapshot copy, so
-          -- this is thread safe
-          loop listener over nodeListeners
-              if listener~matches(event~type, .false) then do
-                  listener~invoke(event)
-                  -- if the immediate stop has been turned on, we're done dispatching
-                  if event~stoppedImmediatePropagation then return event~defaultPrevented
-              end
-          end
-      end
-
-      -- BUBBLING_PHASE: Ancestors are scanned, target to root, for
-      -- non-capturing listeners. If the event's preventBubbling flag
-      -- has been set before processing of a node commences, we
-      -- instead immediately advance to the default phase.
-      -- Note that not all events bubble.
-      if event~bubbles then do
-          event~eventPhase = .DOMEvent~BUBBLING_PHASE
-          do parent over parents
-              if event~propagationStopped then leave
-
-              event~currentTarget = parent
-              nodeListeners = self~getEventListeners(parent)
-              if nodeListeners \= .nil then do
-                  do listener over nodeListener
-                      if listener~matches(event~type, .false) then do
-                          listener~invoke(event)
-                          -- if the immediate stop has been turned on, we're done dispatching
-                          if event~stoppedImmediatePropagation then return event~defaultPrevented
-                      end
-                  end
-              end
-          end
-      end
-  end
-
-  return event~defaultPevented
-
--- look up the capture information for a given event type
-::method lookupCapture private
-  expose captures
-  use strict arg type
-  if captures == .nil then captures = .directory~new
-
-  capture = captures[type]
-  -- create a tracker if this is the first request for this type
-  if capture == .nil then do
-      capture = .EventTracker~new
-      captures[type] = capture
-  end
-
-  return capture
-
--- dispatch an event to an entire subtree
-::method dispatchEventToSubtree private
-  use strict arg node, event
-
-  -- if this is an element type, we need to dispatch
-  -- the attribute nodes too
-  if node~nodeType == .Node~ELEMENT_NODE then do
-      loop attr over node~attributes
-          self~dispatchingEventToSubtree(attr, event)
-      end
-  end
-  self~dispatchingEventToSubtree(node~firstChild, event)
-
--- handle dispatch of an event to a subtree.  This will
--- recursively hit the entire subtree
-::method dispatchingEventToSubtree
-  use strict arg node, event
-
-  if node == .nil then return
-
-  -- dispatch the event to this node
-  node~dispatchEvent(event)
-  -- if this is an element, dispatch on the attributes as well
-  if node~nodeType == .Node~ELEMENT_NODE then do
-      loop attr over node~attributes
-          self~dispatchingEventToSubtree(attr, event)
-      end
-  end
-
-  -- hit the first child, which will also propagate to the siblings
-  self~dispatchingEventToSubtree(node~firstChild, event)
-  -- send down the sibling chain as well
-  self~dispatchingEventToSubtree(node~nextSibling, event)
-
--- dispatch an aggregate event
-::method dispatchAggregateEvents
-  use strict arg node, enclosingAttr = .nil, oldvalue = .nil, change = 0
-
-  owner = .nil
-  if enclosingAttr \== .nil then do
-      capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
-      attr = enclosingAttr[1]
-      if capture~total > 0 then do
-          owner = attr~ownerElement
-          if owner \== .nil then do
-              me = .DOMMutationEvent~new
-              me.initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true. -
-                  .false, attr, enclosingAttr[2], attr~nodeValue, -
-                  attr~nodeName, change)
-              owner~dispatchEvent(me)
-          end
-      end
-  end
-
-  capture = self~lookupCapture(.DOMMutationEvent~DOM_SUBTREE_MODIFIED)
-  if capture~total > 0 then do
-      me = .DOMMutationEvent~new
-      me.initMutationEvent(.DOMMutationEvent~DOM_SUBTREE_MODIFIED, .true. -
-          .false, .nil, .nil, .nil, .nil, 0)
-      owner~dispatchEvent(me)
-
-      if enclosingAttr \= .nil then do
-          self~dispatchEvent(enclosingAttr, me)
-          if owner \= .nil then do
-              self~dispatchEvent(owner, me)
-          end
-      end
-      else do
-          self~dispatchEvent(node, me)
-      end
-  end
-
--- For some modification events, there is an event that says "we're modifying",
--- Followed by an event that says "We modified".  These are dispatched at the same
--- time following the actual modification.  However, the first event requires some of
--- the pre-event state.  This caches the pre-event state needed for the first event
--- so that it can be retrieved to dispatch the event.  The information is just
--- cached in a simple array item.
-::method saveEventContext
-  expose savedEventContext
-  use strict arg node
-
-  -- clear any previous state...we might not actually be saving anything here
-  savedEventContext = .nil
-
-  -- First make sure we've got listeners for this type of event at all
-  capture = self~captureLookup(.DOMMutationEvent~DOM_ATTR_MODIFIED)
-  if capture~total > 0 then do
-      eventAncestor = node
-      -- search for a target event ancestor.  We're looking for an
-      -- attribute node, but since the source event might be one of the
-      -- children of the attribute, we need to find the dispatch target.
-      loop forever
-          -- no attribute ancestor, done
-          if eventAncestor == .nil then return
-          type = eventAncestor~nodeType
-          -- found an attribute in the ancestry, this will be our target.  Save
-          -- the current attribute node value (which may be a composite) to
-          -- broadcast in the event.
-          if type == .Node~ATTRIBUTE_NODE then do
-              savedEventContext = .array~of(eventAncestor, eventAncestor~nodeValue)
-              return
-          end
-          -- an entity reference...move up the chain
-          else if type == .Node~ENTITY_REFERENCE_NODE then eventAncestor = eventAncestor~parentNode
-          -- text nodes also go up
-          else if type == .Node~TEXT_NODE then eventAncestor = eventAncestor~parentNode
-          -- starting point was not an ancestor of an attribute...done
-          else return
-      end
-  end
-
--- We're modifying character data on a node
--- this does not dispatch an event now...this will be done as part of an
--- aggregate later
-::method modifyingCharacterData
-  expose haveMutationEventListeners
-  use strict arg node, replace
-
-  if haveMutationEventListeners then do
-      -- if we're not replacing, check if this belongs to an attribute
-      -- and save that context for event dispatch later
-      if \replace then self~saveEventContext(node)
-  end
-
--- character data has been modified.
-::method modifiedCharacterData
-  expose haveMutationEventListeners
-  use strict arg node, oldValue, value, replace
-
-  -- if we have listeners, dispatch the event
-  if haveMutationEventListeners then
-      self~mutationEventsModifiedCharacterData(node, oldValue, value, replace)
-
--- this dispatches multiple events for modified character data,
--- using potential cached state
-::method mutationEventsModifiedCharacterData
-  expose savedEventContext
-  use strict arg node, oldValue, value, replace
-
-  if \replace then do
-      capture = self~lookupCapture(.DOMMutationEvent.DOM_CHARACTER_DATA_MODIFIED)
-      if capture~total > 0 then do
-          me = .DOMMutationEvent~new
-          me~initMutationEvent(.DOMMutationEvent~DOM_CHARACTER_DATA_MODIFIED, -
-              .true, .false, .nil, oldValue, value, .nil, 0)
-          self~dispatchEvent(node, me)
-      end
-      -- now dispatch the aggregate event on the enclosing attribute
-      self~dispatchAggregateEvents(node, savedEventContext[1], oldValue)
-  end
-
--- character data replacement...handle as a modification
-::method replacedCharacterData
-  use strict arg node, oldvalue, value
-  self~modifiedCharacterData(node, oldvalue, value, .false)
-
--- inserting a new node
-::method insertingNode
-  expose haveMutationEventListeners
-  use strict arg node, replace
-
-  -- no event dispatched at this time, but save the
-  -- context for later
-  if haveMutationEventListeners & \replace then self~saveEventContext(node)
-
--- inserting a node
-::method insertedNode
-  expose haveMutationEventListeners ranges
-  use strict arg node, newInternal, replace
-
-  -- if we have listeners, dispatch the event
-  if haveMutationEventListeners then
-      self~mutationEventsInsertedNode(node, newInternal, replace)
-
-  -- handle the range-related updates
-  if ranges \= .nil then
-      self~notifyRangesInsertedNode(newInternal)
-
--- process a node insertion event
-::method mutationEventsInsertedNode private
-  expose savedEventContext
-  use strict arg node, newInternal, replace
-
-  capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_INSERTED)
-  if capture~total > 0 then do
-      me = .DOMMutationEvent~new
-      me~initMutationEvent(.DOMMutationEvent~DOM_NODE_INSERTED, .true. .false, -
-          node, .nil, .nil, .nil, 0)
-      self~dispatchEvent(newInternal, me)
-  end
-
-  -- now see if anybody is watching at the document level
-  capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT)
-  if capture~total > 0 then do
-      eventAncestor = node
-      -- if we have an active saved context, then the ancestor is the
-      -- element that owns the attribute of the saved context.
-      if savedEventContext \== .nil then
-          eventAncestor = savedEventContext[1]~ownerElement
-      if eventAncestor \== .nil then do
-          parent = eventAncestor
-          loop while parent \== .nil
-              -- save the last valid parent
-              eventAncestor = parent
-              -- if we've walked back up to an attribute, the parent
-              -- is the owning element
-              if parent~nodeType == .Node~ATTRIBUTE_NODE then
-                  parent = parent~ownerElement
-              -- get the parent
-              else parent = parent~parentNode
-          end
-          -- did we eventually arrive at a document node?  dispatch this
-          if eventAncestor~nodeType == .Node~DOCUMENT_NODE then do
-              me = .DOMMutationEvent~new
-              me~initMutationEvent(.DOMMutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT, -
-                  .false, .false, .nil, .nil, .nil, .nil, 0)
-              self~dispatchEventToSubtree(newInternal, me)
-          end
-      end
-  end
-
-  -- also transmit DOMAttrModified and DOMSubtreeModified
-  -- (Common to most kinds of mutation)
-  if \replace then
-      self~dispatchAggregateEvents(node, savedEventContext[1], savedEventContext[2])
-
--- notify any ranges of a node insertion
-::method notifyRangesInsertNode
-  expose ranges
-  use strict arg newInternal
-
-  do range over ranges
-      range~insertedNodeFromDOM(newInternal)
-  end
-
--- handle the pre-removal event processing.  This may involve
--- notifying iterators and ranges of the event, allowing them
--- to update their internal state before things change
-::method removingNode
-  expose iterators ranges haveMutationEventListeners
-  use strict arg node, oldChild, replace
-
-  -- have iterators?  broadcast this to them
-  if iterators \= .nil then
-      self~notifyIteratorsRemovingNode(oldChild)
-
-  -- ditto for the ranges
-  if ranges \= .nil then
-      self~notifyRangesRemovingNode(oldChild)
-
-  -- if there are mutation event listeners, let them know too
-  if haveMutationEventListeners then
-      self~mutationEventsRemovingNode(node, oldChild, replace)
-
--- notify any attached iterators that we're moving a node
-::method notityIteratorsRemovingNode
-  expose iterators
-  use strict arg oldChild
-
-  -- just tap each one on the shoulder
-  do iterator over iterators
-      iterator~removeNode(oldChild)
-  end
-
--- notify the rances of a removal
-::method notifyRangesRemovingNode
-  expose ranges
-  use strict arg oldChild
-
-  do range over ranges
-      range~removeNode(oldChild)
-  end
-
--- handle a node removal mutation event
-::method mutationEventsRemovingNode
-  expose savedEventContext
-  use strict arg node, oldChild, replace
-
-  -- if not a replacement operation, save the
-  -- context for post-update event processing
-  if \replace then
-      self~saveEventContext(node)
-
-  -- do we have capture listeners for this event type?
-  capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_REMOVED)
-  if capture~total > 0 then do
-      me = .DOMMutationEvent~new
-      me~initMutationEvent(.DOMMutationEvent~DOM_NODE_REMOVED, .true, .false,
-          node, .nil, .nil, .nil, 0)
-      self~dispatchEvent(oldChild, me)
-  end
-
-  -- If within Document, the child's subtree is informed that it's
-  -- being removed
-  capture~captureLookup(.DOMMutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT)
-  if capture~total > 0 then do
-      eventAncestor = self
-      if savedEventContext \== .nil then
-          eventAncestor = savedEventContext[1]~ownerElement
-      -- find the last non-null ancestor
-      if eventAncestor \= .nil then do
-          parent = eventAncestor~parentNode
-          do while parent \= .nil
-              eventAncestor = parent
-              parent = parent~parentNode
-          end
-      end
-      -- this must stil be part of a document for this to go out
-      if eventAncestor~nodeType == .Node~DOCUMENT_NODE then do
-          me = new .DOMMutationEvent~new
-          me~initMutationEvent(.DOMMutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT,
-              .false, .false, .nil, .nil, .nil, .nil, 0)
-          -- and dispatch to the removed subtree
-          self~dispatchEventToSubtree(oldChild, me)
-      end
-  end
-
--- handle node removal notification.  This is the post-update
--- event broadcast
-::method removedNode
-  expose haveMutationEventListeners savedEventContext
-  use strict arg node, replace
-
-  if haveMutationEventListeners then do
-      if \replace then do
-          self~dispatchAggregateEvents(node, savedEventContext~node, savedEventContext~oldValue)
-      end
-  end
-
--- broadcast intention of node replacement to the appropriate listeners
-::method replacingNode
-  expose haveMutationEventListeners
-  use strict arg node
-
-  -- if we have events to broadcast later, save the context of the
-  -- replacement
-  if haveMutationEventListeners then
-      self~saveEventContext(node)
-
--- broadcast an impending data replacement
-::method replacingData
-  expose haveMutationEventListeners
-  use strict arg node
-
-  -- if we have events to broadcast later, save the context of the
-  -- replacement
-  if haveMutationEventListeners then
-      self~saveEventContext(node)
-
--- broadcast a node replacement
-::method replacedNode
-  expose haveMutationEventListeners savedEventContext
-  use strict arg node
-
-  -- we've replaced a node...broadcast the update to the node listener and listeners on
-  -- the effected subtree
-  if haveMutationEventListeners then
-      self~dispatchAggregateEvents(node, savedEventContext[1], savedEventContext[2])
-
--- handle attribute value notification
-::method modifiedAttrValue
-  expose haveMutationEventListeners
-  use strict arg attr, oldValue
-
-  -- broadcast to all effected nodes
-  if haveMutationEventListeners then
-      self~dispatchAggregateEvents(attr, attr, oldvalue, .DOMMutationEvent~MODIFICATION)
-
--- handle an attribute set event
-::method setAttrNode
-  expose haveMutationEventListeners
-  use strict arg attr, previous
-
-  if haveMutationEventListeners then do
-      -- new node event
-      if previous == .nil then
-          self~dispatchAggregateEvents(attr~ownerNode, attr, .nil, .DOMMutationEvent~ADDITION)
-      -- replacing an existing node, this is a modification
-      else self~dispatchAggregateEvents(attr~ownerNode, attr, previous~nodeValue, .DOMMutationEvent~MODIFICATION)
-  end
-
--- handle notification of attribute node removal
-::method removedAttrNode
-  expose haveMutationEventListeners
-  use strict arg attr, oldOwner, name
-
-  if haveMutationEventListeners then
-      self~mutationEventRemovedAttrNode(attr, oldOwner, name)
-
--- real processing of attribute node removal
-::method mutationEventRemovedAttrNode
-  use strict arg attr, oldAttr, name
-
-  capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
-  if capture~total > 0 then do
-      me = .DOMMutationEvent~new
-      me~initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true, .false, attr,
-          attr~nodeValue, .nil, name, .DOMMutationEvent~MODIFICATION)
-      self~dispatchEvent(oldAttr, me)
-  end
-
-  -- we might need to dispatch events to the subtree as well
-  self~dispatchAggregateEvents(oldOwner)
-
--- handle notification of attribute node rename
-::method renamedAttrNode
-  use strict arg attr, oldName
-
-  if haveMutationEventListeners then
-      self~mutationEventRenamedAttrNode(newAttr, attr, oldName)
-
--- real processing of attribute node rename
-::method mutationEventRenameAttrNode
-  use strict arg attr, oldName
-
-  capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
-  if capture~total > 0 then do
-      me = .DOMMutationEvent~new
-      me~initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true, .false, attr,
-          attr~nodeName, .nil, oldName, .DOMMutationEvent~MODIFICATION)
-      self~dispatchEvent(attr, me)
-  end
-
--- handle notification of element renames
-::method renamedElement
-  -- old node and new node should be the same
-  use strict arg element, oldName
-
-  if haveMutationEventListeners then
-      self~mutationEventRenamedElementNode(element, oldName)
-
--- real processing of element node rename
-::method mutationEventRenameElementNode
-  use strict arg element, oldName
-
-  capture = self~lookupCapture(.DOMMutationEvent~DOM_ELEMENT_MODIFIED)
-  if capture~total > 0 then do
-      me = .DOMMutationEvent~new
-      me~initMutationEvent(.DOMMutationEvent~DOM_ELEMENT_MODIFIED, .true, .false, element,
-         element~nodeName, .nil, oldName, .DOMMutationEvent~MODIFICATION)
-      self~dispatchEvent(element, me)
-  end
-
 -- internal class for tracking event listeners
 ::class "EventListenerDescriptor"
 ::method init
@@ -4056,30 +3210,12 @@ syntax:
   expose nodeName attributes namespaceURI localName type
   attributes = .nil
   namespaceURI = .nil
-  localName = .nil
   type = .nil
 
-  if arg() == 2 then do
-      use strict arg ownerDoc, nodeName
-      self~init:super(ownerDoc)
-      -- these are the same if not provided
-      localName = nodeName
-  end
-  else if arg() == 3 then do
-      use strict arg ownerDoc, namespaceURI, nodeName
-      self~init:super(ownerDoc)
-      -- decode the name to see if there is a prefix
-      self~setName(nodeName)
-  end
-  else do
-      use strict arg ownerDoc, namespaceURI, nodeName, temp
-      self~init:super(ownerDoc)
-      -- decode the name to see if there is a prefix
-      self~setName(nodeName)
-      -- the provided version overrides anything decoded from the qname
-      localName = temp
-
-  end
+  use strict arg ownerDoc, namespaceURI = .nil, nodeName
+  self~init:super(ownerDoc)
+  -- decode the name to see if there is a prefix
+  self~setName(nodeName)
 
 -- decode a qualified name into its elements
 ::method setName private
@@ -5302,9 +4438,14 @@ syntax:
   if doctype \= .nil, doctype~ownerDocument \= .nil then
       .DomException~raiseError(.DomException~WRONG_DOCUMENT_ERR)
 
-  doc = .CoreDocument~new(doctype)
+  -- validate the namespace/qualified name pair
+  .XMLChar~validateQName(namespaceURI, qualifiedName)
 
-  if qualifiedName \= .nil | namespaceURI \= .nil then do
+  doc = .DocumentImpl~new(doctype)
+
+  -- if we're given a qualified name, this is the name of a root
+  -- element to create when the document is created.
+  if qualifiedName \= .nil then do
       element = doc~createElementNS(namespaceURI, qualifiedName)
       doc~appendChild(element)
   end
@@ -5476,6 +4617,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 ::class "DOMEvent" public
+-- phase definitions
 ::constant NONE 0
 ::constant CAPTURING_PHASE 1
 ::constant AT_TARGET 2
@@ -5556,10 +4698,12 @@ syntax:
 /*----------------------------------------------------------------------------*/
 
 ::class "DOMMutationEvent" subclass DOMEvent public
+-- the type of mutation
 ::constant MODIFICATION 1
 ::constant ADDITION 2
 ::constant REMOVAL 3
 
+-- names of the different mutation events
 ::constant DOM_SUBTREE_MODIFIED "DOMSubtreeModified"
 ::constant DOM_NODE_INSERTED "DOMNodeInserted"
 ::constant DOM_NODE_REMOVED "DOMNodeRemoved"
@@ -5632,6 +4776,8 @@ syntax:
 /* Class: NodeIteratorImpl                                                    */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+
+-- an implementation of a node iterator
 ::class "NodeIteratorImpl" public inherit NodeIterator
 ::method init
   expose document root currentNode whatToShowFlags whatToShow nodeFilter entityReferenceExpansion forward
@@ -5824,6 +4970,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
+-- implemenation of the Range interface
 ::class "RangeImpl" public inherit Range
 ::constant EXTRACT_CONTENTS 1
 ::constant CLONE_CONTENTS   2
@@ -7225,18 +6372,29 @@ syntax:
   -- passed the flag selection and no filter, this is good
   return .NodeFilter~FILTER_ACCEPT
 
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: CoreDocument                                                        */
+/* Class: DocumentImpl                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-::class "CoreDocument" subclass DocumentImpl public
+::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal DocumentEvent DocumentRange
 ::method init
-  expose docType docElement version standalone documentURI -
-         userdata identifiers changes   -
-         documentNumber nodeCounter nodeTable
+  expose iterators ranges eventListeners userData identifiers doctype -
+      haveMutationEventListeners savedEventContext -
+      docElement version standalone documentURI changes -
+      documentNumber nodeCounter nodeTable
+
   use strict arg docType = .nil
-  self~init:super(.nil)
+
+  self~init:super
+
+  iterators = .nil
+  ranges = .nil
+  eventListeners = .nil
+  haveMutationEventListeners = .false
+  savedEventContext = .nil
+
   -- we are our own owning document for purposes of child appends
   self~ownerDocument = self
 
@@ -7267,9 +6425,13 @@ syntax:
   use strict arg
   return "#document"
 
+-- clone a document node
 ::method cloneNode
   use strict arg deep = .false
-  newDoc = .CoreDocument~new
+
+  -- create an instance of the same class (we might be subclassed)
+  -- and go through the cloning logic
+  newDoc = self~class~new
   self~cloneDocument(newDoc, deep)
   return newDoc
 
@@ -7295,6 +6457,12 @@ syntax:
           newDoc~appendChild(newDoc~importDocNode(child, .true, .true, reversedIdentifers))
       end
   end
+
+-- retrieve the DOM implementation this is associated with.  This
+-- always returns the ooRexxDOM
+::method implementation
+  -- this is a singleton
+  return .ooRexxDOM~implementation
 
 -- insert a node into the document
 ::method insertBefore
@@ -7410,19 +6578,23 @@ syntax:
   use strict arg
   return .DocumentFragmentImpl~new(self)
 
+-- create an element node for this document
 ::method createElement
   use strict arg tagname
-  return .ElementImpl~new(self, tagname)
 
+  -- do full name validation, which will catch prefix
+  -- errors when used with a null namespace
+  .XMLChar~validateQName(.nil, tagname)
+  return .ElementImpl~new(self, .nil, tagname)
+
+-- create an element using namespace rules
 ::method createElementNS
-  if arg() == 2 then do
-      use strict arg namespaceURI, qualifiedName
-      return .ElementImpl~new(self, namespaceURI, qualifiedName)
-  end
-  else do
-      use strict arg namespaceURI, qualifiedName, localName
-      return .ElementImpl~new(self, namespaceURI, qualifiedName, localName)
-  end
+  use strict arg namespaceURI, qualifiedName
+
+  -- validate the namespace/qualified name pair
+  .XMLChar~validateQName(namespaceURI, qualifiedName)
+  -- create a new element
+  return .ElementImpl~new(self, namespaceURI, qualifiedName)
 
 ::method createEntityReference
   use strict arg name
@@ -7882,6 +7054,820 @@ syntax:
   use strict arg node
   if userData == .nil then userData = .IdentityTable~new
   if data \== .nil then userData[node] = data
+
+-- create a NodeIterator instance for the DocumentTraversal interface
+::method createNodeIterator
+  expose iterators
+  use strict arg root, whatToShow, filter, entityReferenceExpansion = .true
+
+  iterator = .NodeIteratorImpl~new(self, root, whatToShow, filter, entityReferenceExpansion)
+
+  -- we keep track of the iterators so we can dispatch update events to them
+  if iterators = .nil  then iterators = .list~new
+
+  iterators~append(iterator)
+  return iterator
+
+-- create a tree walker for moving through the nodes
+::method createTreeWalker
+  use strict arg root, whatToShow, filter, entityReferenceExpansion = .true
+  return .TreeWalkerImpl~new(root, whatToShow, filter, entityReferenceExpansion)
+
+-- remove an iterator from tracking as a result of a detach call
+::method removeNodeIterator
+  expose iterators
+  use strict arg nodeIterator
+
+  if nodeIterator == .nil | iterators == .nil then return
+
+  iterators~removeItem(iterator)
+
+
+-- create a range instance associated with this document
+::method createRange
+  expose ranges
+  use strict arg
+
+  -- if this is the first range, then create a list to track these
+  if ranges == .nil then ranges = .list~new
+
+  -- create an instance and add it to the tracking list
+  range = .RangeImpl~new(self)
+  ranges~append(range)
+  return range
+
+-- remove a range from the document
+::method removeRange
+  expose ranges
+  use strict arg range
+
+  if range == .nil | ranges == .nil then return
+  ranges~removeItem(range)
+
+-- handle a replacedText event.  This will broadcast to all of the ranges
+::method replacedText
+  expose ranges
+  use strict arg node
+
+  if ranges \= .nil then do
+      loop range over ranges
+          range~receiveReplacedText(node)
+      end
+  end
+
+
+-- handle a deletedText event.  This will broadcast to all of the ranges
+::method deletedText
+  expose ranges
+  use strict arg node, offset, count
+
+  if ranges \= .nil then do
+      loop range over ranges
+          range~receiveDeletedText(node, offset, count)
+      end
+  end
+
+-- handle a insertedText event.  This will broadcast to all of the ranges
+::method insertedText
+  expose ranges
+  use strict arg node, offset, count
+
+  if ranges \= .nil then do
+      loop range over ranges
+          range~receiveInsertedText(node, offset, count)
+      end
+  end
+
+::method splitData
+  expose ranges
+  use strict arg node, newNode, offset
+
+  if ranges \= .nil then do
+      loop range over ranges
+          range~receiveSplitData(node, newNode, offset)
+      end
+  end
+
+-- create an event object.  Part of the DocumentEvent support
+::method createEvent
+  use strict arg type
+  if type~caselessEquals("Event") then return .DOMEvent~new
+  else if type~caselessEquals("MutationEvent") then return .DOMMutationEvent~new
+  else if type~caselessEquals("MutationNameEvent") then return .DOMMutationNameEvent~new
+  else .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
+
+-- flag to indicate if there are any mutation event listeners in use.
+-- provides an optimization for the normal case of no listeners.
+::attribute haveMutationEventListeners
+
+-- set a set of event listeners for a given node
+::method setEventListeners
+  expose eventListeners
+  use strict arg node, listeners
+
+  -- if this is the first listener request, create the
+  -- listener table
+  if eventListeners == .nil then do
+      eventListeners = .identitytable~new
+  end
+
+  -- no listeners provided?  Just remove the listeners for this node
+  if listeners == .nil then do
+      eventListeners~remove(node)
+      -- if there are no more listeners, turn off even checking
+      if eventListeners~isEmpty then
+          self~haveMutationEventListeners = .false
+  end
+  else do
+      -- add this to the listener table and make sure the
+      -- event flag is turned on
+      eventListeners[node] = listeners
+      self~haveMutationEventListeners = .true
+  end
+
+-- retrieve the event listeners for a target node
+::method getEventListeners
+  expose eventListeners
+  use strict arg node
+
+  if eventListeners == .nil then return .nil
+  return eventListeners[node]
+
+-- EventTarget support
+
+-- add an event listener for a node
+::method addEventListener
+  use strict arg node, eventName, listener, useCapture
+
+  -- we need a good type and listener for this to work
+  if type == .nil | type == "" | listener == .nil then return
+  -- remove any existing event listener for this node and type
+  self~removeEventListener(node, eventName, listener, useCapture)
+  -- get the listener list for this node, creating one if needed
+  nodeListeners = self~getEventListeners(node)
+
+  if nodeListeners == .nil then do
+      nodeListeners = .list~new
+      self~setEventListeners(node, nodeListeners)
+  end
+
+  nodeListeners~append(.EventListenerDescriptor~new(eventName, listener, useCapture))
+  -- look up the capture record for this eventName and record the fact
+  capture = self~lookupCapture(eventName)
+  capture~addListener(useCapture)
+
+-- remove an event listener from the tables
+::method removeEventListener
+  use strict arg node, type, listener, useCapture
+
+  if type == .nil | type == "" | listener == .nil then return
+
+  nodeListeners = self~getEventListeners(node)
+  if nodeListeners == .nil then return
+
+  do le over nodeListeners
+      if le~equals(type, listener, useCapture) then do
+          nodeListeners~removeItem(le)
+          if nodeListeners~isEmpty then
+              self~setEventListeners(node, .nil)
+          -- remove this from the capture tables as well
+          capture = self~lookupCapture(eventName)
+          capture~removeListener(useCapture)
+          return
+      end
+  end
+
+-- copy event listeners to another node
+::method copyEventListeners
+  use strict arg sourceNode, targetNode
+
+  nodeListeners = self~getEventListeners(sourceNode)
+  if nodeListeners == .nil then return
+  -- just copy the event listener table over to the new
+  -- node
+  self~setEventListeners(targetNode, nodeListeners~copy)
+
+-- resolve the prefix that a node is using for a given namespace URI
+::method lookupPrefix
+  use strict arg uri
+
+  -- ask the root element for this (if we have one)
+  root = self~documentElement
+  if root \= .nil then return root~lookupPrefix(uri)
+  return .nil
+
+-- resolve the namespace that a node is using for a given prefix
+::method lookupNamespaceURI
+  use strict arg prefix
+
+  -- ask the root element for this (if we have one)
+  root = self~documentElement
+  if root \= .nil then return root~lookupNamespaceURI(prefix)
+  return .nil
+
+-- test if the current node is using a given namespace as the default
+::method isDefaultNamespace
+  use strict arg uri
+
+  -- ask the root element for this (if we have one)
+  root = self~documentElement
+  if root \= .nil then return root~isDefaultNamespace(uri)
+  return .false
+
+
+/**
+ * Introduced in DOM Level 2. <p>
+ * Distribution engine for DOM Level 2 Events.
+ * <p>
+ * Event propagation runs as follows:
+ * <ol>
+ * <li>Event is dispatched to a particular target node, which invokes
+ *   this code. Note that the event's stopPropagation flag is
+ *   cleared when dispatch begins; thereafter, if it has
+ *   been set before processing of a node commences, we instead
+ *   immediately advance to the DEFAULT phase.
+ * <li>The node's ancestors are established as destinations for events.
+ *   For capture and bubble purposes, node ancestry is determined at
+ *   the time dispatch starts. If an event handler alters the document
+ *   tree, that does not change which nodes will be informed of the event.
+ * <li>CAPTURING_PHASE: Ancestors are scanned, root to target, for
+ *   Capturing listeners. If found, they are invoked (see below).
+ * <li>AT_TARGET:
+ *   Event is dispatched to NON-CAPTURING listeners on the
+ *   target node. Note that capturing listeners on this node are _not_
+ *   invoked.
+ * <li>BUBBLING_PHASE: Ancestors are scanned, target to root, for
+ *   non-capturing listeners.
+ * <li>Default processing: Some DOMs have default behaviors bound to
+ *   specific nodes. If this DOM does, and if the event's preventDefault
+ *   flag has not been set, we now return to the target node and process
+ *   its default handler for this event, if any.
+ * </ol>
+ * <p>
+ * Note that registration of handlers during processing of an event does
+ * not take effect during this phase of this event; they will not be called
+ * until the next time this node is visited by dispatchEvent. On the other
+ * hand, removals take effect immediately.
+ * <p>
+ * If an event handler itself causes events to be dispatched, they are
+ * processed synchronously, before processing resumes
+ * on the event which triggered them. Please be aware that this may
+ * result in events arriving at listeners "out of order" relative
+ * to the actual sequence of requests.
+ */
+
+::method dispatchEvent private
+  use strict arg node, event
+
+  -- check the capture descriptors.  If there are no active listeners
+  -- for this event type, then we don't dispatch this
+  capture = self~lookupCapture(event~type)
+  if capture~total == 0 then return event~isDefaultPrevented
+
+  -- initialize the events dispatch status
+  event~target = node
+  event~propagationStopped = .false
+  event~defaultPrevented = .false
+
+  -- capture the event parentage chain
+  parents = .array~new
+  previous = node
+  parent = previous~parentNode
+  loop while parent \== .nil
+      parents~append(parent)
+      previous = parent
+      parent = parent~parentNode
+  end
+
+  -- capturing phase
+  if capture~captures > 0 then do
+      event~eventPhase = .DOMEvent~CAPTURING_PHASE
+      -- we need to send this up the parent chain.  At any
+      -- point, a listener may turn on the propagation flag,
+      -- so we stop doing this at that poing
+      loop parentNode over parents
+          if event~propagationStopped then leave
+
+          event~currentTarget = parentNode
+          -- for each ancestor node, dispatch a call if there
+          -- is a listener defined for this event type on the node
+          listeners = self~getEventListeners(parentNode)
+          if nodeListeners \== .nil then do
+              -- NB:  Do over takes a snapshot copy, so
+              -- this is thread safe
+              loop listener over nodeListeners
+                  if listener~matches(event~type, .true) then do
+                      listener~invoke(event)
+                      -- if the immediate stop has been turned on, we're done dispatching
+                      if event~stoppedImmediatePropagation then return event~defaultPrevented
+                  end
+              end
+          end
+      end
+  end
+
+  -- both AT_TARGET and BUBBLE use non-capturing listeners
+  if capture~bubbles > 0 then do
+      event~eventPhase = .DOMEvent~AT_TARGET
+      event~currentTarget = node
+      nodeListeners = self~getEventListeners(node)
+      if \event~propagationStopped & nodeListeners \= .nil then do
+          -- NB:  Do over takes a snapshot copy, so
+          -- this is thread safe
+          loop listener over nodeListeners
+              if listener~matches(event~type, .false) then do
+                  listener~invoke(event)
+                  -- if the immediate stop has been turned on, we're done dispatching
+                  if event~stoppedImmediatePropagation then return event~defaultPrevented
+              end
+          end
+      end
+
+      -- BUBBLING_PHASE: Ancestors are scanned, target to root, for
+      -- non-capturing listeners. If the event's preventBubbling flag
+      -- has been set before processing of a node commences, we
+      -- instead immediately advance to the default phase.
+      -- Note that not all events bubble.
+      if event~bubbles then do
+          event~eventPhase = .DOMEvent~BUBBLING_PHASE
+          do parent over parents
+              if event~propagationStopped then leave
+
+              event~currentTarget = parent
+              nodeListeners = self~getEventListeners(parent)
+              if nodeListeners \= .nil then do
+                  do listener over nodeListener
+                      if listener~matches(event~type, .false) then do
+                          listener~invoke(event)
+                          -- if the immediate stop has been turned on, we're done dispatching
+                          if event~stoppedImmediatePropagation then return event~defaultPrevented
+                      end
+                  end
+              end
+          end
+      end
+  end
+
+  return event~defaultPevented
+
+-- look up the capture information for a given event type
+::method lookupCapture private
+  expose captures
+  use strict arg type
+  if captures == .nil then captures = .directory~new
+
+  capture = captures[type]
+  -- create a tracker if this is the first request for this type
+  if capture == .nil then do
+      capture = .EventTracker~new
+      captures[type] = capture
+  end
+
+  return capture
+
+-- dispatch an event to an entire subtree
+::method dispatchEventToSubtree private
+  use strict arg node, event
+
+  -- if this is an element type, we need to dispatch
+  -- the attribute nodes too
+  if node~nodeType == .Node~ELEMENT_NODE then do
+      loop attr over node~attributes
+          self~dispatchingEventToSubtree(attr, event)
+      end
+  end
+  self~dispatchingEventToSubtree(node~firstChild, event)
+
+-- handle dispatch of an event to a subtree.  This will
+-- recursively hit the entire subtree
+::method dispatchingEventToSubtree
+  use strict arg node, event
+
+  if node == .nil then return
+
+  -- dispatch the event to this node
+  node~dispatchEvent(event)
+  -- if this is an element, dispatch on the attributes as well
+  if node~nodeType == .Node~ELEMENT_NODE then do
+      loop attr over node~attributes
+          self~dispatchingEventToSubtree(attr, event)
+      end
+  end
+
+  -- hit the first child, which will also propagate to the siblings
+  self~dispatchingEventToSubtree(node~firstChild, event)
+  -- send down the sibling chain as well
+  self~dispatchingEventToSubtree(node~nextSibling, event)
+
+-- dispatch an aggregate event
+::method dispatchAggregateEvents
+  use strict arg node, enclosingAttr = .nil, oldvalue = .nil, change = 0
+
+  owner = .nil
+  if enclosingAttr \== .nil then do
+      capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
+      attr = enclosingAttr[1]
+      if capture~total > 0 then do
+          owner = attr~ownerElement
+          if owner \== .nil then do
+              me = .DOMMutationEvent~new
+              me.initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true. -
+                  .false, attr, enclosingAttr[2], attr~nodeValue, -
+                  attr~nodeName, change)
+              owner~dispatchEvent(me)
+          end
+      end
+  end
+
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_SUBTREE_MODIFIED)
+  if capture~total > 0 then do
+      me = .DOMMutationEvent~new
+      me.initMutationEvent(.DOMMutationEvent~DOM_SUBTREE_MODIFIED, .true. -
+          .false, .nil, .nil, .nil, .nil, 0)
+      owner~dispatchEvent(me)
+
+      if enclosingAttr \= .nil then do
+          self~dispatchEvent(enclosingAttr, me)
+          if owner \= .nil then do
+              self~dispatchEvent(owner, me)
+          end
+      end
+      else do
+          self~dispatchEvent(node, me)
+      end
+  end
+
+-- For some modification events, there is an event that says "we're modifying",
+-- Followed by an event that says "We modified".  These are dispatched at the same
+-- time following the actual modification.  However, the first event requires some of
+-- the pre-event state.  This caches the pre-event state needed for the first event
+-- so that it can be retrieved to dispatch the event.  The information is just
+-- cached in a simple array item.
+::method saveEventContext
+  expose savedEventContext
+  use strict arg node
+
+  -- clear any previous state...we might not actually be saving anything here
+  savedEventContext = .nil
+
+  -- First make sure we've got listeners for this type of event at all
+  capture = self~captureLookup(.DOMMutationEvent~DOM_ATTR_MODIFIED)
+  if capture~total > 0 then do
+      eventAncestor = node
+      -- search for a target event ancestor.  We're looking for an
+      -- attribute node, but since the source event might be one of the
+      -- children of the attribute, we need to find the dispatch target.
+      loop forever
+          -- no attribute ancestor, done
+          if eventAncestor == .nil then return
+          type = eventAncestor~nodeType
+          -- found an attribute in the ancestry, this will be our target.  Save
+          -- the current attribute node value (which may be a composite) to
+          -- broadcast in the event.
+          if type == .Node~ATTRIBUTE_NODE then do
+              savedEventContext = .array~of(eventAncestor, eventAncestor~nodeValue)
+              return
+          end
+          -- an entity reference...move up the chain
+          else if type == .Node~ENTITY_REFERENCE_NODE then eventAncestor = eventAncestor~parentNode
+          -- text nodes also go up
+          else if type == .Node~TEXT_NODE then eventAncestor = eventAncestor~parentNode
+          -- starting point was not an ancestor of an attribute...done
+          else return
+      end
+  end
+
+-- We're modifying character data on a node
+-- this does not dispatch an event now...this will be done as part of an
+-- aggregate later
+::method modifyingCharacterData
+  expose haveMutationEventListeners
+  use strict arg node, replace
+
+  if haveMutationEventListeners then do
+      -- if we're not replacing, check if this belongs to an attribute
+      -- and save that context for event dispatch later
+      if \replace then self~saveEventContext(node)
+  end
+
+-- character data has been modified.
+::method modifiedCharacterData
+  expose haveMutationEventListeners
+  use strict arg node, oldValue, value, replace
+
+  -- if we have listeners, dispatch the event
+  if haveMutationEventListeners then
+      self~mutationEventsModifiedCharacterData(node, oldValue, value, replace)
+
+-- this dispatches multiple events for modified character data,
+-- using potential cached state
+::method mutationEventsModifiedCharacterData
+  expose savedEventContext
+  use strict arg node, oldValue, value, replace
+
+  if \replace then do
+      capture = self~lookupCapture(.DOMMutationEvent.DOM_CHARACTER_DATA_MODIFIED)
+      if capture~total > 0 then do
+          me = .DOMMutationEvent~new
+          me~initMutationEvent(.DOMMutationEvent~DOM_CHARACTER_DATA_MODIFIED, -
+              .true, .false, .nil, oldValue, value, .nil, 0)
+          self~dispatchEvent(node, me)
+      end
+      -- now dispatch the aggregate event on the enclosing attribute
+      self~dispatchAggregateEvents(node, savedEventContext[1], oldValue)
+  end
+
+-- character data replacement...handle as a modification
+::method replacedCharacterData
+  use strict arg node, oldvalue, value
+  self~modifiedCharacterData(node, oldvalue, value, .false)
+
+-- inserting a new node
+::method insertingNode
+  expose haveMutationEventListeners
+  use strict arg node, replace
+
+  -- no event dispatched at this time, but save the
+  -- context for later
+  if haveMutationEventListeners & \replace then self~saveEventContext(node)
+
+-- inserting a node
+::method insertedNode
+  expose haveMutationEventListeners ranges
+  use strict arg node, newInternal, replace
+
+  -- if we have listeners, dispatch the event
+  if haveMutationEventListeners then
+      self~mutationEventsInsertedNode(node, newInternal, replace)
+
+  -- handle the range-related updates
+  if ranges \= .nil then
+      self~notifyRangesInsertedNode(newInternal)
+
+-- process a node insertion event
+::method mutationEventsInsertedNode private
+  expose savedEventContext
+  use strict arg node, newInternal, replace
+
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_INSERTED)
+  if capture~total > 0 then do
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_NODE_INSERTED, .true. .false, -
+          node, .nil, .nil, .nil, 0)
+      self~dispatchEvent(newInternal, me)
+  end
+
+  -- now see if anybody is watching at the document level
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT)
+  if capture~total > 0 then do
+      eventAncestor = node
+      -- if we have an active saved context, then the ancestor is the
+      -- element that owns the attribute of the saved context.
+      if savedEventContext \== .nil then
+          eventAncestor = savedEventContext[1]~ownerElement
+      if eventAncestor \== .nil then do
+          parent = eventAncestor
+          loop while parent \== .nil
+              -- save the last valid parent
+              eventAncestor = parent
+              -- if we've walked back up to an attribute, the parent
+              -- is the owning element
+              if parent~nodeType == .Node~ATTRIBUTE_NODE then
+                  parent = parent~ownerElement
+              -- get the parent
+              else parent = parent~parentNode
+          end
+          -- did we eventually arrive at a document node?  dispatch this
+          if eventAncestor~nodeType == .Node~DOCUMENT_NODE then do
+              me = .DOMMutationEvent~new
+              me~initMutationEvent(.DOMMutationEvent~DOM_NODE_INSERTED_INTO_DOCUMENT, -
+                  .false, .false, .nil, .nil, .nil, .nil, 0)
+              self~dispatchEventToSubtree(newInternal, me)
+          end
+      end
+  end
+
+  -- also transmit DOMAttrModified and DOMSubtreeModified
+  -- (Common to most kinds of mutation)
+  if \replace then
+      self~dispatchAggregateEvents(node, savedEventContext[1], savedEventContext[2])
+
+-- notify any ranges of a node insertion
+::method notifyRangesInsertNode
+  expose ranges
+  use strict arg newInternal
+
+  do range over ranges
+      range~insertedNodeFromDOM(newInternal)
+  end
+
+-- handle the pre-removal event processing.  This may involve
+-- notifying iterators and ranges of the event, allowing them
+-- to update their internal state before things change
+::method removingNode
+  expose iterators ranges haveMutationEventListeners
+  use strict arg node, oldChild, replace
+
+  -- have iterators?  broadcast this to them
+  if iterators \= .nil then
+      self~notifyIteratorsRemovingNode(oldChild)
+
+  -- ditto for the ranges
+  if ranges \= .nil then
+      self~notifyRangesRemovingNode(oldChild)
+
+  -- if there are mutation event listeners, let them know too
+  if haveMutationEventListeners then
+      self~mutationEventsRemovingNode(node, oldChild, replace)
+
+-- notify any attached iterators that we're moving a node
+::method notityIteratorsRemovingNode
+  expose iterators
+  use strict arg oldChild
+
+  -- just tap each one on the shoulder
+  do iterator over iterators
+      iterator~removeNode(oldChild)
+  end
+
+-- notify the rances of a removal
+::method notifyRangesRemovingNode
+  expose ranges
+  use strict arg oldChild
+
+  do range over ranges
+      range~removeNode(oldChild)
+  end
+
+-- handle a node removal mutation event
+::method mutationEventsRemovingNode
+  expose savedEventContext
+  use strict arg node, oldChild, replace
+
+  -- if not a replacement operation, save the
+  -- context for post-update event processing
+  if \replace then
+      self~saveEventContext(node)
+
+  -- do we have capture listeners for this event type?
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_NODE_REMOVED)
+  if capture~total > 0 then do
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_NODE_REMOVED, .true, .false,
+          node, .nil, .nil, .nil, 0)
+      self~dispatchEvent(oldChild, me)
+  end
+
+  -- If within Document, the child's subtree is informed that it's
+  -- being removed
+  capture~captureLookup(.DOMMutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT)
+  if capture~total > 0 then do
+      eventAncestor = self
+      if savedEventContext \== .nil then
+          eventAncestor = savedEventContext[1]~ownerElement
+      -- find the last non-null ancestor
+      if eventAncestor \= .nil then do
+          parent = eventAncestor~parentNode
+          do while parent \= .nil
+              eventAncestor = parent
+              parent = parent~parentNode
+          end
+      end
+      -- this must stil be part of a document for this to go out
+      if eventAncestor~nodeType == .Node~DOCUMENT_NODE then do
+          me = new .DOMMutationEvent~new
+          me~initMutationEvent(.DOMMutationEvent~DOM_NODE_REMOVED_FROM_DOCUMENT,
+              .false, .false, .nil, .nil, .nil, .nil, 0)
+          -- and dispatch to the removed subtree
+          self~dispatchEventToSubtree(oldChild, me)
+      end
+  end
+
+-- handle node removal notification.  This is the post-update
+-- event broadcast
+::method removedNode
+  expose haveMutationEventListeners savedEventContext
+  use strict arg node, replace
+
+  if haveMutationEventListeners then do
+      if \replace then do
+          self~dispatchAggregateEvents(node, savedEventContext~node, savedEventContext~oldValue)
+      end
+  end
+
+-- broadcast intention of node replacement to the appropriate listeners
+::method replacingNode
+  expose haveMutationEventListeners
+  use strict arg node
+
+  -- if we have events to broadcast later, save the context of the
+  -- replacement
+  if haveMutationEventListeners then
+      self~saveEventContext(node)
+
+-- broadcast an impending data replacement
+::method replacingData
+  expose haveMutationEventListeners
+  use strict arg node
+
+  -- if we have events to broadcast later, save the context of the
+  -- replacement
+  if haveMutationEventListeners then
+      self~saveEventContext(node)
+
+-- broadcast a node replacement
+::method replacedNode
+  expose haveMutationEventListeners savedEventContext
+  use strict arg node
+
+  -- we've replaced a node...broadcast the update to the node listener and listeners on
+  -- the effected subtree
+  if haveMutationEventListeners then
+      self~dispatchAggregateEvents(node, savedEventContext[1], savedEventContext[2])
+
+-- handle attribute value notification
+::method modifiedAttrValue
+  expose haveMutationEventListeners
+  use strict arg attr, oldValue
+
+  -- broadcast to all effected nodes
+  if haveMutationEventListeners then
+      self~dispatchAggregateEvents(attr, attr, oldvalue, .DOMMutationEvent~MODIFICATION)
+
+-- handle an attribute set event
+::method setAttrNode
+  expose haveMutationEventListeners
+  use strict arg attr, previous
+
+  if haveMutationEventListeners then do
+      -- new node event
+      if previous == .nil then
+          self~dispatchAggregateEvents(attr~ownerNode, attr, .nil, .DOMMutationEvent~ADDITION)
+      -- replacing an existing node, this is a modification
+      else self~dispatchAggregateEvents(attr~ownerNode, attr, previous~nodeValue, .DOMMutationEvent~MODIFICATION)
+  end
+
+-- handle notification of attribute node removal
+::method removedAttrNode
+  expose haveMutationEventListeners
+  use strict arg attr, oldOwner, name
+
+  if haveMutationEventListeners then
+      self~mutationEventRemovedAttrNode(attr, oldOwner, name)
+
+-- real processing of attribute node removal
+::method mutationEventRemovedAttrNode
+  use strict arg attr, oldAttr, name
+
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
+  if capture~total > 0 then do
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true, .false, attr,
+          attr~nodeValue, .nil, name, .DOMMutationEvent~MODIFICATION)
+      self~dispatchEvent(oldAttr, me)
+  end
+
+  -- we might need to dispatch events to the subtree as well
+  self~dispatchAggregateEvents(oldOwner)
+
+-- handle notification of attribute node rename
+::method renamedAttrNode
+  use strict arg attr, oldName
+
+  if haveMutationEventListeners then
+      self~mutationEventRenamedAttrNode(newAttr, attr, oldName)
+
+-- real processing of attribute node rename
+::method mutationEventRenameAttrNode
+  use strict arg attr, oldName
+
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_ATTR_MODIFIED)
+  if capture~total > 0 then do
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_ATTR_MODIFIED, .true, .false, attr,
+          attr~nodeName, .nil, oldName, .DOMMutationEvent~MODIFICATION)
+      self~dispatchEvent(attr, me)
+  end
+
+-- handle notification of element renames
+::method renamedElement
+  -- old node and new node should be the same
+  use strict arg element, oldName
+
+  if haveMutationEventListeners then
+      self~mutationEventRenamedElementNode(element, oldName)
+
+-- real processing of element node rename
+::method mutationEventRenameElementNode
+  use strict arg element, oldName
+
+  capture = self~lookupCapture(.DOMMutationEvent~DOM_ELEMENT_MODIFIED)
+  if capture~total > 0 then do
+      me = .DOMMutationEvent~new
+      me~initMutationEvent(.DOMMutationEvent~DOM_ELEMENT_MODIFIED, .true, .false, element,
+         element~nodeName, .nil, oldName, .DOMMutationEvent~MODIFICATION)
+      self~dispatchEvent(element, me)
+  end
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -9911,11 +9897,12 @@ use strict arg min, max
 -- test if a string is a valid XML name
 ::method isValidName class
   use strict arg name
+
   if name = '' then return .false
 
   if \name~matchchar(1, self~namestart) then return .false
 
-  return name~verify(self~name,,2) \= 0
+  return name~verify(self~name,,2) == 0
 
 -- test if a string is a valid XML ncname
 ::method isValidNCName class
@@ -9924,14 +9911,14 @@ use strict arg min, max
 
   if \name~matchchar(1, self~ncnamestart) then return .false
 
-  return name~verify(self~ncname,,2) \= 0
+  return name~verify(self~ncname,,2) == 0
 
 -- test if a string is a valid XML nmtoken
 ::method isValidNMToken class
   use strict arg name
   if name = '' then return .false
 
-  return name~verify(self~name) \= 0
+  return name~verify(self~name) == 0
 
 -- test if a string is a valid XML qname
 ::method isValidQName class
@@ -9940,6 +9927,41 @@ use strict arg min, max
 
   parse var name prefix ':' localName
   return self~isValidNCName(prefix) & self~isValidNCName(localName)
+
+-- validate a qualified name/namespace pair using full validity rules.
+-- This will directly raise errors for the defined failure modes
+::method validateQName class
+  use strict arg namespaceURI, name
+
+  -- Either name, or the namespace might be .nil. It is ok if both are.
+  if name == .nil then do
+      -- this is ok...really means no name specified, which might be ok in
+      -- the caller's context
+      if namespaceURI == .nil then return
+      -- a non-null namespace is defined as an error
+      .DomException~raiseError(.DomException~NAMESPACE_ERR)
+  end
+
+  -- does the name potentially have a prefix?
+  if name~pos(':') \= 0 then do
+      parse var name prefix ':' localname
+      -- validate the two parts
+      if \self~isValidNCName(prefix) | \self~isValidNCName(localName) then
+          .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+      if namespaceURI == .nil then
+          -- if there is a prefix, this is required
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
+      -- check for illegal use of the xml prefix
+      if prefix == "xml" & namespaceURI \== "http://www.w3.org/XML/1998/namespace" then
+          -- if there is a prefix, this is required
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
+  end
+  else do
+      -- the full name must be a valid XML name
+      if \self~isValidName(name) then
+          .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+  end
+
 
 -- strip all XML white space characters from a string.  The source
 -- string can be either a string or mutablebuffer.
@@ -9956,9 +9978,7 @@ use strict arg min, max
   -- if there are leading white space characters, delete them now.
   -- again, doing this in two steps will work appropriately with
   -- mutablebuffers too.
-  if firstNonWhite > 1 then do
-      source = source~delstr(1, firstNonWhite - 1)
-  end
+  if firstNonWhite > 1 then source = source~delstr(1, firstNonWhite - 1)
 
   loop i = source~length by -1
       -- find a non-whitespace char?, then delete
