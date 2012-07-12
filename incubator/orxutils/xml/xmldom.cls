@@ -4438,8 +4438,14 @@ syntax:
   if doctype \= .nil, doctype~ownerDocument \= .nil then
       .DomException~raiseError(.DomException~WRONG_DOCUMENT_ERR)
 
-  -- validate the namespace/qualified name pair
-  .XMLChar~validateQName(namespaceURI, qualifiedName)
+  -- if we have a name, need to check this
+  if qualifiedName \= .nil then
+      -- validate the namespace/qualified name pair
+      .XMLChar~validateQName(namespaceURI, qualifiedName)
+
+  -- it is an error if the name is .nil but the namespace isn't.
+  else if namespaceURI \= .nil then
+      .DomException~raiseError(.DomException~NAMESPACE_ERR)
 
   doc = .DocumentImpl~new(doctype)
 
@@ -6383,7 +6389,7 @@ syntax:
   expose iterators ranges eventListeners userData identifiers doctype -
       haveMutationEventListeners savedEventContext -
       docElement version standalone documentURI changes -
-      documentNumber nodeCounter nodeTable
+      documentNumber nodeCounter nodeTable errorChecking
 
   use strict arg docType = .nil
 
@@ -6394,10 +6400,6 @@ syntax:
   eventListeners = .nil
   haveMutationEventListeners = .false
   savedEventContext = .nil
-
-  -- we are our own owning document for purposes of child appends
-  self~ownerDocument = self
-
   docElement = .nil
   version = .nil
   standalone = .false
@@ -6408,12 +6410,22 @@ syntax:
   documentNumber = 0
   nodeCounter = 0
   nodeTable = .nil
+  errorChecking = .true
+
+  -- we are our own owning document for purposes of child appends
+  self~ownerDocument = self
 
   -- if we have a document type, this gets appended as our first child
   if docType \= .nil then do
+      -- if this type is owned by another document already, this is an error
+      if docType~ownerDocument \= .nil then
+          .DomException~raiseError(.DomException~WRONG_DOCUMENT_ERR)
       docType~ownerDocument = self
       appendChild(docType)
   end
+
+-- used to control error checking
+::attribute errorChecking private
 
 -- get the node type
 ::attribute nodeType GET
@@ -6435,14 +6447,16 @@ syntax:
   self~cloneDocument(newDoc, deep)
   return newDoc
 
+-- the actual cloning method
 ::method cloneDocument private
   expose identifers firstChild
   use arg newDoc, deep
 
+  -- doing a deep clone
   if deep then do
       reversedIdentifers = .nil
       if identifiers \= .nil then do
-          reversedIdentifiers = .directory~new
+          reversedIdentifiers = .table~new
           -- create the table using the inverse look up logic
           sup = identifiers~supplier
           do while sup~available
@@ -6453,10 +6467,11 @@ syntax:
 
       -- now copy each of the children into the new document
       child = firstChild
-      do while child \= .nil
+      loop while child \= .nil
           newDoc~appendChild(newDoc~importDocNode(child, .true, .true, reversedIdentifers))
       end
   end
+
 
 -- retrieve the DOM implementation this is associated with.  This
 -- always returns the ooRexxDOM
@@ -6466,25 +6481,32 @@ syntax:
 
 -- insert a node into the document
 ::method insertBefore
-  expose docElement docType
+  expose docElement docType errorChecking docElement docType
   use strict arg newChild, refChild
 
   type = newChild~nodeType
-  -- if this is a DocumentType node, then make ourselves the owner
-  if newChild~ownerDocument == .nil & newChild~isA(.DocumentType) then do
-      newChild~ownerDocument = self
+
+  -- perform some validity checks to ensure we don't add inappropriate children
+  if errorChecking then do
+      if (type == .Node~ELEMENT_NODE & docElement \== .nil) | -
+         (type == .Node~DOCUMENT_TYPE_NODE & docType \== .nil) then
+          .DomException~raiseError(.DomException~HIERARCHY_REQUEST_ERR)
   end
+
+  -- if this is a DocumentType node, then make ourselves the owner
+  if newChild~ownerDocument == .nil & type ==.Node~DOCUMENT_TYPE_NODE then
+      newChild~ownerDocument = self
+
   -- do a normal insert
   self~insertBefore:super(newChild, refChild)
   -- we have two special types of children, so cache each
   -- type
-  if type == .Node~ELEMENT_NODE then do
+  if type == .Node~ELEMENT_NODE then
       docElement = newChild
-  end
-  else if type == .Node~DOCUMENT_TYPE_NODE then do
+  else if type == .Node~DOCUMENT_TYPE_NODE then
       docType = newChild
-  end
   return newChild
+
 
 -- override for a remove child
 ::method removeChild
@@ -6493,35 +6515,34 @@ syntax:
 
   self~removeChild:super(oldChild)
 
-  type = oldChild~ELEMENT_NODE
+  type = oldChild~docType
 
-  if type = .Node~ELEMENT_TYPE then do
+  -- check to see if we need to invalidate the element and docType singletons
+  if type = .Node~ELEMENT_TYPE then
       docElement = .nil
-  end
-  else if type = .Node~DOCUMENT_TYPE_NODE then do
+  else if type = .Node~DOCUMENT_TYPE_NODE then
       docType = .nil
-  end
   return oldChild
 
+-- override for the replace child method
 ::method replaceChild
   expose docElement docType
   use strict arg newChild, oldChild
 
   -- if this is a DocumentType node, then make ourselves the owner
-  if newChild~ownerDocument == .nil & newChild~isA(.DocumentType) then do
+  if newChild~ownerDocument == .nil & newChild~nodeType ==.Node~DOCUMENT_TYPE_NODE then
       newChild~ownerDocument = self
-  end
 
   self~replaceChild:super(newChild, oldChild)
 
-  type = oldChild~ELEMENT_NODE
+  type = newChild~docType
 
-  if type = .Node~ELEMENT_TYPE then do
-      docElement = .newChild
-  end
-  else if type = .Node~DOCUMENT_TYPE_NODE then do
-      docType = .newChild
-  end
+  -- check to see if we need to update the element and docType singletons
+  if type = .Node~ELEMENT_TYPE then
+      docElement = newChild
+  else if type = .Node~DOCUMENT_TYPE_NODE then
+      docType = newChild
+
   return oldChild
 
 -- document override for text content.  For this type, it always
@@ -6535,75 +6556,87 @@ syntax:
   use strict arg value
   -- this is a NOP for nodes where this has no meaning.
 
-::method getFeature
-  expose xpathEvaluator
-  use strict arg feature, version = .nil
-
-  anyVersion = version == .nil | version == ""
-
-  if feature~caselessEquals("+XPath") & (anyVersion | version == "3.0") then do
-      if xpathEvaluator == .nil then do
-          xpathEvaluator = .XPathEvaluator~new(self)
-      end
-      return xpathEvaluator
-  end
-
-  return self~getFeature:super(feature, version)
-
 -- Document factory methods
 
+-- create an attribute node
 ::method createAttribute
+  expose errorChecking
   use strict arg name
+
+  -- validate the name first
+  if errorChecking then
+     .XMLChar~validateAttributeOrElementName(name)
+
   return .AttrImpl~new(self, name)
 
+-- create an attribute node using namespace qualification
 ::method createAttributeNS
-  if arg() == 2 then do
-      use strict arg namespaceURI, qualifiedName
-      return .AttrImpl~new(self, qualifiedName, namespaceURI)
-  end
-  else do
-      use strict arg namespaceURI, qualifiedName, localName
-      return .AttrImpl~new(self, qualifiedName, namespaceURI, localName)
-  end
+  expose errorChecking
+  use strict arg namespaceURI, qualifiedName
 
+  -- validate the name
+  if errorChecking then
+      .XMLChar~validateAttributeOrElementNameNS(namespaceURI, qualifiedName)
+
+  return .AttrImpl~new(self, qualifiedName, namespaceURI)
+
+-- create a cdata section
 ::method createCDATASection
   use strict arg data
   return .CDATASectionImpl~new(self, data)
 
+-- create a comment node
 ::method createComment
   use strict arg data
   return .CommentImpl~new(self, data)
 
+-- create a document fragment
 ::method createDocumentFragment
   use strict arg
   return .DocumentFragmentImpl~new(self)
 
 -- create an element node for this document
 ::method createElement
+  expose errorChecking
   use strict arg tagname
 
-  -- do full name validation, which will catch prefix
-  -- errors when used with a null namespace
-  .XMLChar~validateQName(.nil, tagname)
+  -- validate the name first
+  if errorChecking then
+     .XMLChar~validateAttributeOrElementName(name)
   return .ElementImpl~new(self, .nil, tagname)
 
 -- create an element using namespace rules
 ::method createElementNS
+  expose errorChecking
   use strict arg namespaceURI, qualifiedName
 
-  -- validate the namespace/qualified name pair
-  .XMLChar~validateQName(namespaceURI, qualifiedName)
+  -- validate the name
+  if errorChecking then
+      .XMLChar~validateAttributeOrElementNameNS(namespaceURI, qualifiedName)
   -- create a new element
   return .ElementImpl~new(self, namespaceURI, qualifiedName)
 
+-- create an entity reference
 ::method createEntityReference
+  expose errorChecking
   use strict arg name
+
+  -- validate the target name
+  if errorChecking then
+      .XMLChar~validateName(target)
   return .EntityReferenceImpl~new(self, name)
 
+-- create a processing instruction
 ::method createProcessingInstruction
+  expose errorChecking
   use strict arg target, data
+
+  -- validate the target name
+  if errorChecking then
+      .XMLChar~validateName(target)
   return .ProcessingInstructionImpl~new(self, target, data)
 
+-- create a text node
 ::method createTextNode
   use strict arg data
   return .TextImpl~new(self, data)
@@ -9928,19 +9961,27 @@ use strict arg min, max
   parse var name prefix ':' localName
   return self~isValidNCName(prefix) & self~isValidNCName(localName)
 
+-- validate a simple XML name.  This must be non-nil and conform
+-- the the valid character rules
+::method validateName class
+  use strict arg name
+
+  -- The name must be valid in this context.
+  if name == .nil then
+      .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+
+  -- the full name must be a valid XML name
+  if \self~isValidName(name) then
+      .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+
 -- validate a qualified name/namespace pair using full validity rules.
 -- This will directly raise errors for the defined failure modes
 ::method validateQName class
   use strict arg namespaceURI, name
 
-  -- Either name, or the namespace might be .nil. It is ok if both are.
-  if name == .nil then do
-      -- this is ok...really means no name specified, which might be ok in
-      -- the caller's context
-      if namespaceURI == .nil then return
-      -- a non-null namespace is defined as an error
-      .DomException~raiseError(.DomException~NAMESPACE_ERR)
-  end
+  -- The name must be valid in this context.
+  if name == .nil then
+      .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
 
   -- does the name potentially have a prefix?
   if name~pos(':') \= 0 then do
@@ -9960,6 +10001,70 @@ use strict arg min, max
       -- the full name must be a valid XML name
       if \self~isValidName(name) then
           .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+  end
+
+-- validate a simple XML attribute name.  This must be non-nil and conform
+-- the the valid character rules, plus additional checks for xmlns
+::method validateAttributeOrElementName class
+  use strict arg name
+
+  -- first validate that this is well formed as a name
+  self~validateName(name)
+
+  -- now additional xmlns restrictions on attribute names
+  -- if the name is xmlns, then the namespace is required
+  if name == "xmlns" & namespaceURI \== "http://www.w3.org/2000/xmlns/" then
+      -- if there is a prefix, this is required
+      .DomException~raiseError(.DomException~NAMESPACE_ERR)
+  -- and the reverse check as well
+  if name \== "xmlns" & namespaceURI == "http://www.w3.org/2000/xmlns/" then
+      -- if there is a prefix, this is required
+      .DomException~raiseError(.DomException~NAMESPACE_ERR)
+
+
+
+-- validate a qualified name/namespace attribute name pair using full validity rules.
+-- This will directly raise errors for the defined failure modes.  This has slighty
+-- more restrictive rules than other names because of xmlns additions
+::method validateAttributeOrElementNameNS class
+  use strict arg namespaceURI, name
+
+  -- The name must be valid in this context.
+  if name == .nil then
+      .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+
+  -- does the name potentially have a prefix?
+  if name~pos(':') \= 0 then do
+      parse var name prefix ':' localname
+      -- validate the two parts
+      if \self~isValidNCName(prefix) | \self~isValidNCName(localName) then
+          .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+      if namespaceURI == .nil then
+          -- if there is a prefix, this is required
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
+      -- check for illegal use of the xml prefix
+      if prefix == "xml" & namespaceURI \== "http://www.w3.org/XML/1998/namespace" then
+          -- if there is a prefix, this is required
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
+      if prefix == "xmlns" & namespaceURI \== "http://www.w3.org/2000/xmlns/" then
+          -- if there is a prefix, this is required
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
+      if prefix \== "xmlns" & namespaceURI == "http://www.w3.org/2000/xmlns/" then
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
+       -- there is a reverse check as well, if the xmlns namespace is used, then the prefix MUST be xmlns
+  end
+  else do
+      -- the full name must be a valid XML name
+      if \self~isValidName(name) then
+          .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+      -- if the name is xmlns, then the namespace is required
+      if name == "xmlns" & namespaceURI \== "http://www.w3.org/2000/xmlns/" then
+          -- if there is a prefix, this is required
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
+      -- and the reverse check as well
+      if name \== "xmlns" & namespaceURI == "http://www.w3.org/2000/xmlns/" then
+          -- if there is a prefix, this is required
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
   end
 
 
