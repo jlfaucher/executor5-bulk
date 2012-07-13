@@ -90,14 +90,10 @@ return testResult
   self~assertNull(element~nextElementSibling)
   self~assertNull(element~previousElementSibling)
 
-  element~rename("BAR")
-  self~assertEquals("BAR", element~localName)
-  self~assertEquals("BAR", element~nodeName)
-  self~assertEquals("BAR", element~tagName)
   element~prefix = "foo"
-  self~assertEquals("BAR", element~localName)
-  self~assertEquals("foo:BAR", element~nodeName)
-  self~assertEquals("foo:BAR", element~tagName)
+  self~assertEquals("FOO", element~localName)
+  self~assertEquals("foo:FOO", element~nodeName)
+  self~assertEquals("foo:FOO", element~tagName)
 
 ::method testBaseAttribute
 
@@ -167,12 +163,6 @@ return testResult
   -- verify the parent/child relationship
   self~assertSame(element, attr~element)
   self~assertSame(element, attr~ownerelement)
-
-  -- rename the attribute
-  attr~rename("DEF")
-  -- verify this renamed correctly
-  self~assertEquals("", element~getAttribute("ABC"))
-  self~assertEquals("789", element~getAttribute("DEF"))
 
   -- verify the parent child relationship
   self~assertSame(element, attr~element)

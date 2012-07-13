@@ -1619,10 +1619,10 @@
   use strict arg attribute
   -- we already own this one
   -- replacing an attribute with itself does nothing
-  if attribute~parentNode == self~ownerNode then
+  if attribute~ownerElement == self~ownerNode then
       return attribute
 
-  attribute~parentNode = self~ownerNode
+  attribute~ownerElement = self~ownerNode
 
   index = self~findNamePoint(attribute~nodeName, 0)
   attributes = self~attributes
@@ -1630,8 +1630,7 @@
   if index \= .nil then do
       previous = attributes[i]
       attributes[i] = attribute
-      previous~ownerNode = self~ownerDocument
-      previous~parentNode = .nil
+      previous~ownerElement = .nil
       previous~specified = .true
   end
   else do
@@ -1650,11 +1649,10 @@
 ::method setNamedItemNS
   use strict arg attribute
   -- replacing an attribute with itself does nothing
-  if attribute~parentNode == self then return attribute
+  if attribute~ownerElement == self~ownerNode then return attribute
 
   -- set the owner relationship and the parent relationship
-  attribute~ownerNode = self~ownerNode
-  attribute~parentNode = self~ownerNode
+  attribute~ownerElement = self~ownerNode
 
   index = self~findNamePointNS(attribute~namespaceURI, attribute~localName)
   attributes = self~attributes
@@ -1663,7 +1661,7 @@
       previous = attributes[index]
       attributes[index] = attribute
       -- remove it from the parent
-      previous~parentNode = .nil
+      previous~ownerElement = .nil
       previous~specified = .true
   end
   else do
@@ -1729,8 +1727,8 @@
               -- does not have a local name
               if newAttr~localName \== .nil then
                   newAttr~namespaceURI = attr~namespaceURI
-              newAttr~ownerNode = self~ownerNode
-              newAttr~parentNode = self
+              newAttr~ownerDocument = self~ownerDocument
+              newAttr~ownerElement = self~ownerNode
               -- mark this as a default value
               newAttr~specified = .false
               attributes[index] = newAttr
@@ -1745,8 +1743,7 @@
   -- if we didn't end up setting a default, remove the node
   if \setDefault then attributes~remove(index)
   -- detach from usage
-  attr~ownerNode = .nil
-  attr~parentNode = .nil
+  attr~ownerElement = .nil
   attr~specified = .true
   attr~isId = .false
 
@@ -2623,26 +2620,18 @@
   -- removing the first child
   if oldChild == firstChild then do
       firstChild = firstChild~nextSibling
-      if firstChild \= .nil then do
-          firstChild~previousSibling = .nil
-      end
+      if firstChild \= .nil then firstChild~previousSibling = .nil
       -- if this was the only child, then clear out everything
-      if lastChild == oldChild then do
-          lastChild = .nil
-      end
+      if lastChild == oldChild then lastChild = .nil
   end
   else do
       previous = oldChild~previousSibling
       next = oldChild~nextSibling
       previous~nextSibling = next
       -- this could be the last child, so we might have to update that
-      if next == .nil then do
-          lastChild = previous
-      end
-      else do
-          -- close up the chaing
-          next~previousSibling = previous
-      end
+      if next == .nil then lastChild = previous
+      -- close up the chain
+      else next~previousSibling = previous
   end
 
   childNodes -= 1
@@ -2657,13 +2646,12 @@
   self~ownerDocument~removedNode(self, replace)
   return oldChild
 
+-- replace a child node
 ::method replaceChild
   use strict arg newChild, oldChild
 
   self~insertBefore(newChild, oldChild, .true)
-  if newChild \== oldChild then do
-      self~removeChild(oldChild, .true)
-  end
+  if newChild \== oldChild then self~removeChild(oldChild, .true)
 
   self~ownerDocument~replacedNode(self)
   return oldChild
@@ -2678,12 +2666,8 @@
   if child \== .nil then do
       next = child~nextSibling
       if next == .nil then do
-          if self~hasTextContent(child) then do
-              return child~textContent
-          end
-          else do
-              return ""
-          end
+          if self~hasTextContent(child) then return child~textContent
+          else return ""
       end
       else do
           buffer = .mutablebuffer~new
@@ -2700,9 +2684,7 @@
   do while child \= .nil
       if self~hasTextContent(child) then do
           content = child~nodeValue
-          if nodeValue \= .nil then do
-              buffer~append(content)
-          end
+          if nodeValue \= .nil then buffer~append(content)
       end
       child = child~nextSibling
   end
@@ -2732,9 +2714,8 @@
   end
 
   -- create a text node and append
-  if text \= .nil, text \== "" then do
+  if text \= .nil, text \== "" then
       self~appendChild(self~ownerDocument~createTextNode(text))
-  end
 
 -- overrides for the NodeList methods
 ::attribute length GET
@@ -2746,9 +2727,7 @@
   expose firstChild childNodes
   use strict arg index
 
-  if index < 0 || index >= childNodes then do
-      return .nil
-  end
+  if index < 0 || index >= childNodes then return .nil
 
   child = firstChild
   loop index
@@ -2763,7 +2742,7 @@
 
   array = .array~new(childNodes)
   child = firstChild
-  do i = 1 while child \= .nil
+  loop i = 1 while child \= .nil
       array[i] = child
       child = child~nextSibling
   end
@@ -2785,10 +2764,6 @@
   return "#document-fragment"
 
 ::method normalize
-  if self~isNormalized then do
-      return
-  end
-
   kid = self~firstChild
 
   do while kid \= .nil
@@ -2811,8 +2786,6 @@
       kid = next
   end
 
-  self~isNormalized = .true
-
 -- resolve the prefix that a node is using for a given namespace URI
 ::method lookupPrefix
   use strict arg uri
@@ -2833,6 +2806,12 @@
 
   -- always returns .false for this type
   return .false
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: EventListenerDescriptor                                             */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- internal class for tracking event listeners
 ::class "EventListenerDescriptor"
@@ -2867,6 +2846,11 @@
 syntax:
   return   -- all errors are just ignored
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: EventTracker                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- internal class for tracking named event trackers
 ::class "EventTracker"
@@ -2908,17 +2892,18 @@ syntax:
 
 ::class "AttrImpl" public subclass ParentNode inherit Attr
 ::method init
-  expose nodeName textNode namespaceURI localName type isId prefix parentNode
+  expose nodeName textNode namespaceURI localName type isId prefix ownerElement
   use strict arg ownerDoc, nodeName, namespaceURI = .nil
 
   self~init:super(ownerDoc)
   type = .nil
   localName = .nil
   prefix = .nil
+  ownerElement = .nil
   isId = .false
-  parentNode = .false
   self~setName(nodeName)
   self~specified = .false
+
 
 -- process a name change for this attribute
 ::method setName private
@@ -2938,30 +2923,26 @@ syntax:
 
 -- support for the Document renameNode method
 ::method rename
-  use strict arg uri, name = .nil
+  use strict arg uri, name
 
-  if name == .nil then
-      self~nodeName = uri
-  else do
-      self~nodeName = name
-      self~namespaceURI = uri
-      self~setName(name)
-  end
+  self~nodeName = name
+  self~namespaceURI = uri
+  -- decode the qualified name and extract the prefix
+  self~setName(name)
 
 -- override for default method
 ::attribute namespaceURI GET
 -- override for the default method
-::attribute parentNode
+-- attributes cannot have parents
+::attribute parentNode GET
+  use strict arg
+  return .nil
 
 -- get the prefix from the node name
 ::attribute prefix GET
-  expose nodeName
-  index = nodeName~pos(":")
-  if index > 0 then return nodeName~substr(1, index - 1)
-  else return .nil
 
 ::attribute prefix SET
-  expose nodeName localName
+  expose nodeName localName prefix
   use strict arg prefix
 
   -- we're either adding or replacing the prefix
@@ -3131,13 +3112,12 @@ syntax:
 
 -- get the element parent for this attribute
 ::attribute element GET
+  forward message("OWNERELEMENT")
   use strict arg
-
-  return self~parentNode
+  return self~ownerElement
 
 -- same as element
-::attribute ownerElement GET
-  forward message("ELEMENT")
+::attribute ownerElement
 
 -- some attribute properties
 ::attribute specified
@@ -3179,16 +3159,9 @@ syntax:
 -- support for the Document renameNode method
 ::method rename
   expose nodeName namespaceURI
-  use strict arg uri, name = .nil
-  if name == .nil then do
-      nodeName = uri
-      self~setName(nodeName)
-  end
-  else do
-      nodeName = name
-      namespaceURI = uri
-      self~setName(name)
-  end
+  use strict arg namespaceURI, nodeName
+
+  self~setName(name)
 
 -- override for default method
 ::attribute namespaceURI GET
