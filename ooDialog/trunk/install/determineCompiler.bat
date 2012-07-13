@@ -36,13 +36,22 @@
 
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 REM  determineCompiler.bat
-REM    This batch file sets CPU and MSVCVER has determined by executing cl.
+REM    This batch file sets CPU andMSVCVER has determined by executing cl.  It
+REM    also sets OOD_ROOT_DIR because this is easy to do in a batch file, but
+REM    difficult to do in a nMake make file.
 REM
-REM    It is simply a copy of the stuff from makeorx.bat.  There may be a better
-REM    way to do this, especially since VC++ 6.0 is not supported anymove.
+REM    It is simply a copy of the stuff from makeorx.bat.
+REM
+REM    There may be a better way to do this, especially since VC++ 6.0 is not
+REM    supported anymore.  Later versions of either the SDK or VC++ set
+REM    TARGET_CPU and MSVCVER, so we could just pull the values from the
+REM    enviroment.  But, I'm not sure when those started getting set.  It would
+REM    take a lot of testing to determine what compiler / SDK combinations would
+REM    be supported if we did away with this.  It is simplier to just keep it.
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-echo In determineCompiler.bat %cd%
+set OOD_ROOT_DIR=%cd%
+
 pushd install
 
 :DETERMINE_COMPILER
@@ -63,6 +72,7 @@ for /F "tokens=1,3,6-10,11" %%i in (temp.txt.okayToDelete) do (
         )
       )
     ) else (
+      if %%m GTR 16.0 set MSVCVER=10.0
       if %%m GTR 15.0 (if %%m LSS 16 set MSVCVER=9.0)
       if %%m GTR 14.0 (if %%m LSS 15 set MSVCVER=8.0)
       if %%m GTR 13.0 (if %%m LSS 14 set MSVCVER=7.0)
@@ -79,6 +89,7 @@ for /F "tokens=1,3,6-10,11" %%i in (temp.txt.okayToDelete) do (
 
 echo CPU=%CPU% > compiler.info.incl
 echo MSVCVER=%MSVCVER% >> compiler.info.incl
+echo OOD_ROOT_DIR=%OOD_ROOT_DIR% >> compiler.info.incl
 
 del /F temp.txt.okayToDelete 1>nul 2>&1
 

@@ -43,7 +43,13 @@ REM    not a working directory, it checks for an existing ooDialog.ver.incl
 REM    file, which may have been included in a source file package when the
 REM    package was created.  If not a svn directory, and no ooDialog.ver.incl
 REM    file, simply copy ooDialog.ver to ooDialog.ver.incl.
+REM
+REM    This is a copy of the same file in the ooDialog source directory, called
+REM    from the top-level MakeFile in the independent ooDialog build.
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+pushd install
+copy ..\ooDialog\ooDialog.ver 1>nul 2>&1.
 
 REM  First parse ooDialog.ver to get the existing version numbers.
 for /F "eol=# delims== tokens=1,2,3*" %%i in (ooDialog.ver) do (
@@ -104,6 +110,8 @@ set MINOR_NUM=
 set LVL_NUM=
 set BLD_NUM=
 set SVN_REV=
+del /F ooDialog.ver 1>nul 2>&1
+popd
 
 exit /b 1
 
@@ -113,6 +121,9 @@ set MINOR_NUM=
 set LVL_NUM=
 set BLD_NUM=
 set SVN_REV=
+del /F ooDialog.ver 1>nul 2>&1
+popd
+
 exit /b 0
 
 

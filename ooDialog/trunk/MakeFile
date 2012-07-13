@@ -71,6 +71,34 @@ LIB = $(LIB);$(REXX_HOME)\api
 
 REXX_LIBS = $(REXX_HOME)\api\rexx.lib $(REXX_HOME)\api\rexxapi.lib
 
+# Generate the compiler information, plus OOD_ROOT_DIR.  Quit if there is an
+# error.
+
+!IF [install\determineCompiler.bat] != 0
+!  ERROR Build error: could not generate compiler informatin.
+!ENDIF
+
+!include install\compiler.info.incl
+
+OOD_OODIALOGSRC=$(OOD_ROOT_DIR)\ooDialog
+
+# Generate the version information.  Quit if there is an error.  This is also
+# done in oodialog.mak.  Seems redundent to do it twice ... but it is easist
+# this way.            ??
+!IF [$(OOD_ROOT_DIR)\install\generateVersionFile.bat] != 0
+!  ERROR Build error: could not gerate version file, ooDialog.ver.incl
+!ENDIF
+
+!include $(OOD_ROOT_DIR)\install\ooDialog.ver.incl
+DOTVER = $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL).$(OOD_BLD_LVL)
+NODOTVER = $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL)
+
+!if "$(CPU)" == "X64"
+NSISCPU = x86_64
+!else
+NSISCPU = x86_32
+!endif
+
 # To be compatible with a build from the interpreter we need to define NODEBUG
 # for a release build.
 !if "$(DEBUG)" == "1"
@@ -78,29 +106,22 @@ REXX_LIBS = $(REXX_HOME)\api\rexx.lib $(REXX_HOME)\api\rexxapi.lib
 !if [if not exist Win32Dbg md Win32Dbg]
 !endif
 
-OOD_OUTDIR=Win32Dbg
-OOD_OODIALOGSRC=ooDialog
+OOD_OUTDIR=$(OOD_ROOT_DIR)\Win32Dbg
+MKASM=0
 
 !else
 
 NODEBUG=1
 
-!if [if not exist Win32Rel md Win32Rel]
+!if [if not exist Win32Rel md Win32Rel\ASM]
 !endif
 
-OOD_OUTDIR=Win32Rel
-OOD_OODIALOGSRC=ooDialog
+OOD_OUTDIR=$(OOD_ROOT_DIR)\Win32Rel
+MKASM=1
 
 !endif
 
-# Generate the compiler information.  Quit if there is an error.
-!IF [install\determineCompiler.bat] != 0
-!  ERROR Build error: could not generate compiler informatin.
-!ENDIF
-
-!include install\compiler.info.incl
-
-OOD_INCLUDE_FILE=install\ooDialogWin32.mak
+OOD_INCLUDE_FILE=$(OOD_ROOT_DIR)\install\ooDialogWin32.mak
 
 CLASSFILES = $(OOD_OODIALOGSRC)\AnimatedButton.cls   $(OOD_OODIALOGSRC)\BaseDialog.cls         $(OOD_OODIALOGSRC)\CategoryDialog.cls    \
              $(OOD_OODIALOGSRC)\ControlDialog.cls    $(OOD_OODIALOGSRC)\DeprecatedClasses.cls  $(OOD_OODIALOGSRC)\DialogControls.cls    \
@@ -112,28 +133,34 @@ CLASSFILES = $(OOD_OODIALOGSRC)\AnimatedButton.cls   $(OOD_OODIALOGSRC)\BaseDial
 all: target_ooDialog $(OOD_OUTDIR)\ooDialog.cls
 
 target_ooDialog:
-    cd ooDialog
-    set OOD_INDEPENDENT=1
-    @set OOD_OUTDIR=..\$(OOD_OUTDIR)
-    @set OOD_OODIALOGSRC=..\$(OOD_OODIALOGSRC)
-    @set OOD_INCLUDE_FILE=..\install\ooDialogWin32.mak
+    @cd $(OOD_OODIALOGSRC)
+    @set OOD_INDEPENDENT=1
+    @set OOD_OUTDIR=$(OOD_OUTDIR)
+    @set OOD_OODIALOGSRC=$(OOD_OODIALOGSRC)
+    @set OOD_INCLUDE_FILE=$(OOD_INCLUDE_FILE)
     @set REXX_LIBS=$(REXX_LIBS)
     @set NODEBUG=$(NODEBUG)
     @set CPU=$(CPU)
     @set MSVCVER=$(MSVCVER)
-    $(MAKE) /F oodialog.mak
-    cd ..\
+    @set MKASM=$(MKASM)
+    @set NOCRTDLL=1
+    $(MAKE) /NOLOGO /F oodialog.mak
+    @cd $(OOD_ROOT_DIR)
 
 $(OOD_OUTDIR)\ooDialog.cls: $(CLASSFILES)
-    cd $(OOD_OUTDIR)
-    REXX ..\$(OOD_OODIALOGSRC)\build_ooDialog_cls.rex
-    cd ..\
-
-
+    @echo .
+    @echo Building ooDialog classes
+    @cd $(OOD_OUTDIR)
+    @REXX $(OOD_OODIALOGSRC)\build_ooDialog_cls.rex
+    @cd $(OOD_ROOT_DIR)
 
 dist: all
-    echo Create installation package
-    # need nsis directions.
+    @echo .
+    @echo Creating installation package
+    @cd $(OOD_ROOT_DIR)\install
+    makensis /DVERSION=$(DOTVER) /DNODOTVER=$(NODOTVER) /DSRCDIR=$(OOD_ROOT_DIR) /DBINDIR=$(OOD_OUTDIR) /DCPU=$(NSISCPU) ooDialog.nsi
+    @cd $(OOD_ROOT_DIR)
+
 
 clean:
     rd /q /s $(OOD_OUTDIR)

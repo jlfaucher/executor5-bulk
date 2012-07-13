@@ -64,15 +64,13 @@ VCPP6 = 1
 !ERROR MSVCVER does not appear to be set. Check windows-build.txt for details
 !ENDIF
 
-!message In ooDialogWin32.mak
-
 # Back out if no source/output dirs set
 !IFNDEF OOD_OUTDIR
 !ERROR Build error, ODD_OUTDIR not set
 !ENDIF
 
 !IF "$(MKASM)" == "1"
-MK_ASM=/FAcs /Fa$(OR_OUTDIR)\ASM\$(@B).asm
+MK_ASM=/FAcs /Fa$(OOD_OUTDIR)\ASM\$(@B).asm
 !ELSE
 MK_ASM=
 !ENDIF
@@ -87,10 +85,8 @@ OR_LINK=link
 #
 OR_IMPLIB=lib
 
-# The ooRexx version definition for the compile flags. We don't use this
-# VER_DEF = -DOOD_VER=$(OOD_MAJOR) -DOOD_REL=$(OOD_MINOR) -DOOD_MOD=$(OOD_MOD_LVL) -DOOD_BLD=$(OOD_BLD_LVL) -DOOD_COPY_YEAR=\"$(OOD_COPY_YEAR)\"
-
-!message VER_DEF $(VER_DEF)
+# The ooRexx version definition for the compile flags. We don't actually use this:
+VER_DEF = -DOOD_VER=$(OOD_MAJOR) -DOOD_REL=$(OOD_MINOR) -DOOD_MOD=$(OOD_MOD_LVL) -DOOD_BLD=$(OOD_BLD_LVL) -DOOD_COPY_YEAR=\"$(OOD_COPY_YEAR)\"
 
 # The start of the warning flags for the compile flags.
 WARNING_FLAGS = /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
@@ -140,7 +136,6 @@ cflags_noopt=/nologo /D:_X86_ /DWIN32 $(WARNING_FLAGS) -c $(my_cdebug) /DNULL=0
 !ENDIF
 
 cflags_common=/EHsc /nologo /D:_X86_ /DWIN32 $(VER_DEF) $(WARNING_FLAGS) -c $(my_cdebug) $(MK_ASM) $(RXDBG) /DNULL=0
-!message cflags_comman $(cflags_common)
 
 # ooRexx has always been using a statically linked CRT.
 !IFDEF NOCRTDLL

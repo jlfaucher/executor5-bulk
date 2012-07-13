@@ -42,22 +42,22 @@
 # NMAKE-compatible MAKE file for ooDialog
 
 # If OOD_INDEPENDENT is defined we are operating outside of the interpreter
-# build.
+# build.  In that case, OOD_OUTDIR, OOD_OODIALOGSRC, and OOD_INCLUDE_File are
+# defined in the parent make file that calls us.  When called in the interpreter
+# build process, we set those macros using the OR_xx values set by the build
+# batch files.
 
 !ifdef OOD_INDEPENDENT
-# OOD_OUTDIR=$(OR_OUTDIR_OOD420)         defined in parent make file
-# OOD_OODIALOGSRC=$(OR_OODIALOGSRC_420)  defined in parent make file
+
 REXXAPI_LIBS = $(REXX_LIBS)
-!message OOD_INDEPENDENT is defined.
-!message OOD_INCLUDE_FILE $(OOD_INCLUDE_FILE)
 
 !else
+
 OOD_OUTDIR=$(OR_OUTDIR)
 OOD_OODIALOGSRC=$(OR_OODIALOGSRC)
-REXXAPI_LIBS = $(OR_LIB)\rexx.lib $(OR_LIB)\rexxapi.lib \
+REXXAPI_LIBS = $(OR_OUTDIR)\rexx.lib $(OR_OUTDIR)\rexxapi.lib
 OOD_INCLUDE_FILE = "$(OR_LIBSRC)\ORXWIN32.MAK"
 
-!message OOD_INDEPENDENT is NOT defined.
 !endif
 
 # Generate the version information.  Quit if there is an error.
@@ -144,12 +144,12 @@ OODUSER_SOURCEF = $(OOD_OUTDIR)\oodPropertySheetDialog.obj $(OOD_OUTDIR)\oodUser
 {$(OOD_OODIALOGSRC)}.c{$(OOD_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(@B).c
-    $(OR_CC) $(cflags_common) $(cflags_dll) /Fo$(OOD_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OOD_OODIALOGSRC)\$(@B).c
+    $(OR_CC) $(cflags_common) $(ood_ver_def)  $(cflags_dll) /Fo$(OOD_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OOD_OODIALOGSRC)\$(@B).c
 
 
-$(OOD_OUTDIR)\oodialog.dll:     $(SOURCEF)
+$(OOD_OUTDIR)\oodialog.dll: $(SOURCEF)
     $(OR_LINK) \
-        $(SOURCEF)  \
+    $(SOURCEF)  \
     $(lflags_common) $(lflags_dll) \
     $(REXXAPI_LIBS) \
     WINMM.LIB \
