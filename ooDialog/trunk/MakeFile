@@ -130,7 +130,9 @@ CLASSFILES = $(OOD_OODIALOGSRC)\AnimatedButton.cls   $(OOD_OODIALOGSRC)\BaseDial
              $(OOD_OODIALOGSRC)\RcDialog.cls         $(OOD_OODIALOGSRC)\ResDialog.cls          $(OOD_OODIALOGSRC)\UserDialog.cls        \
              $(OOD_OODIALOGSRC)\UtilityClasses.cls
 
-all: target_ooDialog $(OOD_OUTDIR)\ooDialog.cls
+BASETARGETS = target_ooDialog $(OOD_OUTDIR)\ooDialog.cls example_dlls
+
+all: $(BASETARGETS)
 
 target_ooDialog:
     @cd $(OOD_OODIALOGSRC)
@@ -149,18 +151,35 @@ target_ooDialog:
 
 $(OOD_OUTDIR)\ooDialog.cls: $(CLASSFILES)
     @echo .
-    @echo Building ooDialog classes
+    @echo Building ooDialog classs
+    @echo Got here cd to $(OOD_OUTDIR) is next
     @cd $(OOD_OUTDIR)
     @REXX $(OOD_OODIALOGSRC)\build_ooDialog_cls.rex
     @cd $(OOD_ROOT_DIR)
+
+example_dlls:
+    @echo .
+    @echo Building resources for examples
+    @cd $(OOD_ROOT_DIR)\examples\res
+    @set MACHINE=$(CPU)
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Samples\DlgData\res
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise05\res
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise06\Product\res
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)
+
 
 dist: all
     @echo .
     @echo Creating installation package
     @cd $(OOD_ROOT_DIR)\install
-    makensis /DVERSION=$(DOTVER) /DNODOTVER=$(NODOTVER) /DSRCDIR=$(OOD_ROOT_DIR) /DBINDIR=$(OOD_OUTDIR) /DCPU=$(NSISCPU) ooDialog.nsi
+    makensis /DVERSION=$(DOTVER) /DNODOTVER=$(NODOTVER) /DROOTDIR=$(OOD_ROOT_DIR) /DOUTDIR=$(OOD_OUTDIR) /DCPU=$(NSISCPU) ooDialog.nsi
     @cd $(OOD_ROOT_DIR)
 
+$(BASETARGETS): Makefile
 
 clean:
     rd /q /s $(OOD_OUTDIR)
