@@ -55,7 +55,7 @@ xml_FILES = oodguide.xml \
 	     Chapter06.xml \
 	     preface.xml \
 	     ../shared/notices.xml \
-	     ../shared/legalstuff.xml \
+	     legalstuff.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
 
@@ -100,6 +100,9 @@ genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
+
+datepub.tmp:
+	date "+%A, %B %d %Y" > datepub.tmp
 
 
 clean:

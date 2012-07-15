@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the Object Rexx OODialog Reference PDF
 #
-# Copyright (c) 2005-2010, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -76,7 +76,7 @@ xml_FILES = advcntlc.xml \
 	     treecontrolc.xml \
 	     userdialog.xml \
 	     ../shared/notices.xml \
-	     ../shared/legalstuff.xml \
+	     legalstuff.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
 # the following files are not used & are here only for historical reasons
@@ -131,6 +131,9 @@ genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
 
 svnrev.tmp:
 	svnversion > svnrev.tmp
+
+datepub.tmp:
+	date "+%A, %B %d %Y" > datepub.tmp
 
 
 clean:

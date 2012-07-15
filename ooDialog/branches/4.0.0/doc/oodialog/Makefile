@@ -2,7 +2,7 @@
 #
 # Description: Makefile for the Object Rexx OODialog Reference PDF
 #
-# Copyright (c) 2005-2007, Rexx Language Association. All rights reserved.
+# Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.
 #
 # This program and the accompanying materials are made available under
 # the terms of the Common Public License v1.0 which accompanies this
@@ -77,7 +77,7 @@ SGML_FILES = advcntlc.sgml \
 	     userdialog.sgml \
 	     virtualkeycodesc.sgml \
 	     ../shared/notices.sgml \
-	     ../shared/legalstuff.sgml \
+	     legalstuff.sgml \
 	     ../shared/gethelp.sgml \
 	     ../shared/CPLv1.0.sgml
 # the following files are not used & are here only for historical reasons
@@ -133,7 +133,8 @@ genindex.sgml: $(HTML_STYLESHEET) $(SGML_FILES) svnrev.tmp
 svnrev.tmp:
 	svnversion > svnrev.tmp
 
-
+datepub.tmp:
+	date "+%A, %B %d %Y" > datepub.tmp
 
 
 clean:
