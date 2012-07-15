@@ -80,10 +80,10 @@ pdf: oodguide.pdf
 
 html: oodguide-html.zip
 
-oodguide.pdf: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp
+oodguide.pdf: $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(STYLESHEET) $(JADETEXFMT) genindex.xml svnrev.tmp datepub.tmp
 	docbook2pdf -d ../shared/oorexx.print.dsl oodguide.xml
 
-book1.htm:  $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp
+book1.htm:  $(PDF_IMAGE_FILES) $(HTML_IMAGE_FILES) $(HTML_STYLESHEET) genindex.xml svnrev.tmp datepub.tmp
 	docbook2html -d ../shared/oorexx.html.dsl oodguide.xml
 
 oodguide-html.zip: book1.htm
@@ -92,7 +92,7 @@ oodguide-html.zip: book1.htm
 $(JADETEXFMT): $(HYPERREFCFG)
 	pdftex -ini \&pdflatex pdfjadetex.ini
 
-genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp
+genindex.xml: $(HTML_STYLESHEET) $(xml_FILES) svnrev.tmp datepub.tmp
 	collateindex.pl -N -o genindex.xml
 	jade -t xml -d ../shared/oorexx.html.dsl -V html-index oodguide.xml
 	rm *.htm
