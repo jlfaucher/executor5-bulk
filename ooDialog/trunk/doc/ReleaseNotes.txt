@@ -15,6 +15,10 @@ ooDialog has been decoupled from the interpreter.  ooDialog 4.2.0
 installs over the top of any ooRexx installation.  It replaces the
 version of ooDialog in the ooRexx installation with ooDialog 4.2.0.
 
+This type of ooDialog installation is called an "independent" ooDialog
+installation to indicate the ooDialog installation is independent of an
+ooRexx installation and, to a degree, the version of ooRexx installed.
+
 This installation can be done today.  The next major release of ooRexx
 will include ooDialog 4.2.0, but there is no reason to wait for that
 release.  Going forward, ooDialog users will be able to install any
@@ -83,6 +87,50 @@ of ooDialog 4.2.0.  There must be an installed version of ooRexx that is
 at least version 4.1.0.  At the time of the installation, *all* ooDialog
 programs must be halted and the ooDialog PDFs must be closed if they
 happen to be opened.
+
+
+Known Problems, "Gotchas," and Solutions with Independent Installations
+=======================================================================
+
+* Problem:
+
+  The ooRexx installer creates a log of the files it installs.  When the
+  uninstaller runs, the user can select to only uninstall files logged
+  during installtion.  An indpendent ooDialog installation may install
+  some example programs, documentation files, and shortcuts not recorded
+  in the log file.  If at the point, ooRexx is uninstalled, these files
+  and shortcuts may not be deleted.
+
+  Solution 1:
+
+  Before uninstalling ooRexx, install the independent ooDialog that
+  matches the ooRexx installation.  I.e., if the ooRexx installation is
+  any 4.0.x, or 4.1.x ooRexx version, install the ooDialog 4.1.0
+  indpendent installation. Then when ooRexx is uninstalled, all ooDialog
+  files and shortcuts will be removed because the files and shortcuts
+  exactly match what was installed during the ooRexx installation.
+
+  Solution 2:
+
+  After uninstalling ooRexx, manually delete any files in the old ooRexx
+  installation directory.
+
+* Gotcha:
+
+  The independent ooDialog installation deletes the entire ooDialog
+  samples subdirectory tree.  This will delete any personal files
+  that may have been put there after ooRexx was installed.
+
+  Solution 1:
+
+  Do not put personal files in the %REXX_HOME%\samples\ooDialog
+  subdirectory tree.
+
+  Solution 2:
+
+  Before executing the independent ooDialog installer, move or back up
+  any personal files that may be in %REXX_HOME%\samples\ooDialog
+  subdirectory tree.
 
 
 New in ooDialog 4.2.0

@@ -42,9 +42,10 @@
  *  of an ooRexx installation.
  *
  *  Run as:
- *    makensis /DVERSION=x.x.x.x /DNODOTVER=xxx /DROOTDIR=y /DOUTDIR=xxx /DCPU=xxx ooDialog.nsi
+ *    makensis /DVERSION=x.x.x.x /DSHORTVERSION=x.x.x /DROOTDIR=yyy /DOUTDIR=xxx /DCPU=zzz /DDEBUG ooDialog.nsi
  *  eg
- *    makensis /DVERSION=4.2.0.6367 /DNODOTVER=420 /DROOTDIR=C:\work\wc\ooDialog\trunk /DOUTDIR=C:\work\wc\ooDialog\trunk\Win32Rel /DCPU=x86_32 ooDialog.nsi
+ *    makensis /DVERSION=4.2.0.6367 /DSHORTVERSION=4.2.0 /DROOTDIR=C:\work\wc\ooDialog\trunk
+ *             /DOUTDIR=C:\work\wc\ooDialog\trunk\Win32Rel /DCPU=x86_32 /DDEBUGPKG=-debug ooDialog.nsi
  *
  *  Note:
  *    ooDialog.nsi must be in the current directory.
@@ -60,9 +61,11 @@
 
   !define LONGNAME       "ooDialog ${VERSION} (beta)"  ; Our long name
   !define SHORTNAME      "ooDialog"                    ; Our short name
-  !define DISPLAYICON    "$INSTDIR\ooDialog.dll,2"                   ; Use the ooDialog icon, the OOD icon
-  !define REXXSHORTNAME  "ooRexx"                                    ; From ooRexx installer.
-  !define REXXLONGNAME   "Open Object Rexx"                          ; From ooRexx installer
+  !define DISPLAYICON    "$INSTDIR\ooDialog.dll,2"     ; Use the ooDialog icon, the OOD icon
+  !define REXXSHORTNAME  "ooRexx"                      ; From ooRexx installer.
+  !define REXXLONGNAME   "Open Object Rexx"            ; From ooRexx installer
+
+  !define SMooRexxFolder "$SMPROGRAMS\${REXXLONGNAME}"
 
   !define SrcDir "${ROOTDIR}\oodialog"
   !Define BinDir "${OUTDIR}"
@@ -83,7 +86,7 @@
 ;General
 
   Name "ooDialog ${VERSION}"
-  OutFile "ooDialog-${VERSION}-${CPU}.exe"
+  OutFile "ooDialog-${VERSION}-${CPU}${DEBUGPKG}.exe"
   ShowInstdetails show
   SetOverwrite on
   SetPluginUnload alwaysoff
@@ -111,9 +114,10 @@
    * the install location.
    */
   Var RegVal_installedLocation      ; location of ooRexx uninstall program found in registry
-  Var RegVal_installedVersion       ; Version / level of ooRexx uninstaller program.  This only exists at 410 or greater
-  Var RegVal_startMenuFolder        ; Which start menu folder is in use for ooRexx.
   Var IsAdminUser                   ; is the installer being run by an admin:           true / false
+  Var ooRexxVersion                 ; Discovered ooRexx version
+  Var isMinimumRequiredRexx         ; Installed ooRexx meets minimum required for this version of ooDialog true / false
+  Var installerProblemIntro         ; First sentence when the installer detects a file can not be deleted, i.e. oodialog.dll
 
 ;--------------------------------
 ;Pages
@@ -135,8 +139,6 @@
 
 Section  doInstall
 
-  Call CheckForProblems
-
   DetailPrint "********** Installing ooDialog  **********"
   DetailPrint ""
 
@@ -154,6 +156,7 @@ Section  doInstall
 
     DetailPrint "********** ooDialog 4.2.0 ooRexxTry **********"
     File "${ExamplesDir}\ooRexxTry\ooRexxTry.rex"
+    CreateShortCut "${SMooRexxFolder}\Try Rexx (GUI).lnk" "$INSTDIR\rexx.exe" '"$INSTDIR\ooRexxTry.rex"' "$INSTDIR\rexx.exe"
     DetailPrint ""
 
     DetailPrint "********** ooDialog 4.2.0 Documentation **********"
@@ -164,9 +167,9 @@ Section  doInstall
     File "${ROOTDIR}\doc\oodguide.pdf"
     File "${ExamplesDir}\ooRexxTry\doc\ooRexxTry.pdf"
 
-    CreateShortCut "$SMPROGRAMS\${LONGNAME}\Documentation\ooRexx ooDialog Reference.lnk" "$INSTDIR\doc\oodialog.pdf" "" "$INSTDIR\doc\oodialog.pdf" 0
-    CreateShortCut "$SMPROGRAMS\${LONGNAME}\Documentation\ooRexx ooDialog User Guide.lnk" "$INSTDIR\doc\oodguide.pdf" "" "$INSTDIR\doc\oodguide.pdf" 0
-    CreateShortCut "$SMPROGRAMS\${LONGNAME}\Documentation\ooRexxTry Reference.lnk" "$INSTDIR\doc\ooRexxTry.pdf" "" "$INSTDIR\doc\ooRexxTry.pdf" 0
+    CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog Reference.lnk" "$INSTDIR\doc\oodialog.pdf" "" "$INSTDIR\doc\oodialog.pdf" 0
+    CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog User Guide.lnk" "$INSTDIR\doc\oodguide.pdf" "" "$INSTDIR\doc\oodguide.pdf" 0
+    CreateShortCut  "${SMooRexxFolder}\Documentation\ooRexxTry Reference.lnk" "$INSTDIR\doc\ooRexxTry.pdf" "" "$INSTDIR\doc\ooRexxTry.pdf" 0
     DetailPrint ""
 
     DetailPrint "********** ooDialog 4.2.0 Samples **********"
@@ -456,11 +459,14 @@ Section  doInstall
     ; Create start menu shortcuts
     DetailPrint "********** ooDialog 4.2.0 Start Menu Shortcuts **********"
 
-    CreateDirectory "$SMPROGRAMS\${LONGNAME}\${SHORTNAME}\Samples\ooDialog"
-    CreateShortCut "$SMPROGRAMS\${LONGNAME}\${SHORTNAME} Samples\ooDialog\Samples.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\sample.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
-    CreateShortCut "$SMPROGRAMS\${LONGNAME}\${SHORTNAME} Samples\ooDialog\Calculator.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\calculator.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
-    CreateShortCut "$SMPROGRAMS\${LONGNAME}\${SHORTNAME} Samples\ooDialog\Change Editor.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\editrex.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
-    CreateShortCut "$SMPROGRAMS\${LONGNAME}\${SHORTNAME} Samples\ooDialog\FTYPE Changer.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\ftyperex.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk" "$INSTDIR\rexxpaws.exe" '"$INSTDIR\samples\oodialog\winsystem\eventlog.rex"' "$INSTDIR\rexx.exe"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\winsystem\usewmgr.rex"' "$INSTDIR\rexx.exe"
+
+    CreateDirectory "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Samples.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\sample.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Calculator.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\calculator.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\Change Editor.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\editrex.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
+    CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog\FTYPE Changer.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\ftyperex.rex"' "$INSTDIR\samples\oodialog\oodialog.ico"
     DetailPrint ""
 
 
@@ -489,19 +495,93 @@ Function .onInit
   ${endif}
 
   ReadRegStr $RegVal_installedLocation HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${REXXSHORTNAME}" "UnInstallLocation"
-  ReadRegStr $RegVal_installedVersion HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${REXXSHORTNAME}" "UninstallVersion"
-  ReadRegStr $RegVal_startMenuFolder HKLM "Software\${SHORTNAME}\" "StartMenuFolder"
 
-  ${if} $RegVal_installedVersion == ""
+  ${if} $RegVal_installedLocation == ""
+    Call WrongRexxVersion
+    Abort
+  ${endif}
+
+  StrCpy $INSTDIR $RegVal_installedLocation
+
+  Call DetermineRexxVersion
+
+  ${if} $isMinimumRequiredRexx == "false"
+    Call WrongRexxVersion
+    Abort
+  ${endif}
+
+  Call CheckForProblems
+
+FunctionEnd
+
+
+/** WrongRexxVersion()
+ *
+ * Puts up a generic message box stating that ooRexx needs to be installed and
+ * at least XX version.
+ */
+Function WrongRexxVersion
+
+  ${if} $RegVal_installedLocation == ""
     MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
       "A version of ooRexx, greater than or equal to$\n\
       version 4.1.0, must be installed prior to the$\n\
       installation of ${LONGNAME}.$\n$\n\
+      The installer can not detect any installed ooRexx.$\n$\n\
       The installer is aborting."
-      Abort
+  ${else}
+    MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
+      "A version of ooRexx, greater than or equal to$\n\
+      version 4.1.0, must be installed prior to the$\n\
+      installation of ${LONGNAME}.$\n$\n\
+      The installed ooRexx appears to be $ooRexxVersion.$\n$\n\
+      The installer is aborting."
   ${endif}
 
-  StrCpy $INSTDIR $RegVal_installedLocation
+FunctionEnd
+
+
+/** InstallerProblem()
+ *
+ * Puts up a generic message box stating that the intaller detected a problem
+ */
+Function InstallerProblem
+
+  MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
+    "$installerProblemIntro\
+    You MUST close the ooDialog reference documentation and close$\n\
+    any running ooDialog programs before executing the ooDialog$\n\
+    installation program.$\n$\n\
+    The ooDialog installer is aborting.$\n$\n\
+    After the installer closes, please close any running$\n\
+    ooDialog programs and make sure all the ooDialog$\n\
+    documentation is closed, then retry the installation."
+
+FunctionEnd
+
+
+/** DeterminRexxVersion()
+ *
+ *
+ *
+ */
+Function DetermineRexxVersion
+
+  GetDllVersion "$INSTDIR\rexx.dll" $R0 $R1
+  IntOp $R2 $R0 / 0x00010000
+  IntOp $R3 $R0 & 0x0000FFFF
+  IntOp $R4 $R1 / 0x00010000
+  IntOp $R5 $R1 & 0x0000FFFF
+
+  StrCpy $ooRexxVersion "$R2.$R3.$R4.$R5"
+
+  ${If} $R2 >= 4
+  ${AndIf} $R3 >= 1
+    StrCpy $isMinimumRequiredRexx "true"
+  ${Else}
+    StrCpy $isMinimumRequiredRexx "false"
+  ${EndIf}
+
 
 FunctionEnd
 
@@ -512,57 +592,100 @@ FunctionEnd
  *  ooDialog program is running, oodialog.dll can not be overwritten.  This will
  *  prevent a clean install.
  *
- *  We check for this possible problem by trying to rename the files.  If we
+ *  We check for this possible problem by trying to delete the files.  If we
  *  can not, we abort, keeping the current version intact.
  */
 Function CheckForProblems
 
   ClearErrors
-  Rename $INSTDIR\doc\oodialog.pdf $INSTDIR\doc\oodialogTest.pdf
+  CopyFiles /SILENT $INSTDIR\doc\oodialog.pdf $INSTDIR\doc\oodialogTest.pdf
   ${If} ${Errors}
-    MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
-      "The installer detected a problem with oodialog.pdf$\n$\n\
-      You MUST close the ooDialog reference documentation and close$\n\
-      any running ooDialog programs before executing the ooDialog$\n\
-      installation program.$\n$\n\
-      Please close the ooDialog Method Reference documentation, and$\n\
-      make sure no ooDialog programs are running.$\n$\n\
-      The ooDialog installer is aborting."
+      StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodialog.pdf$\n$\n"
+      Call InstallerProblem
+
+      ; ooDialog.pdf was not copied, we don't need to do anything before
+      ; aborting.
       Abort
   ${EndIf}
-
-  ; We do not try oodguide.pdf because if it does not exist, Errors will be set,
-  ; so we can not differentiate between an erro because the file is opened or
-  ; because it does not exist.
 
   ClearErrors
-  Rename $INSTDIR\oodialog.dll $INSTDIR\oodialogTest.dll
+  Delete $INSTDIR\doc\oodialog.pdf
   ${If} ${Errors}
-    MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
-      "The installer detected a problem with oodialog.dll$\n$\n\
-      You MUST close any running ooDialog programs and close$\n\
-      the ooDialog reference documentation before executing$\n\
-      the ooDialog installation program.$\n$\n\
-      Please close any running ooDialog programs and make sure$\n\
-      the ooDialog Method Reference documentation is closed.$\n$\n\
-      The ooDialog installer is aborting."
+      StrCpy $installerProblemIntro "The installer detected a problem with oodialog.pdf$\n$\n"
+      Call InstallerProblem
 
-      ; Restore the ooDialog doc renamed above.
-      Rename $INSTDIR\doc\oodialogTest.pdf $INSTDIR\doc\oodialog.pdf
+      ; ooDialog.pdf was not deleted, we just need to delete the copy.
+      Delete $INSTDIR\doc\oodialogTest.pdf
+      Abort
+  ${EndIf}
+
+  ; ooDialog.pdf was deleted, we rename the copy to keep things clean
+  Rename $INSTDIR\doc\oodialogTest.pdf $INSTDIR\doc\oodialog.pdf
+
+  ; We check oodguide.pdf also, but it may not exist.
+  ${If} ${FileExists} $INSTDIR\doc\oodguide.pdf
+    ClearErrors
+    CopyFiles /SILENT $INSTDIR\doc\oodguide.pdf $INSTDIR\doc\oodguideTest.pdf
+    ${If} ${Errors}
+        StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodguide.pdf$\n$\n"
+        Call InstallerProblem
+
+        ; oodguide.pdf was not copied, we don't need to do anything before
+        ; aborting.
+        Abort
+    ${EndIf}
+
+    ClearErrors
+    Delete $INSTDIR\doc\oodguide.pdf
+    ${If} ${Errors}
+        StrCpy $installerProblemIntro "The installer detected a problem with oodguide.pdf$\n$\n"
+        Call InstallerProblem
+
+        ; oodguide.pdf was not deleted, we just need to delete the copy.
+        Delete $INSTDIR\doc\oodguideTest.pdf
+        Abort
+    ${EndIf}
+
+    ; oodguide.pdf was deleted, we rename the copy to keep things clean
+    Rename $INSTDIR\doc\oodguideTest.pdf $INSTDIR\doc\oodguide.pdf
+  ${EndIf}
+
+  ClearErrors
+  CopyFiles /SILENT $INSTDIR\oodialog.dll $INSTDIR\oodialogTest.dll
+  ${If} ${Errors}
+      StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodialog.dll$\n$\n"
+      Call InstallerProblem
+
+      ; oodialog.dll was not copied, we don't need to do anything before
+      ; aborting.
 
       Abort
   ${EndIf}
 
-  ; Rename the files back so we don't orphen the renamed files.
-  Rename $INSTDIR\doc\oodialogTest.pdf $INSTDIR\doc\oodialog.pdf
-  Rename $INSTDIR\oodialog.dll $INSTDIR\oodialogTest.dll
+  ClearErrors
+  Delete $INSTDIR\oodialog.dll
+  ${If} ${Errors}
+      StrCpy $installerProblemIntro "The installer detected a problem with oodialog.dll$\n$\n"
+      Call InstallerProblem
+
+      ; oodialog.dll was not deleted, we just need to delete the copy.
+      Delete $INSTDIR\oodialogTest.dll
+
+      Abort
+  ${EndIf}
+
+  ; ooDialog.dll was deleted, we rename the copy to keep things clean
+  Rename $INSTDIR\oodialogTest.dll $INSTDIR\oodialog.dll
 
 FunctionEnd
 
 
 /** RemoveFiles()
  *
- *  Deletes all the files of the current ooDialog version
+ *  Deletes all the files of the current ooDialog version.  Note that deleting a
+ *  non-existent file does not raise an alarm in the installer, so we just go
+ *  ahead and delete things that might, or might not, be there without worrying
+ *  about it.
  */
 Function RemoveFiles
 
@@ -590,17 +713,19 @@ Function RemoveFiles
   ; relevant short cuts for that installation.
   DetailPrint "Removing ooDialog Start Menu short cuts"
 
-  Delete "$SMPROGRAMS\${LONGNAME}\Try Rexx (GUI).lnk"
+  Delete "${SMooRexxFolder}\Try Rexx (GUI).lnk"
 
-  Delete "$SMPROGRAMS\${LONGNAME}\Documentation\ooRexx\ooDIalog Method Reference.lnk"
-  Delete "$SMPROGRAMS\${LONGNAME}\Documentation\ooRexx\ooDIalog Reference.lnk"
-  Delete "$SMPROGRAMS\${LONGNAME}\Documentation\ooRexx\ooDialog Method Reference.lnk"
-  Delete "$SMPROGRAMS\${LONGNAME}\Documentation\ooRexxTry Reference.lnk"
+  Delete "${SMooRexxFolder}\Documentation\ooRexx ooDialog Method Reference.lnk"
+  Delete "${SMooRexxFolder}\Documentation\ooRexx ooDialog Reference.lnk"
+  Delete "${SMooRexxFolder}\Documentation\ooRexx ooDialog User Guide.lnk"
+  Delete "${SMooRexxFolder}\Documentation\ooDialog Reference.lnk"
+  Delete "${SMooRexxFolder}\Documentation\ooDialog User Guide.lnk"
+  Delete "${SMooRexxFolder}\Documentation\ooRexxTry Reference.lnk"
 
-  Delete "$SMPROGRAMS\${LONGNAME}\${SHORTNAME}\Samples\Display Event Log.lnk"
-  Delete "$SMPROGRAMS\${LONGNAME}\${SHORTNAME}\Samples\Windows Manager.lnk"
+  Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk"
+  Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk"
 
-  RMDir /r "$SMPROGRAMS\${LONGNAME}\${SHORTNAME}\Samples\ooDialog"
+  RMDir /r "${SMooRexxFolder}\${REXXSHORTNAME} Samples\ooDialog"
 
   DetailPrint ""
 

@@ -91,7 +91,7 @@ OOD_OODIALOGSRC=$(OOD_ROOT_DIR)\ooDialog
 
 !include $(OOD_ROOT_DIR)\install\ooDialog.ver.incl
 DOTVER = $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL).$(OOD_BLD_LVL)
-NODOTVER = $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL)
+SHORTVERSION = $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL)
 
 !if "$(CPU)" == "X64"
 NSISCPU = x86_64
@@ -108,6 +108,8 @@ NSISCPU = x86_32
 
 OOD_OUTDIR=$(OOD_ROOT_DIR)\Win32Dbg
 MKASM=0
+NSISDEBUG=-debug
+BUILD_TYPE=debug
 
 !else
 
@@ -118,6 +120,7 @@ NODEBUG=1
 
 OOD_OUTDIR=$(OOD_ROOT_DIR)\Win32Rel
 MKASM=1
+BUILD_TYPE=release
 
 !endif
 
@@ -151,15 +154,14 @@ target_ooDialog:
 
 $(OOD_OUTDIR)\ooDialog.cls: $(CLASSFILES)
     @echo .
-    @echo Building ooDialog classs
-    @echo Got here cd to $(OOD_OUTDIR) is next
+    @echo Building ooDialog classes
     @cd $(OOD_OUTDIR)
     @REXX $(OOD_OODIALOGSRC)\build_ooDialog_cls.rex
     @cd $(OOD_ROOT_DIR)
 
 example_dlls:
     @echo .
-    @echo Building resources for examples
+    @echo Building resource DLLs for examples
     @cd $(OOD_ROOT_DIR)\examples\res
     @set MACHINE=$(CPU)
     $(MAKE) /NOLOGO /F res.mak
@@ -176,12 +178,20 @@ dist: all
     @echo .
     @echo Creating installation package
     @cd $(OOD_ROOT_DIR)\install
-    makensis /DVERSION=$(DOTVER) /DNODOTVER=$(NODOTVER) /DROOTDIR=$(OOD_ROOT_DIR) /DOUTDIR=$(OOD_OUTDIR) /DCPU=$(NSISCPU) ooDialog.nsi
+    makensis /DVERSION=$(DOTVER) /DSHORTVERSION=$(SHORTVERSION) /DROOTDIR=$(OOD_ROOT_DIR) /DOUTDIR=$(OOD_OUTDIR) /DCPU=$(NSISCPU) /DDEBUGPKG=$(NSISDEBUG) ooDialog.nsi
     @cd $(OOD_ROOT_DIR)
 
 $(BASETARGETS): Makefile
 
 clean:
-    rd /q /s $(OOD_OUTDIR)
+    @echo .
+    @echo Cleaning ooDialog $(BUILD_TYPE) build output
+    @rd /q /s $(OOD_OUTDIR)
+    @del /f $(OOD_ROOT_DIR)\install\compiler.info.incl 1>nul 2>&1
+    @del /f $(OOD_ROOT_DIR)\install\ooDialog.ver.incl 1>nul 2>&1
+    @del /f $(OOD_ROOT_DIR)\ooDialog\ooDialog.ver.incl 1>nul 2>&1
+    @del /s $(OOD_ROOT_DIR)\*.pdb 1>nul 2>&1
+    @del /s $(OOD_ROOT_DIR)\examples\*.dll 1>nul 2>&1
+    @del /s $(OOD_ROOT_DIR)\examples\*.res 1>nul 2>&1
 
 
