@@ -1,0 +1,197 @@
+#/*----------------------------------------------------------------------------*/
+#/*                                                                            */
+#/* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
+#/*                                                                            */
+#/* This program and the accompanying materials are made available under       */
+#/* the terms of the Common Public License v1.0 which accompanies this         */
+#/* distribution. A copy is also available at the following address:           */
+#/* http://www.oorexx.org/license.html                                         */
+#/*                                                                            */
+#/* Redistribution and use in source and binary forms, with or                 */
+#/* without modification, are permitted provided that the following            */
+#/* conditions are met:                                                        */
+#/*                                                                            */
+#/* Redistributions of source code must retain the above copyright             */
+#/* notice, this list of conditions and the following disclaimer.              */
+#/* Redistributions in binary form must reproduce the above copyright          */
+#/* notice, this list of conditions and the following disclaimer in            */
+#/* the documentation and/or other materials provided with the distribution.   */
+#/*                                                                            */
+#/* Neither the name of Rexx Language Association nor the names                */
+#/* of its contributors may be used to endorse or promote products             */
+#/* derived from this software without specific prior written permission.      */
+#/*                                                                            */
+#/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+#/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+#/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+#/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+#/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+#/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+#/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+#/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+#/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+#/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+#/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+#/*                                                                            */
+#/*----------------------------------------------------------------------------*/
+
+
+# This is a Visual C++, nMake compatible make file for building ooDialog outside
+# of the interpreter.
+#
+# The compiler needs to be able to find the ooRexx native API headers and
+# libraries. If REXX_HOME is set on the system and points to the correct version
+# of the native API, the correct directory will be automatically added to the
+# LIB and INCLUDE environment variables by this make file.
+#
+# Otherwise, either uncomment the next line and define the correct REXX_HOME, or
+# be sure the LIB and INCLUDE environment variables allow the compiler to find
+# the ooRexx native API headers and libraries.
+#
+# On a build system for ooRexx, you can set REXX_HOME to point to Win32Dbg or
+# Win32Rel, as appropriate, in your build directory.  For this to work, you
+# will have to have built the interpreter.
+# This setting is for my specific machine and should be changed or commented out
+# when building
+
+REXX_HOME = C:\Rexx\static.ooRexx.4.1.0.release
+
+# Define DEBUG on the command line, or here, to build a debug version.  By
+# default non- debug versions are built.  I.e. nMake DEBUG=1
+#DEBUG = 1
+
+# No changes need to be made from here to the bottom.
+
+!if defined(REXX_HOME)
+INCLUDE = $(INCLUDE);$(REXX_HOME)\api
+LIB = $(LIB);$(REXX_HOME)\api
+!else
+!  error Build error: REXX_HOME not defined
+!endif
+
+REXX_LIBS = $(REXX_HOME)\api\rexx.lib $(REXX_HOME)\api\rexxapi.lib
+
+# Generate the compiler information, plus OOD_ROOT_DIR.  Quit if there is an
+# error.
+
+!IF [install\determineCompiler.bat] != 0
+!  ERROR Build error: could not generate compiler informatin.
+!ENDIF
+
+!include install\compiler.info.incl
+
+OOD_OODIALOGSRC=$(OOD_ROOT_DIR)\ooDialog
+
+# Generate the version information.  Quit if there is an error.  This is also
+# done in oodialog.mak.  Seems redundent to do it twice ... but it is easist
+# this way.            ??
+!IF [$(OOD_ROOT_DIR)\install\generateVersionFile.bat] != 0
+!  ERROR Build error: could not gerate version file, ooDialog.ver.incl
+!ENDIF
+
+!include $(OOD_ROOT_DIR)\install\ooDialog.ver.incl
+DOTVER = $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL).$(OOD_BLD_LVL)
+SHORTVERSION = $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL)
+
+!if "$(CPU)" == "X64"
+NSISCPU = x86_64
+!else
+NSISCPU = x86_32
+!endif
+
+# To be compatible with a build from the interpreter we need to define NODEBUG
+# for a release build.
+!if "$(DEBUG)" == "1"
+
+!if [if not exist Win32Dbg md Win32Dbg]
+!endif
+
+OOD_OUTDIR=$(OOD_ROOT_DIR)\Win32Dbg
+MKASM=0
+NSISDEBUG=-debug
+BUILD_TYPE=debug
+
+!else
+
+NODEBUG=1
+
+!if [if not exist Win32Rel md Win32Rel\ASM]
+!endif
+
+OOD_OUTDIR=$(OOD_ROOT_DIR)\Win32Rel
+MKASM=1
+BUILD_TYPE=release
+
+!endif
+
+OOD_INCLUDE_FILE=$(OOD_ROOT_DIR)\install\ooDialogWin32.mak
+
+CLASSFILES = $(OOD_OODIALOGSRC)\AnimatedButton.cls   $(OOD_OODIALOGSRC)\BaseDialog.cls         $(OOD_OODIALOGSRC)\CategoryDialog.cls    \
+             $(OOD_OODIALOGSRC)\ControlDialog.cls    $(OOD_OODIALOGSRC)\DeprecatedClasses.cls  $(OOD_OODIALOGSRC)\DialogControls.cls    \
+             $(OOD_OODIALOGSRC)\DialogExtensions.cls $(OOD_OODIALOGSRC)\DynamicDialog.cls      $(OOD_OODIALOGSRC)\EventNotification.cls \
+             $(OOD_OODIALOGSRC)\Menu.cls             $(OOD_OODIALOGSRC)\PlainBaseDialog.cls    $(OOD_OODIALOGSRC)\PropertySheet.cls     \
+             $(OOD_OODIALOGSRC)\RcDialog.cls         $(OOD_OODIALOGSRC)\ResDialog.cls          $(OOD_OODIALOGSRC)\UserDialog.cls        \
+             $(OOD_OODIALOGSRC)\UtilityClasses.cls
+
+BASETARGETS = target_ooDialog $(OOD_OUTDIR)\ooDialog.cls example_dlls
+
+all: $(BASETARGETS)
+
+target_ooDialog:
+    @cd $(OOD_OODIALOGSRC)
+    @set OOD_INDEPENDENT=1
+    @set OOD_OUTDIR=$(OOD_OUTDIR)
+    @set OOD_OODIALOGSRC=$(OOD_OODIALOGSRC)
+    @set OOD_INCLUDE_FILE=$(OOD_INCLUDE_FILE)
+    @set REXX_LIBS=$(REXX_LIBS)
+    @set NODEBUG=$(NODEBUG)
+    @set CPU=$(CPU)
+    @set MSVCVER=$(MSVCVER)
+    @set MKASM=$(MKASM)
+    @set NOCRTDLL=1
+    $(MAKE) /NOLOGO /F oodialog.mak
+    @cd $(OOD_ROOT_DIR)
+
+$(OOD_OUTDIR)\ooDialog.cls: $(CLASSFILES)
+    @echo .
+    @echo Building ooDialog classes
+    @cd $(OOD_OUTDIR)
+    @REXX $(OOD_OODIALOGSRC)\build_ooDialog_cls.rex
+    @cd $(OOD_ROOT_DIR)
+
+example_dlls:
+    @echo .
+    @echo Building resource DLLs for examples
+    @cd $(OOD_ROOT_DIR)\examples\res
+    @set MACHINE=$(CPU)
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Samples\DlgData\res
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise05\res
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise06\Product\res
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)
+
+
+dist: all
+    @echo .
+    @echo Creating installation package
+    @cd $(OOD_ROOT_DIR)\install
+    makensis /DVERSION=$(DOTVER) /DSHORTVERSION=$(SHORTVERSION) /DROOTDIR=$(OOD_ROOT_DIR) /DOUTDIR=$(OOD_OUTDIR) /DCPU=$(NSISCPU) /DDEBUGPKG=$(NSISDEBUG) ooDialog.nsi
+    @cd $(OOD_ROOT_DIR)
+
+$(BASETARGETS): Makefile
+
+clean:
+    @echo .
+    @echo Cleaning ooDialog $(BUILD_TYPE) build output
+    @rd /q /s $(OOD_OUTDIR)
+    @del /f $(OOD_ROOT_DIR)\install\compiler.info.incl 1>nul 2>&1
+    @del /f $(OOD_ROOT_DIR)\install\ooDialog.ver.incl 1>nul 2>&1
+    @del /f $(OOD_ROOT_DIR)\ooDialog\ooDialog.ver.incl 1>nul 2>&1
+    @del /s $(OOD_ROOT_DIR)\*.pdb 1>nul 2>&1
+    @del /s $(OOD_ROOT_DIR)\examples\*.dll 1>nul 2>&1
+    @del /s $(OOD_ROOT_DIR)\examples\*.res 1>nul 2>&1
+
+
