@@ -1,0 +1,621 @@
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooDialog Reference SGML file.
+    #
+    # Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.
+    # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    # Author(s):
+    #      W. David Ashley <dashley@us.ibm.com>
+    #
+    #########################################################################
+-->
+
+<section id="sctWindowBaseDO"><title>Basic Window Methods</title>
+<indexterm><primary>dialog object</primary><secondary>basic window methods</secondary></indexterm>
+<para>
+  Recall that in the Windows graphical user interface, everything is a window. The <link
+  linkend="clsWindowBase">WindowBase</link> class is a mixin class that contains methods common to all windows. Since a
+  dialog is a window, it inherits the <emphasis role="italic">WindowBase</emphasis> class. This section lists all the
+  basic window methods for the dialog object.
+</para>
+
+<section id="wbdoChildWindowFromPoint"><title>childWindowFromPoint</title>
+<programlisting>
+WindowBase::<link linkend="mthChildWindowFromPoint">childWindowFromPoint</link>
+
+<![CDATA[
+>>--childWindowFromPoint(--point--+----------+--)------------------------------><
+                                  +-,-flags--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoClear"><title>clear</title>
+<programlisting>
+WindowBase::<link linkend="mthClear">clear</link>
+
+<![CDATA[
+>>--clear----------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoClient2screen"><title>client2screen</title>
+<programlisting>
+WindowBase::<link linkend="mthClient2screen">client2screen</link>
+
+<![CDATA[
+>>--client2screen(--pointOrRect--)---------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoClientRect"><title>clientRect</title>
+<programlisting>
+WindowBase::<link linkend="mthClientRect">clientRect</link>
+
+<![CDATA[
+>>--clientRect(--+--------+--)-------------------><
+                 +--hwnd--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoClientToScreen"><title>clientToScreen</title>
+<programlisting>
+WindowBase::<link linkend="mthClientToScreen">clientToScreen</link>
+
+<![CDATA[
+>>--clientToScreen(--x--,--y--)------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoDisable"><title>disable</title>
+<programlisting>
+WindowBass::<link linkend="mthDisable">disable</link>
+
+<![CDATA[
+>>--disable--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoDisplay"><title>display</title>
+<programlisting>
+WindowBase::<link linkend="mthDisplay">display</link>
+
+<![CDATA[
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoDraw"><title>draw</title>
+<programlisting>
+WindowBase::<link linkend="mthDraw">draw</link>
+
+<![CDATA[
+>>--draw-----------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoEnable"><title>enable</title>
+<programlisting>
+WindowBase::<link linkend="mthEnable">enable</link>
+
+<![CDATA[
+>>--enable---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoForegroundWindow"><title>foregroundWindow</title>
+<programlisting>
+WindowBase::<link linkend="mthForegroundWindow">foregroundWindow</link>
+
+<![CDATA[
+>>--foregroundWindow-----------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoGetClientRect"><title>getClientRect</title>
+<programlisting>
+WindowBase::<link linkend="mthGetClientRect">getClientRect</link>
+
+<![CDATA[
+>>--getClientRect(--+------+--)------------------><
+                    +-hwnd-+
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoGetExStyleRaw"><title>getExStyleRaw</title>
+<programlisting>
+WindowBase::<link linkend="mthGetExStyleRaw">getExStyleRaw</link>
+
+<![CDATA[
+>>--getExStyleRaw--------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetID"><title>getID</title>
+<programlisting>
+WindowBase::<link linkend="mthGetID">getID</link>
+
+<![CDATA[
+>>--getID----------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetPos"><title>getPos</title>
+<programlisting>
+WindowBase::<link linkend="mthGetPos">getPos</link>
+
+<![CDATA[
+>>--getPos---------------------------------------><
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetRealPos"><title>getRealPos</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getRealPos</link>
+
+<![CDATA[
+>>--getRealPos-----------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetRealSize"><title>getRealSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetRealSize">getRealSize</link>
+
+<![CDATA[
+>>--getRealSize----------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetRect"><title>getRect</title>
+<programlisting>
+WindowBase::<link linkend="mthGetRect">getRect</link>
+
+<![CDATA[
+>>--getRect--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetSize"><title>getSize</title>
+<programlisting>
+WindowBase::<link linkend="mthGetSize">getSize</link>
+
+<![CDATA[
+>>--getSize--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetStyleRaw"><title>getStyleRaw</title>
+<programlisting>
+WindowBase::<link linkend="mthGetStyleRaw">getStyleRaw</link>
+
+<![CDATA[
+>>--getStyleRaw----------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetText"><title>getText</title>
+<programlisting>
+WindowBase::<link linkend="mthGetText">getText</link>
+
+<![CDATA[
+>>--getText--------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetTextSizePx"><title>getTextSizePx</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizePx">getTextSizePx</link>
+
+<![CDATA[
+>>--getTextSizePx(-text--)-----------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoGetTextSizeScreen"><title>getTextSizeScreen</title>
+<programlisting>
+WindowBase::<link linkend="mthGetTextSizeScreen">getTextSizeScreen</link>
+
+<![CDATA[
+>>--getTextSizeScreen(-text--+---------+--+------------+--+-------------+-)----><
+                             +-,-type--+  +-,-fontSrc--+  +-,-fontSize--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoHide"><title>hide</title>
+<programlisting>
+WindowBase::<link linkend="mthHide">hide</link>
+
+<![CDATA[
+>>--hide-----------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoHideFast"><title>hideFast</title>
+<programlisting>
+WindowBase::<link linkend="mthHideFast">hideFast</link>
+
+<![CDATA[
+>>--hideFast-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoIsEnabled"><title>isEnabled</title>
+<programlisting>
+WindowBase::<link linkend="mthIsEnabled">isEnabled</link>
+
+<![CDATA[
+>>--isEnabled------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoIsVisible"><title>isVisible</title>
+<programlisting>
+WindowBase::<link linkend="mthIsVisible">isVisible</link>
+
+<![CDATA[
+>>--isVisible------------------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoMove"><title>move</title>
+<programlisting>
+WindowBase::<link linkend="mthMove">move</link>
+
+<![CDATA[
+>>--move(--xPos--,--yPos--+-------------+--)-----><
+                          +-,-showOpts--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoMoveTo"><title>moveTo</title>
+<programlisting>
+WindowBase::<link linkend="mthMoveTo">moveTo</link>
+
+<![CDATA[
+Form 1:
+
+>>--moveTo(--point--+--------------+--)----------><
+                    +--,-showOpts--+
+Form 2:
+
+>>--moveTo(--x,--y--+--------------+--)----------><
+                    +--,-showOpts--+
+Generic form:
+
+>>--moveTo(--newPos--+--------------+--)---------><
+                     +--,-showOpts--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoMoveWindow"><title>moveWindow</title>
+<programlisting>
+WindowBase::<link linkend="mthMoveWindow">moveWindow</link>
+
+<![CDATA[
+Form 1:
+
+>>--moveWindow(--hwndBehind--,--point--+--------------+--)------><
+                                       +--,-showOpts--+
+Form 2:
+
+>>--moveWindow(--hwndBehind--,--x,--y--+--------------+--)------><
+                                       +--,-showOpts--+
+Generic form:
+
+>>--moveWindow(--hwndBehind--,--newPos--+--------------+--)-----><
+                                        +--,-showOpts--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoRedraw"><title>redraw</title>
+<programlisting>
+WindowBase::<link linkend="mthRedraw">redraw</link>
+
+<![CDATA[
+>>--redraw---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoRedrawClient"><title>redrawClient</title>
+<programlisting>
+WindowBase::<link linkend="mthRedrawClient">redrawClient</link>
+
+<![CDATA[
+>>--redrawClient(--+------------+--)-------------><
+                   +--eraseBkg--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoResize"><title>resize</title>
+<programlisting>
+WindowBase::<link linkend="mthResize">resize</link>
+
+<![CDATA[
+>>--resize(--width--,--height--+-------------+--)---------------><
+                               +-,-showOpts--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoResizeTo"><title>resizeTo</title>
+<programlisting>
+WindowBase::<link linkend="mthResizeTo">resizeTo</link>
+
+<![CDATA[
+Form 1:
+
+>>--resizeTo(--size--)---------------------------><
+
+Form 2:
+
+>>--resizeTo(--cx,--cy--)------------------------><
+
+Generic form:
+
+>>--resizeTo(--newSize--)------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoScreen2client"><title>screen2client</title>
+<programlisting>
+WindowBase::<link linkend="mthScreen2client">screen2client</link>
+
+<![CDATA[
+>>--screen2client(--pointOrRect--)---------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoScreenToClient"><title>screenToClient</title>
+<programlisting>
+WindowBase::<link linkend="mthScreenToClient">screenToClient</link>
+
+<![CDATA[
+>>--screenToClient(--x--,--y--)------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoSendMessage"><title>sendMessage</title>
+<programlisting>
+WindowBase::<link linkend="mthSendMessage">sendMessage</link>
+
+<![CDATA[
+>>--sendMessage(--id--,--msg--,--wParam--,--lParam--)-----------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSendMessageHandle"><title>sendMessageHandle</title>
+<programlisting>
+WindowBase::<link linkend="mthSendMessageHandle">sendMessageHandle</link>
+
+<![CDATA[
+>>--sendMessageHandle(--id--,--msg--,--wParam--,--lParam--)-----><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSetRect"><title>setRect</title>
+<programlisting>
+WindowBase::<link linkend="mthSetRect">setRect</link>
+
+<![CDATA[
+Form 1:
+
+>>--setRect(--rectangle--+------------+--)-------><
+                         +-,-showOpts-+
+
+Form 2:
+
+>>--setRect(--point--,--size--+------------+--)-----------------><
+                              +-,-showOpts-+
+
+Form 3:
+
+>>--setRect(--x-,--y-,--cx-,--cy--+------------+--)-------------><
+                                  +-,-showOpts-+
+
+Generic form:
+
+>>--setRect(--ptSizeRectangle--+------------+--)----------------><
+                               +-,-showOpts-+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSetText"><title>setText</title>
+<programlisting>
+WindowBase::<link linkend="mthSetText">setText</link>
+
+<![CDATA[
+>>--setText(--newText--)-------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSetTitle"><title>setTitle</title>
+<programlisting>
+WindowBase::<link linkend="mthSetTitle">setTitle</link>
+
+<![CDATA[
+>>--setTitle(--newText--)------------------------><
+]]>
+</programlisting>
+</section>
+
+
+<section id="wbdoSetWindowPos"><title>setWindowPos</title>
+<programlisting>
+WindowBase::<link linkend="mthSetWindowPos">setWindowPos</link>
+
+<![CDATA[
+Form 1:
+
+>>--setWindowPos(--hwndBehind--,--rectangle--+------------+--)-----------------><
+                                             +-,-showOpts-+
+
+Form 2:
+
+>>--setWindowPos(--hwndBehind--,--point--,--size--+------------+--)------------><
+                                                  +-,-showOpts-+
+
+Form 3:
+
+>>--setWindowPos(--hwndBehind--,--x-,--y-,--cx-,--cy--+------------+--)--------><
+                                                      +-,-showOpts-+
+
+Generic form:
+
+>>--setWindowPos(--hwndBehind--,--ptSizeRectangle--+------------+--)-----------><
+                                                   +-,-showOpts-+
+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoShowFast"><title>showFast</title>
+<programlisting>
+WindowBase::<link linkend="mthShowFast">showFast</link>
+
+<![CDATA[
+>>--showFast-------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoSizeWindow"><title>sizeWindow</title>
+<programlisting>
+WindowBase::<link linkend="mthSizeWindow">sizeWindow</link>
+
+<![CDATA[
+Form 1:
+
+>>--sizeWindow(--hwndBehind--,--size--+--------------+--)-------><
+                                      +--,-showOpts--+
+
+Form 2:
+
+>>--sizeWindow(--hwndBehind--,--cx,--cy--+--------------+--)----><
+                                         +--,-showOpts--+
+
+Generic form:
+
+>>--sizeWindow(--hwndBehind--,--newSize--+--------------+--)----><
+                                         +--,-showOpts--+
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoTitle"><title>title</title>
+<programlisting>
+WindowBase::<link linkend="mthTitle">title</link>
+
+<![CDATA[
+>>--title----------------------------------------><
+]]>
+</programlisting>
+</section>
+<section id="wbdoTitleEquals"><title>title=</title>
+<programlisting>
+WindowBase::<link linkend="mthTitleEquals">title=</link>
+
+<![CDATA[
+>>--title=newText--------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoUpdate"><title>update</title>
+<programlisting>
+WindowBase::<link linkend="mthUpdate">update</link>
+
+<![CDATA[
+>>--update---------------------------------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wbdoWindowRect"><title>windowRect</title>
+<programlisting>
+WindowBase::<link linkend="mthWindowRect">windowRect</link>
+
+<![CDATA[
+>>--windowRect(--+--------+--)-------------------><
+                 +--hwnd--+
+]]>
+</programlisting>
+</section>
+
+</section> <!-- END Section Basic Window Methods  -->
