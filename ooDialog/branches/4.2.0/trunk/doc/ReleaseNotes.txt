@@ -1,0 +1,242 @@
+                    Release Notes ooDialog 4.2.0 Beta 1
+                    ===================================
+
+ooDialog 4.2.0 is the first major enhancement in ooDialog in over a
+decade.  There are many improvements and enhancements, more than can be
+listed explicitly.  The "New in ooDialog 4.2.0" section below gives an
+outline of the changes.  To fully understand the changes refer to the
+ooDialog reference manual.
+
+ooDialog 4.2.0 can be installed to any ooRexx installation, 4.1.0 or
+later.
+
+Beginning with the release of ooDialog 4.2.0, the installation of
+ooDialog has been decoupled from the interpreter.  ooDialog 4.2.0
+installs over the top of any ooRexx installation.  It replaces the
+version of ooDialog in the ooRexx installation with ooDialog 4.2.0.
+
+This type of ooDialog installation is called an "independent" ooDialog
+installation to indicate the ooDialog installation is independent of an
+ooRexx installation and, to a degree, the version of ooRexx installed.
+
+This installation can be done today.  The next major release of ooRexx
+will include ooDialog 4.2.0, but there is no reason to wait for that
+release.  Going forward, ooDialog users will be able to install any
+version of ooDialog they want to their ooRexx installation.  Provided of
+course that the ooRexx version meets the minimum required version for
+the ooDialog version.
+
+ooDialog 4.2.0 requires a minimum ooRexx version of 4.1.0.
+
+
+Installation
+============
+
+Installation is simple, done through a typical Windows installer.  Pick
+the installation package that matches the bitness of the ooRexx
+installation.  I.e., a 32-bit package for a 32-bit ooRexx and a 64-bit
+package for a 64-bit ooRexx.
+
+The installer will detect the installed ooRexx, location and version.
+If the ooRexx version is less than 4.1.0, or if there is no installed
+ooRexx, the installer will abort with a message explaining the problem.
+Otherwise the installer will replace the current ooDialog with ooDialog
+4.2.0.
+
+Note that the actions of the installer are dependent on the version
+of ooRexx, not the version of the installed ooDialog.  For instance, if
+the installed ooDialog is version 4.3.0, but for some reason the user is
+not happy with that version, running the ooDialog 4.2.0 installer will
+replace the 4.3.0 version with the 4.2.0 version.
+
+At the time of the installation, *all* ooDialog programs must be halted
+and the ooDialog PDFs must be closed if they happen to be opened.
+
+An alternative way to install ooDialog 4.2.0 is to install
+switchOODialog.
+
+
+switchOODialog
+==============
+
+Switch ooDialog provided a way for users of ooDialog to begin testing
+and experimenting with the new features in 4.2.0.  This technology will
+be continued so that users can upgrade their version of ooDialog without
+worrying about the consequences.  If there is some problem and they are
+not happy with ooDialog 4.2.0, they can easily switch back to ooDialog
+4.1.0
+
+Switch ooDialog makes it possible for users to easily and transparently
+switch back and forth between ooDialog 4.2.0 and the release version of
+ooDialog packaged with ooRexx 4.1.0.  Switch ooDialog is downloadable
+from SourceForge making an upgrade to ooDialog 4.2.0 worry free.
+
+To install ooDialog 4.2.0, pick the switchOODialog package that matches
+the bitness of the installed ooRexx.
+
+When switchOODialog is initially installed, the active version of
+ooDialog will be ooDialog 4.2.0.  switchOODialog.exe acts like a toggle.
+It time it is executed it switches the active version of ooDialog
+between 4.1.0 and 4.2.0.
+
+switchOODialog can be executed from the command line, or through menu
+items in the ooRexx section of the Start menu.
+
+switchOODialog has the same requirements as does a regular installation
+of ooDialog 4.2.0.  There must be an installed version of ooRexx that is
+at least version 4.1.0.  At the time of the installation, *all* ooDialog
+programs must be halted and the ooDialog PDFs must be closed if they
+happen to be opened.
+
+
+Known Problems, "Gotchas," and Solutions with Independent Installations
+=======================================================================
+
+* Problem:
+
+  The ooRexx installer creates a log of the files it installs.  When the
+  uninstaller runs, the user can select to only uninstall files logged
+  during installtion.  An indpendent ooDialog installation may install
+  some example programs, documentation files, and shortcuts not recorded
+  in the log file.  If at the point, ooRexx is uninstalled, these files
+  and shortcuts may not be deleted.
+
+  Solution 1:
+
+  Before uninstalling ooRexx, install the independent ooDialog that
+  matches the ooRexx installation.  I.e., if the ooRexx installation is
+  any 4.0.x, or 4.1.x ooRexx version, install the ooDialog 4.1.0
+  indpendent installation. Then when ooRexx is uninstalled, all ooDialog
+  files and shortcuts will be removed because the files and shortcuts
+  exactly match what was installed during the ooRexx installation.
+
+  Solution 2:
+
+  After uninstalling ooRexx, manually delete any files in the old ooRexx
+  installation directory.
+
+* Gotcha:
+
+  The independent ooDialog installation deletes the entire ooDialog
+  samples subdirectory tree.  This will delete any personal files
+  that may have been put there after ooRexx was installed.
+
+  Solution 1:
+
+  Do not put personal files in the %REXX_HOME%\samples\ooDialog
+  subdirectory tree.
+
+  Solution 2:
+
+  Before executing the independent ooDialog installer, move or back up
+  any personal files that may be in %REXX_HOME%\samples\ooDialog
+  subdirectory tree.
+
+
+New in ooDialog 4.2.0
+=====================
+
+New dialog control classes:
+---------------------------
+
+DateTimePicker control class
+MonthCalendar control class
+UpDown control class
+
+New dialog classes:
+-------------------
+
+PropertySheetDialog:
+
+The PropertySheetDialog is a true implementation of the Windows property
+sheet.  It allows the easy creation of Windows wizards, both Wizard 97
+wizards and the new (to Windows) Aero Wizard.
+
+Property Sheet Page classes:
+  PropertySheetPage
+  ResPSPDialog
+  UserPSPDialog
+  RcPSPDialog
+
+The property sheet page classes are used to implement the pages of a
+property sheet dialog.
+
+Control Dialog classes:
+  ControlDialog
+  ResControlDialog
+  UserControlDialog
+  RcControlDialog
+
+Control dialogs are a special type of dialog that works well as a dialog
+within a top-level dialog.  The primary use of these dialogs is within
+Tab controls.
+
+New utility classes:
+--------------------
+
+ApplicationManager:
+
+The ApplicationManager class is used to manage application-wide (global)
+defaults.
+
+DayState:
+
+The DayState class is a helper class for the DateTimePicker class and
+represents the state of each day in a month.
+
+DayStates:
+
+The DayStates class is also a helper class for the DateTimePicker class
+and provides methods for managing DayState objects.
+
+Mouse:
+
+The Mouse class provides all the methods to work with the mouse and the
+mouse cursor.
+
+OS:
+
+The OS class provides methods related to operating system services.
+
+SM:
+
+This class consists of attributes that reflect the system metrics of the
+computer the ooRexx program is executing on.
+
+SPI:
+
+This class consists of attributes that reflect the system parameters
+information of the computer the ooRexx program is executing on.
+
+VK:
+
+The VK (virtual key) class provides a mapping between numerical key code
+values and their symbolic names.  Every virtual key defined by Microsoft
+is included in the class.
+
+New Methods:
+------------
+
+Many new methods have been added, too many to list individually.  Many
+new methods have been added to the dialog object.  Most, if not all of
+the dialog control classes have new methods.
+
+New samples:
+------------
+
+Many new samples have been added to the distribution.  In addition, many
+of the existing samples have been reworked to better demonstrate how
+ooDialog works.
+
+Documentation
+-------------
+
+Much of the ooDialog Method Reference book has been rewritten to correct
+errors.  The format of some sections has been changed to make finding
+the relevant information easier.  All method tables now give a short
+description of the method within the table.
+
+A new book, the ooDialog User Guide, has been added to the ooDialog
+distribution.  The ooDialog User Guide includes a number of example
+programs that go along with the text in the guide.  These examples are
+include in the example program section of ooDialog.
