@@ -75,7 +75,7 @@ return testResult
 
   self~assertTrue(node~isa(self~nodeclass))
   self~assertEquals(self~nodeName, node~nodeName)
-  self~assertEquals(self~nodeName, node~localName)
+  self~assertNull(node~localName)
   self~assertEquals("xyz", node~data)
   self~assertEquals("xyz", node~nodeValue)
   self~assertEquals("xyz"~length, node~length)
@@ -88,7 +88,6 @@ return testResult
   self~assertNull(node~attributes)
   self~assertNull(node~prefix)
   self~assertNull(node~namespaceURI)
-  self~assertNull(node~item(0))
   self~assertFalse(node~hasAttributes)
   self~assertFalse(node~hasChildNodes)
 
@@ -98,7 +97,10 @@ return testResult
   root~appendChild(node)
 
   self~assertSame(root, node~parentNode)
-  self~assertEquals("xyz", root~textContent)
+  -- only text and cdata nodes affect the text content
+  if node~nodeType == .Node~TEXT_NODE | node~nodeType == .Node~CDATA_SECTION_NODE then
+      self~assertEquals("xyz", root~textContent)
+  else self~assertEquals("", root~textContent)
   -- the text content does not change the element nodeValue
   self~assertEquals(.nil, root~nodeValue)
 

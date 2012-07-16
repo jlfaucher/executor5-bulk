@@ -1885,10 +1885,20 @@
 -- default local name attribute
 ::attribute localName GET
   use strict arg
-  return return .nil    -- this always return .nil except for element and attr nodes
+  return .nil    -- this always returns .nil except for element and attr nodes
 
 -- base URI is not supported yet
 ::attribute baseURI GET
+  use strict arg
+  return .nil
+
+-- detault behavior for nodes that don't have children
+::attribute firstChild GET
+  use strict arg
+  return .nil
+
+-- detault behavior for nodes that don't have children
+::attribute lastChild GET
   use strict arg
   return .nil
 
@@ -3949,6 +3959,9 @@ syntax:
   expose data
   use strict arg offset, count, replace = .false
 
+  if offset < 0 | offset > data~length | count < 0 then
+      .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
+
   tailLength = max(data~length - count - offset, 0)
   if offset >= data~length  then newData = data
   else newData = data~delstr(offset + 1, count)
@@ -3965,6 +3978,9 @@ syntax:
   expose data
   use strict arg offset, newData, replace = .false
 
+  if offset < 0 | offset > data~length then
+      .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
+
   -- NB:  In this case, we don't add one to the offset because
   -- the Rexx insert function inserts after the given offset, not
   -- before.  This actually works to our advantage.
@@ -3978,6 +3994,9 @@ syntax:
 ::method replaceData
   expose data
   use strict arg offset, count, newData
+
+  if offset < 0 | offset > data~length | count < 0 then
+      .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
 
   oldvalue = data
 
@@ -3994,6 +4013,9 @@ syntax:
 ::method substringData
   expose data
   use strict arg offset, count
+
+  if offset < 0 | offset > data~length | count < 0 then
+      .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
 
   return data~substr(offset + 1, count)
 
