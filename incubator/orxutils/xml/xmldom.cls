@@ -402,6 +402,23 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+/* Class: TypeInfo                                                            */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- abstract DOM 3 TypeInfo definition
+::class "TypeInfo" mixinclass Object public
+::constant DERIVATION_RESTRICTION 1
+::constant DERIVATION_EXTENSION   2
+::constant DERIVATION_UNION       4
+::constant DERIVATION_LIST        8
+
+::method typeName abstract
+::method typeNamespace abstract
+::method isDerivedFrom abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 /* Class: DOMImplementation                                                   */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -3444,7 +3461,9 @@ syntax:
   expose attributes
   use strict arg oldAttr
 
-  if attrbutes \= .nil then return attributes~removeItem(oldAttr, .true)
+  if oldAttr~ownerElement \== self then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
+  if attributes \= .nil then return attributes~removeItem(oldAttr, .true)
   return .nil
 
 -- set a new attribute value on an element
@@ -3572,7 +3591,9 @@ syntax:
   use strict arg name, makeId
 
   attr = self~getAttributeNode(name)
-  if attr == .nil then return
+  -- this must be there
+  if attr == .nil then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
 
   self~makeAttributeId(attr, makeId)
 
@@ -3581,12 +3602,17 @@ syntax:
   use strict arg namespaceURI, localname, makeId
 
   attr = self~getAttributeNodeNS(namspaceURI, localname)
-  if attr == .nil then return
+  -- this must be there
+  if attr == .nil then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
   self~makeAttributeId(attr, makeId)
 
 -- private method shared between the different setIdAttributeXXX methods
 ::method makeAttributeId private
   use strict arg attr, makeId
+
+  if attr~elementNode \== self then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
 
   attr~isID = makeId
   if makeId then self~ownerDocument~putIdentifier(attr~value, self)
@@ -4116,6 +4142,8 @@ syntax:
 ::method splitText
   use strict arg offset
 
+  if offset < 0 | offset > self~data~length then
+      .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
   newText = self~ownerDocument~createTextNode(self~data~substr(offset + 1))
   self~nodeValue = self~data~substr(1, offset)
 
