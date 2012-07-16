@@ -1771,7 +1771,7 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::CLASS "NodeImpl" public inherit Node DOMEventTarget
+::class "NodeImpl" public inherit Node DOMEventTarget
 
 -- initialize a counter to give new nodes a unique id
 ::method init class
@@ -2301,6 +2301,85 @@
 
   return ancestors
 
+-- check if a node is an ancestor of this node
+::method isAncestorOf private
+  use strict arg target
+
+  node = self
+  loop while node \= .nil
+      if node == target then return .true
+      node = node~parentNode
+  end
+
+  return .false
+
+-- check if a node is a child of this node
+::method isChildOf private
+  use strict arg target
+
+  node = self~firstChild
+  loop while node \= .nil
+      if node == target then return .true
+      node = node~nextSibling
+  end
+
+  return .false
+
+-- check if a node can be a valid child node for the target node.
+-- raises the appropriate exceptions for any problems
+::method isValidChild
+  use strict arg child
+
+  -- must be from the same document
+  if self~ownerDocument \= child~ownerDocument then
+      .DomException~raiseError(.DomException~WRONG_DOCUMENT_ERR)
+
+  -- the potential child cannot be an ancestor of this node
+  -- already
+  if self~isAncestorOf(child) then
+      .DomException~raiseError(.DomException~HIEARCHY_ERR)
+
+  parentType = self~nodeType
+  childType = child~nodeType
+
+  -- there are restrictions for what sort of children can be
+  -- attached to the different node types (Section 1.1.1 of the DOM
+  -- 3 Core spec)
+
+  -- parent is an element, this is very common.  Document
+  -- fragments and entity references allow the same child types
+  if parentType == .Node~ELEMENT_NODE | parentType == .Node~DOCUMENT_FRAGMENT_NODE | ,
+      parentType == .Node~ENTITY_REFERENCE_NODE | parentType == .Node~ENTITY_NODE then do
+      if childType \= .Node~ELEMENT_NODE,  childType \= .Node~TEXT_NODE, -
+          childType \= .Node~CDATA_SECTION_NODE, childType \= .Node~COMMENT_NODE, -
+          childType \= .Node~PROCESSING_INSTRUCTION_NODE, childType \= .Node~ENTITY_REFERENCE_NODE then
+          .DomException~raiseError(.DomException~HIEARCHY_ERR)
+  end
+  -- attributes can have text nodes and entity references
+  else if parentType == .Node~ATTRIBUTE_NODE then do
+      if childType \= .Node~TEXT_NODE,  childType \= .Node~ENTITY_REFERENCE_NODE then
+          .DomException~raiseError(.DomException~HIEARCHY_ERR)
+  end
+  else if parentType == .Node~DOCUMENT_NODE then do
+      if childType == .Node~ELEMENT_NODE then do
+          -- only a single element is allowed
+          if self~documentElement \= .nil then
+              .DomException~raiseError(.DomException~HIEARCHY_ERR)
+      end
+      else if childType == .Node~DOCUMENT_TYPE_NODE then do
+          -- same with the doc type
+          if self~docType \= .nil then
+              .DomException~raiseError(.DomException~HIEARCHY_ERR)
+      end
+      -- only other premitted child types are comments and processing instructions
+      else if childType \= .Node~COMMENT_NODE, childType \= .Node~PROCESSING_INSTRUCTION_NODE then
+          .DomException~raiseError(.DomException~HIEARCHY_ERR)
+  end
+  -- no children allowed for this node type
+  else do
+      .DomException~raiseError(.DomException~HIEARCHY_ERR)
+  end
+
 ::attribute ctr class private
 ::attribute id       private
 
@@ -2544,9 +2623,32 @@
 ::attribute firstChild GET
 ::attribute lastChild GET
 
+-- insert a node as a child of the target element into the indicated
+-- position.
 ::method insertBefore
   expose firstChild lastChild childNodes
   use arg newChild, refChild = .nil, replace = .false
+
+  -- if this is a document fragment, we insert all of the
+  -- children of this fragment
+  if newChild~nodeType == .Node~DOCUMENT_FRAGMENT_NODE then do
+      node = newChild~firstChild
+      loop while node \= .nil
+          -- inserting will redo this node, so save the
+          -- next link before we insert into the new location
+          next = node~nextSibling
+          self~insertBefore(node, refChild)
+          node = next
+      end
+      return
+  end
+
+  -- verify this doesn't violate any constraint rules
+  self~isValidChild(newChild)
+
+  -- refchild must be one of our child nodes
+  if refChild\= .nil, \self~isChildOf(refChild) then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
 
   -- this case is really a no-op, but we need to go through the steps
   -- in case we need to signal events.
@@ -2945,10 +3047,29 @@ syntax:
   expose nodeName localName prefix
   use strict arg prefix
 
-  -- we're either adding or replacing the prefix
-  if prefix \= "" then nodeName = prefix":"localName
-  -- or removing it entirely
-  else nodeName = localName
+  -- could be removing this entirely
+  if prefix == .nil | prefix == "" then nodeName = localName
+  -- setting it to a legal type...validate it
+  else do
+      -- check for valid characters
+      if .XmlChar~isValidNCName(prefix) then
+          .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+      -- a prefix must have a non null namespace to be valid
+      if self~namespaceURI == .nil then
+          .DomException~raiseError(.DomException~INVALID_NAMESPACE_ERR)
+      -- the xml prefix may only have this uri
+      if prefix == "xml" & self~namespaceURI \= "http://www.w3.org/XML/1998/namespace" then
+          .DomException~raiseError(.DomException~INVALID_NAMESPACE_ERR)
+      -- xmlns has similar restrictions for attributes
+      if prefix == "xmlns" & self~namespaceURI \= "http://www.w3.org/2000/xmlns/" then
+          .DomException~raiseError(.DomException~INVALID_NAMESPACE_ERR)
+      -- the fully qualified name is not allowed to be "xmlns:xmlns"
+      if prefix == "xmlns" & localName == "xmlns" then
+          .DomException~raiseError(.DomException~INVALID_NAMESPACE_ERR)
+
+      -- Form the fully qualified nodename
+      nodeName = prefix":"localName
+  end
 
 -- the localname part of the qualified name
 ::attribute localName GET
@@ -3176,12 +3297,23 @@ syntax:
 ::attribute prefix SET
   expose nodeName localName
   use strict arg prefix
+  -- could be removing this entirely
+  if prefix == .nil | prefix == "" then nodeName = localName
+  -- setting it to a legal type...validate it
+  else do
+      -- check for valid characters
+      if \.XmlChar~isValidNCName(prefix) then
+          .DomException~raiseError(.DomException~INVALID_CHARACTER_ERR)
+      -- a prefix must have a non null namespace to be valid
+      if self~namespaceURI == .nil then
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
+      -- the xml prefix may only have this uri
+      if prefix == "xml" & self~namespaceURI \= "http://www.w3.org/XML/1998/namespace" then
+          .DomException~raiseError(.DomException~NAMESPACE_ERR)
 
-  -- we're either adding or replacing the prefix
-  if prefix \= "" then
+      -- Form the fully qualified nodename
       nodeName = prefix":"localName
-  -- or removing it entirely
-  else nodeName = localName
+  end
 
 -- retrieve the localName
 ::attribute localName GET
@@ -6304,7 +6436,7 @@ syntax:
   expose iterators ranges eventListeners userData identifiers doctype -
       haveMutationEventListeners savedEventContext -
       docElement version standalone documentURI changes -
-      documentNumber nodeCounter nodeTable errorChecking
+      documentNumber nodeCounter nodeTable
 
   use strict arg docType = .nil
 
@@ -6325,7 +6457,6 @@ syntax:
   documentNumber = 0
   nodeCounter = 0
   nodeTable = .nil
-  errorChecking = .true
 
   -- we are our own owning document for purposes of child appends
   self~ownerDocument = self
@@ -6338,9 +6469,6 @@ syntax:
       docType~ownerDocument = self
       appendChild(docType)
   end
-
--- used to control error checking
-::attribute errorChecking private
 
 -- get the node type
 ::attribute nodeType GET
@@ -6396,17 +6524,15 @@ syntax:
 
 -- insert a node into the document
 ::method insertBefore
-  expose docElement docType errorChecking docElement docType
+  expose docElement docType docElement docType
   use strict arg newChild, refChild
 
   type = newChild~nodeType
 
   -- perform some validity checks to ensure we don't add inappropriate children
-  if errorChecking then do
-      if (type == .Node~ELEMENT_NODE & docElement \== .nil) | -
-         (type == .Node~DOCUMENT_TYPE_NODE & docType \== .nil) then
-          .DomException~raiseError(.DomException~HIERARCHY_REQUEST_ERR)
-  end
+  if (type == .Node~ELEMENT_NODE & docElement \== .nil) | -
+     (type == .Node~DOCUMENT_TYPE_NODE & docType \== .nil) then
+      .DomException~raiseError(.DomException~HIERARCHY_REQUEST_ERR)
 
   -- if this is a DocumentType node, then make ourselves the owner
   if newChild~ownerDocument == .nil & type ==.Node~DOCUMENT_TYPE_NODE then
@@ -6475,23 +6601,19 @@ syntax:
 
 -- create an attribute node
 ::method createAttribute
-  expose errorChecking
   use strict arg name
 
   -- validate the name first
-  if errorChecking then
-     .XMLChar~validateAttributeOrElementName(name)
+  .XMLChar~validateAttributeOrElementName(name)
 
   return .AttrImpl~new(self, name)
 
 -- create an attribute node using namespace qualification
 ::method createAttributeNS
-  expose errorChecking
   use strict arg namespaceURI, qualifiedName
 
   -- validate the name
-  if errorChecking then
-      .XMLChar~validateAttributeOrElementNameNS(namespaceURI, qualifiedName)
+  .XMLChar~validateAttributeOrElementNameNS(namespaceURI, qualifiedName)
 
   return .AttrImpl~new(self, qualifiedName, namespaceURI)
 
@@ -6512,43 +6634,35 @@ syntax:
 
 -- create an element node for this document
 ::method createElement
-  expose errorChecking
   use strict arg tagname
 
   -- validate the name first
-  if errorChecking then
-     .XMLChar~validateAttributeOrElementName(name)
+  .XMLChar~validateAttributeOrElementName(name)
   return .ElementImpl~new(self, .nil, tagname)
 
 -- create an element using namespace rules
 ::method createElementNS
-  expose errorChecking
   use strict arg namespaceURI, qualifiedName
 
   -- validate the name
-  if errorChecking then
-      .XMLChar~validateAttributeOrElementNameNS(namespaceURI, qualifiedName)
+  .XMLChar~validateAttributeOrElementNameNS(namespaceURI, qualifiedName)
   -- create a new element
   return .ElementImpl~new(self, namespaceURI, qualifiedName)
 
 -- create an entity reference
 ::method createEntityReference
-  expose errorChecking
   use strict arg name
 
   -- validate the target name
-  if errorChecking then
-      .XMLChar~validateName(target)
+  .XMLChar~validateName(target)
   return .EntityReferenceImpl~new(self, name)
 
 -- create a processing instruction
 ::method createProcessingInstruction
-  expose errorChecking
   use strict arg target, data
 
   -- validate the target name
-  if errorChecking then
-      .XMLChar~validateName(target)
+   .XMLChar~validateName(target)
   return .ProcessingInstructionImpl~new(self, target, data)
 
 -- create a text node
@@ -6563,21 +6677,17 @@ syntax:
 
 -- create an entity object
 ::method createEntity
-  expose errorChecking
   use strict arg name
 
-  if errorChecking then
-      .XMLChar~validateName(target)
+   .XMLChar~validateName(target)
 
   return .EntityImpl~new(self, name)
 
 -- create a notation object
 ::method createNotation
-  expose errorChecking
   use strict arg name
 
-  if errorChecking then
-      .XMLChar~validateName(target)
+  .XMLChar~validateName(target)
 
   return .NotationImpl~new(self, name)
 

@@ -90,6 +90,8 @@ return testResult
   self~assertNull(element~nextElementSibling)
   self~assertNull(element~previousElementSibling)
 
+  -- an element must have a namespace to have a prefix
+  element = doc~createElementNS("http:\\www.rexxla.org\xml", "FOO")
   element~prefix = "foo"
   self~assertEquals("FOO", element~localName)
   self~assertEquals("foo:FOO", element~nodeName)
