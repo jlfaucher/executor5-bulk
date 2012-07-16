@@ -1346,8 +1346,8 @@
 
 ::class "NamedNodeMapImpl" public
 ::method init
-  expose ownerNode attributes hasDefaults changed readonly
-  use strict arg ownerNode
+  expose ownerNode attributes hasDefaults changed readonly type
+  use strict arg ownerNode, type
   attributes = .nil
   hasDefaults = .false
   changed = .false
@@ -1468,8 +1468,20 @@
 
 -- set a named item
 ::method setNamedItem
-  expose attributes
+  expose attributes type
   use strict arg node
+
+  -- must be part of the same document
+  if node~ownerDocument \== self~ownerDocument then
+      .DomException~raiseError(.DomException~HIERARCHY_ERR)
+
+  -- attributes already owned by another element cannot be set
+  if node~nodeType == .Node~ATTRIBUTE_NODE, node~ownerElement \== self~ownerNode then
+      .DomException~raiseError(.DomException~INUSE_ATTRIBUTE_ERR)
+
+  -- these lists have a specific type of item that are allowed in them.  This must match
+  if node~nodeType \== type then
+      .DomException~raiseError(.DomException~HIERARCHY_ERR)
 
   index = self~findNamePoint(node~nodeName)
   previous = .nil
@@ -1488,8 +1500,20 @@
 
 -- set a named item
 ::method setNamedItemNS
-  expose attributes
+  expose attributes type
   use strict arg node
+
+  -- must be part of the same document
+  if node~ownerDocument \== self~ownerDocument then
+      .DomException~raiseError(.DomException~HIERARCHY_ERR)
+
+  -- attributes already owned by another element cannot be set
+  if node~nodeType == .Node~ATTRIBUTE_NODE, node~ownerElement \== self~ownerNode then
+      .DomException~raiseError(.DomException~INUSE_ATTRIBUTE_ERR)
+
+  -- these lists have a specific type of item that are allowed in them.  This must match
+  if node~nodeType \== type then
+      .DomException~raiseError(.DomException~HIERARCHY_ERR)
 
   index = self~findNamePointNS(node~namespaceURI, node~localName)
   previous = .nil
@@ -1522,10 +1546,12 @@
   index = self~findNamePoint(name)
   previous = .nil
 
-  if index \= .nil then do
-      previous = attributes[index]
-      attributes~remove(index)
-  end
+  -- this must be in the list
+  if index == .nil then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
+
+  previous = attributes[index]
+  attributes~remove(index)
   return previous
 
 -- remove a named item
@@ -1534,12 +1560,13 @@
   use strict arg namespace, name
 
   index = self~findNamePointNS(namespace, name)
+  -- this must be in the list
+  if index == .nil then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
   previous = .nil
 
-  if index \= .nil then do
-      previous = attributes[index]
-      attributes~remove(index)
-  end
+  previous = attributes[index]
+  attributes~remove(index)
   return previous
 
 -- perform a deep copy of this map object
@@ -1556,7 +1583,7 @@
   if source \= .nil then do
       -- we use a queue because it can be addressed by relative position
       attributes = .queue~new
-      do attr over source
+      loop attr over source
           attributes~append(attr~cloneNode(.true))
       end
   end
@@ -1603,7 +1630,7 @@
   expose hasDefaults
   use strict arg ownerNode, defaults = .nil
 
-  self~init:super(ownerNode)
+  self~init:super(ownerNode, .Node~ATTRIBUTE_NODE)
   hasDefaults = .false
   -- if we have a defaults set, clone it and if we really added
   -- something, marks us as having defaults
@@ -1680,7 +1707,9 @@
   use strict arg name
 
   index = self~findNamePoint(name)
-  if index == .nil then return .nil
+  -- this must be in the list
+  if index == .nil then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
 
   return self~remove(self~attributes[index], index, .true)
 
@@ -1689,7 +1718,9 @@
   use strict arg namespaceURI, name
 
   index = self~findNamePointNS(namespaceURI, name)
-  if index == .nil then return .nil
+  -- this must be in the list
+  if index == .nil then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
 
   return self~remove(self~attributes[index], index, .true)
 
@@ -2361,18 +2392,9 @@
           .DomException~raiseError(.DomException~HIEARCHY_ERR)
   end
   else if parentType == .Node~DOCUMENT_NODE then do
-      if childType == .Node~ELEMENT_NODE then do
-          -- only a single element is allowed
-          if self~documentElement \= .nil then
-              .DomException~raiseError(.DomException~HIEARCHY_ERR)
-      end
-      else if childType == .Node~DOCUMENT_TYPE_NODE then do
-          -- same with the doc type
-          if self~docType \= .nil then
-              .DomException~raiseError(.DomException~HIEARCHY_ERR)
-      end
       -- only other premitted child types are comments and processing instructions
-      else if childType \= .Node~COMMENT_NODE, childType \= .Node~PROCESSING_INSTRUCTION_NODE then
+      if childType \= .Node~ELEMENT_NODE, childType \= .Node~DOCUMENT_TYPE_NODE, -
+          childType \= .Node~COMMENT_NODE, childType \= .Node~PROCESSING_INSTRUCTION_NODE then
           .DomException~raiseError(.DomException~HIEARCHY_ERR)
   end
   -- no children allowed for this node type
@@ -2591,7 +2613,7 @@
   -- if this is a deep copy, then we need to clone all of the children too
   if deep then do
       child = firstChild
-      do while child \= .nil
+      loop while child \= .nil
           newNode~appendNode(child~cloneNode(.true))
           child = child.nextSibling
       end
@@ -2717,6 +2739,10 @@
   expose firstChild lastChild childNodes
   use strict arg oldChild, replace = .false
 
+  -- can't remove a child that doesn't belong to us
+  if oldChild~parentNode \= self then
+      .DomException~raiseError(.DomException~NOT_FOUND_ERR)
+
   self~ownerDocument~removingNode(self, oldChild, replace)
 
   -- removing the first child
@@ -2752,6 +2778,8 @@
 ::method replaceChild
   use strict arg newChild, oldChild
 
+  -- do the insert first.  This will also perform the necessary
+  -- validity checks on the replacement node
   self~insertBefore(newChild, oldChild, .true)
   if newChild \== oldChild then self~removeChild(oldChild, .true)
 
@@ -2783,7 +2811,7 @@
 ::method buildTextContent private
   use arg buffer
   child = self~firstChild
-  do while child \= .nil
+  loop while child \= .nil
       if self~hasTextContent(child) then do
           content = child~nodeValue
           if nodeValue \= .nil then buffer~append(content)
@@ -2810,7 +2838,7 @@
 ::attribute textContent SET
   use strict arg text
   child = self~firstChild
-  do while child \= .nil
+  loop while child \= .nil
       self~removeChild(child)
       child = self~firstChild
   end
@@ -2868,7 +2896,7 @@
 ::method normalize
   kid = self~firstChild
 
-  do while kid \= .nil
+  loop while kid \= .nil
       next = kid~nextSibling
 
       if kid~nodeType == .Node~TEXT_NODE then do
@@ -3706,7 +3734,7 @@ syntax:
 
   if previous == .nil then do
       parent = node~parentNode
-      do while parent \= .nil, parent~nodeType == .Node~ENTITY_REFERENCE_NODE
+      loop while parent \= .nil, parent~nodeType == .Node~ENTITY_REFERENCE_NODE
           previous = parent~previousSibling
           if previous \= .nil then leave
           parent = parent~parentNode
@@ -4114,8 +4142,8 @@ syntax:
 
   self~init:super  -- initialize superclass data
 
-  entities = .NamedNodeMapImpl~new
-  notations = .NamedNodeMapImpl~new
+  entities = .NamedNodeMapImpl~new(self, .Node~ENTITY_NODE)
+  notations = .NamedNodeMapImpl~new(self, .Node~NOTATION_NODE)
   internalSubset = .nil
 
 -- defined readonly attributes
@@ -6141,7 +6169,7 @@ syntax:
 
   -- skip ahead to the indicated child
   child = container~firstChild
-  do offset while child \= .nil
+  loop offset while child \= .nil
       child = child~nextSibling
   end
 
@@ -6282,7 +6310,7 @@ syntax:
 
   -- ok, up to the parent
   parent = self~getParentNode(currentNode)
-  do while parent \= .nil
+  loop while parent \= .nil
       node = self~getNextSibling(parent)
       if node \= .nil then do
           currentNode = node
@@ -6502,7 +6530,7 @@ syntax:
           reversedIdentifiers = .table~new
           -- create the table using the inverse look up logic
           sup = identifiers~supplier
-          do while sup~available
+          loop while sup~available
               reversedIdentifiers[sup~item] = sup~index
               sup~next
           end
@@ -6522,7 +6550,8 @@ syntax:
   -- this is a singleton
   return .ooRexxDOM~implementation
 
--- insert a node into the document
+-- insert a node into the document.  This is an override of the
+-- base node method.
 ::method insertBefore
   expose docElement docType docElement docType
   use strict arg newChild, refChild
@@ -6554,6 +6583,7 @@ syntax:
   expose docElement docType
   use strict arg oldChild
 
+
   self~removeChild:super(oldChild)
 
   type = oldChild~docType
@@ -6570,8 +6600,24 @@ syntax:
   expose docElement docType
   use strict arg newChild, oldChild
 
+  newType = newChild~nodeType
+
+  -- we can only have a single element node.  If we already have one, then this
+  -- is only allowed if we're replacing the existing one
+  if newType == .Node~ELEMENT_NODE then do
+      -- only a single element is allowed
+      if self~documentElement \= .nil, self~documentElement \= oldChild then
+          .DomException~raiseError(.DomException~HIEARCHY_ERR)
+  end
+  -- same situation with the document type
+  else if newType == .Node~DOCUMENT_TYPE_NODE then do
+      -- same with the doc type
+      if self~docType \= .nil, self~docType \= oldChild then
+          .DomException~raiseError(.DomException~HIEARCHY_ERR)
+  end
+
   -- if this is a DocumentType node, then make ourselves the owner
-  if newChild~ownerDocument == .nil & newChild~nodeType ==.Node~DOCUMENT_TYPE_NODE then
+  if newChild~ownerDocument == .nil & newType ==.Node~DOCUMENT_TYPE_NODE then
       newChild~ownerDocument = self
 
   self~replaceChild:super(newChild, oldChild)
@@ -7300,7 +7346,7 @@ syntax:
   nodeListeners = self~getEventListeners(node)
   if nodeListeners == .nil then return
 
-  do le over nodeListeners
+  loop le over nodeListeners
       if le~equals(type, listener, useCapture) then do
           nodeListeners~removeItem(le)
           if nodeListeners~isEmpty then
@@ -7428,7 +7474,7 @@ syntax:
           -- is a listener defined for this event type on the node
           listeners = self~getEventListeners(parentNode)
           if nodeListeners \== .nil then do
-              -- NB:  Do over takes a snapshot copy, so
+              -- NB:  loop over takes a snapshot copy, so
               -- this is thread safe
               loop listener over nodeListeners
                   if listener~matches(event~type, .true) then do
@@ -7447,7 +7493,7 @@ syntax:
       event~currentTarget = node
       nodeListeners = self~getEventListeners(node)
       if \event~propagationStopped & nodeListeners \= .nil then do
-          -- NB:  Do over takes a snapshot copy, so
+          -- NB:  loop over takes a snapshot copy, so
           -- this is thread safe
           loop listener over nodeListeners
               if listener~matches(event~type, .false) then do
