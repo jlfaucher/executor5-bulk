@@ -1,17 +1,17 @@
-                      Release Notes ooDialog 4.1.0
+                      Release Notes ooDialog 4.0.0
                       ============================
 
-ooDialog 4.1.0 is the version of ooDialog first distributed with ooRexx
-4.0.0, plus all bug fixes and enhancements made to ooDialog up through
-ooRexx 4.1.2.
+ooDialog 4.0.0 is intended to be the equivalent of the ooDialog shipped
+with ooRexx 3.2.0, along with the ability to work with ooRexx 64-bit
+installations.  That is, it is the ooDialog from the previous millenium.
 
-ooDialog 4.1.0 can be installed to any ooRexx installation, 4.0.0 or
+ooDialog 4.0.0 can be installed to any ooRexx installation, 4.0.0 or
 later.
 
 Beginning with the release of ooDialog 4.2.0, the installation of
-ooDialog has been decoupled from the interpreter.  ooDialog 4.1.0
+ooDialog has been decoupled from the interpreter.  ooDialog 4.0.0
 installs over the top of any ooRexx installation.  It replaces the
-version of ooDialog in the ooRexx installation with ooDialog 4.1.0.
+version of ooDialog in the ooRexx installation with ooDialog 4.0.0.
 
 This type of ooDialog installation is called an "independent" ooDialog
 installation to indicate the ooDialog installation is independent of an
@@ -24,18 +24,39 @@ version of ooDialog they want to their ooRexx installation.  Provided of
 course that the ooRexx version meets the minimum required version for
 the ooDialog version.
 
-ooDialog 4.1.0 requires a minimum ooRexx version of 4.0.0.
+ooDialog 4.0.0 requires a minimum ooRexx version of 4.0.0.
 
-The ooDialog 4.1.0 code base is semi-frozen.  Bugs found in 4.1.0 will
-be fixed in the 4.1.0 code base, up until the official release of
-ooDialog 4.2.0 is made.  At that point, bugs found in ooDialog 4.1.0
-will be fixed in the ooDialog 4.2.0 code base, if they exist in 4.2.0.
+The development work to move ooRexx 3.2.0 to 4.0.0 included the ability
+to run as a 64-bit executable and the introduction of a new native API
+interface.  The new native API is far more robust than the old string
+orientated API and makes writing external libraries much easier than the
+old API.
 
-In general, bugs found in the ooDialog 4.1.0 code base will not be fixed
-in that code base once ooDialog 4.2.0 is officially released.  However,
-the developers may, at their own discretion, choose to fix a bug in the
-4.1.0 code base, in which case there may in the future be ooDialog 4.1.0
-bug fix releases.
+Included in the new API was a way to compile old external libraries by
+making very few code changes to the existing code.  This technique
+would allow the old library to work with a 64-bit ooRexx. ooDialog 3.2.0
+was first converted to work with a 64-bit ooRexx using this method.  The
+ooDialog 4.0.0 code base is identical to this first conversion.
+
+However, during the time getting ooRexx 4.0.0 to ship, the allure of
+using the more powerful new APIs lead to enhancing ooDialog before
+ooRexx 4.0.0 was released.
+
+ooDialog 4.0.0 is for those users that are not happy with the enhanced
+ooDialog shipped with ooRexx 4.0.0.  That ooDialog is now called
+ooDialog 4.1.0.  Users not happy with ooDialog 4.1.0, but who need or
+want to upgrade their ooRexx to 4.0.0, or any later version, can retain
+the old ooDialog 3.2.0 behavior by installing ooDialog 4.0.0 to their
+ooRexx installation.
+
+The ooDialog 4.0.0 code base is frozen.  Bug fixes and enhancements will
+not be made to ooDialog 4.0.0.  There is one possible exception to this.
+In order to compile ooDialog 3.2.0 for 64-bit, a few small code changes
+were necessary.  If a user can demonstrate a bug in ooDialog 4.0.0 that
+did not exist in 3.2.0 and was caused by one of those small code
+changes, the developers may consider a fix to ooDialog 4.0.0.  There is
+no strong commitment to do this however, it is completely at the
+discretion of the developers.
 
 
 Installation
@@ -50,55 +71,16 @@ The installer will detect the installed ooRexx, location and version.
 If the ooRexx version is less than 4.0.0, or if there is no installed
 ooRexx, the installer will abort with a message explaining the problem.
 Otherwise the installer will replace the current ooDialog with ooDialog
-4.1.0.
+4.0.0.
 
 Note that the actions of the installer are dependent on the version
 of ooRexx, not the version of the installed ooDialog.  For instance, if
 the installed ooDialog is version 4.3.0, but for some reason the user is
-not happy with that version, running the ooDialog 4.1.0 installer will
-replace the 4.3.0 version with the 4.1.0 version.
+not happy with that version, running the ooDialog 4.0.0 installer will
+replace the 4.3.0 version with the 4.0.0 version.
 
 At the time of the installation, *all* ooDialog programs must be halted
 and the ooDialog PDFs must be closed if they happen to be opened.
-
-An alternative way to install ooDialog 4.1.0 is to install
-switchOODialog, however switchOODialog requires that the ooRexx version
-be ooRexx 4.1.0 or later.  The ooDialog 4.1.0 installer only requires
-that the ooRexx version be 4.0.0.
-
-
-switchOODialog
-==============
-
-Switch ooDialog provided a way for users of ooDialog to begin testing
-and experimenting with the new features in 4.2.0.  This technology will
-be continued so that users can upgrade their version of ooDialog without
-worrying about the consequences.  If there is some problem and they are
-not happy with ooDialog 4.2.0, they can easily switch back to ooDialog
-4.1.0
-
-Switch ooDialog makes it possible for users to easily and transparently
-switch back and forth between ooDialog 4.2.0 and the release version of
-ooDialog packaged with ooRexx 4.1.0.  Switch ooDialog is downloadable
-from SourceForge, in the ooDialog 4.2.0 area, making an upgrade to
-ooDialog 4.2.0 worry free.
-
-To install ooDialog 4.2.0, pick the switchOODialog package that matches
-the bitness of the installed ooRexx.
-
-When switchOODialog is initially installed, the active version of
-ooDialog will be ooDialog 4.2.0.  switchOODialog.exe acts like a toggle.
-Each time it is executed it switches the active version of ooDialog
-between 4.1.0 and 4.2.0.
-
-switchOODialog can be executed from the command line, or through menu
-items in the ooRexx section of the Start menu.
-
-switchOODialog has the same requirements as does a regular installation
-of ooDialog 4.2.0.  There must be an installed version of ooRexx that is
-at least version 4.1.0.  At the time of the installation, *all* ooDialog
-programs must be halted and the ooDialog PDFs must be closed if they
-happen to be opened.
 
 
 Known Problems, "Gotchas," and Solutions with Independent Installations

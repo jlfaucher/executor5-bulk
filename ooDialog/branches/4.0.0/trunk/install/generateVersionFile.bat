@@ -45,6 +45,8 @@ REM    package was created.  If not a svn directory, and no ooDialog.ver.incl
 REM    file, simply copy ooDialog.ver to ooDialog.ver.incl.
 REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+pushd install
+
 REM  First parse ooDialog.ver to get the existing version numbers.
 for /F "eol=# delims== tokens=1,2,3*" %%i in (ooDialog.ver) do (
  if %%i == OOD_MAJOR set MAJOR_NUM=%%j
@@ -104,6 +106,7 @@ set MINOR_NUM=
 set LVL_NUM=
 set BLD_NUM=
 set SVN_REV=
+popd
 
 exit /b 1
 
@@ -113,6 +116,8 @@ set MINOR_NUM=
 set LVL_NUM=
 set BLD_NUM=
 set SVN_REV=
+popd
+
 exit /b 0
 
 

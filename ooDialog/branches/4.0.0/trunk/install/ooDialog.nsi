@@ -44,7 +44,7 @@
  *  Run as:
  *    makensis /DVERSION=x.x.x.x /DSHORTVERSION=x.x.x /DROOTDIR=yyy /DOUTDIR=xxx /DCPU=zzz /DDEBUG ooDialog.nsi
  *  eg
- *    makensis /DVERSION=4.1.0.6367 /DSHORTVERSION=4.1.0 /DROOTDIR=C:\work\wc\ooDialog\trunk
+ *    makensis /DVERSION=4.0.0.6367 /DSHORTVERSION=4.0.0 /DROOTDIR=C:\work\wc\ooDialog\trunk
  *             /DOUTDIR=C:\work\wc\ooDialog\trunk\Win32Rel /DCPU=x86_32 /DDEBUGPKG=-debug ooDialog.nsi
  *
  *  Note:
@@ -147,30 +147,23 @@ Section  doInstall
   ; Install the files
   SetOutPath "$INSTDIR"
 
-    DetailPrint "********** ooDialog 4.1.0 Framework **********"
+    DetailPrint "********** ooDialog 4.0.0 Framework **********"
     File "${BinDir}\oodialog.dll"
     File "${BinDir}\ooDialog.cls"
     File "${BinDir}\oodPlain.cls"
     File "${BinDir}\oodWin32.cls"
     DetailPrint ""
 
-    DetailPrint "********** ooDialog 4.1.0 ooRexxTry **********"
-    File "${ExamplesDir}\ooRexxTry\ooRexxTry.rex"
-    CreateShortCut "${SMooRexxFolder}\Try Rexx (GUI).lnk" "$INSTDIR\rexx.exe" '"$INSTDIR\ooRexxTry.rex"' "$INSTDIR\rexx.exe"
-    DetailPrint ""
-
-    DetailPrint "********** ooDialog 4.1.0 Documentation **********"
+    DetailPrint "********** ooDialog 4.0.0 Documentation **********"
     ; Set the installation directory:
     SetOutPath $INSTDIR\doc
     ; Add the files ...
     File "${ROOTDIR}\doc\oodialog.pdf"
-    File "${ExamplesDir}\ooRexxTry\doc\ooRexxTry.pdf"
 
     CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog Reference.lnk" "$INSTDIR\doc\oodialog.pdf" "" "$INSTDIR\doc\oodialog.pdf" 0
-    CreateShortCut  "${SMooRexxFolder}\Documentation\ooRexxTry Reference.lnk" "$INSTDIR\doc\ooRexxTry.pdf" "" "$INSTDIR\doc\ooRexxTry.pdf" 0
     DetailPrint ""
 
-    DetailPrint "********** ooDialog 4.1.0 Samples **********"
+    DetailPrint "********** ooDialog 4.0.0 Samples **********"
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog
     ; Add the files ...
@@ -191,29 +184,6 @@ Section  doInstall
     File "${ExamplesDir}\examples\*.txt"
 
     ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\examples\resources
-    ; Add the files ...
-    File "${ExamplesDir}\examples\resources\*.bmp"
-    File "${ExamplesDir}\examples\resources\*.h"
-    File "${ExamplesDir}\examples\resources\*.rc"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\oleinfo
-    ; Add the files ...
-    File "${ExamplesDir}\oleinfo\*.rex"
-    File "${ExamplesDir}\oleinfo\*.txt"
-    File "${ExamplesDir}\oleinfo\*.bmp"
-    File "${ExamplesDir}\oleinfo\*.rc"
-
-    SetOutPath $INSTDIR\samples\oodialog\ooRexxTry
-    ; Add the files ...
-    File "${ExamplesDir}\ooRexxTry\ooRexxTry.rex"
-
-    SetOutPath $INSTDIR\samples\oodialog\ooRexxTry\doc
-    ; Add the files ...
-    File "${ExamplesDir}\ooRexxTry\doc\ooRexxTry.pdf"
-
-    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\rc
     ; Add the files ...
     File "${ExamplesDir}\rc\*.rc"
@@ -222,12 +192,6 @@ Section  doInstall
     SetOutPath $INSTDIR\samples\oodialog\res
     ; Add the files ...
     File "${ExamplesDir}\res\*.dll"
-
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\sysinfo
-    ; Add the files ...
-    File "${ExamplesDir}\sysinfo\*.rex"
-    File "${ExamplesDir}\sysinfo\*.rc"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\source
@@ -267,17 +231,10 @@ Section  doInstall
     File "${ExamplesDir}\wav\*.wav"
     File "${ExamplesDir}\wav\*.txt"
 
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\winsystem
-    File "${ExamplesDir}\winsystem\*.rex"
-    File "${ExamplesDir}\winsystem\*.rc"
-    File "${ExamplesDir}\winsystem\*.h"
-    File "${ExamplesDir}\winsystem\*.frm"
     DetailPrint ""
 
-
     ; Create start menu shortcuts
-    DetailPrint "********** ooDialog 4.1.0 Start Menu Shortcuts **********"
+    DetailPrint "********** ooDialog 4.0.0 Start Menu Shortcuts **********"
 
     CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk" "$INSTDIR\rexxpaws.exe" '"$INSTDIR\samples\oodialog\winsystem\eventlog.rex"' "$INSTDIR\rexx.exe"
     CreateShortCut  "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Windows Manager.lnk" "$INSTDIR\rexxhide.exe" '"$INSTDIR\samples\oodialog\winsystem\usewmgr.rex"' "$INSTDIR\rexx.exe"
@@ -341,14 +298,14 @@ Function WrongRexxVersion
   ${if} $RegVal_installedLocation == ""
     MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
       "A version of ooRexx, greater than or equal to$\n\
-      version 4.1.0, must be installed prior to the$\n\
+      version 4.0.0, must be installed prior to the$\n\
       installation of ${LONGNAME}.$\n$\n\
       The installer can not detect any installed ooRexx.$\n$\n\
       The installer is aborting."
   ${else}
     MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
       "A version of ooRexx, greater than or equal to$\n\
-      version 4.1.0, must be installed prior to the$\n\
+      version 4.0.0, must be installed prior to the$\n\
       installation of ${LONGNAME}.$\n$\n\
       The installed ooRexx appears to be $ooRexxVersion.$\n$\n\
       The installer is aborting."

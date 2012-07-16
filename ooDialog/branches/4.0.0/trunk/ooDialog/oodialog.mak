@@ -1,12 +1,12 @@
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
 #/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-#/* Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.         */
+#/* Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
 #/* distribution. A copy is also available at the following address:           */
-#/* http://www.oorexx.org/license.html                          */
+#/* http://www.oorexx.org/license.html                                         */
 #/*                                                                            */
 #/* Redistribution and use in source and binary forms, with or                 */
 #/* without modification, are permitted provided that the following            */
@@ -35,51 +35,68 @@
 #/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 #/*                                                                            */
 #/*----------------------------------------------------------------------------*/
-# NMAKE-compatible MAKE file for FNTEST*
-all:  $(OR_OUTDIR_OOD320)\oodialog.dll
 
-!include "$(OR_LIBSRC)\ORXWIN32.MAK"
+# NOTE:  /OPT:REF in linker flags eliminates unreferenced functions and data.
+#        Need to use /Gy when compiling to use /OPT:REF.
+
+# NMAKE-compatible MAKE file for ooDialog.  Note that in ooDialog trunk we have
+# an incentive to keep this oodialog.mak file in sync with the oodialog.mak file
+# in ooRexx trunk.  However, once ooDialog is branched, there is no reason why
+# this oodialog.mak file needs to remain in sync with ooRexx trunk.
+
+!include $(OOD_ROOT_DIR)\install\compiler.info.incl
+!include $(OOD_ROOT_DIR)\install\ooDialog.ver.incl
+!include $(OOD_ROOT_DIR)\install\ooDialogWin32.mak
+
+# The ooDialog specific version definition
+ood_ver_def = -DOOD_VER=$(OOD_MAJOR) -DOOD_REL=$(OOD_MINOR) -DOOD_MOD=$(OOD_MOD_LVL) -DOOD_BLD=$(OOD_BLD_LVL) -DOOD_COPY_YEAR=\"$(OOD_COPY_YEAR)\"
+
+# We use our own rc flags version.
+rcflags_oodialog = rc /NOLOGO /DWIN32 -dOODIALOG_VER=$(OOD_MAJOR) -dOODIALOG_REL=$(OOD_MINOR) -dOODIALOG_SUB=$(OOD_MOD_LVL) -dOODIALOG_BLD=$(OOD_BLD_LVL) -dOODIALOG_VER_STR=\"$(OOD_VER_STR)\" -dOODIALOG_COPY_YEAR=\"$(OOD_COPY_YEAR)\" -dMANIFEST_FILE=$(M_FILE)
+
 C=cl
-OPTIONS= $(cflags_common) $(cflags_dll) $(OR_ORYXINCL)
-OR_LIB=$(OR_OUTDIR)
+OPTIONS= $(cflags_common) $(ood_ver_def) $(cflags_dll) $(OR_ORYXINCL)
 
-SOURCEF= $(OR_OUTDIR_OOD320)\oovutil.obj $(OR_OUTDIR_OOD320)\oovdata.obj $(OR_OUTDIR_OOD320)\oovtext.obj $(OR_OUTDIR_OOD320)\oovtools.obj \
-                 $(OR_OUTDIR_OOD320)\oovmsg.obj $(OR_OUTDIR_OOD320)\oovscrll.obj $(OR_OUTDIR_OOD320)\oovdeskt.obj $(OR_OUTDIR_OOD320)\oovdraw.obj \
-         $(OR_OUTDIR_OOD320)\oovuser.obj $(OR_OUTDIR_OOD320)\oovbmp.obj $(OR_OUTDIR_OOD320)\oovother.obj $(OR_OUTDIR_OOD320)\oodialog.res
+SOURCEF= $(OOD_OUTDIR)\oovutil.obj $(OOD_OUTDIR)\oovdata.obj  $(OOD_OUTDIR)\oovtext.obj  $(OOD_OUTDIR)\oovtools.obj \
+         $(OOD_OUTDIR)\oovmsg.obj  $(OOD_OUTDIR)\oovscrll.obj $(OOD_OUTDIR)\oovdeskt.obj $(OOD_OUTDIR)\oovdraw.obj \
+         $(OOD_OUTDIR)\oovuser.obj $(OOD_OUTDIR)\oovbmp.obj   $(OOD_OUTDIR)\oovother.obj $(OOD_OUTDIR)\oodialog.res
 
-.c{$(OR_OUTDIR_OOD320)}.obj:
-    $(C) $(OPTIONS)  /DINCL_32  -c $(@B).c /DCREATEDLL /Fo$(OR_OUTDIR_OOD320)\$(@B).obj
+all:  $(OOD_OUTDIR)\oodialog.dll
+
+.c{$(OOD_OUTDIR)}.obj:
+    $(C) $(OPTIONS)  /DINCL_32  -c $(@B).c /DCREATEDLL /Fo$(OOD_OUTDIR)\$(@B).obj
 
 #
 # *** .cpp -> .obj rules
 #
-{$(OR_OODIALOGSRC_320)}.cpp{$(OR_OUTDIR_OOD320)}.obj:
+{$(OOD_OODIALOGSRC)}.cpp{$(OOD_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(@B).cpp
-    $(OR_CC) $(cflags_common) $(cflags_dll) /DCREATEDLL /Fo$(OR_OUTDIR_OOD320)\$(@B).obj $(OR_ORYXINCL)  $(OR_OODIALOGSRC_320)\$(@B).cpp
+    $(OR_CC) $(cflags_common) $(ood_ver_def) $(cflags_dll) /DCREATEDLL /Fo$(OOD_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OOD_OODIALOGSRC)\$(@B).cpp
 
 
-{$(OR_OODIALOGSRC_320)}.c{$(OR_OUTDIR_OOD320)}.obj:
+{$(OOD_OODIALOGSRC)}.c{$(OOD_OUTDIR)}.obj:
     @ECHO .
     @ECHO Compiling $(@B).c
-    $(OR_CC) $(cflags_common) $(cflags_dll) /DCREATEDLL /Fo$(OR_OUTDIR_OOD320)\$(@B).obj $(OR_ORYXINCL)  $(OR_OODIALOGSRC_320)\$(@B).c
+    $(OR_CC) $(cflags_common) $(ood_ver_def)  $(cflags_dll) /DCREATEDLL /Fo$(OOD_OUTDIR)\$(@B).obj $(OR_ORYXINCL)  $(OOD_OODIALOGSRC)\$(@B).c
 
 
-$(OR_OUTDIR_OOD320)\oodialog.dll:     $(SOURCEF)
+$(OOD_OUTDIR)\oodialog.dll: $(SOURCEF)
+    @ECHO .
+    @ECHO Linking $(OOD_OUTDIR)\oodialog.dll
     $(OR_LINK) \
-        $(SOURCEF)  \
+    $(SOURCEF)  \
     $(lflags_common) $(lflags_dll) \
-    $(OR_LIB)\rexx.lib \
-    $(OR_LIB)\rexxapi.lib \
+    $(REXX_LIBS) \
     WINMM.LIB \
     COMDLG32.LIB \
     COMCTL32.LIB \
-    -def:$(OR_OODIALOGSRC_320)\oovutil.def \
-    -out:$(OR_OUTDIR_OOD320)\$(@B).dll
+    -def:$(OOD_OODIALOGSRC)\oovutil.def \
+    -out:$(OOD_OUTDIR)\$(@B).dll
 
 
 # Update the version information block
-$(OR_OUTDIR_OOD320)\oodialog.res: $(OR_OODIALOGSRC_320)\oodialog.rc
+$(OOD_OUTDIR)\oodialog.res: $(OOD_OODIALOGSRC)\oodialog.rc
     @ECHO .
     @ECHO ResourceCompiling $(@B).res
-        $(rc) $(rcflags_common) /i $(OR_OODIALOGSRC_320) /i $(OR_WINKERNELSRC) -r -fo$(OR_OUTDIR_OOD320)\$(@B).res $(OR_OODIALOGSRC_320)\$(@B).rc
+    $(rc) $(rcflags_oodialog) /i $(OOD_OODIALOGSRC) /i $(OR_WINKERNELSRC) -r -fo$(OOD_OUTDIR)\$(@B).res $(OOD_OODIALOGSRC)\$(@B).rc

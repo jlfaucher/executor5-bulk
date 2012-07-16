@@ -54,7 +54,7 @@
 # This setting is for my specific machine and should be changed or commented out
 # when building
 
-REXX_HOME = C:\Rexx\static.ooRexx.4.1.0.release
+REXX_HOME = C:\Rexx\static.ooRexx.4.0.0.release
 
 # Define DEBUG on the command line, or here, to build a debug version.  By
 # default non- debug versions are built.  I.e. nMake DEBUG=1
@@ -126,12 +126,12 @@ BUILD_TYPE=release
 
 OOD_INCLUDE_FILE=$(OOD_ROOT_DIR)\install\ooDialogWin32.mak
 
-CLASSFILES = $(OOD_OODIALOGSRC)\AnimatedButton.cls   $(OOD_OODIALOGSRC)\BaseDialog.cls         $(OOD_OODIALOGSRC)\CategoryDialog.cls    \
-             $(OOD_OODIALOGSRC)\ControlDialog.cls    $(OOD_OODIALOGSRC)\DeprecatedClasses.cls  $(OOD_OODIALOGSRC)\DialogControls.cls    \
-             $(OOD_OODIALOGSRC)\DialogExtensions.cls $(OOD_OODIALOGSRC)\DynamicDialog.cls      $(OOD_OODIALOGSRC)\EventNotification.cls \
-             $(OOD_OODIALOGSRC)\Menu.cls             $(OOD_OODIALOGSRC)\PlainBaseDialog.cls    $(OOD_OODIALOGSRC)\PropertySheet.cls     \
-             $(OOD_OODIALOGSRC)\RcDialog.cls         $(OOD_OODIALOGSRC)\ResDialog.cls          $(OOD_OODIALOGSRC)\UserDialog.cls        \
-             $(OOD_OODIALOGSRC)\UtilityClasses.cls
+CLASSFILES = $(OOD_OODIALOGSRC)\advctrl.cls          $(OOD_OODIALOGSRC)\anibuttn.cls  $(OOD_OODIALOGSRC)\basedlg.cls   \
+             $(OOD_OODIALOGSRC)\catdlg.cls           $(OOD_OODIALOGSRC)\dialog.cls    $(OOD_OODIALOGSRC)\dlgarea.cls   \
+             $(OOD_OODIALOGSRC)\dlgext.cls           $(OOD_OODIALOGSRC)\dyndlg.cls    $(OOD_OODIALOGSRC)\msgext.cls    \
+             $(OOD_OODIALOGSRC)\oodutils.cls         $(OOD_OODIALOGSRC)\plbdlg.cls    $(OOD_OODIALOGSRC)\pludlg.cls    \
+             $(OOD_OODIALOGSRC)\propsht.cls          $(OOD_OODIALOGSRC)\RcDialog.cls  $(OOD_OODIALOGSRC)\resdlg.cls    \
+             $(OOD_OODIALOGSRC)\stddlg.cls           $(OOD_OODIALOGSRC)\stdext.cls    $(OOD_OODIALOGSRC)\userdlg.cls
 
 BASETARGETS = target_ooDialog $(OOD_OUTDIR)\ooDialog.cls example_dlls
 
@@ -139,14 +139,11 @@ all: $(BASETARGETS)
 
 target_ooDialog:
     @cd $(OOD_OODIALOGSRC)
-    @set OOD_INDEPENDENT=1
+    @set OOD_ROOT_DIR=$(OOD_ROOT_DIR)
     @set OOD_OUTDIR=$(OOD_OUTDIR)
     @set OOD_OODIALOGSRC=$(OOD_OODIALOGSRC)
-    @set OOD_INCLUDE_FILE=$(OOD_INCLUDE_FILE)
     @set REXX_LIBS=$(REXX_LIBS)
     @set NODEBUG=$(NODEBUG)
-    @set CPU=$(CPU)
-    @set MSVCVER=$(MSVCVER)
     @set MKASM=$(MKASM)
     @set NOCRTDLL=1
     $(MAKE) /NOLOGO /F oodialog.mak
@@ -156,7 +153,7 @@ $(OOD_OUTDIR)\ooDialog.cls: $(CLASSFILES)
     @echo .
     @echo Building ooDialog classes
     @cd $(OOD_OUTDIR)
-    @REXX $(OOD_OODIALOGSRC)\build_ooDialog_cls.rex
+    @REXX $(OOD_OODIALOGSRC)\m_oodcls.rex
     @cd $(OOD_ROOT_DIR)
 
 example_dlls:
@@ -165,14 +162,7 @@ example_dlls:
     @cd $(OOD_ROOT_DIR)\examples\res
     @set MACHINE=$(CPU)
     $(MAKE) /NOLOGO /F res.mak
-    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Samples\DlgData\res
-    $(MAKE) /NOLOGO /F res.mak
-    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise05\res
-    $(MAKE) /NOLOGO /F res.mak
-    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise06\Product\res
-    $(MAKE) /NOLOGO /F res.mak
     @cd $(OOD_ROOT_DIR)
-
 
 dist: all
     @echo .
