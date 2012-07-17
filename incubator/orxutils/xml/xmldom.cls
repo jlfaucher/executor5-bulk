@@ -9717,7 +9717,7 @@ use strict arg min, max
   return nodeSet
 
 -- retrieve a group of nodes using a blank-delimited string of ids
-::method getNodesById
+::method getNodesById private
   use strict arg context, idString, nodeSet, idSet
 
   owner = context~ownerDocument
@@ -9733,6 +9733,30 @@ use strict arg min, max
           end
       end
   end
+
+-- lang() function
+::method langFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(1)
+
+  lang = argument[1]~evaluateString(context, container)~upper
+
+  current = context
+
+  loop while current \== .nil
+      -- check for a xml:lang attribute
+      attr = current~getAttributeNodeNS("http://www.w3.org/XML/1998/namespace", "lang")
+      if attr \== .nil then do
+          value = attr~value
+          -- this could be the same, or the first part of the language specifier
+          if value == lang | value~caselessMatch(1, lang'-') then return .true
+      end
+      current = current~parentNode
+  end
+  return .false
+
 
 -- get the string value
 ::method stringFunction
