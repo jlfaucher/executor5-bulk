@@ -46,10 +46,14 @@
  *  between the 4.2.0 and 4.1.0 versions of ooDialog in their ooRexx
  *  installation.
  *
- *  Run as:
- *    makensis /DVERSION=x.x.x.x /DNODOTVER=xxx /DSRCDIR=y /DEXEFILE=xxx /DCPU=xxx ooDialog420_410.nsi
- *  eg
- *    makensis /DVERSION=4.2.0.6367 /DNODOTVER=420 /DSRCDIR=C:\work\wc\main.4.1.0.ooDialog /DEXEFILE=switchOODialog /DCPU=x86_32 ooDialog420_410.nsi
+ *  Run as, for example:
+ *
+ *    makensis /DVERSION=$(DOTVER)
+ *             /DNODOTVER=$(NODOTVERSION)
+ *             /DEXEFILE=switch_ooDialog
+ *             /DCPU=$(NSISCPU) \
+ *             /DDEBUGFLAG=$(NSISDEBUG)
+ *             ooDialog420_410.nsi
  *
  *  Note:
  *    ooDialog420_410.nsi must be in the current directory.
@@ -63,13 +67,13 @@
 ;--------------------------------
 ; Defines
 
-  !define LONGNAME       "Switch ooDialog 420(beta)_410 ${VERSION}"  ; Our long name
-  !define SHORTNAME      "Switch_ooDialog"                           ; Our short name
-  !define InstallFile    "${EXEFILE}.exe"                            ; The switch ooDialog executable renamed on install
-  !define SourceFile     "${EXEFILE}420_410.exe"                     ; The switch ooDialog output file name.
-  !define DISPLAYICON    "$INSTDIR\ooDialog.dll,2"                   ; Use the ooDialog icon, the OOD icon
-  !define REXXSHORTNAME  "ooRexx"                                    ; From ooRexx installer.
-  !define REXXLONGNAME   "Open Object Rexx"                          ; From ooRexx installer
+  !define LONGNAME       "Switch ooDialog 420_410 ${VERSION}"  ; Our long name
+  !define SHORTNAME      "Switch_ooDialog"                     ; Our short name
+  !define InstallFile    "switchOODialog.exe"                  ; The switch ooDialog executable renamed on install
+  !define SourceFile     "${EXEFILE}420_410.exe"               ; The switch ooDialog output file name.
+  !define DISPLAYICON    "$INSTDIR\ooDialog.dll,2"             ; Use the ooDialog icon, the OOD icon
+  !define REXXSHORTNAME  "ooRexx"                              ; From ooRexx installer.
+  !define REXXLONGNAME   "Open Object Rexx"                    ; From ooRexx installer
   !define UNINSTALLER    "uninstall_${EXEFILE}.exe"
 
 
@@ -100,8 +104,8 @@
 ;--------------------------------
 ;Interface Settings
 
-  !define MUI_ICON "${SRCDIR}\extensions\platform\windows\oodialog.4.2.0\AppIcon2.ico"
-  !define MUI_UNICON "${SRCDIR}\platform\windows\install\uninstall.ico"
+  !define MUI_ICON "AppIcon2.ico"
+  !define MUI_UNICON "uninstall.ico"
   !define MUI_WELCOMEFINISHPAGE_BITMAP "orange.bmp"
   !define MUI_UNWELCOMEFINISHPAGE_BITMAP "orange-uninstall.bmp"
 
@@ -135,7 +139,7 @@
 ;Pages
 
   !insertmacro MUI_PAGE_WELCOME
-  !insertmacro MUI_PAGE_LICENSE "${SRCDIR}\CPLv1.0.txt"
+  !insertmacro MUI_PAGE_LICENSE "CPLv1.0.txt"
   !insertmacro MUI_PAGE_INSTFILES
   !insertmacro MUI_PAGE_FINISH
 

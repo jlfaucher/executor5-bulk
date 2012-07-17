@@ -237,48 +237,55 @@ System error code: 2
 <indexterm><primary>version</primary></indexterm>
 <programlisting>
 <![CDATA[
-                      +-Full----+
->>-.DlgUtil~version(--------------)------------------------><
-                      +-Short---+
+>>-.DlgUtil~version(--+----------+--)----------------------><
+                      +-format---+
 ]]>
 </programlisting>
 
 <para>Returns the ooDialog version string.</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>There are no arguments for this method.
-<variablelist>
-<varlistentry><term>format</term>
-<listitem>
-<para>
-  A keyword indicating the format of the returned version string.  Only the first letter is
-  needed and case is not significant.  Any unrecognized keyword is ignored and the default
-  format is used.  The format for each keyword is as follows:
-</para>
-<variablelist>
-<varlistentry><term>Full</term>
-<listitem>
-<para>
-  A string specifying the version of ooDialog.  This is the default. The string has the format:
-  <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows Extension) </computeroutput> where
-  x.x.x is the ooRexx interpreter version and SS is the Subversion revision number of the build.
-  The actual version string might look like: <computeroutput>ooDialog Version 4.0.0.3734 (an ooRexx
-  Windows Extension)</computeroutput>
-</para></listitem></varlistentry>
-<varlistentry><term>Short</term>
-<listitem><para>Only the x.x.x.SS part of the full version string is returned.
-</para></listitem></varlistentry>
-</variablelist>
-</listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem>
-<para>
-  A string in one of the formats specified above.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>format [optional]</term>
+      <listitem>
+      <para>
+        A keyword indicating the format of the returned version string.  Only the first letter is
+        needed and case is not significant.  Any unrecognized keyword is ignored and the default
+        format is used.  The format for each keyword is as follows:
+      </para>
+      <variablelist>
+        <varlistentry><term>Full</term>
+        <listitem>
+        <para>
+          A string specifying the version of ooDialog.  This is the default. The string has the format:
+          <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows Extension) </computeroutput> where
+          x.x.x is the ooDialog version and SS is the Subversion revision number of the build. The actual version string might
+          look like: <computeroutput>ooDialog Version 4.1.0.8038 (an ooRexx Windows Extension)</computeroutput>
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>Short</term>
+        <listitem>
+        <para>
+          Only the x.x.x.SS part of the full version string is returned.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A string in one of the formats specified above.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
 <programlisting>
 <![CDATA[
 v = .DlgUtil~version
@@ -286,10 +293,10 @@ say v
 say
 
 if .DlgUtil~version("SHORT") < 4.1.0.0000 then do
-  say 'Too bad, you are still running ooRexx 4.0.0'
+  say 'Too bad, you are using ooDialog 4.0.0'
 end
 else do
-  say 'Great you have upgraded past ooRexx 4.1.0'
+  say 'Great you have upgraded past ooDialog 4.0.0'
 end
 
 ::requires 'oodPlain.cls'
@@ -298,12 +305,13 @@ end
 
 ooDialog Version 4.0.0.3768 (an ooRexx Windows Extension)
 
-Too bad, you are still running ooRexx 4.0.0
+Too bad, you are still using ooDialog 4.0.0
 
 */
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 

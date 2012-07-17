@@ -71,6 +71,18 @@
  *
  *    switchOODialog /I            Displays the current ooDialog version in
  *                                 effect.
+ *
+ *  Execute as, for example:
+ *
+ *   makensis /DVERSION=4.2.0.8089
+ *            /DSHORTVERSION=4.2.0
+ *            /DROOTDIR420=C:\work.ooRexx\wc\ooDialog\branches\4.2.0\trunk
+ *            /DROOTDIR410=C:\work.ooRexx\wc\ooDialog\branches\4.1.0\trunk
+ *            /DBINDIR420=C:\work.ooRexx\wc\ooDialog\branches\4.2.0\trunk\Win32Rel
+ *            /DBINDIR410=C:\work.ooRexx\wc\ooDialog\branches\4.1.0\trunk\Win32Rel
+ *            /DCPU=x86_64
+ *            /DDEBUGPKG=-debug
+ *            switchOODialog420_410.nsi
  */
 
 
@@ -81,15 +93,14 @@
 ;--------------------------------
 ; Defines
 
-  !define SHORTNAME      "ooDialogSwitch"              ; Must be in sync with the ooDialogBeta SHORTNAME
-  !define LONGNAME       "ooDialog ${VERSION} (beta)"
+  !define SHORTNAME      "Switch_ooDialog"                    ; Must be in sync with the switch ooDialog SHORTNAME
+  !define LONGNAME       "Switch ooDialog ${VERSION}"         ; Does not have to be in sync
+  !define OOREXXLONGNAME "Open Object Rexx"                   ; Must be kept in sync with ooRexx install
 
-  !Define BinDir410 "${BINDIR}\oodialog410"
-  !Define BinDir420 "${BINDIR}\oodialog420"
-  !define SrcDir410 "${SRCDIR}\extensions\platform\windows\oodialog.4.1.0"
-  !define SrcDir420 "${SRCDIR}\extensions\platform\windows\oodialog.4.2.0"
-  !Define SamplesDir410 "${SRCDIR}\samples\windows\oodialog.4.1.0"
-  !Define SamplesDir420 "${SRCDIR}\samples\windows\oodialog.4.2.0"
+  !define SrcDir420 "${ROOTDIR420}\ooDialog"
+  !define SrcDir410 "${ROOTDIR410}\oodialog"
+  !Define SamplesDir420 "${ROOTDIR420}\examples"
+  !Define SamplesDir410 "${ROOTDIR410}\examples"
 
 ;--------------------------------
 ;Includes
@@ -104,7 +115,7 @@
 ;General
 
   Name "Switch ooDialog"
-  OutFile "switchOODialog420_410.exe"
+  OutFile "switch_ooDialog420_410.exe"
   ShowInstdetails show
   SetOverwrite on
   SetPluginUnload alwaysoff
@@ -115,13 +126,14 @@
 ;--------------------------------
 ;Interface Settings
 
-  !define MUI_ICON "${SRCDIR}\extensions\platform\windows\oodialog.4.2.0\AppIcon2.ico"
-  !define MUI_UNICON "${SRCDIR}\platform\windows\install\uninstall.ico"
+  !define MUI_ICON "AppIcon2.ico"
+  !define MUI_UNICON "uninstall.ico"
 
 ;--------------------------------
 ; Variables
 
   Var RegVal_installedLocation   ; Our installed location, found in the registry
+  Var RegVal_startMenuFolder     ; Which start menu folder is in use for ooRexx.
   Var RegVal_installedVersion    ; Don't need this Version / level of uninstaller program.  This only exists at 410 or greater
   Var ForceVersion               ; Allows the user to force what ooDialog version is in effect.
   Var CurrentVersion             ; The current ooDialog version, read from the registry
@@ -165,11 +177,19 @@ Section  doSwitch
     File "${BinDir420}\oodWin32.cls"
     DetailPrint ""
 
+    DetailPrint "********** ooDialog 4.2.0 ooRexxTry **********"
+    File "${SamplesDir420}\ooRexxTry\ooRexxTry.rex"
+    DetailPrint ""
+
     DetailPrint "********** ooDialog 4.2.0 Documentation **********"
     ; Set the installation directory:
     SetOutPath $INSTDIR\doc
     ; Add the files ...
-    File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog420.pdf"
+    File "${ROOTDIR420}\doc\oodialog.pdf"
+    File "${ROOTDIR420}\doc\oodguide.pdf"
+
+    CreateShortCut "$RegVal_startMenuFolder\Documentation\ooDialog User Guide.lnk" "$INSTDIR\doc\oodguide.pdf" "" "$INSTDIR\doc\oodguide.pdf" 0
+    CreateShortCut "$RegVal_startMenuFolder\Documentation\ooDialog Reference.lnk" "$INSTDIR\doc\oodialog.pdf" "" "$INSTDIR\doc\oodialog.pdf" 0
     DetailPrint ""
 
     DetailPrint "********** ooDialog 4.2.0 Samples **********"
@@ -209,6 +229,23 @@ Section  doSwitch
     File "${SamplesDir420}\examples\resources\*.rc"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\menus
+    ; Add the files ...
+    File "${SamplesDir420}\menus\*.rex"
+    File "${SamplesDir420}\menus\*.h"
+    File "${SamplesDir420}\menus\*.bmp"
+    File "${SamplesDir420}\menus\*.rc"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\mouse
+    ; Add the files ...
+    File "${SamplesDir420}\mouse\*.rex"
+    File "${SamplesDir420}\mouse\*.h"
+    File "${SamplesDir420}\mouse\*.rc"
+    File "${SamplesDir420}\mouse\*.cur"
+    File "${SamplesDir420}\mouse\*.txt"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\oleinfo
     ; Add the files ...
     File "${SamplesDir420}\oleinfo\*.rex"
@@ -224,6 +261,25 @@ Section  doSwitch
     ; Add the files ...
     File "${SamplesDir420}\ooRexxTry\doc\ooRexxTry.pdf"
 
+    SetOutPath $INSTDIR\samples\oodialog\propertySheet.tabs
+    ; Add the files ...
+    File "${SamplesDir420}\propertySheet.tabs\*.cls"
+    File "${SamplesDir420}\propertySheet.tabs\oodListViews.rex"
+    File "${SamplesDir420}\propertySheet.tabs\PropertySheetDemo.rex"
+    File "${SamplesDir420}\propertySheet.tabs\TabDemo.rex"
+    ; File "${SamplesDir420}\propertySheet.tabs\TabOwnerDemo.rex" ; Do not expose this example yet
+    File "${SamplesDir420}\propertySheet.tabs\ticketWizard.rex"
+    File "${SamplesDir420}\propertySheet.tabs\UserTabDemo.rex"
+
+
+    SetOutPath $INSTDIR\samples\oodialog\propertySheet.tabs\rc
+    ; Add the files ...
+    File "${SamplesDir420}\propertySheet.tabs\rc\oodListViews*"
+    File "${SamplesDir420}\propertySheet.tabs\rc\PropertySheetDemo*"
+    ; File "${SamplesDir420}\propertySheet.tabs\rc\TabOwnerDemo*" ; Do not expose this example yet
+    File "${SamplesDir420}\propertySheet.tabs\rc\ticketWizard*"
+    File "${SamplesDir420}\propertySheet.tabs\rc\UserTabDemo*"
+
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\rc
     ; Add the files ...
@@ -233,12 +289,13 @@ Section  doSwitch
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\res
     ; Add the files ...
-    File "${SamplesDir420}\res\*.res"
     File "${SamplesDir420}\res\*.dll"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\simple
     ; Add the files ...
+    File "${SamplesDir420}\simple\*.h"
+    File "${SamplesDir420}\simple\*.rc"
     File "${SamplesDir420}\simple\*.rex"
     File "${SamplesDir420}\simple\*.txt"
 
@@ -279,6 +336,128 @@ Section  doSwitch
     File "${SamplesDir420}\tutorial\*.rex"
     File "${SamplesDir420}\tutorial\*.bmp"
     File "${SamplesDir420}\tutorial\*.rc"
+    File "${SamplesDir420}\tutorial\*.h"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\userGuide
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\*.txt"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise02
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise02\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise03
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise03\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise04
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise04\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise04\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise04\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise05
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise05\res
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\res\res.mak"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\res\ProductView.dll"
+    File "${SamplesDir420}\userGuide\exercises\Exercise05\res\ProductIcon.bmp"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Customer
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Customer\bmp
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\bmp\*.ico"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Customer\bmp\*.bmp"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Order
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Order\bmp
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\bmp\*.ico"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Order\bmp\*.bmp"
+
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\OrderMgr
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgr\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgr\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\OrderMgr\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Product
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\*.rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise06\Product\res
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\res\*.ico"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\res\*.bmp"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\res\*.dll"
+    File "${SamplesDir420}\userGuide\exercises\Exercise06\Product\res\res.mak"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Samples\ReadMe.txt"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\DlgData
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\*.h"
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\*.rc"
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\*rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\DlgData\res
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\res\res.mak"
+    File "${SamplesDir420}\userGuide\exercises\Samples\DlgData\res\ASimpleDialog.dll"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Samples\Popups
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Samples\Popups\*rex"
+
+    ; Set output path to the installation directory.
+    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Support
+    ; Add the files ...
+    File "${SamplesDir420}\userGuide\exercises\Support\*.cls"
 
     ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\wav
@@ -300,16 +479,24 @@ Section  doSwitch
   ${Else}
     DetailPrint "********** ooDialog 4.1.0 Framework **********"
     File "${BinDir410}\oodialog.dll"
-    File "${BinDir410}\OODIALOG.CLS"
-    File "${BinDir410}\OODPLAIN.CLS"
-    File "${BinDir410}\OODWIN32.CLS"
+    File "${BinDir410}\ooDialog.cls"
+    File "${BinDir410}\oodPlain.cls"
+    File "${BinDir410}\oodWin32.cls"
+    DetailPrint ""
+
+    DetailPrint "********** ooDialog 4.1.0 ooRexxTry **********"
+    File "${SamplesDir410}\ooRexxTry\ooRexxTry.rex"
     DetailPrint ""
 
     DetailPrint "********** ooDialog 4.1.0 Documentation **********"
+    ; For the documentation, remove files always deletes the shortcuts and then
+    ; we always recreate what is needed.
+
     ; Set the installation directory:
     SetOutPath $INSTDIR\doc
     ; Add the files ...
-    File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog410.pdf"
+    File "${ROOTDIR410}\doc\oodialog.pdf"
+    CreateShortCut "$RegVal_startMenuFolder\Documentation\ooDialog Reference.lnk" "$INSTDIR\doc\oodialog.pdf" "" "$INSTDIR\doc\oodialog.pdf" 0
     DetailPrint ""
 
     DetailPrint "********** ooDialog 4.1.0 Samples **********"
@@ -506,6 +693,8 @@ Function .onInit
 
   StrCpy $INSTDIR "$RegVal_installedLocation"
 
+  ReadRegStr $RegVal_startMenuFolder HKLM "Software\${SHORTNAME}\" "StartMenuFolder"
+
   /* If the user did not force a version, the new version is the opposite of
    * the current version.
    */
@@ -553,6 +742,34 @@ Function CheckForProblems
       Abort
   ${EndIf}
 
+  ${If} $CurrentVersion == 420
+    ClearErrors
+    Delete $INSTDIR\oodguide.pdf
+    ${If} ${Errors}
+      MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
+        "switchOODialog detected a problem with oodguide.pdf$\n$\n\
+        You MUST close all the ooDialog documentation and close$\n\
+        any running ooDialog programs before executing the Switch$\n\
+        ooDialog program.$\n$\n\
+        Please close the ooDialog User Guid documentation, and$\n\
+        make sure no ooDialog programs are running.$\n$\n\
+        switchOODialog is aborting."
+        Abort
+
+        ; Restore the oodialog.pdf file deleted above.
+        SetOutPath $INSTDIR\doc
+
+        ${If} $CurrentVersion == 420
+          File "${ROOTDIR420}\doc\oodialog.pdf"
+        ${Else}
+          File "${ROOTDIR410}\doc\oodialog.pdf"
+        ${EndIf}
+
+        Abort
+    ${EndIf}
+  ${EndIf}
+
+  ClearErrors
   Delete $INSTDIR\oodialog.dll
   ${If} ${Errors}
     MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
@@ -564,13 +781,14 @@ Function CheckForProblems
       the ooDialog Method Reference documentation is closed.$\n$\n\
       switchOODialog is aborting."
 
-      ; Restore the oodialog.pdf file deleted above.
+      ; Restore the ooDialog docs deleted above.
       SetOutPath $INSTDIR\doc
 
       ${If} $CurrentVersion == 420
-        File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog420.pdf"
+        File /oname=ooDialog.pdf "${ROOTDIR420}\doc\oodialog.pdf"
+        File /oname=oodGuide.pdf "${ROOTDIR420}\doc\oodguide.pdf"
       ${Else}
-        File /oname=ooDialog.pdf "${SRCDIR}\doc\oodialog410.pdf"
+        File /oname=ooDialog.pdf "${ROOTDIR410}\doc\oodialog.pdf"
       ${EndIf}
 
       Abort
@@ -597,12 +815,14 @@ Function DisplayInfo
         'key' must be 420 or 410."
 
   ${If} $CurrentVersion == 410
-    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n\
-                      Active version of ooDialog: 4.1.0$\n$\n$\n$Message"
+    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n$\n\
+                      Switch ooDialog version:$\t${VERSION}$\n\
+                      Active version of ooDialog:$\t4.1.0$\n$\n$\n$Message"
 
   ${Else}
-    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n\
-                      Active version of ooDialog: 4.2.0$\n$\n$\n$Message"
+    MessageBox MB_OK "Switch ooDialog  4.2.0 <<-->> 4.1.0$\n$\n\
+                      Switch ooDialog version:$\t${VERSION}$\n\
+                      Active version of ooDialog:$\t4.2.0$\n$\n$\n$Message"
   ${EndIf}
 
   Abort
@@ -636,40 +856,94 @@ Function RemoveFiles
 
   ${If} $NewVersion == 420
     DetailPrint "Removing files not present in ooDialog 4.2.0"
+    DetailPrint ""
+    ; The ooRexx ooDialog User Guide probably does not exist, no harm deleting it if it doesn't.
+    Delete "$RegVal_startMenuFolder\Documentation\ooDialog Reference.lnk"
+    Delete "$RegVal_startMenuFolder\Documentation\ooRexx ooDialog Method Reference.lnk"
+    Delete "$RegVal_startMenuFolder\Documentation\ooDialog User Guide.lnk"
+    Delete "$RegVal_startMenuFolder\Documentation\ooRexx ooDialog User Guide.lnk"
 
     RMDir /r $INSTDIR\samples\oodialog\source
     Delete $INSTDIR\samples\oodialog\bmp\movie.bmp
+    Delete $INSTDIR\samples\oodialog\bmp\oodlist1.bmp
+    Delete $INSTDIR\samples\oodialog\bmp\oodlist2.bmp
     Delete $INSTDIR\samples\oodialog\bmp\psdemolv.bmp
     Delete $INSTDIR\samples\oodialog\bmp\psdemoTab.bmp
     Delete $INSTDIR\samples\oodialog\bmp\psdemotv.bmp
     Delete $INSTDIR\samples\oodialog\bmp\ticket.bmp
     Delete $INSTDIR\samples\oodialog\examples\readme.txt
+    Delete $INSTDIR\samples\oodialog\oodlist.rex
+    Delete $INSTDIR\samples\oodialog\oopet.rex
+    Delete $INSTDIR\samples\oodialog\oopet1.rex
     Delete $INSTDIR\samples\oodialog\ooticket.rex
     Delete $INSTDIR\samples\oodialog\propdemo.rex
     Delete $INSTDIR\samples\oodialog\rc\movies.rc
+    Delete $INSTDIR\samples\oodialog\rc\oodlist.rc
+    Delete $INSTDIR\samples\oodialog\rc\oopet.rc
     Delete $INSTDIR\samples\oodialog\rc\propdemo.rc
     Delete $INSTDIR\samples\oodialog\rc\ticket.rc
+    Delete $INSTDIR\samples\oodialog\res\oopet.dll
+    Delete $INSTDIR\samples\oodialog\tutorial\em_categ.rc
+    Delete $INSTDIR\samples\oodialog\tutorial\em_categ.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\emp_mend.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\emp_menu.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\empvalid.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\persdata.rc
+    Delete $INSTDIR\samples\oodialog\tutorial\textscrl.rc
+    Delete $INSTDIR\samples\oodialog\tutorial\textscrl.rex
   ${Else}
     DetailPrint "Removing files not present in ooDialog 4.1.0"
+    DetailPrint ""
+    DetailPrint "Removing ooDialog User Guide and Start Menu shortcut"
+    ; The ooRexx ooDialog User Guide probably does not exist, no harm deleting it if it doesn't.
+    Delete "$RegVal_startMenuFolder\Documentation\ooDialog Reference.lnk"
+    Delete "$RegVal_startMenuFolder\Documentation\ooRexx ooDialog Method Reference.lnk"
+    Delete "$RegVal_startMenuFolder\Documentation\ooRexx ooDialog User Guide.lnk"
+    Delete "$RegVal_startMenuFolder\Documentation\ooDialog User Guide.lnk"
+    Delete $INSTDIR\doc\oodguide.pdf
 
     RMDir /r $INSTDIR\samples\oodialog\source
-    Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoListView.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoTab.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\propertySheetDemoTreeView.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\ticketWizardMovie.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\ticketWizardRexxLA.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\ticketWizardTheater.bmp
-    Delete $INSTDIR\samples\oodialog\bmp\ticketWizardTicket.bmp
+    Delete $INSTDIR\samples\oodialog\AnimalGame.rex
     RMDir /r $INSTDIR\samples\oodialog\controls
+    Delete $INSTDIR\samples\oodialog\dlgAreaUDemo.h
+    Delete $INSTDIR\samples\oodialog\dlgAreaUDemoThree.rex
+    Delete $INSTDIR\samples\oodialog\dlgAreaUDemoTwo.rex
     Delete $INSTDIR\samples\oodialog\examples\ReadMe.txt
+    Delete $INSTDIR\samples\oodialog\examples\resources\CheckIn.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\ClosePalette.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\CodeReview.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\LinkToWeb.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\LockModule.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\LockProject.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\ProjectReview.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\SaveAll.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\SaveModule.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\SaveProject.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\SplitModule.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\Update.bmp
+    Delete $INSTDIR\samples\oodialog\examples\resources\useTools.h
+    Delete $INSTDIR\samples\oodialog\examples\useTools.rex
+    RMDir /r $INSTDIR\samples\oodialog\menus
+    RMDir /r $INSTDIR\samples\oodialog\mouse
     Delete $INSTDIR\samples\oodialog\ooDraw.h
-    Delete $INSTDIR\samples\oodialog\PropertySheetDemo.rex
-    Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.h
-    Delete $INSTDIR\samples\oodialog\rc\PropertySheetDemo.rc
-    Delete $INSTDIR\samples\oodialog\rc\ticketWizard.h
-    Delete $INSTDIR\samples\oodialog\rc\ticketWizard.rc
+    RMDir /r $INSTDIR\samples\oodialog\propertySheet.tabs
+    Delete $INSTDIR\samples\oodialog\rc\AnimalGame.h
+    Delete $INSTDIR\samples\oodialog\rc\AnimalGame.rc
+    Delete $INSTDIR\samples\oodialog\rc\ldvideo.h
+    Delete $INSTDIR\samples\oodialog\res\AnimalGame.dll
+    Delete $INSTDIR\samples\oodialog\samplesSetup.rex
     RMDir /r $INSTDIR\samples\oodialog\simple
-    Delete $INSTDIR\samples\oodialog\ticketWizard.rex
+    Delete $INSTDIR\samples\oodialog\sysinfo\sysInfo.h
+    Delete $INSTDIR\samples\oodialog\tutorial\employe4validate.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\employe7.h
+    Delete $INSTDIR\samples\oodialog\tutorial\employe9menuDyn.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\employee10menuRc.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\employee11tab.h
+    Delete $INSTDIR\samples\oodialog\tutorial\employee11tab.rc
+    Delete $INSTDIR\samples\oodialog\tutorial\employee11tab.rex
+    Delete $INSTDIR\samples\oodialog\tutorial\textScroll.rc
+    Delete $INSTDIR\samples\oodialog\tutorial\textScroll.rex
+    RMDir /r $INSTDIR\samples\oodialog\userGuide
   ${Endif}
 
   DetailPrint ""
