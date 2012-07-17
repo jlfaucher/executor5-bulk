@@ -615,6 +615,78 @@
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+/* Class: XPathEvaluator                                                      */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- interface for XPathEvaluator
+::class "XPathEvaluator" mixinclass object
+::method createExpresson abstract
+::method createNSResolver abstract
+::method evaluate abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathExpression                                                     */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- interface for XPathExpression
+::class "XPathExpression" mixinclass object
+::method evaluate abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathNSResolver                                                     */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- interface for XPathNSResolver
+::class "XPathNSResolver" mixinclass object
+::method lookupNamespaceURI abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathResult                                                         */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- interface for XPathResult
+::class "XPathResult" mixinclass object
+::constant ANY_TYPE 0
+::constant NUMBER_TYPE 1
+::constant STRING_TYPE 2
+::constant BOOLEAN_TYPE 3
+::constant UNORDERED_NODE_ITERATOR_TYPE 4
+::constant ORDERED_NODE_ITERATOR_TYPE 5
+::constant UNORDERED_NODE_SNAPSHOT_TYPE 6
+::constant ORDERED_NODE_SNAPSHOT_TYPE 7
+::constant ANY_UNORDERED_NODE_TYPE 8
+::constant FIRST_ORDERED_NODE_TYPE 9
+
+::method resultType abstract
+::method numberValue abstract
+::method booleanValue abstract
+::method singleNodeValue abstract
+::method invalidIteratorState abstract
+::method snapshotLength abstract
+::method iterateNext abstract
+::method snapshotItem abstract
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathNamespace                                                      */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- interface for XPathNamespace
+::class "XPathNamespace" mixinclass Node
+::constant XPATH_NAMESPACE_NODE 13
+::method ownerElement abstract
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 /* Class: NodeIterator                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -1353,6 +1425,9 @@
 ::method contains
   use strict arg target
   return self~positionOf(target) \= -1
+
+-- access to the owner
+::attribute owner get
 
 
 /*----------------------------------------------------------------------------*/
@@ -4706,6 +4781,11 @@ syntax:
 -- and message codes or error messages, but creates the base infrastructure
 ::class "BaseDomException" public
 
+-- the base retrievable attributes
+::attribute code get
+::attribute message get
+::attribute reason get
+
 -- the message table used by the class instance.  This will be set with different
 -- values by each sub class
 ::attribute messageTable class get
@@ -4726,9 +4806,9 @@ syntax:
 
 -- raise an error using the error numbers for the particular exception
 ::method raiseError class
-  use arg code
+  use strict arg code, reason = .nil
 
-  exception = self~new(code, self~messageTable[code])
+  exception = self~new(code, self~messageTable[code], reason)
   -- this generates both the formatted error message and attaches the
   -- exception object to the condition object
   raise syntax 98.900 array(exception~string, exception)
@@ -4736,8 +4816,8 @@ syntax:
 
 -- instance item for DOM errors.  This is attached to the condition information
 ::method init
-  expose code message
-  use strict arg code, message
+  expose code message reason
+  use strict arg code, message, reason = .nil
 
 -- string method to display the message value
 ::method string
@@ -4806,6 +4886,24 @@ syntax:
   messageTable = .array~new
   messageTable[self~BAD_BOUNDARYPOINTS_ERR] =      "The boundary-points of a Range do not meet specific requirements."
   messageTable[self~INVALID_NODE_TYPE_ERR] =       "The container of a boundary-point of a Range is being set to either a node of an invalid type or a node with an ancestor of an invalid type."
+
+  return messageTable
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class:  XPathException                                                     */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "XPathException" public subclass BaseDomException
+::constant INVALID_EXPRESSION_ERR 1
+::constant TYPE_ERR 2
+
+-- setup messages. Designed to be overridden by subclass exception types
+::method setupMessages class
+  messageTable = .array~new
+  messageTable[self~INVALID_EXPRESSION_ERR] =      "An invalid XPath expression was encountered."
+  messageTable[self~TYPE_ERR] =                    "An XPath result cannot be converted to the requested type."
 
   return messageTable
 
@@ -8900,30 +8998,31 @@ syntax:
   use strict arg context, container
   return .nil
 
+-- evaluate an expression expecting a boolean value back
 ::method evaluateBoolean
   use strict arg context, container
 
   value = self~evaluate(context, container)
+  -- apply the boolean conversion rules if needed
+  return self~convertBoolean(value)
 
-  if \value~datatype('o') then .XPath~error(.Xpath~BOOLEAN_ERROR)
-  return value
-
+-- evaluate an expression, expecting a string value
 ::method evaluateString
   use strict arg context, container
 
   value = self~evaluate(context, container)
+  -- apply the string conversion rules if needed
+  return self~convertString(value)
 
-  if \value~isA(.string) then .XPath~error(.Xpath~STRING_VALUE_ERROR)
-  return value
-
+-- evaluate an expression expecting a numeric value result
 ::method evaluateNumber
   use strict arg context, container
 
   value = self~evaluate(context, container)
+  -- apply the number conversion rules if needed
+  return self~convertNumber(value)
 
-  if \value~datatype('Number') then .XPath~error(.Xpath~NUMBER_VALUE_ERROR)
-  return value
-
+-- evaluate an expression, expecting a nodeset result
 ::method evaluateNodeSet
   use strict arg context, container
 
@@ -8932,6 +9031,7 @@ syntax:
   if \value~isA(.NodeSet) then .XPath~error(.Xpath~NODESET_VALUE_ERROR)
   return value
 
+-- evaluate a predicate expression
 ::method evaluatePredicate
   use strict arg context, container, proximityPosition
 
@@ -8999,10 +9099,41 @@ syntax:
   -- node.  If the set is empty, return a null string
   if value~isa(.nodeset) then do
       if value~length = 0 then return ""
-      else return value[0]~nodeValue
+      else return self~nodeStringValue(value[0])
   end
   -- last option...just return the string form of the object
   return value~string
+
+-- get the XPath string value for a node.  For Element, this is
+-- the recursive concatenation of all text node descendants.
+::method nodeStringValue private
+  use strict arg node
+  buffer = .mutableBuffer~new
+
+  -- if this is the document root, evaluate from the first node
+  if node~nodeType == .Node~DOCUMENT_NODE then
+      node = node~documentElement
+
+  self~buildNodeStringValue(node, buffer)
+  return buffer~string
+
+::method buildNodeStringValue private
+  use strict arg node, buffer
+
+  nodeType = node~nodeType
+
+  if nodeType == .Node~ELEMENT_NODE then do
+      child = node~firstChild
+      loop while child \== .nil
+          self~buildNodeStringValue(child, buffer)
+      end
+  end
+  else if nodeType == .Node~TEXT_NODE | nodeType == .Node~CDATA_SECTION_NODE then do
+      buffer~append(node~textContent)
+  end
+  -- all other node types don't add anything
+  else return
+
 
 -- an axis evaluation step in an expression
 ::class "XpathStep" subclass xpathexpr
@@ -9466,6 +9597,8 @@ use strict arg min, max
       self~xpathError(.XPath~INCORRECT_FUNCTION_ARGUMENTS_ERROR);
 
 -- start of the actual function implementation methods
+
+-- negate the current boolean value
 ::method notFunction
   expose arguments
   use strict arg context, container
@@ -9473,13 +9606,15 @@ use strict arg min, max
   self~checkArgs(1)
   return \arguments[1]~evaluateBoolean(context, container)
 
+-- return the index of the last item in the container
 ::method lastFunction
   expose arguments
   use strict arg context, container
 
-  self~checkArgs(1)
+  self~checkArgs(0)
   return container~last
 
+-- return the current position of the context in the container
 ::method positionFunction
   expose arguments
   use strict arg context, container
@@ -9487,6 +9622,8 @@ use strict arg min, max
   self~checkArgs(0)
   return container~positionOf(context)
 
+-- return either the local name of the argument or
+-- the local name of the context
 ::method localNameFunction
   expose arguments
   use strict arg context, container
@@ -9504,6 +9641,7 @@ use strict arg min, max
   -- use the first item
   return nodeSet~first~localName
 
+-- get the namespace URI of either an argument or the current context.
 ::method namespaceUriFunction
   expose arguments
   use strict arg context, container
@@ -9511,16 +9649,21 @@ use strict arg min, max
   self~checkMinMaxArgs(0, 1)
   -- no node set to check on, just return the namespaceuri of the
   -- context node
-  if arguments~isEmpty then return context~namespaceURI
+  if arguments~isEmpty then
+      n = context~namespaceURI
+  else do
+      -- get the target nodeset
+      nodeSet = arguments[1]~evaluateNodeSet(context, container)
+      -- no elements, no local name
+      if nodeSet~length == 0 then return ""
 
-  -- get the target nodeset
-  nodeSet = arguments[1]~evaluateNodeSet(context, container)
-  -- no elements, no local name
-  if nodeSet~length == 0 then return ""
+      -- use the first item
+      n = nodeSet~first~namespaceURI
+  end
+  if n == .nil then n = ""
+  return n
 
-  -- use the first item
-  return nodeSet~first~namespaceURI
-
+-- get the name either the current context or the argument
 ::method nameFunction
   expose arguments
   use strict arg context, container
@@ -9538,6 +9681,60 @@ use strict arg min, max
   -- use the first item
   return nodeSet~first~nodeName
 
+-- get the targetted nodes using id values
+::method idFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(1)
+
+  -- evaluate the argument...we need to inspect the type to
+  -- determine the operation to perform
+  value = argument[1]~evaluate(context, container)
+  -- create a new nodeset for the current context
+  nodeSet = .NodeSet~new(context~ownerDocument, context)
+  -- this is used to track uniqueness
+  idSet = .set~new
+
+  -- no value?, return an empty nodeset
+  if value == .nil then return nodeSet
+
+  -- this is a nodeset, so we need to iterate over this
+  -- and use the nodevalues of the members as id names
+  if value~isA(.NodeSet) then do
+      loop node over value
+          -- get the node string value
+          textValue = self~nodeStringValue(node)
+          self~getNodesById(context, textValue, nodeSet, idSet)
+      end
+  end
+  else do
+      -- ensure this is a string value
+      value = self~convertString(value)
+      self~getNodesById(context, textValue, nodeSet, idSet)
+  end
+
+  return nodeSet
+
+-- retrieve a group of nodes using a blank-delimited string of ids
+::method getNodesById
+  use strict arg context, idString, nodeSet, idSet
+
+  owner = context~ownerDocument
+
+  -- process each blank-delimited word as an id
+  loop id over .XmlChar~normalizeWhiteSpace(idString)~makearray(' ')
+      -- only add a node once, so if we've seen this id before, skip this
+      if \idSet~hasIndex(id) then do
+          node = owner~getElementById(id)
+          if node \== .nil then do
+              idSet~put(id)
+              nodeSet~append(node)
+          end
+      end
+  end
+
+-- get the string value
 ::method stringFunction
   expose arguments
   use strict arg context, container
@@ -9545,11 +9742,12 @@ use strict arg min, max
   self~checkMinMaxArgs(0, 1)
   -- no node set to check on, just return the string value of the
   -- context node
-  if arguments~isEmpty then return context~nodeValue
+  if arguments~isEmpty then return self~nodeStringValue(context~node)
 
   -- get the target nodeset
   return arguments[0]~evaluateString(context, container)
 
+-- concatenate string values together
 ::method concatFunction
   expose arguments
   use strict arg context, container
@@ -9564,6 +9762,7 @@ use strict arg min, max
 
   return base~string
 
+-- test if a string begins with another string
 ::method startsWithFunction
   expose arguments
   use strict arg context, container
@@ -9575,6 +9774,7 @@ use strict arg min, max
 
   return haystack~match(1, needle)
 
+-- test if one string contains another string
 ::method containsFunction
   expose arguments
   use strict arg context, container
@@ -9586,6 +9786,7 @@ use strict arg min, max
 
   return haystack~pos(needle) \= 0
 
+-- extract the string before a given string
 ::method substringBeforeFunction
   expose arguments
   use strict arg context, container
@@ -9599,6 +9800,7 @@ use strict arg min, max
   if index = 0 then return ""
   return haystack~substr(1, index - 1)
 
+-- extract the substring following another string
 ::method substringAfterFunction
   expose arguments
   use strict arg context, container
@@ -9612,6 +9814,7 @@ use strict arg min, max
   if index = 0 then return ""
   return haystack~substr(index + needle~length)
 
+-- extract a substring value
 ::method substringFunction
   expose arguments
   use strict arg context, container
@@ -9627,24 +9830,59 @@ use strict arg min, max
   length = arguments[3]~evaluateNumber(context, container)
   return haystack~substr(start, length)
 
+-- get the length of a string
 ::method stringLengthFunction
   expose arguments
   use strict arg context, container
 
   self~checkMinMaxArgs(0, 1)
 
-  if arguments~length = 0 then return context~nodeValue~length
+  if arguments~length = 0 then return self~nodeStringValue(context)~length
   return arguments[1]~evaluateString(context, container)~length
 
+-- normalize the spacing of a string
 ::method normalizeSpaceFunction
   expose arguments
   use strict arg context, container
 
   self~checkMinMaxArgs(0, 1)
 
-  if arguments~length = 0 then return context~nodeValue~space
-  return arguments[1]~evaluateString(context, container)~space
+  if arguments~length = 0 then value = self~nodeStringValue(context)
+  else value = arguments[1]~evaluateString(context, container)
 
+  -- normalize this for all of the white space
+  return .XmlChar~normalizeWhiteSpace(value)
+
+-- translate characters in a string.
+::method translateFunction
+  expose arguments
+  use strict arg context, container
+
+  self~checkArgs(3)
+
+  -- get all 3 arguments as strings
+  convertedString = arguments[1]~evaluateString(context, container)
+  inTable = arguments[2]~evaluateString(context, container)
+  outTable = arguments[3]~evaluateString(context, container)
+
+  -- this has a different semantic than the Rexx translate bif,
+  -- so we'll need to build this up manually
+  outValue = .mutablebuffer~new
+
+  -- loop over all of the characters
+  loop char over convertedString~makearray("")
+      index = inTable~pos(char)
+      -- not in the table, just append to the result
+      if index = 0 then outValue~append(char)
+      -- Use the matching character in the output table.  Note that
+      -- subchar will return "" if beyond the end, so this handles the
+      -- deletion case too
+      else outValue~append(outTable~subchar(index))
+  end
+
+  return outValue~string
+
+-- convert a value to a boolean
 ::method booleanFunction
   expose arguments
   use strict arg context, container
@@ -9653,18 +9891,21 @@ use strict arg min, max
 
   return arguments[1]~evaluateBoolean(context, container)
 
+-- always returns true
 ::method trueFunction
   use strict arg context, container
 
   self~checkArgs(0)
   return .true
 
+-- always returns false
 ::method falseFunction
   use strict arg context, container
 
   self~checkArgs(0)
   return .false
 
+-- converts a value to its numeric equivalent
 ::method numberFunction
   expose arguments
   use strict arg context, container
@@ -9674,6 +9915,7 @@ use strict arg min, max
   if arguments~length = 0 then self~convertNumber(context~nodeValue)
   return arguments[1]~evaluateNumber(context, container)
 
+-- sum up all of the nodes in a nodeset
 ::method sumFunction
   expose arguments
   use strict arg context, container
@@ -9689,24 +9931,28 @@ use strict arg min, max
 
   return accum
 
+-- calculate the floor value of a numeric value
 ::method floorFunction
   expose arguments
   use strict arg context, container
 
   return self~floor(arguments[1]~evaluateNumber(context, container))
 
+-- calculate the ceiling value of a numeric value
 ::method ceilingFunction
   expose arguments
   use strict arg context, container
 
   return self~ceiling(arguments[1]~evaluateNumber(context, container))
 
+-- calculate the rounded value of a numeric value
 ::method roundFunction
   expose arguments
   use strict arg context, container
 
   return self~round(arguments[1]~evaluateNumber(context, container))
 
+-- private utility methods for the functions
 ::method floor private
   use strict arg value
 
@@ -10057,7 +10303,16 @@ use strict arg min, max
 -- raise an XPATH error
 ::method xpathError
   use strict arg reason
-  .XPath~xpathError(reason)
+  .XPathException~raiseError(.XPathException~INVALID_EXPRESSION_ERR, reason)
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathResultImpl                                                     */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "XPathResultImpl" public inherit XPathResult
+::method init
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -10066,7 +10321,7 @@ use strict arg min, max
 /*----------------------------------------------------------------------------*/
 
 -- a class for identifying valid xml character values
-::class xmlchar public mixinclass object
+::class "XMLChar" public mixinclass object
 
 -- complete set of valid characters in 8-bit ascii
 ::constant valid '090A0D202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF'x
@@ -10301,3 +10556,12 @@ use strict arg min, max
           return source
       end
   end
+
+-- normalize a string so that all white space characters have been replaced
+-- with single blanks
+::method normalizeWhiteSpace
+  use strict arg source
+
+  -- translate all space characters to blanks
+  source = source~translate('    ', self~space)
+  return source~space
