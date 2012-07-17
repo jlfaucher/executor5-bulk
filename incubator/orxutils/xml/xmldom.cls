@@ -1363,12 +1363,18 @@
 
 ::class "NamedNodeMapImpl" public
 ::method init
-  expose ownerNode attributes hasDefaults changed readonly type
+  expose ownerNode attributes changed type
   use strict arg ownerNode, type
   attributes = .nil
-  hasDefaults = .false
   changed = .false
-  readonly = .false
+
+-- check if a node is readonly and raise an error
+-- for operations that are not valid for readonly nodes
+::method checkReadonly private
+  expose ownerNode
+
+  if ownerNode~readonly then
+      .DomException~raiseError(.DomException~NO_MODIFICATION_ALLOWED_ERR)
 
 -- find the index position for a given attribute
 ::method findItemPoint private
@@ -1449,9 +1455,8 @@
   return .true
 
 ::attribute ownerNode
-::attribute hasDefaults
 ::attribute changed
-::attribute readonly
+
 ::attribute ownerDocument GET
   expose ownerNode
   use strict arg
@@ -1488,6 +1493,8 @@
   expose attributes type
   use strict arg node
 
+  self~checkReadonly   -- must be modifiable
+
   -- must be part of the same document
   if node~ownerDocument \== self~ownerDocument then
       .DomException~raiseError(.DomException~HIERARCHY_ERR)
@@ -1519,6 +1526,8 @@
 ::method setNamedItemNS
   expose attributes type
   use strict arg node
+
+  self~checkReadonly   -- must be modifiable
 
   -- must be part of the same document
   if node~ownerDocument \== self~ownerDocument then
@@ -1560,6 +1569,8 @@
   expose attributes
   use strict arg name
 
+  self~checkReadonly   -- must be modifiable
+
   index = self~findNamePoint(name)
   previous = .nil
 
@@ -1575,6 +1586,8 @@
 ::method removeNamedItemNS
   expose attributes
   use strict arg namespace, name
+
+  self~checkReadonly   -- must be modifiable
 
   index = self~findNamePointNS(namespace, name)
   -- this must be in the list
@@ -1752,6 +1765,7 @@
 
 -- internal removal method used by the different update methods
 ::method remove private
+  expose hasDefaults
   use strict arg attr, index, addDefault = .false
 
   ownerDocument = self~ownerDocument
@@ -1764,7 +1778,7 @@
 
   setdefault = .false
   -- do we have default attributes that we might need to revert to?
-  if self~hasDefaults & addDefault then do
+  if hasDefaults & addDefault then do
       defaults = ownerNode~defaultAttributes
       if defaults \= .nil then do
           defaultAttr = defaults~getNamedItem(name)
@@ -1878,7 +1892,7 @@
   return ownerNode~ownerDocument
 
 -- set the owner document for a node
-::attribute ownerDocument SET PRIVATE
+::attribute ownerDocument SET private
   expose ownerNode
 
   use strict arg doc
@@ -1919,8 +1933,10 @@
   use strict arg
   return .nil
 
--- private attributes used for the implementation
+-- the node readonly attribute
 ::attribute readonly
+
+-- private attributes used for the implementation
 
 -- default implementations designed to be overridden
 ::method hasChildNodes
@@ -2429,6 +2445,14 @@
       .DomException~raiseError(.DomException~HIEARCHY_ERR)
   end
 
+-- check if a node is readonly and raise an error
+-- for operations that are not valid for readonly nodes
+::method checkReadonly private
+  expose readonly
+
+  if readonly then
+      .DomException~raiseError(.DomException~NO_MODIFICATION_ALLOWED_ERR)
+
 ::attribute ctr class private
 ::attribute id       private
 
@@ -2678,6 +2702,8 @@
   expose firstChild lastChild childNodes
   use arg newChild, refChild = .nil, replace = .false
 
+  self~checkReadonly   -- must not be readonly
+
   -- if this is a document fragment, we insert all of the
   -- children of this fragment
   if newChild~nodeType == .Node~DOCUMENT_FRAGMENT_NODE then do
@@ -2765,6 +2791,8 @@
 ::method removeChild
   expose firstChild lastChild childNodes
   use strict arg oldChild, replace = .false
+
+  self~checkReadonly   -- must not be readonly
 
   -- can't remove a child that doesn't belong to us
   if oldChild~parentNode \= self then
@@ -2864,6 +2892,8 @@
 -- with the new content
 ::attribute textContent SET
   use strict arg text
+
+  self~checkReadonly   -- must not be readonly
   child = self~firstChild
   loop while child \= .nil
       self~removeChild(child)
@@ -3102,6 +3132,8 @@ syntax:
   expose nodeName localName prefix
   use strict arg prefix
 
+  self~checkReadonly   -- must not be readonly
+
   -- could be removing this entirely
   if prefix == .nil | prefix == "" then nodeName = localName
   -- setting it to a legal type...validate it
@@ -3240,6 +3272,8 @@ syntax:
 -- set the attribute value
 ::attribute value SET
   use strict arg newValue
+
+  self~checkReadonly   -- must not be readonly
   -- we might need to send mutation events, so get the old value
   if self~ownerDocument~haveMutationEventListeners then
       -- get the old value (normalized)
@@ -3352,6 +3386,8 @@ syntax:
 ::attribute prefix SET
   expose nodeName localName
   use strict arg prefix
+
+  self~checkReadonly   -- must not be readonly
   -- could be removing this entirely
   if prefix == .nil | prefix == "" then nodeName = localName
   -- setting it to a legal type...validate it
@@ -3452,6 +3488,8 @@ syntax:
   expose attributes
   use strict arg name
 
+  self~checkReadonly   -- must be modifiable
+
   if attributes \= .nil  then
       return attributes~removeNamedItem(name)
   return .nil
@@ -3461,6 +3499,8 @@ syntax:
   expose attributes
   use strict arg oldAttr
 
+  self~checkReadonly   -- must be modifiable
+
   if oldAttr~ownerElement \== self then
       .DomException~raiseError(.DomException~NOT_FOUND_ERR)
   if attributes \= .nil then return attributes~removeItem(oldAttr, .true)
@@ -3469,6 +3509,8 @@ syntax:
 -- set a new attribute value on an element
 ::method setAttribute
   use strict arg name, value
+
+  self~checkReadonly   -- must be modifiable
 
   newAttr = self~getAttributeNode(name)
   if newAttr == .nil then do
@@ -3486,6 +3528,8 @@ syntax:
 -- set an attribute on an element by node
 ::method setAttributeNode
   use strict arg newAttr
+
+  self~checkReadonly   -- must be modifiable
 
   -- get the attribute map.  This also creates it if
   -- we don't have one yet
@@ -3507,6 +3551,8 @@ syntax:
 ::method setAttributeNS
   expose attributes
   use strict arg namespaceURI, qualifiedName, value
+
+  self~checkReadonly   -- must be modifiable
 
   index = qualifiedName~pos(":")
   if pos > 0 then parse var qualifiedName prefix ":" localName
@@ -3536,6 +3582,8 @@ syntax:
   expose attributes
   use strict arg namespaceURI, localName
 
+  self~checkReadonly   -- must be modifiable
+
   if attributes == .nil then return .nil
   return attributes~removeNamedItemNS(namespaceURI, localName)
 
@@ -3551,6 +3599,8 @@ syntax:
 -- set an attribute node by specified localname/namespace pair
 ::method setAttributeNodeNS
   use strict arg newAttr
+
+  self~checkReadonly   -- must be modifiable
 
   -- get the attribute map.  This also creates it if
   -- we don't have one yet
@@ -3584,11 +3634,15 @@ syntax:
 ::method setIdAttributeNode
   use strict arg attr, makeId
 
+  self~checkReadonly   -- must be modifiable
+
   self~makeAttributeId(attr, makeId)
 
 -- set a named attribute as an id value for the element
 ::method setIdAttribute
   use strict arg name, makeId
+
+  self~checkReadonly   -- must be modifiable
 
   attr = self~getAttributeNode(name)
   -- this must be there
@@ -3600,6 +3654,8 @@ syntax:
 -- set an attribute to be an id attribute by namespace/localname
 ::method setIdAttributeNS
   use strict arg namespaceURI, localname, makeId
+
+  self~checkReadonly   -- must be modifiable
 
   attr = self~getAttributeNodeNS(namspaceURI, localname)
   -- this must be there
@@ -3950,6 +4006,8 @@ syntax:
   expose data
   use strict arg value, replace = .false
 
+  self~checkReadonly   -- must not be readonly
+
   oldValue = data
   -- announce that we're modifying
   self~ownerDocument~modifyingCharacterData(self, replace)
@@ -3975,6 +4033,8 @@ syntax:
   expose data
   use strict arg newData
 
+  self~checkReadonly   -- must be modifiable
+
   if newData == .nil then return
 
   -- set the node value, which also handles events
@@ -3984,6 +4044,8 @@ syntax:
 ::method deleteData
   expose data
   use strict arg offset, count, replace = .false
+
+  self~checkReadonly   -- must be modifiable
 
   if offset < 0 | offset > data~length | count < 0 then
       .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
@@ -4004,6 +4066,8 @@ syntax:
   expose data
   use strict arg offset, newData, replace = .false
 
+  self~checkReadonly   -- must be modifiable
+
   if offset < 0 | offset > data~length then
       .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
 
@@ -4020,6 +4084,8 @@ syntax:
 ::method replaceData
   expose data
   use strict arg offset, count, newData
+
+  self~checkReadonly   -- must be modifiable
 
   if offset < 0 | offset > data~length | count < 0 then
       .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
@@ -4141,6 +4207,8 @@ syntax:
 -- the split off text and updating the value of the target node
 ::method splitText
   use strict arg offset
+
+  self~checkReadonly   -- must be modifiable
 
   if offset < 0 | offset > self~data~length then
       .DomException~raiseError(.DomException~INDEX_SIZE_ERR)
@@ -6953,6 +7021,8 @@ syntax:
   use strict arg source
 
   if source == .nil then return .nil
+
+  source~checkReadonly   -- this must be modifiable
 
   type = source~nodeType
 
