@@ -39,14 +39,34 @@
 # NOTE:  /OPT:REF in linker flags eliminates unreferenced functions and data.
 #        Need to use /Gy when compiling to use /OPT:REF.
 
-# NMAKE-compatible MAKE file for ooDialog.  Note that in ooDialog trunk we have
-# an incentive to keep this oodialog.mak file in sync with the oodialog.mak file
-# in ooRexx trunk.  However, once ooDialog is branched, there is no reason why
-# this oodialog.mak file needs to remain in sync with ooRexx trunk.
+# NMAKE-compatible MAKE file for ooDialog
 
-!include $(OOD_ROOT_DIR)\install\compiler.info.incl
-!include $(OOD_ROOT_DIR)\install\ooDialog.ver.incl
-!include $(OOD_ROOT_DIR)\install\ooDialogWin32.mak
+# If OOD_INDEPENDENT is defined we are operating outside of the interpreter
+# build.  In that case, OOD_OUTDIR, OOD_OODIALOGSRC, and OOD_INCLUDE_File are
+# defined in the parent make file that calls us.  When called in the interpreter
+# build process, we set those macros using the OR_xx values set by the build
+# batch files.
+
+!ifdef OOD_INDEPENDENT
+
+REXXAPI_LIBS = $(REXX_LIBS)
+
+!else
+
+OOD_OUTDIR=$(OR_OUTDIR)
+OOD_OODIALOGSRC=$(OR_OODIALOGSRC)
+REXXAPI_LIBS = $(OR_OUTDIR)\rexx.lib $(OR_OUTDIR)\rexxapi.lib
+OOD_INCLUDE_FILE = "$(OR_LIBSRC)\ORXWIN32.MAK"
+
+!endif
+
+# Generate the version information.  Quit if there is an error.
+!IF [generateVersionFile.bat] != 0
+!  ERROR Build error: could not gerate version file, ooDialog.ver.incl
+!ENDIF
+
+!include ooDialog.ver.incl
+!include $(OOD_INCLUDE_FILE)
 
 # The ooDialog specific version definition
 ood_ver_def = -DOOD_VER=$(OOD_MAJOR) -DOOD_REL=$(OOD_MINOR) -DOOD_MOD=$(OOD_MOD_LVL) -DOOD_BLD=$(OOD_BLD_LVL) -DOOD_COPY_YEAR=\"$(OOD_COPY_YEAR)\"
@@ -88,7 +108,7 @@ $(OOD_OUTDIR)\oodialog.dll: $(SOURCEF)
     $(OR_LINK) \
     $(SOURCEF)  \
     $(lflags_common) $(lflags_dll) \
-    $(REXX_LIBS) \
+    $(REXXAPI_LIBS) \
     WINMM.LIB \
     COMDLG32.LIB \
     COMCTL32.LIB \

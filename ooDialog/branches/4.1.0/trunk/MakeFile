@@ -140,11 +140,14 @@ all: $(BASETARGETS)
 
 target_ooDialog:
     @cd $(OOD_OODIALOGSRC)
-    @set OOD_ROOT_DIR=$(OOD_ROOT_DIR)
+    @set OOD_INDEPENDENT=1
     @set OOD_OUTDIR=$(OOD_OUTDIR)
     @set OOD_OODIALOGSRC=$(OOD_OODIALOGSRC)
+    @set OOD_INCLUDE_FILE=$(OOD_INCLUDE_FILE)
     @set REXX_LIBS=$(REXX_LIBS)
     @set NODEBUG=$(NODEBUG)
+    @set CPU=$(CPU)
+    @set MSVCVER=$(MSVCVER)
     @set MKASM=$(MKASM)
     @set NOCRTDLL=1
     $(MAKE) /NOLOGO /F oodialog.mak
