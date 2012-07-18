@@ -116,6 +116,7 @@
   Var RegVal_installedLocation      ; location of ooRexx uninstall program found in registry
   Var IsAdminUser                   ; is the installer being run by an admin:           true / false
   Var ooRexxVersion                 ; Discovered ooRexx version
+  Var ooRexxShortVersion            ; Discovered ooRexx version without the svn revision, i.e.: 4.0.0
   Var isMinimumRequiredRexx         ; Installed ooRexx meets minimum required for this version of ooDialog true / false
   Var installerProblemIntro         ; First sentence when the installer detects a file can not be deleted, i.e. oodialog.dll
 
@@ -184,6 +185,14 @@ Section  doInstall
     File "${ExamplesDir}\examples\*.txt"
 
     ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\oleinfo
+    ; Add the files ...
+    File "${ExamplesDir}\oleinfo\*.bmp"
+    File "${ExamplesDir}\oleinfo\*.rc"
+    File "${ExamplesDir}\oleinfo\*.rex"
+    File "${ExamplesDir}\oleinfo\*.txt"
+
+    ; Set the installation directory:
     SetOutPath $INSTDIR\samples\oodialog\rc
     ; Add the files ...
     File "${ExamplesDir}\rc\*.rc"
@@ -230,6 +239,11 @@ Section  doInstall
     ; Add the files ...
     File "${ExamplesDir}\wav\*.wav"
     File "${ExamplesDir}\wav\*.txt"
+
+    ; Set the installation directory:
+    SetOutPath $INSTDIR\samples\oodialog\winsystem
+    ; Add the files ...
+    File "${ExamplesDir}\winsystem\*.rex"
 
     DetailPrint ""
 
@@ -347,6 +361,7 @@ Function DetermineRexxVersion
   IntOp $R5 $R1 & 0x0000FFFF
 
   StrCpy $ooRexxVersion "$R2.$R3.$R4.$R5"
+  StrCpy $ooRexxShortVersion "$R2.$R3.$R4"
 
   ${If} $R2 >= 4
   ${AndIf} $R3 >= 0
@@ -480,6 +495,15 @@ Function RemoveFiles
 
   ; For the examples just delete the whole tree.
   RMDir /r $INSTDIR\samples\oodialog
+
+  ; But in ooRexx 4.0.0, some examples were not in ooDialog
+  ${If} $ooRexxShortVersion == "4.0.0"
+      RMDir /r $INSTDIR\samples\winsystem
+      RMDir /r $INSTDIR\samples\ole\oleinfo
+  ${ElseIf} $ooRexxShortVersion == "4.0.1"
+      RMDir /r $INSTDIR\samples\winsystem
+      RMDir /r $INSTDIR\samples\ole\oleinfo
+  ${EndIf}
 
   ; For the short cuts, we delete any known short cut created in any 4.0.0 or
   ; later installation.  Each independent ooDialog installation will create all
