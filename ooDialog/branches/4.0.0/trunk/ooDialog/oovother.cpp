@@ -289,26 +289,34 @@ size_t RexxEntry SleepMS(const char *funcname, size_t argc, CONSTRXSTRING *argv,
 
 size_t RexxEntry WinTimer(const char *funcname, size_t argc, CONSTRXSTRING *argv, const char *qname, RXSTRING *retstr)
 {
-   UINT_PTR timer;
-   MSG msg;
+    UINT_PTR timerID;
+    MSG msg;
 
-   CHECKARG(2);
-   if (!stricmp(argv[0].strptr, "START"))
-   {
-        timer = SetTimer(NULL, 1001, atoi(argv[1].strptr), NULL);
-        RETPTR(timer)
-   } else
-   if (!stricmp(argv[0].strptr, "STOP"))
-   {
-        timer = KillTimer(NULL, atoi(argv[1].strptr));
+    CHECKARG(2);
+    if ( !stricmp(argv[0].strptr, "START") )
+    {
+        timerID = SetTimer(NULL, 1001, atoi(argv[1].strptr), NULL);
+        RETPTR(timerID)
+    }
+    else if ( !stricmp(argv[0].strptr, "STOP") )
+    {
+        timerID = (UINT_PTR)GET_POINTER(argv[1]);
+        if ( KillTimer(NULL, timerID) == 0 )
+        {
+            RETVAL(GetLastError())
+        }
         RETC(0)
-   } else
-   if (!stricmp(argv[0].strptr, "WAIT"))
-   {
-      while (!PeekMessage(&msg, NULL, WM_TIMER, WM_TIMER, PM_REMOVE) || (msg.wParam != (ULONG)atoi(argv[1].strptr))) {};
-      RETC(0)
-   }
-   RETC(1)
+    }
+    else if ( !stricmp(argv[0].strptr, "WAIT") )
+    {
+        timerID = (UINT_PTR)GET_POINTER(argv[1]);
+        while ( !PeekMessage(&msg, NULL, WM_TIMER, WM_TIMER, PM_REMOVE) || (msg.wParam != timerID) )
+        {
+            ; // do nothing
+        }
+        RETC(0)
+    }
+    RETC(1)
 }
 
 

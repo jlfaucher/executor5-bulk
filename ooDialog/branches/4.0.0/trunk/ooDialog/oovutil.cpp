@@ -276,7 +276,7 @@ LRESULT CALLBACK RexxDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
                 return FALSE;
 
              case WM_USER_CREATECHILD:
-                hW = CreateDialogIndirectParam(MyInstance, (DLGTEMPLATE *) lParam, (HWND) wParam, (DLGPROC)RexxDlgProc, addressedTo->Use3DControls); /* pass 3D flag to WM_INITDIALOG */
+                hW = CreateDialogIndirectParam(MyInstance, (DLGTEMPLATE *) lParam, hDlg, (DLGPROC)RexxDlgProc, addressedTo->Use3DControls); /* pass 3D flag to WM_INITDIALOG */
                 ReplyMessage((LRESULT) hW);
                 return (LRESULT) hW;
              case WM_USER_INTERRUPTSCROLL:

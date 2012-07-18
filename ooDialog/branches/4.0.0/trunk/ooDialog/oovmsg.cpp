@@ -408,13 +408,14 @@ size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING *ar
 {
     LONG i;
     ULONG n[5];
+    HWND hWnd;
 
     CHECKARGL(5);
+    hWnd = GET_HWND(argv[1]);
+
     if (!strcmp(argv[0].strptr,"DLG"))
     {
         CHECKARG(6);
-
-        HWND hWnd = GET_HWND(argv[0]);
 
         for (i=1; i<5; i++)
         {
@@ -433,8 +434,6 @@ size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING *ar
         LPARAM lP;
 
         CHECKARG(6);
-
-        HWND hWnd = GET_HWND(argv[0]);
 
         for (i=0; i<4; i++)
         {
@@ -498,18 +497,19 @@ size_t RexxEntry SendWinMsg(const char *funcname, size_t argc, CONSTRXSTRING *ar
     else
     if (!strcmp(argv[0].strptr,"ANY"))
     {
-       HWND hWnd = GET_HWND(argv[0]);
-       for (i=0; i<4; i++)
+        LRESULT ret;
+        UINT msgID = strtoul(argv[2].strptr, '\0', 16);
+        HANDLE wParam = GET_HANDLE(argv[3].strptr);
+        LONG lParam = atol(argv[4].strptr);
+
+       // it can still be used here.
+       ret = SendMessage(hWnd, msgID, (WPARAM)wParam, (LPARAM)lParam);
+       if ( ret == 0 )
        {
-          if (ISHEX(argv[i+1].strptr))
-              n[i] = strtoul(argv[i+1].strptr,'\0',16);
-          else
-              n[i] = strtoul(argv[i+1].strptr,'\0',10);
+           RETVAL(0)
        }
 
-       ltoa((long)SendMessage(hWnd, n[1], (WPARAM)n[2], (LPARAM)n[3]), retstr->strptr, 10);
-       retstr->strlength = strlen(retstr->strptr);
-       return 0;
+       RETHANDLE(ret);
     }
     return 0;
 }
