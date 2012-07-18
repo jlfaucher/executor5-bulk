@@ -224,7 +224,6 @@
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-
 -- DOM Node interface class
 ::class "Node" public mixinclass Object
 -- various type definitions
@@ -685,7 +684,6 @@
 ::class "XPathNamespace" mixinclass Node
 ::constant XPATH_NAMESPACE_NODE 13
 ::method ownerElement abstract
-
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -2424,22 +2422,6 @@
 -- the document change count
 ::method changes
   return self~ownerdocument~changes
-
--- select a set of nodes using an xpath expression
-::method selectNodeSet
-  use strict arg path
-
-  -- any errors are just treated as selection failures and return an
-  -- empty node set
-  signal on syntax
-
-  -- parse the expression and execute using this node as the starting context
-  parser = .XpathParser~new(self~document, path)
-  expr = parse~parse
-  return expr~evaluate(self, .nil)
-
-  syntax:
-  -- just return an empty node set
 
 -- methods for the DOMEventTracker interface
 
@@ -4216,7 +4198,7 @@ syntax:
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
-/* Class: Text -- a DOM comment node                                          */
+/* Class: Comment -- a DOM comment node                                       */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
@@ -4940,6 +4922,7 @@ syntax:
 /* Class: DOMEvent                                                            */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+
 ::class "DOMEvent" public
 -- phase definitions
 ::constant NONE 0
@@ -6702,6 +6685,7 @@ syntax:
 /* Class: DocumentImpl                                                        */
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
+
 ::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal DocumentEvent DocumentRange
 ::method init
   expose iterators ranges eventListeners userData identifiers doctype -
@@ -8238,7 +8222,6 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-
 ::class "XPath"
 ::constant INVALID_OPERATOR_ERROR "Invalid XPath operator found"
 ::constant INVALID_EXPRESSION_ERROR "Invalid XPath expression."
@@ -8257,6 +8240,12 @@ syntax:
 ::method xpathError class
   use strict arg reason
   raise syntax 93.900 array(reason)
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: TokenQueue                                                          */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- a queue of tokens
 ::class "TokenQueue"
@@ -8305,6 +8294,11 @@ syntax:
   expose queue
   queue~pop
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathToken                                                          */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- a generic token value.  Most of the work here is done via class methods.
 -- the token itself is very general and very simple
@@ -8539,6 +8533,12 @@ syntax:
 -- special test for operator tokens -- default is always false
 ::attribute isOperator GET
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathOperatorToken                                                  */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- special subclass for the operators
 ::class "XPathOperatorToken" subclass XPathToken
 ::method init
@@ -8552,6 +8552,12 @@ syntax:
   return .true
 -- operator precedence value
 ::attribute precedence GET
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathScanner                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- a class to scan an xpath expression and break it up into its tokens.
 ::class "XPathScanner"
@@ -9004,8 +9010,14 @@ syntax:
   tokens~addToken(.XPathToken~numbertoken(number))
   return currentOffset;
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathNodeTest                                                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- test for a node match
-::class "NodeTest"
+::class "XPathNodeTest"
 ::method init
   expose nameTest typeTest
   use strict arg nameTest = .nil, typeTest = (.Node~ANY_NODE)
@@ -9018,6 +9030,11 @@ syntax:
   if nameTest \= .nil then return nodeset~getNamedItems(nameTest)
   else nodeset~getTypedItems(typeTest)
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathConversions                                                    */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 ::class "XPathConversions" mixinclass object
 -- Apply the xpath rules for boolean true/false to an expression result
@@ -9111,6 +9128,11 @@ syntax:
   end
   -- all other node types don't add anything
   else return
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathExpr                                                           */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- base class for an xpath expression term
 ::class "XpathExpr" inherit XPathConversions
@@ -9163,12 +9185,17 @@ syntax:
   -- some inspection
   return self~convertBoolean(result)
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathStep                                                           */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- an axis evaluation step in an expression
 ::class "XpathStep" subclass xpathexpr
 ::method init
   expose axis nodeTest predicates
-  use strict arg axis, nodeTest = (.NodeTest~new(.Node~ANY_NODE)), predicates = (.array~new)
+  use strict arg axis, nodeTest = (.XPathNodeTest~new(.Node~ANY_NODE)), predicates = (.array~new)
 
 ::method evaluate
   expose axis nodeTest
@@ -9191,6 +9218,12 @@ syntax:
   end
 
   return nodeSet
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathDyadicOperator                                                 */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- a dyadic expression term
 ::class "XPathDyadicOperator" subclass XPathExpr
@@ -9560,6 +9593,12 @@ syntax:
 
   return union
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathUnaryOperator                                                  */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- a unary operator expression term
 ::class "XPathUnaryOperator" subclass XPathExpr
 ::method init
@@ -9575,6 +9614,12 @@ syntax:
   -- value
   return - self~evaluateNumber(term)
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathLiteral                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- a literal value as an expression term
 ::class "XPathLiteral" subclass XPathExpr
 ::method init
@@ -9587,6 +9632,12 @@ syntax:
 
   -- just return this without evaluation
   return value
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathFunctionCall                                                   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 ::class "XPathFunctionCall" subclass XPathExpr
 ::method init
@@ -10025,8 +10076,14 @@ use strict arg min, max
   use strict arg value
   return self~floor(value + .5)
 
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathLocationPath                                                   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
 -- a multi-step path to a given location
-::class "LocationPath"
+::class "XPathLocationPath"
 ::method init
   expose steps
   use strict arg steps
@@ -10045,6 +10102,12 @@ use strict arg min, max
   end
 
   return nodeSet
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathParser                                                         */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 -- the expression parser, which builds a location path that can be used to
 -- evaluate the xpath expression
@@ -10154,26 +10217,26 @@ use strict arg min, max
   -- a wild card, this is easy
   if token == .XPathToken~wildcard then do
       -- looking for element nodes, matching anything
-      return .NodeTest~new(Node~ELEMENT_NODE, .QName~new("*", "*"))
+      return .XPathNodeTest~new(Node~ELEMENT_NODE, .QName~new("*", "*"))
   end
   -- some sort of node type test
   else if token~type == "NODETYPE" then do
-      if token~value = "element" then return .NodeTest~new(.Node~ELEMENT_NODE)
-      if token~value = "text" then return .NodeTest~new(.Node~TEXT_NODE)
-      if token~value = "comment" then return .NodeTest~new(.Node~COMMENT_NODE)
-      if token~value = "node" then return .NodeTest~new(.Node~ANY_NODE)
-      if token~value = "processing-instruction" then return .NodeTest~new(.Node~PROCESSING_INSTRUCTION_NODE)
+      if token~value = "element" then return .XPathNodeTest~new(.Node~ELEMENT_NODE)
+      if token~value = "text" then return .XPathNodeTest~new(.Node~TEXT_NODE)
+      if token~value = "comment" then return .XPathNodeTest~new(.Node~COMMENT_NODE)
+      if token~value = "node" then return .XPathNodeTest~new(.Node~ANY_NODE)
+      if token~value = "processing-instruction" then return .XPathNodeTest~new(.Node~PROCESSING_INSTRUCTION_NODE)
   end
   -- have a qualified name...all of the pieces are here already
   else if token~type == "QNAME" then do
-      return .NodeTest~new(Node~ANY_NODE, .QName~new(token~prefix, token~name))
+      return .XPathNodeTest~new(Node~ANY_NODE, .QName~new(token~prefix, token~name))
   end
   -- simple name token?
   else if token~type == "NCNAME" then
-      return .NodeTest~new(Node~ANY_NODE, .QName~new("*", token~name))
+      return .XPathNodeTest~new(Node~ANY_NODE, .QName~new("*", token~name))
   -- this token is something else...push it back and just return an ANY_NODE selector
   tokenqueue~previousToken
-  return .NodeTest~new(Node~ANY_NODE);
+  return .XPathNodeTest~new(Node~ANY_NODE);
 
 -- parse out a predicate
 ::method parsePredicate
@@ -10374,7 +10437,7 @@ use strict arg min, max
   invalidIteratorState = .false
 
   -- make sure we have a good type
-  self~validateType(type)
+  self~class~validateType(type)
   if resultObject == .nil then
       .XpathException~raiseError(.XPathException~INVALID_EXPRESSION_ERR)
 
@@ -10507,7 +10570,7 @@ use strict arg min, max
   return node
 
 -- validate the provided type
-::method validateType private
+::method validateType class
   use strict arg type
 
   if type \==  self~ANY_TYPE  & -
@@ -10738,6 +10801,48 @@ use strict arg min, max
 
 ::method getUserData
   return .nil
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathExpressionImpl                                                 */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- the implementation of the XPathExpression class
+::class "XPathExpressionImpl" inherit XPathExpression
+::method init
+  expose path document
+  use strict arg path, document = .nil
+
+-- evaluate the expression using the given context
+::method evaluate
+  expose path document
+  use strict arg context, type = (.XPathResult~ANY_TYPE), resultObject = .nil
+
+  -- we only support the castable XPathEvaluator, so the documents must match
+  if context \== document, context~ownerDocument \== document then
+      .DomException~raiseError(.DomException~WRONG_DOCUMENT_ERROR)
+
+  -- context nodes are restricted to a small subset
+  nodeType = context~nodeType
+  if nodeType \= .Node~DOCUMENT_NODE & -
+     nodeType \= .Node~ELEMENT_NODE & -
+     nodeType \= .Node~ATTRIBUTE_NODE & -
+     nodeType \= .Node~TEXT_NODE & -
+     nodeType \= .Node~CDATA_SECTION_NODE & -
+     nodeType \= .Node~COMMENT_NODE & -
+     nodeType \= .Node~PROCESSING_INSTRUCTION_NODE & -
+     nodeType \= .XPathNamespace~XPATH_NAMESPACE_NODE then
+      .DomException~raiseError(.DomException~NOT_SUPPORTED_ERROR)
+
+  -- validate that we have a valid type
+  .XPathResultImpl~validateType(type)
+
+   -- evaluate the expression in the current context
+   res = path~evaluate(contextNode, .nil)
+   -- we always return a new object instance
+   return .XPathResultImpl(type, res, contextNode, path)
 
 
 /*----------------------------------------------------------------------------*/
