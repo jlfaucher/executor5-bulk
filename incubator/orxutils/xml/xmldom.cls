@@ -280,6 +280,7 @@
 ::method lookupNamespaceURI abstract
 ::method textContent abstract
 ::method isDefaultNamespace
+::method compareDocumentPosition
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -666,6 +667,7 @@
 
 ::method resultType abstract
 ::method numberValue abstract
+::method stringValue abstract
 ::method booleanValue abstract
 ::method singleNodeValue abstract
 ::method invalidIteratorState abstract
@@ -887,26 +889,7 @@
   -- must be a nodelist...get the items array from the list
   else nodes = nodes~makearray
 
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: NodeList                                                            */
-/*        Private methods                                                     */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-/* Class: NodeList                                                            */
-/*        Public methods                                                      */
-/*----------------------------------------------------------------------------*/
-/*----------------------------------------------------------------------------*/
-
-/*----------------------------------------------------------------------------*/
-/* Method: item                                                               */
-/* Description: get a list item.                                              */
-/*----------------------------------------------------------------------------*/
-
+-- get a list item
 ::method item
   expose nodes
   use strict arg index
@@ -914,10 +897,7 @@
   -- maintain that.
   return nodes[index + 1]   -- returns .nil for out of bounds
 
-/*----------------------------------------------------------------------------*/
-/* Method: length                                                             */
-/* Description: get the number of items in the list.                          */
-/*----------------------------------------------------------------------------*/
+-- get the number of items in the list
 ::method length
   expose nodes
   use strict arg
@@ -928,6 +908,12 @@
   expose nodes
   use strict arg
   return nodes~copy   -- make sure this is a copy
+
+-- provide a supplier for the nodelist
+::method supplier
+  expose nodes
+  use strict arg
+  return nodes~supplier
 
 -- access to the set of nodes
 ::attribute nodes
@@ -993,6 +979,45 @@
   -- not found, return nothing
   if index == .nil then return .nil
   return nodes[index]
+
+-- retrieve the first node in document order
+::method getFirstOrderedNode
+  expose nodes
+
+  if nodes~isEmpty then return .nil
+
+  firstNode = nodes[1]
+
+  flag = .Node~DOCUMENT_POSITION_PRECEDING~d2x~x2b
+
+  loop i = 2 to nodes~items
+      -- if the other node precedes this one, make this the new first
+      test = firstNode~compareDocumentPosition(nodes[i])
+      if test~d2x~x2b~bitand(flag) \= 0 then firstNode = nodes[i]
+  end
+
+  return firstNode    -- the is first in order
+
+-- sort a nodelist so the items are in document order
+::method sortInDocumentOrder
+  expose nodes
+
+  nodes~sortWith(self)    -- sort using our comparator method
+
+-- compare two nodes using document position
+::method compare
+   use arg first, second
+
+  flag = .Node~DOCUMENT_POSITION_PRECEDING~d2x~x2b
+  test = firstNode~compareDocumentPosition(nodes[i])
+  -- they are the same node
+  if test = 0 then return 0
+  -- first is greater in order
+  else if test~d2x~x2b~bitand(flag) \= 0 then return -1
+  else return -1
+
+
+
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -2044,10 +2069,12 @@
   if self~isFeature(feature, version) then return self
   return .nil
 
+-- append a child to a node
 ::method appendChild
   use strict arg newChild
   return self~insertBefore(newChild, .nil)
 
+-- compare the relative document positions of two nodes
 ::method compareDocumentPosition
   use strict arg other
 
@@ -2103,7 +2130,7 @@
       -- we're a descendant of other...this is an easy test.  Other follows us
       -- and also contains us
       if node == self then
-          return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_FOLLOWING
+          return .Node~DOCUMENT_POSITION_IS_CONTAINED + .Node~DOCUMENT_POSITION_FOLLOWING
 
       otherAncestor = node
       node = node~parentNode
@@ -2190,15 +2217,15 @@
   -- perspective of the other node now
   if otherAncestorType == .Node~NOTATION_NODE | otherAncestorType == .Node~ENTITY_NODE then do
       container = thisOwner~doctype
-      if container = this then
-          return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_FOLLOWING
+      if container == self then
+          return .Node~DOCUMENT_POSITION_IS_CONTAINED + .Node~DOCUMENT_POSITION_FOLLOWING
       otherNode = thisOwner
       otherAncestor = thisOwner
   end
   -- owned by a document type
   else if otherAncestorType == .Node~DOCUMENT_TYPE_NODE then do
       if thisNode == otherOwner then
-          return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_FOLLOWING
+          return .Node~DOCUMENT_POSITION_IS_CONTAINED + .Node~DOCUMENT_POSITION_FOLLOWING
       else if otherOwner \== .nil & thisOwner == otherOwner then
           return .Node~DOCUMENT_POSITION_PRECEDING
   end
@@ -2212,7 +2239,7 @@
           -- the other node is an descendent of the reference node's element, which
           -- means it follows this one
           if node == otherNode then
-              return .Node~DOCUMENT_POSITION_CONTAINS + .Node~DOCUMENT_POSITION_FOLLOWING
+              return .Node~DOCUMENT_POSITION_IS_CONTAINED + .Node~DOCUMENT_POSITION_FOLLOWING
           otherAncestor = node
           node = node~parentNode
       end
@@ -8991,57 +9018,8 @@ syntax:
   if nameTest \= .nil then return nodeset~getNamedItems(nameTest)
   else nodeset~getTypedItems(typeTest)
 
--- base class for an xpath expression term
-::class XpathExpr
--- evaluate the expression
-::method evaluate
-  use strict arg context, container
-  return .nil
 
--- evaluate an expression expecting a boolean value back
-::method evaluateBoolean
-  use strict arg context, container
-
-  value = self~evaluate(context, container)
-  -- apply the boolean conversion rules if needed
-  return self~convertBoolean(value)
-
--- evaluate an expression, expecting a string value
-::method evaluateString
-  use strict arg context, container
-
-  value = self~evaluate(context, container)
-  -- apply the string conversion rules if needed
-  return self~convertString(value)
-
--- evaluate an expression expecting a numeric value result
-::method evaluateNumber
-  use strict arg context, container
-
-  value = self~evaluate(context, container)
-  -- apply the number conversion rules if needed
-  return self~convertNumber(value)
-
--- evaluate an expression, expecting a nodeset result
-::method evaluateNodeSet
-  use strict arg context, container
-
-  value = self~evaluate(context, container)
-
-  if \value~isA(.NodeSet) then .XPath~error(.Xpath~NODESET_VALUE_ERROR)
-  return value
-
--- evaluate a predicate expression
-::method evaluatePredicate
-  use strict arg context, container, proximityPosition
-
-  value = self~evaluate(context, container)
-  if value~isA(.string), value~datatype('Number') then
-      return result = proximityPosition
-  -- xpath has funny rules for boolean true/false, so this requires
-  -- some inspection
-  return self~convertBoolean(result)
-
+::class "XPathConversions" mixinclass object
 -- Apply the xpath rules for boolean true/false to an expression result
 ::method convertBoolean
   use strict arg value
@@ -9133,6 +9111,57 @@ syntax:
   end
   -- all other node types don't add anything
   else return
+
+-- base class for an xpath expression term
+::class "XpathExpr" inherit XPathConversions
+-- evaluate the expression
+::method evaluate
+  use strict arg context, container
+  return .nil
+
+-- evaluate an expression expecting a boolean value back
+::method evaluateBoolean
+  use strict arg context, container
+
+  value = self~evaluate(context, container)
+  -- apply the boolean conversion rules if needed
+  return self~convertBoolean(value)
+
+-- evaluate an expression, expecting a string value
+::method evaluateString
+  use strict arg context, container
+
+  value = self~evaluate(context, container)
+  -- apply the string conversion rules if needed
+  return self~convertString(value)
+
+-- evaluate an expression expecting a numeric value result
+::method evaluateNumber
+  use strict arg context, container
+
+  value = self~evaluate(context, container)
+  -- apply the number conversion rules if needed
+  return self~convertNumber(value)
+
+-- evaluate an expression, expecting a nodeset result
+::method evaluateNodeSet
+  use strict arg context, container
+
+  value = self~evaluate(context, container)
+
+  if \value~isA(.NodeSet) then .XPath~error(.Xpath~NODESET_VALUE_ERROR)
+  return value
+
+-- evaluate a predicate expression
+::method evaluatePredicate
+  use strict arg context, container, proximityPosition
+
+  value = self~evaluate(context, container)
+  if value~isA(.string), value~datatype('Number') then
+      return result = proximityPosition
+  -- xpath has funny rules for boolean true/false, so this requires
+  -- some inspection
+  return self~convertBoolean(result)
 
 
 -- an axis evaluation step in an expression
@@ -10335,8 +10364,381 @@ use strict arg min, max
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "XPathResultImpl" public inherit XPathResult
+::class "XPathResultImpl" public inherit XPathResult DomEventListener XPathConversions
 ::method init
+  expose resultObject resultType contextNode xpathExpr supplier snapshot invalidIteratorState
+  use strict arg resultObject, type, contextNode, xpathExpr
+
+  supplier = .nil
+  snapshot = .nil
+  invalidIteratorState = .false
+
+  -- make sure we have a good type
+  self~validateType(type)
+  if resultObject == .nil then
+      .XpathException~raiseError(.XPathException~INVALID_EXPRESSION_ERR)
+
+  -- if this was a request for any value, then make an educated guess on the
+  -- type based on the object
+  if type == .XPathResult~ANY_TYPE then
+      resultType = self~inferResultType(resultObject)
+  else resultType = type
+
+
+  -- if this result requires a nodeset, validate, and potentially sort
+  if resultType == .XPathResult~ORDERED_NODE_ITERATOR_TYPE | resultType == .XPathResult~UNORDERED_NODE_ITERATOR_TYPE | -
+     resultType == .XPathResult~ORDERED_NODE_SNAPSHOT_TYPE | resultType == .XPathResult~UNORDERED_NODE_SNAPSHOT_TYPE | -
+     resultType == .XPathResult~ANY_UNORDERED_NODE_TYPE | resultType == .XPathResult~FIRST_ORDERED_NODE_TYPE then do
+
+      -- we must have a nodeset of some sort to continue
+      if \resultObject~isA(.NodeSet) then
+          .XpathException~raiseError(.XPathException~TYPE_ERR)
+      -- if this is an ordered result type, then sort the nodeset
+      if resultType == .XPathResult~ORDERED_NODE_ITERATOR_TYPE | resultType == .XPathResult~ORDERED_NODE_SNAPSHOT_TYPE then
+          resultObject~sortInDocumentOrder
+      -- If we have an iterator type, add an event listener to the context node to
+      -- detect any updates that might invalidate the result set
+      if resultType == .XPathResult~ORDERED_NODE_ITERATOR_TYPE | resultType == .XPathResult~UNORDERED_NODE_ITERATOR_TYPE then do
+          self~addEventListener
+          supplier = resultObject~supplier
+      end
+      -- the nodelist is already a snapshot, so just remember it in a different way
+      else if resultType == .XPathResult~ORDERED_NODE_SNAPSHOT_TYPE | resultType == .XPathResult~UNORDERED_NODE_SNAPSHOT_TYPE then
+          snapshot = resultType
+
+  end
+
+::attribute resultType GET
+
+-- get the value as a number type
+::method numberValue
+  expose resultObject
+  use strict arg
+  return self~convertNumber(resultObject)
+
+-- get the value as a string type
+::method stringValue
+  expose resultObject
+  use strict arg
+  return self~convertString(resultObject)
+
+-- get the result value as a boolean type
+::method booleanValue
+  expose resultObject
+  use strict arg
+  return self~convertBoolean(resultObject)
+
+-- retrieve a single node value from a node set
+::method singleNodeValue
+  expose resultType resultObject
+  use strict arg
+
+  -- this is only valid if we requested the node type
+  if resultType \== .XPathResult~ANY_UNORDERED_NODE_TYPE & resultType \== .XPathResult~FIRST_ORDERED_NODE_TYPE then
+     .XpathException~raiseError(.XPathException~INVALID_EXPRESSION_ERR)
+  -- if unordered, just return the first item
+  if resultType \== .XPathResult~ANY_UNORDERED_NODE_TYPE then
+      node = resultObject~first
+  else node =  resultObject~getFirstOrderedNode
+
+  self~wrapNodeValue(node)
+
+::attribute invalidIteratorState get
+
+-- get the length of a snapshot, if any
+::method snapshotLength
+  expose snapShot
+  use strict arg
+
+  -- if this is not a snapshot type, this is an error
+  if snapShot == .nil then
+      .XpathException~raiseError(.XPathException~TYPE_ERR)
+
+  return snapShot~length
+
+-- iterate to the next nodeset item
+::method iterateNext
+  expose supplier
+  use strict arg
+
+  -- if no supplier, this is an error.  The wrong type was provided
+  if supplier == .nil then
+     .XpathException~raiseError(.XPathException~TYPE_ERR)
+
+  -- if there's been an update to the tree, we've been invalidated
+  if self~invalidIteratorState then
+      .DomException~raiseError(.DomException~INVALID_STATE_ERR)
+
+  -- if we have an available item, wrap it (if necessary) and
+  -- step the supplier position
+  if supplier~available then do
+      node = self~wrapNodeValue(supplier~item)
+      supplier~next
+      return node
+  end
+  else do
+      -- reached the end...remove our listener
+      self~removeEventListener
+      return .nil
+  end
+
+-- retrieve an indexed snapshot item
+::method snapshotItem
+  expose snapShot
+
+  -- if this is not a snapshot type, this is an error
+  if snapShot == .nil then
+      .XpathException~raiseError(.XPathException~TYPE_ERR)
+
+  -- return the item (with wrapping, if necessary)
+  return self~wrapNodeValue(snapShot[i])
+
+-- potentially handle returning a Namespace node for a single node value
+::method wrapNodeValue private
+  use strict arg node
+
+  if node == .nil then return .nil
+  -- only attribute nodes can meet this criteria
+  if node~nodeType \= .Node~ATTRIBUTE_NODE then return node
+  -- if this is a namespace definition, return a wrappered namespace node
+  if node~prefix == "xmlns" | node~nodeName == "xmlns" then
+      return .XPathNamespaceNode~new(node)
+  -- use the original node
+  return node
+
+-- validate the provided type
+::method validateType private
+  use strict arg type
+
+  if type \==  self~ANY_TYPE  & -
+     type \==  self~NUMBER_TYPE  & -
+     type \==  self~NUMBER_TYPE  & -
+     type \==  self~STRING_TYPE  & -
+     type \==  self~BOOLEAN_TYPE  & -
+     type \==  self~UNORDERED_NODE_ITERATOR_TYPE  & -
+     type \==  self~ORDERED_NODE_ITERATOR_TYPE  & -
+     type \==  self~UNORDERED_NODE_SNAPSHOT_TYPE  & -
+     type \==  self~ORDERED_NODE_SNAPSHOT_TYPE  & -
+     type \==  self~ANY_UNORDERED_NODE_TYPE  & -
+     type \==  self~FIRST_ORDERED_NODE_TYPE then
+      .XpathException~raiseError(.XPathException~TYPE_ERR)
+
+::method inferResultType private
+  use strict arg object
+
+  -- all of our expression nodesets are snapshots, but we can add an event listener
+  -- that will allow us to invalidate the listener if there is an update, so go
+  -- with the iterator version
+  if object~isA(.NodeSet) then return .XPathResult~UNORDERED_NODE_ITERATOR_TYPE
+  -- string value...we can reasonably classify these as number vs. string, but
+  -- boolean causes complications unless it is explicitly requested.
+  if object~isA(.String) then do
+      if object~datatype('Number') then return .XPathResult~NUMBER_TYPE
+      return .XPathResult~STRING_TYPE
+  end
+
+  -- we really shouldn't see anything else, so coerce this to a string type
+  return .XPathResult~STRING_TYPE
+
+-- add an event listener to track context node updates
+::method addEventListener private
+  expose contextNode
+
+  contextNode~addEventListener(.DomMutationEvent~DOM_SUBTREE_MODIFIED, self, .true)
+
+-- remove our event listener to track context node updates
+::method removeEventListener private
+  expose contextNode
+
+  contextNode~removeEventListener(.DomMutationEvent~DOM_SUBTREE_MODIFIED, self, .true)
+
+-- modification event handler
+::method handleEvent
+  expose isInvalidIteratorState
+  use strict arg event
+
+  -- if this is a subtree modification event on our context node, we
+  -- invalidate our iterator and we can also stop listening from this point
+  if event~type == .DomMutationEvent~DOM_SUBTREE_MODIFIED then do
+      isInvalidIteratorState = .true
+      self~removeEventHandler
+  end
+
+-- some compatibility methods to make nodelist feel like a Rexx collection
+::method makearray
+  expose snapshot
+
+  -- if this is not a snapshot type, this is an error
+  if snapShot == .nil then
+      .XpathException~raiseError(.XPathException~TYPE_ERR)
+  -- get an array from the snapshot
+  return snapshot~makearray
+
+::method "[]"
+  forward message("SNAPSHOTITEM")
+::method items
+  forward message("SNAPSHOTLENGTH")
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathNamespaceNode                                                  */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+::class "XPathNamespaceNode" subclass NodeImpl inherit XPathNamespace
+::method init
+  expose attribute textContent
+  use strict arg attribute
+
+-- standard nodetype overrides
+::attribute nodeName get
+  use strict arg
+  return "#namespace"
+
+::attribute nodeType get
+  use strict arg
+  return .XPathNamespace~XPATH_NAMESPACE_NODE
+
+-- behaviour overrides specific to namespace nodes
+::attribute namespaceURI get
+  expose attribute
+  use strict arg
+  -- this is a special node
+  return attribute~nodeValue
+
+::attribute localName get
+  expose attribute
+  use strict arg
+  -- this is the same as the attribute prefix...which is either "" or "xmlns"
+  return attribute~prefix
+
+::attribute cloneNode get
+  -- this is explicitly an error
+  .DomException~raiseError(.DomException~NOT_SUPPORTED_ERR)
+
+-- most methods just delegate to the wrappered attribute.  Unfortunately, because
+-- of the default implementations inherited from the interfaces and the superclass,
+-- we can't just use an unknown method
+
+::attribute ownerElement get
+  expose attribute
+  forward to(attribute)
+
+::attribute nodeValue get
+  expose attribute
+  forward to(attribute)
+
+::attribute nodeValue set
+  expose attribute
+  forward to(attribute)
+
+::attribute parentNode get
+  expose attribute
+  forward to(attribute)
+
+::attribute childNodes get
+  expose attribute
+  forward to(attribute)
+
+::attribute firstChild get
+  expose attribute
+  forward to(attribute)
+
+::attribute lastChild get
+  expose attribute
+  forward to(attribute)
+
+::attribute nextSibling get
+  expose attribute
+  forward to(attribute)
+
+::attribute previousSibling get
+  expose attribute
+  forward to(attribute)
+
+::attribute attributes get
+  expose attribute
+  forward to(attribute)
+
+::attribute ownerDocument get
+  expose attribute
+  forward to(attribute)
+
+::attribute insertBefore get
+  expose attribute
+  forward to(attribute)
+
+::attribute replaceChild get
+  expose attribute
+  forward to(attribute)
+
+::attribute removeChild get
+  expose attribute
+  forward to(attribute)
+
+::attribute appendChild get
+  expose attribute
+  forward to(attribute)
+
+::attribute hasChildNodes get
+  expose attribute
+  forward to(attribute)
+
+::attribute normalize get
+  expose attribute
+  forward to(attribute)
+
+::attribute isSupported get
+  expose attribute
+  forward to(attribute)
+
+::attribute prefix get
+  expose attribute
+  forward to(attribute)
+
+::attribute prefix set
+  use strict arg p  -- this is explicitly a nop
+
+::attribute hasAttributes get
+  expose attribute
+  forward to(attribute)
+
+::attribute baseURI get
+  expose attribute
+  forward to(attribute)
+
+::method lookupPrefix
+  expose attribute
+  forward to(attribute)
+
+::method lookupNamespaceURI
+  expose attribute
+  forward to(attribute)
+
+::method getFeature
+  expose attribute
+  forward to(attribute)
+
+-- some methods are made into nops
+::method compareDocumentPosition
+  return 0
+
+::method isSameNode
+  return .false
+
+::method isEqualNode
+  return .false
+
+::method isDefaultNamespace
+  return .false
+
+::method setUserData
+  return .nil
+
+::method getUserData
+  return .nil
+
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
