@@ -832,10 +832,7 @@
 ::class "QName" public
 ::method init
   expose localName prefix namespaceURI
-
-  localName = ""
-  prefix = ""
-  namespaceURI = ""
+  use strict arg localName, prefix = "", namespaceURI = .nil
 
 ::attribute prefix
 ::attribute localName
@@ -1190,8 +1187,8 @@
   -- get a result nodeset for the base
   nodeSet = .nodeset~new(owner)
 
-  -- wild card on the namespace?  This is a complete wildcard request
-  if name~namespaceURI == '*' then do
+  -- wild card on both the name and the namespace?  This is a complete wildcard request
+  if name~namespaceURI == '*' & name~localName == '*' then do
       nodeSet~union(self)
   end
   -- wild card request with an explicit namespace?, return
@@ -1199,6 +1196,12 @@
   else if name~localName == "*" then do
       loop node over self
          if name~namespaceURI == node~namespaceURI then nodeSet~append(node)
+      end
+  end
+  -- explicit name, wildcard on the namespace.
+  else if name~namespaceURI == "*" then do
+      loop node over self
+         if name~localName == node~localName then nodeSet~append(node)
       end
   end
   -- no wild cards, so we're looking for explicit matches
@@ -4665,10 +4668,9 @@ syntax:
       when feature == "MUTATIONEVENTS" then do
           return anyVersion | version == "3.0"
       end
--- still to be done
---      when feature == "MUTATIONNAMEEVENTS" then do
---          return anyVersion | version == "3.0"
---      end
+      when feature == "MUTATIONNAMEEVENTS" then do
+          return anyVersion | version == "3.0"
+      end
       when feature == "TRAVERSAL" then do
           return anyVersion | version == "3.0"
       end
@@ -6686,7 +6688,7 @@ syntax:
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 
-::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal DocumentEvent DocumentRange
+::class "DocumentImpl" subclass ParentNode public inherit Document DocumentTraversal DocumentEvent DocumentRange XPathEvaluator
 ::method init
   expose iterators ranges eventListeners userData identifiers doctype -
       haveMutationEventListeners savedEventContext -
@@ -8216,6 +8218,31 @@ syntax:
       self~dispatchEvent(element, me)
   end
 
+-- methods for the XPathEvaluator interface
+-- parse an xpath expression and return an executable xpath expression object
+::method createExpression
+  use strict arg expression, prefixResolver
+
+  parser = .XpathParser~new(self, expression, prefixResolver)
+  return .XPathExpressionImpl~new(parser~parse, self)
+
+-- create a wrapped resolver around a node
+::method createNSResolver
+  use strict arg node
+
+  if node~nodeType == .Node~DOCUMENT_NODE then node = node~documentElement
+  return .XPathNSResolverImpl~new(node)  -- wrap the node in a resolver object
+
+-- evaluate an XPath expression
+::method evaluate
+  use strict arg path, context, resolver = .nil, type = (.XPathResult~ANY_TYPE), resultObject = .nil
+  -- use a dummy resolver if none provided
+  if resolver == .nil then resolver = .DummyXPathNSResolver~new
+
+  -- parse the expression and evaluate it
+  expression = self~createExpression(path, resolver)
+  return expression~evaluate(context, type, resultObject)
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
 /* Section:  XPath parser and evaluation engine                               */
@@ -9020,7 +9047,7 @@ syntax:
 ::class "XPathNodeTest"
 ::method init
   expose nameTest typeTest
-  use strict arg nameTest = .nil, typeTest = (.Node~ANY_NODE)
+  use strict arg typeTest = (.Node~ANY_NODE), nameTest = .nil
 
 -- apply the match logic
 ::method apply
@@ -10113,13 +10140,14 @@ use strict arg min, max
 -- evaluate the xpath expression
 ::class "XPathParser"
 ::method init
-  expose termStack opStack document expr
-  use strict arg document, expr
+  expose termStack opStack document expr prefixResolver
+  use strict arg document, expr, prefixResolver
 
   -- create stacks for building up the semantic tree
   termStack = .queue~new
   opStack = .queue~new
 
+-- parse the actual expression
 ::method parse
   expose termStack opStack document expr tokenQueue
  use strict arg
@@ -10217,7 +10245,7 @@ use strict arg min, max
   -- a wild card, this is easy
   if token == .XPathToken~wildcard then do
       -- looking for element nodes, matching anything
-      return .XPathNodeTest~new(Node~ELEMENT_NODE, .QName~new("*", "*"))
+      return .XPathNodeTest~new(Node~ELEMENT_NODE, .QName~new("*", "*", "*"))
   end
   -- some sort of node type test
   else if token~type == "NODETYPE" then do
@@ -10229,14 +10257,27 @@ use strict arg min, max
   end
   -- have a qualified name...all of the pieces are here already
   else if token~type == "QNAME" then do
-      return .XPathNodeTest~new(Node~ANY_NODE, .QName~new(token~prefix, token~name))
+      return .XPathNodeTest~new(Node~ANY_NODE, self~resolveQName(token~name, token~prefix))
   end
   -- simple name token?
   else if token~type == "NCNAME" then
-      return .XPathNodeTest~new(Node~ANY_NODE, .QName~new("*", token~name))
+      return .XPathNodeTest~new(Node~ANY_NODE, .QName~new(token~name, "*", "*"))
   -- this token is something else...push it back and just return an ANY_NODE selector
   tokenqueue~previousToken
   return .XPathNodeTest~new(Node~ANY_NODE);
+
+-- resolve a qualified name with a
+::method resolveQName
+  expose prefixResolver
+  use strict arg localName, prefix
+
+  namespace = prefixResolver~lookupNamespaceURI(prefix)
+  -- if this is not found, this is a namespace error.  We need the namespace to properly
+  -- resolve node names
+  if namespace == .nil then .DomException~raiseError(.DomException~NAMESPACE_ERR)
+
+  return .QName~new(localName, prefix, namespace)
+
 
 -- parse out a predicate
 ::method parsePredicate
@@ -10328,8 +10369,6 @@ use strict arg min, max
       when token~type == "VARIABLE" then self~xpathError(.XPath~INVALID_VARIABLE_REFERENCE_ERROR)
       -- go parse the function call
       when token~type == "FUNCTION" then return self~parseFunctionCall(token~name)
-      -- variable references are not supported.
-      when token~type == "VARIABLE" then self~xpathError(.XPath~INVALID_VARIABLE_REFERENCE_ERROR)
       -- various location names as a substep term.  This needs to be parsed recursively
       when token~type == "AXIS" | token~type == "NCNAME" | -
            token == .XPathToken~at_sign | token == .XPathToken~period | -
@@ -10844,6 +10883,44 @@ use strict arg min, max
    -- we always return a new object instance
    return .XPathResultImpl(type, res, contextNode, path)
 
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: XPathNSResolverImpl                                                 */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- the implementation of the XPathNSResolverImpl to transform a node into a resolver
+::class "XPathNSResolverImpl" inherit XPathNSResolver
+::method init
+  expose node
+  use strict arg node
+
+-- perform the namespace lookup using a node context
+::method lookupNamespaceURI
+  use strict arg prefix
+
+  -- the xml prefix is special...always return the standard URI
+  if prefix == "xml" then return "http://www.w3.org/XML/1998/namespace"
+  -- xmlns is also special
+  if prefix == "xmlns" then return "http://www.w3.org/2000/xmlns/"
+
+  -- delegate to the node for the rest
+  return node~lookupNamespaceURI(prefix)
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: DummyXPathNSResolverImpl                                            */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- A dummy resolver used to simplify the parsing logic
+::class "DummyXPathNSResolverImpl" inherit XPathNSResolver
+-- always return a failure result
+::method lookupNamespaceURI
+  use strict arg prefix
+  return .nil
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
