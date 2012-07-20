@@ -47,6 +47,9 @@
 ::requires "oodutils.cls"  /* load public routines (not static) */
 
 
+::class 'DlgUtil' public
+::method version class external "LIBRARY oodialog dlgutil_version_cls"
+
 /******************************************************************************/
 /* The class WindowBase implements methods that are common to all windows,    */
 /* if it is a dialog or a dialog item                                         */

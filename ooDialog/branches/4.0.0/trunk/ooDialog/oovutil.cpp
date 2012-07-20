@@ -2037,6 +2037,57 @@ static void internalErrorMsg(PSZ pszMsg, PSZ pszTitle)
     MessageBox(0, pszMsg, pszTitle, MB_OK | MB_ICONHAND | MB_SYSTEMMODAL);
 }
 
+/** DlgUtil::version()  [class method]
+ *
+ *  Returns the ooDialog version string, either the full string, or just the
+ *  number part of the string.
+ *
+ * @param  format  [optional]  Keyword indicating which format the returned
+ *                 string should be in.  Keywords are:
+ *
+ *         Short   4.1.0.5814
+ *
+ *         Full    ooDialog Version 4.1.0.5814 (an ooRexx Windows Extension)
+ *
+ *         Level   4.2.0
+ *
+ *                 Only the first letter is required and case is not
+ *                 significant.  If the argument is omitted the Full format is
+ *                 the default.
+ *
+ * @remarks  This method, and class, were not in ooDialog 3.2.0.  It has been
+ *           added to ooDialog 4.0.0 to provide a unified way to get the
+ *           ooDialog version.
+ */
+RexxMethod1(RexxStringObject, dlgutil_version_cls, OPTIONAL_CSTRING, format)
+{
+    char buf[64];
+
+    if ( argumentOmitted(1) )
+    {
+        format = "F";
+    }
+
+    switch ( toupper(*format) )
+    {
+        case 'L' :
+            _snprintf(buf, sizeof(buf), "%u.%u.%u", OOD_VER, OOD_REL, OOD_MOD);
+            break;
+
+        case 'S' :
+            _snprintf(buf, sizeof(buf), "%u.%u.%u.%u", OOD_VER, OOD_REL, OOD_MOD, OOD_BLD);
+            break;
+
+        case 'F' :
+        default :
+            _snprintf(buf, sizeof(buf), "ooDialog Version %u.%u.%u.%u (an ooRexx Windows Extension)",
+                      OOD_VER, OOD_REL, OOD_MOD, OOD_BLD);
+            break;
+
+    }
+    return context->String(buf);
+}
+
 /**
  * Determines the version of comctl32.dll and initializes the common controls.
  *
@@ -2300,6 +2351,11 @@ RexxRoutineEntry oodialog_functions[] =
     REXX_LAST_ROUTINE()
 };
 
+RexxMethodEntry oodialog_methods[] = {
+    REXX_METHOD(dlgutil_version_cls,          dlgutil_version_cls),
+    REXX_LAST_METHOD()
+};
+
 /* Note that this package is the 3.2.0 ooDialog with no changes other than
  * using the RexxPackageEntry to be compatible with ooRexx 4.0.0 and later.  It
  * should behave exactly the same as ooDialog 3.2.0 under ooRexx 3.2.0.
@@ -2313,7 +2369,7 @@ RexxPackageEntry oodialog_package_entry =
     NULL,                                // no load/unload functions
     NULL,
     oodialog_functions,                  // the exported functions
-    NULL                                 // no methods in this package
+    oodialog_methods                     // no methods in this package
 };
 
 // package loading stub.
