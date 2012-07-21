@@ -239,6 +239,111 @@ the following table:</para>
 </tbody></tgroup>
 </table>
 
+<section id="clsDlgUtil"><title>DlgUtil Class</title>
+<indexterm><primary>DlgUtil class</primary></indexterm>
+<para>
+  The DlgUitl class has a single class method, <emphasis role="italic">version</emphasis>. This method is used to
+  determine the current executing version of ooDialog.
+</para>
+<variablelist>
+  <varlistentry><term>Requires:</term>
+  <listitem>
+  <para>
+    The DlgUtil class requires the class definition file <computeroutput>oodPlain.cls</computeroutput>:
+<programlisting>
+<![CDATA[
+::requires "oodPlain.cls"
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+
+<section id="mthVersion"><title>version (Class Method)</title>
+<indexterm><primary>version</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>-.DlgUtil~version(--+----------+--)----------------------><
+                      +-format---+
+]]>
+</programlisting>
+
+<para>Returns the ooDialog version string.</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>format [optional]</term>
+      <listitem>
+      <para>
+        A keyword indicating the format of the returned version string.  Only the first letter is
+        needed and case is not significant.  Any unrecognized keyword is ignored and the default
+        format is used.  The format for each keyword is as follows:
+      </para>
+      <variablelist>
+        <varlistentry><term>Full</term>
+        <listitem>
+        <para>
+          A string specifying the version of ooDialog.  This is the default. The string has the format:
+          <computeroutput>ooDialog Version x.x.x.SS (an ooRexx Windows Extension) </computeroutput> where
+          x.x.x is the ooDialog version and SS is the Subversion revision number of the build. The actual version string might
+          look like: <computeroutput>ooDialog Version 4.1.0.8038 (an ooRexx Windows Extension)</computeroutput>
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>Short</term>
+        <listitem>
+        <para>
+          Only the x.x.x.SS part of the full version string is returned.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    A string in one of the formats specified above.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+<programlisting>
+<![CDATA[
+v = .DlgUtil~version
+say v
+say
+
+if .DlgUtil~version("SHORT") < 4.1.0.0000 then do
+  say 'Too bad, you are using ooDialog 4.0.0'
+end
+else do
+  say 'Great you have upgraded past ooDialog 4.0.0'
+end
+
+::requires 'oodPlain.cls'
+
+/* On the screen you might see:
+
+ooDialog Version 4.0.0.3768 (an ooRexx Windows Extension)
+
+Too bad, you are still using ooDialog 4.0.0
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+</section> <!-- End DlgUtil Class -->
+
 <section id="sctStandardDialogs"><title>Standard Dialog Classes</title>
 <indexterm><primary>standard dialogs</primary></indexterm>
 <para>The standard dialog classes are: </para>
