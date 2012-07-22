@@ -236,9 +236,9 @@ char *REXXENTRY RexxGetVersionInformation()
     sprintf( ver, " %d.%d.%d", ORX_VER, ORX_REL, ORX_MOD );
     char header[] = "Open Object Rexx Version";
   #ifdef _DEBUG
-    char build[] = " - Internal Test Version\nBuild date: ";
+    char build[] = " - Debug SysFileTree Version\nBuild date: ";
   #else
-    char build[] = "\nBuild date: ";
+    char build[] = " - Release SysFileTree Version\nBuild date: ";
   #endif
   #ifdef __REXX64__
     char mode[] = "\nAddressing Mode: 64";

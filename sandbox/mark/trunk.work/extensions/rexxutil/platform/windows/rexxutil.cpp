@@ -316,6 +316,19 @@ typedef struct RxTreeData {
     size_t nattrib;                    /* New attrib, diff for each  */
 } RXTREEDATA;
 
+/*
+ *  Temp data structure used while working on SysFileTreeB.  Not sure yet how
+ *  much of this is really needed.
+ */
+typedef struct RxTreeDataB {
+    size_t count;                    // Number of lines processed  (needed ?)
+    RexxStemObject files;            // Stem that holds results.
+    char TargetSpec[MAX_PATH+1];     // Target filespec what is this? size of buffer may be bad
+    char truefile[MAX_PATH+1];       // expanded file name what is this? size of buffer may be bad
+    char Temp[MAX_PATH+80];          // buffer for returned values ? size? why not just add it to the stem directly ?
+    size_t nattrib;                  // New attrib, diffent for each (?)
+} RXTREEDATAB;
+
 /*********************************************************************/
 /* RxStemData                                                        */
 /*   Structure which describes as generic                            */
@@ -391,6 +404,51 @@ static   P_GDFSE pGetDiskFreeSpaceEx = NULL;
 /****************  REXXUTIL Supporting Functions  ********************/
 /****************  REXXUTIL Supporting Functions  ********************/
 /*********************************************************************/
+
+void inline outOfMemoryException(RexxThreadContext *c)
+{
+    c->RaiseException1(Rexx_Error_System_service_user_defined, c->String("failed to allocate memory"));
+}
+
+/**
+ * <routineName> argument <argPos> must not be a null string
+ *
+ * SysFileTree argument 2 must not be a null string
+ *
+ * @param c      Threade context we are operating in.
+ * @param fName  Routine name.
+ * @param pos    Argument position.
+ */
+void inline nullStringException(RexxThreadContext *c, CSTRING fName, size_t pos)
+{
+    c->RaiseException2(Rexx_Error_Incorrect_call_null, c->String(fName), c->StringSize(pos));
+}
+
+inline void safeLocalFree(void *p)
+{
+    if (p != NULL)
+    {
+        LocalFree(p);
+    }
+}
+
+/**
+ * This is a SysFileTree specific function.  Could be expanded for use in other
+ * RexxUtil functions by passing in function name, etc..
+ *
+ * @param c
+ * @param pos
+ * @param actual
+ */
+static void badSFTOptsException(RexxThreadContext *c, size_t pos, CSTRING actual)
+{
+    char buf[256] = {0};
+    _snprintf(buf, sizeof(buf) - 1,
+             "SysFileTree argument %d must be a combination of F, D, B, S, T, L, I, or O; found \"%s\"",
+             pos, actual);
+
+    c->RaiseException1(Rexx_Error_Incorrect_call_user_defined, c->String(buf));
+}
 
 /**
  * Tests if the the current operating system version meets the specified
@@ -989,6 +1047,221 @@ void getpath(
     strcpy(filename, &string[LastSlashPos+1]);
   else
     strcpy(filename, "*.*");           /* just use wildcards         */
+}
+
+
+/*****************************************************************
+* Function:  getpath(fSpec, path, filename)                     *
+*                                                                *
+* Purpose:  This function gets the PATH and FILENAME of the file *
+*           target contained in STRING.  The path will end with  *
+*           the '\' char if a path is supplied.                  *
+*                                                                *
+*****************************************************************/
+
+/**
+ * This function expands the file spec passed in to the funcition into its full
+ * path name.  The full path name is then split into the path portion and the
+ * file name portion.  The path portion is then returned in path and the file
+ * name portion is returned in fileName.
+ *
+ * @param fSpec
+ * @param path
+ * @param filename
+ * @param pathLen    Size of the path buffer.
+ *
+ * @remarks  On entry, the buffer pointed to by fSpec is guaranteed to be at
+ *           least strlen(fSpec) + 8.  So, we can strcat to it at least 7
+ *           characters and still have it null terminated.
+ *
+ *           This function is only called by SysFileTree.
+ */
+static void getPathB(char *fSpec, char *path, char *filename, size_t pathLen)
+{
+    size_t len;                          /* length of filespec         */
+    int    lastSlashPos;                 /* position of last slash     */
+    char   szBuff[MAX_PATH + 1];             /* used to save current dir   */
+    char   drv[3] = {0};                       /* used to change dir         */
+    size_t i = 0;
+
+    // Skip leading blanks.
+    while ( fSpec[i] == ' ' )
+    {
+        i++;
+    }
+
+    if ( i > 0 )
+    {
+        // We have leading spaces, get the length of the full file spec ...
+        len = strlen(fSpec);
+
+        // If the first character(s) after the leading spaces
+        //   is '\' or '/'
+        // or
+        //   is '.\' or './'
+        // or
+        //   is '..\' or '../'
+        // or
+        //   is z:  (i.e., a drive letter)
+        // then
+        //   point fSpec to fSpec[i]
+        if ( (fSpec[i] == '\\' || fSpec[i] == '/') ||
+             (fSpec[i] == '.' &&
+             ((i < len && (fSpec[i + 1] == '\\' || fSpec[i + 1] == '/')) ||
+             (i + 1 < len && fSpec[i + 1] == '.' && (fSpec[i + 2] == '\\' || fSpec[i + 2] == '/')))) ||
+             (i < len && fSpec[i+1] == ':'))
+        {
+            fSpec = &fSpec[i];
+        }
+    }
+
+    if ( strcmp(fSpec, ".") == 0 )
+    {
+        // If fSpec is exactly "." then change it to "*.*"
+        strcpy(fSpec, "*.*");
+    }
+    else if ( strcmp(fSpec, "..") == 0 )
+    {
+        // Else if fSpec is exactly ".." then change it to "..\*.*"
+        strcpy(fSpec, "..\\*.*");
+    }
+
+    // Now get the length of the file spec after it may have been changed.
+    len = strlen(fSpec);
+
+    // Get the maximum position of the last '\'
+    lastSlashPos = (int)len;
+
+    // Step back through fSpec until at its beginning or at a '\' or '/' character
+    while ( fSpec[lastSlashPos] != '\\' && fSpec[lastSlashPos] != '/' && lastSlashPos >= 0 )
+    {
+        --lastSlashPos;
+    }
+
+    // If lastSlashPos is less than 0, then there is no backslash present in
+    // fSpec.
+    if ( lastSlashPos < 0 )
+    {   // try expandNonPath2FullPath()
+        uint32_t ret = 0;
+
+        // fSpec could be a drive designator.
+        if ( fSpec[1] == ':' )
+        {
+            // Save the current drive and path
+            ret = GetCurrentDirectory(sizeof(szBuff), szBuff);
+            if ( ret == 0 || ret > pathLen )
+            {
+                // Need an exception, return false.
+            }
+
+            // Just copy the drive letter and the colon, omit the rest.  This is
+            // necessary e.g. for something like "I:*"
+            memcpy(drv, fSpec, 2);
+
+            // Change to the specified drive, get the current directory, then go
+            // back to where we came from.
+            SetCurrentDirectory(drv);
+
+            ret = GetCurrentDirectory((uint32_t)pathLen, path);
+            if ( ret == 0 || ret > pathLen )
+            {
+                // Need an exception, return false.
+            }
+
+            // Go back to where we were.
+            SetCurrentDirectory(szBuff);
+
+            // If we need a trailing slash, add one.
+            if ( path[strlen(path) - 1] != '\\' )
+            {
+              strcat(path, "\\");
+            }
+            lastSlashPos = 1;                /* make drive the path        */
+        }
+        else
+        {
+            // No drive designator, get the current directory.
+            ret = GetCurrentDirectory((uint32_t)pathLen, path);
+            if ( ret == 0 || ret > pathLen )
+            {
+                // Need an exception, return false.
+            }
+
+            // If we need a trailing slash, add one.
+            if ( path[strlen(path) - 1] != '\\')
+            {
+                strcat(path, "\\");
+            }
+        }
+    }
+    else
+    {  // try expandPathToFullPath()
+
+        // We do have a path portion.  If fSpec starts with a drive designator,
+        // then we have a full path.  Copy over the pat portion, including the
+        // last slash, and null terminate it.
+        if (fSpec[1] == ':')
+            memcpy(path, fSpec, lastSlashPos + 1);
+            path[lastSlashPos + 1] = '\0';
+        }
+        else
+        {
+            char fpath[MAX_PATH];
+            char drive[_MAX_DRIVE];
+            char dir[_MAX_DIR];
+            char fname[_MAX_FNAME];
+            char ext[_MAX_EXT];
+            char lastChar;
+
+            if ( lastSlashPos == 0 )  /* only one backslash at the beginning */
+            {
+                _fullpath(fpath, "\\", MAX_PATH);  /* Get full path        */
+                strcat(fpath, &fSpec[1]);
+            }
+            else
+            {
+
+                fSpec[lastSlashPos] = '\0'; /* chop off the path          */
+                _fullpath(fpath, fSpec, MAX_PATH); /* Get full path       */
+                fSpec[lastSlashPos] = '\\'; /* put the slash back         */
+                lastChar = fpath[strlen(fpath)-1];
+                if (lastChar != '\\' && lastChar != '/')
+                {
+                    strcat(fpath, &fSpec[lastSlashPos]);
+                }
+            }
+            _splitpath(fpath, drive, dir, fname, ext);
+
+            strcpy(path, drive);
+            strcat(path, dir);
+
+            if (!strlen(path))
+            {             /* invalid path?              */
+                                             /* copy over the path         */
+               memcpy(path, fSpec, lastSlashPos+1);
+               path[lastSlashPos + 1] = '\0';  /* make into an ASCII-Z string */
+            }
+                                             /* need a trailing slash?     */
+            if (path[strlen(path) - 1] != '\\')
+            {
+              strcat(path, "\\");            /* add a trailing slash       */
+            }
+        }
+    }
+
+    // Get the file name from fSpec, the portion just after the last '\'
+    if ( fSpec[lastSlashPos + 1] == '\0' )
+    {
+        // The position after the last slash is not the null terminator.
+        // Therefore, there is something after the last slash, copy it over.
+        strcpy(filename, &fSpec[lastSlashPos + 1]);
+    }
+    else
+    {
+        // The last slash is the last character in fSpec, just use wildcards for
+        // the file name part.
+        strcpy(filename, "*.*");
+    }
 }
 
 
@@ -2290,6 +2563,335 @@ size_t RexxEntry SysFileTree(const char *name, size_t numargs, CONSTRXSTRING arg
     return INVALID_ROUTINE;            /* error on non-zero          */
 
   return VALID_ROUTINE;                /* no error on call           */
+}
+
+
+/**
+ * SysFileTree specific function to determine the options.
+ *
+ * @param c
+ * @param opts
+ * @param pOpts
+ *
+ * @return bool
+ */
+bool static goodOpts(RexxCallContext *c, char *opts, uint32_t *pOpts)
+{
+    uint32_t options = *pOpts;
+
+    while ( *opts )
+    {
+        switch( toupper(*opts) )
+        {
+          case 'S':                      // recurse into subdirectories
+              options |= RECURSE;
+              break;
+
+          case 'O':                      // only return names
+              options |= NAME_ONLY;
+              break;
+
+          case 'T':                      // use short time format, ignored if L is used
+            options |= EDITABLE_TIME;
+            break;
+
+          case 'L':                      // use long time format
+              options |= LONG_TIME;
+              break;
+
+          case 'F':                      // include only files
+              options &= ~DO_DIRS;
+              options |= DO_FILES;
+              break;
+
+          case 'D':                      // include only directories
+              options |= DO_DIRS;
+              options &= ~DO_FILES;
+              break;
+
+          case 'B':                      // include both files and directories
+              options |= DO_DIRS;
+              options |= DO_FILES;
+              break;
+
+          case 'I':                      // case insensitive? no op on Windows
+              break;
+
+          default:                       // error, unknown option
+            return false;
+        }
+        opts++;
+    }
+
+    *pOpts = options;
+    return true;
+}
+
+/**
+ * Set a mask of unsigned ints to what is specified by a mask of chars.  This is
+ * a SysFileTree() specific helper function.
+ *
+ * @param c
+ * @param msk
+ * @param mask
+ *
+ * @return True on success, false on error.
+ *
+ * @remarks  If a character in position N is a '+' then the unsigned int at
+ *           position N is set to 1.  This is turning it on.
+ *
+ *           If a character in position N is a '-' then the unsigned int at
+ *           position N is set to -1.  This is turning it off.
+ *
+ *           If a character in position N is a '*' then the unsigned int at
+ *           position N is set to 0.  This is saying ignore it, it doesn't
+ *           matter what the attribute is.
+ */
+bool static goodMask(RexxCallContext *c, char *msk, uint32_t *mask)
+{
+    uint32_t y = 0;
+
+    while (*msk)
+    {
+        if ( *msk == '+' )
+        {
+            mask[y] = 1;
+        }
+        else if ( *msk == '-' )
+        {
+            mask[y] = -1;
+        }
+        else if (*msk == '*')
+        {
+            mask[y] = 0;
+        }
+        else
+        {
+            return false;
+        }
+        y++;
+        msk++;
+    }
+    return true;
+}
+
+/*************************************************************************
+* Function:  SysFileTreeB                                                *
+*                                                                        *
+* Syntax:    call SysFileTree filespec, stem [, options]                 *
+*                                                                        *
+* Params:    filespec - Filespec to search for (may include * and ?).    *
+*            stem     - Name of stem var to store results in.            *
+*            options  - Any combo of the following:                      *
+*                        'B' - Search for files and directories.         *
+*                        'D' - Search for directories only.              *
+*                        'F' - Search for files only.                    *
+*                        'O' - Only output file names.                   *
+*                        'S' - Recursively scan subdirectories.          *
+*                        'T' - Combine time & date fields into one.      *
+*                        'L' - Long time format                          *
+*                        'I' - Case Insensitive search.                  *
+*                                                                        *
+* Return:    NO_UTIL_ERROR   - Successful.                               *
+*            ERROR_NOMEM     - Out of memory.                            *
+*************************************************************************/
+
+/**
+ * SysFileTree() implementation.  Temp for now
+ *
+ * @param  fSpec
+ *
+ * @param  files
+ *
+ * @param  opts  - Any combonation of the following:
+ *
+ *                  'B' - Search for files and directories.
+ *                  'D' - Search for directories only.
+ *                  'F' - Search for files only.
+ *                  'O' - Only output file names.
+ *                  'S' - Recursively scan subdirectories.
+ *                  'T' - Combine time & date fields into one.
+ *                  'L' - Long time format
+ *                  'I' - Case Insensitive search.
+ *
+ * @param targetAttr  Target attribute mask.  Only files with these attributes
+ *                    will be searched for.  The default is to ignore the
+ *                    attributes of the files found, so all files found are
+ *                    returned.
+ *
+ * @param newAttr     New attribute mask.  Each found file will have its
+ *                    attributes set (changed) to match this mask.  The default
+ *                    is to not change any attributes.
+ *
+ * @return  0 on success, on all errors a condition is raised.
+ *
+ *
+ */
+RexxRoutine5(uint32_t, SysFileTreeB, CSTRING, fSpec, RexxStemObject, files, OPTIONAL_CSTRING, opts,
+             OPTIONAL_CSTRING, targetAttr, OPTIONAL_CSTRING, newAttr)
+{
+     uint32_t result = 1;
+     char *fileSpec  = NULL;           // File spec to search for.
+     char *path      = NULL;           // Path to search along.
+
+     size_t fSpecLen = strlen(fSpec);
+     if ( fSpecLen == 0 )
+     {
+         nullStringException(context->threadContext, "SysFileTree", 1);
+         goto done_out;
+     }
+
+     fileSpec = (char *)LocalAlloc(LPTR, fSpecLen + 8);
+     if ( fileSpec == NULL )
+     {
+         outOfMemoryException(context->threadContext);
+         goto done_out;
+     }
+
+     // We need a minimum size for the path buffer of at least MAX.  But the old
+     // code seemed to think fileSpecLen + 8 could be longer than that.  I guess
+     // it could if the user put in a non-existent long file path.
+     size_t bufLen = MAX;
+     if ( fSpecLen + 8 > MAX )
+     {
+         bufLen = fSpecLen + 8;
+     }
+
+     path = (char *)LocalAlloc(LPTR, bufLen);
+     if ( path == NULL )
+     {
+         outOfMemoryException(context->threadContext);
+         goto done_out;
+     }
+
+     // Struct for data, may not be correct yet.
+     RXTREEDATAB  treeData = {0};
+
+     treeData.files = files;
+
+     // Allocated buffer is zero filled (LPTR flag) already, no need to zero
+     // terminate.
+     memcpy(fileSpec, fSpec, fSpecLen);
+
+
+     // If fileSpec ends in \ then append *.*
+     if ( fileSpec[fSpecLen - 1] == '\\' )
+     {
+         strcat(fileSpec, "*.*");
+     }
+     else if ( fileSpec[fSpecLen - 1] == '.')
+     {
+       // when '.' or '..' are used as directory specifiers append wildcard '\*.*'
+
+       // There is also the case where the '.' is not used as a directory
+       // specifier, but rather is tacked on to the end of a file name. Windows has
+       // a sometimes used convention that a '.' at the end of a file name can be
+       // used to indicate the file has no extension. For example, given a file
+       // named: MyFile a command of dir MyFile. will produce a listing of MyFile.
+       // In this case we want to leave the mask alone.  A command of dir *. will
+       // produce a directory listing of all files that do not have an extension.
+       if ( fSpecLen == 1 ||
+            (fSpecLen > 1  && (fileSpec[fSpecLen - 2] == '\\' || fileSpec[fSpecLen - 2] == '.')) )
+       {
+           strcat(fileSpec, "\\*.*");
+       }
+     }
+
+     uint32_t options = DO_FILES|DO_DIRS;
+
+     if ( argumentExists(3) )
+     {
+         if ( strlen(opts) == 0 )
+         {
+             nullStringException(context->threadContext, "SysFileTree", 3);
+             goto done_out;
+         }
+
+         if ( ! goodOpts(context, (char *)opts, &options) )
+         {
+             badSFTOptsException(context->threadContext, 3, opts);
+         }
+     }
+
+     uint32_t targetMask[5] = {0};    // Attribute mask of files to search for.
+     uint32_t newMask[5]    = {0};    // Attribute mask to set found files to.
+
+     if ( argumentExists(4) && strlen(targetAttr) > 0 )
+     {
+         if ( strlen(targetAttr) > 5 )
+         {
+             // need exception
+             goto done_out;
+         }
+
+         if ( ! goodMask(context, (char *)targetAttr, targetMask) )
+         {
+             // need exception
+             goto done_out;
+         }
+     }
+     else
+     {
+         targetMask[0] = RXIGNORE;
+     }
+
+     if ( argumentExists(4) && strlen(newAttr) > 0 )
+     {
+         if ( strlen(newAttr) > 5 )
+         {
+             // need exception
+             goto done_out;
+         }
+
+         if ( ! goodMask(context, (char *)newAttr, newMask) )
+         {
+             // need exception
+             goto done_out;
+         }
+     }
+     else
+     {
+         newMask[0] = RXIGNORE;
+     }
+
+     // Get path and name  What does this mean?
+     getPathB(fileSpec, path, treeData.TargetSpec, bufLen);
+
+#if 0
+
+                                       /* recursively search         */
+  if (RecursiveFindFile(fileSpec, path, &ldp, targetMask, newMask, options)) {
+    if (fileSpec != buff1) {
+      free(fileSpec);
+      free(path);
+    }
+    return INVALID_ROUTINE;
+  }
+                                       /* return lines read          */
+  ltoa((long)ldp.count, ldp.Temp, 10);
+  ldp.varname[ldp.stemlen] = '0';
+  ldp.varname[ldp.stemlen+1] = 0;
+  ldp.shvb.shvnext = NULL;
+  ldp.shvb.shvname.strptr = ldp.varname;
+  ldp.shvb.shvname.strlength = ldp.stemlen+1;
+  ldp.shvb.shvnamelen = ldp.stemlen+1;
+  ldp.shvb.shvvalue.strptr = ldp.Temp;
+  ldp.shvb.shvvalue.strlength = strlen(ldp.Temp);
+  ldp.shvb.shvvaluelen = ldp.shvb.shvvalue.strlength;
+  ldp.shvb.shvcode = RXSHV_SET;
+  ldp.shvb.shvret = 0;
+
+
+  if (RexxVariablePool(&ldp.shvb) == RXSHV_BADN)
+    return INVALID_ROUTINE;            /* error on non-zero          */
+
+#endif
+
+done_out:
+    safeLocalFree(fileSpec);
+    safeLocalFree(path);
+    return result;
+
 }
 
 
@@ -6349,6 +6951,7 @@ RexxRoutineEntry rexxutil_routines[] =
     REXX_TYPED_ROUTINE(SysFileDelete,                 SysFileDelete),
     REXX_CLASSIC_ROUTINE(SysFileSearch,               SysFileSearch),
     REXX_CLASSIC_ROUTINE(SysFileTree,                 SysFileTree),
+    REXX_TYPED_ROUTINE(SysFileTreeB,                  SysFileTreeB),
     REXX_CLASSIC_ROUTINE(SysGetKey,                   SysGetKey),
     REXX_CLASSIC_ROUTINE(SysIni,                      SysIni),
     REXX_CLASSIC_ROUTINE(SysLoadFuncs,                SysLoadFuncs),
