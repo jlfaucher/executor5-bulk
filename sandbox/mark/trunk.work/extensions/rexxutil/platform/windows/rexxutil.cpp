@@ -323,12 +323,13 @@ typedef struct RxTreeData {
  *  Note that in Windows the MAX_PATH define includes the terminating null.
  */
 typedef struct RxTreeDataB {
-    size_t         count;                // Number of found file lines
-    RexxStemObject files;                // Stem that holds results.
-    char           fNameSpec[MAX_PATH];  // File name portion of the search for file spec, may contain glob characters.
-    char           truefile[MAX_PATH];   // Full path name of found file
-    char           Temp[MAX_PATH + 80];  // buffer for found file line, includes size, time stamp, etc..
-    size_t         nattrib;              // New system attribute mask, diffent for each (?)
+    size_t         count;                         // Number of found file lines
+    RexxStemObject files;                         // Stem that holds results.
+    char           fNameSpec[MAX_PATH];           // File name portion of the search for file spec, may contain glob characters.
+    char           foundFile[MAX_PATH];           // Full path name of found file
+    char           fileTime[64];                  // Time and size of found file
+    char           fileAttr[16];                  // File attribute string of found file
+    char           foundFileLine[MAX_PATH + 80];  // Buffer for found file line, includes foundFile, fileTime, and fileAttr
 } RXTREEDATAB;
 
 /*********************************************************************/
@@ -445,7 +446,7 @@ inline void safeLocalFree(void *p)
 static void badSFTOptsException(RexxThreadContext *c, size_t pos, CSTRING actual)
 {
     char buf[256] = {0};
-    _snprintf(buf, sizeof(buf) - 1,
+    _snprintf(buf, sizeof(buf),
              "SysFileTree argument %d must be a combination of F, D, B, S, T, L, I, or O; found \"%s\"",
              pos, actual);
 
@@ -462,7 +463,7 @@ static void badSFTOptsException(RexxThreadContext *c, size_t pos, CSTRING actual
 static void badMaskException(RexxThreadContext *c, size_t pos, CSTRING actual)
 {
     char buf[256] = {0};
-    _snprintf(buf, sizeof(buf) - 1,
+    _snprintf(buf, sizeof(buf),
              "SysFileTree argument %d must be 5 characters or less in length containing only '+', '-', or '*'; found \"%s\"",
              pos, actual);
 
@@ -480,7 +481,7 @@ static void badMaskException(RexxThreadContext *c, size_t pos, CSTRING actual)
 static void systemServiceExceptionCode(RexxThreadContext *c, CSTRING api, uint32_t rc, size_t bufSize)
 {
     char buf[256] = {0};
-    _snprintf(buf, sizeof(buf) - 1,
+    _snprintf(buf, sizeof(buf),
              "system API %s() failed; rc: %d buffer size: %d last error code: %d",
              api, rc, bufSize, GetLastError());
 
@@ -490,9 +491,19 @@ static void systemServiceExceptionCode(RexxThreadContext *c, CSTRING api, uint32
 static void bufferOverflowException(RexxThreadContext *c, size_t needed, size_t have, CSTRING func, size_t lineNumber)
 {
     char buf[256] = {0};
-    _snprintf(buf, sizeof(buf) - 1,
+    _snprintf(buf, sizeof(buf),
              "buffer overflow would occur in %s() at line: %d; data size: %d buffer size: %d",
              func, lineNumber, needed, have);
+
+    c->RaiseException1(Rexx_Error_Execution_user_defined, c->String(buf));
+}
+
+static void bufferTooSmallException(RexxThreadContext *c, int ret, size_t have, size_t needed, CSTRING func, size_t lineNumber)
+{
+    char buf[256] = {0};
+    _snprintf(buf, sizeof(buf),
+             "in %s() at line: %d buffer too small; _snprintf rc: ret data size: %d buffer size: %d",
+             func, lineNumber, ret, needed, have);
 
     c->RaiseException1(Rexx_Error_Execution_user_defined, c->String(buf));
 }
@@ -1098,333 +1109,6 @@ void getpath(
     strcpy(filename, "*.*");           /* just use wildcards         */
 }
 
-/**
- * This is a SysFileTree() specific function.  It is only called, indirectly
- * through getPath(), from SysFileTree().
- *
- * This function mimics the old IBM code.
- *
- * Leading spaces are stripped, in some cases. A file specification of "." is
- * changed to "*.*" and a file specification of ".." is changed to "..\*.c*"
- *
- * Leading spaces in fSpec are stripped IFF the first character(s) after the
- * leading spaces:
- *
- *       is '\' or '/'
- *     or
- *       is '.\' or './'
- *     or
- *       is '..\' or '../'
- *     or
- *        is z:  (i.e., a drive letter)
- *
- * @param fSpec  The SysFileTree search specification
- *
- * @return A pointer to fSpec, possibly adjust to point to the first non-space
- *         character in the string.
- *
- * @side effects:  fSpec may be changed from "." to "*.*" or may be changed from
- *                 ".." to "..\*.*"
- *
- * @assumes:  The buffer for fSpec is large enough for the possible changes.
- */
-static char *adjustFSpec(char *fSpec)
-{
-    size_t i = 0;
-
-    // Skip leading blanks.
-    while ( fSpec[i] == ' ' )
-    {
-        i++;
-    }
-
-    if ( i > 0 )
-    {
-        size_t len = strlen(fSpec);
-
-        // This series of if statements could be combined in to on huge if, but
-        // this is easier to comprehend:
-        if ( fSpec[i] == '\\' || fSpec[i] == '/' )                         // The "\" case
-        {
-            fSpec = &fSpec[i];
-        }
-        else if ( fSpec[i] == '.' )
-        {
-            if ( i + 1 < len )
-            {
-                if ( fSpec[i + 1] == '\\' || fSpec[i + 1] == '/' )         // The ".\" case
-                {
-                    fSpec = &fSpec[i];
-                }
-                else if ( i + 2 < len )
-                {
-                    if ( fSpec[i + 1] == '.' &&
-                         (fSpec[i + 2] == '\\' || fSpec[i + 2] == '/') )   // The "..\" case
-                    {
-                        fSpec = &fSpec[i];
-                    }
-                }
-            }
-        }
-        else if ( i + 1 < len && fSpec[i + 1] == ':' )                     // The "z:' case
-        {
-            fSpec = &fSpec[i];
-        }
-    }
-
-    if ( strcmp(fSpec, ".") == 0 )
-    {
-        // If fSpec is exactly "." then change it to "*.*"
-        strcpy(fSpec, "*.*");
-    }
-    else if ( strcmp(fSpec, "..") == 0 )
-    {
-        // Else if fSpec is exactly ".." then change it to "..\*.*"
-        strcpy(fSpec, "..\\*.*");
-    }
-
-    return fSpec;
-}
-
-static bool expandNonPath2fullPath(RexxCallContext *c, char *fSpec, char *path, size_t pathLen, int *lastSlashPos)
-{
-    char     szBuff[MAX_PATH];        // used to save current dir
-    char     drv[3] = {0};            // used to change current drive
-    uint32_t ret    = 0;
-
-    // fSpec could be a drive designator.
-    if ( fSpec[1] == ':' )
-    {
-        // Save the current drive and path
-        ret = GetCurrentDirectory(sizeof(szBuff), szBuff);
-        if ( ret == 0 || ret > sizeof(szBuff) )
-        {
-            systemServiceExceptionCode(c->threadContext,  "GetCurrentDirectory", ret, sizeof(szBuff));
-            return false;
-        }
-
-        // Just copy the drive letter and the colon, omit the rest.  This is
-        // necessary e.g. for something like "I:*"
-        memcpy(drv, fSpec, 2);
-
-        // Change to the specified drive, get the current directory, then go
-        // back to where we came from.
-        SetCurrentDirectory(drv);
-        ret = GetCurrentDirectory((uint32_t)pathLen, path);
-        SetCurrentDirectory(szBuff);
-
-        if ( ret == 0 || ret > pathLen )
-        {
-            // Need an exception
-            systemServiceExceptionCode(c->threadContext, "GetCurrentDirectory", ret, pathLen);
-            return false;
-        }
-
-        // make drive the path
-        *lastSlashPos = 1;
-    }
-    else
-    {
-        // No drive designator, get the current directory.
-        ret = GetCurrentDirectory((uint32_t)pathLen, path);
-        if ( ret == 0 || ret > pathLen )
-        {
-            systemServiceExceptionCode(c->threadContext, "GetCurrentDirectory", ret, pathLen);
-            return false;
-        }
-    }
-
-    // If we need a trailing slash, add one.
-    if ( path[strlen(path) - 1] != '\\' )
-    {
-        strcat(path, "\\");
-    }
-
-    return true;
-}
-
-
-static bool expandPath2fullPath(RexxCallContext *c, char *fSpec, size_t lastSlashPos, char *path, size_t pathLen)
-{
-    size_t l = 0;    // Used to calculate lengths of strings.
-
-    // If fSpec starts with a drive designator, then we have a full path. Copy
-    // over the path portion, including the last slash, and null terminate it.
-    if (fSpec[1] == ':')
-    {
-        l = lastSlashPos + 1;
-        if ( l > pathLen )
-        {
-            bufferOverflowException(c->threadContext, l, pathLen, __FUNCTION__, __LINE__);
-            return false;
-        }
-
-        memcpy(path, fSpec, l);
-        path[l] = '\0';
-    }
-    else
-    {
-        char fpath[MAX_PATH];
-        char drive[_MAX_DRIVE];
-        char dir[_MAX_DIR];
-        char fname[_MAX_FNAME];
-        char ext[_MAX_EXT];
-        char lastChar;
-
-        if ( lastSlashPos == 0 )
-        {
-            // Only 1 slash at the beginning, get the full path.
-            _fullpath(fpath, "\\", MAX_PATH);
-
-            l = strlen(fpath) + strlen(&fSpec[1]) + 1;
-            if ( l > MAX_PATH )
-            {
-                bufferOverflowException(c->threadContext, l, MAX_PATH, __FUNCTION__, __LINE__);
-                return false;
-            }
-
-            strcat(fpath, &fSpec[1]);
-        }
-        else
-        {
-            // Chop off the path part by putting a null at the last slash, get
-            // the full path, and then put the slash back.
-            fSpec[lastSlashPos] = '\0';
-            _fullpath(fpath, fSpec, MAX_PATH);
-            fSpec[lastSlashPos] = '\\';
-
-            lastChar = fpath[strlen(fpath)-1];
-            if (lastChar != '\\' && lastChar != '/')
-            {
-                l = strlen(fpath) + strlen(&fSpec[lastSlashPos]) + 1;
-                if ( l > MAX_PATH )
-                {
-                    bufferOverflowException(c->threadContext, l, MAX_PATH, __FUNCTION__, __LINE__);
-                    return false;
-                }
-
-                strcat(fpath, &fSpec[lastSlashPos]);
-            }
-        }
-
-        _splitpath(fpath, drive, dir, fname, ext);
-
-        l = strlen(drive) + strlen(dir) + 1;
-        if ( l > pathLen )
-        {
-            bufferOverflowException(c->threadContext, l, pathLen, __FUNCTION__, __LINE__);
-            return false;
-        }
-
-        strcpy(path, drive);
-        strcat(path, dir);
-
-        // If path is invalid, (the empty string,) for some reason, copy the
-        // path from fSpec.  That is from the start of the string up through the
-        // last slash.  Then zero terminate it.
-        if ( strlen(path) == 0 )
-        {
-            l = lastSlashPos + 2;
-            if ( l > pathLen )
-            {
-                bufferOverflowException(c->threadContext, l, pathLen, __FUNCTION__, __LINE__);
-                return false;
-            }
-
-            memcpy(path, fSpec, lastSlashPos + 1);
-            path[lastSlashPos + 1] = '\0';
-        }
-
-        // If we need a trailing slash, add it.
-        if (path[strlen(path) - 1] != '\\')
-        {
-            l = lastSlashPos + 1;
-            if ( l > pathLen )
-            {
-                bufferOverflowException(c->threadContext, l, pathLen, __FUNCTION__, __LINE__);
-                return false;
-            }
-
-            strcat(path, "\\");
-        }
-    }
-
-    return true;
-}
-
-/**
- * This is a SysFileTree() specific function..
- *
- * This function expands the file spec passed in to the funcition into its full
- * path name.  The full path name is then split into the path portion and the
- * file name portion.  The path portion is then returned in path and the file
- * name portion is returned in fileName.
- *
- * The path portion will end with the '\' char if fSpec contains a path.
- *
- * @param fSpec
- * @param path
- * @param filename
- * @param pathLen    Size of the path buffer.
- *
- * @remarks  On entry, the buffer pointed to by fSpec is guaranteed to be at
- *           least strlen(fSpec) + 8.  So, we can strcat to it at least 7
- *           characters and still have it null terminated.
- *
- */
-static bool getPathB(RexxCallContext *c, char *fSpec, char *path, char *filename, size_t pathLen)
-{
-    size_t len;                     // length of filespec
-    int    lastSlashPos;            // position of last slash
-
-    fSpec = adjustFSpec(fSpec);
-
-    // Find the position of the last slash in fSpec
-    len = strlen(fSpec);
-
-    // Get the maximum position of the last '\'
-    lastSlashPos = (int)len;
-
-    // Step back through fSpec until at its beginning or at a '\' or '/' character
-    while ( fSpec[lastSlashPos] != '\\' && fSpec[lastSlashPos] != '/' && lastSlashPos >= 0 )
-    {
-        --lastSlashPos;
-    }
-
-    // If lastSlashPos is less than 0, then there is no backslash present in
-    // fSpec.
-    if ( lastSlashPos < 0 )
-    {
-        if ( ! expandNonPath2fullPath(c, fSpec, path, pathLen, &lastSlashPos) )
-        {
-            return false;
-        }
-    }
-    else
-    {
-        if ( ! expandPath2fullPath(c, fSpec, lastSlashPos, path, pathLen) )
-        {
-            return false;
-        }
-    }
-
-    // Get the file name from fSpec, the portion just after the last '\'
-    if ( fSpec[lastSlashPos + 1] == '\0' )
-    {
-        // The position after the last slash is not the null terminator so there
-        // is something to copy over to the file name segment.
-        strcpy(filename, &fSpec[lastSlashPos + 1]);
-    }
-    else
-    {
-        // The last slash is the last character in fSpec, just use wildcards for
-        // the file name segment.
-        strcpy(filename, "*.*");
-    }
-
-    return true;
-}
-
 
 /*********************************************************************/
 /* Function: ULONG SameAttr(mask, attr)                              */
@@ -1793,136 +1477,6 @@ LONG RecursiveFindFile(
   }
   if (tempfile != staticBuffer) free(tempfile);
   return VALID_ROUTINE;                /* finished                   */
-}
-
-/*****************************************************************************
-* Function: recursiveFindFileB( FileSpec, path, lpd, smask, dmask, options ) *
-*                                                                            *
-* Purpose:  Finds all files starting with FileSpec, and will look down the   *
-*           directory tree if required.                                      *
-*                                                                            *
-* Params:   FileSpec - ASCIIZ string which designates filespec to search     *
-*                       for.                                                 *
-*           path     - ASCIIZ string for current path                        *
-*                                                                            *
-*           ldp      - Pointer to local data structure.                      *
-*                                                                            *
-*           smask    - Array of integers which describe the source attribute *
-*                       mask.  Only files with attributes matching this mask *
-*                       will be found.                                       *
-*                                                                            *
-*           dmask    - Array of integers which describe the target attribute *
-*                       mask.  Attributes of all found files will be set     *
-*                       using this mask.                                     *
-*                                                                            *
-*             Note:  Both source and targets mask are really arrays of       *
-*                    integers.  Each index of the mask corresponds           *
-*                    to a different file attribute.  Each indexe and         *
-*                    its associated attribute follows:                       *
-*                                                                            *
-*                         mask[0] = FILE_ARCHIVED                            *
-*                         mask[1] = FILE_DIRECTORY                           *
-*                         mask[2] = FILE_HIDDEN                              *
-*                         mask[3] = FILE_READONLY                            *
-*                         mask[4] = FILE_SYSTEM                              *
-*                                                                            *
-*                    A negative value at a given index indicates that        *
-*                    the attribute bit of the file is not set.  A positive   *
-*                    number indicates that the attribute should be set.      *
-*                    A value of 0 indicates a "Don't Care" setting.          *
-*                                                                            *
-*           options  - The search/output options.  The following options     *
-*                       may be ORed together when calling this function:     *
-*                                                                            *
-*                    RECURSE     - Indicates that function should search     *
-*                                   all child subdirectories recursively.    *
-*                    DO_DIRS     - Indicates that directories should be      *
-*                                   included in the search.                  *
-*                    DO_FILES    - Indicates that files should be included   *
-*                                   in the search.                           *
-*                    NAME_ONLY   - Indicates that the output should be       *
-*                                   restricted to filespecs only.            *
-*                    EDITABLE_TIME - Indicates time and date fields should   *
-*                                   be output as one timestamp.              *
-*                    LONG_TIME   - Indicates time and date fields should     *
-*                                   be output as one long formatted timestamp*
-*                                                                            *
-*****************************************************************************/
-
-uint32_t recursiveFindFileB(char *fileSpec, char *path, RXTREEDATAB *ldp,
-                            int32_t  *smask, int32_t *dmask, uint32_t options)
-{
-  WIN32_FIND_DATA wfd;                 /* Find File data struct      */
-
-  CHAR  staticBuffer[MAX_PATH+1];    /* dynamic memory             */
-  CHAR  *tempfile = staticBuffer;      /* Used to hold temp file name*/
-  HANDLE fHandle;                      /* search handle used by      */
-                                       /* FindFirstFile()            */
-
-  /* other changes not flagged (see all tempfile checks) */
-                                       /* if > than static mem, use  */
-                                       /* dynamic mem. dynamic mem   */
-                                       /* must be FREED before func  */
-                                       /* returns...                 */
-  size_t maxsize = strlen(path) + strlen(ldp->fNameSpec);
-                                       /* build spec name            */
-  if (maxsize >= MAX_PATH) {
-    tempfile = (CHAR*) malloc(sizeof(CHAR)*(maxsize+1));
-  }
-  wsprintf(tempfile, "%s%s", path, ldp->fNameSpec);
-  if ((fHandle = FindFirstFile(tempfile,&wfd)) != INVALID_HANDLE_VALUE) {
-
-                                       /* Get the rest of the files  */
-    do {
-                                       /* dot directory?             */
-      if (!strcmp(wfd.cFileName, ".") ||
-          !strcmp(wfd.cFileName, ".."))
-          continue;                    /* skip this one              */
-                                       /* got requested attributes?  */
-      if (SameAttr(smask, wfd.dwFileAttributes, options)) {
-                                       /* build the full name        */
-        wsprintf(ldp->truefile, "%s%s", path,wfd.cFileName);
-                                       /* passed back ok?            */
-        if (FormatFile(ldp, smask, dmask, options, &wfd)) {
-          if (tempfile != staticBuffer) free(tempfile);
-          return INVALID_ROUTINE;      /* error on non-zero          */
-        }
-      }
-    } while (FindNextFile(fHandle,&wfd));
-    FindClose(fHandle);
-  }
-
-  if (options&RECURSE) {               /* need to recurse?           */
-    wsprintf(tempfile, "%s*", path);   /* build new target spec      */
-                                       /* and have some              */
-    if ((fHandle = FindFirstFile(tempfile,&wfd)) != INVALID_HANDLE_VALUE) {
-      do {
-                                       /* dot directory?             */
-        if (!strcmp(wfd.cFileName, ".") ||
-            !strcmp(wfd.cFileName, ".."))
-          continue;                    /* skip this one              */
-        maxsize = strlen(path) + strlen(wfd.cFileName) + 1;
-        if (maxsize >= MAX_PATH) {
-          if (tempfile != staticBuffer) {
-            free(tempfile);
-          }
-          tempfile = (CHAR*) malloc(sizeof(CHAR)*(maxsize+1));
-        }
-                                       /* build the new directory    */
-        wsprintf(tempfile, "%s%s\\", path, wfd.cFileName);
-                                       /* search the next level      */
-        if (recursiveFindFileB(ldp->fNameSpec, tempfile, ldp,
-            smask, dmask, options)) {
-          if (tempfile != staticBuffer) free(tempfile);
-          return INVALID_ROUTINE;      /* error on non-zero          */
-        }
-      } while (FindNextFile(fHandle,&wfd));
-      FindClose(fHandle);
-    }
-  }
-  if (tempfile != staticBuffer) free(tempfile);
-
-  return 0;
 }
 
 /****************************************************************
@@ -2858,6 +2412,779 @@ size_t RexxEntry SysFileTree(const char *name, size_t numargs, CONSTRXSTRING arg
 
 
 /**
+ * Checks that attr is the same as that specified by the mask.
+ *
+ * @param mask
+ * @param attr
+ * @param options
+ *
+ * @return True for a match, otherwise false.
+ */
+bool sameAttr(int32_t *mask, uint32_t attr, uint32_t options)
+{
+    if ( (options & DO_DIRS) && ! (options & DO_FILES) && ! (attr & FILE_ATTRIBUTE_DIRECTORY) )
+    {
+        return false;
+    }
+    if ( ! (options & DO_DIRS) && (options & DO_FILES) && (attr & FILE_ATTRIBUTE_DIRECTORY) )
+    {
+        return false;
+    }
+    if ( mask[0] == RXIGNORE )
+    {
+        return  true;
+    }
+
+    if ( mask[0] < 0 && attr & FILE_ATTRIBUTE_ARCHIVE )
+    {
+        return  false;
+    }
+    if ( mask[0] > 0 && ! (attr & FILE_ATTRIBUTE_ARCHIVE) )
+    {
+        return  false;
+    }
+    if ( mask[1] < 0 && attr & FILE_ATTRIBUTE_DIRECTORY )
+    {
+        return  false;
+    }
+    if ( mask[1] > 0 && ! (attr & FILE_ATTRIBUTE_DIRECTORY) )
+    {
+        return  false;
+    }
+    if ( mask[2] < 0 && attr & FILE_ATTRIBUTE_HIDDEN )
+    {
+        return  false;
+    }
+    if (mask[2] > 0 && ! (attr & FILE_ATTRIBUTE_HIDDEN) )
+    {
+        return  false;
+    }
+    if (mask[3] < 0 && attr & FILE_ATTRIBUTE_READONLY )
+    {
+        return  false;
+    }
+    if (mask[3] > 0 && ! (attr & FILE_ATTRIBUTE_READONLY) )
+    {
+        return  false;
+    }
+    if (mask[4] < 0 && attr & FILE_ATTRIBUTE_SYSTEM )
+    {
+        return  false;
+    }
+    if (mask[4] > 0 && ! (attr & FILE_ATTRIBUTE_SYSTEM) )
+    {
+        return  false;
+    }
+
+    return  true;
+
+}
+
+
+/*********************************************************************/
+/* Function: ULONG NewAttr(mask, attr)                               */
+/*                                                                   */
+/* Purpose:  Returns the new file attribute, given the mask of       */
+/*           attributes to be cleared/set and the current attribute  */
+/*           settings.                                               */
+/*                                                                   */
+/*********************************************************************/
+
+uint32_t newAttr(int32_t *mask, uint32_t attr)
+{
+    if ( mask[0] == RXIGNORE )
+    {
+      return  attr;
+    }
+
+    if ( mask[0] < 0 )
+    {
+        attr &= ~FILE_ATTRIBUTE_ARCHIVE;   // Clear
+    }
+    if ( mask[0] > 0 )
+    {
+        attr |= FILE_ATTRIBUTE_ARCHIVE;    // Set
+    }
+    if ( mask[1] < 0 )
+    {
+        attr &= ~FILE_ATTRIBUTE_DIRECTORY; // Clear
+    }
+    if ( mask[1] > 0 )
+    {
+        attr |= FILE_ATTRIBUTE_DIRECTORY;  // Set
+    }
+    if ( mask[2] < 0 )
+    {
+        attr &= ~FILE_ATTRIBUTE_HIDDEN;    // Clear
+    }
+    if ( mask[2] > 0 )
+    {
+        attr |= FILE_ATTRIBUTE_HIDDEN;     // Set
+    }
+    if ( mask[3] < 0 )
+    {
+        attr &= ~FILE_ATTRIBUTE_READONLY;  // Clear
+    }
+    if ( mask[3] > 0 )
+    {
+        attr |= FILE_ATTRIBUTE_READONLY;   // Set
+    }
+    if ( mask[4] < 0 )
+    {
+        attr &= ~FILE_ATTRIBUTE_SYSTEM;    // Clear
+    }
+    if ( mask[4] > 0 )
+    {
+        attr |= FILE_ATTRIBUTE_SYSTEM;     // Set
+    }
+
+    return  attr;
+}
+
+
+/**
+ * Changes the file attributes of the specified file to those specified by attr.
+ *
+ * @param file  File to change the attributes of.
+ *
+ * @param attr  New file attributes.
+ *
+ * @return True on success, false on error.
+ *
+ * @remarks  Note that this function was named SetFileMode() in the old IBM
+ * code.
+ */
+bool setAttr(const char *file, uint32_t attr)
+{
+    if ( SetFileAttributes(file, attr) == 0 )
+    {
+        return false;
+    }
+    return true;
+}
+
+
+/*********************************************************************/
+/* Function: ULONG FormatFile(                                       */
+/*                                                                   */
+/* Purpose:  Returns the new file attribute, given the mask of       */
+/*           attributes to be cleared/set and the current attribute  */
+/*           settings.                                               */
+/*                                                                   */
+/*********************************************************************/
+
+/**
+ * This function is used by SysFileTree only.
+ *
+ * Formats the line for a found file and adds it to the stem containing all the
+ * found files.
+ *
+ * @param c
+ * @param treeData
+ * @param newMask
+ * @param options
+ * @param wfd
+ *
+ * @return True on success, false on error.
+ */
+bool formatFile(RexxCallContext *c, RXTREEDATAB *treeData, int32_t *newMask, uint32_t options, WIN32_FIND_DATA *wfd)
+{
+    SYSTEMTIME systime;
+    FILETIME   ftLocal;
+    uint32_t   changedAttr;    // New file attributes.
+
+    // The file attributes need to be changed before we format the found file
+    // line.
+
+    changedAttr = newAttr(newMask, wfd->dwFileAttributes);
+    if ( changedAttr != wfd->dwFileAttributes )
+    {
+        // try to set the attributes, but if it fails, just use the exsiting.
+        if ( ! setAttr(treeData->foundFile, changedAttr & ~FILE_ATTRIBUTE_DIRECTORY) )
+        {
+            changedAttr = wfd->dwFileAttributes;
+        }
+    }
+
+    if ( options & NAME_ONLY )
+    {
+        size_t len = strlen(treeData->foundFile) + 1;
+        if ( len > sizeof(treeData->foundFileLine) )
+        {
+            bufferOverflowException(c->threadContext, len, sizeof(treeData->foundFileLine), __FUNCTION__, __LINE__);
+            return false;
+        }
+        strcpy(treeData->foundFileLine, treeData->foundFile);
+    }
+    else
+    {
+        // Convert UTC to local file time, and then to system format.
+        FileTimeToLocalFileTime(&wfd->ftLastWriteTime, &ftLocal);
+        FileTimeToSystemTime(&ftLocal, &systime);
+
+        // The fileTime buffer is 64 bytes, and the fileAtt buffer is 16 bytes.
+        // Since we can count the characters put into the buffer here, there is
+        // no need to check for buffer overflow.
+
+        if ( options & LONG_TIME )
+        {
+            sprintf(treeData->fileTime, "%4d-%02d-%02d %02d:%02d:%02d  %10lu  ",
+                    systime.wYear,
+                    systime.wMonth,
+                    systime.wDay,
+                    systime.wHour,
+                    systime.wMinute,
+                    systime.wSecond,
+                    wfd->nFileSizeLow);
+        }
+        else
+        {
+            if ( options & EDITABLE_TIME )
+            {
+                sprintf(treeData->fileTime, "%02d/%02d/%02d/%02d/%02d  %10lu  ",
+                        (systime.wYear + 100) % 100,
+                        systime.wMonth,
+                        systime.wDay,
+                        systime.wHour,
+                        systime.wMinute,
+                        wfd->nFileSizeLow);
+            }
+            else
+            {
+                sprintf(treeData->fileTime, "%2d/%02d/%02d  %2d:%02d%c  %10lu  ",
+                        systime.wMonth,
+                        systime.wDay,
+                        (systime.wYear + 100) % 100,
+                        (systime.wHour < 13 && systime.wHour != 0 ?
+                         systime.wHour : (abs(systime.wHour - (SHORT)12))),
+                        systime.wMinute,
+                        (systime.wHour < 12 || systime.wHour == 24) ? 'a' : 'p',
+                        wfd->nFileSizeLow);
+            }
+        }
+
+        sprintf(treeData->fileAttr, "%c%c%c%c%c  ",
+               (changedAttr & FILE_ATTRIBUTE_ARCHIVE)   ? 'A' : '-',
+               (changedAttr & FILE_ATTRIBUTE_DIRECTORY) ? 'D' : '-',
+               (changedAttr & FILE_ATTRIBUTE_HIDDEN)    ? 'H' : '-',
+               (changedAttr & FILE_ATTRIBUTE_READONLY)  ? 'R' : '-',
+               (changedAttr & FILE_ATTRIBUTE_SYSTEM)    ? 'S' : '-');
+
+        // Now format the complete line.
+        int len = _snprintf(treeData->foundFileLine, sizeof(treeData->foundFileLine), "%s%s%s",
+                            treeData->fileTime, treeData->fileAttr, treeData->foundFile);
+        if ( len < 0 || len == sizeof(treeData->foundFileLine) )
+        {
+            bufferTooSmallException(c->threadContext, len, sizeof(treeData->foundFileLine),
+                                   strlen(treeData->fileTime) + strlen(treeData->fileAttr) + strlen(treeData->foundFile) + 1,
+                                   __FUNCTION__, __LINE__);
+            return false;
+        }
+    }
+
+    // Place found file line in the stem.
+    treeData->count++;
+    c->SetStemArrayElement(treeData->files, treeData->count, c->String(treeData->foundFileLine));
+
+    return true;
+}
+
+/*****************************************************************************
+* Function: recursiveFindFileB( FileSpec, path, lpd, smask, dmask, options ) *
+*                                                                            *
+* Purpose:  Finds all files starting with FileSpec, and will look down the   *
+*           directory tree if required.                                      *
+*                                                                            *
+* Params:   FileSpec - ASCIIZ string which designates filespec to search     *
+*                       for.                                                 *
+*           path     - ASCIIZ string for current path                        *
+*                                                                            *
+*           ldp      - Pointer to local data structure.                      *
+*                                                                            *
+*           smask    - Array of integers which describe the source attribute *
+*                       mask.  Only files with attributes matching this mask *
+*                       will be found.                                       *
+*                                                                            *
+*           dmask    - Array of integers which describe the target attribute *
+*                       mask.  Attributes of all found files will be set     *
+*                       using this mask.                                     *
+*                                                                            *
+*             Note:  Both source and targets mask are really arrays of       *
+*                    integers.  Each index of the mask corresponds           *
+*                    to a different file attribute.  Each indexe and         *
+*                    its associated attribute follows:                       *
+*                                                                            *
+*                         mask[0] = FILE_ARCHIVED                            *
+*                         mask[1] = FILE_DIRECTORY                           *
+*                         mask[2] = FILE_HIDDEN                              *
+*                         mask[3] = FILE_READONLY                            *
+*                         mask[4] = FILE_SYSTEM                              *
+*                                                                            *
+*                    A negative value at a given index indicates that        *
+*                    the attribute bit of the file is not set.  A positive   *
+*                    number indicates that the attribute should be set.      *
+*                    A value of 0 indicates a "Don't Care" setting.          *
+*                                                                            *
+*           options  - The search/output options.  The following options     *
+*                       may be ORed together when calling this function:     *
+*                                                                            *
+*                    RECURSE     - Indicates that function should search     *
+*                                   all child subdirectories recursively.    *
+*                    DO_DIRS     - Indicates that directories should be      *
+*                                   included in the search.                  *
+*                    DO_FILES    - Indicates that files should be included   *
+*                                   in the search.                           *
+*                    NAME_ONLY   - Indicates that the output should be       *
+*                                   restricted to filespecs only.            *
+*                    EDITABLE_TIME - Indicates time and date fields should   *
+*                                   be output as one timestamp.              *
+*                    LONG_TIME   - Indicates time and date fields should     *
+*                                   be output as one long formatted timestamp*
+*                                                                            *
+*****************************************************************************/
+
+/**
+ *
+ *
+ * @param c
+ * @param fileSpec
+ * @param path
+ * @param treeData
+ * @param targetMask
+ * @param newMask
+ * @param options
+ *
+ * @return uint32_t
+ *
+ * @remarks  Rather than compute lengths of strings and malloc memory, we use a
+ *           static buffer and _snprintf().  We raise a condition if the string
+ *           ends up not being null terminated.
+ *
+ *           The fact that the original IBM code computed string lengths and
+ *           then allocated memory if the string was longer than the buffer
+ *           size, suggests that they knew this happened.  But, MAX_PATH should
+ *           be sufficient as long as we are not compiling with UNICODE.  Which
+ *           we are not.  Note that MAX_PATH is supposedly big enough for the
+ *           null terminator.
+ */
+static bool recursiveFindFileB(RexxCallContext *c, char *fileSpec, char *path, RXTREEDATAB *treeData,
+                               int32_t *targetMask, int32_t *newMask, uint32_t options)
+{
+  WIN32_FIND_DATA  wfd;
+  char             tmpFileName[MAX_PATH];
+  HANDLE           fHandle;
+  int32_t          len;
+
+  len = _snprintf(tmpFileName, sizeof(tmpFileName), "%s%s", path, treeData->fNameSpec);
+  if ( len < 0 || len == sizeof(tmpFileName) )
+  {
+      bufferTooSmallException(c->threadContext, len, sizeof(tmpFileName),
+                             strlen(path) + strlen(treeData->fNameSpec) + 1,
+                             __FUNCTION__, __LINE__);
+      return false;
+  }
+
+  fHandle = FindFirstFile(tmpFileName, &wfd);
+  if ( fHandle != INVALID_HANDLE_VALUE )
+  {
+      do
+      {
+          // Skip dot directories
+          if ( strcmp(wfd.cFileName, ".") == 0 || strcmp(wfd.cFileName, "..") == 0 )
+          {
+              continue;
+          }
+
+          if ( sameAttr(targetMask, wfd.dwFileAttributes, options) )
+          {
+              len = _snprintf(treeData->foundFile, sizeof(treeData->foundFile), "%s%s", path, wfd.cFileName);
+              if ( len < 0 || len == sizeof(treeData->foundFile) )
+              {
+                  bufferTooSmallException(c->threadContext, len, sizeof(treeData->foundFile),
+                                         strlen(path) + strlen(wfd.cFileName) + 1,
+                                         __FUNCTION__, __LINE__);
+                  return false;
+              }
+
+              if ( ! formatFile(c, treeData, newMask, options, &wfd) )
+              {
+                  return false;
+              }
+          }
+      } while ( FindNextFile(fHandle, &wfd) );
+
+      FindClose(fHandle);
+  }
+
+  if ( options & RECURSE )
+  {
+      // Build new target spec.  Above, path + fileSpec fit into tmpFileName,
+      // so we are okay here.
+      sprintf(tmpFileName, "%s*", path);
+
+      fHandle = FindFirstFile(tmpFileName, &wfd);
+      if ( fHandle != INVALID_HANDLE_VALUE )
+      {
+          do
+          {
+              // Skip dot directories
+              if ( strcmp(wfd.cFileName, ".") == 0 || strcmp(wfd.cFileName, "..") == 0 )
+              {
+                  continue;
+              }
+
+              // Build the new directory file name.
+              len = _snprintf(tmpFileName, sizeof(tmpFileName), "%s%s\\", path, wfd.cFileName);
+              if ( len < 0 || len == sizeof(tmpFileName) )
+              {
+                  bufferTooSmallException(c->threadContext, len, sizeof(tmpFileName),
+                                         strlen(path) + strlen(wfd.cFileName) + 1 + 1,
+                                         __FUNCTION__, __LINE__);
+                  return false;
+              }
+
+              // Search the next level.
+              if ( ! recursiveFindFileB(c, treeData->fNameSpec, tmpFileName, treeData, targetMask, newMask, options) )
+              {
+                  return false;
+              }
+          } while (FindNextFile(fHandle, &wfd));
+
+          FindClose(fHandle);
+      }
+  }
+
+  return true;
+}
+
+/**
+ * This is a SysFileTree() specific function.  It is only called, indirectly
+ * through getPath(), from SysFileTree().
+ *
+ * This function mimics the old IBM code.
+ *
+ * Leading spaces are stripped, in some cases. A file specification of "." is
+ * changed to "*.*" and a file specification of ".." is changed to "..\*.c*"
+ *
+ * Leading spaces in fSpec are stripped IFF the first character(s) after the
+ * leading spaces:
+ *
+ *       is '\' or '/'
+ *     or
+ *       is '.\' or './'
+ *     or
+ *       is '..\' or '../'
+ *     or
+ *        is z:  (i.e., a drive letter)
+ *
+ * @param fSpec  The SysFileTree search specification
+ *
+ * @return A pointer to fSpec, possibly adjust to point to the first non-space
+ *         character in the string.
+ *
+ * @side effects:  fSpec may be changed from "." to "*.*" or may be changed from
+ *                 ".." to "..\*.*"
+ *
+ * @assumes:  The buffer for fSpec is large enough for the possible changes.
+ */
+static char *adjustFSpec(char *fSpec)
+{
+    size_t i = 0;
+
+    // Skip leading blanks.
+    while ( fSpec[i] == ' ' )
+    {
+        i++;
+    }
+
+    if ( i > 0 )
+    {
+        size_t len = strlen(fSpec);
+
+        // This series of if statements could be combined in to on huge if, but
+        // this is easier to comprehend:
+        if ( fSpec[i] == '\\' || fSpec[i] == '/' )                         // The "\" case
+        {
+            fSpec = &fSpec[i];
+        }
+        else if ( fSpec[i] == '.' )
+        {
+            if ( i + 1 < len )
+            {
+                if ( fSpec[i + 1] == '\\' || fSpec[i + 1] == '/' )         // The ".\" case
+                {
+                    fSpec = &fSpec[i];
+                }
+                else if ( i + 2 < len )
+                {
+                    if ( fSpec[i + 1] == '.' &&
+                         (fSpec[i + 2] == '\\' || fSpec[i + 2] == '/') )   // The "..\" case
+                    {
+                        fSpec = &fSpec[i];
+                    }
+                }
+            }
+        }
+        else if ( i + 1 < len && fSpec[i + 1] == ':' )                     // The "z:' case
+        {
+            fSpec = &fSpec[i];
+        }
+    }
+
+    if ( strcmp(fSpec, ".") == 0 )
+    {
+        // If fSpec is exactly "." then change it to "*.*"
+        strcpy(fSpec, "*.*");
+    }
+    else if ( strcmp(fSpec, "..") == 0 )
+    {
+        // Else if fSpec is exactly ".." then change it to "..\*.*"
+        strcpy(fSpec, "..\\*.*");
+    }
+
+    return fSpec;
+}
+
+static bool expandNonPath2fullPath(RexxCallContext *c, char *fSpec, char *path, size_t pathLen, int *lastSlashPos)
+{
+    char     szBuff[MAX_PATH];        // used to save current dir
+    char     drv[3] = {0};            // used to change current drive
+    uint32_t ret    = 0;
+
+    // fSpec could be a drive designator.
+    if ( fSpec[1] == ':' )
+    {
+        // Save the current drive and path
+        ret = GetCurrentDirectory(sizeof(szBuff), szBuff);
+        if ( ret == 0 || ret > sizeof(szBuff) )
+        {
+            systemServiceExceptionCode(c->threadContext,  "GetCurrentDirectory", ret, sizeof(szBuff));
+            return false;
+        }
+
+        // Just copy the drive letter and the colon, omit the rest.  This is
+        // necessary e.g. for something like "I:*"
+        memcpy(drv, fSpec, 2);
+
+        // Change to the specified drive, get the current directory, then go
+        // back to where we came from.
+        SetCurrentDirectory(drv);
+        ret = GetCurrentDirectory((uint32_t)pathLen, path);
+        SetCurrentDirectory(szBuff);
+
+        if ( ret == 0 || ret > pathLen )
+        {
+            // Need an exception
+            systemServiceExceptionCode(c->threadContext, "GetCurrentDirectory", ret, pathLen);
+            return false;
+        }
+
+        // make drive the path
+        *lastSlashPos = 1;
+    }
+    else
+    {
+        // No drive designator, get the current directory.
+        ret = GetCurrentDirectory((uint32_t)pathLen, path);
+        if ( ret == 0 || ret > pathLen )
+        {
+            systemServiceExceptionCode(c->threadContext, "GetCurrentDirectory", ret, pathLen);
+            return false;
+        }
+    }
+
+    // If we need a trailing slash, add one.
+    if ( path[strlen(path) - 1] != '\\' )
+    {
+        strcat(path, "\\");
+    }
+
+    return true;
+}
+
+
+static bool expandPath2fullPath(RexxCallContext *c, char *fSpec, size_t lastSlashPos, char *path, size_t pathLen)
+{
+    size_t l = 0;    // Used to calculate lengths of strings.
+
+    // If fSpec starts with a drive designator, then we have a full path. Copy
+    // over the path portion, including the last slash, and null terminate it.
+    if (fSpec[1] == ':')
+    {
+        l = lastSlashPos + 1;
+        if ( l > pathLen )
+        {
+            bufferOverflowException(c->threadContext, l, pathLen, __FUNCTION__, __LINE__);
+            return false;
+        }
+
+        memcpy(path, fSpec, l);
+        path[l] = '\0';
+    }
+    else
+    {
+        char fpath[MAX_PATH];
+        char drive[_MAX_DRIVE];
+        char dir[_MAX_DIR];
+        char fname[_MAX_FNAME];
+        char ext[_MAX_EXT];
+        char lastChar;
+
+        if ( lastSlashPos == 0 )
+        {
+            // Only 1 slash at the beginning, get the full path.
+            _fullpath(fpath, "\\", MAX_PATH);
+
+            l = strlen(fpath) + strlen(&fSpec[1]) + 1;
+            if ( l > MAX_PATH )
+            {
+                bufferOverflowException(c->threadContext, l, MAX_PATH, __FUNCTION__, __LINE__);
+                return false;
+            }
+
+            strcat(fpath, &fSpec[1]);
+        }
+        else
+        {
+            // Chop off the path part by putting a null at the last slash, get
+            // the full path, and then put the slash back.
+            fSpec[lastSlashPos] = '\0';
+            _fullpath(fpath, fSpec, MAX_PATH);
+            fSpec[lastSlashPos] = '\\';
+
+            lastChar = fpath[strlen(fpath)-1];
+            if (lastChar != '\\' && lastChar != '/')
+            {
+                l = strlen(fpath) + strlen(&fSpec[lastSlashPos]) + 1;
+                if ( l > MAX_PATH )
+                {
+                    bufferOverflowException(c->threadContext, l, MAX_PATH, __FUNCTION__, __LINE__);
+                    return false;
+                }
+
+                strcat(fpath, &fSpec[lastSlashPos]);
+            }
+        }
+
+        _splitpath(fpath, drive, dir, fname, ext);
+
+        l = strlen(drive) + strlen(dir) + 1;
+        if ( l > pathLen )
+        {
+            bufferOverflowException(c->threadContext, l, pathLen, __FUNCTION__, __LINE__);
+            return false;
+        }
+
+        strcpy(path, drive);
+        strcat(path, dir);
+
+        // If path is invalid, (the empty string,) for some reason, copy the
+        // path from fSpec.  That is from the start of the string up through the
+        // last slash.  Then zero terminate it.
+        if ( strlen(path) == 0 )
+        {
+            l = lastSlashPos + 2;
+            if ( l > pathLen )
+            {
+                bufferOverflowException(c->threadContext, l, pathLen, __FUNCTION__, __LINE__);
+                return false;
+            }
+
+            memcpy(path, fSpec, lastSlashPos + 1);
+            path[lastSlashPos + 1] = '\0';
+        }
+
+        // If we need a trailing slash, add it.
+        if (path[strlen(path) - 1] != '\\')
+        {
+            l = lastSlashPos + 1;
+            if ( l > pathLen )
+            {
+                bufferOverflowException(c->threadContext, l, pathLen, __FUNCTION__, __LINE__);
+                return false;
+            }
+
+            strcat(path, "\\");
+        }
+    }
+
+    return true;
+}
+
+/**
+ * This is a SysFileTree() specific function..
+ *
+ * This function expands the file spec passed in to the funcition into its full
+ * path name.  The full path name is then split into the path portion and the
+ * file name portion.  The path portion is then returned in path and the file
+ * name portion is returned in fileName.
+ *
+ * The path portion will end with the '\' char if fSpec contains a path.
+ *
+ * @param fSpec
+ * @param path
+ * @param filename
+ * @param pathLen    Size of the path buffer.
+ *
+ * @remarks  On entry, the buffer pointed to by fSpec is guaranteed to be at
+ *           least strlen(fSpec) + 8.  So, we can strcat to it at least 7
+ *           characters and still have it null terminated.
+ *
+ */
+static bool getPathB(RexxCallContext *c, char *fSpec, char *path, char *filename, size_t pathLen)
+{
+    size_t len;                     // length of filespec
+    int    lastSlashPos;            // position of last slash
+
+    fSpec = adjustFSpec(fSpec);
+
+    // Find the position of the last slash in fSpec
+    len = strlen(fSpec);
+
+    // Get the maximum position of the last '\'
+    lastSlashPos = (int)len;
+
+    // Step back through fSpec until at its beginning or at a '\' or '/' character
+    while ( fSpec[lastSlashPos] != '\\' && fSpec[lastSlashPos] != '/' && lastSlashPos >= 0 )
+    {
+        --lastSlashPos;
+    }
+
+    // If lastSlashPos is less than 0, then there is no backslash present in
+    // fSpec.
+    if ( lastSlashPos < 0 )
+    {
+        if ( ! expandNonPath2fullPath(c, fSpec, path, pathLen, &lastSlashPos) )
+        {
+            return false;
+        }
+    }
+    else
+    {
+        if ( ! expandPath2fullPath(c, fSpec, lastSlashPos, path, pathLen) )
+        {
+            return false;
+        }
+    }
+
+    // Get the file name from fSpec, the portion just after the last '\'
+    if ( fSpec[lastSlashPos + 1] != '\0' )
+    {
+        // The position after the last slash is not the null terminator so there
+        // is something to copy over to the file name segment.
+        strcpy(filename, &fSpec[lastSlashPos + 1]);
+    }
+    else
+    {
+        // The last slash is the last character in fSpec, just use wildcards for
+        // the file name segment.
+        strcpy(filename, "*.*");
+    }
+
+    return true;
+}
+
+/**
  * This is a SysFileTree specific function.
  *
  * Determines the options by converting the character based argument to the
@@ -3170,11 +3497,11 @@ static char *getPathBuffer(RexxCallContext *context, size_t fSpecLen, size_t *pa
 /**
  * SysFileTree() implementation.  Temp for now
  *
- * @param  fSpec
+ * @param  fSpec  The search pattern, may contain glob characters.  E.g., *.bat
  *
  * @param  files  A stem to contain the returned results.
  *
- * @param  opts   Any combonation of the following:
+ * @param  opts   Any combination of the following:
  *
  *                  'B' - Search for files and directories.
  *                  'D' - Search for directories only.
@@ -3250,43 +3577,16 @@ RexxRoutine5(uint32_t, SysFileTreeB, CSTRING, fSpec, RexxStemObject, files, OPTI
          goto done_out;
      }
 
-     result = recursiveFindFileB(fileSpec, path, &treeData, targetMask, newMask, options);
-
-#if 0
-
-                                       /* recursively search         */
-  if (RecursiveFindFile(fileSpec, path, &treeData, targetMask, newMask, options)) {
-    if (fileSpec != buff1) {
-      free(fileSpec);
-      free(path);
-    }
-    return INVALID_ROUTINE;
-  }
-                                       /* return lines read          */
-  ltoa((long)ldp.count, ldp.Temp, 10);
-  ldp.varname[ldp.stemlen] = '0';
-  ldp.varname[ldp.stemlen+1] = 0;
-  ldp.shvb.shvnext = NULL;
-  ldp.shvb.shvname.strptr = ldp.varname;
-  ldp.shvb.shvname.strlength = ldp.stemlen+1;
-  ldp.shvb.shvnamelen = ldp.stemlen+1;
-  ldp.shvb.shvvalue.strptr = ldp.Temp;
-  ldp.shvb.shvvalue.strlength = strlen(ldp.Temp);
-  ldp.shvb.shvvaluelen = ldp.shvb.shvvalue.strlength;
-  ldp.shvb.shvcode = RXSHV_SET;
-  ldp.shvb.shvret = 0;
-
-
-  if (RexxVariablePool(&ldp.shvb) == RXSHV_BADN)
-    return INVALID_ROUTINE;            /* error on non-zero          */
-
-#endif
+     if ( recursiveFindFileB(context, fileSpec, path, &treeData, targetMask, newMask, options) )
+     {
+         context->SetStemArrayElement(treeData.files, 0, context->WholeNumber(treeData.count));
+         result = 0;
+     }
 
 done_out:
     safeLocalFree(fileSpec);
     safeLocalFree(path);
     return result;
-
 }
 
 
