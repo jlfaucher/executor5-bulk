@@ -2974,7 +2974,6 @@ static bool expandNonPath2fullPath(RexxCallContext *c, char *fSpec, char *path, 
 
         if ( ret == 0 || ret > pathLen )
         {
-            // Need an exception
             systemServiceExceptionCode(c->threadContext, "GetCurrentDirectory", ret, pathLen);
             return false;
         }

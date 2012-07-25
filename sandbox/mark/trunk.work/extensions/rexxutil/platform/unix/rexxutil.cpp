@@ -409,20 +409,16 @@ typedef struct RxTreeData {
 } RXTREEDATA;
 
 /*
- *  Temp data structure used while working on SysFileTreeB.
- *
- *  Note that in this unix version file, MAX is defined as 256 while buffers
- *  used to create foundFile use IBUF_LEN which is 4096.  So, this is a probable
- *  cause of buffer overflow.
+ *  Data structure used with SysFileTree()
  */
 typedef struct RxTreeDataB {
     size_t         count;                    // Number of found file lines
     RexxStemObject files;                    // Stem that holds results.
-    char           fNameSpec[MAX + 1];       // File name portion of the search for file spec, may contain glob characters.
-    char           foundFile[MAX + 1];       // Full path name of found file
+    char           fNameSpec[IBUF_LEN];      // File name portion of the search for file spec, may contain glob characters.
+    char           foundFile[IBUF_LEN];      // Full path name of found file
     char           fileTime[64];             // Time and size of found file
     char           fileAttr[16];             // File attribute string of found file
-    char           foundFileLine[MAX + 80];  // Buffer for found file line, includes foundFile, fileTime, and fileAttr
+    char           foundFileLine[IBUF_LEN + 80];  // Buffer for found file line, includes foundFile, fileTime, and fileAttr
 } RXTREEDATAB;
 
 
@@ -1028,7 +1024,7 @@ int LinFindNextFile(
   size_t caseless)                     /* case insensitive matching  */
 {
   struct dirent *dir_entry;            /* Directory entry            */
-  char full_path[IBUF_LEN];
+  char full_path[IBUF_LEN+1];
                                        /* strtok routine             */
 
  if(!(dir_entry = readdir(dir_handle)))/* get first entry            */
@@ -2898,6 +2894,10 @@ size_t RexxEntry SysFileTree(const char *name, size_t numargs, CONSTRXSTRING arg
 }
 
 
+void outOfMemoryException(RexxThreadContext *c)
+{
+    c->RaiseException1(Rexx_Error_System_service_user_defined, c->String("failed to allocate memory"));
+}
 
 /**
  * <routineName> argument <argPos> must not be a null string
@@ -2931,7 +2931,7 @@ void inline nullStringException(RexxThreadContext *c, CSTRING fName, size_t pos)
 static void stringTooLongException(RexxThreadContext *c, CSTRING funcName, size_t pos, size_t len, size_t realLen)
 {
     char buf[256];
-    snprintf(buffer, sizeof(buffer), "%s() argument %d must be less than %d characters in length; length is %d",
+    snprintf(buf, sizeof(buf), "%s() argument %lu must be less than %lu characters in length; length is %lu",
               funcName, pos, len, realLen);
 
     c->RaiseException1(Rexx_Error_Incorrect_call_user_defined, c->String(buf));
@@ -2948,48 +2948,79 @@ static void stringTooLongException(RexxThreadContext *c, CSTRING funcName, size_
 static void badSFTOptsException(RexxThreadContext *c, size_t pos, CSTRING actual)
 {
     char buf[256] = {0};
-    _snprintf(buf, sizeof(buf),
-             "SysFileTree argument %d must be a combination of F, D, B, S, T, L, I, or O; found \"%s\"",
+    snprintf(buf, sizeof(buf),
+             "SysFileTree argument %lu must be a combination of F, D, B, S, T, L, I, or O; found \"%s\"",
              pos, actual);
 
     c->RaiseException1(Rexx_Error_Incorrect_call_user_defined, c->String(buf));
 }
 
-
 static void bufferOverflowException(RexxThreadContext *c, size_t needed, size_t have, CSTRING func, size_t lineNumber)
 {
     char buf[256] = {0};
-    _snprintf(buf, sizeof(buf),
-             "buffer overflow would occur in %s() at line: %d; data size: %d buffer size: %d",
+    snprintf(buf, sizeof(buf),
+             "buffer overflow would occur in %s() at line: %lu; data size: %lu buffer size: %lu",
              func, lineNumber, needed, have);
 
     c->RaiseException1(Rexx_Error_Execution_user_defined, c->String(buf));
 }
 
-/* Test if struct stat.st_mode field is a file for our purposes.  */
+/**
+ * This is a SysFileTree specific function.
+ *
+ * Test if struct stat.st_mode field is a file for the purpose of SysFileTree.
+ *
+ * @param m
+ *
+ * @return True if a file, otherwise
+ */
 inline bool isAcceptableFile(mode_t m)
 {
-    return (S_ISREG(m)    ||        /* if it is a file            */
-            S_ISCHR(m)    ||        /* or a device special        */
-            S_ISBLK(m)    ||        /* file                       */
-            S_ISSOCK(m)   ||        /* or a socket                */
-            S_ISLNK(m)    ||        /* or a symbolic link         */
-            S_ISFIFO(m));           /* or a FIFO                  */
+    return (S_ISREG(m)    ||        // if it is a file
+            S_ISCHR(m)    ||        // or a device special
+            S_ISBLK(m)    ||        // file
+            S_ISSOCK(m)   ||        // or a socket
+            S_ISLNK(m)    ||        // or a symbolic link
+            S_ISFIFO(m));           // or a FIFO
 }
 
-/*****************************************************************************
-* Function:  LinFindNextFile(path, dir_handle, finfo, d_name, caseless)      *
-*                                                                            *
-* Purpose:  This function finds the next file in the directory PATH pointed  *
-*           by DIR_HANDLE which matchs the filespec.  All needed info is     *
-*           returned via the FINFO struct and the D_NAME pointer.            *
-*                                                                            *
-* Note:  '?' is currently not supported. Add the impletmentation here !      *
-******************************************************************************/
+inline char typeOfEntry(mode_t m)
+{
+    if( S_ISLNK(m) )
+    {
+      return 'l';                // symbolic link
+    }
+    else if ( S_ISBLK(m) )
+    {
+      return 'b';                // block device
+    }
+    else if ( S_ISCHR(m) )
+    {
+      return 'c';                // character device
+    }
+    else if ( S_ISDIR(m) )
+    {
+      return 'd';                // directory
+    }
+    else if ( S_ISFIFO(m) )
+    {
+      return 'p';                // FIFO
+    }
+    else if ( S_ISSOCK(m) )
+    {
+      return 's';                // socket
+    }
+    else
+    {
+      return '-';                // regular file
+    }
+}
 
 /**
+ * This is a SysFileTree specific function.
+ *
  * Found the next file in the directory pointed to by dir_handle that matches
- * fileSped.  The needed information is returnd in finfo and d_name.
+ * fileSpec.  The needed information is returnd in finfo and d_name.
  *
  * @param fileSpec     Search specification.
  * @param path         Current path we are searching.
@@ -3001,10 +3032,10 @@ inline bool isAcceptableFile(mode_t m)
  * @return True if a file is found, outherwise false.
  *
  * @remarks  The '?' glob character is not currently supported.  Old notes said
- *           addt the implementation here.
+ *           add the implementation here.
  */
 bool linFindNextFile(RexxCallContext *c, const char *fileSpec, const char *path, DIR *dir_handle,
-                     struct stat *finfo, char **d_name, size_t caseless)
+                     struct stat *finfo, char **d_name, bool caseless)
 {
     char fullPath[IBUF_LEN];
     int  len;
@@ -3018,9 +3049,9 @@ bool linFindNextFile(RexxCallContext *c, const char *fileSpec, const char *path,
     do
     {
         len = snprintf(fullPath, sizeof(fullPath), "%s%s", path, dir_entry->d_name);
-        if ( len >= sizeof(fullPath) )
+        if ( len >= (int)sizeof(fullPath) )
         {
-            bufferOverflowException(c, len, sizeof(fullPath), __func__, __LINE__);
+            bufferOverflowException(c->threadContext, len, sizeof(fullPath), __func__, __LINE__);
             return false;
         }
 
@@ -3028,92 +3059,121 @@ bool linFindNextFile(RexxCallContext *c, const char *fileSpec, const char *path,
 
         if ( isAcceptableFile(finfo->st_mode) )
         {
-            if (caseless)
-            {                    /* if caseless search         */
-              char dup_d_name[IBUF_LEN];     /* compare upper cased copy   */
-              char * pDest = dup_d_name;        /* of the entry name          */
-              char * pSrc  = dir_entry->d_name;
+            // If this is a caseless search, we compare an upper cased copy of
+            // the entry name.  fileSpec has already been upper cased at a
+            // higher level.
+            if ( caseless )
+            {
+                char  dup_d_name[IBUF_LEN];
+                char *pDest = dup_d_name;
+                char *pSrc  = dir_entry->d_name;
 
-              for ( ; *pSrc; pDest++, pSrc++ )
-                *pDest = toupper(*pSrc);
-              *pDest = '\x0';
+                for ( ; *pSrc; pDest++, pSrc++ )
+                {
+                    *pDest = toupper(*pSrc);
+                }
+                *pDest = '\x0';
 
-              if(fnmatch(fileSpec,dup_d_name,FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD)==0){
-                *d_name = dir_entry->d_name;    /* retptr to the name location*/
-                return true;                       /* return success             */
-              }
+                if ( fnmatch(fileSpec, dup_d_name, FNM_NOESCAPE | FNM_PATHNAME | FNM_PERIOD ) == 0 )
+                {
+                    *d_name = dir_entry->d_name;
+                    return true;
+                }
             }
             else
-            {                              /* else compare normally      */
-              if(fnmatch(fileSpec,dir_entry->d_name,FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD)==0){
-                *d_name = dir_entry->d_name;    /* retptr to the name location*/
-                return true;                       /* return success             */
+            {
+                if ( fnmatch(fileSpec, dir_entry->d_name, FNM_NOESCAPE | FNM_PATHNAME | FNM_PERIOD) == 0 )
+                {
+                    *d_name = dir_entry->d_name;
+                    return true;
+                }
             }
         }
-
+        dir_entry = readdir(dir_handle);
     }
-   while((dir_entry = readdir(dir_handle)));/* while have entries       */
-   return false;                            /* no file found or EOF       */
+    while( dir_entry != NULL );
+
+    return false;
 }
 
-/*****************************************************************
-* Function:  LinFindNextDir(path, dir_handle, finfo, d_name)     *
-*                                                                *
-* Purpose:  This function finds the next dir in the directory    *
-*           PATH pointed by DIR_HANDLE. All needed info is       *
-*           returned via the FINFO struct and the D_NAME pointer.*
-*                                                                *
-* Note:  '?' is currently not supported. Add the impletmentation *
-*        here !                                                  *
-*****************************************************************/
-int linFindNextDir(
-  const char * filespec,               /* filespec to search for     */
-  const char * path,                   /* current path               */
-  DIR *dir_handle,                     /* directory handle           */
-  struct stat *finfo,                  /* return buf for the finfo   */
-  char * *d_name,                      /* name of the file found     */
-  size_t caseless)                     /* case insensitive matching  */
+/**
+ * This is a SysFileTree specific function.
+ *
+ * Found the next directory in the directory pointed to by dir_handle that
+ * matches fileSpec.  The needed information is returnd in finfo and d_name.
+ *
+ * @param fileSpec     Search specification.
+ * @param path         Current path we are searching.
+ * @param dir_handle   Directory handle.
+ * @param finfo        Returned file info buffer.
+ * @param d_name       Returned name of the directory found.
+ * @param caseless     Do case insensitive matching, or not.
+ *
+ * @return True if a directory is found, outherwise false.
+ *
+ * @remarks  The '?' glob character is not currently supported.  Old notes said
+ *           add the implementation here.
+ */
+bool linFindNextDir(RexxCallContext *c, const char *fileSpec, const char *path, DIR *dir_handle,
+                     struct stat *finfo, char **d_name, bool caseless)
 {
-  struct dirent *dir_entry;            /* Directory entry            */
-  char full_path[IBUF_LEN+1];
-                                       /* strtok routine             */
+    char fullPath[IBUF_LEN];
+    int  len;
 
- if(!(dir_entry = readdir(dir_handle)))/* get first entry           */
-   return 0;                           /* no entry or EOF            */
-
- do{
-
-                                       /* make full spec             */
-    sprintf(full_path, "%s%s", path, dir_entry->d_name);
-    lstat(full_path, finfo);           /* read the info about it     */
-
-    if(S_ISDIR(finfo->st_mode)){       /* if it is a directory       */
-
-      if (caseless) {                    /* if caseless search         */
-        char dup_d_name[IBUF_LEN+1];     /* compare upper cased copy   */
-        char * pDest = dup_d_name;        /* of the entry name          */
-        char * pSrc  = dir_entry->d_name;
-
-        for ( ; *pSrc; pDest++, pSrc++ )
-          *pDest = toupper(*pSrc);
-        *pDest = '\x0';
-
-        if(fnmatch(filespec,dup_d_name,FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD)==0){
-          *d_name = dir_entry->d_name;    /* retptr to the name location*/
-          return true;                       /* return success             */
-        }
-      }
-      else {                              /* else compare normally      */
-        if(fnmatch(filespec,dir_entry->d_name,FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD)==0){
-          *d_name = dir_entry->d_name;    /* retptr to the name location*/
-          return true;                       /* return success             */
-        }
-      }
+    struct dirent *dir_entry = readdir(dir_handle);
+    if( dir_entry == NULL )
+    {
+        return false;
     }
-   }
-   while((dir_entry = readdir(dir_handle)));/* while have entries       */
 
-   return false;
+    do
+    {
+        len = snprintf(fullPath, sizeof(fullPath), "%s%s", path, dir_entry->d_name);
+        if ( len >= (int)sizeof(fullPath) )
+        {
+            bufferOverflowException(c->threadContext, len, sizeof(fullPath), __func__, __LINE__);
+            return false;
+        }
+
+        lstat(fullPath, finfo);
+
+        if ( S_ISDIR(finfo->st_mode) )
+        {
+            // If this is a caseless search, we compare an upper cased copy of
+            // the entry name.  fileSpec has already been upper cased at a
+            // higher level.
+            if ( caseless )
+            {
+                char  dup_d_name[IBUF_LEN];
+                char *pDest = dup_d_name;
+                char *pSrc  = dir_entry->d_name;
+
+                for ( ; *pSrc; pDest++, pSrc++ )
+                {
+                    *pDest = toupper(*pSrc);
+                }
+                *pDest = '\x0';
+
+                if ( fnmatch(fileSpec, dup_d_name, FNM_NOESCAPE | FNM_PATHNAME | FNM_PERIOD ) == 0 )
+                {
+                    *d_name = dir_entry->d_name;
+                    return true;
+                }
+            }
+            else
+            {
+                if ( fnmatch(fileSpec, dir_entry->d_name, FNM_NOESCAPE | FNM_PATHNAME | FNM_PERIOD) == 0 )
+                {
+                    *d_name = dir_entry->d_name;
+                    return true;
+                }
+            }
+        }
+        dir_entry = readdir(dir_handle);
+    }
+    while( dir_entry != NULL );
+
+    return false;
 }
 
 /**
@@ -3128,7 +3188,7 @@ int linFindNextDir(
  *
  * @return bool
  */
-static bool goodOpts(RexxCallContext *c, char *opts, uint32_t *pOpts)
+static bool goodOpts(RexxCallContext *c, CSTRING opts, uint32_t *pOpts)
 {
     uint32_t options = *pOpts;
 
@@ -3193,7 +3253,7 @@ static bool goodOpts(RexxCallContext *c, char *opts, uint32_t *pOpts)
  *
  * @return bool
  */
-static bool getOptionsFromArg(RexxCallContext *context, char *opts, uint32_t *options, size_t argPos)
+static bool getOptionsFromArg(RexxCallContext *context, CSTRING opts, uint32_t *options, size_t argPos)
 {
     *options = DO_FILES | DO_DIRS;
 
@@ -3308,8 +3368,8 @@ static bool getFileSpecFromArg(RexxCallContext *context, CSTRING fSpec, char *fi
  *
  * This function expands the file spec passed in to the funcition into its full
  * path name.  The full path name is then split into the path portion and the
- * file name portion.  The path portion is then returned in path and the file
- * name portion is returned in fileName.
+ * file name portion.  The path portion is returned in path and the file name
+ * portion is returned in fileName.
  *
  * The path portion will end with the '\' char if fSpec contains a path.
  *
@@ -3367,7 +3427,7 @@ static bool getFileSpecFromArg(RexxCallContext *context, CSTRING fSpec, char *fi
  *           both of these things are removed.
  *
  */
-static bool getPathB(RexxCallContext *c, char *fileSpec, char *path, size_t pathLen, char *fileName, size_t fnLen)
+static bool getPath(RexxCallContext *c, char *fileSpec, char *path, size_t pathLen, char *fileName, size_t fnLen)
 {
   int    len;                   // Length of filespec.
   size_t l;                     // Temporay var for length calculations.
@@ -3404,7 +3464,7 @@ static bool getPathB(RexxCallContext *c, char *fileSpec, char *path, size_t path
             l = strlen(&fileSpec[lastSlashPos + 1]) + 1;
             if ( l > fnLen )
             {
-                bufferOverflowException(c, l, fnLen, __func__, __LINE__);
+                bufferOverflowException(c->threadContext, l, fnLen, __func__, __LINE__);
                 return false;
             }
             strcpy(fileName, &fileSpec[lastSlashPos + 1]);
@@ -3422,7 +3482,7 @@ static bool getPathB(RexxCallContext *c, char *fileSpec, char *path, size_t path
         l = strlen(&fileSpec[lastSlashPos + 1]) + 1;
         if ( l > fnLen )
         {
-            bufferOverflowException(c, l, fnLen, __func__, __LINE__);
+            bufferOverflowException(c->threadContext, l, fnLen, __func__, __LINE__);
             return false;
         }
         strcpy(fileName, &fileSpec[lastSlashPos + 1]);
@@ -3435,10 +3495,10 @@ static bool getPathB(RexxCallContext *c, char *fileSpec, char *path, size_t path
         // path name.  We resolve to the current directory.
         if ( getcwd(path, pathLen) == NULL )
         {
-            // The buffer is not big enough, but we do not know how big it should
-            // be.  We use a huge number and anyone investigating the function and
-            // line number, will read this comment.
-            bufferOverflowException(c, 0xfffffff, pathLen, __func__, __LINE__);
+            // The buffer is not big enough, but we do not know how big it
+            // should be.  We use a huge number and anyone investigating the
+            // function and line number, will read this comment.
+            bufferOverflowException(c->threadContext, 0xfffffff, pathLen, __func__, __LINE__);
             return false;
         }
         else
@@ -3453,7 +3513,7 @@ static bool getPathB(RexxCallContext *c, char *fileSpec, char *path, size_t path
         l = lastSlashPos + 1 + 1;
         if ( l > pathLen )
         {
-            bufferOverflowException(c, l, pathLen, __func__, __LINE__);
+            bufferOverflowException(c->threadContext, l, pathLen, __func__, __LINE__);
             return false;
         }
         strncpy(path, fileSpec, lastSlashPos + 1);
@@ -3475,7 +3535,7 @@ static bool getPathB(RexxCallContext *c, char *fileSpec, char *path, size_t path
                     // it should be.  We use a huge number and anyone
                     // investigating the function and line number, will read
                     // this comment.
-                    bufferOverflowException(c, 0xfffffff, pathLen, __func__, __LINE__);
+                    bufferOverflowException(c->threadContext, 0xfffffff, pathLen, __func__, __LINE__);
 
                     // Back to current directory.
                     chdir(savedPath);
@@ -3485,7 +3545,7 @@ static bool getPathB(RexxCallContext *c, char *fileSpec, char *path, size_t path
                 {
                     // Again this mimics the old IBM code, but I'm not sure it
                     // is correct.  What if fileSpec was: /usr?  lastSlashPos
-                    // will be 0, and pat will not have a trailing '/'  ??
+                    // will be 0, and path will not have a trailing '/'  ??
                     if ( lastSlashPos > 0 )
                     {
                         strcat(path, "/");
@@ -3501,120 +3561,145 @@ static bool getPathB(RexxCallContext *c, char *fileSpec, char *path, size_t path
 }
 
 
-bool formatFile(
-  RXTREEDATAB   *treeData,                   /* Pointer to local data      */
-  size_t        options,               /* Search and output format   */
-  struct stat *finfo )              /* File info sturcture        */
+/**
+ * This is a SysFileTree() specific function..
+ *
+ * Formats a found file entry according to the specified options and adds it to
+ * the stem containing the found files.
+ *
+ * @param c         Call context we are operating in.
+ *
+ * @param treeData  Struct with data related to finding the files.
+ *
+ * @param options   Options specifying how the found file line is to be
+ *                  formatted.
+ *
+ * @param finfo     File info structure.
+ *
+ * @return False on error, otherwise true.
+ *
+ * @remarks  Note that we can count the characters used for both the time data
+ *           and attribute data, so we know the buffers are large enough.
+ *
+ *           In addition, the foundFileLine buffer is larger than foundFile
+ *           buffer, so there is no problem with the strcpy().  The previous
+ *           layers have already checked that the foundFile buffer did not
+ *           overflow, and simple arithemetic tells us that that the
+ *           foundFileLine buffer is large enough to hold the 3 pieces.
+ *           Therefore we don't need to check for buffer overflow here.
+ */
+void formatFile(RexxCallContext *c, RXTREEDATAB *treeData, uint32_t options, struct stat *finfo)
 {
-  struct tm *timestamp;                /* Time info about the file   */
-  char tp;                             /* type of the entry          */
+    struct tm *timestamp;
+    char   tp;
 
-  if (options&NAME_ONLY)               /* name only?                 */
-    strcpy(treeData->foundFileLine, treeData->foundFile);  /* just copy it over          */
-  else {
+    if ( options & NAME_ONLY )
+    {
+        //
+        strcpy(treeData->foundFileLine, treeData->foundFile);
+    }
+    else
+    {
 #ifdef AIX
-    struct tm stTimestamp;               /* Time info about the file   */
-    timestamp = localtime_r(&(finfo->st_mtime),&stTimestamp); /* get the time info */
+        struct tm stTimestamp;
+        timestamp = localtime_r(&(finfo->st_mtime), &stTimestamp);
 #else
-    timestamp = localtime(&(finfo->st_mtime));/* get the time info   */
+        timestamp = localtime(&(finfo->st_mtime));
 #endif
-    /* add long time format */
-    if (options&LONG_TIME)             /* need the long time format? */
-                                       /* format as such             */
-      sprintf(treeData->fileTime, "%4d-%02d-%02d %02d:%02d:%02d  %10lu  ",
-        timestamp->tm_year+1900,
-        timestamp->tm_mon+1,
-        timestamp->tm_mday,
-        timestamp->tm_hour,
-        timestamp->tm_min,
-        timestamp->tm_sec,
-        finfo->st_size);
-    else
-    {
-      if (options&EDITABLE_TIME)       /* need the "smushed" form?   */
-                                       /* format as such             */
-        sprintf(treeData->fileTime, "%02d/%02d/%02d/%02d/%02d  %10lu  ",
-          (timestamp->tm_year)%100,
-          timestamp->tm_mon+1,
-          timestamp->tm_mday,
-          timestamp->tm_hour,
-          timestamp->tm_min,
-          finfo->st_size);
-      else                             /* give the pretty form       */
-        sprintf(treeData->fileTime, "%2d/%02d/%02d  %2d:%02d%c  %10lu  ",
-          timestamp->tm_mon+1,
-          timestamp->tm_mday,
-          (timestamp->tm_year)%100,
-          (timestamp->tm_hour < 13?
-          timestamp->tm_hour:
-          (timestamp->tm_hour-12)),
-          timestamp->tm_min,
-          ((timestamp->tm_hour < 12 ||
-          timestamp->tm_hour == 24)?'a':'p'),
-          finfo->st_size);
+        if ( options & LONG_TIME )
+        {
+
+            sprintf(treeData->fileTime, "%4d-%02d-%02d %02d:%02d:%02d  %10lu  ",
+                      timestamp->tm_year + 1900,
+                      timestamp->tm_mon + 1,
+                      timestamp->tm_mday,
+                      timestamp->tm_hour,
+                      timestamp->tm_min,
+                      timestamp->tm_sec,
+                      finfo->st_size);
+        }
+        else
+        {
+            if ( options & EDITABLE_TIME )
+            {
+                sprintf(treeData->fileTime, "%02d/%02d/%02d/%02d/%02d  %10lu  ",
+                          (timestamp->tm_year) % 100,
+                          timestamp->tm_mon + 1,
+                          timestamp->tm_mday,
+                          timestamp->tm_hour,
+                          timestamp->tm_min,
+                          finfo->st_size);
+            }
+            else
+            {
+                sprintf(treeData->fileTime, "%2d/%02d/%02d  %2d:%02d%c  %10lu  ",
+                          timestamp->tm_mon+1,
+                          timestamp->tm_mday,
+                          timestamp->tm_year % 100,
+                          timestamp->tm_hour < 13 ? timestamp->tm_hour : timestamp->tm_hour - 12,
+                          timestamp->tm_min,
+                          (timestamp->tm_hour < 12 || timestamp->tm_hour == 24) ? 'a' : 'p',
+                          finfo->st_size);
+            }
+        }
+        tp = typeOfEntry(finfo->st_mode);
+
+        sprintf(treeData->fileAttr, "%c%c%c%c%c%c%c%c%c%c  ",
+                  tp,
+                  (finfo->st_mode & S_IREAD)  ? 'r' : '-',
+                  (finfo->st_mode & S_IWRITE) ? 'w' : '-',
+                  (finfo->st_mode & S_IEXEC)  ? 'x' : '-',
+                  (finfo->st_mode & S_IRGRP)  ? 'r' : '-',
+                  (finfo->st_mode & S_IWGRP)  ? 'w' : '-',
+                  (finfo->st_mode & S_IXGRP)  ? 'x' : '-',
+                  (finfo->st_mode & S_IROTH)  ? 'r' : '-',
+                  (finfo->st_mode & S_IWOTH)  ? 'w' : '-',
+                  (finfo->st_mode & S_IXOTH)  ? 'x' : '-');
+
+        // Now format the complete line.
+        sprintf(treeData->foundFileLine, "%s%s%s", treeData->fileTime, treeData->fileAttr, treeData->foundFile);
     }
 
-    /* find the type of the entry                                    */
-    if(S_ISLNK(finfo->st_mode))
-      tp = 'l';                        /* symbolic link              */
-    else if(S_ISBLK(finfo->st_mode))
-      tp = 'b';                        /* block device               */
-    else if(S_ISCHR(finfo->st_mode))
-      tp = 'c';                        /* character device           */
-    else if(S_ISDIR(finfo->st_mode))
-      tp = 'd';                        /* directory                  */
-    else if(S_ISFIFO(finfo->st_mode))
-      tp = 'p';                        /* FIFO                       */
-    else if(S_ISSOCK(finfo->st_mode))
-      tp = 's';                        /* socket                     */
-    else
-      tp = '-';                        /* regular file               */
-
-                                       /*  this format the attributes
-                                          now */
-    sprintf(treeData->fileAttr, "%c%c%c%c%c%c%c%c%c%c  ",
-      tp,
-      (((finfo->st_mode)&S_IREAD)?'r':'-'),
-      (((finfo->st_mode)&S_IWRITE)?'w':'-'),
-      (((finfo->st_mode)&S_IEXEC)?'x':'-'),
-      (((finfo->st_mode)&S_IRGRP)?'r':'-'),
-      (((finfo->st_mode)&S_IWGRP)?'w':'-'),
-      (((finfo->st_mode)&S_IXGRP)?'x':'-'),
-      (((finfo->st_mode)&S_IROTH)?'r':'-'),
-      (((finfo->st_mode)&S_IWOTH)?'w':'-'),
-      (((finfo->st_mode)&S_IXOTH)?'x':'-'));
-
-    // Now format the complete line.
-    int len = snprintf(treeData->foundFileLine, sizeof(treeData->foundFileLine), "%s%s%s",
-                       treeData->fileTime, treeData->fileAttr, treeData->foundFile);
-    if ( len >= sizeof(treeData->foundFileLine) )
-    {
-        bufferOverflowException(c, len, sizeof(treeData->foundFileLine), __func__, __LINE__);
-        return false;
-    }
-  }
-
-  // Place found file line in the stem.
-  treeData->count++;
-  c->SetStemArrayElement(treeData->files, treeData->count, c->String(treeData->foundFileLine));
-
-  return true;
+    // Place found file line in the stem.
+    treeData->count++;
+    c->SetStemArrayElement(treeData->files, treeData->count, c->String(treeData->foundFileLine));
 }
 
 
 /**
+ * Finds all files matching treeData->fNameSpec starting path, recursing into
+ * sub-directories if requested.
  *
+ * @param c         Call context we are operating in.
  *
- * @param c
- * @param path
- * @param treeData
- * @param options
+ * @param path      Path to the directory to start in.
+ *
+ * @param treeData  Struct containing data pertaining to the search and used to
+ *                  return the found files.
+ *
+ * @param options   Options defining the search.  Some comination of the
+ *                  following.
+ *
+ *                  RECURSE       - Indicates that function should search
+ *                                  all child subdirectories recursively.
+ *                  DO_DIRS       - Indicates that directories should be
+ *                                  included in the search.
+ *                  DO_FILES      - Indicates that files should be included
+ *                                  in the search.
+ *                  NAME_ONLY     - Indicates that the output should be
+ *                                  restricted to matched file names only.
+ *                  EDITABLE_TIME - Indicates time and date fields should
+ *                                  be output as one timestamp.
+ *                  LONG_TIME     - Indicates time and date fields should
+ *                                  be output as one long formatted timestamp
+ *                  CASELESS      - Indicates do a case insensitive check for
+ *                                  file names.
  *
  * @return True on no error, otherwise false.
  *
- * @remarks  The IBM recursive find file pass in fileSpec as the first argument,
- *           but never used it.  Instead it used TargetSpec in RXTREEDATA.  So,
- *           that argument is eliminated here and fNameSpec (its equivalent) is
+ * @remarks  The IBM recursive find file passed in fileSpec as the first
+ *           argument, but never used it.  Instead it used fNameSpec in
+ *           RXTREEDATA.  So, that argument is eliminated here and fNameSpec is
  *           used.
  *
  *           snprintf() note:
@@ -3631,14 +3716,14 @@ bool formatFile(
  *           I want to see if it happens.  But, that should maybe be removed and
  *           just return short data.
  */
-static bool recursiveFindFileB(RexxCallContext *c, const char *path, RXTREEDATAB *treeData, uint32_t options)
+static bool recursiveFindFile(RexxCallContext *c, const char *path, RXTREEDATAB *treeData, uint32_t options)
 {
     char    tempFile[MAX+1];            // Used to hold temp file name.
     DIR    *dir_handle;                 // Directory handle.
     struct  stat finfo;                 // File information.
     char   *fileName;                   // Found file name returned here.
-    int     len                         // snprintf return to check buffer overflow.
-    size_t  caseless = options & CASELESS;
+    int     len;                        // snprintf return to check buffer overflow.
+    bool    caseless = options & CASELESS;
 
     // First, process all of the normal files, saving directories for last.                                                             *
 
@@ -3651,25 +3736,22 @@ static bool recursiveFindFileB(RexxCallContext *c, const char *path, RXTREEDATAB
     }
 
     // If processing files, and have some files, get all of them.
-    if ( (options & DO_FILES) && LinFindNextFile(treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) )
+    if ( (options & DO_FILES) && linFindNextFile(c, treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) )
     {
         do
         {
             // Build the full name.
             len = snprintf(treeData->foundFile, sizeof(treeData->foundFile), "%s%s", path, fileName);
-            if ( len >= sizeof(treeData->foundFile) )
+            if ( len >= (int)sizeof(treeData->foundFile) )
             {
-                bufferOverflowException(c, len, sizeof(treeData->foundFile), __func__, __LINE__);
+                bufferOverflowException(c->threadContext, len, sizeof(treeData->foundFile), __func__, __LINE__);
                 closedir(dir_handle);
                 return false;
             }
 
-            if ( ! formatFile(c, treeData, options, &finfo) )
-            {
-                closedir(dir_handle);
-                return false;
-            }
-        } while ( LinFindNextFile(treeData->TargetSpec,path, dir_handle, &finfo, &fileName, caseless) );
+            formatFile(c, treeData, options, &finfo);
+        }
+        while ( linFindNextFile(c, treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) );
     }
 
     // Reset the directory handle, (rewinddir doesn't work.)
@@ -3682,7 +3764,7 @@ static bool recursiveFindFileB(RexxCallContext *c, const char *path, RXTREEDATAB
     }
 
     // If processing directories, and have some directories, get all of them.
-    if ( (options & DO_DIRS)  &&  LinFindNextDir(treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) )
+    if ( (options & DO_DIRS)  &&  linFindNextDir(c, treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) )
     {
         do
         {
@@ -3694,19 +3776,16 @@ static bool recursiveFindFileB(RexxCallContext *c, const char *path, RXTREEDATAB
 
             // Build the full name.
             len = snprintf(treeData->foundFile, sizeof(treeData->foundFile), "%s%s", path, fileName);
-            if ( len >= sizeof(treeData->foundFile) )
+            if ( len >= (int)sizeof(treeData->foundFile) )
             {
-                bufferOverflowException(c, len, sizeof(treeData->foundFile), __func__, __LINE__);
+                bufferOverflowException(c->threadContext, len, sizeof(treeData->foundFile), __func__, __LINE__);
                 closedir(dir_handle);
                 return false;
             }
 
-            if ( ! formatFile(c, treeData, options, &finfo) )
-            {
-                closedir(dir_handle);
-                return false;
-            }
-       } while ( LinFindNextDir(treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) );
+            formatFile(c, treeData, options, &finfo);
+       }
+       while ( linFindNextDir(c, treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) );
 
     }
 
@@ -3722,7 +3801,7 @@ static bool recursiveFindFileB(RexxCallContext *c, const char *path, RXTREEDATAB
     if ( options & RECURSE )
     {
         // No need for caseless when matching a star.
-        if ( LinFindNextDir("*", path, dir_handle, &finfo, &fileName, 0) )
+        if ( linFindNextDir(c, "*", path, dir_handle, &finfo, &fileName, 0) )
         {
             do
             {
@@ -3734,19 +3813,20 @@ static bool recursiveFindFileB(RexxCallContext *c, const char *path, RXTREEDATAB
 
                 // Build the new directory name and search the next level.
                 len = snprintf(tempFile, sizeof(tempFile), "%s%s/", path, fileName);
-                if ( len >= sizeof(tempFile) )
+                if ( len >= (int)sizeof(tempFile) )
                 {
-                    bufferOverflowException(c, len, sizeof(tempFile), __func__, __LINE__);
+                    bufferOverflowException(c->threadContext, len, sizeof(tempFile), __func__, __LINE__);
                     closedir(dir_handle);
                     return false;
                 }
 
-                if ( ! recursiveFindFileB(tempFile, treeData, options) )
+                if ( ! recursiveFindFile(c, tempFile, treeData, options) )
                 {
                     closedir(dir_handle);
                     return false;
                 }
-            } while (LinFindNextDir("*",path,dir_handle,&finfo,&fileName, 0));
+            }
+            while ( linFindNextDir(c, "*", path, dir_handle, &finfo, &fileName, 0) );
         }
     }
 
@@ -3756,13 +3836,14 @@ static bool recursiveFindFileB(RexxCallContext *c, const char *path, RXTREEDATAB
 
 
 /**
- * SysFileTree() implementation.  Temp for now
+ * SysFileTree() implementation.  Searches for files in a directory tree.
  *
- * @param  fSpec  The search pattern, may contain glob characters.  E.g., *.sh
+ * @param  fSpec  [required]  The search pattern, may contain glob characters.
+ *                 E.g., .sh
  *
- * @param  files  A stem to contain the returned results.
+ * @param  files  [required]  A stem to contain the returned results.
  *
- * @param  opts   Any combination of the following:
+ * @param  opts   [optional]  Any combination of the following:
  *
  *                  'B' - Search for files and directories.
  *                  'D' - Search for directories only.
@@ -3773,15 +3854,15 @@ static bool recursiveFindFileB(RexxCallContext *c, const char *path, RXTREEDATAB
  *                  'L' - Long time format
  *                  'I' - Case Insensitive search.
  *
- * @param targetAttr  Target attribute mask.  This is not used in the Unix
- *                    version of SysFileTree(), was never used.  But, the doc
- *                    never noted that fact.  It is left here to avoid breaking
- *                    any program that may have used it.
+ * @param targetAttr  [optional]  Target attribute mask.  This is not used in
+ *                    the Unix version of SysFileTree(), was never used.  But,
+ *                    the doc never noted that fact.  It is left here to avoid
+ *                    breaking any program that may have used it.
  *
- * @param newAttr     New attribute mask.  This is not used in the Unix
- *                    version of SysFileTree(), was never used.  But, the doc
- *                    never noted that fact.  It is left here to avoid breaking
- *                    any program that may have used it.
+ * @param newAttr     [optional]  New attribute mask.  This is not used in the
+ *                    Unix version of SysFileTree(), was never used.  But, the
+ *                    doc never noted that fact.  It is left here to avoid
+ *                    breaking any program that may have used it.
  *
  * @return  0 on success, non-zero on error.  For all errors a condition is
  *          raised.
@@ -3791,25 +3872,25 @@ static bool recursiveFindFileB(RexxCallContext *c, const char *path, RXTREEDATAB
 RexxRoutine5(uint32_t, SysFileTreeB, CSTRING, fSpec, RexxStemObject, files, OPTIONAL_CSTRING, opts,
              OPTIONAL_CSTRING, targetAttr, OPTIONAL_CSTRING, newAttr)
 {
-    uint32_t     result   = 1;       // Return value, 1 is an error.
     char         fileSpec[IBUF_LEN]; // File specification to look for.
     char         path[IBUF_LEN];     // Path to search along.
+    uint32_t     result   = 1;       // Return value, 1 is an error.
     RXTREEDATAB  treeData = {0};     // Struct containing data about found files.
+    uint32_t     options  = 0;
 
     treeData.files = files;
 
-    if ( ! getFileSpecFromArg(context, fSpec, fileSpec, 1) )
+    if ( ! getFileSpecFromArg(context, fSpec, fileSpec, IBUF_LEN, 1) )
     {
         goto done_out;
     }
 
-    uint32_t options = 0;
-    if ( ! getOptionsFromArg(context, (char *)opts, &options, 3) )
+    if ( ! getOptionsFromArg(context, opts, &options, 3) )
     {
         goto done_out;
     }
 
-    if ( ! getPathB(fileSpec, path, IBUF_LEN, treeData.fNameSpec, sizeof(treeData.fNameSpec)) )
+    if ( ! getPath(context,fileSpec, path, IBUF_LEN, treeData.fNameSpec, sizeof(treeData.fNameSpec)) )
     {
         goto done_out;
     }
@@ -3825,9 +3906,9 @@ RexxRoutine5(uint32_t, SysFileTreeB, CSTRING, fSpec, RexxStemObject, files, OPTI
     }
 
     // The old RecursiveFindFile pulls fileSpec from treeData and never uses
-    // fileSpec.  fileSpec and treeData.fNameSpec are not equivalent, are they?
-    printf("Equal ? fileSpec=%s treeData.fNameSpec=%s\n", fileSpec, treeData.fNameSpec);
-    if ( recursiveFindFileB(context, path, &treeData, options) )
+    // fileSpec.  fileSpec and treeData.fNameSpec are not equivalent.
+
+    if ( recursiveFindFile(context, path, &treeData, options) )
     {
 
         context->SetStemArrayElement(treeData.files, 0, context->WholeNumber(treeData.count));
