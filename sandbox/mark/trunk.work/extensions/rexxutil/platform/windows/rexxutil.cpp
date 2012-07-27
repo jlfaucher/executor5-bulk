@@ -2564,15 +2564,6 @@ bool setAttr(const char *file, uint32_t attr)
 }
 
 
-/*********************************************************************/
-/* Function: ULONG FormatFile(                                       */
-/*                                                                   */
-/* Purpose:  Returns the new file attribute, given the mask of       */
-/*           attributes to be cleared/set and the current attribute  */
-/*           settings.                                               */
-/*                                                                   */
-/*********************************************************************/
-
 /**
  * This function is used by SysFileTree only.
  *
@@ -2580,14 +2571,21 @@ bool setAttr(const char *file, uint32_t attr)
  * found files.
  *
  * @param c
+ * @parm  path
  * @param treeData
  * @param newMask
  * @param options
  * @param wfd
  *
  * @return True on success, false on error.
+ *
+ * @remarks  We try to use the static buffers in treeData, but if they are not
+ *  big enough we allocate memory.  If we do allocate memory, we have to free it
+ *  of course.  We can determine if the memory needs to be freed by checking
+ *  that either nFoundFile, or nFoundFileLine, are the same size as they are
+ *  originally set to, or not.
  */
-bool formatFile(RexxCallContext *c, RXTREEDATAB *treeData, int32_t *newMask, uint32_t options, WIN32_FIND_DATA *wfd)
+bool formatFile(RexxCallContext *c, char *path, RXTREEDATAB *treeData, int32_t *newMask, uint32_t options, WIN32_FIND_DATA *wfd)
 {
     SYSTEMTIME systime;
     FILETIME   ftLocal;
@@ -2606,91 +2604,128 @@ bool formatFile(RexxCallContext *c, RXTREEDATAB *treeData, int32_t *newMask, uin
         }
     }
 
-    if ( options & NAME_ONLY )
+    char   *dFoundFile = treeData->foundFile;
+    size_t  nFoundFile = sizeof(treeData->foundFile);
+
+    int len = _snprintf(treeData->foundFile, sizeof(treeData->foundFile), "%s%s", path, wfd->cFileName);
+    if ( len < 0 || len == nFoundFile )
     {
-        size_t len = strlen(treeData->foundFile) + 1;
-        if ( len > sizeof(treeData->foundFileLine) )
+        nFoundFile = strlen(path) + strlen(wfd->cFileName);
+        dFoundFile = (char *)LocalAlloc(LPTR, nFoundFile);
+        if ( dFoundFile == NULL )
         {
-            bufferOverflowException(c->threadContext, len, sizeof(treeData->foundFileLine), __FUNCTION__, __LINE__);
+            outOfMemoryException(c->threadContext);
             return false;
         }
-        strcpy(treeData->foundFileLine, treeData->foundFile);
+    }
+
+    if ( options & NAME_ONLY )
+    {
+        // Add the file name to the stem and be done with it.
+        treeData->count++;
+        c->SetStemArrayElement(treeData->files, treeData->count, c->String(dFoundFile));
+
+        if ( nFoundFile != sizeof(treeData->foundFile) )
+        {
+            LocalFree(dFoundFile);
+        }
+        return true;
+    }
+
+    // Convert UTC to local file time, and then to system format.
+    FileTimeToLocalFileTime(&wfd->ftLastWriteTime, &ftLocal);
+    FileTimeToSystemTime(&ftLocal, &systime);
+
+    // The fileTime buffer is 64 bytes, and the fileAtt buffer is 16 bytes.
+    // Since we can count the characters put into the buffer here, there is
+    // no need to check for buffer overflow.
+
+    if ( options & LONG_TIME )
+    {
+        sprintf(treeData->fileTime, "%4d-%02d-%02d %02d:%02d:%02d  %10lu  ",
+                systime.wYear,
+                systime.wMonth,
+                systime.wDay,
+                systime.wHour,
+                systime.wMinute,
+                systime.wSecond,
+                wfd->nFileSizeLow);
     }
     else
     {
-        // Convert UTC to local file time, and then to system format.
-        FileTimeToLocalFileTime(&wfd->ftLastWriteTime, &ftLocal);
-        FileTimeToSystemTime(&ftLocal, &systime);
-
-        // The fileTime buffer is 64 bytes, and the fileAtt buffer is 16 bytes.
-        // Since we can count the characters put into the buffer here, there is
-        // no need to check for buffer overflow.
-
-        if ( options & LONG_TIME )
+        if ( options & EDITABLE_TIME )
         {
-            sprintf(treeData->fileTime, "%4d-%02d-%02d %02d:%02d:%02d  %10lu  ",
-                    systime.wYear,
+            sprintf(treeData->fileTime, "%02d/%02d/%02d/%02d/%02d  %10lu  ",
+                    (systime.wYear + 100) % 100,
                     systime.wMonth,
                     systime.wDay,
                     systime.wHour,
                     systime.wMinute,
-                    systime.wSecond,
                     wfd->nFileSizeLow);
         }
         else
         {
-            if ( options & EDITABLE_TIME )
-            {
-                sprintf(treeData->fileTime, "%02d/%02d/%02d/%02d/%02d  %10lu  ",
-                        (systime.wYear + 100) % 100,
-                        systime.wMonth,
-                        systime.wDay,
-                        systime.wHour,
-                        systime.wMinute,
-                        wfd->nFileSizeLow);
-            }
-            else
-            {
-                sprintf(treeData->fileTime, "%2d/%02d/%02d  %2d:%02d%c  %10lu  ",
-                        systime.wMonth,
-                        systime.wDay,
-                        (systime.wYear + 100) % 100,
-                        (systime.wHour < 13 && systime.wHour != 0 ?
-                         systime.wHour : (abs(systime.wHour - (SHORT)12))),
-                        systime.wMinute,
-                        (systime.wHour < 12 || systime.wHour == 24) ? 'a' : 'p',
-                        wfd->nFileSizeLow);
-            }
+            sprintf(treeData->fileTime, "%2d/%02d/%02d  %2d:%02d%c  %10lu  ",
+                    systime.wMonth,
+                    systime.wDay,
+                    (systime.wYear + 100) % 100,
+                    (systime.wHour < 13 && systime.wHour != 0 ?
+                     systime.wHour : (abs(systime.wHour - (SHORT)12))),
+                    systime.wMinute,
+                    (systime.wHour < 12 || systime.wHour == 24) ? 'a' : 'p',
+                    wfd->nFileSizeLow);
         }
+    }
 
-        sprintf(treeData->fileAttr, "%c%c%c%c%c  ",
-               (changedAttr & FILE_ATTRIBUTE_ARCHIVE)   ? 'A' : '-',
-               (changedAttr & FILE_ATTRIBUTE_DIRECTORY) ? 'D' : '-',
-               (changedAttr & FILE_ATTRIBUTE_HIDDEN)    ? 'H' : '-',
-               (changedAttr & FILE_ATTRIBUTE_READONLY)  ? 'R' : '-',
-               (changedAttr & FILE_ATTRIBUTE_SYSTEM)    ? 'S' : '-');
+    sprintf(treeData->fileAttr, "%c%c%c%c%c  ",
+           (changedAttr & FILE_ATTRIBUTE_ARCHIVE)   ? 'A' : '-',
+           (changedAttr & FILE_ATTRIBUTE_DIRECTORY) ? 'D' : '-',
+           (changedAttr & FILE_ATTRIBUTE_HIDDEN)    ? 'H' : '-',
+           (changedAttr & FILE_ATTRIBUTE_READONLY)  ? 'R' : '-',
+           (changedAttr & FILE_ATTRIBUTE_SYSTEM)    ? 'S' : '-');
 
-        // Now format the complete line.
-        int len = _snprintf(treeData->foundFileLine, sizeof(treeData->foundFileLine), "%s%s%s",
-                            treeData->fileTime, treeData->fileAttr, treeData->foundFile);
-        if ( len < 0 || len == sizeof(treeData->foundFileLine) )
+    // Now format the complete line, allocating memory if we have to.
+
+    char   *dFoundFileLine = treeData->foundFileLine;
+    size_t  nFoundFileLine = sizeof(treeData->foundFileLine);
+
+
+    len = _snprintf(dFoundFileLine, nFoundFileLine, "%s%s%s",
+                    treeData->fileTime, treeData->fileAttr, dFoundFile);
+    if ( len < 0 || len == nFoundFileLine )
+    {
+        nFoundFileLine = strlen(treeData->fileTime) + strlen(treeData->fileAttr) + nFoundFile + 1;
+        dFoundFileLine = (char *)LocalAlloc(LPTR, nFoundFileLine);
+
+        if ( dFoundFileLine == NULL )
         {
-            bufferTooSmallException(c->threadContext, len, sizeof(treeData->foundFileLine),
-                                   strlen(treeData->fileTime) + strlen(treeData->fileAttr) + strlen(treeData->foundFile) + 1,
-                                   __FUNCTION__, __LINE__);
+            outOfMemoryException(c->threadContext);
+            if ( nFoundFile != sizeof(treeData->foundFile) )
+            {
+                LocalFree(dFoundFile);
+            }
             return false;
         }
     }
 
     // Place found file line in the stem.
     treeData->count++;
-    c->SetStemArrayElement(treeData->files, treeData->count, c->String(treeData->foundFileLine));
+    c->SetStemArrayElement(treeData->files, treeData->count, c->String(dFoundFileLine));
+
+    if ( nFoundFile != sizeof(treeData->foundFile) )
+    {
+        LocalFree(dFoundFile);
+    }
+    if ( nFoundFileLine != sizeof(treeData->foundFileLine) )
+    {
+        LocalFree(dFoundFileLine);
+    }
 
     return true;
 }
 
 /*****************************************************************************
-* Function: recursiveFindFileB( FileSpec, path, lpd, smask, dmask, options ) *
+* Function: recursiveFindFile( FileSpec, path, lpd, smask, dmask, options ) *
 *                                                                            *
 * Purpose:  Finds all files starting with FileSpec, and will look down the   *
 *           directory tree if required.                                      *
@@ -2744,47 +2779,84 @@ bool formatFile(RexxCallContext *c, RXTREEDATAB *treeData, int32_t *newMask, uin
 *****************************************************************************/
 
 /**
+ * Finds all files matching a file specification, formats a file name line and
+ * adds the formatted line to a stem.  Much of the data to complete this
+ * operation is contained in the treeData struct.
  *
+ * This is a recursive function that may search through subdirectories if the
+ * recurse option is used.
  *
- * @param c
- * @param fileSpec
- * @param path
- * @param treeData
- * @param targetMask
- * @param newMask
+ * @param c           Call context we are operating in.
+ *
+ * @param path        Current directory we are searching.
+ *
+ * @param treeData    Struct containing data pertaining to the search, such as
+ *                    the file specification we are searching for, the stem to
+ *                    put the results in, etc..
+ *
+ * @param targetMask  An array of integers which describe the source attribute
+ *                    mask.  Only files with attributes matching this mask will
+ *                    be found.
+ *
+ * @param newMask     An array of integers which describe the target attribute
+ *                    mask.  Attributes of all found files will be changed / set
+ *                    to the values specified by this mask.
  * @param options
  *
  * @return uint32_t
  *
- * @remarks  Rather than compute lengths of strings and malloc memory, we use a
- *           static buffer and _snprintf().  We raise a condition if the string
- *           ends up not being null terminated.
+ * @remarks  For both targetMask and newMask, each index of the mask corresponds
+ *           to a different file attribute.  Each index and its associated
+ *           attribute are as follows:
  *
- *           The fact that the original IBM code computed string lengths and
- *           then allocated memory if the string was longer than the buffer
- *           size, suggests that they knew this happened.  But, MAX_PATH should
- *           be sufficient as long as we are not compiling with UNICODE.  Which
- *           we are not.  Note that MAX_PATH is supposedly big enough for the
- *           null terminator.
+ *                        mask[0] = FILE_ARCHIVED
+ *                        mask[1] = FILE_DIRECTORY
+ *                        mask[2] = FILE_HIDDEN
+ *                        mask[3] = FILE_READONLY
+ *                        mask[4] = FILE_SYSTEM
+ *
+ *           A negative value at a given index indicates that the attribute bit
+ *           of the file is not set.  A positive number indicates that the
+ *           attribute should be set. A value of 0 indicates a "Don't Care"
+ *           setting.
+ *
+ *           A close reading of MSDN seems to indicate that as long as we are
+ *           compiled for ANSI, which we are, that MAX_PATH is sufficiently
+ *           large.  But, we will code for the possibility that it is not large
+ *           enough, by mallocing dynamic memory if _snprintf indicates a
+ *           failure.
+ *
+ *           We point dTmpFileName at the static buffer and nTmpFileName is set
+ *           to the size of the buffer.  If we have to allocate memory,
+ *           nTmpFileName will be set to the size we allocate and if
+ *           nTmpFileName does not equal what it is originally set to, we know
+ *           we have to free the allocated memory.
  */
-static bool recursiveFindFileB(RexxCallContext *c, char *fileSpec, char *path, RXTREEDATAB *treeData,
-                               int32_t *targetMask, int32_t *newMask, uint32_t options)
+static bool recursiveFindFile(RexxCallContext *c, char *path, RXTREEDATAB *treeData,
+                              int32_t *targetMask, int32_t *newMask, uint32_t options)
 {
   WIN32_FIND_DATA  wfd;
-  char             tmpFileName[MAX_PATH];
   HANDLE           fHandle;
+  char             tmpFileName[MAX_PATH];
+  char            *dTmpFileName = tmpFileName;   // Dynamic memory for tmpFileName, static memory to begin with.
+  size_t           nTmpFileName = MAX_PATH;      // CouNt of bytes in dTmpFileName.
   int32_t          len;
+  bool             result = true;
 
-  len = _snprintf(tmpFileName, sizeof(tmpFileName), "%s%s", path, treeData->fNameSpec);
-  if ( len < 0 || len == sizeof(tmpFileName) )
+  len = _snprintf(dTmpFileName, nTmpFileName, "%s%s", path, treeData->fNameSpec);
+  if ( len < 0 || len == nTmpFileName )
   {
-      bufferTooSmallException(c->threadContext, len, sizeof(tmpFileName),
-                             strlen(path) + strlen(treeData->fNameSpec) + 1,
-                             __FUNCTION__, __LINE__);
-      return false;
+      nTmpFileName = strlen(path) + strlen(treeData->fNameSpec) + 1;
+      dTmpFileName = (char *)LocalAlloc(LPTR, nTmpFileName);
+      if ( dTmpFileName == NULL )
+      {
+          outOfMemoryException(c->threadContext);
+          result = false;
+          goto done_out;
+      }
   }
 
-  fHandle = FindFirstFile(tmpFileName, &wfd);
+  fHandle = FindFirstFile(dTmpFileName, &wfd);
   if ( fHandle != INVALID_HANDLE_VALUE )
   {
       do
@@ -2797,18 +2869,11 @@ static bool recursiveFindFileB(RexxCallContext *c, char *fileSpec, char *path, R
 
           if ( sameAttr(targetMask, wfd.dwFileAttributes, options) )
           {
-              len = _snprintf(treeData->foundFile, sizeof(treeData->foundFile), "%s%s", path, wfd.cFileName);
-              if ( len < 0 || len == sizeof(treeData->foundFile) )
+              if ( ! formatFile(c, path, treeData, newMask, options, &wfd) )
               {
-                  bufferTooSmallException(c->threadContext, len, sizeof(treeData->foundFile),
-                                         strlen(path) + strlen(wfd.cFileName) + 1,
-                                         __FUNCTION__, __LINE__);
-                  return false;
-              }
-
-              if ( ! formatFile(c, treeData, newMask, options, &wfd) )
-              {
-                  return false;
+                  FindClose(fHandle);
+                  result = false;
+                  goto done_out;
               }
           }
       } while ( FindNextFile(fHandle, &wfd) );
@@ -2819,42 +2884,64 @@ static bool recursiveFindFileB(RexxCallContext *c, char *fileSpec, char *path, R
   if ( options & RECURSE )
   {
       // Build new target spec.  Above, path + fileSpec fit into tmpFileName,
-      // so we are okay here.
-      sprintf(tmpFileName, "%s*", path);
+      // fileSpec is always longer than 1 character, so we are okay here.
+      sprintf(dTmpFileName, "%s*", path);
 
-      fHandle = FindFirstFile(tmpFileName, &wfd);
+      fHandle = FindFirstFile(dTmpFileName, &wfd);
       if ( fHandle != INVALID_HANDLE_VALUE )
       {
           do
           {
-              // Skip dot directories
-              if ( strcmp(wfd.cFileName, ".") == 0 || strcmp(wfd.cFileName, "..") == 0 )
+              // Skip non-directories and dot directories.
+              if ( ! (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
+                   strcmp(wfd.cFileName, ".") == 0 || strcmp(wfd.cFileName, "..") == 0 )
               {
                   continue;
               }
 
               // Build the new directory file name.
-              len = _snprintf(tmpFileName, sizeof(tmpFileName), "%s%s\\", path, wfd.cFileName);
-              if ( len < 0 || len == sizeof(tmpFileName) )
+              len = _snprintf(dTmpFileName, nTmpFileName, "%s%s\\", path, wfd.cFileName);
+              if ( len < 0 || len == nTmpFileName )
               {
-                  bufferTooSmallException(c->threadContext, len, sizeof(tmpFileName),
-                                         strlen(path) + strlen(wfd.cFileName) + 1 + 1,
-                                         __FUNCTION__, __LINE__);
-                  return false;
+                  // We may need to free dTmpFileName if it is now allocated
+                  // memory.
+                  if ( nTmpFileName != MAX_PATH )
+                  {
+                      LocalFree(dTmpFileName);
+                  }
+
+                  nTmpFileName = strlen(path) + strlen(wfd.cFileName) + 2;
+                  dTmpFileName = (char *)LocalAlloc(LPTR, nTmpFileName);
+                  if ( dTmpFileName == NULL )
+                  {
+                      outOfMemoryException(c->threadContext);
+                      FindClose(fHandle);
+                      result = false;
+                      goto done_out;
+                  }
               }
 
               // Search the next level.
-              if ( ! recursiveFindFileB(c, treeData->fNameSpec, tmpFileName, treeData, targetMask, newMask, options) )
+              if ( ! recursiveFindFile(c, tmpFileName, treeData, targetMask, newMask, options) )
               {
-                  return false;
+                  FindClose(fHandle);
+                  result = false;
+                  goto done_out;
               }
-          } while (FindNextFile(fHandle, &wfd));
+          }
+          while (FindNextFile(fHandle, &wfd));
 
           FindClose(fHandle);
       }
   }
 
-  return true;
+done_out:
+
+    if ( nTmpFileName != MAX_PATH )
+    {
+        safeLocalFree(dTmpFileName);
+    }
+    return result;
 }
 
 /**
@@ -3494,13 +3581,20 @@ static char *getPathBuffer(RexxCallContext *context, size_t fSpecLen, size_t *pa
 }
 
 /**
- * SysFileTree() implementation.  Temp for now
+ * SysFileTree() implementation.  Searches for files in a directory tree
+ * matching the specified search pattern.
  *
- * @param  fSpec  The search pattern, may contain glob characters.  E.g., *.bat
+ * @param  fSpec  [required] The search pattern, may contain glob characters
+ *                 and full or partial path informattion. E.g., *.bat, or
+ *                 ..\..\*.txt, or C:\temp
  *
- * @param  files  A stem to contain the returned results.
+ * @param  files  [required] A stem to contain the returned results.  On return,
+ *                files.0 contains the count N of found files and files.1
+ *                through files.N will contain the found files.
  *
- * @param  opts   Any combination of the following:
+ * @param  opts   [optional] Any combination of the following letters that
+ *                specify how the search takes place, or how the returned found
+ *                file line is formatted.  Case is not significant:
  *
  *                  'B' - Search for files and directories.
  *                  'D' - Search for directories only.
@@ -3511,18 +3605,24 @@ static char *getPathBuffer(RexxCallContext *context, size_t fSpecLen, size_t *pa
  *                  'L' - Long time format
  *                  'I' - Case Insensitive search.
  *
- * @param targetAttr  Target attribute mask.  Only files with these attributes
- *                    will be searched for.  The default is to ignore the
- *                    attributes of the files found, so all files found are
+ *                The defualt is 'B' using normal time (neither 'T' nor 'L'.)
+ *                The 'I'option is meaningless on Windows.
+ *
+ * @param targetAttr  [optional] Target attribute mask.  Only files with these
+ *                    attributes will be searched for.  The default is to ignore
+ *                    the attributes of the files found, so all files found are
  *                    returned.
  *
- * @param newAttr     New attribute mask.  Each found file will have its
- *                    attributes set (changed) to match this mask.  The default
- *                    is to not change any attributes.
+ * @param newAttr     [optional] New attribute mask.  Each found file will have
+ *                    its attributes set (changed) to match this mask.  The
+ *                    default is to not change any attributes.
  *
- * @return  0 on success, non-zero on error.  For all errors a condition is
+ * @return  0 on success, non-zero on error.  For all errors, a condition is
  *          raised.
  *
+ * @remarks  The original IBM code passed in fileSpec to recursiveFindFile(),
+ *           but then never used it in recursiveFineFile.  So, that has been
+ *           eliminated.
  *
  */
 RexxRoutine5(uint32_t, SysFileTreeB, CSTRING, fSpec, RexxStemObject, files, OPTIONAL_CSTRING, opts,
@@ -3576,7 +3676,7 @@ RexxRoutine5(uint32_t, SysFileTreeB, CSTRING, fSpec, RexxStemObject, files, OPTI
          goto done_out;
      }
 
-     if ( recursiveFindFileB(context, fileSpec, path, &treeData, targetMask, newMask, options) )
+     if ( recursiveFindFile(context, path, &treeData, targetMask, newMask, options) )
      {
          context->SetStemArrayElement(treeData.files, 0, context->WholeNumber(treeData.count));
          result = 0;
