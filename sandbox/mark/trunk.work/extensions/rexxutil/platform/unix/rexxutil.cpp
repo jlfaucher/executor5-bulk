@@ -288,6 +288,13 @@ extern char *resolve_tilde(const char *);
 #define MAXUSECOUNT     65535          /* max semaphore usecount     */
 #define REXXMESSAGEFILE    "rexx.cat"
 
+// SysFileTree initial buffer sizes;
+#define FNAMESPEC_BUF_LEN      IBUF_LEN
+#define FOUNDFILE_BUF_LEN      IBUF_LEN
+#define FILETIME_BUF_LEN       64
+#define FILEATTR_BUF_LEN       16
+#define FOUNDFILELINE_BUF_LEN  FOUNDFILE_BUF_LEN + FILETIME_BUF_LEN + FILEATTR_BUF_LEN
+
 
 /*********************************************************************/
 /*  Various definitions used by the math functions                   */
@@ -410,15 +417,34 @@ typedef struct RxTreeData {
 
 /*
  *  Data structure used with SysFileTree()
+ *
+ *  dFNameSpec, dFoundFile, and dFoundFileLine start out pointing to the static
+ *  fNameSpec, foundFile, foundFileLine, buffers.
+ *
+ *  The nFNameSpec, nFoundFile, and nFoundLine, fields are set to the the byte
+ *  count of the static buffers.
+ *
+ *  If any buffer turns out to be too small, memory is allocated for a larger
+ *  buffer and the corresponding count variable is set to the new size.
+ *
+ *  On return from SysFileTree() any allocated memory in the struct is freed.
+ *  To test if memory was or wasn't allocated, test if the count variable is not
+ *  or is the same size as the static buffers.
  */
 typedef struct RxTreeDataB {
-    size_t         count;                    // Number of found file lines
-    RexxStemObject files;                    // Stem that holds results.
-    char           fNameSpec[IBUF_LEN];      // File name portion of the search for file spec, may contain glob characters.
-    char           foundFile[IBUF_LEN];      // Full path name of found file
-    char           fileTime[64];             // Time and size of found file
-    char           fileAttr[16];             // File attribute string of found file
-    char           foundFileLine[IBUF_LEN + 80];  // Buffer for found file line, includes foundFile, fileTime, and fileAttr
+    size_t         count;                        // Number of found file lines
+    RexxStemObject files;                        // Stem that holds results.
+    char           fNameSpec[FNAMESPEC_BUF_LEN]; // File name portion of the search for file spec, may contain glob characters.
+    char           foundFile[FOUNDFILE_BUF_LEN]; // Full path name of found file
+    char           foundFileLine[FOUNDFILELINE_BUF_LEN];  // Buffer for found file line, includes foundFile, fileTime, and fileAttr
+    char           fileTime[FILETIME_BUF_LEN];   // Time and size of found file
+    char           fileAttr[FILEATTR_BUF_LEN];   // File attribute string of found file
+    char          *dFNameSpec;                   // Starts out pointing at fNameSpec
+    char          *dFoundFile;                   // Starts out pointing at foundFile
+    char          *dFoundFileLine;               // Starts out pointing at foundFileLine
+    size_t         nFNameSpec;                   // CouNt of bytes in dFNameSpec buffer
+    size_t         nFoundFile;                   // CouNt of bytes in dFoundFile
+    size_t         nFoundFileLine;               // CouNt of bytes in dFoundFileLine buffer
 } RXTREEDATAB;
 
 
@@ -2894,7 +2920,34 @@ size_t RexxEntry SysFileTree(const char *name, size_t numargs, CONSTRXSTRING arg
 }
 
 
-void outOfMemoryException(RexxThreadContext *c)
+/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
+ *                                                                            *
+ *   SysFileTree() implmentation and helper functions.                        *
+ *                                                                            *
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+/* Enum for the different buffers in the RXTREEDATA struct */
+typedef enum
+{
+    FILESPEC_BUFFER,
+    FOUNDFILE_BUFFER,
+    FOUNDFILELINE_BUFFER
+} TreeDataBuffers;
+
+/**
+ * Returns a value that is greater than 'need' by doubling 'have' until that
+ * value is reached.
+ */
+inline size_t neededSize(size_t need, size_t have)
+{
+    while ( have < need )
+    {
+        have *= 2;
+    }
+    return have;
+}
+
+void inline outOfMemoryException(RexxThreadContext *c)
 {
     c->RaiseException1(Rexx_Error_System_service_user_defined, c->String("failed to allocate memory"));
 }
@@ -2963,6 +3016,78 @@ static void bufferOverflowException(RexxThreadContext *c, size_t needed, size_t 
              func, lineNumber, needed, have);
 
     c->RaiseException1(Rexx_Error_Execution_user_defined, c->String(buf));
+}
+
+/**
+ * Dynamically allocates memory for a buffer in the RXTREEDATA structure so that
+ * it is bigger than the size specified.
+ *
+ * @param need          The allocated buffer size must be greater than this.
+ * @param treeData      Pointer to the RXTREEDATA struct.
+ * @param whichBuffer   Identifies the buffer to increase.
+ *
+ * @return True on success, false if memory allocation fails.
+ *
+ * @remarks  For SysFileTree() we start out with very large static buffers to
+ *           use for full path names and the maniupulation of path names.  But,
+ *           on unixes, directories can be nested to any arbitary depth.
+ *
+ *           It is unlikely, but possible, that a static buffers will be too
+ *           small.  If this happens, we double the size of the buffer until it
+ *           is large enough by allocating a new buffer.
+ */
+static bool increaseBuffer(RexxCallContext *c, size_t need, RXTREEDATAB *treeData, TreeDataBuffers whichBuffer)
+{
+    if ( whichBuffer == FILESPEC_BUFFER )
+    {
+        if ( treeData->nFNameSpec != FNAMESPEC_BUF_LEN )
+        {
+            free(treeData->dFNameSpec);
+        }
+
+        treeData->nFNameSpec = neededSize(need, treeData->nFNameSpec);
+        treeData->dFNameSpec = (char *)malloc(sizeof(char) * treeData->nFNameSpec);
+
+        if ( treeData->dFNameSpec == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            return false;
+        }
+    }
+    else if ( whichBuffer == FOUNDFILE_BUFFER )
+    {
+        if ( treeData->nFoundFile != FOUNDFILE_BUF_LEN )
+        {
+            free(treeData->dFoundFile);
+        }
+
+        treeData->nFoundFile = neededSize(need, treeData->nFoundFile);
+        treeData->dFoundFile = (char *)malloc(sizeof(char) * treeData->nFoundFile);
+
+        if ( treeData->dFoundFile == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            return false;
+        }
+    }
+    else
+    {
+        if ( treeData->nFoundFileLine != FOUNDFILELINE_BUF )
+        {
+            free(treeData->dFoundFileLine);
+        }
+
+        treeData->nFoundFile = neededSize(need, treeData->nFoundFile);
+        treeData->dFoundFile = (char *)malloc(sizeof(char) * treeData->nFoundFile);
+
+        if ( treeData->dFoundFile == NULL )
+        {
+            outOfMemoryException(c->threadContext);
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -3117,8 +3242,9 @@ bool linFindNextFile(RexxCallContext *c, const char *fileSpec, const char *path,
 bool linFindNextDir(RexxCallContext *c, const char *fileSpec, const char *path, DIR *dir_handle,
                      struct stat *finfo, char **d_name, bool caseless)
 {
-    char fullPath[IBUF_LEN];
-    int  len;
+    char    fullPath[FOUNDFILE_BUF_LEN];
+    char   *dFullPath = fullPath;
+    size_t  nFullPath = FOUNDFILE_BUF_LEN;
 
     struct dirent *dir_entry = readdir(dir_handle);
     if( dir_entry == NULL )
@@ -3128,11 +3254,23 @@ bool linFindNextDir(RexxCallContext *c, const char *fileSpec, const char *path, 
 
     do
     {
-        len = snprintf(fullPath, sizeof(fullPath), "%s%s", path, dir_entry->d_name);
-        if ( len >= (int)sizeof(fullPath) )
+        int len = snprintf(dFullPath, nFullPath, "%s%s", path, dir_entry->d_name);
+        if ( len >= (int)nFullPath )
         {
-            bufferOverflowException(c->threadContext, len, sizeof(fullPath), __func__, __LINE__);
-            return false;
+            if ( nFullPath != FOUNDFILE_BUF_LEN )
+            {
+                free(dFullPath);
+            }
+            nFullPath = neededSize(len, nFullPath);
+
+            dFullPath = (char *)malloc(nFullPath * sizeof(char));
+            if ( dFullPath == NULL )
+            {
+                outOfMemoryException(c->threadContext);
+                return false;
+            }
+
+            sprintf(dFullPath, nFullPath, "%s%s", path, dir_entry->d_name);
         }
 
         lstat(fullPath, finfo);
@@ -3279,7 +3417,8 @@ static bool getOptionsFromArg(RexxCallContext *context, CSTRING opts, uint32_t *
 /**
  * Checks the file specification as input by the user for validity and expands /
  * redoes the value if needed.  For example if the the specification starts with
- * the ~ character, the home directory is expanded.
+ * the ~ character, the file spec is expanded to include the full path to the
+ * home directory.
  *
  * @param context   Call context we are operating in.
  *
@@ -3290,15 +3429,27 @@ static bool getOptionsFromArg(RexxCallContext *context, CSTRING opts, uint32_t *
  *
  * @param fileSpec  Buffer to contain the expanded file specification.  At this
  *                  time the buffer is 4096 in length, which seems more than
- *                  sufficient.  However, but we check the length when copying
- *                  into it anyway.
+ *                  sufficient.  However, we check the length when copying into
+ *                  it anyway.
  *
  * @param bufLen    Length of fileSpec buffer.
  *
  * @param argPos    Argument position, use for raising conditions.
  *
  * @return True if no error, otherwise false.  False is only returned if an
- *         exception has been raised
+ *         exception has been raised.
+ *
+ * @remarks  The fileSpec buffer is IBUF_LEN, or 4096 bytes.  fSpec is
+ *           restricted to 255 characters, so there is no problem with the input
+ *           string being to long, o begin with.  Theoretically, if fSpec starts
+ *           with the tilde, '~', the string could be too long after expanding
+ *           the home directoy.
+ *
+ *           But that would mean the path to the user's home directory would be
+ *           over about 3750 characters long.  That seems absurd.  The goal is
+ *           to not raise exceptions except for incorrect arguments.  But, here
+ *           a condition is raised if the tilde expansion produces a path too
+ *           long, because I believe the condition will never be raised.
  */
 static bool getFileSpecFromArg(RexxCallContext *context, CSTRING fSpec, char *fileSpec, size_t bufLen, size_t argPos)
 {
@@ -3315,15 +3466,6 @@ static bool getFileSpecFromArg(RexxCallContext *context, CSTRING fSpec, char *fi
         return false;
     }
 
-    // This could never happen, *unless* someone were to change the IBUF_LEN
-    // definition without investigating the consequences.  Seems a small price
-    // to pay for a little added security.
-    if ( len + 1 > bufLen )
-    {
-        bufferOverflowException(context->threadContext, len + 1, bufLen, __func__, __LINE__);
-        return false;
-    }
-
     strcpy(fileSpec, fSpec);
 
     // If filespec is '*' then use './ *'
@@ -3332,7 +3474,7 @@ static bool getFileSpecFromArg(RexxCallContext *context, CSTRING fSpec, char *fi
         strcpy(fileSpec, "./*");
     }
 
-     // If fileSpec ends in '/' then append  '*'
+    // If fileSpec ends in '/' then append  '*'
     if ( fileSpec[len - 1] == '/' )
     {
         strcat(fileSpec, "*");
@@ -3364,75 +3506,252 @@ static bool getFileSpecFromArg(RexxCallContext *context, CSTRING fSpec, char *fi
 }
 
 /**
+ * Allocates a buffer twice as big as the buffer passed in.
+ *
+ * @param c             Call context we are operating in.
+ * @param dPath         Pointer to the buffer to reallocate
+ * @param nPath         Size of dPath buffer.
+ * @param nStaticBuffer Size of original static buffer.
+ *
+ * @return True on success, false on memory allocation failure.
+ *
+ * @remarks  NOTE: that the pointer to the buffer to reallocate, may, or may
+ *           not, be a pointer to a static buffer.  We must NOT try to free a
+ *           static buffer and we MUST free a non-static buffer.
+ */
+static bool getBiggerBuffer(RexxCallContext *c, char **dPath, size_t *nPath, size_t nStaticBuffer)
+{
+    if ( *nPath != nStaticBuffer )
+    {
+        free(*dPath);
+    }
+
+    *nPath *= 2;
+    *dPath = (char *)malloc(nPath * sizeof(char));
+
+    if ( *dPath == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Used to retrieve the file name portion of the search file specification the
+ * user sent to SysFileTree.
+ *
+ * @param c
+ * @param fileSpec
+ * @param treeData
+ * @param lastSlashPos
+ *
+ * @return True on success, false on a memory allocation error.
+ */
+static bool getFileNameSegment(RexxCallContext *c, char *fileSpec, RXTREEDATAB *treeData, int *lastSlashPos)
+{
+    size_t l;                          // Temporay var for length calculations.
+    int slashPos = 0;                  // Position of last slash in fileSpec.
+    int len      = strlen(fileSpec);
+
+    // Get maximum position of last '/' and then step back through fileSpec
+    // until we are at the beginning of fileSpec, or at the last '/' character.
+    slashPos = len - 1;
+    do
+    {
+        slashPos--;
+    }
+    while( fileSpec[slashPos] != '/' && slashPos >= 0 );
+
+    if ( fileSpec[slashPos] == '/' )
+    {
+        // We found a slash, if there are characters after the slash, they are
+        // the file name portion.  Otherwise, juse use wildcards.
+        if ( fileSpec[slashPos + 1] != '\0' )
+        {
+            l = strlen(&fileSpec[slashPos + 1]) + 1;
+            if ( l > treeData->nFNameSpec )
+            {
+                if ( ! increaseBuffer(c, l, treeData, FILESPEC_BUFFER) )
+                {
+                    return false;
+                }
+            }
+            strcpy(treeData->dFNameSpec, &fileSpec[slashPos + 1]);
+        }
+        else
+        {
+            strcpy(fileName, "*");
+        }
+    }
+    else
+    {
+        // no '/', fileSpec is just a file name.  Note, this is the old IBM
+        // code, seems wrong. lastSlash should be 0, copying + 1 should skip the
+        // first character ??  TODO test this.
+
+        l = strlen(&fileSpec[slashPos + 1]) + 1;
+        if ( l > treeData->nFNameSpec )
+        {
+            if ( ! increaseBuffer(l, treeData, FILESPEC_BUFFER) )
+            {
+                return false;
+            }
+        }
+        strcpy(treeData->dFNameSpec, &fileSpec[slashPos + 1]);
+    }
+
+    *lastSlashPos = slashPos;
+    return true;
+}
+
+/**
+ *
+ *
+ * @param c
+ * @param fileSpec
+ * @param path
+ * @param pathLen
+ * @param lastSlashPos
+ *
+ * @return bool
+ */
+static bool getPathSegment(RexxCallContext *c, char *fileSpec, char **path, size_t *pathLen, int lastSlashPos)
+{
+    char    savedPath[FOUNDFILE_BUF_LEN];   // Used to save current directory and return to it.
+    char   *dPath = *path;
+    size_t  nPath = *pathLen;
+
+    if ( fileSpec[lastSlashPos] != '/' )
+    {
+        // We have no slash in fileSpec, so it can not be a relative or full
+        // path name.  We resolve to the current directory.
+        while ( getcwd(dPath, nPath) == NULL )
+        {
+            // The buffer is not big enough, reallocate a bigger buffer.
+            if ( ! getBiggerBuffer(c, &dPath, &nPath, *pathLen) )
+            {
+                return false;
+            }
+        }
+
+        if ( strlen(dPath) + 1 > nPath )
+        {
+            // The buffer is not big enough to concatenate a slash, reallocate
+            // a bigger buffer.
+            if ( ! getBiggerBuffer(c, &dPath, &nPath, *pathLen) )
+            {
+                return false;
+            }
+        }
+
+        strcat(path, "/");
+    }
+    else
+    {
+        // There is a slash in fileSpec, so it is a relative or full path.
+        // Copy the path out.
+        int l = lastSlashPos + 1 + 1;
+        if ( l > nPath )
+        {
+            nPath = neededSize(l, nPath);
+            dPath = (char *)malloc(nPath * sizeof(char));
+
+            if ( dPath == NULL )
+            {
+                outOfMemoryException(c->threadContext);
+                return false;
+            }
+        }
+        strncpy(dPath, fileSpec, lastSlashPos + 1);
+
+        *(dPath + lastSlashPos + 1) = '\0';  // Terminate the string
+
+        // At this point path could be a relative path.  We try to resolve it to
+        // a full path by saving the current directory, doing a chdir() which
+        // will resolve a relative path, and then copying that current directory
+        // into path.  If we can not save the current directory or change
+        // directory we just keep the relative path.
+        if ( getcwd(savedPath, FOUNDFILE_BUF_LEN) != NULL )
+        {
+            if ( chdir(path) == 0 )
+            {
+                while ( getcwd(dPath, nPath) == NULL )
+                {
+                    // The buffer is not big enough, reallocate a bigger buffer.
+                    if ( ! getBiggerBuffer(c, &dPath, &nPath, *pathLen) )
+                    {
+                        // Back to current directory.
+                        chdir(savedPath);
+                        return false;
+                    }
+                }
+
+                if ( strlen(dPath) + 1 > nPath )
+                {
+                    // The buffer is not big enough to concatenate a slash,
+                    // reallocate a bigger buffer.
+                    if ( ! getBiggerBuffer(c, &dPath, &nPath, *pathLen) )
+                    {
+                        return false;
+                    }
+                }
+
+                strcat(path, "/");
+
+                // Back to current directory.
+                chdir(savedPath);
+            }
+        }
+    }
+
+    if ( nPath != *pathLen )
+    {
+        *pathLen = nPath;
+        *path    = dPath;
+    }
+
+    return true;
+}
+
+/**
  * This is a SysFileTree() specific function..
  *
- * This function expands the file spec passed in to the funcition into its full
+ * This function expands the file spec passed in to the function into its full
  * path name.  The full path name is then split into the path portion and the
  * file name portion.  The path portion is returned in path and the file name
- * portion is returned in fileName.
+ * portion is returned in the RXTREEDATA structure.
  *
- * The path portion will end with the '\' char if fSpec contains a path.
+ * The path portion will end with the '\' character.
+ *
+ * @param c          Call context we are operating in.
  *
  * @param fSpec      File specification to search for.
  *
- * @param path       Buffer for the returned full path of expanded file
- *                   specification
+ * @param path       Pointer to the buffer for the returned full path of
+ *                   expanded file specification.  This buffer may be
+ *                   reallocated if it is not big enough
  *
- * @param pathLen    Size of the path buffer.
+ * @param pathLen    Pointer to the size of the passed in path buffer.  This
+ *                   value will be reset if the path buffer is reallocated.
  *
- * @param fileName   Buffer for the returned file name portion of expanded file
- *                   specification.
+ * @param treeData   The file name portion of the full path is copied into the
+ *                   dFNameSpec field in this struct.
  *
- * @param fnLen      Size of the file name buffer.
  *
- * @remarks  In the original IBM code, the file name buffer was much smaller
- *           that the path buffer *and* the buffer holding fileSpec.  This is
- *           still true, but seems to be a possible cause of problems.
+ * @return   True on success, false on error.  The only error would be if memory
+ *           allocation failed, in which case a condition has been raised.  It
+ *           seems highly unlikely that this function could fail.
  *
- *           The old IBM code to fully resolve the path looked like this:
- *
- *   // Now resolve to fully qualified path
- *   len = strlen(fileName);             // Get file name length
- *   if (fileSpec[lastSlashPos] != '/')     // if we have no slash
- *   {                                    // resolve current dir
- *     if (!getcwd(path, (IBUF_LEN - len - 2)))
- *        strcpy(path, "./");             // if no cwd set current dir
- *     else
- *        strcat(path, "/");
- *   }
- *   else {                               // there is path info
- *     strncpy(path, fileSpec, lastSlashPos+1);// copy the path out
- *     *(path+lastSlashPos+1) = '\0';     // make ASCII-Z string
- *     if (getcwd(savedPath, (IBUF_LEN - 1 )))
- *     {
- *       if (!chdir(path))                // If successful get
- *       {                                //   reolved path name
- *         if ((getcwd(path, (IBUF_LEN - len - 2 ))) &&
- *             ( lastSlashPos > 0 ))
- *            strcat(path, "/");          // Add if not root dir
- *         chdir(savedPath);             // Back to current dir
- *       }
- *     }
- *   }
- *
- *           Note 2 things in the above.  If cwd did not fit in the buffer, the
- *           code just changed it to ./  And, the buffer size for the path was
- *           changed to IBUF_LEN - len.
- *
- *           I think the later was done as a round about way to try and ensure
- *           that a complete file spec would never exceed path + file name in
- *           length.
- *
- *           In the newer code, a condition is raised for buffer overflow, so
- *           both of these things are removed.
- *
+ * @remarks  Both the path and the file name destination buffers are checked to
+ *           be sure they are big enough.  If either is not big enough, a larger
+ *           buffer is allocated.
  */
-static bool getPath(RexxCallContext *c, char *fileSpec, char *path, size_t pathLen, char *fileName, size_t fnLen)
+
+static bool getPath(RexxCallContext *c, char *fileSpec, char **path, size_t *pathLen, RXTREEDATAB *treeData)
 {
-  int    len;                   // Length of filespec.
-  size_t l;                     // Temporay var for length calculations.
-  int    lastSlashPos;          // Position of last slash in fileSpec.
-  char   savedPath[IBUF_LEN];   // Used to save current directory and return to it.
+    int  lastSlashPos;                   // Position of last slash in fileSpec.
 
     // If fileSpec is exactly "." or ".." then change it to "*" or "../*"
     if ( strcmp(fileSpec, ".") == 0 )
@@ -3444,119 +3763,18 @@ static bool getPath(RexxCallContext *c, char *fileSpec, char *path, size_t pathL
         strcpy(fileSpec, "../*");
     }
 
-    len = strlen(fileSpec);
-
-    // Get maximum position of last '/' and then step back through fileSpec
-    // until we are at the beginning, or at the last '/' character.
-    lastSlashPos = len - 1;
-    do
+    // Get the file name segment of fileSpec.
+    if ( ! getFileNameSegment(c, fileSpec, treeData, &lastSlashPos) )
     {
-        lastSlashPos--;
-    }
-    while( fileSpec[lastSlashPos] != '/' && lastSlashPos >= 0 );
-
-    if ( fileSpec[lastSlashPos] == '/' )
-    {
-        // We found a slash, if there are characters after the slash, they are
-        // the file name portion.  Otherwise, juse use wildcards.
-        if ( fileSpec[lastSlashPos + 1] != '\0' )
-        {
-            l = strlen(&fileSpec[lastSlashPos + 1]) + 1;
-            if ( l > fnLen )
-            {
-                bufferOverflowException(c->threadContext, l, fnLen, __func__, __LINE__);
-                return false;
-            }
-            strcpy(fileName, &fileSpec[lastSlashPos + 1]);
-        }
-        else
-        {
-            strcpy(fileName, "*");
-        }
-    }
-    else
-    {
-        // no '/' just fileName  Note, this is the old IBM code, seems wrong.
-        // lastSlash should be 0, copying + 1 should skip the first character ??
-
-        l = strlen(&fileSpec[lastSlashPos + 1]) + 1;
-        if ( l > fnLen )
-        {
-            bufferOverflowException(c->threadContext, l, fnLen, __func__, __LINE__);
-            return false;
-        }
-        strcpy(fileName, &fileSpec[lastSlashPos + 1]);
+        return false;
     }
 
-    // Now resolve to fully qualified path
-    if ( fileSpec[lastSlashPos] != '/' )
+    // Now resolve to the fully qualified path name.
+    if ( ! getPathSegment(c, fileSpec, path, pathLen, lastSlashPos) )
     {
-        // We have no slash in fileSpec, so it can not be a relative or full
-        // path name.  We resolve to the current directory.
-        if ( getcwd(path, pathLen) == NULL )
-        {
-            // The buffer is not big enough, but we do not know how big it
-            // should be.  We use a huge number and anyone investigating the
-            // function and line number, will read this comment.
-            bufferOverflowException(c->threadContext, 0xfffffff, pathLen, __func__, __LINE__);
-            return false;
-        }
-        else
-        {
-            strcat(path, "/");
-        }
+        return false;
     }
-    else
-    {
-        // There is a slash in fileSpec, so it is a relative or full path.
-        // Copy the path out.
-        l = lastSlashPos + 1 + 1;
-        if ( l > pathLen )
-        {
-            bufferOverflowException(c->threadContext, l, pathLen, __func__, __LINE__);
-            return false;
-        }
-        strncpy(path, fileSpec, lastSlashPos + 1);
 
-        *(path + lastSlashPos + 1) = '\0';  // Terminate the string
-
-        // At this point path could be a relative path.  We try to resolve it to
-        // a full path by saving the current directory, doing a chdir() which
-        // will resolve a relative path, and then copying that current directory
-        // into path.  If we can not save the current directory or change
-        // directory we just keep the relative path.
-        if ( getcwd(savedPath, IBUF_LEN) != NULL )
-        {
-            if ( chdir(path) == 0 )
-            {
-                if ( getcwd(path, pathLen) == NULL )
-                {
-                    // The buffer is not big enough, but we do not know how big
-                    // it should be.  We use a huge number and anyone
-                    // investigating the function and line number, will read
-                    // this comment.
-                    bufferOverflowException(c->threadContext, 0xfffffff, pathLen, __func__, __LINE__);
-
-                    // Back to current directory.
-                    chdir(savedPath);
-                    return false;
-                }
-                else
-                {
-                    // Again this mimics the old IBM code, but I'm not sure it
-                    // is correct.  What if fileSpec was: /usr?  lastSlashPos
-                    // will be 0, and path will not have a trailing '/'  ??
-                    if ( lastSlashPos > 0 )
-                    {
-                        strcat(path, "/");
-                    }
-                }
-
-                // Back to current directory.
-                chdir(savedPath);
-            }
-        }
-    }
     return true;
 }
 
@@ -3578,24 +3796,35 @@ static bool getPath(RexxCallContext *c, char *fileSpec, char *path, size_t pathL
  *
  * @return False on error, otherwise true.
  *
- * @remarks  Note that we can count the characters used for both the time data
- *           and attribute data, so we know the buffers are large enough.
+ * @remarks  If the options specify name only, we just need to copy over the
+ *           found file name.  Otherwise we need to format a line with the time
+ *           stamp and file attributes, plus the found file name.
  *
- *           In addition, the foundFileLine buffer is larger than foundFile
- *           buffer, so there is no problem with the strcpy().  The previous
- *           layers have already checked that the foundFile buffer did not
- *           overflow, and simple arithemetic tells us that that the
- *           foundFileLine buffer is large enough to hold the 3 pieces.
- *           Therefore we don't need to check for buffer overflow here.
+ *           We use the buffers in the treeData structure to format the found
+ *           file line. snprintf() is used to prevent and detect buffer
+ *           overflows. We start off trying to use the large static buffers in
+ *           the struct, each time a buffer is found to be too small in size, it
+ *           is doubled in size by dynamically allocated memory.. Code at the
+ *           top level detects and frees any allocated memory.
+ *
+ *           Note that we can count the characters used for both the time data
+ *           and attribute data, so we know the buffers are large enough.
  */
 void formatFile(RexxCallContext *c, RXTREEDATAB *treeData, uint32_t options, struct stat *finfo)
 {
     struct tm *timestamp;
     char   tp;
+    size_t len;
 
     if ( options & NAME_ONLY )
     {
-        //
+        if ( treeData->nFoundFileLine < treeData->nFoundFile )
+        {
+            if ( ! increaseBuffer(c, treeData->nFoundFile, treeData, FOUNDFILELINE_BUFFER) )
+            {
+                return false;
+            }
+        }
         strcpy(treeData->foundFileLine, treeData->foundFile);
     }
     else
@@ -3657,7 +3886,20 @@ void formatFile(RexxCallContext *c, RXTREEDATAB *treeData, uint32_t options, str
                   (finfo->st_mode & S_IXOTH)  ? 'x' : '-');
 
         // Now format the complete line.
-        sprintf(treeData->foundFileLine, "%s%s%s", treeData->fileTime, treeData->fileAttr, treeData->foundFile);
+        int len = snprintf(treeData->dFoundFileLine, treeData->nFoundFileLine, "%s%s%s",
+                           treeData->fileTime, treeData->fileAttr, treeData->dFoundFile);
+        if ( len >= treeData->nFoundFileLine )
+        {
+            size_t need = treeData->nFoundFile + strlen(treeData->fileTime) + treeData->fileAttr + 1;
+            if ( ! increaseBuffer(c, need, treeData, FOUNDFILELINE_BUFFER) )
+            {
+                return false;
+            }
+
+            // The buffer is now guaranteed to be big enough.
+            sprintf(treeData->dFoundFileLine, treeData->nFoundFileLine, "%s%s%s",
+                    treeData->fileTime, treeData->fileAttr, treeData->dFoundFile);
+        }
     }
 
     // Place found file line in the stem.
@@ -3712,17 +3954,22 @@ void formatFile(RexxCallContext *c, RXTREEDATAB *treeData, uint32_t options, str
  *           return value of size or more means that the output was truncated.
  *
  *           Therefore, unlike windows, there is no possibility of having an
- *           unterminated string.  For, now I raise a syntax condition, because
- *           I want to see if it happens.  But, that should maybe be removed and
- *           just return short data.
+ *           unterminated string.  If we detect that the buffers in use are too
+ *           small, rather than truncate data, we allocate dynamic memory that
+ *           is big enough.  Actually we allocate a buffer twice as big as the
+ *           current buffer.
+ *
+ *           We start with big static buffers, so we need to keep track of
+ *           whether memory was allocated or not.  This is done by tracking the
+ *           size of the buffers.  If a buffer size does not equal the original
+ *           size of the static buffer, then it needs to be freed.
  */
 static bool recursiveFindFile(RexxCallContext *c, const char *path, RXTREEDATAB *treeData, uint32_t options)
 {
-    char    tempFile[MAX+1];            // Used to hold temp file name.
-    DIR    *dir_handle;                 // Directory handle.
-    struct  stat finfo;                 // File information.
-    char   *fileName;                   // Found file name returned here.
-    int     len;                        // snprintf return to check buffer overflow.
+    DIR    *dir_handle;                  // Directory handle.
+    struct  stat finfo;                  // File information.
+    char   *fileName;                    // Found file name returned here.
+    int     len;                         // snprintf return to check buffer overflow.
     bool    caseless = options & CASELESS;
 
     // First, process all of the normal files, saving directories for last.                                                             *
@@ -3736,22 +3983,27 @@ static bool recursiveFindFile(RexxCallContext *c, const char *path, RXTREEDATAB 
     }
 
     // If processing files, and have some files, get all of them.
-    if ( (options & DO_FILES) && linFindNextFile(c, treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) )
+    if ( (options & DO_FILES) && linFindNextFile(c, treeData->dFNameSpec, path, dir_handle, &finfo, &fileName, caseless) )
     {
         do
         {
             // Build the full name.
-            len = snprintf(treeData->foundFile, sizeof(treeData->foundFile), "%s%s", path, fileName);
-            if ( len >= (int)sizeof(treeData->foundFile) )
+            len = snprintf(treeData->dFoundFile, treeData->nFoundFile, "%s%s", path, fileName);
+            if ( len >= (int)treeData->nFoundFile )
             {
-                bufferOverflowException(c->threadContext, len, sizeof(treeData->foundFile), __func__, __LINE__);
-                closedir(dir_handle);
-                return false;
+                if ( ! increaseBuffer(c, len + 1, treeData, FOUNDFILE_BUFFER) )
+                {
+                    closedir(dir_handle);
+                    return false;
+                }
+
+                // We are guarenteed the buffer is big enough.
+                sprintf(treeData->dFoundFile, "%s%s", path, fileName);
             }
 
             formatFile(c, treeData, options, &finfo);
         }
-        while ( linFindNextFile(c, treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) );
+        while ( linFindNextFile(c, treeData->dFNameSpec, path, dir_handle, &finfo, &fileName, caseless) );
     }
 
     // Reset the directory handle, (rewinddir doesn't work.)
@@ -3764,7 +4016,7 @@ static bool recursiveFindFile(RexxCallContext *c, const char *path, RXTREEDATAB 
     }
 
     // If processing directories, and have some directories, get all of them.
-    if ( (options & DO_DIRS)  &&  linFindNextDir(c, treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) )
+    if ( (options & DO_DIRS)  &&  linFindNextDir(c, treeData->dFNameSpec, path, dir_handle, &finfo, &fileName, caseless) )
     {
         do
         {
@@ -3775,17 +4027,22 @@ static bool recursiveFindFile(RexxCallContext *c, const char *path, RXTREEDATAB 
             }
 
             // Build the full name.
-            len = snprintf(treeData->foundFile, sizeof(treeData->foundFile), "%s%s", path, fileName);
-            if ( len >= (int)sizeof(treeData->foundFile) )
+            len = snprintf(treeData->dFoundFile, treeData->nFoundFile, "%s%s", path, fileName);
+            if ( len >= (int)treeData->nFoundFile )
             {
-                bufferOverflowException(c->threadContext, len, sizeof(treeData->foundFile), __func__, __LINE__);
-                closedir(dir_handle);
-                return false;
+                if ( ! increaseBuffer(c, len + 1, treeData, FOUNDFILE_BUFFER) )
+                {
+                    closedir(dir_handle);
+                    return false;
+                }
+
+                // We are guarenteed the buffer is big enough.
+                sprintf(treeData->dFoundFile, "%s%s", path, fileName);
             }
 
             formatFile(c, treeData, options, &finfo);
        }
-       while ( linFindNextDir(c, treeData->fNameSpec, path, dir_handle, &finfo, &fileName, caseless) );
+       while ( linFindNextDir(c, treeData->dFNameSpec, path, dir_handle, &finfo, &fileName, caseless) );
 
     }
 
@@ -3800,6 +4057,11 @@ static bool recursiveFindFile(RexxCallContext *c, const char *path, RXTREEDATAB 
     // Do we need to recurse?
     if ( options & RECURSE )
     {
+        // Used to create a new directory name.
+        char    tmpDirName[FOUNDFILE_BUF_LEN];
+        char   *dTmpDirName = tmpDirName;
+        size_t  nTmpDirName = FOUNDFILE_BUF_LEN;
+
         // No need for caseless when matching a star.
         if ( linFindNextDir(c, "*", path, dir_handle, &finfo, &fileName, 0) )
         {
@@ -3812,27 +4074,84 @@ static bool recursiveFindFile(RexxCallContext *c, const char *path, RXTREEDATAB 
                 }
 
                 // Build the new directory name and search the next level.
-                len = snprintf(tempFile, sizeof(tempFile), "%s%s/", path, fileName);
-                if ( len >= (int)sizeof(tempFile) )
+                len = snprintf(dTmpDirName, sizeof(tempFile), "%s%s/", path, fileName);
+                if ( len >= (int)nTmpDirName )
                 {
-                    bufferOverflowException(c->threadContext, len, sizeof(tempFile), __func__, __LINE__);
-                    closedir(dir_handle);
-                    return false;
+                    if ( ! getBiggerBuffer(c, &dTmpDirName, &nTmpDirName, FOUNDFILE_BUF_LEN) )
+                    {
+                        closedir(dir_handle);
+                        return false;
+                    }
+
+                    // We are guarenteed the buffer is big enough.
+                    sprintf(dTmpDirName, "%s%s/", path, fileName);
                 }
 
-                if ( ! recursiveFindFile(c, tempFile, treeData, options) )
+                if ( ! recursiveFindFile(c, dTmpDirName, treeData, options) )
                 {
                     closedir(dir_handle);
+                    if ( nTmpDirName != FOUNDFILE_BUF_LEN )
+                    {
+                        free(dTmpDirName);
+                    }
                     return false;
                 }
             }
             while ( linFindNextDir(c, "*", path, dir_handle, &finfo, &fileName, 0) );
+        }
+
+        if ( nTmpDirName != FOUNDFILE_BUF_LEN )
+        {
+            free(dTmpDirName);
         }
     }
 
     closedir(dir_handle);
     return true;
 }
+
+/**
+ * Intializes the RXTREEDATA struct at start up of SysFileTree()
+ *
+ * @param treeData
+ * @param files
+ */
+void inline initTreeData(RXTREEDATAB *treeData, RexxStemObject files)
+{
+    treeData->files = files;
+
+    treeData->dFNameSpec = &treeData->fNameSpec;
+    treeData->nFNameSpec = FNAMESPEC_BUF_LEN;
+
+    treeData->dFoundFile = &treeData->foundFile;
+    treeData->nFoundFile = FOUNDFILE_BUF_LEN;
+
+    treeData->dFoundFileLine = &treeData->foundFileLine;
+    treeData->nFoundFileLine = FOUNDFILELINE_BUF_LEN;
+}
+
+/**
+ * Frees any allocated memory in the RXTREEDATA struct, if needed, on return
+ * from SysFileTree()
+ *
+ * @param treeData
+ */
+void inline uninitTreeData(RXTREEDATAB *treeData)
+{
+    if ( treeData->nFNameSpec > FNAMESPEC_BUF_LEN )
+    {
+        free(treeData->dFNameSpec);
+    }
+    if ( treeData->nFoundFile > FOUNDFILE_BUF_LEN )
+    {
+        free(treeData->dFoundFile);
+    }
+    if ( treeData->nFoundFileLine > FOUNDFILELINE_BUF_LEN )
+    {
+        free(treeData->dFoundFileLine);
+    }
+}
+
 
 
 /**
@@ -3872,15 +4191,15 @@ static bool recursiveFindFile(RexxCallContext *c, const char *path, RXTREEDATAB 
 RexxRoutine5(uint32_t, SysFileTreeB, CSTRING, fSpec, RexxStemObject, files, OPTIONAL_CSTRING, opts,
              OPTIONAL_CSTRING, targetAttr, OPTIONAL_CSTRING, newAttr)
 {
-    char         fileSpec[IBUF_LEN]; // File specification to look for.
-    char         path[IBUF_LEN];     // Path to search along.
+    char         fileSpec[FNAMESPEC_BUF_LEN]; // File specification to look for.
+    char         path[FOUNDFILE_BUF_LEN];     // Path to search along.
     uint32_t     result   = 1;       // Return value, 1 is an error.
     RXTREEDATAB  treeData = {0};     // Struct containing data about found files.
     uint32_t     options  = 0;
 
-    treeData.files = files;
+    initTreeData(&treeData, files);
 
-    if ( ! getFileSpecFromArg(context, fSpec, fileSpec, IBUF_LEN, 1) )
+    if ( ! getFileSpecFromArg(context, fSpec, fileSpec, FNAMESPEC_BUF_LEN, 1) )
     {
         goto done_out;
     }
@@ -3890,7 +4209,9 @@ RexxRoutine5(uint32_t, SysFileTreeB, CSTRING, fSpec, RexxStemObject, files, OPTI
         goto done_out;
     }
 
-    if ( ! getPath(context,fileSpec, path, IBUF_LEN, treeData.fNameSpec, sizeof(treeData.fNameSpec)) )
+    char   *dPath = path;
+    size_t  nPath = FOUNDFILE_BUF_LEN;
+    if ( ! getPath(context, fileSpec, &dPath, &nPath, &treeData) )
     {
         goto done_out;
     }
@@ -3908,15 +4229,22 @@ RexxRoutine5(uint32_t, SysFileTreeB, CSTRING, fSpec, RexxStemObject, files, OPTI
     // The old RecursiveFindFile pulls fileSpec from treeData and never uses
     // fileSpec.  fileSpec and treeData.fNameSpec are not equivalent.
 
-    if ( recursiveFindFile(context, path, &treeData, options) )
+    if ( recursiveFindFile(context, dPath, &treeData, options) )
     {
 
         context->SetStemArrayElement(treeData.files, 0, context->WholeNumber(treeData.count));
         result = 0;
     }
 
+    if ( nPath != FOUNDFILE_BUF_LEN )
+    {
+        free(dPath);
+    }
+
 done_out:
- return result;
+
+    uninitTreeData(&treeData);
+    return result;
 }
 
 

@@ -2580,8 +2580,8 @@ bool setAttr(const char *file, uint32_t attr)
  * @return True on success, false on error.
  *
  * @remarks  We try to use the static buffers in treeData, but if they are not
- *  big enough we allocate memory.  If we do allocate memory, we have to free it
- *  of course.  We can determine if the memory needs to be freed by checking
+ *  big enough, we allocate memory.  If we do allocate memory, we have to free
+ *  it of course.  We can determine if the memory needs to be freed by checking
  *  that either nFoundFile, or nFoundFileLine, are the same size as they are
  *  originally set to, or not.
  */
