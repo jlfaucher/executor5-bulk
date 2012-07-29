@@ -343,11 +343,6 @@ Section  doSwitch
     ; Add the files ...
     File "${SamplesDir420}\userGuide\*.txt"
 
-    ; Set the installation directory:
-    SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises
-    ; Add the files ...
-    File "${SamplesDir420}\userGuide\exercises\*.rex"
-
     ; Set output path to the installation directory.
     SetOutPath $INSTDIR\samples\oodialog\userGuide\exercises\Exercise02
     ; Add the files ...
