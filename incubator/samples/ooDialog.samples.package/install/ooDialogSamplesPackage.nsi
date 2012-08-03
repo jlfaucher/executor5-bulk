@@ -197,6 +197,7 @@ Section  installFiles
 
   ${CreateDirectory} "$INSTDIR\Controls"
   ${CreateDirectory} "$INSTDIR\Controls\Edit"
+  ${CreateDirectory} "$INSTDIR\Controls\List-box"
   ${CreateDirectory} "$INSTDIR\Controls\List-view"
   ${CreateDirectory} "$INSTDIR\Controls\Static"
   ${CreateDirectory} "$INSTDIR\Dialogs"
@@ -210,6 +211,11 @@ Section  installFiles
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "NumberOnlyEditEx.cls"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG32.dll"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG64.dll"
+
+  ${SetOutPath} "$INSTDIR\Controls\List-box\pop.quiz"
+  ${File} "${SRCDIR}\Controls\List-box\pop.quiz\" "popQuiz.h"
+  ${File} "${SRCDIR}\Controls\List-box\pop.quiz\" "popQuiz.rc"
+  ${File} "${SRCDIR}\Controls\List-box\pop.quiz\" "popQuiz.rex"
 
   ${SetOutPath} "$INSTDIR\Controls\List-view\edit.items"
   ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.bmp"
@@ -243,6 +249,7 @@ Section  installFiles
 
   ${SetOutPath} "$INSTDIR\Dialogs\simple.dialogs"
   ${File} "${SRCDIR}\Dialogs\simple.dialogs\" "inputDlg.rex"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\" "fileNameDialog.rex"
 
   ; Write the uninstall keys.
   DetailPrint "Writing uninstall keys."
