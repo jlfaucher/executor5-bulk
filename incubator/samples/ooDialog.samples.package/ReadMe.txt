@@ -22,6 +22,39 @@
   By default the package is installed in the current user's application data
   folder.  This location can be changed during installation.
 
+
+  Cumlative Release Notes:
+  ------------------------
+
+                              Release Notes
+                      Extra ooDialog Samples v0.0.3
+                      =============================
+
+  Requires:
+
+  Version 0.0.3 of the package requires ooDialog 4.2.0 or later to run all
+  example programs in the package.  This is the same as the previous
+  release.
+
+  The release still only contains a few programs.
+
+  The following examples have been added since v0.0.2:
+
+  Controls\List-box\pop.quiz\popQuiz.rex
+
+  Controls\List-view\edit.items\EditableListView.rex
+  Controls\List-view\transfer.items\propertyValues.rex
+
+  Controls\Static\staticImage.rex
+
+  Dialogs\simple.dialogs\inputDlg.rex
+  Dialogs\simple.dialogs\fileNameDialog.rex
+
+  To gain the full benefit of the examples, the comments throughout the
+  program code should be read.  Some directories may contain additional
+  documentation in the form of "read me" files within the directory.
+
+
                               Release Notes
                       Extra ooDialog Samples v0.0.2
                       =============================
@@ -40,3 +73,22 @@
   To gain the full benefit of the examples, the comments throughout the
   program code should be read.  Some directories may contain additional
   documentation in the form of "read me" files within the directory.
+
+
+                              Release Notes
+                      Extra ooDialog Samples v0.0.1
+                      =============================
+
+  Requires:
+
+  Version 0.0.1 of the package requires ooDialog 4.2.0.7033 or later to run
+  all example programs in the package.
+
+  This initial release only contains a few programs.  In general the
+  programs are heavily commented.  To gain the full benefit of the examples,
+  the comments throughout the program code should be read.  Some directories
+  may contain additional documentation in the form of "read me" files within
+  the directory.
+
+  Enjoy!
+
