@@ -1,0 +1,170 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 3050 $
+  Change Date:  $Date: 2008-08-23 12:24:37 -0700 (Sat, 23 Aug 2008) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2011 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+
+  group~addWithSuite(.ListBox.testGroup, .ListBoxSuite)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooDialog.cls'
+::requires 'ooTest.frm'
+
+::class 'ListBoxSuite' public subclass ooTestSuite
+
+::method setUp
+
+  dlg = .SimpleDialog~new
+  dlg~popup("SHOWTOP")
+
+  -- There might be a need here to pause until the underlying dialog is
+  -- created.
+  j = SysSleep(.5)
+
+  .local~testDlg = dlg
+
+::method tearDown
+
+  .testDlg~cancel
+  .local~setEntry(testDlg)
+
+
+/* class: ListBox.testGroup - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "ListBox.testGroup" public subclass ooTestCase
+
+::method test_dlg1_delete
+
+  ret = .testDlg~dlgTest1
+  self~assertSame(4, ret)
+
+::method  test_dlg2_delete
+
+  ret = .testDlg~dlgTest2
+  self~assertSame(3, ret)
+
+::method  test_dlg3_delete
+
+  ret = .testDlg~dlgTest3
+  self~assertSame(-1, ret)
+
+::method test_dlg4_deleteAll
+
+  ret = .testDlg~dlgTest4
+  self~assertSame(0, ret)
+
+  ret = .testDlg~getLBItems
+  self~assertSame(0, ret)
+
+::method test_dlg5_insert
+
+  ret = .testDlg~dlgTest5
+  self~assertSame(5, ret)
+
+  ret = .testDlg~getLBItems
+  self~assertSame(5, ret)
+
+-- End of class: ListBox.testGroup
+
+
+::class SimpleDialog subclass UserDialog inherit advancedcontrols
+
+::method dlgTest1
+ lb = self~getListBox(100)
+
+ ret = lb~delete(1)
+ return ret
+
+::method dlgTest2
+ lb = self~getListBox(100)
+
+ ret = lb~delete(3)
+ return ret
+
+::method dlgTest3
+ lb = self~getListBox(100)
+
+ ret = lb~delete(100)
+ return ret
+
+::method dlgTest4
+ lb = self~getListBox(100)
+
+ ret = lb~deleteAll
+ return ret
+
+::method getLBItems
+  return self~getListBox(100)~items
+
+::method dlgTest5
+
+ items = .array~of("New York", "San Diego", "Los Angeles", "Bakersfield", "San Jose")
+ lb = self~getListBox(100)
+ do city over items
+   ret = lb~insert(  , city)
+ end
+
+ return ret
+
+::method init
+  forward class (super) continue
+  self~create(0, 0, 186, 95, "Simple Dialog")
+
+::method defineDialog
+
+ self~addButton(IDOK, 74, 71, 50, 14, "OK", , "DEFAULT")
+ self~addListBox(100,, 10, 10, 166, 48, 'VSCROLL SORT NOTIFY' )
+
+::method initDialog
+
+  self~dlgTest5
+

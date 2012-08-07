@@ -1,0 +1,466 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec;
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.OLEVariant.testGroup)
+  group~restrictOS("WINDOWS")
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: OLEVariant.testGroup - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    The OLEVariant test case class.  Each method starting with 'test_' is an
+    individual test case for the OLEVariant class.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'OLEVariant.testGroup' public subclass ooTestCase
+
+  /* test_instantiateProper( ) - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    Test .OLEVariant~new() using valid (proper) arguments.
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  test_instantiate_proper
+
+    varVal = .array~new
+    vt     = "VT_BOOL"
+    flags  = "IN"
+
+    ole = .oleVariant~new( varVal, vt, flags )
+    a   = ole~!varValue_
+
+    self~assertTrue((a~class == .array), "Variant value class should be array")
+    self~assertSame(varVal, ole~!varValue_, "Variant value should be the value it was set as")
+    self~assertEquals("VT_BOOL", ole~!varType_, "Variant type (string) should equal VT_BOOL")
+    self~assertEquals("IN", ole~!paramFlags_, "Variant flags (string) should equal IN")
+    self~assertTrue(ole~!clearVariant_, "Clear variant attribute must be true")
+
+    -- Case insensitive should be allowed for variant type and param flags.
+    varVal = "cat"
+    vt     = "VT_bool"
+    flags  = "IN,out"
+
+    ole = .oleVariant~new( varVal, vt, flags )
+    a   = ole~!varValue_
+
+    self~assertTrue((a~class == .string), "Variant value class should be string")
+    self~assertSame("cat", ole~!varValue_, "Variant value should be 'cat'")
+    self~assertEquals("VT_bool", ole~!varType_, "Variant type (string) should equal VT_bool")
+    self~assertEquals("IN,out", ole~!paramFlags_, "Variant flags (string) should equal IN,OUT")
+    self~assertTrue(ole~!clearVariant_, "Clear variant attribute must be true")
+
+    -- Spaces should not affect variant type or param flags.
+    varVal = .list~of( "Sequoia", "Yosemite", "Rainier" )
+    vt     = " VT_bool         "
+    flags  = "IN,  out"
+
+    ole = .oleVariant~new( varVal, vt, flags )
+    a   = ole~!varValue_
+
+    self~assertTrue((a~class == .list), "Variant value class should be list")
+    self~assertSame("Sequoia", ole~!varValue_~at( 0 ), "Variant value object: list~at( 0 ) should be 'Sequoia'")
+    self~assertSame("Yosemite", ole~!varValue_~at( 1 ), "Variant value object: list~at( 1 ) should be 'Yosemite'")
+    self~assertSame("Rainier", ole~!varValue_~at( 2 ), "Variant value object: list~at( 2 ) should be 'Rainier'")
+    self~assertEquals(vt, ole~!varType_, "Variant type (string) should equal" vt)
+    self~assertEquals(flags, ole~!paramFlags_, "Variant flags (string) should equal" flags)
+    self~assertTrue(ole~!clearVariant_, "Clear variant attribute must be true")
+
+
+  -- End test_instantiateProper( )
+
+  /* test_instantiate_errorXX( ) - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    The following methods all test .OLEVariant~new() using invalid (error
+    producing) arguments.  Since a syntax error is raised, a large number of
+    individual test cases need to be used rather than combining a number of
+    assertions in one test case.
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+  -- No args is not allowed; must include the varValue argument.
+  ::method  test_instantiate_error01
+    self~expectSyntax( 93.903)
+    ole = .oleVariant~new( )
+
+  -- Can not skip the first arg; must include the varValue argument.
+  ::method test_instantiate_error02
+    self~expectSyntax( 93.903)
+    ole = .oleVariant~new( , VT_BOOL, .nil )
+
+  -- More than 3 args are not allowed.
+  ::method test_instantiate_error03
+    self~expectSyntax( 93.902)
+    ole = .oleVariant~new( "temp", VT_BOOL, .nil, "bogus" )
+
+  -- The variant type must be valid variant type for OLE Automation.
+  ::method test_instantiate_error04
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", VTT_BOOL )
+
+  -- The variant type must be valid variant type for OLE Automation.
+  ::method test_instantiate_error05
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", "VT_BOOL,VT_BOOL" )
+
+  -- The variant type must be valid variant type for OLE Automation.
+  ::method test_instantiate_error06
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", "VT_BYREF,VT_ARRAY" )
+
+  -- The variant type must be valid, VT_VARIANT must be by ref or array.
+  ::method test_instantiate_error07
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", "VT_VARIANT" )
+
+  -- The variant type must be valid, VT_EMPTY must not be by ref or array.
+  ::method test_instantiate_error08
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", "VT_EMPTY,VT_BYREF" )
+
+  -- The variant type must be valid, VT_EMPTY must not be by ref or array.
+  ::method test_instantiate_error09
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", "VT_EMPTY,VT_ARRAY" )
+
+  -- The variant type must be valid, VT_NULL must not be by ref or array.
+  ::method test_instantiate_error10
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", "VT_NULL,VT_BYREF" )
+
+  -- The variant type must be valid, VT_NULL must not be by ref or array.
+  ::method test_instantiate_error11
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", "VT_NULL,VT_ARRAY" )
+
+  -- The variant type must be valid, VT_BYREF can not be by itself.
+  ::method test_instantiate_error12
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", VT_BYREF )
+
+  -- The variant type must be valid, VT_ARRAY can not be by itself.
+  ::method test_instantiate_error13
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", VT_ARRAY )
+
+  -- There are VARENUMs that are not valid for use as dispatch args.
+
+  -- The variant type must be valid, VT_VOID is not valid
+  ::method test_instantiate_error14
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", VT_VOID )
+
+  -- The variant type must be valid, VT_HRESULT is not valid
+  ::method test_instantiate_error15
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", VT_HRESULT )
+
+  -- The variant type must be valid, VT_PTR is not valid
+  ::method test_instantiate_error16
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", VT_PTR )
+
+  -- The variant type must be valid, VT_SAFEARRAY is not valid
+  ::method test_instantiate_error17
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", VT_SAFEARRAY )
+
+  -- The variant type must be valid, VT_CARRAY is not valid
+  ::method test_instantiate_error18
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", VT_CARRAY )
+
+  -- The variant type must be valid, VT_USERDEFINED is not valid
+  ::method test_instantiate_error19
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", VT_USERDEFINED )
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_instantiate_error20
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", , "IN,OUT,DONE" )
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_instantiate_error21
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", , "INT" )
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_instantiate_error22
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", , "IN OUT" )
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_instantiate_error23
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", , "IN|OUT" )
+
+  -- The param flags must be valid param flags used in OLE Automation, but they
+  -- are abbreviated for convenience.
+  ::method test_instantiate_error24
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", , PARAMFLAG_FIN )
+
+  -- The param flags must be valid param flags used in OLE Automation, but they
+  -- are abbreviated for convenience.
+  ::method test_instantiate_error25
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", , PARAMFLAG_FOUT )
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_instantiate_error26
+    self~expectSyntax( 93.953)
+    ole = .oleVariant~new( "temp", , "IN,OUT,IN,OUT,IN,OUT,OUT,IN,OUT,OUT,OUT,IN,IN IN" )
+
+  -- End test_instantiate_errorXX( )
+
+  /* test_paramFlagsEquals_errorXX( )- - - - - - - - - - - - - - - - - - - - -*\
+
+    The following tests all set param flags to a not permitted value.  As such
+    they should all raise a syntax error.
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_paramFlagsEquals_error01
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!paramFlags_ = "IN,OUT,IN,OUT,IN,OUT,OUT,IN,OUT,OUT,OUT,IN,IN IN"
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_paramFlagsEquals_error02
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!paramFlags_ = "IN,OUT,DONE"
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_paramFlagsEquals_error03
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!paramFlags_ = "INT"
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_paramFlagsEquals_error04
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!paramFlags_ = "IN OUT"
+
+  -- The param flags must be valid param flags used in OLE Automation
+  ::method test_paramFlagsEquals_error05
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!paramFlags_ = "IN|OUT"
+
+  -- The param flags must be valid param flags used in OLE Automation, but they
+  -- are abbreviated for convenience.
+  ::method test_paramFlagsEquals_error06
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!paramFlags_ = PARAMFLAG_FIN
+
+  -- The param flags must be valid param flags used in OLE Automation, but they
+  -- are abbreviated for convenience.
+  ::method test_paramFlagsEquals_error07
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!paramFlags_ = PARAMFLAG_FOUT
+
+  -- End test_paramFlagsEquals_errorXX( )
+
+  /* test_varTypeEquals_errorXX( ) - - - - - - - - - - - - - - - - - - - - - -*\
+
+    The following tests all test trying to set the variant type to a non-
+    acceptable value.  These tests should all raise a syntax error.
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+
+  -- The variant type must be valid, VT_SAFEARRAY is not valid
+  ::method test_varTypeEquals_error01
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = VT_SAFEARRAY
+
+  -- The variant type must be valid, VT_CARRAY is not valid
+  ::method test_varTypeEquals_error02
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = VT_CARRAY
+
+  -- The variant type must be valid, VT_USERDEFINED is not valid
+  ::method test_varTypeEquals_error03
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = VT_USERDEFINED
+
+  -- The variant type must be valid variant type for OLE Automation.
+  ::method test_varTypeEquals_error04
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = VTT_BOOL
+
+  -- The variant type must be valid variant type for OLE Automation.
+  ::method test_varTypeEquals_error05
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = "VT_BOOL,VT_BOOL"
+
+  -- The variant type must be valid variant type for OLE Automation.
+  ::method test_varTypeEquals_error06
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = "VT_BYREF,VT_ARRAY"
+
+  -- The variant type must be valid, VT_VARIANT must be by ref or array.
+  ::method test_varTypeEquals_error07
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = "VT_VARIANT"
+
+  -- The variant type must be valid, VT_EMPTY must not be by ref or array.
+  ::method test_varTypeEquals_error08
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = "VT_EMPTY,VT_BYREF"
+
+  -- The variant type must be valid, VT_EMPTY must not be by ref or array.
+  ::method test_varTypeEquals_error09
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = "VT_EMPTY,VT_ARRAY"
+
+  -- The variant type must be valid, VT_NULL must not be by ref or array.
+  ::method test_varTypeEquals_error10
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = "VT_NULL,VT_BYREF"
+
+  -- The variant type must be valid, VT_NULL must not be by ref or array.
+  ::method test_varTypeEquals_error11
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = "VT_NULL,VT_ARRAY"
+
+  -- The variant type must be valid, VT_BYREF can not be by itself.
+  ::method test_varTypeEquals_error12
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = VT_BYREF
+
+  -- The variant type must be valid, VT_ARRAY can not be by itself.
+  ::method test_varTypeEquals_error13
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = VT_ARRAY
+
+  -- The variant type must be valid, VT_VOID is not valid
+  ::method test_varTypeEquals_error14
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = VT_VOID
+
+  -- The variant type must be valid, VT_HRESULT is not valid
+  ::method test_varTypeEquals_error15
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = VT_HRESULT
+
+  -- The variant type must be valid, VT_PTR is not valid
+  ::method test_varTypeEquals_error16
+    ole = .oleVariant~new( "temp" )
+    self~expectSyntax( 93.953)
+    ole~!varType_ = VT_PTR
+
+  -- End test_varTypeEqualsXX( )
+
+  /* test_clearVariantEqualsXX( )  - - - - - - - - - - - - - - - - - - - - - -*\
+
+    The following tests set the clear variant attribute to an illegal value.
+    They should all raise a syntax error.
+
+  \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  ::method  test_clearVariantEquals01
+    ole = .oleVariant~new( .nil )
+
+    -- Clear variant must always be true when a new object is instantiated.
+    self~assertTrue(ole~!clearVariant_, "Clear variant attribute must be true")
+    self~expectSyntax( 93.914)
+    ole~!clearVariant_ = "true"
+
+  ::method  test_clearVariantEquals02
+    ole = .oleVariant~new( .true )
+
+    -- Clear variant must always be true when a new object is instantiated.
+    self~assertTrue(ole~!clearVariant_, "Clear variant attribute must be true")
+    self~expectSyntax( 93.914)
+    ole~!clearVariant_ = "false"
+
+  ::method  test_clearVariantEquals03
+    ole = .oleVariant~new( .true )
+
+    -- Clear variant must always be true when a new object is instantiated.
+    self~assertTrue(ole~!clearVariant_, "Clear variant attribute must be true")
+    self~expectSyntax( 93.914)
+    ole~!clearVariant_ = "10"
+
+  ::method  test_clearVariantEquals04
+    ole = .oleVariant~new( .true )
+
+    -- Clear variant must always be true when a new object is instantiated.
+    self~assertTrue(ole~!clearVariant_, "Clear variant attribute must be true")
+    self~expectSyntax( 93.914)
+    ole~!clearVariant_ = "00009"
+
+
+  -- End test_clearVariantEqualsXX( )
+
+-- End of class: OLEVariant.testGroup
+
