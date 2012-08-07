@@ -143,7 +143,7 @@ liborxinvocation.so: orxinvocation.o
 
 # Build the executable file
 rexxinstance: rexxinstance.o
-	gcc $(ORXEXELFLAGS) -lorxexits rexxinstance.o -o rexxinstance
+	gcc $(ORXEXELFLAGS) rexxinstance.o -lorxexits -lrexx -lrexxapi -ldl -o rexxinstance
 
 # Compile the objects
 rexxinstance.o: rexxinstance.cpp orxexits.hpp
