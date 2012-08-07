@@ -861,7 +861,9 @@ return .ooTestResult~new(5)~~addException(err)
 ::method 'testArray04'
   tester = .METHODtester~new
   self~expectSyntax('98.913')
-  x = tester~TestOptionalArrayArg("abc")
+  -- NB:  String has a makearray method that was not getting handled
+  -- properly until recently, so a string value does not result in an error
+  x = tester~TestOptionalArrayArg(.object~new)
 
 ::method 'testArray05'
   tester = .METHODtester~new
