@@ -51,8 +51,11 @@
  * further the goals of the project.
  */
 
+-- The ooTest framework version is intended to be in 2 parts.  To the left of
+-- the underscore is the framework version itself.  To the right is intended to
+-- be the minimum version of ooRexx needed for the included tests to pass.
 if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
-  .local~ooTest_Framework_version = 1.0.0_4.0.0
+  .local~ooTest_Framework_version = 1.0.0_4.1.2
 
   -- Replace the default test result class in the environment with the ooRexx
   -- project's default class.
