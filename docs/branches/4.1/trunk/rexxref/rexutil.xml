@@ -186,7 +186,7 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend="utlSysfilecopy">SysFileCopy</link></entry><entry>YES</entry><entry>NO</entry>
+<entry><link linkend="utlSysfilecopy">SysFileCopy</link></entry><entry>YES</entry><entry>YES</entry>
 <entry></entry>
 </row>
 <row>
@@ -1530,12 +1530,18 @@ File System=NTFS
 <para>Finds all files that match a file specification. SysFileTree returns the
 file descriptions (date, time, size, attributes, and file specification) space delimited in
 a Rexx stem variable collection. The default format for date and time is platform specific.</para>
+<para>
+  <emphasis role="italic">SysFileTree</emphasis> uses operating system APIs to find the files. The found files are
+  placed in the returned stem in the order they are found by the operating system. This documentation does not attempt
+  to define what that order might be.
+</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
-<varlistentry><term><emphasis role="italic">filespec</emphasis></term>
-<listitem><para>The search file specification.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">stem</emphasis></term>
+<varlistentry><term><emphasis role="italic">filespec [required]</emphasis></term>
+<listitem><para>The search file specification. This can not be the empty string. On Unix-like systems, <emphasis
+role="italic">filespec</emphasis> must be less than or equal to 255 characters in length.
+          </para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">stem [required]</emphasis></term>
 <listitem><para>The name of a stem variable to be used for storing results.
 SysFileTree sets Rexx variable <emphasis role="italic">stem.0</emphasis>
 to the number of files and directories found and stores individual
@@ -1545,8 +1551,9 @@ Note: <emphasis role="italic">stem</emphasis> can be specified as
 <emphasis role="italic">stem</emphasis> or <emphasis role="italic">stem.</emphasis>
 (with or without the trailing period)
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">options</emphasis></term>
-<listitem><para>A string with any combination of the following:</para>
+<varlistentry><term><emphasis role="italic">options [optional]</emphasis></term>
+<listitem><para>A string with any combination of the following. If this argument is omitted, it defaults to <emphasis
+            role="italic">B</emphasis>.</para>
 <variablelist>
 <varlistentry><term>"F"</term>
 <listitem><para>Search only for files.
@@ -1575,12 +1582,13 @@ by default.
 </para></listitem></varlistentry>
 <varlistentry><term>"O"</term>
 <listitem><para>Return only the fully-qualified file name.</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">tattrib</emphasis></term>
+<varlistentry><term><emphasis role="italic">tattrib [optional] [Windows only]</emphasis></term>
 <listitem><para>The target attribute mask for file specification matches. Only
 files that match the target mask are returned. The default mask is "*****".
 This returns all files regardless of the settings (clear or set) of the Archive,
 Directory, Hidden, Read-Only, and System attributes. The target mask attributes
-must appear in the order "ADHRS". </para></listitem></varlistentry>
+must appear in the order "ADHRS". This argument is Windows only. It is allowed but ignored on Unix-like operating
+systems.</para></listitem></varlistentry>
 </variablelist>
 <para>Target Mask
 Options </para>
@@ -1611,11 +1619,12 @@ Options </para>
 </para></listitem></varlistentry>
 </variablelist>
 </listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">nattrib</emphasis></term>
+<varlistentry><term><emphasis role="italic">nattrib [optional] [Windows only]</emphasis></term>
 <listitem><para>The new attribute mask for setting the attributes of each
 matching file. The default mask is "*****". This means not to change the
 Archive, Directory, Hidden, Read-Only, and System attributes. The target mask
-attributes must appear in the order "ADHRS".</para>
+attributes must appear in the order "ADHRS". This argument is Windows only. It is allowed but ignored on Unix-like
+operating systems.</para>
 <para>New Attribute
 Mask Options </para>
 <variablelist>
@@ -1629,7 +1638,7 @@ Mask Options </para>
 <listitem><para>Clear the file attribute.
 </para></listitem></varlistentry>
 </variablelist>
-<para>New Attribute Mask Examples </para>
+<para>New Attribute Mask Examples</para>
 <variablelist>
 <varlistentry><term>"***+*"</term>
 <listitem><para>Set the Read-Only attribute on all files.
