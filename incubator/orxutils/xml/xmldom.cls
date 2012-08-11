@@ -6965,9 +6965,8 @@ syntax:
   return .TextImpl~new(self, data)
 
 -- the following creating methods are strangely not defined in any
--- specification I can find.  Wrote these before I knew that, but I
--- suspect they'll be needed eventually when I get to doctype and
--- schema support
+-- specification I can find.  However, they are needed (sort of)
+-- for doctype support.
 
 -- create an entity object
 ::method createEntity

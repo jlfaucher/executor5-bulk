@@ -2541,7 +2541,7 @@
 
 -- handle an internal entity declaration
 ::method internalEntityDecl
-  expose entityDecls parameterEntityDecls
+  expose entityDecls parameterEntityDecls document documentType
   use strict arg entityName, isParameter, text, normalizedText
 
   -- normal entities and parameter entities have different name spaces
@@ -2555,9 +2555,16 @@
   entityDecl = .InternalEntityDecl~new(entityName, text, normalizedText)
   table[entityName] = entityDecl
 
+  -- Now add an entity node to the document type, but only general entities.
+  if \isParameter then do
+      entities = documentType~entities
+      entity = document~createEntity(entityName)
+      entities~setNamedItem(entity)
+  end
+
 -- handle an external entity declaration
 ::method externalEntityDecl
-  expose entityDecls parameterEntityDecls
+  expose entityDecls parameterEntityDecls document documentType
   use strict arg entityName, location
 
   -- normal entities and parameter entities have different name spaces
@@ -2570,6 +2577,16 @@
 
   entityDecl = .ExternalEntityDecl~new(entityName, location)
   table[entityName] = entityDecl
+
+  -- Now add an entity node to the document type, but only general entities.
+  if \isParameter then do
+      entities = documentType~entities
+      entity = document~createEntity(entityName)
+      entity~publicId = location~publicId
+      entity~systemId = location~systemId
+      entity~baseUri = location~baseUri
+      entities~setNamedItem(entity)
+  end
 
 -- handle an unparsed entity declaration
 ::method unparsedEntityDecl
@@ -2587,6 +2604,17 @@
   entityDecl = .ExternalEntityDecl~new(entityName, location, notation)
   table[entityName] = entityDecl
 
+  -- Now add an entity node to the document type, but only general entities.
+  if \isParameter then do
+      entities = documentType~entities
+      entity = document~createEntity(entityName)
+      entity~publicId = location~publicId
+      entity~systemId = location~systemId
+      entity~baseUri = location~baseUri
+      entity~notation = notation
+      entities~setNamedItem(entity)
+  end
+
 -- handle a notation declaration
 ::method notationDecl
   expose notationDecls
@@ -2598,6 +2626,17 @@
 
   notationDecl = .NotationDecl~new(notationName, location)
   notationDecls[notationName] = notationDecl
+
+  -- Now add an entity node to the document type, but only general entities.
+  if \isParameter then do
+      notatons = documentType~notations
+      notation = document~createNotation(notationName)
+      notation~publicId = location~publicId
+      notation~systemId = location~systemId
+      notation~baseUri = location~baseUri
+      notation~notation = notation
+      notations~setNamedItem(notation)
+  end
 
 -- start a group within a content model declaration
 ::method startGroup
