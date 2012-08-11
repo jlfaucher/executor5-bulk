@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rxsock.ent">
+%BOOK_ENTITIES;
+]>
+<chapter><title>Introduction</title>
+<para>RxMath is a Rexx utility package that enables you to use enhanced mathematical
+functions.</para>
+<para>The function names in the Rexx Mathematical Functions package are similar to
+the names of their corresponding mathematical functions.</para>
+<para>The precision of calculation depends on:</para>
+<itemizedlist>
+<listitem><para>The value specified when the command is issued</para></listitem>
+<listitem><para>The numeric digits settings of the calling Rexx activity</para></listitem>
+</itemizedlist>
+<note><para>Precision is limited to 16 digits.</para></note>
+
+<section><title>Using the RxMath package</title>
+<para>
+  The Rexx Mathematical Functions package is contained in the library <emphasis
+  role="italic">rxmath</emphasis>, with the appropriate file name for the operating system.  This library
+  must be loadable by the operating system using the normal procedure for the system. For instance, on Windows
+  the file must be placed in a directory listed in your PATH. When installing ooRexx from any of the
+  installation packages, the details of where the file is placed are handled automatically.
+</para>
+<para>
+  Beginning with ooRexx 4.0.0, a more robust process is used to load external functions. To get access to
+  the functions in the Rexx Mathematical Functions package, use a ::requires directive. For example:
+</para>
+<programlisting>
+say 'The square root of 3 is:' RxCalcSqrt(3)
+
+::requires 'rxmath' LIBRARY
+</programlisting>
+<para>
+  Existing code that used the previous proces to load external functions:
+</para>
+<programlisting>
+call rxfuncadd "MathLoadFuncs", "rxmath", "MathLoadFuncs"
+</programlisting>
+<para>
+  does not need to be changed. However, both <computeroutput>MathLoadFuncs()</computeroutput> and
+  <computeroutput>MathDropFuncs()</computeroutput> are nops in ooRexx 4.0.0 and later.
+</para>
+</section>
+
+<section><title>Error Handling and Function Returns</title>
+<para>
+  Error 40 (Incorrect call to routine) is raised if either the wrong number of arguments or incorrect
+  data is passed to a function.
+</para>
+<para>
+  If a mathematical function fails, the function will return <emphasis role="italic">nan</emphasis>,
+  <emphasis role="italic">+infinity</emphasis>, and <emphasis role="italic">-infinity</emphasis> as
+  appropriate. These returns are consistent on all operating systems.
+</para>
+<para>
+  Where an error occurs, the variable MATHERRNO is set with additional information that further defines
+  the source of the error.
+</para>
+</section>
+</chapter>
