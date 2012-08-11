@@ -1603,6 +1603,8 @@
           if name \== "DOCTYPE" then self~reportFatalError("Unrecognized markup: '!"name"'")
           if seenDoctype then self~reportFatalError("Only one !DOCTYPE declaration permitted in a document")
           seenDoctype = .false
+          -- scan the doctype instruction itself
+          self~scanDoctypeDecl
           -- TODO:  Lots of processing needed for external DTDs.
           self~scanDoctypeDecls
       end
@@ -1675,9 +1677,40 @@
   self~skipWhiteSpace(.true)
   if self~peekCharacter(.true) \== '' then self~reportFatalError("Illegal content after root element")
 
+-- scan the doctype declaration element itself
+::method scanDocTypeDecl
+  expose currentEntity documentHandler
+
+  if \currentEntity~skipWhiteSpace(.false) then self~reportFatalError("Space required before !DOCTYPE root element name")
+  -- root name is required
+  rootElementName = self~scanName(.false)
+  if rootElementName == "" then self~reportFatalError("Missing !DOCTYPE root element name")
+  -- get the id information
+  systemId = .nil
+  publicId = .nil
+  if currentEntity~skipWhiteSpace(.false) then do
+      ids = self~scanExternalId
+      systemId = ids~systemId
+      publicId = ids~publicId
+  end
+
+  -- allow the doctype handler to process this part
+  documentHandler~doctypeDecl(rootName, publicId, systemId)
+
+  currentEntity~skipWhiteSpace(.false)
+  -- do we have an internal subset?  Then go secan it
+  if currentEntity~checkDelimiter('[') then do
+      self~scanDoctypeDecls
+  end
+  else do
+      if \currenEntity~checkDelimiter('>') then self~reportFatalError("Unterminated !DOCTYPE declaration")
+  end
+
+
 -- scan the various Decl types for a DocType
 ::method scanDocTypeDecls
   expose conditionalDepth includeDepth documentHandler currentEntity
+  use strict arg scanningInclude = .false
 
   loop forever
       -- skip over whitespace and process any PErefs
@@ -1698,20 +1731,19 @@
               else if currentEntityt~checkDelimiter("ENTITY", .false) then self~scanEntityDecl
               -- <!NOTATION declaration
               else if currentEntity~checkDelimiter("NOTATION", .false) then self~scanNotationDecl
-              -- <![ conditonal.  Only valid if not working on an internal subset
-              else if currentEntity~checkDelimiter("[", .true) then self~scanConditionalSection
+              -- <![ conditonal.  Only valid if not an internal subset.  Note:  conditional sections CAN nest.
+              else if \self~scanningInternalSubset, currentEntity~checkDelimiter("[", .true) then self~scanConditionalSection
               else self~reportFatalError("Unrecognized DTD markup")
           end
           else self~reportFatalError("Unrecognized DTD markup")
       end
-      -- potential conditional include terminator?
-      else if includeDepth > 0, currentEntity~checkDelimiter(']', .true) then do
-          if \currentEntity~checkDelimiter(']>', .true) then self~reportFatalError("Unterminated conditional section")
-          self~documentHandler~endConditional
-          includeDepth -= 1
-      end
+      -- have we been called recursively to process the statements inside of an
+      -- include section?  Then check for terminator.  The .true return indicates we found what we're looking for
+      else if scanningInclude, currentEntity~checkDelimiter(']]>', .true) then return .true
       -- if we're handling an internal subset, we've hit the end of what we're parsing
-      else if self~scanningInternalSubset, self~peekCharacter(.true) == ']' then return .false
+      else if self~scanningInternalSubset, currentEntity~checkDelimiter(.true) == ']' then return .true
+      -- end of data?  Terminate the loop
+      else if currentEntity~peekCharacter(.true) == "" then return .false
       else self~reportFatalError("Unrecognized DTD markup")
   end
 
@@ -1730,70 +1762,71 @@
 
   self~requiredDeclSep("Space required before !ELEMENT type")
   typename = self~scanName(.true)
+  contentModel = .nil -- no extra information available by default
   if typename == '' then self~reportFatalError("Missing !ELEMENT type name")
   self~requiredDeclSep("Space required before !ELEMENT content specification")
   -- indicate we're processing a new element
   dtdHandler~startContentModel(name)
   if currentEntity~checkDelimiter("EMPTY", .false) then do
-      contentModel = "EMPTY"
+      contentType = "EMPTY"
       dtdHandler~empty
   end
   if currentEntity~checkDelimiter("ANY", .false) then do
-      contentModel = "ANY"
+      contentType = "ANY"
       dtdHandler~any
   end
   else do
       if \currentEntity~checkDelimiter('(', .false) then self~reportFatalError("Invalid !ELEMENT type")
       dtdHandler~startGroup
       self~skipDeclSep
-      if currentEntity~checkDelimiter('#PCDATA', .false) then contentModel = self~scanMixedContentModel
-      else contentModel = self~scanChildTypes
+      if currentEntity~checkDelimiter('#PCDATA', .false) then do
+          contentType = "MIXED"
+          contentModel = self~scanMixedContentModel
+      end
+      else do
+          contentType = "CHILDREN"
+          contentModel = self~scanChildTypes
+      end
   end
 
   dtdHandler~endContentModel
   self~skipDeclSep
   if \currentEntity~checkDelimiter('>', .false) then self~reportFatalError("Unterminated !ELEMENT specification")
-  dtdHandler~elementDecl(name, contentModel)
+  dtdHandler~elementDecl(name, contentType, contentModel)
 
 -- scan a mixed content model, defined as
 --  [51]    Mixed    ::=    '(' S? '#PCDATA' (S? '|' S? Name)* S? ')*'
 --                        | '(' S? '#PCDATA' S? ')'
 ::method scanMixedContentModel
   expose dtdHandler currentEntity
-  buffer = .mutableBuffer~new
 
-  buffer~append("#PCDATA")
+  dtdHandler~startGroup
   dtdHandler~pcData
 
   self~skipDeclSep
-  childName = .nil
+  seq = .XMLTypeChoice~new
 
   loop while currentEntity~checkDelimiter('|', .false)
-      buffer~append('|')
       dtdHandler~separator('|')
       self~skipDeclSep
       -- the child name can be a directly specified name or a Parameter Entity
       -- reference
       childName = self~scanNameOrParameterEntityRef
       if childName == "" then self~reportFatalError("Missing !ELEMENT type name")
-      buffer~append(childName)
-      dtdHandler~element(childName)
+      seq~append(childName)
+      dtdHandler~elementType(childName)
       self~skipDeclSep
   end
 
   -- the parens can be in a different entity, so allow this to pop
   if currentEntity~checkDelimiter(')*', .true) then do
-      buffer~append(')*')
       dtdHandler~endGroup
       dtdHandler~occurrence(.XMLContentModelHandler~ZERO_OR_MORE)
   end
   else if childName \= .nil then self~reportFatalError("Unterminated !ELEMENT mixed content specification")
-  else if currentEntity~checkDelimiter(')', .true) then do
-      buffer~append(')')
-      dtdHandler~endGroup
-  end
+  else if currentEntity~checkDelimiter(')', .true) then dtdHandler~endGroup
   else self~reportFatalError("Missing closing parentheses in !ELEMENT mixed content specification")
-  return buffer~string
+  return seq
 
 -- scan child types in an element decl.  These can be nested lists of child types
 --   [47]    children  ::=    (choice | seq) ('?' | '*' | '+')?
@@ -1803,11 +1836,11 @@
 ::method scanChildTypes
   expose dtdHandler currentEntity
 
-  buffer = .mutableBuffer~new
   -- since there are nested groups, we need to keep track of
   -- what sort of choice operators we're dealing with
   operatorStack = .queue~new
-  currentOperator = .nil
+  currentGroup = .nil  -- this is the current group we add elements to
+  firstChild = .nil
 
   groupDepth = 0   -- keep track of the groupings
   loop forever
@@ -1815,75 +1848,90 @@
       currentEntity~skipWhiteSpace(.false)
       -- start of a new group (or potentially, the first one)
       if currentEntity~checkDelimiter('(', .false) then do
-          buffer~append('(')
           -- start a new group
           dtdHandler~startGroup
-              groupDepth += 1
+          groupDepth += 1
           -- reset the operator to none until we find a new one
-          operatorStack~push(currentOperator)
-          currentOperator = .nil
+          operatorStack~push(currentGroup)
+          currentGroup = .nil
       end
       else do
           childname = self~scanNameOrParameterEntityRef
           if childname == "" then self~reportFatalError("Missing !ELEMENT child element type")
           dtdHandler~element(childname)
-          buffer~append(childname)
           -- check for modifiers on the child type
           if currentEntity~checkDelimiter('?', .false) then do
               dtdHandler~occurrence(.XMLContentModelHandler~ZERO_OR_ONE)
-              buffer~append('?')
+              child = .ZeroOrOne~new(childName)
           end
           else if currentEntity~checkDelimiter('*', .false) then do
               dtdHandler~occurrence(.XMLContentModelHandler~ZERO_OR_MORE)
-              buffer~append('*')
+              child = .ZeroOrMore~new(childName)
           end
           else if currentEntity~checkDelimiter('+', .false) then do
               dtdHandler~occurrence(.XMLContentModelHandler~ONE_OR_MORE)
-              buffer~append('+')
+              child = .OneOrMore~new(childName)
           end
+          else child = .SingleChild~new(childName)
+          -- if we don't know what sort of group this is yet, hold on to the child element
+          -- until we see the next bit
+          if currentGroup == .nil then firstChild = child
+          else currentGroup~append(child)
       end
+      -- we're in a group, now continue with the choice or sequence
       loop forever
           self~skipDeclSep
           -- processing a sequence?  We only allow this if we're not currently
           -- handling a choice expression
-          if currentOperator \== '|', currentEntity~checkDelimiter(',', .false) then do
-              -- make this the current
-              currentOperator = ','
+          if \currentGroup~isA(.TypeChoice), currentEntity~checkDelimiter(',', .true) then do
+              -- this might be the first type indicator, so we can finally create the
+              -- group instance and add the first type
+              if currentGroup == .nil then do
+                  currentGroup = .TypeSequence~new
+                  currentGroup~append(firstChild)
+                  firstChild = .nil
+              end
               dtdHandler~separator(.XMLContentModelHandler~SEQUENCE)
-              buffer~append(',')
               leave   -- done processing
           end
           -- the opposite situation
-          else if currentOperator \== ',', currentEntity~checkDelimiter('|', .false) then do
-              -- make this the current
-              currentOperator = '|'
+          else if \currentGroup~isA(.TypeSequence), currentEntity~checkDelimiter('|', .true) then do
+              -- this might be the first type indicator, so we can finally create the
+              -- group instance and add the first type
+              if currentGroup == .nil then do
+                  currentGroup = .TypeChoice~new
+                  currentGroup~append(firstChild)
+                  firstChild = .nil
+              end
               dtdHandler~separator(.XMLContentModelHandler~CHOICE)
-              buffer~append('|')
               leave   -- done processing
           end
           -- the close of a group
-          else if currentEntity~checkDelimiter(')', .false) then do
-              buffer~append(')')
+          else if currentEntity~checkDelimiter(')', .true) then do
               groupDepth -= 1
               dtdHandler~endGroup
-              currentOp = operatorQueue~pull
               -- we've hit the end, now look to see if there
-              -- is a repetition modifier
+              -- is a repetition modifier (NOTE, these must be in the same
+              -- entity as the terminator
               if currentEntity~checkDelimiter('?', .false) then do
-                  buffer~append('?')
+                  currentGroup~repetitor = .XMLContentModelHandler~ZERO_OR_ONE
                   dtdHandler~occurrence(.XMLContentModelHandler~ZERO_OR_ONE)
               end
               else if currentEntity~checkDelimiter('+', .false) then do
-                  buffer~append('+')
+                  currentGroup~repetitor = .XMLContentModelHandler~ONE_OR_NORE
                   dtdHandler~occurrence(.XMLContentModelHandler~ONE_OR_MORE)
               end
               else if currentEntity~checkDelimiter('*', .false) then do
-                  buffer~append('*')
+                  currentGroup~repetitor = .XMLContentModelHandler~ZERO_OR_NORE
                   dtdHandler~occurrence(.XMLContentModelHandler~ZERO_OR_MORE)
               end
+              -- we've unwound all of the groups, we're done parsing this
+              if groupDepth = 0 then return currentGroup
+              -- back up to the previous group
+              currentGroup = operatorStack~pull
           end
-          -- we've unwound all of the groups, we're done parsing this
-          if groupDepth = 0 then return buffer~string
+          -- something invalid here
+          else self~reportFatalError("Invalid marking up in element content type")
       end
   end
 
@@ -1919,7 +1967,7 @@
       self~requiredDeclSep("Space required before !ATTLIST attribute type")
       defaultType = self~scanAttributeDefault(elementName, attributeName, attributeType)
 
-      dtdHandler~attributeDecl(elementName, attributeName, attributeType, defaultType)
+      dtdHandler~attributeDecl(elementName, attributeName, .nil, attributeType, defaultType, .nil, .nil)
       currentEntity~skipWhiteSpace(.true)
   end
 
@@ -2137,6 +2185,81 @@
   if \self~checkDelimiter('>', .false) then self~reportFatalError("Unterminated !NOTATION declaration")
   dtdHandler~notationDecl(name, info~systemId, info~publicId, baseSystemId)
 
+-- scan a conditional section
+::method scanConditionalSection
+  expose dtdHandler currentEntity tokenBuffer
+
+  -- save this depth.  While it is normal for the INCLUDE/IGNORE of the
+  -- conditional section to be defined in a PE Ref, both sides of the
+  -- keyword MUST be part of the same entity.
+  startEntity = currentEntity
+  -- NOTE:  this is one place where looking for a PEref is critical, as
+  -- the INCLUDE/IGNORE keyword is typically defined in a PE ref.
+  self~skipDeclSep
+  -- is this section to be included?
+  if currentEntity~checkDelimiter('INCLUDE', .false) then do
+      -- skip any white space...and also give this a chance
+      -- to switch back to the initiating entity
+      self~skipDeclSep
+      if currentEntity \== startEntity then self~reportFatalError("Invalid parameter entity reference in conditional section")
+      -- must have the delimiter marker here
+      if \currentEntity~checkDelimiter('[', .false) then self~reportFatalError("Unrecognized DTD markup")
+      -- inform the DTD handler we're starting this...the DTD handler will drive the rest of the processing
+      dtdHandler~startConditional("INCLUDE")
+      -- now recursively scan the section for additional statements
+      -- the argument causes this to recognize the conditional terminator
+      if \self~scanDocTypeDecls(.true) then self~reportFatalError("Unterminated conditional INCLUDE section")
+      if startEntity \== currentEntity then self~reportFatalError("Parameter entity within a conditional section cannot contain a ]]> terminator")
+      -- give the termination indicator
+      dtdHandler~endConditional("INCLUDE")
+  end
+  -- section to be ignored
+  else if currentEntity~checkDelimiter('IGNORE', .false) then do
+      -- skip any white space...and also give this a chance
+      -- to switch back to the initiating entity
+      self~skipDeclSep
+      if currentEntity \== startEntity then self~reportFatalError("Invalid parameter entity reference in conditional section")
+      -- must have the delimiter marker here
+      if \currentEntity~checkDelimiter('[', .false) then self~reportFatalError("Unrecognized DTD markup")
+      -- inform the DTD handler we're starting this...the DTD handler will drive the rest of the processing
+      dtdHandler~startConditional("IGNORE")
+      -- now perform scanning on the ignore buffer.  We can't just scan for the terminator, but
+      -- must also check for disallowed combinations inside the data.
+
+      -- conditional sections can nest, so we need to at least recognize the start of
+      -- the nesting so we can keep track of the terminators as well
+      nestLevel = 0
+      tokenBuffer~setBufferSize(0)
+      loop forever
+          -- is this a nested conditional section?
+          if currentEntity~checkDelimiter('<![') then do
+              nestLevel += 1
+              tokenBuffer~append('<![')
+          end
+          else if currentEntity~checkDelimiter(']]>') then do
+              tokenBuffer~append(']]>')
+              -- reduce the nesting level
+              nestLevel -= 1
+              -- if we've unwound to zero, then it's time to stop
+              if nestLevel = 0 then do
+                  -- check that the start and end are at the same entity level
+                  if startEntity \== currentEntity then self~reportFatalError("Parameter entity within a conditional section cannot contain a ]]> terminator")
+                  -- poke the dtd handler with this stuff
+                  dtdHandler~ignoredCharacters(tokenBuffer~string)
+                  dtdHandler~endConditional
+              end
+          end
+          else do
+              -- get the next character
+              ch = self~scanCharacter(.true)
+              if ch == '' then self~reportFatalError("Unterminated conditional section")
+              tokenBuffer~append(ch)
+          end
+      end
+  end
+  else self~reportFatalError("Unrecognized DTD markeup")
+
+
 
 -- drive the parsing of the document
 ::method parseDocument
@@ -2326,6 +2449,366 @@
   entityRef = .nil
   currentNode = currentNode~parentNode
 
+-- start processing of a DTD.  This initializes important state data
+::method startDTD
+  expose locations
+  use strict arg location
+  -- add this to the top of the location stack
+  locations~push(location)
+
+-- end parsing of a DTD
+::method endDTD
+  expose locations
+
+  locations~pull   -- remove the top-most item
+  -- just a NOP for the moment
+
+-- begin processing of a parameterEntity
+::method startParameterEntity
+  expose entities
+  use strict arg name
+  entities~push(name)
+
+-- end processing of an external entity
+::method endParameterEntity
+  expose entities
+
+  entities~pull
+
+-- begin handling of an external subset referenced from the DOCTYPE
+::method startExternalSubset
+  expose inExternalSubset locations
+  use strict arg location
+
+  locations~push(location)   -- keep track of this location
+  inExternalSubset = .true
+
+-- mark the end of external subset processing
+::method endExternalSubset
+  expose inExternalSubset locations
+
+  inExternalSubset = .false
+  locations~pop
+
+-- add an element declaration to our tables
+::method elementDecl
+  expose elementDecls elementContentModels
+  use strict arg name, contentType
+
+  -- see if we have a definition for this element name yet
+  elementDecl = elementDecls[name]
+  if elementDecl \== .nil then do
+      -- it's possible we have had a forward reference to an element by an attribute
+      -- declaration.  If this declaration has type information, then this is a duplicate
+      if elementDecl \== .nil then self~reportFatalError("Duplicate !ELEMENT definition:" name)
+      -- complete the declaraton
+      elementDecl~contentType = contentType
+      elementDecl~contentModel = elementContentModels[name]
+  end
+  -- need to create a new one for our tables
+  else do
+      -- create an element declaration and hook it up with any accumulated content model
+      -- information we may have for this element
+      elementDecl = .ElementDecl~new(name, contentType, elementContentModels[name])
+      elementDecls[name] = elementDecl
+  end
+
+-- process an attribute declaration
+::method  attributeDecl
+  expose elementDecls
+  use strict arg elementName, attributeName, type, enumeration, defaultType, defaultValue, unnormalizedDefault
+
+  -- see if we have a matching element already defined
+  elementDecl = elementDecls[elementName]
+  -- this is a forward reference to an undeclared element decl, so
+  -- create a placeholder
+  if elementDecl == .nil then do
+      elementDecl = .ElementDecl~new(elementName)
+      elementDecls[elementName] = elementDecl
+  end
+
+  -- the spec says only the first definition is binding and all additional ones
+  -- are just ignored.
+  if elementDecl~attributes[attributeName] \== .nil then return
+
+  -- fill in the attribute decl values and attach to the element declaration
+  attributeDecl = .AttributeDecl~new(attributeName, type)
+  attributeDecl~enumeration = enumeration
+  attributeDecl~defaultType = defaultValue
+  attributeDecl~unnormalizedDefault = unnormalizedDefault
+
+  elementDecl~attributes[attributeName] = attributeDecl
+
+-- handle an internal entity declaration
+::method internalEntityDecl
+  expose entityDecls parameterEntityDecls
+  use strict arg entityName, isParameter, text, normalizedText
+
+  -- normal entities and parameter entities have different name spaces
+  if isParameter then table = parameterEntityDecls
+  else table = entityDecls
+
+  -- duplicate entity declarations are ignored, with the first
+  -- one always remaining bound to the name
+  if table~hasIndex(entityName) then return
+
+  entityDecl = .InternalEntityDecl~new(entityName, text, normalizedText)
+  table[entityName] = entityDecl
+
+-- handle an external entity declaration
+::method externalEntityDecl
+  expose entityDecls parameterEntityDecls
+  use strict arg entityName, location
+
+  -- normal entities and parameter entities have different name spaces
+  if isParameter then table = parameterEntityDecls
+  else table = entityDecls
+
+  -- duplicate entity declarations are ignored, with the first
+  -- one always remaining bound to the name
+  if table~hasIndex(entityName) then return
+
+  entityDecl = .ExternalEntityDecl~new(entityName, location)
+  table[entityName] = entityDecl
+
+-- handle an unparsed entity declaration
+::method unparsedEntityDecl
+  expose entityDecls parameterEntityDecls
+  use strict arg entityName, location, notation
+
+  -- normal entities and parameter entities have different name spaces
+  if isParameter then table = parameterEntityDecls
+  else table = entityDecls
+
+  -- duplicate entity declarations are ignored, with the first
+  -- one always remaining bound to the name
+  if table~hasIndex(entityName) then return
+
+  entityDecl = .ExternalEntityDecl~new(entityName, location, notation)
+  table[entityName] = entityDecl
+
+-- handle a notation declaration
+::method notationDecl
+  expose notationDecls
+  use strict arg notationName, location
+
+  -- duplicate notation declarations are ignored, with the first
+  -- one always remaining bound to the name
+  if notationDecls~hasIndex(notationName) then return
+
+  notationDecl = .NotationDecl~new(notationName, location)
+  notationDecls[notationName] = notationDecl
+
+-- start a group within a content model declaration
+::method startGroup
+  expose groupStack currentGroup
+
+  -- push the current grouping, and make a new current group
+  groupStack~push(currentGroup)
+  currentGroup = .ContentModelGroup~new
+
+-- signaled if a #PCDATA indicator is encountered in a content model
+-- definition.  This is called after the startGroup for the group to which
+-- it belongs, so this will modify the state of the current group
+::method pcdata
+  expose currentGroup
+  currentGroup~mixed = .true
+
+-- add an element name to an existing group
+::method element
+  expose currentGroup
+  use strict arg elementName
+
+  currentGroup~elements~append(elementName)
+
+-- handle a group separator.  This will determine whether a group
+-- is a sequence or a choice
+::method separator
+  expose currentGroup
+  use strict arg separator
+
+  -- the separator argument doubles as the type value
+  currentGroup~type = separator
+
+-- add an occurrence modifier to a current group
+::method occurrence
+  expose currentGroup
+  use strict arg currentGroup~occurrence
+
+-- process the end of a group element
+::method endGroup
+  expose groupStack currentGroup
+
+  -- get the previous group
+  oldGroup = groupStack~pull
+  -- if there is a previous group, then make it current and add the
+  -- just terminated group to that one as a child
+  if oldGroup \== .nil then do
+      oldGroup~elements~append(currentGroup)
+      currentGroup = oldGroup
+  end
+  -- if this is the top group, then we leave currentGroup active
+
+-- handle the start of an attlist declaration
+::method startAttlist
+  use strict arg elementName
+
+  -- this is a nop for this handler, but other handlers might decide to
+  -- do something.
+
+-- handle the end of an attlist declaration
+::method endAttlist
+  use strict arg elementName
+
+  -- this is a nop for this handler, but other handlers might decide to
+  -- do something.
+
+-- handle the start of a conditional section
+::method startConditional
+  use strict arg type
+
+  -- this is a nop for this handler, but other handlers might decide to
+  -- do something.
+
+-- handle the end of a conditional section
+::method endConditional
+  use strict arg type
+
+  -- this is a nop for this handler, but other handlers might decide to
+  -- do something.
+
+
+
+-- handle the ignored characters of a conditional section
+::method ignoredCharacters
+  use strict arg ignoredCharacters
+
+  -- this is a nop for this handler, but other handlers might decide to
+  -- do something.
+
+
+
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: ContentModelGroup                                                   */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- a definition grouping within a content model
+::class "ContentModelGroup"
+::method init
+  expose elements mixed type
+  elements = .array~new
+  mixed = .false
+  type = .nil   -- unknown type so far
+
+::attribute elements
+::attribute mixed
+::attribute type
+::attribute occurrence
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: ElementDecl                                                         */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- a holder for an element declaration
+::class "ElementDecl"
+::method init
+  expose name contentType contentModel
+  use strict arg name, contentType = .nil, contentModel = .nil
+  -- NB: the name is a QName, so use a table rather than a directory.
+  attributes = .table~new
+
+::attribute name
+::attribute contentType
+::attribute contentModel
+::attribute attributes
+::attribute enumeration
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: AttributeDecl                                                       */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- a holder for an attribute declaration
+::class "AttributeDecl"
+::method init
+  expose name type
+  use strict arg name, type
+
+::attribute name
+::attribute type
+::attribute defaultType
+::attribute enumeration
+::attribute defaultValue
+::attribute unnormalizedDefault
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: InternalEntityDecl                                                  */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- a holder for an internal entity declaration
+::class "InternalEntityDecl"
+::method init
+  expose name text normalizedText
+  use strict arg name, text, normalizedText
+
+::attribute name
+::attribute text
+::attribute normalizedText
+::method isInternal
+  return .true
+::method isExternal
+  return .false
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: ExternalEntityDecl                                                  */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- a holder for an external entity declaration
+::class "ExternalEntityDecl"
+::method init
+  expose name location
+  use strict arg name, location, notation = .nil
+
+::attribute name
+::attribute location
+::attribute notation
+::method isUnparsed
+  expose notation
+  return notation \== .nil
+::method isInternal
+  return .false
+::method isExternal
+  return .true
+
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* Class: NotationDecl                                                        */
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+-- a holder for a notation declaration
+::class "NotationDecl"
+::method init
+  expose name location
+  use strict arg name, location
+
+::attribute name
+::attribute location
 
 
 /*----------------------------------------------------------------------------*/
