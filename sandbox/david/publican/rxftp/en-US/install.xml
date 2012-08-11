@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rxsock.ent">
+%BOOK_ENTITIES;
+]>
+<chapter><title>Installation</title>
+<indexterm><primary>RxFtp installation</primary></indexterm>
+<indexterm><primary>installation, RxFtp</primary></indexterm>
+<para>The RxFtp package is contained in the file
+<emphasis role="italic">rxftp.cls</emphasis>. This file must be placed in
+a directory listed in your PATH. To get access to the class and methods in the RxFtp
+package you must include a ::REQUIRES directive in any Object Rexx script that
+uses the class:
+<indexterm><primary>::REQUIRES directive, RxFtp</primary></indexterm>
+<programlisting>
+     .
+     .
+     .
+::requires "rxftp.cls"
+</programlisting></para>
+
+<para>You instantiate an instance of the class using the normal Object Rexx
+conventions.
+<programlisting>
+myftpobj = .rxftp~new
+</programlisting></para>
+<para>Each instance of the class completely encapsulates a connection to an
+FTP server. This means that you can  instantiate multiples instance of the class
+and have multiple open connections to FTP servers simultaneously.</para>
+
+<section><title>Notes on Using RxFtp</title>
+<indexterm><primary>RxFtp notes</primary></indexterm>
+<indexterm><primary>notes, RxFtp</primary></indexterm>
+<orderedlist>
+<listitem><para>
+The FtpProxy method does not exist in the RxFtp class.
+</para></listitem>
+<listitem><para>
+Firewalls can prevent many of the RxFtp methods from working
+properly. Active and passive mode transfers can both be restricted by the use
+of firewalls. This especially applies to active mode transfers when the client
+is running a firewall locally (like WindowsXP SP2 or any modern Linux
+distribution).
+</para></listitem>
+<listitem><para>
+Each instance of the RxFtp class you
+ instantiate has its own connection to an FTP server. Thus
+you can  instantiate multiple instance of this class and
+connect to multiple FTP servers simultaneously. Also, each
+instance can be reused - the FtpLogoff method reinitializes
+the instance and a following FtpSetUser method can establish
+a new connection to an FTP server.
+</para></listitem>
+</orderedlist>
+</section>
+</chapter>

@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rxsock.ent">
+%BOOK_ENTITIES;
+]>
+<appendix><title>Sample RxFtp Program</title>
+<indexterm><primary>RxFtp example program</primary></indexterm>
+<indexterm><primary>example</primary>
+<secondary>RxFtp program</secondary></indexterm>
+<indexterm><primary>using RxFtp</primary></indexterm>
+<para>The following is a sample program using REXX FTP Class Library
+methods.</para>
+<programlisting>
+<![CDATA[
+/*==============================================================*/
+/* Basic RxFTP sample to send a file with cmd/reply logging     */
+/*==============================================================*/
+/* Define the variables for: */
+server = "127.0.0.1" /* IP address or server name */
+userid = "remote_user_ID"
+passwd = "password_of_remote_user"
+trclog = "logfile.txt" /* Trace log file name */
+retc = 0 /* Set return code to 0 */
+
+myftp = .rxftp~new()
+
+/* Start tracing FTP commands and logging of replies */
+retc = myftp~FtpTrace()
+
+/* Trace log file will be replaced, not appended to. */
+retc = myftp~FtpTraceLog(trclog, "R")
+If retc = 0 then Say " Replies will be written to log file: "trclog"."
+Else Say " No writing to log file: "trclog" possible."
+
+/* Define remote host and user to be used during the session */
+retc = myftp~FtpSetUser(server, userid, passwd)
+If retc = 0 then Say " Connection established."
+Else Call Terminate " *** Connection failed."
+
+/* Transfer an ASCII file to the remote ftp server */
+retc = myftp~FtpPut("sample.rex", "sample.put", "ASCII")
+If retc = 0 then Call Terminate " File has been sent. "
+Else Call Terminate " *** File has NOT been sent."
+
+/* Terminate the file transfer */
+Terminate:
+Parse Arg Message
+Say Message
+Say "FtpErrNo =" myftp~ftperrno
+
+retc = myftp~FtpLogoff()
+
+retc = myftp~FtpTraceLogoff()
+retc = myftp~FtpTrace()
+
+exit retc
+
+::requires "rxftp.cls"
+]]>
+</programlisting>
+</appendix>
