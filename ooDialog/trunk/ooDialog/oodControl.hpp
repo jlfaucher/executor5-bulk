@@ -148,6 +148,8 @@ typedef struct _lvFullRow
 } CLvFullRow;
 typedef CLvFullRow *pCLvFullRow;
 
+enum FullRowOp {lvfrAdd, lvfrPrepend, lvfrInsert};
+
 #define LVFULLROW_MAGIC              0xCafeDeaf  // Magic number to identify a CLvFullRow struct
 #define LVFULLROW_DEF_SUBITEMS       10          // Initial size of the subItems array
 

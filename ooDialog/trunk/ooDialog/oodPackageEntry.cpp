@@ -1009,11 +1009,13 @@ REXX_METHOD_PROTOTYPE(lv_hasCheckBoxes);
 REXX_METHOD_PROTOTYPE(lv_hitTestInfo);
 REXX_METHOD_PROTOTYPE(lv_insert);
 REXX_METHOD_PROTOTYPE(lv_insertColumnPx);
+REXX_METHOD_PROTOTYPE(lv_insertFullRow);
 REXX_METHOD_PROTOTYPE(lv_isChecked);
 REXX_METHOD_PROTOTYPE(lv_itemState);
 REXX_METHOD_PROTOTYPE(lv_itemText);
 REXX_METHOD_PROTOTYPE(lv_modify);
 REXX_METHOD_PROTOTYPE(lv_modifyColumnPx);
+REXX_METHOD_PROTOTYPE(lv_prependFullRow);
 REXX_METHOD_PROTOTYPE(lv_removeItemData);
 REXX_METHOD_PROTOTYPE(lv_replaceExtendStyle);
 REXX_METHOD_PROTOTYPE(lv_replaceStyle);
@@ -1030,28 +1032,32 @@ REXX_METHOD_PROTOTYPE(lv_sortItems);
 REXX_METHOD_PROTOTYPE(lv_stringWidthPx);
 
 // LvItem
-REXX_METHOD_PROTOTYPE(lvi_init            );
-REXX_METHOD_PROTOTYPE(lvi_unInit          );
-REXX_METHOD_PROTOTYPE(lvi_index           );
-REXX_METHOD_PROTOTYPE(lvi_setIndex        );
-REXX_METHOD_PROTOTYPE(lvi_mask            );
-REXX_METHOD_PROTOTYPE(lvi_setMask         );
-REXX_METHOD_PROTOTYPE(lvi_text            );
-REXX_METHOD_PROTOTYPE(lvi_setText         );
-REXX_METHOD_PROTOTYPE(lvi_imageIndex      );
-REXX_METHOD_PROTOTYPE(lvi_setImageIndex   );
-REXX_METHOD_PROTOTYPE(lvi_userData        );
-REXX_METHOD_PROTOTYPE(lvi_setUserData     );
-REXX_METHOD_PROTOTYPE(lvi_itemState       );
-REXX_METHOD_PROTOTYPE(lvi_setItemState    );
-REXX_METHOD_PROTOTYPE(lvi_itemStateMask   );
-REXX_METHOD_PROTOTYPE(lvi_setItemStateMask);
-REXX_METHOD_PROTOTYPE(lvi_indent          );
-REXX_METHOD_PROTOTYPE(lvi_setIndent       );
-REXX_METHOD_PROTOTYPE(lvi_groupID         );
-REXX_METHOD_PROTOTYPE(lvi_setGroupID      );
-REXX_METHOD_PROTOTYPE(lvi_columns         );
-REXX_METHOD_PROTOTYPE(lvi_setColumns      );
+REXX_METHOD_PROTOTYPE(lvi_init                );
+REXX_METHOD_PROTOTYPE(lvi_unInit              );
+REXX_METHOD_PROTOTYPE(lvi_columns             );
+REXX_METHOD_PROTOTYPE(lvi_setColumns          );
+REXX_METHOD_PROTOTYPE(lvi_groupID             );
+REXX_METHOD_PROTOTYPE(lvi_setGroupID          );
+REXX_METHOD_PROTOTYPE(lvi_imageIndex          );
+REXX_METHOD_PROTOTYPE(lvi_setImageIndex       );
+REXX_METHOD_PROTOTYPE(lvi_indent              );
+REXX_METHOD_PROTOTYPE(lvi_setIndent           );
+REXX_METHOD_PROTOTYPE(lvi_index               );
+REXX_METHOD_PROTOTYPE(lvi_setIndex            );
+REXX_METHOD_PROTOTYPE(lvi_itemState           );
+REXX_METHOD_PROTOTYPE(lvi_setItemState        );
+REXX_METHOD_PROTOTYPE(lvi_itemStateMask       );
+REXX_METHOD_PROTOTYPE(lvi_setItemStateMask    );
+REXX_METHOD_PROTOTYPE(lvi_mask                );
+REXX_METHOD_PROTOTYPE(lvi_setMask             );
+REXX_METHOD_PROTOTYPE(lvi_overlayImageIndex   );
+REXX_METHOD_PROTOTYPE(lvi_setOverlayImageIndex);
+REXX_METHOD_PROTOTYPE(lvi_stateImageIndex     );
+REXX_METHOD_PROTOTYPE(lvi_setStateImageIndex  );
+REXX_METHOD_PROTOTYPE(lvi_text                );
+REXX_METHOD_PROTOTYPE(lvi_setText             );
+REXX_METHOD_PROTOTYPE(lvi_userData            );
+REXX_METHOD_PROTOTYPE(lvi_setUserData         );
 
 // LvSubItem
 REXX_METHOD_PROTOTYPE(lvsi_init           );
@@ -1884,11 +1890,13 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lv_hitTestInfo,                 lv_hitTestInfo),
     REXX_METHOD(lv_insert,                      lv_insert),
     REXX_METHOD(lv_insertColumnPx,              lv_insertColumnPx),
+    REXX_METHOD(lv_insertFullRow,         	    lv_insertFullRow),
     REXX_METHOD(lv_isChecked,                   lv_isChecked),
     REXX_METHOD(lv_itemText,                    lv_itemText),
     REXX_METHOD(lv_itemState,                   lv_itemState),
     REXX_METHOD(lv_modify,                      lv_modify),
     REXX_METHOD(lv_modifyColumnPx,              lv_modifyColumnPx),
+    REXX_METHOD(lv_prependFullRow,         	    lv_prependFullRow),
     REXX_METHOD(lv_removeItemData,   	        lv_removeItemData),
     REXX_METHOD(lv_replaceExtendStyle,          lv_replaceExtendStyle),
     REXX_METHOD(lv_replaceStyle,                lv_replaceStyle),
@@ -1907,26 +1915,30 @@ RexxMethodEntry oodialog_methods[] = {
     // LvItem
     REXX_METHOD(lvi_init,                       lvi_init),
     REXX_METHOD(lvi_unInit,                     lvi_unInit),
-    REXX_METHOD(lvi_index,                      lvi_index),
-    REXX_METHOD(lvi_setIndex,                   lvi_setIndex),
-    REXX_METHOD(lvi_mask,                       lvi_mask),
-    REXX_METHOD(lvi_setMask,                    lvi_setMask),
-    REXX_METHOD(lvi_text,                       lvi_text),
-    REXX_METHOD(lvi_setText,                    lvi_setText),
+    REXX_METHOD(lvi_columns,                    lvi_columns),
+    REXX_METHOD(lvi_setColumns,                 lvi_setColumns),
+    REXX_METHOD(lvi_groupID,                    lvi_groupID),
+    REXX_METHOD(lvi_setGroupID,                 lvi_setGroupID),
     REXX_METHOD(lvi_imageIndex,                 lvi_imageIndex),
     REXX_METHOD(lvi_setImageIndex,              lvi_setImageIndex),
-    REXX_METHOD(lvi_userData,                   lvi_userData),
-    REXX_METHOD(lvi_setUserData,                lvi_setUserData),
+    REXX_METHOD(lvi_indent,                     lvi_indent),
+    REXX_METHOD(lvi_setIndent,                  lvi_setIndent),
+    REXX_METHOD(lvi_index,                      lvi_index),
+    REXX_METHOD(lvi_setIndex,                   lvi_setIndex),
     REXX_METHOD(lvi_itemState,                  lvi_itemState),
     REXX_METHOD(lvi_setItemState,               lvi_setItemState),
     REXX_METHOD(lvi_itemStateMask,              lvi_itemStateMask),
     REXX_METHOD(lvi_setItemStateMask,           lvi_setItemStateMask),
-    REXX_METHOD(lvi_indent,                     lvi_indent),
-    REXX_METHOD(lvi_setIndent,                  lvi_setIndent),
-    REXX_METHOD(lvi_groupID,                    lvi_groupID),
-    REXX_METHOD(lvi_setGroupID,                 lvi_setGroupID),
-    REXX_METHOD(lvi_columns,                    lvi_columns),
-    REXX_METHOD(lvi_setColumns,                 lvi_setColumns),
+    REXX_METHOD(lvi_mask,                       lvi_mask),
+    REXX_METHOD(lvi_setMask,                    lvi_setMask),
+    REXX_METHOD(lvi_overlayImageIndex,          lvi_overlayImageIndex),
+    REXX_METHOD(lvi_setOverlayImageIndex,       lvi_setOverlayImageIndex),
+    REXX_METHOD(lvi_stateImageIndex,            lvi_stateImageIndex),
+    REXX_METHOD(lvi_setStateImageIndex,         lvi_setStateImageIndex),
+    REXX_METHOD(lvi_text,                       lvi_text),
+    REXX_METHOD(lvi_setText,                    lvi_setText),
+    REXX_METHOD(lvi_userData,                   lvi_userData),
+    REXX_METHOD(lvi_setUserData,                lvi_setUserData),
 
     // LvSubItem
     REXX_METHOD(lvsi_init,                      lvsi_init),

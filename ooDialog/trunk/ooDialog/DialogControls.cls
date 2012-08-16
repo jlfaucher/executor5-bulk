@@ -1073,9 +1073,14 @@
 ::constant LVM_DELETEITEM         "0x1008"
 ::constant LVM_GETTOPINDEX        "0x1027"
 
+::constant I_IMAGECALLBACK        -1
+::constant I_IMAGENONE            -2
+::constant I_GROUPIDCALLBACK      -1
+::constant I_GROUPIDNONE          -2
+
 ::method add unguarded external "LIBRARY oodialog lv_add"
 ::method addExtendedStyle unguarded external "LIBRARY oodialog lv_addClearExtendStyle"
-::method addFullRow unguarded external "LIBRARY oodialog lv_addFullRow"                -- Do not document for 4.2.0
+::method addFullRow unguarded external "LIBRARY oodialog lv_addFullRow"
 ::method addRow unguarded external "LIBRARY oodialog lv_addRow"
 ::method addStyle unguarded external "LIBRARY oodialog lv_addRemoveStyle"
 ::method alignLeft unguarded external "LIBRARY oodialog lv_arrange"
@@ -1168,6 +1173,7 @@
    return self~insertColumnPx(nr, text, width, fmt)
 
 ::method insertColumnPx unguarded external "LIBRARY oodialog lv_insertColumnPx"
+::method insertFullRow unguarded external "LIBRARY oodialog lv_insertFullRow"
 ::method isChecked unguarded external "LIBRARY oodialog lv_isChecked"
 ::method itemInfo
    use strict arg index, subItem = 0
@@ -1216,6 +1222,7 @@
    use strict arg countItems
    return self~sendWinIntMsg(self~LVM_SETITEMCOUNT, countItems, 0)
 
+::method prependFullRow unguarded external "LIBRARY oodialog lv_prependFullRow"
 ::method previous unguarded external "LIBRARY oodialog lv_getNextItem"
 ::method previousSelected unguarded external "LIBRARY oodialog lv_getNextItem"
 ::method redrawItems unguarded
@@ -1303,42 +1310,46 @@
 ::method init external "LIBRARY oodialog lvi_init"
 ::method unInit external "LIBRARY oodialog lvi_unInit"
 
-::attribute index get external "LIBRARY oodialog lvi_index"
-::attribute index set external "LIBRARY oodialog lvi_setIndex"
-::attribute mask get external "LIBRARY oodialog lvi_mask"
-::attribute mask set external "LIBRARY oodialog lvi_setMask"
-::attribute text get external "LIBRARY oodialog lvi_text"
-::attribute text set external "LIBRARY oodialog lvi_setText"
+::attribute columns get external "LIBRARY oodialog lvi_columns"
+::attribute columns set external "LIBRARY oodialog lvi_setColumns"
+::attribute groupID get external "LIBRARY oodialog lvi_groupID"
+::attribute groupID set external "LIBRARY oodialog lvi_setGroupID"
 ::attribute imageIndex get external "LIBRARY oodialog lvi_imageIndex"
 ::attribute imageIndex set external "LIBRARY oodialog lvi_setImageIndex"
-::attribute userData get external "LIBRARY oodialog lvi_userData"
-::attribute userData set external "LIBRARY oodialog lvi_setUserData"
+::attribute indent get external "LIBRARY oodialog lvi_indent"
+::attribute indent set external "LIBRARY oodialog lvi_setIndent"
+::attribute index get external "LIBRARY oodialog lvi_index"
+::attribute index set external "LIBRARY oodialog lvi_setIndex"
 ::attribute itemState get external "LIBRARY oodialog lvi_itemState"
 ::attribute itemState set external "LIBRARY oodialog lvi_setItemState"
 ::attribute itemStateMask get external "LIBRARY oodialog lvi_itemStateMask"
 ::attribute itemStateMask set external "LIBRARY oodialog lvi_setItemStateMask"
-::attribute indent get external "LIBRARY oodialog lvi_indent"
-::attribute indent set external "LIBRARY oodialog lvi_setIndent"
-::attribute groupID get external "LIBRARY oodialog lvi_groupID"
-::attribute groupID set external "LIBRARY oodialog lvi_setGroupID"
-::attribute columns get external "LIBRARY oodialog lvi_columns"
-::attribute columns set external "LIBRARY oodialog lvi_setColumns"
+::attribute mask get external "LIBRARY oodialog lvi_mask"
+::attribute mask set external "LIBRARY oodialog lvi_setMask"
+::attribute overlayImageIndex get external "LIBRARY oodialog lvi_overLayImageIndex"
+::attribute overlayImageIndex set external "LIBRARY oodialog lvi_setOverlayImageIndex"
+::attribute stateImageIndex get external "LIBRARY oodialog lvi_stateImageIndex"
+::attribute stateImageIndex set external "LIBRARY oodialog lvi_setStateImageIndex"
+::attribute text get external "LIBRARY oodialog lvi_text"
+::attribute text set external "LIBRARY oodialog lvi_setText"
+::attribute userData get external "LIBRARY oodialog lvi_userData"
+::attribute userData set external "LIBRARY oodialog lvi_setUserData"
 
 
 ::class 'LvSubItem' public                                                             -- Do not document for 4.2.0
 ::method init external "LIBRARY oodialog lvsi_init"
 ::method unInit external "LIBRARY oodialog lvsi_unInit"
 
-::attribute item get external "LIBRARY oodialog lvsi_item"
-::attribute item set external "LIBRARY oodialog lvsi_setItem"
-::attribute subItem get external "LIBRARY oodialog lvsi_subItem"
-::attribute subItem set external "LIBRARY oodialog lvsi_setSubItem"
-::attribute mask get external "LIBRARY oodialog lvsi_mask"
-::attribute mask set external "LIBRARY oodialog lvsi_setMask"
-::attribute text get external "LIBRARY oodialog lvsi_text"
-::attribute text set external "LIBRARY oodialog lvsi_setText"
 ::attribute imageIndex get external "LIBRARY oodialog lvsi_imageIndex"
 ::attribute imageIndex set external "LIBRARY oodialog lvsi_setImageIndex"
+::attribute item get external "LIBRARY oodialog lvsi_item"
+::attribute item set external "LIBRARY oodialog lvsi_setItem"
+::attribute mask get external "LIBRARY oodialog lvsi_mask"
+::attribute mask set external "LIBRARY oodialog lvsi_setMask"
+::attribute subItem get external "LIBRARY oodialog lvsi_subItem"
+::attribute subItem set external "LIBRARY oodialog lvsi_setSubItem"
+::attribute text get external "LIBRARY oodialog lvsi_text"
+::attribute text set external "LIBRARY oodialog lvsi_setText"
 
 
 ::class 'LvFullRow' public                                                             -- Do not document for 4.2.0
