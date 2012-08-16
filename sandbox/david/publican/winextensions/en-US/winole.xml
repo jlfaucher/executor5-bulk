@@ -58,15 +58,15 @@
 <para>
   OLE (Object Linking and Embedding) is an implementation of COM (Component Object Model). OLE automation
   makes it possible for one application to manipulate objects implemented in another application, or to
-  expose objects so they can be manipulated. ooRexx provides two classes, <link
-  linkend="clsOLEOjbect">OLEObject</link> and <link linkend="clsOLEVariant">OLEVariant</link> that allow
+  expose objects so they can be manipulated. ooRexx provides two classes, OLEObject (<xref
+  linkend="clsOLEOjbect" />) and OLEVariant (<xref linkend="clsOLEVariant" /> that allow
   the programmer to take advantage of this ability to manipulate objects that are exposed as OLE objects.
 </para>
 <para>
   An automation client is an application that can manipulate exposed objects belonging to another
   application. An automation server is an application that exposes the objects. The OLEObject class
-  enables Rexx to be an OLE automation client. In addition, some automation servers have an event <link
-  linkend="oleevents">mechanism</link> that allows them to invoke methods in the OLE automation client.
+  enables Rexx to be an OLE automation client. In addition, some automation servers have an event mechanism (<xref
+  linkend="oleevents" />) that allows them to invoke methods in the OLE automation client.
   The OLEObject class also supports this mechanism.
 </para>
 <para>
@@ -169,8 +169,8 @@
   The original implementation of OLEObject allowed the Rexx programmer to use events in this way: The
   programmer defines and implements a subclass of the OLEObject. Within the subclass, the programmer
   defines and implements the event methods for which she wants to recieve notifications. The progammer
-  has the client make a connection to the automation server at the time the OLEObject object is <link
-  linkend="oleobjinit">instantiated</link> by using the <computeroutput>WITHEVENTS</computeroutput>
+  has the client make a connection to the automation server at the time the OLEObject object is instaniated (<xref
+  linkend="oleobjinit" /> by using the <computeroutput>WITHEVENTS</computeroutput>
   keyword for the <emphasis role="italic">events</emphasis> argument. If the
   <computeroutput>WITHEVENTS</computeroutput> keyword is not used during instantiation, then no event
   connection can be made.
@@ -219,9 +219,9 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 </para>
 <para>
   This second process works this way: With an already instantiated object, the programmer can create
-  method objects for any events of interest and use the <link
-  linkend="oleobjaddeventmethod">addEventMethod</link>() method to add the method to the instantiated
-  object. Then the <link linkend="oleobjconnectevents">connectEvents</link>() method is used to connect
+  method objects for any events of interest and use the addEventMethod () (<xref
+  linkend="oleobjaddeventmethod" />) method to add the method to the instantiated
+  object. Then the connectEvents () (<xref linkend="oleobjconnectevents" />) method is used to connect
   the automation client (the instantiated object in this case) to the connectable OLE automation server.
 </para>
 <para>
@@ -263,8 +263,8 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 </para>
 <para>
   The programmer adds an ooRexx event method to the OLEObject with that name. Then the programmer tries
-  to invoke the normal method.  However, the invocation will no longer get forwarded to the <link
-  linkend="oleobunk">unknown</link>() method. Instead the event method by the same name is invoked. This
+  to invoke the normal method.  However, the invocation will no longer get forwarded to the unknown() (<xref
+  linkend="oleobunk" />) method. Instead the event method by the same name is invoked. This
   is the case in the above example. The document object has a <computeroutput>close</computeroutput>()
   method that is used to close the document. The document also has the
   <computeroutput>close</computeroutput>() event method that is used to notify clients that the document
@@ -279,8 +279,8 @@ myIE = .WatchedIE~new("InternetExplorer.Application", "WITHEVENTS")
 <para>
   <emphasis role="bold">Note</emphasis> that <emphasis role="italic">only</emphasis> the event method
   names that have matching normal event names can be prepended with the OLEEvent_prefix. Other event
-  names must not have the prefix. One way to check for this is to use the <link
-  linkend="oleobgetknev">getKnownEvents</link>() method. This method will return the correct names for
+  names must not have the prefix. One way to check for this is to use the getKnownEvents() (<xref
+  linkend="oleobgetknev" />) method. This method will return the correct names for
   all events the OLE object supports.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -438,7 +438,7 @@ return 0
   <emphasis role="bold">Note:</emphasis> It is somewhat useful to think of the Rexx OLEObject object as a
   proxy to the real OLE object. The real OLE object has its own methods. Which methods it has is
   dependent on its individual implementation.  These methods are then accessed transparently through the
-  <link linkend="oleobunk">unknown</link>() method mechanism of the OLEObject by invoking a method of the
+  unknown() (<xref linkend="oleobunk" />) method mechanism of the OLEObject by invoking a method of the
   same name on the OLEObject object.
 </para>
 
@@ -603,7 +603,7 @@ end
 </programlisting>
 
 <para>
-  Returns a stem with information on the <link linkend="oleevents">events</link> that the connectable OLE
+  Returns a stem with information on the events (<xref linkend="oleevents" /> that the connectable OLE
   object supports. It collects this information from the type library of the OLE object. A type library
   provides the names, types, and arguments of the provided methods. The OLEObject object does not need to
   be currently connected to connectable OLE object.
@@ -709,8 +709,8 @@ ONSTATUSBAR
   subclass object) to the automation server (the OLE object) at any time. The method returns
   <computeroutput>.true</computeroutput> if the connection was made, otherwise
   <computeroutput>.false</computeroutput>. Remember, not all OLE objects support events. The programmer
-  can determine if the OLE object supports events by using the <link
-  linkend="oleobjisconnectable">isConnectable</link>() method.
+  can determine if the OLE object supports events by using the isConnectable() (<xref
+  linkend="oleobjisconnectable" />) method.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -825,11 +825,11 @@ ONSTATUSBAR
   invoke the event methods, in effect stopping event notifications.
 </para>
 <para>
-  The internal data structures used to manage events remain intact. The programmer can use the <link
-  linkend="oleobjconnectevents">connectEvents</link>() method to reconnect at any time. Since the
+  The internal data structures used to manage events remain intact. The programmer can use the connectEvents() (<xref
+  linkend="oleobjconnectevents" />) method to reconnect at any time. Since the
   internal data structures do not need to be rebuilt, this will save some small amount of processor time.
-  To completely remove the internal data structures use the <link
-  linkend="oleobjremoveeventhandler">removeEventHandler</link>() method.
+  To completely remove the internal data structures use the removeEventHandler() (<xref
+  linkend="oleobjremoveeventhandler" />) method.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>
@@ -887,8 +887,8 @@ ONSTATUSBAR
 
 <para>
   Removes the event handler and cleans up the internal data structures used to manage events. No event
-  methods will be invoked after this method is called. See the <link
-  linkend="oleobjdisconnectevents">disconnectEvents</link>() method for a way to temporarily disconnect
+  methods will be invoked after this method is called. See the disconnectEvents() (<xref
+  linkend="oleobjdisconnectevents" />) method for a way to temporarily disconnect
   from event notifications.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -925,7 +925,7 @@ ONSTATUSBAR
 </para>
 <para>
   The purpose of this method is to add an event method to a OLEObject after the object has been
-  instantiated. See the <link linkend="oleevents">OLE Events</link> section for more details on events.
+  instantiated. See the OLE Events (<xref linkend="oleevents" />) section for more details on events.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <para>
@@ -967,7 +967,7 @@ ONSTATUSBAR
 
 <para>
   Removes the event method with the specified <emphasis role="italic">name</emphasis> that has been
-  previously added to this object by the <link linkend="oleobjaddeventmethod">addEventMethod</link>()
+  previously added to this object by the addEventMethod() (<xref linkend="oleobjaddeventmethod" />)
   method.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -1064,7 +1064,7 @@ the "=" symbol, as in these examples:
 <entry>stem.n.!RETTYPE</entry>
 <entry>The return type of the n-th method. The return type
 will be automatically converted to a Rexx object (see
-<link linkend="oleobtypconv">Type Conversion</link> in
+Type Conversion (<xref linkend="oleobtypconv" /> in
 the description of the UNKNOWN method of the OLEObject class).</entry>
 </row>
 <row>
@@ -1297,7 +1297,7 @@ val = myOLEObject~unknown("copy", msgArgs)
   <computeroutput>C:\processDir\</computeroutput>.
 </para>
 <para>
-  The other thing the Rexx programmer can do is use the <link linkend="oledispatch">dispatch</link>()
+  The other thing the Rexx programmer can do is use the dispatch() (<xref linkend="oledispatch" />)
   method. Since, in OLE automation terms, the act of invoking a method on the OLE object is commonly
   referred to as <emphasis role="italic">dispatching</emphasis> a message to the OLE object, this may
   make the code a little easier to understand.  In the above example the
@@ -1447,7 +1447,7 @@ handles this transparently.</para>
 
 <para>
 The OLEVariant class enhances the support for OLE Automation provided by the
-<link linkend="clsOLEOjbect">OLEObject class</link> and is used in conjunction with
+OLEObject class (<xref linkend="clsOLEOjbect" /> and is used in conjunction with
 that class.  An OLEVariant object is used as a parameter in a method call of
 an OLEObject object.  In the OLEObject's role as a proxy for a OLE / COM
 object, the parameters in method calls are forwarded on to the actual OLE /
@@ -1459,7 +1459,7 @@ OLEObject method calls.</para>
 <itemizedlist>
 <listitem><para>Parameters forwarded on to COM objects must be converted to and from
 the proper datatypes.  This conversion is done automatically (see
-<link linkend="oleobtypconv">OLEObject Type Conversion</link>.)
+<xref linkend="oleobtypconv" />.)
 Occasionally this automatic conversion is
 incorrect.  The OLEVariant allows the ooRexx programmer to override the
 automatic conversion by specifying how the conversion should be done.
@@ -1596,8 +1596,8 @@ not omitted it must be a valid OLE Automation variant type and ooRexx will
 attempt to convert the valueObject to this variant type.
 </para>
 <para>
-The valid variant type symbols are listed in Table
-<link linkend="oleobtypconv">OLE/Rexx Types</link>.
+The valid variant type symbols are listed in
+<xref linkend="oleobtypconv" />.
 In addition any of those symbols can be combined with the
 VT_BYREF or the VT_ARRAY symbol.  When symbols are combined a comma is used
 to separate the two symbols.  This of course necessitates that the argument
@@ -1712,7 +1712,7 @@ Returns the variant type specification of the OLEVariant instance.
 <para>
 Sets the variant type specification of an OLEVariant instance.  This serves
 the same purpose as the second argument to the
-<link linkend="olevarnew">new method</link>
+new method (<xref linkend="olevarnew" />)
 and follows the same rules as specified in the documentation of the
 new method.  I.e., the value must be a valid variant type used in OLE
 Automation, or .nil.  If not a syntax error is raised.
@@ -1741,7 +1741,7 @@ Returns the parameter flags specification of the OLEVariant instance.
 <para>
 Sets the flags specification of an OLEVariant instance.  This serves the
 same purpose as the third argument to the
-<link linkend="olevarnew">new method</link>
+new method (<xref linkend="olevarnew" />)
 and follows the same rules as specified in the documentation of the new
 method.  I.e., the value must be a valid combination of PARAMFLAG types as
 documented for use in OLE Automation, or .nil.  If not a syntax error is

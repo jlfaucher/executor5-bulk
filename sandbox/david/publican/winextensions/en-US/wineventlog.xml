@@ -81,75 +81,75 @@
 </thead>
 <tbody>
 <row>
-<entry><link linkend="mthNewWindowsEventLog">new</link></entry>
+<entry>new (<xref linkend="mthNewWindowsEventLog" />)</entry>
 <entry>Class method</entry>
 </row>
 <row>
-<entry><link linkend="atrEvents">events</link></entry>
+<entry>events (<xref linkend="atrEvents" />)</entry>
 <entry>Attribute</entry>
 </row>
 <row>
-<entry><link linkend="atrMinimumReadBuffer">minimumReadBuffer</link></entry>
+<entry>minimumReadBuffer (<xref linkend="atrMinimumReadBuffer" />)</entry>
 <entry>Attribute</entry>
 </row>
 <row>
-<entry><link linkend="atrMinimumReadMin">minimumReadMin</link></entry>
+<entry>minimumReadMin (<xref linkend="atrMinimumReadMin" />)</entry>
 <entry>Attribute</entry>
 </row>
 <row>
-<entry><link linkend="atrMinimumReadMin">minimumReadMax</link></entry>
+<entry>minimumReadMax (<xref linkend="atrMinimumReadMin" />)</entry>
 <entry>Attribute</entry>
 </row>
 <row>
-<entry><link linkend="mthClearClsWindowsEventLog">clear</link></entry>
+<entry>clear (<xref linkend="mthClearClsWindowsEventLog" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthCloseWindowsEventLog">close</link></entry>
+<entry>close (<xref linkend="mthCloseWindowsEventLog" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthGetFirst">getFirst</link></entry>
+<entry>getFirst (<xref linkend="mthGetFirst" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthGetLast">getLast</link></entry>
+<entry>getLast (<xref linkend="mthGetLast" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthGetLogNames">getLogNames</link></entry>
+<entry>getLogNames (<xref linkend="mthGetLogNames" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthGetNumber">getNumber</link></entry>
+<entry>getNumber (<xref linkend="mthGetNumber" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthIsFull">isFull</link></entry>
+<entry>isFull (<xref linkend="mthIsFull" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthMinimumRead">minimumRead</link></entry>
+<entry>minimumRead (<xref linkend="mthMinimumRead" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthMinimumReadEquals">minimumRead=</link></entry>
+<entry>minimumRead= (<xref linkend="mthMinimumReadEquals" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthOpenWindowsEventLog">open</link></entry>
+<entry>open (<xref linkend="mthOpenWindowsEventLog" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><emphasis role="bold">Deprecated</emphasis>  <link linkend="mthReadWindowsEventLog">read</link></entry>
+<entry><emphasis role="bold">Deprecated</emphasis>  read (<xref linkend="mthReadWindowsEventLog" />)</entry>
 <entry><emphasis role="bold">Deprecated</emphasis> instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthReadRecords">readRecords</link></entry>
+<entry>readRecords (<xref linkend="mthReadRecords" />)</entry>
 <entry>Instance method</entry>
 </row>
 <row>
-<entry><link linkend="mthWrite">write</link></entry>
+<entry>write (<xref linkend="mthWrite" /></entry>
 <entry>Instance method</entry>
 </row>
 </tbody></tgroup>
@@ -214,8 +214,8 @@ HKEY_LOCAL_MACHINE
       format. For instance, <computeroutput>\\Osprey</computeroutput>.
     </para>
     <para>
-      <emphasis role="bold">Note</emphasis> that if there is an <link linkend="openedEventLog">open
-      event log</link>, the <emphasis role="italic">server</emphasis> argument is ignored.
+      <emphasis role="bold">Note</emphasis> that if there is an open (<xref linkend="openedEventLog" />)
+      , the <emphasis role="italic">server</emphasis> argument is ignored.
     </para>
   </listitem></varlistentry>
   <varlistentry id="eventSource"><term><emphasis role="bold">Event Source</emphasis></term>
@@ -245,12 +245,12 @@ HKEY_LOCAL_MACHINE
       role="italic">atapi</emphasis> are all event sources.
     </para>
     <para>
-      Like the <link linkend="server">server</link> argument, many of the WindowsEventLog instance
+      Like the server (<xref linkend="server" />) argument, many of the WindowsEventLog instance
       methods have a <emphasis role="italic">source</emphasis> argument. This argument specifies the
       event source and therefore determines exactly which event log is used. The argument is always
       optional, the default is Application, and the empty string is the same as omitting the argument. In
-      the same manner as the server argument, if there is an <link linkend="openedEventLog">open
-      event log</link>, the <emphasis role="italic">source</emphasis> argument is ignored.
+      the same manner as the server argument, if there is an open event log (<xref linkend="openedEventLog" />),
+      the <emphasis role="italic">source</emphasis> argument is ignored.
     </para>
     <para>
       <emphasis role="bold">Note</emphasis> that if the Event Log service can not find the event source
@@ -297,16 +297,16 @@ eventLog~open( , "LoadPerf")
       written consecutively. This makes the record with the lowest record number the oldest record.
       Likewise the highest record number makes that record the youngest record. The user can set a
       property for an event log to overwrite records when the maximum log size is reached. Because of
-      this, the oldest record is not always record number 1. The <link
-      linkend="mthGetFirst">getFirst</link>() and <link linkend="mthGetLast">getLast</link>() methods can
+      this, the oldest record is not always record number 1. The getFirst() (<xref
+      linkend="mthGetFirst" />) and getLast() (<xref linkend="mthGetLast" />) methods can
       be used to get the absolute record numbers of the oldest and youngest records.
     </para>
     <para>
-      Record numbers can be used in the <link linkend="mthReadRecords">readRecords</link>() method to
+      Record numbers can be used in the readRecords() (<xref linkend="mthReadRecords" />) method to
       read portions of the event log rather than the entire log.
     </para>
     <para>
-      When the <link linkend="mthReadRecords">readRecords</link>() method reads a record it converts the
+      When the readRecords() (<xref linkend="mthReadRecords" />) method reads a record it converts the
       information in the record to a string with a defined format that makes it easy to parse. The parts
       (fields) of the string are as follows, in order:
     </para>
@@ -326,7 +326,7 @@ eventLog~open( , "LoadPerf")
 <tbody>
 <row>
 <entry>type</entry>
-<entry>The <link linkend="eventType">event type</link></entry>
+<entry>The event type (<xref linkend="eventType" />)</entry>
 <entry>Single word</entry>
 </row>
 <row>
@@ -341,12 +341,12 @@ eventLog~open( , "LoadPerf")
 </row>
 <row>
 <entry>source</entry>
-<entry>The <link linkend="eventSource">The event source</link></entry>
+<entry>The event source (<xref linkend="eventSource" />)</entry>
 <entry>Enclosed in single quotes</entry>
 </row>
 <row>
 <entry>id</entry>
-<entry>The <link linkend="eventIdentifier">event ID</link></entry>
+<entry>The event ID (<xref linkend="eventIdentifier" />)</entry>
 <entry>Single word</entry>
 </row>
 <row>
@@ -479,19 +479,19 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
   <varlistentry id="openedEventLog"><term><emphasis role="bold">Opened event log</emphasis></term>
   <listitem>
     <para>
-      When an event log has been opened using the <link linkend="mthOpenWindowsEventLog">open</link>()
+      When an event log has been opened using the open() (<xref linkend="mthOpenWindowsEventLog" />)
       method, that opened log is always used until it has been closed. The log can be closed using the
-      <link linkend="mthCloseWindowsEventLog">close</link>() method, or by another call to the
+      close() (<xref linkend="mthCloseWindowsEventLog" />) method, or by another call to the
       <computeroutput>open()</computeroutput> method. This means that if there is an open log, the
       <emphasis role="italic">server</emphasis> and <emphasis role="italic">source</emphasis> arguments
-      are <emphasis role="bold">always</emphasis> ignored. The only exception to this is the <link
-      linkend="mthWrite">write</link>() method. Each time a record is written to a log, the log is
+      are <emphasis role="bold">always</emphasis> ignored. The only exception to this is the write() (<xref
+      linkend="mthWrite" />) method. Each time a record is written to a log, the log is
       specifically opened for writing and then closed.
     </para>
     <para>
       <emphasis role="bold">Note</emphasis> that when there is not an open event log, then all the
       instance methods behave as the <computeroutput>write()</computeroutput> method. That is, methods
-      like <link linkend="mthReadRecords">readRecords</link>, <link linkend="mthIsFull">isFull</link>,
+      like readRecords() (<xref linkend="mthReadRecords" />), isFull() (<xref linkend="mthIsFull" />),
       etc., will open the log specified in the method call and then explicitly close the log before
       returning.
     </para>
@@ -499,8 +499,8 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
   <varlistentry id="eventCategory"><term><emphasis role="bold">Event Category</emphasis></term>
   <listitem>
     <para>
-      Categories are used to organize events so that an event viewer can filter them. Each <link
-      linkend="eventSource">event source</link> can define its own numbered categories and the text
+      Categories are used to organize events so that an event viewer can filter them. Each event source (<xref
+      linkend="eventSource" /> can define its own numbered categories and the text
       strings to which they are mapped.
     </para>
     <para>
@@ -541,7 +541,7 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
 </programlisting>
 
 <para>
-  The programmer can <link linkend="mthMinimumReadEquals">set the size</link> of the minimum read buffer,
+  The programmer can set the size (<xref linkend="mthMinimumReadEquals" />) of the minimum read buffer,
   within limits. <computeroutput>minimumReadMin</computeroutput> is the lowest acceptable size of the
   minimum read buffer.
 </para>
@@ -594,7 +594,7 @@ Smallest possible read buffer is 16 kilobytes
 </programlisting>
 
 <para>
-  The programmer can <link linkend="mthMinimumReadEquals">set the size</link> of the minimum read buffer,
+  The programmer can set the size (<xref linkend="mthMinimumReadEquals" />) of the minimum read buffer,
   within limits. The <computeroutput>minimumReadMax</computeroutput> value is the largest acceptable size
   for the minimum read buffer.
 </para>
@@ -646,8 +646,8 @@ Largest possible minimum read buffer is 256 kilobytes
 </programlisting>
 
 <para>
-  Returns the current size of the minimum read buffer in bytes. The programmer can <link
-  linkend="mthMinimumReadEquals">adjust the size</link> of the minimum read buffer. The value of this
+  Returns the current size of the minimum read buffer in bytes. The programmer can adjust the size (<xref
+  linkend="mthMinimumReadEquals" />) of the minimum read buffer. The value of this
   attribute reflects that size.
 </para>
 <variablelist>
@@ -655,8 +655,8 @@ Largest possible minimum read buffer is 256 kilobytes
   <listitem>
     <para>
       <computeroutput>minimumReadBuffer=</computeroutput> is a private method, not intended to be changed
-      by the programmer. The programmer changes the size of the buffer using the <link
-      linkend="mthMinimumReadEquals">minimumRead=</link> method.
+      by the programmer. The programmer changes the size of the buffer using the minimumRead= (<xref
+      linkend="mthMinimumReadEquals" />) method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">~minimumReadBuffer</emphasis> (get minimumReadBuffer)</term>
@@ -706,13 +706,13 @@ Adjusted size of the minimum read buffer to 65536 bytes
 
 <para>
   The <computeroutput>events</computeroutput> attribute is an array that holds the event log records that
-  are read from the event log during a call to <link linkend="mthReadRecords">readRecords</link>(). The
+  are read from the event log during a call to readRecords() (<xref linkend="mthReadRecords" />). The
   array is empty if no call to <computeroutput>readRecords()</computeroutput> has been made. Each time
   <computeroutput>readRecords()</computeroutput> is called the array is first emptied.
 </para>
 <para>
-  Each index in the array holds one event record in the form of a string with a <link
-  linkend="eventLogRecord">fixed format</link>.
+  Each index in the array holds one event record in the form of a string with a fixed format (<xref
+  linkend="eventLogRecord" />.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">~events=</emphasis> (set events)</term>
@@ -725,8 +725,8 @@ Adjusted size of the minimum read buffer to 65536 bytes
   <varlistentry><term><emphasis role="bold">~events</emphasis> (get events)</term>
   <listitem>
     <para>
-      Returns the array holding the event log records from the last <link
-      linkend="mthReadRecords">readRecords</link>() call. The array will be empty if no call to
+      Returns the array holding the event log records from the last readRecords() (<xref
+      linkend="mthReadRecords" />) call. The array will be empty if no call to
       <computeroutput>readRecords()</computeroutput> has been made.
     </para>
   </listitem></varlistentry>
@@ -772,9 +772,9 @@ The System log has 1983 records
 
 <para>
   Opens the specified event log. Once an event log is opened, other methods of the
-  <computeroutput>WindowsEventLog</computeroutput> instance will use that <link
-  linkend="openedEventLog">opened log</link> until it has been <link
-  linkend="mthCloseWindowsEventLog">closed</link>.
+  <computeroutput>WindowsEventLog</computeroutput> instance will use that opened log (<xref
+  linkend="openedEventLog" /> until it has been closed (<xref
+  linkend="mthCloseWindowsEventLog" />).
 </para>
 <para>
   If an event log is already open, then it is first closed before the specified log is opened.
@@ -788,13 +788,13 @@ The System log has 1983 records
         <varlistentry><term>server</term>
         <listitem>
           <para>
-            Optional. The name of the <link linkend="server">server</link> where the event log resides.
+            Optional. The name of the server (<xref linkend="server" />) where the event log resides.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>source</term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventSource">event source</link>.
+            Optional. The event source (<xref linkend="eventSource" />).
           </para>
         </listitem></varlistentry>
       </variablelist>
@@ -864,7 +864,7 @@ end
 </programlisting>
 
 <para>
-  Closes an <link linkend="openedEventLog">open event log</link>. If no log is open, this method does
+  Closes an open event log (<xref linkend="openedEventLog" />). If no log is open, this method does
   nothing.
 </para>
 <variablelist>
@@ -921,8 +921,8 @@ end
   <tertiary>read</tertiary>
 </indexterm>
 <note><title>Note</title><para>
-  This method is deprecated.  It is replaced by the functionally equivalent <link
-  linkend="mthReadRecords">readRecords()</link> method.  Do not use this method in new
+  This method is deprecated.  It is replaced by the functionally equivalent readRecords() (<xref
+  linkend="mthReadRecords" />) method.  Do not use this method in new
   code. Try to migrate existing code to to the <computeroutput>readRecords()</computeroutput> method.
   This method may not exist in future versions of ooRexx.
 </para></note>
@@ -940,8 +940,8 @@ end
 </programlisting>
 
 <para>
-  Reads the desired event records from the specified event log. Each record is stored in the <link
-  linkend="atrEvents">events</link> array. After a successful read, all records will be contained in the
+  Reads the desired event records from the specified event log. Each record is stored in the events(<xref
+  linkend="atrEvents" />) array. After a successful read, all records will be contained in the
   <computeroutput>events</computeroutput> array in the order there were read. Prior to starting the read
   opereation the array is emptied.
 </para>
@@ -951,10 +951,10 @@ end
     <para>
       This method will raise syntax errors if the <emphasis role="italic">start</emphasis> or <emphasis
       role="italic">count</emphasis> arguments are used incorrectly. These arguments, if used, must
-      specify records actually contained in the event log. Use any combination of the <link
-      linkend="mthGetFirst">getFirst</link>(), <link linkend="mthGetLast">getLast</link>(), or <link
-      linkend="mthGetNumber">getNumber</link>() methods to determine the absolute <link
-      linkend="paraEventRecordNumber">record numbers</link> contained in the log.
+      specify records actually contained in the event log. Use any combination of the getFirst() (<xref
+      linkend="mthGetFirst" />), getLast() (<xref linkend="mthGetLast" />), or getNumber() (<xref
+      linkend="mthGetNumber" />) methods to determine the absolute record numbers
+      contained in the log.
     </para>
     <para>
       During a read operation, if a single event record is larger than the read buffer an execution error
@@ -965,8 +965,8 @@ end
       at the time of the error.
     </para>
     <para>
-      The minimum size of the read buffer can be increased by using the <link
-      linkend="mthMinimumReadEquals">minimumRead=</link> method. If this error occurred, the minimum read
+      The minimum size of the read buffer can be increased by using the minimumRead= (<xref
+      linkend="mthMinimumReadEquals" />) method. If this error occurred, the minimum read
       buffer should be set larger than the size of the offending record.
     </para>
     <para>
@@ -993,19 +993,19 @@ end
         <varlistentry><term>server</term>
         <listitem>
           <para>
-            Optional. The name of the <link linkend="server">server</link> where the event log resides
+            Optional. The name of the server (<xref linkend="server" />) where the event log resides
           </para>
         </listitem></varlistentry>
         <varlistentry><term>source</term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventSource">event source</link>.
+            Optional. The event source (<xref linkend="eventSource" />).
           </para>
         </listitem></varlistentry>
         <varlistentry><term>start</term>
         <listitem>
           <para>
-            Optional. The starting <link linkend="paraEventRecordNumber">record number</link> for the
+            Optional. The starting record number for the
             read operation. The start and the count arguments must be used together. Either both must be
             used or neither. If both arguments are omitted, the entire log is read. When both arguments
             are used, the read begins with the record number specified by <emphasis
@@ -1138,34 +1138,34 @@ Displayed 5 records
         <varlistentry><term>srvr</term>
         <listitem>
           <para>
-            Optional. The name of the <link linkend="server">server</link> where the event log resides
+            Optional. The name of the server (<xref linkend="server" />) where the event log resides
           </para>
         </listitem></varlistentry>
         <varlistentry><term>src</term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventSource">event source</link>.
+            Optional. The event source (<xref linkend="eventSource" />).
           </para>
         </listitem></varlistentry>
         <varlistentry><term><emphasis role="bold">type</emphasis></term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventType">event type</link> for the record. The default is the
+            Optional. The event type (<xref linkend="eventType" />) for the record. The default is the
             <emphasis role="italic">Error</emphasis> (1) event type. When used, this argument must be the
-            numeric value of a valid <link linkend="eventType">event type</link>.
+            numeric value of a valid event type (<xref linkend="eventType" />).
           </para>
         </listitem></varlistentry>
         <varlistentry><term><emphasis role="bold">category</emphasis></term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventCategory">event category</link> for the record. The default
+            Optional. The event category (<xref linkend="eventCategory" />) for the record. The default
             is 0, which is the same as no category (none.)
           </para>
         </listitem></varlistentry>
         <varlistentry><term><emphasis role="bold">id</emphasis></term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventIdentifier">event identifier</link> for the record.. The
+            Optional. The event identifier (<xref linkend="eventIdentifier" />) for the record.. The
             default is 0.
           </para>
         </listitem></varlistentry>
@@ -1185,8 +1185,8 @@ Displayed 5 records
             Each additional argument is a string used as a substitution string in the description string.
           </para>
           <para>
-            The <link linkend="eventIdentifier">event identifier</link> together with the <link
-            linkend="eventSource">event source</link> name identify a description string contained in
+            The event identifier (<xref linkend="eventIdentifier" />) together with the event source(<xref
+            linkend="eventSource" />) name identify a description string contained in
             a message file that describes the event in more detail. The description string can contain
             substitution place holders. The substitution strings named by this argument are used to
             replace the substitution place holders in the description string.
@@ -1255,13 +1255,13 @@ Displayed 5 records
         <varlistentry><term>srvr</term>
         <listitem>
           <para>
-            Optional. The name of the <link linkend="server">server</link> where the event log resides
+            Optional. The name of the server (<xref linkend="server" />) where the event log resides
           </para>
         </listitem></varlistentry>
         <varlistentry><term>src</term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventSource">event source</link>.
+            Optional. The event source (<xref linkend="eventSource" />).
           </para>
         </listitem></varlistentry>
         <varlistentry><term>backupFileName</term>
@@ -1334,9 +1334,9 @@ Displayed 5 records
 </programlisting>
 
 <para>
-  Determines the current minimum size, in kilobytes, of the buffer used to <link
-  linkend="mthReadRecords">read</link> event log records.  The minimum size of this buffer can be <link
-  linkend="mthMinimumReadEquals">adjusted</link> by the programmer.
+  Determines the current minimum size, in kilobytes, of the buffer used to read (<xref
+  linkend="mthReadRecords" />) event log records.  The minimum size of this buffer can be adjusted (<xref
+  linkend="mthMinimumReadEquals" />) by the programmer.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1392,12 +1392,12 @@ Current minimum size of the read buffer is: 16 KB
   the minimum size of the read buffer.
 </para>
 <para>
-  The read buffer is used by the underlying implementation during the <link
-  linkend="mthReadRecords">readRecords</link>() method only. During a read operation, the
+  The read buffer is used by the underlying implementation during the readRecords() (<xref
+  linkend="mthReadRecords" />) method only. During a read operation, the
   <computeroutput>WindowsEventLog</computeroutput> attempts to allocate a buffer that is big enough to
   read in all the records at once. The size of the buffer is guessed at by using the number of records in
-  the event log. The size is constrained by a <link linkend="atrMinimumReadMin">minimum</link> and <link
-  linkend="atrMinimumReadMax">maximum</link>. The buffer will never be larger than the maximum and never
+  the event log. The size is constrained by a minimum (<xref linkend="atrMinimumReadMin" />) and maximum (<xref
+  linkend="atrMinimumReadMax" />). The buffer will never be larger than the maximum and never
   smaller than the minimum.  The maximum value is fixed.  The minimum value can be adjusted by the
   programmer by this, the <computeroutput>minimumRead()</computeroutput> method.
 </para>
@@ -1485,13 +1485,13 @@ Current minimum size of the read buffer is: 64 KB
         <varlistentry><term>server</term>
         <listitem>
           <para>
-            Optional. The <link linkend="server">server</link> where the event log resides.
+            Optional. The server (<xref linkend="server" />) where the event log resides.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>source</term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventSource">event source</link>.
+            Optional. The event source (<xref linkend="eventSource" />).
           </para>
         </listitem></varlistentry>
       </variablelist>
@@ -1553,13 +1553,13 @@ return success
         <varlistentry><term>server</term>
         <listitem>
           <para>
-            Optional. The <link linkend="server">server</link> where the event log resides.
+            Optional. The server (<xref linkend="server" />) where the event log resides.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>source</term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventSource">event source</link>.
+            Optional. The event source (<xref linkend="eventSource" />).
           </para>
         </listitem></varlistentry>
       </variablelist>
@@ -1676,7 +1676,7 @@ Log: System
 </programlisting>
 
 <para>
-  Determines the absolute <link linkend="paraEventRecordNumber">record number</link> of the last record
+  Determines the absolute record number of the last record
   in the event log.
 </para>
 <variablelist>
@@ -1688,13 +1688,13 @@ Log: System
         <varlistentry><term>server</term>
         <listitem>
           <para>
-            Optional. The <link linkend="server">server</link> where the event log resides.
+            Optional. The server (<xref linkend="server" />) where the event log resides.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>source</term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventSource">event source</link>.
+            Optional. The event source (<xref linkend="eventSource" />).
           </para>
         </listitem></varlistentry>
       </variablelist>
@@ -1766,7 +1766,7 @@ Data     :
 </programlisting>
 
 <para>
-  Determines the absolute <link linkend="paraEventRecordNumber">record number</link> of the first record
+  Determines the absolute record number of the first record
   in the event log.
 </para>
 <variablelist>
@@ -1777,13 +1777,13 @@ Data     :
         <varlistentry><term>server</term>
         <listitem>
           <para>
-            Optional. The <link linkend="server">server</link> where the event log resides.
+            Optional. The server (<xref linkend="server" />) where the event log resides.
           </para>
         </listitem></varlistentry>
         <varlistentry><term>source</term>
         <listitem>
           <para>
-            Optional. The <link linkend="eventSource">event source</link>.
+            Optional. The event source (<xref linkend="eventSource" />).
           </para>
         </listitem></varlistentry>
       </variablelist>

@@ -89,8 +89,8 @@
   key. As a convenience to the programmer, the <computeroutput>WindowsRegistry</computeroutput> class
   usually allows this handle to be omitted as an argument in its methods. The class keeps track of the
   most recently opened handle and supplies this handle when the programmer omits the parent handle
-  argument in a method. This mechanism is implemented through the <link
-  linkend="wrAtrCurrentKey">current_key</link> attribute.  When a method has a parent handle argument and
+  argument in a method. This mechanism is implemented through the current_key (<xref
+  linkend="wrAtrCurrentKey" />) attribute.  When a method has a parent handle argument and
   the programmer omits the arguement, the current key handle is used.
 </para>
 <para>
@@ -223,8 +223,8 @@ HKEY_LOCAL_MACHINE and HKEY_USERS.</para>
 </programlisting>
 
 <para>
-  Adds a new named subkey to the registry and returns its handle. The first argument is the <link
-  linkend="wrParaParentKey">parent key</link> handle. The second argument is the name of the new subkey.
+  Adds a new named subkey to the registry and returns its handle. The first argument is the parent key
+  handle. The second argument is the name of the new subkey.
 </para>
 <para>
   Example:
@@ -249,15 +249,15 @@ newKey = rg~create(rg~local_machine, "myOwnKey")
 </programlisting>
 
 <para>
-  Returns the handle of the current key. The current key is set by the <link linkend="wrMthNew">new</link>()
+  Returns the handle of the current key. The current key is set by the new() (<xref linkend="wrMthNew" />)
   method to <computeroutput>HKEY_LOCAL_MACHINE</computeroutput>. It's value is then updated by every call
-  to <link linkend="wrMthCreate">create</link>() and <link linkend="wrMthOpen">open</link>(). Therefore
-  its value is always that of the handle of the most recently opened key unless the programmer <link
-  linkend="wrAtrCurrentKeyEquals">sets</link> it to some other value.
+  to create() (<xref linkend="wrMthCreate" />) and open() (<xref linkend="wrMthOpen" />). Therefore
+  its value is always that of the handle of the most recently opened key unless the programmer sets (<xref
+  linkend="wrAtrCurrentKeyEquals" />) it to some other value.
 </para>
 <para>
-  Most registry operations require an open handle to the <link linkend="wrParaParentKey">parent
-  key</link> of the subkey being operated on. In the <computeroutput>WindowsRegistry</computeroutput>
+  Most registry operations require an open handle to the parent key
+   of the subkey being operated on. In the <computeroutput>WindowsRegistry</computeroutput>
   class most methods that require the parent key allow the programmer to omit the parent key. When the
   parent key is
   omitted, the <computeroutput>current_key</computeroutput> handle is used.
@@ -277,8 +277,8 @@ newKey = rg~create(rg~local_machine, "myOwnKey")
 </programlisting>
 
 <para>
-  Sets the handle of the current key. The <computeroutput>WindowsRegistry</computeroutput> class <link
-  linkend="wrAtrCurrentKey">maintains</link> this key, but the programmer can set it to any value at any
+  Sets the handle of the current key. The <computeroutput>WindowsRegistry</computeroutput> class maintains (<xref
+  linkend="wrAtrCurrentKey" />) this key, but the programmer can set it to any value at any
   time.
 </para>
 </section>
@@ -317,7 +317,7 @@ newKey = rg~create(rg~local_machine, "myOwnKey")
 <para>
   Deletes a subkey and all its descendants. The method will remove the key, all of the key's values, and
   all of its subkeys from the registry. To delete a key only if the key does not have subkeys values, use
-  the <link linkend="mthWRDeleteKey">deleteKey</link>() method.
+  the deleteKey() (<xref linkend="mthWRDeleteKey" />) method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments</emphasis></term>
@@ -366,7 +366,7 @@ newKey = rg~create(rg~local_machine, "myOwnKey")
 <para>
   Deletes a subkey and its values from the registry. The subkey to be deleted must not have subkeys. To
   delete a key and all its subkeys, you need to enumerate the subkeys and delete them individually. To
-  delete keys recursively, use the <link linkend="mthWRDelete">delete</link>() method.
+  delete keys recursively, use the delete() (<xref linkend="mthWRDelete" />) method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguements</emphasis></term>
@@ -563,7 +563,7 @@ end
 
 <para>Load creates a named subkey under the open key key_handle and loads
 registry data from the file filename (created by
-<link linkend="wrsave">SAVE</link>) and stores the
+SAVE (<xref linkend="wrsave" />)) and stores the
 data under the newly created subkey.</para>
 <para>key_handle can only be HKEY_USERS or HKEY_LOCAL_MACHINE.
 Registry information is stored in the form of a hive - a discrete body
@@ -571,7 +571,7 @@ of keys, subkeys, and values that is rooted at the top of the registry
 hierarchy. A hive is backed by a single file.</para>
 <para>If <emphasis role="italic">key_handle</emphasis> is omitted, the subkey
 is created under HKEY_LOCAL_MACHINE.</para>
-<para>Use <link linkend="wrunld">UNLOAD</link> to delete the subkey and to
+<para>Use UNLOAD (<xref linkend="wrunld" />) to delete the subkey and to
 unlock the registry data file filename.</para>
 </section>
 
@@ -609,7 +609,7 @@ unlock the registry data file filename.</para>
 
 <para>
   Opens a named subkey with the specified access rights and returns its handle. When the programmer is
-  done with the handle it should be closed using the <link linkend="wrMthClose">close</link>() method.
+  done with the handle it should be closed using the close () (<xref linkend="wrMthClose" />) method.
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> The default for the <emphasis role="italic">access</emphasis>
@@ -633,8 +633,8 @@ unlock the registry data file filename.</para>
         <varlistentry><term><emphasis role="bold">parentHandle</emphasis> [optional]</term>
         <listitem>
           <para>
-            A handle to the open <link linkend="wrParaParentKey">parent key</link>. If this argument is
-            omitted then the <link linkend="wrAtrCurrentKey">current_key</link> attribute is used.
+            A handle to the open parent key. If this argument is
+            omitted then the current_key (<xref linkend="wrAtrCurrentKey" />) attribute is used.
           </para>
         </listitem></varlistentry>
         <varlistentry><term><emphasis role="bold">subkey</emphasis> [optional]</term>
@@ -714,7 +714,7 @@ unlock the registry data file filename.</para>
   <listitem>
     <para>
       A handle to the opened key on success, otherwise 0.  If the key was opened correctly, the value of
-      the <link linkend="wrAtrCurrentKey">current_key</link> attribute is set to this handle. If the
+      the current_key (<xref linkend="wrAtrCurrentKey" />) attribute is set to this handle. If the
       method fails, <computeroutput>current_key</computeroutput> is left unchanged.
     </para>
   </listitem></varlistentry>
@@ -857,7 +857,7 @@ rg~SETVALUE(objectrexxkey,"VERSION","1.0")
 ]]>
 </programlisting>
 
-<para>Removes a named subkey (created with <link linkend="wrload">LOAD</link>)
+<para>Removes a named subkey (created with LOAD (<xref linkend="wrload" />))
 and its dependents from the registry, but does not modify the file containing
 the registry information. If <emphasis role="italic">key_handle</emphasis>
 is omitted, the subkey under CURRENT_KEY is unloaded. Unload also unlocks the
