@@ -145,6 +145,22 @@
 <entry>Connects list-view event notifications to a method in the Rexx dialog object.</entry>
 </row>
 <row>
+<entry align="center"><emphasis role="bold">ListView</emphasis></entry>
+<entry align="center"><emphasis role="bold">Helper Classes</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="clsLvFullRow">LvFullRow</link></entry>
+<entry>The <computeroutput>LvFullRow</computeroutput> class represents a single item and its subitems in a list-view and contains the completed set of data pertaining to that item.</entry>
+</row>
+<row>
+<entry><link linkend="clsLvItem">LvItem</link></entry>
+<entry>The <computeroutput>LvItem</computeroutput> class represents a list-view item and the data for that item.</entry>
+</row>
+<row>
+<entry><link linkend="clsLvSubItem">LvSubItem</link></entry>
+<entry>The <computeroutput>LvSubItem</computeroutput> class represents a single subitem of a list-view item and the data for that subitem.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
@@ -154,7 +170,11 @@
 </row>
 <row>
 <entry><link linkend="mthAddExtendedStyle">addExtendedStyle</link></entry>
-<entry>adds one or more of the extended list-view styles to a list-view control.</entry>
+<entry>Adds one or more of the extended list-view styles to a list-view control.</entry>
+</row>
+<row>
+<entry><link linkend="mthAddFullRow">addFullRow</link></entry>
+<entry>Adds a new item to a list-view at the end of the list using a <link linkend="clsLvFullRow">LvFullRow</link> object.</entry>
 </row>
 <row>
 <entry><link linkend="mthAddRow">addRow</link></entry>
@@ -332,6 +352,9 @@
 <entry><link linkend="mthInsertColumnPX">insertColumnPX</link></entry>
 <entry>Inserts a new column into a list-view control using pixels for the width</entry>
 </row>
+<entry><link linkend="mthInsertFullRow">insertFullRow</link></entry>
+<entry>Adds a new item to a list-view at the position specified using a <link linkend="clsLvFullRow">LvFullRow</link> object.</entry>
+</row>
 <row>
 <entry><link linkend="mthIsCheckedClsListControl">isChecked</link></entry>
 <entry>Determines if a check box for a list-view item is checked or not.</entry>
@@ -399,6 +422,10 @@
 <row>
 <entry><link linkend="mthPrepare4nItems">prepare4nItems</link></entry>
 <entry>Informs the list-view control to prepare for the addition of a large number of items.</entry>
+</row>
+<row>
+<entry><link linkend="mthPrependFullRow">prependFullRow</link></entry>
+<entry>Adds a new item to a list-view at the beginning of the list using a <link linkend="clsLvFullRow">LvFullRow</link> object.</entry>
 </row>
 <row>
 <entry><link linkend="mthPrevious">previous</link></entry>
@@ -932,6 +959,68 @@ first column.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthAddFullRow"><title>addFullRow</title>
+<indexterm><primary>addFullRow</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>addFullRow</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--addFullRow(--row--)--------------------------><
+]]>
+</programlisting>
+
+<para>
+  Add an item to the list-view at the end of the list using a <link linkend="clsLvFullRow">LvFullRow</link> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>row [required]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsLvFullRow">LvFullRow</link> object that specifies the item to be added to the list-view.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, returns the zero-based index of the added row. On error, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a full row object is used to add an item to the list view, all the subitems are also added. The item is always
+    added as the last item in the list. Because of this, the item index and subitem index values in the full row object
+    are ignored. After the item is added, the item and subitem index are updated to the correct value of the newly added
+    item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::addFullRow() -->
 
 <section id="mthAddRow"><title>addRow</title>
 <indexterm><primary>addRow</primary></indexterm>
@@ -3573,6 +3662,68 @@ column. It can be one of the following values:
 </variablelist>
 </section>  <!-- End ListView::insertColumnPX() -->
 
+<section id="mthInsertFullRow"><title>insertFullRow</title>
+<indexterm><primary>insertFullRow</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>insertFullRow</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--insertFullRow(--row--)-----------------------><
+]]>
+</programlisting>
+
+<para>
+  Adds an item to the list-view by inserting it into the list at the position specified by the <emphasis
+  role="italic">row</emphasis> argument.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>row [required]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsLvFullRow">LvFullRow</link> object that specifies the item to be added to the list-view.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, returns the zero-based index of the added row. On error, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a full row object is used to add an item to the list view, all the subitems are also added. The <emphasis
+    role="italic">insertFullRow</emphasis> method always inserts the item into the list at the position specified in the
+    full row object. The item index in the subitems in the full row object are ignored. After the item is inserted, the
+    item index in the subitems is updated to the correct value of the newly added item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::insertFullRow() -->
 
 <section id="mthIsCheckedClsListControl"><title>isChecked</title>
 <indexterm><primary>isChecked</primary>
@@ -4317,6 +4468,69 @@ control for adding a large number of items.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthPrependFullRow"><title>prependFullRow</title>
+<indexterm><primary>prependFullRow</primary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>prependFullRow</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--prependFullRow(--row--)----------------------><
+]]>
+</programlisting>
+
+<para>
+  Adds an item to the list-view at the first position in the list using a <link linkend="clsLvFullRow">LvFullRows</link>
+  object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>row [required]</term>
+      <listitem>
+      <para>
+        A <link linkend="clsLvFullRow">LvFullRow</link> object that specifies the item to be added to the list-view.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, returns the zero-based index of the added row. On error, -1 is returned.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    When a full row object is used to add an item to the list view, all the subitems are also added. The <emphasis
+    role="italic">prependFullRow</emphasis> method always as the first item in the list. Because of this, the item index
+    in the item and in the subitems in the full row object are ignored. After the item is inserted, the item index is
+    updated in the item and in the subitems is updated to the correct value of the newly added item.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End ListView::prependFullRow() -->
 
 <section id="mthPrevious"><title>previous</title>
 <indexterm><primary>previous</primary>
@@ -6396,6 +6610,385 @@ that allows the user to remove the check mark from all the check boxes:
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="clsLvFullRow"><title>LvFullRow Class</title>
+<indexterm><primary>LvFullRow class</primary></indexterm>
+<para>
+  A <computeroutput>LvFullRow</computeroutput> object is used in ooDialog to represent a list-view item and all subitems
+  of that item. The attributes of the <computeroutput>LvFullRow</computeroutput> object reflect the data that defines
+  the list-view item in the <link linkend="ovvUnderlying">underlying</link> list-view.
+</para>
+<para>
+  Each item in a list-view control has an icon, a label, a current state, and an application-defined value. The
+  attributes of the <computeroutput>LvFullRow</computeroutput> reflect these values. In addition, each list-view item
+  can contain one or more <emphasis role="italic">subitems</emphasis>. In ooDialog, list-view subitems can be
+  represented through the <link linkend="clsLvSubItem">LvSubItem</link> class. The
+  <computeroutput>LvFullRow</computeroutput> object contains the <computeroutput>LvSubItem</computeroutput> objects
+  defined for the item.
+</para>
+
+<section id="sctMethodsLvFullRow"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>LvFullRow</computeroutput> class:
+
+<table id="tblMethodsLvFullRow" frame="all"> <title>LvFullRow Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsLvFullRow">new</link></entry>
+<entry>Instantiates a new <computeroutput>LvFullRow</computeroutput>object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsLvFullRow"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>LvFullRow class</secondary></indexterm>
+<indexterm><primary>LvFullRow class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+                +--------------+
+                V              |
+>>--new(--item--+--------------+--)--------------><
+                +--,--subItem--+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>LvFullRow</computeroutput> object.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>item [required]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsLvItem">LvItem</link> object that specifies the values of the list-view item being added.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>subItem [optional]</term>
+    <listitem>
+    <para>
+      A <link linkend="clsLvSubItem">LvSubItem</link> object that specifies the values for a subitem of the list-view
+      item being added. The argument can repeat has many times as needed to specify all the subitems of the item. The
+      subitems are added to the item in the order of the arguments to the <emphasis role="italic">new</emphasis> method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the new <computeroutput>LvFullRow</computeroutput> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Each subitem argument must be specified. If a subitem is omitted and a subitem argument follows it, a syntax
+    condition is raised. That is, if a subitem is specified, its preceding subitem must not have been omitted. These
+    statements are acceptable:
+
+<programlisting>
+<![CDATA[
+     row = .LvFullRow~new(item)
+     row = .LvFullRow~new(item, si1, si2)
+     row = .LvFullRow~new(item, si1, si2, si3)
+]]>
+</programlisting>
+
+    These statements will raise a syntax codition:
+
+<programlisting>
+<![CDATA[
+     row = .LvFullRow~new(item, , si2)
+     row = .LvFullRow~new(item, si1, , si3)
+]]>
+</programlisting>
+
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example show a method that creates an array of list-view full rows from NFL football player data. The array is
+    later used to insert the rows into a list-view control.
+<programlisting>
+<![CDATA[
+
+::method getPlayers private
+
+  players = .NFLPlayer~playersFromDataSource("nflPlayers.txt")
+
+  self~masterList = .MasterPlayerList~new(players)
+
+  playerRows = .array~new(players~items)
+  do i = 1 to players~items
+    j = i - 1
+    p = players[i]
+    lvi = .LvItem~new(j, , p~name, , p)
+    lvsi1 = .LvSubItem~new(j, 1, p~team)
+    lvsi2 = .LvSubItem~new(j, 2, p~position)
+    lvsi3 = .LvSubItem~new(j, 3, p~rating)
+
+    r = .LvFullRow~new(lvi, lvsi1, lvsi2, lvsi3)
+    playerRows[i] = r
+  end
+
+  return playerRows
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvFullRow::new() -->
+
+</section> <!-- End LvFullRow Class -->
+
+
+<section id="clsLvItem"><title>LvItem Class</title>
+<indexterm><primary>LvItem class</primary></indexterm>
+<para>
+  A <computeroutput>LvItem</computeroutput> object represents a single item in a list-view control. List-view items have
+  an icon, a label, a current state, and an application-defined value. The attributes of the
+  <computeroutput>LvItem</computeroutput> object reflect the values the icon, label, state, etc., for the list-view
+  item.
+</para>
+
+<section id="sctMethodsLvItem"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>LvItem</computeroutput> class:
+
+<table id="tblMethodsLvItem" frame="all"> <title>LvItem Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsLvItem">new</link></entry>
+<entry>Instantiates a new <computeroutput>LvItem</computeroutput> object.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsLvItem"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>LvItem class</secondary></indexterm>
+<indexterm><primary>LvItem class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--+-------+--+-------------+--+-------+--+---------+-------->
+          +--indx--+  +-,-txt-+  +-,-imageIndx-+  +-,-msk-+  +-,-user-+
+
+>---+------------+-+---------------+-+----------+-+-----------+-+--------+--)---><
+    +-,-itmState-+ +-,-itmStateMsk-+ +-,-indent-+ +-,-groupID-+ +-,-cols-+
+]]>
+</programlisting>
+
+<para>
+  Instantiates a new <computeroutput>LvItem</computeroutput> object. <computeroutput>LvItem</computeroutput> objects are
+  used in some <link linkend="clsListView">Listview</link> methods such as <link
+  linkend="mthAddFullRow">addFullRow</link>. It is anticipated that future versions of ooDialog will make more use of
+  <computeroutput>LvItem</computeroutput> objects.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvItem::new() -->
+
+</section> <!-- End LvItem Class -->
+
+<section id="clsLvSubItem"><title>LvSubItem Class</title>
+<indexterm><primary>LvSubItem class</primary></indexterm>
+<para>
+  A LvSubItem object ...
+</para>
+<para>
+  xx
+</para>
+
+<section id="sctMethodsLvSubItem"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>LvSubItem</computeroutput> class:
+
+<table id="tblMethodsLvSubItem" frame="all"> <title>LvSubItem Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsLvSubItem">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsLvSubItem"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>LvSubItem class</secondary></indexterm>
+<indexterm><primary>LvSubItem class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--new(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvSubItem::new() -->
+
+</section> <!-- End LvSubItem Class -->
 
 
 </chapter>
