@@ -6982,14 +6982,14 @@ trackbar position by extracting the high-oder word. Example:
   <orderedlist>
   <listitem>
   <para>
-    The event-handling method connected to ENDEDIT receives two arguments: the item handle of which the label has been
-    edited and the newly entered text. Example:
+    The event-handling method connected to ENDEDIT receives three arguments: the resource ID of the tree view control,
+    the handle of the item whose label was been edited, and the newly entered text. Example:
 
 <programlisting>
 <![CDATA[
 
 ::method onEndEdit unguarded
-  use arg item, newText
+  use arg id, hItem, newText
 
   return 0
 ]]>
