@@ -4609,7 +4609,7 @@ RexxObjectPtr setLviGroupID(RexxMethodContext *c, LPLVITEM pLVI, int32_t id)
         return NULLOBJECT;
     }
 
-    pLVI->iGroupId = id < I_GROUPIDNONE ? I_GROUPIDNONE : I_GROUPID;
+    pLVI->iGroupId = id < I_GROUPIDNONE ? I_GROUPIDNONE : id;
     pLVI->mask |= LVIF_GROUPID;
 
     return NULLOBJECT;
@@ -4689,7 +4689,7 @@ done_out:
 
 RexxArrayObject getLviColumnFormats(RexxMethodContext *c, LPLVITEM pLVI)
 {
-    if ( ! requiredOS(context, "LvItem::columnFormats", "Vista", Vista_OS) )
+    if ( ! requiredOS(c, "LvItem::columnFormats", "Vista", Vista_OS) )
     {
         return 0;
     }
@@ -4708,7 +4708,7 @@ RexxArrayObject getLviColumnFormats(RexxMethodContext *c, LPLVITEM pLVI)
 
 RexxObjectPtr setLviColumnFormats(RexxMethodContext *c, LPLVITEM pLVI, RexxArrayObject _formats, size_t argPos)
 {
-    if ( ! requiredOS(context, "LvItem::columnFormats", "Vista", Vista_OS) )
+    if ( ! requiredOS(c, "LvItem::columnFormats", "Vista", Vista_OS) )
     {
         return 0;
     }
@@ -4722,32 +4722,34 @@ RexxObjectPtr setLviColumnFormats(RexxMethodContext *c, LPLVITEM pLVI, RexxArray
         goto done_out;
     }
 
-    uint32_t *pFormats = (uint32_t *)malloc(items * sizeof(uint32_t));
+    int32_t *pFormats = (int32_t *)malloc(items * sizeof(int32_t *));
     if ( pFormats != NULL )
     {
         RexxObjectPtr item;
-        uint32_t column;
+        int32_t format;
+
+        // TODO need to decide if format is a string or a ::constant !!!!
 
         for ( size_t i = 0; i < items; i++)
         {
-            item = c->ArrayAt(_, i + 1);       LVCFMT_FILL
+            item = c->ArrayAt(_formats, i + 1);
             if ( item == NULLOBJECT )
             {
                 sparseArrayException(c->threadContext, argPos, i + 1);
                 goto done_out;
             }
-            if ( ! c->ObjectToUnsignedInt32(item, &column) || column < 1)
+            if ( ! c->ObjectToInt32(item, &format) )
             {
-                wrongObjInArrayException(c->threadContext, argPos, i + 1, "a valid column number", item);
+                wrongObjInArrayException(c->threadContext, argPos, i + 1, "SEE TODO ABOVE", item);
                 goto done_out;
             }
 
-            pColumns[i] = column;
+            pFormats[i] = format;
         }
 
-        pLVI->cColumns   = (uint32_t)items;
-        pLVI->puColumns  = pColumns;
-        pLVI->mask      |= LVIF_COLUMNS;
+        pLVI->cColumns  = (uint32_t)items;
+        pLVI->piColFmt  = pFormats;
+        pLVI->mask     |= LVIF_COLFMT;
     }
     else
     {
@@ -5235,7 +5237,7 @@ RexxMethod5(RexxObjectPtr, lvsi_init, RexxObjectPtr, _item, uint32_t, subItem, O
 
     if ( argumentExists(4) )
     {
-        lvi->iImage = imageIndex;
+        lvi->iImage = imageIndex < I_IMAGENONE ? I_IMAGENONE : imageIndex;
         lvi->mask |= LVIF_IMAGE;
     }
 
@@ -5291,7 +5293,7 @@ RexxMethod1(int32_t, lvsi_imageIndex, CSELF, pLVI)
 }
 RexxMethod2(RexxObjectPtr, lvsi_setImageIndex, int32_t, imageIndex, CSELF, pLVI)
 {
-    ((LPLVITEM)pLVI)->iImage  = imageIndex;
+    ((LPLVITEM)pLVI)->iImage  = imageIndex < I_IMAGENONE ? I_IMAGENONE : imageIndex;
     ((LPLVITEM)pLVI)->mask   |= LVIF_IMAGE;
     return NULLOBJECT;
 }
@@ -5314,27 +5316,26 @@ RexxMethod2(RexxObjectPtr, lvsi_setMask, CSTRING, mask, CSELF, pLVI)
  */
 #define LVFULLROW_CLASS                "LvFullRow"
 
-#define LVFULLROW_USERDATA_ATTRIBUTE   "LVFULLROW_USERDATA"
+#define LVFULLROW_BAGOFITEMS_ATTRIBUTE "LVFULLROW_BAGOFITEMS"
 
 /**
- *  If the user stores a Rexx object in the user data storage of a list view
- *  item, the Rexx object could be garbage collected because it might be that no
- *  Rexx object has a reference to it.
- *
- *  For the life time of a LvFullRow object, we set a context variable to the
- *  user data Rexx object, if there is one.
+ *  We put the Rexx item and subitems in a Rexx bag and save the bag as an
+ *  object variable to prevent GC of the items.
  *
  * @param c
  * @param pclvfr
  */
-static void lvfrMaybeProtect(RexxMethodContext *c, pCLvFullRow pclvfr)
+static void lvfrStoreItems(RexxMethodContext *c, pCLvFullRow pclvfr)
 {
-    RexxObjectPtr data = getLviUserData(pclvfr->subItems[0]);
+    RexxObjectPtr bag = rxNewBuiltinObject(c, "BAG");
 
-    if ( data != TheNilObj )
+    c->SetObjectVariable(LVFULLROW_BAGOFITEMS_ATTRIBUTE, bag);
+
+    for ( size_t i = 0; i <= pclvfr->subItemCount; i++ )
     {
-        c->SetObjectVariable(LVFULLROW_USERDATA_ATTRIBUTE, data);
+        c->SendMessage1(bag, "PUT", pclvfr->rxSubItems[i]);
     }
+    pclvfr->bagOfItems = bag;
 }
 
 
@@ -5363,6 +5364,11 @@ RexxMethod1(RexxObjectPtr, lvfr_unInit, CSELF, pCSelf)
 
 /** LvFullRow::init()
  *
+ *  Instantiates a new LvFullRow object.
+ *
+ *  Full row objects can be used to specify, or receive, all the attributes of a
+ *  list-view item, and all subitems of that list-view item.
+ *
  *  @param   lvItem      [required] Must be a LvItem object.
  *
  *  @param  lvSubItem    [optional] A LvSubItem object representing the first
@@ -5378,6 +5384,11 @@ RexxMethod1(RexxObjectPtr, lvfr_unInit, CSELF, pCSelf)
  *                                  indicate the user wants to use the ooDialog
  *                                  internal sorting of list view items.
  *
+ *  @notes  We allow users to add or remove subitems.  So, we start out with a
+ *          default number of items in CLvFullRow.subItems and
+ *          CLvFullRow.rxSubItems, and then double the size of the arrays each
+ *          time it is too small.  There seems to be no limit to the number of
+ *          columns in a list view, so we don't set a limit.
  */
 RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
 {
@@ -5402,9 +5413,14 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
 
         if ( i == 1 )
         {
-            if ( context->IsBuffer(obj) )
+            if ( context->IsBuffer(obj) && isLvFullRowStruct(context->BufferData(buf)) )
             {
                 context->SetObjectVariable("CSELF", obj);
+
+                pclvfr = (pCLvFullRow)context->BufferData(buf);
+                pclvfr->rexxSelf = self;
+                lvfrStoreItems(context, pclvfr);
+
                 return NULLOBJECT;
             }
 
@@ -5428,6 +5444,7 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
 
             pclvfr->subItems   = (LPLVITEM *)LocalAlloc(LPTR, size * sizeof(LPLVITEM *));
             pclvfr->rxSubItems = (RexxObjectPtr *)LocalAlloc(LPTR, size * sizeof(RexxObjectPtr *));
+
             if ( pclvfr->subItems == NULL || pclvfr->rxSubItems == NULL )
             {
                 safeLocalFree(pclvfr->subItems);
