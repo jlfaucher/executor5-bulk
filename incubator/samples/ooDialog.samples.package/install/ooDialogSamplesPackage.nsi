@@ -251,6 +251,11 @@ Section  installFiles
   ${File} "${SRCDIR}\Dialogs\simple.dialogs\" "inputDlg.rex"
   ${File} "${SRCDIR}\Dialogs\simple.dialogs\" "fileNameDialog.rex"
 
+  ${SetOutPath} "$INSTDIR\Dialogs\simple.dialogs\typingTutor"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\typingTutor\" "typingTutor.rex"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\typingTutor\" "typingTutor.h"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\typingTutor\" "typingTutor.rc"
+
   ; Write the uninstall keys.
   DetailPrint "Writing uninstall keys."
   WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}" "InstallLocation" '"$INSTDIR"'

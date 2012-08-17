@@ -40,6 +40,7 @@
 
   The following examples have been added since v0.0.4:
 
+  Dialogs\simple.dialogs\typingTutor\typingTutor.rex
 
   To gain the full benefit of the examples, the comments throughout the
   program code should be read.  Some directories may contain additional
