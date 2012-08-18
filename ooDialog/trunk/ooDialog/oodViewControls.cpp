@@ -4392,6 +4392,53 @@ inline bool isLviInternalInit(RexxMethodContext *context, RexxObjectPtr index, C
     return argumentExists(1) && context->IsBuffer(index) && argumentExists(2) && strcmp(text, LVITEM_OBJ_MAGIC) == 0;
 }
 
+inline bool validExtendedTileFormat(int32_t format)
+{
+    return (uint32_t)format == LVCFMT_LINE_BREAK        ||
+           (uint32_t)format == LVCFMT_FILL              ||
+           (uint32_t)format == LVCFMT_WRAP              ||
+           (uint32_t)format == LVCFMT_NO_TITLE          ||
+           (uint32_t)format == LVCFMT_TILE_PLACEMENTMASK;
+}
+
+/**
+ * Converts a keyword to the proper list view column format, LVCFMT_*, flag.
+ *
+ * @param c     Method context we are operating in.
+ * @param flag  The keyword to convert.
+ *
+ * @return The flag or OOD_BAD_WIDTH_EXCEPTION on error.
+ *
+ * @note  Raises a syntax condition if flag is not a proper format flag.
+ *
+ * @TODO  This code is not actually used anywhere, at this time.  Saved because
+ *        it may become usefull in the future.
+ */
+#if 0
+uint32_t keyword2lvcfmt(RexxMethodContext *c, CSTRING flag)
+{
+    uint32_t val = 0;
+
+    if ( StrCmpI(flag, "LEFT"                ) == 0 ) return LVCFMT_LEFT;
+    else if ( StrCmpI(flag, "RIGHT"          ) == 0 ) return LVCFMT_RIGHT;
+    else if ( StrCmpI(flag, "CENTER"         ) == 0 ) return LVCFMT_CENTER;
+    else if ( StrCmpI(flag, "IMAGE"          ) == 0 ) return LVCFMT_IMAGE;
+    else if ( StrCmpI(flag, "BITMAP_ON_RIGHT") == 0 ) return LVCFMT_BITMAP_ON_RIGHT;
+    else if ( StrCmpI(flag, "COL_HAS_IMAGES" ) == 0 ) return LVCFMT_COL_HAS_IMAGES;
+    else if ( StrCmpI(flag, "FIXED_WIDTH"    ) == 0 ) return LVCFMT_FIXED_WIDTH;
+    else if ( StrCmpI(flag, "NO_DPI_SCALE"   ) == 0 ) return LVCFMT_NO_DPI_SCALE;
+    else if ( StrCmpI(flag, "FIXED_RATIO"    ) == 0 ) return LVCFMT_FIXED_RATIO;
+    else if ( StrCmpI(flag, "LINE_BREAK"     ) == 0 ) return LVCFMT_LINE_BREAK;
+    else if ( StrCmpI(flag, "FILL"           ) == 0 ) return LVCFMT_FILL;
+    else if ( StrCmpI(flag, "WRAP"           ) == 0 ) return LVCFMT_WRAP;
+    else if ( StrCmpI(flag, "NO_TITLE"       ) == 0 ) return LVCFMT_NO_TITLE;
+    else if ( StrCmpI(flag, "SPLITBUTTON"    ) == 0 ) return LVCFMT_SPLITBUTTON;
+
+    return OOD_BAD_WIDTH_EXCEPTION;
+}
+#endif
+
+
 /**
  * Converts a string of keywords to the proper LVIF_* flag.
  *
@@ -4706,6 +4753,29 @@ RexxArrayObject getLviColumnFormats(RexxMethodContext *c, LPLVITEM pLVI)
     return formats;
 }
 
+/**
+ * Transforms an array of Rexx numbers into an array of LVCFMT_* flags.
+ *
+ * The Rexx program should use the provided LVCFMT_* ::constants to construct
+ * the array.  Only these constants / flags are valid:
+ *
+ *   LVCFMT_LINE_BREAK
+ *   LVCFMT_FILL
+ *   LVCFMT_WRAP
+ *   LVCFMT_NO_TITLE
+ *   LVCFMT_TILE_PLACEMENTMASK
+ *
+ * @param c
+ * @param pLVI
+ * @param _formats
+ * @param argPos
+ *
+ * @return RexxObjectPtr
+ *
+ * @notes  Since this code is newer than 4.2.0, and it seems that only a single
+ *         flag can be set, not a combination of flags, the Rexx programmer is
+ *         required to use the constant values rather than string keywords.
+ */
 RexxObjectPtr setLviColumnFormats(RexxMethodContext *c, LPLVITEM pLVI, RexxArrayObject _formats, size_t argPos)
 {
     if ( ! requiredOS(c, "LvItem::columnFormats", "Vista", Vista_OS) )
@@ -4726,9 +4796,7 @@ RexxObjectPtr setLviColumnFormats(RexxMethodContext *c, LPLVITEM pLVI, RexxArray
     if ( pFormats != NULL )
     {
         RexxObjectPtr item;
-        int32_t format;
-
-        // TODO need to decide if format is a string or a ::constant !!!!
+        int32_t format = -1;
 
         for ( size_t i = 0; i < items; i++)
         {
@@ -4738,9 +4806,9 @@ RexxObjectPtr setLviColumnFormats(RexxMethodContext *c, LPLVITEM pLVI, RexxArray
                 sparseArrayException(c->threadContext, argPos, i + 1);
                 goto done_out;
             }
-            if ( ! c->ObjectToInt32(item, &format) )
+            if ( ! c->ObjectToInt32(item, &format) || ! validExtendedTileFormat(format) )
             {
-                wrongObjInArrayException(c->threadContext, argPos, i + 1, "SEE TODO ABOVE", item);
+                wrongObjInArrayException(c->threadContext, argPos, i + 1, "a valid column format", item);
                 goto done_out;
             }
 
@@ -4779,6 +4847,7 @@ RexxMethod1(RexxObjectPtr, lvi_unInit, CSELF, pCSelf)
 #endif
         safeLocalFree(pLVI->pszText);
         safeLocalFree(pLVI->puColumns);
+        safeLocalFree(pLVI->piColFmt);
     }
     return NULLOBJECT;
 }
@@ -4859,6 +4928,12 @@ RexxMethod1(RexxObjectPtr, lvi_unInit, CSELF, pCSelf)
  *            image indexes. To set either of the 2 indexes, the user must set
  *            the value of those attributes individually. They can not be set
  *            through arguments to new().
+ *
+ *            columnFormats attribute:  The value of the columnFormats attribute
+ *            has no effect in standard tile views. For extended tile views,
+ *            only the LVCFMT_LINE_BREAK, LVCFMT_FILL, LVCFMT_WRAP,
+ *            LVCFMT_NO_TITLE, and LVCFMT_TILE_PLACEMENTMASK constants are
+ *            valid.
  */
 RexxMethod10(RexxObjectPtr, lvi_init, OPTIONAL_RexxObjectPtr, _index, OPTIONAL_CSTRING, text,
              OPTIONAL_int32_t, imageIndex, OPTIONAL_RexxObjectPtr, userData, OPTIONAL_CSTRING, mask,
@@ -4979,7 +5054,7 @@ RexxMethod1(RexxArrayObject, lvi_columnFormats, CSELF, pLVI)
 {
     return getLviColumnFormats(context, (LPLVITEM)pLVI);
 }
-RexxMethod2(RexxObjectPtr, lvi_setColumnFormats, RexxArrayObject, _formatss, CSELF, pLVI)
+RexxMethod2(RexxObjectPtr, lvi_setColumnFormats, RexxArrayObject, _formats, CSELF, pLVI)
 {
     return setLviColumnFormats(context, (LPLVITEM)pLVI, _formats, 1);
 }
@@ -5399,7 +5474,7 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
     if ( argCount == 0 )
     {
         context->RaiseException(Rexx_Error_Incorrect_method_noarg, context->ArrayOfOne(TheOneObj));
-        goto done;
+        goto err_out;
     }
 
     for ( size_t i = 1; i <= argCount; i++ )
@@ -5408,26 +5483,25 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
         if ( obj == NULLOBJECT )
         {
             context->RaiseException(Rexx_Error_Incorrect_method_noarg, context->ArrayOfOne(context->WholeNumber(i)));
-            goto done;
+            goto err_out;
         }
 
         if ( i == 1 )
         {
-            if ( context->IsBuffer(obj) && isLvFullRowStruct(context->BufferData(buf)) )
+            if ( context->IsBuffer(obj) && isLvFullRowStruct(context->BufferData((RexxBufferObject)obj)) )
             {
                 context->SetObjectVariable("CSELF", obj);
 
-                pclvfr = (pCLvFullRow)context->BufferData(buf);
+                pclvfr = (pCLvFullRow)context->BufferData((RexxBufferObject)obj);
                 pclvfr->rexxSelf = self;
-                lvfrStoreItems(context, pclvfr);
 
-                return NULLOBJECT;
+                goto done;
             }
 
             if ( ! context->IsOfType(obj, "LVITEM") )
             {
                 wrongClassException(context->threadContext, 1, "LvItem");
-                goto done;
+                goto err_out;
             }
 
             RexxBufferObject buf = context->NewBuffer(sizeof(CLvFullRow));
@@ -5451,7 +5525,7 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
                 safeLocalFree(pclvfr->rxSubItems);
 
                 outOfMemoryException(context->threadContext);
-                goto done;
+                goto err_out;
             }
 
             lvi = (LPLVITEM)context->ObjectToCSelf(obj);
@@ -5478,8 +5552,6 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
                 {
                     pclvfr->subItems[0]->lParam = (LPARAM)pclvfr;
                 }
-
-                lvfrMaybeProtect(context, pclvfr);
                 goto done;
             }
         }
@@ -5487,7 +5559,7 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
         if ( ! context->IsOfType(obj, "LVSUBITEM") )
         {
             wrongClassException(context->threadContext, i, "LvSubItem");
-            goto done;
+            goto err_out;
         }
 
         lvi = (LPLVITEM)context->ObjectToCSelf(obj);
@@ -5497,9 +5569,10 @@ RexxMethod2(RexxObjectPtr, lvfr_init, ARGLIST, args, OSELF, self)
         pclvfr->subItemCount++;
     }
 
-    lvfrMaybeProtect(context, pclvfr);
-
 done:
+    lvfrStoreItems(context, pclvfr);
+
+err_out:
     return NULLOBJECT;
 }
 

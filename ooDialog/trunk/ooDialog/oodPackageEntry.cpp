@@ -1034,6 +1034,8 @@ REXX_METHOD_PROTOTYPE(lv_stringWidthPx);
 // LvItem
 REXX_METHOD_PROTOTYPE(lvi_init                );
 REXX_METHOD_PROTOTYPE(lvi_unInit              );
+REXX_METHOD_PROTOTYPE(lvi_columnFormats       );
+REXX_METHOD_PROTOTYPE(lvi_setColumnFormats    );
 REXX_METHOD_PROTOTYPE(lvi_columns             );
 REXX_METHOD_PROTOTYPE(lvi_setColumns          );
 REXX_METHOD_PROTOTYPE(lvi_groupID             );
@@ -1915,6 +1917,8 @@ RexxMethodEntry oodialog_methods[] = {
     // LvItem
     REXX_METHOD(lvi_init,                       lvi_init),
     REXX_METHOD(lvi_unInit,                     lvi_unInit),
+    REXX_METHOD(lvi_columnFormats,              lvi_columnFormats),
+    REXX_METHOD(lvi_setColumnFormats,           lvi_setColumnFormats),
     REXX_METHOD(lvi_columns,                    lvi_columns),
     REXX_METHOD(lvi_setColumns,                 lvi_setColumns),
     REXX_METHOD(lvi_groupID,                    lvi_groupID),

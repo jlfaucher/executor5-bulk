@@ -1078,6 +1078,12 @@
 ::constant I_GROUPIDCALLBACK      -1
 ::constant I_GROUPIDNONE          -2
 
+::constant LVCFMT_LINE_BREAK          1048576   -- 0x100000
+::constant LVCFMT_FILL                2097152   -- 0x200000
+::constant LVCFMT_WRAP                4194304   -- 0x400000
+::constant LVCFMT_NO_TITLE            8388608   -- 0x800000
+::constant LVCFMT_TILE_PLACEMENTMASK  3145728   -- (LVCFMT_LINE_BREAK | LVCFMT_FILL
+
 ::method add unguarded external "LIBRARY oodialog lv_add"
 ::method addExtendedStyle unguarded external "LIBRARY oodialog lv_addClearExtendStyle"
 ::method addFullRow unguarded external "LIBRARY oodialog lv_addFullRow"
@@ -1310,6 +1316,8 @@
 ::method init external "LIBRARY oodialog lvi_init"
 ::method unInit external "LIBRARY oodialog lvi_unInit"
 
+::attribute columnFormats get external "LIBRARY oodialog lvi_columnFormats"
+::attribute columnFormats set external "LIBRARY oodialog lvi_setColumnFormats"
 ::attribute columns get external "LIBRARY oodialog lvi_columns"
 ::attribute columns set external "LIBRARY oodialog lvi_setColumns"
 ::attribute groupID get external "LIBRARY oodialog lvi_groupID"
