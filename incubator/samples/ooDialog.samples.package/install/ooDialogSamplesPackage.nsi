@@ -50,8 +50,8 @@
 ;--------------------------------
 ; Defines
 
-  !define VERSION        "0.0.4"
-  !define VERSIONNODOTS  "0_0_4"
+  !define VERSION        "0.0.5"
+  !define VERSIONNODOTS  "0_0_5"
   !define SHORTNAME      "ooDialog_Samples_${VERSIONNODOTS}"
   !define LONGNAME       "Extra ooDialog Samples ${VERSION}"
   !define DISPLAYICON    "$INSTDIR\AppIcon2.ico"
