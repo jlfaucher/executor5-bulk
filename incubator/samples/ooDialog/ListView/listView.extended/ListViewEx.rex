@@ -141,7 +141,7 @@ return 0
 
 -- All the functionality of the dialog is implemented in this base, mixin,
 -- class.
-::class ListViewExBase public mixinclass BaseDialog                            -
+::class ListViewExBase public mixinclass PlainBaseDialog                       -
                        inherit AdvancedControls MessageExtensions
 
 -- initDialog()
