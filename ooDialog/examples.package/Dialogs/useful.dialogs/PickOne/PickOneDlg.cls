@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2009 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -59,6 +59,11 @@
  *
  *   answer = .PickOneDlg~new(msg, title, labels, check, minimum)~execute
  *
+ *   or:
+ *
+ *   dlg = .PickOneDlg~new(msg, title, labels, check, minimum)
+ *   answer = dlg~execute
+ *
  * Options:
  *   msg       REQUIRED
  *     The message placed in the top panel of the dialog.
@@ -102,7 +107,7 @@
  *   The minimum width can only be used to make the dialog wider than cal-
  *   culated.  It will never make the dialog narrower than the calculated width.
  */
-::class 'PickOneDlg' public subclass UserDialog inherit AdvancedControls
+::class 'PickOneDlg' public subclass UserDialog
 
 ::method init
   expose msg title radioButtons selected
@@ -140,10 +145,13 @@
   -- Put the minimum width value into the Constant Directory, (the constDir
   -- attribute.)
   --
-  -- NOTE: You should NOT do this IFF you are using a data stem with symbolic
-  -- IDs.  If you are using a data stem with symbolic IDs, you would want to be
-  -- sure to only put unique resource IDs into the constDir.  Since this class
-  -- is structured to not use the data stem and is not really suitable for sub-
+  -- NOTE: You should not necessarily use this as an example of what to do in
+  -- your own programming.
+  --
+  -- You should NOT do this IFF you are using a data stem with symbolic IDs.  If
+  -- you are using a data stem with symbolic IDs, you would want to be sure to
+  -- only put unique resource IDs into the constDir.  Since this class is
+  -- structured to not use the data stem and is not really suitable for sub-
   -- classing, this usage of the constDir causes no problems.
   self~constDir["DLG_MIN_CX"] = min
 
@@ -350,10 +358,13 @@ return 0
 return selected
 
 /**
- * defineDialog
+ * defineDialog()
  *
  * Define all the controls for this dialog using the values stored in the
  * constDir.
+ *
+ * The ooDialog framework automatically invokes this method at the proper time
+ * for the programmer to define the dialog template.
  */
 ::method defineDialog
   expose msg radioButtons
@@ -394,7 +405,7 @@ return selected
     do i = i to radioButtons~items
       y  = startY + (j * offset)
       id = self~constDir~IDC_RB_BASE + i - 1
-      self~createRadioButton(id, , x, y, cx, cy, , radioButtons[i])
+      self~createRadioButton(id, x, y, cx, cy, , radioButtons[i])
       j = j + 1
     end
   end
@@ -414,6 +425,11 @@ return selected
  * initDialog()
  *
  * Check and set the focus to the initial radio button default.
+ *
+ * initDialog() is another method that the ooDialog framework automatically
+ * invokes at the proper time in the life-cycle of the dialog.  It should be
+ * used by the programmer to do any initilization of the dialog or its controls
+ * that requires the underlying Windows dialog to exist.
  */
 ::method initDialog
   expose selected
@@ -426,7 +442,7 @@ return selected
  *
  * The user pressed the OK button.  Set selected to the checked radio button.
  */
-::method ok
+::method ok unguarded
   expose selected
 
   do i = self~constDir~IDC_RB_BASE to self~constDir~IDC_RB_LAST
@@ -443,7 +459,9 @@ return self~ok:super
  *
  * The user canceled the dialog.  Set selected to -1.
  */
-::method cancel
+::method cancel unguarded
   expose selected
+
   selected = -1
+
 return self~cancel:super
