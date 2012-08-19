@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,10 +36,9 @@
 /*----------------------------------------------------------------------------*/
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  File:    ListView.rex                             Author:      Mark Miesfeld
-                                                    Creation date:  07/08/2007
-  Company: N/A
-  Project: ooDialog Examples                        Last update:    07/14/2007
+  File:    ListViewEx.rex                           Creation date:  07/08/2007
+
+  Project: ooDialog Examples                        Last update:    08/18/2012
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   Category:
@@ -49,40 +48,32 @@
     list-view [useRC]
 
   Purpose:
-    Demonstrates (uses) new List-View features in ooDialog.
+    Demonstrates (uses) List-View features in ooDialog.
 
   Assumes:
-    Rexx is ooRexx (Open Object Rexx.)  Requires an ooRexx build later than
-    SVN revision: 590
+    Rexx is ooRexx (Open Object Rexx.)  Requires ooDialog 4.2.0 or later.
 
   Input:
     useRC  OPTIONAL
       Will use the resource script file (*.rc) to define the dialog.  By default
-      the binary resource file (*.dll) is used.
+      the binary resource file (*.dll) is used.  The actual value of the
+      argument can be anything.  It is the presence of an argument, not the
+      value of the argument that controls the program's behaviour.
 
   Returns:
     0 if no error, non-zero if the dialog could not be created.
 
   Notes:
     This dialog was created using a visual resource editor, the ResEdit Resource
-    Editor.  There is another sample ooDialog package that contains example code
-    and documentation on how to use a number of common resource editors.  This
-    package should be located in the ooRexx SVN repository, currently at:
-
-    https://oorexx.svn.sourceforge.net/svnroot/oorexx/incubator/samples/ooDialog/ResourceEditors
-
-    and could be checked out separately using this command:
-
-    svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/incubator/samples/ooDialog/ResourceEditors <yourNameForDirectory>
-
-    Note: The ResourceEditors package may not appear in SVN until 7/15/2007.
+    Editor.
 
     Symbolic IDs are used exclusively in this program for the resource ID
     numbers of the dialog controls.  ResEdit manages the symbolic IDs and places
-    them in the resource.h header file.  Passing the name of the header file
-    when the ooDialog dialog is instantiated is what allows these IDs to be used
-    in place of the numeric IDs.  In a program like this that uses a lot of
-    resource IDs, symbolic IDs make the code much easier to read and maintain.
+    them in the *.h header file.  The .application object is used to inform the
+    ooDialog framework of the symbolic IDs.  Informing the framework of the
+    symbolic IDs is what allows the IDs to be used in place of the numeric IDs.
+    In a program like this that uses a lot of resource IDs, symbolic IDs make
+    the code much easier to read and maintain.
 
     This program will use either the resource script (ListViewEx.rc) file or the
     binary compiled resource (ListViewEx.dll) file for the definition of the
@@ -92,9 +83,11 @@
     one or the other, not both.
 
   Changes:
+    Updated to use ooDialog 4.2.0 idioms.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 use arg useRC
 
+  .application~setDefaults('O', 'ListViewEx.h')
   -- This stem variable is used by ooDialog to set the initial state of the
   -- controls.  There is only a need to set radio buttons and checkboxes that
   -- are to start out as checked (1), by default they are set to unchecked (0).
@@ -113,17 +106,16 @@ use arg useRC
   initData.IDC_CHECK_ONEXIT = 1
 
   if arg(1, 'O') then
-    dlg = .ListViewExDLL~new("ListViewEx.dll", IDD_DLG, initData., "resource.h")
+    dlg = .ListViewExDLL~new("ListViewEx.dll", IDD_DLG, initData.)
   else
-    dlg = .ListViewExRC~new("ListViewEx.rc", IDD_DLG, initData., "resource.h")
+    dlg = .ListViewExRC~new("ListViewEx.rc", IDD_DLG, initData.)
 
   if dlg~initCode <> 0 then do
     say "Error creating dialog.  InitCode:" dlg~initCode
     return dlg~initCode
   end
 
-  dlg~Execute("SHOWTOP")
-  dlg~Deinstall
+  dlg~execute("SHOWTOP")
 
 return 0
 -- End of entry point.
@@ -131,18 +123,17 @@ return 0
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::requires "oodWin32.CLS"
+::requires "ooDialog.cls"
 
 -- The ListViewEx.dll version of the dialog.
-::class ListViewExDLL subclass ResDialog inherit ListViewExBase
+::class 'ListViewExDLL' subclass ResDialog inherit ListViewExBase
 
 -- The ListViewEx.rc version of the dialog.
-::class ListViewExRC subclass RcDialog inherit ListViewExBase
+::class 'ListViewExRC' subclass RcDialog inherit ListViewExBase
 
 -- All the functionality of the dialog is implemented in this base, mixin,
 -- class.
-::class ListViewExBase public mixinclass PlainBaseDialog                       -
-                       inherit AdvancedControls MessageExtensions
+::class 'ListViewExBase' public mixinclass PlainBaseDialog                       -
 
 -- initDialog()
 --
@@ -151,7 +142,7 @@ return 0
 --
 -- It makes it the correct place to do any initializing that needs the actual
 -- Windows control.  For instance, you can not insert a row into a list-view
--- control, until Windows has actually created the control.  You can
+-- control until Windows has actually created the control.
 --
 -- I also think it is the best place to connect methods to the control events.
 -- You can do the connecting in the init method, but by doing it here, you keep
@@ -165,19 +156,19 @@ return 0
   -- that is the first thing I would check.
 
   -- Connect the push button events to methods of this class.
-  ret = self~connectButton(IDC_PB_SETSTYLE, "onSetStyle")
-  ret = self~connectButton(IDC_PB_GETSTYLE, "onGetStyle")
-  ret = self~connectButton(IDC_PB_EXECUTE,  "onExecute")
-  ret = self~connectButton(IDC_PB_CLEAR,    "onClear")
+  ret = self~connectButtonEvent(IDC_PB_SETSTYLE, "CLICKED", "onSetStyle")
+  ret = self~connectButtonEvent(IDC_PB_GETSTYLE, "CLICKED", "onGetStyle")
+  ret = self~connectButtonEvent(IDC_PB_EXECUTE,  "CLICKED", "onExecute")
+  ret = self~connectButtonEvent(IDC_PB_CLEAR,    "CLICKED", "onClear")
 
   -- Get the list-view with symbolic ID of IDC_LIST and save the reference to
   -- it in the exposed sLC variable.
   sLC = self~getListControl(IDC_LIST)
 
   -- Add 12 rows of 3 columns to the main list-view.
-  sLC~InsertColumn(0, "Occupation", 80)
-  sLC~InsertColumn(1, "Name", 50)
-  sLC~InsertColumn(2, "Employer", 70)
+  sLC~insertColumn(0, "Occupation", 80)
+  sLC~insertColumn(1, "Name", 50)
+  sLC~insertColumn(2, "Employer", 70)
   sLC~addRow(2, ,  "Business Manager", "Tom", "Qualcom")
   sLC~addRow(3, ,  "Software Developer and All Around Great Guy", "Sam", "AMCC")
   sLC~addRow(4, ,  "Accountant", "Cienna", "Bank of America")
@@ -200,12 +191,16 @@ return 0
   -- Get a reference to the ListBox control.  Text that could be sent to the
   -- console is put into this list box to display what is happening.  A sort of
   -- log of the execution.
-  lb = self~getListBox(IDC_LB_EVENTS)
+  lb = self~newListBox(IDC_LB_EVENTS)
 
-  -- If the horizontal extent is not set, the horziontal scroll bar will not
-  -- scroll when long strings are inserted.
+  -- If the horizontal extent, the internal width of the list-bx, is not set,
+  -- the horziontal scroll bar will not scroll when long strings are inserted.
+  -- Typically, a program might keep track of the width, in pixels, of the
+  -- longest string added to the list-box.  And then set the width to that
+  -- value.
   --
-  -- ooDialog does not provide a specific method to do this, (an oversight on
+  -- Here, we do not know how long this might be, so we just set it to a large
+  -- number and be done with it
   -- the designer's part,)  But, there is a method provided to send any message
   -- to a dialog item.  This of course requires that the programmer understands
   -- the underlying Windows API.  The horizontal extent is set by sending the
@@ -215,7 +210,7 @@ return 0
   -- Message: LB_SETHORIZONTALEXTENT == 0x00000194
   -- WPARAM:  Width in pixels -> 800
   -- LPARM:   Must be 0
-  ret = self~sendMessageToItem(IDC_LB_EVENTS, "0x00000194", 800, 0)
+  ret = lb~setWidthPX(800)
   self~lbAdd("Send Message: LB_SETHORIZONTALEXTENT rc:" ret)
 
   -- The hover time is the amount of time, in milliseconds, that a mouse
@@ -231,20 +226,20 @@ return 0
   -- printed is controlled by check boxes in the dialog.  All the events are
   -- received, the program uses the check box state to filter what is displayed.
 
-  ret = self~connectListViewNotify(IDC_LIST, "SelectChanged")
-  ret = self~connectListViewNotify(IDC_LIST, "CheckboxChanged")
-  ret = self~connectListViewNotify(IDC_LIST, "FocusChanged")
-  ret = self~connectListViewNotify(IDC_LIST, "SelectFocus")
-  ret = self~connectListViewNotify(IDC_LIST, "Click", "onMouseClick")
+  ret = self~connectListViewEvent(IDC_LIST, "SelectChanged")
+  ret = self~connectListViewEvent(IDC_LIST, "CheckboxChanged")
+  ret = self~connectListViewEvent(IDC_LIST, "FocusChanged")
+  ret = self~connectListViewEvent(IDC_LIST, "SelectFocus")
+  ret = self~connectListViewEvent(IDC_LIST, "Click", "onMouseClick")
 
-  self~getEditControl(IDC_EDIT_CHKBOX)~setCue(" Enter row numbers to act on")
+  self~newEdit(IDC_EDIT_CHKBOX)~setCue(" Enter row numbers to act on")
 
 -- End initDialog()
 
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
   The next 5 methods are for the list-view notification events, that were
-  'connected' through the connectListViewNotify method call in initDialog.
+  'connected' through the connectListViewEvent method call in initDialog.
 
   Note the arguments that are received by the methods.  The programmer can rely
   on getting these arguments each time the method executes.
@@ -259,10 +254,10 @@ return 0
   ::method onMouseClick
     use arg id, row, column, keyDown
 
-    if id == self~constDir[IDC_LIST_DIRS] then do
+    if id == .constDir[IDC_LIST_DIRS] then do
       <do something specific for this control>
     end
-    else if id == self~constDir[IDC_LIST_SERVERS] then do
+    else if id == .constDir[IDC_LIST_SERVERS] then do
       <do something with the servers list-view>
     end
     ...
@@ -273,8 +268,8 @@ return 0
 
   ...
 
-  self~connectListViewNotify(IDC_LIST_DIRS, "Click", "onMouseClickDirs")
-  self~connectListViewNotify(IDC_LIST_SERVERS, "Click", "onMouseClickServers")
+  self~connectListViewEvent(IDC_LIST_DIRS, "Click", "onMouseClickDirs")
+  self~connectListViewEvent(IDC_LIST_SERVERS, "Click", "onMouseClickServers")
 
   ...
 
@@ -306,10 +301,13 @@ return 0
   expose chkSelFoc
   use arg id, row, status
 
-  if \ chkSelFocus~isInstanceOf(.CheckControl) then
-    chkSelFocus = self~getCheckControl(IDC_CHECK_EVENTSELFOC)
+  -- The first time this method is invoked, the chkSelFoc variable will not have
+  -- been set.  If so, we net a new CheckBox object, and then reuse that object
+  -- any other time this method is invoked.
+  if \ chkSelFocus~isInstanceOf(.CheckBox) then
+    chkSelFocus = self~newCheckBox(IDC_CHECK_EVENTSELFOC)
 
-  if chkSelFocus~isChecked == "CHECKED" then
+  if chkSelFocus~checked then
   	self~lbAdd("Row:" row~right(2) "select focus ->" status)
 
 -- End onSelectFocus( id, row, status )
@@ -328,10 +326,10 @@ return 0
   expose chkCheckbox
   use arg id, row, status
 
-  if \ chkCheckbox~isInstanceOf(.CheckControl) then
-    chkCheckbox = self~getCheckControl(IDC_CHECK_EVENTCHK)
+  if \ chkCheckbox~isInstanceOf(.CheckBox) then
+    chkCheckbox = self~newCheckBox(IDC_CHECK_EVENTCHK)
 
-  if chkCheckbox~isChecked == "CHECKED" then
+  if chkCheckbox~checked then
     self~lbAdd("Row:" row~right(2) "checkbox -> " status)
 
 -- End onCheckboxChanged( id, row, status )
@@ -350,10 +348,10 @@ return 0
   expose chkSelect
   use arg id, row, status
 
-  if \ chkSelect~isInstanceOf(.CheckControl) then
-    chkSelect = self~getCheckControl(IDC_CHECK_EVENTSEL)
+  if \ chkSelect~isInstanceOf(.CheckBox) then
+    chkSelect = self~newCheckBox(IDC_CHECK_EVENTSEL)
 
-  if chkSelect~isChecked = "CHECKED" then
+  if chkSelect~checked then
     self~lbAdd("Row:" row~right(2) "selection ->" status)
 
 -- End onSelectChanged( id, row, status )
@@ -372,10 +370,10 @@ return 0
   expose chkFocus
   use arg id, row, status
 
-  if \ chkFocus~isInstanceOf(.CheckControl) then
-    chkFocus = self~getCheckControl(IDC_CHECK_EVENTFOC)
+  if \ chkFocus~isInstanceOf(.CheckBox) then
+    chkFocus = self~newCheckBox(IDC_CHECK_EVENTFOC)
 
-  if chkFocus~isChecked = "CHECKED" then
+  if chkFocus~checked then
     self~lbAdd("Row:" row~right(2) "focus ->" status)
 
 
@@ -393,10 +391,10 @@ return 0
   expose chkMouse
   use arg id, row, column, keyDown
 
-  if \ chkMouse~isInstanceOf(.CheckControl) then
-    chkMouse = self~getCheckControl(IDC_CHECK_EVENTMOUSE)
+  if \ chkMouse~isInstanceOf(.CheckBox) then
+    chkMouse = self~newCheckBox(IDC_CHECK_EVENTMOUSE)
 
-  if chkMouse~isChecked == "CHECKED" then
+  if chkMouse~checked then
   	self~lbAdd("Mouse click -> Row:" row~right(2) "column:" column "key down:" -
                keyDown)
 
@@ -412,101 +410,123 @@ return 0
 -- just data validation.  Making sure the user has set the radio buttons and
 -- the text in the edit control correctly.  If the edit control text is not
 -- correct, a visual help is put up explaining what is wrong.  This 'balloon
--- tip' is a new feature of the Edit control, now available in ooDialog.
+-- tip' is a feature of the edit control.
+--
+-- Note the variable name for the edit control object is editChk here.  Because
+-- this edit control is the group box with the radio buttons and the check box
+-- Maybe not the best name because it might be confused with a check box
+-- control.
 ::method onExecute
   expose sLC rbCheck rbUncheck rbGet checkAll editChk rbIs
 
   if \ rbCheck~isInstanceOf(.RadioButton) then do
-    rbCheck   = self~getRadioControl(IDC_RB_CHK_SET)
-    rbUncheck = self~getRadioControl(IDC_RB_CHK_UN)
-    rbGet     = self~getRadioControl(IDC_RB_CHK_GET)
+    rbCheck   = self~newRadioButton(IDC_RB_CHK_SET)
+    rbUncheck = self~newRadioButton(IDC_RB_CHK_UN)
+    rbGet     = self~newRadioButton(IDC_RB_CHK_GET)
     rbIs      = self~newRadioButton(IDC_RB_CHK_IS)
-    checkAll  = self~getCheckControl(IDC_CHECK_DOALL)
-    editChk   = self~getEditControl(IDC_EDIT_CHKBOX)
+    checkAll  = self~newCheckBox(IDC_CHECK_DOALL)
+    editChk   = self~newEdit(IDC_EDIT_CHKBOX)
   end
 
-  items = self~getEntryLine(IDC_EDIT_CHKBOX)
+  -- See what text the user has entered in the edit control
+  items = editChk~getText
 
-  all = checkAll~isChecked == "CHECKED"
-  doGet = rbGet~isChecked == "CHECKED"
-  doIs  = rbIs~isChecked  == "CHECKED"
+  -- Are we going to do ALL listview items; are we using the list view
+  -- getChecked() method; are we using the list view isChecked() method.
+  all = checkAll~checked
+  doGet = rbGet~checked
+  doIs  = rbIs~checked
 
-  self~setEntryLine(IDC_EDIT_CHKBOX, "")
+  -- When we are doing ALL, we ignore any text in the edit control and execute
+  -- whatever action is specified on all the list view items.  If we are
+  -- not doing all, then the text in the edit control specifies the list view
+  -- items (the rows) to execute the action on.
+  --
+  -- The other radio buttons specify the action to execute: check the list view
+  -- item (rbCheck;) uncheck the list view item (rbUnCheck;) use the
+  -- getChecked() method on the list view item (rbGet;) or use the isChecked()
+  -- method on the list view item.
+  --
+  -- getCheck() returns a code, some which are error codes.  isChecked() returns
+  -- .true or .false.
 
+  -- Set the text in the edit control to blank
+  editChk~setText("")
+
+  -- Figure out what to do based on the state of the different controls.
   select
-    when rbCheck~isChecked == "CHECKED" & all then do
+    when rbCheck~checked & all then do
       ret = sLC~checkAll
-      self~setEntryLine(IDC_EDIT_CHKBOX, "checkAll returns:" ret)
+      editChk~setText("checkAll returns:" ret)
     end
 
-    when rbCheck~isChecked == "CHECKED" then do
-      if items~words == 0 then
-        return self~doBalloonTip(editChk, 'check')
+    when rbCheck~checked then do
+      if items~words == 0 then return self~doBalloonTip(editChk, 'check')
 
       msg = "returns:"
       do i = 1 to items~words
         n = items~word(i)
-        if \ n~datatype('W') then
-          return self~doBalloonTip(editChk, 'check', '"'n'"')
+        if \ n~datatype('W') then return self~doBalloonTip(editChk, 'check', '"'n'"')
 
         ret = sLC~check(items~word(i))
         msg = msg ret
       end
-      self~setEntryLine(IDC_EDIT_CHKBOX, msg)
+      editChk~setText(msg)
     end
-    -- End when rbCheck~isChecked == "CHECKED"
+    -- End when rbCheck~checked
 
-    when rbUncheck~isChecked == "CHECKED" & all then do
+    when rbUncheck~checked & all then do
       ret = sLC~uncheckAll
-      self~setEntryLine(IDC_EDIT_CHKBOX, "uncheckAll returns:" ret)
+      editChk~setText("uncheckAll returns:" ret)
     end
 
-    when rbUncheck~isChecked == "CHECKED" then do
-      if items~words == 0 then
-        return self~doBalloonTip(editChk, 'uncheck')
+    when rbUncheck~checked then do
+      if items~words == 0 then return self~doBalloonTip(editChk, 'uncheck')
 
       msg = "returns:"
       do i = 1 to items~words
         n = items~word(i)
-        if \ n~datatype('W') then
-          return self~doBalloonTip(editChk, 'uncheck', '"'n'"')
+        if \ n~datatype('W') then return self~doBalloonTip(editChk, 'uncheck', '"'n'"')
 
         ret = sLC~uncheck(n)
         msg = msg ret
       end
-      self~setEntryLine(IDC_EDIT_CHKBOX, msg)
+      editChk~setText(msg)
     end
-    -- End when rbUncheck~isChecked == "CHECKED"
+    -- End when rbUncheck~checked
 
     when (doGet | doIs) & all then do
       count = sLC~items
       msg = ''
       do i = 0 to (count -1)
-        if doGet then ret = sLC~getCheck(i); else ret = sLC~isChecked(i)
+        if doGet then ret = sLC~getCheck(i)
+        else ret = sLC~isChecked(i)
         msg = msg "row:" i "->" ret
       end
-      self~setEntryLine(IDC_EDIT_CHKBOX, msg)
+      editChk~setText(msg)
     end
 
     when doGet | doIs then do
-      if doGet then tipWord = 'get'; else tipWord = 'is'
-      if items~words == 0 then
-        return self~doBalloonTip(editChk, tipWord)
+      if doGet then tipWord = 'get'
+      else tipWord = 'is'
+
+      if items~words == 0 then return self~doBalloonTip(editChk, tipWord)
 
       msg = ""
       do i = 1 to items~words
         n = items~word(i)
-        if \ n~datatype('W') then
-          return self~doBalloonTip(editChk, tipWord, '"'n'"')
+        if \ n~datatype('W') then return self~doBalloonTip(editChk, tipWord, '"'n'"')
 
-        if doGet then ret = sLC~getCheck(n); else ret = sLC~isChecked(n)
+        if doGet then ret = sLC~getCheck(n)
+        else ret = sLC~isChecked(n)
+
         msg = msg "row:" n "->" ret
       end
-      self~setEntryLine(IDC_EDIT_CHKBOX, msg)
+      editChk~setText(msg)
     end
-    -- End when rbCheck~isChecked == "CHECKED"
+    -- End when rbCheck~checked
 
-    otherwise self~setEntryLine(IDC_EDIT_CHKBOX, "Not implemented")
+    otherwise editChk~setText(IDC_EDIT_CHKBOX, "Not implemented")
   end
   -- End select
 
@@ -573,95 +593,95 @@ return ""
 
   -- Simply check the state of every checkbox and put the associated style in
   -- the appropriate variable.  Tedious, but straight forward.
-  if self~getCheckControl(IDC_CHECK_CHECKBOXES)~isChecked = "CHECKED" then
-    addStyle = addStyle "CHECKBOXES"
+  if self~newCheckBox(IDC_CHECK_CHECKBOXES)~checked then
+    addStyle ||= "CHECKBOXES"
   else
-    removeStyle = removeStyle "CHECKBOXES"
+    removeStyle ||= "CHECKBOXES"
 
-  if self~getCheckControl(IDC_CHECK_FULLROW)~isChecked = "CHECKED" then
-    addStyle = addStyle "FULLROWSELECT"
+  if self~newCheckBox(IDC_CHECK_FULLROW)~checked then
+    addStyle ||= "FULLROWSELECT"
   else
-    removeStyle = removeStyle "FULLROWSELECT"
+    removeStyle ||= "FULLROWSELECT"
 
-  if self~getCheckControl(IDC_CHECK_BORDER)~isChecked = "CHECKED" then
-    addStyle = addStyle "BORDERSELECT"
+  if self~newCheckBox(IDC_CHECK_BORDER)~checked then
+    addStyle ||= "BORDERSELECT"
   else
-    removeStyle = removeStyle "BORDERSELECT"
+    removeStyle ||= "BORDERSELECT"
 
-  if self~getCheckControl(IDC_CHECK_GRIDLINES)~isChecked = "CHECKED" then
-    addStyle = addStyle "GRIDLINES"
+  if self~newCheckBox(IDC_CHECK_GRIDLINES)~checked then
+    addStyle ||= "GRIDLINES"
   else
-    removeStyle = removeStyle "GRIDLINES"
+    removeStyle ||= "GRIDLINES"
 
-  if self~getCheckControl(IDC_CHECK_UNDERLINEHOT)~isChecked = "CHECKED" then
-    addStyle = addStyle "UNDERLINEHOT"
+  if self~newCheckBox(IDC_CHECK_UNDERLINEHOT)~checked then
+    addStyle ||= "UNDERLINEHOT"
   else
-    removeStyle = removeStyle "UNDERLINEHOT"
+    removeStyle ||= "UNDERLINEHOT"
 
-  if self~getCheckControl(IDC_CHECK_ONECLICK)~isChecked = "CHECKED" then
-    addStyle = addStyle "ONECLICKACTIVATE"
+  if self~newCheckBox(IDC_CHECK_ONECLICK)~checked then
+    addStyle ||= "ONECLICKACTIVATE"
   else
-    removeStyle = removeStyle "ONECLICKACTIVATE"
+    removeStyle ||= "ONECLICKACTIVATE"
 
-  if self~getCheckControl(IDC_CHECK_FLATSB)~isChecked = "CHECKED" then
-    addStyle = addStyle "FLATSB"
+  if self~newCheckBox(IDC_CHECK_FLATSB)~checked then
+    addStyle ||= "FLATSB"
   else
-    removeStyle = removeStyle "FLATSB"
+    removeStyle ||= "FLATSB"
 
-  if self~getCheckControl(IDC_CHECK_INFOTIP)~isChecked = "CHECKED" then
-    addStyle = addStyle "INFOTIP"
+  if self~newCheckBox(IDC_CHECK_INFOTIP)~checked then
+    addStyle ||= "INFOTIP"
   else
-    removeStyle = removeStyle "INFOTIP"
+    removeStyle ||= "INFOTIP"
 
-  if self~getCheckControl(IDC_CHECK_REGIONAL)~isChecked = "CHECKED" then
-    addStyle = addStyle "REGIONAL"
+  if self~newCheckBox(IDC_CHECK_REGIONAL)~checked then
+    addStyle ||= "REGIONAL"
   else
-    removeStyle = removeStyle "REGIONAL"
+    removeStyle ||= "REGIONAL"
 
-  if self~getCheckControl(IDC_CHECK_SUBITEM)~isChecked = "CHECKED" then
-    addStyle = addStyle "SUBITEMIMAGES"
+  if self~newCheckBox(IDC_CHECK_SUBITEM)~checked then
+    addStyle ||= "SUBITEMIMAGES"
   else
-    removeStyle = removeStyle "SUBITEMIMAGES"
+    removeStyle ||= "SUBITEMIMAGES"
 
-  if self~getCheckControl(IDC_CHECK_TRACK)~isChecked = "CHECKED" then
-    addStyle = addStyle "TRACKSELECT"
+  if self~newCheckBox(IDC_CHECK_TRACK)~checked then
+    addStyle ||= "TRACKSELECT"
   else
-    removeStyle = removeStyle "TRACKSELECT"
+    removeStyle ||= "TRACKSELECT"
 
-  if self~getCheckControl(IDC_CHECK_LABELTIP)~isChecked = "CHECKED" then
-    addStyle = addStyle "LABELTIP"
+  if self~newCheckBox(IDC_CHECK_LABELTIP)~checked then
+    addStyle ||= "LABELTIP"
   else
-    removeStyle = removeStyle "LABELTIP"
+    removeStyle ||= "LABELTIP"
 
-  if self~getCheckControl(IDC_CHECK_TWOCLICK)~isChecked = "CHECKED" then
-    addStyle = addStyle "TWOCLICKACTIVATE"
+  if self~newCheckBox(IDC_CHECK_TWOCLICK)~checked then
+    addStyle ||= "TWOCLICKACTIVATE"
   else
-    removeStyle = removeStyle "TWOCLICKACTIVATE"
+    removeStyle ||= "TWOCLICKACTIVATE"
 
-  if self~getCheckControl(IDC_CHECK_DOUBLEBUFFER)~isChecked = "CHECKED" then
-    addStyle = addStyle "DOUBLEBUFFER"
+  if self~newCheckBox(IDC_CHECK_DOUBLEBUFFER)~checked then
+    addStyle ||= "DOUBLEBUFFER"
   else
-    removeStyle = removeStyle "DOUBLEBUFFER"
+    removeStyle ||= "DOUBLEBUFFER"
 
-  if self~getCheckControl(IDC_CHECK_HEADERDRAGDROP)~isChecked = "CHECKED" then
-    addStyle = addStyle "HEADERDRAGDROP"
+  if self~newCheckBox(IDC_CHECK_HEADERDRAGDROP)~checked then
+    addStyle ||= "HEADERDRAGDROP"
   else
-    removeStyle = removeStyle "HEADERDRAGDROP"
+    removeStyle ||= "HEADERDRAGDROP"
 
-  if self~getCheckControl(IDC_CHECK_MULTIWORK)~isChecked = "CHECKED" then
-    addStyle = addStyle "MULTIWORKAREAS"
+  if self~newCheckBox(IDC_CHECK_MULTIWORK)~checked then
+    addStyle ||= "MULTIWORKAREAS"
   else
-    removeStyle = removeStyle "MULTIWORKAREAS"
+    removeStyle ||= "MULTIWORKAREAS"
 
-  if self~getCheckControl(IDC_CHECK_SIMPLE)~isChecked = "CHECKED" then
-    addStyle = addStyle "SIMPLESELECT"
+  if self~newCheckBox(IDC_CHECK_SIMPLE)~checked then
+    addStyle ||= "SIMPLESELECT"
   else
-    removeStyle = removeStyle "SIMPLESELECT"
+    removeStyle ||= "SIMPLESELECT"
 
-  if self~getCheckControl(IDC_CHECK_UNDERLINECOLD)~isChecked = "CHECKED" then
-    addStyle = addStyle "UNDERLINECOLD"
+  if self~newCheckBox(IDC_CHECK_UNDERLINECOLD)~checked then
+    addStyle ||= "UNDERLINECOLD"
   else
-    removeStyle = removeStyle "UNDERLINECOLD"
+    removeStyle ||= "UNDERLINECOLD"
 
   -- Now change the styles.  While working with this sample, I noticed that the
   -- list-view control's appearance is sometimes a little ragged after changing
@@ -730,32 +750,37 @@ return ""
 -- ok()
 --
 -- Called when the user clicks the OK button.  This will display, or not, a list
--- of the selected rows at the time of exit.  A check box in the dialog controls
--- whether or not the selected rows are displayed.
+-- of the selected rows at the time of exit.  A check box in the dialog,
+-- controls whether or not the selected rows are displayed.
 ::method ok
   expose sLC onExit
 
   if \ onExit~isInstanceOf(.CheckBox) then
-    onExit = self~getCheckControl(IDC_CHECK_ONEXIT)
+    onExit = self~newCheckBox(IDC_CHECK_ONEXIT)
 
   -- If the user is tired of the last InfoDialog displaying each time they quit
   -- and unchecks the display selected items checkbox, then just exit.
-  if onExit~isChecked \== "CHECKED" then do
-    self~ok:super
-    self~finished = 1
-    return self~finished
-  end
+  if \ onExit~checked then return self~ok:super
 
   -- The show selection on exit checkbox is checked, put up a message box
-  -- showing what is selected at this point.
+  -- showing what is selected at this point.  The MessageDialog routine lets us
+  -- customize the appearance of the message box so that it fits the situation.
+  -- We changed the push button style, icon style, and message based on whether
+  -- any list view items are selected.
   eol = .endOfLine
 
   msg = "Is this the correct selection?" || eol || eol
   count = sLC~selectedItems
-  if count > 0 then
-    msg = msg "Selected:"
-  else
-    msg = "There are no items selected"
+  if count > 0 then do
+    msg     = msg "Selected:"
+    buttons = "YESNO"
+    icon    = 'QUERY'
+  end
+  else do
+    msg     = "There are no items selected"
+    buttons = 'OK'
+    icon    = 'INFORMATION'
+  end
 
   if count > 0 then do
     item = sLC~selected
@@ -767,8 +792,8 @@ return ""
     msg = msg selectedText || eol
   end
 
-  ret = AskDialog(msg)
-  junk = self~ok:super
+  ret = MessageDialog(msg, self~hwnd, 'List-view Checked Items', buttons, icon)
+  return self~ok:super
 
 -- End ok()
 
