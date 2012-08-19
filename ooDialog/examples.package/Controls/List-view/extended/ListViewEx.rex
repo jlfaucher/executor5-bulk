@@ -88,6 +88,7 @@
 use arg useRC
 
   .application~setDefaults('O', 'ListViewEx.h')
+
   -- This stem variable is used by ooDialog to set the initial state of the
   -- controls.  There is only a need to set radio buttons and checkboxes that
   -- are to start out as checked (1), by default they are set to unchecked (0).

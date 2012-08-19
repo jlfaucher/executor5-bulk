@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -34,18 +34,6 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-// NOTE: The TestEditControl dialog was created with ResEdit.  ResEdit REQUIRES
-// that the header file for the symbolic IDs be named "resource.h"  If you want
-// to use ResEdit to make changes to this dialog, you will need to:
-//
-//   Rename this file, TestEditControl.h, to resource.h
-//
-//   Change the reference in TestEditControl.rc from TestEditControl.h to
-//   resource.h
-//
-//   Change the reference to TestEditControl.h in TestEditControl.rex to
-//   resource.h
 
 #ifndef IDC_STATIC
 #define IDC_STATIC (-1)

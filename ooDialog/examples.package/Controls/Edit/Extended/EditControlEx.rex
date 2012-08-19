@@ -35,52 +35,44 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/* Sample Dialog using some new features of the EditControl in ooDialog.      */
+/* Sample Dialog using some newish features of the EditControl in ooDialog.   */
 
+-- NOTE: This example requires ooDialog 4.2.0 or later.
+--
 -- NOTE: This is a work in progress, it will be updated to make it a better
 -- example for people new to ooDialog.  Still it may be of benefit to anyone
 -- using ooDialog.
 --
--- NOTE: This requires ooRexx 3.2.0 svn revision 573 or later to run.
+-- This example was a little experimental when first written.  There are a lot
+-- of controls in the example, so some alternative methods to managing the
+-- controls were tried.  The two classes 'DlgControls' and 'Cntrl' were
+-- experiments in this area.
 
+  -- For this application, use the global .constDir for symbolic ID lookup
+  -- 'O'nly, Symbolic IDs are defined in 'EditControlEx.h', and set automatic
+  -- data detection off (.false.)
+  .application~setDefaults('O', 'EditControlEx.h', .false)
 
--- NOTE: The TestEditControl dialog was created with ResEdit.  ResEdit REQUIRES
--- that the header file for the symbolic IDs be named "resource.h"  If you want
--- to use ResEdit to make changes to this dialog, you will need to:
---
---   Rename the file, TestEditControl.h, to resource.h
---
---   Change the reference in TestEditControl.rc from TestEditControl.h to
---   resource.h
---
---   Change the reference to TestEditControl.h in TestEditControl.rex to
---   resource.h
-
-  dlg = .ExtendedEdit~new( TestEditControl.dll, IDD_DIALOG1, , "TestEditControl.h" )
+  dlg = .ExtendedEdit~new( 'EditControlEx.dll', IDD_DIALOG1 )
   if dlg~initCode \== 0 then do
     say "The dialog did not initialize properly.  Program Abort."
     return -99
   end
 
-  dlg~Execute( "SHOWTOP", IDI_DLG_OOREXX )
-  dlg~Deinstall
+  -- Start the dialog and show it.  Use the IDI_DLG_OOREXX icon for the
+  -- application icon.
+  dlg~execute( "SHOWTOP", IDI_DLG_OOREXX )
 
 return 0
 -- End of entry point.
 
-::requires "OODWin32.cls"
+::requires "ooDialog.cls"
 
-::class ExtendedEdit subclass ResDialog -
-                     inherit AdvancedControls MessageExtensions
+::class ExtendedEdit subclass ResDialog
 
 ::method init
   forward class (super) continue
   if result <> 0 then return result
-
-  -- Tell ooDialog to leave the control settings alone.  This dialog sets the
-  -- dialog controls the way they should be in initDialog.  If auto detection is
-  -- on, then ooDialog resets the controls after initDialog has run.
-  self~noAutoDetection
 
   -- Put some constant strings in the .local directory for the dialog to use.
   .local~cueExplanation = "Unfortunately, you can not set a" || .endOfLine || -
@@ -92,19 +84,19 @@ return 0
   .local~numberCue = " type here, only numbers will be allowed"
   .local~noneCue   = " type here, what you type is what you get"
 
-  return 0
+return 0
 
 ::method initDialog
   expose elQ staticTextQ dlgControls
 
-  el1 = self~getEditControl( IDC_EDIT_FIRST )
-  el2 = self~getEditControl( IDC_EDIT_SECOND )
-  el3 = self~getEditControl( IDC_EDIT_THIRD )
+  el1 = self~newEdit( IDC_EDIT_FIRST )
+  el2 = self~newEdit( IDC_EDIT_SECOND )
+  el3 = self~newEdit( IDC_EDIT_THIRD )
   elQ = .queue~of( el1, el2, el3 )
 
-  el1Static = self~getStaticControl( IDC_ST_STYLE_EL1 )
-  el2Static = self~getStaticControl( IDC_ST_STYLE_EL2 )
-  el3Static = self~getStaticControl( IDC_ST_STYLE_EL3 )
+  el1Static = self~newStatic( IDC_ST_STYLE_EL1 )
+  el2Static = self~newStatic( IDC_ST_STYLE_EL2 )
+  el3Static = self~newStatic( IDC_ST_STYLE_EL3 )
   staticTextQ = .queue~of( el1Static, el2Static, el3Static )
 
   el1~addStyle( "NUMBER")
@@ -117,10 +109,10 @@ return 0
   el2Static~setTitle( "Upper Case")
   el3Static~setTitle( "Lower Case")
 
-  self~connectButton( IDC_PB_SETTABSTOP, setTabStops )
-  self~connectButton( IDC_PB_STYLES, setStyles )
-  self~connectButton( IDC_PB_TIP, showTip )
-  self~connectButton( IDC_PB_SETCUE, setCue )
+  self~connectButtonEvent( IDC_PB_SETTABSTOP, "CLICKED", setTabStops )
+  self~connectButtonEvent( IDC_PB_STYLES, "CLICKED", setStyles )
+  self~connectButtonEvent( IDC_PB_TIP, 'CLICKED', showTip )
+  self~connectButtonEvent( IDC_PB_SETCUE, "CLICKED", setCue )
 
   self~connectButtonNotify( IDC_CHECK_DLG, "CLICKED", setTabstopSetType )
   self~connectButtonNotify( IDC_CHECK_CTRL, "CLICKED", setTabstopSetType )
@@ -138,8 +130,7 @@ return 0
   combo~add( "EditLine 2 (EL-2)" )
   combo~add( "EditLine 3 (EL-3)" )
   combo~selectIndex( 1 )
-  ret = self~connectComboBoxNotify( IDC_COMBO_APPLYTO, "SELENDOK",             -
-                                    onComboChange )
+  ret = self~connectComboBoxEvent( IDC_COMBO_APPLYTO, "SELENDOK", onComboChange )
 
   dlgControls~tabStops( 'A' )
 
@@ -228,20 +219,20 @@ return 0
   end
 
   id = BinaryAnd( controlID, '0x0000FFFF' )
-  if id == self~constDir[IDC_CHECK_DLG] then checkCtrl~unCheck
+  if id == .constDir[IDC_CHECK_DLG] then checkCtrl~unCheck
   else checkDlg~unCheck
 
 ::method setTabStops
   expose dlgControls
 
   select
-    when dlgControls~get( IDC_RB_ALL )~isChecked == "CHECKED" then
+    when dlgControls~get( IDC_RB_ALL )~checked then
       dlgControls~tabStops( 'A' )
-    when dlgControls~get( IDC_RB_NOTABSTOPS )~isChecked == "CHECKED" then
+    when dlgControls~get( IDC_RB_NOTABSTOPS )~checked then
       dlgControls~tabStops( 'N' )
-    when dlgControls~get( IDC_RB_EVEN )~isChecked == "CHECKED" then
+    when dlgControls~get( IDC_RB_EVEN )~checked then
       dlgControls~tabStops( 'E' )
-    when dlgControls~get( IDC_RB_ODD )~isChecked == "CHECKED" then
+    when dlgControls~get( IDC_RB_ODD )~checked then
       dlgControls~tabStops( 'O' )
     otherwise
       nop  -- Should never happen.  Could indicate an error somehow.
@@ -264,38 +255,38 @@ return 0
   removeStyle = ""
   addStyle = ""
 
-  if dlgControls~get( IDC_CHECK_TABSTOP )~isChecked == "CHECKED" then
+  if dlgControls~get( IDC_CHECK_TABSTOP )~checked then
     addStyle = "TABSTOP"
   else
     removeStyle = "TABSTOP"
 
-  if dlgControls~get( IDC_CHECK_GROUP )~isChecked == "CHECKED" then
+  if dlgControls~get( IDC_CHECK_GROUP )~checked then
     addStyle = addStyle "GROUP"
   else
     removeStyle = removeStyle "GROUP"
 
-  if dlgControls~get( IDC_CHECK_OEM )~isChecked == "CHECKED" then
+  if dlgControls~get( IDC_CHECK_OEM )~checked then
     addStyle = addStyle "OEM"
   else
     removeStyle = removeStyle "OEM"
 
-  if dlgControls~get( IDC_CHECK_RETURN )~isChecked == "CHECKED" then
+  if dlgControls~get( IDC_CHECK_RETURN )~checked then
     addStyle = addStyle "WANTRETURN"
   else
     removeStyle = removeStyle "WANTRETURN"
 
   select
-    when dlgControls~get( IDC_RB_UPPER )~isChecked == "CHECKED" then do
+    when dlgControls~get( IDC_RB_UPPER )~checked then do
       addStyle = addStyle "UPPER"
       removeStyle = removeStyle "LOWER NUMBER"
       staticText = "Upper Case"
     end
-    when dlgControls~get( IDC_RB_LOWER )~isChecked == "CHECKED" then do
+    when dlgControls~get( IDC_RB_LOWER )~checked then do
       addStyle = addStyle "LOWER"
       removeStyle = removeStyle "UPPER NUMBER"
       staticText = "Lower Case"
     end
-    when dlgControls~get( IDC_RB_NUMBER )~isChecked == "CHECKED" then do
+    when dlgControls~get( IDC_RB_NUMBER )~checked then do
       addStyle = addStyle "NUMBER"
       removeStyle = removeStyle "UPPER LOWER"
       staticText = "Numbers"
@@ -307,12 +298,12 @@ return 0
   end
   -- End select
 
-  if dlgControls~get( IDC_CHECK_WSVISIBLE )~isChecked == "CHECKED" then
+  if dlgControls~get( IDC_CHECK_WSVISIBLE )~checked then
     hide = .false
   else
     hide = .true
 
-  if dlgControls~get( IDC_CHECK_ENABLED )~isChecked == "CHECKED" then
+  if dlgControls~get( IDC_CHECK_ENABLED )~checked then
     enable = .true
   else
     enable = .false
@@ -401,11 +392,11 @@ return 0
   do id over tmpA
     c = .Cntrl~new(id)
     select
-      when c~button then c~obj = parent~getButtonControl(id)
-      when c~check then c~obj = parent~getCheckControl(id)
-      when c~radio then c~obj = parent~getRadioControl(id)
-      when c~combo then c~obj = parent~getComboBox(id)
-      when c~edit then c~obj = parent~getEditControl(id)
+      when c~button then c~obj = parent~newPushButton(id)
+      when c~check then c~obj = parent~newCheckBox(id)
+      when c~radio then c~obj = parent~newRadioButton(id)
+      when c~combo then c~obj = parent~newComboBox(id)
+      when c~edit then c~obj = parent~newEdit(id)
       otherwise nop
     end
     -- End select
@@ -424,7 +415,7 @@ return self~controls[id]~obj
   expose parent
   use arg type
 
-  if self~controls[IDC_CHECK_DLG]~obj~isChecked == "CHECKED" then
+  if self~controls[IDC_CHECK_DLG]~obj~checked then
     useParent = .true
   else
     useParent = .false
@@ -460,12 +451,12 @@ return self~controls[id]~obj
 ::method setOrUnset private
   use arg id
 
-  if self~controls[IDC_CHECK_NO_EDITLINES]~obj~isChecked == "CHECKED" then
+  if self~controls[IDC_CHECK_NO_EDITLINES]~obj~checked then
     noEL = .true
   else
     noEL = .false
 
-  if self~controls[IDC_CHECK_NOBUTTONS]~obj~isChecked == "CHECKED" then
+  if self~controls[IDC_CHECK_NOBUTTONS]~obj~checked then
     noButtons = .true
   else
     noButtons = .false
