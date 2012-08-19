@@ -2052,22 +2052,21 @@ xPixels = xDialogUnits * self~FactorX
 
 <para>The classes are: </para>
 <variablelist>
-<varlistentry><term>PlainBaseDialog, BaseDialog</term>
+<varlistentry><term>PlainBaseDialog</term>
 <listitem><para>Base methods regardless of whether the dialog is implemented as a binary
-resource, a script, or dynamically. PlainBaseDialog provides limited functionality.
+resource, a script, or dynamically.
 </para></listitem></varlistentry>
 <varlistentry><term>DynamicDialog, DialogExtensions, WindowBase, WindowExtensions</term>
-<listitem><para>Internal mixin classes used to extend PlainBaseDialog, PlainUserDialog,
-BaseDialog, UserDialog, and DialogControl. The methods provided by these classes
-are not listed separately but are listed in BaseDialog or UserDialog.
+<listitem><para>Internal mixin classes used to extend PlainBaseDialog, UserDialog, and DialogControl. The methods
+provided by these classes are not listed separately but are listed in PlainBaseDialog.
 </para></listitem></varlistentry>
 <varlistentry><term>UserDialog</term>
-<listitem><para>Subclass of BaseDialog used to create a dialog with all its control
+<listitem><para>Subclass of PlainBaseDialog used to create a dialog with all its control
 elements, such as push buttons, check boxes, radio buttons, entry lines, and
 list boxes.
 </para></listitem></varlistentry>
 <varlistentry><term>ResDialog</term>
-<listitem><para>Subclass of BaseDialog for dialogs within a binary (compiled) resource
+<listitem><para>Subclass of PlainBaseDialog for dialogs within a binary (compiled) resource
 file (.DLL).
 </para></listitem></varlistentry>
 <varlistentry><term>TimedMessage</term>

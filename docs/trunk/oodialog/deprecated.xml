@@ -97,6 +97,35 @@
 </para>
 </section>
 
+<section id="deprecatedBaseDialog"><title>BaseDialog Class</title>
+<indexterm><primary>Deprecated</primary><secondary>BaseDialog Class</secondary></indexterm>
+<para>
+  This class is <link linkend="apxDeprecated">deprecated</link>. Th class served no useful purpose and it
+  over-complicated the class hierarchy. Internally, the class has no methods. There was, and is no reason for the
+  ooDialog programmer to use the class. If it was used, all references to the
+  <computeroutput>BaseDialog</computeroutput> class should be replaced with the <link
+  linkend="clsPlainBaseDialog">PlainBaseDialog</link>. Unlike most other deprecated classes and methods, the intent is
+  to remove this class in the near future. Because of this, the ooDialog programmer should actively make sure no
+  existing programs reference the <computeroutput>BaseDialog</computeroutput> class.
+</para>
+</section>
+
+<section id="deprecatedCategoryDialog"><title>CategoryDialog Class</title>
+<indexterm><primary>Deprecated</primary><secondary>CategoryDialog Class</secondary></indexterm>
+<para>
+  This class is <link linkend="apxDeprecated">deprecated</link>. The <computeroutput>CategoryDialog</computeroutput>
+  class was never documented well, was hard for most users to understand, was buggy, and was difficult to debug. In
+  addition, the dialog pages of the <computeroutput>CategoryDialog</computeroutput> functioned using a completely
+  different paradigm than all other dialogs. This was not only confusing, but <emphasis
+  role="italic">unnecessary</emphasis> to begin with.
+</para>
+<para>
+  Use the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link>, or a <link linkend="clsTab">tab</link>
+  control with one of the <link linkend="sctControlDialogs">Control</link> dialog classes, to replace the
+  <computeroutput>CategoryDialog</computeroutput> class.
+</para>
+</section>
+
 <section id="deprecatedMessageExtensions"><title>MessageExtensions Mixin Class</title>
 <indexterm><primary>Deprecated</primary><secondary>MessageExtensions Class</secondary></indexterm>
 <para>
@@ -116,22 +145,6 @@
   linkend="sctHistory">no longer</link> makes a distinction between a plain user dialog and an <link
   linkend="clsUserDialog">user dialog</link>. Directly subclass the <emphasis role="italic">Userdialog</emphasis>
   instead of the <emphasis role="italic">PlainUserDialog</emphasis>.
-</para>
-</section>
-
-<section id="deprecatedCategoryDialog"><title>CategoryDialog Class</title>
-<indexterm><primary>Deprecated</primary><secondary>CategoryDialog Class</secondary></indexterm>
-<para>
-  This class is <link linkend="apxDeprecated">deprecated</link>. The <computeroutput>CategoryDialog</computeroutput>
-  class was never documented well, was hard for most users to understand, was buggy, and was difficult to debug. In
-  addition, the dialog pages of the <computeroutput>CategoryDialog</computeroutput> functioned using a completely
-  different paradigm than all other dialogs. This was not only confusing, but <emphasis
-  role="italic">unnecessary</emphasis> to begin with.
-</para>
-<para>
-  Use the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link>, or a <link linkend="clsTab">tab</link>
-  control with one of the <link linkend="sctControlDialogs">Control</link> dialog classes, to replace the
-  <computeroutput>CategoryDialog</computeroutput> class.
 </para>
 </section>
 
