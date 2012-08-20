@@ -1,0 +1,130 @@
+#/*----------------------------------------------------------------------------*/
+#/*                                                                            */
+#/* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
+#/*                                                                            */
+#/* This program and the accompanying materials are made available under       */
+#/* the terms of the Common Public License v1.0 which accompanies this         */
+#/* distribution. A copy is also available at the following address:           */
+#/* http://www.oorexx.org/license.html                                         */
+#/*                                                                            */
+#/* Redistribution and use in source and binary forms, with or                 */
+#/* without modification, are permitted provided that the following            */
+#/* conditions are met:                                                        */
+#/*                                                                            */
+#/* Redistributions of source code must retain the above copyright             */
+#/* notice, this list of conditions and the following disclaimer.              */
+#/* Redistributions in binary form must reproduce the above copyright          */
+#/* notice, this list of conditions and the following disclaimer in            */
+#/* the documentation and/or other materials provided with the distribution.   */
+#/*                                                                            */
+#/* Neither the name of Rexx Language Association nor the names                */
+#/* of its contributors may be used to endorse or promote products             */
+#/* derived from this software without specific prior written permission.      */
+#/*                                                                            */
+#/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+#/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+#/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+#/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+#/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+#/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+#/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+#/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+#/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+#/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+#/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+#/*                                                                            */
+#/*----------------------------------------------------------------------------*/
+
+
+# This is a Visual C++, nMake compatible make file used to generate an
+# installation package for the Extra ooDialog Examples package.
+# of the interpreter.
+#
+# We only need to run NSIS to build the installer and compile a few resource
+# only DLLs.  So, we don't need much.
+
+# Generate the compiler information, plus PACKAGE_ROOT_DIR.  Quit if there is an
+# error.
+
+!IF [install\determineCompiler.bat] != 0
+!  ERROR Build error: could not generate compiler informatin.
+!ENDIF
+
+!include install\compiler.info.incl
+!include install\package.ver.incl
+
+DOTVERISION = $(PACKAGE_MAJOR).$(PACKAGE_MINOR).$(PACKAGE_MOD_LVL)
+NODOTVERSION = $(PACKAGE_MAJOR)_$(PACKAGE_MINOR)_$(PACKAGE_MOD_LVL)
+
+!if "$(CPU)" == "X64"
+NSISCPU = x86_64
+!else
+NSISCPU = x86_32
+!endif
+
+PACKAGE_OUTDIR=$(PACKAGE_ROOT_DIR)
+PACKAGE_NAME=ooDialog_Samples_$(NODOTVERSION)_$(NSISCPU).exe
+
+DLLFILES = $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\ListViewEx.dll          \
+           $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\EditControlEx.dll       \
+           $(PACKAGE_ROOT_DIR)\Controls\Edit\NumberOnly\CalcMPG.dll           \
+           $(PACKAGE_ROOT_DIR)\Dialogs\application.icon\ApplicationIcon.dll   \
+           $(PACKAGE_ROOT_DIR)\Tutorial\001.intro\logonRes.dll
+
+
+all: package
+
+package: clean $(PACKAGE_NAME)
+    @cd $(PACKAGE_ROOT_DIR)
+    @set OOD_INDEPENDENT=1
+    @set OOD_OUTDIR=$(OOD_OUTDIR)
+    @set PACKAGE_ROOT_DIR=$(PACKAGE_ROOT_DIR)
+    @set OOD_INCLUDE_FILE=$(OOD_INCLUDE_FILE)
+    @set REXX_LIBS=$(REXX_LIBS)
+    @set NODEBUG=$(NODEBUG)
+    @set CPU=$(CPU)
+    @set MSVCVER=$(MSVCVER)
+    @set MKASM=$(MKASM)
+    @set NOCRTDLL=1
+    $(MAKE) /NOLOGO /F oodialog.mak
+    @cd $(OOD_ROOT_DIR)
+
+$(OOD_OUTDIR)\ooDialog.cls: $(CLASSFILES)
+    @echo .
+    @echo Building ooDialog classes
+    @cd $(OOD_OUTDIR)
+    @REXX $(PACKAGE_ROOT_DIR)\build_ooDialog_cls.rex
+    @cd $(OOD_ROOT_DIR)
+
+example_dlls:
+    @echo .
+    @echo Building resource DLLs for examples
+    @cd $(OOD_ROOT_DIR)\examples\res
+    @set MACHINE=$(CPU)
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Samples\DlgData\res
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise05\res
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise06\Product\res
+    $(MAKE) /NOLOGO /F res.mak
+    @cd $(OOD_ROOT_DIR)
+
+
+dist: all
+    @echo .
+    @echo Creating installation package
+    @cd $(OOD_ROOT_DIR)\install
+    makensis /DVERSION=$(DOTVER) /DSHORTVERSION=$(SHORTVERSION) /DROOTDIR=$(OOD_ROOT_DIR) /DOUTDIR=$(OOD_OUTDIR) /DCPU=$(NSISCPU) /DDEBUGPKG=$(NSISDEBUG) ooDialog.nsi
+    @cd $(OOD_ROOT_DIR)
+
+$(BASETARGETS): Makefile
+
+clean:
+    @echo .
+    @echo Deleting resource-only DLLs and installer package
+    @del /f /s *.res 1>nul 2>&1
+    @del /f /s *.dll 1>nul 2>&1
+    @del /f ooDialog_*.exe 1>nul 2>&1
+
+
