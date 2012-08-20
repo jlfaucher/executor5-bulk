@@ -1,0 +1,154 @@
+
+                Extra ooDialog Samples Package, makeDLL.rex
+                ===========================================
+
+
+The makeDll.rex program can be used to compile a resource script file into a
+resource-only DLL.  Resource-only DLL files are needed for the ResDialog
+class in ooDialog.  There are a number of examples in this package that show
+how to use the ResDialog class.
+
+Using makeDll.rex you can recompile the resource-only DLL files for the
+examples from their resource script file.
+
+Requirements:
+-------------
+
+The link.exe and rc.exe Microsoft tooles are needed to compile resource-only
+DLLs.  The tools are available for free from Microsoft.
+
+The easiest way to obtain the tools is to install either a recent Windows SDK
+or a recent version of Visual C++ Express.  There are many other ways to
+obtain these tools, but it is beyond the scope of this document to explain
+every possible way to obtain link.exe and rc.exe
+
+Windows SDK
+-----------
+
+Do a Gobble search of: Microsoft Windows SDK latest version download
+
+The top 2 or 3 hits will all lead to the free download.  The latest version
+at the time of writing this documentation is 7.1.  Follow instructions to
+install the SDK.
+
+Visual C++ Express
+------------------
+
+Do a Gobble search of: VC++ express
+
+The top 2 or 3 hits will lead to the free download.  The latest version at
+the time of writing this document is VC++ 2010.  VC++ 2012 will probably be
+out soon.  As Microsoft releases new Express versions they remove the
+previous version.  Follow the instructions to install.
+
+Usage:
+------
+
+makeDll.rex is intended to run from the command line.  Normally a user would
+put makeDll.rex in a directory in the path.  Then cd to the directory that
+contains the resource script to compile.
+
+The Microsoft tools must also be in the path.  The Windows SDK contains a
+.cmd program to set up its tools, so does VC++ Express.
+
+A typical scenario would be to open up a command prompt window, execute the
+proper batch program to set up the Microsoft tools, cd to the directory
+containing the resource script, execute makeDLL.rex.
+
+Windows SDK        -> <installDirectory>\bin\SetEnv.Cmd
+Visual C++ Express -> <installDirectory>\VC\vcvarsall.bat
+
+Here is what the typical scenario using a Windows SDK would look like:
+
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+C:\work.ooRexx>\Tools\Microsoft.SDKs\v7.1\bin\SetEnv.Cmd
+
+Setting SDK environment relative to C:\Tools\Microsoft.SDKs\v7.1\.
+Targeting Windows 7 x64 Debug
+
+C:\work.ooRexx>cd ListViewEx
+
+C:\work.ooRexx\ListViewEx>rexx makeDll.rex ListViewEx.rc
+Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Microsoft (R) Incremental Linker Version 10.00.40219.01
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+C:\work.ooRexx\ListViewEx>dir *.dll
+ Volume in drive C is Win7
+ Volume Serial Number is D25E-50D5
+
+ Directory of C:\work.ooRexx\ListViewEx
+
+08/20/2012  03:01 PM             3,584 ListViewEx.dll
+               1 File(s)          3,584 bytes
+               0 Dir(s)   3,039,014,912 bytes free
+
+C:\work.ooRexx\ListViewEx>
+
+If using Visual C++, the steps are identical, simply use the vcvarsall.bat
+command.
+
+Important:
+----------
+
+Later versions of Visual C++ and the Windows SDK use a feature called
+delayed environment expansion in their set up scripts.  But, often delayed
+expansion is turned off.  This causes problems, the set up scripts do not
+work.  The easiest way to fix this is to edit the registry:
+
+Using regedit, edit the following REG_DWORD value in the registry:
+
+   HKEY_LOCAL_MACHINE\Software\Microsoft\Command Processor\DelayedExpansion
+
+set it to 0x1
+
+If the DelayedExpansion value is not already there then just add it.
+
+NOTE - Building a 64-bit DLL:
+-----------------------------
+
+Whether a 32-bit or 64-bit DLL is built is determined by how the Microsoft
+tools are set up.
+
+To build a 64-bit DLL, use the 64-bit tools.  The 64-bit tools are used when
+the correct options to vcvarsall.bat or SetEnv.cmd.  To determine the
+options use the /?  arg.  For example:
+
+C:\home\Tools\Visual.Studio.8\VC\vcvarsall.bat /?
+
+or
+
+C:\work.ooRexx>\Tools\Microsoft.SDKs\v7.1\bin\SetEnv.Cmd /?
+
+In general, the x64 or amd64 option is what is needed to use the 64-bit
+tools. This may vary depending on the exact version of VC++ and the SDK.
+
+Syntax for makeDLL.rex
+----------------------
+
+  rexx makeDll.rex inputName <outputName>
+
+Where:
+
+inputName is required and is the name of the resource script file.
+
+outputName is optional and is the name of the DLL file.  if outputName is
+omitted, the name of the DLL file will be constructed from the name of
+the resource file.
+
+Examples:
+
+Compile ApplicationIcon.rc to ApplicationIcon.dll:
+
+  rexx makeDll.rex ApplicationIcon.rc
+
+Compile resources.dlg to Application.dll:
+
+  rexx makeDll.rex resources.dlg Application.dll
+
+

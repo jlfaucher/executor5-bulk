@@ -36,9 +36,10 @@
 #/*----------------------------------------------------------------------------*/
 
 # This is a nMake compatible make file to create the resource-only DLL for the
-# EditControlEx.rex example.  It is intended to be used as part of the packaging
-# system for the Extra ooDialog Examples package.  It expects that the MACHINE
-# environment variable has been set.  The packaging system does this normally.
+# 001.intro section of the tutorial.  It is intended to be used as part of the
+# packaging system for the Extra ooDialog Examples package.  It expects that the
+# MACHINE environment variable has been set.  The packaging system does this
+# normally.
 #
 # If you have nMake, rc, and link, and wish to use this make file to re-compile
 # the resource-only DLL, you can define MACHINE on the command line, use this
@@ -54,10 +55,10 @@
 # source.  makeDll.rex is accompanied by a read me file explaining how to use
 # it.
 
-BASE_NAME = EditControlEx
+BASE_NAME = logonRc
 
-$(BASE_NAME).dll : $(BASE_NAME).res
-  link $(BASE_NAME).res /NOENTRY /DLL /MACHINE:$(MACHINE) /OUT:$(BASE_NAME).dll
+logonRes.dll : logonRes.res
+  link logonRes.res /NOENTRY /DLL /MACHINE:$(MACHINE) /OUT:logonRes.dll
 
-$(BASE_NAME).res : $(BASE_NAME).rc $(BASE_NAME).h
-  rc /DWIN32 /R /FO$(BASE_NAME).res $(BASE_NAME).rc
+logonRes.res : logonRc.rc
+  rc /DWIN32 /R /FOlogonRes.res logonRc.rc

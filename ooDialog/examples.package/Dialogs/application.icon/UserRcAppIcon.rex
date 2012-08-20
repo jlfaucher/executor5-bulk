@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2011 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,11 +41,11 @@
  * method of the RcDialog subclass.
  */
 
-  .application~useGlobalConstDir("O", 'appIcon.h')
+  .application~useGlobalConstDir("O", 'ApplicationIcon.h')
 
   -- The dialog template is loaded from a resource script file,
-  -- ApplicationIcon.rc.   In the appIcon.h file are defines for the symbolic
-  -- resource IDs used in this program.
+  -- ApplicationIcon.rc.   In the ApplicationIcon.h file are defines for the
+  -- symbolic resource IDs used in this program.
 
   dlg = .SimpleDialog~new("ApplicationIcon.rc", IDD_DIALOG1)
   dlg~execute("SHOWTOP", IDI_CUSTOM_ICON)

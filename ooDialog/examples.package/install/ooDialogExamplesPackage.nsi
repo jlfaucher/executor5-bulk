@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2011 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,9 +36,13 @@
 /*----------------------------------------------------------------------------*/
 
 /**
- *  ooDialogSamplesPackage.nsi
+ *  ooDialogexamplesPackage.nsi
  *
- *  An NSIS script to build the ooDialog Samples installer.
+ *  An NSIS script to build the Extra ooDialog Examples installer.
+ *
+ *  Use this command line to execute this script:
+ *
+ *    makensis /DVERSION=n.n.n /DNODOTSVERSION=n_n_n_ /DROOTDIR=<root> /DCPU=x86_64 ooDialogExamplesPackage.nsi
  *
  */
 
@@ -50,12 +54,12 @@
 ;--------------------------------
 ; Defines
 
-  !define VERSION        "0.0.5"
-  !define VERSIONNODOTS  "0_0_5"
-  !define SHORTNAME      "ooDialog_Samples_${VERSIONNODOTS}"
+  ; define VERSION        "0.0.5"  defined on command line
+  ; define NODOTSVERSION  "0_0_5"  defined on command line
+  !define SHORTNAME      "ooDialog_Examples_${NODOTSVERSION}"
   !define LONGNAME       "Extra ooDialog Samples ${VERSION}"
   !define DISPLAYICON    "$INSTDIR\AppIcon2.ico"
-  !define SRCDIR         "C:\work.ooRexx\wc\incubator\samples\ooDialog.samples.package"
+  !define SRCDIR         "${ROOTDIR}"
   !define UNINSTALLER    "uninstall.exe"
 
 
@@ -66,13 +70,12 @@
   !include "Library.nsh"
   !include "LogicLib.nsh"
   !include "FileFunc.nsh"
-;  !include "admin.nsh"
 
 ;--------------------------------
 ;General
 
   Name "Extra ooDialog Samples"
-  OutFile "${SHORTNAME}.exe"
+  OutFile "${SHORTNAME}_${CPU}.exe"
   ShowInstdetails show
   SetOverwrite on
   SetPluginUnload alwaysoff
@@ -190,8 +193,10 @@ Section  installFiles
 
   DetailPrint "******** Extra ooDialog Samples ${VERSION} **********"
 
-  ${File} "${SRCDIR}\install\" "CPLv1.0.txt"
   ${File} "${SRCDIR}\install\" "AppIcon2.ico"
+  ${File} "${SRCDIR}\install\" "CPLv1.0.txt"
+  ${File} "${SRCDIR}\" "makeDLL.ReadMe"
+  ${File} "${SRCDIR}\" "makeDLL.rex"
   ${File} "${SRCDIR}\" "ReleaseNotes.txt"
   ${File} "${SRCDIR}\" "Version.txt"
 
@@ -203,14 +208,22 @@ Section  installFiles
   ${CreateDirectory} "$INSTDIR\Dialogs"
   ${CreateDirectory} "$INSTDIR\Menus"
 
+  ${SetOutPath} "$INSTDIR\Controls\Edit\Extended"
+  ${File} "${SRCDIR}\Controls\Edit\Extended\" "EditControlEx.dll"
+  ${File} "${SRCDIR}\Controls\Edit\Extended\" "EditControlEx.h"
+  ${File} "${SRCDIR}\Controls\Edit\Extended\" "EditControlEx.rc"
+  ${File} "${SRCDIR}\Controls\Edit\Extended\" "EditControlEx.rex"
+  ${File} "${SRCDIR}\Controls\Edit\Extended\" "MakeFile"
+  ${File} "${SRCDIR}\Controls\Edit\Extended\" "ReadMe.txt"
+
   ${SetOutPath} "$INSTDIR\Controls\Edit\NumberOnly"
-  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "ReadMeFirst.txt"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG.dll"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG.h"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG.rc"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG.rex"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "MakeFile"
   ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "NumberOnlyEditEx.cls"
-  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG32.dll"
-  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "CalcMPG64.dll"
+  ${File} "${SRCDIR}\Controls\Edit\NumberOnly\" "ReadMe.txt"
 
   ${SetOutPath} "$INSTDIR\Controls\List-box\pop.quiz"
   ${File} "${SRCDIR}\Controls\List-box\pop.quiz\" "popQuiz.h"
@@ -222,6 +235,22 @@ Section  installFiles
   ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.h"
   ${File} "${SRCDIR}\Controls\List-view\edit.items\" "EditableListView.rex"
 
+  ${SetOutPath} "$INSTDIR\Controls\List-view\extended"
+  ${File} "${SRCDIR}\Controls\List-view\extended\" "ListViewEx.dll"
+  ${File} "${SRCDIR}\Controls\List-view\extended\" "ListViewEx.h"
+  ${File} "${SRCDIR}\Controls\List-view\extended\" "ListViewEx.rc"
+  ${File} "${SRCDIR}\Controls\List-view\extended\" "ListViewEx.rex"
+  ${File} "${SRCDIR}\Controls\List-view\extended\" "MakeFile"
+  ${File} "${SRCDIR}\Controls\List-view\extended\" "ReadMe.txt"
+
+  ${SetOutPath} "$INSTDIR\Controls\List-view\imageLists"
+  ${File} "${SRCDIR}\Controls\List-view\imageLists\" "addListViews.rex"
+  ${File} "${SRCDIR}\Controls\List-view\imageLists\" "Attribution.txt"
+  ${File} "${SRCDIR}\Controls\List-view\imageLists\" "iconList.h"
+  ${File} "${SRCDIR}\Controls\List-view\imageLists\" "iconList.rc"
+  ${File} "${SRCDIR}\Controls\List-view\imageLists\" "iconList_16.bmp"
+  ${File} "${SRCDIR}\Controls\List-view\imageLists\" "iconList_32.bmp"
+
   ${SetOutPath} "$INSTDIR\Controls\List-view\transfer.items"
   ${File} "${SRCDIR}\Controls\List-view\transfer.items\" "propertyValues.rex"
 
@@ -230,11 +259,11 @@ Section  installFiles
   ${File} "${SRCDIR}\Controls\Static\" "staticImage.rex"
 
   ${SetOutPath} "$INSTDIR\Dialogs\application.icon"
-  ${File} "${SRCDIR}\Dialogs\application.icon\" "appIcon.h"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "ApplicationIcon.dll"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "ApplicationIcon.h"
   ${File} "${SRCDIR}\Dialogs\application.icon\" "ApplicationIcon.rc"
-  ${File} "${SRCDIR}\Dialogs\application.icon\" "ApplicationIcon32.dll"
-  ${File} "${SRCDIR}\Dialogs\application.icon\" "ApplicationIcon64.dll"
   ${File} "${SRCDIR}\Dialogs\application.icon\" "Camera.ico"
+  ${File} "${SRCDIR}\Dialogs\application.icon\" "MakeFile"
   ${File} "${SRCDIR}\Dialogs\application.icon\" "Question32.ico"
   ${File} "${SRCDIR}\Dialogs\application.icon\" "RcAppIcon.rex"
   ${File} "${SRCDIR}\Dialogs\application.icon\" "ResAppIcon.rex"
@@ -247,14 +276,30 @@ Section  installFiles
   ${File} "${SRCDIR}\Dialogs\dlgData\" "dlgData.rex"
   ${File} "${SRCDIR}\Dialogs\dlgData\" "symbolicDlgData.rex"
 
-  ${SetOutPath} "$INSTDIR\Dialogs\simple.dialogs"
-  ${File} "${SRCDIR}\Dialogs\simple.dialogs\" "inputDlg.rex"
-  ${File} "${SRCDIR}\Dialogs\simple.dialogs\" "fileNameDialog.rex"
+  ${SetOutPath} "$INSTDIR\Dialogs\progress.indicator"
+  ${File} "${SRCDIR}\Dialogs\progress.indicator\" "ProgressDialog.cls"
+  ${File} "${SRCDIR}\Dialogs\progress.indicator\" "progressProgram.rex"
+
+  ${SetOutPath} "$INSTDIR\Dialogs\simple.dialogs\fileName"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\fileName\" "fileNameDialog.rex"
+
+  ${SetOutPath} "$INSTDIR\Dialogs\simple.dialogs\input"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\input\" "inputDlg.rex"
+
+  ${SetOutPath} "$INSTDIR\Dialogs\simple.dialogs\jobConsole"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\jobConsole\" "guiConsole.h"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\jobConsole\" "guiConsole.rc"
+  ${File} "${SRCDIR}\Dialogs\simple.dialogs\jobConsole\" "jobConsole.rex"
 
   ${SetOutPath} "$INSTDIR\Dialogs\simple.dialogs\typingTutor"
   ${File} "${SRCDIR}\Dialogs\simple.dialogs\typingTutor\" "typingTutor.rex"
   ${File} "${SRCDIR}\Dialogs\simple.dialogs\typingTutor\" "typingTutor.h"
   ${File} "${SRCDIR}\Dialogs\simple.dialogs\typingTutor\" "typingTutor.rc"
+
+  ${SetOutPath} "$INSTDIR\Dialogs\useful.dialogs\PickOne"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\PickOne\" "pickAnInterpreter.rex"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\PickOne\" "PickOneDlg.cls"
+
 
   ; Write the uninstall keys.
   DetailPrint "Writing uninstall keys."

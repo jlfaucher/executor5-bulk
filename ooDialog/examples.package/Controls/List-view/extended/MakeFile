@@ -36,7 +36,7 @@
 #/*----------------------------------------------------------------------------*/
 
 # This is a nMake compatible make file to create the resource-only DLL for the
-# EditControlEx.rex example.  It is intended to be used as part of the packaging
+# ListViewEx.rex example.  It is intended to be used as part of the packaging
 # system for the Extra ooDialog Examples package.  It expects that the MACHINE
 # environment variable has been set.  The packaging system does this normally.
 #
@@ -50,11 +50,11 @@
 # a 64-bit DLL and X86 to build a 32-bit DLL.
 #
 # If needed, it may be easier to use the makeDLL.rex program distributed with
-# the Extra ooDialog Examples package to rebuild the EditControlEx.dll file from
+# the Extra ooDialog Examples package to rebuild the ListViewEx.dll file from
 # source.  makeDll.rex is accompanied by a read me file explaining how to use
 # it.
 
-BASE_NAME = EditControlEx
+BASE_NAME = ListViewEx
 
 $(BASE_NAME).dll : $(BASE_NAME).res
   link $(BASE_NAME).res /NOENTRY /DLL /MACHINE:$(MACHINE) /OUT:$(BASE_NAME).dll

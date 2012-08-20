@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2011 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,25 +35,86 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-/**
- * A simple dialog showing how to use an application icon.  In this example
- * the icon is located in the application icon resource only DLL file.  We first
- * check if the program is running under a 64-bit or 32-bit version of ooRexx,
- * and then load the appropriate DLL.
- *
- * The symbolic ID for the icon is: IDI_APP_ICON which is defined in the
- * ApplicationIcon.h file.  The symbolic IDs in that file are loaded into the
- * global .constDir so that symbolic resource IDs can be used anywhere in the
- * application.  Probably a little bit of overkill for this simple example.
- */
+-- This Rexx program can be used to compile a resource script file to a resource
+-- only DLL (a binary resource.)
+--
+-- It assumes the Microsoft tools are in the path.
+--
+-- Syntax:
+--
+--   rexx makeDll.rex inputName <outputName>
+--
+-- Where:
+--
+-- inputName is required and is the name of the resource script file.
+--
+-- outputName is optional and is the name of the DLL file.  if outputName is
+-- omitted, the the name of the DLL file will be constructed from the name of
+-- the resource file.
+--
+-- Examples:
+--
+-- Compile ApplicationIcon.rc to ApplicationIcon.dll:
+--
+--   rexx makeDll.rex ApplicationIcon.rc
+--
+-- Compile resources.dlg to pplication.dll:
+--
+--   rexx makeDll.rex resources.dlg Application.dll
+--
+use arg cmdLine
 
-  .application~useGlobalConstDir("O", 'ApplicationIcon.h')
+  if arg(1, 'O') then return doHelp()
 
-  dlg = .SimpleDialog~new('ApplicationIcon.dll', IDD_DIALOG1)
-  dlg~execute("SHOWTOP", IDI_APP_ICON)
+  parse var cmdLine inFile outFile .
 
-::requires "ooDialog.cls"
+  baseName = getBaseName(inFile)
 
-::class 'SimpleDialog' subclass ResDialog
+  if outFile == "" then do
+    outFile = baseName'.dll'
+  end
+
+  if \ haveTools() then return doHelp()
+
+  'rc -r -fo' || baseName'.res' inFile
+  'link' baseName'.res /NOENTRY /DLL /MACHINE:X86 /OUT:'outFile
+
+return 0
+
+-- Simplistic check for rc.exe to see if the tools are accessible.
+::routine haveTools
+  'rc /? > nul 2>&1'
+  rcRet = RC
+  if rcRet <> 0 then do
+    say "rx.exe or link.exe (or both) do not appear to be in the path."
+    return .false
+  end
+
+return .true
+
+::routine getBaseName
+  use strict arg inFile
+
+  ext = FileSpec('E', inFile)
+
+  if ext == "" then return infile
+  else return inFile~left(inFile~lastPos(ext) - 2)
 
 
+::routine doHelp
+  say
+  say "makeDLL: compile a resource only DLL using Microsoft's tools."
+  say 'rc.exe and link.exe must be in the path.'
+  say
+  say 'Syntax: rexx makeDll.rex rcFile [outFile]'
+  say 'where rcFile is the input file, the resource script.'
+  say 'outFile is optional, use it to rename the output file.'
+  say
+  say 'Examples:'
+  say 'makeDll OpenWatcom.rc'
+  say '  Compiles OpenWatcom.rc producing OpenWatcom.dll.'
+  say
+  say 'makeDll OpenWatcom.dlg OpenWatcomMS.dll'
+  say '  Compiles OpenWatcom.dlg producing OpenWatcomMS.dll.'
+
+  return 0

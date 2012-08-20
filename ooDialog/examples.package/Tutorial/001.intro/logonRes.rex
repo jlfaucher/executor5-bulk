@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2011 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -101,24 +101,13 @@
   -- coding an ooDialog listed in the Tutorial: section above.
 
 
-  -- Instantiate an object of our RcDialog (1.) subclass.  The subclass
+  -- Instantiate an object of our ResDialog (1.) subclass.  The subclass
   -- definition is below.  The programmer provides the name of the resource only
-  -- DLL (logonRes32.dll or logon64.dll) that contains the dialog template.  The
-  -- dialog resource ID must be provided also.  The ID is required by the
-  -- operating system, even if the DLL only contains 1 dialog template.
+  -- DLL (logonRes.dll) that contains the dialog template.  The dialog resource
+  -- ID must be provided also.  The ID is required by the operating system, even
+  -- if the DLL only contains 1 dialog template.
 
-  -- A slight complication arises since the bitness of a DLL must match the
-  -- bitness of the application loading the DLL.  Because of this a 32-bit
-  -- version of the resource only DLL is provided for ooRexx 32-bit and a 64-bit
-  -- version for ooRexx 64-bit. ooDialog provides a class, .OS, than has utility
-  -- methods related to the operating system.  The is64bit() method returns
-  -- .true if the 64-bit ooRexx interpreter is in use, otherwise false.  We use
-  -- this to determine which resource only DLL to use here.
-
-  resourceDLL = "logonRes32.dll"
-  if .OS~is64bit then resourceDLL = "logonRes64.dll"
-
-  dlg = .LogonDialog~new(resourceDll, 100)
+  dlg = .LogonDialog~new('logonRes.dll', 100)
 
   -- Execute (3.) the dialog.  The execute() method passes the dialog template
   -- to the operarting system, runs the dialog, and does not return until the

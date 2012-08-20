@@ -62,10 +62,10 @@ NSISCPU = x86_64
 NSISCPU = x86_32
 !endif
 
-PACKAGE_OUTDIR=$(PACKAGE_ROOT_DIR)
-PACKAGE_NAME=ooDialog_Samples_$(NODOTVERSION)_$(NSISCPU).exe
+PACKAGE_OUTDIR = $(PACKAGE_ROOT_DIR)
+PACKAGE_NAME = ooDialog_Examples_$(NODOTVERSION)_$(NSISCPU).exe
 
-DLLFILES = $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\ListViewEx.dll          \
+DLLFILES = $(PACKAGE_ROOT_DIR)\Controls\List-view\extended\ListViewEx.dll     \
            $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\EditControlEx.dll       \
            $(PACKAGE_ROOT_DIR)\Controls\Edit\NumberOnly\CalcMPG.dll           \
            $(PACKAGE_ROOT_DIR)\Dialogs\application.icon\ApplicationIcon.dll   \
@@ -75,50 +75,50 @@ DLLFILES = $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\ListViewEx.dll          \
 all: package
 
 package: clean $(PACKAGE_NAME)
-    @cd $(PACKAGE_ROOT_DIR)
-    @set OOD_INDEPENDENT=1
-    @set OOD_OUTDIR=$(OOD_OUTDIR)
-    @set PACKAGE_ROOT_DIR=$(PACKAGE_ROOT_DIR)
-    @set OOD_INCLUDE_FILE=$(OOD_INCLUDE_FILE)
-    @set REXX_LIBS=$(REXX_LIBS)
-    @set NODEBUG=$(NODEBUG)
-    @set CPU=$(CPU)
-    @set MSVCVER=$(MSVCVER)
-    @set MKASM=$(MKASM)
-    @set NOCRTDLL=1
-    $(MAKE) /NOLOGO /F oodialog.mak
-    @cd $(OOD_ROOT_DIR)
+    @echo                       Extra ooDialog Samples v$(PACKAGE_MAJOR).$(PACKAGE_MINOR).$(PACKAGE_MOD_LVL) > Version.txt
 
-$(OOD_OUTDIR)\ooDialog.cls: $(CLASSFILES)
-    @echo .
-    @echo Building ooDialog classes
-    @cd $(OOD_OUTDIR)
-    @REXX $(PACKAGE_ROOT_DIR)\build_ooDialog_cls.rex
-    @cd $(OOD_ROOT_DIR)
-
-example_dlls:
-    @echo .
-    @echo Building resource DLLs for examples
-    @cd $(OOD_ROOT_DIR)\examples\res
-    @set MACHINE=$(CPU)
-    $(MAKE) /NOLOGO /F res.mak
-    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Samples\DlgData\res
-    $(MAKE) /NOLOGO /F res.mak
-    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise05\res
-    $(MAKE) /NOLOGO /F res.mak
-    @cd $(OOD_ROOT_DIR)\examples\userGuide\exercises\Exercise06\Product\res
-    $(MAKE) /NOLOGO /F res.mak
-    @cd $(OOD_ROOT_DIR)
-
-
-dist: all
+$(PACKAGE_NAME): $(DLLFILES)
     @echo .
     @echo Creating installation package
-    @cd $(OOD_ROOT_DIR)\install
-    makensis /DVERSION=$(DOTVER) /DSHORTVERSION=$(SHORTVERSION) /DROOTDIR=$(OOD_ROOT_DIR) /DOUTDIR=$(OOD_OUTDIR) /DCPU=$(NSISCPU) /DDEBUGPKG=$(NSISDEBUG) ooDialog.nsi
-    @cd $(OOD_ROOT_DIR)
+    @cd $(PACKAGE_ROOT_DIR)\install
+    makensis /DVERSION=$(DOTVERISION) /DNODOTSVERSION=$(NODOTVERSION) /DROOTDIR=$(PACKAGE_ROOT_DIR) /DCPU=$(NSISCPU) ooDialogExamplesPackage.nsi
+    @move $(PACKAGE_NAME) $(PACKAGE_ROOT_DIR)
+    @cd $(PACKAGE_ROOT_DIR)
 
-$(BASETARGETS): Makefile
+$(PACKAGE_ROOT_DIR)\Controls\List-view\extended\ListViewEx.dll: $(LISTVIEWEX_DEP)
+    @echo .
+    @echo Building $(PACKAGE_ROOT_DIR)\Controls\List-view\extended\ListViewEx.dll
+    @cd $(PACKAGE_ROOT_DIR)\Controls\List-view\extended
+    $(MAKE) /NOLOGO MACHINE=$(CPU)
+    @cd $(PACKAGE_ROOT_DIR)
+
+$(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\EditControlEx.dll: $(EDITCONTROLEX_DEP)
+    @echo .
+    @echo Building $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\EditControlEx.dll
+    @cd $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended
+    $(MAKE) /NOLOGO MACHINE=$(CPU)
+    @cd $(PACKAGE_ROOT_DIR)
+
+$(PACKAGE_ROOT_DIR)\Controls\Edit\NumberOnly\CalcMPG.dll: $(CALCMPG_DEP)
+    @echo .
+    @echo Building $(PACKAGE_ROOT_DIR)\Controls\Edit\NumberOnly\CalcMPG.dll
+    @cd $(PACKAGE_ROOT_DIR)\Controls\Edit\NumberOnly
+    $(MAKE) /NOLOGO MACHINE=$(CPU)
+    @cd $(PACKAGE_ROOT_DIR)
+
+$(PACKAGE_ROOT_DIR)\Dialogs\application.icon\ApplicationIcon.dll: $(APPLICATIONICON_DEP)
+    @echo .
+    @echo Building $(PACKAGE_ROOT_DIR)\Dialogs\application.icon\ApplicationIcon.dll
+    @cd $(PACKAGE_ROOT_DIR)\Dialogs\application.icon
+    $(MAKE) /NOLOGO MACHINE=$(CPU)
+    @cd $(PACKAGE_ROOT_DIR)
+
+$(PACKAGE_ROOT_DIR)\Tutorial\001.intro\logonRes.dll: $(LOGONREX_DEP)
+    @echo .
+    @echo Building $(PACKAGE_ROOT_DIR)\Tutorial\001.intro\logonRes.dll
+    @cd $(PACKAGE_ROOT_DIR)\Tutorial\001.intro
+    $(MAKE) /NOLOGO MACHINE=$(CPU)
+    @cd $(PACKAGE_ROOT_DIR)
 
 clean:
     @echo .
@@ -127,4 +127,14 @@ clean:
     @del /f /s *.dll 1>nul 2>&1
     @del /f ooDialog_*.exe 1>nul 2>&1
 
+
+LISTVIEWEX_DEP = $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\ListViewEx.rc $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\ListViewEx.h
+
+EDITCONTROLEX_DEP = $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\EditControlEx.rc $(PACKAGE_ROOT_DIR)\Controls\Edit\Extended\EditControlEx.h
+
+CALCMPG_DEP = $(PACKAGE_ROOT_DIR)\Controls\Edit\NumberOnly\CalcMPG.rc $(PACKAGE_ROOT_DIR)\Controls\Edit\NumberOnly\CalcMPG.h
+
+APPLICATIONICON_DEP = $(PACKAGE_ROOT_DIR)\Dialogs\application.icon\ApplicationIcon.rc $(PACKAGE_ROOT_DIR)\Dialogs\application.icon\ApplicationIcon.h
+
+LOGONRES_DEP = $(PACKAGE_ROOT_DIR)\Tutorial\001.intro\logonRc.rc
 
