@@ -1,6 +1,6 @@
 
                               Release Notes
-                      Extra ooDialog Samples v0.0.5
+                      Extra ooDialog Samples v0.0.6
                       =============================
 
   The extra ooDialog samples package is meant to provide ooDialog
@@ -31,6 +31,34 @@
   program code should be read.  Some directories may contain additional
   documentation in the form of "read me" files within the directory.
 
+  Notes:
+  ------
+
+  *  Version 0.0.6 of the package requires ooDialog 4.2.0 or later to run
+  all example programs in the package.  This is the same as the previous
+  release.
+
+  *  The release contains around 2 dozen example programs.
+
+  Changes Since v0.0.5:
+  ---------------------
+
+  Examples:
+  ---------
+
+  The following examples have been added since v0.0.5:
+
+  * Event.Handlers\Edit\LostFocus\
+
+
+
+                        Cumlative Release Notes:
+                        ========================
+
+
+                              Release Notes
+                      Extra ooDialog Samples v0.0.5
+                      =============================
   Notes:
   ------
 
@@ -98,10 +126,6 @@
     was moved to
     Dialogs\simple.dialogs\input\inputDlg.rex
 
-
-
-                        Cumlative Release Notes:
-                        ========================
 
 
                               Release Notes

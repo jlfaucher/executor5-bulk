@@ -300,6 +300,10 @@ Section  installFiles
   ${File} "${SRCDIR}\Dialogs\useful.dialogs\PickOne\" "pickAnInterpreter.rex"
   ${File} "${SRCDIR}\Dialogs\useful.dialogs\PickOne\" "PickOneDlg.cls"
 
+  ${SetOutPath} "$INSTDIR\Event.Handlers\Edit\LostFocus"
+  ${File} "${SRCDIR}\Event.Handlers\Edit\LostFocus\" "voterDlg.h"
+  ${File} "${SRCDIR}\Event.Handlers\Edit\LostFocus\" "voterDlg.rc"
+  ${File} "${SRCDIR}\Event.Handlers\Edit\LostFocus\" "voterDlg.rex"
 
   ; Write the uninstall keys.
   DetailPrint "Writing uninstall keys."
