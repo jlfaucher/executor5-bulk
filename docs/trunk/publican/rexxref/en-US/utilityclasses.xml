@@ -3937,6 +3937,36 @@ contents is erased and the new buffer size is the value given
 in the <emphasis role="bold">init</emphasis> method.</para>
 </section>
 
+<section id="mthMutableBufferSpace"><title>space</title>
+<indexterm><primary>space method</primary>
+<secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>space method</secondary>
+<tertiary>of MutableBuffer class</tertiary></indexterm>
+<indexterm><primary>formatting</primary>
+<secondary>text spacing</secondary></indexterm>
+<indexterm><primary>spacing, formatting, space method</primary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-space-+---------------+-------------------------------------><
+         +-(n-+------+-)-+
+              +-,pad-+
+]]>
+</programlisting>
+
+<para>Returns the target mutablebuffer, with
+<emphasis role="italic">n</emphasis>&nbsp;<emphasis role="italic">pad</emphasis>
+characters between each whitespace-delimited word. If you specify
+<emphasis role="italic">n</emphasis>, it must
+be a positive whole number or zero. If it is
+<computeroutput>0</computeroutput>, all whitespace characters are removed.
+Leading and trailing whitespace characters are always removed. The default for
+<emphasis role="italic">n</emphasis> is <computeroutput>1</computeroutput>,
+and the default <emphasis role="italic">pad</emphasis> character is a blank.
+</para>
+</section>
+
 <section id="mthMutableBufferString"><title>string</title>
 <indexterm><primary>string method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
