@@ -146,7 +146,7 @@ ADDRESS VALUE"ENVIR"||number
 Commands are strings sent to an external environment. You can send commands
 by specifying clauses consisting of only an expression or by using the ADDRESS
 instruction. (See
-<link linkend="cmdhost">Commands to External Environments</link>.)</para>
+<xref linkend="cmdhost" />.)</para>
 <para>To send a single command to a specified environment, code an
 
 <emphasis role="italic">environment</emphasis>,
@@ -182,7 +182,7 @@ ADDRESS "bash" "ls /usr/lib"
 </programlisting>
 <para>If you specify only <emphasis role="italic">environment</emphasis>, a
 lasting change of destination occurs: all commands (see
-<link linkend="commnds">Commands</link>) that follow are routed to
+<xref linkend="commnds" />) that follow are routed to
 the specified command environment, until the next ADDRESS instruction is
 processed. The previously selected environment is saved.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -216,14 +216,14 @@ Using a null string for the environment name (&quot;&quot;) is the same as using
 the default environment.</para>
 <para>The two environment names are automatically saved across internal and external
 subroutine and function calls. See the CALL instruction
-(<link linkend="keyCall">CALL</link>) for more details.</para>
+(<xref linkend="keyCall" />) for more details.</para>
 <para>The address setting is the currently
 <indexterm><primary>address setting</primary></indexterm>
 <indexterm><primary>environment</primary>
 <secondary>default</secondary></indexterm>
 selected environment name. You can retrieve the current address setting by
 using the ADDRESS built-in function. (See
-<link linkend="bifAddress">ADDRESS</link>.) The
+<xref linkend="bifAddress" />.) The
 <citetitle pubwork="book">Open Object Rexx: Programming Guide</citetitle>
 describes the creation of alternative subcommand environments.</para>
 </section>
@@ -284,7 +284,7 @@ characters, patterns, or both.
 <para>The objects passed to the program, routine, or method
 are converted to string values
 and parsed into variables according to the rules described in
-<link linkend="parsingch">Parsing</link>.</para>
+<xref linkend="parsingch" />.</para>
 <para>The language processor converts the objects to strings and translates the
 strings to uppercase (that is, lowercase
 <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput> to
@@ -327,9 +327,9 @@ Fred:  Arg string, num1, num2
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The ARG built-in function can also retrieve or check the
-arguments. See <link linkend="bifArg">ARG (Argument)</link>.</para></listitem>
+arguments. See <xref linkend="bifArg" />.</para></listitem>
 <listitem><para>The USE ARG instruction (see
-<link linkend="keyUse">USE</link>) is an alternative way
+<xref linkend="keyUse" />) is an alternative way
 of retrieving arguments. USE ARG performs a direct, one-to-one assignment
 of argument objects to Rexx variables. You should use this when your program
 needs a direct reference to the argument object, without string conversion
@@ -410,7 +410,7 @@ of certain conditions (if you specify ON or OFF).</para>
 <para>To control trapping, you specify OFF or ON and the condition you want to
 trap. OFF turns off the specified condition trap. ON turns on the specified
 condition trap. All information on condition traps is contained in
-<link linkend="condtra">Conditions and Condition Traps</link>.</para>
+<xref linkend="condtra" />.</para>
 <para>To call a routine, specify <emphasis role="italic">name</emphasis>,
 which must be a literal string or symbol that is taken as a constant. The
 <emphasis role="italic">usercondition</emphasis> is a single
@@ -437,7 +437,7 @@ Rexx language.
 </term>
 <listitem><para>A subroutine that is neither built-in nor a label
 within the same same program as the CALL instruction call that invokes it.
-See <link linkend="xsearcho">Search Order</link> for details on the different
+See <xref linkend="xsearcho" /> for details on the different
 types of external routines.
 </para></listitem></varlistentry>
 </variablelist>
@@ -454,7 +454,7 @@ parentheses. The expression is evaluated before any of the argument expressions,
 and the value is the target of the CALL instruction. The language processor
 does not translate the expression value into uppercase, so the evaluated name
 must exactly match any label name or built-in function name. (See
-<link linkend="labels">Labels</link> for a description of label names.)</para>
+<xref linkend="labels" /> for a description of label names.)</para>
 <para>The called routine can optionally return a result. In this case, the CALL
 instruction is functionally identical with the clause:</para>
 <para></para>
@@ -485,7 +485,7 @@ including extra commas.</para>
 <para>The CALL then branches to the routine called
 <emphasis role="italic">name</emphasis>, using exactly
 the same mechanism as function calls. See
-<link linkend="funct">Functions</link>. The search
+<xref linkend="funct" />. The search
 order is as follows: </para>
 <indexterm><primary>search order</primary>
 <secondary>for subroutines</secondary></indexterm>
@@ -501,7 +501,7 @@ internal routine.
 <varlistentry><term><emphasis role="bold">Built-in routines</emphasis></term>
 <listitem><para>These are routines built into the language processor for
 providing various functions.  They always return an object that is the result
-of the routine. (See <link linkend="bifArg">ARG (Argument)</link>.)</para>
+of the routine. (See <xref linkend="bifArg" />.)</para>
 
 <note><title>Note</title>
 <para>You can call any built-in function
@@ -524,7 +524,7 @@ USE ARG instructions or the ARG built-in function.
 </para></listitem></varlistentry>
 </variablelist>
 <para>For more information on the search order, see
-<link linkend="xsearcho">Search Order</link>.</para>
+<xref linkend="xsearcho" />.</para>
 <para>During execution of an internal routine, all variables previously known
 are generally accessible. However, the PROCEDURE instruction can set up a
 local variables environment to protect the subroutine and caller from each
@@ -608,7 +608,7 @@ at the start and tracing is automatically restored to the conditions at entry
 (interactive debug) is saved across routines.</para></listitem>
 <listitem><para><emphasis role="bold">NUMERIC settings:</emphasis>  The DIGITS,
 FUZZ, and FORM of arithmetic operations (in
-<link linkend="keyNumeric">NUMERIC</link>) are saved and then restored
+<xref linkend="keyNumeric" />) are saved and then restored
 on return. A subroutine can, therefore, set the precision, for example, that
 it needs to use without affecting the caller.</para></listitem>
 <listitem><para><emphasis role="bold">ADDRESS settings:
@@ -616,7 +616,7 @@ it needs to use without affecting the caller.</para></listitem>
 <secondary>settings saved during subroutine calls</secondary></indexterm>
 <indexterm><primary>address setting</primary></indexterm>
 </emphasis>The current and previous destinations for commands (see
-<link linkend="keyAddress">ADDRESS</link>)
+<xref linkend="keyAddress" />)
 are saved and then restored on return.</para></listitem>
 <listitem><para>
 <indexterm><primary>SIGNAL instruction</primary>
@@ -635,15 +635,15 @@ information describes
 <secondary>saved</secondary></indexterm>
 the state and origin of the current trapped condition. The CONDITION built-in
 function returns this information. See
-<link linkend="bifCondition">CONDITION</link>.</para></listitem>
+<xref linkend="bifCondition" />.</para></listitem>
 <listitem><para><emphasis role="bold">.RS value:</emphasis> The value of
-the .RS environment symbol. (See <link linkend="rs">.RS</link>.)
+the .RS environment symbol. (See <xref linkend="rs" />.)
 </para></listitem>
 <listitem><para><emphasis role="bold">Elapsed-time clocks:</emphasis>
 <indexterm><primary>elapsed-time clock</primary>
 <secondary>saved during subroutine calls</secondary></indexterm>
 A subroutine inherits the elapsed-time
-clock from its caller (see <link linkend="bifTime">TIME</link>), but because the
+clock from its caller (see <xref linkend="bifTime" />), but because the
 time clock is saved across routine calls, a subroutine or internal function
 can independently restart and use the clock without affecting its caller.
 For the same reason, a clock started within an internal routine is not
@@ -786,7 +786,7 @@ get placed in the array in no particular order.
 </para></listitem>
 </orderedlist>
 <para>For more information, refer to
-<link linkend="dokey">Using DO and LOOP</link>.</para>
+<xref linkend="dokey" />.</para>
 </section>
 
 <section id="keyDrop"><title>DROP</title>
@@ -826,8 +826,8 @@ allowed. The list need not contain any names&mdash;that is, it can be empty.
 </para>
 <para>Variables are dropped from left to right. It is not an error to specify
 a name more than once or to drop a variable that is not known. If an exposed
-variable is named (see <link linkend="keyExpose">EXPOSE</link>
-and <link linkend="keyProcedure">PROCEDURE</link>), then
+variable is named (see <xref linkend="keyExpose" />
+and <xref linkend="keyProcedure" />), then
 the original variable is dropped.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>DROP instruction</primary>
@@ -885,7 +885,7 @@ Drop  z.
 <para>EXIT leaves a program unconditionally. Optionally, EXIT returns a
 result object to the caller. The program is stopped immediately, even
 if an internal routine is being run.  If no internal routine is active, RETURN
-(see <link linkend="keyReturn">RETURN</link>) and EXIT are identical in their
+(see <xref linkend="keyReturn" />) and EXIT are identical in their
 effect on the program running.</para>
 <para>If you specify <emphasis role="italic">expression</emphasis>,
 it is evaluated and the object resulting from the evaluation is passed back
@@ -908,7 +908,7 @@ as an error.
 <para>You can also use EXIT within a method. The method is stopped immediately,
 and the result object, if specified, is returned to the sender. If the method
 has previously issued a REPLY instruction
-(see <link linkend="keyReply">REPLY</link>),
+(see <xref linkend="keyReply" />),
 the EXIT instruction must not include a result expression.</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
@@ -986,9 +986,9 @@ myobj~c
 myobj~d         /* Would display "Z is: 120"                 */
 
 ::class myclass /* The ::CLASS directive                     */
-                /* (see <link linkend="clasdi">::CLASS</link>)                             */
+                /* (see <xref linkend="clasdi" />)           */
 ::method c      /* The ::METHOD directive                    */
-                /* (see <link linkend="methd">::METHOD</link>)                            */
+                /* (see <xref linkend="methd" />)            */
   expose z
   z = 100       /* Would assign 100 to the object variable z */
   return
@@ -1000,7 +1000,7 @@ myobj~d         /* Would display "Z is: 120"                 */
   return
 </programlisting>
 <para>You can expose an entire collection of compound variables
-(see <link linkend="compsym">Compound Symbols</link>)
+(see <xref linkend="compsym" />)
 by specifying their stem in the variable list or a subsidiary list.
 The variables are exposed for all operations.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
@@ -1220,7 +1220,7 @@ WHEN) or released (for GUARD OFF WHEN), and the method resumes running.</para>
 <para>If the condition expression cannot be met, GUARD ON WHEN puts the
 program in a continuous wait condition. This can occur in particular when
 several activities run concurrently. See
-<link linkend="guamet">Guarded Methods</link> for more information.
+<xref linkend="guamet" /> for more information.
 </para></note>
 </section>
 
@@ -1448,7 +1448,7 @@ value of a variable (<computeroutput>NAME</computeroutput>) and another literal,
 and the final result (<computeroutput>Hello Kitty!</computeroutput>) is then
 displayed.</para></listitem>
 <listitem><para>For many purposes, you can use the VALUE function
-(see <link linkend="bifValue">VALUE</link>)
+(see <xref linkend="bifValue" />)
 instead of the INTERPRET instruction. The following line could, therefore,
 have replaced line 5 in the previous example: </para>
 <programlisting>
@@ -1458,7 +1458,7 @@ say "Hello" value(indirect)"!"
 two or more statements are to be interpreted together, or when an expression
 is to be evaluated dynamically.</para></listitem>
 <listitem><para>You cannot use a directive (see
-<link linkend="dire">Directives</link>) within an INTERPRET
+<xref linkend="dire" />) within an INTERPRET
 instruction.</para></listitem>
 </orderedlist>
 </section>
@@ -1743,7 +1743,7 @@ get placed in the array in no particular order.
 </para></listitem>
 </orderedlist>
 <para>For more information, refer to
-<link linkend="dokey">Using DO and LOOP</link>.</para>
+<xref linkend="dokey" />.</para>
 </section>
 
 <section id="keyNop"><title>NOP</title>
@@ -1819,7 +1819,7 @@ and is, therefore, a valid target for the THEN clause.</para></note>
 
 <para>NUMERIC changes the way in which a program carries out arithmetic
 operations. The options of this instruction are described in detail in
-<link linkend="numarit">Numbers and Arithmetic</link>.</para>
+<xref linkend="numarit" />.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">NUMERIC DIGITS</emphasis>
 <indexterm><primary>NUMERIC instruction</primary>
@@ -1829,7 +1829,7 @@ operations. The options of this instruction are described in detail in
 built-in functions are evaluated. If you omit
 <emphasis role="italic">expression1</emphasis>, the precision defaults to
 9 digits, but can be overridden on a source-file basis using the
-<link linkend="optionsd">::OPTIONS directive</link>.  Otherwise, the character
+::OPTIONS directive (<xref linkend="optionsd" />.  Otherwise, the character
 string value result of
 <emphasis role="italic">expression1</emphasis> must evaluate to a positive whole
 number and must be larger than the current NUMERIC FUZZ setting.</para>
@@ -1839,7 +1839,7 @@ require a great amount of processing time. It is recommended that you use
 the default value whenever possible.</para>
 <para>You can retrieve the current NUMERIC
 DIGITS setting with the DIGITS built-in function. See
-<link linkend="bifDigits">DIGITS</link>.</para>
+<xref linkend="bifDigits" />.</para>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">NUMERIC FORM</emphasis>
 <indexterm><primary>NUMERIC instruction</primary>
@@ -1861,12 +1861,12 @@ symbol or a literal string,
 that is, if it starts with a special character, such as an operator character
 or parenthesis.</para>
 <para>You can retrieve the current NUMERIC FORM setting with
-the FORM built-in function. See <link linkend="bifForm">FORM</link>.</para>
+the FORM built-in function. See <xref linkend="bifForm" />.</para>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">NUMERIC FUZZ</emphasis></term>
 <listitem><para>controls how many digits, at full precision, are ignored during
 a numeric
-comparison operation. (See <link linkend="numcom">Numeric Comparisons</link>.)
+comparison operation. (See <xref linkend="numcom" />.)
 If you omit <emphasis role="italic">expression3</emphasis>,
 the default is 0 digits. Otherwise, the character string value result
 of <emphasis role="italic">expression3</emphasis> must evaluate
@@ -1882,14 +1882,14 @@ reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
 numeric comparison. The numbers are subtracted under a precision of DIGITS
 minus FUZZ digits during the comparison and are then compared with 0.</para>
 <para>You can retrieve the current NUMERIC FUZZ setting with the FUZZ built-in
-function. See <link linkend="bifFuzz">FUZZ</link>.</para>
+function. See <xref linkend="bifFuzz" />.</para>
 </listitem></varlistentry>
 </variablelist>
 
 <note><title>Note</title>
 <para>The three numeric settings are automatically saved across
 internal subroutine and function calls. See the CALL instruction
-(<link linkend="keyCall">CALL</link>) for more details.</para></note>
+(<xref linkend="keyCall" />) for more details.</para></note>
 </section>
 
 <section id="keyOptions"><title>OPTIONS</title>
@@ -1971,7 +1971,7 @@ language processor.</para>
 either order.</para></note>
 <indexterm><primary>assigning data to variables</primary></indexterm>
 <para>PARSE assigns data from various sources to one or more variables according
-to the rules of parsing. (See <link linkend="parsingch">Parsing</link>.)</para>
+to the rules of parsing. (See <xref linkend="parsingch" />.)</para>
 <para>
 <indexterm><primary>uppercase translation</primary>
 <secondary>with PARSE UPPER</secondary></indexterm>
@@ -1995,7 +1995,7 @@ both.</para>
 <para>Each template is applied to a single source string. Specifying several
 templates is not a syntax error, but only the PARSE ARG variant can supply
 more than one non-null source string. See
-<link linkend="parsmul">Parsing Several Strings</link> for information
+<xref linkend="parsmul" /> for information
 on parsing several source strings.</para>
 <para>If you do not specify a template, no variables are set but the data is
 prepared for parsing, if necessary. Thus for PARSE PULL, a data string is
@@ -2014,14 +2014,14 @@ instruction.</para>
 </term>
 <listitem><para>parses the strings passed to a program, routine, or method as
 input arguments. (See the ARG instruction in
-<link linkend="keyArg">ARG</link> for details and examples.)
+<xref linkend="keyArg" /> for details and examples.)
 
 <note><title>Note</title>
 <para>Parsing uses the string values of the argument objects. The
 USE ARG instruction provides direct access to argument objects.
 You can also retrieve or check the argument objects to a Rexx program, routine, or
 method with the ARG built-in function (see
-<link linkend="bifArg">ARG (Argument)</link>).
+<xref linkend="bifArg" />).
 </para></note>
 </para></listitem></varlistentry>
 <varlistentry><term id="parlini"><emphasis role="bold">PARSE LINEIN</emphasis>
@@ -2031,7 +2031,7 @@ method with the ARG built-in function (see
 </term>
 <listitem><para>
 parses the next line of the default input stream.
-(See <link linkend="iostrms">Input and Output Streams</link> for a discussion
+(See <xref linkend="iostrms" /> for a discussion
 of Rexx input and output.) PARSE LINEIN
 is a shorter form of the following instruction:
 </para>
@@ -2050,8 +2050,8 @@ PARSE LINEIN will not pull lines from the external data queue.
 </para>
 <para>To check if any lines are available in the default input stream, use the
 built-in
-function LINES. See <link linkend="bifLines">LINES (Lines Remaining)</link>
-and <link linkend="bifLinein">LINEIN (Line Input)</link>.</para>
+function LINES. See <xref linkend="bifLines" />
+and <xref linkend="bifLinein" />.</para>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">PARSE PULL</emphasis>
 <indexterm><primary>PULL option of PARSE instruction</primary></indexterm>
@@ -2063,11 +2063,11 @@ terminal), and the program pauses, if necessary, until a line is complete.
 You can add data to the head or tail of the queue by using the PUSH and QUEUE
 instructions, respectively. You can find the number of lines currently in
 the queue with the QUEUED built-in function. (See
-<link linkend="bifQueued">QUEUED</link>.)
+<xref linkend="bifQueued" />.)
 The queue remains active as long as the language processor is active. Other
 programs in the system can alter the queue and use it to communicate with
 programs written in Rexx. See also the PULL instruction in
-<link linkend="keyPull">PULL</link>.
+<xref linkend="keyPull" />.
 </para>
 
 <note><title>Note</title>
@@ -2169,7 +2169,7 @@ words:
 <computeroutput>6.03</computeroutput>.</para></listitem>
 <listitem><para>Three tokens that describe the language processor release
 date in the same format as the default for the DATE built-in function
-(see <link linkend="bifDate">DATE</link>),
+(see <xref linkend="bifDate" />),
 for example, &quot;27 Sep 2007&quot;.</para></listitem></itemizedlist>
 </para></listitem></varlistentry>
 </variablelist>
@@ -2340,7 +2340,7 @@ lucky7:Procedure Expose i j a. c.
 of routines if they are included in all intermediate PROCEDURE instructions.
 </para></note>
 <para>See the CALL instruction and function descriptions in
-<link linkend="keyCall">CALL</link> and <link linkend="funct">Functions</link>
+<xref linkend="keyCall" /> and <xref linkend="funct" />
 for details and examples of how routines are called.</para>
 </section>
 
@@ -2377,7 +2377,7 @@ for details and examples of how routines are called.</para>
 
 <para>PULL reads a string from the head of the external data queue or, if
 the external data queue is empty, from the standard input stream (typically the keyboard).
-(See <link linkend="iostrms">Input and Output Streams</link> for a
+(See <xref linkend="iostrms" /> for a
 discussion of Rexx input and output.) It is a short
 form of the following instruction:</para>
 <indexterm><primary>uppercase translation</primary>
@@ -2404,7 +2404,7 @@ to uppercase (that is, lowercase
 to uppercase
 <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>)
 and then parsed into variables according to the
-rules described in <link linkend="parsingch">Parsing</link>. Use the PARSE PULL
+rules described in <xref linkend="parsingch" />. Use the PARSE PULL
 instruction if you do not desire uppercase translation. </para>
 
 <note><title>Note</title>
@@ -2429,9 +2429,9 @@ to isolate the first word the user enters.</para>
 <para>If the external data queue is empty, a line is read from the default input
 stream and the program pauses, if necessary, until a line is complete. (This
 is as though PARSE UPPER LINEIN had been processed.
-See <link linkend="parlini">PARSE LINEIN</link>.)</para>
+See <xref linkend="parlini" />.)</para>
 <para>The QUEUED built-in function (see
-<link linkend="bifQueued">QUEUED</link>) returns the
+<xref linkend="bifQueued" />) returns the
 number of lines currently in the external data queue.</para>
 </section>
 
@@ -2456,7 +2456,7 @@ number of lines currently in the external data queue.</para>
 <para>PUSH stacks the string resulting from the evaluation of
 <emphasis role="italic">expression</emphasis> LIFO (Last In, First Out)
 into the external data queue. (See
-<link linkend="iostrms">Input and Output Streams</link> for
+<xref linkend="iostrms" /> for
 a discussion of Rexx input and output.)</para>
 <para>If you do not specify <emphasis role="italic">expression</emphasis>,
 a null string is stacked.</para>
@@ -2471,7 +2471,7 @@ push       /* Puts a null line onto the queue */
 push a 2   /* Puts "Fred 2"    onto the queue */
 </programlisting>
 <para> The QUEUED built-in
-function (described in <link linkend="bifQueued">QUEUED</link>) returns the number
+function (described in <xref linkend="bifQueued" />) returns the number
 of lines currently in the external data queue.</para>
 </section>
 
@@ -2496,7 +2496,7 @@ of lines currently in the external data queue.</para>
 <emphasis role="italic">expression</emphasis> to the tail
 of the external data queue. That is, it is added FIFO (First In, First Out).
 <indexterm><primary>FIFO (first-in/first-out) stacking</primary></indexterm>
-(See <link linkend="iostrms">Input and Output Streams</link>
+(See <xref linkend="iostrms" />
 for a discussion of Rexx input and output.)</para>
 <para>If you do not specify <emphasis role="italic">expression</emphasis>,
 a null string is queued.</para>
@@ -2511,7 +2511,7 @@ queue a 2  /* Enqueues "Toft 2" */
 queue      /* Enqueues a null line behind the last */
 </programlisting>
 <para> The QUEUED built-in
-function (described in <link linkend="bifQueued">QUEUED</link>) returns the number
+function (described in <xref linkend="bifQueued" />) returns the number
 of lines currently in the external data queue.</para>
 </section>
 
@@ -2588,7 +2588,7 @@ RETURN, and EXIT in any order. However, if you specify EXIT without
 <emphasis role="italic">exprr</emphasis>, it must appear last.</para></note>
 <para>RAISE returns or exits from the currently running routine or method and
 raises a condition in the caller (for a routine) or sender (for a method).
-See <link linkend="condtra">Conditions and Condition Traps</link>
+See <xref linkend="condtra" />
 for details of the actions taken when conditions
 are raised. The RAISE instruction can raise all conditions that can be trapped.
 </para>
@@ -2661,10 +2661,10 @@ expression to obtain its character string value. If you do not specify
 <emphasis role="italic">exprr</emphasis> or
 <emphasis role="italic">expre</emphasis>, no result is passed back to the
 caller or sender. In either case, the effect is the same as that of the
-RETURN or EXIT instruction (see <link linkend="keyReturn">RETURN</link>).
+RETURN or EXIT instruction (see <xref linkend="keyReturn" />).
 Following the return or exit, the appropriate action is taken in the caller
 or sender (see
-<link linkend="atwcnt">Action Taken when a Condition Is Not Trapped</link>).
+<xref linkend="atwcnt" />).
 If specified, the result value can be obtained from the RESULT entry of the
 condition object.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -2750,7 +2750,7 @@ on the thread also have access, the method issuing the REPLY releases its access
 and reacquires the access on the new thread. This might force the method
 to wait until the original activity has released its access.</para></listitem>
 </orderedlist>
-<para>See <link linkend="xconcur">Concurrency</link> for a complete
+<para>See <xref linkend="xconcur" /> for a complete
 description of concurrency.</para>
 </section>
 
@@ -2782,7 +2782,7 @@ description of concurrency.</para>
 method, or routine to the point of its invocation.</para>
 <para>If no internal routine (subroutine or function) is active, RETURN and EXIT
 are identical in their effect on the program that is run.
-(See <link linkend="keyExit">EXIT</link>.)</para>
+(See <xref linkend="keyExit" />.)</para>
 <para>If called as a routine, <emphasis role="italic">expression</emphasis>
 (if any) is evaluated, control is passed back to the caller, and the Rexx
 special variable
@@ -2792,13 +2792,13 @@ RESULT is set to the value of <emphasis role="italic">expression</emphasis>.
 If you omit <emphasis role="italic">expression</emphasis>,
 the special variable RESULT is dropped (becomes uninitialized). The
 various settings saved at the time of the CALL (for example, tracing and
-addresses) are also restored. (See <link linkend="keyCall">CALL</link>.)</para>
+addresses) are also restored. (See <xref linkend="keyCall" />.)</para>
 <para>If a function call is active, the action taken is identical, except that
 <emphasis role="italic">expression</emphasis> must be specified on the
 RETURN instruction. The result of <emphasis role="italic">expression</emphasis>
 is then used in the original expression at the point where the function
 was called. See the description of functions in
-<link linkend="funct">Functions</link> for more details.</para>
+<xref linkend="funct" /> for more details.</para>
 <para>If a method is processed, the language processor evaluates
 <emphasis role="italic">expression</emphasis> (if any) and returns control to
 the point from which the method's activating message was sent.
@@ -2851,7 +2851,7 @@ returned to the operating system is zero.
 
 <para>SAY writes a line to the default output stream, which displays it to the
 user. However, the output destination can depend on the implementation. See
-<link linkend="iostrms">Input and Output Streams</link> for a discussion of
+<xref linkend="iostrms" /> for a discussion of
 Rexx input and output. The string value of the
 <emphasis role="italic">expression</emphasis> result is written to the default
 character output stream. The resulting string can be of any length. If
@@ -2874,7 +2874,7 @@ the null string is written.</para>
 </listitem>
 <listitem><para>CALL LINEOUT can raise NOTREADY; SAY will not.</para></listitem>
 </itemizedlist>
-<para>See <link linkend="bifLineout">LINEOUT (Line Output)</link>
+<para>See <xref linkend="bifLineout" />
 for details of the LINEOUT function.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <indexterm><primary>SAY instruction</primary>
@@ -3114,7 +3114,7 @@ certain conditions (if you specify ON or OFF).</para>
 <para>To control trapping, you specify OFF or ON and the condition you want to
 trap. OFF turns off the specified condition trap. ON turns on the specified
 condition trap. All information on condition traps is contained in
-<link linkend="condtra">Conditions and Condition Traps</link>.</para>
+<xref linkend="condtra" />.</para>
 <para>To change the flow of control, a label
 name is derived from <emphasis role="italic">labelname</emphasis> or taken
 from the character string result of evaluating the
@@ -3218,7 +3218,7 @@ can interact with the language processor while the program is running.)</para>
 
 <note><title>Note</title>
 <para>TRACE cannot be used in the Rexx macrospace. See
-<link linkend="traceinmacrospace">Trace in Macrospace</link>.</para></note>
+<xref linkend="traceinmacrospace" />.</para></note>
 <para>If specified, the <emphasis role="italic">number</emphasis>
 must be a whole number.</para>
 <para>The <emphasis role="italic">string</emphasis> or
@@ -3227,7 +3227,7 @@ must be a whole number.</para>
 <listitem><para>A numeric option</para></listitem>
 <listitem><para>One of the valid prefix or alphabetic character (word) options
 described in
-<link linkend="alphaco">Trace Alphabetic Character (Word) Options</link></para>
+<xref linkend="alphaco" /></para>
 </listitem>
 <listitem><para>Null</para></listitem></itemizedlist>
 <para>The <emphasis role="italic">symbol</emphasis> is taken as a constant
@@ -3235,7 +3235,7 @@ and is therefore:</para>
 <itemizedlist>
 <listitem><para>A numeric option</para></listitem>
 <listitem><para>One of the valid prefix or alphabetic character (word) options
-described in <link linkend="alphaco">Alphabetic Character (Word) Options</link>
+described in <xref linkend="alphaco" />
 </para></listitem></itemizedlist>
 <para>The option that follows TRACE or the character string that is the result
 of evaluating <emphasis role="italic">expression</emphasis> determines the
@@ -3265,7 +3265,7 @@ to as alphabetic character options.</para>
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Commands</emphasis></term>
 <listitem><para>Traces all commands before execution. If the command results
-in an error or failure (see <link linkend="commnds">Commands</link>),
+in an error or failure (see <xref linkend="commnds" />),
 tracing also displays the return code from the command.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Error</emphasis>
@@ -3273,12 +3273,12 @@ tracing also displays the return code from the command.
 <secondary>traceback after</secondary></indexterm>
 </term>
 <listitem><para>Traces any command resulting in an error or failure after
-execution (see <link linkend="commnds">Commands</link>), together with the
+execution (see <xref linkend="commnds" />), together with the
 return code from the command.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Failure</emphasis></term>
 <listitem><para>Traces any command resulting in a failure after execution
-(see <link linkend="commnds">Commands</link>), together with the return
+(see <xref linkend="commnds" />), together with the return
 code from the command. This is
 the same as the <computeroutput>Normal</computeroutput> option.
 </para></listitem></varlistentry>
@@ -3330,7 +3330,7 @@ of a prefix on an instruction reverses the action of the previous prefix.
 controls interactive debugging.  During normal execution, a TRACE option
 with a prefix of <computeroutput>?</computeroutput>
 causes interactive debugging to be switched
-on. (See <link linkend="xintdeb">Debugging Aids</link>
+on. (See <xref linkend="xintdeb" />
 for full details of this facility.) When interactive
 debugging is on, interpretation pauses after most clauses that are traced.
 For example, the instruction <computeroutput>TRACE ?E</computeroutput>
@@ -3371,7 +3371,7 @@ debugging.</para>
 <para>If interactive debugging is active and the option specified is a positive
 whole number (or an expression that evaluates to a positive whole number),
 that number indicates the number of debug pauses to be skipped.
-(See <link linkend="xintdeb">Debugging Aids</link> for further information.)
+(See <xref linkend="xintdeb" /> for further information.)
 However, if the option is a negative
 whole number (or an expression that evaluates to a negative whole number),
 all tracing, including debug pauses, is temporarily inhibited for the specified
@@ -3388,14 +3388,14 @@ After that, tracing resumes as before.</para>
 every iteration of the loop.</para></listitem>
 <listitem><para>You can retrieve the trace actions currently in effect by
 using the TRACE
-built-in function (see <link linkend="bifTrace">TRACE</link>).</para></listitem>
+built-in function (see <xref linkend="bifTrace" />).</para></listitem>
 <listitem><para>The trace output of commands traced before execution always
 contains the final value of the command, that is, the
 string passed to the environment, and the clause generating it.</para>
 </listitem>
 <listitem><para>Trace actions are automatically saved across subroutine,
 function, and method calls. See
-<link linkend="keyCall">CALL</link> for more details.
+<xref linkend="keyCall" /> for more details.
 </para></listitem></itemizedlist>
 </section>
 
@@ -3496,7 +3496,7 @@ updates for DO and LOOP instructions.
 <indexterm><primary>>.> tracing flag</primary></indexterm>
 </term>
 <listitem><para>Identifies the value assigned to a placeholder during parsing
-(see <link linkend="placeh">The Period as a Placeholder</link>).
+(see <xref linkend="placeh" />).
 </para></listitem></varlistentry>
 </variablelist><para> The following prefixes are used only if
 <computeroutput>TRACE Intermediates</computeroutput> is in effect:</para>
@@ -3649,7 +3649,7 @@ parentheses.</para>
 <para>The <emphasis role="italic">name</emphasis>s may be any valid symbol or
 message term which
 can appear on the left side of an assignment statement (See
-<link linkend="assinmt">Assignments and Symbols</link>).
+<xref linkend="assinmt" />).
 </para>
 <para>The STRICT options imposes additional constraints on argument processing.
 The number of arguments must match the number of
@@ -3747,7 +3747,7 @@ myArray[1] = arg(1)
 myDirectory~name = arg(2)
 </programlisting>
 <para>You can retrieve or check the arguments by using the ARG built-in function
-(see <link linkend="bifArg">ARG (Argument)</link>).
+(see <xref linkend="bifArg" />).
 The ARG and PARSE ARG instructions are alternative
 ways of retrieving arguments. ARG and PARSE ARG access the string values of
 arguments. USE ARG performs a direct, one-to-one assignment of arguments.

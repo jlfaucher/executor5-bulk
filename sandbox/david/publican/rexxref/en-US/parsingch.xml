@@ -48,8 +48,8 @@
 <secondary>description</secondary></indexterm>
 <indexterm><primary>conceptual overview of parsing</primary></indexterm>
 <para>The parsing instructions are ARG, PARSE, and PULL (see
-<link linkend="keyArg">ARG</link>, <link linkend="keyParse">PARSE</link>, and
-<link linkend="keyPull">PULL</link>).</para>
+<xref linkend="keyArg" />, <xref linkend="keyParse" />, and
+<xref linkend="keyPull" />).</para>
 <para>The data to be parsed is a source string.
 <indexterm><primary>parsing</primary>
 <secondary>source string</secondary></indexterm>
@@ -83,7 +83,7 @@ names:
 </term>
 <listitem><para>Match the characters in the source string to specify where
 it is to be split. (See
-<link linkend="parspat">Templates Containing String Patterns</link> for details.)
+<xref linkend="parspat" /> for details.)
 </para></listitem></varlistentry>
 <varlistentry><term>Positional patterns
 <indexterm><primary>parsing</primary>
@@ -96,7 +96,7 @@ it is to be split. (See
 </term>
 <listitem><para>Indicate the character positions at which the source string is
 to be split. (See
-<link linkend="xpospat">Templates Containing Positional (Numeric) Patterns</link>
+<xref linkend="xpospat" />
 for details.)
 </para></listitem></varlistentry>
 </variablelist>
@@ -158,7 +158,7 @@ parse value string with var1 var2 var3           /* same results */
 the source string to uppercase
 <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>.
 If you want to convert characters to uppercase, use PARSE UPPER VALUE. See
-<link linkend="xupper">Using UPPER, LOWER, and CASELESS</link> for
+<xref linkend="xupper" /> for
 a summary of the effect of parsing instructions on the case.</para>
 <para>Note that if you specify the CASELESS option on a PARSE instruction, the
 string comparisons during the scanning operation are made independently of
@@ -168,7 +168,7 @@ in lowercase.</para>
 the variables named in a template. There are various parsing instructions
 because of the differences in the nature or origin of source strings. For
 a summary of all the parsing instructions, see
-<link linkend="parsum">Parsing Instructions Summary</link>.</para>
+<xref linkend="parsum" />.</para>
 
 <para>The PARSE VAR instruction is similar to PARSE VALUE except
 that the source string to be parsed is always a variable. In PARSE VAR, the
@@ -253,7 +253,7 @@ parse value "   Pluto   " with var1        /* var1="   Pluto   "*/
 <section id="parseterm"><title>Message Term Assignments</title>
 <para>In addition to assigning values to variables, the PARSE instruction also
 allows any message term value that can be used on the left side of an assignment
-instruction (See <link linkend="assinmt">Assignments and Symbols</link>).
+instruction (See <xref linkend="assinmt" />).
 For example:</para>
 <programlisting>
 /* Preserving extra blanks                                       */
@@ -321,7 +321,7 @@ either of the following: </para>
 (<computeroutput>+</computeroutput>), minus
 (<computeroutput>-</computeroutput>), or equal sign
 (<computeroutput>=</computeroutput>) before the left parenthesis. (See
-<link linkend="varpat">Parsing with Variable Patterns</link> for details.)
+<xref linkend="varpat" /> for details.)
 </para></listitem></varlistentry>
 </variablelist>
 <para>Here are two templates, a simple template and a template containing a
@@ -378,7 +378,7 @@ of string.</para>
 
 <para>A template with a string pattern omits data in the source string
 that matches the pattern. (There is a special case (see
-<link linkend="parcmb">Combining String and Positional Patterns</link>)
+<xref linkend="parcmb" />)
 in which a template with a string pattern does not omit matching data in the
 source string.) The pattern <computeroutput>", "</computeroutput> (with a blank)
 is used instead of <computeroutput>","</computeroutput> (no blank) because,
@@ -415,7 +415,7 @@ an equal sign (<computeroutput>=</computeroutput>)
 <tertiary>in parsing templates</tertiary></indexterm>
 preceding it.</para></listitem>
 <listitem><para>An expression in parentheses with an equal sign before the left
-parenthesis. (See <link linkend="varpat">Parsing with Variable Patterns</link>
+parenthesis. (See <xref linkend="varpat" />
 for details on variable positional patterns.)</para></listitem>
 </itemizedlist>
 <para>The number specifies the absolute character position at which the source
@@ -505,7 +505,7 @@ minus (<computeroutput>-</computeroutput>) sign preceding it. It can also be a
 variable within parentheses, with a plus (<computeroutput>+</computeroutput>)
 or minus (<computeroutput>-</computeroutput>) sign preceding the left
 parenthesis; for details see
-<link linkend="varpat">Parsing with Variable Patterns</link>.</para>
+<xref linkend="varpat" />.</para>
 <para>The number specifies the relative character position at which the source
 string is to be split. The plus or minus indicates movement right or left,
 respectively, from the start of the string (for the first pattern) or from
@@ -529,7 +529,7 @@ Therefore,
 +0 is a valid relative positional pattern.</para>
 <para>Absolute and relative positional patterns are interchangeable except in
 the special case
-(<link linkend="parcmb">Combining String and Positional Patterns</link>) when a
+(see <xref linkend="parcmb" />) when a
 string pattern precedes a
 variable name and a positional pattern follows the variable name. The templates
 from the examples of absolute and relative positional patterns give the same
@@ -594,7 +594,7 @@ is a number with a (<computeroutput>&gt;</computeroutput>) or
 expression within parentheses, with a (<computeroutput>&gt;</computeroutput>)
 or (<computeroutput>&lt;</computeroutput>) preceding the left
 parenthesis; for details see
-<link linkend="varpat">Parsing with Variable Patterns</link>.</para>
+<xref linkend="varpat" />.</para>
 <para>The number specifies the length at which the source
 string is to be split, relative to the current position.. The &gt; or &lt; indicates movement right or left,
 respectively, from the start of the string (for the first pattern) or from
@@ -699,7 +699,7 @@ assigns the entire string into <computeroutput>ln</computeroutput>
 without removing any blanks. This is because <computeroutput>ln</computeroutput>
 is the only variable in this section of the template.
 (For details about treatment of whitespace characters, see
-<link linkend="simtem">Simple Templates for Parsing into Words</link>.)</para>
+<xref linkend="simtem" />.)</para>
 <indexterm><primary>examples</primary>
 <secondary>combining positional pattern and parsing into words</secondary>
 </indexterm>
@@ -736,7 +736,7 @@ receive <computeroutput>"&nbsp;X"</computeroutput> (with a blank before the
 <computeroutput>X</computeroutput>) because each is the only variable
 in its section of the template. (For details on treatment of whitespace
 characters, see
-<link linkend="simtem">Simple Templates for Parsing into Words</link>.)</para>
+<xref linkend="simtem" />.)</para>
 </section>
 </section>
 
@@ -986,7 +986,7 @@ say &apos;Input error--color is not "red" or "blue" or "yellow"&apos;; exit
 </programlisting>
 <para>ARG converts alphabetic characters to uppercase before parsing. An example
 of ARG with the arguments in the CALL to a subroutine is in
-<link linkend="parsmul">Parsing Several Strings</link>.</para>
+<xref linkend="parsmul" />.</para>
 <para>PARSE ARG is similar to ARG except that PARSE ARG
 does not convert alphabetic characters to uppercase before parsing.</para>
 <para>PARSE LINEIN </para>
@@ -1007,9 +1007,9 @@ parse source sysname .
 Say sysname                         /* Possibly Displays:        */
                                     /* "Windows"                 */
 </programlisting>
-<para><link linkend="pvalex">PARSE VALUE</link>.</para>
+<para><xref linkend="pvalex" />.</para>
 <para>PARSE VAR examples are throughout the chapter, starting
-with <link linkend="parsingch">Parsing</link>.</para>
+with <xref linkend="parsingch" />.</para>
 <para>PARSE VERSION </para>
 <programlisting>
 parse version . level .
@@ -1089,7 +1089,7 @@ parsing proceeds to the next template and source string.</para>
 <para>There is a special case in which absolute and relative positional patterns
 do not work identically. Parsing with a template containing a string pattern
 skips the data in the source string that matches the pattern (see
-<link linkend="parspat">Templates Containing String Patterns</link>).
+<xref linkend="parspat" />).
 But a template containing the sequence string pattern, variable name, and
 relative position pattern does not skip the matching data. A relative positional
 pattern moves relative to the first character matching a string pattern. As

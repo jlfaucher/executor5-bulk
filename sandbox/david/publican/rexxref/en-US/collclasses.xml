@@ -53,15 +53,15 @@ retrieve the item from the collection with the AT or [] methods.</para>
 following collection classes:</para>
 
 <variablelist>
-<varlistentry><term><link linkend="clsArray">Array</link></term>
+<varlistentry><term>Array (<xref linkend="clsArray" />)</term>
 <listitem><para>A sequenced collection of objects ordered by whole-number
 indexes.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsBag">Bag</link></term>
+<varlistentry><term>Bag (<xref linkend="clsBag" />)</term>
 <listitem><para>A collection where the index and the item are the same object. Bag indexes
 can be any object and each index can appear more than once.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsCircularQueue">CircularQueue</link></term>
+<varlistentry><term>CircularQueue (<xref linkend="clsCircularQueue" />)</term>
 <listitem><para>
 The CircularQueue class allows for storing objects in a circular queue
 of a predefined size. Once the end of the queue has been reached, new item
@@ -70,45 +70,45 @@ The collected objects can be processed in FIFO (first in, first out) or in a
 stack-like LIFO (last in, first out) order.
 </para></listitem>
 </varlistentry>
-<varlistentry><term><link linkend="clsDirectory">Directory</link></term>
+<varlistentry><term>Directory (<xref linkend="clsDirectory" />)</term>
 <listitem><para>A collection with character string indexes. Index comparisons are performed
 using the string == comparison method.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsList">List</link></term>
+<varlistentry><term>List (<xref linkend="clsList" />)</term>
 <listitem><para>A sequenced collection that lets you add new items at any position in
 the sequence. A list generates and returns an index value for each item placed
 in the list. The returned index remains valid until the item is removed from
 the list.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsProperties">Properties</link></term>
+<varlistentry><term>Properties (<xref linkend="clsProperties" /></term>
 <listitem><para>A collection with character string indexes and values.
 Properties collections include support for saving and loading from disk files.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsQueue">Queue</link></term>
+<varlistentry><term>Queue (<xref linkend="clsQueue" />)</term>
 <listitem><para>A sequenced collection with the items ordered as a queue. You can remove
 items from the head of the queue and add items at either its tail or its head.
 Queues index the items with whole-number indexes, in the order in which the
 items would be removed. The current head of the queue has index 1, the item
 after the head item has index 2, up to the number of items in the queue.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsRelation">Relation</link></term>
+<varlistentry><term>Relation (<xref linkend="clsRelation" />)</term>
 <listitem><para>A collection with indexes that can be any object.  A relation
 can contain duplicate indexes.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsSet">Set</link></term>
+<varlistentry><term>Set (<xref linkend="clsSet" />)</term>
 <listitem><para>A collection where the index and the item are the same object. Set indexes
 can be any object and each index is unique.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsStem">Stem</link></term>
+<varlistentry><term>Stem (<xref linkend="clsStem" />)</term>
 <listitem><para>A collection with character string indexes constructed from one
 or more string segments.  Index comparisons are performed using the string ==
 comparison method.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsTable">Table</link></term>
+<varlistentry><term>Table (<xref linkend="clsTable" />)</term>
 <listitem><para>A collection with indexes that can be any object.
 A table contains no duplicate indexes.
 </para></listitem></varlistentry>
-<varlistentry><term><link linkend="clsIdentityTable">IdentityTable</link></term>
+<varlistentry><term>IdentityTable (<xref linkend="clsIdentityTable" />)</term>
 <listitem><para>A collection with indexes that can be any object. The
 IdentityTable class determines index item matches by using an object identity
 comparison. With object identity matches, an index will only match the same
@@ -125,22 +125,22 @@ This does NOT represent the order that methods are inherited but rather
 the organization of the classes.</para>
 
 <programlisting>
-<link linkend="clsCollection">Collection</link>
-   <link linkend="clsMapCollection">MapCollection</link>
-      <link linkend="clsDirectory">Directory</link>
-      <link linkend="clsProperties">Properties</link>
-      <link linkend="clsRelation">Relation</link>
-      <link linkend="clsStem">Stem</link>
-      <link linkend="clsTable">Table</link>
-      <link linkend="clsIdentityTable">IdentityTable</link>
-   <link linkend="clsOrderedCollection">OrderedCollection</link>
-      <link linkend="clsArray">Array</link>
-      <link linkend="clsList">List</link>
-      <link linkend="clsQueue">Queue</link>
-      <link linkend="clsCircularQueue">CircularQueue</link>
-   <link linkend="clsSetCollection">SetCollection</link>
-      <link linkend="clsBag">Bag</link>
-      <link linkend="clsSet">Set</link>
+Collection (<xref linkend="clsCollection" />)
+   MapCollection (<xref linkend="clsMapCollection" />)
+      Directory (<xref linkend="clsDirectory" />)
+      Properties (<xref linkend="clsProperties" />)
+      Releation (<xref linkend="clsRelation" />)
+      Stem (<xref linkend="clsStem" />)
+      Table (<xref linkend="clsTable" />)
+      IdentityTable (<xref linkend="clsIdentityTable" />)
+   OrderedCollection (<xref linkend="clsOrderedCollection" />)
+      Array (<xref linkend="clsArray" />)
+      List (<xref linkend="clsList" />)
+      Queue (<xref linkend="clsQueue" />)
+      CircularQueue (<xref linkend="clsCircularQueue" />)
+   SetCollection (<xref linkend="clsSetCollection" />)
+      Bag (<xref linkend="clsBag" />)
+      Set (<xref linkend="clsSet" />)
 </programlisting>
 </section>
 
@@ -440,7 +440,7 @@ index values in the receiver collection.</para>
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsSupplier">Supplier object</link> for the
+<para>Returns a Supplier object (<xref linkend="clsSupplier" />) for the
 collection. The supplier allows you to enumerate through the index/item pairs
 for the collection.  The supplier is created from a snapshot of the collection
 and is unaffected by subsequent changes to the collection's contents.
@@ -516,10 +516,10 @@ object to a value.
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -751,7 +751,7 @@ remains unchanged.
 </programlisting>
 
 <para>Sorts a a collection of Comparable items into ascending order using an algorithm that is not guaranteed to be stable.
-See <link linkend="sortarray">Sorting Arrays</link> for details.
+See <xref linkend="sortarray" /> for details.
 </para>
 </section>
 
@@ -770,7 +770,7 @@ See <link linkend="sortarray">Sorting Arrays</link> for details.
 
 <para>Sorts a collection of items into ascending order using an algorithm that is not guaranteed to be stable.
 Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
-See <link linkend="sortarray">Sorting Arrays</link> for details.
+See <xref linkend="sortarray" /> for details.
 </para>
 </section>
 
@@ -788,7 +788,7 @@ See <link linkend="sortarray">Sorting Arrays</link> for details.
 </programlisting>
 
 <para>Sorts a collection of Comparable items into ascending order using a stable Mergesort algorithm.
-See <link linkend="sortarray">Sorting Arrays</link> for details.
+See <xref linkend="sortarray" /> for details.
 </para>
 </section>
 
@@ -807,7 +807,7 @@ See <link linkend="sortarray">Sorting Arrays</link> for details.
 
 <para>Sorts a collection of items into ascending order using a stable Mergesort algorithm.
 Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
-See <link linkend="sortarray">Sorting Arrays</link> for details.
+See <xref linkend="sortarray" /> for details.
 </para>
 </section>
 
@@ -898,10 +898,10 @@ constrain the index and item to be be the same object.</para>
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -931,9 +931,8 @@ object.
 </figure>
 <note><title>Note</title>
 <para>The Array class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the <link linkend="clsOrderedCollection">OrderedCollection
-class</link>.
+metaclass, the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the OrderedCollection class (<xref linkend="clsOrderedCollection" />).
 </para></note>
 <para>Array objects are variable-sized. The dimensionality of an array is fixed,
 but the size of each dimension is variable. When you create an array, you
@@ -950,20 +949,20 @@ whole-number indexes to reference items in an array.</para>
     index = .array~of(1,2,3)  -- create an index list
     x = myarray[index]   -- also retrieves from "1,2,3"
 </programlisting>
-<para>Methods such as <link linkend="mthArrayIndex">index()</link> that return
+<para>Methods such as index() (<xref linkend="mthArrayIndex" />) that return
 index items will return a single numeric value for single-dimension arrays and
 an array of indexes for multi-dimension arrays.</para>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsOrderedCollection">OrderedCollection class</link>.</para>
+OrderedCollection class (<xref linkend="clsOrderedCollection" />).</para>
 <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -1050,10 +1049,10 @@ does not include the indexes corresponding to those you omitted.</para>
 ]]>
 </programlisting>
 
-<para>Returns the same value as the <link linkend="mthArrayAt">at()</link>
+<para>Returns the same value as the at() (<xref linkend="mthArrayAt" />)
 method.</para>
 <para>
-  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  Note that the index (<xref linkend="paraArrayIndex" />) argument may also be specified as an array of
   indexes.
 </para>
 </section>
@@ -1072,10 +1071,10 @@ method.</para>
 ]]>
 </programlisting>
 
-<para>This method is the same as the <link linkend="mthArrayPut">put()</link>
+<para>This method is the same as the put() (<xref linkend="mthArrayPut" />)
 method.</para>
 <para>
-  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  Note that the index argument may also be specified as an array of
   indexes.
 </para>
 </section>
@@ -1190,7 +1189,7 @@ with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, this method returns the
 Nil object.</para>
 <para>
-  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  Note that the index argument may also be specified as an array of
   indexes.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -1227,7 +1226,7 @@ reduced by 1 element.
 </para>
 <para>
 The delete method is only valid with single-dimension arrays.  The
-The <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+The index argument may also be specified as an array of
 indexes.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -1341,7 +1340,7 @@ of index values.
 an item associated with the specified index or indexes. Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
 <para>
-  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  Note that the index argument may also be specified as an array of
   indexes.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -1531,7 +1530,7 @@ a <emphasis role="italic">separator</emphasis> string can be specified. The
 separator will be used between concatenated elements instead of the default line
 end separator.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
-<para>See <link linkend="mthArrayToString">toString</link> for examples.</para>
+<para>See <xref linkend="mthArrayToString" /> for examples.</para>
 </section>
 
 <section id="mthArrayNext"><title>next</title>
@@ -1550,11 +1549,11 @@ end separator.</para>
 follows the array item having index <emphasis role="italic">index</emphasis>
 or returns the Nil object if the item having that index is last in the array.
 For multi-dimention arrays, the same ordering used by the
-<link linkend="mthArrayAllItems">allItems</link> method is used to determine the
+allitems() (<xref linkend="mthArrayAllItems" />) method is used to determine the
 next position and the index is returned as an array of index values.
 </para>
 <para>
-  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  Note that the index argument may also be specified as an array of
   indexes.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -1583,10 +1582,10 @@ next position and the index is returned as an array of index values.
 item having that index is first in the
 array.
 For multi-dimention arrays, the same ordering used by the
-<link linkend="mthArrayAllItems">allItems</link> method is used to determine the
+allitems() (<xref linkend="mthArrayAllItems" />) method is used to determine the
 previous position and the index is returned as an array of index values.</para>
 <para>
-  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  Note that the index argument may also be specified as an array of
   indexes.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -1623,7 +1622,7 @@ with the new item. If the <emphasis role="italic">index</emphasis> for a
 particular dimension is greater than the current size of
 that dimension, the array is expanded to the new dimension size.</para>
 <para>
-  Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+  Note that the index argument may also be specified as an array of
   indexes.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -1672,7 +1671,7 @@ the array is unchanged and no other indexes of the array are modified with the
 removal.
 </para>
 <para>
-Note that the <link linkend="paraArrayIndex">index</link> argument may also be specified as an array of
+Note that the index argument may also be specified as an array of
 indexes.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
@@ -1736,8 +1735,8 @@ the new array contains all subsequent items of the receiver array. The receiver
 array remains unchanged. The section() method is valid only for single-index
 arrays.</para>
 <para>
-  Note that the <emphasis role="italic">start</emphasis> argument, (the <link
-  linkend="paraArrayIndex">index</link> argument,) may also be specified as an array of indexes.
+  Note that the <emphasis role="italic">start</emphasis> argument, (the
+  index argument,) may also be specified as an array of indexes.
 </para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
@@ -1782,7 +1781,7 @@ dimensions in the array.</para>
 </programlisting>
 
 <para>Sorts an array of Comparable items into ascending order using an unstable Quicksort algorithm.
-See <link linkend="sortarray">Sorting Arrays</link> for details.
+See <xref linkend="sortarray" /> for details.
 </para>
 </section>
 
@@ -1801,7 +1800,7 @@ See <link linkend="sortarray">Sorting Arrays</link> for details.
 
 <para>Sorts an array of items into ascending order using an unstable Quicksort algorithm.
 Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
-See <link linkend="sortarray">Sorting Arrays</link> for details.
+See <xref linkend="sortarray" /> for details.
 </para>
 </section>
 
@@ -1819,7 +1818,7 @@ See <link linkend="sortarray">Sorting Arrays</link> for details.
 </programlisting>
 
 <para>Sorts an array of Comparable items into ascending order using a stable Mergesort algorithm.
-See <link linkend="sortarray">Sorting Arrays</link> for details.
+See <xref linkend="sortarray" /> for details.
 </para>
 </section>
 
@@ -1838,7 +1837,7 @@ See <link linkend="sortarray">Sorting Arrays</link> for details.
 
 <para>Sorts an array of items into ascending order using a stable Mergesort algorithm.
 Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
-See <link linkend="sortarray">Sorting Arrays</link> for details.
+See <xref linkend="sortarray" /> for details.
 </para>
 </section>
 
@@ -1854,7 +1853,7 @@ See <link linkend="sortarray">Sorting Arrays</link> for details.
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsSupplier">Supplier</link> object for the
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the
 collection. The supplier allows you to iterate over the index/item pairs
 for the collection.
 The supplier enumerates the array items in their sequenced order.
@@ -1972,9 +1971,9 @@ in a bag, and the same object can be placed in a bag several times.
 </figure>
 <note><title>Note</title>
 <para>The Bag class also has available class methods that its metaclass,
-the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the <link linkend="clsSetCollection">Set Collection
-class</link>, although there are not currently any methods defined in that class.
+the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the Set Collection (<xref linkend="clsSetCollection" />)
+class, although there are not currently any methods defined in that class.
 </para></note>
 <para>The Bag class is a subclass of the Relation class. In addition to its own
 methods, it inherits the methods of the Object class and the Relation class.</para>
@@ -1982,43 +1981,43 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsMapCollection">MapCollection class</link>.</para>
+MapCollection class (<xref linkend="clsMapCollection" />).</para>
 <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 <para>Methods inherited from the
-<link linkend="clsRelation">Relation class</link>.</para>
+Relation class (<xref linkend="clsRelation" />).</para>
 <simplelist type="vert" columns="3">
-<member><link linkend="mthRelationNew">new (class method)</link></member>
-<member><link linkend="mthRelationAllAt">allAt</link></member>
-<member><link linkend="mthRelationAllIndex">allIndex</link></member>
-<member><link linkend="mthRelationAllIndexes">allIndexes</link></member>
-<member><link linkend="mthRelationAllItems">allItems</link></member>
-<member><link linkend="mthRelationAt">at</link></member>
-<member><link linkend="mthRelationAtGet">[ ]</link></member>
-<member><link linkend="mthRelationDifference">difference</link></member>
-<member><link linkend="mthRelationEmpty">empty</link></member>
-<member><link linkend="mthRelationHasIndex">hasIndex</link></member>
-<member><link linkend="mthRelationHasItem">hasItem</link></member>
-<member><link linkend="mthRelationIndex">index</link></member>
-<member><link linkend="mthRelationIntersection">intersection</link></member>
-<member><link linkend="mthRelationIsEmpty">isEmpty</link></member>
-<member><link linkend="mthRelationItems">items</link></member>
-<member><link linkend="mthRelationMakeArray">makeArray</link></member>
-<member><link linkend="mthRelationPut">put</link></member>
-<member><link linkend="mthRelationPutSet">[ ]=</link></member>
-<member><link linkend="mthRelationRemove">remove</link></member>
-<member><link linkend="mthRelationRemoveAll">removeAll</link></member>
-<member><link linkend="mthRelationRemoveItem">removeItem</link></member>
-<member><link linkend="mthRelationSubset">subset</link></member>
-<member><link linkend="mthRelationSupplier">supplier</link></member>
-<member><link linkend="mthRelationUnion">union</link></member>
-<member><link linkend="mthRelationXor">xor</link></member>
+<member>new ( class method) (<xref linkend="mthRelationNew" />)</member>
+<member>allAt (<xref linkend="mthRelationAllAt" />)</member>
+<member>allIndex (<xref linkend="mthRelationAllIndex" />)</member>
+<member>allIndexes (<xref linkend="mthRelationAllIndexes" />)</member>
+<member>allItems (<xref linkend="mthRelationAllItems" />)</member>
+<member>at (<xref linkend="mthRelationAt" />)</member>
+<member>[ ] (<xref linkend="mthRelationAtGet" />)</member>
+<member>difference (<xref linkend="mthRelationDifference" />)</member>
+<member>empty (<xref linkend="mthRelationEmpty" />)</member>
+<member>hasIndex (<xref linkend="mthRelationHasIndex" />)</member>
+<member>hasItem (<xref linkend="mthRelationHasItem" />)</member>
+<member>index (<xref linkend="mthRelationIndex" />)</member>
+<member>intersection (<xref linkend="mthRelationIntersection" />)</member>
+<member>isEmpty (<xref linkend="mthRelationIsEmpty" />)</member>
+<member>items (<xref linkend="mthRelationItems" />)</member>
+<member>makeArray (<xref linkend="mthRelationMakeArray" /></member>
+<member>put (<xref linkend="mthRelationPut" />)</member>
+<member>[ ]= (<xref linkend="mthRelationPutSet" />)</member>
+<member>remove (<xref linkend="mthRelationRemove" />)</member>
+<member>removeAll (<xref linkend="mthRelationRemoveAll" />)</member>
+<member>removeItem (<xref linkend="mthRelationRemoveItem" />)</member>
+<member>subset (<xref linkend="mthRelationSubset" />)</member>
+<member>supplier (<xref linkend="mthRelationSupplier" />)</member>
+<member>union (<xref linkend="mthRelationUnion" />)</member>
+<member>xor (<xref linkend="mthRelationXor" />)</member>
 </simplelist>
 
 </section>
@@ -2054,7 +2053,7 @@ methods, it inherits the methods of the Object class and the Relation class.</pa
 </programlisting>
 
 <para>Adds an item to the Bag.  This method is the same as the
-<link linkend="mthBagPut">put()</link> method.</para>
+put() (<xref linkend="mthBagPut" />) method.</para>
 </section>
 
 <section id="mthBagDifference"><title>difference</title>
@@ -2261,7 +2260,7 @@ in the queue.
 <note><title>Note</title>
 <para>
 The CircularQueue class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.</para>
+metaclass, the Class class (<xref linkend="clsClass" />), defines.</para>
 </note>
 <para>
 The collected objects can be processed in FIFO (first in, first out) or in a
@@ -2271,47 +2270,47 @@ stack-like LIFO (last in, first out) order.
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsOrderedCollection">OrderedCollection class</link>.</para>
+orderedCollection (<xref linkend="clsOrderedCollection" />).</para>
 <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 <para>Methods inherited from the
-<link linkend="clsQueue">Queue class</link>.</para>
+Queue class (<xref linkend="clsQueue" />).</para>
 <simplelist type="vert" columns="3">
-<member><link linkend="mthQueueNew">new (class method)</link></member>
-<member><link linkend="mthQueueOf">of (class method)</link></member>
-<member><link linkend="mthQueueAllIndexes">allIndexes</link></member>
-<member><link linkend="mthQueueAllItems">allItems</link></member>
-<member><link linkend="mthQueueAppend">append</link></member>
-<member><link linkend="mthQueueAt">at</link></member>
-<member><link linkend="mthQueueAtGet">[ ]</link></member>
-<member><link linkend="mthQueueDelete">[ ]</link></member>
-<member><link linkend="mthQueueEmpty">empty</link></member>
-<member><link linkend="mthQueueFirst">first</link></member>
-<member><link linkend="mthQueueHasIndex">hasIndex</link></member>
-<member><link linkend="mthQueueHasItem">hasItem</link></member>
-<member><link linkend="mthQueueIndex">index</link></member>
-<member><link linkend="mthQueueInsert">insert</link></member>
-<member><link linkend="mthQueueIsEmpty">isEmpty</link></member>
-<member><link linkend="mthQueueItems">items</link></member>
-<member><link linkend="mthQueueLast">last</link></member>
-<member><link linkend="mthQueueMakeArray">makeArray</link></member>
-<member><link linkend="mthQueueNext">next</link></member>
-<member><link linkend="mthQueuePeek">peek</link></member>
-<member><link linkend="mthQueuePrevious">previous</link></member>
-<member><link linkend="mthQueuePull">pull</link></member>
-<member><link linkend="mthQueuePush">push</link></member>
-<member><link linkend="mthQueuePut">put</link></member>
-<member><link linkend="mthQueuePutSet">[ ]=</link></member>
-<member><link linkend="mthQueueQueue">queue</link></member>
-<member><link linkend="mthQueueRemove">remove</link></member>
-<member><link linkend="mthQueueRemoveItem">removeItem</link></member>
-<member><link linkend="mthQueueSupplier">supplier</link></member>
+<member>new (class method) (<xref linkend="mthQueueNew" />)</member>
+<member>of (class method) (<xref linkend="mthQueueOf" />)</member>
+<member>allIndexes (<xref linkend="mthQueueAllIndexes" /></member>
+<member>allItems (<xref linkend="mthQueueAllItems" /></member>
+<member>append (<xref linkend="mthQueueAppend" />)</member>
+<member>at (<xref linkend="mthQueueAt" />)</member>
+<member>[ ] (<xref linkend="mthQueueAtGet" /></member>
+<member>delete (<xref linkend="mthQueueDelete" />)</member>
+<member>empty (<xref linkend="mthQueueEmpty" />)</member>
+<member>first (<xref linkend="mthQueueFirst" />)</member>
+<member>hasIndex (<xref linkend="mthQueueHasIndex" />)</member>
+<member>hasItem (<xref linkend="mthQueueHasItem" />)</member>
+<member>index (<xref linkend="mthQueueIndex" />)</member>
+<member>insert (<xref linkend="mthQueueInsert" />)</member>
+<member>isEmpty (<xref linkend="mthQueueIsEmpty" />)</member>
+<member>items (<xref linkend="mthQueueItems" />)</member>
+<member>last (<xref linkend="mthQueueLast" />)</member>
+<member>makeArray (<xref linkend="mthQueueMakeArray" />)</member>
+<member>next (<xref linkend="mthQueueNext" />)</member>
+<member>peek (<xref linkend="mthQueuePeek" />)</member>
+<member>previous (<xref linkend="mthQueuePrevious" />)</member>
+<member>pull (<xref linkend="mthQueuePull" />)</member>
+<member>push (<xref linkend="mthQueuePush" />)</member>
+<member>put (<xref linkend="mthQueuePut" />)</member>
+<member>[ ]= (<xref linkend="mthQueuePutSet" />)</member>
+<member>queue (<xref linkend="mthQueueQueue" />)</member>
+<member>remove (<xref linkend="mthQueueRemove" />)</member>
+<member>removeItem (<xref linkend="mthQueueRemoveItem" /></member>
+<member>supplier (<xref linkend="mthQueueSupplier" />)</member>
 </simplelist>
 
 </section>
@@ -2627,7 +2626,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 </programlisting>
 
 <para>
-Returns a <link linkend="clsSupplier">Supplier</link> object for the collection.
+Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
 The supplier allows you to iterate over the items that were in the queue at the
 time of the supplier's creation.
 </para>
@@ -2739,9 +2738,9 @@ items of the collection can be any valid Rexx object.
 </figure>
 <note><title>Note</title>
 <para>The Directory class also has available class methods that
-metaclass, the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the <link linkend="clsMapCollection">Map Collection
-class</link>, although there are not currently any methods defined in that class.
+metaclass, the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the Map (<xref linkend="clsMapCollection" />) class,
+although there are not currently any methods defined in that class.
 </para></note>
 <para>In addition to the standard put() and at() methods defined for
 Collections, Directories provide access to objects using methods.  For
@@ -2755,13 +2754,13 @@ say mydir~name        -- same as say mydir['NAME']
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsMapCollection">MapCollection class</link>.</para>
+MapCollection (<xref linkend="clsMapCollection" />).</para>
 <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -2794,7 +2793,7 @@ say mydir~name        -- same as say mydir['NAME']
 </programlisting>
 
 <para>Returns the item corresponding to <emphasis role="italic">name</emphasis>.
-This method is the same as the <link linkend="mthDirectoryPut">at</link>
+This method is the same as the at() (<xref linkend="mthDirectoryPut" />)
 method.</para>
 </section>
 
@@ -2811,7 +2810,7 @@ method.</para>
 </programlisting>
 
 <para>Adds or replaces the entry at index <emphasis role="italic">name</emphasis>.
-This method is the same as the <link linkend="mthDirectoryPut">put</link>
+This method is the same as the put() (<xref linkend="mthDirectoryPut" />)
 method.
 </para>
 </section>
@@ -2829,7 +2828,7 @@ method.
 </programlisting>
 
 <para>Returns an array of all the directory indexes, including those of all
-the <link linkend="mthDirectorySetMethod">setMethod</link> methods.</para>
+the setMethods (<xref linkend="mthDirectorySetMethod" />) methods.</para>
 </section>
 
 <section id="mthDirectoryAllItems"><title>allItems</title>
@@ -2845,7 +2844,7 @@ the <link linkend="mthDirectorySetMethod">setMethod</link> methods.</para>
 </programlisting>
 
 <para>Returns an array of all items contained in the directory, including those
-returned by all <link linkend="mthDirectorySetMethod">setMethod</link>
+returned by all setMethod (<xref linkend="mthDirectorySetMethod" />)
 methods.</para>
 </section>
 
@@ -2862,8 +2861,8 @@ methods.</para>
 </programlisting>
 
 <para>Returns the item associated with index
-<emphasis role="italic">name</emphasis>. If a method defined using <link
-linkend="mthDirectorySetMethod">setMethod</link> is associated with index
+<emphasis role="italic">name</emphasis>. If a method defined using setMethod (<xref
+linkend="mthDirectorySetMethod" />) is associated with index
 <emphasis role="italic">name</emphasis>, the result of running this method is
 returned. If the collection has no item or method associated with index
 <emphasis role="italic">name</emphasis>, the Nill object is returned.
@@ -2887,7 +2886,7 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </programlisting>
 
 <para>Removes all items from the directory.  Empty also removes
-all methods added using <link linkend="mthDirectorySetMethod">setMethod</link>.
+all methods added using setMethod (<xref linkend="mthDirectorySetMethod" />).
 </para>
 </section>
 
@@ -2907,7 +2906,7 @@ all methods added using <link linkend="mthDirectorySetMethod">setMethod</link>.
 <emphasis role="italic">name</emphasis> (translated to uppercase).
 If there is no such entry, <emphasis role="italic">name</emphasis>
 returns the item for any method that
-<link linkend="mthDirectorySetMethod">setMethod</link> supplied. If there is
+setMethod (<xref linkend="mthDirectorySetMethod" />) supplied. If there is
 neither an entry nor a method for <emphasis role="italic">name</emphasis> the
 Nil object is returned.</para>
 </section>
@@ -3070,7 +3069,7 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 <para>Returns and removes the member item with index
 <emphasis role="italic">name</emphasis> from a collection.
 If a method is associated with
-<link linkend="mthDirectorySetMethod">setMethod</link> for index
+setMethod (<xref linkend="mthDirectorySetMethod" />) for index
 <emphasis role="italic">name</emphasis>,
 the method is removed and running the method is returned. If there is no item or
 method with index
@@ -3166,7 +3165,7 @@ the entry with the specified
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsSupplier">Supplier</link>
+<para>Returns a Supplier (<xref linkend="clsSupplier" />)
 object for the collection.  The supplier allows you to iterate over
 the index/item pairs in the directory at the time the supplier was created.
 The supplier iterates the items in an unspecified order.
@@ -3185,8 +3184,8 @@ The supplier iterates the items in an unspecified order.
 ]]>
 </programlisting>
 
-<para>Runs either the <link linkend="mthDirectoryEntry">entry</link> or
-<link linkend="mthDirectorySetEntry">setEntry</link> method, depending on
+<para>Runs either the entry (<xref linkend="mthDirectoryEntry" />) or
+setEntry (<xref linkend="mthDirectorySetEntry" />) method, depending on
 whether
 <emphasis role="italic">messagename</emphasis> ends with an equal sign. If
 <emphasis role="italic">messagename</emphasis> does not end with an
@@ -3301,7 +3300,7 @@ Exit
 <secondary>List class</secondary></indexterm>
 
 <para>A list is a non-sparse sequenced collection similar to the
-<link linkend="clsArray">Array Class</link> to which you can add new items at
+Arrat class (<xref linkend="clsArray" />) to which you can add new items at
 any position in the sequence. The List creates a new index value whenever an
 item is added to the list and the associated index value remains valid
 for that item regardless of other additions or removals.
@@ -3317,21 +3316,21 @@ object will not modify indexes for items in the list.</para>
 </figure>
 <note><title>Note</title>
 <para>The List class also has available class methods that its metaclass,
-metaclass, the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the <link linkend="clsOrderedCollection">OrderedCollection
-class</link>.
+metaclass, the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the OrderedCollection (<xref linkend="clsOrderedCollection" />)
+class.
 </para></note>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsOrderedCollection">OrderedCollection class</link>.</para>
+OrderedCollection (<xref linkend="clsOrderedCollection" />).</para>
 <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -3383,7 +3382,7 @@ class</link>.
 
 <para>Returns the item located at <emphasis role="italic">index</emphasis>.
 This is the same as the
-<link linkend="mthListAt">at</link> method.</para>
+at() (<xref linkend="mthListAt" />) method.</para>
 </section>
 
 <section id="mthListPutSet"><title>[]=</title>
@@ -3400,7 +3399,7 @@ This is the same as the
 
 <para>Replaces the item at <emphasis role="italic">index</emphasis> with
 <emphasis role="italic">item</emphasis>.  This method is the same as the
-<link linkend="mthListPut">put</link> method.</para>
+put() (<xref linkend="mthListPut" />) method.</para>
 </section>
 
 <section id="mthListAllIndexes"><title>allIndexes</title>
@@ -3879,7 +3878,7 @@ remains unchanged.</para>
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsSupplier">Supplier</link> object for the list.
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the list.
 The supplier allows you to iterate over the index/item pairs stored in the list at the
 time the supplier is created.  The iteration is in the same
 order as the list sequence order.</para>
@@ -3907,44 +3906,44 @@ are useful for processing bundles of application option values.
 </figure>
 <note><title>Note</title>
 <para>The Properties class also has available class methods that
-its metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+its metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsMapCollection">MapCollection class</link>.</para>
+MapCollection (<xref linkend="clsMapCollection" />).</para>
 <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 <para>Methods inherited from the
-<link linkend="clsDirectory">Directory class</link>.</para>
+Directory class (<xref linkend="clsDirectory" />).</para>
 <simplelist type="vert" columns="3">
-<member><link linkend="mthDirectoryAllIndexes">allIndexes</link></member>
-<member><link linkend="mthDirectoryAllItems">allItems</link></member>
-<member><link linkend="mthDirectoryAt">at</link></member>
-<member><link linkend="mthDirectoryAtGet">[ ]</link></member>
-<member><link linkend="mthDirectoryEmpty">empty</link></member>
-<member><link linkend="mthDirectoryEntry">entry</link></member>
-<member><link linkend="mthDirectoryHasEntry">hasEntry</link></member>
-<member><link linkend="mthDirectoryHasIndex">hasIndex</link></member>
-<member><link linkend="mthDirectoryHasItem">hasItem</link></member>
-<member><link linkend="mthDirectoryIndex">index</link></member>
-<member><link linkend="mthDirectoryIsEmpty">isEmpty</link></member>
-<member><link linkend="mthDirectoryItems">items</link></member>
-<member><link linkend="mthDirectoryMakeArray">makeArray</link></member>
-<member><link linkend="mthDirectoryPut">put</link></member>
-<member><link linkend="mthDirectoryPutSet">[ ]=</link></member>
-<member><link linkend="mthDirectoryRemove">remove</link></member>
-<member><link linkend="mthDirectoryRemoveItem">removeItem</link></member>
-<member><link linkend="mthDirectorySetEntry">setEntry</link></member>
-<member><link linkend="mthDirectorySetMethod">setMethod</link></member>
-<member><link linkend="mthDirectorySupplier">supplier</link></member>
-<member><link linkend="mthDirectoryUnsetMethod">unsetMethod</link></member>
+<member>allIndexes (<xref linkend="mthDirectoryAllIndexes" />)</member>
+<member>allItems (<xref linkend="mthDirectoryAllItems" />)</member>
+<member>at (<xref linkend="mthDirectoryAt" />)</member>
+<member>[ ] (<xref linkend="mthDirectoryAtGet" />)</member>
+<member>empty (<xref linkend="mthDirectoryEmpty" />)</member>
+<member>entry (<xref linkend="mthDirectoryEntry" />)</member>
+<member>hasEntry (<xref linkend="mthDirectoryHasEntry" />)</member>
+<member>hasIndex (<xref linkend="mthDirectoryHasIndex" />)</member>
+<member>hasItem (<xref linkend="mthDirectoryHasItem" />)</member>
+<member>index (<xref linkend="mthDirectoryIndex" />)</member>
+<member>isEmpty (<xref linkend="mthDirectoryIsEmpty" />)</member>
+<member>items (<xref linkend="mthDirectoryItems" />)</member>
+<member>makeArray (<xref linkend="mthDirectoryMakeArray" />)</member>
+<member>put (<xref linkend="mthDirectoryPut" />)</member>
+<member>[ ]= (<xref linkend="mthDirectoryPutSet" />)</member>
+<member>remove (<xref linkend="mthDirectoryRemove" />)</member>
+<member>removeItem (<xref linkend="mthDirectoryRemoveItem" />)</member>
+<member>setEntry (<xref linkend="mthDirectorySetEntry" />)</member>
+<member>setMethod (<xref linkend="mthDirectorySetMethod" />)</member>
+<member>supplier (<xref linkend="mthDirectorySupplier" />)</member>
+<member>unsetMethod (<xref linkend="mthDirectoryUnsetMethod" />)</member>
 </simplelist>
 
 </section>
@@ -3964,7 +3963,7 @@ its metaclass, the <link linkend="clsClass">Class class</link>, defines.</para><
 
 <para>Loads a set of properties from <emphasis role="italic">source</emphasis> and returns them as a new Properties object.
 The load source can be either the string name of a file or a stream object.  Properties are read from the source as
-individual lines using <link linkend="mthStreamLineIn">linein()</link>.  Blank lines and lines with a Rexx line comment ("--")
+individual lines using linein() (<xref linkend="mthStreamLineIn" />).  Blank lines and lines with a Rexx line comment ("--")
 as the first non-blank characters are ignored.  Otherwise, the lines are assumed to be of the form "name=value" and
 are added to the receiver Properties value using name as the index for the value.
 </para>
@@ -4001,7 +4000,7 @@ are added to the receiver Properties value using name as the index for the value
 <para>Adds <emphasis role="bold">item</emphasis> using the index
 <emphasis role="bold">index</emphasis>.
 This method is the same as the
-<link linkend="mthPropertiesPut">put()</link> method.</para>
+put() (<xref linkend="mthPropertiesPut" />) method.</para>
 </section>
 
 <section id="mthPropertiesGetLogical"><title>getLogical</title>
@@ -4077,7 +4076,7 @@ been specified, a syntax error is raised for missing values.</para>
 
 <para>Loads a set of properties into the receiving Properties object from <emphasis role="italic">source</emphasis>.
 The load source can be either the string name of a file or a stream object.  Properties are read from the source as
-individual lines using <link linkend="mthStreamLineIn">linein()</link>.  Blank lines and lines with a Rexx line comment ("--")
+individual lines using linein() (<xref linkend="mthStreamLineIn" />).  Blank lines and lines with a Rexx line comment ("--")
 as the first non-blank characters are ignored.  Otherwise, the lines are assumed to be of the form "name=value" and
 are added to the receiver Properties value using name as the index for the value.
 Properties loaded from <emphasis role="italic">source</emphasis> that have the
@@ -4121,9 +4120,9 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 
 <para>Saves a set of properties into <emphasis role="italic">target</emphasis>.
 The save target can be either the string name of a file or a stream object.  Properties are stored as
-individual lines using <link linkend="mthStreamLineOut">lineout()</link>.
+individual lines using lineout() (<xref linkend="mthStreamLineOut" />).
 The lines are written in the form "name=value".  A saved Properties file can be reloaded using the Properties
-<link linkend="mthPropertiesLoad">load()</link> method.
+load() (<xref linkend="mthPropertiesLoad" />) method.
 </para>
 </section>
 
@@ -4199,21 +4198,21 @@ head of the queue.</para>
 </figure>
 <note><title>Note</title>
 <para>The Queue class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the <link linkend="clsOrderedCollection">OrderedCollection
-class</link>.
+metaclass, the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the OrederedCollection (<xref linkend="clsOrderedCollection" />)
+class.
 </para></note>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsOrderedCollection">OrderedCollection class</link>.</para>
+OrderedCollection (<xref linkend="clsOrderedCollection" />).</para>
 <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -4265,7 +4264,7 @@ class</link>.
 
 <para>Returns the item located at index <emphasis role="italic">index</emphasis>.
 This is the same as the
-<link linkend="mthQueueAt">at()</link> method.</para>
+at() (<xref linkend="mthQueueAt" />) method.</para>
 </section>
 
 <section id="mthQueuePutSet"><title>[]=</title>
@@ -4283,7 +4282,7 @@ This is the same as the
 <para>Replaces item at <emphasis role="italic">index</emphasis> with
 <emphasis role="italic">item</emphasis>.
 This method is the same as the
-<link linkend="mthQueuePut">put()</link> method.
+put() (<xref linkend="mthQueuePut" />) method.
 </para>
 </section>
 
@@ -4301,7 +4300,7 @@ This method is the same as the
 
 <para>Returns an array of all index values for the
 queue. For the Queue class, the indices are integers 1 -
-<link linkend="mthQueueItems">items</link>.</para>
+items (<xref linkend="mthQueueItems" />).</para>
 </section>
 
 <section id="mthQueueAllItems"><title>allItems</title>
@@ -4783,7 +4782,7 @@ remains unchanged.</para>
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsSupplier">Supplier</link>object for the queue.
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the queue.
 The supplier allows you to iterate over the index/item pair contained in the queue
 at the time the supplier was created.
 The supplier iterates the items in their queuing order, with the head of
@@ -4811,21 +4810,21 @@ a table, which can contain only one item for any index).</para>
 </figure>
 <note><title>Note</title>
 <para>The Relation class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the <link linkend="clsMapCollection">Map Collection
-class</link>.
+metaclass, the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the MapCollection (<xref linkend="clsMapCollection" />)
+class.
 </para></note>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsMapCollection">MapCollection class</link>.</para>
+MapCollection (<xref linkend="clsMapCollection" />).</para>
 <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -4859,7 +4858,7 @@ class</link>.
 
 <para>Returns an item associated with <emphasis role="italic">index</emphasis>.
 Thie is the same as the
-<link linkend="mthRelationAt">at()</link> method.</para>
+at() (<xref linkend="mthRelationAt" />) method.</para>
 </section>
 
 <section id="mthRelationPutSet"><title>[]=</title>
@@ -4876,7 +4875,7 @@ Thie is the same as the
 
 <para>Adds <emphasis role="italic">item</emphasis> to the relation associated with index
 <emphasis role="italic">index</emphasis>.  This is the same as the
-<link linkend="mthRelationPut">put()</link> method.</para>
+put() (<xref linkend="mthRelationPut" />) method.</para>
 </section>
 
 <section id="mthRelationAllAt"><title>allAt</title>
@@ -5277,7 +5276,7 @@ collection class object.</para>
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsSupplier">The Supplier Class</link> object for the relation.
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the relation.
 The supplier allows you to iterate over all index/item pairs in the relation at the time
 the supplier was created.
 The supplier enumerates the items in an unspecified order.
@@ -5390,48 +5389,48 @@ using the == method.
 </figure>
 <note><title>Note</title>
 <para>The Set class also has available class methods that its metaclass,
-the <link linkend="clsClass">Class class</link>, defines.
+the Class class (<xref linkend="clsClass" />), defines.
 </para></note>
 <para>The Set class is a subclass of the Table class. In addition to its own
 methods, it inherits the methods of the Object class (see
-<link linkend="clsObject">The Object Class</link>)
+<xref linkend="clsObject" />)
 and the Table class.
-It also inherits methods from the <link linkend="clsSetCollection">Set Collection
-class</link>.
+It also inherits methods from the Set Collection (<xref linkend="clsSetCollection" />)
+class.
 </para>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsMapCollection">MapCollection class</link>.</para>
+MapCollection (<xref linkend="clsMapCollection" />).</para>
 <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 <para>Methods inherited from the
-<link linkend="clsTable">Table class</link>.</para>
+Table class (<xref linkend="clsTable" />).</para>
 <simplelist type="vert" columns="3">
-<member><link linkend="mthTableNew">new (class method)</link></member>
-<member><link linkend="mthTableAllIndexes">allIndexes</link></member>
-<member><link linkend="mthTableAllItems">allItems</link></member>
-<member><link linkend="mthTableAt">at</link></member>
-<member><link linkend="mthTableAtGet">[ ]</link></member>
-<member><link linkend="mthTableEmpty">empty</link></member>
-<member><link linkend="mthTableHasIndex">hasIndex</link></member>
-<member><link linkend="mthTableHasItem">hasItem</link></member>
-<member><link linkend="mthTableIndex">index</link></member>
-<member><link linkend="mthTableIsEmpty">isEmpty</link></member>
-<member><link linkend="mthTableItems">items</link></member>
-<member><link linkend="mthTableMakeArray">makeArray</link></member>
-<member><link linkend="mthTablePut">put</link></member>
-<member><link linkend="mthTablePutSet">[ ]=</link></member>
-<member><link linkend="mthTableRemove">remove</link></member>
-<member><link linkend="mthTableRemoveItem">removeItem</link></member>
-<member><link linkend="mthTableSupplier">supplier</link></member>
+<member>new (class method) (<xref linkend="mthTableNew" />)</member>
+<member>allIndexes (<xref linkend="mthTableAllIndexes" />)</member>
+<member>allItems (<xref linkend="mthTableAllItems" />)</member>
+<member>at (<xref linkend="mthTableAt" />)</member>
+<member>[ ] (<xref linkend="mthTableAtGet" />)</member>
+<member>empty (<xref linkend="mthTableEmpty" />)</member>
+<member>hasIndex (<xref linkend="mthTableHasIndex" />)</member>
+<member>hasItem (<xref linkend="mthTableHasItem" />)</member>
+<member>index (<xref linkend="mthTableIndex" />)</member>
+<member>isEmpty (<xref linkend="mthTableIsEmpty" />)</member>
+<member>items (<xref linkend="mthTableItems" />)</member>
+<member>makeArray (<xref linkend="mthTableMakeArray" />)</member>
+<member>put (<xref linkend="mthTablePut" />)</member>
+<member>[ ]= (<xref linkend="mthTablePutSet" />)</member>
+<member>remove (<xref linkend="mthTableRemove" />)</member>
+<member>removeItem (<xref linkend="mthTableRemoveItem" />)</member>
+<member>supplier (<xref linkend="mthTableSupplier" />)</member>
 </simplelist>
 
 </section>
@@ -5468,7 +5467,7 @@ class</link>.
 
 <para>Add an item to the Set.
 This method is the same as the
-<link linkend="mthSetPut">put()</link> method.</para>
+put() (<xref linkend="mthSetPut" />) method.</para>
 </section>
 
 <section id="mthSetIntersection"><title>intersection</title>
@@ -5629,9 +5628,9 @@ that are character strings.</para>
 </figure>
 <note><title>Note</title>
 <para>The Stem class also has available class methods that its metaclass,
-the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the <link linkend="clsMapCollection">Map Collection
-class</link>.
+the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the Map Collection (<xref linkend="clsMapCollection" />
+class.
 </para></note>
 <para>Stems are automatically created whenever a Rexx stem variable or Rexx
 compound variable is used. For example: </para>
@@ -5667,13 +5666,13 @@ the methods =, ==, \=, \==, &lt;>, and >&lt; using the DEFINE method.</para>
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsMapCollection">MapCollection class</link>.</para>
+MapCollection class (<xref linkend="clsMapCollection" />).</para>
 <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -6018,7 +6017,7 @@ stem object's default value.
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsSupplier">Supplier</link> object for the stem.
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the stem.
 The supplier allows you to iterate though the index/item pairs contained in the Stem
 object at the time the supplier was created.
 The supplier iterams the items in an unspecified order.
@@ -6037,7 +6036,7 @@ The supplier iterams the items in an unspecified order.
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsDirectory">Directory</link> object for the stem.
+<para>Returns a Directory (<xref linkend="clsDirectory" />) object for the stem.
 The directory will contain a
 name/value pair for each stem index with a directly assigned value.</para>
 </section>
@@ -6056,7 +6055,7 @@ name/value pair for each stem index with a directly assigned value.</para>
 
 <para>Reissues or forwards all unknown
 messages to the stem's current default value.  For additional information, see
-<link linkend="unkno">Defining an unknown Method</link>.</para>
+<xref linkend="unkno" />.</para>
 </section>
 </section>
 
@@ -6083,21 +6082,21 @@ using the == method.
 </figure>
 <note><title>Note</title>
 <para>The Table class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the <link linkend="clsMapCollection">Map Collection
-class</link>.
+metaclass, the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the MapCollection (<xref linkend="clsMapCollection" />)
+class.
 </para></note>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collextion class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsMapCollection">MapCollection class</link>.</para>
+MapCollection class (<xref linkend="clsMapCollection" />).</para>
 <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -6131,7 +6130,7 @@ class</link>.
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
 This is the same as the
-<link linkend="mthTableAt">at()</link> method.</para>
+at () (<xref linkend="mthTableAt" />) method.</para>
 </section>
 
 <section id="mthTablePutSet"><title>[]=</title>
@@ -6149,7 +6148,7 @@ This is the same as the
 <para>Adds <emphasis role="italic">item</emphasis> to the table at index
 <emphasis role="italic">index</emphasis>.
 This method is the same as the
-<link linkend="mthTablePut">put()</link> method.</para>
+put() (<xref linkend="mthTablePut" />) method.</para>
 </section>
 
 <section id="mthTableAllIndexes"><title>allIndexes</title>
@@ -6387,7 +6386,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsSupplier">Supplier</link> object for the collection.
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
 The supplier allows you iterate over the index/item pairs contained in the table at the
 time the supplier was created.
 The supplier iterates over the items in an unspecified order.
@@ -6418,21 +6417,21 @@ used in the collection.
 </figure>
 <note><title>Note</title>
 <para>The IdentityTable class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.
-It also inherits methods from the <link linkend="clsMapCollection">Map Collection
-class</link>.
+metaclass, the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the MapCollection (<xref linkend="clsMapCollection" />
+class.
 </para></note>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsCollection">Collection class</link>.</para>
+Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <para>Methods inherited from the
-<link linkend="clsMapCollection">MapCollection class</link>.</para>
+MapCollection class (<xref linkend="clsMapCollection" />).</para>
 <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -6467,7 +6466,7 @@ class</link>.
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
 This is the same as the
-<link linkend="mthIdentityTableAt">at()</link> method.</para>
+at() (<xref linkend="mthIdentityTableAt" />) method.</para>
 </section>
 
 <section id="mthIdentityTablePutSet"><title>[]=</title>
@@ -6486,7 +6485,7 @@ This is the same as the
 <para>Adds <emphasis role="italic">item</emphasis> to the table at index
 <emphasis role="italic">index</emphasis>.
 This method is the same as the
-<link linkend="mthIdentityTablePut">put()</link> method.</para>
+put() (<xref linkend="mthIdentityTablePut" />) method.</para>
 </section>
 
 <section id="mthIdentityTableAllIndexes"><title>allIndexes</title>
@@ -6721,7 +6720,7 @@ removed item.
 </programlisting>
 
 
-<para>Returns a <link linkend="clsSupplier">Supplier</link> object for the collection.
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
 The supplier allows you iterate over the index/item pairs contained in the table at the
 time the supplier was created.
 The supplier iterates over the items in an unspecified order.
@@ -6750,7 +6749,7 @@ of the two strings.</para>
 <section id="sortcomparable"><title>Sorting non-strings</title>
 <para>Sorting is not limited to string values.  Any object that inherits the Comparable mixin class and
 implements a <emphasis role="bold">compareTo</emphasis> method can be sorted.  The
-<link linkend="clsDateTime">DateTime Class</link> and <link linkend="clsTimeSpan">TimeSpan Class</link>
+DateTime class (<xref linkend="clsDateTime" />) and TimeSpan class (<xref linkend="clsTimeSpan" />)
 are examples of built-in Rexx classes that can be sorted.  Any user created class may also
 implement a compareTo() method to enable sorting.
 For example, consider the
@@ -6955,7 +6954,7 @@ depending on class of <emphasis role="italic">receiver</emphasis>.
 collection to compare each element of the <emphasis role="italic">receiver</emphasis> with each element
 of the <emphasis role="italic">argument</emphasis> collection. The element is defined as the tuple &lt;
 <emphasis role="italic">index,item</emphasis>> (see
-<link linkend="idit">Determining the Identity of an Item</link>).
+<xref linkend="idit" />).
 Depending on the set-operator method and
 the result of the comparison, an element of the receiver collection is, or
 is not, included in the resulting collection. A receiver collection that allows

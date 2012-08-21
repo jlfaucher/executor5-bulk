@@ -97,8 +97,8 @@ EXPOSEs an object variable.  The class creates the object instance, defines the 
 the object has, and the object instance completes the job of constructing the object.
 </para>
 <para>
-The <link linkend="clsString">String class</link> and the
-<link linkend="clsArray">Array Class</link>
+The String class (<xref linkend="clsString" />) and the
+Array class (<xref linkend="clsArray" />
 are examples of object classes.</para>
 </section>
 
@@ -114,7 +114,7 @@ to add a set of instance and class
 methods to other classes are called <emphasis>mixin classes</emphasis>,
 or simply mixins.</para>
 <para>You can add mixin methods to an existing class by sending an INHERIT
-message or using the INHERIT option on the <link linkend="clasdi">::CLASS directive</link>.
+message or using the INHERIT option on the ::CLASS directive (<xref linkend="clasdi" />.
 In either case, the class to be inherited must be a mixin. During both class
 creation and multiple inheritance, subclasses inherit both class and instance
 methods from their superclasses.</para>
@@ -162,7 +162,7 @@ The Class class is like a factory for producing the factories that produce
 objects.</para>
 <para>To change the behavior of an object that is an instance, you generally
 use subclassing. For example, you can create Statarray, a subclass of the
-<link linkend="clsArray">Array class</link>.
+Array class (<xref linkend="clsArray" />).
 The statArray class can include a
 method for computing a total of all the numeric elements of an array.</para>
 <programlisting>
@@ -173,7 +173,7 @@ method for computing a total of all the numeric elements of an array.</para>
 ::method init    /*  Initialize running total and forward to superclass */
   expose total
   total = 0
-  /* <link linkend="mthMessageNew">init</link>  describes the init method.  */
+  /* <xref linkend="mthMessageNew" />  describes the init method.  */
   forward class (super)
 
 ::method put     /*  Modify to increment running total */
@@ -315,12 +315,12 @@ main part of your source program:</para>
 </programlisting>
 <para>This creates an Account class that is a subclass of the Object class.  Object
 is the default superclass if one is not specified.
-(See <link linkend="clsObject">The Object Class</link> for a description of the
+(See <xref linkend="clsObject" /> for a description of the
 Object class.)  The string &quot;Account&quot;
 is a string identifier for the new class.  The string identifier is both the internal
-class name and the name of the <link linkend="ensym">environment symbol</link> used to locate your new class instance.
+class name and the name of the environment symbol (<xref linkend="ensym" />) used to locate your new class instance.
 </para>
-<para>Now you can use <link linkend="methd">::METHOD directives</link> to add methods to your new class. The
+<para>Now you can use ::METHOD directive (<xref linkend="methd" />) to add methods to your new class. The
 ::METHOD directives must immediately follow the ::CLASS directive that creates
 the class. </para>
 <programlisting>
@@ -344,7 +344,7 @@ it: </para>
 return "a savings account"
 </programlisting>
 <para>Now you can create an instance of the Savings class with the NEW method
-(see <link linkend="mthClassNew">NEW</link>) and send TYPE, NAME, and NAME= messages
+(see <xref linkend="mthClassNew" />) and send TYPE, NAME, and NAME= messages
 to that instance:</para>
 <programlisting>
 asav = .savings~new
@@ -364,7 +364,7 @@ the NAME and NAME= methods: </para>
   return name
 </programlisting>
 
-<para>You can replace this with a single <link linkend="attrd">::ATTRIBUTE directive</link>.
+<para>You can replace this with a single ::ATTRIBUTE directive (<xref linkend="attrd" />.
 For example, the directive </para>
 <programlisting>
 ::attribute name
@@ -374,7 +374,7 @@ same function as the NAME and NAME= methods in the original example. The NAME
 method returns the current value of the object variable NAME; the NAME= method
 assigns a new value to the object variable NAME.</para>
 <para>In addition to defining operational methods and attribute methods, you can add
-"constant" methods to a class using the <link linkend="constantd">::CONSTANT directive</link>.
+"constant" methods to a class using the ::CONSTANT directive (<xref linkend="constantd" />.
 The ::CONSTANT directive will create both a class method and an instance method to the class
 definition.  The constant method will always return the same constant value, and can be
 invoked by sending a message to either the class or an instance method.  For example, you
@@ -424,8 +424,8 @@ used by a superclass, because the variables are created at different scopes.</pa
 <title>Defining Instance Methods with SETMETHOD or ENHANCED</title>
 <para>In Rexx, methods are usually associated with instances using classes, but
 it is also possible to add methods directly to an instance using the SETMETHOD
-(see <link linkend="mthObjectSetMethod">SETMETHOD</link>) or ENHANCED (see
-<link linkend="mthClassEnhanced">ENHANCED</link>) method.</para>
+(see <xref linkend="mthObjectSetMethod" />) or ENHANCED (see
+<xref linkend="mthClassEnhanced" />) method.</para>
 <para>All subclasses of the Object class inherit SETMETHOD. You can use
 SETMETHOD to create one-off objects, objects that must be absolutely
 unique so that a class that is capable of creating other instances is not
@@ -475,7 +475,7 @@ mycost~"%"        /* Produces:  Enter a price.             */
 <para>The search order for a method name matching the message is for: </para>
 <orderedlist>
 <listitem><para>A method the object itself defines with SETMETHOD or ENHANCED.
-(See <link linkend="mthObjectSetMethod">SETMETHOD</link> .)</para></listitem>
+(See <xref linkend="mthObjectSetMethod" /> .)</para></listitem>
 <listitem><para>A method the object's class defines. (Note that an object
 acquires the instance methods of the class to which it belongs at the time of
 its creation. If a class gains additional methods, objects created before the
@@ -483,7 +483,7 @@ definition of these methods do not acquire these methods.)</para></listitem>
 <listitem><para>A method that a superclass of the object's class defines.
 This is also limited to methods that were available when the object was
 created. The order of the INHERIT (see
-<link linkend="mthClassInherit">INHERIT</link>) messages sent to an object's
+<xref linkend="mthClassInherit" />) messages sent to an object's
 class determines the search order of the superclass method definitions.
 </para></listitem></orderedlist>
 <para>This search order places methods of a class before methods of its
@@ -531,7 +531,7 @@ forward to(target) message(name) arguments(arguments)
 <para>You can change the usual search order for methods by: </para>
 <orderedlist>
 <listitem><para>Ensuring that the receiver object is the sender object.
-(You usually do this by specifying the special variable <link linkend="xself">SELF</link>.
+(You usually do this by specifying the special variable SELF (<xref linkend="xself" />).
 </para></listitem>
 <listitem><para>Specifying a colon and a class symbol after the message name.
 The class symbol can be a variable name or an environment symbol. It identifies
@@ -539,7 +539,7 @@ the class object to be used as the starting point for the method search.</para>
 <para>The class object must be a superclass of the class defining the active
 method, or, if you used SETMETHOD to define the active method, the object's own
 class. The class symbol is usually the special variable SUPER
-(see <link linkend="xsuper">SUPER</link>) but it can be any environment
+(see <xref linkend="xsuper" />) but it can be any environment
 symbol or variable name whose value is a valid class.</para></listitem>
 </orderedlist>
 <para>Suppose you create an Account class that is a subclass of the Object
@@ -736,11 +736,11 @@ string values.</para>
 <para>For other objects without string values (that is, without a MAKESTRING
 method), the action taken depends on the setting of the NOSTRING condition
 trap. If the NOSTRING condition is being trapped (see
-<link linkend="condtra">Conditions and Condition Traps</link>),
+<xref linkend="condtra" />),
 the language processor raises the NOSTRING condition. If the NOSTRING condition
 is not being trapped, the language processor sends a STRING message to the
 object to obtain its readable string representation (see the STRING method
-of the Object class <link linkend="mthObjectString">STRING</link>) and uses this string.
+of the Object class STRING <xref linkend="mthObjectString" />) and uses this string.
 </para>
 <para>When comparing a string object with the Nil object, if
 the NOSTRING condition is being trapped, then</para>
@@ -770,7 +770,7 @@ method raises an error.</para>
 <section id="concurr"><title>Concurrency</title>
 <para>Rexx supports concurrency, multiple methods running
 simultaneously on a single object. See
-<link linkend="xconcur">Concurrency</link>  for a full
+<xref linkend="xconcur" />  for a full
 description of concurrency.</para>
 </section>
 </section>
@@ -951,7 +951,7 @@ appropriate ::requires directive to load the class definitions.</para>
 <para>The chapters that follow describe the classes and other objects that Rexx
 provides and their available methods. Rexx provides the objects listed in
 these sections and they are generally available to all methods through
-environment symbols (see <link linkend="ensym">Environment Symbols</link>).
+environment symbols (see <xref linkend="ensym" />).
 </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
@@ -971,8 +971,8 @@ Array1~&quot;[]&quot;(1)
 </programlisting>
 <para>
 even though the latter is valid and equivalent. For more information,
-see <link linkend="mssg">Message Terms</link> and
-<link linkend="msgit">Message Instructions</link>.</para></listitem>
+see <xref linkend="mssg" /> and
+<xref linkend="msgit" />.</para></listitem>
 <listitem><para>When the argument of a method must be a specific kind of object (such
 as array, class, method, or string) the variable you specify must be of the
 same class as the required object or be able to produce an object of the
@@ -980,7 +980,7 @@ required kind in response to a conversion message. In particular, subclasses
 are acceptable in place of superclasses (unless overridden in a way that
 changes superclass behavior), because they inherit a suitable conversion method
 from their Rexx superclass.</para>
-<para>The <link linkend="mthObjectIsA">isA method</link> of the Object class
+<para>The isA method (<xref linkend="mthObjectIsA" />) of the Object class
 can perform this validation.
 </para></listitem>
 </orderedlist>

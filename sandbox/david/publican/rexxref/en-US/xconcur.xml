@@ -87,8 +87,8 @@ represent the Rexx programs running on the activity.  An invocation can be
 a main program invocation, an internal function or subroutine call, an external
 function or subroutine call, an INTERPRET instruction, or a message invocation.
 An invocation is activated when an executable unit is invoked and removed
-(popped) when execution completes. In the
-<link linkend="earlyr">Early Reply</link> figure, the programs
+(popped) when execution completes. In 
+<xref linkend="earlyr" />, the programs
 begins with a single activity.  The activity contains a single invocation,
 method A. When method A invokes method B, a second invocation is added to
 the activity.</para>
@@ -138,10 +138,10 @@ end
 <indexterm><primary>concurrency</primary>
 <secondary>message objects</secondary></indexterm>
 <para>A message object
-(see <link linkend="clsMessage">The Message Class</link>) is an
+(see <xref linkend="clsMessage" />) is an
 intermediary between two objects that enables
 concurrent processing. All objects inherit the START method (see the
-<link linkend="clsMessage">Message Class</link>)
+<xref linkend="clsMessage" />)
 from the object class. To obtain a message object, an object sends a START
 message to the object to which the message object will convey a message. The
 message is an argument to the START message as in the following example:</para>
@@ -385,7 +385,7 @@ method of the Method class, you specify: </para>
 <programlisting>
 <emphasis role="italic">methodname</emphasis>~SETUNGUARDED
 </programlisting>
-<para>(See <link linkend="mthMethodSetUnguarded">SETUNGUARDED</link> for details about
+<para>(See <xref linkend="mthMethodSetUnguarded" /> for details about
 SETUNGUARDED.)</para>
 <para>Alternately,
 you can define a method with the ::METHOD directive, specifying the UNGUARDED
@@ -416,7 +416,7 @@ use of an object's scope and allowing other activities to use the scope.</para>
 <para>By default, a method must wait until a currently running method is finished
 before it begins. GUARD OFF lets another method (running on a different activity)
 that needs exclusive use of the same object variables become active on the
-same object. See <link linkend="keyGuard">GUARD</link> for more information.</para>
+same object. See <xref linkend="keyGuard" /> for more information.</para>
 </section>
 
 <section id="guamet"><title>Guarded Methods</title>
@@ -450,7 +450,7 @@ continue running. GUARD reevaluates the
 of an exposed object variable changes. When the expression evaluates to
 <computeroutput>1</computeroutput>, the method resumes running. You can use
 GUARD to block running any method when proceeding is not safe.
-(See <link linkend="keyGuard">GUARD</link> for details about GUARD.) </para>
+(See <xref linkend="keyGuard" /> for details about GUARD.) </para>
 <note><title>Note</title>
 <para>It is important to ensure that you use an expression
 that can be fulfilled. If the condition expression cannot be met, GUARD ON
@@ -721,8 +721,8 @@ return waits                                /* Return number of objects waiting 
 </figure>
 <note><title>Note</title>
 <para>There are functions available that use system semaphores.
-See <link linkend="utlSyscreateeventsem">SysCreateEventSem</link>, and
-<link linkend="utlSyscreatemutexsem">SysCreateMutexSem</link>.
+See <xref linkend="utlSyscreateeventsem" />, and
+<xref linkend="utlSyscreatemutexsem" />.
 </para></note>
 </section>
 
@@ -732,7 +732,7 @@ See <link linkend="utlSyscreateeventsem">SysCreateEventSem</link>, and
 <para>A monitor object consists of a number of client methods, WAIT
 and SIGNAL methods for client methods to use, and one or more condition variables.
 Guarded methods provide the functionality of monitors. Do not confuse this
-with the Monitor class (see <link linkend="clsMonitor">The Monitor Class</link>).
+with the Monitor class (see <xref linkend="clsMonitor" />).
 </para>
 <programlisting>
 ::method init

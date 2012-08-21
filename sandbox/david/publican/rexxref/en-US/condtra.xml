@@ -60,7 +60,7 @@
 condition trap can modify the flow of execution in a Rexx program. Condition
 traps are turned on or off using the ON or OFF subkeywords of the SIGNAL and
 CALL instructions (see
-<link linkend="keyCall">CALL</link> and <link linkend="keySignal">SIGNAL</link>).</para>
+<xref linkend="keyCall" /> and <xref linkend="keySignal" />).</para>
 <programlisting>
 <![CDATA[
 >>-+-CALL---+--------------------------------------------------->
@@ -190,7 +190,7 @@ a Rexx macro. (See the
 <citetitle pubwork="book">Open Object Rexx: Programming Guide</citetitle>
 for details about exits.)</para></listitem>
 <listitem><para>Only SIGNAL ON HALT or CALL ON HALT can trap error 4, described
-in <link linkend="errnum">Appendix C. Error Numbers and Messages</link>.</para></listitem>
+in <xref linkend="errnum" />.</para></listitem>
 </orderedlist>
 </listitem></varlistentry>
 <varlistentry><term>LOSTDIGITS
@@ -221,7 +221,7 @@ condition only for SIGNAL ON.
 </term>
 <listitem><para>raised when the language processor requires a string value from an object
 and the object does not directly provide a string value. See
-<link linkend="reqstr">Required String Values</link> for
+<xref linkend="reqstr" /> for
 more information. You can specify the NOSTRING condition only for SIGNAL ON.
 </para></listitem></varlistentry>
 <varlistentry><term>NOTREADY
@@ -231,7 +231,7 @@ more information. You can specify the NOSTRING condition only for SIGNAL ON.
 <secondary>NOTREADY</secondary></indexterm>
 </term>
 <listitem><para>raised if an error occurs during an input or output operation.
-See <link linkend="stmerr">Errors during Input and Output</link>. This
+See <xref linkend="stmerr" />. This
 condition is ignored if the NOTREADY condition trap is already in the
 delayed state.
 </para></listitem></varlistentry>
@@ -293,7 +293,7 @@ You can specify this condition only for SIGNAL ON.</para>
 the execution of an INTERPRET instruction.</para></listitem>
 </orderedlist>
 <para>For information on these errors, refer to
-<link linkend="errnum">Error Numbers and Messages</link>.</para>
+<xref linkend="errnum" />.</para>
 </listitem></varlistentry>
 <varlistentry><term>USER
 <indexterm><primary>USER subkeyword</primary>
@@ -337,7 +337,7 @@ instruction, or clause with function or message invocations active at the
 time of the error, terminating each instruction if a SYNTAX trap is not active
 at the instruction level. If the SYNTAX condition is not trapped at any of
 the higher levels, processing stops, and a message (see
-<link linkend="errnum">Error Numbers and Messages</link>)
+<xref linkend="errnum" />)
 describing the nature of the event that occurred usually indicates the
 condition.</para></listitem>
 <listitem><para>For all other conditions, the condition is ignored and its state remains
@@ -369,7 +369,7 @@ on whether a SIGNAL or CALL is processed: </para>
 <itemizedlist>
 <listitem><para>If the action taken is a SIGNAL, execution of the current instruction
 ceases immediately, the condition is disabled (set to OFF), and SIGNAL proceeds
-as usually (see <link linkend="keySignal">SIGNAL</link>). </para>
+as usually (see <xref linkend="keySignal" />). </para>
 <para>If any new occurrence of the condition
 is to be trapped, a new CALL ON or SIGNAL ON instruction for the condition
 is required to re-enable it when the label is reached. For example, if SIGNAL
@@ -378,7 +378,7 @@ termination occurs if the SIGNAL ON SYNTAX label name is not found.</para></list
 <listitem><para>If the action taken is a CALL, the
 <computeroutput>CALL</computeroutput>
 <emphasis role="italic">trapname</emphasis> proceeds
-in the usual way (see  <link linkend="keyCall">CALL</link>) when the instruction completes.
+in the usual way (see  <xref linkend="keyCall" />) when the instruction completes.
 The call does not affect the special variable RESULT. If the routine should
 RETURN any data, that data is ignored. </para>
 <para>When the condition is raised, and
@@ -422,7 +422,7 @@ The state (ON, OFF, or DELAY, and any
 of each condition trap is saved on entry to a subroutine and is then restored
 on RETURN.  This means that CALL ON, CALL OFF, SIGNAL ON, and SIGNAL OFF can
 be used in a subroutine without affecting the conditions set up by the caller.
- See <link linkend="keyCall">CALL</link> for details of other information that is saved during
+ See Call (<xref linkend="keyCall" />) for details of other information that is saved during
 a subroutine call.</para></listitem>
 <listitem><para>The state of condition traps is not affected when an external routine
 is called by a CALL, even if the external routine is a Rexx program.  On entry
@@ -451,7 +451,7 @@ be labels; therefore, several labels are allowed before another type of clause.
 <para>When a condition is trapped and causes a SIGNAL or CALL, this becomes the
 current trapped condition, and certain condition information associated with
 it is recorded. You can inspect this information by using the CONDITION built-in
-function (see <link linkend="bifCondition">CONDITION</link>).</para>
+function (see <xref linkend="bifCondition" />).</para>
 
 <para>The condition information includes: </para>
 <itemizedlist>
@@ -460,10 +460,10 @@ function (see <link linkend="bifCondition">CONDITION</link>).</para>
 (CALL or SIGNAL)</para></listitem>
 <listitem><para>The status of the trapped condition</para></listitem>
 <listitem><para>A descriptive string (see
-<link linkend="dstring">Descriptive Strings</link>) associated with that
+<xref linkend="dstring" />) associated with that
 condition</para></listitem>
 <listitem><para>Optional additional object information (see
-<link linkend="addinf">Additional Object Information</link>)</para></listitem>
+<xref linkend="addinf" />)</para></listitem>
 </itemizedlist>
 <para>The current condition information is replaced when control is passed to
 a label as the result of a condition trap (CALL ON or SIGNAL ON). Condition

@@ -426,7 +426,7 @@ the Icon class to the Screen-Object superclass:</para>
 <figure><title>The Screen-Object Superclass</title>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/ScreenObject" scale="70" />
+<imagedata fileref="images/ScreenObject.png" scale="70" />
 </imageobject>
 </mediaobject>
 </figure>
@@ -462,7 +462,7 @@ Acquiring methods and variables from more than one superclass is known as
 <listitem><para>Zero or more whitespace characters (blank or horizontal tabs)
 (which are ignored)</para></listitem>
 <listitem><para>A sequence of tokens (see
-<link linkend="xtokens">Tokens</link>)</para></listitem>
+<xref linkend="xtokens" />)</para></listitem>
 <listitem><para>Zero or more whitespace characters (again
 ignored)</para></listitem>
 <listitem><para>A semicolon (;)
@@ -884,7 +884,7 @@ to uppercase
 <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>).
 Symbols that begin with a number or a period are constant symbols
 and cannot directly be assigned a value. (See
-<link linkend="ensym">Environment Symbols</link>.)</para>
+<xref linkend="ensym" />.)</para>
 <para>One other form of symbol is allowed to support the representation of
 numbers in exponential format. The symbol starts with a digit
 (<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>)
@@ -930,7 +930,7 @@ followed optionally by a plus or minus sign,
 then followed by one or more decimal digits defining the power of 10. Whenever
 a character string is used as a number, rounding can occur to a precision
 specified by the NUMERIC DIGITS instruction (the default is nine digits).
-See <link linkend="numarit">Numbers and Arithmetic</link> for
+See <xref linkend="numarit" /> for
 a full definition of numbers.</para>
 <para>Numbers
 <indexterm><primary>restrictions</primary>
@@ -989,7 +989,7 @@ and the sequences
 <computeroutput>>=  &lt;=  \>  \&lt;  \=  >&lt;  &lt;>  ==  \==  //  &amp;&amp;
 ||  ** &not;>  &not;&lt;  &not;=  &not;==  >>  &lt;&lt;  >>=  \&lt;&lt;
 &not;&lt;&lt;  \>> &not;>>  &lt;&lt;=</computeroutput> indicate operations
- (see <link linkend="opera">Operators</link>).
+ (see <xref linkend="opera" />).
 A few of these are also used in parsing templates, and the equal sign
 <indexterm><primary>equal</primary>
 <secondary>sign</secondary>
@@ -1184,7 +1184,7 @@ original data. All expressions evaluate to objects.
 Rexx provides some objects, which are described in later sections. You can
 also define and create objects that are useful in particular applications&mdash;for
 example, a menu object for user interaction. See
-<link linkend="objects">Modeling Objects</link> for
+<xref linkend="objects" /> for
 more information.</para>
 
 <section id="expres"><title>Terms and Expressions</title>
@@ -1206,9 +1206,9 @@ provides; in this case, that object is used. Otherwise a symbol is treated
 as a constant string. A symbol can also be
 <emphasis role="italic">compound</emphasis>.</para>
 <para><emphasis role="italic">Message terms</emphasis>
-are described in <link linkend="mssg">Message Terms</link>.</para>
+are described in <xref linkend="mssg" />.</para>
 <para><emphasis role="italic">Function calls</emphasis>
-(see <link linkend="funct">Functions</link>), which
+(see <xref linkend="funct" />), which
 are of the following form:
 </para>
 <programlisting>
@@ -1232,7 +1232,7 @@ expression surrounded with a left and a right parenthesis.</para>
 <secondary>evaluation</secondary></indexterm>
 <para>Evaluation of an expression is left to right, modified by parentheses
 and operator precedence in the usual algebraic manner (see
-<link linkend="oprpri">Parentheses and Operator Precedence</link>).
+<xref linkend="oprpri" />).
 Expressions are wholly evaluated, unless an error occurs during evaluation.
 </para>
 <indexterm><primary>expressions</primary>
@@ -1286,8 +1286,8 @@ is changed to a <computeroutput>\</computeroutput>. That is, the operators
 prefix&nbsp;- and prefix&nbsp;+ operators), Rexx sends a message to the term,
 with no arguments. This means <computeroutput>-z</computeroutput> has the
 same effect as <computeroutput>z~"-"</computeroutput>.</para>
-<para>See <link linkend="mthObjectOperators">Operator Methods</link> for operator methods of
-the Object class and   <link linkend="mthStringArithmeticMethods">Arithmetic Methods</link>
+<para>See <xref linkend="mthObjectOperators" /> for operator methods of
+the Object class and  <xref linkend="mthStringArithmeticMethods" />
 for operator methods of the String class.</para>
 <para>There are four types of operators:
 <itemizedlist>
@@ -1388,7 +1388,7 @@ in an abuttal, and evaluates to <computeroutput>37.40</computeroutput>.</para>
 <indexterm><primary>operator</primary>
 <secondary>comparison</secondary></indexterm>
 <para>You can combine character strings that are
-valid numbers (see <link linkend="numbrs">Numbers</link>)
+valid numbers (see <xref linkend="numbrs" />)
 using the following arithmetic operators: </para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
@@ -1481,7 +1481,7 @@ the result can be negative)
 </tbody>
 </tgroup>
 </informaltable>
-<para>See <link linkend="numarit">Numbers and Arithmetic</link>
+<para>See <xref linkend="numarit" />
 for details about precision, the format of valid numbers, and the
 operation rules for arithmetic. Note that if an arithmetic result is
 shown in exponential notation, it is likely that rounding has occurred.</para>
@@ -1538,7 +1538,7 @@ operators also do not attempt to perform a numeric comparison on the two
 operands.</para>
 <para>For all other comparison operators, if both terms
 involved are numeric, a numeric comparison (see
-<link linkend="numcom">Numeric Comparisons</link>) is
+<xref linkend="numcom" />) is
 effected. Otherwise, both terms are treated as character strings, leading
 and trailing whitespace characters are ignored, and the shorter string is padded
 with blanks on the right.
@@ -1773,7 +1773,7 @@ this:
 <itemizedlist>
 <listitem><para>When parentheses are encountered&mdash;other than those that
 identify the arguments on messages (see
-<link linkend="mssg">Message Terms</link>) and function calls&mdash;the
+<xref linkend="mssg" />) and function calls&mdash;the
 entire subexpression between the parentheses is evaluated immediately when
 the term is required.</para></listitem>
 <listitem><para>When the sequence </para>
@@ -1912,7 +1912,7 @@ to an object to perform an action, obtain a result, or both.</para>
 </programlisting>
 
 <para>The <emphasis role="italic">receiver</emphasis> is a term (see
-<link linkend="expres">Terms and Expressions</link> for a definition
+<xref linkend="expres" /> for a definition
 of term). It receives the message. The ~ or ~~ indicates
 sending a message. The <emphasis role="italic">messagename</emphasis>
 is a literal string or a symbol that is taken as a constant. The
@@ -1942,7 +1942,7 @@ by one or more <emphasis role="italic">expression</emphasis> arguments.
 The message name (in uppercase) and the resulting argument
 objects are then sent to the receiver object. The receiver object selects
 a method to be run based on the message name
-(see <link linkend="meths1">Classes and Inheritance</link>), and
+(see <xref linkend="meths1" />), and
 runs the selected method with the specified argument objects. The receiver
 eventually returns, allowing processing to continue.</para>
 <para>If the message term uses ~, the receiver method must return a result object.
@@ -1960,7 +1960,7 @@ a="Position of &apos;e&apos; is:" c~pos("e",3)
 a result object. Any result object is discarded, and the receiver object is
 included in the original expression in place of the message term.</para>
 <para>For example, the messages INHERIT and SUBCLASS are valid for classes
-(see <link linkend="clsClass">The Class Class</link>) and, assuming the
+(see <xref linkend="clsClass" />) and, assuming the
 existence of the Persistent class, you could code:</para>
 <programlisting>
 account = .object~subclass("Account")~~inherit(.persistent)
@@ -1975,7 +1975,7 @@ form of the message term. Thus, <computeroutput>a[b]</computeroutput>
 is the same as <computeroutput>a~"[]"(b)</computeroutput>.</para>
 
 <para>For example, the message [] is valid for arrays
-(see <link linkend="clsArray">The Array Class</link>) and you could code:</para>
+(see <xref linkend="clsArray" />) and you could code:</para>
 <programlisting>
 a = .array~of(10,20)
 say "Second item is" a[2]   /* Same as: a~at(2)              */
@@ -1990,10 +1990,10 @@ only those required. For example,
 <computeroutput>1</computeroutput>.</para>
 <para>A colon (:) and symbol can follow the message name. In this case, the
 symbol must be the name of a variable (usually the special variable SUPER--see
-page <link linkend="xsuper">SUPER</link>) or an environment symbol
-(see <link linkend="ensym">Environment Symbols</link>).
+page <xref linkend="xsuper" />) or an environment symbol
+(see <xref linkend="ensym" />).
 The resulting value changes the usual method selection. For more information,
-see <link linkend="chsrod">Changing the Search Order for Methods</link>.</para>
+see <xref linkend="chsrod" />.</para>
 </section>
 
 <section id="mseq"><title>Message Sequences</title>
@@ -2071,7 +2071,7 @@ divide a program into separate executable units (methods and routines) and
 supply information about the program or its executable units. Directives perform
 various functions, such as creating new Rexx classes (::CLASS
 directive) or defining a method (::METHOD directive). See
-<link linkend="dire">Directives</link> for
+<xref linkend="dire" /> for
 more information about directives.</para>
 </section>
 
@@ -2130,12 +2130,12 @@ keyword instructions, or commands.</para>
 <para>A single clause of
 the form <emphasis role="italic">symbol=expression</emphasis> is an instruction
 known as an <emphasis>assignment</emphasis>. An assignment gives a (new) value
-to a variable. See <link linkend="assinmt">Assignments and Symbols</link>.
+to a variable. See <xref linkend="assinmt" />.
 </para>
 <section><title>Extended Assignments</title>
 <para>The character sequences <computeroutput>+=, -=, *= /=, %=, //=, ||=, &amp;=, |=, and &amp;&amp;=</computeroutput>
 can be used to create extended assignments.  These sequences combine an operation with the assignment.
-See <link linkend="extassign">Extended Assignments</link> for more details.</para>
+See <xref linkend="extassign" /> for more details.</para>
 </section>
 
 <section id="msgit"><title>Message Instructions</title>
@@ -2145,11 +2145,11 @@ See <link linkend="extassign">Extended Assignments</link> for more details.</par
 <secondary>message</secondary></indexterm>
 <indexterm><primary>message instructions</primary></indexterm>
 <para>A <emphasis>message instruction</emphasis> is a single clause in the
-form of a message term (see <link linkend="mssg">Message Terms</link>)
+form of a message term (see <xref linkend="mssg" />)
 or in the form
 <emphasis role="italic">messageterm</emphasis>=<emphasis role="italic">expression</emphasis>.
 A message is sent to an object, which responds by performing some action.
-See <link linkend="msgi">Message Instructions</link>.</para>
+See <xref linkend="msgi" />.</para>
 </section>
 
 <section id="keyinst"><title>Keyword Instructions</title>
@@ -2252,8 +2252,8 @@ of the symbol itself, translated to uppercase (that is,
 lowercase <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>
 to uppercase
 <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>).
-However, if it is a compound symbol (described under
-<link linkend="compsym">Compound Symbols</link>), its value is the
+However, if it is a compound symbol (described in
+<xref linkend="compsym" />), its value is the
 derived name of the symbol.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -2273,7 +2273,7 @@ be assigned new values. You can use simple symbols for variables where the
 name corresponds to a single value. You can use compound symbols and stems
 for more complex collections of variables although the collection classes
 might be preferable in many cases. See
-<link linkend="clsCollection">The Collection Classes</link>.</para>
+<xref linkend="clsCollection" />.</para>
 
 <section id="extassign"><title>Extended Assignments</title>
 <indexterm><primary>extended assignments</primary></indexterm>
@@ -2325,8 +2325,8 @@ alphabetic characters translated to uppercase).</para>
 17E-3
 </programlisting>
 <para>Symbols where the first character is a period and the second character
-is alphabetic are environment symbols.
-<link linkend="ensym">Environment symbols</link>).
+is alphabetic are environment symbols
+(<xref linkend="ensym" />) and
 may have a
 value other other than the symbol name.
 </para>
@@ -2364,10 +2364,10 @@ a digit.</para>
 FRED.
 A.
 </programlisting><para>The value of a stem is always a Stem object. (See
-<link linkend="clsStem">The Stem Class</link>.)
+<xref linkend="clsStem" />.)
 The stem variable's Stem object is automatically created the first time
 you use the stem variable or a
-<link linkend="compsym">compound variable</link>)
+compound variable (<xref linkend="compsym" />)
 containing the stem variable name.
 The Stem object's assigned name is
 the name of the stem variable (with the characters translated to uppercase).
@@ -2473,13 +2473,13 @@ say total.[] total.null              /* says "0 5" */
 collections of variables, referred to by their stems.
 <computeroutput>DROP FRED.</computeroutput> assigns
 a new Stem object to the specified stem. (See
-<link linkend="keyDrop">DROP</link>.) <computeroutput>EXPOSE FRED.</computeroutput>
+<xref linkend="keyDrop" />.) <computeroutput>EXPOSE FRED.</computeroutput>
 and <computeroutput>PROCEDURE EXPOSE FRED.</computeroutput> expose all possible
-variables with that stem (see <link linkend="keyExpose">EXPOSE</link> and
-<link linkend="keyProcedure">PROCEDURE</link>).</para>
+variables with that stem (see <xref linkend="keyExpose" /> and
+<xref linkend="keyProcedure" />).</para>
 
 <para>The DO instruction can also iterate over all of the values
-assigned to a stem variable. See <link linkend="keyDo">DO</link> for more details.
+assigned to a stem variable. See <xref linkend="keyDo" /> for more details.
 </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
@@ -2503,9 +2503,9 @@ Address="10 Downing Street";
 </programlisting>
 </listitem>
 <listitem><para>You can use the VAR function (see
-<link linkend="bifVar">VAR</link>) to test whether
+<xref linkend="bifVar" />) to test whether
 a symbol has been assigned a value. In addition, you can set
-<link linkend="uninit">SIGNAL ON NOVALUE</link>
+SIGNAL ON NOVALUE (<xref linkend="uninit" />)
 to trap the use of any uninitialized variables (except when they are tails
 in compound variables or stem variables, which are always initialized with a Stem object
 when first used.
@@ -2616,7 +2616,7 @@ producing a form of associative memory (content-addressable).</para>
 
 <section id="evcoms"><title>Evaluated Compound Variables</title>
 <para>The value of a stem variable is always a Stem object (see
-<link linkend="clsStem">The Stem Class</link> for
+<xref linkend="clsStem" /> for
 details). A Stem object is a type of collection that supports the []
 and []= methods used by other collection classes. The [] method
 provides an alternate means of accessing compound variables that also allows
@@ -2661,32 +2661,32 @@ series of searches to see if the environment symbol has an assigned value. The
 search locations and their ordering are:
 <orderedlist>
 <listitem><para>The directory of classes declared on ::CLASS directives (see
-<link linkend="clasdi">::CLASS</link>)
+<xref linkend="clasdi" />)
 within the current program package or added to the current package using
-the <link linkend="mthPackageAddClass">addClass() method</link>.</para></listitem>
+the addClass()  method (<xref linkend="mthPackageAddClass" />.</para></listitem>
 <listitem><para>The directory of PUBLIC classes declared on ::CLASS directives
 of other files included with a ::REQUIRES directive or added to the current
-Package instance using the <link linkend="mthPackageAddClass">addPackage() method</link>.
+Package instance using the addPackage() method (<xref linkend="mthPackageAddClass" />).
 </para></listitem>
 <listitem><para>The local environment directory specific to the current
 interpreter instance. The local
 environment includes process-specific
 objects such as the .INPUT and .OUTPUT objects. You can directly access the
 local environment directory by using the .LOCAL environment symbol. (See
-<link linkend="locenv">The Local Environment Object  (.LOCAL)</link>.)</para>
+<xref linkend="locenv" />.)</para>
 </listitem>
 <listitem><para>The global environment directory.  The global environment
 includes all
 permanent Rexx objects such as the Rexx supplied classes (.ARRAY and so on)
 and constants such as .TRUE and .FALSE. You can directly access the global
 environment by using the .ENVIRONMENT environment symbol (see
-<link linkend="envo">The Environment Object</link>).
+<xref linkend="envo" />).
 Entries in the global environment directory can also be accessed via the VALUE
-built-in function (see <link linkend="bifValue">VALUE</link>)
+built-in function (see <xref linkend="bifValue" />)
 by using a null string for the
 <emphasis role="italic">selector</emphasis> argument.</para></listitem>
 <listitem><para>Rexx defined symbols. Other simple environment symbols are
-reserved for use by <link linkend="oneof">Rexx built-in environment objects</link>.
+reserved for use by Rexx built-in environment objects (<xref linkend="oneof" />).
 The currently defined built-in
 objects are .RS, .LINE, .METHODS, .ROUTINES, and .CONTEXT.</para></listitem>
 </orderedlist>
@@ -2716,7 +2716,7 @@ in either directory include at least one period in the entry name.</para>
 <para>You can send a message to an object to perform an action, obtain a result,
 or both. You use a message instruction if the main purpose of the message
 is to perform an action. You use a message term (see
-<link linkend="mssg">Message Terms</link>)
+<xref linkend="mssg" />)
 if the main purpose of the message is to obtain a result.</para>
 <para>A <emphasis>message instruction</emphasis> is a clause of the form:
 </para>
@@ -2729,7 +2729,7 @@ if the main purpose of the message is to obtain a result.</para>
 
 <para>If there is only a <emphasis role="italic">messageterm</emphasis>,
 the message is sent in exactly the same way as for a message term (see
-<link linkend="mssg">Message Terms</link>). If the message
+<xref linkend="mssg" />). If the message
 yields a result object, it is assigned to the sender's special variable RESULT.
 If you use the ~~ form of message term, the receiver object
 is used as the result. If there is no result object, the variable RESULT is
@@ -2769,7 +2769,7 @@ the argument expressions within any [] pairs from left to right.</para>
 <programlisting>
    table[i] += 1        -- Same as table[i] = table[i] + 1
 </programlisting>
-<para>See <link linkend="extassign">Extended Assignments</link> for more details</para>
+<para>See <xref linkend="extassign" /> for more details</para>
 </section>
 
 <section id="cmdhost"><title>Commands to External Environments</title>
@@ -2818,7 +2818,7 @@ of the form:</para>
 expression;
 </programlisting>
 <para>The expression (which must not be an expression that forms a valid message
-instruction&mdash;see <link linkend="msgi">Message Instructions</link>)
+instruction&mdash; see <xref linkend="msgi" />)
 is evaluated, resulting in a character string value
 (which can be the null string), which is then prepared as appropriate
 and submitted to the environment specified by the current ADDRESS setting.
@@ -2840,7 +2840,7 @@ places this return code in the Rexx special variable RC.
 <indexterm><primary>variable</primary>
 <secondary>special</secondary>
 <tertiary>RC</tertiary></indexterm>
-See <link linkend="spvard">Special Variables</link>.</para>
+See <xref linkend="spvard" />.</para>
 
 <para>In addition to setting a return code, the underlying system can also
 indicate to the language processor if an error or failure occurred. An
@@ -2855,7 +2855,7 @@ command that is not executable or cannot be found.</para>
 <secondary>definition</secondary></indexterm>
 and failures in commands can affect Rexx processing if a condition
 trap for ERROR or FAILURE is ON (see
-<link linkend="condtra">Conditions and Condition Traps</link>). They can also
+<xref linkend="condtra" />). They can also
 <indexterm><primary>failure, definition</primary></indexterm>
 <indexterm><primary>error</primary>
 <secondary>from commands</secondary></indexterm>
@@ -2863,7 +2863,7 @@ cause the command to be traced if <computeroutput>TRACE E</computeroutput>
 or <computeroutput>TRACE F</computeroutput> is
 set. <computeroutput>TRACE Normal</computeroutput> is the same as
 <computeroutput>TRACE F</computeroutput> and is the
-default&mdash;see <link linkend="keyTrace">TRACE</link>.</para>
+default&mdash; see <xref linkend="keyTrace" />.</para>
 <para>The .RS environment symbol can also be used to detect command failures
 and errors. When the command environment indicates that a command failure
 has occurred, the Rexx environment symbol .RS has the value
@@ -2935,9 +2935,9 @@ environment.</para>
 <para></para>
 <para>Rexx programs can call other Rexx programs as external
 functions or subroutines with the
-<link linkend="keyCall">call</link> instruction.</para>
+CALL (<xref linkend="keyCall" />) instruction.</para>
 <para>If a program is called with the
-<link linkend="keyCall">call</link> instruction, the program runs in the same
+CALL (<xref linkend="keyCall" />) instruction, the program runs in the same
 process as the calling program.
 If you call another program by a Rexx command, the program is executed in
 a new process and therefore does not share .environment, .local,

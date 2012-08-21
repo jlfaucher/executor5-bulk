@@ -143,7 +143,7 @@ invocation to resume execution.
 Control is then passed to the first label in the program that matches the
 name. As with a routine called by the CALL instruction, status information,
 such as TRACE and NUMERIC settings, is saved too. See the CALL instruction
-(<link linkend="keyCall">CALL</link>) for details. </para>
+(<xref linkend="keyCall" />) for details. </para>
 <para>If you call an internal routine as a
 function, you must specify an expression in any RETURN
 instruction so that the routine can return.  This is not necessary if it is
@@ -167,7 +167,7 @@ invocation.</para>
 </listitem></varlistentry>
 <varlistentry><term>Built-in</term>
 <listitem><para>These functions are always available and are defined in
-<link linkend="xbuiltin">Built-in Functions</link>.
+<xref linkend="xbuiltin" />.
 </para></listitem></varlistentry>
 <varlistentry><term>External
 <indexterm><primary>external functions</primary>
@@ -476,13 +476,13 @@ default values apply.</para></listitem>
 <indexterm><primary>pad character, definition</primary></indexterm>
 character, it must be exactly one character long. A pad character
 extends a string, usually on the right. For an example, see the LEFT built-in
-function <link linkend="bifLeft">LEFT</link>.</para></listitem>
+function LEFT (<xref linkend="bifLeft" />).</para></listitem>
 <listitem><para>If a function has an
 <emphasis role="italic">option</emphasis> that you can select by specifying
 the first character of a string, that character can be in uppercase or
 lowercase.</para></listitem>
 <listitem><para>Many of the built-in functions invoked methos of the
-<link linkend="clsString">String</link> class.
+String (<xref linkend="clsString" /> class.
 For the functions ABBREV, ABS, BITAND, BITOR, BITXOR,
 B2X, CENTER, CENTRE, CHANGESTR, COMPARE, COPIES, COUNTSTR, C2D, C2X, DATATYPE,
 DELSTR, DELWORD, D2C, D2X, FORMAT, LEFT, LENGTH, LOWER, MAX, MIN, REVERSE, RIGHT,
@@ -744,7 +744,7 @@ strings. (See the
 <citetitle pubwork="book">Open Object Rexx: Programming Guide</citetitle>
 for information about RexxStart.)</para></listitem>
 <listitem><para>You can access the argument objects of a program with the USE instruction.
-See <link linkend="keyUse">USE</link> for more information.</para></listitem>
+See <xref linkend="keyUse" /> for more information.</para></listitem>
 <listitem><para>You can retrieve and directly parse the argument strings of a program
 or internal routine with the ARG or PARSE ARG instructions.</para></listitem>
 </orderedlist>
@@ -1252,7 +1252,7 @@ CHANGESTR("1","101100","X", 1) ->    "X01100"
 <para>Returns a string of up to <emphasis role="italic">length</emphasis>
 characters read from the character input stream
 <emphasis role="italic">name</emphasis>. (To understand the input and output functions,
-see <link linkend="iostrms">Input and Output Streams</link>.) If you omit
+see <xref linkend="iostrms" />.) If you omit
 <emphasis role="italic">name</emphasis>, characters are read
 from STDIN, which is the default input stream. The default
 <emphasis role="italic">length</emphasis> is
@@ -1278,7 +1278,7 @@ characters are read and the null string is returned.</para>
 available, the execution of the program generally stops until sufficient characters
 become available.  If, however, it is impossible for those characters to become
 available because of an error or another problem, the NOTREADY condition is
-raised (see <link linkend="stmerr">Errors during Input and Output</link>)
+raised (see <xref linkend="stmerr" />)
 and CHARIN returns with fewer than the requested number of characters.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>CHARIN function</primary>
@@ -1333,7 +1333,7 @@ press the Enter key.</para></listitem>
 <emphasis role="italic">string</emphasis> to the character output stream
 <emphasis role="italic">name</emphasis>. (To understand the
 input and output functions, see
-<link linkend="iostrms">Input and Output Streams</link>.) If you omit
+<xref linkend="iostrms" />.) If you omit
 <emphasis role="italic">name</emphasis>, characters in
 <emphasis role="italic">string</emphasis> are written to STDOUT (generally
 the display), which is the default output stream. The
@@ -1366,7 +1366,7 @@ and returns control to Rexx, even though the output data might not have been
 printed.  Rexx considers this to be complete, even though the data has not
 been printed. If, however, it is impossible for all the characters to be written,
 the NOTREADY condition is raised (see
-<link linkend="stmerr">Errors during Input and Output</link>) and CHAROUT returns
+<xref linkend="stmerr" />) and CHAROUT returns
 with the number of characters that could not be written (the residual count).</para>
 <para>Here are some examples:</para>
 <indexterm><primary>CHAROUT function</primary>
@@ -1417,7 +1417,7 @@ stream <emphasis role="italic">name</emphasis>. The count includes any
 line separator characters, if
 these are defined for the stream. In the case of persistent streams, it is
 the count of characters from the current read position. (See
-<link linkend="iostrms">Input and Output Streams</link> for
+<xref linkend="iostrms" /> for
 a discussion of Rexx input and output.) If you omit
 <emphasis role="italic">name</emphasis>, the number
 of characters available in the default input stream (STDIN) is returned.</para>
@@ -1503,7 +1503,7 @@ COMPARE("ab-- ","ab","-")    ->    5
 </programlisting>
 
 <para>Returns the condition information associated with the current trapped
-condition. (See <link linkend="condtra">Conditions and Condition Traps</link>
+condition. (See <xref linkend="condtra" />
 for a description of condition traps.) You can
 request the following pieces of information: </para>
 <itemizedlist>
@@ -1524,7 +1524,7 @@ needed; all characters following it are ignored.) </para>
 <varlistentry><term>Additional</term>
 <listitem><para>returns any additional object information associated with the
 current trapped condition. See
-<link linkend="addinf">Additional Object Information</link> for a list of
+<xref linkend="addinf" /> for a list of
 possible values. If no additional object information is available or no
 condition has been trapped, the language processor returns the Nil object.
 </para></listitem></varlistentry>
@@ -1536,7 +1536,7 @@ user condition name, separated by a whitespace character.
 </para></listitem></varlistentry>
 <varlistentry><term>Description</term>
 <listitem><para>returns any descriptive string associated with the current
-trapped condition. See <link linkend="dstring">Descriptive Strings</link>
+trapped condition. See <xref linkend="dstring" />
 for the list of possible values. If no description
 is available or no condition has been trapped, it returns a null string.
 </para></listitem></varlistentry>
@@ -1550,7 +1550,7 @@ condition has been trapped, it returns a null string.
 <varlistentry><term>Object</term>
 <listitem><para>returns an object that contains all the information about the
 current trapped condition. See
-<link linkend="condtra">Conditions and Condition Traps</link> for more
+<xref linkend="condtra" /> for more
 information. If no condition has been trapped, it returns the Nil object.
 </para></listitem></varlistentry>
 <varlistentry><term>Status</term>
@@ -1879,7 +1879,7 @@ the string is exactly "0" or "1". Otherwise it returns
 <emphasis role="italic">string</emphasis> is a valid symbol, that is,
 if <computeroutput>SYMBOL(string)</computeroutput> does not return
 <computeroutput>BAD</computeroutput>. (See
-<link linkend="xsymbol">Symbols</link>.)
+<xref linkend="xsymbol" />.)
 Note that both uppercase and lowercase alphabetics are
 permitted.
 </para></listitem></varlistentry>
@@ -2333,7 +2333,7 @@ DELWORD("Now is the  time",2,2)  ->  "Now time"
 </programlisting>
 <para>
 Returns the current setting
-of NUMERIC DIGITS. See <link linkend="keyNumeric">NUMERIC</link> for more
+of NUMERIC DIGITS. See <xref linkend="keyNumeric" /> for more
 information.</para>
 <para>Here is an example:</para>
 <indexterm><primary>DIGITS function</primary>
@@ -2409,7 +2409,7 @@ else
 </programlisting>
 
 <para>Restores the directory and environment variables in effect before the last
-<link linkend="bifSetlocal">SETLOCAL</link>
+SETLOCAL (<xref linkend="bifSetlocal" />
 function was run. If ENDLOCAL is not
 included in a procedure, the initial environment saved by SETLOCAL is restored
 upon exiting the procedure.</para>
@@ -2431,7 +2431,7 @@ n = SETLOCAL()                   /* saves the current environment */
 n = ENDLOCAL()                   /* restores the initial environment */
 </programlisting>
 <para>For additional examples, see
-<link linkend="bifSetlocal">SETLOCAL</link>.</para>
+<xref linkend="bifSetlocal" />.</para>
 </section>
 
 
@@ -2455,7 +2455,7 @@ n = ENDLOCAL()                   /* restores the initial environment */
 <computeroutput>0</computeroutput>-<computeroutput>99</computeroutput>.
 It returns the null string if <emphasis role="italic">n</emphasis>
 is in the allowed range but is not a defined Rexx error
-number. See <link linkend="errnum">Error Numbers and Messages</link> for a
+number. See <xref linkend="errnum" /> for a
 complete description of error numbers and messages.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>ERRORTEXT function</primary>
@@ -2549,7 +2549,7 @@ say FILESPEC(part,thisfile)        /* says "SYSTEM.INI"      */
 </programlisting>
 <para>
 Returns the current setting of NUMERIC
-FORM. See <link linkend="keyNumeric">NUMERIC</link> for more information.</para>
+FORM. See <xref linkend="keyNumeric" /> for more information.</para>
 <para>Here is an example:</para>
 <indexterm><primary>FORM function</primary>
 <secondary>example</secondary></indexterm>
@@ -2681,7 +2681,7 @@ FORMAT("1234567e5", ,3,0)   ->    "123456700000.000"
 </programlisting>
 <para>
 Returns the current setting of NUMERIC
-FUZZ. See <link linkend="keyNumeric">NUMERIC</link> for more information.</para>
+FUZZ. See <xref linkend="keyNumeric" /> for more information.</para>
 <para>Here is an example:</para>
 <indexterm><primary>FUZZ function</primary>
 <secondary>example</secondary></indexterm>
@@ -2767,7 +2767,7 @@ INSERT("123","abc", ,5,"-")    ->    "123--abc"
 <para>Returns the position of the last occurrence of one string,
 <emphasis role="italic">needle</emphasis>,
 in another, <emphasis role="italic">haystack</emphasis>. (See also
-<link linkend="bifPos">POS (Position)</link>.) It returns
+<xref linkend="bifPos" />.) It returns
 <computeroutput>0</computeroutput> if <emphasis role="italic">needle</emphasis>
 is a null string or not found. By default, the
 search starts at the last character of
@@ -2902,7 +2902,7 @@ character input stream <emphasis role="italic">name</emphasis>. The
 <emphasis role="italic">count</emphasis> must be
 <computeroutput>1</computeroutput> or <computeroutput>0</computeroutput>
 (To understand the input and output functions, see
-<link linkend="iostrms">Input and Output Streams</link>.) If you omit
+<xref linkend="iostrms" />.) If you omit
 <emphasis role="italic">name</emphasis>, the line is read from the default
 input stream, STDIN. The default <emphasis role="italic">count</emphasis> is
 <computeroutput>1</computeroutput>.</para>
@@ -2927,7 +2927,7 @@ and a null string is returned.</para>
 then execution of the program usually stops until the line is complete. If,
 however, it is impossible for a line to be completed because of an error or
 another problem, the NOTREADY condition is raised (see
-<link linkend="stmerr">Errors during Input and Output</link>)
+<xref linkend="stmerr" />)
 and LINEIN returns whatever characters are available.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>LINEIN function</primary>
@@ -2974,7 +2974,7 @@ LINEIN("QUEUE:")   ->  "Queue line" /* Read a line from the queue. */
 stream, as in a dialog with a user, use the PULL or PARSE PULL instruction.
 </para></note>
 <para>The PARSE LINEIN instruction is also useful in certain cases. (See
-<link linkend="parlini">PARSE LINEIN</link>.)</para>
+<xref linkend="parlini" />.)</para>
 </section>
 
 
@@ -3002,7 +3002,7 @@ stream, as in a dialog with a user, use the PULL or PARSE PULL instruction.
 output stream <emphasis role="italic">name</emphasis>, or
 <computeroutput>1</computeroutput> if an error occurs while writing
 the line. (To understand the input and output functions, see
-<link linkend="iostrms">Input and Output Streams</link>.)
+<xref linkend="iostrms" />.)
 If you omit <emphasis role="italic">string</emphasis> but include
 <emphasis role="italic">line</emphasis>, only the write position
 is repositioned. If <emphasis role="italic">string</emphasis> is a null string,
@@ -3044,7 +3044,7 @@ the data and returns control to Rexx, even though the output data might not
 have been printed.  Rexx considers this to be complete, even though the data
 has not been printed. If, however, it is impossible for a line to be written,
 the NOTREADY condition is raised (see
-<link linkend="stmerr">Errors during Input and Output</link>), and LINEOUT
+<xref linkend="stmerr" />), and LINEOUT
 returns a result of <computeroutput>1</computeroutput>, that is, the residual
 count of lines written.</para>
 <para>Here are some examples:</para>
@@ -3117,10 +3117,10 @@ the current read position and the end of the character input stream
 <emphasis role="italic">name</emphasis>. It returns
 <computeroutput>0</computeroutput> if no data remains. In effect, LINES reports
 whether a read action that CHARIN (see
-<link linkend="bifCharin">CHARIN (Character Input)</link>) or LINEIN (see
-<link linkend="bifLinein">LINEIN (Line Input)</link>)
+<xref linkend="bifCharin" />) or LINEIN (see
+<xref linkend="bifLinein" />)
 performs will succeed. (To understand the input and output functions, see
-<link linkend="iostrms">Input and Output Streams</link>.)</para>
+<xref linkend="iostrms" />.)</para>
 
 <para>The ANSI Standard has extended this function to allow an option: "Count".
 If this option is used, LINES returns the actual number of complete
@@ -3328,7 +3328,7 @@ OVERLAY("123","abc",5,6,"+")    ->    "abc+123+++"
 <para>Returns the position of one string,
 <emphasis role="italic">needle</emphasis>, in another,
 <emphasis role="italic">haystack</emphasis>. (See also
-<link linkend="bifLastpos">LASTPOS (Last Position)</link>.) It returns
+<xref linkend="bifLastpos" />.) It returns
 <computeroutput>0</computeroutput> if <emphasis role="italic">needle</emphasis>
 is a null string or not found or if <emphasis role="italic">start</emphasis>
 is greater than the length of <emphasis role="italic">haystack</emphasis>.
@@ -3397,7 +3397,7 @@ The file does not need to exist to generate the full name.
 </programlisting>
 
 <para>Returns the number of lines remaining in the external data queue when the
-function is called. (See <link linkend="iostrms">Input and Output Streams</link>
+function is called. (See <xref linkend="iostrms" />
 for a discussion of Rexx input and output.)</para>
 <para>Here is an example:</para>
 <indexterm><primary>QUEUED function</primary>
@@ -3441,7 +3441,7 @@ QUEUED()    ->    5    /* Perhaps */
 <computeroutput>0</computeroutput> and <computeroutput>999</computeroutput>,
 respectively. To start a repeatable sequence of results, use a specific
 <emphasis role="italic">seed</emphasis> as the third
-argument, as described in Note <link linkend="rsseed">1</link>. This
+argument. This
 <emphasis role="italic">seed</emphasis> must be a positive whole number from
 0 to 999999999.</para>
 <para>Here are some examples:</para>
@@ -3793,9 +3793,9 @@ rxqueue("delete", "Fred")  -> "0"
 variables that are local to the current process.</para>
 <para>For example, SETLOCAL can be used to save the current environment before
 changing selected settings with the VALUE function (see
-<link linkend="bifValue">VALUE</link>.
+<xref linkend="bifValue" />.
 To restore the directory and environment, use the ENDLOCAL function (see
-<link linkend="bifEndlocal">ENDLOCAL</link>.</para>
+<xref linkend="bifEndlocal" />.</para>
 <para>SETLOCAL returns a value of 1 if the initial directory and environment are
 successfully saved and a value of 0 if unsuccessful. If SETLOCAL is not followed
 by an ENDLOCAL function in a procedure, the initial environment saved by
@@ -3969,7 +3969,7 @@ upon, the character stream <emphasis role="italic">name</emphasis>.
 The result may depend on characteristics
 of the stream that you have specified in other uses of the STREAM function.
 (To understand the input and output functions, see
-<link linkend="iostrms">Input and Output Streams</link>.)
+<xref linkend="iostrms" />.)
 This function requests information on the state of an input or output stream
 or carries out some specific operation on the stream.</para>
 <para>The first argument, <emphasis role="italic">name</emphasis>,
@@ -3996,7 +3996,7 @@ information about the ERROR or NOTREADY states.
 <listitem><para>returns a string that indicates the current state of the
 specified stream. This is the default operation.</para>
 <para>The returned strings are as described in
-<link linkend="mthStreamState">STATE</link>.</para>
+<xref linkend="mthStreamState" />.</para>
 </listitem></varlistentry>
 </variablelist>
 
@@ -4202,7 +4202,7 @@ to this stream.
 specified, both the read and write positions are set. </para>
 
 <note><title>Note</title>
-<para>See <link linkend="iostrms">Input and Output Streams</link> for a
+<para>See <xref linkend="iostrms" /> for a
 discussion of read and write positions in a persistent
 stream.</para></note>
 <para>To use this command, the named stream must first
@@ -4253,7 +4253,7 @@ complete, because, in most cases, the file must be scanned from the top to
 count line-end characters.  However, for binary streams with a specified record
 length, this results in a simple multiplication of the new resulting line
 number by the record length, and then a simple character positioning. See
-<link linkend="positio">Line versus Character Positioning</link> for
+<xref linkend="positio" /> for
 a detailed discussion of this issue.
 
 <note><title>Note</title>
@@ -4352,7 +4352,7 @@ default.</para></listitem></varlistentry>
 this operation can take a long time to complete, because the language processor
 starts tracking the current line number if not already doing so. Thus, it
 might require a scan of the stream from the top to count line-end characters.
-See <link linkend="positio">Line versus Character Positioning</link> for a
+See <xref linkend="positio" /> for a
 detailed discussion of this issue.</para>
 <programlisting>
 stream("myfile","c","query position write")
@@ -4518,7 +4518,7 @@ SUBSTR("abc",2,6,".")    ->    "bc...."
 <para>In some situations the positional (numeric) patterns of parsing
 templates are more convenient for selecting substrings, especially if more
 than one substring is to be extracted from a string. See also
-<link linkend="bifLeft">LEFT</link> and <link linkend="bifRight">RIGHT</link>.
+<xref linkend="bifLeft" /> and <xref linkend="bifRight" />.
 </para></note>
 </section>
 
@@ -4898,7 +4898,7 @@ associated with the TRACE instruction (that is, starting with
 <computeroutput>I</computeroutput>, <computeroutput>L</computeroutput>,
 <computeroutput>N</computeroutput>, <computeroutput>O</computeroutput>,
 or <computeroutput>R</computeroutput>), or both. (See the TRACE instruction
-in <link linkend="alphaco">Alphabetic Character (Word) Options</link> for
+in <xref linkend="alphaco" /> for
 full details.)</para>
 <para>Unlike the TRACE instruction, the TRACE function alters the trace action
 even if interactive debugging is active. Also unlike the TRACE instruction,
@@ -5137,7 +5137,7 @@ characters in <emphasis role="italic">name</emphasis> are
 translated to uppercase for the local environment. For the global environment
 lowercase characters are not translated because the global environment supports
 mixed-case identifiers. Substitution in a compound name (see
-<link linkend="compsym">Compound Symbols</link>)
+<xref linkend="compsym" />)
 occurs if possible.</para>
 
 <para>If you specify <emphasis role="italic">newvalue</emphasis>,
@@ -5265,7 +5265,7 @@ arguments) to the current environment object. The environment returns the
 object identified by <emphasis role="italic">name</emphasis>. If there is
 no such object, it returns, by default, the string
 <emphasis role="italic">name</emphasis> with an added initial period
-(an environment symbol--see <link linkend="ensym">Environment Symbols</link>).
+(an environment symbol--see <xref linkend="ensym" />).
 </para>
 
 <para>Here are some examples: </para>
@@ -5319,7 +5319,7 @@ string between the quotation marks can usually replace the whole function call.
 For example, <computeroutput>fred=VALUE("k");</computeroutput> is identical
 with the assignment <computeroutput>fred=k;</computeroutput>, unless the
 NOVALUE condition is trapped. See
-<link linkend="condtra">Conditions and Condition Traps</link>.
+<xref linkend="condtra" />.
 </para></listitem>
 </orderedlist>
 </section>

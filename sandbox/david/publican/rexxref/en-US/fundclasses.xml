@@ -62,7 +62,7 @@ of the Object class are, therefore, available on all objects.</para>
 </figure>
 <note><title>Note</title>
 <para>The Object class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
 
 <section id="mthObjectNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -99,12 +99,12 @@ class determines equality based on the value of the string data.
 </para>
 <note><title>Note</title>
 <para>The MapCollection classes such as Table and Relation use the == operator
-combined with the <link linkend="mthObjectHashCode">hashCode method</link> to determine index and
+combined with the hashCode method (<xref linkend="mthObjectHashCode" />) to determine index and
 item equivalence.
 It is generally necessary
 for a class to override both the hashCode method and the == operator method to maintain
 the contract specified for the hashCode method.
-See <link linkend="mthObjectHashCode">hashCode Method</link> for details on the contract.
+See <xref linkend="mthObjectHashCode" /> for details on the contract.
 </para></note>
 <para>The comparison operators you can use in a message are: </para>
 <variablelist>
@@ -161,7 +161,7 @@ See <link linkend="mthObjectHashCode">hashCode Method</link> for details on the 
 
 <para>Returns a new string that is the concatenation the of receiver object's string value with
 <emphasis role="italic">argument</emphasis>. (See
-<link linkend="strgcon">String Concatenation</link>.)
+<xref linkend="strgcon" />.)
 The <emphasis role="italic">concatenation_operator</emphasis> can be: </para>
 <variablelist>
 <varlistentry><term>&quot;&quot;</term>
@@ -249,13 +249,13 @@ exact form of this representation depends on the object and might not alone
 be sufficient to reconstruct the object. All objects must be able to produce
 a short string representation of themselves in this way, even if the object
 does not have a string value. See
-<link linkend="reqstr">Required String Values</link> for more information.
+<xref linkend="reqstr" /> for more information.
 The <emphasis role="bold">defaultName</emphasis>
 method of the Object class returns a string that identifies
 the class of the object, for example, an Array or a Directory. See also
-<link linkend="mthObjectObjectName">objectName</link> and
-<link linkend="mthObjectString">string</link>. See
-<link linkend="mthObjectObjectNameEquals">objectName=</link> for an
+<xref linkend="mthObjectObjectName" /> and
+<xref linkend="mthObjectString" />. See
+<xref linkend="mthObjectObjectNameEquals" /> for an
 example using <emphasis role="bold">defaultName</emphasis>.</para>
 </section>
 
@@ -326,7 +326,7 @@ Otherwise, it returns <computeroutput>0</computeroutput> (false). </para>
 as private.  A private method has restricted access rules, so its possible to
 receive an unknown method error (error 97) when invoking <emphasis role="italic">methodname</emphasis>
 even if hasMethod indicates the method exists.
-See <link linkend="pubpri">Public versus Private Methods</link>
+See <xref linkend="pubpri" />
 for private method restrictions.
 </para></note>
 </section>
@@ -412,7 +412,7 @@ instance of <emphasis role="italic">class</emphasis>, the Nil object is returned
 </programlisting>
 
 <note><para>This method is an alias of the
-<link linkend="mthObjectIsInstanceOf">isInstanceOf</link> method.</para>
+isInstance (<xref linkend="mthObjectIsInstanceOf" />) method.</para>
 </note>
 </section>
 
@@ -461,7 +461,7 @@ class inheritance chain. For example:
 <emphasis role="bold">objectName=</emphasis> method. If
 the receiver object does not have a name, this method returns the result of
 the <emphasis role="bold">defaultName</emphasis> method. See
-<link linkend="reqstr">Required String Values</link> for more information. See
+<xref linkend="reqstr" /> for more information. See
 the <emphasis role="bold">objectName=</emphasis>
 method for an example using <emphasis role="bold">objectName</emphasis>.</para>
 </section>
@@ -513,7 +513,7 @@ say points[3]                 /* Says: "E"Points is still an array   */
 class, or the Nil object if the request cannot be satisfied.</para>
 <para>This method first compares the identity of the object's class (see
 the <emphasis role="italic">id</emphasis>
-method of the Class class in <link linkend="mthClassId">id</link>) to
+method of the Class class in <xref linkend="mthClassId" />) to
 <emphasis role="italic">classid</emphasis>. If they are the same, the
 receiver object is returned as the result.
 Otherwise, <emphasis role="bold">request</emphasis>
@@ -539,7 +539,7 @@ requested class. For example, <emphasis role="bold">makeArray</emphasis>
 must return an array. The language
 processor uses the <emphasis role="bold">makeString</emphasis>
 method to obtain string values in certain contexts;
-see <link linkend="reqstr">Required String Values</link>.</para>
+see <xref linkend="reqstr" />.</para>
 </section>
 
 <section id="mthObjectRun"><title>run</title>
@@ -560,7 +560,7 @@ see <link linkend="reqstr">Required String Values</link>.</para>
 </programlisting>
 
 <para>Runs the method object <emphasis role="italic">method</emphasis> (see
-<link linkend="clsMethod">The Method Class</link>). The
+<xref linkend="clsMethod" />). The
 <emphasis role="italic">method</emphasis> has access to the object variables
 of the receiver object, as
 if the receiver object had defined the method by using
@@ -576,7 +576,7 @@ the order you specify them.
 </para></listitem></varlistentry>
 <varlistentry><term>Array</term>
 <listitem><para>Requires <emphasis role="italic">argument</emphasis>,
-which is an array object. (See <link linkend="clsArray">The Array Class</link>.)
+which is an array object. (See <xref linkend="clsArray" />.)
 The member items of the array are passed to the method
 as arguments. The first argument is at index 1, the second argument at index
 2, and so on. If you omitted any indexes when creating the array, the
@@ -596,7 +596,7 @@ method object.</para>
 <orderedlist>
 <listitem><para>The <emphasis role="bold">run</emphasis> method is a
 private method.
-See <link linkend="pubpri">Public versus Private Methods</link>
+See <xref linkend="pubpri" />
 for information private method restrictions.
 </para></listitem>
 <listitem><para>The RUN method is a protected method.</para></listitem>
@@ -628,7 +628,7 @@ an array. If <emphasis role="italic">messagename</emphasis> is an array object,
 its first item is the name of the message and its
 second item is a class object to use as the starting point for the method
 search. For more information, see
-<link linkend="meths1">Classes and Inheritance</link>.</para>
+<xref linkend="meths1" />.</para>
 <para>Any
 <emphasis role="italic">argument</emphasis>s are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
@@ -678,7 +678,7 @@ an array. If <emphasis role="italic">messagename</emphasis> is an array object,
 its first item is the name of the message and its
 second item is a class object to use as the starting point for the method
 search. For more information, see
-<link linkend="meths1">Classes and Inheritance</link>.</para>
+<xref linkend="meths1" />.</para>
 <para>The <emphasis role="italic">arguments</emphasis> argument must be
 a single-dimension array instance.
 The values contained in
@@ -754,7 +754,7 @@ attached to.</para>
 <listitem><para>The <emphasis role="bold">setMethod</emphasis>
 method is a private method.
 See the <emphasis role="bold">setPrivate</emphasis> method
-in <link linkend="mthMethodSetPrivate">setPrivate</link> for details.
+in <xref linkend="mthMethodSetPrivate" /> for details.
 </para>
 </listitem>
 <listitem><para>The <emphasis role="bold">setMethod</emphasis>
@@ -778,7 +778,7 @@ method is a protected method.</para></listitem>
 </programlisting>
 
 <para>Returns a message object (see
-<link linkend="clsMessage">The Message Class</link>) and sends it a
+<xref linkend="clsMessage" />) and sends it a
 <emphasis role="bold">start</emphasis> message
 to start concurrent processing. The object receiving the message
 <emphasis role="italic">messagename</emphasis> processes this message
@@ -788,7 +788,7 @@ an array. If <emphasis role="italic">messagename</emphasis> is an array object,
 its first item is the name of the message and its
 second item is a class object to use as the starting point for the method
 search. For more information, see
-<link linkend="meths1">Classes and Inheritance</link>.</para>
+<xref linkend="meths1" />.</para>
 <para>Any
 <emphasis role="italic">argument</emphasis>s are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
@@ -796,7 +796,7 @@ specify them.</para>
 <para>When the receiver object has finished processing the message, the message
 object retains its result and holds it until the sender requests it by sending
 a <emphasis role="bold">result</emphasis> message. For further details,
-see <link linkend="mthMessageStart">start</link>.
+see <xref linkend="mthMessageStart" />.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -828,7 +828,7 @@ say msg2~result           /* Produces Hello world 21:04:25.081000 */
 </programlisting>
 
 <para>Returns a message object (see
-<link linkend="clsMessage">The Message Class</link>) and sends it a
+<xref linkend="clsMessage" />) and sends it a
 <emphasis role="bold">start</emphasis> message
 to start concurrent processing. The object receiving the message
 <emphasis role="italic">messagename</emphasis> processes this message
@@ -838,7 +838,7 @@ an array. If <emphasis role="italic">messagename</emphasis> is an array object,
 its first item is the name of the message and its
 second item is a class object to use as the starting point for the method
 search. For more information, see
-<link linkend="meths1">Classes and Inheritance</link>.</para>
+<xref linkend="meths1" />.</para>
 <para>The <emphasis role="italic">arguments</emphasis> argument must be
 a single-dimension array instance.
 Any values contained in
@@ -848,7 +848,7 @@ specify them.</para>
 <para>When the receiver object has finished processing the message, the message
 object retains its result and holds it until the sender requests it by sending
 a <emphasis role="bold">result</emphasis> message. For further details,
-see <link linkend="mthMessageStart">start</link>.
+see <xref linkend="mthMessageStart" />.
 </para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
@@ -889,14 +889,14 @@ string representation of themselves in this way.</para>
 method (which can in turn use the
 <emphasis role="bold">defaultName</emphasis> method). See also the
 <emphasis role="bold">objectName</emphasis>
-method (<link linkend="mthObjectObjectName">OBJECTNAME</link>) and the
+method (<xref linkend="mthObjectObjectName" />) and the
 <emphasis role="bold">defaultName</emphasis> method
-(<link linkend="mthObjectDefaultName">defaultName</link>).</para>
+(<xref linkend="mthObjectDefaultName" />).</para>
 <para>The distinction between this method, the
 <emphasis role="bold">makeString</emphasis> method (which obtains
-string values&mdash;see <link linkend="mthStringMakeString">makeString</link>) and the
+string values&mdash;see <xref linkend="mthStringMakeString" />) and the
 <emphasis role="bold">request</emphasis>
-method (see <link linkend="mthObjectRequest">request</link>) is important. All objects
+method (see <xref linkend="mthObjectRequest" />) is important. All objects
 have a <emphasis role="bold">string</emphasis> method, which returns
 a string representation (human-readable form) of the
 object. This form is useful in tracing and debugging. Only those objects that
@@ -938,7 +938,7 @@ no action is taken. </para>
 <listitem><para>The <emphasis role="bold">unsetMethod</emphasis>
 method is a private method.
 See the <emphasis role="bold">setPrivate</emphasis> method
-in <link linkend="mthMethodSetPrivate">setPrivate</link> for details.
+in <xref linkend="mthMethodSetPrivate" /> for details.
 </para>
 </listitem>
 <listitem><para>The <emphasis role="bold">unsetMethod</emphasis>
@@ -954,7 +954,7 @@ method is a protected method.</para></listitem>
 
 <para>The Class class is like a factory that produces the factories that
 produce objects. It is a subclass of the
-<link linkend="clsObject">Object class</link>. The instance methods of the
+Object class (<xref linkend="clsObject" />). The instance methods of the
 Class class are also the class methods of all classes.</para>
 <figure><title>The Class class and methods</title>
 <mediaobject>
@@ -967,7 +967,7 @@ Class class are also the class methods of all classes.</para>
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -1130,7 +1130,7 @@ the collection <emphasis role="italic">methods</emphasis>. The collection
 indexes are the names of the enhancing
 methods, and the items are the method objects (or strings or arrays of strings
 containing method code). (See the description of
-<link linkend="mthClassDefine">define</link>.)
+define (<xref linkend="mthClassDefine" />.)
 You can use any collection that supports a
 <emphasis role="bold">supplier</emphasis> method.</para>
 <para><emphasis role="bold">enhanced</emphasis> sends an
@@ -1283,9 +1283,9 @@ to create subclasses of this class when you send
 (with no metaclass arguments).
 The instance methods of the default metaclass are the class methods of the
 receiver class. For more information about class methods, see
-<link linkend="objcla">Object Classes</link>.
+<xref linkend="objcla" />.
 See also the description of the <emphasis role="bold">subClass</emphasis>
-method in <link linkend="mthClassSubclass">subClass</link>.</para>
+method in <xref linkend="mthClassSubclass" />.</para>
 </section>
 
 <section id="mthClassMethod"><title>method</title>
@@ -1333,7 +1333,7 @@ say method_source[1]              /* Shows the method source code */
 ]]>
 </programlisting>
 
-<para>Returns a <link linkend="clsSupplier">Supplier object</link>
+<para>Returns a Supplier object (<xref linkend="clsSupplier" />)
 for all the instance methods of the receiver
 class and its superclasses, if you specify no argument. If
 <emphasis role="italic">class_object</emphasis> is the Nil object,
@@ -1434,7 +1434,7 @@ buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
 <para>Returns a new instance of the receiver class, whose object methods are
 the instance methods of the class. This method initializes a new instance
 by running its <emphasis role="bold">init</emphasis> methods. (See
-<link linkend="creo">Initialization</link>.)
+<xref linkend="creo" />.)
 <emphasis role="bold">new</emphasis> also sends an
 <emphasis role="bold">init</emphasis> message. If you specify args,
 <emphasis role="bold">new</emphasis> passes these
@@ -1659,19 +1659,19 @@ string value can have any length and contain any characters.
 </figure>
 <note><title>Note</title>
 <para>The String class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.
+metaclass, the Class class (<xref linkend="clsClass" />, defines.
 </para></note>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />.</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 <para>Methods inherited from the
-<link linkend="clsComparable">Comparable class</link>.</para>
+Comparable class (<xref linkend="clsComparable" />.</para>
 <itemizedlist>
-<listitem><para><link linkend="mthComparableCompareTo">compareTo</link></para></listitem>
+<listitem><para>compareTo (<xref linkend="mthComparableCompareTo" /></para></listitem>
 </itemizedlist>
 
 </section>
@@ -1709,7 +1709,7 @@ metaclass, the <link linkend="clsClass">Class class</link>, defines.
 <para>Returns the result of performing the specified arithmetic operation on
 the receiver object. The receiver object and the
 <emphasis role="italic">argument</emphasis> must be
-valid numbers (see <link linkend="numbrs">Numbers</link>). The
+valid numbers (see <xref linkend="numbrs" />). The
 <emphasis role="italic">arithmetic_operator</emphasis> can be:
 </para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
@@ -1784,7 +1784,7 @@ the result can be negative)
 </tbody>
 </tgroup>
 </informaltable>
-<para>See <link linkend="numarit">Numbers and Arithmetic</link> for details
+<para>See <xref linkend="numarit" /> for details
 about precision, the format of valid
 numbers, and the operation rules for arithmetic. Note that if an arithmetic
 result is shown in exponential notation, it might have been rounded.</para>
@@ -1944,7 +1944,7 @@ comparison operators do not attempt to perform a numeric comparison on the
 two operands.</para>
 <para>For all the other comparison operators, if both terms
 are numeric, the String class does a numeric comparison (ignoring, for
-example, leading zeros&mdash;see <link linkend="numcom">Numeric Comparisons</link>).
+example, leading zeros&mdash; see <xref linkend="numcom" />).
 Otherwise, it treats
 both terms as character strings, ignoring leading and trailing whitespace
 characters and padding the shorter string on the right with blanks.
@@ -2131,7 +2131,7 @@ becomes <computeroutput>0</computeroutput>, and
 
 <para>Concatenates the receiver object with
 <emphasis role="italic">argument</emphasis>. (See
-<link linkend="strgcon">String Concatenation</link>.)
+<xref linkend="strgcon" />.)
 The <emphasis role="italic">concatenation_operator</emphasis> can be: </para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
@@ -2839,7 +2839,7 @@ Returns .false ("0") if the two strings are not strictly equal.
 
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
-in the receiving string. (See also <link linkend="mthStringPos">POS</link>.) It
+in the receiving string. (See also <xref linkend="mthStringPos" />.) It
 returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving string
@@ -2973,7 +2973,7 @@ a positive whole number less than or equal to the length of the target string.</
 
 <para>Returns the position in the receiving string of another string,
 <emphasis role="italic">needle</emphasis>. (See also
-<link linkend="mthStringLastPos">caselessLastPos</link>.) It returns
+<xref linkend="mthStringLastPos" />.) It returns
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
@@ -3476,7 +3476,7 @@ the receiving string is exactly "0" or "1". Otherwise it returns
 <listitem><para>returns <computeroutput>1</computeroutput> if the receiving
 string is a valid symbol, that is, if SYMBOL(string) does not return
 <computeroutput>BAD</computeroutput>. (See
-<link linkend="xsymbol">Symbols</link>.)
+<xref linkend="xsymbol" />.)
 Note that both uppercase and lowercase alphabetic characters are permitted.
 </para></listitem></varlistentry>
 <varlistentry><term>Uppercase</term>
@@ -3830,7 +3830,7 @@ expression.</para>
 <para>Returns a string value that is used as a hash value for MapCollection
 such as Table, Relation, Set, Bag, and Directory.  The String hash code method will return
 the same hash value for all pairs of string instances for which the == operator is true.
-See <link linkend="mthObjectHashCode">hashCode Method</link> for details.
+See <xref linkend="mthObjectHashCode" /> for details.
 </para>
 </section>
 
@@ -3902,7 +3902,7 @@ truncates <emphasis role="italic">new</emphasis> to length
 
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
-in the receiving string. (See also <link linkend="mthStringPos">POS</link>.) It
+in the receiving string. (See also <xref linkend="mthStringPos" />.) It
 returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving string
@@ -4085,7 +4085,7 @@ array = string~makeArray("*")     /* contains 3 items */
 the receiver is an instance of a subclass of the String class, this method
 returns an equivalent string object. If the receiver is a string object (not
 an instance of a subclass of the String class), this method returns the receiver
-object. See <link linkend="reqstr">Required String Values</link>.</para>
+object. See <xref linkend="reqstr" />.</para>
 </section>
 
 <section id="mthStringMatch"><title>match</title>
@@ -4288,7 +4288,7 @@ and the default value for <emphasis role="italic">n</emphasis> is
 
 <para>Returns the position in the receiving string of another string,
 <emphasis role="italic">needle</emphasis>. (See also
-<link linkend="mthStringLastPos">lastPos</link>.) It returns
+<xref linkend="mthStringLastPos" />.) It returns
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
@@ -4616,7 +4616,7 @@ character is a blank.</para>
 <para>In some situations the positional (numeric) patterns
 of parsing templates are more convenient for selecting substrings, in particular
 if you need to extract more than one substring from a string. See also
-<link linkend="mthStringLeft">left</link> and <link linkend="mthStringRight">right</link>.
+<xref linkend="mthStringLeft" /> and <xref linkend="mthStringRight" />.
 </para></note>
 </section>
 
@@ -5253,7 +5253,7 @@ the method returns <computeroutput>0</computeroutput>.</para>
 <secondary>Method class</secondary></indexterm>
 
 <para>The Method class creates method objects from Rexx source code.
-It is a subclass of the <link linkend="clsObject">Object class</link>.</para>
+It is a subclass of the Object class (<xref linkend="clsObject" />).</para>
 <figure><title>The Method class and methods</title>
 <mediaobject>
 <imageobject>
@@ -5268,7 +5268,7 @@ metaclass, the Class class, defines.</para></note>
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -5380,7 +5380,7 @@ method = .Method~loadExternalMethod("homeAddress=", 'LIBRARY mylib setHomeAddres
 ]]>
 </programlisting>
 <para>Returns true ("1") if the method is a Private method.  Returns false ("0") for Public methods.
-See <link linkend="pubpri">Public versus Private Methods</link>
+See <xref linkend="pubpri" />
 for details on private method restrictions.
 </para>
 </section>
@@ -5452,7 +5452,7 @@ Guarded is the default state for method objects.
 
 <para>Specifies that a method is a private method.
 By default, method objects are created as public methods.
-See <link linkend="pubpri">Public versus Private Methods</link>
+See <xref linkend="pubpri" />
 for details on private method restrictions.
 </para>
 </section>
@@ -5471,7 +5471,7 @@ for details on private method restrictions.
 
 <para>Specifies that a method is a protected method. Method objects are not
 protected by default.
-(See <link linkend="secman">The Security Manager</link> for details.)</para>
+(See <xref linkend="secman" /> for details.)</para>
 </section>
 
 <section id="mthMethodSetSecurityManager"><title>setSecurityManager</title>
@@ -5544,7 +5544,7 @@ items.</para>
 
 <para>The Routine class creates routine objects from Rexx source code.
 It is a
-subclass of the <link linkend="clsObject">Object class</link>.</para>
+subclass of the Object class (<xref linkend="clsObject" />).</para>
 <figure><title>The Routine class and methods</title>
 <mediaobject>
 <imageobject>
@@ -5559,7 +5559,7 @@ metaclass, the Class class, defines.</para></note>
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -5742,8 +5742,8 @@ items.</para>
 package instance holds all of the routines, classes, and methods created from a
 source code unit and also manages external dependencies referenced by ::REQUIRES
 directives.  The files loaded by ::REQUIRES are also contained in Package class
-instances. It is a subclass of the <link linkend="clsObject">Object
-class</link>.</para>
+instances. It is a subclass of the Object class (<xref linkend="clsObject" />.
+</para>
 <figure><title>The Package class and methods</title>
 <mediaobject>
 <imageobject>
@@ -5759,7 +5759,7 @@ Class class, defines.
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -5916,9 +5916,9 @@ the .METHODS environment symbol.</para>
 >>-digits------------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the initial <link linkend="keyNumeric">NUMERIC DIGITS</link>
+<para>Returns the initial NUMERIC DIGITS (<xref linkend="keyNumeric" />)
 setting used for all Rexx code contained within the package.  The default
-value is 9.  The <link linkend="optionsd">::OPTIONS directive</link> can
+value is 9.  The ::OPTIONS (<xref linkend="optionsd" />) can
 override the default value.
 </para>
 </section>
@@ -5971,10 +5971,10 @@ not found, .nil will be returned.</para>
 >>-form--------------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the initial <link linkend="keyNumeric">NUMERIC FORM</link> setting
+<para>Returns the initial NUMERIC FORM (<xref linkend="keyNumeric" />) setting
 used for all Rexx code contained within the package.  The default value is
-SCIENTIFIC.  The
-<link linkend="optionsd">::OPTIONS directive</link> can override the default
+SCIENTIFIC.  The ::OPTIONS directive
+(<xref linkend="optionsd" />) can override the default
 value.
 </para>
 </section>
@@ -5990,10 +5990,10 @@ value.
 >>-fuzz--------------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the initial <link linkend="keyNumeric">NUMERIC FUZZ</link> setting
+<para>Returns the initial NUMERIC FUZZ (<xref linkend="keyNumeric" />) setting
 used for all Rexx code contained within the package.  The default value is 0.
-The
-<link linkend="optionsd">::OPTIONS directive</link> can override the default
+The ::OPTIONS directive
+(<xref linkend="optionsd" />) can override the default
 value.
 </para>
 </section>
@@ -6220,9 +6220,9 @@ code is not available, 0 is returned.</para>
 >>-trace-------------------------------------------------------><
 ]]>
 </programlisting>
-<para>Returns the initial <link linkend="keyTrace">TRACE</link> setting used for
+<para>Returns the initial TRACE (<xref linkend="keyTrace" />) setting used for
 all Rexx code contained within the package.  The default value is Normal. The
-<link linkend="optionsd">::OPTIONS directive</link> can override the default
+::OPTIONS directive (<xref linkend="optionsd" />) can override the default
 value.
 </para>
 </section>
@@ -6237,7 +6237,7 @@ value.
 asynchronous sending of a message. You can create a message object by using
 the <emphasis role="bold">new</emphasis>
 method of the Message class or the
-<emphasis role="bold"><link linkend="mthObjectStart">start</link></emphasis> method of the
+<emphasis role="bold">start</emphasis> (<xref linkend="mthObjectStart" />) method of the
 Object class.
 </para>
 <figure><title>The Message class and methods</title>
@@ -6249,12 +6249,12 @@ Object class.
 </figure>
 <note><title>Note</title>
 <para>The Message class also has available class methods that its
-metaclass, the <link linkend="clsClass">Class class</link>, defines.</para></note>
+metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
 
 <section><title>Inherited Methods</title>
 
 <para>Methods inherited from the
-<link linkend="clsObject">Object class</link>.</para>
+Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
@@ -6284,7 +6284,7 @@ array. If <emphasis role="italic">messagename</emphasis> is an array object,
 its first item is the name of the message and its
 second item is a class object to use as the starting point for the method
 search. For more information, see
-<link linkend="meths1">Classes and Inheritance</link>.</para>
+<xref linkend="meths1" />.</para>
 <para>If you specify the Individual or Array option, any remaining arguments
 are arguments for the message. (You need to specify only the first letter;
 all characters following the first are ignored.) </para>
@@ -6299,7 +6299,7 @@ to <emphasis role="italic">target</emphasis> in the order you specify them.
 <varlistentry><term>Array</term>
 <listitem><para>If you specify this option, you must specify an
 <emphasis role="italic">argument</emphasis>, which
-is an array object. (See <link linkend="clsArray">The Array Class</link>.)
+is an array object. (See <xref linkend="clsArray" />.)
 The member items of the array are passed to
 <emphasis role="italic">target</emphasis> as arguments.
 The first argument is

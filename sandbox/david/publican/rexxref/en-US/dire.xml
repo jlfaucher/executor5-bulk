@@ -112,7 +112,7 @@ directive precedes an ::ATTRIBUTE directive, the attribute methods are not
 associated with a class but are accessible to the main (executable) part of a
 program through the .METHODS built-in object. Only one ::ATTRIBUTE directive can
 appear for any method name not associated with a class. See
-<link linkend="methe">.METHODS</link>  for more details.</para>
+<xref linkend="methe" />  for more details.</para>
 <para>If you do not specify either SET or GET, ::ATTRIBUTE will create two attribute methods with the
 names <emphasis role="italic">name</emphasis> and <emphasis role="italic">name=</emphasis>.
 These are the methods for getting and setting an attribute.  These generated methods are
@@ -154,7 +154,7 @@ is frequently used so the SET attribute method can perform new value validation.
   size=value
 </programlisting>
 <para>If you specify the CLASS option, the created methods are class
-methods. See <link linkend="provide">Objects and Classes</link>. The attribute methods are
+methods. See <xref linkend="provide" />. The attribute methods are
 associated with the class specified on the most recent ::CLASS directive. The
 ::ATTRIBUTE must be preceded by a ::CLASS directive if CLASS is
 specified.</para>
@@ -201,7 +201,7 @@ name will be used unchanged.
 <listitem><para>If you specify the PRIVATE option, the created methods are
 private methods.  Private methods have restricted access rules on how they can
 be invoked.
-See <link linkend="pubpri">Public versus Private Methods</link>
+See <xref linkend="pubpri" />
 for details of how private methods can be used.
 If you omit the PRIVATE option or specify PUBLIC, the method is a public method
 that any sender can activate.
@@ -215,7 +215,7 @@ that requires exclusive use of the object variable pool is active on the same
 object.</para></listitem>
 <listitem><para>If you specify the PROTECTED option, the method methods are
 protected methods. (See
-<link linkend="secman">The Security Manager</link> for more information.)
+<xref linkend="secman" /> for more information.)
 If you omit the PROTECTED option or specify UNPROTECTED, the methods are not
 protected.
 </para></listitem>
@@ -273,7 +273,7 @@ end of the program. Only one ::CLASS directive can appear for
 <para>If you specify the METACLASS option, the instance methods of the
 <emphasis role="italic">metaclass</emphasis> class become class methods of the
 <emphasis role="italic">classname</emphasis> class.
-(See <link linkend="provide">Objects and Classes</link> .) The
+(See <xref linkend="provide" /> .) The
 <emphasis role="italic">metaclass</emphasis> and
 <emphasis role="italic">classname</emphasis> are literal
 strings or symbols that are taken as constants. In the search order for methods,
@@ -281,7 +281,7 @@ the metaclass methods precede inherited class methods and follow any class
 methods defined by ::METHOD directives with the CLASS option.</para>
 <para>If you specify the PUBLIC option, the class is visible beyond its containing
 Rexx program to any other program that references this program with a ::REQUIRES
-directive. (See <link linkend="requ">::REQUIRES</link>.) If you do not
+directive. (See <xref linkend="requ" />.) If you do not
 specify the PUBLIC option,
 the class is visible only within its containing Rexx program. All public classes
 defined within a program are used before PUBLIC classes created with the same
@@ -304,7 +304,7 @@ in their order of appearance
 to the class object, with each INHERIT message (except the first) specifying
 the preceding class in <emphasis role="italic">iclasses</emphasis>
 as the <emphasis role="italic">classpos</emphasis> argument.
-(See  <link linkend="mthClassInherit">INHERIT</link> .) As with the INHERIT message,
+(See  <xref linkend="mthClassInherit" /> .) As with the INHERIT message,
 each of the classes in <emphasis role="italic">iclasses</emphasis>
 must be a mixin class. The <emphasis role="italic">iclasses</emphasis>
 is a whitespace-separated list of literal strings or symbols that are taken as
@@ -376,7 +376,7 @@ directive precedes ::CONSTANT, a single constant method method is created that
 is not associated with a class but is accessible to the main (executable) part
 of a program through the .METHODS built-in object. Only one ::CONSTANT directive
 can appear for any method name not associated with a class. See
-<link linkend="methe">.METHODS</link>  for more details.</para>
+<xref linkend="methe" />  for more details.</para>
 <para>The methods created by a ::CONSTANT directive are UNGUARDED and will have
 a return result that is specified by
 <emphasis role="italic">value</emphasis>.  The constant value must be a single
@@ -455,9 +455,9 @@ for any <emphasis role="italic">methodname</emphasis> in a class.</para>
 but is accessible to the main (executable) part of a program through the .METHODS
 built-in object. Only one ::METHOD directive can appear for any method name
 not associated with a class. See
-<link linkend="methe">.METHODS</link>  for more details.</para>
+<xref linkend="methe" />  for more details.</para>
 <para>If you specify the CLASS option, the method is a class
-method. See <link linkend="provide">Objects and Classes</link>. The method is
+method. See <xref linkend="provide" />. The method is
 associated with the class specified on the most recent ::CLASS directive. The
 ::METHOD directive must follow a ::CLASS directive when the CLASS option is
 used.
@@ -561,7 +561,7 @@ setter attribute method, the name is appended to the string "SET".</para>
 <listitem><para>If you specify the PRIVATE option, the created methods are
 private methods.  Private methods have restricted access rules on how they can
 be invoked.
-See <link linkend="pubpri">Public versus Private Methods</link>
+See <xref linkend="pubpri" />
 for details of how private methods can be used.
 If you omit the PRIVATE option or specify PUBLIC, the method is a public method
 that any sender can activate.
@@ -574,7 +574,7 @@ use of the object variable pool; it can run only if no other method that
 requires exclusive use of the object variable pool is active on the same
 object.</para></listitem>
 <listitem><para>If you specify the PROTECTED option, the method is a protected
-method. (See <link linkend="secman">The Security Manager</link> for more information.)
+method. (See <xref linkend="secman" /> for more information.)
 If you omit the PROTECTED option or specify UNPROTECTED, the method is
 not protected.</para></listitem>
 <listitem><para>If you specify ATTRIBUTE, ABSTRACT, or EXTERNAL, another
@@ -619,7 +619,7 @@ code contained in the source file.  For example, </para>
 ::OPTIONS DIGITS 20
 </programlisting>
 <para>would direct that all method and routine code defined in this source package
-execute with an initial <link linkend="keyNumeric">NUMERIC DIGITS</link> setting of
+execute with an initial NUMERIC DIGITS (<xref linkend="keyNumeric" />) setting of
 20 digits.  The ::OPTIONS directive controls only the initial setting.  A method
 or routine may change the current setting with the NUMERIC DIGITS instruction as normal.
 The values specified with ::OPTIONS only apply to code that appears in the same source file.
@@ -644,7 +644,7 @@ The value <emphasis role="italic">digits</emphasis> must be a symbol or string
 that is a valid positive whole number value and must be larger than the
 current FUZZ ::OPTIONS setting.
 The package value can be retrieved using the Package class
-<link linkend="mthPackageDigits">digits</link> method.
+digits (<xref linkend="mthPackageDigits" /> method.
 </para>
 <para>There is no limit to the value for DIGITS
 (except the amount of storage available), but high precisions are likely to
@@ -664,7 +664,7 @@ case only one, nonzero digit appears before the decimal point) or ENGINEERING
 SCIENTIFIC. The subkeywords SCIENTIFIC or ENGINEERING must be specified as
 symbols.
 The package value can be retrieved using the Package class
-<link linkend="mthPackageDigits">form</link> method.
+form (<xref linkend="mthPackageDigits" />) method.
 </para>
 </entry></row>
 <row><entry>FUZZ
@@ -674,12 +674,12 @@ The package value can be retrieved using the Package class
 <entry>
 <para>controls how many digits, at full precision, are ignored during
 a numeric
-comparison operation. (See <link linkend="numcom">Numeric Comparisons</link>.)
+comparison operation. (See <xref linkend="numcom" />.)
 The value <emphasis role="italic">fuzz</emphasis> must be a symbol or string
 that is a valid positive whole number value and must be smaller than the
 current DIGIT ::OPTIONS setting.
 The package value can be retrieved using the Package class
-<link linkend="mthPackageDigits">fuzz</link> method.
+fuzz (<xref linkend="mthPackageDigits" />) method.
 </para>
 <para>NUMERIC FUZZ temporarily
 reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
@@ -695,9 +695,9 @@ minus FUZZ digits during the comparison and are then compared with 0.
 <para>controls the tracing action (that is, how much is displayed to the user) during the processing of
 all Rexx code contained in the package. Tracing describes some or all of the clauses in a program,
 producing descriptions of clauses as they are processed. TRACE is mainly used for debugging. The value
-<emphasis role="italic">trace</emphasis> must be one of the <link linkend="alphaco">Trace Alphabetic
-Character (Word) Options</link> valid for the <link linkend="keyTrace">Trace instruction</link>. The
-package value can be retrieved using the Package class <link linkend="mthPackageDigits">trace</link>
+<emphasis role="italic">trace</emphasis> must be one of the Trace Alphabetic (<xref linkend="alphaco" />)
+valid for the Trace instruction (<xref linkend="keyTrace" />). The
+package value can be retrieved using the Package class trace (<xref linkend="mthPackageDigits" />)
 method.
 </para>
 </entry></row>
@@ -732,7 +732,7 @@ taken as a constant. The string or symbol
 as the target of a CALL instruction. The program <emphasis
 role="italic">programname</emphasis> is called as an external routine with no
 arguments.  The program is searched for using normal external program search
-order.  See <link linkend="xsearcho">Search Order</link> for details.  The main
+order.  See <xref linkend="xsearcho" /> for details.  The main
 program code, which precedes the first directive instruction, is run.
 </para>
 <para>If any Rexx code preceeds the first directive in
@@ -862,7 +862,7 @@ not specified, the ::ROUTINE name is used.  Loading of the function will be
 attempted using the name as given and as all uppercase.  Using REGISTERED is the
 equivalent of loading an external function using the RXFUNCADD() built-in
 function.  See
-<link linkend="bifRxfuncadd">.METHODS</link>  for more details.
+<xref linkend="bifRxfuncadd" /> for more details.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Example:</emphasis></para>
