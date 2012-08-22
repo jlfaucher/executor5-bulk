@@ -1827,6 +1827,10 @@ The one exception is when <emphasis role="italic">argument</emphasis> is the Nil
 for the ==, \==, =, \=, &gt;&lt;, and &lt;&gt; operators.
 A string object will never compare equal to the Nil object, even when the
 string matches the string value of the Nil object ("The Nil object").
+As a result, == will always return
+0 (false) when compared to the Nil object and \== will always return 1
+(true). All of the relational comparisions (for example, &lt;, &gt;,
+&lt;=, etc.) will always return .false when compared to the Nil object.
 </para>
 
 <para>The comparison operators you can use in a message are: </para>
@@ -1843,7 +1847,7 @@ string matches the string value of the Nil object ("The Nil object").
 <tertiary>of String class</tertiary></indexterm>
 </entry>
 <entry><para>True if the terms are equal (for example, numerically or when
-padded)
+padded). False if <emphasis role="italic">argument</emphasis> is the Nil object.
 </para></entry></row>
 <row><entry>\=, &gt;&lt;, &lt;&gt;
 <indexterm><primary>>&lt; method</primary>
@@ -1862,49 +1866,49 @@ padded)
 <secondary>&lt;&gt;</secondary>
 <tertiary>of String class</tertiary></indexterm>
 </entry>
-<entry><para>True if the terms are not equal (inverse of =)
+<entry><para>True if the terms are not equal (inverse of =). True if <emphasis role="italic">argument</emphasis> is the Nil object.
 </para></entry></row>
 <row><entry>&gt;
 <indexterm><primary>&gt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>></secondary></indexterm>
 </entry>
-<entry><para>Greater than
+<entry><para>Greater than. False if <emphasis role="italic">argument</emphasis> is the Nil object.
 </para></entry></row>
 <row><entry>&lt;
 <indexterm><primary>&lt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&lt;</secondary></indexterm>
 </entry>
-<entry><para>Less than
+<entry><para>Less than. False if <emphasis role="italic">argument</emphasis> is the Nil object.
 </para></entry></row>
 <row><entry>&gt;=
 <indexterm><primary>&gt;= method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&gt;=</secondary></indexterm>
 </entry>
-<entry><para>Greater than or equal to
+<entry><para>Greater than or equal to. False if <emphasis role="italic">argument</emphasis> is the Nil object.
 </para></entry></row>
 <row><entry>\&lt;
 <indexterm><primary>\&lt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>\&lt;</secondary></indexterm>
 </entry>
-<entry><para>Not less than
+<entry><para>Not less than. False if <emphasis role="italic">argument</emphasis> is the Nil object.
 </para></entry></row>
 <row><entry>&lt;=
 <indexterm><primary>&lt;= method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&lt;=</secondary></indexterm>
 </entry>
-<entry><para>Less than or equal to
+<entry><para>Less than or equal to. False if <emphasis role="italic">argument</emphasis> is the Nil object.
 </para></entry></row>
 <row><entry>\&gt;
 <indexterm><primary>\&gt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>\&gt;</secondary></indexterm>
 </entry>
-<entry><para>Not greater than
+<entry><para>Not greater than. False if <emphasis role="italic">argument</emphasis> is the Nil object.
 </para></entry></row>
 </tbody>
 </tgroup>
