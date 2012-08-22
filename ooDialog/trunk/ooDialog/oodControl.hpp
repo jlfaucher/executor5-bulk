@@ -140,7 +140,7 @@ typedef NEWCONTROLPARAMS *PNEWCONTROLPARAMS;
 typedef struct _lvFullRow
 {
     uint32_t          magic;         // Indentifies this struct
-    LPLVITEM         *subItems;      // Subitem[0] is actually the item the rest are the subitems
+    LPLVITEM         *subItems;      // subitems[0] is actually the item the rest are the subitems
     RexxObjectPtr    *rxSubItems;    // The Rexx subitems rxSubItems[0] is a LvItem, the rest LvSubItems
     RexxObjectPtr     rexxSelf;      // The LvFullRow Rexx object
     RexxObjectPtr     bagOfItems;    // A Rexx bag to hold the Rexx items and protect from GC

@@ -1364,6 +1364,12 @@
 ::method init external "LIBRARY oodialog lvfr_init"
 ::method unInit external "LIBRARY oodialog lvfr_unInit"
 
+::method addSubItem external "LIBRARY oodialog lvfr_addSubitem"
+::method item external "LIBRARY oodialog lvfr_item"
+::method removeSubItem external "LIBRARY oodialog lvfr_removeSubitem"
+::method subItem external "LIBRARY oodialog lvfr_subitem"
+::method subItems external "LIBRARY oodialog lvfr_subitems"
+
 
 
 /************* Tree Control Class *********************************************/

@@ -5393,6 +5393,19 @@ RexxMethod2(RexxObjectPtr, lvsi_setMask, CSTRING, mask, CSELF, pLVI)
 
 #define LVFULLROW_BAGOFITEMS_ATTRIBUTE "LVFULLROW_BAGOFITEMS"
 
+inline void lvfrStoreItem(RexxMethodContext *c, pCLvFullRow pclvfr, uint32_t index)
+{
+    c->SendMessage1(pclvfr->bagOfItems, "PUT", pclvfr->rxSubItems[index]);
+}
+
+inline void adjustSubItemIndexes(pCLvFullRow pclvfr)
+{
+    for ( uint32_t i = 1; i <= pclvfr->subItemCount; i++ )
+    {
+        pclvfr->subItems[i]->iSubItem = i;
+    }
+}
+
 /**
  *  We put the Rexx item and subitems in a Rexx bag and save the bag as an
  *  object variable to prevent GC of the items.
@@ -5413,6 +5426,44 @@ static void lvfrStoreItems(RexxMethodContext *c, pCLvFullRow pclvfr)
     pclvfr->bagOfItems = bag;
 }
 
+
+/**
+ * Expands the rxItems and the subItems arrays in a CLvFullRow struct by
+ * doubling the array size.
+ *
+ * @param c
+ * @param pclvfr
+ *
+ * @return True on success, false on a memory allocation error.
+ */
+static bool expandSubItems(RexxMethodContext *c, pCLvFullRow pclvfr)
+{
+    uint32_t s = pclvfr->size * 2;
+
+    RexxObjectPtr *rxItems = (RexxObjectPtr *)LocalAlloc(LPTR, s * sizeof(RexxObjectPtr *));
+    LPLVITEM *subItems     = (LPLVITEM *)LocalAlloc(LPTR, s * sizeof(LPLVITEM *));
+
+    if ( subItems == NULL || rxItems == NULL )
+    {
+        safeLocalFree(subItems);
+        safeLocalFree(rxItems);
+
+        outOfMemoryException(c->threadContext);
+        return false;
+    }
+
+    memcpy(subItems, pclvfr->subItems, pclvfr->size * sizeof(LPLVITEM *));
+    memcpy(rxItems, pclvfr->rxSubItems, pclvfr->size * sizeof(RexxObjectPtr *));
+
+    LocalFree(pclvfr->subItems);
+    LocalFree(pclvfr->rxSubItems);
+
+    pclvfr->subItems   = subItems;
+    pclvfr->rxSubItems = rxItems;
+    pclvfr->size       = s;
+
+    return true;
+}
 
 /** LvFullRow::uninit()
  *
@@ -5575,6 +5626,123 @@ done:
 err_out:
     return NULLOBJECT;
 }
+
+/** LvFullRow::addSubitem()
+ *
+ *  Adds a subitem to this full row.  Subitems are always added as the last
+ *  subitem in the row.
+ *
+ *  @param  subitem  The subitem to add.
+ *
+ *  @return  Returns the index of the added item, or 0 on error.
+ */
+RexxMethod2(uint32_t, lvfr_addSubitem, RexxObjectPtr, subitem, CSELF, pCSelf)
+{
+    pCLvFullRow pclvfr = (pCLvFullRow)pCSelf;
+
+    if ( ! context->IsOfType(subitem, "LVSUBITEM") )
+    {
+        wrongClassException(context->threadContext, 1, "LvSubItem");
+        return 0;
+    }
+
+    uint32_t i = pclvfr->subItemCount + 1;
+
+    if ( i >= pclvfr->size )
+    {
+        if ( ! expandSubItems(context, pclvfr) )
+        {
+            return 0;
+        }
+    }
+
+    pclvfr->subItemCount          = i;
+    pclvfr->rxSubItems[i]         = subitem;
+    pclvfr->subItems[i]           = (LPLVITEM)context->ObjectToCSelf(subitem);
+    pclvfr->subItems[i]->iSubItem = i;
+
+    lvfrStoreItem(context, pclvfr, i);
+
+    return i;
+}
+
+/** LvFullRow::item()
+ *
+ *  Returns the item object of this full row.
+ *
+ */
+RexxMethod1(RexxObjectPtr, lvfr_item, CSELF, pCSelf)
+{
+    pCLvFullRow pclvfr = (pCLvFullRow)pCSelf;
+    return pclvfr->rxSubItems[0];
+}
+
+/** LvFullRow::removeSubItem()
+ *
+ *  Removes the specified subitem from this full row.
+ *
+ *  @param  index  The index of the subitem to remove.
+ *
+ *  @return  Returns the the removed subitem, or .nil on error.
+ *
+ *  @note If the index is the last subitem, we just need to decrement
+ *        subItemCount.  Otherwise we need to decrement and shift the following
+ *        subItems down by 1.
+ */
+RexxMethod2(RexxObjectPtr, lvfr_removeSubitem, uint32_t, index, CSELF, pCSelf)
+{
+    pCLvFullRow pclvfr = (pCLvFullRow)pCSelf;
+
+    if ( index < 1 || index > pclvfr->subItemCount )
+    {
+        wrongRangeException(context->threadContext, 1, 1, pclvfr->subItemCount, index);
+        return TheNilObj;
+    }
+
+    RexxObjectPtr subItem = pclvfr->rxSubItems[index];
+
+    if ( index < pclvfr->subItemCount )
+    {
+        size_t count = (pclvfr->subItemCount - index) * sizeof(void *);
+
+        memmove(&pclvfr->rxSubItems[index], &pclvfr->rxSubItems[index + 1], count);
+        memmove(&pclvfr->subItems[index],   &pclvfr->subItems[index + 1],   count);
+    }
+
+    pclvfr->subItemCount++;
+
+    adjustSubItemIndexes(pclvfr);
+
+    return subItem;
+}
+
+/** LvFullRow::subItem()
+ *
+ *  Returns the subitem specified by <index> of this full row, or .nil if the
+ *  subitem <index> is not valid.
+ *
+ */
+RexxMethod2(RexxObjectPtr, lvfr_subitem, uint32_t, index, CSELF, pCSelf)
+{
+    pCLvFullRow pclvfr = (pCLvFullRow)pCSelf;
+
+    if ( index == 0 || index > pclvfr->subItemCount )
+    {
+        return TheNilObj;
+    }
+    return pclvfr->rxSubItems[index];
+}
+
+/** LvFullRow::subItems()
+ *
+ *  Returns the number of subitems in this full row.
+ *
+ */
+RexxMethod1(uint32_t, lvfr_subitems, CSELF, pCSelf)
+{
+    return ((pCLvFullRow)pCSelf)->subItemCount;
+}
+
 
 /**
  *  Methods for the .TreeView class.

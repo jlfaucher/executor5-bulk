@@ -1076,8 +1076,13 @@ REXX_METHOD_PROTOTYPE(lvsi_imageIndex     );
 REXX_METHOD_PROTOTYPE(lvsi_setImageIndex  );
 
 // LvFullRow
-REXX_METHOD_PROTOTYPE(lvfr_init           );
-REXX_METHOD_PROTOTYPE(lvfr_unInit         );
+REXX_METHOD_PROTOTYPE(lvfr_init);
+REXX_METHOD_PROTOTYPE(lvfr_unInit);
+REXX_METHOD_PROTOTYPE(lvfr_addSubitem);
+REXX_METHOD_PROTOTYPE(lvfr_item);
+REXX_METHOD_PROTOTYPE(lvfr_removeSubitem);
+REXX_METHOD_PROTOTYPE(lvfr_subitem);
+REXX_METHOD_PROTOTYPE(lvfr_subitems);
 
 // TreeView
 REXX_METHOD_PROTOTYPE(tv_getSpecificItem);
@@ -1961,6 +1966,11 @@ RexxMethodEntry oodialog_methods[] = {
     // LvFullRow
     REXX_METHOD(lvfr_init,                      lvfr_init),
     REXX_METHOD(lvfr_unInit,                    lvfr_unInit),
+    REXX_METHOD(lvfr_addSubitem,                lvfr_addSubitem),
+    REXX_METHOD(lvfr_item,                      lvfr_item),
+    REXX_METHOD(lvfr_removeSubitem,             lvfr_removeSubitem),
+    REXX_METHOD(lvfr_subitem,                   lvfr_subitem),
+    REXX_METHOD(lvfr_subitems,                  lvfr_subitems),
 
     // TreeView
     REXX_METHOD(tv_getSpecificItem,             tv_getSpecificItem),
