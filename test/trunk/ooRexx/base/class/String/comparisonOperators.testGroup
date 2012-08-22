@@ -54,6 +54,9 @@ return testResult
 ::class "comparisonOperators.testGroup" subclass ooTestCase public
 
 ::method "test_comparison_operators"
+   -- none of these should raise nostring conditions
+   signal on nostring
+
    self~assertTrue(5=5) /* equal */
    self~assertTrue(42\=41) /* All of these are */
    self~assertTrue(42><41) /* "not equal" */
@@ -76,6 +79,78 @@ return testResult
    self~assertTrue(12~'<='(13))
    self~assertTrue(12~'\>'(13))
 
+   -- number string comparisons
+   self~assertTrue(5.5=5.5) /* equal */
+   self~assertTrue(42.1\=41.1) /* All of these are */
+   self~assertTrue(42.1><41.1) /* "not equal" */
+   self~assertTrue(42.1<>41.1)
+   self~assertTrue(13.1>12.1) /* Variations of */
+   self~assertTrue(12.1<13.1) /* less than and */
+   self~assertTrue(13.1>=12.1) /* greater than */
+   self~assertFalse(12.1\<13.1)
+   self~assertTrue(12.1<=13.1)
+   self~assertTrue(12.1\>13.1)
+
+   self~assertTrue(5.5~'='(5.5)) /* equal */
+   self~assertTrue(42.1~'\='(41.1)) /* All of these are */
+   self~assertTrue(42.1~'><'(41.1)) /* "not equal" */
+   self~assertTrue(42.1~'<>'(41.1))
+   self~assertTrue(13.1~'>'(12.1)) /* Variations of */
+   self~assertTrue(12.1~'<'(13.1)) /* less than and */
+   self~assertTrue(13.1~'>='(12.1)) /* greater than */
+   self~assertFalse(12.1~'\<'(13.1))
+   self~assertTrue(12.1~'<='(13.1))
+   self~assertTrue(12.1~'\>'(13.1))
+
+   -- repeat all of these with the left-hand side being explicitly
+   -- a string value.  Because there are special hidden integer and numberstring
+   -- classes used internally, this can make an actual different
+
+   self~assertTrue('5'=5) /* equal */
+   self~assertTrue('42'\=41) /* All of these are */
+   self~assertTrue('42'><41) /* "not equal" */
+   self~assertTrue('42'<>41)
+   self~assertTrue('13'>12) /* Variations of */
+   self~assertTrue('12'<13) /* less than and */
+   self~assertTrue('13'>=12) /* greater than */
+   self~assertFalse('12'\<13)
+   self~assertTrue('12'<=13)
+   self~assertTrue('12'\>13)
+
+   self~assertTrue('5'~'='(5)) /* equal */
+   self~assertTrue('42'~'\='(41)) /* All of these are */
+   self~assertTrue('42'~'><'(41)) /* "not equal" */
+   self~assertTrue('42'~'<>'(41))
+   self~assertTrue('13'~'>'(12)) /* Variations of */
+   self~assertTrue('12'~'<'(13)) /* less than and */
+   self~assertTrue('13'~'>='(12)) /* greater than */
+   self~assertFalse('12'~'\<'(13))
+   self~assertTrue('12'~'<='(13))
+   self~assertTrue('12'~'\>'(13))
+
+   -- number string comparisons
+   self~assertTrue('5.5'=5.5) /* equal */
+   self~assertTrue('42.1'\=41.1) /* All of these are */
+   self~assertTrue('42.1'><41.1) /* "not equal" */
+   self~assertTrue('42.1'<>41.1)
+   self~assertTrue('13.1'>12.1) /* Variations of */
+   self~assertTrue('12.1'<13.1) /* less than and */
+   self~assertTrue('13.1'>=12.1) /* greater than */
+   self~assertFalse('12.1'\<13.1)
+   self~assertTrue('12.1'<=13.1)
+   self~assertTrue('12.1'\>13.1)
+
+   self~assertTrue('5.5'~'='(5.5)) /* equal */
+   self~assertTrue('42.1'~'\='(41.1)) /* All of these are */
+   self~assertTrue('42.1'~'><'(41.1)) /* "not equal" */
+   self~assertTrue('42.1'~'<>'(41.1))
+   self~assertTrue('13.1'~'>'(12.1)) /* Variations of */
+   self~assertTrue('12.1'~'<'(13.1)) /* less than and */
+   self~assertTrue('13.1'~'>='(12.1)) /* greater than */
+   self~assertFalse('12.1'~'\<'(13.1))
+   self~assertTrue('12.1'~'<='(13.1))
+   self~assertTrue('12.1'~'\>'(13.1))
+
    -- identical
    self~assertTrue('space'  ==  'space')  /* Strictly equal */
    self~assertTrue('space'  \== ' space')  /* Strictly not equal */
@@ -94,5 +169,50 @@ return testResult
    self~assertTrue('space'~'\<<'(' space'))
    self~assertTrue(' space'~'<<='('space'))
    self~assertTrue(' space'~'\>>'('space'))
+
+   return
+   nostring:
+   self~assertTrue(.false, "Unexpected NOSTRING condition raised at" sigl)
+
+::method test_nil
+  signal on nostring
+
+  -- verify the various tests against .nil.
+  test = .nil~string   -- test against the string version of .nil to make sure we don't get false positives
+
+  self~assertFalse(test = .nil)
+  self~assertTrue(test \= .nil)
+  self~assertFalse(test == .nil)
+  self~assertTrue(test \== .nil)
+  self~assertTrue(test <> .nil)
+  self~assertTrue(test >< .nil)
+  self~assertFalse(test > .nil)
+  self~assertFalse(test < .nil)
+  self~assertFalse(test >= .nil)
+  self~assertFalse(test <= .nil)
+  self~assertFalse(test \> .nil)
+  self~assertFalse(test \< .nil)
+  self~assertFalse(test << .nil)
+  self~assertFalse(test >> .nil)
+  self~assertFalse(test >>= .nil)
+  self~assertFalse(test <<= .nil)
+  self~assertFalse(test \<< .nil)
+  self~assertFalse(test \>> .nil)
+  return
+
+  nostring:
+  self~assertTrue(.false, "Unexpected NOSTRING condition raised at" sigl)
+
+::method test_nostring
+  test = .object~new~string
+
+  self~assertTrue(test == .object~new)
+  -- this should never return for this next one
+  signal on nostring
+  self~assertFalse(test == .object~new, "NOSTRING not raised")
+  return
+
+  nostring: return -- should get here
+
 
 
