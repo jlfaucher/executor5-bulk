@@ -5658,6 +5658,27 @@ fuzz() (<xref linkend="bifFuzz" />) built-in function.
 </para>
 </section>
 
+<section id="mthRexxContextName"><title>name</title>
+<indexterm><primary>name method</primary>
+<secondary>of RexxContextclass</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>name method</secondary>
+<tertiary>of RexxContext class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-name-------------------------------------------------------><
+]]>
+</programlisting>
+<para>Returns the name used to invoke the current context.  If the current
+context is a method, <emphasis role="italic">name</emphasis> is the message name
+used to invoke the method.  If the current context is a routine invoked as an
+external call, <emphasis role="italic">name</emphasis> is the name used to call
+the routine.  If the current context is an internal routine call, <emphasis role="italic">name</emphasis>
+is the name of the label used to invoke the call.  If the context is the main part of the program,
+<emphasis role="italic">name</emphasis> will be the package name.
+</para>
+</section>
+
 <section id="mthRexxContextPackage"><title>package</title>
 <indexterm><primary>package method</primary>
 <secondary>of RexxContextclass</secondary></indexterm>
