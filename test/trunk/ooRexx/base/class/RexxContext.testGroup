@@ -141,10 +141,25 @@ return testResult
   'echo foo'
   self~assertSame(.rs, .context~rs)
 
+::method TestName01
+  self~assertSame("INTERNAL", internal())
+  self~assertSame("ROUTINE", routine())
+  self~assertSame("METHODCALL", self~methodCall)
+  exit   -- don't want to fall through to the internal routine
+
+internal:  return .context~name
+
+::method methodCall
+  return .context~name
 
 
 ::routine testargs
   return .context~args
+
+::routine routine
+  return .context~name
+
+
 
 
 
