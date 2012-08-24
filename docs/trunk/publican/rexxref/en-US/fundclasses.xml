@@ -3052,6 +3052,44 @@ the word at which the search is to be started.</para>
 </programlisting>
 </section>
 
+<section id="mthStringCeiling"><title>ceiling</title>
+<indexterm><primary>ceiling method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>ceiling method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>formatting</primary>
+<secondary>numbers with ceiling</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-ceiling-----------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the largest integer not less than the receiving string.
+The receiving string is first rounded according
+to standard Rexx rules, as though the operation
+<computeroutput>receiving_string+0</computeroutput> had been carried out.
+The ceiling is then calculated and returned.
+The result is never in exponential form. If there are no nonzero digits in
+the result, any minus sign is removed.  </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>ceiling method</secondary></indexterm>
+<programlisting>
+2~ceiling             ->    2
+'-2'~ceiling          ->    -2
+12.3~ceiling          ->    13
+'-12.3'~ceiling       ->    -12
+</programlisting>
+
+<note><title>Note</title>
+<para>The <emphasis role="italic">number</emphasis> is rounded according to the
+current setting of NUMERIC DIGITS if necessary, before the method processes it.
+</para></note>
+</section>
+
 <section id="mthStringCenter"><title>center/centre</title>
 <indexterm><primary>center method</primary>
 <secondary>of String class</secondary></indexterm>
@@ -3720,6 +3758,44 @@ the same comparison performed by the "==" comparison method.
 "33"~equals("3")         ->    0
 "4"~equals("3")          ->    0
 </programlisting>
+</section>
+
+<section id="mthStringFloor"><title>floor</title>
+<indexterm><primary>floor method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>floor method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>formatting</primary>
+<secondary>numbers with floor</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-floor-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the largest integer not greater than the receiving string.
+The receiving string is first rounded according
+to standard Rexx rules, as though the operation
+<computeroutput>receiving_string+0</computeroutput> had been carried out.
+The floor is then calculated and returned.
+The result is never in exponential form. If there are no nonzero digits in
+the result, any minus sign is removed.  </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>floor method</secondary></indexterm>
+<programlisting>
+2~floor               ->    2
+'-2'~floor            ->    -2
+12.3~floor            ->    12
+'-12.3'~floor         ->    -13
+</programlisting>
+
+<note><title>Note</title>
+<para>The <emphasis role="italic">number</emphasis> is rounded according to the
+current setting of NUMERIC DIGITS if necessary, before the method processes it.
+</para></note>
 </section>
 
 <section id="mthStringFormat"><title>format</title>
@@ -4424,6 +4500,46 @@ whole number or zero.</para>
 </programlisting>
 </section>
 
+<section id="mthStringRound"><title>round</title>
+<indexterm><primary>round method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>round method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+<indexterm><primary>formatting</primary>
+<secondary>numbers with round</secondary></indexterm>
+
+<programlisting>
+<![CDATA[
+>>-round------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the nearest to the receiving string.
+The receiving string is first rounded according
+to standard Rexx rules, as though the operation
+<computeroutput>receiving_string+0</computeroutput> had been carried out.
+The rounded value is then calculated and returned.
+The result is never in exponential form. If there are no nonzero digits in
+the result, any minus sign is removed.  </para>
+<para><emphasis role="bold">Examples:</emphasis></para>
+<indexterm><primary>examples</primary>
+<secondary>round method</secondary></indexterm>
+<programlisting>
+2~round               ->    2
+'-2'~round            ->    -2
+2.4~round             ->    2
+'-2.4'~round          ->    -2
+2.5~round             ->    3
+'-2.5'~round          ->    -3
+</programlisting>
+
+<note><title>Note</title>
+<para>The <emphasis role="italic">number</emphasis> is rounded according to the
+current setting of NUMERIC DIGITS if necessary, before the method processes it.
+</para></note>
+</section>
+
 <section id="mthStringSign"><title>sign</title>
 <indexterm><primary>sign method</primary>
 <secondary>of String class</secondary></indexterm>
@@ -4779,6 +4895,7 @@ to reorder the characters in a string. In the example, the last character
 of any 4-character string specified as the first argument would be moved to
 the beginning of the string.</para></note>
 </section>
+
 
 <section id="mthStringTrunc"><title>trunc</title>
 <indexterm><primary>trunc method</primary>
