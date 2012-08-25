@@ -42,9 +42,6 @@
  * Dialog Control Classes.
  */
 
-::requires "PlainBaseDialog.cls"
-::requires "BaseDialog.cls"
-
 -- Base class for all dialog controls
 ::class 'DialogControl' public inherit WindowBase WindowExtensions
 

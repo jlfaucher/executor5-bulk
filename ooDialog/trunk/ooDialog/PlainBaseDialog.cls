@@ -44,7 +44,6 @@
  * PlainBaseDialog with its two inherited mixin classes, WindowBase and
  * ResourceUtils, is the base dialog for all dialogs in the ooDialog framwork.
  */
-::requires "UtilityClasses.cls"
 
 /* The WindowBase class implements methods that are common to all windows.  The
  * methods only require the operating system window handle to function.
