@@ -1180,3 +1180,32 @@ return testResult
   end
   return .true
 
+
+::method "test_first_last_next_previous"
+
+  a=.queue~new       -- empty queue
+  self~assertNull(a~first)
+  self~assertNull(a~last)
+  self~assertNull(a~firstItem)
+  self~assertNull(a~lastItem)
+  -- next and previous must use valid indices, so these won't work yet
+  -- self~assertNull(a~next(1))
+  -- self~assertNull(a~previous(1))
+
+  a~push("1v")          -- single item
+  self~assertEquals(1, a~first)
+  self~assertEquals(1, a~last)
+  self~assertEquals("1v", a~firstItem)
+  self~assertEquals("1v", a~lastItem)
+  self~assertNull(a~next(1))
+  self~assertNull(a~previous(1))
+
+
+  a~queue("2v")
+  self~assertEquals(1, a~first)
+  self~assertEquals("1v", a~firstItem)
+  self~assertEquals(2, a~last)
+  self~assertEquals("2v", a~lastItem)
+  self~assertEquals(2, a~next(1))
+  self~assertEquals(1, a~previous(2))
+

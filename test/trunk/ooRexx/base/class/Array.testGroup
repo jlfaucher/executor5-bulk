@@ -1096,24 +1096,29 @@ makeColl: procedure
 
 
 ::method "test_first_last_next_previous"
-  expose collDir clz bUserDefinedIndex bSingleItem
 
   a=.array~new       -- no dimension
   self~assertNull(a~first)
   self~assertNull(a~last)
+  self~assertNull(a~firstItem)
+  self~assertNull(a~lastItem)
   self~assertNull(a~next(1))
   self~assertNull(a~previous(1))
 
   a[1]="1v"          -- single dimension
   self~assertEquals(1, a~first)
   self~assertEquals(1, a~last)
+  self~assertEquals("1v", a~firstItem)
+  self~assertEquals("1v", a~lastItem)
   self~assertNull(a~next(1))
   self~assertNull(a~previous(1))
 
 
   a[15]="2v"
   self~assertEquals(1, a~first)
+  self~assertEquals("1v", a~firstItem)
   self~assertEquals(15, a~last)
+  self~assertEquals("2v", a~lastItem)
   self~assertEquals(15, a~next(1))
   self~assertEquals(15, a~next(.array~of(2)))
   self~assertEquals(1, a~previous(15))
@@ -1132,6 +1137,19 @@ makeColl: procedure
   a=.array~new
   self~expectSyntax("93.902")
   a~last(.nil)
+
+::method "test_firstItem_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~firstItem(1)
+
+
+::method "test_lastItem_syntax"
+
+  a=.array~new
+  self~expectSyntax("93.902")
+  a~lastItem(1)
 
 
 ::method "test_next_syntax1"
@@ -1285,6 +1303,8 @@ makeColl: procedure
   l=.array~of(3,3,3) -- last
   self~assertNull(a~first)
   self~assertNull(a~last)
+  self~assertNull(a~firstItem)
+  self~assertNull(a~lastItem)
   self~assertNull(a~next(1,1,1))
   self~assertNull(a~next(2,2,2))
   self~assertNull(a~next(3,3,3))
@@ -1299,7 +1319,9 @@ makeColl: procedure
   a[f]="1v"
   a[l]="3v"
   self~assertEquals(f, a~first)
+  self~assertEquals("1v", a~firstItem)
   self~assertEquals(l, a~last)
+  self~assertEquals("3v", a~lastItem)
   self~assertEquals(l, a~next(1,1,1))
   self~assertEquals(l, a~next(2,2,2))
   self~assertEquals(f, a~previous(2,2,2))
@@ -1311,7 +1333,9 @@ makeColl: procedure
 
   a[m]="2v"
   self~assertEquals(f, a~first)
+  self~assertEquals("1v", a~firstItem)
   self~assertEquals(l, a~last)
+  self~assertEquals("3v", a~lastItem)
   self~assertEquals(m, a~next(1,1,1))
   self~assertEquals(l, a~next(2,2,2))
   self~assertEquals(f, a~previous(2,2,2))
