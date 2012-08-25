@@ -153,7 +153,7 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
             pcpbd->dlgProcContext = context;
 
-            //RexxSetProcessMessages(FALSE);
+            RexxSetProcessMessages(FALSE);
         }
 
         pcpbd->hDlg = hDlg;
