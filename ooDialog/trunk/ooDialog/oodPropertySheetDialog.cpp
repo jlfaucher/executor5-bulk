@@ -1284,7 +1284,17 @@ LRESULT CALLBACK RexxPropertySheetDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, L
             return endDialogPremature(NULL, hDlg, NoPCPSPpased);
         }
 
+        pCPlainBaseDialog pcpbd = pcpsp->pcpbd;
+        pcpbd->hDlg = hDlg;
+
         initializePropSheetPage(hDlg, pcpsp);
+
+        if ( pcpbd->isCustomDrawDlg && pcpbd->idsNotChecked )
+        {
+            // We don't care what the outcome of this is, customDrawCheckIDs
+            // will take care of aborting this dialog if the IDs are bad.
+            customDrawCheckIDs(pcpbd);
+        }
 
         return TRUE;
     }
@@ -4767,7 +4777,7 @@ static inline pCTabOwnerDialog validateTodCSelf(RexxMethodContext *c, void *pCSe
     pCTabOwnerDialog pctod = (pCTabOwnerDialog)pCSelf;
     if ( pctod == NULL )
     {
-        baseClassIntializationException(c);
+        baseClassInitializationException(c);
     }
     return pctod;
 }
@@ -5540,6 +5550,13 @@ LRESULT CALLBACK RexxTabOwnerDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
         pcpbd->isActive = true;
         setDlgHandle(pcpbd->dlgProcContext, pcpbd);
 
+        if ( pcpbd->isCustomDrawDlg && pcpbd->idsNotChecked )
+        {
+            // We don't care what the outcome of this is, customDrawCheckIDs
+            // will take care of aborting this dialog if the IDs are bad.
+            customDrawCheckIDs(pcpbd);
+        }
+
         setMangedTabDetails(pctod);
         initStartPages(pctod);
 
@@ -6135,7 +6152,7 @@ RexxMethod2(RexxObjectPtr, todi_add, RexxObjectPtr, mts, CSELF, pCSelf)
     pCTabOwnerDlgInfo pctodi = (pCTabOwnerDlgInfo)pCSelf;
     if ( pctodi == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
 
     return todiAddMTs(context, pctodi, mts);
@@ -6486,7 +6503,7 @@ static inline pCControlDialog validateCdCSelf(RexxMethodContext *c, void *pCSelf
     pCControlDialog pccd = (pCControlDialog)pCSelf;
     if ( pccd == NULL )
     {
-        baseClassIntializationException(c);
+        baseClassInitializationException(c);
     }
     return pccd;
 }

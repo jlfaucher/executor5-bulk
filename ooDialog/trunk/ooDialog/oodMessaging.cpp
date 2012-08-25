@@ -153,10 +153,18 @@ LRESULT CALLBACK RexxDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
             pcpbd->dlgProcContext = context;
 
-            RexxSetProcessMessages(FALSE);
+            //RexxSetProcessMessages(FALSE);
         }
 
+        pcpbd->hDlg = hDlg;
         setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)pcpbd);
+
+        if ( pcpbd->isCustomDrawDlg && pcpbd->idsNotChecked )
+        {
+            // We don't care what the outcome of this is, customDrawCheckIDs
+            // will take care of aborting this dialog if the IDs are bad.
+            customDrawCheckIDs(pcpbd);
+        }
 
         return TRUE;
     }
@@ -478,7 +486,16 @@ LRESULT CALLBACK RexxChildDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             return endDialogPremature(pcpbd, hDlg, NoPCPBDpased);
         }
 
+        pcpbd->hDlg = hDlg;
         setWindowPtr(hDlg, GWLP_USERDATA, (LONG_PTR)pcpbd);
+
+        if ( pcpbd->isCustomDrawDlg && pcpbd->idsNotChecked )
+        {
+            // We don't care what the outcome of this is, customDrawCheckIDs
+            // will take care of aborting this dialog if the IDs are bad.
+            customDrawCheckIDs(pcpbd);
+        }
+
         return TRUE;
     }
 
@@ -980,7 +997,8 @@ done_out:
  * @param t      Error type.
  *
  * @return False always.
- *
+ *                                                      TODO this doc is not
+ *                                                      correct, need to edit.
  * @remarks  For all the original types of ooDialog dialogs (4.0.1 and
  *           previous,) DestroyWindow() causes a WM_DESTROY message to reach
  *           RexxDlgProc(). The dialog procedure then posts a quit message, we
@@ -1038,6 +1056,7 @@ BOOL endDialogPremature(pCPlainBaseDialog pcpbd, HWND hDlg, DlgProcErrType t)
             abortPropertySheet((pCPropertySheetDialog)pcpbd->dlgPrivate, hDlg, t);
             return FALSE;
         }
+        //ensureFinished(pcpbd, pcpbd->dlgProcContext, TheTrueObj);
     }
 
     DestroyWindow(hDlg);
@@ -1094,6 +1113,101 @@ LRESULT paletteMessage(pCPlainBaseDialog pcpbd, HWND hDlg, UINT msg, WPARAM wPar
 }
 
 /**
+ * Checks that reply is not null and that the context does not have a pending
+ * condition.
+ *
+ * @param c
+ * @param pcpbd
+ * @param reply
+ * @param methodName
+ * @param clear
+ *
+ * @return True if reply is not null and there is no pending condition.
+ *
+ * @note  If there is a condition, it is just printed, but the dialog is not
+ *        ended.  This results in a message to the screen, if the user is
+ *        running from a console window, but the dialog keeps running.  I'm not
+ *        sure this is the right way to do it.  It is just what I did during
+ *        development.  We should maybe alwasy end the dialog.
+ *
+ * @note  The call to checkForCondition() after noMsgReturnException() is what
+ *        causes the condition to be printed to the screen.  Without that call,
+ *        the dialog just quits with no reason printed, so it is needed.
+ */
+bool msgReplyIsGood(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING methodName, bool clear)
+{
+    bool haveCondition = checkForCondition(c, clear);
+
+    if ( ! haveCondition && reply == NULLOBJECT )
+    {
+        noMsgReturnException(c, methodName);
+        haveCondition = true;
+        checkForCondition(c, clear);
+        endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+    }
+    return ! haveCondition;
+}
+
+
+/**
+ * Checks that there is no pending condition and ends the dialog if there is
+ * one.  This is like msgReplyIsGood(), but is used when we do not enforce that
+ * the user returns a value from the event handler.
+ *
+ * @param c
+ * @param pcpbd
+ * @param methodName
+ * @param clear
+ *
+ * @return True if there is a pending condition and the dialog was ended,
+ *         otherwise false.
+ */
+bool endOnCondition(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, bool clear)
+{
+    if ( checkForCondition(c, clear) )
+    {
+        endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+        return true;
+    }
+    return false;
+}
+
+
+/**
+ * Checks that no condition has been raised, and that reply is either true or
+ * false. If not, an exception is raised and the dialog is ended.
+ *
+ * @param c
+ * @param pcpbd
+ * @param reply
+ * @param method
+ * @param clear
+ *
+ * @return TheTrueObj or TheFalseObj on success, NULLOBJECT on failure.
+ */
+RexxObjectPtr requiredBooleanReply(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply,
+                                   CSTRING method, bool clear)
+{
+    RexxObjectPtr result = NULLOBJECT;
+
+    if ( msgReplyIsGood(c, pcpbd, reply, method, false) )
+    {
+        result = convertToTrueOrFalse(c, reply);
+        if ( result == NULLOBJECT )
+        {
+            wrongReplyNotBooleanException(c, method, reply);
+            checkForCondition(c, false);
+        }
+    }
+
+    if ( result == NULLOBJECT )
+    {
+        endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+    }
+    return result;
+}
+
+/**
  * Invokes the Rexx dialog's event handling method for a Windows message.
  *
  * The method invocation is done indirectly using startWith().  This allows us
@@ -1128,89 +1242,6 @@ MsgReplyType invokeDispatch(RexxThreadContext *c, RexxObjectPtr obj, RexxStringO
 {
     c->SendMessage2(obj, "STARTWITH", method, args);
     return ReplyTrue;
-}
-
-/**
- * Checks that reply is not null and that the context does not have a pending
- * condition.
- *
- * @param c
- * @param pcpbd
- * @param reply
- * @param methodName
- * @param clear
- *
- * @return True if reply is not null and there is no pending condition.
- */
-bool msgReplyIsGood(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING methodName, bool clear)
-{
-    bool haveCondition = checkForCondition(c, clear);
-
-    if ( ! haveCondition && reply == NULLOBJECT )
-    {
-        noMsgReturnException(c, methodName);
-        haveCondition = true;
-        checkForCondition(c, clear);
-        endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
-    }
-    return ! haveCondition;
-}
-
-
-/**
- * Checks that there is no pending condition and ends the dialog if there is
- * one.  This is like msgReplyIsGood(), but is used when we do not enforce that
- * the user returns a value form the event handler.
- *
- * @param c
- * @param pcpbd
- * @param methodName
- * @param clear
- *
- * @return True if there is a pending condition and the dialog was ended,
- *         otherwise false.
- */
-bool endOnCondition(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, bool clear)
-{
-    bool haveCondition = checkForCondition(c, clear);
-
-    if ( checkForCondition(c, clear) )
-    {
-        endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
-        return true;
-    }
-    return false;
-}
-
-
-/**
- * Checks that reply is either true or false.  If not, an exception is raised
- * and the dialog is ended.
- *
- * @param c
- * @param pcpbd
- * @param reply
- * @param method
- * @param clear
- *
- * @return TheTrueObj or TheFalseObj on success, NULLOBJECT on failure.
- */
-RexxObjectPtr requiredBooleanReply(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply,
-                                   CSTRING method, bool clear)
-{
-    RexxObjectPtr result = NULLOBJECT;
-
-    if ( msgReplyIsGood(c, pcpbd, reply, method, false) )
-    {
-        result = convertToTrueOrFalse(c, reply);
-        if ( result == NULLOBJECT )
-        {
-            wrongReplyNotBooleanException(c, method, reply);
-            checkForCondition(c, false);
-            endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
-        }
-    }
-    return result;
 }
 
 /**
@@ -1315,7 +1346,10 @@ bool invokeDirect(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodN
  *         execution of the Rexx method.
  *
  * @remarks  This function is exactly like invokeDirect(), except it does not
- *           check that the Rexx method returned a value.
+ *           check that the Rexx method returned a value.  It is used to 'sync'
+ *           the Windows message handling loop with Rexx.  For each Windows
+ *           message, we won't return from the loop until we get a reply back
+ *           from Rexx.
  *
  *           Earlier versions of ooDialog, on the C++ side, constructed a method
  *           invocation string, placed it on a queue, and returned immediately
@@ -1495,7 +1529,90 @@ MsgReplyType searchCommandTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog 
 
 
 /**
- * Helper function to deterimine a list view item's index using a hit test.
+ * Handles the processing for the list-view custom draw event for the basic
+ * case.  That is, the user wants to change text color or font, for a list-view
+ * item, and / or, in report mode, the item and subitems indivicually.
+ *
+ * @param c
+ * @param methodName
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @notes  Typically for a list-view there are a flurry of custom draw events at
+ *         one time.  Testing has shown that if there is a condition pending,
+ *         things seem to hang.  So, we check for a condition on entry and just
+ *         do a CDRF_DODEFAULT immediately if that is the case.
+ *
+ *         The simple case is to only respond to item prepaint or subitem
+ *         prepaint.  We don't currently check the return reply from Rexx, but
+ *         it should be either CDRF_NOTIFYSUBITEMDRAW, CDRF_NEWFONT, or
+ *         CDRF_DODEFAULT.
+ */
+MsgReplyType lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    LPNMLVCUSTOMDRAW lvcd  = (LPNMLVCUSTOMDRAW)lParam;
+    LPARAM           reply = CDRF_DODEFAULT;
+
+    if ( lvcd->nmcd.dwDrawStage == CDDS_PREPAINT )
+    {
+        reply = CDRF_NOTIFYITEMDRAW;
+    }
+    else if ( lvcd->nmcd.dwDrawStage == CDDS_ITEMPREPAINT || lvcd->nmcd.dwDrawStage == (CDDS_ITEMPREPAINT | CDDS_SUBITEM) )
+    {
+        if ( c->CheckCondition() )
+        {
+            goto done_out;
+        }
+
+        RexxBufferObject lvcdsBuf = c->NewBuffer(sizeof(CLvCustomDrawSimple));
+        if ( lvcdsBuf == NULLOBJECT )
+        {
+            outOfMemoryException(c);
+            endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+            goto done_out;
+        }
+
+        pCLvCustomDrawSimple pclvcds = (pCLvCustomDrawSimple)c->BufferData(lvcdsBuf);
+        memset(pclvcds, 0, sizeof(CLvCustomDrawSimple));
+
+        pclvcds->drawStage = lvcd->nmcd.dwDrawStage;
+        pclvcds->item      = lvcd->nmcd.dwItemSpec;
+        pclvcds->subItem   = lvcd->iSubItem;
+        pclvcds->userData  = lviLParam2UserData(lvcd->nmcd.lItemlParam);
+
+        RexxObjectPtr custDrawSimple = c->SendMessage1(TheLvCustomDrawSimpleClass, "NEW", lvcdsBuf);
+        if ( custDrawSimple != NULLOBJECT )
+        {
+            RexxObjectPtr msgReply = c->SendMessage1(pcpbd->rexxSelf, methodName, custDrawSimple);
+
+            msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+            if ( msgReply == TheTrueObj )
+            {
+                lvcd->clrText   = pclvcds->clrText;
+                lvcd->clrTextBk = pclvcds->clrTextBk;
+
+                if ( pclvcds->hFont != NULL )
+                {
+                    // An example I've seen deletes the old font.  Doesn't seem
+                    // appropriate for ooRexx.  The user would need to save the
+                    // list-view font and then add it back in.  Not sure if
+                    // there is a resource leak here.
+                    HFONT hOldFont = (HFONT)SelectObject(lvcd->nmcd.hdc, pclvcds->hFont);
+                }
+                reply = pclvcds->reply;
+            }
+        }
+    }
+
+done_out:
+    setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, (LPARAM)reply);
+    return ReplyTrue;
+}
+
+/**
+ * Helper function to determine a list view item's index using a hit test.
  *
  * @param hwnd  Handle of the list view.
  * @param pIA   Pointer to an item activate structure.
@@ -2168,7 +2285,7 @@ MsgReplyType processMCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  */
 MsgReplyType processUDN(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
-    LPNMUPDOWN    pUPD = (LPNMUPDOWN)lParam;
+    LPNMUPDOWN pUPD = (LPNMUPDOWN)lParam;
 
     RexxArrayObject args = c->ArrayOfFour(c->Int32(pUPD->iPos), c->Int32(pUPD->iDelta),
                                           idFrom2rexxArg(c, lParam), hwndFrom2rexxArg(c, lParam));
@@ -2197,6 +2314,49 @@ MsgReplyType processUDN(RexxThreadContext *c, CSTRING methodName, LPARAM lParam,
             }
         }
     }
+    return ReplyTrue;
+}
+
+/**
+ * Handles the NM_CUSTOMDRAW event notification message.
+ *
+ * @param c
+ * @param methodName
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @notes  Currently we are only handling the list-view custom draw, and only
+ *         the simple case.  Everything else is just ignored.  Custom draw for
+ *         more controls will be added over time.
+ *
+ *         The simple case may be the only practical case.  But, the intent is
+ *         to add complete support for custom draw, with the anticipation that
+ *         it may be to slow in ooDialog.
+ */
+MsgReplyType processCustomDraw(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    LPARAM reply = CDRF_DODEFAULT;
+
+    if ( ! pcpbd->badIDs )
+    {
+        switch ( tag & TAG_FLAGMASK )
+        {
+            case TAG_CD_LISTVIEW :
+                if ( (tag & TAG_EXTRAMASK) == TAG_CD_SIMPLE )
+                {
+                    return lvSimpleCustomDraw(c, methodName, lParam, pcpbd);
+                }
+
+                break;
+
+            default :
+                break;
+        }
+    }
+
+    setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, (LPARAM)reply);
     return ReplyTrue;
 }
 
@@ -2241,6 +2401,10 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
             switch ( m[i].tag & TAG_CTRLMASK )
             {
                 case TAG_NOTHING :
+                    break;
+
+                case TAG_CUSTOMDRAW :
+                    return processCustomDraw(c, m[i].rexxMethod, m[i].tag, lParam, pcpbd);
                     break;
 
                 case TAG_LISTVIEW :
@@ -2646,7 +2810,7 @@ bool addCommandMessage(pCEventNotification pcen, RexxMethodContext *c, WPARAM wP
 {
     if ( pcen == NULL || pcen->commandMsgs == NULL )
     {
-        baseClassIntializationException(c);
+        baseClassInitializationException(c);
         return false;
     }
 
@@ -2906,6 +3070,7 @@ bool initEventNotification(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxOb
     pCEventNotification pcen = (pCEventNotification)c->BufferData(obj);
     memset(pcen, 0, sizeof(pCEventNotification));
 
+    pcen->magic    = EVENTNOTIFICATION_MAGIC;
     pcen->rexxSelf = self;
 
     if ( ! initCommandMessagesTable(c, pcen, pcpbd) )

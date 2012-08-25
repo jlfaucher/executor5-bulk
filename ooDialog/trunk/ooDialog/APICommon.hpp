@@ -53,8 +53,10 @@ extern void  systemServiceException(RexxThreadContext *context, const char *msg,
 extern void  systemServiceExceptionCode(RexxThreadContext *context, const char *msg, const char *arg1, uint32_t rc);
 extern void  systemServiceExceptionCode(RexxThreadContext *context, const char *msg, const char *arg1);
 extern void  outOfMemoryException(RexxThreadContext *c);
-extern void *baseClassIntializationException(RexxMethodContext *c);
-extern void *baseClassIntializationException(RexxMethodContext *c, CSTRING clsName);
+extern void *baseClassInitializationException(RexxThreadContext *c);
+extern void *baseClassInitializationException(RexxThreadContext *c, CSTRING clsName);
+extern void *baseClassInitializationException(RexxMethodContext *c);
+extern void *baseClassInitializationException(RexxMethodContext *c, CSTRING clsName);
 extern void  userDefinedMsgException(RexxThreadContext *c, CSTRING msg);
 extern void  userDefinedMsgException(RexxThreadContext *c, CSTRING formatStr, int number);
 extern void  userDefinedMsgException(RexxThreadContext *c, int pos, CSTRING msg);
@@ -99,6 +101,7 @@ extern RexxObjectPtr invalidTypeException(RexxThreadContext *c, size_t pos, cons
 extern RexxObjectPtr noSuchRoutineException(RexxThreadContext *c, CSTRING rtnName, size_t pos);
 extern RexxObjectPtr unsupportedRoutineException(RexxCallContext *c, CSTRING rtnName);
 extern RexxObjectPtr invalidReturnWholeNumberException(RexxThreadContext *c, CSTRING name, RexxObjectPtr actual, bool isMethod);
+extern void          notBooleanReplyException(RexxThreadContext *c, CSTRING method, RexxObjectPtr actual);
 
 extern CSTRING rxGetStringAttribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING name);
 extern bool    rxGetNumberAttribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING name, wholenumber_t *pNumber);

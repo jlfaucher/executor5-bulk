@@ -93,6 +93,14 @@ inline BitmapButtonBMPType getBMPType(bool inMemory, bool isIntResource)
     return t;
 }
 
+inline char *bmpType2String(BitmapButtonBMPType type)
+{
+    if (      type == InMemoryBmp    ) return "in memory";
+    else if ( type == IntResourceBmp ) return "from resource ID";
+    else if ( type == FromFileBmp    ) return "from file";
+    return "unknown";
+}
+
 /**
  * Modify a palette to have the system colors in the first and last 10
  * positions.
@@ -1642,7 +1650,7 @@ pCPlainBaseDialog dlgExtSetup(RexxMethodContext *c, RexxObjectPtr dlg)
     pCPlainBaseDialog pcpbd = requiredDlgCSelf(c, dlg, oodPlainBaseDialog, 0, NULL);
     if ( pcpbd == NULL )
     {
-        return (pCPlainBaseDialog)baseClassIntializationException(c);
+        return (pCPlainBaseDialog)baseClassInitializationException(c);
     }
 
     if ( pcpbd->hDlg == NULL )
@@ -1681,7 +1689,7 @@ RexxObjectPtr dlgExtControlSetup(RexxMethodContext *c, RexxObjectPtr self, RexxO
     pCPlainBaseDialog pcpbd = dlgToCSelf(c, self);
     if ( pcpbd == NULL )
     {
-        baseClassIntializationException(c);
+        baseClassInitializationException(c);
         return TheOneObj;
     }
 
@@ -1770,7 +1778,7 @@ RexxMethod3(RexxObjectPtr, dlgext_clearRect, POINTERSTRING, hwnd, ARGLIST, args,
     pCPlainBaseDialog pcpbd = dlgToCSelf(context, self);
     if ( pcpbd == NULL )
     {
-        baseClassIntializationException(context);
+        baseClassInitializationException(context);
         return TheOneObj;
     }
 
@@ -2290,7 +2298,7 @@ RexxMethod8(RexxObjectPtr, dlgext_installBitmapButton, RexxObjectPtr, rxID, OPTI
         BitmapButtonBMPType focused = getBMPType(inMemory, isIntResource);
         if ( focused != normal )
         {
-            bitmapTypeMismatchException(context, normal, focused, 4);
+            bitmapTypeMismatchException(context, bmpType2String(normal), bmpType2String(focused), 4);
             return TheOneObj;
         }
 
@@ -2308,7 +2316,7 @@ RexxMethod8(RexxObjectPtr, dlgext_installBitmapButton, RexxObjectPtr, rxID, OPTI
         BitmapButtonBMPType selected = getBMPType(inMemory, isIntResource);
         if ( selected != normal )
         {
-            bitmapTypeMismatchException(context, normal, selected, 5);
+            bitmapTypeMismatchException(context, bmpType2String(normal), bmpType2String(selected), 5);
             return TheOneObj;
         }
 
@@ -2326,7 +2334,7 @@ RexxMethod8(RexxObjectPtr, dlgext_installBitmapButton, RexxObjectPtr, rxID, OPTI
         BitmapButtonBMPType disabled = getBMPType(inMemory, isIntResource);
         if ( disabled != normal )
         {
-            bitmapTypeMismatchException(context, normal, disabled, 6);
+            bitmapTypeMismatchException(context, bmpType2String(normal), bmpType2String(disabled), 6);
             return TheOneObj;
         }
 
@@ -2490,7 +2498,7 @@ RexxMethod7(RexxObjectPtr, dlgext_changeBitmapButton, RexxObjectPtr, rxID, RexxO
             BitmapButtonBMPType focused = getBMPType(inMemory, isIntResource);
             if ( focused != normal )
             {
-                bitmapTypeMismatchException(context, normal, focused, 3);
+                bitmapTypeMismatchException(context, bmpType2String(normal), bmpType2String(focused), 3);
                 return TheOneObj;
             }
 
@@ -2508,7 +2516,7 @@ RexxMethod7(RexxObjectPtr, dlgext_changeBitmapButton, RexxObjectPtr, rxID, RexxO
             BitmapButtonBMPType selected = getBMPType(inMemory, isIntResource);
             if ( selected != normal )
             {
-                bitmapTypeMismatchException(context, normal, selected, 4);
+                bitmapTypeMismatchException(context, bmpType2String(normal), bmpType2String(selected), 4);
                 return TheOneObj;
             }
 
@@ -2526,7 +2534,7 @@ RexxMethod7(RexxObjectPtr, dlgext_changeBitmapButton, RexxObjectPtr, rxID, RexxO
             BitmapButtonBMPType disabled = getBMPType(inMemory, isIntResource);
             if ( disabled != normal )
             {
-                bitmapTypeMismatchException(context, normal, disabled, 5);
+                bitmapTypeMismatchException(context, bmpType2String(normal), bmpType2String(disabled), 5);
                 return TheOneObj;
             }
 
@@ -3161,7 +3169,7 @@ RexxMethod5(int32_t, dlgext_setControlColor, RexxObjectPtr, rxID, RexxObjectPtr,
     pCPlainBaseDialog pcpbd = dlgToCSelf(context, self);
     if ( pcpbd == NULL )
     {
-        baseClassIntializationException(context);
+        baseClassInitializationException(context);
         return 0;
     }
 

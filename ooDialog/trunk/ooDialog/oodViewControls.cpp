@@ -2466,6 +2466,9 @@ static int getColumnWidthArg(RexxMethodContext *context, RexxObjectPtr _width, s
  * This function gets the Rexx object stored by the user, translating it to the
  * LvFullRow object if needed.
  *
+ * TODO However, if it is a LvFullRow object and the list-view item lParam is
+ * not null, then we *should* return that.
+ *
  * @param lvi Pointer to a LVITEM struct.
  *
  * @return The Rexx object stored by the user for the specified list view item,
@@ -2484,6 +2487,33 @@ static RexxObjectPtr getLviUserData(LVITEM *lvi)
         else
         {
             result = (RexxObjectPtr)lvi->lParam;
+        }
+    }
+    return result;
+}
+
+
+RexxObjectPtr lviLParam2UserData(LPARAM lParam)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    if ( lParam != 0 )
+    {
+        if ( isLvFullRowStruct((void *)(lParam)) )
+        {
+            pCLvFullRow pclvfr = (pCLvFullRow)lParam;
+            if ( pclvfr->subItems[0]->lParam != 0 )
+            {
+                result = (RexxObjectPtr)pclvfr->subItems[0]->lParam;
+            }
+            else
+            {
+                result = pclvfr->rexxSelf;
+            }
+        }
+        else
+        {
+            result = (RexxObjectPtr)lParam;
         }
     }
     return result;
@@ -2573,10 +2603,6 @@ int32_t fullRowOperation(RexxMethodContext *c, RexxObjectPtr row, FullRowOp type
 
         pCLvFullRow pclvfr = (pCLvFullRow)c->ObjectToCSelf(row);
         HWND        hwnd   = pcdc->hCtrl;
-
-        printf("Is LvFullRow struct? %d lParam=%p\n",
-               isLvFullRowStruct((void *)(pclvfr->subItems[0]->lParam)),
-               pclvfr->subItems[0]->lParam);
 
         if ( type == lvfrAdd )
         {
@@ -4131,7 +4157,7 @@ RexxMethod5(RexxObjectPtr, lv_setImageList, RexxObjectPtr, ilSrc,
             type = width;
         }
     }
-    else if ( context->IsOfType(ilSrc, "ImageList") )
+    else if ( context->IsOfType(ilSrc, "IMAGELIST") )
     {
         imageList = ilSrc;
         himl = rxGetImageList(context, imageList, 1);
@@ -5037,7 +5063,7 @@ RexxMethod10(RexxObjectPtr, lvi_init, OPTIONAL_RexxObjectPtr, _index, OPTIONAL_C
     return NULLOBJECT;
 }
 
-/** LvItem::columns            [attribute]
+/** LvItem::columns                [attribute]
  */
 RexxMethod1(RexxArrayObject, lvi_columns, CSELF, pLVI)
 {
@@ -5048,7 +5074,7 @@ RexxMethod2(RexxObjectPtr, lvi_setColumns, RexxArrayObject, _columns, CSELF, pLV
     return setLviColumns(context, (LPLVITEM)pLVI, _columns, 1);
 }
 
-/** LvItem::columnFormats      [attribute]
+/** LvItem::columnFormats          [attribute]
  */
 RexxMethod1(RexxArrayObject, lvi_columnFormats, CSELF, pLVI)
 {
@@ -5059,7 +5085,7 @@ RexxMethod2(RexxObjectPtr, lvi_setColumnFormats, RexxArrayObject, _formats, CSEL
     return setLviColumnFormats(context, (LPLVITEM)pLVI, _formats, 1);
 }
 
-/** LvItem::groupID            [attribute]
+/** LvItem::groupID                [attribute]
  */
 RexxMethod1(int32_t, lvi_groupID, CSELF, pLVI)
 {
@@ -5070,7 +5096,7 @@ RexxMethod2(RexxObjectPtr, lvi_setGroupID, int32_t, id, CSELF, pLVI)
     return setLviGroupID(context, (LPLVITEM)pLVI, id);
 }
 
-/** LvItem::groupIndex         [attribute]
+/** LvItem::groupIndex             [attribute]
  */
 RexxMethod1(int32_t, lvi_groupIndex, CSELF, pLVI)
 {
@@ -5091,7 +5117,7 @@ RexxMethod2(RexxObjectPtr, lvi_setGroupIndex, int32_t, id, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvItem::imageIndex         [attribute]
+/** LvItem::imageIndex             [attribute]
  */
 RexxMethod1(int32_t, lvi_imageIndex, CSELF, pLVI)
 {
@@ -5104,7 +5130,7 @@ RexxMethod2(RexxObjectPtr, lvi_setImageIndex, int32_t, imageIndex, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvItem::indent             [attribute]
+/** LvItem::indent                 [attribute]
  */
 RexxMethod1(int32_t, lvi_indent, CSELF, pLVI)
 {
@@ -5117,7 +5143,7 @@ RexxMethod2(RexxObjectPtr, lvi_setIndent, int32_t, indent, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvItem::index              [attribute]
+/** LvItem::index                  [attribute]
  */
 RexxMethod1(int32_t, lvi_index, CSELF, pLVI)
 {
@@ -5129,7 +5155,7 @@ RexxMethod2(RexxObjectPtr, lvi_setIndex, int32_t, index, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvItem::itemState          [attribute]
+/** LvItem::itemState              [attribute]
  */
 RexxMethod1(RexxStringObject, lvi_itemState, CSELF, pLVI)
 {
@@ -5142,7 +5168,7 @@ RexxMethod2(RexxObjectPtr, lvi_setItemState, CSTRING, itemState, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvItem::itemStateMask      [attribute]
+/** LvItem::itemStateMask          [attribute]
  */
 RexxMethod1(RexxStringObject, lvi_itemStateMask, CSELF, pLVI)
 {
@@ -5154,7 +5180,7 @@ RexxMethod2(RexxObjectPtr, lvi_setItemStateMask, CSTRING, itemStateMask, CSELF, 
     return NULLOBJECT;
 }
 
-/** LvItem::mask               [attribute]
+/** LvItem::mask                   [attribute]
  */
 RexxMethod1(RexxStringObject, lvi_mask, CSELF, pLVI)
 {
@@ -5166,7 +5192,7 @@ RexxMethod2(RexxObjectPtr, lvi_setMask, CSTRING, mask, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvItem::overlayImageIndex  [attribute]
+/** LvItem::overlayImageIndex      [attribute]
  */
 RexxMethod1(int32_t, lvi_overlayImageIndex, CSELF, pLVI)
 {
@@ -5179,7 +5205,7 @@ RexxMethod2(RexxObjectPtr, lvi_setOverlayImageIndex, int32_t, index, CSELF, pLVI
     return NULLOBJECT;
 }
 
-/** LvItem::stateImageIndex    [attribute]
+/** LvItem::stateImageIndex        [attribute]
  */
 RexxMethod1(int32_t, lvi_stateImageIndex, CSELF, pLVI)
 {
@@ -5192,7 +5218,7 @@ RexxMethod2(RexxObjectPtr, lvi_setStateImageIndex, int32_t, index, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvItem::text               [attribute]
+/** LvItem::text                   [attribute]
  */
 RexxMethod1(RexxStringObject, lvi_text, CSELF, pLVI)
 {
@@ -5204,7 +5230,7 @@ RexxMethod2(RexxObjectPtr, lvi_setText, CSTRING, text, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvItem::userData           [attribute]
+/** LvItem::userData               [attribute]
  */
 RexxMethod1(RexxObjectPtr, lvi_userData, CSELF, pLVI)
 {
@@ -5324,7 +5350,7 @@ RexxMethod5(RexxObjectPtr, lvsi_init, RexxObjectPtr, _item, uint32_t, subItem, O
     return NULLOBJECT;
 }
 
-/** LvSubItem::item    [attribute]
+/** LvSubItem::item                [attribute]
  */
 RexxMethod1(int32_t, lvsi_item, CSELF, pLVI)
 {
@@ -5336,7 +5362,7 @@ RexxMethod2(RexxObjectPtr, lvsi_setItem, int32_t, item, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvSubItem::subItem    [attribute]
+/** LvSubItem::subItem             [attribute]
  */
 RexxMethod1(int32_t, lvsi_subItem, CSELF, pLVI)
 {
@@ -5348,7 +5374,7 @@ RexxMethod2(RexxObjectPtr, lvsi_setSubItem, int32_t, subItem, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvSubItem::text    [attribute]
+/** LvSubItem::text                [attribute]
  */
 RexxMethod1(RexxStringObject, lvsi_text, CSELF, pLVI)
 {
@@ -5360,7 +5386,7 @@ RexxMethod2(RexxObjectPtr, lvsi_setText, CSTRING, text, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvSubItem::imageIndex    [attribute]
+/** LvSubItem::imageIndex          [attribute]
  */
 RexxMethod1(int32_t, lvsi_imageIndex, CSELF, pLVI)
 {
@@ -5373,7 +5399,7 @@ RexxMethod2(RexxObjectPtr, lvsi_setImageIndex, int32_t, imageIndex, CSELF, pLVI)
     return NULLOBJECT;
 }
 
-/** LvSubItem::mask    [attribute]
+/** LvSubItem::mask                [attribute]
  */
 RexxMethod1(RexxStringObject, lvsi_mask, CSELF, pLVI)
 {
@@ -5742,6 +5768,105 @@ RexxMethod1(uint32_t, lvfr_subitems, CSELF, pCSelf)
 {
     return ((pCLvFullRow)pCSelf)->subItemCount;
 }
+
+
+/**
+ *  Methods for the .LvCustomDrawSimple class.
+ */
+#define LVCUSTOMDRAWSIMPLE_CLASS                "LvCustomDrawSimple"
+
+
+/** LvCustomDrawSimple::inti()     [class]
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, lvcds_init_cls, OSELF, self)
+{
+    if ( isOfClassType(context, self, LVCUSTOMDRAWSIMPLE_CLASS) )
+    {
+        TheLvCustomDrawSimpleClass = (RexxClassObject)self;
+        context->RequestGlobalReference(TheLvCustomDrawSimpleClass);
+    }
+    return NULLOBJECT;
+}
+
+/** LvCustomDrawSimple::init()
+ *
+ */
+RexxMethod2(RexxObjectPtr, lvcds_init, RexxObjectPtr, cself, OSELF, self)
+{
+    if ( context->IsBuffer(cself) )
+    {
+        context->SetObjectVariable("CSELF", cself);
+    }
+    else
+    {
+        baseClassInitializationException(context, "LvCustomDrawSimple");
+    }
+    return NULLOBJECT;
+}
+
+/** LvCustomDrawSimple::clrText    [attribute]
+ */
+RexxMethod2(uint32_t, lvcds_setClrText, uint32_t, clrText, CSELF, pCSelf)
+{
+    ((pCLvCustomDrawSimple)pCSelf)->clrText = clrText;
+    return NULLOBJECT;
+}
+
+/** LvCustomDrawSimple::clrTextBk  [attribute]
+ */
+RexxMethod2(RexxObjectPtr, lvcds_setClrTextBk, uint32_t, clrTextBk, CSELF, pCSelf)
+{
+    ((pCLvCustomDrawSimple)pCSelf)->clrTextBk = clrTextBk;
+    return NULLOBJECT;
+}
+
+/** LvCustomDrawSimple::drawStage  [attribute]
+ */
+RexxMethod1(uint32_t, lvcds_getDrawStage, CSELF, pCSelf)
+{
+    return ((pCLvCustomDrawSimple)pCSelf)->drawStage;
+}
+
+/** LvCustomDrawSimple::font       [attribute]
+ */
+RexxMethod2(RexxObjectPtr, lvcds_setFont, POINTERSTRING, font, CSELF, pCSelf)
+{
+    ((pCLvCustomDrawSimple)pCSelf)->hFont = (HFONT)font;
+    return NULLOBJECT;
+}
+
+/** LvCustomDrawSimple::item       [attribute]
+ */
+RexxMethod1(uintptr_t, lvcds_getItem, CSELF, pCSelf)
+{
+    return ((pCLvCustomDrawSimple)pCSelf)->item;
+}
+
+/** LvCustomDrawSimple::reply      [attribute]
+ */
+RexxMethod2(RexxObjectPtr, lvcds_setReply, uint32_t, reply, CSELF, pCSelf)
+{
+    ((pCLvCustomDrawSimple)pCSelf)->reply = reply;
+    return NULLOBJECT;
+}
+
+/** LvCustomDrawSimple::subItem    [attribute]
+ */
+RexxMethod1(uint32_t, lvcds_getSubItem, CSELF, pCSelf)
+{
+    return ((pCLvCustomDrawSimple)pCSelf)->subItem;
+}
+
+/** LvCustomDrawSimple::userData   [attribute]
+ */
+RexxMethod2(RexxObjectPtr, lvcds_getUserData, uint32_t, reply, CSELF, pCSelf)
+{
+    return ((pCLvCustomDrawSimple)pCSelf)->userData;
+}
+
+
 
 
 /**
@@ -6230,7 +6355,7 @@ RexxMethod4(RexxObjectPtr, tv_setImageList, RexxObjectPtr, ilSrc,
             type = width;
         }
     }
-    else if ( context->IsOfType(ilSrc, "ImageList") )
+    else if ( context->IsOfType(ilSrc, "IMAGELIST") )
     {
         imageList = ilSrc;
         himl = rxGetImageList(context, imageList, 1);
@@ -6728,7 +6853,7 @@ RexxMethod4(RexxObjectPtr, tab_setImageList, RexxObjectPtr, ilSrc,
     {
         imageList = ilSrc;
     }
-    else if ( context->IsOfType(ilSrc, "ImageList") )
+    else if ( context->IsOfType(ilSrc, "IMAGELIST") )
     {
         imageList = ilSrc;
         himl = rxGetImageList(context, imageList, 1);

@@ -483,20 +483,21 @@ void wrongWindowStyleException(RexxMethodContext *c, const char *obj, const char
 }
 
 
-inline char *bmpType2String(BitmapButtonBMPType type)
-{
-    if (      type == InMemoryBmp    ) return "in memory";
-    else if ( type == IntResourceBmp ) return "from resource ID";
-    else if ( type == FromFileBmp    ) return "from file";
-    return "unknown";
-}
-
-void bitmapTypeMismatchException(RexxMethodContext *c, BitmapButtonBMPType orig, BitmapButtonBMPType found, size_t pos)
+void bitmapTypeMismatchException(RexxMethodContext *c, CSTRING orig, CSTRING found, size_t pos)
 {
     char msg[256];
     _snprintf(msg, sizeof(msg), "Button bitmaps must be the same; normal bitmap is %s, arg %d bitmap is %s",
-              bmpType2String(orig), pos, bmpType2String(found));
+              orig, pos, found);
     userDefinedMsgException(c, msg);
+}
+
+void customDrawMismatchException(RexxThreadContext *c, uint32_t id, oodControl_t type)
+{
+    TCHAR buffer[256];
+    _snprintf(buffer, sizeof(buffer),
+              "The control marked for custom draw with id %d is not a %s control", id, controlType2controlName(type));
+
+    executionErrorException(c, buffer);
 }
 
 
@@ -1419,7 +1420,7 @@ RexxStringObject dword2string(RexxMethodContext *c, uint32_t num)
  *
  * In many places in ooDialog we require the user to use .true or .false.  But,
  * really ooRexx allows 1 or 0 to equal .true or .false, so we need to
- * accomadate that.  If we compare a Rexx object to TheTrueObj, it will fail if
+ * accommodate that.  If we compare a Rexx object to TheTrueObj, it will fail if
  * the Rexx object is 1, same thing with TheFalseObj.
  *
  * @param c
@@ -1737,7 +1738,7 @@ pCPlainBaseDialog requiredDlgCSelf(RexxMethodContext *c, RexxObjectPtr self, ood
 
     if ( pcpbd == NULLOBJECT )
     {
-        baseClassIntializationException(c);
+        baseClassInitializationException(c);
     }
     return pcpbd;
 }

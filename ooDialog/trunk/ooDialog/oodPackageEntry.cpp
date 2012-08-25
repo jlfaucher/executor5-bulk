@@ -94,13 +94,16 @@ RexxClassObject     ThePropertySheetPageClass = NULLOBJECT;
 RexxClassObject     TheControlDialogClass = NULLOBJECT;
 
 // Initialized in the Point class init method (point_init_cls.)
-RexxClassObject     ThePointClass = NULLOBJECT;;
+RexxClassObject     ThePointClass = NULLOBJECT;
 
 // Initialized in the Size class init method (size_init_cls.)
-RexxClassObject     TheSizeClass = NULLOBJECT;;
+RexxClassObject     TheSizeClass = NULLOBJECT;
 
 // Initialized in the Rect class init method (rect_init_cls.)
 RexxClassObject     TheRectClass = NULLOBJECT;
+
+// Initialized in the LvCustomDrawSimple class init method (lvcds_init_cls.)
+RexxClassObject     TheLvCustomDrawSimpleClass = NULLOBJECT;
 
 /* GdiplusStartupInput gdiplusStartupInput;
 ULONG_PTR           gdiplusToken; */
@@ -1315,6 +1318,23 @@ REXX_METHOD_PROTOTYPE(mouse_showCursor);
 REXX_METHOD_PROTOTYPE(mouse_trackEvent);
 REXX_METHOD_PROTOTYPE(mouse_test);
 
+// CustomDraw
+REXX_METHOD_PROTOTYPE(cd_init);
+REXX_METHOD_PROTOTYPE(cd_customDrawControl);
+
+// LvCustomDrawSimple
+REXX_METHOD_PROTOTYPE(lvcds_init_cls    );
+REXX_METHOD_PROTOTYPE(lvcds_init        );
+REXX_METHOD_PROTOTYPE(lvcds_setClrText  );
+REXX_METHOD_PROTOTYPE(lvcds_setClrTextBk);
+REXX_METHOD_PROTOTYPE(lvcds_getItem     );
+REXX_METHOD_PROTOTYPE(lvcds_setFont     );
+REXX_METHOD_PROTOTYPE(lvcds_getItem     );
+REXX_METHOD_PROTOTYPE(lvcds_setReply    );
+REXX_METHOD_PROTOTYPE(lvcds_getSubItem  );
+REXX_METHOD_PROTOTYPE(lvcds_getUserData );
+
+
 RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_init_cls,               dlgutil_init_cls),
     REXX_METHOD(dlgutil_comctl32Version_cls,    dlgutil_comctl32Version_cls),
@@ -2214,6 +2234,22 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(mouse_showCursor,               mouse_showCursor),
     REXX_METHOD(mouse_trackEvent,               mouse_trackEvent),
     REXX_METHOD(mouse_test,                     mouse_test),
+
+// CustomDraw
+    REXX_METHOD(cd_init,                        cd_init),
+    REXX_METHOD(cd_customDrawControl,           cd_customDrawControl),
+
+// LvCustomDrawSimple
+    REXX_METHOD(lvcds_init_cls,                 lvcds_init_cls),
+    REXX_METHOD(lvcds_init,                     lvcds_init),
+    REXX_METHOD(lvcds_setClrText,               lvcds_setClrText),
+    REXX_METHOD(lvcds_setClrTextBk,             lvcds_setClrTextBk),
+    REXX_METHOD(lvcds_getItem,                  lvcds_getItem),
+    REXX_METHOD(lvcds_setFont,                  lvcds_setFont),
+    REXX_METHOD(lvcds_getItem,                  lvcds_getItem),
+    REXX_METHOD(lvcds_setReply,                 lvcds_setReply),
+    REXX_METHOD(lvcds_getSubItem,               lvcds_getSubItem),
+    REXX_METHOD(lvcds_getUserData,              lvcds_getUserData),
 
     REXX_LAST_METHOD()
 };

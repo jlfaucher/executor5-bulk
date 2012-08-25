@@ -57,7 +57,9 @@
 #define MAXDIALOGS              20
 
 #define MAXTABPAGES           MAXPROPPAGES
-#define MAXMANAGEDTABS        4
+#define MAXMANAGEDTABS           4
+
+#define MAXCUSTOMDRAWCONTROLS   20
 
 #define DEFAULT_FONTNAME            "MS Shell Dlg"
 #define DEFAULT_FONTSIZE              8
@@ -141,6 +143,7 @@
 #define TAG_UPDOWN                0x0000000A
 #define TAG_DATETIMEPICKER        0x0000000B
 #define TAG_MONTHCALENDAR         0x0000000C
+#define TAG_CUSTOMDRAW            0x000000FF
 
 /**
  * The next 2 bytes are generic 'flags' that can be isolated using TAG_FLAGMASK.
@@ -162,11 +165,27 @@
 #define TAG_SELECTCHANGED         0x00000400
 #define TAG_FOCUSCHANGED          0x00000800
 
+// When combined with CTRL flag of custom draw, specifies which type of control.
+#define TAG_CD_HEADER             0x00000100
+#define TAG_CD_LISTVIEW           0x00000200
+#define TAG_CD_REBAR              0x00000400
+#define TAG_CD_TOOLBAR            0x00000800
+#define TAG_CD_TOOLTIP            0x00001000
+#define TAG_CD_TRACKBAR           0x00002000
+#define TAG_CD_TREEVIEW           0x00004000
+
 /**
  * The last byte is for, well 'extra' information.  Use TAG_EXTRAMASK to
  * isolate the byte.
  */
 #define TAG_EXTRAMASK             0xFF000000
+
+// When compbined with TAG_CUSTOMDRAW and one of the TAG_CD_* flags means to use
+// the simple form of custom draw.  What is 'simple' is defined by the control.
+// For instance, with a list-view, ooDialog lets the user change the foreground,
+// background colors, and the font on an item and sub-item basis, but nothing
+// more.
+#define TAG_CD_SIMPLE             0x01000000
 
 // Reply TRUE in dialog procedure, not FALSE.  Reply FALSE passes message on to
 // the system for processing.  TRUE indicates the message was handled.
@@ -513,6 +532,7 @@ typedef CWindowBase *pCWindowBase;
 
 /* Struct for the EventNotification object CSelf. */
 typedef struct _enCSelf {
+    uint32_t            magic;
     MESSAGETABLEENTRY  *notifyMsgs;
     MESSAGETABLEENTRY  *commandMsgs;
     MESSAGETABLEENTRY  *miscMsgs;
@@ -522,12 +542,15 @@ typedef struct _enCSelf {
     size_t              cmNextIndex;
     size_t              mmSize;
     size_t              mmNextIndex;
-    HWND                hDlg;
     RexxObjectPtr       rexxSelf;
+    HWND                hDlg;
     HHOOK               hHook;
     void               *pHookData;
+    void               *pCustomDraw;
 } CEventNotification;
 typedef CEventNotification *pCEventNotification;
+
+#define EVENTNOTIFICATION_MAGIC    0x1ee1e11e
 
 // Struct for the PlainBaseDialog class CSelf.
 typedef struct _pbdcCSelf {
@@ -597,14 +620,17 @@ typedef struct _pbdCSelf {
     DWORD                dlgProcThreadID;
     uint32_t             fontSize;
     bool                 onTheTop;
-    bool                 isCategoryDlg;  // Need to use IsNestedDialogMessage()
-    bool                 isControlDlg;   // Dialog was created as DS_CONTROL | WS_CHILD
-    bool                 isOwnedDlg;     // Dialog has an owner dialog
-    bool                 isManagedDlg;   // Dialog has an owner dialog, which is a tab owner dialog
-    bool                 isPageDlg;      // Dialog is a property sheet page dialog
-    bool                 isPropSheetDlg; // Dialog is a property sheet dialog
-    bool                 isTabOwnerDlg;  // Dialog is a tab owner dialog
-    bool                 isDlgHwndSet;   // Has setDlgHandle() been executed
+    bool                 isCategoryDlg;   // Need to use IsNestedDialogMessage()
+    bool                 isControlDlg;    // Dialog was created as DS_CONTROL | WS_CHILD
+    bool                 isOwnedDlg;      // Dialog has an owner dialog
+    bool                 isManagedDlg;    // Dialog has an owner dialog, which is a tab owner dialog
+    bool                 isPageDlg;       // Dialog is a property sheet page dialog
+    bool                 isPropSheetDlg;  // Dialog is a property sheet dialog
+    bool                 isTabOwnerDlg;   // Dialog is a tab owner dialog
+    bool                 isCustomDrawDlg; // Dialog inherited CustomDraw
+    bool                 idsNotChecked;
+    bool                 badIDs;
+    bool                 isDlgHwndSet;    // Has setDlgHandle() been executed
     bool                 sharedIcon;
     bool                 didChangeIcon;
     bool                 isActive;
@@ -634,6 +660,21 @@ typedef struct _lvRexxSort{
 } CRexxSort;
 typedef CRexxSort *pCRexxSort;
 
+/**
+ * Struct for the CustomDraw object CSelf.  This is in anticipation of future
+ * enhancements to CustoDraw.  It is not really needed as yet.
+ */
+typedef struct _customdrawCSelf {
+    uint32_t             magic;
+    uint32_t             ids[MAXCUSTOMDRAWCONTROLS];   // List of all control IDs the user has set.
+    oodControl_t         types[MAXCUSTOMDRAWCONTROLS]; // Matching type of control for each ID.
+    pCEventNotification  enCSelf;
+    RexxObjectPtr        rexxSelf;
+    uint32_t             count;                        // Number of IDs in the ids array.
+} CCustomDraw;
+typedef CCustomDraw *pCCustomDraw;
+
+#define CUSTOMDRAW_MAGIC    0x7cd7c77d
 
 
 // Struct for the DialogControl object CSelf.
@@ -932,6 +973,7 @@ extern RexxClassObject TheControlDialogClass;
 extern RexxClassObject ThePointClass;
 extern RexxClassObject TheSizeClass;
 extern RexxClassObject TheRectClass;
+extern RexxClassObject TheLvCustomDrawSimpleClass;
 
 extern HBRUSH searchForBrush(pCPlainBaseDialog pcpbd, size_t *index, uint32_t id);
 

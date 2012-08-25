@@ -106,6 +106,32 @@ const char *controlType2className(oodControl_t control)
 }
 
 
+const char *controlType2controlName(oodControl_t control)
+{
+    switch ( control )
+    {
+        case winStatic :               return "Static";
+        case winPushButton :           return "PushButton";
+        case winRadioButton :          return "RadioButton";
+        case winCheckBox :             return "CheckBox";
+        case winGroupBox :             return "GroupBox";
+        case winEdit :                 return "Edit";
+        case winListBox :              return "ListBox";
+        case winComboBox :             return "ComboBox";
+        case winScrollBar :            return "ScrollBar";
+        case winTreeView :             return "TreeView";
+        case winListView :             return "ListView";
+        case winTab :                  return "Tab";
+        case winProgressBar :          return "ProgressBar";
+        case winTrackBar :             return "TrackBar";
+        case winMonthCalendar :        return "MonthCalendar";
+        case winDateTimePicker :       return "DateTimePicker";
+        case winUpDown :               return "UpDown";
+        default :                      return "";
+    }
+}
+
+
 oodControl_t winName2controlType(const char *className)
 {
     if (      strcmp(className, WC_STATIC         ) == 0 ) return winStatic;
@@ -155,6 +181,28 @@ oodControl_t control2controlType(HWND hControl)
     }
 
     return type;
+}
+
+oodControl_t controlName2controlType(CSTRING name)
+{
+    if      ( StrCmpI(name, "CHECKBOX"      ) == 0 ) return winCheckBox;
+    else if ( StrCmpI(name, "COMBOBOX"      ) == 0 ) return winComboBox;
+    else if ( StrCmpI(name, "DATETIMEPICKER") == 0 ) return winDateTimePicker;
+    else if ( StrCmpI(name, "EDIT"          ) == 0 ) return winEdit;
+    else if ( StrCmpI(name, "GROUPBOX"      ) == 0 ) return winGroupBox;
+    else if ( StrCmpI(name, "LISTBOX"       ) == 0 ) return winListBox;
+    else if ( StrCmpI(name, "LISTVIEW"      ) == 0 ) return winListView;
+    else if ( StrCmpI(name, "MONTHCALENDAR" ) == 0 ) return winMonthCalendar;
+    else if ( StrCmpI(name, "PROGRESSBAR"   ) == 0 ) return winProgressBar;
+    else if ( StrCmpI(name, "PUSHBUTTON"    ) == 0 ) return winPushButton;
+    else if ( StrCmpI(name, "RADIOBUTTON"   ) == 0 ) return winRadioButton;
+    else if ( StrCmpI(name, "SCROLLBAR"     ) == 0 ) return winScrollBar;
+    else if ( StrCmpI(name, "STATIC"        ) == 0 ) return winStatic;
+    else if ( StrCmpI(name, "TAB"           ) == 0 ) return winTab;
+    else if ( StrCmpI(name, "TRACKBAR"      ) == 0 ) return winTrackBar;
+    else if ( StrCmpI(name, "TREEVIEW"      ) == 0 ) return winTreeView;
+    else if ( StrCmpI(name, "UPDOWN"        ) == 0 ) return winUpDown;
+    else return winUnknown;
 }
 
 RexxStringObject controlWindow2rexxString(RexxMethodContext *c, HWND hControl)
@@ -214,6 +262,27 @@ bool isControlMatch(HWND hControl, oodControl_t control)
         }
     }
     return true;
+}
+
+/**
+ * Determine if a dialog control belongs to the specified dialog control class.
+ *
+ * @param hDlg     Handle to the owner dialog of the control, the assumed owner.
+ * @param   id     Resource ID of the dialog control/
+ * @param control  One of the oodControl types specifying the class to check
+ *                 for.
+ *
+ * @return True if the dialog control is the type specified, otherwise false.
+ */
+bool isControlMatch(HWND hDlg, uint32_t id, oodControl_t control)
+{
+    HWND hControl = GetDlgItem(hDlg, id);
+
+    if ( hControl != NULL )
+    {
+        return isControlMatch(hControl, control);
+    }
+    return false;
 }
 
 /**

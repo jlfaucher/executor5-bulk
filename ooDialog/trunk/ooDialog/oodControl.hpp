@@ -149,10 +149,26 @@ typedef struct _lvFullRow
 } CLvFullRow;
 typedef CLvFullRow *pCLvFullRow;
 
+/* Struct for the LvCustomDrawSimple object CSelf. */
+typedef struct _lvCDSimple
+{
+    HFONT             hFont;
+    RexxObjectPtr     userData;
+    uintptr_t         item;
+    COLORREF          clrText;
+    COLORREF          clrTextBk;
+    uint32_t          reply;
+    uint32_t          subItem;
+    uint32_t          drawStage;
+} CLvCustomDrawSimple;
+typedef CLvCustomDrawSimple *pCLvCustomDrawSimple;
+
 enum FullRowOp {lvfrAdd, lvfrPrepend, lvfrInsert};
 
 #define LVFULLROW_MAGIC              0xCafeDeaf  // Magic number to identify a CLvFullRow struct
 #define LVFULLROW_DEF_SUBITEMS       10          // Initial size of the subItems array
+
+extern RexxObjectPtr lviLParam2UserData(LPARAM lParam);
 
 enum DateTimePart {dtFull, dtTime, dtDate, dtNow};
 
@@ -167,11 +183,13 @@ extern RexxClassObject    oodClass4controlType(RexxMethodContext *c, oodControl_
 extern RexxClassObject    oodClass4controlType(oodControl_t controlType, RexxMethodContext *c);
 extern RexxClassObject    oodClass4controlType(RexxThreadContext *c, oodControl_t controlType);
 extern oodControl_t       control2controlType(HWND hControl);
+extern oodControl_t       controlName2controlType(CSTRING name);
 extern oodControl_t       winName2controlType(const char *className);
 extern const char        *controlType2winName(oodControl_t control);
 extern RexxStringObject   controlWindow2rexxString(RexxMethodContext *c, HWND hControl);
 extern oodControl_t       oodName2controlType(CSTRING name);
 extern bool               isControlMatch(HWND, oodControl_t);
+extern bool               isControlMatch(HWND hDlg, uint32_t id, oodControl_t control);
 
 extern RexxStringObject   cbLbGetText(RexxMethodContext *c, HWND hCtrl, uint32_t index, oodControl_t ctrl);
 extern void               sysTime2dt(RexxThreadContext *c, SYSTEMTIME *sysTime, RexxObjectPtr *dateTime, DateTimePart part);
@@ -250,7 +268,7 @@ inline pCDialogControl validateDCCSelf(RexxMethodContext *c, void *pcdc)
     oodResetSysErrCode(c->threadContext);
     if ( pcdc == NULL )
     {
-        baseClassIntializationException(c);
+        baseClassInitializationException(c);
     }
     return (pCDialogControl)pcdc;
 }

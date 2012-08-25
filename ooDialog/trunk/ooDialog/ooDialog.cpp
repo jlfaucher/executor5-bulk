@@ -721,7 +721,7 @@ static inline pCWindowBase validateWbCSelf(RexxMethodContext *c, void *pCSelf)
     pCWindowBase pcwb = (pCWindowBase)pCSelf;
     if ( pcwb == NULL )
     {
-        baseClassIntializationException(c);
+        baseClassInitializationException(c);
     }
     return pcwb;
 }
@@ -2641,7 +2641,7 @@ static inline HWND getPBDWindow(RexxMethodContext *c, void *pCSelf)
 {
     if ( pCSelf == NULL )
     {
-        return (HWND)baseClassIntializationException(c);
+        return (HWND)baseClassInitializationException(c);
     }
 
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
@@ -2656,7 +2656,7 @@ HWND getPBDControlWindow(RexxMethodContext *c, pCPlainBaseDialog pcpbd, RexxObje
 {
     if ( pcpbd == NULL )
     {
-        return (HWND)baseClassIntializationException(c);
+        return (HWND)baseClassInitializationException(c);
     }
 
     HWND hCtrl = NULL;
@@ -2900,6 +2900,12 @@ static bool checkDlgType(RexxMethodContext *c, RexxObjectPtr self, pCPlainBaseDi
     else if ( c->IsOfType(self, "PROPERTYSHEETPAGE") )
     {
         pcpbd->isPageDlg = true;
+    }
+
+    if ( c->IsOfType(self, "CUSTOMDRAW") )
+    {
+        pcpbd->isCustomDrawDlg = true;
+        pcpbd->idsNotChecked   = true;
     }
 
     return true;
@@ -3217,7 +3223,7 @@ RexxMethod1(CSTRING, pbdlg_getLibrary, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (CSTRING)baseClassIntializationException(context);
+        return (CSTRING)baseClassInitializationException(context);
     }
     return pcpbd->library;
 }
@@ -3229,7 +3235,7 @@ RexxMethod1(RexxObjectPtr, pbdlg_getResourceID, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
     return pcpbd->resourceID;
 }
@@ -3241,7 +3247,7 @@ RexxMethod1(RexxObjectPtr, pbdlg_getDlgHandle, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
     return pcpbd->wndBase->rexxHwnd;
 }
@@ -3253,7 +3259,7 @@ RexxMethod1(RexxObjectPtr, pbdlg_getAutoDetect, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
     return pcpbd->autoDetect ? TheTrueObj : TheFalseObj;
 }
@@ -3264,7 +3270,7 @@ RexxMethod2(RexxObjectPtr, pbdlg_setAutoDetect, logical_t, on, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
     pcpbd->autoDetect = on;
     return NULLOBJECT;
@@ -3277,7 +3283,7 @@ RexxMethod1(RexxObjectPtr, pbdlg_getParentDlg_pvt, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
     return pcpbd->rexxParent == NULLOBJECT ? TheNilObj : pcpbd->rexxParent;
 }
@@ -3288,7 +3294,7 @@ RexxMethod2(RexxObjectPtr, pbdlg_setParentDlg_pvt, RexxObjectPtr, parent, CSELF,
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
 
     if ( requiredClass(context->threadContext, parent, "PLAINBASEDIALOG", 1) )
@@ -3310,7 +3316,7 @@ RexxMethod1(RexxObjectPtr, pbdlg_getOwnerDialog, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
     return pcpbd->rexxOwner == NULLOBJECT ? TheNilObj : pcpbd->rexxOwner;
 }
@@ -3347,7 +3353,7 @@ RexxMethod2(RexxObjectPtr, pbdlg_setOwnerDialog, RexxObjectPtr, owner, CSELF, pC
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
 
     if ( pcpbd->isOwnedDlg )
@@ -3410,7 +3416,7 @@ RexxMethod2(RexxObjectPtr, pbdlg_getFontNameSize, NAME, method, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
 
     RexxObjectPtr result;
@@ -3432,7 +3438,7 @@ RexxMethod2(RexxObjectPtr, pbdlg_setFontName_pvt, CSTRING, name, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
 
     if ( strlen(name) > (MAX_DEFAULT_FONTNAME - 1) )
@@ -3453,7 +3459,7 @@ RexxMethod2(RexxObjectPtr, pbdlg_setFontSize_pvt, uint32_t, size, CSELF, pCSelf)
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
 
     pcpbd->fontSize = size;
@@ -3496,7 +3502,7 @@ RexxMethod3(RexxObjectPtr, pbdlg_setDlgFont, CSTRING, fontName, OPTIONAL_uint32_
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
     if ( pcpbd == NULL )
     {
-        return (RexxObjectPtr)baseClassIntializationException(context);
+        return (RexxObjectPtr)baseClassInitializationException(context);
     }
 
     if ( strlen(fontName) > (MAX_DEFAULT_FONTNAME - 1) )

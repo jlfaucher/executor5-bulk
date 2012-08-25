@@ -191,9 +191,15 @@ extern bool initWindowExtensions(RexxMethodContext *, RexxObjectPtr, HWND, pCWin
 extern bool validControlDlg(RexxMethodContext *c, pCPlainBaseDialog pcpbd);
 extern bool processOwnedDialog(RexxMethodContext *c, pCPlainBaseDialog pcpbd);
 extern void setFontAttrib(RexxThreadContext *c, pCPlainBaseDialog pcpbd);
+extern void customDrawCheckIDs(pCPlainBaseDialog pcpbd);
 
 // These functions are defined in oodPropertySheet.cpp
 extern void abortPropertySheet(pCPropertySheetDialog pcpsd, HWND hDlg, DlgProcErrType t);
+
+// This function is defined in oodControl.cpp.  TODO should be in
+// oodControl.hpp, but needed by oodCommon.cpp, need to straighten out all
+// theses extern declarations.
+extern const char *controlType2controlName(oodControl_t control);
 
 // These functions are defined in oodViewControls.cpp
 extern bool isInReportView(HWND hList);
@@ -342,7 +348,8 @@ extern void          *wrongReplyMsgException(RexxThreadContext *c, const char *m
 extern void          *wrongReplyNotBooleanException(RexxThreadContext *c, const char *mName, RexxObjectPtr actual);
 extern void           controlFailedException(RexxThreadContext *, CSTRING, CSTRING, CSTRING);
 extern void           wrongWindowStyleException(RexxMethodContext *c, CSTRING, CSTRING);
-extern void           bitmapTypeMismatchException(RexxMethodContext *c, BitmapButtonBMPType orig, BitmapButtonBMPType found, size_t pos);
+extern void           bitmapTypeMismatchException(RexxMethodContext *c, CSTRING orig, CSTRING found, size_t pos);
+extern void           customDrawMismatchException(RexxThreadContext *c, uint32_t id, oodControl_t type);
 extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, CSTRING methodName, RexxObjectPtr rxDlg, CSTRING msg);
 extern RexxObjectPtr  methodCanNotBeInvokedException(RexxMethodContext *c, CSTRING methodName, CSTRING msg, RexxObjectPtr rxDlg);
 extern RexxObjectPtr  invalidAttributeException(RexxMethodContext *c, RexxObjectPtr rxDlg);
@@ -468,7 +475,7 @@ static inline pCPlainBaseDialog getPBDCSelf(RexxMethodContext *c, void * pCSelf)
 {
     if ( pCSelf == NULL )
     {
-        baseClassIntializationException(c);
+        baseClassInitializationException(c);
     }
     return (pCPlainBaseDialog)pCSelf;
 }

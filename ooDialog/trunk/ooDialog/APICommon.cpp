@@ -130,16 +130,20 @@ void *executionErrorException(RexxThreadContext *c, CSTRING msg)
  *
  *            if ( pCSelf == NULL )
  *            {
- *                return baseClassIntializationException(c);
+ *                return baseClassInitializationException(c);
  *            }
  *
  * @remarks  This error is intended to be used when the CSelf pointer is null.
  *           It can only happen (I believe) when the user inovkes a method on
  *           self in init() before the super class init() has run.
  */
-void *baseClassIntializationException(RexxMethodContext *c)
+void *baseClassInitializationException(RexxThreadContext *c)
 {
-    return executionErrorException(c->threadContext, "The base class has not been initialized correctly");
+    return executionErrorException(c, "The base class has not been initialized correctly");
+}
+void *baseClassInitializationException(RexxMethodContext *c)
+{
+    return baseClassInitializationException(c->threadContext);
 }
 
 /**
@@ -164,11 +168,15 @@ void *baseClassIntializationException(RexxMethodContext *c)
  *           Identifying the actual base class may make it easier for the user to
  *           understand what the problem is.
  */
-void *baseClassIntializationException(RexxMethodContext *c, CSTRING clsName)
+void *baseClassInitializationException(RexxThreadContext *c, CSTRING clsName)
 {
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "The %s base class has not been initialized correctly", clsName);
-    return executionErrorException(c->threadContext, buffer);
+    return executionErrorException(c, buffer);
+}
+void *baseClassInitializationException(RexxMethodContext *c, CSTRING clsName)
+{
+    return baseClassInitializationException(c->threadContext, clsName);
 }
 
 /**
@@ -769,6 +777,27 @@ RexxObjectPtr invalidReturnWholeNumberException(RexxThreadContext *c, CSTRING na
     return NULLOBJECT;
 }
 
+/**
+ *  98.900
+ *  Error 98 - Execution error
+ *        The language processor detected a specific error during execution.
+ *
+ *  The return from method "name"() must a logical; found "value"
+ *
+ *  The return from method onCustomDraw() must be a logical; found an Array
+ *
+ *  The exception is raised, printed, and the dialog is ended.
+ */
+void notBooleanReplyException(RexxThreadContext *c, CSTRING method, RexxObjectPtr actual)
+{
+    TCHAR buf[256];
+    _snprintf(buf, sizeof(buf), "The return from method %s() must be a logical; found %s",
+              method, c->ObjectToStringValue(actual));
+
+    c->RaiseException1(Rexx_Error_Execution_user_defined, c->String(buf));
+}
+
+
 CSTRING rxGetStringAttribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING name)
 {
     CSTRING value = NULL;
@@ -1156,6 +1185,7 @@ void standardConditionMsg(RexxThreadContext *c, RexxDirectoryObject condObj, Rex
  */
 bool checkForCondition(RexxThreadContext *c, bool clear)
 {
+    //printf("In checkForCondition() condition ?=%d\n", c->CheckCondition());
     if ( c->CheckCondition() )
     {
         RexxCondition condition;

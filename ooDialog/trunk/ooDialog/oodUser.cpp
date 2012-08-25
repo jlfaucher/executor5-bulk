@@ -619,7 +619,7 @@ inline pCDynamicDialog validateDDCSelf(RexxMethodContext *c, void *pcdd)
 {
     if ( pcdd == NULL )
     {
-        baseClassIntializationException(c);
+        baseClassInitializationException(c);
     }
     return (pCDynamicDialog)pcdd;
 }
