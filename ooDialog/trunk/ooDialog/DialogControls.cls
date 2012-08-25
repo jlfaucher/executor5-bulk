@@ -45,8 +45,10 @@
 -- Base class for all dialog controls
 ::class 'DialogControl' public inherit WindowBase WindowExtensions
 
-::constant CCM_SETUNICODEFORMAT     "0x2005"
 ::constant CCM_GETUNICODEFORMAT     "0x2006"
+::constant CCM_GETVERSION           "0x2008"
+::constant CCM_SETUNICODEFORMAT     "0x2005"
+::constant CCM_SETVERSION           "0x2007"
 
 ::method new class external "LIBRARY oodialog dlgctrl_new_cls"
 ::method init class external "LIBRARY oodialog dlgctrl_init_cls"
@@ -84,9 +86,17 @@
    use strict arg doUseUnicode
    return self~sendWinIntMsg(self~CCM_SETUNICODEFORMAT, doUseUnicode, 0)
 
+::method useVersion unguarded
+   use strict arg version
+   return self~sendWinIntMsg(self~CCM_SETVERSION, version, 0)
+
 ::method usingUnicode unguarded
    use strict arg
    return (self~sendWinIntMsg(self~CCM_GETUNICODEFORMAT, 0, 0) <> 0)
+
+::method usingVersion unguarded
+   use strict arg
+   return self~sendWinIntMsg(self~CCM_GETVERSION, 0, 0)
 
 -- DEPRECATED START
 ::method captureMouse unguarded
