@@ -660,6 +660,38 @@ only those items from the receiver that are not also contained in the
 </para>
 </section>
 
+<section id="mthOrderedCollectionFirst"><title>first</title>
+<indexterm><primary>first method</primary>
+<secondary>of OrderedCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>first method</secondary>
+<tertiary>of OrderedCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-first-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the first item in the collection order.   Returns the Nil object if the collection is empty.
+</para>
+</section>
+
+<section id="mthOrderedCollectionFirstItem"><title>firstItem</title>
+<indexterm><primary>firstItem method</primary>
+<secondary>of OrderedCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>firstItem method</secondary>
+<tertiary>of OrderedCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-firstItem------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the first item in the collection order.   Returns the Nil object if the collection is empty.
+</para>
+</section>
+
 <section id="mthOrderedCollectionInsert"><title>insert</title>
 <indexterm><primary>insert method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
@@ -707,6 +739,57 @@ of this class.</para>
 only those items from the receiver that are in both the receiver collection and
 the <emphasis role="italic">argument</emphasis> collection. The <emphasis
 role="italic">argument</emphasis> can be any collection class object.
+</para>
+</section>
+
+<section id="mthOrderedCollectionLast"><title>last</title>
+<indexterm><primary>last method</primary>
+<secondary>of OrderedCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>last method</secondary>
+<tertiary>of OrderedCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-last--------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the last item in the collection order. Returns the Nil object if the
+collection is empty.
+</para>
+</section>
+
+<section id="mthOrderedCollectionLastItem"><title>lastItem</title>
+<indexterm><primary>lastItem method</primary>
+<secondary>of OrderedCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lastItem method</secondary>
+<tertiary>of OrderedCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-lastItem-------------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the first item in the collection order.  Returns the Nil object if the collection is empty.
+</para>
+</section>
+
+<section id="mthOrderedCollectionNext"><title>next</title>
+<indexterm><primary>next method</primary>
+<secondary>of OrderedCollection class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>next method</secondary>
+<tertiary>of OrderedCollection class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-next(index)-------------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns the index of the item that
+follows the collection item having index <emphasis role="italic">index</emphasis>
+or returns the Nil object if the item having that index is last in the collection.
 </para>
 </section>
 
@@ -1307,6 +1390,29 @@ determined, <computeroutput>0</computeroutput> is returned.</para>
 ]]>
 </programlisting>
 
+<section id="mthArrayFirstItem"><title>firstItem</title>
+<indexterm><primary>firstItem method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>firstItem method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-firstItem---------------------------------------------------><
+]]>
+</programlisting>
+
+<para> </para>
+<para>Returns the first item in the array or the Nil object if the array is
+empty.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
+item=musketeers~firstItem                         /* Gives first item in array     */
+                                                  /* (Assigns "Porthos" to item)   */
+</programlisting>
+</section>
+
 <para>Returns the index of the first item in the array or the Nil object if the
 array is empty.  For multi-dimention arrays, the index is returned as an array
 of index values.
@@ -1395,7 +1501,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 <para>Returns the index of the specified item within the array.  If the
 target item appears at more than one index, the first located index will
 be returned.  For multi-dimension arrays, the index is returned as an array of
-index values.  If the array does not contain the specified item, .nil is
+index values.  If the array does not contain the specified item, the Nil object is
 returned. Item equality is determined by using the == method of <emphasis
 role="italic">item</emphasis>.
 </para>
@@ -1478,6 +1584,29 @@ index items.
 <programlisting>
    a = .array~of("Fred", , "Mike", , "David")
    say a~last  -- says: 5
+</programlisting>
+</section>
+
+<section id="mthArrayLastItem"><title>lastItem</title>
+<indexterm><primary>lastItem method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lastItem method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-lastItem----------------------------------------------------><
+]]>
+</programlisting>
+
+<para> </para>
+<para>Returns the last item in the array or the Nil object if the array is
+empty.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
+item=musketeers~lastItem                          /* Gives last item in array      */
+                                                  /* (Assigns "Aramis" to item)    */
 </programlisting>
 </section>
 
@@ -2292,13 +2421,14 @@ Queue class (<xref linkend="clsQueue" />).</para>
 <member>delete (<xref linkend="mthQueueDelete" />)</member>
 <member>empty (<xref linkend="mthQueueEmpty" />)</member>
 <member>first (<xref linkend="mthQueueFirst" />)</member>
+<member>firstItem (<xref linkend="mthQueueFirstItem" />)</member>
 <member>hasIndex (<xref linkend="mthQueueHasIndex" />)</member>
 <member>hasItem (<xref linkend="mthQueueHasItem" />)</member>
 <member>index (<xref linkend="mthQueueIndex" />)</member>
 <member>insert (<xref linkend="mthQueueInsert" />)</member>
 <member>isEmpty (<xref linkend="mthQueueIsEmpty" />)</member>
 <member>items (<xref linkend="mthQueueItems" />)</member>
-<member>last (<xref linkend="mthQueueLast" />)</member>
+<member>lastItem (<xref linkend="mthQueueLast" />)</member>
 <member>makeArray (<xref linkend="mthQueueMakeArray" />)</member>
 <member>next (<xref linkend="mthQueueNext" />)</member>
 <member>peek (<xref linkend="mthQueuePeek" />)</member>
@@ -3543,9 +3673,9 @@ list is empty.
 empty.</para>
 <para><emphasis role="bold">Example:</emphasis></para>
 <programlisting>
-musketeers=.list~of(Porthos,Athos,Aramis) /* Creates list MUSKETEERS      */
-item=musketeers~firstItem                 /* Gives first item in list     */
-                                          /* (Assigns "Porthos" to item)  */
+musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS      */
+item=musketeers~firstItem                       /* Gives first item in list     */
+                                                /* (Assigns "Porthos" to item)  */
 </programlisting>
 </section>
 
@@ -3635,10 +3765,10 @@ The index values for any items in the list are not modified by the insertion.</p
 <secondary>insert method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <programlisting>
-musketeers=.list~of(Porthos,Athos,Aramis) /* Creates list MUSKETEERS        */
-                                          /* consisting of: Porthos         */
-                                          /*                Athos           */
-                                          /*                Aramis          */
+musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS        */
+                                                /* consisting of: Porthos         */
+                                                /*                Athos           */
+                                                /*                Aramis          */
 index=musketeers~first                    /* Gives index of first item      */
 musketeers~insert("D&apos;Artagnan",index) /* Adds D&apos;Artagnan after Porthos  */
                                           /* List is now: Porthos           */
@@ -4414,6 +4544,23 @@ The delete method and the remove method produce the same result for the list cla
 queue is empty.  The index will always be 1 for non-empty queues.</para>
 </section>
 
+<section id="mthQueueFirstItem"><title>firstItem</title>
+<indexterm><primary>firstItem method</primary>
+<secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>firstItem method</secondary>
+<tertiary>of Queue class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-firstItem---------------------------------------------------><
+]]>
+</programlisting>
+
+<para> </para>
+<para>Returns the first item in the queue or the Nil object if the queue is
+empty.</para>
+</section>
+
 <section id="mthQueueHasIndex"><title>hasIndex</title>
 <indexterm><primary>hasIndex method</primary>
 <secondary>of Queue class</secondary></indexterm>
@@ -4500,10 +4647,10 @@ by the queue object.</para>
 <secondary>insert method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <programlisting>
-musketeers=.queue~of(Porthos,Athos,Aramis) /* Creates queue MUSKETEERS       */
-                                           /* consisting of: Porthos         */
-                                           /*                Athos           */
-                                           /*                Aramis          */
+musketeers=.queue~of("Porthos","Athos","Aramis) /* Creates queue MUSKETEERS       */
+                                                /* consisting of: Porthos         */
+                                                /*                Athos           */
+                                                /*                Aramis          */
 index=musketeers~first                     /* Gives index of first item      */
 musketeers~insert("D&apos;Artagnan",index) /* Adds D&apos;Artagnan after Porthos  */
                                            /* List is now: Porthos           */
@@ -4571,6 +4718,29 @@ is empty.  Returns
 
 <para>Returns the index of the last item in the queue or the Nil object if the
 queue is empty.</para>
+</section>
+
+<section id="mthArrayLastItem"><title>lastItem</title>
+<indexterm><primary>lastItem method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>lastItem method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-lastItem----------------------------------------------------><
+]]>
+</programlisting>
+
+<para> </para>
+<para>Returns the last item in the array or the Nil object if the array is
+empty.</para>
+<para><emphasis role="bold">Example:</emphasis></para>
+<programlisting>
+musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
+item=musketeers~lastItem                          /* Gives last item in array      */
+                                                  /* (Assigns "Aramis" to item)    */
+</programlisting>
 </section>
 
 <section id="mthQueueMakeArray"><title>makeArray</title>
