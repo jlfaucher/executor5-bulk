@@ -67,6 +67,7 @@
     DateTimePicker control and how to respond to the FORMATQUERY, FORMAT,
     and KEYDOWN notifications.
 
+
     - userStringDTP.rex
 
     Demonstrates how to use the DateTimePicker control.  This example
@@ -76,3 +77,11 @@
     program to provide the user with the capability of typing within the DTP
     control.  The program can then provide a custom response when the user
     has finished typing.
+
+
+    - customDrawListView.rex
+
+    Shows how to use a list-view with emphasis on custom draw.  Custom draw
+    with a list-view allows you set the text color, background color, and
+    font for individuals list-view items.  And when the list-view is in
+    report view, this can be done for individual subitems of each row.
