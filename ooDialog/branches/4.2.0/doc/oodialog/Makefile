@@ -86,7 +86,7 @@ xml_FILES = baseClasses.xml \
 	     windowExtensionsDO.xml \
 	     windowExtensionsDCO.xml \
 	     ../shared/notices.xml \
-	     ../legalstuff.xml \
+	     ../shared/legalstuff.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
 # The following files are not used, but the names are saved for reference. They
