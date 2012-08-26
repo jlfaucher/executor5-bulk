@@ -303,10 +303,12 @@ Section  doInstall
     File "${SrcDir}\DialogExtensions.cls"
     File "${SrcDir}\DynamicDialog.cls"
     File "${SrcDir}\EventNotification.cls"
+    File "${SrcDir}\ListView.cls"
     File "${SrcDir}\Menu.cls"
     File "${SrcDir}\PlainBaseDialog.cls"
     File "${SrcDir}\RcDialog.cls"
     File "${SrcDir}\ResDialog.cls"
+    File "${SrcDir}\TreeView.cls"
     File "${SrcDir}\UserDialog.cls"
     File "${SrcDir}\UtilityClasses.cls"
 
