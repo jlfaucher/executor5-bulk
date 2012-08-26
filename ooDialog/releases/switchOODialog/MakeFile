@@ -1,0 +1,143 @@
+#/*----------------------------------------------------------------------------*/
+#/*                                                                            */
+#/* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
+#/*                                                                            */
+#/* This program and the accompanying materials are made available under       */
+#/* the terms of the Common Public License v1.0 which accompanies this         */
+#/* distribution. A copy is also available at the following address:           */
+#/* http://www.oorexx.org/license.html                                         */
+#/*                                                                            */
+#/* Redistribution and use in source and binary forms, with or                 */
+#/* without modification, are permitted provided that the following            */
+#/* conditions are met:                                                        */
+#/*                                                                            */
+#/* Redistributions of source code must retain the above copyright             */
+#/* notice, this list of conditions and the following disclaimer.              */
+#/* Redistributions in binary form must reproduce the above copyright          */
+#/* notice, this list of conditions and the following disclaimer in            */
+#/* the documentation and/or other materials provided with the distribution.   */
+#/*                                                                            */
+#/* Neither the name of Rexx Language Association nor the names                */
+#/* of its contributors may be used to endorse or promote products             */
+#/* derived from this software without specific prior written permission.      */
+#/*                                                                            */
+#/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+#/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+#/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+#/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+#/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+#/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+#/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+#/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+#/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+#/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+#/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+#/*                                                                            */
+#/*----------------------------------------------------------------------------*/
+
+
+# This is a Visual C++, nMake compatible make file for building switchOODialog.
+#
+
+# Define DEBUG on the command line, or here, to build a debug version.  By
+# default non- debug versions are built.  I.e. nMake DEBUG=1
+#DEBUG = 1
+
+# No changes need to be made from here to the bottom.
+
+# This generates the root dir plus CPU, for historical reasons the .bat file is
+# called determineCompiler.bat.
+
+!IF [determineCompiler.bat] != 0
+!  ERROR Build error: could not generate set up information.
+!ENDIF
+
+# Generate the version information.  Quit if there is an error.
+!IF [generateVersionFile.bat] != 0
+!  ERROR Build error: could not gerate version file, ooDialog.ver.incl
+!ENDIF
+
+!include ooDialog.ver.incl
+!include compiler.info.incl
+
+DOTVER = $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL).$(OOD_BLD_LVL)
+SHORTVERSION = $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL)
+NODOTVERSION = $(OOD_MAJOR)$(OOD_MINOR)$(OOD_MOD_LVL)
+
+!message CPU is $(CPU)
+!message MSVCVER is $(MSVCVER)
+!message switch root dir is $(SWITCH_ROOT_DIR)
+
+CURRENT_DIR=$(SWITCH_ROOT_DIR)\switchOODialog
+ROOT_DIR_420=$(SWITCH_ROOT_DIR)\4.2.0\trunk
+ROOT_DIR_410=$(SWITCH_ROOT_DIR)\4.1.0\trunk
+
+!if "$(CPU)" == "X64"
+NSISCPU = x86_64
+!else
+NSISCPU = x86_32
+!endif
+
+# Set up vars to locate
+!if "$(DEBUG)" == "1"
+
+DEBUG_FLAG=DEBUG=1
+BIN_DIR_420=$(ROOT_DIR_420)\Win32Dbg
+BIN_DIR_410=$(ROOT_DIR_410)\Win32Dbg
+NSISDEBUG=-debug
+
+!else
+
+DEBUG_FLAG=
+BIN_DIR_420=$(ROOT_DIR_420)\Win32Rel
+BIN_DIR_410=$(ROOT_DIR_410)\Win32Rel
+NSISDEBUG=-debug
+
+!endif
+
+SRC_DIR_420=$(ROOT_DIR)\4.2.0\trunk\ooDialog
+SRC_DIR_410=$(ROOT_DIR)\4.1.0\trunk\ooDialog
+EXAMPLE_DIR_420=$(SWITCH_ROOT_DIR)\4.2.0\trunk\examples
+EXAMPLE_DIR_410=$(SWITCH_ROOT_DIR)\4.1.0\trunk\examples
+
+all: switch_ooDialog
+
+switch_ooDialog: build_420 build_410
+    @echo .
+    @echo Creating MM switch_ooDialog package
+    makensis /DVERSION=$(DOTVER) /DSHORTVERSION=$(SHORTVERSION) /DROOTDIR420=$(ROOT_DIR_420) /DROOTDIR410=$(ROOT_DIR_410) \
+             /DBINDIR420=$(BIN_DIR_420) /DBINDIR410=$(BIN_DIR_410) /DCPU=$(NSISCPU) /DDEBUGPKG=$(NSISDEBUG) /DMMTEMP \
+             switchOODialog420_410.nsi
+    makensis /DVERSION=$(DOTVER) /DNODOTVER=$(NODOTVERSION) /DEXEFILE=switch_ooDialog /DCPU=$(NSISCPU) \
+             /DDEBUGFLAG=$(NSISDEBUG) ooDialog420_410.nsi
+
+
+build_420:
+    @echo .
+    @echo Building ooDialog 4.2.0
+    @cd $(ROOT_DIR_420)
+    $(MAKE) /NOLOGO $(DEBUG_FLAG)
+    @cd $(CURRENT_DIR)
+
+build_410:
+    @echo .
+    @echo Building ooDialog 4.1.0
+    @cd $(ROOT_DIR_410)
+    $(MAKE) /NOLOGO $(DEBUG_FLAG)
+    @cd $(CURRENT_DIR)
+
+clean_420:
+    @echo .
+    @echo Cleaning ooDialog 4.2.0 build
+    @cd $(ROOT_DIR_420)
+    $(MAKE) /NOLOGO $(DEBUG_FLAG)
+    @cd $(CURRENT_DIR)
+
+clean_410:
+    @echo .
+    @echo CLeaning ooDialog 4.1.0 build
+    @cd $(ROOT_DIR_410)
+    $(MAKE) /NOLOGO $(DEBUG_FLAG)
+    @cd $(CURRENT_DIR)
+
+
