@@ -76,7 +76,7 @@ xml_FILES = advcntlc.xml \
 	     treecontrolc.xml \
 	     userdialog.xml \
 	     ../shared/notices.xml \
-	     legalstuff.xml \
+	     ../legalstuff.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
 # the following files are not used & are here only for historical reasons

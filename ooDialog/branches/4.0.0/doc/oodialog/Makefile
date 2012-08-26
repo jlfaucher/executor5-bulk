@@ -77,7 +77,7 @@ SGML_FILES = advcntlc.sgml \
 	     userdialog.sgml \
 	     virtualkeycodesc.sgml \
 	     ../shared/notices.sgml \
-	     legalstuff.sgml \
+	     ../shared/legalstuff.sgml \
 	     ../shared/gethelp.sgml \
 	     ../shared/CPLv1.0.sgml
 # the following files are not used & are here only for historical reasons

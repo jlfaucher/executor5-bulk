@@ -55,7 +55,7 @@ xml_FILES = oodguide.xml \
 	     Chapter06.xml \
 	     preface.xml \
 	     ../shared/notices.xml \
-	     legalstuff.xml \
+	     ../legalstuff.xml \
 	     ../shared/gethelp.xml \
 	     ../shared/CPLv1.0.xml
 
