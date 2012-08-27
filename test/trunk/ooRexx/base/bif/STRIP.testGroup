@@ -72,15 +72,13 @@ return testResult
     self~assertSame(' @@aaa@@ ', strip('@ @@aaa@@ @',,'@'))
 
 ::method 'test004'
-    self~expectSyntax(93.922)
-    xre = strip('@ @@aaa@@ @',,'')
+    self~assertSame('@ @@aaa@@ @', strip('@ @@aaa@@ @',,''))
 
 ::method 'test005'
     self~assertSame('aaa', strip('@@@aaa@@@',,'@'))
 
 ::method 'test006'
-    self~expectSyntax(93.922)
-    xre = strip('@@@aaa@@@',,'@@')
+    self~assertSame('aaa', strip('@@@aaa@@@',,'@@'))
 
 ::method 'test007'
     self~assertSame('aaa@@@', strip('@@@aaa@@@','L','@'))
@@ -113,8 +111,7 @@ return testResult
     self~assertSame('aaa', strip(' aaa ','B',' '))
 
 ::method 'test017'
-    self~expectSyntax(93.922)
-    xre = strip(' aaa ','B','  ')
+    self~assertSame('aaa', strip(' aaa ','B','  '))
 
 ::method 'test018'
     self~expectSyntax(93.915)
@@ -160,8 +157,7 @@ return testResult
     self~assertSame('     '||.v256, strip('     '||.v256||'     ',tbl))
 
 ::method 'test032'
-    self~expectSyntax(93.922)
-    xre = strip('no.v1',,no.v2)
+    self~assertSame('1', strip('NO.V1',,no.v2))
 
 ::method 'test033'
     self~assertSame('0', strip(202+202,,'4'))
@@ -318,10 +314,6 @@ return testResult
     self~expectSyntax(93.915)
     xre = strip(.s,nov.2)
 
-::method 'test075'
-    self~expectSyntax(93.922)
-    xre = strip(.s,'b',nov3)
-
 ::method 'test076'
     self~expectSyntax(93.915)
     xre = strip(nov1,nov2,nov3)
@@ -343,8 +335,7 @@ return testResult
     self~assertSame('12.7', strip(12.70000,,+00))
 
 ::method 'test082'
-    self~expectSyntax(93.922)
-    xre = strip(12.70000,,00)
+    self~assertSame('12.7', strip(12.70000,,00))
 
 ::method 'test083'
     self~assertSame('6', strip(12*5,,0))
@@ -441,4 +432,15 @@ return testResult
    -- new tests
     self~assertSame('', STRIP(''    ))
     self~assertSame('', STRIP('    '))
+
+::method testMultiChar
+  self~assertSame("a-+b", strip("+-+-a-+b-+-+",,"-+"))
+  self~assertSame("a-+b", strip("+-+-a-+b-+-+",'B',"-+"))
+  self~assertSame("a-+b-+-+", strip("+-+-a-+b-+-+",'L',"-+"))
+  self~assertSame("+-+-a-+b", strip("+-+-a-+b-+-+",'T',"-+"))
+  self~assertSame("abc", strip("abc",,""))
+  self~assertSame("", strip("+-+--+-+-+",,"-+"))
+  self~assertSame("abc", strip('0001'x||"abc"||'0100'x,,'0001'x))
+
+
 
