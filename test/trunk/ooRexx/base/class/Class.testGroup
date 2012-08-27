@@ -714,6 +714,19 @@ getBags: procedure         -- return indices in an index bag, and method items i
    self~expectSyntax(98.945)
    rgf_amphibian_vehicle~uninherit(rgf_water_vehicle)
 
+::method test_activate
+  -- create a directory that the loaded package can store results in
+  .local~class.testgroup = .directory~new
+  -- now load a package to trigger the activate tests
+  .context~package~loadPackage("class.testgroup.cls")
+  -- give an assertion failure if something was detected
+  self~assertTrue(.local~class.testgroup~assertFail \= .true, .local~class.testgroup~assertFailReason)
+  -- and verify that the activate methods were even called
+  self~assertTrue(.local~class.testgroup~class1 == .true)
+  self~assertTrue(.local~class.testgroup~class2 == .true)
+  self~assertTrue(.local~class.testgroup~class3 == .true)
+
+  .local~remove(class.testgroup)
 
 
 
