@@ -198,6 +198,48 @@ return testResult
   self~assertFalse(test <<= .nil)
   self~assertFalse(test \<< .nil)
   self~assertFalse(test \>> .nil)
+  -- because of the internal classes, test also with integer and decimal numbers
+  test = 120
+
+  self~assertFalse(test = .nil)
+  self~assertTrue(test \= .nil)
+  self~assertFalse(test == .nil)
+  self~assertTrue(test \== .nil)
+  self~assertTrue(test <> .nil)
+  self~assertTrue(test >< .nil)
+  self~assertFalse(test > .nil)
+  self~assertFalse(test < .nil)
+  self~assertFalse(test >= .nil)
+  self~assertFalse(test <= .nil)
+  self~assertFalse(test \> .nil)
+  self~assertFalse(test \< .nil)
+  self~assertFalse(test << .nil)
+  self~assertFalse(test >> .nil)
+  self~assertFalse(test >>= .nil)
+  self~assertFalse(test <<= .nil)
+  self~assertFalse(test \<< .nil)
+  self~assertFalse(test \>> .nil)
+
+  test = 120.1
+
+  self~assertFalse(test = .nil)
+  self~assertTrue(test \= .nil)
+  self~assertFalse(test == .nil)
+  self~assertTrue(test \== .nil)
+  self~assertTrue(test <> .nil)
+  self~assertTrue(test >< .nil)
+  self~assertFalse(test > .nil)
+  self~assertFalse(test < .nil)
+  self~assertFalse(test >= .nil)
+  self~assertFalse(test <= .nil)
+  self~assertFalse(test \> .nil)
+  self~assertFalse(test \< .nil)
+  self~assertFalse(test << .nil)
+  self~assertFalse(test >> .nil)
+  self~assertFalse(test >>= .nil)
+  self~assertFalse(test <<= .nil)
+  self~assertFalse(test \<< .nil)
+  self~assertFalse(test \>> .nil)
   return
 
   nostring:
