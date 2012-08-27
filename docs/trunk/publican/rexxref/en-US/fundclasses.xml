@@ -4635,9 +4635,9 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 
 <programlisting>
 <![CDATA[
->>-strip-+---------------------+-------------------------------><
-         +-(option-+-------+-)-+
-                   +-,char-+
+>>-strip-+----------------------+-------------------------------><
+         +-(option-+--------+-)-+
+                   +-,chars-+
 ]]>
 </programlisting>
 
@@ -4658,10 +4658,12 @@ default.
 <listitem><para>Removes trailing characters.
 </para></listitem></varlistentry>
 </variablelist>
-<para>The <emphasis role="italic">char</emphasis> specifies the character to be
-removed, and the default is a blank. If you specify
-<emphasis role="italic">char</emphasis>, it must be exactly one character
-long.</para>
+<para>The <emphasis role="italic">chars</emphasis> specifies
+the set of characters to be removed, and the default is to remove all whitespace
+characters (spaces and horizontal tabs). If
+<emphasis role="italic">chars</emphasis>, is a null string, then no characters are
+removed.  Otherwise, any occurrences of the characters in <emphasis role="italic">chars</emphasis>
+will be removed.</para>
 <para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>strip method</secondary></indexterm>
@@ -4671,6 +4673,7 @@ long.</para>
 "  ab c  "~strip("t")    ->    "  ab c"
 "12.7000"~strip(,0)      ->    "12.7"
 "0012.700"~strip(,0)     ->    "12.7"
+"0012.000"~strip(,".0"") ->    "12"
 </programlisting>
 </section>
 

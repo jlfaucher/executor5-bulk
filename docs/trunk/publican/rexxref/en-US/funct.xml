@@ -4424,9 +4424,9 @@ stream("..\file.txt","c","query timestamp")
 
 <programlisting>
 <![CDATA[
->>-STRIP(string--+--------------------------+--)---------------><
-                 +-,--+--------+--+-------+-+
-                      +-option-+  +-,char-+
+>>-STRIP(string--+---------------------------+--)---------------><
+                 +-,--+--------+--+--------+-+
+                      +-option-+  +-,chars-+
 ]]>
 </programlisting>
 
@@ -4450,11 +4450,12 @@ is the default.
 <emphasis role="italic">string</emphasis>.
 </para></listitem></varlistentry>
 </variablelist>
-<para>The third argument, <emphasis role="italic">char</emphasis>, specifies
-the character to be removed, and the default is to remove all whitespace
-characters. If you specify
-<emphasis role="italic">char</emphasis>, it must be exactly
-one character long.</para>
+<para>The third argument, <emphasis role="italic">chars</emphasis>, specifies
+the set of characters to be removed, and the default is to remove all whitespace
+characters (spaces and horizontal tabs). If
+<emphasis role="italic">chars</emphasis>, is a null string, then no characters are
+removed.  Otherwise, any occurrences of the characters in <emphasis role="italic">chars</emphasis>
+will be removed.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>STRIP function</primary>
 <secondary>example</secondary></indexterm>
@@ -4466,6 +4467,7 @@ STRIP("  ab c  ","L")    ->    "ab c  "
 STRIP("  ab c  ","t")    ->    "  ab c"
 STRIP("12.7000", ,0)     ->    "12.7"
 STRIP("0012.700", ,0)    ->    "12.7"
+STRIP("12.0000", "T", '.0') -> "12"
 </programlisting>
 </section>
 
