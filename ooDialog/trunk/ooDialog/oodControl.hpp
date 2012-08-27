@@ -169,6 +169,25 @@ enum FullRowOp {lvfrAdd, lvfrPrepend, lvfrInsert};
 #define LVFULLROW_DEF_SUBITEMS       10          // Initial size of the subItems array
 
 extern RexxObjectPtr lviLParam2UserData(LPARAM lParam);
+extern MsgReplyType  lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd);
+
+
+/* Struct for the TvCustomDrawSimple object CSelf. */
+typedef struct _tvCDSimple
+{
+    HFONT             hFont;
+    RexxObjectPtr     userData;    // Not used in 4.2.1, will be used when TreeView is updated
+    HTREEITEM         item;
+    COLORREF          clrText;
+    COLORREF          clrTextBk;
+    uint32_t          reply;
+    uint32_t          level;       // 1-based level of the item, tree-view value is 0-based
+    uint32_t          drawStage;
+} CTvCustomDrawSimple;
+typedef CTvCustomDrawSimple *pCTvCustomDrawSimple;
+
+MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd);
+
 
 enum DateTimePart {dtFull, dtTime, dtDate, dtNow};
 

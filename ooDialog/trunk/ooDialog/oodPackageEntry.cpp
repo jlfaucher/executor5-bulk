@@ -105,6 +105,9 @@ RexxClassObject     TheRectClass = NULLOBJECT;
 // Initialized in the LvCustomDrawSimple class init method (lvcds_init_cls.)
 RexxClassObject     TheLvCustomDrawSimpleClass = NULLOBJECT;
 
+// Initialized in the TvCustomDrawSimple class init method (tvcds_init_cls.)
+RexxClassObject     TheTvCustomDrawSimpleClass = NULLOBJECT;
+
 /* GdiplusStartupInput gdiplusStartupInput;
 ULONG_PTR           gdiplusToken; */
 
@@ -1327,12 +1330,24 @@ REXX_METHOD_PROTOTYPE(lvcds_init_cls    );
 REXX_METHOD_PROTOTYPE(lvcds_init        );
 REXX_METHOD_PROTOTYPE(lvcds_setClrText  );
 REXX_METHOD_PROTOTYPE(lvcds_setClrTextBk);
-REXX_METHOD_PROTOTYPE(lvcds_getItem     );
+REXX_METHOD_PROTOTYPE(lvcds_getDrawStage);
 REXX_METHOD_PROTOTYPE(lvcds_setFont     );
 REXX_METHOD_PROTOTYPE(lvcds_getItem     );
 REXX_METHOD_PROTOTYPE(lvcds_setReply    );
 REXX_METHOD_PROTOTYPE(lvcds_getSubItem  );
 REXX_METHOD_PROTOTYPE(lvcds_getUserData );
+
+// TvCustomDrawSimple
+REXX_METHOD_PROTOTYPE(tvcds_init_cls    );
+REXX_METHOD_PROTOTYPE(tvcds_init        );
+REXX_METHOD_PROTOTYPE(tvcds_setClrText  );
+REXX_METHOD_PROTOTYPE(tvcds_setClrTextBk);
+REXX_METHOD_PROTOTYPE(tvcds_getDrawStage);
+REXX_METHOD_PROTOTYPE(tvcds_setFont     );
+REXX_METHOD_PROTOTYPE(tvcds_getItem     );
+REXX_METHOD_PROTOTYPE(tvcds_setReply    );
+REXX_METHOD_PROTOTYPE(tvcds_getLevel    );
+REXX_METHOD_PROTOTYPE(tvcds_getUserData );
 
 
 RexxMethodEntry oodialog_methods[] = {
@@ -2244,12 +2259,24 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(lvcds_init,                     lvcds_init),
     REXX_METHOD(lvcds_setClrText,               lvcds_setClrText),
     REXX_METHOD(lvcds_setClrTextBk,             lvcds_setClrTextBk),
-    REXX_METHOD(lvcds_getItem,                  lvcds_getItem),
+    REXX_METHOD(lvcds_getDrawStage,             lvcds_getDrawStage),
     REXX_METHOD(lvcds_setFont,                  lvcds_setFont),
     REXX_METHOD(lvcds_getItem,                  lvcds_getItem),
     REXX_METHOD(lvcds_setReply,                 lvcds_setReply),
     REXX_METHOD(lvcds_getSubItem,               lvcds_getSubItem),
     REXX_METHOD(lvcds_getUserData,              lvcds_getUserData),
+
+// TvCustomDrawSimple
+    REXX_METHOD(tvcds_init_cls,                 tvcds_init_cls),
+    REXX_METHOD(tvcds_init,                     tvcds_init),
+    REXX_METHOD(tvcds_setClrText,               tvcds_setClrText),
+    REXX_METHOD(tvcds_setClrTextBk,             tvcds_setClrTextBk),
+    REXX_METHOD(tvcds_getDrawStage,             tvcds_getDrawStage),
+    REXX_METHOD(tvcds_setFont,                  tvcds_setFont),
+    REXX_METHOD(tvcds_getItem,                  tvcds_getItem),
+    REXX_METHOD(tvcds_setReply,                 tvcds_setReply),
+    REXX_METHOD(tvcds_getLevel,                 tvcds_getLevel),
+    REXX_METHOD(tvcds_getUserData,              tvcds_getUserData),
 
     REXX_LAST_METHOD()
 };

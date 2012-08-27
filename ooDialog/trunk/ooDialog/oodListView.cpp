@@ -3623,7 +3623,91 @@ RexxMethod1(uint32_t, lvfr_subitems, CSELF, pCSelf)
 #define LVCUSTOMDRAWSIMPLE_CLASS                "LvCustomDrawSimple"
 
 
-/** LvCustomDrawSimple::inti()     [class]
+/**
+ * Handles the processing for the list-view custom draw event for the basic
+ * case.  That is, the user wants to change text color or font, for a list-view
+ * item, and / or, in report mode, the item and subitems indivicually.
+ *
+ * @param c
+ * @param methodName
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @notes  Typically for a list-view there are a flurry of custom draw events at
+ *         one time.  Testing has shown that if there is a condition pending,
+ *         things seem to hang.  So, we check for a condition on entry and just
+ *         do a CDRF_DODEFAULT immediately if that is the case.
+ *
+ *         The simple case is to only respond to item prepaint or subitem
+ *         prepaint.  We don't currently check the return reply from Rexx, but
+ *         it should be either CDRF_NOTIFYSUBITEMDRAW, CDRF_NEWFONT, or
+ *         CDRF_DODEFAULT.
+ */
+MsgReplyType lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    LPNMLVCUSTOMDRAW lvcd  = (LPNMLVCUSTOMDRAW)lParam;
+    LPARAM           reply = CDRF_DODEFAULT;
+
+    if ( lvcd->nmcd.dwDrawStage == CDDS_PREPAINT )
+    {
+        reply = CDRF_NOTIFYITEMDRAW;
+    }
+    else if ( lvcd->nmcd.dwDrawStage == CDDS_ITEMPREPAINT || lvcd->nmcd.dwDrawStage == (CDDS_ITEMPREPAINT | CDDS_SUBITEM) )
+    {
+        if ( c->CheckCondition() )
+        {
+            goto done_out;
+        }
+
+        RexxBufferObject lvcdsBuf = c->NewBuffer(sizeof(CLvCustomDrawSimple));
+        if ( lvcdsBuf == NULLOBJECT )
+        {
+            outOfMemoryException(c);
+            endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+            goto done_out;
+        }
+
+        pCLvCustomDrawSimple pclvcds = (pCLvCustomDrawSimple)c->BufferData(lvcdsBuf);
+        memset(pclvcds, 0, sizeof(CLvCustomDrawSimple));
+
+        pclvcds->drawStage = lvcd->nmcd.dwDrawStage;
+        pclvcds->item      = lvcd->nmcd.dwItemSpec;
+        pclvcds->subItem   = lvcd->iSubItem;
+        pclvcds->userData  = lviLParam2UserData(lvcd->nmcd.lItemlParam);
+
+        RexxObjectPtr custDrawSimple = c->SendMessage1(TheLvCustomDrawSimpleClass, "NEW", lvcdsBuf);
+        if ( custDrawSimple != NULLOBJECT )
+        {
+            RexxObjectPtr msgReply = c->SendMessage1(pcpbd->rexxSelf, methodName, custDrawSimple);
+
+            msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+            if ( msgReply == TheTrueObj )
+            {
+                lvcd->clrText   = pclvcds->clrText;
+                lvcd->clrTextBk = pclvcds->clrTextBk;
+
+                if ( pclvcds->hFont != NULL )
+                {
+                    // An example I've seen deletes the old font.  Doesn't seem
+                    // appropriate for ooRexx.  The user would need to save the
+                    // list-view font and then add it back in.  Not sure if
+                    // there is a resource leak here.
+                    HFONT hOldFont = (HFONT)SelectObject(lvcd->nmcd.hdc, pclvcds->hFont);
+                }
+                reply = pclvcds->reply;
+            }
+        }
+    }
+
+done_out:
+    setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, (LPARAM)reply);
+    return ReplyTrue;
+}
+
+
+/** LvCustomDrawSimple::init()     [class]
  *
  *
  */

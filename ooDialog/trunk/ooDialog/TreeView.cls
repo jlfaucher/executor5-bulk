@@ -211,3 +211,14 @@
    return self~setImageList(.nil, 0)
 
 
+::class 'TvCustomDrawSimple' public
+::method init class external       "LIBRARY oodialog tvcds_init_cls"
+::method init external             "LIBRARY oodialog tvcds_init"
+::attribute clrText set external   "LIBRARY oodialog tvcds_setClrText"
+::attribute clrTextBk set external "LIBRARY oodialog tvcds_setClrTextBk"
+::attribute drawStage get external "LIBRARY oodialog tvcds_getDrawStage"
+::attribute font set external      "LIBRARY oodialog tvcds_setFont"
+::attribute item get external      "LIBRARY oodialog tvcds_getItem"
+::attribute reply set external     "LIBRARY oodialog tvcds_setReply"
+::attribute level get external     "LIBRARY oodialog tvcds_getLevel"
+::attribute userData get external  "LIBRARY oodialog tvcds_getUserData"        -- Do not document, no way to set user data for tree view

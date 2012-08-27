@@ -602,3 +602,186 @@ RexxMethod2(RexxObjectPtr, tv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
 }
 
 
+/**
+ *  Methods for the .TvCustomDrawSimple class.
+ */
+#define TVCUSTOMDRAWSIMPLE_CLASS                "TvCustomDrawSimple"
+
+
+/**
+ * Handles the processing for the tree-view custom draw event for the basic
+ * case. That is, the user wants to change text color or font, for a tree-view
+ * item.
+ *
+ * @param c
+ * @param methodName
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @notes  Typically for a list-view there are a flurry of custom draw events at
+ *         one time.  Testing has shown that if there is a condition pending,
+ *         things seem to hang.  So, we check for a condition on entry and just
+ *         do a CDRF_DODEFAULT immediately if that is the case.
+ *
+ *         The simple case is to only respond to item prepaint or subitem
+ *         prepaint.  We don't currently check the return reply from Rexx, but
+ *         it should be either CDRF_NOTIFYSUBITEMDRAW, CDRF_NEWFONT, or
+ *         CDRF_DODEFAULT.
+ */
+MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd)
+{
+    LPNMTVCUSTOMDRAW tvcd  = (LPNMTVCUSTOMDRAW)lParam;
+    LPARAM           reply = CDRF_DODEFAULT;
+
+    if ( tvcd->nmcd.dwDrawStage == CDDS_PREPAINT )
+    {
+        reply = CDRF_NOTIFYITEMDRAW;
+    }
+    else if ( tvcd->nmcd.dwDrawStage == CDDS_ITEMPREPAINT )
+    {
+        if ( c->CheckCondition() )
+        {
+            goto done_out;
+        }
+
+        RexxBufferObject tvcdsBuf = c->NewBuffer(sizeof(CTvCustomDrawSimple));
+        if ( tvcdsBuf == NULLOBJECT )
+        {
+            outOfMemoryException(c);
+            endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+            goto done_out;
+        }
+
+        pCTvCustomDrawSimple pctvcds = (pCTvCustomDrawSimple)c->BufferData(tvcdsBuf);
+        memset(pctvcds, 0, sizeof(CTvCustomDrawSimple));
+
+        pctvcds->drawStage = tvcd->nmcd.dwDrawStage;
+        pctvcds->item      = (HTREEITEM)tvcd->nmcd.dwItemSpec;
+        pctvcds->level     = tvcd->iLevel;
+
+        RexxObjectPtr custDrawSimple = c->SendMessage1(TheTvCustomDrawSimpleClass, "NEW", tvcdsBuf);
+        if ( custDrawSimple != NULLOBJECT )
+        {
+            RexxObjectPtr msgReply = c->SendMessage1(pcpbd->rexxSelf, methodName, custDrawSimple);
+
+            msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+            if ( msgReply == TheTrueObj )
+            {
+                tvcd->clrText   = pctvcds->clrText;
+                tvcd->clrTextBk = pctvcds->clrTextBk;
+
+                if ( pctvcds->hFont != NULL )
+                {
+                    // An example I've seen deletes the old font.  Doesn't seem
+                    // appropriate for ooRexx.  The user would need to save the
+                    // list-view font and then add it back in.  Not sure if
+                    // there is a resource leak here.
+                    HFONT hOldFont = (HFONT)SelectObject(tvcd->nmcd.hdc, pctvcds->hFont);
+                }
+                reply = pctvcds->reply;
+            }
+            c->ReleaseLocalReference(msgReply);
+            c->ReleaseLocalReference(custDrawSimple);
+        }
+        c->ReleaseLocalReference(tvcdsBuf);
+    }
+
+done_out:
+    setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, (LPARAM)reply);
+    return ReplyTrue;
+}
+
+
+/** TvCustomDrawSimple::init()     [class]
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, tvcds_init_cls, OSELF, self)
+{
+    if ( isOfClassType(context, self, TVCUSTOMDRAWSIMPLE_CLASS) )
+    {
+        TheTvCustomDrawSimpleClass = (RexxClassObject)self;
+        context->RequestGlobalReference(TheTvCustomDrawSimpleClass);
+    }
+    return NULLOBJECT;
+}
+
+/** TvCustomDrawSimple::init()
+ *
+ */
+RexxMethod2(RexxObjectPtr, tvcds_init, RexxObjectPtr, cself, OSELF, self)
+{
+    if ( context->IsBuffer(cself) )
+    {
+        context->SetObjectVariable("CSELF", cself);
+    }
+    else
+    {
+        baseClassInitializationException(context, "TvCustomDrawSimple");
+    }
+    return NULLOBJECT;
+}
+
+/** TvCustomDrawSimple::clrText    [attribute]
+ */
+RexxMethod2(uint32_t, tvcds_setClrText, uint32_t, clrText, CSELF, pCSelf)
+{
+    ((pCTvCustomDrawSimple)pCSelf)->clrText = clrText;
+    return NULLOBJECT;
+}
+
+/** TvCustomDrawSimple::clrTextBk  [attribute]
+ */
+RexxMethod2(RexxObjectPtr, tvcds_setClrTextBk, uint32_t, clrTextBk, CSELF, pCSelf)
+{
+    ((pCTvCustomDrawSimple)pCSelf)->clrTextBk = clrTextBk;
+    return NULLOBJECT;
+}
+
+/** TvCustomDrawSimple::drawStage  [attribute]
+ */
+RexxMethod1(uint32_t, tvcds_getDrawStage, CSELF, pCSelf)
+{
+    return ((pCTvCustomDrawSimple)pCSelf)->drawStage;
+}
+
+/** TvCustomDrawSimple::font       [attribute]
+ */
+RexxMethod2(RexxObjectPtr, tvcds_setFont, POINTERSTRING, font, CSELF, pCSelf)
+{
+    ((pCTvCustomDrawSimple)pCSelf)->hFont = (HFONT)font;
+    return NULLOBJECT;
+}
+
+/** TvCustomDrawSimple::item       [attribute]
+ */
+RexxMethod1(RexxStringObject, tvcds_getItem, CSELF, pCSelf)
+{
+    return pointer2string(context, ((pCTvCustomDrawSimple)pCSelf)->item);
+}
+
+/** TvCustomDrawSimple::reply      [attribute]
+ */
+RexxMethod2(RexxObjectPtr, tvcds_setReply, uint32_t, reply, CSELF, pCSelf)
+{
+    ((pCTvCustomDrawSimple)pCSelf)->reply = reply;
+    return NULLOBJECT;
+}
+
+/** TvCustomDrawSimple::level    [attribute]
+ */
+RexxMethod1(uint32_t, tvcds_getLevel, CSELF, pCSelf)
+{
+    return ((pCTvCustomDrawSimple)pCSelf)->level;
+}
+
+/** TvCustomDrawSimple::userData   [attribute]
+ */
+RexxMethod2(RexxObjectPtr, tvcds_getUserData, uint32_t, reply, CSELF, pCSelf)
+{
+    return ((pCTvCustomDrawSimple)pCSelf)->userData;
+}
+
+
