@@ -140,6 +140,79 @@ static void parseTvModifyOpts(CSTRING opts, TVITEMEX *tvi)
     }
 }
 
+/**
+ * Finds the first tree-view item whose text matches the specified text.
+ *
+ * @param hTv
+ * @param text
+ *
+ * @return HTREEITEM
+ *
+ * @note  Although the text for a tree-view item can be any length, only 260
+ *        characters are displayed.  The old IBM code used a huge buffer, twice
+ *        4096.  I think we should limit the length of text a user can assign to
+ *        a tree-view item, but for now we'll just go with 4096.
+ */
+HTREEITEM tvFindItem(HWND hTv, CSTRING text)
+{
+    if ( *text == '\0' )
+    {
+        return NULL;
+    }
+
+    HTREEITEM hTreeItem = NULL;
+    HTREEITEM root      = TreeView_GetRoot(hTv);
+    TVITEM    tvi       = {0};
+    char      buff[4096];
+
+    tvi.hItem = root;
+    while ( tvi.hItem != NULL )
+    {
+         tvi.mask = TVIF_HANDLE | TVIF_TEXT | TVIF_CHILDREN;
+         tvi.pszText = buff;
+         tvi.cchTextMax = sizeof(buff) - 1;
+         if ( TreeView_GetItem(hTv, &tvi) )
+         {
+             if ( stricmp(tvi.pszText, text) == 0 )
+             {
+                 return tvi.hItem;
+             }
+             else
+             {
+                 if ( tvi.cChildren > 0 )
+                 {
+                     hTreeItem = TreeView_GetChild(hTv, tvi.hItem);
+                 }
+                 else
+                 {
+                     hTreeItem = TreeView_GetNextSibling(hTv, tvi.hItem);
+                 }
+
+                 while ( hTreeItem == NULL && tvi.hItem != NULL )
+                 {
+                     tvi.hItem = TreeView_GetParent(hTv, tvi.hItem);
+                     hTreeItem = TreeView_GetNextSibling(hTv, tvi.hItem);
+                     if ( hTreeItem == root )
+                     {
+                         return NULL;
+                     }
+                 }
+
+                 if ( tvi.hItem == NULL )
+                 {
+                     return NULL;
+                 }
+                 tvi.hItem = hTreeItem;
+             }
+         }
+         else
+         {
+             tvi.hItem = NULL;
+         }
+    }
+
+    return NULL;
+}
 
 RexxMethod8(RexxObjectPtr, tv_insert, OPTIONAL_CSTRING, _hItem, OPTIONAL_CSTRING, _hAfter, OPTIONAL_CSTRING, label,
             OPTIONAL_int32_t, imageIndex, OPTIONAL_int32_t, selectedImage, OPTIONAL_CSTRING, opts, OPTIONAL_uint32_t, children,
@@ -407,6 +480,21 @@ RexxMethod3(RexxObjectPtr, tv_expand, CSTRING, _hItem, NAME, method, CSELF, pCSe
 }
 
 
+/** TreeView::find()
+ *
+ *  Finds the first item with the specified text.
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, tv_find, CSTRING, text, CSELF, pCSelf)
+{
+    HWND hwnd  = getDChCtrl(pCSelf);
+
+    HTREEITEM hItem = tvFindItem(hwnd, text);
+    return pointer2string(context, hItem);
+}
+
+
 /** TreeView::hitTestInfo()
  *
  *  Determine the location of a point relative to the tree-view control.
@@ -620,20 +708,27 @@ RexxMethod2(RexxObjectPtr, tv_getImageList, OPTIONAL_uint8_t, type, OSELF, self)
  *
  * @return MsgReplyType
  *
- * @notes  Typically for a list-view there are a flurry of custom draw events at
- *         one time.  Testing has shown that if there is a condition pending,
- *         things seem to hang.  So, we check for a condition on entry and just
- *         do a CDRF_DODEFAULT immediately if that is the case.
+ * @notes  In testing the list-view custom draw, we saw what seemed to be hangs
+ *         if there was an uncleared condition on entry.   That seemed to be
+ *         fixed by checking for a condition and immediately returning
+ *         CDRF_DODEFAULT if a condition was detected.
  *
- *         The simple case is to only respond to item prepaint or subitem
- *         prepaint.  We don't currently check the return reply from Rexx, but
- *         it should be either CDRF_NOTIFYSUBITEMDRAW, CDRF_NEWFONT, or
- *         CDRF_DODEFAULT.
+ *         The simple case is to only respond to CDDS_PREPAINT or
+ *         CDDS_ITEMPREPAINT.  We tried allowing the user to repsond to
+ *         CDDS_PREPAINT, but, if the response was anything other than
+ *         CDRF_NOTIFYITEMDRAW, then things just didn't work.  So, we went back
+ *         to always replying CDRF_NOTIFYITEMDRAW for CDDS_PREPAINT.
+ *
  */
 MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
     LPNMTVCUSTOMDRAW tvcd  = (LPNMTVCUSTOMDRAW)lParam;
     LPARAM           reply = CDRF_DODEFAULT;
+
+    if ( c->CheckCondition() )
+    {
+        goto done_out;
+    }
 
     if ( tvcd->nmcd.dwDrawStage == CDDS_PREPAINT )
     {
@@ -641,11 +736,6 @@ MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
     }
     else if ( tvcd->nmcd.dwDrawStage == CDDS_ITEMPREPAINT )
     {
-        if ( c->CheckCondition() )
-        {
-            goto done_out;
-        }
-
         RexxBufferObject tvcdsBuf = c->NewBuffer(sizeof(CTvCustomDrawSimple));
         if ( tvcdsBuf == NULLOBJECT )
         {
@@ -682,7 +772,7 @@ MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
                 }
                 reply = pctvcds->reply;
             }
-            c->ReleaseLocalReference(msgReply);
+
             c->ReleaseLocalReference(custDrawSimple);
         }
         c->ReleaseLocalReference(tvcdsBuf);
@@ -774,7 +864,7 @@ RexxMethod2(RexxObjectPtr, tvcds_setReply, uint32_t, reply, CSELF, pCSelf)
  */
 RexxMethod1(uint32_t, tvcds_getLevel, CSELF, pCSelf)
 {
-    return ((pCTvCustomDrawSimple)pCSelf)->level;
+    return ((pCTvCustomDrawSimple)pCSelf)->level + 1;
 }
 
 /** TvCustomDrawSimple::userData   [attribute]

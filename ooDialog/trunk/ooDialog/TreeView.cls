@@ -45,102 +45,25 @@
 ::class 'TreeControl' subclass DialogControl public
 ::class 'TreeView' subclass TreeControl public
 
+-- TV_FIRST == 0x1100  (4352)
+::constant TVM_DELETEITEM          "0x1101"
+::constant TVM_EDITLABELA          "0x110E"
+::constant TVM_EDITLABELW          "0x1141"
+::constant TVM_ENDEDITLABELNOW     "0x1116"
+::constant TVM_ENSUREVISIBLE       "0x1114"
+::constant TVM_GETCOUNT            "0x1105"
+::constant TVM_GETINDENT           "0x1106"
+::constant TVM_GETUNICODEFORMAT    "0x2006"
+::constant TVM_GETVISIBLECOUNT     "0x1110"
+::constant TVM_SETINDENT           "0x1107"
+::constant TVM_SORTCHILDREN        "0x1113"
+
 ::attribute rootArray private
 
 ::method init
    forward class (super) continue
    self~rootArray = .array~new(4)
 
-::method subclassEdit external "LIBRARY oodialog generic_subclassEdit"
-::method restoreEditClass external "LIBRARY oodialog generic_subclassEdit"
-
-::method insert unguarded external "LIBRARY oodialog tv_insert"
-::method modify unguarded external "LIBRARY oodialog tv_modify"
-::method itemInfo unguarded external "LIBRARY oodialog tv_itemInfo"
-::method root unguarded external "LIBRARY oodialog tv_getSpecificItem"
-::method selected unguarded external "LIBRARY oodialog tv_getSpecificItem"
-::method dropHighlighted unguarded external "LIBRARY oodialog tv_getSpecificItem"
-::method firstVisible unguarded external "LIBRARY oodialog tv_getSpecificItem"
-::method parent unguarded external "LIBRARY oodialog tv_getNextItem"
-::method child unguarded external "LIBRARY oodialog tv_getNextItem"
-::method next unguarded external "LIBRARY oodialog tv_getNextItem"
-::method nextVisible unguarded external "LIBRARY oodialog tv_getNextItem"
-::method previous unguarded external "LIBRARY oodialog tv_getNextItem"
-::method previousVisible unguarded external "LIBRARY oodialog tv_getNextItem"
-::method collapse unguarded external "LIBRARY oodialog tv_expand"
-::method collapseAndReset unguarded external "LIBRARY oodialog tv_expand"
-::method expand unguarded external "LIBRARY oodialog tv_expand"
-::method toggle unguarded external "LIBRARY oodialog tv_expand"
-::method select unguarded external "LIBRARY oodialog tv_selectItem"
-::method makeFirstVisible unguarded external "LIBRARY oodialog tv_selectItem"
-::method dropHighlight unguarded external "LIBRARY oodialog tv_selectItem"
-::method setImageList unguarded external "LIBRARY oodialog tv_setImageList"
-::method getImageList unguarded external "LIBRARY oodialog tv_getImageList"
-
-::method hitTestInfo unguarded external "LIBRARY oodialog tv_hitTestInfo"
-::method hitTest unguarded
-   forward message "hitTestInfo" continue
-   info = result
-   if info~hItem = 0 then return 0
-   else return info~hItem info~location
-
-
--- TV_FIRST == 0x1100  (4352)
-::constant TVM_DELETEITEM          "0x1101"
-::constant TVM_GETCOUNT            "0x1105"
-::constant TVM_GETINDENT           "0x1106"
-::constant TVM_SETINDENT           "0x1107"
-::constant TVM_GETVISIBLECOUNT     "0x1110"
-::constant TVM_SORTCHILDREN        "0x1113"
-::constant TVM_ENSUREVISIBLE       "0x1114"
-::constant TVM_EDITLABELA          "0x110E"
-::constant TVM_EDITLABELW          "0x1141"
-::constant TVM_GETUNICODEFORMAT    "0x2006"
-::constant TVM_ENDEDITLABELNOW     "0x1116"
-
-::method items unguarded
-   use strict arg
-   return self~sendWinIntMsg(self~TVM_GETCOUNT, 0, 0)
-
-::method visibleItems unguarded
-   use strict arg
-   return self~sendWinIntMsg(self~TVM_GETVISIBLECOUNT, 0, 0)
-
-::method ensureVisible unguarded
-   use strict arg hItem
-   return self~sendWinHandle2Msg(self~TVM_ENSUREVISIBLE, 0, hItem)
-
--- The old code did not have recurse arg and had a comment saying "recursive not yet supported"
--- Although MSDN documents this message as recursively sorting the children if WPARAM is true,
--- it doesn't seem to work.
-::method sortChildren unguarded
-   use strict arg hitem, recurse = .false
-   return self~sendWinHandle2Msg(self~TVM_SORTCHILDREN, recurse, hItem)
-
-::method indent unguarded
-   use strict arg
-   return self~sendWinIntMsg(self~TVM_GETINDENT, 0, 0)
-
-::method "indent=" unguarded
-   use strict arg indentAmount
-   return self~sendWinIntMsg(self~TVM_SETINDENT, indentAmount, 0)
-
-::method delete unguarded
-   use strict arg hItem
-   return self~sendWinHandle2Msg(self~TVM_DELETEITEM, 0, hItem)
-
-::method deleteAll unguarded
-   use strict arg
-   return self~sendWinIntMsg(self~TVM_DELETEITEM, 0, 0)
-
-::method edit unguarded
-   use strict arg hitem
-   if self~usingUnicode then return self~sendWinHandle2MsgH(self~TVM_EDITLABELW, 0, hItem)
-   else return self~sendWinHandle2MsgH(self~TVM_EDITLABELA, 0, hItem)
-
-::method endEdit unguarded
-   use strict arg cancel = .false
-   return (self~sendWinIntMsg(self~TVM_ENDEDITLABELNOW , cancel, 0) <> 0)
 
 ::method add unguarded
    do i = 1 to arg()
@@ -162,6 +85,71 @@
       end
    end
 
+::method child unguarded external "LIBRARY oodialog tv_getNextItem"
+::method collapse unguarded external "LIBRARY oodialog tv_expand"
+::method collapseAndReset unguarded external "LIBRARY oodialog tv_expand"
+::method delete unguarded
+   use strict arg hItem
+   return self~sendWinHandle2Msg(self~TVM_DELETEITEM, 0, hItem)
+
+::method deleteAll unguarded
+   use strict arg
+   return self~sendWinIntMsg(self~TVM_DELETEITEM, 0, 0)
+
+::method dropHighlight unguarded external "LIBRARY oodialog tv_selectItem"
+::method dropHighlighted unguarded external "LIBRARY oodialog tv_getSpecificItem"
+::method edit unguarded
+   use strict arg hitem
+   if self~usingUnicode then return self~sendWinHandle2MsgH(self~TVM_EDITLABELW, 0, hItem)
+   else return self~sendWinHandle2MsgH(self~TVM_EDITLABELA, 0, hItem)
+
+::method endEdit unguarded
+   use strict arg cancel = .false
+   return (self~sendWinIntMsg(self~TVM_ENDEDITLABELNOW , cancel, 0) <> 0)
+
+::method ensureVisible unguarded
+   use strict arg hItem
+   return self~sendWinHandle2Msg(self~TVM_ENSUREVISIBLE, 0, hItem)
+
+::method expand unguarded external "LIBRARY oodialog tv_expand"
+::method find unguarded external "LIBRARY oodialog tv_find"
+::method firstVisible unguarded external "LIBRARY oodialog tv_getSpecificItem"
+::method getImageList unguarded external "LIBRARY oodialog tv_getImageList"
+::method hitTest unguarded
+   forward message "hitTestInfo" continue
+   info = result
+   if info~hItem = 0 then return 0
+   else return info~hItem info~location
+
+::method hitTestInfo unguarded external "LIBRARY oodialog tv_hitTestInfo"
+::method indent unguarded
+   use strict arg
+   return self~sendWinIntMsg(self~TVM_GETINDENT, 0, 0)
+
+::method "indent=" unguarded
+   use strict arg indentAmount
+   return self~sendWinIntMsg(self~TVM_SETINDENT, indentAmount, 0)
+
+::method insert unguarded external "LIBRARY oodialog tv_insert"
+::method isAncestor unguarded
+   use strict arg hParent, hItem
+   if arg(1, 'O') | hParent = 0 then return .false
+   if arg(2, 'O') | hItem = 0 then return .false
+   if hItem = hParent then return .false
+   ancestor = self~parent(hItem)
+   do while ancestor \= 0 & ancestor \= hParent
+       ancestor = self~Parent(ancestor)
+   end
+   if ancestor = hParent then return .true
+   else return .false
+
+::method itemInfo unguarded external "LIBRARY oodialog tv_itemInfo"
+::method items unguarded
+   use strict arg
+   return self~sendWinIntMsg(self~TVM_GETCOUNT, 0, 0)
+
+::method makeFirstVisible unguarded external "LIBRARY oodialog tv_selectItem"
+::method modify unguarded external "LIBRARY oodialog tv_modify"
 ::method moveItem unguarded
    use strict arg hItem, hNewParent, redraw = .true, extended = ""
    if hItem = 0 then return 0
@@ -191,17 +179,31 @@
    if redraw then self~update
    return newRoot
 
-::method isAncestor unguarded
-   use strict arg hParent, hItem
-   if arg(1, 'O') | hParent = 0 then return .false
-   if arg(2, 'O') | hItem = 0 then return .false
-   if hItem = hParent then return .false
-   ancestor = self~parent(hItem)
-   do while ancestor \= 0 & ancestor \= hParent
-       ancestor = self~Parent(ancestor)
-   end
-   if ancestor = hParent then return .true
-   else return .false
+::method next unguarded external "LIBRARY oodialog tv_getNextItem"
+::method nextVisible unguarded external "LIBRARY oodialog tv_getNextItem"
+::method parent unguarded external "LIBRARY oodialog tv_getNextItem"
+::method previous unguarded external "LIBRARY oodialog tv_getNextItem"
+::method previousVisible unguarded external "LIBRARY oodialog tv_getNextItem"
+::method restoreEditClass external "LIBRARY oodialog generic_subclassEdit"
+::method root unguarded external "LIBRARY oodialog tv_getSpecificItem"
+::method select unguarded external "LIBRARY oodialog tv_selectItem"
+::method selected unguarded external "LIBRARY oodialog tv_getSpecificItem"
+::method setImageList unguarded external "LIBRARY oodialog tv_setImageList"
+
+-- The old code did not have recurse arg and had a comment saying "recursive not yet supported"
+-- Although MSDN documents this message as recursively sorting the children if WPARAM is true,
+-- it doesn't seem to work.
+::method sortChildren unguarded
+   use strict arg hitem, recurse = .false
+   return self~sendWinHandle2Msg(self~TVM_SORTCHILDREN, recurse, hItem)
+
+::method subclassEdit external "LIBRARY oodialog generic_subclassEdit"
+::method toggle unguarded external "LIBRARY oodialog tv_expand"
+
+::method visibleItems unguarded
+   use strict arg
+   return self~sendWinIntMsg(self~TVM_GETVISIBLECOUNT, 0, 0)
+
 
 -- DEPRECATED
 ::method setImages unguarded external "LIBRARY oodialog tv_setImageList"

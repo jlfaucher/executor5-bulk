@@ -186,7 +186,8 @@ typedef struct _tvCDSimple
 } CTvCustomDrawSimple;
 typedef CTvCustomDrawSimple *pCTvCustomDrawSimple;
 
-MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern HTREEITEM    tvFindItem(HWND hTv, CSTRING text);
 
 
 enum DateTimePart {dtFull, dtTime, dtDate, dtNow};

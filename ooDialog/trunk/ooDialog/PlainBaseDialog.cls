@@ -391,11 +391,11 @@
    -- If we ourselves are a child dialog and not called by the parent's stopIt(), then
    -- remove ourself from the parent dialog's child list.  (Child dialogs are independent
    -- and the user could close them at any time.)
-   if self~parentDlg \= .nil & caller \= "PARENT" then self~parentDlg~childDied(self)
+   if self~parentDlg \== .nil & caller \== "PARENT" then self~parentDlg~childDied(self)
 
    -- If we have child dialogs, then stop all of them.  Child dialogs are always started
    -- through popupAsChild() and are always closed when the parent closes.
-   if self~childDialogs \= .nil then do
+   if self~childDialogs \== .nil then do
        if self~childDialogs~items > 0 then
        do child over self~childDialogs
           child~stopit("PARENT")
@@ -408,9 +408,9 @@
 -- Remove a child dialog from the chain of child dialogs.
 ::method childDied                                         -- Not to be doumented.
    use arg child
-   if self~childDialogs \= .nil then do
+   if self~childDialogs \== .nil then do
        ndx = self~childDialogs~first
-       do while ndx \= .nil
+       do while ndx \== .nil
           if self~childDialogs[ndx] == child then do
               self~childDialogs~remove(ndx)
               ndx = .nil
@@ -491,7 +491,7 @@
    self~putDlgDataInStem(InternDlgData.)
 
    id = self~dataConnection~first
-   do while (id \= .nil)
+   do while (id \== .nil)
       self~sendWith(self~dataConnection[id]'=', .array~of(InternDlgData.id))
       id = self~dataConnection~next(id)
    end
@@ -502,7 +502,7 @@
 -- connectXXX methods.  connectListBox(), connectComboBox(), etc..
 ::method setData unguarded
    id = self~dataConnection~first
-   do while (id \= .nil)
+   do while (id \== .nil)
       data = self~send(self~dataConnection[id])
       InternDlgData.id = data
       id = self~dataConnection~next(id)
@@ -558,7 +558,7 @@
 ::method getDataAttribute unguarded
    use strict arg attributeName
    id = self~dataConnection~First
-   do while (id \= .nil)
+   do while (id \== .nil)
       if self~dataConnection[id] = attributeName~space(0) then do
          data = self~getControlData(id)
          self~sendWith(attributeName'=', .array~of(data))
@@ -585,7 +585,7 @@
 ::method setDataAttribute unguarded
    use strict arg attributeName
    id = self~dataConnection~first
-   do while (id \= .nil)
+   do while (id \== .nil)
       if self~dataConnection[id] = attributeName~space(0) then do
          data = self~send(attributeName)
          return self~setControlData(id, data)
@@ -621,7 +621,7 @@
 
    a = .array~new(self~dataConnection~items)
    id = self~dataConnection~first
-   do j = 1 while (id \= .nil)
+   do j = 1 while (id \== .nil)
       attributeName = self~dataConnection~at(id)
       data = self~send(attributeName)
       a[j] = data

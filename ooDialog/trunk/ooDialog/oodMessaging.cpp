@@ -1184,6 +1184,9 @@ bool endOnCondition(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING metho
  * @param clear
  *
  * @return TheTrueObj or TheFalseObj on success, NULLOBJECT on failure.
+ *
+ * @note  The local reference to the reply object is always released in this
+ *        function.
  */
 RexxObjectPtr requiredBooleanReply(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply,
                                    CSTRING method, bool clear)
@@ -1198,6 +1201,11 @@ RexxObjectPtr requiredBooleanReply(RexxThreadContext *c, pCPlainBaseDialog pcpbd
             wrongReplyNotBooleanException(c, method, reply);
             checkForCondition(c, false);
         }
+    }
+
+    if ( reply != NULLOBJECT )
+    {
+        c->ReleaseLocalReference(reply);
     }
 
     if ( result == NULLOBJECT )
