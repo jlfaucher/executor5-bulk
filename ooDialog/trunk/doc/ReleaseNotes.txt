@@ -88,7 +88,7 @@ with the item into a list-view at one time.
 LvCustomDrawSimple class:
 
 The LvCustomDrawSimple class is used in conjuction with the custom draw
-facility.
+facility for ListView controls.
 
 New ListView methods:
 ---------------------
@@ -106,9 +106,16 @@ The CustomDraw class is a new mixin class.  Dialogs in ooDialog can
 inherit this class, which then gives the dialog the ability to access
 the custom draw facility.
 
+The ListView and TreeView controls can register for custom draw.
+
 
 New utility classes:
 --------------------
+
+TvCustomDrawSimple class:
+
+The TvCustomDrawSimple class is used in conjuction with the custom draw
+facility for TreeView controls.
 
 
 New Methods:
@@ -119,6 +126,10 @@ In the DialogControl class:
 useVersion()
 usingVersion()
 
+In the TreeView class:
+
+find()
+
 
 New samples:
 ------------
@@ -127,6 +138,15 @@ oodialog\controls\customDrawListView.rex
 
 The customDrawListView example demonstrates how to change the text, text
 color, and background color of individual rows in a list-view.
+
+Enhanced samples:
+-----------------
+
+oodialog\treeViewCustomDraw.rex
+
+The oodtree.rex example has been renamed to the treeViewCustomDraw.rex
+and enhanced.  The example has been more fully commented, uses custom
+draw for the tree-view control, and has a number of small bugs fixed.
 
 
 Documentation

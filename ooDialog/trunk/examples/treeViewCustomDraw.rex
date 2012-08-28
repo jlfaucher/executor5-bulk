@@ -37,8 +37,14 @@
 /*----------------------------------------------------------------------------*/
 
 /**
+ * treeViewCustomDraw.rex
  *
+ * This example demonstrates many of the features of a tree-view control.
+ * Including, but not limited to: drag and drop of items, label editing of
+ * items, custom draw, using image lists to supply the icons for tree-view
+ * items, etc..
  */
+
     -- Use the global .constDir for symbolic IDs and turn automatic data
     -- detection off.
     .application~setDefaults('O', 'rc\treeViewCustomDraw.h', .false)
@@ -52,10 +58,19 @@ return 0
 
 ::requires "ooDialog.cls"  -- Require the ooDialog framework.
 
+
+/*- TreeViewConstants - Class - - - - - - - - - - - - - - - - - - - - - - - - *\
+
+   This mixin class defines some constant values and is inherited by the two
+   dialog classes in this example.
+
+\*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 ::class 'TreeViewConstants' mixinclass Object
 ::constant BMP_FILE  "bmp\treeViewCustomDraw.bmp"  -- Icons for selected/not-selected items.
 ::constant TREE_FILE "treeViewCustomDraw.inp"      -- Input file with the items to build the tree.
 ::constant ITEM_FILE "treeViewCustomDrawi.inp"     -- Input file with dynamically added items.
+
+::constant APPLICATION_TITLE  "Crazy Sam's Emporium - Inventory"
 
 ::constant UNSELECTED_FOLDER  0         -- Index for the icon of an unselected folder item
 ::constant SELECTED_FOLDER    1         -- Index for the icon of a selected folder item
@@ -63,8 +78,21 @@ return 0
 ::constant SELECTED_LEAF      3         -- Index for the icon of a selected leaf item
 
 
+/*- InventoryDlg - Class- - - - - - - - - - - - - - - - - - - - - - - - - - - *\
+
+   This is the main dialog class for this example.  It contains the tree-view
+   control that the example is all about.
+
+\*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 ::class 'InventoryDlg' subclass RcDialog inherit CustomDraw TreeViewConstants
 
+/** isLeafItem()  [class method]
+ *
+ * The isLeafItem() method provides a convenient way to test if any tree-view
+ * item is a leaf item rather than a folder item.  Leaf items and folder items
+ * in this example use different icon images, so we just test which icon is set
+ * for the item.
+ */
 ::method isLeafItem class
   use strict arg treeView, item
 
@@ -72,6 +100,23 @@ return 0
 
 return info.!Image == self~UNSELECTED_LEAF
 
+
+/** init()
+ *
+ * Initialization of the Rexx dialog object.  We do several things here.
+ *
+ * 1.) Initialize the super class.  Never invoke any method on a dialog class
+ *     before the super class is initialized.
+ *
+ * 2.) So a sanity check to ensure the data files needed can be found.
+ *
+ * 3.) Connect the event handlers for the tree-view.
+ *
+ * 4.) Create custom colors to draw the individual items in the tree-view.
+ *
+ * 5.) Initialize the custom draw interface and register the tree-view control
+ *     to use custom draw.
+ */
 ::method init
     expose bkClr oddLevelClr evenLevelClr selectedClr leafClr
     use arg rcFile, idDlg
@@ -85,68 +130,37 @@ return info.!Image == self~UNSELECTED_LEAF
     end
 
     -- Connect dialog control events to methods in the Rexx dialog.
+    self~connectTreeViewEvent(IDC_TREE, "EXPANDING", "onExpanding")
+    self~connectTreeViewEvent(IDC_TREE, "DEFAULTEDIT")
+    self~connectTreeViewEvent(IDC_TREE, "BEGINDRAG", "DefTreeDragHandler")
+    self~connectTreeViewEvent(IDC_TREE, "KEYDOWN",   "onKeyDown")
 
-    --self~connectTreeViewEvent("IDC_TREE", "SelChanged", "onSelChanged_IDC_TREE")
-    self~connectTreeViewEvent("IDC_TREE", "Expanding", "onExpanding_IDC_TREE")
-    --self~connectTreeViewEvent("IDC_TREE", "Expanded", "onExpanded_IDC_TREE")
-    self~connectTreeViewEvent("IDC_TREE", "DefaultEdit")
-    self~connectTreeViewEvent("IDC_TREE","BEGINDRAG", "DefTreeDragHandler")
-    --self~connectTreeViewEvent("IDC_TREE","Delete","OnDelete_IDC_TREE")
-    self~connectTreeViewEvent("IDC_TREE","KeyDown","OnKeyDown_IDC_TREE")
-    self~connectButtonEvent("IDC_PB_NEW", "CLICKED", "IDC_PB_NEW")
-    self~connectButtonEvent("IDC_PB_DELETE", "CLICKED", "IDC_PB_DELETE")
-    self~connectButtonEvent(IDC_PB_EXP_ALL, "CLICKED", "IDC_PB_EXP_ALL")
-    self~connectButtonEvent(IDC_PB_COL_ALL, "CLICKED", "IDC_PB_COL_ALL")
-    self~connectButtonEvent(IDC_PB_INFO, "CLICKED", "IDC_PB_INFO")
+    self~connectButtonEvent(IDC_PB_NEW,     "CLICKED", "onNewItem")
+    self~connectButtonEvent(IDC_PB_DELETE,  "CLICKED", "onDeleteItem")
+    self~connectButtonEvent(IDC_PB_EXP_ALL, "CLICKED", "onExpandAll")
+    self~connectButtonEvent(IDC_PB_COL_ALL, "CLICKED", "onCollapseAll")
+    self~connectButtonEvent(IDC_PB_INFO,    "CLICKED", "onItemInfo")
 
-    bkClr        =  self~RGB(250, 250, 250)
-    oddLevelClr  = self~RGB(82, 61, 0)
-    evenLevelClr = self~RGB(0, 20, 82)
-    selectedClr  = self~RGB(82, 0, 20)
-    leafClr      = self~RGB(0, 82, 20)
+    -- Create the custom colors use to draw the tree-view items
+    bkClr        = self~RGB(250, 250, 250)
+    oddLevelClr  = self~RGB( 82,  61,   0)
+    evenLevelClr = self~RGB(  0,  20,  82)
+    selectedClr  = self~RGB( 82,   0,  20)
+    leafClr      = self~RGB(  0,  82,  20)
 
+    -- Initialize the custom draw interface and register the tree-view control
+    -- to use custom draw.
     self~customDraw
     self~customDrawControl(IDC_TREE, 'TreeView')
 
 return 0
 
-/** checkForRequiredFiles()
- *
- * This method is used to check that the bitmap and input files are available.
- * It returns .true if they are found and .false if they are not found.
- */
-::method checkForRequiredFiles private
-
-    haveError = .false
-    file = ''
-
-    if stream(self~BMP_FILE, "C", "QUERY EXISTS") = "" then do
-      haveError = .true
-      file = self~BMP_FILE
-    end
-    else if stream(self~TREE_FILE, "C", "QUERY EXISTS") = "" then do
-      haveError = .true
-      file = self~TREE_FILE
-    end
-    else if stream(self~ITEM_FILE, "C", "QUERY EXISTS") = "" then do
-        haveError = .true
-        file = self~ITEM_FILE
-    end
-
-    if haveError then do
-        msg   = "The required data file" file "does"  || .endOfLine || -
-                "not exist.  Without that file, this progam"   || .endOfLine || -
-                "will not run."                                || .endOfLine~copies(2) || -
-                "The program will abort."
-        title = 'File Error'
-
-        ret = MessageDialog(msg, 0, title, 'OK', 'ERROR')
-    end
-
-return \haveError
-
-
 /** initDialog()
+ *
+ * Just as the init() method is for initializing the Rexx dialog object, the
+ * initDialog() method is used to initialize the underlying Windows dialog.
+ * Some things, like inserting the items into a tree-view, can only be done
+ * after the Windows dialog exists.  Those types of things are done here.
  */
 ::method initDialog
     expose tv
@@ -162,11 +176,10 @@ return \haveError
          image~release
     end
 
-    -- Read the file containig the tree input data and build the tree.
+    -- Read the file containing the tree input data and build the tree.
     do while lines(self~TREE_FILE)
-        line = linein(self~TREE_FILE)
-        command = "tv~Add("||line||")"
-        interpret command
+        args = self~makeArgs(linein(self~TREE_FILE))
+        tv~sendWith('add', args)
     end
 
     -- Select the item with the text of Computers.
@@ -178,14 +191,27 @@ return 0
 
 /*- - - - - - - - - - Event handler(s) - - - - - - - - - - - - - - - - - - - -*/
 
+/** onCustomDraw()
+ *
+ * This is the event handler for the custom draw event.  Certain of the dialog
+ * controls in Windows support custom draw.  Those controls send custom draw
+ * event notifications through out the paint cycle when the control is drawing
+ * or redrawing itself
+ *
+ * Please read the custom draw documentation in the ooDialog reference manual to
+ * fully understand the details.
+ *
+ * We take advantage of custom draw here to paint each individual tree-view item
+ * a custom color depending on exactly which item is about to be drawn.
+ *
+ * Our scheme is relatively simple.  Every other level of the tree is painted an
+ * alternating color.  If an item is selected, it is painted a reddish color to
+ * match the reddish selected icon.  If not selected and a leaf node, we paint
+ * it a greenish color to match the non-folder, non-selected greenish icon.
+ */
 ::method onCustomDraw unguarded
   expose tv bkClr oddLevelClr evenLevelClr selectedClr leafClr
   use arg tvcds
-
-  --say 'onCustomDraw()'
-  --say '  item:     ' tvcds~item
-  --say '  level:    ' tvcds~level
-  --say '  drawStage:' self~drawStage2string(tvcds~drawStage)
 
   if tvcds~drawStage == self~CDDS_ITEMPREPAINT then do
       tvcds~reply = self~CDRF_NEWFONT
@@ -216,118 +242,412 @@ return 0
   return .false
 
 
+/** onExpanding()
+ *
+ * This is the event handler for the EXPANDING event.  The method is invoked
+ * when a tree-view item is about to be expanded or collapsed.  The method is
+ * invoked before the item is expanded or collapsed.
+ *
+ * This method demonstrates dynamically adding items to the tree.  The node,
+ * 'Special Offers' is initially added to the tree during initDialog with no
+ * children.
+ *
+ * When the user expands the node, the child items for the node are dynamically
+ * added here.  The items are loaded from a file in the same manner as the
+ * original items are loaded from a file to build the tree.
+ *
+ * When the user collapses the node, all its children items are removed.
+ */
+::method onExpanding unguarded
+    expose tv
+    use arg tree, item, what
 
+    itemInfo. = tv~itemInfo(item)
 
-/* Method onExpanding_IDC_TREE handles notification 'Expanding' for item IDC_TREE */
-::method onExpanding_IDC_TREE
-  expose ITEM_FILE
-  use arg tree, item, what
-  curTree = self~newTreeView(tree)
-  itemInfo. = curTree~itemInfo(item)
-
-  /* if the special item is selected, load the child items dynamically from a file */
-  /* and delete all children of the item if it will be collapsed                   */
-  if itemInfo.!TEXT = "Special Offers" then do
-    if what = "COLLAPSED" & curTree~child(item) = 0 then do
-      do while lines(self~ITEM_FILE)
-        line = linein(self~ITEM_FILE)
-        command = "curTree~insert(item,,"||line||")"
-        interpret command
-      end
-      curTree~expand(item)
+    if itemInfo.!TEXT = "Special Offers" then do
+        if what == "COLLAPSED", tv~child(item) == 0 then do
+            do while lines(self~ITEM_FILE)
+                args = self~makeArgs(item, , linein(self~ITEM_FILE))
+                tv~sendWith('insert', args)
+            end
+            tv~expand(item)
+        end
+        else if what == "EXPANDED", tv~child(item) <> 0 then do
+            tv~collapseAndReset(item)
+        end
     end
-    else
-      if what = "EXPANDED" & curTree~child(item) \= 0 then do
-        curTree~collapseAndReset(item)
-      end
-  end
+
+return 0
 
 
-/* Method onKeyDown_IDC_TREE handles notification 'KeyDown' for item IDC_TREE */
-::method onKeyDown_IDC_TREE
+/** onKeyDown()
+ *
+ * This is the event handler for the key down event.  It is invoked each time
+ * the user presses a key when the tree-view has the focus.
+ *
+ * We examime the key pressed to see if it is the insert or delete key.
+ *
+ * On the insert key we simulate pushing the 'New Item' push button by invoking
+ * the event handler for that button.  This allows the user to add a new tree-
+ * view item.
+ *
+ * On the delete key, we delete the selected item.
+ */
+::method onKeyDown unguarded
+  expose tv
   use arg treeId, key
-  curTree = self~newTreeView(treeId)
-  /* if DELETE key is pressed, delete the selected item */
+
   if key == .VK~DELETE then
-    curTree~delete(curTree~Selected)
-  else
-    /* if INSERT key is pressed, simulate pressing the New button */
-    if key == .VK~INSERT then
-      self~IDC_PB_NEW
+      tv~delete(tv~Selected)
+  else if key == .VK~INSERT then
+      self~onNewItem
 
-/* Method IDC_PB_NEW is connected to item IDC_PB_NEW */
-::method IDC_PB_NEW
-  -- When the new button is pressed, display a dialog that gets the name of the new item
-  -- and inserts it into the tree.
-  dlg = .NewTreeItemDlg~new("rc\treeViewCustomDraw.rc",  IDD_ADD_TREE_ITEM, self~newTreeView("IDC_TREE"))
-  dlg~execute
+return 0
+
+/** onNewItem()
+ *
+ * This is the event handler for the 'New Item' push button.  It is invoked when
+ * the user clicks that button.
+ *
+ * We put up a dialog that allows the user to fill out the details for a new
+ * tree-view item and insert it into the tree-view.
+ */
+::method onNewItem unguarded
+    expose tv
+
+    dlg = .NewTreeItemDlg~new("rc\treeViewCustomDraw.rc",  IDD_ADD_TREE_ITEM, tv)
+    dlg~execute
+
+return 0
 
 
-/* Method IDC_PB_DELETE is connected to item IDC_PB_DELETE */
-::method IDC_PB_DELETE
-  /*delete the selected item */
-  curTree = self~newTreeView("IDC_TREE")
-  curTree~delete(curTree~selected)
+/** onDeleteItem()
+ *
+ * This is the event handler for the 'Delete Item' push button.  This method is
+ * invoked when the user clicks that button.
+ *
+ * We expand the selected item and all its children recursively.
+ */
+::method onDeleteItem unguarded
+    expose tv
 
+    selected = tv~selected
+    if selected == 0 then do
+        title = self~APPLICATION_TITLE~subword(1, 3) '- Warning'
+        msg   = "There is no tree-view item selected.  If you" || .endOfLine           ||-
+                "continue, all items will be deleted."         || .endOfLine~copies(2) ||-
+                "Do you want to continue and delete all items?"
 
-/* Method IDC_PB_EXP_ALL is connected to item IDC_PB_EXP_ALL */
-::method IDC_PB_EXP_ALL
-  /*expand the selected item and all its childs */
-  curTree = self~newTreeView("IDC_TREE")
-  if curTree~selected = 0 then
-    call infoDialog "No item selected !"
-  else do
-    curTree~expand(curTree~Selected)
-    nextItem = curTree~child(curTree~Selected)
-    do while nextItem \= 0
-      curTree~expand(nextItem)
-      nextItem = curTree~next(nextItem)
+        ret = MessageDialog(msg, self~hwnd, title, 'YESNO', 'WARNING', 'DEFBUTTON2')
+        if ret == self~IDNO then return 0
     end
-  end
+
+    tv~delete(selected)
+return 0
 
 
-/* Method IDC_PB_COL_ALL is connected to item IDC_PB_COL_ALL */
-::method IDC_PB_COL_ALL
-  /*collapse the selected item and all its childs */
-  curTree = self~newTreeView("IDC_TREE")
-  if curTree~selected = 0 then
-    call infoDialog "No item selected !"
-  else do
-    nextItem = curTree~child(curTree~Selected)
-    do while nextItem \= 0
-      curTree~collapse(nextItem)
-      nextItem = curTree~next(nextItem)
+/** onExpandAll()
+ *
+ * This is the event handler for the 'Expand All' push button.  This method is
+ * invoked when the user clicks that button.
+ *
+ * We expand the selected item and all its children recursively.
+ */
+::method onExpandAll unguarded
+    expose tv
+
+    if tv~selected == 0 then do
+        title = self~APPLICATION_TITLE~subword(1, 3) '- Error'
+        msg   = "There is no tree-view item selected.  Before" || .endOfLine ||-
+                "you can expand all items you must first"      || .endOfLine ||-
+                "select an item"
+
+        ret = MessageDialog(msg, self~hwnd, title, 'OK', 'WARNING')
+        return 0
     end
-    curTree~collapse(curTree~selected)
-  end
 
-/* Method IDC_PB_INFO is connected to item IDC_PB_COL_ALL */
-::method IDC_PB_INFO
-  /* Display the attributes of the selected item */
-  use arg tree
-  curTree = self~newTreeView("IDC_TREE")
-  itemInfo. = curTree~itemInfo(curTree~selected)
+    if self~isFullyExpanded(tv~selected) then do
+        title = self~APPLICATION_TITLE~subword(1, 3) '- Information'
+        msg   = "The selected tree-view item is already fully" || .endOfLine ||-
+                "expanded.  Expanding will take place, but it" || .endOfLine ||-
+                "have no visile effect."
 
-  if itemInfo.!Children = 0 then children = "no"
-  else children = ""
+        ret = MessageDialog(msg, self~hwnd, title, 'OK', 'WARNING')
+    end
 
-  call InfoDialog 'The selected item "'itemInfo.!Text'" has' children 'children. The index for the icon is "'itemInfo.!Image'"',
-                   ', the index for the selected icon is "'itemInfo.!SelectedImage'". The states are "'itemInfo.!State'".'
+    self~expandAll(tv~selected)
+
+return 0
+
+/** onCollapseAll()
+ *
+ * This is the event handler for the 'Collapse All' push button.  This method is
+ * invoked when the user clicks that button.
+ *
+ * We collapse the selected item and all its children recursively.
+ */
+::method onCollapseAll unguarded
+    expose tv
+
+    if tv~selected == 0 then do
+        title = self~APPLICATION_TITLE~subword(1, 3) '- Error'
+        msg   = "There is no tree-view item selected.  Before"  || .endOfLine ||-
+                "you can collapse all items you must first"     || .endOfLine ||-
+                "select an item"
+
+        ret = MessageDialog(msg, self~hwnd, title, 'OK', 'WARNING')
+        return 0
+    end
+
+    itemInfo. = tv~itemInfo(tv~selected)
+    if itemInfo.!State~wordPos('EXPANDED') == 0 then do
+        title = self~APPLICATION_TITLE~subword(1, 3) '- Information'
+        msg   = "The selected tree-view item is already collapsed.  You"  || .endOfLine || -
+                "may not see anything, but all children of the selected"  || .endOfLine || -
+                "item will be collapsed."
+
+        ret = MessageDialog(msg, self~hwnd, title, 'OK', 'INFORMATION')
+    end
+
+    self~collapseAll(tv~selected)
+
+return 0
+
+/** onItemInfo
+ *
+ * This is the event handler for the 'Item Info' push button.  It iw invoked
+ * when the button is clicked.
+ *
+ * We get the selected tree-view item and display information about it.
+ */
+::method onItemInfo unguarded
+    expose tv
+
+    selected  = tv~selected
+
+    if selected == 0 then do
+        title = self~APPLICATION_TITLE~subword(1, 3) '- Error'
+        msg   = "There is no tree-view item selected.  Before"  || .endOfLine ||-
+                "you can display information on an item you"    || .endOfLine ||-
+                "must first select an item"
+
+        ret = MessageDialog(msg, self~hwnd, title, 'OK', 'WARNING')
+        return 0
+    end
+
+    itemInfo. = tv~itemInfo(selected)
+    tab1      = '09'x
+    tab2      = tab1~copies(2)
+
+    hasChildren = self~logicalToString(itemInfo.!Children)
+
+    title = self~APPLICATION_TITLE~changeStr('-', '') '- Item Information'
+    msg   = 'The Selected Item is:'    || tab1 || '"'itemInfo.!Text'"'     || .endOfLine~copies(2) || -
+            '  Contains children:'     || tab2 || hasChildren              || .endOfLine || -
+            '  Unselected icon index:' || tab1 || itemInfo.!Image          || .endOfLine || -
+            '  Selected icon index:'   || tab2 || itemInfo.!SelectedImage  || .endOfLine || -
+            '  Item state:'            || tab2 || itemInfo.!State          || .endOfLine || -
+            '  Is leaf node:'          || tab2 || self~logicalToString(.InventoryDlg~isLeafItem(tv, selected))
+
+    ret = MessageDialog(msg, self~hwnd, title 'OK', 'INFORMATION')
+
+return 0
 
 /** help()
+ *
+ * The help command event handler is connected automatically by the ooDialog
+ * framework to the command with ID of 9.  The default help event handler
+ * provided by ooDialog does nothing.
+ *
+ * In this example, the Help push button is given the resource ID of 9, and
+ * therefore the help event handler is invoked when the user clicks on the Help
+ * button.  Rather than do noting when the button is clicked, we over-ride the
+ * help method here.  We still do not do much, just inform the user that there
+ * is no help.
  */
-::method help
-  call infoDialog "No help available."
+::method help unguarded
+    title = self~APPLICATION_TITLE
+    msg   = "There is no help available for this example program."
+    ret =  MessageDialog(msg, self~hwnd, title, "OK", "INFORMATION")
+return 0
 
 
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
+/*- - - - - - - - - - Helper Methods - - - - - - - - - - - - - - - - - - - - -*/
 
- NewTreeItemDlg - Class
-   This class allows the user to add a new item to the tree-view
+/** expandAll()
+ *
+ * This helper method recursively expands all children nodes of the specified
+ * tree-view item.
+ */
+::method expandAll private unguarded
+    expose tv
+    use strict arg item
+
+    if item == 0 then return 0
+
+    tv~expand(item)
+
+    nextItem = tv~child(item)
+    do while nextItem \== 0
+        self~expandAll(nextItem)
+        nextItem = tv~next(nextItem)
+    end
+
+return 0
+
+/** collapseAll()
+ *
+ * This helper method recursively collapse the specified tree-view item and all
+ * its children.
+ */
+::method collapseAll private unguarded
+    expose tv
+    use strict arg item
+
+    if item == 0 then return 0
+
+    nextItem = tv~child(item)
+    do while nextItem \== 0
+        self~collapseAll(nextItem)
+        nextItem = tv~next(nextItem)
+    end
+
+    tv~collapse(item)
+
+return 0
+
+
+/** isFullyExpanded()
+ *
+ * This helper method checks if the specified item is fully expanded by
+ * recursively descending though the children of the item and checking that each
+ * item is expanded.
+ *
+ * Returns .true if the item is fully expanded, otherwise .false.
+ */
+::method isFullyExpanded private unguarded
+    expose tv
+    use strict arg item
+
+    if item == 0 then return .true
+    if .InventoryDlg~isLeafItem(tv, item) then return .true
+
+    itemInfo. = tv~itemInfo(item)
+    if itemInfo.!State~wordPos('EXPANDED') == 0 then return .false
+
+    nextItem = tv~child(item)
+    do while nextItem \== 0
+        if \ self~isFullyExpanded(nextItem) then return .false
+        nextItem = tv~next(nextItem)
+    end
+
+return .true
+
+/** checkForRequiredFiles()
+ *
+ * This helper method is used to check that the bitmap and input files are
+ * available.  It returns .true if they are found and .false if they are not
+ * found.
+ */
+::method checkForRequiredFiles private
+
+    haveError = .false
+    file = ''
+
+    if stream(self~BMP_FILE, "C", "QUERY EXISTS") = "" then do
+      haveError = .true
+      file = self~BMP_FILE
+    end
+    else if stream(self~TREE_FILE, "C", "QUERY EXISTS") = "" then do
+      haveError = .true
+      file = self~TREE_FILE
+    end
+    else if stream(self~ITEM_FILE, "C", "QUERY EXISTS") = "" then do
+        haveError = .true
+        file = self~ITEM_FILE
+    end
+
+    if haveError then do
+        title = self~APPLICATION_TITLE~subword(1, 3) '- File Error'
+        msg   = "The required data file" file                     || .endOfLine || -
+                "does not exist.  Without that file, this progam" || .endOfLine || -
+                "will not run."                                   || .endOfLine~copies(2) || -
+                "The program will abort."
+
+        ret = MessageDialog(msg, 0, title, 'OK', 'ERROR')
+    end
+
+return \haveError
+
+
+/** makeArgs()
+ *
+ * This helper method turns a line of comma separted values into an argument
+ * array with empty values turned into empty indexes in the array.
+ */
+::method makeArgs private unguarded
+    if arg() == 1 then line = arg(1)
+    else line = arg(3)
+
+    args = line~makeArray(',')
+    if arg() == 1 then do
+        newArgs = .array~new(args~items)
+        do i = 1 to args~items
+            if args[i]~strip \== "" then newArgs[i] = args[i]~strip('B', '"')
+        end
+    end
+    else do
+        newArgs = .array~new(args~items + 2)
+        newArgs[1] = arg(1)
+        newArgs[2] = 'LAST'
+
+        j = 2
+        do i = 1 to args~items
+            j += 1
+            if args[i]~strip \== "" then newArgs[j] = args[i]~strip('B', '"')
+        end
+    end
+
+return newArgs
+
+/** logicalToString()
+ *
+ * This helper method converts and returns a value to true or false if value is
+ * a logical, otherwise it returns the empty string.
+ */
+::method logicalToString private
+    use strict arg logical
+    if logical == .true then return 'True'
+    else if logical == .false then return 'False'
+    else return ''
+
+/** print()
+ *
+ * This helper function is useful in debugging.  It prints the label of the
+ * specified tree-view item to the screen.
+ */
+::method print private unguarded
+    expose tv
+    use strict arg item, indent
+
+    itemInfo. = tv~itemInfo(item);
+    say indent || itemInfo.!Text
+
+return 0
+
+
+/*- NewTreeItemDlg - Class- - - - - - - - - - - - - - - - - - - - - - - - - - *\
+
+   This dialog class allows the user to add a new item to the tree-view
 
 \*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 ::class 'NewTreeItemDlg' subclass RcDialog inherit TreeViewConstants
 
+/** init()
+ *
+ * The initialization of the Rexx dialog object.  We just use this to grab a
+ * reference to the tree-view control in the parent dialog.
+ */
 ::method init
   expose treeControl
   use arg scriptFile, dlgID, treeControl
@@ -335,6 +655,11 @@ return 0
   -- Initialize the super class.
   self~init:super(scriptFile, dlgID)
 
+/** initDialog()
+ *
+ * The initialization of the Windows dialog.  We use this to set the state of
+ * the various controls in the dialog.
+ */
 ::method initDialog
     expose treeControl editControl childRB folderChk selected
 
@@ -369,6 +694,26 @@ return 0
 
 return 0
 
+/** ok()
+ *
+ * The is the event handler for the Ok button.  It is invoked when the user
+ * clicks that button.
+ *
+ * The ooDialog framework provides a default implementation for this event.  It
+ * is important to always close a dialog, once the underlying Windows dialog has
+ * been created, through the Ok or Cancel event handlers.  This ensures that the
+ * dialog is ended correctly and that the needed clean up.
+ *
+ * Here we over-ride the superclass ok method so that we can check that the user
+ * entered the correct data for the new item and then insert it into the tree-
+ * view.  If the user did not enter the data correctly, we giver her a chance to
+ * correct it.  We give her a chance to cancel and if she does, we end the
+ * dialog cancel instead of ok.
+ *
+ * Note that we end the dialog by either calling the superclass ok or cancel
+ * method.  We prevent the dialog from closing by *not* invoking one of those
+ * methods and simply returning.
+ */
 ::method ok
     expose treeControl editControl childRB folderChk selected
 
@@ -376,7 +721,7 @@ return 0
     text = editControl~getText~strip
     if text == "" then do
         msg   = "You must enter the name of the new item"
-        title = "Inventory - Add Item"
+        title = self~APPLICATION_TITLE~changestr('-', '') '- Add Item'
 
         ret = MessageDialog(msg, self~hwnd, title, 'WARNING', 'OKCANCEL')
         if ret == self~IDCANCEL then return self~cancel:super
