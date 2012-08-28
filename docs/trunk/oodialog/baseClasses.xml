@@ -64,6 +64,12 @@
   linkend="chpDialogControlObject">dialog</link> control object chapters link back to this chapter for the detailed
   information where needed.
 </para>
+<para>
+  Other mixin classes that can optionally be inherited by the either the <emphasis role="italic">dialog
+  object</emphasis> or the <emphasis role="italic">dialog control object</emphasis> are also documented in this section.
+  Non-mixin classes that are neither dialog controls nor dialogs are primarily documented in the <link
+  linkend="utilityclasses">Utility Classes</link> chapter.
+</para>
 
 <section id="sctComponentClassesDiagram"><title>Component Classes Diagram</title>
 <para>
@@ -3739,5 +3745,338 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
 </section>
 
 </section>
+
+<section id="clsCustomDraw"><title>CustomDraw Class</title>
+<indexterm><primary>CustomDraw class</primary></indexterm>
+<para>
+  Custom draw is a service provided by some of the Windows common controls. This service allows the programmer greater
+  control over the appearance of a control than that provided directly though the styles and methods of the control.
+  Not all controls support custom draw, but those that do, provide the service in a similar manner through the user of
+  custom draw event notifications.
+</para>
+<para>
+  The following controls
+  <itemizedlist>
+  <listitem>
+  <para>
+    Header controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    List-view controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Rebar controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Toolbar controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Trackbar controls.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    Tree-view controls.
+  </para>
+  </listitem>
+  </itemizedlist>
+  The current implementation only supports custom draw for <link linkend="clsListView">list-view</link> and <link
+  linkend="clsTreeView">tree-view</link> controls.
+</para>
+
+<section id="sctName"><title>Custom Draw Overview</title>
+<indexterm><primary>custom draw</primary><secondary>overview</secondary></indexterm>
+
+<para>
+
+</para>
+
+
+</section> <!-- End Custom Draw Overview section -->
+
+
+<section id="sctCustom Draw in ooDialog"><title>Custom Draw in ooDialog</title>
+<indexterm><primary>custom draw</primary>ooDialog</indexterm>
+
+<para>
+
+</para>
+
+
+</section> <!-- End Custom Draw in ooDialog section -->
+
+
+<section id="sctMethodsCustomDraw"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>CustomDraw</computeroutput> class:
+
+<table id="tblMethodsCustomDraw" frame="all"> <title>CustomDraw Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthCustomDraw">customDraw</link></entry>
+<entry>.</entry>
+</row>
+<row>
+<entry><link linkend="mthCustomDrawControl">customDrawControl</link></entry>
+<entry>.</entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+
+<section id="sctConstantsClsCustomDraw"><title>Constants</title>
+<indexterm><primary>constants</primary><secondary>CustomDraw class</secondary></indexterm>
+<indexterm><primary>CustomDraw class</primary><secondary>constants</secondary></indexterm>
+
+<para>
+
+</para>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">CDRF_DODEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">CDRF_NEWFONT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">CDRF_SKIPDEFAULT</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">CDRF_DOERASE</emphasis></term>
+  <listitem>
+  <para>
+    xxx and xxx sss.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>
+
+<section id="mthCustomDraw"><title>customDraw</title>
+<indexterm><primary>customDraw</primary></indexterm>
+<indexterm><primary>CustomDraw class</primary><secondary>customDraw</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--customDraw(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CustomDraw::customDraw() -->
+
+<section id="mthCustomDrawControl"><title>customDrawControl</title>
+<indexterm><primary>customDrawControl</primary></indexterm>
+<indexterm><primary>CustomDraw class</primary><secondary>customDrawControl</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--customDrawControl(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CustomDraw::customDrawControl() -->
+
+<section id="mthRGB"><title>rgb</title>
+<indexterm><primary>rgb</primary></indexterm>
+<indexterm><primary>CustomDraw class</primary><secondary>rgb</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--rgb(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+    <variablelist>
+      <varlistentry><term>TERM</term>
+      <listitem>
+      <para>
+        xx
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End CustomDraw::rgb() -->
+
+
+</section> <!-- End CustomDraw Class -->
 
 </chapter>

@@ -6992,4 +6992,73 @@ that allows the user to remove the check mark from all the check boxes:
 </section> <!-- End LvSubItem Class -->
 
 
+<section id="clsLvCustomDrawSimple"><title>LvCustomDrawSimple Class</title>
+<indexterm><primary>LvCustomDrawSimple class</primary></indexterm>
+<para>
+  A LvCustomDrawSimple object is used when a <link linkend="clsListView">ListView</link> control is registered for <link
+  linkend="clsCustomDraw">custom</link> draw. A LvCustomDrawSimple object is passed to the CUSTOMDRAW event handler. It
+  supplies both information to the event handler and returns information back to the Windows control. The attributes of
+  the object convey the information both ways.
+</para>
+<para>
+  When the ooDialog framework recieves information from the Windows custom draw control, it assigns values to the
+  attributes of the <computeroutput>LvCustomDrawSimple</computeroutput> object and sends the object to the Rexx dialog's
+  event handler. The programmer uses those values to determine what action to take and then assigns values to the
+  object's attributes to convey information back to the Windows control.
+  <computeroutput>LvCustomDrawSimple</computeroutput> object is specific to the
+  <computeroutput>ListView</computeroutput> class. Other ooDialog controls that support custom draw will have their own
+  class that performs a similar function, but whose attributes are specific to that control. For instance
+</para>
+
+<section id="sctMethodsLvCustomDrawSimple"><title>Method Table</title>
+<para>
+  The following table lists the class and instance methods of the <computeroutput>LvCustomDrawSimple</computeroutput> class:
+
+<table id="tblMethodsLvCustomDrawSimple" frame="all"> <title>LvCustomDrawSimple Class Method Reference</title>
+<tgroup cols="2">
+<colspec colwidth="1.5in">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
+</row>
+<row>
+<entry>new</entry>
+<entry><link linkend="mthNewClsLvCustomDrawSimple">new</link></entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+</row>
+</tbody></tgroup>
+</table>
+</para>
+</section>
+
+<section id="mthNewClsLvCustomDrawSimple"><title>new (Class Method)</title>
+<indexterm><primary>new</primary><secondary>LvCustomDrawSimple class</secondary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>new</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--><
+
+]]>
+</programlisting>
+
+<para>
+  The <computeroutput>LvCustomDrawSimple</computeroutput> class can not be instantiated by the Rexx program. When
+  needed, the ooDialog framework instantiates a <computeroutput>LvCustomdDrawSimple</computeroutput> object and passes
+  it to the dialog's custom draw event handler TODO need link.
+</para>
+</section>  <!-- End LvCustomDrawSimple::new() -->
+
+</section> <!-- End LvCustomDrawSimple Class -->
+
+
 </chapter>

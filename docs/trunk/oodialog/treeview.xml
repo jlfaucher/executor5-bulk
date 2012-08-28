@@ -165,6 +165,10 @@
 <entry><link linkend="expand">Expand</link></entry>
 </row>
 <row>
+<entry><link linkend="mthfind">find</link></entry>
+<entry>firstVisible</entry>
+</row>
+<row>
 <entry>firstVisible</entry>
 <entry><link linkend="firstvisibletrc">firstVisible</link></entry>
 </row>
@@ -891,6 +895,70 @@ associated with the specified parent item.</para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthFind"><title>find</title>
+<indexterm><primary>find</primary></indexterm>
+<indexterm><primary>TreeView class</primary><secondary>find</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--find(--text--)-------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Finds the first tree-view item whose label matches the text specified.  The search is case insensitive.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>text [required]</term>
+      <listitem>
+      <para>
+        Specifies the label, the text, of item to search for. The search is case insensitive, but is otherwise exact.
+        I.e., <emphasis role="italic">Coffe Product</emphasis> will not match <emphasis role="italic">Coffe
+        Products</emphasis>, but will match <emphasis role="italic">coffe product</emphasis> or <emphasis
+        role="italic">coffe PRODUCT</emphasis>
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the <link linkend="defHandle">handle</link> of the item found, or 0 if no item matches <emphasis
+    role="italic">text</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The first item to match the search text is returned. The search always starts at the root of the tree.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example searches for the first tree-view item whose label is <emphasis role="italic">Computers</emphasis>, and
+    if found, selects that item.
+<programlisting>
+<![CDATA[
+
+  tv = self~newTreeView(IDC_TV_PRODUCTS)
+
+  hItem = tv~find('Computers')
+  if hItem \== 0 then tv~select(hItem)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End TreeView::find() -->
 
 <section id="firstvisibletrc"><title>firstVisible</title>
 <indexterm><primary>firstVisible</primary>
