@@ -36,11 +36,14 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+/**
+ *
+ */
     -- Use the global .constDir for symbolic IDs and turn automatic data
     -- detection off.
-    .application~setDefaults('O', 'rc\oodtree.h', .false)
+    .application~setDefaults('O', 'rc\treeViewCustomDraw.h', .false)
 
-    dlg = .InventoryDlg~new("rc\oodtree.rc", IDD_TREE_DLG)
+    dlg = .InventoryDlg~new("rc\treeViewCustomDraw.rc", IDD_TREE_DLG)
     if dlg~initCode = 0 then do
         ret = dlg~execute("SHOWTOP")
     end
@@ -50,9 +53,9 @@ return 0
 ::requires "ooDialog.cls"  -- Require the ooDialog framework.
 
 ::class 'TreeViewConstants' mixinclass Object
-::constant BMP_FILE  "bmp\oodtree.bmp"  -- Icons for selected/not-selected items.
-::constant TREE_FILE "oodtree.inp"      -- Input file with the items to build the tree.
-::constant ITEM_FILE "oodtreei.inp"     -- Input file with dynamically added items.
+::constant BMP_FILE  "bmp\treeViewCustomDraw.bmp"  -- Icons for selected/not-selected items.
+::constant TREE_FILE "treeViewCustomDraw.inp"      -- Input file with the items to build the tree.
+::constant ITEM_FILE "treeViewCustomDrawi.inp"     -- Input file with dynamically added items.
 
 ::constant UNSELECTED_FOLDER  0         -- Index for the icon of an unselected folder item
 ::constant SELECTED_FOLDER    1         -- Index for the icon of a selected folder item
@@ -256,7 +259,7 @@ return 0
 ::method IDC_PB_NEW
   -- When the new button is pressed, display a dialog that gets the name of the new item
   -- and inserts it into the tree.
-  dlg = .NewTreeItemDlg~new("rc\oodtree.rc",  IDD_ADD_TREE_ITEM, self~newTreeView("IDC_TREE"))
+  dlg = .NewTreeItemDlg~new("rc\treeViewCustomDraw.rc",  IDD_ADD_TREE_ITEM, self~newTreeView("IDC_TREE"))
   dlg~execute
 
 
