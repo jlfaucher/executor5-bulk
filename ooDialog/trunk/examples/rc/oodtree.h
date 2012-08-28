@@ -1,7 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2012 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2012 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,43 +34,19 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
 
-#include <windows.h>
-#include <winuser.h>
-#include <commctrl.h>
-#include "oodtree.h"
-
-
-LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-IDD_TREE_DLG DIALOG 40, 60, 274, 311
-STYLE DS_MODALFRAME | DS_SETFONT | WS_CAPTION | WS_GROUP | WS_MAXIMIZEBOX | WS_POPUP | WS_SYSMENU
-CAPTION "Crazy Sam's Emporium - Inventory"
-FONT 8, "MS Sans Serif"
-{
-    CONTROL         "Tree", IDC_TREE, WC_TREEVIEW, WS_BORDER | TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_EDITLABELS | TVS_SHOWSELALWAYS, 10, 10, 254, 231
-    PUSHBUTTON      "New Item", IDC_PB_NEW, 10, 250, 50, 14, WS_GROUP
-    PUSHBUTTON      "Delete Item", IDC_PB_DELETE, 10, 268, 50, 14
-    PUSHBUTTON      "Item Info", IDC_PB_INFO, 10, 287, 50, 14
-    PUSHBUTTON      "Expand All", IDC_PB_EXP_ALL, 79, 268, 50, 14
-    PUSHBUTTON      "Collapse All", IDC_PB_COL_ALL, 79, 287, 50, 14
-    PUSHBUTTON      "Help", IDHELP, 214, 268, 50, 14
-    PUSHBUTTON      "Close", IDCANCEL, 214, 287, 50, 14
-}
-
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-IDD_ADD_TREE_ITEM DIALOG 0, 0, 209, 91
-STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
-CAPTION "Add New Item"
-FONT 8, "MS Sans Serif"
-{
-    LTEXT           "Name:", IDC_STATIC, 10, 13, 20, 8, SS_LEFT, WS_EX_RIGHT
-    EDITTEXT        IDC_EDIT_NAME, 34, 11, 106, 14, ES_AUTOHSCROLL
-    GROUPBOX        "Add new item as:", IDC_STATIC, 15, 32, 123, 49
-    AUTORADIOBUTTON "Sibling", IDC_RB_SIBLING, 23, 46, 32, 10, WS_TABSTOP
-    AUTORADIOBUTTON "Child", IDC_RB_CHILD, 23, 63, 32, 10, WS_TABSTOP
-    AUTOCHECKBOX    "Folder", IDC_CHK_FOLDER, 85, 46, 41, 10
-    DEFPUSHBUTTON   "OK", IDOK, 149, 47, 50, 14
-    PUSHBUTTON      "Cancel", IDCANCEL, 149, 67, 50, 14
-}
-
-
+#define IDD_TREE_DLG                            100
+#define IDD_ADD_TREE_ITEM                       101
+#define IDC_PB_NEW                              110
+#define IDC_PB_DELETE                           111
+#define IDC_PB_EXP_ALL                          112
+#define IDC_PB_COL_ALL                          113
+#define IDC_PB_INFO                             114
+#define IDC_TREE                                120
+#define IDC_CHK_FOLDER                          1001
+#define IDC_RB_SIBLING                          1004
+#define IDC_RB_CHILD                            1006
+#define IDC_EDIT_NAME                           1007

@@ -35,122 +35,189 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/****************************************************************************/
-/* Name: oodtree.rex                                                        */
-/* Type: Open Object REXX Script using ooDialog                             */
-/* Resource: oodtree.rc                                                     */
-/*                                                                          */
-/* Description:                                                             */
-/*                                                                          */
-/* Demonstration of a tree control using the Object REXX TreeControl class. */
-/*                                                                          */
-/****************************************************************************/
 
--- Use the global .constDir for symbolic IDs
-.application~useGlobalConstDir('O')
+    -- Use the global .constDir for symbolic IDs and turn automatic data
+    -- detection off.
+    .application~setDefaults('O', 'rc\oodtree.h', .false)
 
+    dlg = .InventoryDlg~new("rc\oodtree.rc", IDD_TREE_DLG)
+    if dlg~initCode = 0 then do
+        ret = dlg~execute("SHOWTOP")
+    end
 
-myDialog = .MyDialogClass~new("rc\oodtree.rc", IDD_TREE_DLG)
-if myDialog~initCode = 0 then do
-    rc = myDialog~Execute("SHOWTOP")
-end
+return 0
 
-/* Add program code here */
+::requires "ooDialog.cls"  -- Require the ooDialog framework.
 
-exit   /* leave program */
+::class 'TreeViewConstants' mixinclass Object
+::constant BMP_FILE  "bmp\oodtree.bmp"  -- Icons for selected/not-selected items.
+::constant TREE_FILE "oodtree.inp"      -- Input file with the items to build the tree.
+::constant ITEM_FILE "oodtreei.inp"     -- Input file with dynamically added items.
 
-
-::requires "ooDialog.cls"    /* This file contains the ooDialog classes */
+::constant UNSELECTED_FOLDER  0         -- Index for the icon of an unselected folder item
+::constant SELECTED_FOLDER    1         -- Index for the icon of a selected folder item
+::constant UNSELECTED_LEAF    2         -- Index for the icon of an unselected leaf item
+::constant SELECTED_LEAF      3         -- Index for the icon of a selected leaf item
 
 
-/* ---------------------------- Directives ---------------------------------*/
+::class 'InventoryDlg' subclass RcDialog inherit CustomDraw TreeViewConstants
 
-::class 'MyDialogClass' subclass RcDialog
+::method isLeafItem class
+  use strict arg treeView, item
+
+  info. = treeView~itemInfo(item)
+
+return info.!Image == self~UNSELECTED_LEAF
 
 ::method init
-  use arg rcFile, idDlg, initData., includeFile, options, expected
+    expose bkClr oddLevelClr evenLevelClr selectedClr leafClr
+    use arg rcFile, idDlg
 
-  forward class (super) continue
-  if self~initCode <> 0 then return self~initCode
+    self~init:super(rcFile, idDlg)
+    if self~initCode <> 0 then return self~initCode
 
-  /* Connect dialog control events to methods in the Rexx dialog. */
-  self~connectTreeViewEvent("IDC_TREE", "SelChanging", "onSelChanging_IDC_TREE")
-  --self~connectTreeViewEvent("IDC_TREE", "SelChanged", "onSelChanged_IDC_TREE")
-  self~connectTreeViewEvent("IDC_TREE", "Expanding", "onExpanding_IDC_TREE")
-  --self~connectTreeViewEvent("IDC_TREE", "Expanded", "onExpanded_IDC_TREE")
-  self~connectTreeViewEvent("IDC_TREE", "DefaultEdit")
-  self~connectTreeViewEvent("IDC_TREE","BEGINDRAG", "DefTreeDragHandler")
-  --self~connectTreeViewEvent("IDC_TREE","Delete","OnDelete_IDC_TREE")
-  self~connectTreeViewEvent("IDC_TREE","KeyDown","OnKeyDown_IDC_TREE")
-  self~connectButtonEvent("IDC_PB_NEW", "CLICKED", "IDC_PB_NEW")
-  self~connectButtonEvent("IDC_PB_DELETE", "CLICKED", "IDC_PB_DELETE")
-  self~connectButtonEvent(IDC_PB_EXP_ALL, "CLICKED", "IDC_PB_EXP_ALL")
-  self~connectButtonEvent(IDC_PB_COL_ALL, "CLICKED", "IDC_PB_COL_ALL")
-  self~connectButtonEvent(IDC_PB_INFO, "CLICKED", "IDC_PB_INFO")
+    if self~checkForRequiredFiles == .false then do
+      self~initCode = 17
+      return self~initCode
+    end
+
+    -- Connect dialog control events to methods in the Rexx dialog.
+
+    --self~connectTreeViewEvent("IDC_TREE", "SelChanged", "onSelChanged_IDC_TREE")
+    self~connectTreeViewEvent("IDC_TREE", "Expanding", "onExpanding_IDC_TREE")
+    --self~connectTreeViewEvent("IDC_TREE", "Expanded", "onExpanded_IDC_TREE")
+    self~connectTreeViewEvent("IDC_TREE", "DefaultEdit")
+    self~connectTreeViewEvent("IDC_TREE","BEGINDRAG", "DefTreeDragHandler")
+    --self~connectTreeViewEvent("IDC_TREE","Delete","OnDelete_IDC_TREE")
+    self~connectTreeViewEvent("IDC_TREE","KeyDown","OnKeyDown_IDC_TREE")
+    self~connectButtonEvent("IDC_PB_NEW", "CLICKED", "IDC_PB_NEW")
+    self~connectButtonEvent("IDC_PB_DELETE", "CLICKED", "IDC_PB_DELETE")
+    self~connectButtonEvent(IDC_PB_EXP_ALL, "CLICKED", "IDC_PB_EXP_ALL")
+    self~connectButtonEvent(IDC_PB_COL_ALL, "CLICKED", "IDC_PB_COL_ALL")
+    self~connectButtonEvent(IDC_PB_INFO, "CLICKED", "IDC_PB_INFO")
+
+    bkClr        =  self~RGB(250, 250, 250)
+    oddLevelClr  = self~RGB(82, 61, 0)
+    evenLevelClr = self~RGB(0, 20, 82)
+    selectedClr  = self~RGB(82, 0, 20)
+    leafClr      = self~RGB(0, 82, 20)
+
+    self~customDraw
+    self~customDrawControl(IDC_TREE, 'TreeView')
+
+return 0
+
+/** checkForRequiredFiles()
+ *
+ * This method is used to check that the bitmap and input files are available.
+ * It returns .true if they are found and .false if they are not found.
+ */
+::method checkForRequiredFiles private
+
+    haveError = .false
+    file = ''
+
+    if stream(self~BMP_FILE, "C", "QUERY EXISTS") = "" then do
+      haveError = .true
+      file = self~BMP_FILE
+    end
+    else if stream(self~TREE_FILE, "C", "QUERY EXISTS") = "" then do
+      haveError = .true
+      file = self~TREE_FILE
+    end
+    else if stream(self~ITEM_FILE, "C", "QUERY EXISTS") = "" then do
+        haveError = .true
+        file = self~ITEM_FILE
+    end
+
+    if haveError then do
+        msg   = "The required data file" file "does"  || .endOfLine || -
+                "not exist.  Without that file, this progam"   || .endOfLine || -
+                "will not run."                                || .endOfLine~copies(2) || -
+                "The program will abort."
+        title = 'File Error'
+
+        ret = MessageDialog(msg, 0, title, 'OK', 'ERROR')
+    end
+
+return \haveError
 
 
-  /* Initial values that are assigned to the object attributes */
-  self~IDC_TREE = 'Computers' /* Text of the item which should be selected */
-
-  /* Add any other initialization code here */
-  return 0
-
-
-/* Initialization Code, fill tree with initialization data  */
+/** initDialog()
+ */
 ::method initDialog
-  expose bmpFile treeFile itemFile
+    expose tv
 
-  curTree = self~newTreeView("IDC_TREE")
-  if curTree \= .nil then do
-    bmpFile  = "bmp\oodtree.bmp"  /* file which contains the icons for selected/not-selected items */
-    treeFile = "oodtree.inp"  /* input file which contains the items to build the tree         */
-    itemFile = "oodtreei.inp" /* input file which contains the items to build the special item */
+    tv = self~newTreeView("IDC_TREE")
 
-    /* check the file existence and display an error messge */
-    if stream(bmpFile, "C", "QUERY EXISTS") = "" then do
-      call infoDialog "Data file " bmpFile " does not exist"
-    end
-
-    if stream(treeFile, "C", "QUERY EXISTS") = "" then do
-      call infoDialog "Data file " treefile " does not exist !"
-    end
-
-    if stream(itemFile, "C", "QUERY EXISTS") = "" then do
-      call infoDialog "Data file " itemFile " does not exist"
-    end
-
-    /* Set image list for Tree control IDC_TREE */
-    image = .Image~getImage(bmpFile)
+    -- Set the image list for the tree-vies
+    image = .Image~getImage(self~BMP_FILE)
     imageList = .ImageList~create(.Size~new(16, 12), .Image~toID(ILC_COLOR8), 5, 2)
     if \image~isNull,  \imageList~isNull then do
-       imageList~add(image)
-       curTree~setImageList(imageList, .Image~toID(TVSIL_NORMAL))
-       image~release
+         imageList~add(image)
+         tv~setImageList(imageList, .Image~toID(TVSIL_NORMAL))
+         image~release
     end
 
-    /* Read the file containig the tree input data and build the tree */
-    do while lines(treeFile)
-      line = linein(treeFile)
-      command = "curTree~Add("||line||")"
-      interpret command
+    -- Read the file containig the tree input data and build the tree.
+    do while lines(self~TREE_FILE)
+        line = linein(self~TREE_FILE)
+        command = "tv~Add("||line||")"
+        interpret command
     end
+
+    -- Select the item with the text of Computers.
+    hItem = tv~find('Computers')
+    if hItem \== 0 then tv~select(hItem)
+
+return 0
+
+
+/*- - - - - - - - - - Event handler(s) - - - - - - - - - - - - - - - - - - - -*/
+
+::method onCustomDraw unguarded
+  expose tv bkClr oddLevelClr evenLevelClr selectedClr leafClr
+  use arg tvcds
+
+  --say 'onCustomDraw()'
+  --say '  item:     ' tvcds~item
+  --say '  level:    ' tvcds~level
+  --say '  drawStage:' self~drawStage2string(tvcds~drawStage)
+
+  if tvcds~drawStage == self~CDDS_ITEMPREPAINT then do
+      tvcds~reply = self~CDRF_NEWFONT
+
+      selected = tv~selected
+      isLeaf   = .InventoryDlg~isLeafItem(tv, tvcds~item)
+
+      if selected == tvcds~item then do
+        tvcds~clrText   = selectedClr
+        tvcds~clrTextBk = bkClr
+      end
+      else if isLeaf then do
+        tvcds~clrText   = leafClr
+        tvcds~clrTextBk = bkClr
+      end
+      else if tvcds~level // 2 == 1 then do
+        tvcds~clrText   = oddLevelClr
+        tvcds~clrTextBk = bkClr
+      end
+      else do
+        tvcds~clrText   = evenLevelClr
+        tvcds~clrTextBk = bkClr
+      end
+
+      return .true
   end
 
+  return .false
 
-/* --------------------- message handler(s) ----------------------------------*/
-
-/* Method onSelChanging_IDC_TREE handles notification 'SelChanging' for item IDC_TREE */
-::method onSelChanging_IDC_TREE
-  curTree = self~newTreeView("IDC_TREE")
-
-  /* diaplay items which are selected once as bolds */
-  curTree~modify(curtree~selected, , , , "BOLD")
 
 
 
 /* Method onExpanding_IDC_TREE handles notification 'Expanding' for item IDC_TREE */
 ::method onExpanding_IDC_TREE
-  expose itemFile
+  expose ITEM_FILE
   use arg tree, item, what
   curTree = self~newTreeView(tree)
   itemInfo. = curTree~itemInfo(item)
@@ -159,8 +226,8 @@ exit   /* leave program */
   /* and delete all children of the item if it will be collapsed                   */
   if itemInfo.!TEXT = "Special Offers" then do
     if what = "COLLAPSED" & curTree~child(item) = 0 then do
-      do while lines(itemFile)
-        line = linein(itemFile)
+      do while lines(self~ITEM_FILE)
+        line = linein(self~ITEM_FILE)
         command = "curTree~insert(item,,"||line||")"
         interpret command
       end
@@ -189,7 +256,7 @@ exit   /* leave program */
 ::method IDC_PB_NEW
   -- When the new button is pressed, display a dialog that gets the name of the new item
   -- and inserts it into the tree.
-  dlg = .NewTreeItemDlg~new("rc\oodtreeNewItem.rc",  IDD_ADD_TREE_ITEM, self~newTreeView("IDC_TREE"))
+  dlg = .NewTreeItemDlg~new("rc\oodtree.rc",  IDD_ADD_TREE_ITEM, self~newTreeView("IDC_TREE"))
   dlg~execute
 
 
@@ -244,11 +311,19 @@ exit   /* leave program */
   call InfoDialog 'The selected item "'itemInfo.!Text'" has' children 'children. The index for the icon is "'itemInfo.!Image'"',
                    ', the index for the selected icon is "'itemInfo.!SelectedImage'". The states are "'itemInfo.!State'".'
 
-/* Method Help is connected to item 9 */
-::method Help
+/** help()
+ */
+::method help
   call infoDialog "No help available."
 
-::class 'NewTreeItemDlg' subclass RcDialog
+
+/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
+
+ NewTreeItemDlg - Class
+   This class allows the user to add a new item to the tree-view
+
+\*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+::class 'NewTreeItemDlg' subclass RcDialog inherit TreeViewConstants
 
 ::method init
   expose treeControl
@@ -258,62 +333,71 @@ exit   /* leave program */
   self~init:super(scriptFile, dlgID)
 
 ::method initDialog
-  expose treeControl editControl childRB folderChk selected
+    expose treeControl editControl childRB folderChk selected
 
-  -- Save a reference to the current selected item
-  selected = treeControl~selected
+    -- Save a reference to the current selected item
+    selected = treeControl~selected
 
-  -- Save a reference to some of the controls we will use repeatedly
-  editControl = self~newEdit(IDC_EDIT_NAME)
-  childRB = self~newRadioButton(IDC_RB_CHILD)
-  folderChk = self~newCheckBox(IDC_CHK_FOLDER)
+    editControl = self~newEdit(IDC_EDIT_NAME)
+    childRB     = self~newRadioButton(IDC_RB_CHILD)
+    siblingRB   = self~newRadioButton(IDC_RB_SIBLING)
+    folderChk   = self~newCheckBox(IDC_CHK_FOLDER)
 
-  -- If the selected is the root of the tree, a new item has to be inserted as
-  -- a child.  So disable the radio buttons that allow the user to choose to
-  -- insert as a child or sibling.  And, pre-check the add as a folder check
-  -- box.
-  if selected == treeControl~root then do
-    childRB~~check~disable
-    self~newRadioButton(IDC_RB_SIBLING)~disable
-    folderChk~check
-  end
-  else do
-    self~newRadioButton(IDC_RB_SIBLING)~check
-  end
+    -- If the selected is the root of the tree, a new item has to be inserted as
+    -- a child.  So disable the radio buttons that allow the user to choose to
+    -- insert as a child or sibling.  And, pre-check the add as a folder check
+    -- box.
+    if selected == treeControl~root then do
+        childRB~~check~disable
+        siblingRB~disable
+        folderChk~check
+    end
+    else if .InventoryDlg~isLeafItem(treeControl, selected) then do
+        siblingRB~~check~disable
+        childRB~disable
+    end
+    else do
+        siblingRB~check
+    end
 
-  -- Set a visual cue for the edit control.  This will only show when the edit
-  -- control has no text in it, and does not have the focus.
-  editControl~setCue("Enter name of new item")
+    -- Set a visual cue for the edit control.  This will only show when the edit
+    -- control has no text in it, and does not have the focus.
+    editControl~setCue("Enter name of new item")
+
+return 0
 
 ::method ok
-  expose treeControl editControl childRB folderChk selected
+    expose treeControl editControl childRB folderChk selected
 
-  -- Make sure the user has given the item a name.
-  text = editControl~getText~strip
-  if text == "" then do
-    j = infoDialog("You must enter the name of the new item")
-    editControl~assignFocus
-    return 0
-  end
+    -- Make sure the user has given the item a name.
+    text = editControl~getText~strip
+    if text == "" then do
+        msg   = "You must enter the name of the new item"
+        title = "Inventory - Add Item"
 
-  -- See if the user wants to add this as a folder item, or a regular item.
-  -- This will determine the image IDs we use when we insert the item
-  addAsFolder = folderChk~checked
+        ret = MessageDialog(msg, self~hwnd, title, 'WARNING', 'OKCANCEL')
+        if ret == self~IDCANCEL then return self~cancel:super
 
-  -- Now insert the item either as a child or a sibling depending on what the
-  -- user requested.
-  if childRB~checked then do
-    if addAsFolder then newItem = treeControl~insert(selected, , text, 0, 1)
-    else newItem = treeControl~insert(selected, , text, 2, 3)
-    treeControl~expand(treeControl~parent(newItem))
-  end
-  else do
-    if addAsFolder then treeControl~insert(treeControl~Parent(selected), , text, 0, 1)
-    else treeControl~insert(treeControl~Parent(selected), , text, 2, 3)
-  end
+        editControl~assignFocus
+        return 0
+    end
 
-  -- Finally, quit by invoking the super class ok() method.
-  return self~ok:super
+    -- See if the user wants to add this as a folder item, or a regular item.
+    -- This will determine the image IDs we use when we insert the item
+    addAsFolder = folderChk~checked
 
-::method initAutoDetection
-  self~noAutoDetection
+    -- Now insert the item either as a child or a sibling depending on what the
+    -- user requested.
+    if childRB~checked then do
+        if addAsFolder then newItem = treeControl~insert(selected, , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER)
+        else newItem = treeControl~insert(selected, , text, self~UNSELECTED_LEAF, self~SELECTED_LEAF)
+        treeControl~expand(treeControl~parent(newItem))
+    end
+    else do
+        if addAsFolder then treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_FOLDER, self~SELECTED_FOLDER)
+        else treeControl~insert(treeControl~Parent(selected), , text, self~UNSELECTED_LEAF, self~SELECTED_LEAF)
+    end
+
+    -- Finally, quit by invoking the super class ok() method.
+return self~ok:super
+
