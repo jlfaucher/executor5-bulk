@@ -672,6 +672,35 @@ makeColl: procedure
   self~assertTrue(sameContent(c, check))
   self~assertTrue(sameArrayContent(removed, .array~new))
 
+::method test_uniqueindexes
+  r = .relation~new
+  i = r~uniqueindexes
+  self~assertTrue(i~isa(.array))
+  self~assertTrue(i~isEmpty)
+
+  r~put(1, "foo")
+
+  i = r~uniqueindexes
+  self~assertEquals(1, i~items)
+  self~assertEquals("foo", i[1])
+
+  r~put(2, "bar")
+
+  i = r~uniqueindexes
+  self~assertEquals(2, i~items)
+  self~assertTrue(i~hasItem("foo"))
+  self~assertTrue(i~hasItem("bar"))
+
+  loop i = 1 to 10
+      r~put(i, "foo")
+      r~put(i, "bar")
+  end
+
+  i = r~uniqueindexes
+  self~assertEquals(2, i~items)
+  self~assertTrue(i~hasItem("foo"))
+  self~assertTrue(i~hasItem("bar"))
+
 
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
