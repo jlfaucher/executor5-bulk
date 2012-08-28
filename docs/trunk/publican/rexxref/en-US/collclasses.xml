@@ -5102,13 +5102,9 @@ using the == method of <emphasis role="italic">item</emphasis>.
 
 <para>Returns an array of all indexes contained in the Relation. The returned
 array will have one index for every item stored in the relation, including
-duplicates.  Duplicate indexes can be removed easily by converted the array to a
+duplicates.  To retrieve the indexes without duplicates, use the uniqueindexes (<xref linkend="mthRelationUniqueIndexes" />) method.
 set.
 </para>
-<programlisting>
-   -- retrieve the unique index items
-   indexes = .set~new~union(relation~allindexes)
-</programlisting>
 </section>
 
 <section id="mthRelationAllItems"><title>allItems</title>
@@ -5472,6 +5468,22 @@ supplier contains all of the items with the specified index.
 and the <emphasis role="italic">argument</emphasis> collection. The
 <emphasis role="italic">argument</emphasis> can be any
 collection class object.</para>
+</section>
+
+<section id="mthRelationUniqueIndexes"><title>uniqueIndexes</title>
+<indexterm><primary>uniqueIndexes method</primary>
+<secondary>of Relation class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>uniqueIndexes method</secondary>
+<tertiary>of Relation class</tertiary></indexterm>
+<programlisting>
+<![CDATA[
+>>-uniqueIndexes-----------------------------------------------><
+]]>
+</programlisting>
+
+<para>Returns an array of all indexes contained in the Relation, with no duplicates.
+</para>
 </section>
 
 <section id="mthRelationXor"><title>xor</title>
