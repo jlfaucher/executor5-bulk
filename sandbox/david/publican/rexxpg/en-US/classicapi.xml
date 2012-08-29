@@ -74,9 +74,9 @@ replacing Rexx system requests.
 <para>Subcommand, function, and system exit handlers have similar coding, compilation,
 and packaging characteristics.</para>
 <para>In addition, applications can manipulate the variables in Rexx programs
-(see <link linkend="os2vpi">Variable Pool Interface</link>),
+(see <xref linkend="os2vpi" />),
 and execute Rexx routines directly from memory
-(see <link linkend="macrosp">Macrospace Interface</link>).</para>
+(see <xref linkend="macrosp" />).</para>
 
 <section id="apigenc"><title>Handler Characteristics</title>
 <para>The basic requirements for subcommand, function, and system exit handlers
@@ -216,7 +216,7 @@ of the operating system, or from within an application.</para>
 <section id="invcom"><title>From the Operating System</title>
 <para>You can run a Rexx program directly from the operating system
 command prompt using Rexx followed by the program name.
-See <link linkend="looks">Running a Rexx Program</link>.</para>
+See <xref linkend="looks" />.</para>
 </section>
 
 <section id="fwaa"><title>From within an Application</title>
@@ -270,7 +270,7 @@ requests a Rexx procedure from the macrospace,
 <indexterm><primary>RexxStart</primary>
 <secondary>using macrospace programs</secondary></indexterm>
 <emphasis role="italic">ProgramName</emphasis> is the macrospace
-function name (see <link linkend="macrosp">Macrospace Interface</link>).</para>
+function name (see <xref linkend="macrosp" />).</para>
 </listitem></varlistentry>
 <varlistentry><term>Instore (PRXSTRING) - input</term>
 <listitem><para>is
@@ -278,7 +278,7 @@ an array of two RXSTRING descriptors for in-storage Rexx procedures. If the
 <emphasis role="italic">strptr</emphasis> fields of both RXSTRINGs are null,
 the interpreter searches for Rexx procedure
 <emphasis role="italic">ProgramName</emphasis> in the Rexx macrospace (see
-<link linkend="macrosp">Macrospace Interface</link>).
+<xref linkend="macrosp" />).
 If the procedure is not in the macrospace, the call to RexxStart terminates
 with an error return code. </para>
 <para>If either <emphasis role="italic">Instore strptr</emphasis> field
@@ -385,7 +385,7 @@ typedef struct {
 ASCII exit handler name registered with RexxRegisterExitExe or
 RexxRegisterExitDll. <emphasis role="italic">Sysexit_code</emphasis>
 is a code identifying the handler exit type. See
-<link linkend="sysex">System Exit Interface</link> for exit code
+<xref linkend="sysex" /> for exit code
 definitions. An RXENDLST entry identifies the system-exit list end.
 <emphasis role="italic">Exits</emphasis> must be null if exits are not used.</para>
 </listitem></varlistentry>
@@ -427,7 +427,7 @@ the interpreter.
 </para></listitem></varlistentry>
 </variablelist>
 <para>When a macrospace Rexx procedure (see
-<link linkend="macrosp">Macrospace Interface</link>) is not loaded
+<xref linkend="macrosp" />) is not loaded
 in the macrospace, the return code is -3 (&quot;Program is unreadable&quot;).</para>
 </section>
 
@@ -1057,7 +1057,7 @@ versions of Object Rexx or other Rexx interpreters is a consideration.</para>
 <para>The newer style functions have access to Rexx objects and a fuller set of
 APIs for interfacing with the interpreter runtime.  These functions are the
 preferred method for writing Open Object Rexx extensions are defined in
-<link linkend="buildinglibs">Building an External Native Library</link>.
+<xref linkend="buildinglibs" />.
 </para>
 <section id="xffmt"><title>Registering External Functions</title>
 <para>An external function can reside in the same module (executable
@@ -3635,7 +3635,7 @@ or delete a queue named SESSION.</entry>
 <secondary>RexxPullQueue</secondary></indexterm>
 <para>RexxPullQueue removes the top entry from the queue and returns it to the
 caller.  RexxPullQueue is deprecated in favor of its more portable
-replacement <link linkend="rpulfque">RexxPullFromQueue</link>.
+replacement RexxPullFromQueue (<xref linkend="rpulfque" />).
 </para>
 <programlisting>
 retc = RexxPullQueue(QueueName, DataBuf, DateTime, WaitFlag);
