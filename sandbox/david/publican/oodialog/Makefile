@@ -44,12 +44,12 @@ PRODUCT = oodialog
 all: pdf html
 
 pdf:
-	- rm -r tmp/en-US/pdf
+	- rm -rf tmp/en-US/pdf
 	publican build --formats=pdf --langs=en-US
 	cd tmp/en-US/pdf; mv ooRexx*.pdf $(PRODUCT).pdf; cd ../../..
 
 html:
-	- rm -r tmp/en-US/html
+	- rm -rf tmp/en-US/html
 	publican build --formats=html --langs=en-US
 	cd tmp/en-US/html; zip -r $(PRODUCT)-html.zip *; cd ../../..
 

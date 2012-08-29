@@ -56,8 +56,8 @@
 </para>
 <para>
   The <computeroutput>Edit</computeroutput> class provides methods to work with and manipulate the underlying
-  Windows edit dialog control which it represents. It is a concrete subclass of the dialog control <link
-  linkend="chpDialogControlObject">object</link> and therefore has all methods of the of the dialog control object.
+  Windows edit dialog control which it represents. It is a concrete subclass of the dialog control
+  object (<xref linkend="chpDialogControlObject" />) and therefore has all methods of the of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -66,22 +66,22 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the <link linkend="tmthNewEdit">newEdit</link>() method of the <link
-    linkend="chpDialogObject">dialog</link> object to retrieve a new Edit object.
+    Use the newEdit (<xref linkend="tmthNewEdit" />)() method of the
+    dialog (<xref linkend="chpDialogObject" />) object to retrieve a new Edit object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define an edit in a <link linkend="clsUserDialog">UserDialog</link> class, use the <link
-    linkend="mthCreateEdit">createEdit</link> method.
+    To dynamically define an edit in a UserDialog (<xref linkend="clsUserDialog" />) class, use the
+    createEdit (<xref linkend="mthCreateEdit" />) method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the <link linkend="ovvEvents">event</link> notifications sent by the underlying edit control to
-    a method in the Rexx dialog object use the <link linkend="mthConnectEditEvent">connectEditEvent</link>()
+    To connect the event (<xref linkend="ovvEvents" />) notifications sent by the underlying edit control to
+    a method in the Rexx dialog object use the connectEditEvent (<xref linkend="mthConnectEditEvent" />)()
     method.
   </para> </listitem></varlistentry>
 </variablelist> </para>
@@ -107,15 +107,15 @@
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="tmthNewEdit">newEdit</link></entry>
+<entry>newEdit (<xref linkend="tmthNewEdit" />)</entry>
 <entry>Returns a new <computeroutput>Edit</computeroutput> object for the edit control with the specified ID.</entry>
 </row>
 <row>
-<entry><link linkend="tmthCreateEdit">createEdit</link></entry>
-<entry>Creates an edit control in the dialog template of a <link linkend="clsUserDialog">UserDialog</link></entry>
+<entry>createEdit (<xref linkend="tmthCreateEdit" />)</entry>
+<entry>Creates an edit control in the dialog template of a UserDialog (<xref linkend="clsUserDialog" />)</entry>
 </row>
 <row>
-<entry><link linkend="tmthConnectEditEvent">connectEditEvent</link></entry>
+<entry>connectEditEvent (<xref linkend="tmthConnectEditEvent" />)</entry>
 <entry>Connects an edit control event notification to a method in the Rexx dialog object</entry>
 </row>
 <row>
@@ -123,7 +123,7 @@
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="atrPasswordChar">passwordChar</link></entry>
+<entry>passwordChar (<xref linkend="atrPasswordChar" />)</entry>
 <entry>Set or get the password character for an edit control with the PASSWORD style.</entry>
 </row>
 <row>
@@ -131,167 +131,167 @@
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthAddStyleClsEdit">addStyle</link></entry>
+<entry>addStyle (<xref linkend="mthAddStyleClsEdit" />)</entry>
 <entry>Adds one or more edit control styles to the edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthCanUndo">canUndo</link></entry>
+<entry>canUndo (<xref linkend="mthCanUndo" />)</entry>
 <entry>Determines if there are any actions in the undo queue of the edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthClearText">clearText</link></entry>
+<entry>clearText (<xref linkend="mthClearText" />)</entry>
 <entry>Deletes the currently selected text from the edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthCopyText">copyText</link></entry>
+<entry>copyText (<xref linkend="mthCopyText" />)</entry>
 <entry>Copies the currently selected text to the clipboard in text format.</entry>
 </row>
 <row>
-<entry><link linkend="mthCutText">cutText</link></entry>
+<entry>cutText (<xref linkend="mthCutText" />)</entry>
 <entry>Deletes the currently selected text in the edit control and copies it to the clipboard.</entry>
 </row>
 <row>
-<entry><link linkend="mthDisableInternalResize">disableInternalResize</link></entry>
+<entry>disableInternalResize (<xref linkend="mthDisableInternalResize" />)</entry>
 <entry>Prevents the edit control from internally resizing itself when its owner dialog is resized.</entry>
 </row>
 <row>
-<entry><link linkend="mthEnsureCaretVisibility">ensureCaretVisibility</link></entry>
+<entry>ensureCaretVisibility (<xref linkend="mthEnsureCaretVisibility" />)</entry>
 <entry>Scrolls the edit control until the caret (cursor) is visible.</entry>
 </row>
 <row>
-<entry><link linkend="mthFirstVisibleLine">firstVisibleLine</link></entry>
+<entry>firstVisibleLine (<xref linkend="mthFirstVisibleLine" />)</entry>
 <entry>Retrieves the index of the first visible line, or the first visible character, in an edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetCue">getCue</link></entry>
+<entry>getCue (<xref linkend="mthGetCue" />)</entry>
 <entry>Retrieves the cue text, or the empty string if there is no cue set.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetLine">getLine</link></entry>
+<entry>getLine (<xref linkend="mthGetLine" />)</entry>
 <entry>Retrieves the text of the specified line.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetMargins">getMargins</link></entry>
+<entry>getMargins (<xref linkend="mthGetMargins" />)</entry>
 <entry>Returns the width of the left and right margins of the edit control in a <computeroutput>Directory</computeroutput> object.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetRectClsEdit">getRect</link></entry>
+<entry>getRect (<xref linkend="mthGetRectClsEdit" />)</entry>
 <entry>Returns the edit control's current formatting rectangle as a <computeroutput>.Rect</computeroutput> object</entry>
 </row>
 <row>
-<entry><link linkend="mthGetStyle">getStyle</link></entry>
+<entry>getStyle (<xref linkend="mthGetStyle" />)</entry>
 <entry>Returns the edit control's current style as a blank delimited list of style keywords.</entry>
 </row>
 <row>
-<entry><link linkend="mthHideBalloon">hideBalloon</link></entry>
+<entry>hideBalloon (<xref linkend="mthHideBalloon" />)</entry>
 <entry>Hides the balloon information window displayed by the <emphasis role="italic">showBalloon</emphasis> method.</entry>
 </row>
 <row>
-<entry><link linkend="mthIsModified">isModified</link></entry>
+<entry>isModified (<xref linkend="mthIsModified" />)</entry>
 <entry>Determines if the text in the edit control has been modified.</entry>
 </row>
 <row>
-<entry><link linkend="mthIsSingleLine">isSingleLine</link></entry>
+<entry>isSingleLine (<xref linkend="mthIsSingleLine" />)</entry>
 <entry>Determines if this edit control is a single line or a multi-line edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthLineFromIndex">lineFromIndex</link></entry>
+<entry>lineFromIndex (<xref linkend="mthLineFromIndex" />)</entry>
 <entry>Gets the line index of the line that contains the specified character index.</entry>
 </row>
 <row>
-<entry><link linkend="mthLineIndex">lineIndex</link></entry>
+<entry>lineIndex (<xref linkend="mthLineIndex" />)</entry>
 <entry>Determines the one-based character index of the first character in the line specified.</entry>
 </row>
 <row>
-<entry><link linkend="mthLineLength">lineLength</link></entry>
+<entry>lineLength (<xref linkend="mthLineLength" />)</entry>
 <entry>Returns the length, in characters, of the specified line in an edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthLines">lines</link></entry>
+<entry>lines (<xref linkend="mthLines" />)</entry>
 <entry>Determines the number of lines in a multiline edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthLineScroll">lineScroll</link></entry>
+<entry>lineScroll (<xref linkend="mthLineScroll" />)</entry>
 <entry>Scrolls the text horizontally and vertically in a multiline edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthMargins">margins</link></entry>
+<entry>margins (<xref linkend="mthMargins" />)</entry>
 <entry>Returns the left and right margins of the edit control as a <computeroutput>String</computeroutput> object.</entry>
 </row>
 <row>
-<entry><link linkend="mthNoContextMenu">noContextMenu</link></entry>
+<entry>noContextMenu (<xref linkend="mthNoContextMenu" />)</entry>
 <entry>Removes the edit control's internal context menu.</entry>
 </row>
 <row>
-<entry><link linkend="mthPasteText">pasteText</link></entry>
+<entry>pasteText (<xref linkend="mthPasteText" />)</entry>
 <entry>Copies the content of the clipboard to the edit control at the current caret position.</entry>
 </row>
 <row>
-<entry><link linkend="mthRemoveStyleClsEdit">removeStyle</link></entry>
+<entry>removeStyle (<xref linkend="mthRemoveStyleClsEdit" />)</entry>
 <entry>Removes one or more edit control styles from the edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthReplaceSelText">replaceSelText</link></entry>
+<entry>replaceSelText (<xref linkend="mthReplaceSelText" />)</entry>
 <entry>Replaces the text selection in an edit control with the specified text.</entry>
 </row>
 <row>
-<entry><link linkend="mthReplaceStyleClsEdit">replaceStyle</link></entry>
+<entry>replaceStyle (<xref linkend="mthReplaceStyleClsEdit" />)</entry>
 <entry>Removes and adds one or more edit control styles in one operation.</entry>
 </row>
 <row>
-<entry><link linkend="mthScrollCommand">scrollCommand</link></entry>
+<entry>scrollCommand (<xref linkend="mthScrollCommand" />)</entry>
 <entry>Scrolls the text vertically in a multiline edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthSelectClsEdit">select</link></entry>
+<entry>select (<xref linkend="mthSelectClsEdit" />)</entry>
 <entry>Used to change the text selection and / or the position of the cursor</entry>
 </row>
 <row>
-<entry><link linkend="mthSelectedClsEdit">selected</link></entry>
+<entry>selected (<xref linkend="mthSelectedClsEdit" />)</entry>
 <entry>Returns a <computeroutput>String</computeroutput> object containing the start and end of the text selection.</entry>
 </row>
 <row>
-<entry><link linkend="mthSelection">selection</link></entry>
+<entry>selection (<xref linkend="mthSelection" />)</entry>
 <entry>Returns a <computeroutput>Directory</computeroutput> object containing the start and end of the text selection.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetCue">setCue</link></entry>
+<entry>setCue (<xref linkend="mthSetCue" />)</entry>
 <entry>Sets the text for the <emphasis role="italic">cue</emphasis> banner.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetLimit">setLimit</link></entry>
+<entry>setLimit (<xref linkend="mthSetLimit" />)</entry>
 <entry>Sets the maximum number of characters the user can type in to the edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetMargins">setMargins</link></entry>
+<entry>setMargins (<xref linkend="mthSetMargins" />)</entry>
 <entry>Sets the left and right margins of the edit control as specified.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetModified">setModified</link></entry>
+<entry>setModified (<xref linkend="mthSetModified" />)</entry>
 <entry>Sets the modified flag of an edit control to the state specified, <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetReadOnly">setReadOnly</link></entry>
+<entry>setReadOnly (<xref linkend="mthSetReadOnly" />)</entry>
 <entry>Adds or removes the read only style for the edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetRectClsEdit">setRect</link></entry>
+<entry>setRect (<xref linkend="mthSetRectClsEdit" />)</entry>
 <entry>Sets the edit control's current formatting rectangle using a <computeroutput>.Rect</computeroutput> object</entry>
 </row>
 <row>
-<entry><link linkend="mthSetTabStops">setTabStops</link></entry>
+<entry>setTabStops (<xref linkend="mthSetTabStops" />)</entry>
 <entry>setTabStops</entry>
 </row>
 <row>
-<entry><link linkend="mthShowBalloon">showBalloon</link></entry>
+<entry>showBalloon (<xref linkend="mthShowBalloon" />)</entry>
 <entry>Displays an informational window, a balloon tip, for the edit control.</entry>
 </row>
 <row>
-<entry><link linkend="mthTabEquals">tab=</link></entry>
+<entry>tab= (<xref linkend="mthTabEquals" />)</entry>
 <entry>An alias for the <emphasis role="italic">setTabStops</emphasis> method.</entry>
 </row>
 <row>
-<entry><link linkend="mthUndo">undo</link></entry>
+<entry>undo (<xref linkend="mthUndo" />)</entry>
 <entry>Undoes the last edit control operation in the edit control's undo queue.</entry>
 </row>
 </tbody></tgroup>
@@ -302,8 +302,8 @@
 <section id="tmthNewEdit"><title>newEdit (dialog object method)</title>
 <para>
   Edit objects can not be instantiated by the programmer from Rexx code. Rather an Edit object is obtained
-  by using the <link linkend="mthNewEdit">newEdit</link>() method of the dialog <link
-  linkend="chpDialogObject">object</link>. The syntax is:
+  by using the newEdit (<xref linkend="mthNewEdit" />)() method of the dialog
+  object (<xref linkend="chpDialogObject" />). The syntax is:
 <programlisting>
 <![CDATA[
 >>--newEdit(--id--)------------------------------><
@@ -316,8 +316,8 @@
 
 <section id="tmthCreateEdit"><title>createEdit (UserDialog method)</title>
 <para>
-  An edit control can be added to the dialog template for a <link linkend="clsUserDialog">UserDialog</link>
-  dialog through the <link linkend="mthCreateEdit">createEdit</link>() method. The basic syntax is:
+  An edit control can be added to the dialog template for a UserDialog (<xref linkend="clsUserDialog" />)
+  dialog through the createEdit (<xref linkend="mthCreateEdit" />)() method. The basic syntax is:
 <programlisting> <![CDATA[
 >>--createEdit(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
                                          +-,-style-+  +-,-attributeName-+
@@ -330,9 +330,9 @@
 
 <section id="tmthConnectEditEvent"><title>connectEditEvent (dialog object method)</title>
 <para>
-  To connect event notifications from an edit control use the <link
-  linkend="mthConnectEditEvent">connectEditEvent</link>() method of the <link
-  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+  To connect event notifications from an edit control use the
+  connectEditEvent (<xref linkend="mthConnectEditEvent" />)() method of the
+  dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>--connectEditEvent(--id--,--event--+----------------+--)-----><
@@ -381,7 +381,7 @@
   </para>
   <para>
     When the operating system creates the underlying edit control, if it has the PASSWORD style, it sets the password
-    character to the default. This is an asterisk for earlier versions of <link linkend="ovvComctl32">Comctl32</link>, a
+    character to the default. This is an asterisk for earlier versions of Comctl32 (<xref linkend="ovvComctl32" />), a
     solid circle for Comctl32 version 6.0 and later.
   </para>
   </listitem></varlistentry>
@@ -458,21 +458,21 @@
             Converts text entered in the edit control from the Windows character set to the OEM character set and then
             back again to the Windows character set. This ensures proper character conversion in certain circumstances.
             Microsoft states that this style is most useful when edit controls contain file names that will be used with
-            file systems that do not support Unicode. For further details see the <link linkend="defWindowsDoc">Windows
-            documentation</link> provided by Microsoft.
+            file systems that do not support Unicode. For further details see the
+            Windows documentation (<xref linkend="defWindowsDoc" />) provided by Microsoft.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>TAB</term>
           <listitem>
           <para>
-            Adds the <link linkend="wstabstop">tabstop</link> tab stop
+            Adds the tabstop (<xref linkend="wstabstop" />) tab stop
           style.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>GROUP</term>
           <listitem>
           <para>
-            Adds the <link linkend="wsgroup">group</link> style.
+            Adds the group (<xref linkend="wsgroup" />) style.
           </para>
           </listitem></varlistentry>
         </variablelist>
@@ -493,7 +493,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method only works with the <link linkend="paraDialogControlStyles">window styles</link> that can be changed
+    This method only works with the window styles (<xref linkend="paraDialogControlStyles" />) that can be changed
     after the edit control has been created. Not all window styles can be changed after the control is created.
   </para>
   <para>
@@ -511,7 +511,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -562,7 +562,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    When the undo queue is not empty, the <link linkend="mthUndo">undo</link> method can be used to undo the most recent
+    When the undo queue is not empty, the undo (<xref linkend="mthUndo" />) method can be used to undo the most recent
     operation.
   </para>
   </listitem></varlistentry>
@@ -600,7 +600,7 @@
   <listitem>
   <para>
     When the <emphasis role="italic">clearText</emphasis> method is used to delete the selected text, the deletion can
-    be undone using the <link linkend="mthUndo">undo</link> method.
+    be undone using the undo (<xref linkend="mthUndo" />) method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -666,9 +666,9 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The deletion performed by the <emphasis role="italic">cutText</emphasis> method can be undone by using the <link
-    linkend="mthUndo">undo</link> method.  To delete the currently selected text without placing that text on the
-    clipboard, use the <link linkend="mthClearText">clearText</link> method.
+    The deletion performed by the <emphasis role="italic">cutText</emphasis> method can be undone by using the
+    undo (<xref linkend="mthUndo" />) method.  To delete the currently selected text without placing that text on the
+    clipboard, use the clearText (<xref linkend="mthClearText" />) method.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -725,15 +725,15 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
-    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    Requires Common Control Library (<xref linkend="ovvComctl32" />) version 6.0 or later. If necessary use the
+    comCtl32Version (<xref linkend="mthComCtl32Version" />)() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable. The following codes may be set. They
+    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable. The following codes may be set. They
     are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
@@ -880,8 +880,8 @@
 </programlisting>
 
 <para>
-  Retrieves the cue text, or the empty string if there is no cue set. The cue text is set with the <link
-  linkend="mthSetCue">setCue</link> method.
+  Retrieves the cue text, or the empty string if there is no cue set. The cue text is set with the
+  setCue (<xref linkend="mthSetCue" />) method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -921,8 +921,8 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
-    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    Requires Common Control Library (<xref linkend="ovvComctl32" />) version 6.0 or later. If necessary use the
+    comCtl32Version (<xref linkend="mthComCtl32Version" />)() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
   </listitem></varlistentry>
@@ -983,7 +983,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable. The following error code is set by
+    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable. The following error code is set by
     the ooDialog framework on error.
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
@@ -1002,8 +1002,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example prints to the screen the text in the edit control with the <link
-    linkend="defSymbolicID">symbolic</link> ID of <computeroutput>IDC_EDIT_COPYRIGHT</computeroutput>
+    This example prints to the screen the text in the edit control with the
+    symbolic (<xref linkend="defSymbolicId" />) ID of <computeroutput>IDC_EDIT_COPYRIGHT</computeroutput>
 <programlisting>
 <![CDATA[
 
@@ -1125,8 +1125,8 @@
     rectangle can be made smaller than the window rectangle, which will create more white space around the text.
   </para>
   <para>
-    The coordinates of an edit control's formatting rectangle can be set through the <link
-    linkend="mthSetRectClsEdit">setRect</link> method.
+    The coordinates of an edit control's formatting rectangle can be set through the
+    setRect (<xref linkend="mthSetRectClsEdit" />) method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1192,7 +1192,7 @@
     </simplelist>
   </para>
   <para>
-    The meaning of these style keywords is documented in the <link linkend="mthCreateEdit">createEdit</link> method.
+    The meaning of these style keywords is documented in the createEdit (<xref linkend="mthCreateEdit" />) method.
   </para>
   <para>
     It is possible, but very unlikely, that a negative number is returned. See the remarks.
@@ -1212,7 +1212,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1247,7 +1247,7 @@
 </programlisting>
 
 <para>
-  Hides the balloon information window displayed by the <link linkend="mthShowBalloon">showBalloon</link> method.
+  Hides the balloon information window displayed by the showBalloon (<xref linkend="mthShowBalloon" />) method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1276,15 +1276,15 @@
     Raises syntax errors for incorrect usage.
   </para>
   <para>
-    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
-    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    Requires Common Control Library (<xref linkend="ovvComctl32" />) version 6.0 or later. If necessary use the
+    comCtl32Version (<xref linkend="mthComCtl32Version" />)() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    For an example see the <link linkend="exampleShowBalloon">showBalloon</link> example.
+    For an example see the showBalloon (<xref linkend="exampleShowBalloon" />) example.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1322,8 +1322,8 @@
   <listitem>
   <para>
     The operating system automatically sets the modification flag to false when the edit control is created. If the user
-    changes the control's text, then the operating system sets the flag to true.  The <link
-    linkend="mthSetModified">setModified</link> method can be used to set the flag to true or false.
+    changes the control's text, then the operating system sets the flag to true.  The
+    setModified (<xref linkend="mthSetModified" />) method can be used to set the flag to true or false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1384,7 +1384,7 @@
   <listitem>
   <para>
     Some methods are not applicable for single line edit controls, or behave differently between single line and
-    multi-line edit controls. For instance, the <link linkend="mthSetTabStops">setTabStops</link> method does nothing
+    multi-line edit controls. For instance, the setTabStops (<xref linkend="mthSetTabStops" />) method does nothing
     for a single line edit control. The <emphasis role="italic">isSingleLine</emphasis> method allows the programmer to
     write generic code for an edit control by checking which type of edit control the code is dealing with.
   </para>
@@ -1542,7 +1542,7 @@ Character 55 is contained in line 2
   <varlistentry id="exampleLineIndex"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The following example sets the text for edit control with the <link linkend="defSymbolicID">symbolic</link> id of
+    The following example sets the text for edit control with the symbolic (<xref linkend="defSymbolicId" />) id of
     IDC_EDIT and displays the number of text lines (3), the starting index of the second line (carriage return, 0x0d,
     and line feed, 0x0a, which mark a line break, are also considered to be characters), and the length of the third
     line:
@@ -1716,7 +1716,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">lineIndex</emphasis> <link linkend="exampleLineIndex">example</link> uses the <emphasis
+    The <emphasis role="italic">lineIndex</emphasis> example (<xref linkend="exampleLineIndex" />) uses the <emphasis
     role="italic">lines</emphasis> method
   </para>
   </listitem></varlistentry>
@@ -1823,8 +1823,8 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">margins</emphasis> method is exactly equivalent to the <link
-    linkend="mthGetMargins">getMargins</link> method. The values returned will be exactly the same whichever method is
+    The <emphasis role="italic">margins</emphasis> method is exactly equivalent to the
+    getMargins (<xref linkend="mthGetMargins" />) method. The values returned will be exactly the same whichever method is
     used.
   </para>
   </listitem></varlistentry>
@@ -1876,8 +1876,8 @@ Length of 3rd line: 21
     Undo, Cut, Copy, Paste, Delete, and Select All.
   </para>
   <para>
-    However, if the Rexx programmer wants to use his own context menu through the <link
-    linkend="clsPopupMenu">PopupMenu</link> class, the built-in menu will prevent that. Removing the built-in menu
+    However, if the Rexx programmer wants to use his own context menu through the
+    PopupMenu (<xref linkend="clsPopupMenu" />) class, the built-in menu will prevent that. Removing the built-in menu
     through the <emphasis role="italic">noContextMenu</emphasis> allows the programmer to replace the built-in menu with
     their own context menu. If the context menu is removed and the programmer does not supply a context menu, then no
     context menu is displayed when the user right-clicks on the edit control.
@@ -1886,15 +1886,15 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
-    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    Requires Common Control Library (<xref linkend="ovvComctl32" />) version 6.0 or later. If necessary use the
+    comCtl32Version (<xref linkend="mthComCtl32Version" />)() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable. The following codes may be set. They
+    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable. The following codes may be set. They
     are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
@@ -1991,8 +1991,8 @@ Length of 3rd line: 21
         </simplelist>
       </para>
       <para>
-        The argument <link linkend="argsAddStyle">list</link> for the <link linkend="mthAddStyleClsEdit">addStyle</link>
-        method details the meaning of the keywords. The <link linkend="mthCreateEdit">createEdit</link> method documents
+        The argument list (<xref linkend="argsAddStyle" />) for the addStyle (<xref linkend="mthAddStyleClsEdit" />)
+        method details the meaning of the keywords. The createEdit (<xref linkend="mthCreateEdit" />) method documents
         the meaning of all the edit control style keywords.
       </para>
       </listitem></varlistentry>
@@ -2011,7 +2011,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method only works with the <link linkend="paraDialogControlStyles">window styles</link> that can be changed
+    This method only works with the window styles (<xref linkend="paraDialogControlStyles" />) that can be changed
     after the edit control has been created. Not all window styles can be changed after the control is created.
   </para>
   <para>
@@ -2029,7 +2029,7 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2096,7 +2096,7 @@ Length of 3rd line: 21
   <listitem>
   <para>
     Use the <emphasis role="italic">replaceSelText</emphasis> to replace only a portion of the text in an edit control.
-    To replace all of the text, use the <link linkend="mthSetText">setText</link> method.
+    To replace all of the text, use the setText (<xref linkend="mthSetText" />) method.
   </para>
   <para>
     If there is no selection, the replacement text is inserted at the cursor.
@@ -2180,8 +2180,8 @@ Length of 3rd line: 21
         </simplelist>
       </para>
       <para>
-        The argument <link linkend="argsAddStyle">list</link> for the <link linkend="mthAddStyleClsEdit">addStyle</link>
-        method details the meaning of the keywords. The <link linkend="mthCreateEdit">createEdit</link> method documents
+        The argument list (<xref linkend="argsAddStyle" />) for the addStyle (<xref linkend="mthAddStyleClsEdit" />)
+        method details the meaning of the keywords. The createEdit (<xref linkend="mthCreateEdit" />) method documents
         the meaning of all the edit control style keywords.
       </para>
       </listitem></varlistentry>
@@ -2200,7 +2200,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method only works with the <link linkend="paraDialogControlStyles">window styles</link> that can be changed
+    This method only works with the window styles (<xref linkend="paraDialogControlStyles" />) that can be changed
     after the edit control has been created. Not all window styles can be changed after the control is created.
   </para>
   <para>
@@ -2218,7 +2218,7 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2317,7 +2317,7 @@ Length of 3rd line: 21
   <para>
     The operating system packs the success indicator (<computeroutput>.true</computeroutput> or
     <computeroutput>.false</computeroutput>) in the high-word of the return. The low-word contains the number of lines
-    scrolled. Use the <link linkend="mthSHiWord">sHiWord</link> and <link linkend="mthSLoWord">sLoWord</link> methods to
+    scrolled. Use the sHiWord (<xref linkend="mthSHiWord" />) and sLoWord (<xref linkend="mthSLoWord" />) methods to
     extract these values
   </para>
   </listitem></varlistentry>
@@ -2325,7 +2325,7 @@ Length of 3rd line: 21
   <listitem>
   <para>
     For the UP and PAGEUP commands, the number of lines scrolled by the operating system is negative. Be sure to use the
-    <emphasis role="italic">signed</emphasis> version of the loWord method (<link linkend="mthSLoWord">sLoWord</link>)
+    <emphasis role="italic">signed</emphasis> version of the loWord method (sLoWord (<xref linkend="mthSLoWord" />))
     to get the correct value.
   </para>
   <para>
@@ -2442,7 +2442,7 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the <link linkend="mthSelectedClsEdit">selected</link> method's example.
+    See the selected (<xref linkend="mthSelectedClsEdit" />) method's example.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2650,8 +2650,8 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
-    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    Requires Common Control Library (<xref linkend="ovvComctl32" />) version 6.0 or later. If necessary use the
+    comCtl32Version (<xref linkend="mthComCtl32Version" />)() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
   </listitem></varlistentry>
@@ -2698,8 +2698,8 @@ Length of 3rd line: 21
   <listitem>
   <para>
     Note that the text limit is the number of characters the user can type in the edit control. The limit does not
-    effect any text already entered in the edit control. It also does not effect the length of the text that the <link
-    linkend="mthSetText">setText</link> method can copy into the edit control. If a program uses <emphasis
+    effect any text already entered in the edit control. It also does not effect the length of the text that the
+    setText (<xref linkend="mthSetText" />) method can copy into the edit control. If a program uses <emphasis
     role="italic">setText</emphasis> to copy more text into the edit control than the text limit, the user can edit the
     entire contents of the edit control.
   </para>
@@ -2836,8 +2836,8 @@ The new left margin is 10 and the new right margin is 5
   <listitem>
   <para>
     The operating system automatically sets the modification flag to false when the edit control is created. If the user
-    changes the control's text, then the operating system sets the flag to true.  The <link
-    linkend="mthSetModified">getModified</link> method can be used to determine the current state of the flag.
+    changes the control's text, then the operating system sets the flag to true.  The
+    getModified (<xref linkend="mthSetModified" />) method can be used to determine the current state of the flag.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2941,7 +2941,7 @@ The new left margin is 10 and the new right margin is 5
       <varlistentry><term>rect [required.]</term>
       <listitem>
       <para>
-        A <link linkend="clsRect">.Rect</link> object that contains the new coordinates for the formatting rectangle,
+        A .Rect (<xref linkend="clsRect" />) object that contains the new coordinates for the formatting rectangle,
         or 0. If <emphasis role="italic">rect</emphasis> is 0, the formatting rectangle is reset to its default.
       </para>
       </listitem></varlistentry>
@@ -3063,7 +3063,7 @@ The new left margin is 10 and the new right margin is 5
     Under normal circumstances there is no way for a user to enter a tab character by typing in a
     multi-line edit control.  The edit control would need to be sub-classed and this is not provided by
     ooDialog. However, the user could use copy and paste to paste in text with tabs.  And, text placed in
-    the edit control by the programmer, (for example by using the <link linkend="mthSetText"></link>()
+    the edit control by the programmer, (for example by using the setText (<xref linkend="mthSetText" />)
     method,) can also contain tabs.
   </para>
   </listitem></varlistentry>
@@ -3155,7 +3155,7 @@ The new left margin is 10 and the new right margin is 5
   </para>
   <para>
     The balloon is displayed for 10 seconds and then goes away. The programmer can also dismiss the balloon sooner
-    using the <link linkend="mthHideBalloon">hideBalloon</link> method. Typically balloon windows are used to convey
+    using the hideBalloon (<xref linkend="mthHideBalloon" />) method. Typically balloon windows are used to convey
     information to the user without having to put up a message box that the user then needs to dismiss manually.
   </para>
   </listitem></varlistentry>
@@ -3165,8 +3165,8 @@ The new left margin is 10 and the new right margin is 5
     Raises syntax errors for incorrect usage.
   </para>
   <para>
-    Requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later. If necessary use the <link
-    linkend="mthComCtl32Version">comCtl32Version</link>() method to determine the current version of the library. A
+    Requires Common Control Library (<xref linkend="ovvComctl32" />) version 6.0 or later. If necessary use the
+    comCtl32Version (<xref linkend="mthComCtl32Version" />)() method to determine the current version of the library. A
     syntax error is raised if this method is invoked on an operating system where it is not supported.
   </para>
   </listitem></varlistentry>
@@ -3254,8 +3254,8 @@ The new left margin is 10 and the new right margin is 5
 </programlisting>
 
 <para>
-  The <emphasis role="italic">tab =</emphasis> method is an alias for the <link
-  linkend="mthSetTabStops">setTabStops</link>() method.  It behaves exactly the same except there is no return
+  The <emphasis role="italic">tab =</emphasis> method is an alias for the
+  setTabStops (<xref linkend="mthSetTabStops" />)() method.  It behaves exactly the same except there is no return
   value.
 </para>
 </section>

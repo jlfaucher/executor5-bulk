@@ -339,7 +339,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
       <para>
         <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol <link
         linkend="defPoundDefine">definitions</link>, or a collection object that maps <link
-        linkend="defSymbolicID">symbolic</link> IDs to their numeric value.
+        linkend="defSymbolicId">symbolic</link> IDs to their numeric value.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -680,7 +680,7 @@ ResourceUtils::<link linkend="atrConstDir">constDir</link>
       <para>
         <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol <link
         linkend="defPoundDefine">definitions</link>, or a collection object that maps <link
-        linkend="defSymbolicID">symbolic</link> IDs to their numeric value.
+        linkend="defSymbolicId">symbolic</link> IDs to their numeric value.
       </para>
       <para>
         This argument is ignored if a <computeroutput>directory</computeroutput> object is used for argument one.
@@ -800,7 +800,7 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
 
 <para>
   The ooDialog framework <link linkend="ovvSymbolicIDMechanism">supports</link> using <link
-  linkend="defSymbolicID">symbolic</link> resource IDs for method aruments that required a resource ID. The global <link
+  linkend="defSymbolicId">symbolic</link> resource IDs for method aruments that required a resource ID. The global <link
   linkend="dotConstDir">.constDir</link> is part of that support. The <computeroutput>.constDir</computeroutput> is the
   most efficient and capable way to use symbolic IDs. However, to support backwards program compatibility, the
   programmer must specify a usage <link linkend="entConstDirStrategy">strategy</link> that includes the use of the
@@ -876,7 +876,7 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
       <para>
         <emphasis role="italic">symbolSrc</emphasis> can either be the name of a file containing symbol <link
         linkend="defPoundDefine">definitions</link>, or a collection object that maps <link
-        linkend="defSymbolicID">symbolic</link> IDs to their numeric value.
+        linkend="defSymbolicId">symbolic</link> IDs to their numeric value.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -953,7 +953,7 @@ ResourceUtils::<link linkend="mthResolveSymbolicID">resolveSymbolicID</link>
   present in all ooDialog programs. It is initialized and placed in the <computeroutput>.local</computeroutput>
   environment automatically by the <link linkend="dotApplication">application</link> object. The global
   <computeroutput>.constDir</computeroutput> is part of the <link linkend="ovvSymbolicIDMechanism">mechanism</link>
-  allowing the use of <link linkend="defSymbolicID">symbolic</link> IDs in ooDialog programs.
+  allowing the use of <link linkend="defSymbolicId">symbolic</link> IDs in ooDialog programs.
 </para>
 <para>
   The <computeroutput>.constDir</computeroutput> is the most efficient way to use symbolic IDs. However, to maintain
@@ -1762,7 +1762,7 @@ End month day state value:   1000000100000010000001000000
 </section>  <!-- End DayStates::getDayState() -->
 
 
-<section id="mthGetDayStatebuffer"><title>getDayStateBuffer</title>
+<section id="mthGetDayStateBuffer"><title>getDayStateBuffer</title>
 <indexterm><primary>getDayStateBuffer</primary></indexterm>
 <indexterm><primary>DayStates class</primary><secondary>getDayStateBuffer</secondary></indexterm>
 <programlisting>
@@ -2851,7 +2851,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 <figure id="dlgareasample"><title>Sample DlgArea</title>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/sample1.png /">
+<imagedata fileref="images/sample1.png"/>
 </imageobject>
 </mediaobject>
 </figure>
@@ -2992,17 +2992,17 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
       <varlistentry><term>noResize</term>
       <listitem>
       <para>
-        A <computeroutput>.Set</computeroutput> object containing the resource <link linkend="defResourceID">IDs</link>
+        A <computeroutput>.Set</computeroutput> object containing the resource <link linkend="defResourceId">IDs</link>
         of the dialog controls that should <emphasis role="bold">not</emphasis> be resized during the resize event. The
-        IDs may be numeric or <link linkend="defSymbolicID">symbolic</link>.
+        IDs may be numeric or <link linkend="defSymbolicId">symbolic</link>.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>noMove</term>
       <listitem>
       <para>
-        A <computeroutput>.Set</computeroutput> object containing the resource <link linkend="defResourceID">IDs</link>
+        A <computeroutput>.Set</computeroutput> object containing the resource <link linkend="defResourceId">IDs</link>
         of the dialog controls that should <emphasis role="bold">not</emphasis> be moved during the resize event. The
-        IDs may be numeric or <link linkend="defSymbolicID">symbolic</link>.
+        IDs may be numeric or <link linkend="defSymbolicId">symbolic</link>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3062,7 +3062,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   does not wish to be moved during a resize event. The IDs in the set must be numeric.
 </para>
 <para>
-  The programmer can use <link linkend="defSymbolicID">symbolic</link> IDs for the dialog controls by adding to the set
+  The programmer can use <link linkend="defSymbolicId">symbolic</link> IDs for the dialog controls by adding to the set
   through the <link linkend="mthNoMovePut">noMovePut</link> method. Or by passing in a
   <computeroutput>.Set</computeroutput> object when instantiating a <link linkend="mthNewClsDlgAreaU">new</link>
   <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
@@ -3087,7 +3087,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   does not wish to be resized during a resize event. The IDs in the set must be numeric.
 </para>
 <para>
-  The programmer can use <link linkend="defSymbolicID">symbolic</link> IDs for the dialog controls by adding to the set
+  The programmer can use <link linkend="defSymbolicId">symbolic</link> IDs for the dialog controls by adding to the set
   through the <link linkend="mthNoResizePut">noResizePut</link> method. Or by passing in a
   <computeroutput>.Set</computeroutput> object when instantiating a <link linkend="mthNewClsDlgAreaU">new</link>
   <computeroutput>DlgAreaU</computeroutput> object. If the programmer accesses the set of IDs directly through the
@@ -3162,7 +3162,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Using this method allows the programmer to use <link linkend="defSymbolicID">symbolic</link> ids for the dialog
+    Using this method allows the programmer to use <link linkend="defSymbolicId">symbolic</link> ids for the dialog
     control. If the resource ID is put directly into the set through the <emphasis role="italic">noMove</emphasis>
     attribute, symbolic IDs will not be recognized.
   </para>
@@ -3215,7 +3215,7 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Using this method allows the programmer to use <link linkend="defSymbolicID">symbolic</link> ids for the dialog
+    Using this method allows the programmer to use <link linkend="defSymbolicId">symbolic</link> ids for the dialog
     control. If the resource ID is put directly into the set through the <emphasis role="italic">noResize</emphasis>
     attribute, symbolic IDs will not be recognized.
   </para>
