@@ -53,8 +53,8 @@
   practice programmers use property sheets for a number of different reasons other than setting properties.
 </para>
 <para>
-  ooDialog implements property sheets through the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link> and
-  the <link linkend="clsPropertySheetPage">PropertySheetPage</link> classes.
+  ooDialog implements property sheets through the PropertySheetDialog (xref linkend="clsPropertySheetDialog" />) and
+  the PropertySheetPage (xref linkend="clsPropertySheetPage" />) classes.
 </para>
 <para>
   Windows has a style for dialogs that allows the dialog to work well as a dialog within a top-level dialog. The
@@ -77,11 +77,11 @@
 </para>
 <para>
   The <computeroutput>ControlDialog</computeroutput> class is a mixin class that signals to the ooDialog framework that
-  the <link linkend="ovvUnderlying">underlying</link> Windows dialog is to have the control dialog style. To use a
+  the underlying (xref linkend="ovvUnderlying" />) Windows dialog is to have the control dialog style. To use a
   control dialog in an ooDialog program, the programmer simply subclasses one of the 3 provided dialog classes that
   inherit the <computeroutput>ControlDialog</computeroutput> mixin class. These are the <link
-  linkend="clsRcControlDialog">RcControlDialog</link>, the <link linkend="clsResControlDialog">ResControlDialog</link>
-  and the <link linkend="clsUserControlDialog">UserControlDialog</link>. The 3 classes allow the programmer to base the
+  linkend="clsRcControlDialog">RcControlDialog</link>, the ResControlDialog (xref linkend="clsResControlDialog" />)
+  and the UserControlDialog (xref linkend="clsUserControlDialog" />). The 3 classes allow the programmer to base the
   dialog subclass on any one of the 3 basic ooDialog dialogs, a dialog based on a resource <link
   linkend="defResourceScript">script</link> file, dialog based on a binary compiled resource file, or a dialog where the
   programmer manually defines the dialog template in the program code. Because of this a control dialog is programmed in
@@ -102,20 +102,20 @@
   <itemizedlist>
   <listitem>
   <para>
-     Subclass the <link linkend="clsRcControlDialog">RcControlDialog</link> when the dialog template will be defined in
-     a resource <link linkend="defResourceScript">script</link> file.
+     Subclass the RcControlDialog (xref linkend="clsRcControlDialog" />) when the dialog template will be defined in
+     a resource script (xref linkend="defResourceScript" />) file.
   </para>
   </listitem>
   <listitem>
   <para>
-    Subclass the <link linkend="clsResControlDialog">ResControlDialog</link> when the dialog template will be loaded
-    from a <link linkend="ovvDialogTemplate">binary</link> resource file.
+    Subclass the ResControlDialog (xref linkend="clsResControlDialog" />) when the dialog template will be loaded
+    from a binary (xref linkend="ovvDialogTemplate" />) resource file.
   </para>
   </listitem>
   <listitem>
   <para>
-    Subclass the <link linkend="clsUserControlDialog">UserControlDialog</link> when the dialog template will be defined
-    using the <link linkend="sctCreateMethods">create</link> methods.
+    Subclass the UserControlDialog (xref linkend="clsUserControlDialog" />) when the dialog template will be defined
+    using the create (xref linkend="sctCreateMethods" />) methods.
   </para>
   </listitem>
   </itemizedlist>
@@ -158,7 +158,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the <link linkend="tblConstantsDlgObject">IDOK</link> constant if the dialog was <link
+    Returns the IDOK (xref linkend="tblConstantsDlgObject" />) constant if the dialog was <link
     linkend="atrWasActivatedClsControlDialog">activated</link> and is closed as though the user pressed the <emphasis
     role="italic">Ok</emphasis> button.  Otherwise, the IDCANCEL constant is returned.
   </para>
@@ -174,7 +174,7 @@
     other dialogs.
   </para>
   <para>
-    Control dialogs are most useful as the pages in a <link linkend="clsTab">tab</link> control. In Windows applications
+    Control dialogs are most useful as the pages in a tab (xref linkend="clsTab" />) control. In Windows applications
     it is common practice to not create the underlying dialog for a tab page unless the user actually visits that page.
     If the Rexx control dialog, never has its underlying dialog created, then <emphasis
     role="italic">endExecution</emphasis> always returns the IDCANCEL constant and the Rexx dialog object is always
@@ -217,7 +217,7 @@
 
 <para>
   All <computeroutput>ControlDialog</computeroutput> objects must be started through the <emphasis
-  role="italic">execute</emphasis> method. This method causes the <link linkend="ovvUnderlying">dialog</link> to be
+  role="italic">execute</emphasis> method. This method causes the dialog (xref linkend="ovvUnderlying" />) to be
   created. Do not use any other method to start control dialogs.
 </para>
 <variablelist>
@@ -238,7 +238,7 @@
   <para>
     In order to ensure that dialogs used as controls in main dialogs behave consistently, the programmer is required to
     start execution of all controld dialogs using the <emphasis role="italic">execute</emphasis> method and to end the
-    dialog using the <link linkend="mthEndExecution">endExecution</link> method. Failure to do so is not guarenteed to
+    dialog using the endExecution (xref linkend="mthEndExecution" />) method. Failure to do so is not guarenteed to
     work.
   </para>
   </listitem></varlistentry>
@@ -283,7 +283,7 @@
 
 <para>
   Causes the ooDialog framework to use an internal work around for a known Windows problem when a <link
-  linkend="clsListView">list-view</link> control is used in the page of a <link linkend="clsTab">tab</link> control.
+  linkend="clsListView">list-view</link> control is used in the page of a tab (xref linkend="clsTab" />) control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -325,7 +325,7 @@
   <para>
     There is a work around for this problem and the ooDialog framework implements the work around internally so the Rexx
     programmer does not need to remember, or know, the details of the work around. If an application exhibits this
-    problem, then use this method to fix it. The <link linkend="mthInitDialog">initDialog</link> is the best place to
+    problem, then use this method to fix it. The initDialog (xref linkend="mthInitDialog" />) is the best place to
     invoke the method.
   </para>
   <para>
@@ -376,7 +376,7 @@
 </programlisting>
 
 <para>
-  Reflects whether the <link linkend="ovvUnderlying">underlying</link> dialog for this control dialog was ever created.
+  Reflects whether the underlying (xref linkend="ovvUnderlying" />) dialog for this control dialog was ever created.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">wasActivated get:</emphasis></term>
@@ -410,7 +410,7 @@
 <indexterm><primary>RcControlDialog Class</primary></indexterm>
 <para>
   The <computeroutput>RcControlDialog</computeroutput> should be subclassed when the programmer wants to use a resource
-  <link linkend="defResourceScript">script</link> to create the dialog <link linkend="ovvDialogTemplate">template</link>
+  script (xref linkend="defResourceScript" />) to create the dialog template (xref linkend="ovvDialogTemplate" />)
   for his control dialog.
 </para>
 
@@ -435,7 +435,7 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsUserControlDialog">new</link></entry>
+<entry>new (xref linkend="mthNewClsUserControlDialog" />)</entry>
 <entry>Instantiates a new user control dialog.</entry>
 </row>
 <row>
@@ -443,27 +443,27 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="atrOwnerDialog">ownerDialog</link></entry>
+<entry>ownerDialog (xref linkend="atrOwnerDialog" />)</entry>
 <entry>Reflects the dialog that owns this control dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrWasActivatedClsControlDialog">wasActivated</link></entry>
-<entry>Reflects whether the <link linkend="ovvUnderlying">underlying</link> dialog for this control dialog was ever created.</entry>
+<entry>wasActivated (xref linkend="atrWasActivatedClsControlDialog" />)</entry>
+<entry>Reflects whether the underlying (xref linkend="ovvUnderlying" />) dialog for this control dialog was ever created.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthEndExecution">endExecution</link></entry>
+<entry>endExecution (xref linkend="mthEndExecution" />)</entry>
 <entry>Must be used to finish the execution of all <computeroutput>RcControlDialog</computeroutput> objects.</entry>
 </row>
 <row>
-<entry><link linkend="mthExecuteClsControlDialog">execute</link></entry>
+<entry>execute (xref linkend="mthExecuteClsControlDialog" />)</entry>
 <entry>All <computeroutput>RcControlDialog</computeroutput> objects must be started through the <emphasis role="italic">execute</emphasis> method.</entry>
 </row>
 <row>
-<entry><link linkend="mthInitUpdateListView">initUpdateListView</link></entry>
+<entry>initUpdateListView (xref linkend="mthInitUpdateListView" />)</entry>
 <entry>Initializes an internal work around for a problem with list-views that are used in a page of a tab control.</entry>
 </row>
 </tbody></tgroup>
@@ -498,20 +498,20 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template. This may be numeric or <link linkend="defSymbolicId">symbolic </link>.
+        The resource ID of the dialog template. This may be numeric or symbolic  (xref linkend="defSymbolicId" />).
       </para>
       </listitem></varlistentry>
       <varlistentry><term>data. [optional]</term>
       <listitem>
       <para>
-        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        A dialog data stem (xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>h [optional]</term>
       <listitem>
       <para>
-        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+        The name of a file (xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>opts [optional]</term>
@@ -528,9 +528,9 @@
         <varlistentry><term>CONNECTBUTTONS</term>
         <listitem>
         <para>
-          Each push <link linkend="clsButton">button</link> in the underlying dialog has the CLICKED <link
+          Each push button (xref linkend="clsButton" />) in the underlying dialog has the CLICKED <link
           linkend="ovvEvents">event</link> notification connected automatically to a method in the Rexx dialog object.
-          This is the same as using the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the
+          This is the same as using the connectButtonEvent (xref linkend="mthConnectButtonEvent" />)() method for the
           CLICKED notification. The name for the method is generated automatically by the ooDialog framework. The method
           name is the button label with all spaces, ampersands, colons, and trailing <emphasis
           role="italic">...</emphasis> characters removed.
@@ -548,7 +548,7 @@
         <varlistentry><term>CONNECTCHECKS</term>
         <listitem>
         <para>
-          Exactly the same as CONNECTRADIOS, for <link linkend="clsCheckBox">check box</link> controls. The object
+          Exactly the same as CONNECTRADIOS, for check box (xref linkend="clsCheckBox" />) controls. The object
           method name is generated in the same way as it is for radio buttons. That is, the method name is the button
           label, with all spaces, ampersands, colons, and trailing <emphasis role="italic">...</emphasis> characters
           removed. Which is then <emphasis role="bold"> prepended</emphasis> with the text
@@ -562,7 +562,7 @@
       <listitem>
       <para>
         This is the maximum number of dialog controls expected in the dialog template. It serves the same purpose as the
-        <emphasis role="italic">expected</emphasis> argument in the <link linkend="mthCreate">create</link>() method of
+        <emphasis role="italic">expected</emphasis> argument in the create (xref linkend="mthCreate" />)() method of
         the <computeroutput>UserDialog</computeroutput>. The default value for this argument is 200.
       </para>
       </listitem></varlistentry>
@@ -571,8 +571,8 @@
       <para>
         Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this <link
         linkend="clsControlDialog">ControlDialog</link>. All control dialogs <emphasis role="italic">must</emphasis>
-        have the <link linkend="atrOwnerDialog">ownerDialog</link> attribute set to the Rexx dialog that owns the
-        control dialog, before the <link linkend="ovvUnderlying">underlying</link> control dialog is created. In
+        have the ownerDialog (xref linkend="atrOwnerDialog" />) attribute set to the Rexx dialog that owns the
+        control dialog, before the underlying (xref linkend="ovvUnderlying" />) control dialog is created. In
         addition, the underlying owner dialog must be created before the underlying control dialog can be created.
       </para>
       <para>
@@ -606,7 +606,7 @@
   <listitem>
   <para>
     This example shows the instantiation of a <computeroutput>RcControlDialog</computeroutput> subclass, (which is
-    really no different than instantiating a <link linkend="clsRcDialog">RcDialog</link> subclass.) Note that the
+    really no different than instantiating a RcDialog (xref linkend="clsRcDialog" />) subclass.) Note that the
     <emphasis role="italic">ownerDialog</emphasis> attribute is set after the invocation of the <emphasis
     role="italic">new</emphasis> method. This is sometimes easier than using a lot of omitted arguments for a
     <computeroutput>RcControlDialog</computeroutput>.
@@ -643,7 +643,7 @@
 <indexterm><primary>ResControlDialog Class</primary></indexterm>
 <para>
   Subclass the <computeroutput>ResControlDialog</computeroutput> to use a control dialog in an application where the
-  dialog <link linkend="ovvDialogTemplate">template</link> comes from a compiled binary resource file.
+  dialog template (xref linkend="ovvDialogTemplate" />) comes from a compiled binary resource file.
 </para>
 
 <section id="sctMethodsResControlDialog"><title>Method Table</title>
@@ -667,7 +667,7 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsUserControlDialog">new</link></entry>
+<entry>new (xref linkend="mthNewClsUserControlDialog" />)</entry>
 <entry>Instantiates a new user control dialog.</entry>
 </row>
 <row>
@@ -675,27 +675,27 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="atrOwnerDialog">ownerDialog</link></entry>
+<entry>ownerDialog (xref linkend="atrOwnerDialog" />)</entry>
 <entry>Reflects the dialog that owns this control dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrWasActivatedClsControlDialog">wasActivated</link></entry>
-<entry>Reflects whether the <link linkend="ovvUnderlying">underlying</link> dialog for this control dialog was ever created..</entry>
+<entry>wasActivated (xref linkend="atrWasActivatedClsControlDialog" />)</entry>
+<entry>Reflects whether the underlying (xref linkend="ovvUnderlying" />) dialog for this control dialog was ever created..</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthEndExecution">endExecution</link></entry>
+<entry>endExecution (xref linkend="mthEndExecution" />)</entry>
 <entry>Must be used to finish the execution of all <computeroutput>ResControlDialog</computeroutput> objects.</entry>
 </row>
 <row>
-<entry><link linkend="mthExecuteClsControlDialog">execute</link></entry>
+<entry>execute (xref linkend="mthExecuteClsControlDialog" />)</entry>
 <entry>All <computeroutput>ResControlDialog</computeroutput> objects must be started through the <emphasis role="italic">execute</emphasis> method.</entry>
 </row>
 <row>
-<entry><link linkend="mthInitUpdateListView">initUpdateListView</link></entry>
+<entry>initUpdateListView (xref linkend="mthInitUpdateListView" />)</entry>
 <entry>Initializes an internal work around for a problem with list-views that are used in a page of a tab control.</entry>
 </row>
 </tbody></tgroup>
@@ -734,21 +734,21 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template.  This may be numeric or <link linkend="defSymbolicId">symbolic</link>.
+        The resource ID of the dialog template.  This may be numeric or symbolic (xref linkend="defSymbolicId" />).
         The resource ID is assigned to the dialog template when it was compiled.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>dlgData. [optional]</term>
       <listitem>
       <para>
-        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        A dialog data stem (xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>hFile [optional]</term>
       <listitem>
       <para>
-        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+        The name of a file (xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>ownerData [optional]</term>
@@ -756,8 +756,8 @@
       <para>
         Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this <link
         linkend="clsControlDialog">ControlDialog</link>. All control dialogs <emphasis role="italic">must</emphasis>
-        have the <link linkend="atrOwnerDialog">ownerDialog</link> attribute set to the Rexx dialog that owns the
-        control dialog, before the <link linkend="ovvUnderlying">underlying</link> control dialog is created. In
+        have the ownerDialog (xref linkend="atrOwnerDialog" />) attribute set to the Rexx dialog that owns the
+        control dialog, before the underlying (xref linkend="ovvUnderlying" />) control dialog is created. In
         addition, the underlying owner dialog must be created before the underlying control dialog can be created.
       </para>
       <para>
@@ -796,7 +796,7 @@
   <listitem>
   <para>
     This example shows the instantiation of a <computeroutput>ResControlDialog</computeroutput> subclass, (which is
-    really no different than instantiating a <link linkend="clsResDialog">ResDialog</link> subclass.) Note that the
+    really no different than instantiating a ResDialog (xref linkend="clsResDialog" />) subclass.) Note that the
     <emphasis role="italic">ownerDialog</emphasis> attribute is set after the invocation of the <emphasis
     role="italic">new</emphasis> method. This is sometimes easier than using a lot of omitted arguments for a
     <computeroutput>ResControlDialog</computeroutput>.
@@ -832,7 +832,7 @@
 <indexterm><primary>UserControlDialog Class</primary></indexterm>
 <para>
   The <computeroutput>UserControlDialog</computeroutput> should be used when the programmer wants to define the dialog
-  <link linkend="ovvDialogTemplate">template</link> for the control dialog by  using the <link
+  template (xref linkend="ovvDialogTemplate" />) for the control dialog by  using the <link
   linkend="sctCreateMethods">create</link> methods.
 </para>
 
@@ -858,7 +858,7 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsUserControlDialog">new</link></entry>
+<entry>new (xref linkend="mthNewClsUserControlDialog" />)</entry>
 <entry>Instantiates a new user control dialog.</entry>
 </row>
 <row>
@@ -866,27 +866,27 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="atrOwnerDialog">ownerDialog</link></entry>
+<entry>ownerDialog (xref linkend="atrOwnerDialog" />)</entry>
 <entry>Reflects the dialog that owns this control dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrWasActivatedClsControlDialog">wasActivated</link></entry>
-<entry>Reflects whether the <link linkend="ovvUnderlying">underlying</link> dialog for this control dialog was ever created..</entry>
+<entry>wasActivated (xref linkend="atrWasActivatedClsControlDialog" />)</entry>
+<entry>Reflects whether the underlying (xref linkend="ovvUnderlying" />) dialog for this control dialog was ever created..</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthEndExecution">endExecution</link></entry>
+<entry>endExecution (xref linkend="mthEndExecution" />)</entry>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend="mthExecuteClsControlDialog">execute</link></entry>
+<entry>execute (xref linkend="mthExecuteClsControlDialog" />)</entry>
 <entry></entry>
 </row>
 <row>
-<entry><link linkend="mthInitUpdateListView">initUpdateListView</link></entry>
+<entry>initUpdateListView (xref linkend="mthInitUpdateListView" />)</entry>
 <entry>Initializes an internal work around for a problem with list-views that are used in a page of a tab control.</entry>
 </row>
 </tbody></tgroup>
@@ -916,14 +916,14 @@
     <varlistentry><term>dlgData. [optional]</term>
     <listitem>
     <para>
-      A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+      A dialog data stem (xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
       contains data used to initialize the underlying dialog's controls.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>hFile [optional]</term>
     <listitem>
     <para>
-      The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+      The name of a file (xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>ownerData [optional]</term>
@@ -931,8 +931,8 @@
     <para>
       Used to specifiy the <emphasis role="italic">owner</emphasis> dialog of this <link
       linkend="clsControlDialog">ControlDialog</link>. All control dialogs <emphasis role="italic">must</emphasis>
-      have the <link linkend="atrOwnerDialog">ownerDialog</link> attribute set to the Rexx dialog that owns the
-      control dialog, before the <link linkend="ovvUnderlying">underlying</link> control dialog is created. In
+      have the ownerDialog (xref linkend="atrOwnerDialog" />) attribute set to the Rexx dialog that owns the
+      control dialog, before the underlying (xref linkend="ovvUnderlying" />) control dialog is created. In
       addition, the underlying owner dialog must be created before the underlying control dialog can be created.
     </para>
     <para>
@@ -1028,7 +1028,7 @@
   linkend="clsPropertySheetPage">PropertySheetPage</link> classes that allow the programmer to create property sheet and
   wizard dialogs. Unlike most other ooDialog dialogs, the operating system manages much of the property sheet dialog
   itself. For instance, the operating system executes and shows the page dialogs itself. The ooDialog programmer does
-  not invoke the <link linkend="mthExecute">execute</link> method for the page dialogs.
+  not invoke the execute (xref linkend="mthExecute" />) method for the page dialogs.
 </para>
 
 <section id="sctMethodsPropertySheetDialog"><title>Method Table</title>
@@ -1053,11 +1053,11 @@
 </row>
 <row>
 <entry>ID_PSREBOOTSYSTEM</entry>
-<entry>Possible return value from the <link linkend="mthExecuteClsPSD">execute</link> or <link linkend="mthGetResult">getResult</link> methods. Indicates a page sent the reboot system message to the property sheet. The computer must be restarted for the user's changes to take effect. The application is responsible for rebooting the  computer.</entry>
+<entry>Possible return value from the execute (xref linkend="mthExecuteClsPSD" />) or getResult (xref linkend="mthGetResult" />) methods. Indicates a page sent the reboot system message to the property sheet. The computer must be restarted for the user's changes to take effect. The application is responsible for rebooting the  computer.</entry>
 </row>
 <row>
 <entry>ID_PSRESTARTWINDOWS</entry>
-<entry>Possible return value from the <link linkend="mthExecuteClsPSD">execute</link> or <link linkend="mthGetResult">getResult</link> methods. Indicates a page sent the restart Window message to the property sheet. Microsoft Windwos must be restarted for the user's changes to take effect. The application is responsible for restarting Windows.</entry>
+<entry>Possible return value from the execute (xref linkend="mthExecuteClsPSD" />) or getResult (xref linkend="mthGetResult" />) methods. Indicates a page sent the restart Window message to the property sheet. Microsoft Windwos must be restarted for the user's changes to take effect. The application is responsible for restarting Windows.</entry>
 </row>
 <row>
 <entry>MAXPROPPAGES</entry>
@@ -1068,7 +1068,7 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthNewClsPropertySheetDialog">new</link></entry>
+<entry>new (xref linkend="mthNewClsPropertySheetDialog" />)</entry>
 <entry>Instantiates a new <computeroutput>PropertySheetDialog</computeroutput> object.</entry>
 </row>
 <row>
@@ -1076,35 +1076,35 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="atrAppIcon">appIcon</link></entry>
-<entry>Reflects the value of the dialog <link linkend="defDialogIcon">icon</link> for the property sheet dialog.</entry>
+<entry>appIcon (xref linkend="atrAppIcon" />)</entry>
+<entry>Reflects the value of the dialog icon (xref linkend="defDialogIcon" />) for the property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrCaption">caption</link></entry>
+<entry>caption (xref linkend="atrCaption" />)</entry>
 <entry>Reflects the caption, or title, of the property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrHeader">header</link></entry>
+<entry>header (xref linkend="atrHeader" />)</entry>
 <entry>Specifies the bitmap that will be placed at the right side of an interior page's header area in a Wizard dialog. The attribute is only used for the Wizard style property sheet dialogs.</entry>
 </row>
 <row>
-<entry><link linkend="atrImageList">imageList</link></entry>
+<entry>imageList (xref linkend="atrImageList" />)</entry>
 <entry>Used to assign icons for the tabs of the tab control in a property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrPages">pages</link></entry>
+<entry>pages (xref linkend="atrPages" />)</entry>
 <entry>Reflects the dialog objects used as the pages of this property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrResourcesClsPSD">resources</link></entry>
-<entry>Can be set to a <link linkend="clsResourceImage">ResourceImage</link> object to supply some or all of the resources used by the property sheet dialog.</entry>
+<entry>resources (xref linkend="atrResourcesClsPSD" />)</entry>
+<entry>Can be set to a ResourceImage (xref linkend="clsResourceImage" />) object to supply some or all of the resources used by the property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrStartPage">startPage</link></entry>
+<entry>startPage (xref linkend="atrStartPage" />)</entry>
 <entry>Reflects the index of the page that will be selected and visible when the property sheet dialog is first shown on the screen.</entry>
 </row>
 <row>
-<entry><link linkend="atrWatermark">watermark</link></entry>
+<entry>watermark (xref linkend="atrWatermark" />)</entry>
 <entry>Reflects the watermark bitmap image that will be used with a Wizard97 property sheet dialog.</entry>
 </row>
 <row>
@@ -1112,147 +1112,147 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthAddPage">addPage</link></entry>
+<entry>addPage (xref linkend="mthAddPage" />)</entry>
 <entry>Adds a page to the property sheet at the end of the current pages.</entry>
 </row>
 <row>
-<entry><link linkend="mthApplyClsPSD">apply</link></entry>
+<entry>apply (xref linkend="mthApplyClsPSD" />)</entry>
 <entry>Simulates the selection of the Apply button, indicating that one or more  pages have changed and the changes need to be validated and recorded.</entry>
 </row>
 <row>
-<entry><link linkend="mthCancelToClose">cancelToClose</link></entry>
+<entry>cancelToClose (xref linkend="mthCancelToClose" />)</entry>
 <entry>Used when changes made since the most recent APPLY notification cannot be canceled.</entry>
 </row>
 <row>
-<entry><link linkend="mthChanged">changed</link></entry>
+<entry>changed (xref linkend="mthChanged" />)</entry>
 <entry>Informs the underlying property sheet dialog that information in a page has changed.</entry>
 </row>
 <row>
-<entry><link linkend="mthEnableWizButtons">enableWizButtons</link></entry>
+<entry>enableWizButtons (xref linkend="mthEnableWizButtons" />)</entry>
 <entry>Enables or disables buttons in an Aero wizard.</entry>
 </row>
 <row>
-<entry><link linkend="mthExecuteClsPSD">execute</link></entry>
-<entry>Starts the execution of the underlying, <link linkend="defModalModeless">modal</link>, property sheet dialog.</entry>
+<entry>execute (xref linkend="mthExecuteClsPSD" />)</entry>
+<entry>Starts the execution of the underlying, modal (xref linkend="defModalModeless" />), property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetCurrentPageHwnd">getCurrentPageHwnd</link></entry>
-<entry>Retrieves the window <link linkend="defHandle">handle</link> of the <link linkend="ovvUnderlying">underlying</link> dialog of the current page in this property sheet dialog.</entry>
+<entry>getCurrentPageHwnd (xref linkend="mthGetCurrentPageHwnd" />)</entry>
+<entry>Retrieves the window handle (xref linkend="defHandle" />) of the underlying (xref linkend="ovvUnderlying" />) dialog of the current page in this property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetPage">getPage</link></entry>
+<entry>getPage (xref linkend="mthGetPage" />)</entry>
 <entry>Gets the Rexx dialog object for the page specified by <emphasis role="italic">index</emphasis>.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetResult">getResult</link></entry>
+<entry>getResult (xref linkend="mthGetResult" />)</entry>
 <entry>Returns a keyword indicating the result of executing the <computeroutput>PropertySheetDialog</computeroutput>.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetTabControl">getTabControl</link></entry>
+<entry>getTabControl (xref linkend="mthGetTabControl" />)</entry>
 <entry>Retrieves the Rexx tab control object for the tab control of the property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthHwndToIndex">hwndToIndex</link></entry>
+<entry>hwndToIndex (xref linkend="mthHwndToIndex" />)</entry>
 <entry>Returns the one-based index of the property sheet page specified by its window handle.</entry>
 </row>
 <row>
-<entry><link linkend="mthIdToIndex">idToIndex</link></entry>
+<entry>idToIndex (xref linkend="mthIdToIndex" />)</entry>
 <entry>Takes a property sheet page ID and returns its one-based page index.</entry>
 </row>
 <row>
-<entry><link linkend="mthIndexToHwnd">indexToHwnd</link></entry>
+<entry>indexToHwnd (xref linkend="mthIndexToHwnd" />)</entry>
 <entry>Given the one-based index to a page, returns the window handle of the underlying page dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthIndexToID">indexToID</link></entry>
+<entry>indexToID (xref linkend="mthIndexToID" />)</entry>
 <entry>Given the index of a page, returns its ID.</entry>
 </row>
 <row>
-<entry><link linkend="mthIndexToPage">indexToPage</link></entry>
-<entry>Returns the PROPSHEETPAGE <link linkend="defHandle">handle</link> for the specified page index.</entry>
+<entry>indexToPage (xref linkend="mthIndexToPage" />)</entry>
+<entry>Returns the PROPSHEETPAGE handle (xref linkend="defHandle" />) for the specified page index.</entry>
 </row>
 <row>
-<entry><link linkend="mthInitDialogClsPSD">initDialog</link></entry>
+<entry>initDialog (xref linkend="mthInitDialogClsPSD" />)</entry>
 <entry>Invoked by the ooDialog framework when the underlying property sheet dialog has first been created.</entry>
 </row>
 <row>
-<entry><link linkend="mthInsertPage">insertPage</link></entry>
+<entry>insertPage (xref linkend="mthInsertPage" />)</entry>
 <entry>Inserts a new page into the property sheet dialog at the specified index.</entry>
 </row>
 <row>
-<entry><link linkend="mthPageToIndex">pageToIndex</link></entry>
-<entry>Takes the handle of a <link linkend="mthIndexToPage">PROPSHEETPAGE</link> and returns the one-based index of the page.</entry>
+<entry>pageToIndex (xref linkend="mthPageToIndex" />)</entry>
+<entry>Takes the handle of a PROPSHEETPAGE (xref linkend="mthIndexToPage" />) and returns the one-based index of the page.</entry>
 </row>
 <row>
-<entry><link linkend="mthPopupClsPSD">popup</link></entry>
+<entry>popup (xref linkend="mthPopupClsPSD" />)</entry>
 <entry>Begins the execution of a modeless property sheet dialog and returns immediately.</entry>
 </row>
 <row>
-<entry><link linkend="mthPressButton">pressButton</link></entry>
+<entry>pressButton (xref linkend="mthPressButton" />)</entry>
 <entry>Pushes the specified property sheet button programmatically.</entry>
 </row>
 <row>
-<entry><link linkend="mthQuerySiblings">querySiblings</link></entry>
-<entry>Causes the underlying property sheet dialog to send the <link linkend="mthQueryFromSibling">queryFromSibling</link> notification, with the specified arguments to each page of the of the property sheet dialog.</entry>
+<entry>querySiblings (xref linkend="mthQuerySiblings" />)</entry>
+<entry>Causes the underlying property sheet dialog to send the queryFromSibling (xref linkend="mthQueryFromSibling" />) notification, with the specified arguments to each page of the of the property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthRebootSystem">rebootSystem</link></entry>
+<entry>rebootSystem (xref linkend="mthRebootSystem" />)</entry>
 <entry>Invoked to notify the property sheet dialog that the system needs to be rebooted for changes to take effect.</entry>
 </row>
 <row>
-<entry><link linkend="mthRecalcPageSizes">recalcPageSizes</link></entry>
+<entry>recalcPageSizes (xref linkend="mthRecalcPageSizes" />)</entry>
 <entry>Recalculates the page size of a standard or wizard property sheet after pages have been added or removed.</entry>
 </row>
 <row>
-<entry><link linkend="mthRestartWindows">restartWindows</link></entry>
+<entry>restartWindows (xref linkend="mthRestartWindows" />)</entry>
 <entry>Invoked to notify the property sheet dialog that Microsoft Windows needs to be restarted for changes to take effect.</entry>
 </row>
 <row>
-<entry><link linkend="mthRemovePage">removePage</link></entry>
+<entry>removePage (xref linkend="mthRemovePage" />)</entry>
 <entry>Removes a page from this property sheet.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetButtonText">setButtonText</link></entry>
+<entry>setButtonText (xref linkend="mthSetButtonText" />)</entry>
 <entry>Sets the text of the specified button in an Aero wizard.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetCurSel">setCurSel</link></entry>
+<entry>setCurSel (xref linkend="mthSetCurSel" />)</entry>
 <entry>Activates the specified page in a property sheet.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetCurSelByID">setCurSelByID</link></entry>
+<entry>setCurSelByID (xref linkend="mthSetCurSelByID" />)</entry>
 <entry>Activates the page specified by <emphasis role="italic">id</emphasis> in this property sheet.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetFinishText">setFinishText</link></entry>
+<entry>setFinishText (xref linkend="mthSetFinishText" />)</entry>
 <entry>Sets the text of the Finish button in a wizard, shows and enables the button, and hides the Next and Back buttons.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetHeaderSubTitle">setHeaderSubTitle</link></entry>
+<entry>setHeaderSubTitle (xref linkend="mthSetHeaderSubTitle" />)</entry>
 <entry>Sets or resets the text for the header subtitle in a wizard property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetHeaderTitle">setHeaderTitle</link></entry>
+<entry>setHeaderTitle (xref linkend="mthSetHeaderTitle" />)</entry>
 <entry>Sets or resets the text for the header in a wizard property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetNextText">setNextText</link></entry>
+<entry>setNextText (xref linkend="mthSetNextText" />)</entry>
 <entry>Sets the text of the Next button in an Aero wizard.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetTitleClsPSD">setTitle</link></entry>
+<entry>setTitle (xref linkend="mthSetTitleClsPSD" />)</entry>
 <entry>Sets the title for a property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetWizButtons">setWizButtons</link></entry>
+<entry>setWizButtons (xref linkend="mthSetWizButtons" />)</entry>
 <entry>Enables or disables the Back, Next, and Finish buttons in a wizard.</entry>
 </row>
 <row>
-<entry><link linkend="mthShowWizButtons">shwoWizButtons</link></entry>
+<entry>shwoWizButtons (xref linkend="mthShowWizButtons" />)</entry>
 <entry>Shows or hides buttons in an Aero wizard.</entry>
 </row>
 <row>
-<entry><link linkend="mthUnchanged">unchanged</link></entry>
+<entry>unchanged (xref linkend="mthUnchanged" />)</entry>
 <entry>Informs this property sheet that information in a page has reverted to the previously saved state.</entry>
 </row>
 </tbody></tgroup>
@@ -1281,7 +1281,7 @@
       <varlistentry><term>pages [required]</term>
       <listitem>
       <para>
-        An array of <link linkend="clsPropertySheetPage">PropertySheetPage</link> dialogs to be used as the pages of the
+        An array of PropertySheetPage (xref linkend="clsPropertySheetPage" />) dialogs to be used as the pages of the
         property sheet. The number of the property sheet page dialogs and the order of the dialogs determines the number
         and order of the pages in the property sheet.
       </para>
@@ -1318,7 +1318,7 @@
           <varlistentry><term>HASHELP</term>
           <listitem>
           <para>
-            Permits property sheet pages (<link linkend="clsPropertySheetPage">PropertySheetPage</link>) to display a
+            Permits property sheet pages (PropertySheetPage (xref linkend="clsPropertySheetPage" />)) to display a
             <emphasis role="italic">Help</emphasis> button. The HASHELP keyword must also be used in the page's
             <emphasis role="italic">opts</emphasis> argument when the page is instantiated. If any of the
             initial property sheet pages enable a Help button, the operating system will automatically enables this
@@ -1352,7 +1352,7 @@
           <para>
             Adjusts the title in the title bar of the property sheet. The title takes the appropriate form for the
             Microsoft Windows version. In more recent versions of Windows, the title is the string specified by the
-            <link linkend="atrCaption">caption</link> attribute followed by the string <emphasis
+            caption (xref linkend="atrCaption" />) attribute followed by the string <emphasis
             role="italic">Properties</emphasis>. In older versions of Windows, the title is the string <emphasis
             role="italic">Properties for</emphasis>, followed by the string specified by the <emphasis
             role="italic">caption</emphasis> attribute This keyword is not supported with the AEROWIZARD style.
@@ -1418,15 +1418,15 @@
       <varlistentry><term>title [optional]</term>
       <listitem>
       <para>
-        Sets the <link linkend="atrCaption">caption</link> attribute to the text specified.
+        Sets the caption (xref linkend="atrCaption" />) attribute to the text specified.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>hFile [optional]</term>
       <listitem>
       <para>
-        A file, (often called a <link linkend="defHeaderFile">header</link> file,) defining <link
+        A file, (often called a header (xref linkend="defHeaderFile" />) file,) defining <link
         linkend="defSymbolicId">symbolic IDs</link> for resources. The symbolic IDs defined within the file will be
-        added to the <link linkend="atrConstDir">constDir</link> directory.
+        added to the constDir (xref linkend="atrConstDir" />) directory.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1439,7 +1439,7 @@
     that their life-cycle is controlled by the operating system rather than the ooDialog framework. In general the
     programmer customizes these dialogs by using the proper keywords in the <emphasis role="italic">opts</emphasis>
     argument and by setting the attributes of the dialog object, then starting the dialog through <link
-    linkend="mthExecuteClsPSD">execute</link> or <link linkend="mthPopupClsPSD">popup</link>. Most of the programming
+    linkend="mthExecuteClsPSD">execute</link> or popup (xref linkend="mthPopupClsPSD" />). Most of the programming
     work for a property sheet dialog is in the dialogs that are used as the pages for the property sheet.
   </para>
   </listitem></varlistentry>
@@ -1490,7 +1490,7 @@
 </programlisting>
 
 <para>
-  Reflects the value of the dialog <link linkend="defDialogIcon">icon</link> for the property sheet dialog.
+  Reflects the value of the dialog icon (xref linkend="defDialogIcon" />) for the property sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">appIcon get:</emphasis></term>
@@ -1504,8 +1504,8 @@
   <varlistentry><term><emphasis role="bold">appIcon set:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">appIcon</emphasis> can be set either using an <link linkend="clsImage">Image</link>
-    object, or a resource ID, numeric or <link linkend="defSymbolicId">symbolic</link>.
+    The <emphasis role="italic">appIcon</emphasis> can be set either using an Image (xref linkend="clsImage" />)
+    object, or a resource ID, numeric or symbolic (xref linkend="defSymbolicId" />).
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1516,7 +1516,7 @@
   </para>
   <para>
     When the <emphasis role="italic">appIcon</emphasis> attribute is specified as a resource ID, then the image must be
-    a resource in the resource <link linkend="clsResourceImage">image</link> specified by the <link
+    a resource in the resource image (xref linkend="clsResourceImage" />) specified by the <link
     linkend="atrResourcesClsPSD">resources</link> attribute. When the property sheet dialog is shown, if an icon can not
     be loaded from the resource image, the the property sheet dialog will not have a dialog icon.
   </para>
@@ -1585,7 +1585,7 @@
   <listitem>
   <para>
     This is not a <emphasis role="italic">dynamic</emphasis> attribute. I.e., if the underlying property sheet has its
-    title bar caption changed, say through the <link linkend="mthSetTitle">setTitle</link> method, the value of the
+    title bar caption changed, say through the setTitle (xref linkend="mthSetTitle" />) method, the value of the
     <emphasis role="italic">caption</emphasis> attribute will not change. Likewise, if the programmer were to change the
     value of this attribute after the underlying dialog was created, it would not change the title bar of the dialog. At
     the time the underlying dialog is created, this attribute is used to set the dialog's title bar. Other than that,
@@ -1702,7 +1702,7 @@
   <varlistentry><term><emphasis role="bold">imageList set:</emphasis></term>
   <listitem>
   <para>
-    When an <link linkend="clsImageList">ImageList</link> object is assigned to the <emphasis
+    When an ImageList (xref linkend="clsImageList" />) object is assigned to the <emphasis
     role="italic">imageList</emphasis> attribute, the icons in the imagelist are used as the icons in the tabs of the
     pages in the property sheet. The icons are assigned in order to the pages, the first icon in the imagelist is
     assigned to the first page, the second icon to the second page, etc..
@@ -1711,8 +1711,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    An icon for the tab of a page can also be assigned through the <link linkend="atrTabIcon">tabIcon</link> attribute
-    of the <link linkend="clsPropertySheetPage">PropertySheetPage</link> dialog object for each page in a property sheet
+    An icon for the tab of a page can also be assigned through the tabIcon (xref linkend="atrTabIcon" />) attribute
+    of the PropertySheetPage (xref linkend="clsPropertySheetPage" />) dialog object for each page in a property sheet
     dialog. However, assigning an image list to the <emphasis role="italic">imageList</emphasis> attribute takes
     precedence over the <emphasis role="italic">tabIcon</emphasis> attribute of a property sheet page dialog. If an
     image list is asigned to the <emphasis role="italic">imageList</emphasis> attribute of the property sheet dialog,
@@ -1765,7 +1765,7 @@
     of this attrbiute. I.e., if the programmer removes an index of the array, it does not remove that page in the
     property sheet, if the programmer adds an index to the array, it does not add a page to the property sheet dialog.
     Page manipulation must be done through the instance methods of the property sheet dialog, for instance, the <link
-    linkend="mthInsertPage">insertPage</link> or <link linkend="mthRemovePage">removePage</link> methods.
+    linkend="mthInsertPage">insertPage</link> or removePage (xref linkend="mthRemovePage" />) methods.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1799,7 +1799,7 @@
   <varlistentry><term><emphasis role="bold">resources set:</emphasis></term>
   <listitem>
   <para>
-    This attribute can only be set to a <link linkend="clsResourceImage">ResourceImage</link> object.
+    This attribute can only be set to a ResourceImage (xref linkend="clsResourceImage" />) object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1807,7 +1807,7 @@
   <para>
     Many of the resources used by a property sheet dialog can be located within the resource section of an executable
     module. (Recall that in Windows both an executable file and a DLL are executable modules.) Resources such as the
-    <link linkend="atrAppIcon">appIcon</link>, <link linkend="atrHeader">header</link>, <link
+    appIcon (xref linkend="atrAppIcon" />), header (xref linkend="atrHeader" />), <link
     linkend="atrImageList">imageList</link>, etc.. can all be located in the
     <computeroutput>ResourceImage</computeroutput> that is the value of the <emphasis role="italic">resources</emphasis>
     attribute.
@@ -2024,13 +2024,13 @@
   <listitem>
   <para>
     Syntax conditions are raised if the <emphasis role="italic">page</emphasis> argument is not correct. The argument
-    must be a <link linkend="clsPropertySheetPage">PropertySheetPage</link> dialog object.
+    must be a PropertySheetPage (xref linkend="clsPropertySheetPage" />) dialog object.
   </para>
   <para>
-    This method must not be invoked from within the event handling methods, <link linkend="mthApplyClsPSP">apply</link>,
-    <link linkend="mthKillActive">killActive</link>, <link linkend="mthReset">reset</link>, or <link
-    linkend="mthSetActive">setActive</link> of the <link linkend="clsPropertySheetPage">PropertySheetPage</link>
-    class. However, you can add or remove pages during the <link linkend="mthWizBack">wizBack</link> or <link
+    This method must not be invoked from within the event handling methods, apply (xref linkend="mthApplyClsPSP" />),
+    killActive (xref linkend="mthKillActive" />), reset (xref linkend="mthReset" />), or <link
+    linkend="mthSetActive">setActive</link> of the PropertySheetPage (xref linkend="clsPropertySheetPage" />)
+    class. However, you can add or remove pages during the wizBack (xref linkend="mthWizBack" />) or <link
     linkend="mthWizNext">wizNext</link> event handling methods, provided the correct index to specify the new page is
     returned from those event handlers.
   </para>
@@ -2043,13 +2043,13 @@
   <para>
     It is possible that the user never <emphasis role="italic">visited</emphasis> a page before it was removed. In this
     case the Rexx dialog object could be used to add or insert a new page at some later point, because the underlying
-    Windows dialog would never have been created. The <link linkend="atrWasActivatedClsPSP">wasActivated</link>
+    Windows dialog would never have been created. The wasActivated (xref linkend="atrWasActivatedClsPSP" />)
     attribute can be used to test for this condition.  However, it
     is probably simplier to always instantiate a new Rexx dialog object for each page added to a property sheet.
   </para>
   <para>
     The Windows operating system restricts the maximum number of pages that a property sheet can hold. The MAXPROPPAGES
-    constant of the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link> reflects this number.  If the
+    constant of the PropertySheetDialog (xref linkend="clsPropertySheetDialog" />) reflects this number.  If the
     programer tries to insert or add a page past this number, a condition is raised.
   </para>
   </listitem></varlistentry>
@@ -2311,7 +2311,7 @@
 </programlisting>
 
 <para>
-  Starts the execution of the underlying, <link linkend="defModalModeless">modal</link>, property sheet dialog. This
+  Starts the execution of the underlying, modal (xref linkend="defModalModeless" />), property sheet dialog. This
   method does not return until the user has closed the property sheet dialog.
 </para>
 <variablelist>
@@ -2334,7 +2334,7 @@
   <listitem>
   <para>
     Returns a positive number if successful and -1 on error. It is possible that the return will be either one of the
-    <link linkend="tblPropertySheetDialogMethods">constants</link> ID_PSRESTARTWINDOWS or ID_PSREBOOTSYSTEM.
+    constants (xref linkend="tblPropertySheetDialogMethods" />) ID_PSRESTARTWINDOWS or ID_PSREBOOTSYSTEM.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2343,7 +2343,7 @@
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the <link linkend="dotSystemErrorCode">.systemErrorCode</link> variable.
+    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -2360,7 +2360,7 @@
 </programlisting>
 
 <para>
-  Retrieves the window <link linkend="defHandle">handle</link> of the <link linkend="ovvUnderlying">underlying</link>
+  Retrieves the window handle (xref linkend="defHandle" />) of the underlying (xref linkend="ovvUnderlying" />)
   dialog of the current page in this property sheet dialog.
 </para>
 <variablelist>
@@ -2520,7 +2520,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the Rexx <link linkend="clsTab">tab</link> control for the underlying Windows tab control in the property
+    Returns the Rexx tab (xref linkend="clsTab" />) control for the underlying Windows tab control in the property
     sheet dialog
   </para>
   </listitem></varlistentry>
@@ -2550,7 +2550,7 @@
       <varlistentry><term>hwnd [required]</term>
       <listitem>
       <para>
-        The <link linkend="atrHwnd">window</link><link linkend="defHandle">handle</link> whose page index is needed.
+        The window (xref linkend="atrHwnd" />)handle (xref linkend="defHandle" />) whose page index is needed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2587,7 +2587,7 @@
       <varlistentry><term>ID [required]</term>
       <listitem>
       <para>
-        The property sheet page <link linkend="mthIndexToID">ID</link>.
+        The property sheet page ID (xref linkend="mthIndexToID" />).
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2676,14 +2676,14 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Page IDs are different depending on the type of the dialog page, <link linkend="clsUserPSPDialog">UserPSPDialog</link>,
-    <link linkend="clsResPSPDialog">ResPSPDialog</link>, etc..  In order to get the correct ID, the Rexx programmer
+    Page IDs are different depending on the type of the dialog page, UserPSPDialog (xref linkend="clsUserPSPDialog" />),
+    ResPSPDialog (xref linkend="clsResPSPDialog" />), etc..  In order to get the correct ID, the Rexx programmer
     must use this method.
   </para>
   <para>
     There are also two special case values for <emphasis role="italic">index</emphasis>. The page ID would most
-    commonly be used in the <link linkend="mthSetActive">setActive</link>, <link linkend="mthWizBack">wizBack</link>, or
-    <link linkend="mthWizNext">wizNext</link> event notification methods that signal a page is being changed.  To accept
+    commonly be used in the setActive (xref linkend="mthSetActive" />), wizBack (xref linkend="mthWizBack" />), or
+    wizNext (xref linkend="mthWizNext" />) event notification methods that signal a page is being changed.  To accept
     the page change, the event handler returns 0, and to cancel the page change the event handler returns -1. So, 0 and
     -1 are acceptable here and return the proper value for those methods.
   </para>
@@ -2708,7 +2708,7 @@
 </programlisting>
 
 <para>
-  Returns the PROPSHEETPAGE <link linkend="defHandle">handle</link> for the specified page index.
+  Returns the PROPSHEETPAGE handle (xref linkend="defHandle" />) for the specified page index.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2760,8 +2760,8 @@
 
 <para>
   Invoked by the ooDialog framework when the underlying property sheet dialog has first been created. This is the same
-  point in the life-cycle of the property sheet dialog as the <link linkend="mthInitDialog">initDialog</link> method is
-  invoked for the normal dialog <link linkend="chpDialogObject">object</link>.
+  point in the life-cycle of the property sheet dialog as the initDialog (xref linkend="mthInitDialog" />) method is
+  invoked for the normal dialog object (xref linkend="chpDialogObject" />).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2838,16 +2838,16 @@
   <listitem>
   <para>
     Syntax conditions are raised if the <emphasis role="italic">page</emphasis> argument is not correct. The argument
-    must be a <link linkend="clsPropertySheetPage">PropertySheetPage</link> dialog object.
+    must be a PropertySheetPage (xref linkend="clsPropertySheetPage" />) dialog object.
   </para>
   <para>
     The pages after the insertion point are shifted to the right to accommodate the new page.
   </para>
   <para>
-    This method must not be invoked from within the event handling methods, <link linkend="mthApplyClsPSP">apply</link>,
-    <link linkend="mthKillActive">killActive</link>, <link linkend="mthReset">reset</link>, or <link
-    linkend="mthSetActive">setActive</link> of the <link linkend="clsPropertySheetPage">PropertySheetPage</link>
-    class. However, you can add or remove pages during the <link linkend="mthWizBack">wizBack</link> or <link
+    This method must not be invoked from within the event handling methods, apply (xref linkend="mthApplyClsPSP" />),
+    killActive (xref linkend="mthKillActive" />), reset (xref linkend="mthReset" />), or <link
+    linkend="mthSetActive">setActive</link> of the PropertySheetPage (xref linkend="clsPropertySheetPage" />)
+    class. However, you can add or remove pages during the wizBack (xref linkend="mthWizBack" />) or <link
     linkend="mthWizNext">wizNext</link> event handling methods, provided the correct index to specify the new page is
     returned from those event handlers.
   </para>
@@ -2860,13 +2860,13 @@
   <para>
     It is possible that the user never <emphasis role="italic">visited</emphasis> a page before it was removed. In this
     case the Rexx dialog object could be used to add or insert a new page at some later point, because the underlying
-    Windows dialog would never have been created. The <link linkend="atrWasActivatedClsPSP">wasActivated</link>
+    Windows dialog would never have been created. The wasActivated (xref linkend="atrWasActivatedClsPSP" />)
     attribute can be used to test for this condition.  However, it
     is probably simplier to always instantiate a new Rexx dialog object for each page added to a property sheet.
   </para>
   <para>
     The Windows operating system restricts the maximum number of pages that a property sheet can hold. The MAXPROPPAGES
-    constant of the <link linkend="clsPropertySheetDialog">PropertySheetDialog</link> reflects this number.  If the
+    constant of the PropertySheetDialog (xref linkend="clsPropertySheetDialog" />) reflects this number.  If the
     programer tries to insert or add a page past this number, a condition is raised.
   </para>
   </listitem></varlistentry>
@@ -2890,7 +2890,7 @@
 </programlisting>
 
 <para>
-  Takes the handle of a <link linkend="mthIndexToPage">PROPSHEETPAGE</link> and returns the one-based index of the page.
+  Takes the handle of a PROPSHEETPAGE (xref linkend="mthIndexToPage" />) and returns the one-based index of the page.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2960,7 +2960,7 @@
   <listitem>
   <para>
     All <computeroutput>PropertySheetDialog</computeroutput> objects must be executed through either the <emphasis
-    role="italic">popup</emphasis> or <link linkend="mthExecuteClsPSD">execute</link> methods. However, a property sheet
+    role="italic">popup</emphasis> or execute (xref linkend="mthExecuteClsPSD" />) methods. However, a property sheet
     with the Aero Wizard style can not be executed as a modeless dialog. Do not use the <emphasis
     role="italic">popup</emphasis> method with an Aero Wizard.
   </para>
@@ -3070,7 +3070,7 @@
 
 <para>
   The <emphasis role="italic">querySiblings</emphasis> method causes the underlying property sheet dialog to send the
-  <link linkend="mthQueryFromSibling">queryFromSibling</link> notification, with the specified arguments to each page of
+  queryFromSibling (xref linkend="mthQueryFromSibling" />) notification, with the specified arguments to each page of
   the of the property sheet dialog.
 </para>
 <variablelist>
@@ -3155,8 +3155,8 @@
   <listitem>
   <para>
     An application should invoke the <emphasis role="italic">rebootSystem</emphasis> method only in response to the
-    APPLY or KILLACTIVE notifications.  Invoking the method causes the <link linkend="mthExecuteClsPSD">execute</link>
-    method to return the ID_PSREBOOTSYSTEM value, or for the <link linkend="mthGetResult">getResult</link> method to
+    APPLY or KILLACTIVE notifications.  Invoking the method causes the execute (xref linkend="mthExecuteClsPSD" />)
+    method to return the ID_PSREBOOTSYSTEM value, or for the getResult (xref linkend="mthGetResult" />) method to
     return <emphasis role="italic">RebootSystem</emphasis>. But only if the user clicks the OK button to close the
     property sheet. It is the application's responsibility to reboot the system.
   </para>
@@ -3199,8 +3199,8 @@
     pages are subsequently added or removed. Applications would use the <emphasis
     role="italic">recalcPageSizes</emphasis> method after adding or removing pages to ensure that the property sheet is
     properly sized for its current collection of pages. <emphasis role="bold">Note</emphasis> however that the ooDialog
-    framework automatically invokes this method during the <link linkend="mthAddPage">addPage</link>, <link
-    linkend="mthInsertPage">insertPage</link>, and <link linkend="mthRemovePage">removePage</link> methods. Therefore
+    framework automatically invokes this method during the addPage (xref linkend="mthAddPage" />), <link
+    linkend="mthInsertPage">insertPage</link>, and removePage (xref linkend="mthRemovePage" />) methods. Therefore
     the programmer will normally not need to explicitly invoke this method.
   </para>
   </listitem></varlistentry>
@@ -3238,8 +3238,8 @@
   <listitem>
   <para>
     An application should invoke the <emphasis role="italic">restartWindows</emphasis> method only in response to the
-    APPLY or KILLACTIVE notifications.  Invoking the method causes the <link linkend="mthExecuteClsPSD">execute</link>
-    method to return the ID_PSRESTARTWINDOWS value, or for the <link linkend="mthGetResult">getResult</link> method to
+    APPLY or KILLACTIVE notifications.  Invoking the method causes the execute (xref linkend="mthExecuteClsPSD" />)
+    method to return the ID_PSRESTARTWINDOWS value, or for the getResult (xref linkend="mthGetResult" />) method to
     return <emphasis role="italic">RestartWindows</emphasis>. But only if the user clicks the OK button to close the
     property sheet. It is the application's responsibility to restart Windows.
   </para>
@@ -3284,10 +3284,10 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method must not be invoked from within the event handling methods, <link linkend="mthApplyClsPSP">apply</link>,
-    <link linkend="mthKillActive">killActive</link>, <link linkend="mthReset">reset</link>, or <link
-    linkend="mthSetActive">setActive</link> of the <link linkend="clsPropertySheetPage">PropertySheetPage</link>
-    class. However, you can add or remove pages during the <link linkend="mthWizBack">wizBack</link> or <link
+    This method must not be invoked from within the event handling methods, apply (xref linkend="mthApplyClsPSP" />),
+    killActive (xref linkend="mthKillActive" />), reset (xref linkend="mthReset" />), or <link
+    linkend="mthSetActive">setActive</link> of the PropertySheetPage (xref linkend="clsPropertySheetPage" />)
+    class. However, you can add or remove pages during the wizBack (xref linkend="mthWizBack" />) or <link
     linkend="mthWizNext">wizNext</link> event handling methods, provided the correct index to specify the new page is
     returned from those event handlers.
   </para>
@@ -3415,7 +3415,7 @@
       <varlistentry><term>hPropSheetPage [optional]</term>
       <listitem>
       <para>
-        A <link linkend="mthIndexToPage">PROPSHEETPAGE</link> <link linkend="defHandle">handle</link> for the page to be
+        A PROPSHEETPAGE (xref linkend="mthIndexToPage" />) handle (xref linkend="defHandle" />) for the page to be
         removed. If this argument is omitted, then the <emphasis role="italic">index</emphasis> argument can not be
         omitted.
       </para>
@@ -3487,7 +3487,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The property sheet page ID can be obtained using the <link linkend="mthIndexToID">indexToID</link> method.  Do not
+    The property sheet page ID can be obtained using the indexToID (xref linkend="mthIndexToID" />) method.  Do not
     confuse a page ID with a page handle, they are 2 separate things.  The only way for the Rexx programmer to obtain
     the page ID is through <emphasis role="italic">indexToID</emphasis>.
   </para>
@@ -3825,7 +3825,7 @@
      the interior pages, and enables the Back and Finish buttons for the completion page.  The Cancel button is always
      enabled. Normally, setting FINISH or DISABLEDFINISH replaces the Next button with a Finish button. To changes this
      to display both Next and Finish buttons simultaneously, set the WIZARDHASFINISH keyword in the options when the
-     <link linkend="mthNewClsPropertySheetDialog">PropertySheetDialog</link> is instantiated. With that option, every
+     PropertySheetDialog (xref linkend="mthNewClsPropertySheetDialog" />) is instantiated. With that option, every
      page will then display all four buttons.
   </para>
   <para>
@@ -3835,7 +3835,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example shows the <link linkend="mthSetActive">setActive</link> event handler in one of the interior page
+    This example shows the setActive (xref linkend="mthSetActive" />) event handler in one of the interior page
     dialogs for a wizard property sheet dialog:
 <programlisting>
 <![CDATA[
@@ -3998,7 +3998,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example shows the <link linkend="mthSetActive">setActive</link> event handler for the first page in an Aero
+    This example shows the setActive (xref linkend="mthSetActive" />) event handler for the first page in an Aero
     wizard. It removes the Back button from the page, (since it is impossible to go back from the first page.)
 <programlisting>
 <![CDATA[
@@ -4075,7 +4075,7 @@
 <section id="sctPropertySheetPages"><title>Property Sheet Pages</title>
 <indexterm><primary>Property Sheet Pages</primary></indexterm>
 <para>
-  Each property sheet <link linkend="clsPropertySheetDialog">dialog</link> must contain one or more property sheet
+  Each property sheet dialog (xref linkend="clsPropertySheetDialog" />) must contain one or more property sheet
   <emphasis role="italic">pages</emphasis>. To instantiate a <computeroutput>PropertySheetDialog</computeroutput> the
   programmer passes in an array of one or more <computeroutput>PropertySheetPage</computeroutput> objects. In ooDialog
   each property sheet page is represented by one of the concrete property sheet page dialogs that inherit from the
@@ -4087,27 +4087,27 @@
   <itemizedlist>
   <listitem>
   <para>
-     Subclass the <link linkend="clsRcPSPDialog">RcPSPDialog</link> when the page dialog template will be defined in
-     a resource <link linkend="defResourceScript">script</link> file.
+     Subclass the RcPSPDialog (xref linkend="clsRcPSPDialog" />) when the page dialog template will be defined in
+     a resource script (xref linkend="defResourceScript" />) file.
   </para>
   </listitem>
   <listitem>
   <para>
-    Subclass the <link linkend="clsResPSPDialog">ResPSPDialog</link> when the dialog template will be loaded from a
-    <link linkend="ovvDialogTemplate">binary</link> resource file.
+    Subclass the ResPSPDialog (xref linkend="clsResPSPDialog" />) when the dialog template will be loaded from a
+    binary (xref linkend="ovvDialogTemplate" />) resource file.
   </para>
   </listitem>
   <listitem>
   <para>
-    Subclass the <link linkend="clsUserPSPDialog">UserControlDialog</link> when the dialog template will be defined
-    using the <link linkend="sctCreateMethods">create</link> methods.
+    Subclass the UserControlDialog (xref linkend="clsUserPSPDialog" />) when the dialog template will be defined
+    using the create (xref linkend="sctCreateMethods" />) methods.
   </para>
   </listitem>
   </itemizedlist>
 </para>
 <para>
   All property sheet page dialogs are managed more by the operating system than is typical for an ooDialog dialog. The
-  programmer does not <link linkend="mthExecute">execute</link> the page dialog to create the <link
+  programmer does not execute (xref linkend="mthExecute" />) the page dialog to create the <link
   linkend="ovvUnderlying">underlying</link> Windows dialog, or stop the dialog. The operating system creates and
   destroys the underlying page dialogs.
 </para>
@@ -4136,11 +4136,11 @@
 <para>
   The <computeroutput>PropertySheetPage</computeroutput> class is a mixin class that contains the methods of a property
   sheet page dialog object. Other than the individual <emphasis role="italic">new</emphasis> methods for each of the
-  three types of property sheet page dialogs, (<link linkend="mthNewClsRcPSPDialog">Rc</link>, <link
-  linkend="mthNewClsResPSPDialog">Res</link>, and <link linkend="mthNewClsUserPSPDialog">User</link>,) all page methods
+  three types of property sheet page dialogs, (Rc (xref linkend="mthNewClsRcPSPDialog" />), <link
+  linkend="mthNewClsResPSPDialog">Res</link>, and User (xref linkend="mthNewClsUserPSPDialog" />),) all page methods
   come from the <computeroutput>PropertySheetPage</computeroutput> class. Of course, each property sheet page dialog has
-  all the methods of the dialog <link linkend="chpDialogObject">object</link> and the methods of its parent class,
-  respectively the <link linkend="clsRcDialog">RcDialog</link>, <link linkend="clsResDialog">ResDialog</link>, or <link
+  all the methods of the dialog object (xref linkend="chpDialogObject" />) and the methods of its parent class,
+  respectively the RcDialog (xref linkend="clsRcDialog" />), ResDialog (xref linkend="clsResDialog" />), or <link
   linkend="clsUserDialog">UserDialog</link>.
 </para>
 
@@ -4209,71 +4209,71 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="clsRcPSPDialog">new</link> (RcPSPDialog)</entry>
-<entry>Instantiates a new property sheet page whose dialog template is created from a <link linkend="defResourceScript">resource</link>script.</entry>
+<entry>new (xref linkend="clsRcPSPDialog" />) (RcPSPDialog)</entry>
+<entry>Instantiates a new property sheet page whose dialog template is created from a resource (xref linkend="defResourceScript" />)script.</entry>
 </row>
 <row>
-<entry><link linkend="clsResPSPDialog">new</link> (ResPSPDialog)</entry>
-<entry>Instantiates a new property sheet page whose dialog template is comes from a compiled <link linkend="ovvDialogTemplate">binary</link>resource file.</entry>
+<entry>new (xref linkend="clsResPSPDialog" />) (ResPSPDialog)</entry>
+<entry>Instantiates a new property sheet page whose dialog template is comes from a compiled binary (xref linkend="ovvDialogTemplate" />)resource file.</entry>
 </row>
 <row>
-<entry><link linkend="clsUserPSPDialog">new</link> (UserPSPDialog)</entry>
-<entry>Instantiates a new property sheet page whose dialog template is created using the <link linkend="sctCreateMethods">create</link> methods of the <computeroutput>UserDialog</computeroutput> class.</entry>
+<entry>new (xref linkend="clsUserPSPDialog" />) (UserPSPDialog)</entry>
+<entry>Instantiates a new property sheet page whose dialog template is created using the create (xref linkend="sctCreateMethods" />) methods of the <computeroutput>UserDialog</computeroutput> class.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="atrCX">cx</link></entry>
+<entry>cx (xref linkend="atrCX" />)</entry>
 <entry>Reflects the initial width of the property page dialog in dialog units.</entry>
 </row>
 <row>
-<entry><link linkend="atrCY">cy</link></entry>
+<entry>cy (xref linkend="atrCY" />)</entry>
 <entry>Reflects the initial height of the property page dialog in dialog units.</entry>
 </row>
 <row>
-<entry><link linkend="atrHeaderSubtitle">headerSubtitle</link></entry>
+<entry>headerSubtitle (xref linkend="atrHeaderSubtitle" />)</entry>
 <entry>Reflects the text for the subtitle of a non-Aero wizard.</entry>
 </row>
 <row>
-<entry><link linkend="atrHeaderTitle">headerTitle</link></entry>
+<entry>headerTitle (xref linkend="atrHeaderTitle" />)</entry>
 <entry>Reflects the text that will be displayed as the title in the header area of the page in a wizard.</entry>
 </row>
 <row>
-<entry><link linkend="atrPageID">pageID</link></entry>
-<entry>Reflects the value of the page ID, which identifies the page to the <link linkend="ovvUnderlying">underlying</link> property sheet dialog.</entry>
+<entry>pageID (xref linkend="atrPageID" />)</entry>
+<entry>Reflects the value of the page ID, which identifies the page to the underlying (xref linkend="ovvUnderlying" />) property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="atrPageNumber">pageNumber</link></entry>
+<entry>pageNumber (xref linkend="atrPageNumber" />)</entry>
 <entry>Reflects the page number, or index, of this property sheet page.</entry>
 </row>
 <row>
-<entry><link linkend="atrPageTitle">pageTitle</link></entry>
+<entry>pageTitle (xref linkend="atrPageTitle" />)</entry>
 <entry>Reflects the title to use for this property sheet page.</entry>
 </row>
 <row>
-<entry><link linkend="atrPropSheet">propSheet</link></entry>
-<entry>Reflects the Rexx <link linkend="clsPropertySheetDialog">PropertySheetDialog</link> object that this page belongs to.</entry>
+<entry>propSheet (xref linkend="atrPropSheet" />)</entry>
+<entry>Reflects the Rexx PropertySheetDialog (xref linkend="clsPropertySheetDialog" />) object that this page belongs to.</entry>
 </row>
 <row>
-<entry><link linkend="atrResourcesClsPSP">resourcesClsPSP</link></entry>
-<entry>The <emphasis role="italic">resources</emphasis> attribute is set to a <link linkend="clsResourceImage">ResourceImage</link> object containing resources used by this property sheet page.</entry>
+<entry>resourcesClsPSP (xref linkend="atrResourcesClsPSP" />)</entry>
+<entry>The <emphasis role="italic">resources</emphasis> attribute is set to a ResourceImage (xref linkend="clsResourceImage" />) object containing resources used by this property sheet page.</entry>
 </row>
 <row>
-<entry><link linkend="atrTabIcon">tabIcon</link></entry>
+<entry>tabIcon (xref linkend="atrTabIcon" />)</entry>
 <entry>Reflects the icon to use as the icon in the tab of this property sheet page.</entry>
 </row>
 <row>
-<entry><link linkend="atrWasActivatedClsPSP">wasActivated</link></entry>
-<entry>Reflects whether the <link linkend="ovvUnderlying">underlying</link> property sheet page was created.</entry>
+<entry>wasActivated (xref linkend="atrWasActivatedClsPSP" />)</entry>
+<entry>Reflects whether the underlying (xref linkend="ovvUnderlying" />) property sheet page was created.</entry>
 </row>
 <row>
-<entry><link linkend="atrWantAccelerators">wantAccelerators</link></entry>
+<entry>wantAccelerators (xref linkend="atrWantAccelerators" />)</entry>
 <entry>The value of this attribute determines if this page should receive the TRANSLATEACCELERATOR event notification.</entry>
 </row>
 <row>
-<entry><link linkend="atrWantGetObject">wantGetObject</link></entry>
+<entry>wantGetObject (xref linkend="atrWantGetObject" />)</entry>
 <entry>The value of this attribute determines if this page should receive the GETOBJECT event notification message.</entry>
 </row>
 <row>
@@ -4281,71 +4281,71 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthApplyClsPSP">apply</link></entry>
+<entry>apply (xref linkend="mthApplyClsPSP" />)</entry>
 <entry>Notifies every page in the property sheet that the user has clicked the OK, Close, or Apply button and wants all changes to take effect.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetObject">getObject</link></entry>
+<entry>getObject (xref linkend="mthGetObject" />)</entry>
 <entry>Sent by a property sheet dialog to request a drop target object when the cursor passes over one of the tab control's buttons.</entry>
 </row>
 <row>
-<entry><link linkend="mthHelpClsPSP">help</link></entry>
+<entry>help (xref linkend="mthHelpClsPSP" />)</entry>
 <entry>Notifies a page that the user has clicked the Help button.</entry>
 </row>
 <row>
-<entry><link linkend="mthKillActive">killActive</link></entry>
+<entry>killActive (xref linkend="mthKillActive" />)</entry>
 <entry>Notifies a page that it is about to lose activation either because another page is being activated or the user has clicked the OK button.</entry>
 </row>
 <row>
-<entry><link linkend="mthPageCreate">pageCreate</link></entry>
-<entry>Notifies the Rexx page dialog that the <link linkend="ovvUnderlying">underyling</link> page dialog is about to be created.</entry>
+<entry>pageCreate (xref linkend="mthPageCreate" />)</entry>
+<entry>Notifies the Rexx page dialog that the underyling (xref linkend="ovvUnderlying" />) page dialog is about to be created.</entry>
 </row>
 <row>
-<entry><link linkend="mthQueryCancel">queryCancel</link></entry>
+<entry>queryCancel (xref linkend="mthQueryCancel" />)</entry>
 <entry>Notifies a property sheet page that the user has canceled the property sheet dialog.</entry>
 </row>
 <row>
-<entry><link linkend="mthQueryFromSibling">queryFromSibling</link></entry>
+<entry>queryFromSibling (xref linkend="mthQueryFromSibling" />)</entry>
 <entry>Notifies the page of a <link linkend="mthQuerySiblings"></link> messge.</entry>
 </row>
 <row>
-<entry><link linkend="mthQueryInitialFocus">queryInitialFocus</link></entry>
+<entry>queryInitialFocus (xref linkend="mthQueryInitialFocus" />)</entry>
 <entry>Provides a property sheet page an opportunity to specify which dialog box control should receive the initial focus.</entry>
 </row>
 <row>
-<entry><link linkend="mthReset">reset</link></entry>
+<entry>reset (xref linkend="mthReset" />)</entry>
 <entry>Notifies a page that the property sheet is about to be destroyed.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetActive">setActive</link></entry>
+<entry>setActive (xref linkend="mthSetActive" />)</entry>
 <entry>Notifies a page that it is about to be activated.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetSizeClsPSP">setSize</link></entry>
-<entry>Used to set both the <link linkend="atrCX">cx</link> and <link linkend="atrCY">cy</link> attributes at one time.</entry>
+<entry>setSize (xref linkend="mthSetSizeClsPSP" />)</entry>
+<entry>Used to set both the cx (xref linkend="atrCX" />) and cy (xref linkend="atrCY" />) attributes at one time.</entry>
 </row>
 <row>
-<entry><link linkend="mthTranslateAccelerator">translateAccelerator</link></entry>
+<entry>translateAccelerator (xref linkend="mthTranslateAccelerator" />)</entry>
 <entry>Notifies a property sheet page that a keyboard message has been received. It provides the page an opportunity to do private keyboard accelerator translation.</entry>
 </row>
 <row>
-<entry><link linkend="mthWizBack">wizBack</link></entry>
+<entry>wizBack (xref linkend="mthWizBack" />)</entry>
 <entry>Notifies a page that the user has clicked the Back button in a wizard.</entry>
 </row>
 <row>
-<entry><link linkend="mthWizFinish">wizFinish</link></entry>
+<entry>wizFinish (xref linkend="mthWizFinish" />)</entry>
 <entry>Notifies a page that the user has clicked the Finish button in a wizard.</entry>
 </row>
 <row>
-<entry><link linkend="mthWizNext">wizNext</link></entry>
+<entry>wizNext (xref linkend="mthWizNext" />)</entry>
 <entry>Notifies a page that the user has clicked the Next button in a wizard.</entry>
 </row>
 <row>
-<entry><link linkend="mthValidateClsPSP">validate</link></entry>
+<entry>validate (xref linkend="mthValidateClsPSP" />)</entry>
 <entry>Provides a place to validate the data entered by the user in a page during the <emphasis role="italic">apply</emphasis> notification.</entry>
 </row>
 <row>
-<entry><link linkend="mthValidatePage">pageValidate</link></entry>
+<entry>pageValidate (xref linkend="mthValidatePage" />)</entry>
 <entry>Provides a place to validate the data entered by the user in a page during the <emphasis role="italic">killActive</emphasis> notification</entry>
 </row>
 </tbody></tgroup>
@@ -4358,20 +4358,20 @@
 <indexterm><primary>PropertySheetPage class</primary><secondary>event handlers</secondary></indexterm>
 
 <para>
-  The process for connecting <link linkend="ovvEvents">event</link> handlers for the property sheet page
+  The process for connecting event (xref linkend="ovvEvents" />) handlers for the property sheet page
   dialogs takes a slightly different approach than that of other dialog classes in the ooDialog framework. The property
   sheet page class provides a default event handler for all property sheet page specifc events.
 </para>
 <para>
   Rather than connecting a property sheet page event to a specified method in the Rexx dialog, the programmer over-rides
-  the default handler in the dialog. This is similiar to how the <link linkend="mthOk">ok</link> and <link
-  linkend="mthCancel">cancel</link> events are handled in the dialog <link linkend="chpDialogObject">object</link>.
+  the default handler in the dialog. This is similiar to how the ok (xref linkend="mthOk" />) and <link
+  linkend="mthCancel">cancel</link> events are handled in the dialog object (xref linkend="chpDialogObject" />).
 </para>
 <para>
   In the property sheet page dialogs, most of the methods are actually default event handlers. To act on an event in a
   manner different from the default, the programmer over-rides the default handler and provides an implementation that
   handles the event as needed by the application. For example, to remove the back button from the first page of an
-  Aero wizard, the programmer would over-ride the <link linkend="mthSetActive">setActive</link> method in the page
+  Aero wizard, the programmer would over-ride the setActive (xref linkend="mthSetActive" />) method in the page
   dialog for the first page of the property sheet dialog. In the new implementation code for <emphasis
   role="italic">setActive</emphasis>, the programmer would invoke the <link
   linkend="mthShowWizButtons">showWizButtons</link> method of the property sheet dialog and specify that the Back button
@@ -4420,23 +4420,23 @@
     Setting <emphasis role="italic">cx</emphasis> is really only of use for a <link
     linkend="clsUserPSPDialog">UserPSPDialog</link>. And, indeed, for a <computeroutput>UserPSPDialog</computeroutput>
     the programmer must set this attribute to obtain a dialog with a different width than one of the 3 recommended
-    widths. With a <link linkend="clsRcPSPDialog">RcPSPDialog</link>, <emphasis role="italic">cx</emphasis> is
-    over-written with the value in the resource script, and for a <link linkend="clsResPSPDialog">ResPSPDialog</link>,
+    widths. With a RcPSPDialog (xref linkend="clsRcPSPDialog" />), <emphasis role="italic">cx</emphasis> is
+    over-written with the value in the resource script, and for a ResPSPDialog (xref linkend="clsResPSPDialog" />),
     the width is determined when the resource is compiled and can not changed.
   </para>
   <para>
     With a <computeroutput>UserPSPDialog</computeroutput>, the underlying page dialog is created with the width
     specified by the <emphasis role="italic">cx</emphasis> attribute. So, to have a different width than one of the
     recommended widths, the programmer must set this attribute before the dialog template is created. Note that the
-    <link linkend="mthSetSizeClsPSP">setSize</link> method can be used to set both the <emphasis
-    role="italic">cx</emphasis> and <link linkend="atrCY">cy</link> attributes at one time.
+    setSize (xref linkend="mthSetSizeClsPSP" />) method can be used to set both the <emphasis
+    role="italic">cx</emphasis> and cy (xref linkend="atrCY" />) attributes at one time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     This example shows an <computeroutput>UserPSPDialog</computeroutput> being instantiated for use as one of the pages
-    of a <link linkend="clsPropertySheetDialog">property</link> sheet dialog. The size of the page dialog is set using
+    of a property (xref linkend="clsPropertySheetDialog" />) sheet dialog. The size of the page dialog is set using
     the <emphasis role="italic">cx</emphasis> and <emphasis role="italic">cy</emphasis> attributes;
 <programlisting>
 <![CDATA[
@@ -4495,23 +4495,23 @@
     Setting <emphasis role="italic">cy</emphasis> is really only of use for a <link
     linkend="clsUserPSPDialog">UserPSPDialog</link>. And, indeed, for a <computeroutput>UserPSPDialog</computeroutput>
     the programmer must set this attribute to obtain a dialog with a different height than one of the 3 recommended
-    heights. With a <link linkend="clsRcPSPDialog">RcPSPDialog</link>, <emphasis role="italic">cy</emphasis> is
-    over-written with the value in the resource script, and for a <link linkend="clsResPSPDialog">ResPSPDialog</link>,
+    heights. With a RcPSPDialog (xref linkend="clsRcPSPDialog" />), <emphasis role="italic">cy</emphasis> is
+    over-written with the value in the resource script, and for a ResPSPDialog (xref linkend="clsResPSPDialog" />),
     the height is determined when the resource is compiled and can not changed.
   </para>
   <para>
     With a <computeroutput>UserPSPDialog</computeroutput>, the underlying page dialog is created with the height
     specified by the <emphasis role="italic">cy</emphasis> attribute. So, to have a different height than one of the
     recommended heights, the programmer must set this attribute before the dialog template is created. Note that the
-    <link linkend="mthSetSizeClsPSP">setSize</link> method can be used to set both the <emphasis
-    role="italic">cy</emphasis> and <link linkend="atrCX">cx</link> attributes at one time.
+    setSize (xref linkend="mthSetSizeClsPSP" />) method can be used to set both the <emphasis
+    role="italic">cy</emphasis> and cx (xref linkend="atrCX" />) attributes at one time.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     This example shows an <computeroutput>UserPSPDialog</computeroutput> being instantiated for use as one of the pages
-    of a <link linkend="clsPropertySheetDialog">property</link> sheet dialog. The size of the page dialog is set using
+    of a property (xref linkend="clsPropertySheetDialog" />) sheet dialog. The size of the page dialog is set using
     the <emphasis role="italic">cx</emphasis> and <emphasis role="italic">cy</emphasis> attributes;
 <programlisting>
 <![CDATA[
@@ -4570,7 +4570,7 @@
     For non-aero wizards, the subtitle text can also be set dynamically by using the <link
     linkend="mthSetHeaderSubTitle">setHeaderSubtitle</link> method of the <link
     linkend="clsPropertySheetDialog">PropertySheetDialog</link>. For instance, setting the subtitle text could be done
-    in the <link linkend="mthSetActive">setActive</link> event handler when the page is about to become active but
+    in the setActive (xref linkend="mthSetActive" />) event handler when the page is about to become active but
     before it is actually shown on the screen.
   </para>
   </listitem></varlistentry>
@@ -4616,7 +4616,7 @@
     For non-aero wizards, the header title text can also be set dynamically by using the <link
     linkend="mthSetHeaderTitle">setHeaderTitle</link> method of the <link
     linkend="clsPropertySheetDialog">PropertySheetDialog</link>. For instance, setting the title text could be done in
-    the <link linkend="mthSetActive">setActive</link> event handler when the page is about to become active but before
+    the setActive (xref linkend="mthSetActive" />) event handler when the page is about to become active but before
     it is actually shown on the screen.
   </para>
   </listitem></varlistentry>
@@ -4636,7 +4636,7 @@
 </programlisting>
 
 <para>
-  Reflects the value of the page ID, which identifies the page to the <link linkend="ovvUnderlying">underlying</link>
+  Reflects the value of the page ID, which identifies the page to the underlying (xref linkend="ovvUnderlying" />)
   property sheet dialog. The ID is essentially an opaque value to the Rexx programmer.
 </para>
 <variablelist>
@@ -4661,7 +4661,7 @@
     Note that the page <emphasis role="italic">ID</emphasis> is different than the page <emphasis
     role="italic">index</emphasis>. The <emphasis role="italic">index</emphasis> is the page number of the page, page 1,
     page 2, etc.. A page ID can be returned from several of the page event handlers, such as <link
-    linkend="mthSetActive">setActive</link>, <link linkend="mthWizBack">wizBack</link>, and <link
+    linkend="mthSetActive">setActive</link>, wizBack (xref linkend="mthWizBack" />), and <link
     linkend="mthWizNext">wizNext</link> to direct the property sheet dialog to display the page with that ID. The <link
     linkend="mthIndexToID">indexToID</link> method of the <link
     linkend="clsPropertySheetDialog">PropertySheetDialog</link> class can be used to translate the page number to that
@@ -4753,11 +4753,11 @@
     it. There is one <emphasis role="italic">exception</emphasis> to this. For the <link
     linkend="clsRcPSPDialog">RcPSPDialog</link> page object, the title for the page will be overwritten when the
     resource script is parsed.  To prevent this, for <computeroutput>RcPSPDialog</computeroutput> pages, the USETITLE
-    keyword must be used in the <link linkend="argPageOptsClsRcPSPDialog">pageOpts</link> argument.
+    keyword must be used in the pageOpts (xref linkend="argPageOptsClsRcPSPDialog" />) argument.
   </para>
   <para>
-    In a <link linkend="clsUserPSPDialog">UserPSPDialog</link>, the <emphasis role="italic">pageTitle</emphasis>
-    attribute can also be set by using the <link linkend="argTitleClsUserPSPDialog">title</link> argument in the
+    In a UserPSPDialog (xref linkend="clsUserPSPDialog" />), the <emphasis role="italic">pageTitle</emphasis>
+    attribute can also be set by using the title (xref linkend="argTitleClsUserPSPDialog" />) argument in the
     <emphasis role="italic">new</emphasis> method of the class.
   </para>
   </listitem></varlistentry>
@@ -4800,7 +4800,7 @@
 </programlisting>
 
 <para>
-  Reflects the Rexx <link linkend="clsPropertySheetDialog">PropertySheetDialog</link> object that this page belongs to.
+  Reflects the Rexx PropertySheetDialog (xref linkend="clsPropertySheetDialog" />) object that this page belongs to.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">propSheet get:</emphasis></term>
@@ -4876,7 +4876,7 @@
   <para>
     The <emphasis role="italic">resources</emphasis> attribute is set to the source of some resources used by the
     property sheet page dialog. The object assigned to the <emphasis role="italic">resources</emphasis> attribute must
-    be a <link linkend="clsResourceImage">ResourceImage</link> object.
+    be a ResourceImage (xref linkend="clsResourceImage" />) object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -4968,22 +4968,22 @@
   <varlistentry><term><emphasis role="bold">tabIcon set:</emphasis></term>
   <listitem>
   <para>
-    This attribute can either be set to a stand alone icon <link linkend="clsImage">Image</link> object or to the
+    This attribute can either be set to a stand alone icon Image (xref linkend="clsImage" />) object or to the
     resource ID of the icon if the icon image is contained in a compiled resource file. If the attribute is set to a
-    resource ID, then the <link linkend="atrResourcesClsPSP">resources</link> attribute must be set to a <link
+    resource ID, then the resources (xref linkend="atrResourcesClsPSP" />) attribute must be set to a <link
     linkend="clsResourceImage">ResourceImage</link> object that contains the icon image. If the attribute is set to an
     <computeroutput>Image</computeroutput> object, the the image has to be an actual icon image. It can not be a bitmap
     or cursor.
   </para>
   <para>
-    When a resource ID is used it may be numeric or <link linkend="defSymbolicId">symbolic</link>.
+    When a resource ID is used it may be numeric or symbolic (xref linkend="defSymbolicId" />).
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The tab icons for all pages in a <link linkend="clsPropertySheetDialog">property</link> sheet dialog can also be set
-    through the <link linkend="atrImageList">imageList</link> attribute. If both the <emphasis
+    The tab icons for all pages in a property (xref linkend="clsPropertySheetDialog" />) sheet dialog can also be set
+    through the imageList (xref linkend="atrImageList" />) attribute. If both the <emphasis
     role="italic">imageList</emphasis> attribute and the <emphasis role="italic">tabIcon</emphasis> attribute are set,
     the icon for the tab is taken from the <emphasis role="italic">imageList</emphasis> attribute.
   </para>
@@ -5042,7 +5042,7 @@
 </programlisting>
 
 <para>
-  Reflects whether the <link linkend="ovvUnderlying">underlying</link> property sheet page was created.
+  Reflects whether the underlying (xref linkend="ovvUnderlying" />) property sheet page was created.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">wasActivated get:</emphasis></term>
@@ -5060,7 +5060,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The property <link linkend="clsPropertySheetDialog">sheet</link> dialog creates the property sheet page dialogs as
+    The property sheet (xref linkend="clsPropertySheetDialog" />) dialog creates the property sheet page dialogs as
     they are needed, usually not until the page is visited. This attribute allows the Rexx programmer to determine
     whether or not the underlying dialog was ever created.
   </para>
@@ -5068,7 +5068,7 @@
 </variablelist>
 </section>  <!-- End PropertySheetPage::wasActivated() [attribute]  -->
 
-<section id="atrwantAccelerators"><title>wantAccelerators (Attribute)</title>
+<section id="atrWantAccelerators"><title>wantAccelerators (Attribute)</title>
 <indexterm><primary>wantAccelerators</primary></indexterm>
 <indexterm><primary>PropertySheetPage class</primary><secondary>wantAccelerators</secondary></indexterm>
 <programlisting>
@@ -5147,7 +5147,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This attribute and the <link linkend="mthGetObject">getObject</link> event handler are provided for completeness.
+    This attribute and the getObject (xref linkend="mthGetObject" />) event handler are provided for completeness.
     The ooDialog framework does not currently have a way to allow the programmer to handle the get object event. The
     <emphasis role="italic">wantGetObject</emphasis> attribute is set to false by default. Changing it to true will not
     be of any use int the current ooDialog implementation.. Future versions of ooDialog may be enhanced to take
@@ -5215,7 +5215,7 @@
     <varlistentry><term>PSNRET_NOERROR</term>
     <listitem>
     <para>
-      Return the PSNRET_NOERROR <link linkend="tblPropertySheetPageMethods">constant</link> to indicate that the
+      Return the PSNRET_NOERROR constant (xref linkend="tblPropertySheetPageMethods" />) to indicate that the
       changes made to this page are valid and have been applied.  If all pages return PSNRET_NOERROR, the property sheet
       dialog can be destroyed.
     </para>
@@ -5223,14 +5223,14 @@
     <varlistentry><term>PSNRET_INVALID</term>
     <listitem>
     <para>
-      Return the PSNRET_INVALID <link linkend="tblPropertySheetPageMethods">constant</link> to prevent the property
+      Return the PSNRET_INVALID constant (xref linkend="tblPropertySheetPageMethods" />) to prevent the property
       sheet dialog from being destroyed. The focus will be returned to this page.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>PSNRET_INVALID_NOCHANGEPAGE</term>
     <listitem>
     <para>
-      Return the PSNRET_INVALID_NOCHANGEPAGE <link linkend="tblPropertySheetPageMethods">constant</link> to prevent the
+      Return the PSNRET_INVALID_NOCHANGEPAGE constant (xref linkend="tblPropertySheetPageMethods" />) to prevent the
       property sheet dialog from being destroyed. The focus will be returned to the page that had the focus when the
       button was pressed.
     </para>
@@ -5250,14 +5250,14 @@
   <para>
     The <emphasis role="italic">apply</emphasis> event handler can be over-ridden by the Rexx programmer, but there are
     a few additional details the programmer needs to be aware of. First, the default implementation simply calls the
-    <link linkend="mthValidateClsPSP">validate</link> method and returns the value that <emphasis
+    validate (xref linkend="mthValidateClsPSP" />) method and returns the value that <emphasis
     role="italic">validate</emphasis> returns. Because of that, an appropriate strategy would be to over-ride <emphasis
     role="italic">validate</emphasis> and leave the default implementation of <emphasis role="italic">apply</emphasis>
     as is.
   </para>
   <para>
     Second, when the return from <emphasis role="italic">apply</emphasis> is to be PSNRET_NOERROR, the programmer should
-    always invoke the private <link linkend="mthApplyNoError">applyNoError</link> method as the last step. Failure to
+    always invoke the private applyNoError (xref linkend="mthApplyNoError" />) method as the last step. Failure to
     invoke <emphasis role="italic">applyNoError</emphasis> will likely introduce inconsistencies in the behaviour of the
     page dialog as compared to the behaviour of other ooDialog dialogs.
   </para>
@@ -5296,7 +5296,7 @@
 </para>
 <para>
   The first and only argument to <emphasis role="italic">applyNoError</emphasis> should be the same <emphasis
-  role="italic">propSheet</emphasis> argument that is passed to <link linkend="mthApplyClsPSP">apply</link>. The return
+  role="italic">propSheet</emphasis> argument that is passed to apply (xref linkend="mthApplyClsPSP" />). The return
   from <emphasis role="italic">applyNoError</emphasis> is always PSNRET_NOERROR. The typical over-ride of the <emphasis
   role="italic">apply</emphasis> method would always look similar to this:
 
@@ -5454,8 +5454,8 @@
   <para>
     The Rexx programmer must return <computeroutput>.true</computeroutput> to allow the page to lose activation and
     <computeroutput>.false</computeroutput> to prevent the page from losing the activation. The default implementation
-    of this event handler returns <link linkend="mthValidatePage">validatePage</link>. The default implementation of
-    <link linkend="mthValidatePage">validatePage</link> returns <computeroutput>.true</computeroutput>.
+    of this event handler returns validatePage (xref linkend="mthValidatePage" />). The default implementation of
+    validatePage (xref linkend="mthValidatePage" />) returns <computeroutput>.true</computeroutput>.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -5466,7 +5466,7 @@
     to explain the problem to the user.
   </para>
   <para>
-    The default implementation invokes the <link linkend="mthValidatePage">validatePage</link> method. Since the default
+    The default implementation invokes the validatePage (xref linkend="mthValidatePage" />) method. Since the default
     implementation of <emphasis role="italic">validatePage</emphasis> returns <computeroutput>.true</computeroutput>,
     the default <emphasis role="italic">killActive</emphasis> returns <computeroutput>.true</computeroutput>. Rather
     than over-ride <emphasis role="italic">killActive</emphasis>, the programmer could over-ride the <emphasis
@@ -5530,7 +5530,7 @@
 </programlisting>
 
 <para>
-  Notifies the Rexx page dialog that the <link linkend="ovvUnderlying">underyling</link> page dialog is about to be
+  Notifies the Rexx page dialog that the underyling (xref linkend="ovvUnderlying" />) page dialog is about to be
   created. This notification is sent before the underlying page exists.
 </para>
 <variablelist>
@@ -5691,7 +5691,7 @@
     Return a whole number. If the returned number is 0, the property sheet <link
     linkend="clsPropertySheetDialog">dialog</link> sends the QUERYSIBLINGS message on to the next page in the property
     sheet. If the number is not 0, then the property sheet dialog does not send the message on the the next page and
-    returns its value from the <link linkend="mthQuerySiblings">querySiblings</link> method. The default implementation
+    returns its value from the querySiblings (xref linkend="mthQuerySiblings" />) method. The default implementation
     returns 0.
   </para>
   </listitem></varlistentry>
@@ -5923,7 +5923,7 @@
   <listitem>
   <para>
     The Rexx programmer returns 0 to allow the page to become active, -1 to prevent a page change, and the page <link
-    linkend="atrPageNumber">number</link> or page <link linkend="atrPageID">ID</link>, to go to that specific page. The
+    linkend="atrPageNumber">number</link> or page ID (xref linkend="atrPageID" />), to go to that specific page. The
     default implementation returns 0.
   </para>
   </listitem></varlistentry>
@@ -5979,15 +5979,15 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setSize</emphasis> method can be used to set both the <link linkend="atrCX">cx</link> and
-  <link linkend="atrCY">cy</link> attributes at one time.
+  The <emphasis role="italic">setSize</emphasis> method can be used to set both the cx (xref linkend="atrCX" />) and
+  cy (xref linkend="atrCY" />) attributes at one time.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
     The arguments are the width and height values, in dialog units, for the dialog template of this page. As noted in
-    the syntax diagram, the width and height can either be supplied through a single <link linkend="clsSize">Size</link>
+    the syntax diagram, the width and height can either be supplied through a single Size (xref linkend="clsSize" />)
     object, or by specifying the width and height separately.
   </para>
   </listitem></varlistentry>
@@ -6221,7 +6221,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The Rexx programmer returns one of the <link linkend="tblPropertySheetPageMethods">constants</link> PSNRET_NOERROR
+    The Rexx programmer returns one of the constants (xref linkend="tblPropertySheetPageMethods" />) PSNRET_NOERROR
     or PSNRET_MESSAGEHANDLED. Return PSNRET_MESSAGEHANDLED to indicate to the OS that no further processing is necessary
     or return PSNRET_NOERROR to request normal processing from the OS. The default implementation returns
     PSNRET_NOERROR.
@@ -6331,7 +6331,7 @@ Alt held: 0 shift held: 0 control held: 0
   <listitem>
   <para>
     The Rexx programmer returns 0 to allow the page to be changed to the previous page, -1 to prevent the page from
-    changing, and the page <link linkend="atrPageNumber">number</link> or page <link linkend="atrPageID">ID</link>, to
+    changing, and the page number (xref linkend="atrPageNumber" />) or page ID (xref linkend="atrPageID" />), to
     go to that specific page instead of the previous page. The default implementation returns 0.
   </para>
   </listitem></varlistentry>
@@ -6346,7 +6346,7 @@ Alt held: 0 shift held: 0 control held: 0
   <para>
     This example is from some exploratory code. When the user clicks the back button on page four of the wizard, instead
     of going to page three, the dialog goes back to page one. I.e., the user starts over. There are some say statements
-    to print out information on the screen. The <link linkend="mthIndexToID">indexToID</link> method is used to test
+    to print out information on the screen. The indexToID (xref linkend="mthIndexToID" />) method is used to test
     that it works. It would have been just as good to simply return the page number (1.)
 <programlisting>
 <![CDATA[
@@ -6496,7 +6496,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <listitem>
   <para>
     The Rexx programmer returns 0 to allow the page to be changed to the next page, -1 to prevent the page from
-    changing, and the page <link linkend="atrPageNumber">number</link> or page <link linkend="atrPageID">ID</link>, to
+    changing, and the page number (xref linkend="atrPageNumber" />) or page ID (xref linkend="atrPageID" />), to
     go to that specific page instead of the next page. The default implementation returns 0.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -6520,9 +6520,9 @@ Got return from indexToID() ret: 0x00000000004EAF60
 
 <para>
   The <emphasis role="italic">validate</emphasis> method is invoked automatically by the ooDialog framework from the
-  default implementation of the <link linkend="mthApplyClsPSP">apply</link> event handler. It is meant to be over-ridden
+  default implementation of the apply (xref linkend="mthApplyClsPSP" />) event handler. It is meant to be over-ridden
   by the Rexx progammer and provides a place to validate the data entered by the user in a page. It is similar in
-  purpose to the dialog <link linkend="chpDialogObject">object's</link> <link linkend="mthValidate">validate</link>
+  purpose to the dialog object's (xref linkend="chpDialogObject" />) validate (xref linkend="mthValidate" />)
   method.
 </para>
 <variablelist>
@@ -6564,7 +6564,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Recall that the <link linkend="mthApplyClsPSP">apply</link> method handles the notification sent to every page in
+    Recall that the apply (xref linkend="mthApplyClsPSP" />) method handles the notification sent to every page in
     the property sheet that the user has clicked the OK, Close, or Apply button and wants all changes to take effect.
     The purpose of that notification, and therefore the <emphasis role="italic">validate</emphasis> method, is to give
     the application a chance to check that any data entered by the user is of the right form and prevent the dialog from
@@ -6576,7 +6576,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
     Therefore, a better stategy than over-riding the <emphasis role="italic">apply</emphasis> method, might be to
     over-ride the <emphasis role="italic">validate</emphasis> method. In the over-ride, return PSNRET_INVALID or
     PSNRET_INVALID_NOCHANGEPAGE to prevent the dialog from closing and return PSNRET_NOERROR to allow the dialog to
-    close. The advantage to this is that the <link linkend="mthApplyClsPSP">apply</link> method also handles some
+    close. The advantage to this is that the apply (xref linkend="mthApplyClsPSP" />) method also handles some
     internal house keeping when the return is PNSRET_NOERROR. By over-riding <emphasis role="italic">validate</emphasis>
     instead of <emphasis role="italic">apply</emphasis>, the Rexx programmer has fewer details to take care of.
   </para>
@@ -6624,9 +6624,9 @@ Got return from indexToID() ret: 0x00000000004EAF60
 
 <para>
   The <emphasis role="italic">validatePage</emphasis> method is invoked automatically by the ooDialog framework from the
-  default implementation of the <link linkend="mthKillActive">killActive</link> event handler. It is meant to be
+  default implementation of the killActive (xref linkend="mthKillActive" />) event handler. It is meant to be
   over-ridden by the Rexx progammer and provides a place to validate the data entered by the user in a page. It is
-  similar in purpose to the dialog <link linkend="chpDialogObject">object's</link> <link
+  similar in purpose to the dialog object's (xref linkend="chpDialogObject" />) <link
   linkend="mthValidate">validate</link> method.
 </para>
 <variablelist>
@@ -6649,7 +6649,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <para>
     The Rexx programmer  should return <computeroutput>.true</computeroutput> to signal that the data entered for the
     page is valid and <computeroutput>.false</computeroutput> to signal that the data on the page is not valid. The
-    default implementation of <link linkend="mthKillActive">killActive</link> directly returns <emphasis
+    default implementation of killActive (xref linkend="mthKillActive" />) directly returns <emphasis
     role="italic">validatePage</emphasis>. Therefore, if <emphasis role="italic">killActive</emphasis> is not
     over-ridden, the progammer must return <computeroutput>.true</computeroutput> to allow the page to lose activation
     and <computeroutput>.false</computeroutput> to prevent the page from losing the activation.
@@ -6659,7 +6659,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <listitem>
   <para>
     A common strategy might be to over-ride <emphasis role="italic">validatePage</emphasis> and do all page validation
-    there. When using this strategy, the default implementation of <link linkend="mthKillActive">killActive</link> would
+    there. When using this strategy, the default implementation of killActive (xref linkend="mthKillActive" />) would
     be left alone. The programmer would be careful to return either <computeroutput>.true</computeroutput> or
     <computeroutput>.false</computeroutput> from <emphasis role="italic">validatePage</emphasis>.
   </para>
@@ -6681,7 +6681,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <para>
     This example over-rides the implementation of <emphasis role="italic">validatePage</emphasis> and returns
     <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> to indicate if the page is valid
-    or invalid. The default implementation of <link linkend="mthKillActive">killActive</link> is left alone:
+    or invalid. The default implementation of killActive (xref linkend="mthKillActive" />) is left alone:
 <programlisting>
 <![CDATA[
 
@@ -6717,7 +6717,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
 <para>
   The <computeroutput>RcPSPDialog</computeroutput> class provides the basis for a page dialog where the dialog <link
   linkend="ovvDialogTemplate">template</link> is defined within a resource <link
-  linkend="defResourceScript">script</link> file. It is a subclass of the <link linkend="clsRcDialog">RcDialog</link>.
+  linkend="defResourceScript">script</link> file. It is a subclass of the RcDialog (xref linkend="clsRcDialog" />).
 </para>
 
 <section id="mthNewClsRcPSPDialog"><title>new (Class method)</title>
@@ -6732,7 +6732,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
 
 <para>
   Instantiates a new <computeroutput>RcPSPDialog</computeroutput> object. A <computeroutput>RcPSPDialog</computeroutput>
-  object can be used as a page in a <link linkend="clsPropertySheetDialog">property</link> sheet dialog.
+  object can be used as a page in a property (xref linkend="clsPropertySheetDialog" />) sheet dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6749,20 +6749,20 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template. This may be numeric or <link linkend="defSymbolicId">symbolic </link>.
+        The resource ID of the dialog template. This may be numeric or symbolic  (xref linkend="defSymbolicId" />).
       </para>
       </listitem></varlistentry>
       <varlistentry><term>data. [optional]</term>
       <listitem>
       <para>
-        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        A dialog data stem (xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>hFile [optional]</term>
       <listitem>
       <para>
-        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+        The name of a file (xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
       </para>
       </listitem></varlistentry>
       <varlistentry id="argPageOptsClsRcPSPDialog"><term>pOpts [optional]</term>
@@ -6814,8 +6814,8 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a large property
-            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
-            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            sheet page. This sets the cx (xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the constant (xref linkend="tblPropertySheetPageMethods" />) values
             PROP_LG_CXDLG and PROP_LG_CYDLG respectively.
           </para>
           <para>
@@ -6831,8 +6831,8 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a medium property
-            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
-            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            sheet page. This sets the cx (xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the constant (xref linkend="tblPropertySheetPageMethods" />) values
             PROP_MED_CXDLG and PROP_MED_CYDLG respectively. This is the default if the SMALL or LARGE keywords are not
             used.
           </para>
@@ -6866,8 +6866,8 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a small property
-            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
-            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            sheet page. This sets the cx (xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the constant (xref linkend="tblPropertySheetPageMethods" />) values
             PROP_SM_CXDLG and PROP_SM_CYDLG respectively.
           </para>
           <para>
@@ -6890,7 +6890,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERSUBTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the <link linkend="atrHeaderSubtitle">headerSubtitle</link> attribute as the
+            Displays the string value of the headerSubtitle (xref linkend="atrHeaderSubtitle" />) attribute as the
             subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
             keyword is used.
           </para>
@@ -6898,7 +6898,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the <link linkend="atrHeaderTitle">headerTitle</link> attribute as the title in
+            Displays the string value of the headerTitle (xref linkend="atrHeaderTitle" />) attribute as the title in
             the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
           </para>
           </listitem></varlistentry>
@@ -6913,7 +6913,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USETITLE</term>
           <listitem>
           <para>
-            Specifies that the <link linkend="atrPageTitle">pageTitle</link> attribute will be used as the title of the
+            Specifies that the pageTitle (xref linkend="atrPageTitle" />) attribute will be used as the title of the
             page, rather than the title stored in the dialog template for the page. This keyword is not supported when
             using the Aero-style wizard.
           </para>
@@ -6938,9 +6938,9 @@ Got return from indexToID() ret: 0x00000000004EAF60
         <varlistentry><term>CONNECTBUTTONS</term>
         <listitem>
         <para>
-          Each push <link linkend="clsButton">button</link> in the underlying dialog has the CLICKED <link
+          Each push button (xref linkend="clsButton" />) in the underlying dialog has the CLICKED <link
           linkend="ovvEvents">event</link> notification connected automatically to a method in the Rexx dialog object.
-          This is the same as using the <link linkend="mthConnectButtonEvent">connectButtonEvent</link>() method for the
+          This is the same as using the connectButtonEvent (xref linkend="mthConnectButtonEvent" />)() method for the
           CLICKED notification. The name for the method is generated automatically by the ooDialog framework. The method
           name is the button label with all spaces, ampersands, colons, and trailing <emphasis
           role="italic">...</emphasis> characters removed.
@@ -6960,7 +6960,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
         <varlistentry><term>CONNECTCHECKS</term>
         <listitem>
         <para>
-          Exactly the same as CONNECTRADIOS, for <link linkend="clsCheckBox">check box</link> controls. The object
+          Exactly the same as CONNECTRADIOS, for check box (xref linkend="clsCheckBox" />) controls. The object
           method name is generated in the same way as it is for radio buttons. That is, the method name is the button
           label, with all spaces, ampersands, colons, and trailing <emphasis role="italic">...</emphasis> characters
           removed. Which is then <emphasis role="bold"> prepended</emphasis> with the text
@@ -6974,7 +6974,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <listitem>
       <para>
         This is the maximum number of dialog controls expected in the dialog template. It serves the same purpose as the
-        <emphasis role="italic">expected</emphasis> argument in the <link linkend="mthCreate">create</link>() method of
+        <emphasis role="italic">expected</emphasis> argument in the create (xref linkend="mthCreate" />)() method of
         the <computeroutput>UserDialog</computeroutput>. The default value for this argument is 200.
       </para>
       </listitem></varlistentry>
@@ -6985,7 +6985,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
   <listitem>
   <para>
     This example creates 5 <computeroutput>RcPSPDialog</computeroutput> objects and then uses them as the 5 pages of a
-    <link linkend="clsPropertySheetDialog">PropertySheetDialog</link>:
+    PropertySheetDialog (xref linkend="clsPropertySheetDialog" />):
 
 <programlisting>
 <![CDATA[
@@ -7054,21 +7054,21 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template.  This may be numeric or <link linkend="defSymbolicId">symbolic</link>.
+        The resource ID of the dialog template.  This may be numeric or symbolic (xref linkend="defSymbolicId" />).
         The resource ID is assigned to the dialog template when it was compiled.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>dlgData. [optional]</term>
       <listitem>
       <para>
-        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        A dialog data stem (xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>hFile [optional]</term>
       <listitem>
       <para>
-        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+        The name of a file (xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>pageOpts [optional]</term>
@@ -7120,8 +7120,8 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a large property
-            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
-            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            sheet page. This sets the cx (xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the constant (xref linkend="tblPropertySheetPageMethods" />) values
             PROP_LG_CXDLG and PROP_LG_CYDLG respectively.
           </para>
           <para>
@@ -7137,8 +7137,8 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a medium property
-            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
-            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            sheet page. This sets the cx (xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the constant (xref linkend="tblPropertySheetPageMethods" />) values
             PROP_MED_CXDLG and PROP_MED_CYDLG respectively. This is the default if the SMALL or LARGE keywords are not
             used.
           </para>
@@ -7172,8 +7172,8 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a small property
-            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
-            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            sheet page. This sets the cx (xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the constant (xref linkend="tblPropertySheetPageMethods" />) values
             PROP_SM_CXDLG and PROP_SM_CYDLG respectively.
           </para>
           <para>
@@ -7196,7 +7196,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERSUBTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the <link linkend="atrHeaderSubtitle">headerSubtitle</link> attribute as the
+            Displays the string value of the headerSubtitle (xref linkend="atrHeaderSubtitle" />) attribute as the
             subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
             keyword is used.
           </para>
@@ -7204,7 +7204,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the <link linkend="atrHeaderTitle">headerTitle</link> attribute as the title in
+            Displays the string value of the headerTitle (xref linkend="atrHeaderTitle" />) attribute as the title in
             the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
           </para>
           </listitem></varlistentry>
@@ -7219,7 +7219,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USETITLE</term>
           <listitem>
           <para>
-            Specifies that the <link linkend="atrPageTitle">pageTitle</link> attribute will be used as the title of the
+            Specifies that the pageTitle (xref linkend="atrPageTitle" />) attribute will be used as the title of the
             page, rather than the title stored in the dialog template for the page. This keyword is not supported when
             using the Aero-style wizard.
           </para>
@@ -7276,7 +7276,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
 <para>
   The <computeroutput>UserPSPDialog</computeroutput> class provides the basis for a page dialog where the dialog <link
   linkend="ovvDialogTemplate">template</link> is built dynamically in the program using the <link
-  linkend="sctCreateMethods">create</link> methods of the <link linkend="clsUserDialog">UserDialog</link>. It is a
+  linkend="sctCreateMethods">create</link> methods of the UserDialog (xref linkend="clsUserDialog" />). It is a
   subclass of the <computeroutput>UserDialog</computeroutput>.
 </para>
 
@@ -7295,7 +7295,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
 
 <para>
   Instantiates a new <computeroutput>UserPSPDialog</computeroutput> object. This dialog can then be used as a page in a
-  <link linkend="clsPropertySheetDialog">PropertySheetDialog</link>.
+  PropertySheetDialog (xref linkend="clsPropertySheetDialog" />).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7306,14 +7306,14 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <varlistentry><term>dlgData. [optional]</term>
       <listitem>
       <para>
-        A dialog <link linkend="termDialogDataStem">data stem</link> variable (don't forget the trailing period) that
+        A dialog data stem (xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>hFile [optional]</term>
       <listitem>
       <para>
-        The name of a <link linkend="termHFile">file</link> containing symbolic ID defines for resource IDs.
+        The name of a file (xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>pageOpts [optional]</term>
@@ -7365,8 +7365,8 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a large property
-            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
-            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            sheet page. This sets the cx (xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the constant (xref linkend="tblPropertySheetPageMethods" />) values
             PROP_LG_CXDLG and PROP_LG_CYDLG respectively.
           </para>
           <para>
@@ -7382,8 +7382,8 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a medium property
-            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
-            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            sheet page. This sets the cx (xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the constant (xref linkend="tblPropertySheetPageMethods" />) values
             PROP_MED_CXDLG and PROP_MED_CYDLG respectively. This is the default if the SMALL or LARGE keywords are not
             used.
           </para>
@@ -7400,8 +7400,8 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <listitem>
           <para>
             Specifies that the initial size of the page dialog is the Microsoft recommended size for a small property
-            sheet page. This sets the <link linkend="atrCX">cx</link> and <emphasis role="italic">cy</emphasis>
-            attributes of the page to the <link linkend="tblPropertySheetPageMethods">constant</link> values
+            sheet page. This sets the cx (xref linkend="atrCX" />) and <emphasis role="italic">cy</emphasis>
+            attributes of the page to the constant (xref linkend="tblPropertySheetPageMethods" />) values
             PROP_SM_CXDLG and PROP_SM_CYDLG respectively.
           </para>
           <para>
@@ -7441,7 +7441,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERSUBTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the <link linkend="atrHeaderSubtitle">headerSubtitle</link> attribute as the
+            Displays the string value of the headerSubtitle (xref linkend="atrHeaderSubtitle" />) attribute as the
             subtitle in the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER
             keyword is used.
           </para>
@@ -7449,7 +7449,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USEHEADERTITLE</term>
           <listitem>
           <para>
-            Displays the string value of the <link linkend="atrHeaderTitle">headerTitle</link> attribute as the title in
+            Displays the string value of the headerTitle (xref linkend="atrHeaderTitle" />) attribute as the title in
             the header of a Wizard97 interior page. This keyword is ignored when the HIDEHEADER keyword is used.
           </para>
           </listitem></varlistentry>
@@ -7464,7 +7464,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
           <varlistentry><term>USETITLE</term>
           <listitem>
           <para>
-            Specifies that the <link linkend="atrPageTitle">pageTitle</link> attribute will be used as the title of the
+            Specifies that the pageTitle (xref linkend="atrPageTitle" />) attribute will be used as the title of the
             page, rather than the title stored in the dialog template for the page. This keyword is not supported when
             using the Aero-style wizard.
           </para>
@@ -7485,7 +7485,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <listitem>
       <para>
         The text to use for this page's title. The page title is used as the text for the tab label for this page in the
-        property sheet <link linkend="clsPropertySheetDialog">dialog</link>. This argument sets the <link
+        property sheet dialog (xref linkend="clsPropertySheetDialog" />). This argument sets the <link
         linkend="atrPageTitle">pageTitle</link> attribute of this property sheet page and automatically adds the
         USETITLE keyword to the <emphasis role="italic">pageOpts</emphasis> argument. If this arugment is omitted and
         the <emphasis role="italic">pageTitle</emphasis> attribute is not set by the programmer, then a label is
@@ -7499,7 +7499,7 @@ Got return from indexToID() ret: 0x00000000004EAF60
       <listitem>
       <para>
         The name of the font to be used by the dialog for all text. If this argument is omitted, the default dialog font
-        is used.  The programmer can change this default by using the<link linkend="mthClsSetDefaultfont">
+        is used.  The programmer can change this default by using the<link linkend="mthClsSetDefaultFont">
         setDefaultFont</link>() class method. If the default font has not been changed, ooDialog uses a symbolic font
         name provided by Microsoft. This symbolic name signals the operating system to use the appropriate dialog font
         for the specific version of Windows in use. I.e., the dialog font under Windows 2000 might be different then the

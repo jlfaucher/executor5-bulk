@@ -70,15 +70,15 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the <link linkend="mthNewProgressBar">newProgressBar</link>() method of the <link
+    Use the newProgressBar (xref linkend="mthNewProgressBar" />)() method of the <link
     linkend="chpDialogObject">dialog</link> to retrieve a progress bar object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically add a progress bar to the dialog template of an <link linkend="clsUserDialog">UserDialog</link> use
-    the <link linkend="mthCreateProgressBar">createProgressBar</link>() method.
+    To dynamically add a progress bar to the dialog template of an UserDialog (xref linkend="clsUserDialog" />) use
+    the createProgressBar (xref linkend="mthCreateProgressBar" />)() method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -86,8 +86,8 @@
   <para>
     Unlike most dialog controls, the progress bar does not send any event notifications. Therefore there is no
     corresponding <emphasis role="italic">connectProgressBarEvent</emphasis> as there is for other dialog controls. For
-    instance like the <link linkend="mthConnectDateTimePickerEvent">connectDateTimePickerEvent</link> method of the
-    <link linkend="clsDateTimePicker">DateTimePicker</link> class.
+    instance like the connectDateTimePickerEvent (xref linkend="mthConnectDateTimePickerEvent" />) method of the
+    DateTimePicker (xref linkend="clsDateTimePicker" />) class.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -116,51 +116,51 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="tmthNewProgressBar">newProgressBar</link></entry>
+<entry>newProgressBar (xref linkend="tmthNewProgressBar" />)</entry>
 <entry>Obtains a ProgressBar object that represents a progress bar control in a dialog.</entry>
 </row>
 <row>
-<entry><link linkend="tmthCreateProgressBar">createProgressBar</link></entry>
-<entry>Creates a ProgressBar control in the dialog template of an <link linkend="clsUserDialog">UserDialog</link>.</entry>
+<entry>createProgressBar (xref linkend="tmthCreateProgressBar" />)</entry>
+<entry>Creates a ProgressBar control in the dialog template of an UserDialog (xref linkend="clsUserDialog" />).</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry><link linkend="mthBackgroundColorPBC">backgroundColor</link></entry>
+<entry>backgroundColor (xref linkend="mthBackgroundColorPBC" />)</entry>
 <entry>Sets the background color in the progress bar.</entry>
 </row>
 <row>
-<entry><link linkend="mthBarColorPBC">barColor</link></entry>
+<entry>barColor (xref linkend="mthBarColorPBC" />)</entry>
 <entry>Sets the color of the progress indicator bar in the progress bar control.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetFullRangePBC">getFullRange</link></entry>
+<entry>getFullRange (xref linkend="mthGetFullRangePBC" />)</entry>
 <entry>Retrives the current high and low limits of the range of the progress bar.</entry>
 </row>
 <row>
-<entry><link linkend="mthGetPosPBC">getPos</link></entry>
+<entry>getPos (xref linkend="mthGetPosPBC" />)</entry>
 <entry>Returns the current position of the progress bar.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetFullRangePBC">setFullRange</link></entry>
+<entry>setFullRange (xref linkend="mthSetFullRangePBC" />)</entry>
 <entry>Sets the minimum and maximum values for the progress bar using the full allowable range and returns the previous range.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetMarqueePBC">setMarquee</link></entry>
+<entry>setMarquee (xref linkend="mthSetMarqueePBC" />)</entry>
 <entry>Sets the progress bar to marquee mode. This causes the progress bar to move in a scrolling manner.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetPosPBC">setPos</link></entry>
+<entry>setPos (xref linkend="mthSetPosPBC" />)</entry>
 <entry>Sets the new position for a progress bar and redraws the bar to reflect the new position.</entry>
 </row>
 <row>
-<entry><link linkend="mthSetStepPBC">setStep</link></entry>
+<entry>setStep (xref linkend="mthSetStepPBC" />)</entry>
 <entry>Specifies the step increment for the progress bar.</entry>
 </row>
 <row>
-<entry><link linkend="mthStepPBC">step</link></entry>
+<entry>step (xref linkend="mthStepPBC" />)</entry>
 <entry>Advances the current position of the progress bar.</entry>
 </row>
 </tbody></tgroup>
@@ -172,7 +172,7 @@
 <para>
   <computeroutput>ProgressBar</computeroutput> objects can not be instantiated by the programmer from Rexx code using a
   <emphasis role="italic">new</emphasis>() method. Rather, a date and time picker object is obtained by using the <link
-  linkend="mthNewProgressBar">newProgressBar</link>() method of the <link linkend="chpDialogObject">dialog</link>
+  linkend="mthNewProgressBar">newProgressBar</link>() method of the dialog (xref linkend="chpDialogObject" />)
   object. The syntax is:
 <programlisting>
 <![CDATA[
@@ -222,7 +222,7 @@
         <para>
           A COLORREF that specifies the new background color for the progress bar, or CLR_DEFAULT to set
           the backgroun color back to its default color. If needed, use the <link
-          linkend="mthColorRef">colorRef</link>() method of the <link linkend="clsImage">Image</link>
+          linkend="mthColorRef">colorRef</link>() method of the Image (xref linkend="clsImage" />)
           class to construct the proper value for this argument.
         </para>
       </listitem></varlistentry>
@@ -297,7 +297,7 @@ Old background color was: 4278190080 (0xFF000000)
         <para>
           A COLORREF that specifies the new color for the bar in the progress bar, or CLR_DEFAULT to set
           the bar color back to its default color. If needed, use the <link
-          linkend="mthColorRef">colorRef</link>() method of the <link linkend="clsImage">Image</link>
+          linkend="mthColorRef">colorRef</link>() method of the Image (xref linkend="clsImage" />)
           class to construct the proper value for this argument.
         </para>
       </listitem></varlistentry>
@@ -599,8 +599,8 @@ Form 2:
 </para>
 <para>
   This method is used to start or stop the scrolling. Note that the progress bar has to have the
-  PBS_MARQUEE style. When using the <link linkend="mthCreateProgressBar">createProgressBar</link>() method in
-  a <link linkend="clsUserDialog">UserDialog</link> class the style keyword is MARQUEE. Otherwise, a
+  PBS_MARQUEE style. When using the createProgressBar (xref linkend="mthCreateProgressBar" />)() method in
+  a UserDialog (xref linkend="clsUserDialog" />) class the style keyword is MARQUEE. Otherwise, a
   resource editor will handle adding the PBS_MARQUEE style flag to the resource script.
 </para>
 <para>
@@ -636,8 +636,8 @@ Form 2:
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
     <para>
-      This method requires <link linkend="ovvComctl32">Common Control Library</link> version 6.0 or later.
-      If necessary use the <link linkend="mthComCtl32Version">comCtl32Version</link>() method to
+      This method requires Common Control Library (xref linkend="ovvComctl32" />) version 6.0 or later.
+      If necessary use the comCtl32Version (xref linkend="mthComCtl32Version" />)() method to
       determine the current version of the library.
     </para>
     <para>
@@ -711,7 +711,7 @@ Form 2:
 
 <para>
   This method specifies the step increment for the progress bar. The step increment is the amount by
-  which the progress bar advances its current position when the <link linkend="mthStepPBC">step</link>()
+  which the progress bar advances its current position when the step (xref linkend="mthStepPBC" />)()
   method is called without an increment value.
 </para>
 <para>
