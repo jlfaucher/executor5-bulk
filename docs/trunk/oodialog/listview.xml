@@ -6995,21 +6995,92 @@ that allows the user to remove the check mark from all the check boxes:
 <section id="clsLvCustomDrawSimple"><title>LvCustomDrawSimple Class</title>
 <indexterm><primary>LvCustomDrawSimple class</primary></indexterm>
 <para>
-  A LvCustomDrawSimple object is used when a <link linkend="clsListView">ListView</link> control is registered for <link
-  linkend="clsCustomDraw">custom</link> draw. A LvCustomDrawSimple object is passed to the CUSTOMDRAW event handler. It
-  supplies both information to the event handler and returns information back to the Windows control. The attributes of
-  the object convey the information both ways.
+  A <computeroutput>LvCustomDrawSimple</computeroutput> object is used when a <link
+  linkend="clsListView">ListView</link> control is registered for <link linkend="clsCustomDraw">custom</link> draw. A
+  <computeroutput>LvCustomDrawSimple</computeroutput> object is passed to the CUSTOMDRAW event handler. It supplies both
+  information to the event handler and returns information back to the Windows control. The attributes of the object
+  convey the information both ways.
 </para>
 <para>
   When the ooDialog framework recieves information from the Windows custom draw control, it assigns values to the
   attributes of the <computeroutput>LvCustomDrawSimple</computeroutput> object and sends the object to the Rexx dialog's
   event handler. The programmer uses those values to determine what action to take and then assigns values to the
-  object's attributes to convey information back to the Windows control.
+  object's attributes to convey information back to the Windows control. The
   <computeroutput>LvCustomDrawSimple</computeroutput> object is specific to the
-  <computeroutput>ListView</computeroutput> class. Other ooDialog controls that support custom draw will have their own
-  class that performs a similar function, but whose attributes are specific to that control. For instance
+  <computeroutput>ListView</computeroutput> class. Other ooDialog controls that support custom draw have their own class
+  that performs a similar function, but whose attributes are specific to that control. For instance, the <link
+  linkend="clsTreeView">TreeView</link> class uses the <link linkend="clsTvCustomDrawSimple">TvCustomDrawSimple</link>
+  for its CUSTOMDRAW event handler.
 </para>
 
+<section id="evtListViewCustomDraw"><title>CustomDraw Event Handler</title>
+<indexterm><primary>ListView Event</primary><secondary>CUSTOMDRAW</secondary></indexterm>
+<indexterm><primary>custom draw</primary><secondary>list-view control</secondary></indexterm>
+<para>
+  The event handler for the xx xx event is invoked when ...
+</para>
+<para>
+  The programmer must return xx and the interpreter waits (does not wait) for this return.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onCustomDraw unguarded
+  use arg x, y, z
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>arg</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg1</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End CustomDraw Event Handler -->
 <section id="sctMethodsLvCustomDrawSimple"><title>Method Table</title>
 <para>
   The following table lists the class and instance methods of the <computeroutput>LvCustomDrawSimple</computeroutput> class:
@@ -7029,12 +7100,16 @@ that allows the user to remove the check mark from all the check boxes:
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new</entry>
 <entry><link linkend="mthNewClsLvCustomDrawSimple">new</link></entry>
+<entry>The Rexx programmer can not instantiate a <computeroutput>LvCustomDrawSimple</computeroutput>object, the ooDialog framework instantiates these objects</entry>
 </row>
 <row>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
-<entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="mthNewClsLvCustomDrawSimple">new</link></entry>
+<entry></entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -7057,6 +7132,447 @@ that allows the user to remove the check mark from all the check boxes:
   it to the dialog's custom draw event handler TODO need link.
 </para>
 </section>  <!-- End LvCustomDrawSimple::new() -->
+
+<section id="atrClrText"><title>clrText (Attribute)</title>
+<indexterm><primary>clrText</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>clrText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clrText-----------------------------------------------------><
+
+>>--clrText-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">clrText get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">clrText set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::clrText() [attribute]  -->
+
+<section id="atrClrTextBk"><title>clrTextBk (Attribute)</title>
+<indexterm><primary>clrTextBk</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>clrTextBk</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--clrTextBk-----------------------------------------------------><
+
+>>--clrTextBk-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">clrTextBk get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">clrTextBk set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::clrTextBk() [attribute]  -->
+
+<section id="atrDrawStage"><title>drawStage (Attribute)</title>
+<indexterm><primary>drawStage</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>drawStage</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--drawStage-----------------------------------------------------><
+
+>>--drawStage-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">drawStage get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">drawStage set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::drawStage() [attribute]  -->
+
+<section id="atrFont"><title>font (Attribute)</title>
+<indexterm><primary>font</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>font</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--font-----------------------------------------------------><
+
+>>--font-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">font get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">font set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::font() [attribute]  -->
+
+<section id="atrItem"><title>item (Attribute)</title>
+<indexterm><primary>item</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>item</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--item-----------------------------------------------------><
+
+>>--item-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">item get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">item set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::item() [attribute]  -->
+
+<section id="atrReply"><title>reply (Attribute)</title>
+<indexterm><primary>reply</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>reply</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--reply-----------------------------------------------------><
+
+>>--reply-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">reply get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">reply set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::reply() [attribute]  -->
+
+<section id="atrSubItem"><title>subItem (Attribute)</title>
+<indexterm><primary>subItem</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>subItem</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--subItem-----------------------------------------------------><
+
+>>--subItem-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">subItem get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">subItem set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::subItem() [attribute]  -->
+
+<section id="atrUserData"><title>userData (Attribute)</title>
+<indexterm><primary>userData</primary></indexterm>
+<indexterm><primary>LvCustomDrawSimple class</primary><secondary>userData</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--userData-----------------------------------------------------><
+
+>>--userData-=-varName-------------------------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">userData get:</emphasis></term>
+  <listitem>
+  <para>
+    details about get
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">userData set:</emphasis></term>
+  <listitem>
+  <para>
+    details about set
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect arguments are detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End LvCustomDrawSimple::userData() [attribute]  -->
+
 
 </section> <!-- End LvCustomDrawSimple Class -->
 

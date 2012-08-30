@@ -3746,16 +3746,16 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
 
 </section>
 
-<section id="clsCustomDraw"><title>CustomDraw Class</title>
+<section id="clsCustomDraw"><title>CustomDraw Mixin Class</title>
 <indexterm><primary>CustomDraw class</primary></indexterm>
 <para>
   Custom draw is a service provided by some of the Windows common controls. This service allows the programmer greater
   control over the appearance of a control than that provided directly though the styles and methods of the control.
-  Not all controls support custom draw, but those that do, provide the service in a similar manner through the user of
-  custom draw event notifications.
+  Not all controls support custom draw, but those that do provide the service in a generic manner through the use of
+  custom draw <link linkend="ovvEvents">event</link> notifications.
 </para>
 <para>
-  The following controls
+  The following Windows controls provide custom draw services:
   <itemizedlist>
   <listitem>
   <para>
@@ -3788,11 +3788,11 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
   </para>
   </listitem>
   </itemizedlist>
-  The current implementation only supports custom draw for <link linkend="clsListView">list-view</link> and <link
-  linkend="clsTreeView">tree-view</link> controls.
+  The current implementation of custom draw in ooDialog supports <emphasis role="italic">simple</emphasis> custom draw
+  for the <link linkend="clsListView">list-view</link> and <link linkend="clsTreeView">tree-view</link> controls.
 </para>
 
-<section id="sctName"><title>Custom Draw Overview</title>
+<section id="sctCustomDrawOverview"><title>Custom Draw Overview</title>
 <indexterm><primary>custom draw</primary><secondary>overview</secondary></indexterm>
 
 <para>
@@ -3800,11 +3800,11 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
 </para>
 
 
-</section> <!-- End Custom Draw Overview section -->
+</section> <!-- End CustomDrawOverview section -->
 
 
 <section id="sctCustomDrawInooDialog"><title>Custom Draw in ooDialog</title>
-<indexterm><primary>custom draw</primary><secondary>ooDialog</secondary></indexterm>
+<indexterm><primary>custom draw</primary><secondary>in ooDialog</secondary></indexterm>
 
 <para>
 
@@ -3812,6 +3812,17 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
 
 
 </section> <!-- End CustomDrawInOODialog section -->
+
+
+<section id="sctSimpleCustomDraw"><title>Simple Custom Draw</title>
+<indexterm><primary>custom draw</primary><secondary>simple custom draw</secondary></indexterm>
+
+<para>
+
+</para>
+
+
+</section> <!-- End SimpleCustomDraw section -->
 
 
 <section id="sctMethodsCustomDraw"><title>Method Table</title>
@@ -3833,16 +3844,28 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
+<entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
+<entry align="center"><emphasis role="bold">Constant Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="sctConstantsClsCustomDraw">constants</link></entry>
+<entry>The <computeroutput>CustomDraw</computeroutput>class provides a number of constant values needed to work with the custom draw interface.</entry>
+</row>
+<row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
 <entry><link linkend="mthCustomDraw">customDraw</link></entry>
-<entry>.</entry>
+<entry>Initializes the custom draw interface in ooDialog.</entry>
 </row>
 <row>
 <entry><link linkend="mthCustomDrawControl">customDrawControl</link></entry>
-<entry>.</entry>
+<entry>Registers the specified dialog control to use custom draw.</entry>
+</row>
+<row>
+<entry><link linkend="mthRGB">rgb</link></entry>
+<entry>Constructs a COLORREF from the red, green, and blue values of a color..</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -3892,56 +3915,50 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
 <indexterm><primary>CustomDraw class</primary><secondary>customDraw</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--customDraw(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--customDraw-----------------------------------><
+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Initializes the custom draw interface in ooDialog and allows dialog controls to register for custom draw.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
-    <variablelist>
-      <varlistentry><term>TERM</term>
-      <listitem>
-      <para>
-        xx
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    There are no arguments for this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns true on success and false on error. An error is highly unlikely.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+    The <emphasis role="italic">customDraw</emphasis> method must be invoked before any other use of custom draw. It
+    performs the basic initialization that allows ooDialog to inteact with the Windows custom draw service. The basic
+    sequence is to invoke the <emphasis role="italic">customDraw</emphasis> method and then register the control(s) that
+    will use custom draw.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example initializes the custom draw interface and then registers a list-view control to use custom draw.
 <programlisting>
 <![CDATA[
+
+::method init
+    expose textRed textBlack
+
+    forward class (super) continue
+
+    self~customDraw
+    self~customDrawControl(IDC_LV_CUSTOM, 'ListView', onCustomDraw)
 
 ]]>
 </programlisting>
@@ -3955,13 +3972,13 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
 <indexterm><primary>CustomDraw class</primary><secondary>customDrawControl</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--customDrawControl(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--customDrawControl(-id--+-----------+--+------------+-+------------+--)-----><
+                           +-,-ctrlName+  +-,-methName-+ +-,-reserved-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Specifies that the programmer will custom draw the named control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3969,10 +3986,31 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        xx
+        Resource ID of the control, may be numeric or <link linkend="defSymbolicID">symbolic</link>. A syntax condition
+        is raised if the ID is symbolic and it can not be resolved.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ctrlName [optional]</term>
+      <listitem>
+      <para>
+        The name of the type of control. I.e., treeView, TrackBar, LISTVIEW.  By default the control is assumed to be a
+        ListView. Case is not significant. Only ListView and TreeView controls are currently supported.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>methName [optional]</term>
+      <listitem>
+      <para>
+         The name of a method in the Rexx dialog that will be invoked for the custom draw event. If omitted it defaults
+         to <emphasis role="italic">onCustomDraw</emphasis>.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>reserved [optional]</term>
+      <listitem>
+      <para>
+        Reserverd for future use. This argument is currently ignored.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -3981,13 +4019,32 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns 0 on success and 1 on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The <emphasis role="italic">customDrawControl</emphasis> method in effect registers a specific dialog control to
+    receive custom draw event notifications and to use a certain <emphasis role="italic">type</emphasis> of custom draw.
+    Currently the only type implemented in ooDialog is <emphasis role="italic">simple</emphasis> custom draw.
+  </para>
+  <para>
+    It is important that the programmer correctly names the control using custom draw through the <emphasis
+    role="italic">ctrlName</emphasis> argument. Failure to do so will result in undefined behaviour.
+  </para>
+  <para>
+    The event handling method for the custom draw event will recieve a single object as its argument. The object
+    conveys information to the event handler concerning the event and recieves information from the event handle to pass
+    back to the underlying Windows control. The exact object will depend on the type of dialog control. List-views will
+    receive a <link linkend="clsLvCustomDrawSimple">LvCustomDrawSimple</link> object and tree-views will receive a <link
+    linkend="clsTvCustomDrawSimple">TvCustomDrawSimple</link> object.
+  </para>
+  <para>
+    It is possible to have several dialog controls register to use the same event handling method. The information
+    object sent to the event handler has the resource ID of the control the event is for. However, the event handler
+    needs to respond to the events as quickly as possible. Therefore it may be better to use a different event handler
+    for each dialog control and eliminate the need to decipher which control the event is for in a single handler.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3995,17 +4052,17 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example initializes the custom draw interface and then registers two controls to use custom draw:
 <programlisting>
 <![CDATA[
 
+  self~customDraw
+  self~customDrawControl(IDC_LV_A, 'ListView', onCustomDrawA)
+  self~customDrawControl(IDC_LV_B, 'ListView', onCustomDrawB)
 ]]>
 </programlisting>
   </para>
@@ -4018,13 +4075,14 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
 <indexterm><primary>CustomDraw class</primary><secondary>rgb</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--rgb(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--rgb(--+---+--+-----+--+-----+--)-------------><
+          +-r-+  +-,-g-+  +-,-b-+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Constructs a COLORREF from the red, green, and blue components of a color.  In the Windows API values of the type
+  COLORREF are often used for colors.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4032,10 +4090,27 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
   <para>
     The arguments are:
     <variablelist>
-      <varlistentry><term>TERM</term>
+      <varlistentry><term>r [optional]</term>
       <listitem>
       <para>
-        xx
+        The red component for the color. The default is 0. This argument can also be one of 3 keywords
+      </para>
+      <para>
+        This argument can also be one of 3 keywords: CLR_DEFAULT, CLR_NONE, or CLR_INVALID, case is not significant. If
+        a keyword is used, the other arguments are ignored. See the remarks section for more information on the
+        keywords.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>g [optional]</term>
+      <listitem>
+      <para>
+        The green component for the color. The default is 0.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>b [optional]</term>
+      <listitem>
+      <para>
+        The blue component for the color. The default is 0.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -4044,13 +4119,30 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns the COLORREF value for the specified arguments.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    A COLORREF is a 32-bit number with a hexidecimal format of: <computeroutput>0x00bbggrr</computeroutput>. The
+    <emphasis role="italic">rgb</emphasis> method provides a way to construct a COLORREF from the red, green, and blue
+    values. Each color value (red, green, or blue) is a whole number in the range of 0 to 255 inclusive.
+  </para>
+  <para>
+    The CLR_DEFAULT, CLR_NONE, etc., keywords represent special COLORREF values defined in the Windows API. The exact
+    meaning of the value seems dependent on the context it is used in. For instance, in the list-view custom draw
+    interface, if an item's foreground or background color is assigned CLR_DEFAULT, the list-view draws that item in its
+    default color. On the other hand, if the same thing is done for a tree-view item, the tree-view draws that item in
+    black.
+  </para>
+  <para>
+    CLR_DEFAULT and CLR_INVALID are actually the same value. The CLR_INVAID keyword is provided for completeness.
+  </para>
+  <para>
+    The functionality of the <emphasis role="italic">rgb</emphasis> method is identical to the functionality of the
+    <link linkend="mthColorRef">colorRef</link> class method of the <link linkend="clsImage">Image</link> class. Either
+    method will return the same value for the same inputs.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -4058,16 +4150,19 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example specifies the custom draw colors for a list-view item. The item will be drawn with dark blue text on a
+    light blue background.
 <programlisting>
 <![CDATA[
+
+  if list~isChecked(item) then do
+      lvcds~clrText   = self~RGB( 17,   5, 250)
+      lvcds~clrTextBk = self~RGB(115, 245, 186)
+  end
 
 ]]>
 </programlisting>
@@ -4075,7 +4170,6 @@ DynamicDialog::<link linkend="mthLoadItems">loadItems</link>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End CustomDraw::rgb() -->
-
 
 </section> <!-- End CustomDraw Class -->
 
