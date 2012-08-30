@@ -156,14 +156,15 @@
 <section id="dotApplication"><title>.application object</title>
 <indexterm><primary>.application</primary></indexterm>
 <para>
-  The <computeroutput>.application</computeroutput> object is an instance of the <link
-  linkend="clsApplicationManager">ApplicationManager</link> class that is present in all ooDialog programs. The object is
-  initialized and placed in the <computeroutput>.local</computeroutput> environment when the ooDialog package is loaded.
+  The <computeroutput>.application</computeroutput> object is an instance of the
+  ApplicationManager (xref linkend="clsApplicationManager" />) class that is present in all ooDialog programs. The
+  object is initialized and placed in the <computeroutput>.local</computeroutput> environment when the ooDialog package
+  is loaded.
 </para>
 <para>
   The <computeroutput>.application</computeroutput> object is used by the programmer to manage application wide settings
-  and constants. Its use is primarily to change global default values of ooDialog. For instance, by default, <link
-  linkend="paraAutomaticDataDetection">automatic</link> data detection is on. (Automatic data detection is part of the
+  and constants. Its use is primarily to change global default values of ooDialog. For instance, by default,
+  automatic (xref linkend="paraAutomaticDataDetection" />) data detection is on. (Automatic data detection is part of the
   data  (xref linkend="sctUnderstandingDataAttributes" />) attributes concept.) The
   <computeroutput>.application</computeroutput> object can be used to change the default for all dialogs in a
   application to off.
@@ -194,10 +195,10 @@
 <indexterm><primary>ApplicationManager class</primary></indexterm>
 <para>
   An application manager is used to set certain application wide defaults and to perform tasks that effect the entire
-  ooDialog application. Examples of application wide defaults are the default <link
-  linkend="mthClsGetFontName">font</link> and font size (xref linkend="mthClsGetFontSize" />), whether <link
-  linkend="mthInitAutoDetection">automatic</link> data detection is on or off, etc.. An example of a task that effects
-  the entire application is the populating of the .constDir (xref linkend="dotConstDir" />) with symbols.
+  ooDialog application. Examples of application wide defaults are the default
+  font (xref linkend="mthClsGetFontName" />) and font size (xref linkend="mthClsGetFontSize" />), whether
+  automatic (xref linkend="mthInitAutoDetection" />) data detection is on or off, etc.. An example of a task that
+  effects the entire application is the populating of the .constDir (xref linkend="dotConstDir" />) with symbols.
 </para>
 <para>
   When an ooDialog application starts, the ooDialog framework instantiates an
@@ -293,8 +294,8 @@
 <para>
   A new instance of the <computeroutput>ApplicationManager</computeroutput> can not be instantiated from Rexx code. A
   single instance for the <computeroutput>ApplicationManager</computeroutput> is instantiated by the ooDialog framework
-  for each application and placed in the <computeroutput>.local</computeroutput> environment as the <link
-  linkend="dotApplication">.application</link> object. All methods of the
+  for each application and placed in the <computeroutput>.local</computeroutput> environment as the
+  .application (xref linkend="dotApplication" />) object. All methods of the
   <computeroutput>ApplicationManger</computeroutput> are invoked by the programmer though the
   <computeroutput>.application</computeroutput> object.
 </para>
@@ -323,10 +324,10 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
 </programlisting>
 
 <para>
-  The <emphasis role="italic">addToConstDir</emphasis> is used to add symbolic IDs to the global <link
-  linkend="dotConstDir">.constDir</link> object. The useGlobalConstDir (xref linkend="mthUseGlobalConstDir" />),
-  parseIncludeFile (xref linkend="ruapParseIncludeFile" />), and setDefaults (xref linkend="mthSetDefaults" />)
-  methods can also be used to add symbols to the <computeroutput>.constDir</computeroutput>.
+  The <emphasis role="italic">addToConstDir</emphasis> is used to add symbolic IDs to the global
+  .constDir (xref linkend="dotConstDir" />) object. The useGlobalConstDir (xref linkend="mthUseGlobalConstDir" />),
+  parseIncludeFile (xref linkend="ruapParseIncludeFile" />), and setDefaults (xref linkend="mthSetDefaults" />) methods
+  can also be used to add symbols to the <computeroutput>.constDir</computeroutput>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -337,11 +338,10 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
       <varlistentry><term>symbols [required]</term>
       <listitem>
       <para>
-        <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol <link
-        linkend="defPoundDefine">definitions</link>, or a collection object that maps <link
-        linkend="defSymbolicId">symbolic</link> IDs to their numeric value.
-      </para>
-      </listitem></varlistentry>
+        <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol
+        definitions (xref linkend="defPoundDefine" />), or a collection object that maps
+        <link linkend="defSymbolicId">symbolic</link> IDs to their numeric value.
+      </para> </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -355,9 +355,9 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
   <listitem>
   <para>
     If <emphasis role="italic">symbols</emphasis> is a string it is taken to be the name of a file containing symbol
-    definitons. The result in this case is the same as using the <link
-    linkend="ruapParseIncludeFile">parseIncludeFile</link>. The file is parsed and any symbol definitions are added to
-    the <computeroutput>.constDir</computeroutput>.
+    definitons. The result in this case is the same as using the
+    parseIncludeFile (xref linkend="ruapParseIncludeFile" />). The file is parsed and any symbol definitions are
+    added to the <computeroutput>.constDir</computeroutput>.
   </para>
   <para>
     When <emphasis role="italic">symbols</emphasis> is not a string, it must be an object with a <emphasis
@@ -429,8 +429,8 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
 </programlisting>
 
 <para>
-  The <emphasis role="italic">autoDetection</emphasis> method is used to turn the application-wide default for <link
-  linkend="mthInitAutoDetection">automatic</link> data field detection on or off. When an ooDialog program starts, the
+  The <emphasis role="italic">autoDetection</emphasis> method is used to turn the application-wide default for
+  automatic (xref linkend="mthInitAutoDetection" />) data field detection on or off. When an ooDialog program starts, the
   default for automatic data field detection is on.
 </para>
 <variablelist>
@@ -517,8 +517,8 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
   <listitem>
   <para>
     The programmer can change the global font back to the default font and font size by omitting both arguments. The
-   setDefaultFont (xref linkend="mthClsSetDefaultFont" />) class method of the <link
-  linkend="chpDialogObject">dialog</link> object can also be used to set the application-wide default dialog font.
+   setDefaultFont (xref linkend="mthClsSetDefaultFont" />) class method of the
+    dialog (xref linkend="chpDialogObject" />) object can also be used to set the application-wide default dialog font.
   </para>
   <para>
     The length of the font name must be less than 256 characters and can not be the empty string, otherwise a syntax
@@ -558,8 +558,8 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
       <varlistentry><term>usage [optional]</term>
       <listitem>
       <para>
-        The <emphasis role="italic">usage</emphasis> argument can either be a string specifying the global <link
-        linkend="dotConstDir">.constDir</link> strategy (xref linkend="entConstDirStrategy" />) to use for the
+        The <emphasis role="italic">usage</emphasis> argument can either be a string specifying the global
+        .constDir (xref linkend="dotConstDir" />) strategy (xref linkend="entConstDirStrategy" />) to use for the
         application, or it can be a <computeroutput>directory</computeroutput> object specifying any number of defaults
         to set, and / or any number of application tasks to perform.
         <variablelist>
@@ -588,16 +588,17 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
               <listitem>
               <para>
                 When a symbolic ID needs to be resolved, the ooDialog framework first tries to resolve the ID through the
-                <computeroutput>.constDir</computeroutput>. If that fails, the framework then tries the <link
-                linkend="atrConstDir">constDir</link> attribute of the dialog (xref linkend="chpDialogObject" />) object.
+                <computeroutput>.constDir</computeroutput>. If that fails, the framework then tries the
+                constDir (xref linkend="atrConstDir" />) attribute of the dialog (xref linkend="chpDialogObject" />)
+                object.
               </para>
               </listitem></varlistentry>
               <varlistentry><term>Last</term>
               <listitem>
               <para>
                 This is the opposite of the <emphasis role="italic">First</emphasis> strategy. When a symbolic ID needs to
-                be resolved, the ooDialog framework tries to resolve the ID through the <link
-                linkend="atrConstDir">constDir</link> attribute of the dialog (xref linkend="chpDialogObject" />)
+                be resolved, the ooDialog framework tries to resolve the ID through the
+                constDir (xref linkend="atrConstDir" />) attribute of the dialog (xref linkend="chpDialogObject" />)
                 object. If that fails, the framework then tries the global <computeroutput>.constDir</computeroutput>
                 object.
               </para>
@@ -626,10 +627,10 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
               <varlistentry><term><emphasis role="bold">CONSTDIRUSAGE:</emphasis></term>
               <listitem>
               <para>
-                Specifies the <computeroutput>.constDir</computeroutput> usage <link
-                linkend="entConstDirStrategy">strategy</link>. This is equivalent to the <emphasis
-                role="italic">mode</emphasis> argument in the <link
-                linkend="mthUseGlobalConstDir">useGlobalConstDir</link> method and is the same as when <emphasis
+                Specifies the <computeroutput>.constDir</computeroutput> usage
+                strategy (xref linkend="entConstDirStrategy" />). This is equivalent to the <emphasis
+                role="italic">mode</emphasis> argument in the
+                useGlobalConstDir (xref linkend="mthUseGlobalConstDir" />) method and is the same as when <emphasis
                 role="italic">usage</emphasis>is a string above.
               </para>
               </listitem></varlistentry>
@@ -637,24 +638,22 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
               <listitem>
               <para>
                 Adds symbols to the <computeroutput>.constDir</computeroutput>. This is equivalent to the <emphasis
-                role="italic">symbolSrc</emphasis> argument in the <link
-                linkend="mthUseGlobalConstDir">useGlobalConstDir</link> method.
-              </para>
-              </listitem></varlistentry>
+                role="italic">symbolSrc</emphasis> argument in the
+                useGlobalConstDir (xref linkend="mthUseGlobalConstDir" />) method.
+              </para> </listitem></varlistentry>
               <varlistentry><term><emphasis role="bold">AUTODETECTION</emphasis></term>
               <listitem>
               <para>
                 Sets the default for automatic (xref linkend="mthInitAutoDetection" />) data detection. This is
-                equivalent to the <emphasis role="italic">on</emphasis> argument in the <link
-                linkend="mthAutoDetectionClsApplicationManger">autoDetecion</link> method.
-              </para>
-              </listitem></varlistentry>
+                equivalent to the <emphasis role="italic">on</emphasis> argument in the
+                autoDetecion (xref linkend="mthAutoDetectionClsApplicationManger" />) method.
+              </para> </listitem></varlistentry>
               <varlistentry><term><emphasis role="bold">FONTNAME</emphasis></term>
               <listitem>
               <para>
                 Sets the name of the default font for dialogs. This is equivalent to the <emphasis
-                role="italic">fontName</emphasis> argument in the <link
-                linkend="mthDefaultFont">defaultFont</link> method. With this exception, if both the FONTNAME and
+                role="italic">fontName</emphasis> argument in the
+                defaultFont (xref linkend="mthDefaultFont" />) method. With this exception, if both the FONTNAME and
                 FONTSIZE indexes are missing from the <computeroutput>directory</computeroutput> object, the default is
                 not set back to the default when an ooDialog application starts.
               </para>
@@ -663,8 +662,8 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
               <listitem>
               <para>
                 Sets the default font size for dialogs. This is equivalent to the <emphasis
-                role="italic">fontSize</emphasis> argument in the <link
-                linkend="mthDefaultFont">defaultFont</link> method. With this exception, if both the FONTNAME and
+                role="italic">fontSize</emphasis> argument in the
+                defaultFont (xref linkend="mthDefaultFont" />) method. With this exception, if both the FONTNAME and
                 FONTSIZE indexes are missing from the <computeroutput>directory</computeroutput> object, the default is
                 not set back to the default when an ooDialog application starts.
               </para>
@@ -678,9 +677,9 @@ ResourceUtils::constDir (xref linkend="atrConstDir" />)
       <varlistentry><term>symbols [optional]</term>
       <listitem>
       <para>
-        <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol <link
-        linkend="defPoundDefine">definitions</link>, or a collection object that maps <link
-        linkend="defSymbolicId">symbolic</link> IDs to their numeric value.
+        <emphasis role="italic">symbols</emphasis> can either be the name of a file containing symbol
+        definitions (xref linkend="defPoundDefine" />), or a collection object that maps
+        symbolic (xref linkend="defSymbolicId" />) IDs to their numeric value.
       </para>
       <para>
         This argument is ignored if a <computeroutput>directory</computeroutput> object is used for argument one.
@@ -799,10 +798,10 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
 </programlisting>
 
 <para>
-  The ooDialog framework supports (xref linkend="ovvSymbolicIDMechanism" />) using <link
-  linkend="defSymbolicId">symbolic</link> resource IDs for method aruments that required a resource ID. The global <link
-  linkend="dotConstDir">.constDir</link> is part of that support. The <computeroutput>.constDir</computeroutput> is the
-  most efficient and capable way to use symbolic IDs. However, to support backwards program compatibility, the
+  The ooDialog framework supports (xref linkend="ovvSymbolicIDMechanism" />) using
+  symbolic (xref linkend="defSymbolicId" />) resource IDs for method aruments that required a resource ID. The global
+  .constDir (xref linkend="dotConstDir" />) is part of that support. The <computeroutput>.constDir</computeroutput>
+  is the most efficient and capable way to use symbolic IDs. However, to support backwards program compatibility, the
   programmer must specify a usage strategy (xref linkend="entConstDirStrategy" />) that includes the use of the
   <computeroutput>.constDir</computeroutput>.
 </para>
@@ -843,16 +842,17 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
           <listitem>
           <para>
             When a symbolic ID needs to be resolved, the ooDialog framework first tries to resolve the ID through the
-            <computeroutput>.constDir</computeroutput>. If that fails, the framework then tries the <link
-            linkend="atrConstDir">constDir</link> attribute of the dialog (xref linkend="chpDialogObject" />) object.
+            <computeroutput>.constDir</computeroutput>. If that fails, the framework then tries the
+            constDir (xref linkend="atrConstDir" />) attribute of the dialog (xref linkend="chpDialogObject" />)
+            object.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>Last</term>
           <listitem>
             <para>
               This is the opposite of the <emphasis role="italic">First</emphasis> strategy. When a symbolic ID needs to
-              be resolved, the ooDialog framework tries to resolve the ID through the <link
-              linkend="atrConstDir">constDir</link> attribute of the dialog (xref linkend="chpDialogObject" />)
+              be resolved, the ooDialog framework tries to resolve the ID through the
+              constDir (xref linkend="atrConstDir" />) attribute of the dialog (xref linkend="chpDialogObject" />)
               object. If that fails, the framework then tries the global <computeroutput>.constDir</computeroutput>
               object.
             </para>
@@ -874,11 +874,10 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
         <emphasis role="italic">symbolSrc</emphasis> argument
       </para>
       <para>
-        <emphasis role="italic">symbolSrc</emphasis> can either be the name of a file containing symbol <link
-        linkend="defPoundDefine">definitions</link>, or a collection object that maps <link
-        linkend="defSymbolicId">symbolic</link> IDs to their numeric value.
-      </para>
-      </listitem></varlistentry>
+        <emphasis role="italic">symbolSrc</emphasis> can either be the name of a file containing symbol
+        definitions (xref linkend="defPoundDefine" />), or a collection object that maps
+        symbolic (xref linkend="defSymbolicId" />) IDs to their numeric value.
+      </para> </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -892,9 +891,9 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
   <listitem>
   <para>
     If <emphasis role="italic">symbolSrc</emphasis> is a string it is taken to be the name of a file containing symbol
-    definitons. The result in this case is the same as using the <link
-    linkend="ruapParseIncludeFile">parseIncludeFile</link>. The file is parsed and any symbol definitions are added to
-    the <computeroutput>.constDir</computeroutput>.
+    definitons. The result in this case is the same as using the
+    parseIncludeFile (xref linkend="ruapParseIncludeFile" />). The file is parsed and any symbol definitions are
+    added to the <computeroutput>.constDir</computeroutput>.
   </para>
   <para>
     When <emphasis role="italic">symbolSrc</emphasis> is not a string, it must be an object with a <emphasis
@@ -902,8 +901,8 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
     supplier provides are added to the <computeroutput>.constDir</computeroutput> using the supplied indexes.
   </para>
   <para>
-    Either the addToConstDir (xref linkend="mthAddToConstDir" />) or the <link
-    linkend="ruapParseIncludeFile">parseIncludeFile</link> can be used to add additional symbols to the
+    Either the addToConstDir (xref linkend="mthAddToConstDir" />) or the
+    parseIncludeFile (xref linkend="ruapParseIncludeFile" />) can be used to add additional symbols to the
     <computeroutput>.constDir</computeroutput>. <emphasis role="bold">Note</emphasis> that if the usage strategy is
     specified as <emphasis role="italic">None</emphasis> and the <emphasis role="italic">symbolSrc</emphasis> argument
     is used, the symbols will be loaded into the <computeroutput>.constDir</computeroutput>, (because the
@@ -958,8 +957,8 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
 <para>
   The <computeroutput>.constDir</computeroutput> is the most efficient way to use symbolic IDs. However, to maintain
   backwards compatiblity with older ooDialog programs its use is turned off by default. The
-  <computeroutput>.application</computeroutput> object, through its <link
-  linkend="mthUseGlobalConstDir">useGlobalConstDir</link> method or setDefaults (xref linkend="mthSetDefaults" />)
+  <computeroutput>.application</computeroutput> object, through its
+  useGlobalConstDir (xref linkend="mthUseGlobalConstDir" />) method or setDefaults (xref linkend="mthSetDefaults" />)
   method is used to specify how the <computeroutput>.constDir</computeroutput> is used.
 </para>
 <para>
@@ -1120,11 +1119,10 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example constructs a day state for an application that displays the author's birth date in a <link
-    linkend="clsMonthCalendar">month</link> calendar control in bold. All other days of the year are displayed without
-    emphasis.
-<programlisting>
-<![CDATA[
+    This example constructs a day state for an application that displays the author's birth date in a
+    month (xref linkend="clsMonthCalendar" />) calendar control in bold. All other days of the year are displayed
+    without emphasis.
+<programlisting> <![CDATA[
 
 ::method getProperDayState private
   use strict arg date
@@ -1416,9 +1414,9 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
 </programlisting>
 
 <para>
-  Instantiates a new <computeroutput>DayStates</computeroutput> object and initalizes the cache of <link
-  linkend="clsDayState">DayState</link> objects. Each day state in the is initialized with the state of every day turned
-  off.
+  Instantiates a new <computeroutput>DayStates</computeroutput> object and initalizes the cache of
+  DayState (xref linkend="clsDayState" />) objects. Each day state in the is initialized with the state of every day
+  turned off.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1458,11 +1456,10 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
     the day state values in the cache to values with the state of days turned on.
   </para>
   <para>
-    The makeDayStateBuffer (xref linkend="mthMakeDayStateBuffer" />) and <link
-    linkend="mthQuickDayStateBuffer">quickDayStateBuffer</link> class methods can be used to obtain a day states buffer
-    without initializing or using a cache.
-  </para>
-  </listitem></varlistentry>
+    The makeDayStateBuffer (xref linkend="mthMakeDayStateBuffer" />) and
+    quickDayStateBuffer (xref linkend="mthQuickDayStateBuffer" />) class methods can be used to obtain a day states
+    buffer without initializing or using a cache.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -1550,8 +1547,8 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
   <para>
     Normally the month calendar control is sized to only display 1 month. With this display, a week prior to the month
     and a week after the month are also shown. For this situation, when the underlying month calendar requests
-    information on how to display individual days through the <link
-    linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link> notification, it will always request 3 months. The
+    information on how to display individual days through the
+    GETDAYSTATE (xref linkend="evtMonthCalendarGETDAYSTATE" />) notification, it will always request 3 months. The
     <emphasis role="italic">quickDayStateBuffer</emphasis> is a convenience method for this situation, which is the most
     common request.
   </para>
@@ -1597,9 +1594,9 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
 </programlisting>
 
 <para>
-  The <emphasis role="italic">endMonth</emphasis> attribute reflects the last month in the cache of <link
-  linkend="clsDayState">DayState</link> objects. Its value is a <computeroutput>DateTime</computeroutput> object whose
-  date is the first of the last month and last year in the cache.
+  The <emphasis role="italic">endMonth</emphasis> attribute reflects the last month in the cache of
+  DayState (xref linkend="clsDayState" />) objects. Its value is a <computeroutput>DateTime</computeroutput> object
+  whose date is the first of the last month and last year in the cache.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">endMonth get:</emphasis></term>
@@ -1640,9 +1637,9 @@ ResourceUtils::resolveSymbolicID (xref linkend="mthResolveSymbolicID" />)
 </programlisting>
 
 <para>
-  The <emphasis role="italic">startMonth</emphasis> attribute reflects the first month in the cache of <link
-  linkend="clsDayState">DayState</link> objects. Its value is a <computeroutput>DateTime</computeroutput> object whose
-  date is the first of January of the first year in the cache.
+  The <emphasis role="italic">startMonth</emphasis> attribute reflects the first month in the cache of
+  DayState (xref linkend="clsDayState" />) objects. Its value is a <computeroutput>DateTime</computeroutput> object
+  whose date is the first of January of the first year in the cache.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">startMonth get:</emphasis></term>
@@ -1774,8 +1771,8 @@ End month day state value:   1000000100000010000001000000
 
 <para>
   Creates a buffer from the cached DayState (xref linkend="clsDayState" />) objects using the specified date and
-  <emphasis role="italic">count</emphasis>. This buffer can be used for the return from the event handler for a <link
-  linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link> event.
+  <emphasis role="italic">count</emphasis>. This buffer can be used for the return from the event handler for a
+  GETDAYSTATE (xref linkend="evtMonthCalendarGETDAYSTATE" />) event.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1818,10 +1815,9 @@ End month day state value:   1000000100000010000001000000
   <listitem>
   <para>
     This example sets up a cache of <computeroutput>DayState</computeroutput> objects before the application dialog is
-    displayed.  It then gets buffers from this cache during the <link
-    linkend="evtMonthCalendarGETDAYSTATE">GETDAYSTATE</link> event to return from the event handler.
-<programlisting>
-<![CDATA[
+    displayed.  It then gets buffers from this cache during the
+    GETDAYSTATE (xref linkend="evtMonthCalendarGETDAYSTATE" />) event to return from the event handler.
+<programlisting> <![CDATA[
 
 ::class 'PaidHolidaysDlg' subclass ResDialog
 
@@ -2044,8 +2040,8 @@ End month day state value:   1000000100000010000001000000
 <para>
   The <computeroutput>DlgArea</computeroutput> class provides assistance in laying out the dialog controls in a
   dynamically defined dialog.  The class defines an area within the client (xref linkend="defClientArea" />) area of
-  a UserDialog (xref linkend="clsUserDialog" />). It is a helper class for the <link
-  linkend="mthDefineDialog">defineDialog</link> method of a <computeroutput>UserDialog</computeroutput> and has no
+  a UserDialog (xref linkend="clsUserDialog" />). It is a helper class for the
+  defineDialog (xref linkend="mthDefineDialog" />) method of a <computeroutput>UserDialog</computeroutput> and has no
   effect on any underlying (xref linkend="ovvUnderlying" />) window.
 </para>
 <para>
@@ -2194,11 +2190,10 @@ End month day state value:   1000000100000010000001000000
       <varlistentry><term>x [required]</term>
       <listitem>
       <para>
-        The x coordinate for the area to be defined. The coordinate is specified in dialog <link
-        linkend="defDialogUnit">units</link> and is relative to the top left corner of the <link
-        linkend="defClientArea">client</link> area of the <computeroutput>UserDialog</computeroutput>.
-      </para>
-      </listitem></varlistentry>
+        The x coordinate for the area to be defined. The coordinate is specified in dialog
+        units (xref linkend="defDialogUnit" />) and is relative to the top left corner of the
+        client (xref linkend="defClientArea" />) area of the <computeroutput>UserDialog</computeroutput>.
+      </para> </listitem></varlistentry>
       <varlistentry><term>y [required]</term>
       <listitem>
       <para>
@@ -2417,12 +2412,10 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
         <listitem>
         <para>
           A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
-          dialog area width should be returned. I.e., that portion of the width between the last invocation of the <link
-          linkend="mthXClsDlgArea">x</link> method and the right margin.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-      </listitem></varlistentry>
+          dialog area width should be returned. I.e., that portion of the width between the last invocation of the
+          x (xref linkend="mthXClsDlgArea" />) method and the right margin.
+        </para> </listitem></varlistentry>
+      </variablelist> </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -2653,12 +2646,10 @@ b = .dlgArea~new(u~x("70%"), u~y , u~w("R"), u~h("R"))
         <listitem>
         <para>
           A capital <computeroutput>R</computeroutput> indicates the <emphasis role="italic">remainder</emphasis> of the
-          dialog area width should be returned. I.e., that portion of the width between the last invocation of the <link
-          linkend="mthXClsDlgArea">x</link> method and the right margin.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-      </listitem></varlistentry>
+          dialog area width should be returned. I.e., that portion of the width between the last invocation of the
+          x (xref linkend="mthXClsDlgArea" />) method and the right margin.
+        </para> </listitem></varlistentry>
+      </variablelist> </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -3041,10 +3032,9 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 </programlisting>
 
 <para>
-  An attribute holding the details if an error was encountered when parsing the calling dialog's <link
-  linkend="mthDefineDialog">defineDialog</link> method.  The value of the attribute is .nil if no error occurred.
-</para>
-</section>
+  An attribute holding the details if an error was encountered when parsing the calling dialog's
+  defineDialog (xref linkend="mthDefineDialog" />) method.  The value of the attribute is .nil if no error occurred.
+</para> </section>
 
 <section id="atrNoMove"><title>noMove (Attribute)</title>
 <indexterm><primary>noMove</primary></indexterm>
@@ -3243,8 +3233,8 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   The <emphasis role="italic">resize</emphasis> method causes the <computeroutput>DlgAreaU</computeroutput> object to
   resize and reposition all the dialog controls in the <emphasis role="italic">dlgObj</emphasis> dialog in relation to
   the <emphasis role="italic">sizeInfo</emphasis> argument. Normally the dialog is then told to update itself, which
-  redraws the controls. However, the updating is dependent on the value of the <link
-  linkend="atrUpdateOnResize">upDateOnResize</link> attribute.
+  redraws the controls. However, the updating is dependent on the value of the
+  upDateOnResize (xref linkend="atrUpdateOnResize" />) attribute.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3255,10 +3245,9 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
     <varlistentry><term>dlgObj [required]</term>
     <listitem>
     <para>
-      The dialog which is being resized. The dialog must be the same dialog used to instantiate the <link
-      linkend="mthNewClsDlgAreaU">new</link> <computeroutput>DlgAreaU</computeroutput> object.
-    </para>
-    </listitem></varlistentry>
+      The dialog which is being resized. The dialog must be the same dialog used to instantiate the
+      new (xref linkend="mthNewClsDlgAreaU" />) <computeroutput>DlgAreaU</computeroutput> object.
+    </para> </listitem></varlistentry>
     <varlistentry><term>sizeInfo [required]</term>
     <listitem>
     <para>
@@ -3278,9 +3267,9 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The most common way to use the <computeroutput>DlgAreaU</computeroutput> class is to connect the <link
-    linkend="mthConnectResize">RESIZE</link> event to an event handling method in a resizable dialog. Then the <emphasis
-    role="italic">sizeInfo</emphasis> arg to the event handler is simply passed on to the <emphasis
+    The most common way to use the <computeroutput>DlgAreaU</computeroutput> class is to connect the
+    RESIZE (xref linkend="mthConnectResize" />) event to an event handling method in a resizable dialog. Then the
+    <emphasis role="italic">sizeInfo</emphasis> arg to the event handler is simply passed on to the <emphasis
     role="italic">resize</emphasis> method.
   </para>
   </listitem></varlistentry>
@@ -3324,9 +3313,9 @@ self~createPushButton(IDOK,b~x,b~y(-15),b~w,15,"Default","OK","OK")
 </para>
 <para>
   The dialog must be a UserDialog (xref linkend="clsUserDialog" />) with all dialog controls created in the dialog
-  template from within the defineDialog (xref linkend="mthDefineDialog" />) method. In the <link
-  linkend="mthCreate">create</link> or createCenter (xref linkend="mthCreateCenter" />) method, the dialog template
-  must be created with the THICKFRAME option.
+  template from within the defineDialog (xref linkend="mthDefineDialog" />) method. In the
+  create (xref linkend="mthCreate" />) or createCenter (xref linkend="mthCreateCenter" />) method, the dialog
+  template must be created with the THICKFRAME option.
 </para>
 <para id="paraResizeEvent">
   You must connect the RESIZE (xref linkend="mthConnectResize" />) event to a method in your dialog. Add the
@@ -3352,9 +3341,9 @@ u = .dlgAreaU~new(self)
 ]]>
 </programlisting>
 <para>
-  Your <emphasis role="italic">defineDialog</emphasis> method must not reference variables within the <link
-  linkend="sctCreateMethods">create</link> control method parameters. Although you can use references to <link
-  linkend="clsDlgArea">DlgArea</link> attributes, so
+  Your <emphasis role="italic">defineDialog</emphasis> method must not reference variables within the
+  create (xref linkend="sctCreateMethods" />) control method parameters. Although you can use references to
+  DlgArea (xref linkend="clsDlgArea" />) attributes, so
 </para>
 <programlisting>
 <![CDATA[
@@ -3463,10 +3452,10 @@ if u~lastError \= .nil then call errorDialog u~lastError
 </tgroup>
 </table>
 <para>
-  The following methods (xref linkend="sctCreateMethods" />) can be used to define dialog controls in a <link
-  linkend="clsUserDialog">UserDialog</link>, but cannot be handled by the <computeroutput>DlgAreaU</computeroutput>
-  resize (xref linkend="mthResizeClsDlgAreaU" />) method. If you use any of these methods, the dialog controls will
-  not be automatically resized and positioned.
+  The following methods (xref linkend="sctCreateMethods" />) can be used to define dialog controls in a
+  UserDialog (xref linkend="clsUserDialog" />), but cannot be handled by the
+  <computeroutput>DlgAreaU</computeroutput> resize (xref linkend="mthResizeClsDlgAreaU" />) method. If you use any of
+  these methods, the dialog controls will not be automatically resized and positioned.
 </para>
 <table frame="all">
 <title>DlgAreaU Non-Automatic Resize Controls</title>
@@ -3508,10 +3497,11 @@ if u~lastError \= .nil then call errorDialog u~lastError
 <section id="sctDlgAreaUProblems"><title>Possible Problems</title>
 <para>
   The <computeroutput>DlgAreaU</computeroutput> resize (xref linkend="mthResizeClsDlgAreaU" />) method can create slightly
-  over-size margins on the left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has a <link
-  linkend="atrCorrectionFactor">correctionFactor </link> attribute set by default to 1.05. In tests, this correction
-  factor appears to neutralise the effect. If your dialogs have over (or under) sized margins, you may be able to
-  correct this in your code by adjusting the <emphasis role="italic">correctionFactor</emphasis> attribute. For example:
+  over-size margins on the left &amp; bottom of the Dialog.  To correct for this the DlgAreaU class has a
+  correctionFactor  (xref linkend="atrCorrectionFactor" />) attribute set by default to 1.05. In tests, this
+  correction factor appears to neutralise the effect. If your dialogs have over (or under) sized margins, you may be
+  able to correct this in your code by adjusting the <emphasis role="italic">correctionFactor</emphasis> attribute. For
+  example:
 </para>
 <programlisting>
 <![CDATA[
@@ -3734,8 +3724,8 @@ u~resize(self, sizeinfo)
 </para>
 <para>
   The normal use of an <emphasis role="italic">and</emphasis> operation in ooDialog programs is to extract the low or
-  high words from an argument returned from the operating system. The addition of the <link
-  linkend="mthLoWord">loWord</link>() and hiWord (xref linkend="mthHiWord" />)() methods to the ooDialog framework
+  high words from an argument returned from the operating system. The addition of the
+  loWord (xref linkend="mthLoWord" />)() and hiWord (xref linkend="mthHiWord" />)() methods to the ooDialog framework
   have eliminated most of the reason for this usage.
 </para>
 <variablelist>
@@ -3868,9 +3858,9 @@ u~resize(self, sizeinfo)
     In the following example, the programmer repositions the dialog controls under certain conditions.  In Windows XP
     and later, this task is more accurate if the <computeroutput>getIdealSize()</computeroutput> method of the Button
     class is used. However, the programmer needs the application to also run on Windows 2000.  He uses the
-    <computeroutput>comCtl32Version()</computeroutput> method to determine if the <link
-    linkend="mthGetIdealSize">getIdealSize</link> method is available.  If it is not available he uses an alternative,
-    but less accurate method to reposition the controls.
+    <computeroutput>comCtl32Version()</computeroutput> method to determine if the
+    getIdealSize (xref linkend="mthGetIdealSize" />) method is available.  If it is not available he uses an
+    alternative, but less accurate method to reposition the controls.
 
 <programlisting>
 <![CDATA[
@@ -4151,9 +4141,9 @@ return .true
 </programlisting>
 
 <para>
-  When a message (xref linkend="ovvWindowMessages" />) is sent (xref linkend="mthSendMessage" />) to an <link
-  linkend="ovvUnderlying">underlying</link> window two of the arguments are the WPARAM and the LPARAM parameters. Quite
-  often the Windows API requires that two numbers be packed into the LPARAM argument. The <emphasis
+  When a message (xref linkend="ovvWindowMessages" />) is sent (xref linkend="mthSendMessage" />) to an
+  underlying (xref linkend="ovvUnderlying" />) window two of the arguments are the WPARAM and the LPARAM parameters.
+  Quite often the Windows API requires that two numbers be packed into the LPARAM argument. The <emphasis
   role="italic">makeLParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
   loWord (xref linkend="mthLoWord" />) and hiWord (xref linkend="mthHiWord" />) methods, but works in the
   opposite direction.
@@ -4236,9 +4226,9 @@ return .true
 </programlisting>
 
 <para>
-  When a message (xref linkend="ovvWindowMessages" />) is sent (xref linkend="mthSendMessage" />) to an <link
-  linkend="ovvUnderlying">underlying</link> window two of the arguments are the WPARAM and the LPARAM parameters. Quite
-  often the Windows API requires that two numbers be packed into the WPARAM argument. The <emphasis
+  When a message (xref linkend="ovvWindowMessages" />) is sent (xref linkend="mthSendMessage" />) to an
+  underlying (xref linkend="ovvUnderlying" />) window two of the arguments are the WPARAM and the LPARAM parameters.
+  Quite often the Windows API requires that two numbers be packed into the WPARAM argument. The <emphasis
   role="italic">makeWParam</emphasis> method is a convenience method used to perform the packing.  It is similar to the
   loWord (xref linkend="mthLoWord" />) and hiWord (xref linkend="mthHiWord" />) methods, but works in the
   opposite direction.
@@ -4340,11 +4330,10 @@ return .true
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    One method that has an argument that can be the result of combining a number of flags is the <link
-    linkend="mthCreateClsImageList">create()</link> method of the <link
-    linkend="clsImage">.ImageList</link> class.  This is how the or method might be used
-<programlisting>
-<![CDATA[
+    One method that has an argument that can be the result of combining a number of flags is the
+    create() (xref linkend="mthCreateClsImageList" />) method of the
+    .ImageList (xref linkend="clsImage" />) class.  This is how the or method might be used
+<programlisting> <![CDATA[
   flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
 
   -- Create an empty .ImageList object:
@@ -4633,9 +4622,9 @@ return .true
 
 <para>
   The Windows API often packs two values into a single number.  One value in the low-order word and the other value in
-  the high-order word. The <emphasis role="italic">sHiWord</emphasis> method is the signed version of the <link
-  linkend="mthHiWord">HiWord</link> method. It is used to extract the high-order word from a number, where the value of
-  the high-order word may be positive or negative.
+  the high-order word. The <emphasis role="italic">sHiWord</emphasis> method is the signed version of the
+  HiWord (xref linkend="mthHiWord" />) method. It is used to extract the high-order word from a number, where the
+  value of the high-order word may be positive or negative.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4746,9 +4735,9 @@ return .true
 
 <para>
   The Windows API often packs two values into a single number.  One value in the low-order word and the other value in
-  the high-order word. The <emphasis role="italic">sLoWord</emphasis> method is the signed version of the <link
-  linkend="mthLoWord">loWord</link> method. It is used to extract the low-order word from a number, where the value of
-  the low-order word may be positive or negative.
+  the high-order word. The <emphasis role="italic">sLoWord</emphasis> method is the signed version of the
+  loWord (xref linkend="mthLoWord" />) method. It is used to extract the low-order word from a number, where the
+  value of the low-order word may be positive or negative.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -5217,10 +5206,9 @@ Too bad, you are still running ooRexx 4.0.0
   <listitem>
   <para>
     This method does not retrieve handles of hidden or disabled windows even if the point is within the window. The
-    childWindowFromPoint (xref linkend="mthChildWindowFromPoint" />) method of the <link
-    linkend="chpDialogObject">dialog</link> object can be used for a nonrestrictive search.
-  </para>
-  </listitem></varlistentry>
+    childWindowFromPoint (xref linkend="mthChildWindowFromPoint" />) method of the
+    dialog (xref linkend="chpDialogObject" />) object can be used for a nonrestrictive search.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -7259,8 +7247,8 @@ size in pixels of the width is at index 3 and the height in pixels is at index
 <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
 <listitem>
 <para>
-  There are a few problems with this routine. The main problem is with the values returned for the <link
-  linkend="defDialogUnit">dialog units</link>. Since dialog units are depenedent on the font in use for a specific
+  There are a few problems with this routine. The main problem is with the values returned for the
+  dialog units (xref linkend="defDialogUnit" />). Since dialog units are depenedent on the font in use for a specific
   dialog, and there is no dialog involved here, the routine calculates the dialog units using 8 point System font. It is
   higly unlikely that this is correct for any specific dialog.
 </para>
@@ -7564,10 +7552,10 @@ New width: 100 new height: 300
 </para>
 <para>
   Not every possible comparsion operation is implemented, only the operators listed are supported. All the comparisons
-  follow these two principles. When a comparison operator is doubled, it is a strict comparison. The <link
-  linkend="atrWidthClsSize">width</link> attribute of each <computeroutput>Size</computeroutput> object is compared and
-  the height (xref linkend="atrHeightClsSize" />) attribute of each <computeroutput>Size</computeroutput> object is
-  compared. Both comparsions must be true.
+  follow these two principles. When a comparison operator is doubled, it is a strict comparison. The
+  width (xref linkend="atrWidthClsSize" />) attribute of each <computeroutput>Size</computeroutput> object is
+  compared and the height (xref linkend="atrHeightClsSize" />) attribute of each <computeroutput>Size</computeroutput>
+  object is compared. Both comparsions must be true.
 </para>
 <para>
   When there is not a doubled operator, then the <emphasis role="italic">area</emphasis> of the size objects is
@@ -7689,8 +7677,8 @@ New width: 100 new height: 300
       <varlistentry><term>otherSize</term>
       <listitem>
       <para>
-        The <computeroutput>Size</computeroutput> object that is used to set the <link
-        linkend="atrWidthClsSize">width</link> and height (xref linkend="atrHeightClsSize" />) attributes of this
+        The <computeroutput>Size</computeroutput> object that is used to set the
+        width (xref linkend="atrWidthClsSize" />) and height (xref linkend="atrHeightClsSize" />) attributes of this
         object.
       </para>
       </listitem></varlistentry>
@@ -8008,8 +7996,8 @@ s2: a Size (2, 3)
 
 <para>
   Reflects the thickness of a frame around the perimeter of a window that has a caption but is not sizable, in pixels.
-  <emphasis role="italic">cxFixedFrame</emphasis> is the width of the vertical border and <link
-  linkend="atrCyFixedFrame">cyFixedFrame</link> is the height of the horizontal border.
+  <emphasis role="italic">cxFixedFrame</emphasis> is the width of the vertical border and
+  cyFixedFrame (xref linkend="atrCyFixedFrame" />) is the height of the horizontal border.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">cxFixedFrame get:</emphasis></term>
@@ -8200,8 +8188,8 @@ s2: a Size (2, 3)
 
 <para>
   Reflects the thickness of a frame around the perimeter of a window that has a caption but is not sizable, in pixels.
-  <emphasis role="italic">cyFixedFrame</emphasis> is the height of the horizontal border and <link
-  linkend="atrCxFixedFrame">cxFixedFrame</link> is the width of the vertical border.
+  <emphasis role="italic">cyFixedFrame</emphasis> is the height of the horizontal border and
+  cxFixedFrame (xref linkend="atrCxFixedFrame" />) is the width of the vertical border.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">cyFixedFrame get:</emphasis></term>
@@ -8414,8 +8402,8 @@ s2: a Size (2, 3)
 </programlisting>
 
 <para>
-  <emphasis role="italic">WHEEL_PAGESCROLL</emphasis> is a value defined by the Windows <link
-  linkend="defPlatformSDK">SDK</link> that indicates a turn of one notch in the mouse wheel should scroll one page
+  <emphasis role="italic">WHEEL_PAGESCROLL</emphasis> is a value defined by the Windows
+  SDK (xref linkend="defPlatformSDK" />) that indicates a turn of one notch in the mouse wheel should scroll one page
   rather than some number of lines. See the wheelScrollLines (xref linkend="atrWheelScrollLines" />) attribute more
   more information on the mouse wheel.
 </para>
@@ -8551,10 +8539,9 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Menu animation must be on for <emphasis role="italic">any</emphasis> menu animations to occur. The <link
-    linkend="atrMenuFade">menuFade</link> attribute reflects whether menus use slide or fade animation.
-  </para>
-  </listitem></varlistentry>
+    Menu animation must be on for <emphasis role="italic">any</emphasis> menu animations to occur. The
+    menuFade (xref linkend="atrMenuFade" />) attribute reflects whether menus use slide or fade animation.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -8599,9 +8586,9 @@ s2: a Size (2, 3)
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    When menu fade is off, menus use slide animation. For any animation to be used, <link
-    linkend="atrMenuAnimation">menuAnimation</link> must be on. Menu fade effect is only possible if the system has a
-    color depth of more than 256 colors.
+    When menu fade is off, menus use slide animation. For any animation to be used,
+    menuAnimation (xref linkend="atrMenuAnimation" />) must be on. Menu fade effect is only possible if the system
+    has a color depth of more than 256 colors.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -8649,11 +8636,10 @@ s2: a Size (2, 3)
   <para>
     The hover rectangle is the rectangle within which the mouse pointer has to stay for the operating system to generate
     a MOUSEHOVER (xref linkend="mthConnectEvent" />) notification. The time out value is the number of milliseconds
-    the mouse has to remain in the rectangle. Normally the mouse hover event is not generated. The <link
-    linkend="mthTrackEvent">trackEvent</link> method must be invoked to request hover tracking before the operating
-    system will generate the hover notification.
-  </para>
-  </listitem></varlistentry>
+    the mouse has to remain in the rectangle. Normally the mouse hover event is not generated. The
+    trackEvent (xref linkend="mthTrackEvent" />) method must be invoked to request hover tracking before the
+    operating system will generate the hover notification.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -9024,8 +9010,8 @@ s2: a Size (2, 3)
   programmer nothing. Neither that a system error happened, or that it did not happen.
 </para>
 <para>
-  The getImage() (xref linkend="mthGetImageClsImage" />) method of the <link
-  linkend="clsImage">.Image</link> class is one method that does change .SystemErrorCode. <emphasis
+  The getImage() (xref linkend="mthGetImageClsImage" />) method of the
+  <link linkend="clsImage">.Image</link> class is one method that does change .SystemErrorCode. <emphasis
   role="bold">Note</emphasis> in the example the use of the RexxUtil function,
   <computeroutput>SysGetErrorText</computeroutput>. This function is useful to get an explanatory message for the error
   code. The message is provided by Windows, not by ooRexx or ooDialog. This is an example of a possible usage:
@@ -10062,9 +10048,9 @@ else if key == .VK~INSERT then
 <indexterm><primary>Window class</primary></indexterm>
 <para>
   A <emphasis role="italic">Window</emphasis> object allows the invocation of methods common to every window.  It does
-  this by inheriting the WindowBase (xref linkend="clsWindowBase" />) class. Other than the <link
-  linkend="mthNewClsWindow">new</link>() method, the <emphasis role="italic">Window</emphasis> class provides no other
-  methods of its own.
+  this by inheriting the WindowBase (xref linkend="clsWindowBase" />) class. Other than the
+  new (xref linkend="mthNewClsWindow" />)() method, the <emphasis role="italic">Window</emphasis> class provides no
+  other methods of its own.
 </para>
 
 <section id="sctMethodsWindow"><title>Method Table</title>

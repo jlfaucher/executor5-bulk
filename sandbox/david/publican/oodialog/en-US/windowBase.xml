@@ -46,8 +46,8 @@
 <section id="clsWindowBase"><title>WindowBase Mixin Class</title>
 <indexterm><primary>WindowBase Class</primary></indexterm>
 <para>
-  WindowBase is a mixin class with methods that are common to all windows. It is inherited by both the <link
-  linkend="chpDialogObject">dialog</link> and dialog control (xref linkend="chpDialogControlObject" />) objects.
+  WindowBase is a mixin class with methods that are common to all windows. It is inherited by both the
+  dialog (xref linkend="chpDialogObject" />) and dialog control (xref linkend="chpDialogControlObject" />) objects.
   Every dialog object and every dialog control object have the instance methods of the WindowBase class. In addition,
   the Window (xref linkend="clsWindow" />) class inherits the WindowBase class.
 </para>
@@ -320,8 +320,9 @@
   circumstances.
 </para>
 <para>
-  To accurately convert between dialog units and pixels use the appropriate <link
-  linkend="mthDlgUnit2pixel">dlgUnit2pixel</link>() or pixel2dlgUnit (xref linkend="mthPixel2dlgUnit" />)() method.
+  To accurately convert between dialog units and pixels use the appropriate
+  dlgUnit2pixel (xref linkend="mthDlgUnit2pixel" />)() or pixel2dlgUnit (xref linkend="mthPixel2dlgUnit" />)()
+  method.
 </para>
 </section>  <!-- End WindowBase::factorX() [attribute]  -->
 
@@ -345,8 +346,9 @@
   circumstances.
 </para>
 <para>
-  To accurately convert between dialog units and pixels use the appropriate <link
-  linkend="mthDlgUnit2pixel">dlgUnit2pixel</link>() or pixel2dlgUnit (xref linkend="mthPixel2dlgUnit" />)() method.
+  To accurately convert between dialog units and pixels use the appropriate
+  dlgUnit2pixel (xref linkend="mthDlgUnit2pixel" />)() or pixel2dlgUnit (xref linkend="mthPixel2dlgUnit" />)()
+  method.
 </para>
 </section>  <!-- End WindowBase::factorX() [attribute]  -->
 
@@ -495,16 +497,17 @@ Window handeles:
 </programlisting>
 
 <para>
-  The value of the <emphasis role="italic">pixelCX</emphasis> is the width of the window in <link
-  linkend="defPixel">pixels</link>.
+  The value of the <emphasis role="italic">pixelCX</emphasis> is the width of the window in
+  pixels (xref linkend="defPixel" />).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     The <emphasis role="italic">pixelCX</emphasis> value is the correct
-    width of the window, as opposed to the sizeX (xref linkend="atrSizeX" />) attribute which is usually <link
-    linkend="ovvInaccurate">incorrect</link> because it is calculated using factorX (xref linkend="atrFactorX" />).
+    width of the window, as opposed to the sizeX (xref linkend="atrSizeX" />) attribute which is usually
+    incorrect (xref linkend="ovvInaccurate" />) because it is calculated using factorX (xref linkend="atrFactorX"
+    />).
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCX get:</emphasis></term>
@@ -592,17 +595,17 @@ The dialog unit height of the button is: 14
 </programlisting>
 
 <para>
-  The value of the <emphasis role="italic">pixelCY</emphasis> is the height of the window in <link
-  linkend="defPixel">pixels</link>.
+  The value of the <emphasis role="italic">pixelCY</emphasis> is the height of the window in
+  pixels (xref linkend="defPixel" />).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">pixelCY</emphasis> value is the correct height of the window, as opposed to the <link
-    linkend="atrSizeY">sizeY</link> attribute which is usually
-    incorrect (xref linkend="ovvInaccurate" />) because it is calculated using <link
-    linkend="atrFactorY">factorY</link>.
+    The <emphasis role="italic">pixelCY</emphasis> value is the correct height of the window, as opposed to the
+    sizeY (xref linkend="atrSizeY" />) attribute which is usually
+    incorrect (xref linkend="ovvInaccurate" />) because it is calculated using
+    factorY (xref linkend="atrFactorY" />).
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCY get:</emphasis></term>
   <listitem>
@@ -648,8 +651,8 @@ The dialog unit height of the button is: 14
 </programlisting>
 
 <para>
-  The <emphasis role="italic">sizeX</emphasis> attribute was intended to be the width of the window and <link
-  linkend="atrSizeY">sizeY</link> the height of the window in dialog units (xref linkend="defDialogUnit" />).
+  The <emphasis role="italic">sizeX</emphasis> attribute was intended to be the width of the window and
+  sizeY (xref linkend="atrSizeY" />) the height of the window in dialog units (xref linkend="defDialogUnit" />).
   However, in almost all cases, the value is not correct. (xref linkend="ovvInaccurate" />)
 </para>
 <variablelist>
@@ -666,8 +669,8 @@ The dialog unit height of the button is: 14
     These attributes are set one time by the ooDialog framework and not changed by the framework again.
   </para>
   <para>
-    To obtain the correct width and height of a window in either pixels or dialog units, use the <link
-    linkend="atrPixelCX">pixelCX</link> and pixelCY (xref linkend="atrPixelCY" />) attributes. These valuse can be
+    To obtain the correct width and height of a window in either pixels or dialog units, use the
+    <link linkend="atrPixelCX">pixelCX</link> and pixelCY (xref linkend="atrPixelCY" />) attributes. These valuse can be
     correctly converted (xref linkend="examplePixelCX" />) to dialog units if dialog units are desired.
   </para>
   </listitem></varlistentry>
@@ -734,11 +737,10 @@ The dialog unit height of the button is: 11
 
 <para>
   The <emphasis role="italic">sizeY</emphasis> attribute is the counterpart to the <emphasis
-  role="italic">sizeX</emphasis> attribute. The attribute was meant to be the height of the window in dialog <link
-  linkend="defDialogUnit">units</link>, but is not accurate. The documentation for sizeX (xref linkend="atrSizeX" />) has
-  a complete discussion of both attributes.
-</para>
-</section>  <!-- End WindowBase::sizeY() [attribute]  -->
+  role="italic">sizeX</emphasis> attribute. The attribute was meant to be the height of the window in dialog
+  units (xref linkend="defDialogUnit" />), but is not accurate. The documentation for sizeX (xref linkend="atrSizeX"
+  />) has a complete discussion of both attributes.
+</para> </section>  <!-- End WindowBase::sizeY() [attribute]  -->
 
 
 <section id="mthChildWindowFromPoint"><title>childWindowFromPoint</title>
@@ -763,10 +765,9 @@ The dialog unit height of the button is: 11
       <varlistentry><term>point [required]</term>
       <listitem>
       <para>
-        A point (xref linkend="clsPoint" />) object specifying the point to test for. The point must be in <link
-        linkend="defScreenCoordinates">client</link> coordinates of the parent window.
-      </para>
-      </listitem></varlistentry>
+        A point (xref linkend="clsPoint" />) object specifying the point to test for. The point must be in
+        client (xref linkend="defScreenCoordinates" />) coordinates of the parent window.
+      </para> </listitem></varlistentry>
       <varlistentry><term>flags [optional]</term>
       <listitem>
       <para>
@@ -828,12 +829,11 @@ The dialog unit height of the button is: 11
   </para>
   <para>
     Since this method is a method of the WindowBase (xref linkend="clsWindowBase" />) class, it is a method of both
-    the dialog (xref linkend="chpDialogObject" />) object and the dialog <link
-    linkend="chpDialogControlObject">control</link> object. It is of limited use with a dialog control because most
-    dialog controls do not have child windows. However, some do. For instance, a list (xref linkend="clsListView" />)
-    view control in report view contains a child header window.
-  </para>
-  </listitem></varlistentry>
+    the dialog (xref linkend="chpDialogObject" />) object and the dialog
+    control (xref linkend="chpDialogControlObject" />) object. It is of limited use with a dialog control because
+    most dialog controls do not have child windows. However, some do. For instance, a list (xref linkend="clsListView"
+    />) view control in report view contains a child header window.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
@@ -1020,8 +1020,8 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">clientRect</emphasis> method supplies an alternative to the <link
-    linkend="mthGetClientRect">getClientRect</link>(hwnd) method, to allow returning a
+    The <emphasis role="italic">clientRect</emphasis> method supplies an alternative to the
+    getClientRect (xref linkend="mthGetClientRect" />)(hwnd) method, to allow returning a
     <computeroutput>.Rect</computeroutput> object, which is usually more convienent, rather than a string of blank
     separated values.
   </para>
@@ -1077,8 +1077,8 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">clientToScreen</emphasis> method maps the specified <link
-  linkend="defClientArea">client-area</link> coordinates of this window to screen coordinates.
+  The <emphasis role="italic">clientToScreen</emphasis> method maps the specified
+  client-area (xref linkend="defClientArea" />) coordinates of this window to screen coordinates.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1500,9 +1500,9 @@ separated by blanks.
 
 <para>
   The <emphasis role="italic">getExStyleRaw</emphasis> method retrieves the extended window style flags of the window.
-  The flags are returned in their numeric format. This function is very similar to the <link
-  linkend="mthGetStyleRaw">getStyleRaw</link>() method, allowing the programmer to get the extended window flags. The
-  numeric value of the extended style flags can be looked up using the
+  The flags are returned in their numeric format. This function is very similar to the
+  getStyleRaw (xref linkend="mthGetStyleRaw" />)() method, allowing the programmer to get the extended window flags.
+  The numeric value of the extended style flags can be looked up using the
   Windows documentation (xref linkend="defWindowsDoc" />) and the Platform SDK (xref linkend="defPlatformSDK" />).
 </para>
 <variablelist>
@@ -1845,10 +1845,10 @@ height = bottom - top
   <listitem>
   <para>
     The values returned by this method are usually incorrect (xref linkend="ovvInaccurate" />) because they are
-    calculated using factorX (xref linkend="atrFactorX" />) and factorY (xref linkend="atrFactorY" />). The <link
-    linkend="mthGetRealSize">getRealSize</link>() method returns the correct size in pixels. Normally it is not
-    necessary to covert to dialog units. However, if this is desired, use the <link
-    linkend="mthPixel2dlgUnit">pixel2dlgUnit</link> method to get the correct size.
+    calculated using factorX (xref linkend="atrFactorX" />) and factorY (xref linkend="atrFactorY" />). The
+    getRealSize (xref linkend="mthGetRealSize" />)() method returns the correct size in pixels. Normally it is not
+    necessary to covert to dialog units. However, if this is desired, use the
+    pixel2dlgUnit (xref linkend="mthPixel2dlgUnit" />) method to get the correct size.
   </para>
   <para>
     This method can only be used after the underlying Windows dialog (xref linkend="ovvUnderlying" />) has been
@@ -2146,10 +2146,10 @@ stFont2~setRect(r)
     Raises syntax errors for incorrect usage.
   </para>
   <para>
-    Part of the purpose of this method is to provide backwards compatibility to the <link
-    linkend="ovvDeprecated">deprecated</link> <emphasis role="italic">getTextSize</emphasis> method. This is the reason
-    for the rather convulted arguments. In general, the Rexx programmer should always use the <link
-    linkend="mthGetTextSizePx">getTextSizePx</link>() method.
+    Part of the purpose of this method is to provide backwards compatibility to the
+    deprecated (xref linkend="ovvDeprecated" />) <emphasis role="italic">getTextSize</emphasis> method. This is the
+    reason for the rather convulted arguments. In general, the Rexx programmer should always use the
+    <link linkend="mthGetTextSizePx">getTextSizePx</link>() method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2317,8 +2317,8 @@ stFont2~setRect(r)
     When a window is marked invisible, the operating system will not draw or redraw the window. It will only draw or
     redraw the area the window covered. For example if the window is part of another window's client area, and the
     client area is redrawn, then the window marked as invisible is not drawn. There are several methods that
-    the programmer can use to cause a window to be redrawn, update (xref linkend="mthUpdate" />)), <link
-    linkend="mthDraw">draw</link>, etc..
+    the programmer can use to cause a window to be redrawn, update (xref linkend="mthUpdate" />)),
+    draw (xref linkend="mthDraw" />), etc..
   </para>
   <para>
     To restate this for clarity, when the window is marked invisible, having the window update or redraw itself will do
@@ -2463,8 +2463,8 @@ else
 </programlisting>
 
 <para>
-  The move method moves the associated dialog or dialog control to the specified position. This method is not <link
-  linkend="ovvInaccurate">accurate</link> because it uses the incorrect <emphasis role="italic">factorX</emphasis> and
+  The move method moves the associated dialog or dialog control to the specified position. This method is not
+  <link linkend="ovvInaccurate">accurate</link> because it uses the incorrect <emphasis role="italic">factorX</emphasis> and
   <emphasis role="italic">factorY</emphasis> attributes.
 </para>
 <variablelist>
@@ -2597,12 +2597,10 @@ Generic form:
     <listitem>
     <para>
       No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
-      window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
-      linkend="mthRedraw">redraw</link> method.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
+      window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the
+      redraw (xref linkend="mthRedraw" />) method.
+    </para> </listitem></varlistentry>
+  </variablelist> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
@@ -2827,10 +2825,9 @@ Generic form:
       <listitem>
       <para>
         No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
-        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
-        linkend="mthRedraw">redraw</link> method.
-      </para>
-      </listitem></varlistentry>
+        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the
+        redraw (xref linkend="mthRedraw" />) method.
+      </para> </listitem></varlistentry>
       <varlistentry><term>NOREPOSITION</term>
       <listitem>
       <para>
@@ -2949,9 +2946,9 @@ Generic form:
 <para>
   The <emphasis role="italic">redraw</emphasis> method immediately redraws the entire window and all its child windows,
   recursively, including the non-client (xref linkend="defClientArea" />) area of the window(s). Contrast this with
-  some of the other draw methods such as redrawClient (xref linkend="mthRedrawClient" />) or <link
-  linkend="mthDraw">draw</link>, which only redraw the <emphasis role="italic">client</emphasis> area and not the child
-  windows.
+  some of the other draw methods such as redrawClient (xref linkend="mthRedrawClient" />) or
+  draw (xref linkend="mthDraw" />), which only redraw the <emphasis role="italic">client</emphasis> area and not the
+  child windows.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -3267,12 +3264,10 @@ Generic form:
     <listitem>
     <para>
       No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
-      window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
-      linkend="mthRedraw">redraw</link> method.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
+      window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the
+      redraw (xref linkend="mthRedraw" />) method.
+    </para> </listitem></varlistentry>
+  </variablelist> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
@@ -3351,8 +3346,8 @@ Generic form:
 </programlisting>
 
 <para>
-  Converts the screen coordinates of the specified point(s) on the screen to <link
-  linkend="defClientArea">client-area</link> coordinates of this window.
+  Converts the screen coordinates of the specified point(s) on the screen to
+  client-area (xref linkend="defClientArea" />) coordinates of this window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3432,8 +3427,8 @@ Generic form:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">screenToClient</emphasis> method maps the screen coordinates specified to the <link
-  linkend="defClientArea">client-area</link> of this window.
+  The <emphasis role="italic">screenToClient</emphasis> method maps the screen coordinates specified to the
+  client-area (xref linkend="defClientArea" />) of this window.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3525,9 +3520,9 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method returns the response as a whole number. This will not be usable if the response is a window <link
-    linkend="defHandle">handle</link>. For those cases, use the <link
-    linkend="mthSendMessageHandle">sendMessageHandle</link>() method.
+    This method returns the response as a whole number. This will not be usable if the response is a window
+    handle (xref linkend="defHandle" />). For those cases, use the
+    sendMessageHandle (xref linkend="mthSendMessageHandle" />)() method.
   </para>
   <para>
     It is not possible in ooRexx to send a message directly to a window when either the WPARAM or LPARAM arguments are
@@ -3789,14 +3784,11 @@ Generic form:
       <listitem>
       <para>
         No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
-        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
-        linkend="mthRedraw">redraw</link> method.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
+        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the
+        redraw (xref linkend="mthRedraw" />) method.
+      </para> </listitem></varlistentry>
+    </variablelist> </listitem></varlistentry>
+  </variablelist> </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -3932,10 +3924,9 @@ Generic form:
     the user has entered, etc..
   </para>
   <para>
-    The <emphasis role="italic">setText</emphasis>, setTitle (xref linkend="mthSetTitle" />), and <link
-    linkend="mthTitleEquals">title=</link> methods do exactly the same thing. The methods are interchangeable.
-  </para>
-  </listitem></varlistentry>
+    The <emphasis role="italic">setText</emphasis>, setTitle (xref linkend="mthSetTitle" />), and
+    title= (xref linkend="mthTitleEquals" />) methods do exactly the same thing. The methods are interchangeable.
+  </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -4014,9 +4005,9 @@ Generic form:
     specified in pixels.
   </para>
   <para>
-    The arguments can be specified using either a Rect (xref linkend="clsRect" />) object, or by using a <link
-    linkend="clsPoint">Point</link> object followed by a Size (xref linkend="clsSize" />) object, or by using the x, y
-    coordinates of the upper left point of the window followed by the width and height of the window.
+    The arguments can be specified using either a Rect (xref linkend="clsRect" />) object, or by using a
+    Point (xref linkend="clsPoint" />) object followed by a Size (xref linkend="clsSize" />) object, or by using the
+    x, y coordinates of the upper left point of the window followed by the width and height of the window.
   <variablelist>
     <varlistentry><term>hwndBehind [required]</term>
     <listitem>
@@ -4173,10 +4164,9 @@ Generic form:
       <listitem>
       <para>
         No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
-        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
-        linkend="mthRedraw">redraw</link> method.
-      </para>
-      </listitem></varlistentry>
+        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the
+        redraw (xref linkend="mthRedraw" />) method.
+      </para> </listitem></varlistentry>
       <varlistentry><term>NOREPOSITION</term>
       <listitem>
       <para>
@@ -4583,10 +4573,9 @@ Generic form:
       <listitem>
       <para>
         No repainting of any kind is done. The programmer is responsible for invalidating or redrawing any parts of the
-        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the <link
-        linkend="mthRedraw">redraw</link> method.
-      </para>
-      </listitem></varlistentry>
+        window and <emphasis role="bold">parent</emphasis> window that need redrawing. See the
+        redraw (xref linkend="mthRedraw" />) method.
+      </para> </listitem></varlistentry>
       <varlistentry><term>NOREPOSITION</term>
       <listitem>
       <para>
@@ -4826,8 +4815,8 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">windowRect</emphasis> method supplies an alternative to the <link
-    linkend="mthGetRect">getRect</link>(hwnd) method, to allow returning a
+    The <emphasis role="italic">windowRect</emphasis> method supplies an alternative to the
+    getRect (xref linkend="mthGetRect" />)(hwnd) method, to allow returning a
     <computeroutput>.Rect</computeroutput> object, which is usually more convienent, rather than a string of blank
     separated values.
   </para>

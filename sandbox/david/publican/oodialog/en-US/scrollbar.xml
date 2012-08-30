@@ -63,8 +63,8 @@ modify scroll bar controls.
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newScrollBar (xref linkend="mthNewScrollBar" />)() method of the <link
-    linkend="chpDialogObject">dialog</link> object to retrieve a scroll bar object.
+    Use the newScrollBar (xref linkend="mthNewScrollBar" />)() method of the
+    dialog (xref linkend="chpDialogObject" />) object to retrieve a scroll bar object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
@@ -220,8 +220,8 @@ modify scroll bar controls.
 <section id="tmthNewScrollBar"><title>newScrollBar (dialog object method)</title>
 <para>
   <computeroutput>ScrollBar</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
-  role="italic">new</emphasis>() method. Rather, a scroll bar object is obtained by using the <link
-  linkend="mthNewScrollBar">newScrollBar</link>() method of the dialog (xref linkend="chpDialogObject" />)
+  role="italic">new</emphasis>() method. Rather, a scroll bar object is obtained by using the
+  newScrollBar (xref linkend="mthNewScrollBar" />)() method of the dialog (xref linkend="chpDialogObject" />)
   object. The syntax is:
 <programlisting>
 <![CDATA[
@@ -251,9 +251,9 @@ modify scroll bar controls.
 
 <section id="tmthConnectScrollBarEvent"><title>connectScrollBarEvent (dialog object method)</title>
 <para>
-  To connect an individual event notification from a scroll bar control use the <link
-  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link> method of the <link
-  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+  To connect an individual event notification from a scroll bar control use the
+  connectScrollBarEvent (xref linkend="mthConnectScrollBarEvent" />) method of the
+  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>--connectScrollBarEvent(--id--,--event--+----------------+--)----------------><
@@ -267,8 +267,8 @@ modify scroll bar controls.
 
 <section id="tmthConnectAllSBEvents"><title>connectAllSBEvents (dialog object method)</title>
 <para>
-  To connect all event notifications from a scroll bar control to a single method use the <link
-  linkend="mthConnectAllSBEvents">connectAllSBEvents</link> method of the dialog (xref linkend="chpDialogObject" />)
+  To connect all event notifications from a scroll bar control to a single method use the
+  connectAllSBEvents (xref linkend="mthConnectAllSBEvents" />) method of the dialog (xref linkend="chpDialogObject" />)
   object. The basic syntax is:
 
 <programlisting>
@@ -286,8 +286,8 @@ modify scroll bar controls.
 <section id="tmthConnectEachSBEvent"><title>connectEachSBEvent (dialog object method)</title>
 <para>
   To connect a number of event notifications from a scroll bar control, and specify an individual method for each event,
-  in one method invocation use the connectEachSBEvent (xref linkend="mthConnectEachSBEvent" />) method of the <link
-  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+  in one method invocation use the connectEachSBEvent (xref linkend="mthConnectEachSBEvent" />) method of the
+  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting>
 <![CDATA[
@@ -312,16 +312,16 @@ modify scroll bar controls.
 <indexterm><primary>ScrollBar class</primary><secondary>scroll bar event constants</secondary></indexterm>
 
 <para>
-  When a scroll bar sends an event (xref linkend="ovvEvents" />) notification <link
-  linkend="ovvWindowMessages">rmessage</link>, one of the pararmeters contains the numeric code, (defined by Windows,)
+  When a scroll bar sends an event (xref linkend="ovvEvents" />) notification
+  rmessage (xref linkend="ovvWindowMessages" />), one of the pararmeters contains the numeric code, (defined by Windows,)
   for the event. The <computeroutput>ScrollBar</computeroutput> class provides
   <computeroutput>::constant</computeroutput> values for each of the event codes. This allows the programmer to
   determine which event is represented by the event code without having to know what the individual numeric value is for
   each code.
 </para>
 <para>
-  Connecting the scroll bar event notifications to a method in the Rexx dialog object is done through the <link
-  linkend="mthConnectScrollBarEvent">connectScrollBarEvent</link> method. The second argument to that method is the
+  Connecting the scroll bar event notifications to a method in the Rexx dialog object is done through the
+  connectScrollBarEvent (xref linkend="mthConnectScrollBarEvent" />) method. The second argument to that method is the
   event <emphasis role="italic">keyword</emphasis> that is to be connected. Do not confuse the keyword and the constant.
   The event <emphasis role="italic">keyword</emphasis> is a string that identifies the event to be connected to the
   ooDialog framework.  The event <emphasis role="italic">constant</emphasis> is a numeric value that Windows sends in

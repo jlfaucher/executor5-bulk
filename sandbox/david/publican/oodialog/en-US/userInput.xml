@@ -52,9 +52,9 @@
 <para>
   The following table lists the general categories of user input in the Windows operating system, as described by the
   Windows documentation. Several of the categories have no current implmentation in ooDialog, or the implementation
-  is scatterd throughout the dialog (xref linkend="chpDialogObject" />) and dialog <link
-  linkend="chpDialogControlObject">control</link> classes. These categories are mentioned here for completeness. Future
-  versions of ooDialog may be enhanced to address those categories.
+  is scatterd throughout the dialog (xref linkend="chpDialogObject" />) and dialog
+  control (xref linkend="chpDialogControlObject" />) classes. These categories are mentioned here for completeness.
+  Future versions of ooDialog may be enhanced to address those categories.
 <table id="tblUserInputClasses" frame="all"> <title>ooDialog User Input Groups</title>
 <tgroup cols="2">
 <colspec colwidth="1.5in" />
@@ -1331,8 +1331,8 @@ say  "You Selected the month: " mon.s
           <varlistentry><term>DEFAULTDESKTOP</term>
           <listitem>
           <para>
-            Same as the desktop of the interactive window station. The programmer should consult the Windows <link
-           linkend="defWindowsDoc">documentation</link> when considering to use this keyword.
+            Same as the desktop of the interactive window station. The programmer should consult the Windows
+            documentation (xref linkend="defWindowsDoc" />) when considering to use this keyword.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>RIGHT</term>
@@ -1377,8 +1377,8 @@ say  "You Selected the month: " mon.s
           <para>
             Adds a <emphasis role="bold">Help</emphasis> push button to the message box, in addition to the push buttons
             specifed in the <emphasis role="italic">pb</emphasis> argument. When the user clicks the <emphasis
-            role="bold">Help</emphasis> button or presses F1, the operating system sends a HELP event <link
-            linkend="ovvEvents">notification</link> to the window specified by the <emphasis
+            role="bold">Help</emphasis> button or presses F1, the operating system sends a HELP event
+            notification (xref linkend="ovvEvents" />) to the window specified by the <emphasis
             role="italic">hwnd</emphasis> argument. If this window is an ooDialog dialog, the programmer can capture
             this notification using the connectHelp (xref linkend="mthConnectHelp" />) method.
           </para>
@@ -1393,8 +1393,8 @@ say  "You Selected the month: " mon.s
   <listitem>
   <para>
     <emphasis role="italic">MessageDialog</emphasis> returns the Microsoft defined resource ID of the button pushed by
-    the user, and 0 on error. The programmer can use a constant (xref linkend="sctMethodsDlgObject" />) of the <link
-    linkend="chpDialogObject">dialog object</link> to determine the return. The return values are:
+    the user, and 0 on error. The programmer can use a constant (xref linkend="sctMethodsDlgObject" />) of the
+    dialog object (xref linkend="chpDialogObject" />) to determine the return. The return values are:
     <variablelist>
       <varlistentry><term>0</term>
       <listitem>
@@ -1479,8 +1479,8 @@ say  "You Selected the month: " mon.s
     can not close the message box by using the ESC key.
   </para>
   <para>
-    The AskDialog (xref linkend="rtnAskDialog" />), InfoDialog (xref linkend="rtnInfoDialog" />), and <link
-    linkend="rtnErrorDialog">errorDialog</link> routines are all implemented using the
+    The AskDialog (xref linkend="rtnAskDialog" />), InfoDialog (xref linkend="rtnInfoDialog" />), and
+    errorDialog (xref linkend="rtnErrorDialog" />) routines are all implemented using the
     <computeroutput>MessageDialog</computeroutput> routine. While they are simplier to use, they are not very flexible.
     In addition because of the way modal (xref linkend="defModalModeless" />) dialogs are implemented, it is possbile
     that those routines will not diable the correct dialog. If the programmer encounters problems with the wrong dialog
@@ -1866,8 +1866,8 @@ call directory curdir
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>TimedMessage</secondary></indexterm>
-<para>The TimedMessage routine provides a shortcut to invoke a <link
-linkend="clsTimedMessage">TimedMessage</link> dialog as a function:
+<para>The TimedMessage routine provides a shortcut to invoke a
+  TimedMessage (xref linkend="clsTimedMessage" />) dialog as a function:
 </para>
 <programlisting>
 <![CDATA[
@@ -1949,8 +1949,8 @@ InputBox (xref linkend="clsInputBox" />) dialog as a function: </para>
 <![CDATA[
 say "Your name:" InputBox("Please enter your name","Personal Data")
 ]]>
-</programlisting><para> The parameters are described in the <link
-linkend="initInputBox">init</link> method of the<computeroutput>
+</programlisting><para> The parameters are described in the
+                   init (xref linkend="initInputBox" />) method of the<computeroutput>
 InputBox</computeroutput> class.</para>
 </section>
 
@@ -1967,8 +1967,8 @@ dialog as a function:
 pwd = PasswordBox("Please enter your password","Security")
 ]]>
 </programlisting>
-<para> The parameters are described in the <link
-linkend="initInputBox">init</link> method of the <computeroutput>
+<para> The parameters are described in the
+  init (xref linkend="initInputBox" />) method of the <computeroutput>
 InputBox</computeroutput>class.
 </para>
 </section>
@@ -1986,8 +1986,8 @@ dialog as a function:
 say "Your age:" IntegerBox("Please enter your age","Personal Data")
 ]]>
 </programlisting>
-<para> The parameters are described in the <link
-linkend="initInputBox">init</link> method of the <computeroutput>
+<para> The parameters are described in the
+  init (xref linkend="initInputBox" />) method of the <computeroutput>
 InputBox</computeroutput>class.
 </para>
 </section>
@@ -1997,8 +1997,8 @@ InputBox</computeroutput>class.
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>MultiInputBox</secondary></indexterm>
-<para>Provides a shortcut function to invoke a <link
-linkend="clsMultiInputBox">MultiInputBox</link> dialog:</para>
+<para>Provides a shortcut function to invoke a
+  MultiInputBox (xref linkend="clsMultiInputBox" />) dialog:</para>
 <programlisting>
 <![CDATA[
 res = MultiInputBox("Enter your address","Personal Data", ,
@@ -2009,8 +2009,8 @@ if res \= .Nil then do entry over res
                     end
 ]]>
 </programlisting>
-<para> The parameters are described in the <link
-linkend="initMultiInputBox">init</link> method of the <computeroutput>
+<para> The parameters are described in the
+  init (xref linkend="initMultiInputBox" />) method of the <computeroutput>
 MultiInputBox</computeroutput>class.  However, instead of using stems,
 arrays are used for input.
 </para>
@@ -2025,8 +2025,8 @@ other difference from the MultiInputBox dialog: if the user cancels the dialog
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>ListChoice</secondary></indexterm>
-<para>The ListChoice function provides a shortcut to invoke a <link
-linkend="clsListChoice">ListChoice</link> dialog:
+<para>The ListChoice function provides a shortcut to invoke a
+  ListChoice (xref linkend="clsListChoice" />) dialog:
 </para>
 <programlisting>
 <![CDATA[
@@ -2036,8 +2036,8 @@ day = ListChoice("Select a day","My favorite day", ,
 say "Your favorite day is" day
 ]]>
 </programlisting>
-<para> The parameters are described in the <link
-linkend="initListChoice">init</link> method of the <computeroutput>
+<para> The parameters are described in the
+  init (xref linkend="initListChoice" />) method of the <computeroutput>
 ListChoice</computeroutput>class. However, instead of an input stem an array is
 passed into the function.
 </para>
@@ -2051,8 +2051,8 @@ returned rather than the empty string.
 <secondary>function</secondary></indexterm>
 <indexterm><primary>public routines</primary>
 <secondary>MultiListChoice</secondary></indexterm>
-<para>Provides a shortcut to invoke a <link
-linkend="clsMultiListChoice">MultiListChoice</link> dialog as a function:
+<para>Provides a shortcut to invoke a
+  MultiListChoice (xref linkend="clsMultiListChoice" />) dialog as a function:
 </para>
 <programlisting>
 <![CDATA[
@@ -2064,8 +2064,8 @@ if days <> .Nil then do day over days
                     end
 ]]>
 </programlisting>
-<para> The parameters are described in the <link
-linkend="initListChoice">init</link> method of the <computeroutput>
+<para> The parameters are described in the
+  init (xref linkend="initListChoice" />) method of the <computeroutput>
 MultiListChoice</computeroutput>class. However, instead of stems, arrays are
 passed into the function.
 </para>
@@ -2097,8 +2097,8 @@ dialog: </para>
 
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are similar to what is described in the <link
-linkend="initCheckList">init</link> method of the <computeroutput>
+<listitem><para>The arguments are similar to what is described in the
+            init (xref linkend="initCheckList" />) method of the <computeroutput>
 CheckList</computeroutput>class. However, instead of stems, arrays are
 passed into and returned from the function.
 <variablelist>
@@ -2205,8 +2205,8 @@ else
 
 ]]>
 </programlisting>
-<para> The parameters are described in the <link
-linkend="initSingleSelection">init</link> method of the <computeroutput>
+<para> The parameters are described in the
+  init (xref linkend="initSingleSelection" />) method of the <computeroutput>
 SingleSelection</computeroutput>class. However, instead of an input stem an
 array is passed into the function.
 </para>

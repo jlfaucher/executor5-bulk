@@ -78,8 +78,8 @@
 </para>
 <para>
   The <computeroutput>UpDown</computeroutput> class provides methods to work with and manipulate the underlying Windows
-  up-down dialog control which it represents. It is a concrete subclass of the dialog control <link
-  linkend="chpDialogControlObject">object</link> and therefore has all methods of the of the dialog control object.
+  up-down dialog control which it represents. It is a concrete subclass of the dialog control
+  object (xref linkend="chpDialogControlObject" />) and therefore has all methods of the of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -88,15 +88,15 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newUpDown (xref linkend="tmthNewUpDown" />)() method of the <link
-    linkend="chpDialogObject">dialog</link> object to retrieve a new UpDown object.
+    Use the newUpDown (xref linkend="tmthNewUpDown" />)() method of the
+    dialog (xref linkend="chpDialogObject" />) object to retrieve a new UpDown object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define an up-down control in a UserDialog (xref linkend="clsUserDialog" />) class, use the <link
-    linkend="mthCreateUpDown">createUpDown</link> method.
+    To dynamically define an up-down control in a UserDialog (xref linkend="clsUserDialog" />) class, use the
+    createUpDown (xref linkend="mthCreateUpDown" />) method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -202,8 +202,8 @@
 <section id="tmthNewUpDown"><title>newUpDown (dialog object method)</title>
 <para>
   UpDown objects can not be instantiated by the programmer from Rexx code. Rather an UpDown object is obtained by using
-  the newUpDown (xref linkend="mthNewUpDown" />)() method of the dialog <link
-  linkend="chpDialogObject">object</link>. The syntax is:
+  the newUpDown (xref linkend="mthNewUpDown" />)() method of the dialog
+  object (xref linkend="chpDialogObject" />). The syntax is:
 <programlisting>
 <![CDATA[
 >>-newUpDown(--id--)-----------------------------><
@@ -230,9 +230,9 @@
 
 <section id="tmthConnectUpDownEvent"><title>connectUpDownEvent (dialog object method)</title>
 <para>
-  To connect event notifications from an up-down object use the <link
-  linkend="mthConnectUpDownEvent">connectUpDownEvent</link>() method of the <link
-  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+  To connect event notifications from an up-down object use the
+  connectUpDownEvent (xref linkend="mthConnectUpDownEvent" />)() method of the
+  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectUpDownEvent(--id--,--event--+----------------+--)------------><
@@ -255,8 +255,8 @@
 </programlisting>
 
 <para>
-  Constructs the (proper) reply object for a DELTAPOS (xref linkend="evtUpDownDELTAPOS" />) up-down <link
-  linkend="ovvEvents">event</link> notification.
+  Constructs the (proper) reply object for a DELTAPOS (xref linkend="evtUpDownDELTAPOS" />) up-down
+  event (xref linkend="ovvEvents" />) notification.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -867,8 +867,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If <emphasis role="italic">newPosition</emphasis> is outside the control's current <link
-    linkend="mthSetRangeClsUpDown">range</link>, the position is set to the nearest valid position within the range.
+    If <emphasis role="italic">newPosition</emphasis> is outside the control's current
+    range (xref linkend="mthSetRangeClsUpDown" />), the position is set to the nearest valid position within the range.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>

@@ -68,8 +68,8 @@
 </para>
 <para>
   The <computeroutput>Tab</computeroutput> class provides methods to work with and manipulate the underlying
-  Windows tab dialog control which it represents. It is a concrete subclass of the dialog control <link
-  linkend="chpDialogControlObject">object</link> and therefore has all methods of the dialog control object.
+  Windows tab dialog control which it represents. It is a concrete subclass of the dialog control
+  object (xref linkend="chpDialogControlObject" />) and therefore has all methods of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -78,15 +78,15 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newTab (xref linkend="tmthNewTab" />)() method of the <link
-    linkend="chpDialogObject">dialog</link> object to retrieve a new Tab object.
+    Use the newTab (xref linkend="tmthNewTab" />)() method of the
+    dialog (xref linkend="chpDialogObject" />) object to retrieve a new Tab object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define a tab in a UserDialog (xref linkend="clsUserDialog" />) class, use the <link
-    linkend="tmthCreateTab">createTab</link> method.
+    To dynamically define a tab in a UserDialog (xref linkend="clsUserDialog" />) class, use the
+    createTab (xref linkend="tmthCreateTab" />) method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -280,9 +280,9 @@
 
 <section id="tmthConnectTabEvent"><title>connectTabEvent (dialog object method)</title>
 <para>
-  To connect event notifications from an tab control use the <link
-  linkend="mthConnectTabEvent">connectTabEvent</link>() method of the <link
-  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+  To connect event notifications from an tab control use the
+  connectTabEvent (xref linkend="mthConnectTabEvent" />)() method of the
+  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectTabEvent(--id--,--event--+----------------+--+--------------+--)-----><
@@ -322,8 +322,8 @@
     </listitem></varlistentry>
     <varlistentry><term>icon1 [optional]</term>
     <listitem>
-    <para>The index of the icon in the image list of the tab control, set with the <link
-    linkend="mthSetImageListClsTabControl">setImageList</link>() method.
+    <para>The index of the icon in the image list of the tab control, set with the
+    setImageList (xref linkend="mthSetImageListClsTabControl" />)() method.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>user1 [optional]</term>
@@ -509,8 +509,8 @@ string. The coordinates are separated by blanks and are in the following order:
 <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
 <listitem>
 <para>
-  This method is outmoded and retained solely for backwards compatibility. All new code should use the <link
-  linkend="mthCalcWindowRect">calcWindowRect</link> method.
+  This method is outmoded and retained solely for backwards compatibility. All new code should use the
+  calcWindowRect (xref linkend="mthCalcWindowRect" />) method.
 </para>
 </listitem></varlistentry>
 </variablelist>
@@ -1173,8 +1173,8 @@ order:
 <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
 <listitem>
 <para>
-  This method is outmoded and retained solely for backwards compatibility. All new code should use the <link
-  linkend="mthCalcDisplayArea">calcDispalyArea</link> method.
+  This method is outmoded and retained solely for backwards compatibility. All new code should use the
+  calcDispalyArea (xref linkend="mthCalcDisplayArea" />) method.
 </para>
 </listitem></varlistentry>
 </variablelist>
@@ -1371,8 +1371,8 @@ the currently selected tab.</para>
 <para>
   Destroying a tab control does not destroy an image list that is associated with it. The programmer must destroy the
   image list separately, if desired. This is useful if the programmer wants to assign the same image list to multiple
-  tab controls. In essence, the ownership of the image list remains with the programmer. The <link
-  linkend="clsImageList">ImageList</link> and Image (xref linkend="clsImage" />) classes are used to manage image
+  tab controls. In essence, the ownership of the image list remains with the programmer. The
+  ImageList (xref linkend="clsImageList" />) and Image (xref linkend="clsImage" />) classes are used to manage image
   lists and images in ooDialog. The documentation on both classes discusses when and why the programmer may want to
   release image lists. The Image class documentation has the most detail on this subject.
 </para>
