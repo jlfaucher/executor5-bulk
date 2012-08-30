@@ -366,10 +366,12 @@
 ::class 'LvCustomDrawSimple' public
 ::method init class external       "LIBRARY oodialog lvcds_init_cls"
 ::method init external             "LIBRARY oodialog lvcds_init"
+
 ::attribute clrText set external   "LIBRARY oodialog lvcds_setClrText"
 ::attribute clrTextBk set external "LIBRARY oodialog lvcds_setClrTextBk"
 ::attribute drawStage get external "LIBRARY oodialog lvcds_getDrawStage"
 ::attribute font set external      "LIBRARY oodialog lvcds_setFont"
+::attribute id get external        "LIBRARY oodialog lvcds_getID"
 ::attribute item get external      "LIBRARY oodialog lvcds_getItem"
 ::attribute reply set external     "LIBRARY oodialog lvcds_setReply"
 ::attribute subItem get external   "LIBRARY oodialog lvcds_getSubItem"

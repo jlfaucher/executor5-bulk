@@ -3675,6 +3675,7 @@ MsgReplyType lvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
         pclvcds->drawStage = lvcd->nmcd.dwDrawStage;
         pclvcds->item      = lvcd->nmcd.dwItemSpec;
         pclvcds->subItem   = lvcd->iSubItem;
+        pclvcds->id        = ((NMHDR *)lParam)->idFrom;
         pclvcds->userData  = lviLParam2UserData(lvcd->nmcd.lItemlParam);
 
         RexxObjectPtr custDrawSimple = c->SendMessage1(TheLvCustomDrawSimpleClass, "NEW", lvcdsBuf);
@@ -3766,6 +3767,13 @@ RexxMethod2(RexxObjectPtr, lvcds_setFont, POINTERSTRING, font, CSELF, pCSelf)
 {
     ((pCLvCustomDrawSimple)pCSelf)->hFont = (HFONT)font;
     return NULLOBJECT;
+}
+
+/** LvCustomDrawSimple::id         [attribute]
+ */
+RexxMethod1(uintptr_t, lvcds_getID, CSELF, pCSelf)
+{
+    return ((pCLvCustomDrawSimple)pCSelf)->id;
 }
 
 /** LvCustomDrawSimple::item       [attribute]

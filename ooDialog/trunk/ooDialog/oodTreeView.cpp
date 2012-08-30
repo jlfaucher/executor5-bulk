@@ -749,6 +749,7 @@ MsgReplyType tvSimpleCustomDraw(RexxThreadContext *c, CSTRING methodName, LPARAM
 
         pctvcds->drawStage = tvcd->nmcd.dwDrawStage;
         pctvcds->item      = (HTREEITEM)tvcd->nmcd.dwItemSpec;
+        pctvcds->id        = ((NMHDR *)lParam)->idFrom;
         pctvcds->level     = tvcd->iLevel;
 
         RexxObjectPtr custDrawSimple = c->SendMessage1(TheTvCustomDrawSimpleClass, "NEW", tvcdsBuf);
@@ -843,6 +844,13 @@ RexxMethod2(RexxObjectPtr, tvcds_setFont, POINTERSTRING, font, CSELF, pCSelf)
 {
     ((pCTvCustomDrawSimple)pCSelf)->hFont = (HFONT)font;
     return NULLOBJECT;
+}
+
+/** TvCustomDrawSimple::id         [attribute]
+ */
+RexxMethod1(uint32_t, tvcds_getID, CSELF, pCSelf)
+{
+    return ((pCTvCustomDrawSimple)pCSelf)->id;
 }
 
 /** TvCustomDrawSimple::item       [attribute]

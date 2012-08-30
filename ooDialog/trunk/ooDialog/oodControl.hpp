@@ -160,6 +160,7 @@ typedef struct _lvCDSimple
     uint32_t          reply;
     uint32_t          subItem;
     uint32_t          drawStage;
+    uint32_t          id;          // Resource ID of the dialog control
 } CLvCustomDrawSimple;
 typedef CLvCustomDrawSimple *pCLvCustomDrawSimple;
 
@@ -183,6 +184,7 @@ typedef struct _tvCDSimple
     uint32_t          reply;
     uint32_t          level;       // 1-based level of the item, tree-view value is 0-based
     uint32_t          drawStage;
+    uint32_t          id;          // Resource ID of the dialog control
 } CTvCustomDrawSimple;
 typedef CTvCustomDrawSimple *pCTvCustomDrawSimple;
 
