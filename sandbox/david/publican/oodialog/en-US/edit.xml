@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsEdit"><title>Edit Controls</title>
+<chapter id="clsEdit" xreflabel="Edit"><title>Edit Controls</title>
 <indexterm><primary>Edit class</primary></indexterm>
 <para>
   An edit control is a rectangular window that allows the user to enter and edit text using the keyboard. Edit controls
@@ -73,15 +73,15 @@
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define an edit in a UserDialog (<xref linkend="clsUserDialog" />) class, use the
-    createEdit (<xref linkend="mthCreateEdit" />) method.
+    To dynamically define an edit in a <xref linkend="clsUserDialog"/> class, use the
+ <xref linkend="mthCreateEdit"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the event (<xref linkend="ovvEvents" />) notifications sent by the underlying edit control to
-    a method in the Rexx dialog object use the connectEditEvent (<xref linkend="mthConnectEditEvent" />)()
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying edit control to
+    a method in the Rexx dialog object use the <xref linkend="mthConnectEditEvent"/>()
     method.
   </para> </listitem></varlistentry>
 </variablelist> </para>
@@ -94,7 +94,7 @@
 <table id="tblEditMethods" frame="all">
 <title>Important Edit Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" /><colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -107,15 +107,15 @@
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry>newEdit (<xref linkend="tmthNewEdit" />)</entry>
+<entry><xref linkend="tmthNewEdit"/></entry>
 <entry>Returns a new <computeroutput>Edit</computeroutput> object for the edit control with the specified ID.</entry>
 </row>
 <row>
-<entry>createEdit (<xref linkend="tmthCreateEdit" />)</entry>
-<entry>Creates an edit control in the dialog template of a UserDialog (<xref linkend="clsUserDialog" />)</entry>
+<entry><xref linkend="tmthCreateEdit"/></entry>
+<entry>Creates an edit control in the dialog template of a <xref linkend="clsUserDialog"/></entry>
 </row>
 <row>
-<entry>connectEditEvent (<xref linkend="tmthConnectEditEvent" />)</entry>
+<entry><xref linkend="tmthConnectEditEvent"/></entry>
 <entry>Connects an edit control event notification to a method in the Rexx dialog object</entry>
 </row>
 <row>
@@ -123,7 +123,7 @@
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
 </row>
 <row>
-<entry>passwordChar (<xref linkend="atrPasswordChar" />)</entry>
+<entry><xref linkend="atrPasswordChar"/></entry>
 <entry>Set or get the password character for an edit control with the PASSWORD style.</entry>
 </row>
 <row>
@@ -131,159 +131,159 @@
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>addStyle (<xref linkend="mthAddStyleClsEdit" />)</entry>
+<entry><xref linkend="mthAddStyleClsEdit"/></entry>
 <entry>Adds one or more edit control styles to the edit control.</entry>
 </row>
 <row>
-<entry>canUndo (<xref linkend="mthCanUndo" />)</entry>
+<entry><xref linkend="mthCanUndo"/></entry>
 <entry>Determines if there are any actions in the undo queue of the edit control.</entry>
 </row>
 <row>
-<entry>clearText (<xref linkend="mthClearText" />)</entry>
+<entry><xref linkend="mthClearText"/></entry>
 <entry>Deletes the currently selected text from the edit control.</entry>
 </row>
 <row>
-<entry>copyText (<xref linkend="mthCopyText" />)</entry>
+<entry><xref linkend="mthCopyText"/></entry>
 <entry>Copies the currently selected text to the clipboard in text format.</entry>
 </row>
 <row>
-<entry>cutText (<xref linkend="mthCutText" />)</entry>
+<entry><xref linkend="mthCutText"/></entry>
 <entry>Deletes the currently selected text in the edit control and copies it to the clipboard.</entry>
 </row>
 <row>
-<entry>disableInternalResize (<xref linkend="mthDisableInternalResize" />)</entry>
+<entry><xref linkend="mthDisableInternalResize"/></entry>
 <entry>Prevents the edit control from internally resizing itself when its owner dialog is resized.</entry>
 </row>
 <row>
-<entry>ensureCaretVisibility (<xref linkend="mthEnsureCaretVisibility" />)</entry>
+<entry><xref linkend="mthEnsureCaretVisibility"/></entry>
 <entry>Scrolls the edit control until the caret (cursor) is visible.</entry>
 </row>
 <row>
-<entry>firstVisibleLine (<xref linkend="mthFirstVisibleLine" />)</entry>
+<entry><xref linkend="mthFirstVisibleLine"/></entry>
 <entry>Retrieves the index of the first visible line, or the first visible character, in an edit control.</entry>
 </row>
 <row>
-<entry>getCue (<xref linkend="mthGetCue" />)</entry>
+<entry><xref linkend="mthGetCue"/></entry>
 <entry>Retrieves the cue text, or the empty string if there is no cue set.</entry>
 </row>
 <row>
-<entry>getLine (<xref linkend="mthGetLine" />)</entry>
+<entry><xref linkend="mthGetLine"/></entry>
 <entry>Retrieves the text of the specified line.</entry>
 </row>
 <row>
-<entry>getMargins (<xref linkend="mthGetMargins" />)</entry>
+<entry><xref linkend="mthGetMargins"/></entry>
 <entry>Returns the width of the left and right margins of the edit control in a <computeroutput>Directory</computeroutput> object.</entry>
 </row>
 <row>
-<entry>getRect (<xref linkend="mthGetRectClsEdit" />)</entry>
+<entry><xref linkend="mthGetRectClsEdit"/></entry>
 <entry>Returns the edit control's current formatting rectangle as a <computeroutput>.Rect</computeroutput> object</entry>
 </row>
 <row>
-<entry>getStyle (<xref linkend="mthGetStyle" />)</entry>
+<entry><xref linkend="mthGetStyle"/></entry>
 <entry>Returns the edit control's current style as a blank delimited list of style keywords.</entry>
 </row>
 <row>
-<entry>hideBalloon (<xref linkend="mthHideBalloon" />)</entry>
+<entry><xref linkend="mthHideBalloon"/></entry>
 <entry>Hides the balloon information window displayed by the <emphasis role="italic">showBalloon</emphasis> method.</entry>
 </row>
 <row>
-<entry>isModified (<xref linkend="mthIsModified" />)</entry>
+<entry><xref linkend="mthIsModified"/></entry>
 <entry>Determines if the text in the edit control has been modified.</entry>
 </row>
 <row>
-<entry>isSingleLine (<xref linkend="mthIsSingleLine" />)</entry>
+<entry><xref linkend="mthIsSingleLine"/></entry>
 <entry>Determines if this edit control is a single line or a multi-line edit control.</entry>
 </row>
 <row>
-<entry>lineFromIndex (<xref linkend="mthLineFromIndex" />)</entry>
+<entry><xref linkend="mthLineFromIndex"/></entry>
 <entry>Gets the line index of the line that contains the specified character index.</entry>
 </row>
 <row>
-<entry>lineIndex (<xref linkend="mthLineIndex" />)</entry>
+<entry><xref linkend="mthLineIndex"/></entry>
 <entry>Determines the one-based character index of the first character in the line specified.</entry>
 </row>
 <row>
-<entry>lineLength (<xref linkend="mthLineLength" />)</entry>
+<entry><xref linkend="mthLineLength"/></entry>
 <entry>Returns the length, in characters, of the specified line in an edit control.</entry>
 </row>
 <row>
-<entry>lines (<xref linkend="mthLines" />)</entry>
+<entry><xref linkend="mthLines"/></entry>
 <entry>Determines the number of lines in a multiline edit control.</entry>
 </row>
 <row>
-<entry>lineScroll (<xref linkend="mthLineScroll" />)</entry>
+<entry><xref linkend="mthLineScroll"/></entry>
 <entry>Scrolls the text horizontally and vertically in a multiline edit control.</entry>
 </row>
 <row>
-<entry>margins (<xref linkend="mthMargins" />)</entry>
+<entry><xref linkend="mthMargins"/></entry>
 <entry>Returns the left and right margins of the edit control as a <computeroutput>String</computeroutput> object.</entry>
 </row>
 <row>
-<entry>noContextMenu (<xref linkend="mthNoContextMenu" />)</entry>
+<entry><xref linkend="mthNoContextMenu"/></entry>
 <entry>Removes the edit control's internal context menu.</entry>
 </row>
 <row>
-<entry>pasteText (<xref linkend="mthPasteText" />)</entry>
+<entry><xref linkend="mthPasteText"/></entry>
 <entry>Copies the content of the clipboard to the edit control at the current caret position.</entry>
 </row>
 <row>
-<entry>removeStyle (<xref linkend="mthRemoveStyleClsEdit" />)</entry>
+<entry><xref linkend="mthRemoveStyleClsEdit"/></entry>
 <entry>Removes one or more edit control styles from the edit control.</entry>
 </row>
 <row>
-<entry>replaceSelText (<xref linkend="mthReplaceSelText" />)</entry>
+<entry><xref linkend="mthReplaceSelText"/></entry>
 <entry>Replaces the text selection in an edit control with the specified text.</entry>
 </row>
 <row>
-<entry>replaceStyle (<xref linkend="mthReplaceStyleClsEdit" />)</entry>
+<entry><xref linkend="mthReplaceStyleClsEdit"/></entry>
 <entry>Removes and adds one or more edit control styles in one operation.</entry>
 </row>
 <row>
-<entry>scrollCommand (<xref linkend="mthScrollCommand" />)</entry>
+<entry><xref linkend="mthScrollCommand"/></entry>
 <entry>Scrolls the text vertically in a multiline edit control.</entry>
 </row>
 <row>
-<entry>select (<xref linkend="mthSelectClsEdit" />)</entry>
+<entry><xref linkend="mthSelectClsEdit"/></entry>
 <entry>Used to change the text selection and / or the position of the cursor</entry>
 </row>
 <row>
-<entry>selected (<xref linkend="mthSelectedClsEdit" />)</entry>
+<entry><xref linkend="mthSelectedClsEdit"/></entry>
 <entry>Returns a <computeroutput>String</computeroutput> object containing the start and end of the text selection.</entry>
 </row>
 <row>
-<entry>selection (<xref linkend="mthSelection" />)</entry>
+<entry><xref linkend="mthSelection"/></entry>
 <entry>Returns a <computeroutput>Directory</computeroutput> object containing the start and end of the text selection.</entry>
 </row>
 <row>
-<entry>setCue (<xref linkend="mthSetCue" />)</entry>
+<entry><xref linkend="mthSetCue"/></entry>
 <entry>Sets the text for the <emphasis role="italic">cue</emphasis> banner.</entry>
 </row>
 <row>
-<entry>setLimit (<xref linkend="mthSetLimit" />)</entry>
+<entry><xref linkend="mthSetLimit"/></entry>
 <entry>Sets the maximum number of characters the user can type in to the edit control.</entry>
 </row>
 <row>
-<entry>setMargins (<xref linkend="mthSetMargins" />)</entry>
+<entry><xref linkend="mthSetMargins"/></entry>
 <entry>Sets the left and right margins of the edit control as specified.</entry>
 </row>
 <row>
-<entry>setModified (<xref linkend="mthSetModified" />)</entry>
+<entry><xref linkend="mthSetModified"/></entry>
 <entry>Sets the modified flag of an edit control to the state specified, <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput>.</entry>
 </row>
 <row>
-<entry>setReadOnly (<xref linkend="mthSetReadOnly" />)</entry>
+<entry><xref linkend="mthSetReadOnly"/></entry>
 <entry>Adds or removes the read only style for the edit control.</entry>
 </row>
 <row>
-<entry>setRect (<xref linkend="mthSetRectClsEdit" />)</entry>
+<entry><xref linkend="mthSetRectClsEdit"/></entry>
 <entry>Sets the edit control's current formatting rectangle using a <computeroutput>.Rect</computeroutput> object</entry>
 </row>
 <row>
-<entry>setTabStops (<xref linkend="mthSetTabStops" />)</entry>
+<entry><xref linkend="mthSetTabStops"/></entry>
 <entry>setTabStops</entry>
 </row>
 <row>
-<entry>showBalloon (<xref linkend="mthShowBalloon" />)</entry>
+<entry><xref linkend="mthShowBalloon"/></entry>
 <entry>Displays an informational window, a balloon tip, for the edit control.</entry>
 </row>
 <row>
@@ -291,7 +291,7 @@
 <entry>An alias for the <emphasis role="italic">setTabStops</emphasis> method.</entry>
 </row>
 <row>
-<entry>undo (<xref linkend="mthUndo" />)</entry>
+<entry><xref linkend="mthUndo"/></entry>
 <entry>Undoes the last edit control operation in the edit control's undo queue.</entry>
 </row>
 </tbody></tgroup>
@@ -302,7 +302,7 @@
 <section id="tmthNewEdit"><title>newEdit (dialog object method)</title>
 <para>
   Edit objects can not be instantiated by the programmer from Rexx code. Rather an Edit object is obtained
-  by using the newEdit (<xref linkend="mthNewEdit" />)() method of the dialog
+  by using the <xref linkend="mthNewEdit"/>() method of the dialog
   object (<xref linkend="chpDialogObject" />). The syntax is:
 <programlisting>
 <![CDATA[
@@ -316,8 +316,8 @@
 
 <section id="tmthCreateEdit"><title>createEdit (UserDialog method)</title>
 <para>
-  An edit control can be added to the dialog template for a UserDialog (<xref linkend="clsUserDialog" />)
-  dialog through the createEdit (<xref linkend="mthCreateEdit" />)() method. The basic syntax is:
+  An edit control can be added to the dialog template for a <xref linkend="clsUserDialog"/>
+  dialog through the <xref linkend="mthCreateEdit"/>() method. The basic syntax is:
 <programlisting> <![CDATA[
 >>--createEdit(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
                                          +-,-style-+  +-,-attributeName-+
@@ -331,7 +331,7 @@
 <section id="tmthConnectEditEvent"><title>connectEditEvent (dialog object method)</title>
 <para>
   To connect event notifications from an edit control use the
-  connectEditEvent (<xref linkend="mthConnectEditEvent" />)() method of the
+ <xref linkend="mthConnectEditEvent"/>() method of the
   dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
@@ -389,7 +389,7 @@
 </section>  <!-- End Edit::passwordChar() [attribute]  -->
 
 
-<section id="mthAddStyleClsEdit"><title>addStyle</title>
+<section id="mthAddStyleClsEdit" xreflabel="addStyle"><title>addStyle</title>
 <indexterm><primary>addStyle</primary><secondary>Edit class</secondary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>addStyle</secondary></indexterm>
 <programlisting>
@@ -511,7 +511,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -532,7 +532,7 @@
 </section>  <!-- End Edit::addStyle() -->
 
 
-<section id="mthCanUndo"><title>canUndo</title>
+<section id="mthCanUndo" xreflabel="canUndo"><title>canUndo</title>
 <indexterm><primary>canUndo</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>canUndo</secondary></indexterm>
 <programlisting>
@@ -562,7 +562,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    When the undo queue is not empty, the undo (<xref linkend="mthUndo" />) method can be used to undo the most recent
+    When the undo queue is not empty, the <xref linkend="mthUndo"/> method can be used to undo the most recent
     operation.
   </para>
   </listitem></varlistentry>
@@ -570,7 +570,7 @@
 </section>  <!-- End Edit::canUndo() -->
 
 
-<section id="mthClearText"><title>clearText</title>
+<section id="mthClearText" xreflabel="clearText"><title>clearText</title>
 <indexterm><primary>clearText</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>clearText</secondary></indexterm>
 <programlisting>
@@ -600,13 +600,13 @@
   <listitem>
   <para>
     When the <emphasis role="italic">clearText</emphasis> method is used to delete the selected text, the deletion can
-    be undone using the undo (<xref linkend="mthUndo" />) method.
+    be undone using the <xref linkend="mthUndo"/> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Edit::clearText() -->
 
-<section id="mthCopyText"><title>copyText</title>
+<section id="mthCopyText" xreflabel="copyText"><title>copyText</title>
 <indexterm><primary>copyText</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>copyText</secondary></indexterm>
 <programlisting>
@@ -636,7 +636,7 @@
 </section>  <!-- End Edit::copyText() -->
 
 
-<section id="mthCutText"><title>cutText</title>
+<section id="mthCutText" xreflabel="cutText"><title>cutText</title>
 <indexterm><primary>cutText</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>cutText</secondary></indexterm>
 <programlisting>
@@ -667,15 +667,15 @@
   <listitem>
   <para>
     The deletion performed by the <emphasis role="italic">cutText</emphasis> method can be undone by using the
-    undo (<xref linkend="mthUndo" />) method.  To delete the currently selected text without placing that text on the
-    clipboard, use the clearText (<xref linkend="mthClearText" />) method.
+ <xref linkend="mthUndo"/> method.  To delete the currently selected text without placing that text on the
+    clipboard, use the <xref linkend="mthClearText"/> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Edit::cutText() -->
 
 
-<section id="mthDisableInternalResize"><title>disableInternalResize</title>
+<section id="mthDisableInternalResize" xreflabel="disableInternalResize"><title>disableInternalResize</title>
 <indexterm><primary>disableInternalResize</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>disableInternalResize</secondary></indexterm>
 <programlisting>
@@ -733,7 +733,7 @@
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable. The following codes may be set. They
+    Sets the <xref linkend="dotSystemErrorCode" /> variable. The following codes may be set. They
     are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
@@ -777,7 +777,7 @@
 </section>  <!-- End Edit::disableInternalResize() -->
 
 
-<section id="mthEnsureCaretVisibility"><title>ensureCaretVisibility</title>
+<section id="mthEnsureCaretVisibility" xreflabel="ensureCaretVisibility"><title>ensureCaretVisibility</title>
 <indexterm><primary>ensureCaretVisibility</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>ensureCaretVisibility</secondary></indexterm>
 <programlisting>
@@ -813,7 +813,7 @@
 </section>  <!-- End Edit::ensureCaretVisibility() -->
 
 
-<section id="mthFirstVisibleLine"><title>firstVisibleLine</title>
+<section id="mthFirstVisibleLine" xreflabel="firstVisibleLine"><title>firstVisibleLine</title>
 <indexterm><primary>firstVisibleLine</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>firstVisibleLine</secondary></indexterm>
 <programlisting>
@@ -869,7 +869,7 @@
 </section>  <!-- End Edit::firstVisibleLine() -->
 
 
-<section id="mthGetCue"><title>getCue</title>
+<section id="mthGetCue" xreflabel="getCue"><title>getCue</title>
 <indexterm><primary>getCue</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>getCue</secondary></indexterm>
 <programlisting>
@@ -881,7 +881,7 @@
 
 <para>
   Retrieves the cue text, or the empty string if there is no cue set. The cue text is set with the
-  setCue (<xref linkend="mthSetCue" />) method.
+ <xref linkend="mthSetCue"/> method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -930,7 +930,7 @@
 </section>  <!-- End Edit::getCue() -->
 
 
-<section id="mthGetLine"><title>getLine</title>
+<section id="mthGetLine" xreflabel="getLine"><title>getLine</title>
 <indexterm><primary>getLine</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>getLine</secondary></indexterm>
 <programlisting>
@@ -983,7 +983,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable. The following error code is set by
+    Sets the <xref linkend="dotSystemErrorCode" /> variable. The following error code is set by
     the ooDialog framework on error.
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
@@ -1021,7 +1021,7 @@
 </section>  <!-- End Edit::getLine() -->
 
 
-<section id="mthGetMargins"><title>getMargins</title>
+<section id="mthGetMargins" xreflabel="getMargins"><title>getMargins</title>
 <indexterm><primary>getMargins</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>getMargins</secondary></indexterm>
 <programlisting>
@@ -1088,7 +1088,7 @@
 </section>  <!-- End Edit::getMargins() -->
 
 
-<section id="mthGetRectClsEdit"><title>getRect</title>
+<section id="mthGetRectClsEdit" xreflabel="getRect"><title>getRect</title>
 <indexterm><primary>getRect</primary><secondary>Edit class</secondary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>getRect</secondary></indexterm>
 <programlisting>
@@ -1126,7 +1126,7 @@
   </para>
   <para>
     The coordinates of an edit control's formatting rectangle can be set through the
-    setRect (<xref linkend="mthSetRectClsEdit" />) method.
+ <xref linkend="mthSetRectClsEdit"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1155,7 +1155,7 @@
 </section>  <!-- End Edit::getRect() -->
 
 
-<section id="mthGetStyle"><title>getStyle</title>
+<section id="mthGetStyle" xreflabel="getStyle"><title>getStyle</title>
 <indexterm><primary>getStyle</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>getStyle</secondary></indexterm>
 <programlisting>
@@ -1192,7 +1192,7 @@
     </simplelist>
   </para>
   <para>
-    The meaning of these style keywords is documented in the createEdit (<xref linkend="mthCreateEdit" />) method.
+    The meaning of these style keywords is documented in the <xref linkend="mthCreateEdit"/> method.
   </para>
   <para>
     It is possible, but very unlikely, that a negative number is returned. See the remarks.
@@ -1212,7 +1212,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1236,7 +1236,7 @@
 </section>  <!-- End Edit::getStyle() -->
 
 
-<section id="mthHideBalloon"><title>hideBalloon</title>
+<section id="mthHideBalloon" xreflabel="hideBalloon"><title>hideBalloon</title>
 <indexterm><primary>hideBalloon</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>hideBallon</secondary></indexterm>
 <programlisting>
@@ -1247,7 +1247,7 @@
 </programlisting>
 
 <para>
-  Hides the balloon information window displayed by the showBalloon (<xref linkend="mthShowBalloon" />) method.
+  Hides the balloon information window displayed by the <xref linkend="mthShowBalloon"/> method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1291,7 +1291,7 @@
 </section>
 
 
-<section id="mthIsModified"><title>isModified</title>
+<section id="mthIsModified" xreflabel="isModified"><title>isModified</title>
 <indexterm><primary>isModified</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>isModified</secondary></indexterm>
 <programlisting>
@@ -1323,7 +1323,7 @@
   <para>
     The operating system automatically sets the modification flag to false when the edit control is created. If the user
     changes the control's text, then the operating system sets the flag to true.  The
-    setModified (<xref linkend="mthSetModified" />) method can be used to set the flag to true or false.
+ <xref linkend="mthSetModified"/> method can be used to set the flag to true or false.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1353,7 +1353,7 @@
 </section>  <!-- End Edit::isModified() -->
 
 
-<section id="mthIsSingleLine"><title>isSingleLine</title>
+<section id="mthIsSingleLine" xreflabel="isSingleLine"><title>isSingleLine</title>
 <indexterm><primary>isSingleLine</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>isSingleLine</secondary></indexterm>
 <programlisting>
@@ -1384,7 +1384,7 @@
   <listitem>
   <para>
     Some methods are not applicable for single line edit controls, or behave differently between single line and
-    multi-line edit controls. For instance, the setTabStops (<xref linkend="mthSetTabStops" />) method does nothing
+    multi-line edit controls. For instance, the <xref linkend="mthSetTabStops"/> method does nothing
     for a single line edit control. The <emphasis role="italic">isSingleLine</emphasis> method allows the programmer to
     write generic code for an edit control by checking which type of edit control the code is dealing with.
   </para>
@@ -1412,7 +1412,7 @@
 </section>  <!-- End Edit::isSingleLine() -->
 
 
-<section id="mthLineFromIndex"><title>lineFromIndex</title>
+<section id="mthLineFromIndex" xreflabel="lineFromIndex"><title>lineFromIndex</title>
 <indexterm><primary>lineFromIndex</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>lineFromIndex</secondary></indexterm>
 <programlisting>
@@ -1488,7 +1488,7 @@ Character 55 is contained in line 2
 </section>  <!-- End Edit::lineFromIndex() -->
 
 
-<section id="mthLineIndex"><title>lineIndex</title>
+<section id="mthLineIndex" xreflabel="lineIndex"><title>lineIndex</title>
 <indexterm><primary>lineIndex</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>lineIndex</secondary></indexterm>
 <programlisting>
@@ -1577,7 +1577,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::lineIndex() -->
 
 
-<section id="mthLineLength"><title>lineLength</title>
+<section id="mthLineLength" xreflabel="lineLength"><title>lineLength</title>
 <indexterm><primary>lineLength</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>lineLength</secondary></indexterm>
 <programlisting>
@@ -1679,7 +1679,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::lineLength() -->
 
 
-<section id="mthLines"><title>lines</title>
+<section id="mthLines" xreflabel="lines"><title>lines</title>
 <indexterm><primary>lines</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>lines</secondary></indexterm>
 <programlisting>
@@ -1724,7 +1724,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::lines() -->
 
 
-<section id="mthLineScroll"><title>lineScroll</title>
+<section id="mthLineScroll" xreflabel="lineScroll"><title>lineScroll</title>
 <indexterm><primary>lineScroll</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>lineScroll</secondary></indexterm>
 <programlisting>
@@ -1794,7 +1794,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::lineScroll() -->
 
 
-<section id="mthMargins"><title>margins</title>
+<section id="mthMargins" xreflabel="margins"><title>margins</title>
 <indexterm><primary>margins</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>margins</secondary></indexterm>
 <programlisting>
@@ -1824,7 +1824,7 @@ Length of 3rd line: 21
   <listitem>
   <para>
     The <emphasis role="italic">margins</emphasis> method is exactly equivalent to the
-    getMargins (<xref linkend="mthGetMargins" />) method. The values returned will be exactly the same whichever method is
+ <xref linkend="mthGetMargins"/> method. The values returned will be exactly the same whichever method is
     used.
   </para>
   </listitem></varlistentry>
@@ -1832,7 +1832,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::margins() -->
 
 
-<section id="mthNoContextMenu"><title>noContextMenu</title>
+<section id="mthNoContextMenu" xreflabel="noContextMenu"><title>noContextMenu</title>
 <indexterm><primary>noContextMenu</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>noContextMenu</secondary></indexterm>
 <programlisting>
@@ -1894,7 +1894,7 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable. The following codes may be set. They
+    Sets the <xref linkend="dotSystemErrorCode" /> variable. The following codes may be set. They
     are set by the ooDialog framework rather than the operating system and are used to indicate error conditions:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_NOT_SUPPORTED (50)</emphasis></term>
@@ -1919,7 +1919,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::noContextMenu() -->
 
 
-<section id="mthPasteText"><title>pasteText</title>
+<section id="mthPasteText" xreflabel="pasteText"><title>pasteText</title>
 <indexterm><primary>pasteText</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>pasteText</secondary></indexterm>
 <programlisting>
@@ -1955,7 +1955,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::pasteText() -->
 
 
-<section id="mthRemoveStyleClsEdit"><title>removeStyle</title>
+<section id="mthRemoveStyleClsEdit" xreflabel="removeStyle"><title>removeStyle</title>
 <indexterm><primary>removeStyle</primary><secondary>Edit class</secondary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>removeStyle</secondary></indexterm>
 <programlisting>
@@ -1991,8 +1991,8 @@ Length of 3rd line: 21
         </simplelist>
       </para>
       <para>
-        The argument list (<xref linkend="argsAddStyle" />) for the addStyle (<xref linkend="mthAddStyleClsEdit" />)
-        method details the meaning of the keywords. The createEdit (<xref linkend="mthCreateEdit" />) method documents
+        The argument list (<xref linkend="argsAddStyle" />) for the <xref linkend="mthAddStyleClsEdit"/>
+        method details the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents
         the meaning of all the edit control style keywords.
       </para>
       </listitem></varlistentry>
@@ -2029,7 +2029,7 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2050,7 +2050,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::removeStyle() -->
 
 
-<section id="mthReplaceSelText"><title>replaceSelText</title>
+<section id="mthReplaceSelText" xreflabel="replaceSelText"><title>replaceSelText</title>
 <indexterm><primary>replaceSelText</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>replaceSelText</secondary></indexterm>
 <programlisting>
@@ -2096,7 +2096,7 @@ Length of 3rd line: 21
   <listitem>
   <para>
     Use the <emphasis role="italic">replaceSelText</emphasis> to replace only a portion of the text in an edit control.
-    To replace all of the text, use the setText (<xref linkend="mthSetText" />) method.
+    To replace all of the text, use the <xref linkend="mthSetText"/> method.
   </para>
   <para>
     If there is no selection, the replacement text is inserted at the cursor.
@@ -2130,7 +2130,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::replaceSelText() -->
 
 
-<section id="mthReplaceStyleClsEdit"><title>replaceStyle</title>
+<section id="mthReplaceStyleClsEdit" xreflabel="replaceStyle"><title>replaceStyle</title>
 <indexterm><primary>replaceStyle</primary><secondary>Edit class</secondary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>replaceStyle</secondary></indexterm>
 <programlisting>
@@ -2180,8 +2180,8 @@ Length of 3rd line: 21
         </simplelist>
       </para>
       <para>
-        The argument list (<xref linkend="argsAddStyle" />) for the addStyle (<xref linkend="mthAddStyleClsEdit" />)
-        method details the meaning of the keywords. The createEdit (<xref linkend="mthCreateEdit" />) method documents
+        The argument list (<xref linkend="argsAddStyle" />) for the <xref linkend="mthAddStyleClsEdit"/>
+        method details the meaning of the keywords. The <xref linkend="mthCreateEdit"/> method documents
         the meaning of all the edit control style keywords.
       </para>
       </listitem></varlistentry>
@@ -2218,7 +2218,7 @@ Length of 3rd line: 21
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2240,7 +2240,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::removeStyle() -->
 
 
-<section id="mthScrollCommand"><title>scrollCommand</title>
+<section id="mthScrollCommand" xreflabel="scrollCommand"><title>scrollCommand</title>
 <indexterm><primary>scrollCommand</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>scrollCommand</secondary></indexterm>
 <programlisting>
@@ -2317,7 +2317,7 @@ Length of 3rd line: 21
   <para>
     The operating system packs the success indicator (<computeroutput>.true</computeroutput> or
     <computeroutput>.false</computeroutput>) in the high-word of the return. The low-word contains the number of lines
-    scrolled. Use the sHiWord (<xref linkend="mthSHiWord" />) and sLoWord (<xref linkend="mthSLoWord" />) methods to
+    scrolled. Use the <xref linkend="mthSHiWord"/> and <xref linkend="mthSLoWord"/> methods to
     extract these values
   </para>
   </listitem></varlistentry>
@@ -2370,7 +2370,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::scrollCommand() -->
 
 
-<section id="mthSelectClsEdit"><title>select</title>
+<section id="mthSelectClsEdit" xreflabel="select"><title>select</title>
 <indexterm><primary>select</primary><secondary>Edit class</secondary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>select</secondary></indexterm>
 <programlisting>
@@ -2442,14 +2442,14 @@ Length of 3rd line: 21
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    See the selected (<xref linkend="mthSelectedClsEdit" />) method's example.
+    See the <xref linkend="mthSelectedClsEdit"/> method's example.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Edit::select() -->
 
 
-<section id="mthSelectedClsEdit"><title>selected</title>
+<section id="mthSelectedClsEdit" xreflabel="selected"><title>selected</title>
 <indexterm><primary>selected</primary><secondary>Edit class</secondary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>selected</secondary></indexterm>
 <programlisting>
@@ -2516,7 +2516,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::selected() -->
 
 
-<section id="mthSelection"><title>selection</title>
+<section id="mthSelection" xreflabel="selection"><title>selection</title>
 <indexterm><primary>selection</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>selection</secondary></indexterm>
 <programlisting>
@@ -2584,7 +2584,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::selection() -->
 
 
-<section id="mthSetCue"><title>setCue</title>
+<section id="mthSetCue" xreflabel="setCue"><title>setCue</title>
 <indexterm><primary>setCue</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>setCue</secondary></indexterm>
 <programlisting>
@@ -2659,7 +2659,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::setCue() -->
 
 
-<section id="mthSetLimit"><title>setLimit</title>
+<section id="mthSetLimit" xreflabel="setLimit"><title>setLimit</title>
 <indexterm><primary>setLimit</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>setLimit</secondary></indexterm>
 <programlisting>
@@ -2699,7 +2699,7 @@ Length of 3rd line: 21
   <para>
     Note that the text limit is the number of characters the user can type in the edit control. The limit does not
     effect any text already entered in the edit control. It also does not effect the length of the text that the
-    setText (<xref linkend="mthSetText" />) method can copy into the edit control. If a program uses <emphasis
+ <xref linkend="mthSetText"/> method can copy into the edit control. If a program uses <emphasis
     role="italic">setText</emphasis> to copy more text into the edit control than the text limit, the user can edit the
     entire contents of the edit control.
   </para>
@@ -2716,7 +2716,7 @@ Length of 3rd line: 21
 </section>  <!-- End Edit::setLimit() -->
 
 
-<section id="mthSetMargins"><title>setMargins</title>
+<section id="mthSetMargins" xreflabel="setMargins"><title>setMargins</title>
 <indexterm><primary>setMargins</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>setMargins</secondary></indexterm>
 <programlisting>
@@ -2795,7 +2795,7 @@ The new left margin is 10 and the new right margin is 5
 </section>  <!-- End Edit::setMargins() -->
 
 
-<section id="mthSetModified"><title>setModified</title>
+<section id="mthSetModified" xreflabel="setModified"><title>setModified</title>
 <indexterm><primary>setModified</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>setModified</secondary></indexterm>
 <programlisting>
@@ -2837,7 +2837,7 @@ The new left margin is 10 and the new right margin is 5
   <para>
     The operating system automatically sets the modification flag to false when the edit control is created. If the user
     changes the control's text, then the operating system sets the flag to true.  The
-    getModified (<xref linkend="mthSetModified" />) method can be used to determine the current state of the flag.
+ <xref linkend="mthSetModified"/> method can be used to determine the current state of the flag.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -2868,7 +2868,7 @@ The new left margin is 10 and the new right margin is 5
 </section>  <!-- End Edit::setModified() -->
 
 
-<section id="mthSetReadOnly"><title>setReadOnly</title>
+<section id="mthSetReadOnly" xreflabel="setReadOnly"><title>setReadOnly</title>
 <indexterm><primary>setReadOnly</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>setReadOnly</secondary></indexterm>
 <programlisting>
@@ -2919,7 +2919,7 @@ The new left margin is 10 and the new right margin is 5
 </section>  <!-- End Edit::setReadOnly() -->
 
 
-<section id="mthSetRectClsEdit"><title>setRect</title>
+<section id="mthSetRectClsEdit" xreflabel="setRect"><title>setRect</title>
 <indexterm><primary>setRect</primary><secondary>Edit class</secondary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>setRect</secondary></indexterm>
 <programlisting>
@@ -3006,7 +3006,7 @@ The new left margin is 10 and the new right margin is 5
 </section>  <!-- End Edit::setRect() -->
 
 
-<section id="mthSetTabStops"><title>setTabStops</title>
+<section id="mthSetTabStops" xreflabel="setTabStops"><title>setTabStops</title>
 <indexterm><primary>setTabStops</primary><secondary>Edit class</secondary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>setTabStops</secondary></indexterm>
 <programlisting>
@@ -3063,7 +3063,7 @@ The new left margin is 10 and the new right margin is 5
     Under normal circumstances there is no way for a user to enter a tab character by typing in a
     multi-line edit control.  The edit control would need to be sub-classed and this is not provided by
     ooDialog. However, the user could use copy and paste to paste in text with tabs.  And, text placed in
-    the edit control by the programmer, (for example by using the setText (<xref linkend="mthSetText" />)
+    the edit control by the programmer, (for example by using the <xref linkend="mthSetText"/>
     method,) can also contain tabs.
   </para>
   </listitem></varlistentry>
@@ -3077,7 +3077,7 @@ The new left margin is 10 and the new right margin is 5
 </section>
 
 
-<section id="mthShowBalloon"><title>showBalloon</title>
+<section id="mthShowBalloon" xreflabel="showBalloon"><title>showBalloon</title>
 <indexterm><primary>showBalloon</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>showBallon</secondary></indexterm>
 <programlisting>
@@ -3155,7 +3155,7 @@ The new left margin is 10 and the new right margin is 5
   </para>
   <para>
     The balloon is displayed for 10 seconds and then goes away. The programmer can also dismiss the balloon sooner
-    using the hideBalloon (<xref linkend="mthHideBalloon" />) method. Typically balloon windows are used to convey
+    using the <xref linkend="mthHideBalloon"/> method. Typically balloon windows are used to convey
     information to the user without having to put up a message box that the user then needs to dismiss manually.
   </para>
   </listitem></varlistentry>
@@ -3255,13 +3255,13 @@ The new left margin is 10 and the new right margin is 5
 
 <para>
   The <emphasis role="italic">tab =</emphasis> method is an alias for the
-  setTabStops (<xref linkend="mthSetTabStops" />)() method.  It behaves exactly the same except there is no return
+ <xref linkend="mthSetTabStops"/>() method.  It behaves exactly the same except there is no return
   value.
 </para>
 </section>
 
 
-<section id="mthUndo"><title>undo</title>
+<section id="mthUndo" xreflabel="undo"><title>undo</title>
 <indexterm><primary>undo</primary></indexterm>
 <indexterm><primary>Edit class</primary><secondary>undo</secondary></indexterm>
 <programlisting>

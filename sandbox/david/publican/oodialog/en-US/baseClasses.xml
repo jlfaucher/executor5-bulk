@@ -54,7 +54,7 @@
 </para>
 <para>
   To make it easier to understand the methods and attributes that all dialogs have in common, this documentation treats
-  the dialog object (<xref linkend="chpDialogObject" />) as a whole.  The dialog object chapter shows all the methods
+  the <xref linkend="chpDialogObject"/> object as a whole.  The dialog object chapter shows all the methods
   and attributes that every dialog has, without making much distinction as to what specific mixin or base class the
   method belongs to. The dialog control object (<xref linkend="chpDialogControlObject" />), is treated in a similar
   fashion in its chapter.
@@ -62,7 +62,7 @@
 <para>
   This chapter describes the base and mixin classes that make up the dialog object and the dialog control object and
   shows how they fit together. In addition, it contains the detailed information for the mixin classes inherited by both
-  the dialog and dialog control object. The dialog object (<xref linkend="chpDialogObject" />) and the
+  the dialog and dialog control object. The <xref linkend="chpDialogObject"/> object and the
   dialog control (<xref linkend="chpDialogControlObject" />) object chapters link back to this chapter for the detailed
   information where needed.
 </para>
@@ -83,31 +83,31 @@
 </figure>
 </section>
 
-<section id="clsPlainBaseDialog"><title>PlainBaseDialog Class</title>
+<section id="clsPlainBaseDialog" xreflabel="PlainBaseDialog"><title>PlainBaseDialog Class</title>
 <indexterm><primary>PlainBaseDialog Class</primary></indexterm>
 <para>
   PlainBaseDialog is the base class of all dialog classes in the ooDialog framework.  It implements methods that are
   common to every dialog.  PlainBaseDialog is an abstract class. A programmer can not instantiate a new PlainBaseDialog
   object and display a dialog on the screen. Rather, the ooDialog programmer subclasses one of the concrete classes
   provided by the ooDialog framework, such as the ResDialog (<xref linkend="clsResDialog" />), the RcDialog (<xref
-  linkend="clsRcDialog" />), or the UserDialog (<xref linkend="clsUserDialog" />), to create and
+  linkend="clsRcDialog" />), or the <xref linkend="clsUserDialog"/>, to create and
   execute a real dialog.
 </para>
 <para>
   Many of the methods of the PlainBaseDialog are actually implemented in one of the mixin classes inherited by the
   PlainBaseDialog. See this <xref linkend="figComponentClassesDiagram" /> to visualize the inheritance. In
-  essence the PlainBaseDialog is the dialog object (<xref linkend="chpDialogObject" />). All the methods and attributes
+  essence the PlainBaseDialog is the <xref linkend="chpDialogObject"/> object. All the methods and attributes
   of the PlainBaseDialog are listed in the dialog object chapter. This includes the methods and attributes of its
   inherited mixin classes.
 </para>
 <para>
   The PlainBaseDialog inherits the following mixin classes:
   <itemizedlist>
-  <listitem><para>WindowBase (<xref linkend="clsWindowBase" />)</para></listitem>
-  <listitem><para>WindowExtensions (<xref linkend="clsWindowExtensions" />)</para></listitem>
-  <listitem><para>DialogExtensions (<xref linkend="clsDialogExtensions" />)</para></listitem>
-  <listitem><para>EventNotification (<xref linkend="clsEventNotification" />)</para></listitem>
-  <listitem><para>ResourceUtils (<xref linkend="clsResourceUtils" />)</para></listitem>
+  <listitem><para><xref linkend="clsWindowBase"/></para></listitem>
+  <listitem><para><xref linkend="clsWindowExtensions"/></para></listitem>
+  <listitem><para><xref linkend="clsDialogExtensions"/></para></listitem>
+  <listitem><para><xref linkend="clsEventNotification"/></para></listitem>
+  <listitem><para><xref linkend="clsResourceUtils"/></para></listitem>
   </itemizedlist>
 </para>
 
@@ -119,7 +119,8 @@
 </para>
 <table id="tblMethodsPlainBaseDialog" frame="all"> <title>PlainBaseDialog Method Reference</title>
 <tgroup cols="2">
-<colspec colwidth="1.75in" />
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
 <thead>
 <row>
 <entry>Dialog Method</entry>
@@ -128,7 +129,7 @@
 </thead>
 <tbody>
 <row>
-<entry>Constant Methods (<xref linkend="tblConstantsDlgObject" />)</entry>
+<entry><link linkend="tblConstantsDlgObject">Constant</link> Methods</entry>
 <entry>The <computeroutput>PlainBaseDialog</computeroutput> provides a number of <emphasis role="italic">constant</emphasis> values through the <computeroutput>::constant</computeroutput>directive.</entry>
 </row>
 <row>
@@ -136,19 +137,19 @@
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>new (<xref linkend="pbdNew" />)</entry>
+<entry><xref linkend="pbdNew"/></entry>
 <entry>Instantiates a new dialog object.</entry>
 </row>
 <row>
-<entry>getFontName (<xref linkend="pbdGetFontName" />)</entry>
+<entry><xref linkend="pbdGetFontName"/></entry>
 <entry>Returns the default font for all dialogs.</entry>
 </row>
 <row>
-<entry>getFontSize (<xref linkend="pbdGetFontSize" />)</entry>
+<entry><xref linkend="pbdGetFontSize"/></entry>
 <entry>Returns the default font size for all dialogs.</entry>
 </row>
 <row>
-<entry>setDefaultFont (<xref linkend="pbdSetDefaultFont" />)</entry>
+<entry><xref linkend="pbdSetDefaultFont"/></entry>
 <entry>Sets the default font name and size for all dialogs.</entry>
 </row>
 <row>
@@ -156,23 +157,23 @@
 <entry align="center"><emphasis role="bold">Attribute Methods</emphasis></entry>
 </row>
 <row>
-<entry>autoDetect (<xref linkend="pbdAutoDetect" />)</entry>
+<entry><xref linkend="pbdAutoDetect"/></entry>
 <entry>If automatic data field detection is on or off.</entry>
 </row>
 <row>
-<entry>dlgHandle (<xref linkend="pbdDlgHandle" />)</entry>
+<entry><xref linkend="pbdDlgHandle"/></entry>
 <entry>The window handle of the dialog.</entry>
 </row>
 <row>
-<entry>fontName (<xref linkend="pbdFontName" />)</entry>
+<entry><xref linkend="pbdFontName"/></entry>
 <entry>Name of the dialog's font.</entry>
 </row>
 <row>
-<entry>fontSize (<xref linkend="pbdFontSize" />)</entry>
+<entry><xref linkend="pbdFontSize"/></entry>
 <entry>Point size of the dialog's font.</entry>
 </row>
 <row>
-<entry>ownerDialog (<xref linkend="pbdOwnerDialog" />)</entry>
+<entry><xref linkend="pbdOwnerDialog"/></entry>
 <entry>The owner dialog of the dialog, if there is one.</entry>
 </row>
 <row>
@@ -180,63 +181,63 @@
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>addComboEntry (<xref linkend="pbdAddComboEntry" />)</entry>
+<entry><xref linkend="pbdAddComboEntry"/></entry>
 <entry>Adds a string to the list of a combo box.</entry>
 </row>
 <row>
-<entry>addListEntry (<xref linkend="pbdAddListEntry" />)</entry>
+<entry><xref linkend="pbdAddListEntry"/></entry>
 <entry>Adds a string to the specified list box.</entry>
 </row>
 <row>
-<entry>addNewAttribute (<xref linkend="pbdAddNewAttribute" />)</entry>
+<entry><xref linkend="pbdAddNewAttribute"/></entry>
 <entry>Adds a new attribute (a method) to this dialog.</entry>
 </row>
 <row>
-<entry>addNewMethod (<xref linkend="pbdAddNewMethod" />)</entry>
+<entry><xref linkend="pbdAddNewMethod"/></entry>
 <entry>Adds a new method to this dialog.</entry>
 </row>
 <row>
-<entry>autoDetection (<xref linkend="pbdAutoDetection" />)</entry>
+<entry><xref linkend="pbdAutoDetection"/></entry>
 <entry>Turns automatic data field detection on</entry>
 </row>
 <row>
-<entry>backgroundBitmap (<xref linkend="pbdBackgroundBitmap" />)</entry>
+<entry><xref linkend="pbdBackgroundBitmap"/></entry>
 <entry>Sets a bitmap as the dialog's background picture.</entry>
 </row>
 <row>
-<entry>backgroundColor (<xref linkend="pbdBackgroundColor" />)</entry>
+<entry><xref linkend="pbdBackgroundColor"/></entry>
 <entry>Sets the background color of a dialog.</entry>
 </row>
 <row>
-<entry>cancel (<xref linkend="pbdCancel" />)</entry>
+<entry><xref linkend="pbdCancel"/></entry>
 <entry>A default event handler, provided by the ooDialog framework , for the cancel event.</entry>
 </row>
 <row>
-<entry>center (<xref linkend="pbdCenter" />)</entry>
+<entry><xref linkend="pbdCenter"/></entry>
 <entry>Moves the dialog to the screen center.</entry>
 </row>
 <row>
-<entry>changeComboEntry (<xref linkend="pbdChangeComboEntry" />)</entry>
+<entry><xref linkend="pbdChangeComboEntry"/></entry>
 <entry>changeComboEntry</entry>
 </row>
 <row>
-<entry>changeListEntry (<xref linkend="pbdChangeListEntry" />)</entry>
+<entry><xref linkend="pbdChangeListEntry"/></entry>
 <entry>changeListEntry</entry>
 </row>
 <row>
-<entry>comboAddDirectory (<xref linkend="pbdComboAddDirectory" />)</entry>
+<entry><xref linkend="pbdComboAddDirectory"/></entry>
 <entry>Adds all or selected file names in the given directory to the combo box.</entry>
 </row>
 <row>
-<entry>comboDrop (<xref linkend="pbdComboDrop" />)</entry>
+<entry><xref linkend="pbdComboDrop"/></entry>
 <entry>Deletes all items from the list of the given combo box.</entry>
 </row>
 <row>
-<entry>connectCheckBox (<xref linkend="pbdConnectCheckBox" />)</entry>
+<entry><xref linkend="pbdConnectCheckBox"/></entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a check box control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectComboBox (<xref linkend="pbdConnectComboBox" />)</entry>
+<entry><xref linkend="pbdConnectComboBox"/></entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a combo box control in the underlying dialog.</entry>
 </row>
 <row>
@@ -244,7 +245,7 @@
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a date time picker control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectEdit (<xref linkend="pbdConnectEdit" />)</entry>
+<entry><xref linkend="pbdConnectEdit"/></entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a edit control in the underlying dialog.</entry>
 </row>
 <row>
@@ -252,19 +253,19 @@
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a list box control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectListView (<xref linkend="pbdConnectListView" />)</entry>
+<entry><xref linkend="pbdConnectListView"/></entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a list view control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectMonthCalendar (<xref linkend="pbdConnectMonthCalendar" />)</entry>
+<entry><xref linkend="pbdConnectMonthCalendar"/></entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a month calendar control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectRadioButton (<xref linkend="pbdConnectRadioButton" />)</entry>
+<entry><xref linkend="pbdConnectRadioButton"/></entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a radio button control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectTab (<xref linkend="pbdConnectTab" />)</entry>
+<entry><xref linkend="pbdConnectTab"/></entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a tab control in the underlying dialog.</entry>
 </row>
 <row>
@@ -272,27 +273,27 @@
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a track bar control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectTreeView (<xref linkend="pbdConnectTreeview" />)</entry>
+<entry><xref linkend="pbdConnectTreeview"/></entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a tree view control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>connectUpDown (<xref linkend="pbdConnectUpDown" />)</entry>
+<entry><xref linkend="pbdConnectUpDown"/></entry>
 <entry>Creates a data attribute in the Rexx dialog object and connects it to a up-down control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>deleteComboEntry (<xref linkend="pbdDeleteComboEntry" />)</entry>
+<entry><xref linkend="pbdDeleteComboEntry"/></entry>
 <entry>Deletes a string from the combo box.</entry>
 </row>
 <row>
-<entry>deleteListEntry (<xref linkend="pbdDeleteListEntry" />)</entry>
+<entry><xref linkend="pbdDeleteListEntry"/></entry>
 <entry>Deletes an item from a list box.</entry>
 </row>
 <row>
-<entry>disableControl (<xref linkend="pbdDisableControl" />)</entry>
+<entry><xref linkend="pbdDisableControl"/></entry>
 <entry>Disables the dialog control with the specified ID.</entry>
 </row>
 <row>
-<entry>dlgUnit2pixel (<xref linkend="pbdDlgUnit2pixel" />)</entry>
+<entry><xref linkend="pbdDlgUnit2pixel"/></entry>
 <entry>Takes a dimension expressed in dialog units of this dialog and transforms it to a dimension expressed in pixels.</entry>
 </row>
 <row>
@@ -300,35 +301,35 @@
 <entry>Enables the control with the specified resource id.</entry>
 </row>
 <row>
-<entry>ensureVisible (<xref linkend="pbdEnsureVisible" />)</entry>
+<entry><xref linkend="pbdEnsureVisible"/></entry>
 <entry>Causes the dialog to reposition itself so that it is entirely on the visible screen.</entry>
 </row>
 <row>
-<entry>execute (<xref linkend="pbdExecute" />)</entry>
+<entry><xref linkend="pbdExecute"/></entry>
 <entry>Creates the underlying dialog, shows it, starts the automatic methods, if any, and destroys the underlying dialog when the user closes it.</entry>
 </row>
 <row>
-<entry>findComboEntry (<xref linkend="pbdFindComboEntry" />)</entry>
+<entry><xref linkend="pbdFindComboEntry"/></entry>
 <entry>Returns the index corresponding to a given text string in the combo box.</entry>
 </row>
 <row>
-<entry>findListEntry (<xref linkend="pbdFindListEntry" />)</entry>
+<entry><xref linkend="pbdFindListEntry"/></entry>
 <entry>Returns the index of the specified string within the list box with the specified ID.</entry>
 </row>
 <row>
-<entry>focusControl (<xref linkend="pbdFocusControl" />)</entry>
+<entry><xref linkend="pbdFocusControl"/></entry>
 <entry>Sets the input focus to the specified dialog control.</entry>
 </row>
 <row>
-<entry>get (<xref linkend="pbdGet" />)</entry>
+<entry><xref linkend="pbdGet"/></entry>
 <entry>Returns the window handle of the Windows dialog associated with the top Rexx dialog instance.</entry>
 </row>
 <row>
-<entry>getCheckBoxData (<xref linkend="pbdGetCheckBoxData" />)</entry>
+<entry><xref linkend="pbdGetCheckBoxData"/></entry>
 <entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specified check box in the underlying dialog.</entry>
 </row>
 <row>
-<entry>getComboBoxData (<xref linkend="pbdGetComboBoxData" />)</entry>
+<entry><xref linkend="pbdGetComboBoxData"/></entry>
 <entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specified combo box in the underlying dialog.</entry>
 </row>
 <row>
@@ -336,119 +337,119 @@
 <entry>Returns the string at the specified index of the combo box.</entry>
 </row>
 <row>
-<entry>getComboItems (<xref linkend="pbdGetComboItems" />)</entry>
+<entry><xref linkend="pbdGetComboItems"/></entry>
 <entry>Returns the number of items in the combo box.</entry>
 </row>
 <row>
-<entry>getControlData (<xref linkend="pbdGetControlData" />)</entry>
+<entry><xref linkend="pbdGetControlData"/></entry>
 <entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specified dialog control in the underlying dialog.</entry>
 </row>
 <row>
-<entry>getControlHandle (<xref linkend="pbdGetControlHandle" />)</entry>
+<entry><xref linkend="pbdGetControlHandle"/></entry>
 <entry>Retrieves the window handle of the specified dialog control.</entry>
 </row>
 <row>
-<entry>getControlID (<xref linkend="pbdGetControlID" />)</entry>
+<entry><xref linkend="pbdGetControlID"/></entry>
 <entry>Returns the numeric resource ID of the control with the specified window handle.</entry>
 </row>
 <row>
-<entry>getControlText (<xref linkend="pbdGetControlText" />)</entry>
+<entry><xref linkend="pbdGetControlText"/></entry>
 <entry>Gets the text of the specified dialog control</entry>
 </row>
 <row>
-<entry>getCurrentComboIndex (<xref linkend="pbdGetCurrentComboIndex" />)</entry>
+<entry><xref linkend="pbdGetCurrentComboIndex"/></entry>
 <entry>Returns the index of the currently selected item in the comb box.</entry>
 </row>
 <row>
-<entry>getCurrentListIndex (<xref linkend="pbdGetCurrentListIndex" />)</entry>
+<entry><xref linkend="pbdGetCurrentListIndex"/></entry>
 <entry>Returns the index of the currently selected list box item, or 0 if no item is selected.</entry>
 </row>
 <row>
-<entry>getData (<xref linkend="pbdGetData" />)</entry>
+<entry><xref linkend="pbdGetData"/></entry>
 <entry>Sets all the Rexx dialog data attribute values to the state of the underlying, connected, Windows dialog controls.</entry>
 </row>
 <row>
-<entry>getDataAttribute (<xref linkend="pbdGetDataAttribute" />)</entry>
+<entry><xref linkend="pbdGetDataAttribute"/></entry>
 <entry>Sets a data attribute of the Rexx dialog using the data from a connected Windows dialog control.</entry>
 </row>
 <row>
-<entry>getDataStem (<xref linkend="pbdGetDataStem" />)</entry>
+<entry><xref linkend="pbdGetDataStem"/></entry>
 <entry>Sets the values of the indexes of the specified stem to the state of the underlying, connected, Windows dialog controls.</entry>
 </row>
 <row>
-<entry>getFocus (<xref linkend="pbdGetFocus" />)</entry>
+<entry><xref linkend="pbdGetFocus"/></entry>
 <entry>Returns the window handle of the dialog control that currently has the input focus.</entry>
 </row>
 <row>
-<entry>getListBoxData (<xref linkend="pbdGetListBoxData" />)</entry>
+<entry><xref linkend="pbdGetListBoxData"/></entry>
 <entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specified list box in the underlying dialog.</entry>
 </row>
 <row>
-<entry>getListEntry (<xref linkend="pbdGetListEntry" />)</entry>
+<entry><xref linkend="pbdGetListEntry"/></entry>
 <entry>Returns the string at the specified index of the list box.</entry>
 </row>
 <row>
-<entry>getListItems (<xref linkend="pbdGetListItems" />)</entry>
+<entry><xref linkend="pbdGetListItems"/></entry>
 <entry>Returns the number of items in the list box.</entry>
 </row>
 <row>
-<entry>getMenuBar (<xref linkend="pbdGetMenuBar" />)</entry>
+<entry><xref linkend="pbdGetMenuBar"/></entry>
 <entry>Returns the menu object attached to the dialog, or .nil if there is no menu attached.</entry>
 </row>
 <row>
-<entry>getRadioButtonData (<xref linkend="pbdGetRadioButtonData" />)</entry>
+<entry><xref linkend="pbdGetRadioButtonData"/></entry>
 <entry>Sets the value of the connected data attribute in the Rexx dialog object to match the state of the specified radio button in the underlying dialog.</entry>
 </row>
 <row>
-<entry>getSelf (<xref linkend="pbdGetSelf" />)</entry>
+<entry><xref linkend="pbdGetSelf"/></entry>
 <entry>Returns the window handle of the dialog.</entry>
 </row>
 <row>
-<entry>getTextSizeDlg (<xref linkend="pbdGetTextSizeDlg" />)</entry>
+<entry><xref linkend="pbdGetTextSizeDlg"/></entry>
 <entry>Calculates the size needed to display a string in dialog units.</entry>
 </row>
 <row>
-<entry>getTextSizeDu (<xref linkend="pbdGetTextSizeDu" />)</entry>
+<entry><xref linkend="pbdGetTextSizeDu"/></entry>
 <entry>Calculates the size needed to display a string in dialog units <emphasis role="bold">(preferred method.)</emphasis></entry>
 </row>
 <row>
-<entry>getWindowText (<xref linkend="pbdGetWindowText" />)</entry>
+<entry><xref linkend="pbdGetWindowText"/></entry>
 <entry>Gets the text of the specified window.</entry>
 </row>
 <row>
-<entry>hasMenuBar (<xref linkend="pbdHasMenuBar" />)</entry>
+<entry><xref linkend="pbdHasMenuBar"/></entry>
 <entry>Tests if the dialog has a menu bar attached.</entry>
 </row>
 <row>
-<entry>help (<xref linkend="pbdHelp" />)</entry>
+<entry><xref linkend="pbdHelp"/></entry>
 <entry>A default implementation of the help event handler method provided by the ooDialog framework.</entry>
 </row>
 <row>
-<entry>hideControl (<xref linkend="pbdHideControl" />)</entry>
+<entry><xref linkend="pbdHideControl"/></entry>
 <entry>Hides the specified control by marking it invisible and immediately redrawing the area it occupies.</entry>
 </row>
 <row>
-<entry>hideControlFast (<xref linkend="pbdHideControlFast" />)</entry>
+<entry><xref linkend="pbdHideControlFast"/></entry>
 <entry>Marks the specified control as invisible without any redrawing.</entry>
 </row>
 <row>
-<entry>hideWindow (<xref linkend="pbdHideWindow" />)</entry>
+<entry><xref linkend="pbdHideWindow"/></entry>
 <entry>Hides a whole dialog window or a dialog control window and forces the window to repaint.</entry>
 </row>
 <row>
-<entry>hideWindowFast (<xref linkend="pbdHideWindowFast" />)</entry>
+<entry><xref linkend="pbdHideWindowFast"/></entry>
 <entry>Hides a whole dialog window or a dialog control window, but does not force the window to redraw.</entry>
 </row>
 <row>
-<entry>initAutoDetection (<xref linkend="pbdInitAutoDetection" />)</entry>
+<entry><xref linkend="pbdInitAutoDetection"/></entry>
 <entry>Switches automatic data field detection on or off.</entry>
 </row>
 <row>
-<entry>initDialog (<xref linkend="pbdInitDialog" />)</entry>
+<entry><xref linkend="pbdInitDialog"/></entry>
 <entry>A method automatically invoked by the ooDialog framework when the underlying dialog is first created.</entry>
 </row>
 <row>
-<entry>insertComboEntry (<xref linkend="pbdInsertComboEntry" />)</entry>
+<entry><xref linkend="pbdInsertComboEntry"/></entry>
 <entry>Inserts a string into the list of a combo box.</entry>
 </row>
 <row>
@@ -456,83 +457,83 @@
 <entry>Inserts a string into the specified list box.</entry>
 </row>
 <row>
-<entry>isDialogActive (<xref linkend="pbdIsDialogActive" />)</entry>
+<entry><xref linkend="pbdIsDialogActive"/></entry>
 <entry>Returns true if the underlying Windows dialog still exists.</entry>
 </row>
 <row>
-<entry>isMaximized (<xref linkend="pbdIsMaximized" />)</entry>
+<entry><xref linkend="pbdIsMaximized"/></entry>
 <entry>Checks if a dialog is currently maximized.</entry>
 </row>
 <row>
-<entry>inMinimized (<xref linkend="pbdIsMinimized" />)</entry>
+<entry><xref linkend="pbdIsMinimized"/></entry>
 <entry>Checks if a dialog is currently minimized.</entry>
 </row>
 <row>
-<entry>leaving (<xref linkend="pbdLeaving" />)</entry>
+<entry><xref linkend="pbdLeaving"/></entry>
 <entry>A method automatically invoked by the ooDialog framework when the underlying dialog is being closed.</entry>
 </row>
 <row>
-<entry>listAddDirectory (<xref linkend="pbdListAddDirectory" />)</entry>
+<entry><xref linkend="pbdListAddDirectory"/></entry>
 <entry>Adds all or selected file names of a given directory to the list box.</entry>
 </row>
 <row>
-<entry>listDrop (<xref linkend="pbdListDrop" />)</entry>
+<entry><xref linkend="pbdListDrop"/></entry>
 <entry>Removes all items from the list box.</entry>
 </row>
 <row>
-<entry>maximize (<xref linkend="pbdMaximize" />)</entry>
+<entry><xref linkend="pbdMaximize"/></entry>
 <entry>Maximizes the dialog on the screen.</entry>
 </row>
 <row>
-<entry>minimize (<xref linkend="pbdMinimize" />)</entry>
+<entry><xref linkend="pbdMinimize"/></entry>
 <entry>Minimizes the dialog to the taskbar.</entry>
 </row>
 <row>
-<entry>newChectBox (<xref linkend="pbdNewCheckBox" />)</entry>
+<entry><xref linkend="pbdNewCheckBox"/></entry>
 <entry>Returns an object of the <computeroutput>CheckBox</computeroutput> class for the check box control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newComboBox (<xref linkend="pbdNewComboBox" />)</entry>
+<entry><xref linkend="pbdNewComboBox"/></entry>
 <entry>Returns an object of the <computeroutput>ComboBox</computeroutput> class for the combo box control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newDateTimePicker (<xref linkend="pbdNewDateTimePicker" />)</entry>
+<entry><xref linkend="pbdNewDateTimePicker"/></entry>
 <entry>Returns an object of the <computeroutput>DateTimePicker</computeroutput> class for the date time picker control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newEdit (<xref linkend="pbdNewEdit" />)</entry>
+<entry><xref linkend="pbdNewEdit"/></entry>
 <entry>Returns an object of the <computeroutput>Edit</computeroutput> class for the edit control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newGroupBox (<xref linkend="pbdNewGroupBox" />)</entry>
+<entry><xref linkend="pbdNewGroupBox"/></entry>
 <entry>Returns an object of the <computeroutput>GroupBox</computeroutput> class for the group box control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newListBox (<xref linkend="pbdNewListBox" />)</entry>
+<entry><xref linkend="pbdNewListBox"/></entry>
 <entry>Returns an object of the <computeroutput>ListBox</computeroutput> class for the list box control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newListView (<xref linkend="pbdNewListView" />)</entry>
+<entry><xref linkend="pbdNewListView"/></entry>
 <entry>Returns an object of the <computeroutput>ListView</computeroutput> class for the list-view control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newMonthCalendar (<xref linkend="pbdNewMonthCalendar" />)</entry>
+<entry><xref linkend="pbdNewMonthCalendar"/></entry>
 <entry>Returns an object of the <computeroutput>MonthCalendar</computeroutput> class for the month calendar control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newProgressBar (<xref linkend="pbdNewProgressBar" />)</entry>
+<entry><xref linkend="pbdNewProgressBar"/></entry>
 <entry>Returns an object of the <computeroutput>ProgressBar</computeroutput> class for the progress bar control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newPushButton (<xref linkend="pbdNewPushButton" />)</entry>
+<entry><xref linkend="pbdNewPushButton"/></entry>
 <entry>Returns an object of the <computeroutput>Button</computeroutput> class for the push button control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newRadioButton (<xref linkend="pbdNewRadioButton" />)</entry>
+<entry><xref linkend="pbdNewRadioButton"/></entry>
 <entry>Returns an object of the <computeroutput>RadioButton</computeroutput> class for the radio button control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newScrollBar (<xref linkend="pbdNewScrollBar" />)</entry>
+<entry><xref linkend="pbdNewScrollBar"/></entry>
 <entry>Returns an object of the <computeroutput>ScrollBar</computeroutput> class for the scroll bar control with the specified resource ID.</entry>
 </row>
 <row>
@@ -540,19 +541,19 @@
 <entry>Returns an object of the <computeroutput>TrackBar</computeroutput> class for the track bar control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newStatic (<xref linkend="pbdNewStatic" />)</entry>
+<entry><xref linkend="pbdNewStatic"/></entry>
 <entry>Returns an object of the <computeroutput>Static</computeroutput> class for the static control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newTab (<xref linkend="pbdNewTab" />)</entry>
+<entry><xref linkend="pbdNewTab"/></entry>
 <entry>Returns an object of the <computeroutput>Tab</computeroutput> class for the tab control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newTreeView (<xref linkend="pbdNewTreeView" />)</entry>
+<entry><xref linkend="pbdNewTreeView"/></entry>
 <entry>Returns an object of the <computeroutput>TreeView</computeroutput> class for the tree-view control with the specified resource ID.</entry>
 </row>
 <row>
-<entry>newUpDown (<xref linkend="pbdNewUpDown" />)</entry>
+<entry><xref linkend="pbdNewUpDown"/></entry>
 <entry>Returns an object of the <computeroutput>UpDown</computeroutput> class for the up-down control with the specified resource ID.</entry>
 </row>
 <row>
@@ -560,147 +561,147 @@
 <entry>Turns automatic data field detection off</entry>
 </row>
 <row>
-<entry>ok (<xref linkend="pbdOk" />)</entry>
+<entry><xref linkend="pbdOk"/></entry>
 <entry>A default event handler, provided by the ooDialog framework, for the cancel event.</entry>
 </row>
 <row>
-<entry>pixel2dlgUnit (<xref linkend="pbdPixel2dlgUnit" />)</entry>
+<entry><xref linkend="pbdPixel2dlgUnit"/></entry>
 <entry>Takes a dimension expressed in pixels and transforms it to a dimension expressed in dialog units of this dialog.</entry>
 </row>
 <row>
-<entry>restore (<xref linkend="pbdRestore" />)</entry>
+<entry><xref linkend="pbdRestore"/></entry>
 <entry>Restores a minimized or maximized dialog to its original position.</entry>
 </row>
 <row>
-<entry>sendMessageToControl (<xref linkend="pbdSendMessageToControl" />)</entry>
+<entry><xref linkend="pbdSendMessageToControl"/></entry>
 <entry>Sends a Windows message to a dialog control and returns its response as a whole number.</entry>
 </row>
 <row>
-<entry>sendMessageToControlH (<xref linkend="pbdSendMessageToControlH" />)</entry>
+<entry><xref linkend="pbdSendMessageToControlH"/></entry>
 <entry>Sends a Windows message to a dialog control and returns its response as a handle.</entry>
 </row>
 <row>
-<entry>sendMessageToWindow (<xref linkend="pbdSendMessageToWindow" />)</entry>
+<entry><xref linkend="pbdSendMessageToWindow"/></entry>
 <entry>Sends a Windows message to a window and returns its response as a whole number.</entry>
 </row>
 <row>
-<entry>sendMessageToWindowH (<xref linkend="pbdSendMessageToWindowH" />)</entry>
+<entry><xref linkend="pbdSendMessageToWindowH"/></entry>
 <entry>Sends a Windows message to a window and returns its response as a handle.</entry>
 </row>
 <row>
-<entry>setCheckBoxData (<xref linkend="pbdSetCheckBoxData" />)</entry>
+<entry><xref linkend="pbdSetCheckBoxData"/></entry>
 <entry>Sets the <emphasis role="italic">data</emphasis> of a check box control.</entry>
 </row>
 <row>
-<entry>setComboBoxData (<xref linkend="pbdSetComboBoxData" />)</entry>
+<entry><xref linkend="pbdSetComboBoxData"/></entry>
 <entry>Sets the <emphasis role="italic">data</emphasis> of a combo box control.</entry>
 </row>
 <row>
-<entry>setControlData (<xref linkend="pbdSetControlData" />)</entry>
+<entry><xref linkend="pbdSetControlData"/></entry>
 <entry>Sets the <emphasis role="italic">data</emphasis> of a dialog control.</entry>
 </row>
 <row>
-<entry>SetControlText (<xref linkend="pbdSetControlText" />)</entry>
+<entry><xref linkend="pbdSetControlText"/></entry>
 <entry>Sets the text for the specified dialog control</entry>
 </row>
 <row>
-<entry>SetCurrentComboIndex (<xref linkend="pbdSetCurrentComboIndex" />)</entry>
+<entry><xref linkend="pbdSetCurrentComboIndex"/></entry>
 <entry>Selects the item with the specified index within the combo box list. If called without an index, all items in the combo box list are deselected.</entry>
 </row>
 <row>
-<entry>setCurrentListIndex (<xref linkend="pbdSetCurrentListIndex" />)</entry>
+<entry><xref linkend="pbdSetCurrentListIndex"/></entry>
 <entry>Selects the item with the specified index in the list box. If called without an index, all items in the list box are deselected.</entry>
 </row>
 <row>
-<entry>setData (<xref linkend="pbdSetData" />)</entry>
+<entry><xref linkend="pbdSetData"/></entry>
 <entry>Sets the state of all underlying, connected, dialog controls to the values of the matching dialog object data attributes.</entry>
 </row>
 <row>
-<entry>setDataAttribute (<xref linkend="pbdSetDataAttribute" />)</entry>
+<entry><xref linkend="pbdSetDataAttribute"/></entry>
 <entry>Sets the state of a dialog control using the value of a data attribute of the Rexx dialog.</entry>
 </row>
 <row>
-<entry>setDataStem (<xref linkend="pbdSetDataStem" />)</entry>
+<entry><xref linkend="pbdSetDataStem"/></entry>
 <entry>Sets the <emphasis role="italic">data</emphasis>, (the state,) of a number of Windows dialog controls to the values specified by a stem.</entry>
 </row>
 <row>
-<entry>setDlgFont (<xref linkend="pbdSetDlgFont" />)</entry>
+<entry><xref linkend="pbdSetDlgFont"/></entry>
 <entry>Sets the font that to be used for the underlying Windows dialog, when it is created.</entry>
 </row>
 <row>
-<entry>setEditData (<xref linkend="pbdSetEditData" />)</entry>
+<entry><xref linkend="pbdSetEditData"/></entry>
 <entry>Sets the <emphasis role="italic">data</emphasis> of an edit control.</entry>
 </row>
 <row>
-<entry>SetFocus (<xref linkend="pbdSetFocus" />)</entry>
+<entry><xref linkend="pbdSetFocus"/></entry>
 <entry>sets the input focus to a dialog control specified by hwnd and returns the window handle of the control that previously had the focus.</entry>
 </row>
 <row>
-<entry>setFocusToWindow (<xref linkend="pbdSetFocusToWindow" />)</entry>
+<entry><xref linkend="pbdSetFocusToWindow"/></entry>
 <entry>Moves the input focus to another top-level window or dialog.</entry>
 </row>
 <row>
-<entry>setGroup (<xref linkend="pbdSetGroup" />)</entry>
+<entry><xref linkend="pbdSetGroup"/></entry>
 <entry>Adds or removes the group style (<xref linkend="wsgroup" />) for the control specified.</entry>
 </row>
 <row>
-<entry>setListBoxData (<xref linkend="pbdSetListBoxData" />)</entry>
+<entry><xref linkend="pbdSetListBoxData"/></entry>
 <entry>Sets the <emphasis role="italic">data</emphasis> of the underlying list box to the value specified.</entry>
 </row>
 <row>
-<entry>setListTabulators (<xref linkend="pbdSetListTabulators" />)</entry>
+<entry><xref linkend="pbdSetListTabulators"/></entry>
 <entry>Sets the tabulators for a list box.</entry>
 </row>
 <row>
-<entry>setRadioButtonData (<xref linkend="pbdSetRadioButtonData" />)</entry>
+<entry><xref linkend="pbdSetRadioButtonData"/></entry>
 <entry>Sets the <emphasis role="italic">data</emphasis> of a radio button control.</entry>
 </row>
 <row>
-<entry>setTabStop (<xref linkend="pbdSetTabStop" />)</entry>
+<entry><xref linkend="pbdSetTabStop"/></entry>
 <entry>Add or remove the tab stop style for the specified control.</entry>
 </row>
 <row>
-<entry>SetWindowText (<xref linkend="pbdSetWindowText" />)</entry>
+<entry><xref linkend="pbdSetWindowText"/></entry>
 <entry>Sets the text for the specified window.</entry>
 </row>
 <row>
-<entry>show (<xref linkend="pbdShow" />)</entry>
+<entry><xref linkend="pbdShow"/></entry>
 <entry>Sets the dialog window's show state.</entry>
 </row>
 <row>
-<entry>showControl (<xref linkend="pbdShowControl" />)</entry>
+<entry><xref linkend="pbdShowControl"/></entry>
 <entry>Makes the specified dialog control reappear on the screen.</entry>
 </row>
 <row>
-<entry>showControlFast (<xref linkend="pbdShowControlFast" />)</entry>
+<entry><xref linkend="pbdShowControlFast"/></entry>
 <entry>Shows a dialog control without redrawing its area.</entry>
 </row>
 <row>
-<entry>showWindow (<xref linkend="pbdShowWindow" />)</entry>
+<entry><xref linkend="pbdShowWindow"/></entry>
 <entry>Shows the window or dialog control again.</entry>
 </row>
 <row>
-<entry>showWindowFast (<xref linkend="pbdShowWindowFast" />)</entry>
+<entry><xref linkend="pbdShowWindowFast"/></entry>
 <entry>Marks the specified window as visible but does not force it to redraw.</entry>
 </row>
 <row>
-<entry>tabToNext (<xref linkend="pbdTabToNext" />)</entry>
+<entry><xref linkend="pbdTabToNext"/></entry>
 <entry>Sets the focus to the next tab stop dialog control in the dialog and returns the window handle of the dialog control that currently has the focus.</entry>
 </row>
 <row>
-<entry>tabToPrevious (<xref linkend="pbdTabToPrevious" />)</entry>
+<entry><xref linkend="pbdTabToPrevious"/></entry>
 <entry>Sets the focus to the previous tab stop dialog control in the dialog and returns the window handle of the dialog control that currently has the focus.</entry>
 </row>
 <row>
-<entry>tiledBackgroundBitmap (<xref linkend="pbdTiledBackgroundBitmap" />)</entry>
+<entry><xref linkend="pbdTiledBackgroundBitmap"/></entry>
 <entry>Sets a bitmap as the dialog's background brush.</entry>
 </row>
 <row>
-<entry>toTheTop (<xref linkend="pbdToTheTop" />)</entry>
+<entry><xref linkend="pbdToTheTop"/></entry>
 <entry>Makes the dialog the topmost dialog.</entry>
 </row>
 <row>
-<entry>validate (<xref linkend="pbdValidate" />)</entry>
+<entry><xref linkend="pbdValidate"/></entry>
 <entry>A method meant to be over-ridden. Its purpose is to validate the user's input and decide whether or not to allow the dialog to close.</entry>
 </row>
 </tbody></tgroup>
@@ -2191,7 +2192,8 @@ PlainBaseDialog::validate (<xref linkend="mthValidate" />)
 <table id="tblDialogControl" frame="all">
 <title>DialogControl Method Reference</title>
 <tgroup cols="2">
-<colspec colwidth="1.65in" />
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
 <thead>
 <row>
 <entry>DialogControl Method</entry>
@@ -2204,15 +2206,15 @@ PlainBaseDialog::validate (<xref linkend="mthValidate" />)
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>hDlg (<xref linkend="atrHDlg" />)</entry>
+<entry><xref linkend="atrHDlg"/></entry>
 <entry>Reflects the window handle of the underlying Windows dialog that the dialog control belongs to.</entry>
 </row>
 <row>
-<entry>id (<xref linkend="atrID" />)</entry>
+<entry><xref linkend="atrID"/></entry>
 <entry>Reflects the numeric resource ID for the dialog control.</entry>
 </row>
 <row>
-<entry>oDlg (<xref linkend="atrODlg" />)</entry>
+<entry><xref linkend="atrODlg"/></entry>
 <entry>Reflects the Rexx dialog object that the dialog control belongs to.</entry>
 </row>
 <row>
@@ -2220,27 +2222,27 @@ PlainBaseDialog::validate (<xref linkend="mthValidate" />)
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>assignFocus (<xref linkend="dcoAssignFocus" />)</entry>
+<entry><xref linkend="dcoAssignFocus"/></entry>
 <entry>Sets the input focus to this dialog control.</entry>
 </row>
 <row>
-<entry>clearRect (<xref linkend="dcoClearRect" />)</entry>
+<entry><xref linkend="dcoClearRect"/></entry>
 <entry>Clears the specified rectangular within the client area of this control.</entry>
 </row>
 <row>
-<entry>connectCharEvent (<xref linkend="dcoConnectCharEvent" />)</entry>
+<entry><xref linkend="dcoConnectCharEvent"/></entry>
 <entry>Connects a character event notification sent to the control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectFKeyPress (<xref linkend="dcoConnectFKeyPress" />)</entry>
+<entry><xref linkend="dcoConnectFKeyPress"/></entry>
 <entry>Connects all F Key key press events to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectKeyPress (<xref linkend="dcoConnectKeyPress" />)</entry>
+<entry><xref linkend="dcoConnectKeyPress"/></entry>
 <entry>Connects a key press event notification with a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>data (<xref linkend="dcoData" />)</entry>
+<entry><xref linkend="dcoData"/></entry>
 <entry>Reprieves the <emphasis role="italic">data</emphasis> (the value) of the underlying control's state.</entry>
 </row>
 <row>
@@ -2248,47 +2250,47 @@ PlainBaseDialog::validate (<xref linkend="mthValidate" />)
 <entry>Sets the state of the underlying dialog control to the <emphasis role="italic">data</emphasis> (the value) specified.</entry>
 </row>
 <row>
-<entry>disconnectLetPress (<xref linkend="dcoDisconnectKeyPress" />)</entry>
+<entry><xref linkend="dcoDisconnectKeyPress"/></entry>
 <entry>Disconnects a method in the Rexx dialog from a previously connected key press event.</entry>
 </row>
 <row>
-<entry>getTextSizeGlg (<xref linkend="dcoGetTextSizeDlg" />)</entry>
+<entry><xref linkend="dcoGetTextSizeDlg"/></entry>
 <entry>Calculates the size, (width and height,) in dialog units for a given string.</entry>
 </row>
 <row>
-<entry>group (<xref linkend="dcoGroup" />)</entry>
+<entry><xref linkend="dcoGroup"/></entry>
 <entry>Adds or removes the group style (<xref linkend="wsgroup" />) for the control.</entry>
 </row>
 <row>
-<entry>hasKeyPressConnection (<xref linkend="dcoHasKeyPressConnection" />)</entry>
+<entry><xref linkend="dcoHasKeyPressConnection"/></entry>
 <entry>Queries if a specific method, or any method, in the Rexx dialog has a connection to a key press event.</entry>
 </row>
 <row>
-<entry>redrawRect (<xref linkend="dcoRedrawRect" />)</entry>
+<entry><xref linkend="dcoRedrawRect"/></entry>
 <entry>Immediately redraws the rectangle of the client area of the associated dialog.</entry>
 </row>
 <row>
-<entry>setColor (<xref linkend="dcoSetColor" />)</entry>
+<entry><xref linkend="dcoSetColor"/></entry>
 <entry>Sets the background color, and optionally the text color, for this dialog control.</entry>
 </row>
 <row>
-<entry>setSysColor (<xref linkend="dcoSetSysColor" />)</entry>
+<entry><xref linkend="dcoSetSysColor"/></entry>
 <entry>Sets the background color, and optionally the text color, for this dialog control using the system colors.</entry>
 </row>
 <row>
-<entry>tabStop (<xref linkend="dcoTabStop" />)</entry>
+<entry><xref linkend="dcoTabStop"/></entry>
 <entry>Add or remove the tab stop style for the control.</entry>
 </row>
 <row>
-<entry>textSize (<xref linkend="mthTextSize" />)</entry>
+<entry><xref linkend="mthTextSize"/></entry>
 <entry>Computes the width and height in pixels of the specified string of text when displayed by this control.</entry>
 </row>
 <row>
-<entry>useUnicode (<xref linkend="mthUseUnicode" />)</entry>
+<entry><xref linkend="mthUseUnicode"/></entry>
 <entry>Sets the format flag telling the control to use, or not use, Unicode.</entry>
 </row>
 <row>
-<entry>usingUnicode (<xref linkend="mthUsingUnicode" />)</entry>
+<entry><xref linkend="mthUsingUnicode"/></entry>
 <entry>Determines if the control is using Unicode or not.</entry>
 </row>
 </tbody></tgroup>
@@ -2562,7 +2564,8 @@ DialogControl::usingUnicode (<xref linkend="mthUsingUnicode" />)
 <table id="tblResourceUtilsMethods" frame="all">
 <title>ResourceUtils Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -2575,7 +2578,7 @@ DialogControl::usingUnicode (<xref linkend="mthUsingUnicode" />)
 <entry align="center"><emphasis role="bold">Attributes</emphasis></entry>
 </row>
 <row>
-<entry>constDir (<xref linkend="atrConstDir" />)</entry>
+<entry><xref linkend="atrConstDir"/></entry>
 <entry>A directory object that maps symbolic resource IDS to their numeric IDs.</entry>
 </row>
 <row>
@@ -2583,15 +2586,15 @@ DialogControl::usingUnicode (<xref linkend="mthUsingUnicode" />)
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>parseIncludeFile (<xref linkend="mthParseIncludeFile" />)</entry>
+<entry><xref linkend="mthParseIncludeFile"/></entry>
 <entry>Reads a file and adds any symbol definitions found to the proper constant directory.</entry>
 </row>
 <row>
-<entry>resolveNumericID (<xref linkend="mthResolveNumericID" />)</entry>
+<entry><xref linkend="mthResolveNumericID"/></entry>
 <entry>Uses the constant directory to resolve a numeric ID to its symbolic ID.</entry>
 </row>
 <row>
-<entry>resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)</entry>
+<entry><xref linkend="mthResolveSymbolicID"/></entry>
 <entry>Uses the constant directory to resolve a symbolic ID to its numeric value.</entry>
 </row>
 </tbody></tgroup>
@@ -2688,7 +2691,7 @@ DialogControl::usingUnicode (<xref linkend="mthUsingUnicode" />)
 </variablelist>
 </section>  <!-- End ResourceUtils::constDir() [attribute]  -->
 
-<section id="mthParseIncludeFile"><title>parseIncludeFile</title>
+<section id="mthParseIncludeFile" xreflabel="parseIncludeFile"><title>parseIncludeFile</title>
 <indexterm><primary>parseIncludeFile</primary></indexterm>
 <indexterm><primary>ApplicationManager class</primary><secondary>parseIncludeFile</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>parseIncludeFile</secondary></indexterm>
@@ -2759,7 +2762,7 @@ DialogControl::usingUnicode (<xref linkend="mthUsingUnicode" />)
 </variablelist>
 </section>  <!-- End ResourceUtils::parseIncludeFile() -->
 
-<section id="mthResolveNumericID"><title>resolveNumericID</title>
+<section id="mthResolveNumericID" xreflabel="resolveNumericID"><title>resolveNumericID</title>
 <indexterm><primary>resolveNumericID</primary></indexterm>
 <indexterm><primary>ApplicationManager class</primary><secondary>parseIncludeFile</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>parseIncludeFile</secondary></indexterm>
@@ -2826,7 +2829,7 @@ DialogControl::usingUnicode (<xref linkend="mthUsingUnicode" />)
 </variablelist>
 </section>  <!-- End ResourceUtils::resolveNumericID() -->
 
-<section id="mthResolveSymbolicID"><title>resolveSymbolicID</title>
+<section id="mthResolveSymbolicID" xreflabel="resolveSymbolicID"><title>resolveSymbolicID</title>
 <indexterm><primary>resolveSymbolicID</primary></indexterm>
 <indexterm><primary>ApplicationManager class</primary><secondary>parseIncludeFile</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>parseIncludeFile</secondary></indexterm>
@@ -2916,7 +2919,8 @@ DialogControl::usingUnicode (<xref linkend="mthUsingUnicode" />)
 <table id="tDynamicDialogClass" frame="all">
 <title>DynamicDialog Method Reference</title>
 <tgroup cols="2">
-<colspec colwidth="1.75in" />
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
 <thead>
 <row>
 <entry>Dialog Method</entry>
@@ -2929,47 +2933,47 @@ DialogControl::usingUnicode (<xref linkend="mthUsingUnicode" />)
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>addIconResource (<xref linkend="mthAddIconResource" />)</entry>
+<entry><xref linkend="mthAddIconResource"/></entry>
 <entry>Adds the file name for an icon resource to the dialog's icon table.</entry>
 </row>
 <row>
-<entry>create (<xref linkend="mthCreate" />)</entry>
+<entry><xref linkend="mthCreate"/></entry>
 <entry>Begins the creation of the in-memory Windows dialog template by specifying the general details for the dialog itself.</entry>
 </row>
 <row>
-<entry>createBitmapButton (<xref linkend="mthCreateBitmapButton" />)</entry>
+<entry><xref linkend="mthCreateBitmapButton"/></entry>
 <entry>Creates a bitmap push button in the dialog template.</entry>
 </row>
 <row>
-<entry>createBlackFrame (<xref linkend="mthCreateBlackFrame" />)</entry>
+<entry><xref linkend="mthCreateBlackFrame"/></entry>
 <entry>Creates a static black frame control in the dialog template.</entry>
 </row>
 <row>
-<entry>createBlackRect (<xref linkend="mthCreateBlackRect" />)</entry>
+<entry><xref linkend="mthCreateBlackRect"/></entry>
 <entry>Creates a static black rectangle control in the dialog template.</entry>
 </row>
 <row>
-<entry>createCenter (<xref linkend="mthCreateCenter" />)</entry>
+<entry><xref linkend="mthCreateCenter"/></entry>
 <entry>Begins the creation of an in-memory dialog template for a dialog that will be centered in the user's screen.</entry>
 </row>
 <row>
-<entry>createCheckBox (<xref linkend="mthCreateCheckBox" />)</entry>
+<entry><xref linkend="mthCreateCheckBox"/></entry>
 <entry>Creates a check box control in the dialog template.</entry>
 </row>
 <row>
-<entry>createCheckBoxGroup (<xref linkend="mthCreateCheckBoxGroup" />)</entry>
+<entry><xref linkend="mthCreateCheckBoxGroup"/></entry>
 <entry>Creates a group of check box controls in the dialog template using a single string to specify the check box labels.</entry>
 </row>
 <row>
-<entry>createCheckBoxStem (<xref linkend="mthCreateCheckBoxStem" />)</entry>
+<entry><xref linkend="mthCreateCheckBoxStem"/></entry>
 <entry>Creates a group of check box controls in the dialog template using a stem to specify the check box labels.</entry>
 </row>
 <row>
-<entry>createComboBox (<xref linkend="mthCreateComboBox" />)</entry>
+<entry><xref linkend="mthCreateComboBox"/></entry>
 <entry>Creates a combobox control in the dialog template.</entry>
 </row>
 <row>
-<entry>createComboBoxInput (<xref linkend="mthCreateComboBoxInput" />)</entry>
+<entry><xref linkend="mthCreateComboBoxInput"/></entry>
 <entry>Creates a combobox with a static text control (for the label) in the dialog template. </entry>
 </row>
 <row>
@@ -2977,162 +2981,162 @@ DialogControl::usingUnicode (<xref linkend="mthUsingUnicode" />)
 <entry>Creates a date time picker control in the dialog template.</entry>
 </row>
 <row>
-<entry>createEdit (<xref linkend="mthCreateEdit" />)</entry>
+<entry><xref linkend="mthCreateEdit"/></entry>
 <entry>Creates an edit control in the dialog template</entry>
 </row>
 <row>
-<entry>createEditInput (<xref linkend="mthCreateEditInput" />)</entry>
+<entry><xref linkend="mthCreateEditInput"/></entry>
 <entry>Creates an edit control and a static text control (for the label) in the dialog template, in one step.</entry>
 </row>
 <row>
-<entry>createEditInputGroup (<xref linkend="mthCreateEditInputGroup" />)</entry>
+<entry><xref linkend="mthCreateEditInputGroup"/></entry>
 <entry>Creates one or more edit controls with labels in the dialog template using a single string to specify the labels.</entry>
 </row>
 <row>
-<entry>createEditInputStem (<xref linkend="mthCreateEditInputStem" />)</entry>
+<entry><xref linkend="mthCreateEditInputStem"/></entry>
 <entry>Creates one or more edit controls with labels in the dialog template using a stem to specify the labels.</entry>
 </row>
 <row>
-<entry>createEtchedFrame (<xref linkend="mthCreateEtchedFrame" />)</entry>
+<entry><xref linkend="mthCreateEtchedFrame"/></entry>
 <entry>Creates a static etched frame control in the dialog template.</entry>
 </row>
 <row>
-<entry>createEtchedHorizontal (<xref linkend="mthCreateEtchedHorizontal" />)</entry>
+<entry><xref linkend="mthCreateEtchedHorizontal"/></entry>
 <entry>Creates a static control in the dialog template that is an etched horizontal line.</entry>
 </row>
 <row>
-<entry>createEtchedVertical (<xref linkend="mthCreateEtchedVertical" />)</entry>
+<entry><xref linkend="mthCreateEtchedVertical"/></entry>
 <entry>Creates a static frame control in the dialog template that is a single etched vertical line.</entry>
 </row>
 <row>
-<entry>createGrayFrame (<xref linkend="mthCreateGrayFrame" />)</entry>
+<entry><xref linkend="mthCreateGrayFrame"/></entry>
 <entry>Creates a static gray frame control in the dialog template.</entry>
 </row>
 <row>
-<entry>createGrayRect (<xref linkend="mthCreateGrayRect" />)</entry>
+<entry><xref linkend="mthCreateGrayRect"/></entry>
 <entry>Creates a static gray rectangle control in the dialog template.</entry>
 </row>
 <row>
-<entry>createGroupBox (<xref linkend="mthCreateGroupBox" />)</entry>
+<entry><xref linkend="mthCreateGroupBox"/></entry>
 <entry>Creates a group box in the dialog template.</entry>
 </row>
 <row>
-<entry>createListBox (<xref linkend="mthCreateListBox" />)</entry>
+<entry><xref linkend="mthCreateListBox"/></entry>
 <entry>Creates a list box control in the dialog template.</entry>
 </row>
 <row>
-<entry>createListView (<xref linkend="mthCreateListView" />)</entry>
+<entry><xref linkend="mthCreateListView"/></entry>
 <entry>Creates a list-view control in the dialog template.</entry>
 </row>
 <row>
-<entry>createMonthCalendar (<xref linkend="mthCreateMonthCalendar" />)</entry>
+<entry><xref linkend="mthCreateMonthCalendar"/></entry>
 <entry>Creates a month calendar control in the dialog template.</entry>
 </row>
 <row>
-<entry>createOkCancelRightBottom (<xref linkend="mthCreateOkCancelRightBottom" />)</entry>
+<entry><xref linkend="mthCreateOkCancelRightBottom"/></entry>
 <entry>Creates an Ok and Cancel push buttons in the right bottom corner of the dialog template.</entry>
 </row>
 <row>
-<entry>createOkCancelRightTop (<xref linkend="mthCreateOkCancelRightTop" />)</entry>
+<entry><xref linkend="mthCreateOkCancelRightTop"/></entry>
 <entry>Creates an Ok and Cancel push buttons in the right top corner of the dialog template.</entry>
 </row>
 <row>
-<entry>createOkCancelLeftBottom (<xref linkend="mthCreateOkCancelLeftBottom" />)</entry>
+<entry><xref linkend="mthCreateOkCancelLeftBottom"/></entry>
 <entry>Creates an Ok and Cancel push buttons in the left bottom corner of the dialog template.</entry>
 </row>
 <row>
-<entry>createOkCancelLeftTop (<xref linkend="mthCreateOkCancelLeftTop" />)</entry>
+<entry><xref linkend="mthCreateOkCancelLeftTop"/></entry>
 <entry>Creates an Ok and Cancel push buttons in the left top corner of the dialog template.</entry>
 </row>
 <row>
-<entry>createPasswordEdit (<xref linkend="mthCreatePasswordEdit" />)</entry>
+<entry><xref linkend="mthCreatePasswordEdit"/></entry>
 <entry>Creates an edit control with the PASSWORD style set in the dialog template.</entry>
 </row>
 <row>
-<entry>createProgressBar (<xref linkend="mthCreateProgressBar" />)</entry>
+<entry><xref linkend="mthCreateProgressBar"/></entry>
 <entry>Creates a progress bar control in the dialog template.</entry>
 </row>
 <row>
-<entry>createPushButton (<xref linkend="mthCreatePushButton" />)</entry>
+<entry><xref linkend="mthCreatePushButton"/></entry>
 <entry>Creates a push button in the dialog template.</entry>
 </row>
 <row>
-<entry>createPushButtonGroup (<xref linkend="mthCreatePushButtonGroup" />)</entry>
+<entry><xref linkend="mthCreatePushButtonGroup"/></entry>
 <entry>Creates any number of push buttons in the dialog template at one time.</entry>
 </row>
 <row>
-<entry>createRadioButton (<xref linkend="mthCreateRadioButton" />)</entry>
+<entry><xref linkend="mthCreateRadioButton"/></entry>
 <entry>Creates a radio button control in the dialog template.</entry>
 </row>
 <row>
-<entry>createRadioButtonGroup (<xref linkend="mthCreateRadioButtonGroup" />)</entry>
+<entry><xref linkend="mthCreateRadioButtonGroup"/></entry>
 <entry>Creates a group of radio buttons with labels in the dialog template using a single string to specify the labels.</entry>
 </row>
 <row>
-<entry>createRadioButtonStem (<xref linkend="mthCreateRadioButtonStem" />)</entry>
+<entry><xref linkend="mthCreateRadioButtonStem"/></entry>
 <entry>Creates a group of radio buttons with labels in the dialog template using a stem to specify the labels.</entry>
 </row>
 <row>
-<entry>createScrollBar (<xref linkend="mthCreateScrollBar" />)</entry>
+<entry><xref linkend="mthCreateScrollBar"/></entry>
 <entry>Creates a scroll bar control in the dialog template.</entry>
 </row>
 <row>
-<entry>createStatic (<xref linkend="mthCreateStatic" />)</entry>
+<entry><xref linkend="mthCreateStatic"/></entry>
 <entry>Creates a static control in the dialog template.</entry>
 </row>
 <row>
-<entry>createStaticFrame (<xref linkend="mthCreateStaticFrame" />)</entry>
+<entry><xref linkend="mthCreateStaticFrame"/></entry>
 <entry>Creates one of the static frame controls in the dialog template.</entry>
 </row>
 <row>
-<entry>createStaticImage (<xref linkend="mthCreateStaticImage" />)</entry>
+<entry><xref linkend="mthCreateStaticImage"/></entry>
 <entry>Creates a static image control in the dialog template.</entry>
 </row>
 <row>
-<entry>createStaticText (<xref linkend="mthCreateStaticText" />)</entry>
+<entry><xref linkend="mthCreateStaticText"/></entry>
 <entry>Creates a static text control in the dialog template.</entry>
 </row>
 <row>
-<entry>createTab (<xref linkend="mthCreateTab" />)</entry>
+<entry><xref linkend="mthCreateTab"/></entry>
 <entry>Creates a tab control in the dialog template.</entry>
 </row>
 <row>
-<entry>createTrackbar (<xref linkend="mthCreateTrackBar" />)</entry>
+<entry><xref linkend="mthCreateTrackBar"/></entry>
 <entry>Creates a trackbar control in the dialog template.</entry>
 </row>
 <row>
-<entry>createTreeView (<xref linkend="mthCreateTreeView" />)</entry>
+<entry><xref linkend="mthCreateTreeView"/></entry>
 <entry>Creates a tree view control in the dialog template</entry>
 </row>
 <row>
-<entry>createUpDown (<xref linkend="mthCreateUpDown" />)</entry>
+<entry><xref linkend="mthCreateUpDown"/></entry>
 <entry>Creates an up-down control in the dialog template.</entry>
 </row>
 <row>
-<entry>createWhiteFrame (<xref linkend="mthCreateWhiteFrame" />)</entry>
+<entry><xref linkend="mthCreateWhiteFrame"/></entry>
 <entry>Creates a white static frame control in the dialog template.</entry>
 </row>
 <row>
-<entry>createWhiteRect (<xref linkend="mthCreateWhiteRect" />)</entry>
+<entry><xref linkend="mthCreateWhiteRect"/></entry>
 <entry>Creates a white static rectangle control in the dialog template.</entry>
 </row>
 <row>
-<entry>defineDialog (<xref linkend="mthDefineDialog" />)</entry>
+<entry><xref linkend="mthDefineDialog"/></entry>
 <entry>
   The programmer uses this method to dynamically create the dialog controls in the dialog template by using the appropriate
   create ... methods.
 </entry>
 </row>
 <row>
-<entry>load (<xref linkend="mthLoad" />)</entry>
+<entry><xref linkend="mthLoad"/></entry>
 <entry>Creates the in-memory dialog template by reading the dialog template from a resource script file.</entry>
 </row>
 <row>
-<entry>loadFrame (<xref linkend="mthLoadFrame" />)</entry>
+<entry><xref linkend="mthLoadFrame"/></entry>
 <entry>Starts the in-memory Windows dialog template by reading a dialog template from a resource script file.</entry>
 </row>
 <row>
-<entry>loadItem (<xref linkend="mthLoadItems" />)</entry>
+<entry><xref linkend="mthLoadItems"/></entry>
 <entry>
   Creates the dialog controls in the dialog template, and finishes the dialog template, by reading a dialog template
   from a resource script file.
@@ -3577,7 +3581,7 @@ DynamicDialog::createRadioButtonZStem (<xref linkend="mthCreateRadioButtonStem" 
 
 <section id="ddCreateScrollBar"><title>createScrollBar</title>
 <programlisting>
-DynamicDialog::create ScroolBar (<xref linkend="mthCreateScrollBar" />)
+DynamicDialog::create <xref linkend="mthCreateScrollBar"/>
 
 <![CDATA[
 >>--createScrollBar(--id--,--x--,--y--,--cx--,--cy--+----------+--)------------><

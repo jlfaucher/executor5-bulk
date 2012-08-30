@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsUpDown"><title>Up Down Controls</title>
+<chapter id="clsUpDown" xreflabel="UpDown"><title>Up Down Controls</title>
 <indexterm><primary>UpDown class</primary></indexterm>
 <para>
   Up-down controls consist of a pair of arrow buttons that the user can click to increment or decrement a value, such as
@@ -79,7 +79,7 @@
 <para>
   The <computeroutput>UpDown</computeroutput> class provides methods to work with and manipulate the underlying Windows
   up-down dialog control which it represents. It is a concrete subclass of the dialog control
-  object (xref linkend="chpDialogControlObject" />) and therefore has all methods of the of the dialog control object.
+  object (<xref linkend="chpDialogControlObject" />) and therefore has all methods of the of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -88,22 +88,22 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newUpDown (xref linkend="tmthNewUpDown" />)() method of the
-    dialog (xref linkend="chpDialogObject" />) object to retrieve a new UpDown object.
+    Use the newUpDown (<xref linkend="tmthNewUpDown" />)() method of the
+    dialog (<xref linkend="chpDialogObject" />) object to retrieve a new UpDown object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define an up-down control in a UserDialog (xref linkend="clsUserDialog" />) class, use the
-    createUpDown (xref linkend="mthCreateUpDown" />) method.
+    To dynamically define an up-down control in a <xref linkend="clsUserDialog"/> class, use the
+ <xref linkend="mthCreateUpDown"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the event (xref linkend="ovvEvents" />) notifications sent by the underlying up-down control to a
-    method in the Rexx dialog object use the connectUpDownEvent (xref linkend="mthConnectUpDownEvent" />)()
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying up-down control to a
+    method in the Rexx dialog object use the <xref linkend="mthConnectUpDownEvent"/>()
     method.
   </para>
   </listitem></varlistentry>
@@ -118,7 +118,8 @@
 <table id="tblUpDownMethods" frame="all">
 <title>Important UpDown Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -131,15 +132,15 @@
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry>newUpDown (xref linkend="tmthNewUpDown" />)</entry>
+<entry><xref linkend="tmthNewUpDown"/></entry>
 <entry>Returns an <computeroutput>UpDown</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
-<entry>createUpDown (xref linkend="tmthCreateUpDown" />)</entry>
-<entry>Creates an up-down control in the dialog template of a UserDialog (xref linkend="clsUserDialog" />)</entry>
+<entry><xref linkend="tmthCreateUpDown"/></entry>
+<entry>Creates an up-down control in the dialog template of a <xref linkend="clsUserDialog"/></entry>
 </row>
 <row>
-<entry>connectUpDownEvent (xref linkend="tmthConnectUpDownEvent" />)</entry>
+<entry><xref linkend="tmthConnectUpDownEvent"/></entry>
 <entry>Connects up-down event notifications to a method in the Rexx dialog object</entry>
 </row>
 <row>
@@ -147,7 +148,7 @@
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>deltaPosReply  (xref linkend="mthDeltaPosReply" />)</entry>
+<entry><xref linkend="mthDeltaPosReply"/></entry>
 <entry>Constructs the proper return object for the event handler of the up-down DELTAPOS event.</entry>
 </row>
 <row>
@@ -155,43 +156,43 @@
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>getAcceleration (xref linkend="mthGetAcceleration" />)</entry>
+<entry><xref linkend="mthGetAcceleration"/></entry>
 <entry>Retrieves the acceleration information for the up-down control in an array of <computeroutput>Directory</computeroutput> objects.</entry>
 </row>
 <row>
-<entry>getBase (xref linkend="mthGetBase" />)</entry>
+<entry><xref linkend="mthGetBase"/></entry>
 <entry>Retrieves the current base, either base 10 or 16, for the up-down control.</entry>
 </row>
 <row>
-<entry>getBuddy (xref linkend="mthGetBuddy" />)</entry>
+<entry><xref linkend="mthGetBuddy"/></entry>
 <entry>Retrieves the up-down's buddy window as a dialog control object.</entry>
 </row>
 <row>
-<entry>getPosition (xref linkend="mthGetPosition" />)</entry>
+<entry><xref linkend="mthGetPosition"/></entry>
 <entry>Returns the position of the up-down control as a signed whole number.</entry>
 </row>
 <row>
-<entry>getRange (xref linkend="mthGetRange" />)</entry>
+<entry><xref linkend="mthGetRange"/></entry>
 <entry>Returns the current range of the up-down control in a <computeroutput>Directory</computeroutput> object.</entry>
 </row>
 <row>
-<entry>setAcceleration (xref linkend="mthSetAcceleration" />)</entry>
+<entry><xref linkend="mthSetAcceleration"/></entry>
 <entry>Sets the acceleration for the up-down control.</entry>
 </row>
 <row>
-<entry>setBase (xref linkend="mthSetBase" />)</entry>
+<entry><xref linkend="mthSetBase"/></entry>
 <entry>Sets the radix base for the up-down control.</entry>
 </row>
 <row>
-<entry>setBuddy (xref linkend="mthSetBuddy" />)</entry>
+<entry><xref linkend="mthSetBuddy"/></entry>
 <entry>Sets the buddy window for the up-down control.</entry>
 </row>
 <row>
-<entry>setPosition (xref linkend="mthSetPosition" />)</entry>
+<entry><xref linkend="mthSetPosition"/></entry>
 <entry>Sets the current position of the up-down control.</entry>
 </row>
 <row>
-<entry>setRange (xref linkend="mthSetRangeClsUpDown" />)</entry>
+<entry><xref linkend="mthSetRangeClsUpDown"/></entry>
 <entry>Sets the range of positions for the up-down control to that specified.</entry>
 </row>
 </tbody></tgroup>
@@ -202,8 +203,8 @@
 <section id="tmthNewUpDown"><title>newUpDown (dialog object method)</title>
 <para>
   UpDown objects can not be instantiated by the programmer from Rexx code. Rather an UpDown object is obtained by using
-  the newUpDown (xref linkend="mthNewUpDown" />)() method of the dialog
-  object (xref linkend="chpDialogObject" />). The syntax is:
+  the <xref linkend="mthNewUpDown"/>() method of the dialog
+  object (<xref linkend="chpDialogObject" />). The syntax is:
 <programlisting>
 <![CDATA[
 >>-newUpDown(--id--)-----------------------------><
@@ -216,8 +217,8 @@
 
 <section id="tmthCreateUpDown"><title>createUpDown (UserDialog method)</title>
 <para>
-  An UpDown object can be added to the dialog template for a UserDialog (xref linkend="clsUserDialog" />) dialog
-  through the createUpDown (xref linkend="mthCreateUpDown" />)() method. The basic syntax is:
+  An UpDown object can be added to the dialog template for a <xref linkend="clsUserDialog"/> dialog
+  through the <xref linkend="mthCreateUpDown"/>() method. The basic syntax is:
 <programlisting> <![CDATA[
 >>--createUpDown(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
                                            +-,-style-+  +-,-attributeName-+
@@ -231,8 +232,8 @@
 <section id="tmthConnectUpDownEvent"><title>connectUpDownEvent (dialog object method)</title>
 <para>
   To connect event notifications from an up-down object use the
-  connectUpDownEvent (xref linkend="mthConnectUpDownEvent" />)() method of the
-  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
+ <xref linkend="mthConnectUpDownEvent"/>() method of the
+  dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectUpDownEvent(--id--,--event--+----------------+--)------------><
@@ -244,7 +245,7 @@
 </section>  <!-- End connectUpDownEvent() [EventNotification method] -->
 
 
-<section id="mthDeltaPosReply"><title>deltaPosReply (Class method)</title>
+<section id="mthDeltaPosReply" xreflabel="deltaPosReply"><title>deltaPosReply (Class method)</title>
 <indexterm><primary>deltaPosReply</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>deltaPosReply</secondary></indexterm>
 <programlisting>
@@ -255,8 +256,8 @@
 </programlisting>
 
 <para>
-  Constructs the (proper) reply object for a DELTAPOS (xref linkend="evtUpDownDELTAPOS" />) up-down
-  event (xref linkend="ovvEvents" />) notification.
+  Constructs the (proper) reply object for a DELTAPOS (<xref linkend="evtUpDownDELTAPOS" />) up-down
+  <xref linkend="ovvEvents"/> notification.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -314,7 +315,7 @@
 </section>  <!-- End UpDown::deltaPosReply() -->
 
 
-<section id="mthGetAcceleration"><title>getAcceleration</title>
+<section id="mthGetAcceleration" xreflabel="getAcceleration"><title>getAcceleration</title>
 <indexterm><primary>getAcceleration</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>getAcceleration</secondary></indexterm>
 <programlisting>
@@ -368,13 +369,13 @@
   <para>
     The accelerations are always sorted by seconds in ascending order. Typically the first acelleration would be 0
     seconds with an increment of 1. The programmer can change the acceleration information for the up-down control
-    through the setAccelleration (xref linkend="mthSetAcceleration" />) method.
+    through the <xref linkend="mthSetAcceleration"/> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End UpDown::getAcceleration() -->
 
-<section id="mthGetBase"><title>getBase</title>
+<section id="mthGetBase" xreflabel="getBase"><title>getBase</title>
 <indexterm><primary>getBase</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>getBase</secondary></indexterm>
 <programlisting>
@@ -403,7 +404,7 @@
 </variablelist>
 </section>  <!-- End UpDown::getBase() -->
 
-<section id="mthGetBuddy"><title>getBuddy</title>
+<section id="mthGetBuddy" xreflabel="getBuddy"><title>getBuddy</title>
 <indexterm><primary>getBuddy</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>getBuddy</secondary></indexterm>
 <programlisting>
@@ -427,8 +428,8 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The return is the dialog control object (xref linkend="chpDialogControlObject" />) that is the buddy window of
-    the up-down control. Normally, or at least most often, this will be an Edit (xref linkend="clsEdit" />) object.
+    The return is the dialog control object (<xref linkend="chpDialogControlObject" />) that is the buddy window of
+    the up-down control. Normally, or at least most often, this will be an Edit (<xref linkend="clsEdit" />) object.
     Howver, it could be some other type of dialog control object. If the up-down control does not have a buddy window,
     then <computeroutput>.nil</computeroutput> is returned.
   </para>
@@ -458,7 +459,7 @@
 </variablelist>
 </section>  <!-- End UpDown::getBuddy() -->
 
-<section id="mthGetPosition"><title>getPosition</title>
+<section id="mthGetPosition" xreflabel="getPosition"><title>getPosition</title>
 <indexterm><primary>getPosition</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>getPosition</secondary></indexterm>
 <programlisting>
@@ -496,7 +497,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable. See the remarks section.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable. See the remarks section.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -541,7 +542,7 @@
 </variablelist>
 </section>  <!-- End UpDown::getPosition() -->
 
-<section id="mthGetRange"><title>getRange</title>
+<section id="mthGetRange" xreflabel="getRange"><title>getRange</title>
 <indexterm><primary>getRange</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>getRange</secondary></indexterm>
 <programlisting>
@@ -593,7 +594,7 @@
 </variablelist>
 </section>  <!-- End UpDown::getRange() -->
 
-<section id="mthSetAcceleration"><title>setAcceleration</title>
+<section id="mthSetAcceleration" xreflabel="setAcceleration"><title>setAcceleration</title>
 <indexterm><primary>setAcceleration</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>setAcceleration</secondary></indexterm>
 <programlisting>
@@ -695,7 +696,7 @@
 </variablelist>
 </section>  <!-- End UpDown::setAcceleration() -->
 
-<section id="mthSetBase"><title>setBase</title>
+<section id="mthSetBase" xreflabel="setBase"><title>setBase</title>
 <indexterm><primary>setBase</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>setBase</secondary></indexterm>
 <programlisting>
@@ -757,7 +758,7 @@
 </variablelist>
 </section>  <!-- End UpDown::setBase() -->
 
-<section id="mthSetBuddy"><title>setBuddy</title>
+<section id="mthSetBuddy" xreflabel="setBuddy"><title>setBuddy</title>
 <indexterm><primary>setBuddy</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>setBuddy</secondary></indexterm>
 <programlisting>
@@ -811,7 +812,7 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example sets the buddy window during the initDialog (xref linkend="mthInitDialog" />) method for an up-down
+    This example sets the buddy window during the <xref linkend="mthInitDialog"/> method for an up-down
     control that does not have the AUTOBUDDY style.
 <programlisting>
 <![CDATA[
@@ -829,7 +830,7 @@
 </variablelist>
 </section>  <!-- End UpDown::setBuddy() -->
 
-<section id="mthSetPosition"><title>setPosition</title>
+<section id="mthSetPosition" xreflabel="setPosition"><title>setPosition</title>
 <indexterm><primary>setPosition</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>setPosition</secondary></indexterm>
 <programlisting>
@@ -868,7 +869,7 @@
   <listitem>
   <para>
     If <emphasis role="italic">newPosition</emphasis> is outside the control's current
-    range (xref linkend="mthSetRangeClsUpDown" />), the position is set to the nearest valid position within the range.
+ <xref linkend="mthSetRangeClsUpDown"/>, the position is set to the nearest valid position within the range.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -898,7 +899,7 @@
 </variablelist>
 </section>  <!-- End UpDown::setPosition() -->
 
-<section id="mthSetRangeClsUpDown"><title>setRange</title>
+<section id="mthSetRangeClsUpDown" xreflabel="setRange"><title>setRange</title>
 <indexterm><primary>setRange</primary></indexterm>
 <indexterm><primary>UpDown class</primary><secondary>setRange</secondary></indexterm>
 <programlisting>

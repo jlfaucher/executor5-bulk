@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsScrollBar"><title>Scroll Bar Controls</title>
+<chapter id="clsScrollBar" xreflabel="ScrollBar"><title>Scroll Bar Controls</title>
 <indexterm><primary>ScrollBar class</primary></indexterm>
 <para>
   A scroll bar is a dialog control that allows a user to scroll data like
@@ -63,22 +63,22 @@ modify scroll bar controls.
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newScrollBar (xref linkend="mthNewScrollBar" />)() method of the
-    dialog (xref linkend="chpDialogObject" />) object to retrieve a scroll bar object.
+    Use the <xref linkend="mthNewScrollBar"/>() method of the
+    dialog (<xref linkend="chpDialogObject" />) object to retrieve a scroll bar object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically create a scroll bar in the dialog template of a UserDialog (xref linkend="clsUserDialog" />) use
-    the createScrollBar (xref linkend="mthCreateScrollBar" />) method.
+    To dynamically create a scroll bar in the dialog template of a <xref linkend="clsUserDialog"/> use
+    the <xref linkend="mthCreateScrollBar"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the event (xref linkend="ovvEvents" />) notifications sent by the underlying scroll bar control to a
-    method in the Rexx dialog object use the connectScrollBarEvent (xref linkend="mthConnectScrollBarEvent" />))
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying scroll bar control to a
+    method in the Rexx dialog object use the <xref linkend="mthConnectScrollBarEvent"/>)
     method.
   </para>
   </listitem></varlistentry>
@@ -93,7 +93,7 @@ modify scroll bar controls.
 <table id="tblScrollBarMethods" frame="all">
 <title>ScrollBar Methods and Attributes</title>
 <tgroup cols="2">
-<colspec colwidth="1.75in" />
+<colspec colwidth="1*" /><colspec colwidth="3*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -106,23 +106,23 @@ modify scroll bar controls.
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>newScrollBar (xref linkend="tmthNewScrollBar" />)</entry>
+<entry><xref linkend="tmthNewScrollBar"/></entry>
 <entry>Obtains a ScrollBar object that represents a scroll bar control in a dialog.</entry>
 </row>
 <row>
-<entry>createScrollBar (xref linkend="tmthCreateScrollBar" />)</entry>
-<entry>Creates a scroll bar control in an UserDialog (xref linkend="clsUserDialog" />).</entry>
+<entry><xref linkend="tmthCreateScrollBar"/></entry>
+<entry>Creates a scroll bar control in an <xref linkend="clsUserDialog"/>.</entry>
 </row>
 <row>
-<entry>connectScrollBarEvent (xref linkend="tmthConnectScrollBarEvent" />)</entry>
+<entry><xref linkend="tmthConnectScrollBarEvent"/></entry>
 <entry>Connects a single scroll bar event notification to a Rexx dialog method.</entry>
 </row>
 <row>
-<entry>connectAllSBEvents (xref linkend="tmthConnectAllSBEvents" />)</entry>
+<entry><xref linkend="tmthConnectAllSBEvents"/></entry>
 <entry>Connects all scroll bar event notifications to a single Rexx dialog method.</entry>
 </row>
 <row>
-<entry>connectEachSBEvent (xref linkend="tmthConnectEachSBEvent" />)</entry>
+<entry><xref linkend="tmthConnectEachSBEvent"/></entry>
 <entry>Connects a number of scroll bar event notifications, each to its own Rexx dialog method, in a single method invocation.</entry>
 </row>
 <row>
@@ -130,63 +130,63 @@ modify scroll bar controls.
 <entry align="center"><emphasis role="bold">Constants</emphasis></entry>
 </row>
 <row>
-<entry>LINEUP (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled up by one unit.</entry>
 </row>
 <row>
-<entry>LINELEFT (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled to the left by one unit.</entry>
 </row>
 <row>
-<entry>LINEDOWN (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled down by one unit.</entry>
 </row>
 <row>
-<entry>LINERIGHT (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled to the right by one unit.</entry>
 </row>
 <row>
-<entry>PAGEUP (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled up by one page size.</entry>
 </row>
 <row>
-<entry>PAGELEFT (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled to the left by one page size.</entry>
 </row>
 <row>
-<entry>PAGEDOWN (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled down by one page size.</entry>
 </row>
 <row>
-<entry>PAGERIGHT (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled to the right by one page size.</entry>
 </row>
 <row>
-<entry>THUMBPOSITION (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll box (thumb) of the scroll bar was dragged and the user has released the mouse button.</entry>
 </row>
 <row>
-<entry>THUMBTRACK (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The user is dragging the scroll box. This message is sent repeatedly until the user releases the mouse button.</entry>
 </row>
 <row>
-<entry>TOP (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled completely to the top.</entry>
 </row>
 <row>
-<entry>LEFT (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled completely to the left.</entry>
 </row>
 <row>
-<entry>BOTTOM (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled completely to the bottom.</entry>
 </row>
 <row>
-<entry>RIGHT (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>The scroll bar was scrolled completely to the right.</entry>
 </row>
 <row>
-<entry>ENDSCROLL (xref linkend="sctSBEventCode" />)</entry>
+<entry><xref linkend="sctSBEventCode"/></entry>
 <entry>Scrolling has been ended, that is, the appropriate key or mouse button has been released.</entry>
 </row>
 <row>
@@ -194,23 +194,23 @@ modify scroll bar controls.
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>determinePosition (xref linkend="mthDeterminePosition" />)</entry>
+<entry><xref linkend="mthDeterminePosition"/></entry>
 <entry>Determines the new position of the scroll box based on the position sent with the scroll bar event notification message.</entry>
 </row>
 <row>
-<entry>position (xref linkend="mthPosition" />)</entry>
+<entry><xref linkend="mthPosition"/></entry>
 <entry>Retrieves the position of the scroll box in the associated scroll bar.</entry>
 </row>
 <row>
-<entry>range (xref linkend="mthRange" />)</entry>
+<entry><xref linkend="mthRange"/></entry>
 <entry>Retrieves the minimum and maximum positions of the associated scroll bar.</entry>
 </row>
 <row>
-<entry>setRange (xref linkend="mthSetRange" />)</entry>
+<entry><xref linkend="mthSetRange"/></entry>
 <entry>Sets the minimum and maximum positions for the associated scroll bar.</entry>
 </row>
 <row>
-<entry>setPos (xref linkend="mthSetPos" />)</entry>
+<entry><xref linkend="mthSetPos"/></entry>
 <entry>Sets the position of the scroll box for the associated scroll bar.</entry>
 </row>
 </tbody></tgroup>
@@ -221,7 +221,7 @@ modify scroll bar controls.
 <para>
   <computeroutput>ScrollBar</computeroutput> objects can not be instantiated by the programmer from Rexx code using a <emphasis
   role="italic">new</emphasis>() method. Rather, a scroll bar object is obtained by using the
-  newScrollBar (xref linkend="mthNewScrollBar" />)() method of the dialog (xref linkend="chpDialogObject" />)
+ <xref linkend="mthNewScrollBar"/>() method of the dialog (<xref linkend="chpDialogObject" />)
   object. The syntax is:
 <programlisting>
 <![CDATA[
@@ -235,8 +235,8 @@ modify scroll bar controls.
 
 <section id="tmthCreateScrollBar"><title>createScrollBar (UserDialog method)</title>
 <para>
-  A scroll bar control can be created in the dialog template of a UserDialog (xref linkend="clsUserDialog" />)
-  through the createScrollBar (xref linkend="mthCreateScrollBar" />) method. The basic syntax is:
+  A scroll bar control can be created in the dialog template of a <xref linkend="clsUserDialog"/>
+  through the <xref linkend="mthCreateScrollBar"/> method. The basic syntax is:
 
 <programlisting>
 <![CDATA[
@@ -252,8 +252,8 @@ modify scroll bar controls.
 <section id="tmthConnectScrollBarEvent"><title>connectScrollBarEvent (dialog object method)</title>
 <para>
   To connect an individual event notification from a scroll bar control use the
-  connectScrollBarEvent (xref linkend="mthConnectScrollBarEvent" />) method of the
-  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
+ <xref linkend="mthConnectScrollBarEvent"/> method of the
+  dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>--connectScrollBarEvent(--id--,--event--+----------------+--)----------------><
@@ -268,7 +268,7 @@ modify scroll bar controls.
 <section id="tmthConnectAllSBEvents"><title>connectAllSBEvents (dialog object method)</title>
 <para>
   To connect all event notifications from a scroll bar control to a single method use the
-  connectAllSBEvents (xref linkend="mthConnectAllSBEvents" />) method of the dialog (xref linkend="chpDialogObject" />)
+ <xref linkend="mthConnectAllSBEvents"/> method of the dialog (<xref linkend="chpDialogObject" />)
   object. The basic syntax is:
 
 <programlisting>
@@ -286,8 +286,8 @@ modify scroll bar controls.
 <section id="tmthConnectEachSBEvent"><title>connectEachSBEvent (dialog object method)</title>
 <para>
   To connect a number of event notifications from a scroll bar control, and specify an individual method for each event,
-  in one method invocation use the connectEachSBEvent (xref linkend="mthConnectEachSBEvent" />) method of the
-  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
+  in one method invocation use the <xref linkend="mthConnectEachSBEvent"/> method of the
+  dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting>
 <![CDATA[
@@ -312,8 +312,8 @@ modify scroll bar controls.
 <indexterm><primary>ScrollBar class</primary><secondary>scroll bar event constants</secondary></indexterm>
 
 <para>
-  When a scroll bar sends an event (xref linkend="ovvEvents" />) notification
-  rmessage (xref linkend="ovvWindowMessages" />), one of the pararmeters contains the numeric code, (defined by Windows,)
+  When a scroll bar sends an <xref linkend="ovvEvents"/> notification
+  rmessage (<xref linkend="ovvWindowMessages" />), one of the pararmeters contains the numeric code, (defined by Windows,)
   for the event. The <computeroutput>ScrollBar</computeroutput> class provides
   <computeroutput>::constant</computeroutput> values for each of the event codes. This allows the programmer to
   determine which event is represented by the event code without having to know what the individual numeric value is for
@@ -321,7 +321,7 @@ modify scroll bar controls.
 </para>
 <para>
   Connecting the scroll bar event notifications to a method in the Rexx dialog object is done through the
-  connectScrollBarEvent (xref linkend="mthConnectScrollBarEvent" />) method. The second argument to that method is the
+ <xref linkend="mthConnectScrollBarEvent"/> method. The second argument to that method is the
   event <emphasis role="italic">keyword</emphasis> that is to be connected. Do not confuse the keyword and the constant.
   The event <emphasis role="italic">keyword</emphasis> is a string that identifies the event to be connected to the
   ooDialog framework.  The event <emphasis role="italic">constant</emphasis> is a numeric value that Windows sends in
@@ -331,8 +331,8 @@ modify scroll bar controls.
 <table id="tblScrollBarConstants" frame="all">
 <title>ScrollBar Event Constants</title>
 <tgroup cols="3">
-<colspec colwidth="1.25in" />
-<colspec colwidth="1.25in" />
+<colspec colwidth="1*" /><colspec colwidth="5*" />
+<colspec colwidth="1*" /><colspec colwidth="5*" />
 <thead>
 <row>
 <entry>Constant</entry>
@@ -421,7 +421,7 @@ modify scroll bar controls.
 
 </section>
 
-<section id="mthDeterminePosition"><title>determinePosition</title>
+<section id="mthDeterminePosition" xreflabel="determinePosition"><title>determinePosition</title>
 <indexterm><primary>determinePosition</primary></indexterm>
 <indexterm><primary>ScrollBar class</primary><secondary>determinePosition</secondary></indexterm>
 <programlisting>
@@ -466,13 +466,13 @@ by the scroll box or the arrow buttons.
 The position of a scroll bar cannot be modified directly by
 a user. The Object Rexx program must react to the notification that is the
 result of the user interaction and set the resulting position of the scroll
-box using setPos (xref linkend="mthSetPos" />). Use the determinePosition
+box using <xref linkend="mthSetPos"/>. Use the determinePosition
 method to determine the resulting position within your notification handler
 for the scroll bar notification messages.
 </para></note>
 </section>  <!-- End UserDialog::determinePosition -->
 
-<section id="mthPosition"><title>position</title>
+<section id="mthPosition" xreflabel="position"><title>position</title>
 <indexterm><primary>position</primary></indexterm>
 <indexterm><primary>ScrollBar class</primary><secondary>position</secondary></indexterm>
 <programlisting>
@@ -491,7 +491,7 @@ for the scroll bar notification messages.
 </variablelist>
 </section>  <!-- End UserDialog::position -->
 
-<section id="mthRange"><title>range</title>
+<section id="mthRange" xreflabel="range"><title>range</title>
 <indexterm><primary>range</primary><secondary>ScrollBar class</secondary></indexterm>
 <indexterm><primary>ScrollBar class</primary><secondary>range</secondary></indexterm>
 <programlisting>
@@ -510,7 +510,7 @@ for the scroll bar notification messages.
 </variablelist>
 </section>  <!-- End UserDialog::range -->
 
-<section id="mthSetPos"><title>setPos</title>
+<section id="mthSetPos" xreflabel="setPos"><title>setPos</title>
 <indexterm><primary>setPos</primary><secondary>ScrollBar class</secondary></indexterm>
 <indexterm><primary>ScrollBar class</primary><secondary>setPos</secondary></indexterm>
 <programlisting>
@@ -552,7 +552,7 @@ The default value is 1.
 </variablelist>
 </section>  <!-- End UserDialog::setPos -->
 
-<section id="mthSetRange"><title>setRange</title>
+<section id="mthSetRange" xreflabel="setRange"><title>setRange</title>
 <indexterm><primary>setRange</primary><secondary>ScrollBar class</secondary></indexterm>
 <indexterm><primary>ScrollBar class</primary><secondary>setRange</secondary></indexterm>
 <programlisting>

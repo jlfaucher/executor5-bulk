@@ -47,7 +47,7 @@
 <indexterm><primary>EventNotification class</primary></indexterm>
 <para>
   The event notification class is a <emphasis role="italic">Mixin</emphasis> class that contains methods that connect
-  the notification of a Windows event (<xref linkend="ovvEvents" />) sent to the
+  the notification of a Windows <xref linkend="ovvEvents"/> sent to the
   underlying (<xref linkend="ovvUnderlying" />) dialog with a method in the Rexx dialog object. Except as noted below, the
   Rexx programmer adds the method to her dialog subclass. Once the event notification is connected, each time the event
   occurs, the connected method is invoked. The programmer codes the method to take the appropriate action for the event.
@@ -84,7 +84,7 @@
   Whenever a dialog object is instantiated, the ooDialog framework
   automatically (<xref linkend="sctStandardEventMethods" />) makes several event connections. For all other events the Rexx
   programmer, usually, needs to specifically connect the event to his dialog, through one of the event notification
-  methods, to be able to respond to the event. In a UserDialog (<xref linkend="clsUserDialog" />), some of the methods
+  methods, to be able to respond to the event. In a <xref linkend="clsUserDialog"/>, some of the methods
   that create dialog controls have an option that automatically connects an event to a dialog method. But, for most
   events, say the resize or move events, the connection needs to be made explicitly.  Indeed, except for trivial
   dialogs, most of the programming is deciding which events to be notified of and taking action upon receiving the
@@ -93,12 +93,12 @@
 <para id="paraWhereToConnectEvents">
   In general, events should be connected before the dialog is shown on the screen, or immediately after the dialog is
   created. There is no reason why the programmer can not place the invocation where ever it makes the most sense.
-  Connecting the events in the initDialog (<xref linkend="mthInitDialog" />)() method is usually sufficient. In a
-  <computeroutput>UserDialog</computeroutput>, the defineDialog (<xref linkend="mthDefineDialog" />)() method also
+  Connecting the events in the <xref linkend="mthInitDialog"/>() method is usually sufficient. In a
+  <computeroutput>UserDialog</computeroutput>, the <xref linkend="mthDefineDialog"/>() method also
   makes a good place for the connect event methods. If the programmer is overriding the <emphasis
   role="italic">init</emphasis>() method, the connect event methods can be placed there.  In this case, do not invoke
   the connect event method until <emphasis role="bold">after</emphasis> the
-  superclass (<xref linkend="mthNewDialogObject" />) has been initialized.
+ <xref linkend="mthNewDialogObject"/> has been initialized.
 </para>
 
 <section id="sctCodingEventHandlers"><title>Coding Event Handlers</title>
@@ -171,7 +171,7 @@
   the event handler invoked directly and for the ooDialog framework to wait for the return. These methods will be called
   new connection methods. For instance, the date time (<xref linkend="clsDateTimePicker" />) picker control did not
   exist in ooDialog 4.1.0, so its event connection method,
-  connectDateTimePickerEvent (<xref linkend="mthConnectDateTimePickerEvent" />) falls into this category.
+ <xref linkend="mthConnectDateTimePickerEvent"/> falls into this category.
 </para>
 </listitem>
 <listitem>
@@ -343,7 +343,7 @@
   <listitem>
   <para>
     The DTP (<xref linkend="clsDateTimePicker" />) (date time picker) control has the
-    DROPDOWN (<xref linkend="mthConnectDateTimePickerEvent" />) event notification that is sent when the drop down calendar
+ <xref linkend="mthConnectDateTimePickerEvent"/> event notification that is sent when the drop down calendar
     is shown. This gives the programmer a chance to customize the month calendar that is shown. Since the month calendar
     is not shown until the event handling method returns, replying directly to the notification allows the programmer to
     completely finish the customizations before the month calendar appears on the screen.
@@ -401,7 +401,7 @@
   <varlistentry id="exampleEventHandler3"><term><emphasis role="bold">Veto Events</emphasis></term>
   <listitem>
   <para>
-    The tab (<xref linkend="clsTab" />) control has the SELCHANGING (<xref linkend="mthConnectTabEvent" />) event.
+    The tab (<xref linkend="clsTab" />) control has the <xref linkend="mthConnectTabEvent"/> event.
     It is sent when the user selects a different tab, and is sent <emphasis role="bold">before</emphasis> the selected
     tab is changed. The programmer can <emphasis role="italic">veto</emphasis> the change to a new tab by returning
     <computeroutput>.false</computeroutput> to the event notification, or allow the change by returning
@@ -539,7 +539,8 @@
 <table id="tblEventNotificationMethods" frame="all">
 <title>EventNotification Methods</title>
 <tgroup cols="2">
-<colspec colwidth="2.0in" />
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -548,138 +549,138 @@
 </thead>
 <tbody>
 <row>
-<entry>addUserMsg (<xref linkend="mthAddUserMsg" />)</entry>
+<entry><xref linkend="mthAddUserMsg"/></entry>
 <entry>Connects an operating system window message with a method in the Rexx dialog object.</entry>
 </row>
 <row>
-<entry>connectActivate (<xref linkend="mthConnectActivate" />)</entry>
+<entry><xref linkend="mthConnectActivate"/></entry>
 <entry>Connects the window activation event to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectAllSBEvents (<xref linkend="mthConnectAllSBEvents" />)</entry>
+<entry><xref linkend="mthConnectAllSBEvents"/></entry>
 <entry>Connects all event notifications from a scroll bar control to a single method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectButtonEvent (<xref linkend="mthConnectButtonEvent" />)</entry>
+<entry><xref linkend="mthConnectButtonEvent"/></entry>
 <entry>Connect an event notification from a button control to a method in the Rexx Dialog</entry>
 </row>
 <row>
-<entry>connectComboBoxEvent (<xref linkend="mthConnectComboBoxEvent" />)</entry>
+<entry><xref linkend="mthConnectComboBoxEvent"/></entry>
 <entry>Connects an event notification from a combo box to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectCommandEvents (<xref linkend="mthConnectCommandEvents" />)</entry>
+<entry><xref linkend="mthConnectCommandEvents"/></entry>
 <entry>Connects a command event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectDateTimePickerEvent (<xref linkend="mthConnectDateTimePickerEvent" />)</entry>
+<entry><xref linkend="mthConnectDateTimePickerEvent"/></entry>
 <entry>Connects an event notification form a date time picker to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectDraw (<xref linkend="mthConnectDraw" />)</entry>
+<entry><xref linkend="mthConnectDraw"/></entry>
 <entry>Connects the draw item event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectEachSBEvent (<xref linkend="mthConnectEachSBEvent" />)</entry>
+<entry><xref linkend="mthConnectEachSBEvent"/></entry>
 <entry>Connects each specified event notification from a scroll bar to a separate method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectEditEvent (<xref linkend="mthConnectEditEvent" />)</entry>
+<entry><xref linkend="mthConnectEditEvent"/></entry>
 <entry>Connects an event notification from an edit control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogObject" />)</entry>
+<entry><xref linkend="mthConnectFKeyPressDialogObject"/></entry>
 <entry>Connects a F Key key press (a F key is typed) with a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectHelp (<xref linkend="mthConnectHelp" />)</entry>
+<entry><xref linkend="mthConnectHelp"/></entry>
 <entry>Connects the Windows Help event to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectKeyPress (<xref linkend="mthConnectKeyPressDialogObject" />)</entry>
+<entry><xref linkend="mthConnectKeyPressDialogObject"/></entry>
 <entry>Connects a key press (a key is typed) with a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectListBoxEvent (<xref linkend="mthConnectListBoxEvent" />)</entry>
+<entry><xref linkend="mthConnectListBoxEvent"/></entry>
 <entry>Connects an event notification from a list box control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectListViewEvent (<xref linkend="mthConnectListViewEvent" />)</entry>
+<entry><xref linkend="mthConnectListViewEvent"/></entry>
 <entry>Connects an event notification from a list-view control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectMonthCalendarEvent (<xref linkend="mthConnectMonthCalendarEvent" />)</entry>
+<entry><xref linkend="mthConnectMonthCalendarEvent"/></entry>
 <entry>Connects an event notification from a month calendar to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectMove (<xref linkend="mthConnectMove" />)</entry>
+<entry><xref linkend="mthConnectMove"/></entry>
 <entry>Connects the move event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectNotifyEvent (<xref linkend="mthConnectNotifyEvent" />)</entry>
+<entry><xref linkend="mthConnectNotifyEvent"/></entry>
 <entry>Connects a generic event notification from a dialog control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectPosChanged (<xref linkend="mthConnectPosChanged" />)</entry>
+<entry><xref linkend="mthConnectPosChanged"/></entry>
 <entry>Connects the position has changed event notification to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectResize (<xref linkend="mthConnectResize" />)</entry>
+<entry><xref linkend="mthConnectResize"/></entry>
 <entry>Connects the size event notification to a method in the Rexx dialog</entry>
 </row>
 <row>
-<entry>connectResizing (<xref linkend="mthConnectResizing" />)</entry>
+<entry><xref linkend="mthConnectResizing"/></entry>
 <entry>Connects the sizing event notification to a method in the Rexx dialog</entry>
 </row>
 <row>
-<entry>connectScrollBarEvent (<xref linkend="mthConnectScrollBarEvent" />)</entry>
+<entry><xref linkend="mthConnectScrollBarEvent"/></entry>
 <entry>Connects an event notification from a scroll bar control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectSizeMoveEnded (<xref linkend="mthConnectSizeMoveEnded" />)</entry>
+<entry><xref linkend="mthConnectSizeMoveEnded"/></entry>
 <entry>Connects the size / move ended event notification to a method in the Rexx dialog object.</entry>
 </row>
 <row>
-<entry>connectStaticEvent (<xref linkend="mthConnectStaticEvent" />)</entry>
+<entry><xref linkend="mthConnectStaticEvent"/></entry>
 <entry>Connects an event notification from a static control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectTabEvent (<xref linkend="mthConnectTabEvent" />)</entry>
+<entry><xref linkend="mthConnectTabEvent"/></entry>
 <entry>Connects an event notification from a tab control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectTrackBarEvent (<xref linkend="mthConnectTrackBarEvent" />)</entry>
+<entry><xref linkend="mthConnectTrackBarEvent"/></entry>
 <entry>Connects an event notification from a track bar control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectTreeViewEvent (<xref linkend="mthConnectTreeViewEvent" />)</entry>
+<entry><xref linkend="mthConnectTreeViewEvent"/></entry>
 <entry>Connects an event notification from a tree view control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>connectUpDownEvent (<xref linkend="mthConnectUpDownEvent" />)</entry>
+<entry><xref linkend="mthConnectUpDownEvent"/></entry>
 <entry>Connects an event notification from an UpDown control to a method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>defListDragHandler (<xref linkend="mthDefListDragHandler" />)</entry>
+<entry><xref linkend="mthDefListDragHandler"/></entry>
 <entry>Default implementation of a drag and drop handler for a list-view control.</entry>
 </row>
 <row>
-<entry>defTreeDragHandler (<xref linkend="mthDefTreeDragHandler" />)</entry>
+<entry><xref linkend="mthDefTreeDragHandler"/></entry>
 <entry>Default implementation of a drag and drop handler for a tree view control.</entry>
 </row>
 <row>
-<entry>disconnectKeyPress (<xref linkend="mthDisconnectKeyPressDialogObject" />)</entry>
+<entry><xref linkend="mthDisconnectKeyPressDialogObject"/></entry>
 <entry>Disconnects a method that was previously connected to key press event.</entry>
 </row>
 <row>
-<entry>hasKeyPressConnection (<xref linkend="mthHasKeyPressConnectionDialogObject" />)</entry>
+<entry><xref linkend="mthHasKeyPressConnectionDialogObject"/></entry>
 <entry>Queries if a connection to a key press event already exists.</entry>
 </row>
 </tbody></tgroup>
 </table>
 </section>
 
-<section id="mthAddUserMsg"><title>addUserMsg</title>
+<section id="mthAddUserMsg" xreflabel="addUserMsg"><title>addUserMsg</title>
 <indexterm><primary>addUserMsg</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>addUserMsg</secondary></indexterm>
 <indexterm><primary>EventNotification class</primary><secondary>addUserMsg</secondary></indexterm>
@@ -789,7 +790,7 @@
   </para>
   <para>
     In all cases, it is preferable to use specific connect event methods provided by ooDialog.  Such as
-    connectEditEvent (<xref linkend="mthConnectEditEvent" />), connectResize (<xref linkend="mthConnectResize" />), etc..
+ <xref linkend="mthConnectEditEvent"/>, <xref linkend="mthConnectResize"/>, etc..
     <emphasis role="italic">addUserMsg</emphasis> is provided for those cases where the specific connect event method
     the programmer needs is not present in ooDialog.
   </para>
@@ -946,7 +947,7 @@
 </programlisting>
 
 <para>
-  The event handler connected through the addUserMsg (<xref linkend="mthAddUserMsg" />) is invoked when ooDialog
+  The event handler connected through the <xref linkend="mthAddUserMsg"/> is invoked when ooDialog
   internally matches a message sent to the underlying (<xref linkend="ovvUnderlying" />) Windows dialog using the
   arguments specified by the programmer in the invocation of the <emphasis role="italic">addUserMsg</emphasis> method.
 </para>
@@ -960,7 +961,7 @@
   <listitem>
   <para>
     The event handling method receives two arguments. However, as noted in the remarks for the
-    addUserMessage (<xref linkend="mthAddUserMsg" />) this does not hold if ooDialog already has a connect event method for
+ <xref linkend="mthAddUserMsg"/> this does not hold if ooDialog already has a connect event method for
     the window message. In which case, the programmer should use the existing method, rather than <emphasis
     role="italic">addUserMsg</emphasis>.
   </para>
@@ -1002,7 +1003,7 @@
 
 </section>  <!-- End EventNotification::addUserMsg() -->
 
-<section id="mthConnectActivate"><title>connectActivate</title>
+<section id="mthConnectActivate" xreflabel="connectActivate"><title>connectActivate</title>
 <indexterm><primary>connectActivate</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectActivate</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectActivate</secondary></indexterm>
@@ -1014,7 +1015,7 @@
 </programlisting>
 
 <para>
-  Connects an <emphasis role="italic">activate</emphasis> event (<xref linkend="ovvEvents" />) notification sent to
+  Connects an <emphasis role="italic">activate</emphasis> <xref linkend="ovvEvents"/> notification sent to
   the underlying dialog with a method in the Rexx dialog. This event notification is sent to both the window being
   activated and the window being deactivated
 </para>
@@ -1065,7 +1066,7 @@
     Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
     role="italic">connectActivate</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />)
     to code event handlers are included in the documentation for the
-    EventNotification (<xref linkend="clsEventNotification" />) class.
+    <xref linkend="clsEventNotification"/> class.
   </para>
   <para>
     The interpreter invokes the event handler directly and waits in the window
@@ -1225,7 +1226,7 @@
 
 </section>
 
-<section id="mthConnectAllSBEvents"><title>connectAllSBEvents</title>
+<section id="mthConnectAllSBEvents" xreflabel="connectAllSBEvents"><title>connectAllSBEvents</title>
 <indexterm><primary>connectAllSBEvents</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1240,7 +1241,7 @@
 </para>
 <para>
   This method requires that the underlying (<xref linkend="ovvUnderlying" />) scroll bar exists. Therefore, the method
-  is best invoked in the initDialog (<xref linkend="mthInitDialog" />) method.
+  is best invoked in the <xref linkend="mthInitDialog"/> method.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1284,7 +1285,7 @@
 </variablelist>
 </section>
 
-<section id="mthConnectButtonEvent"><title>connectButtonEvent</title>
+<section id="mthConnectButtonEvent" xreflabel="connectButtonEvent"><title>connectButtonEvent</title>
 <indexterm><primary>connectButtonEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1295,7 +1296,7 @@
 </programlisting>
 
 <para>
-  Connects a method in the Rexx dialog to the Windows event (<xref linkend="ovvEvents" />) notification from a
+  Connects a method in the Rexx dialog to the Windows <xref linkend="ovvEvents"/> notification from a
   button (<xref linkend="clsButton" />) control. The <emphasis role="italic">connectButtonEvent</emphasis> method is used
   for all types of buttons (push button, radio button, or check box.)
 </para>
@@ -1432,7 +1433,7 @@
       Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
       role="italic">connectComboBoxEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />)
       to code event handlers are included in the documentation for the
-      EventNotification (<xref linkend="clsEventNotification" />) class.
+      <xref linkend="clsEventNotification"/> class.
     </para>
     </listitem>
     <listitem>
@@ -1492,7 +1493,7 @@
   </para>
   <para>
     The <emphasis role="italic">connectButtonEvent</emphasis> method is a member of the
-    EventNotification (<xref linkend="clsEventNotification" />) mixin class.
+    <xref linkend="clsEventNotification"/> mixin class.
   </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
@@ -1526,7 +1527,7 @@
 
 </section>  <!-- End EventNotification::connectionButtonEvent() -->
 
-<section id="mthConnectComboBoxEvent"><title>connectComboBoxEvent</title>
+<section id="mthConnectComboBoxEvent" xreflabel="connectComboBoxEvent"><title>connectComboBoxEvent</title>
 <indexterm><primary>connectComboBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1616,7 +1617,7 @@ incorrect.
   Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
   role="italic">connectComboBoxEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />)
   to code event handlers are included in the documentation for the
-  EventNotification (<xref linkend="clsEventNotification" />) class.
+  <xref linkend="clsEventNotification"/> class.
 </para>
 <para>
   The event-handling methods receive two arguments: the first is a combination of the ID of the combo box and the ID of
@@ -1660,7 +1661,7 @@ incorrect.
 
 </section>
 
-<section id="mthConnectCommandEvents"><title>connectCommandEvents</title>
+<section id="mthConnectCommandEvents" xreflabel="connectCommandEvents"><title>connectCommandEvents</title>
 <indexterm><primary>connectCommandEvents</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectCommandEvents</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectCommandEvents</secondary></indexterm>
@@ -1674,7 +1675,7 @@ incorrect.
 
 <para>
   The <emphasis role="italic">connectCommandEvents</emphasis> method connects a Rexx dialog method to the command
-  event (<xref linkend="ovvEvents" />) notifications sent by a Windows dialog control to its parent dialog.
+  <xref linkend="ovvEvents"/> notifications sent by a Windows dialog control to its parent dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1727,7 +1728,7 @@ incorrect.
   <para>
     The number of different notification codes and the meanings of the notifications are dependent on the type of dialog
     control specified. Therefore, it is more advisable to use the specific connectXXXEvent() method for the control.
-    Such as the connectListBoxEvent (<xref linkend="mthConnectListBoxEvent" />)() method.
+    Such as the <xref linkend="mthConnectListBoxEvent"/>() method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1793,7 +1794,7 @@ lo word resource ID:       1003
 </variablelist>
 </section>
 
-<section id="mthConnectDateTimePickerEvent"><title>connectDateTimePickerEvent</title>
+<section id="mthConnectDateTimePickerEvent" xreflabel="connectDateTimePickerEvent"><title>connectDateTimePickerEvent</title>
 <indexterm><primary>connectDateTimePickerEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1805,7 +1806,7 @@ lo word resource ID:       1003
 
 <para>
   The <emphasis role="italic">connectDateTimePickerEvent</emphasis> method connects an
-  event (<xref linkend="ovvEvents" />) notification message from a date time picker (<xref linkend="clsDateTimePicker" />)
+  <xref linkend="ovvEvents"/> notification message from a date time picker (<xref linkend="clsDateTimePicker" />)
   control to a method in the Rexx dialog.
 </para>
 <para>
@@ -1953,7 +1954,7 @@ lo word resource ID:       1003
     Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
     role="italic">connectDateTimePickerEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />)
     to code event handlers are included in the documentation for the
-    EventNotification (<xref linkend="clsEventNotification" />) class.
+    <xref linkend="clsEventNotification"/> class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2004,7 +2005,7 @@ lo word resource ID:       1003
 <para>
   The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
-  connectDateTimePickerEvent (<xref linkend="mthConnectDateTimePickerEvent" />) method. The actual value returned from the
+ <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   event handler is ignored.
 </para>
 <para>
@@ -2095,7 +2096,7 @@ lo word resource ID:       1003
 <para>
   The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
-  connectDateTimePickerEvent (<xref linkend="mthConnectDateTimePickerEvent" />) method. The actual value returned from the
+ <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   date time change event handler is ignored.
 </para>
 
@@ -2225,7 +2226,7 @@ lo word resource ID:       1003
 <para>
   The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
-  connectDateTimePickerEvent (<xref linkend="mthConnectDateTimePickerEvent" />) method. The actual value returned from the
+ <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   event handler for the drop down event is ignored.
 </para>
 
@@ -2277,7 +2278,7 @@ lo word resource ID:       1003
   </para>
   <para>
     In Windows Vista and later versions of Windows, the DTP control has the
-    setMonthCalStyle (<xref linkend="mthSetMonthCalStyle" />) method which can be used to set the month calendar's style
+ <xref linkend="mthSetMonthCalStyle"/> method which can be used to set the month calendar's style
     once and the DTP control will then use that style each time it creates the month calendar. Therefore, the technique
     of setting the month calendar style during the drop down event handler is really only needed for Windows XP and
     earlier.
@@ -2679,7 +2680,7 @@ lo word resource ID:       1003
 <para>
   The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
-  connectDateTimePickerEvent (<xref linkend="mthConnectDateTimePickerEvent" />) method. The actual value returned from the
+ <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   event handler for the kill focus event is ignored.
 </para>
 
@@ -2733,7 +2734,7 @@ lo word resource ID:       1003
 <para>
   The programmer can specify for the interpreter to wait, or not wait, for the return from the the event handler by
   using the <emphasis role="italic">willReply</emphasis> argument in the
-  connectDateTimePickerEvent (<xref linkend="mthConnectDateTimePickerEvent" />) method. The actual value returned from the
+ <xref linkend="mthConnectDateTimePickerEvent"/> method. The actual value returned from the
   event handler for the set focus event is ignored.
 </para>
 
@@ -2904,7 +2905,7 @@ lo word resource ID:       1003
 
 </section>  <!-- End EventNotification::connectDateTimePickerEvent() -->
 
-<section id="mthConnectDraw"><title>connectDraw</title>
+<section id="mthConnectDraw" xreflabel="connectDraw"><title>connectDraw</title>
 <indexterm><primary>connectDraw</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectDraw</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectDraw</secondary></indexterm>
@@ -2989,7 +2990,7 @@ lo word resource ID:       1003
 </variablelist>
 </section>
 
-<section id="mthConnectEachSBEvent"><title>connectEachSBEvent</title>
+<section id="mthConnectEachSBEvent" xreflabel="connectEachSBEvent"><title>connectEachSBEvent</title>
 <indexterm><primary>connectEachSBEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3007,12 +3008,12 @@ lo word resource ID:       1003
 
 <para>
   The <emphasis role="italic">connectEachSBEvent</emphasis> method connects an
-  event (<xref linkend="ovvEvents" />) notification message from a scroll bar to a method in the Rexx dialog object.
+  <xref linkend="ovvEvents"/> notification message from a scroll bar to a method in the Rexx dialog object.
   Optionally, the method can also initialize the scroll bar, (set the range and current position.)
 </para>
 <para>
   This method requires that the underlying (<xref linkend="ovvUnderlying" />) scroll bar exists. Therefore, the method
-  is best invoked in the initDialog (<xref linkend="mthInitDialog" />) method.
+  is best invoked in the <xref linkend="mthInitDialog"/> method.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3105,7 +3106,7 @@ the dragging.
 </variablelist>
 </section>
 
-<section id="mthConnectEditEvent"><title>connectEditEvent</title>
+<section id="mthConnectEditEvent" xreflabel="connectEditEvent"><title>connectEditEvent</title>
 <indexterm><primary>connectEditEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3242,7 +3243,7 @@ it to 0 when a nonnumeric value was entered:
 
 </section>
 
-<section id="mthConnectFKeyPressDialogObject"><title>connectFKeyPress</title>
+<section id="mthConnectFKeyPressDialogObject" xreflabel="connectFKeyPress"><title>connectFKeyPress</title>
 <indexterm><primary>connectFKeyPress</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectFKeyPress</secondary></indexterm>
 <programlisting>
@@ -3308,7 +3309,7 @@ it to 0 when a nonnumeric value was entered:
   <listitem>
   <para>
     This method works for function keys F2 through F24. In Windows the F1 key is the help key and the
-    connectHelp (<xref linkend="mthConnectHelp" />) method should be used for F1. This method is a convenience method and is
+ <xref linkend="mthConnectHelp"/> method should be used for F1. This method is a convenience method and is
     exactly equivalent to:
 
 <programlisting>
@@ -3328,13 +3329,13 @@ it to 0 when a nonnumeric value was entered:
   </para>
   <para>
     Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
-    method can be used. That means it can be used in initDialog (<xref linkend="mthInitDialog" />) or any time
+    method can be used. That means it can be used in <xref linkend="mthInitDialog"/> or any time
     thereafter.  There is a maximum limit of 63 methods, per dialog, that can be connected to key press events.
-    Connections can be removed using the disconnectKeyPress (<xref linkend="mthDisconnectKeyPressDialogObject" />)
+    Connections can be removed using the <xref linkend="mthDisconnectKeyPressDialogObject"/>
     method if there is no longer a need for a notification of a key press.
   </para>
   <para>
-    The dialog control object also has a connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogControlObject" />)()
+    The dialog control object also has a <xref linkend="mthConnectFKeyPressDialogControlObject"/>()
     method. The method of the dialog object (this method) will capture any F key press event when the dialog is the
     active window. The method of the dialog control object will only capture a F key press when the control has the
     keyboard focus.
@@ -3371,7 +3372,7 @@ it to 0 when a nonnumeric value was entered:
   <listitem>
   <para>
     The following example is a variation on the example (<xref linkend="connectKeyPressExample" />) shown for the
-    connectKeyPress (<xref linkend="mthConnectKeyPressDialogObject" />) method. It connects all the function keys to the
+ <xref linkend="mthConnectKeyPressDialogObject"/> method. It connects all the function keys to the
     same method and then determines what action to take by examining which key was pressed.
 
   <programlisting>
@@ -3413,7 +3414,7 @@ it to 0 when a nonnumeric value was entered:
 </variablelist>
 </section>
 
-<section id="mthConnectHelp"><title>connectHelp</title>
+<section id="mthConnectHelp" xreflabel="connectHelp"><title>connectHelp</title>
 <indexterm><primary>connectHelp</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectHelp</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectHelp</secondary></indexterm>
@@ -3565,7 +3566,7 @@ Help request:
 </variablelist>
 </section>
 
-<section id="mthConnectKeyPressDialogObject"><title>connectKeyPress</title>
+<section id="mthConnectKeyPressDialogObject" xreflabel="connectKeyPress"><title>connectKeyPress</title>
 <indexterm><primary>connectKeyPress</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectKeyPress</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectKeyPress</secondary></indexterm>
@@ -3579,7 +3580,7 @@ Help request:
 
 <para>
   The <emphasis role="italic">connectKeyPress</emphasis> method connects a key press
-  event (<xref linkend="ovvEvents" />) notification with a method in the Rexx dialog. A single key or multiple keys can be
+  <xref linkend="ovvEvents"/> notification with a method in the Rexx dialog. A single key or multiple keys can be
   connected to the same method.  Multiple methods can be connected for key press events, but only 1 method can be
   connected to any single key.
 </para>
@@ -3623,7 +3624,7 @@ Help request:
           <listitem>
           <para>
             All Function keys, other than F1.  (In Windows the F1 key is the help key and the
-            connectHelp (<xref linkend="mthConnectHelp" />) method should be used for F1.)
+ <xref linkend="mthConnectHelp"/> method should be used for F1.)
           </para>
           </listitem></varlistentry>
           <varlistentry><term>ALPHA</term>
@@ -3783,13 +3784,13 @@ Help request:
   <listitem>
   <para>
     Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
-    method can be used. That means it can be used in initDialog (<xref linkend="mthInitDialog" />) or any time
+    method can be used. That means it can be used in <xref linkend="mthInitDialog"/> or any time
     thereafter.  There is a maximum limit of 63 methods, per dialog, that can be connected to key press events.
-    Connections can be removed using the disconnectKeyPress (<xref linkend="mthDisconnectKeyPressDialogObject" />)
+    Connections can be removed using the <xref linkend="mthDisconnectKeyPressDialogObject"/>
     method if there is no longer a need for a notification of a key press.
   </para>
   <para>
-    The dialog control object also has a connectKeyPress (<xref linkend="mthConnectKeyPressDialogControlObject" />)()
+    The dialog control object also has a <xref linkend="mthConnectKeyPressDialogControlObject"/>()
     method.  It is important to note this distinction between the two methods. The method of the dialog object (this
     method) will capture all key press events when the dialog is the active window. This includes key presses when a
     dialog control in the dialog has the focus.
@@ -3986,7 +3987,7 @@ Help request:
 
 </section>
 
-<section id="mthConnectListBoxEvent"><title>connectListBoxEvent</title>
+<section id="mthConnectListBoxEvent" xreflabel="connectListBoxEvent"><title>connectListBoxEvent</title>
 <indexterm><primary>connectListBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4058,7 +4059,7 @@ incorrect.
   Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
   role="italic">connectListBoxEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />)
   to code event handlers are included in the documentation for the
-  EventNotification (<xref linkend="clsEventNotification" />) class.
+  <xref linkend="clsEventNotification"/> class.
 </para>
 <para>
   The event-handling methods receive two arguments: the first is a combination of the ID of the listbox and the ID of
@@ -4098,7 +4099,7 @@ incorrect.
 
 </section>
 
-<section id="mthConnectListViewEvent"><title>connectListViewEvent</title>
+<section id="mthConnectListViewEvent" xreflabel="connectListViewEvent"><title>connectListViewEvent</title>
 <indexterm><primary>connectListViewEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4110,7 +4111,7 @@ incorrect.
 
 <para>
   The <emphasis role="italic">connectListViewEvent</emphasis> method connects a particular
-  event (<xref linkend="ovvEvents" />) notification from a list-view control with an event handling method in the Rexx
+  <xref linkend="ovvEvents"/> notification from a list-view control with an event handling method in the Rexx
   dialog.
 </para>
 <variablelist>
@@ -4139,7 +4140,7 @@ incorrect.
       <varlistentry><term>BEGINDRAG</term>
       <listitem>
       <para>
-        A drag-and-drop operation was initiated. See defListDragHandler (<xref linkend="mthDefListDragHandler" />) for
+        A drag-and-drop operation was initiated. See <xref linkend="mthDefListDragHandler"/> for
         information on how to implement a drag-and-drop handler.
       </para>
       </listitem></varlistentry>
@@ -4147,7 +4148,7 @@ incorrect.
       <listitem>
       <para>
         A drag-and-drop operation involving the right mouse button was initiated. See
-        defListDragHandler (<xref linkend="mthDefListDragHandler" />) for information on how to implement a drag-and-drop
+ <xref linkend="mthDefListDragHandler"/> for information on how to implement a drag-and-drop
         handler.
       </para>
       </listitem></varlistentry>
@@ -4192,7 +4193,7 @@ incorrect.
       <listitem>
       <para>
         The check box state of an item changed.  (The check box was checked or unchecked.) This event can only occur if
-        the list-view has the check box extended (<xref linkend="mthAddExtendedStyle" />) list-view style.  Use this
+        the list-view has the check box <xref linkend="mthAddExtendedStyle"/> list-view style.  Use this
         keyword instead of the CHANGED keyword.
       </para>
       </listitem></varlistentry>
@@ -4201,7 +4202,7 @@ incorrect.
       <para>
         This event is generated when the list-view is clicked with the left mouse button. However, in report view only,
         this excludes the column headers. Connecting the CLICK event is a replacement for the
-        connectNotifyEvent (<xref linkend="mthConnectNotifyEvent" />) method's CLICK event.
+ <xref linkend="mthConnectNotifyEvent"/> method's CLICK event.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>DBLCLK</term>
@@ -4209,7 +4210,7 @@ incorrect.
       <para>
         This event is generated when the list-view is double-clicked with the left mouse button. However, in
         report view only, this excludes the column headers. Connecting the DBLCLK event is a replacement for the
-        connectNotifyEvent (<xref linkend="mthConnectNotifyEvent" />) method's DBLCLK event.
+ <xref linkend="mthConnectNotifyEvent"/> method's DBLCLK event.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>COLUMNCLICK</term>
@@ -4318,7 +4319,7 @@ incorrect.
   </para>
   <para>
     Likewise, the <computeroutput>connectListViewEvent</computeroutput> CLICK keyword provides much better information
-    than that provided by the connectNotifyEvent (<xref linkend="mthConnectNotifyEvent" />)'s CLICK keyword.
+    than that provided by the <xref linkend="mthConnectNotifyEvent"/>'s CLICK keyword.
   </para>
   <para>
     <emphasis role="bold">Note:</emphasis> If the same event, for the same control, is connected using two different
@@ -4707,7 +4708,7 @@ incorrect.
 
 </section>
 
-<section id="mthConnectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
+<section id="mthConnectMonthCalendarEvent" xreflabel="connectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
 <indexterm><primary>connectMonthCalendarEvent</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectMonthCalendarEvent</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectMonthCalendarEvent</secondary></indexterm>
@@ -4721,7 +4722,7 @@ incorrect.
 
 <para>
   The <emphasis role="italic">connectMonthCalendarEvent</emphasis> method connects an
-  event (<xref linkend="ovvEvents" />) notification message from a month calendar (<xref linkend="clsMonthCalendar" />)
+  <xref linkend="ovvEvents"/> notification message from a month calendar (<xref linkend="clsMonthCalendar" />)
   control to a method in the Rexx dialog.
 </para>
 <variablelist>
@@ -4824,7 +4825,7 @@ incorrect.
     Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
     role="italic">connectMonthCalendarEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />)
     to code event handlers are included in the documentation for the
-    EventNotification (<xref linkend="clsEventNotification" />) class.
+    <xref linkend="clsEventNotification"/> class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -4994,7 +4995,7 @@ incorrect.
 <para>
   The event handler for the released event is invoked when the month calendar releases the mouse capture. The
   interpreter waits, or does not wait, for the reply as specified by the programmer in the
-  connectMonthCalendarEvent (<xref linkend="mthConnectMonthCalendarEvent" />) method. The operating system ignores the value
+ <xref linkend="mthConnectMonthCalendarEvent"/> method. The operating system ignores the value
   of the reply.
 </para>
 <variablelist>
@@ -5054,7 +5055,7 @@ incorrect.
 </para>
 <para>
   The interpreter waits, or does not wait, for the reply as specified by the programmer in the
-  connectMonthCalendarEvent (<xref linkend="mthConnectMonthCalendarEvent" />) method. The operating system ignores the value
+ <xref linkend="mthConnectMonthCalendarEvent"/> method. The operating system ignores the value
   of the reply.
 </para>
 <variablelist>
@@ -5123,7 +5124,7 @@ incorrect.
 </para>
 <para>
   The interpreter waits, or does not wait, for the reply as specified by the programmer in the
-  connectMonthCalendarEvent (<xref linkend="mthConnectMonthCalendarEvent" />) method. The operating system ignores the value
+ <xref linkend="mthConnectMonthCalendarEvent"/> method. The operating system ignores the value
   of the reply.
 </para>
 <variablelist>
@@ -5192,7 +5193,7 @@ incorrect.
 </para>
 <para>
   The interpreter waits, or does not wait, for the reply as specified by the programmer in the
-  connectMonthCalendarEvent (<xref linkend="mthConnectMonthCalendarEvent" />) method. The operating system ignores the value
+ <xref linkend="mthConnectMonthCalendarEvent"/> method. The operating system ignores the value
   of the reply.
 </para>
 <variablelist>
@@ -5236,7 +5237,7 @@ incorrect.
 
 </section>  <!-- End EventNotification::connectionMonthCalendarEvent() -->
 
-<section id="mthConnectMove"><title>connectMove</title>
+<section id="mthConnectMove" xreflabel="connectMove"><title>connectMove</title>
 <indexterm><primary>connectMove</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectMove</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectMove</secondary></indexterm>
@@ -5327,7 +5328,7 @@ incorrect.
 </variablelist>
 </section>
 
-<section id="mthConnectNotifyEvent"><title>connectNotifyEvent</title>
+<section id="mthConnectNotifyEvent" xreflabel="connectNotifyEvent"><title>connectNotifyEvent</title>
 <indexterm><primary>connectNotifyEvent</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectNotifyEvent</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectNotifyEvent</secondary></indexterm>
@@ -5346,7 +5347,7 @@ incorrect.
 <para>
   Most event notifications are specific to the particular type of control that sends them. These generic event
   notifications are common to a number of dialog controls. In general, if one of the dialog control specific event
-  connection methods, such as connectListViewEvent (<xref linkend="mthConnectListViewEvent" />) can make a connection
+  connection methods, such as <xref linkend="mthConnectListViewEvent"/> can make a connection
   for the event, then <emphasis role="italic">connectNotifyEvent</emphasis> should not be used. In these cases, the
   dialog control does not send one of the generic event notifications. It sends a notification specific to itself.
 </para>
@@ -5414,7 +5415,7 @@ incorrect.
   <listitem>
     <para>
       The <emphasis role="italic">connectNotifyEvent</emphasis> method is a member of the
-      EventNotification (<xref linkend="clsEventNotification" />) mixin class.
+      <xref linkend="clsEventNotification"/> mixin class.
     </para>
     <para>
       Syntax errors are raised when incorrect usage is detected.
@@ -5453,7 +5454,7 @@ incorrect.
 
 </section>
 
-<section id="mthConnectPosChanged"><title>connectPosChanged</title>
+<section id="mthConnectPosChanged" xreflabel="connectPosChanged"><title>connectPosChanged</title>
 <indexterm><primary>connectPosChanged</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectPosChanged</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectPosChanged</secondary></indexterm>
@@ -5543,7 +5544,7 @@ incorrect.
 </variablelist>
 </section>
 
-<section id="mthConnectResize"><title>connectResize</title>
+<section id="mthConnectResize" xreflabel="connectResize"><title>connectResize</title>
 <indexterm><primary>connectResize</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectResize</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectResize</secondary></indexterm>
@@ -5710,7 +5711,7 @@ incorrect.
 </variablelist>
 </section>
 
-<section id="mthConnectResizing"><title>connectResizing</title>
+<section id="mthConnectResizing" xreflabel="connectResizing"><title>connectResizing</title>
 <indexterm><primary>connectResizing</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectResizing</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectResizing</secondary></indexterm>
@@ -5722,7 +5723,7 @@ incorrect.
 </programlisting>
 
 <para>
-  Connects a <emphasis role="italic">sizing</emphasis> event (<xref linkend="ovvEvents" />) notification sent to the
+  Connects a <emphasis role="italic">sizing</emphasis> <xref linkend="ovvEvents"/> notification sent to the
   underlying dialog with a method in the Rexx dialog. The notification is sent to the dialog <emphasis
   role="italic">before</emphasis> its size has changed.
 </para>
@@ -5770,7 +5771,7 @@ incorrect.
     Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
     role="italic">connectResizing</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />)
     to code event handlers are included in the documentation for the
-    EventNotification (<xref linkend="clsEventNotification" />) class.
+    <xref linkend="clsEventNotification"/> class.
   </para>
   <para>
     The interpreter invokes the event handler directly and waits in the window
@@ -5945,7 +5946,7 @@ incorrect.
 </variablelist>
 </section>
 
-<section id="mthConnectScrollBarEvent"><title>connectScrollBarEvent</title>
+<section id="mthConnectScrollBarEvent" xreflabel="connectScrollBarEvent"><title>connectScrollBarEvent</title>
 <indexterm><primary>connectScrollBarEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5956,7 +5957,7 @@ incorrect.
 </programlisting>
 
 <para>
-  Connects a method in the Rexx dialog to the Windows event (<xref linkend="ovvEvents" />) notification from a
+  Connects a method in the Rexx dialog to the Windows <xref linkend="ovvEvents"/> notification from a
   scroll bar (<xref linkend="clsScrollBar" />) control.
 </para>
 <variablelist>
@@ -6115,13 +6116,13 @@ incorrect.
   <listitem>
   <para>
     This method requires that the underlying (<xref linkend="ovvUnderlying" />) scroll bar exists. Therefore, the method
-    is best invoked in the initDialog (<xref linkend="mthInitDialog" />) method. At some later point in the life cycle
+    is best invoked in the <xref linkend="mthInitDialog"/> method. At some later point in the life cycle
     of the dialog is fine. If the method is invoked before the underlying dialog has been created a syntax condition is
     raised.
   </para>
   <para>
     Common guidelines on how (<xref linkend="sctCodingEventHandlers" />) to code event handlers are included in the
-    documentation for the EventNotification (<xref linkend="clsEventNotification" />) class.
+    documentation for the <xref linkend="clsEventNotification"/> class.
   </para>
   <para>
     When the user interacts with a scroll bar, the operating system does not reposition the scroll box (thumb.) Rather,
@@ -6190,7 +6191,7 @@ incorrect.
 
 </section>
 
-<section id="mthConnectSizeMoveEnded"><title>connectSizeMoveEnded</title>
+<section id="mthConnectSizeMoveEnded" xreflabel="connectSizeMoveEnded"><title>connectSizeMoveEnded</title>
 <indexterm><primary>connectSizeMoveEnded</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectSizeMoveEnded</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>connectSizeMoveEnded</secondary></indexterm>
@@ -6203,7 +6204,7 @@ incorrect.
 
 <para>
   The <emphasis role="italic">connectSizeMoveEnded</emphasis> method connects the Windows exit size / move
-  event (<xref linkend="ovvEvents" />) with an event handling method in the Rexx dialog object. This event is sent exactly
+  <xref linkend="ovvEvents"/> with an event handling method in the Rexx dialog object. This event is sent exactly
   one time when the user has stopped moving or stopped resizing the dialog.
 </para>
 <variablelist>
@@ -6330,7 +6331,7 @@ incorrect.
 
 </section>
 
-<section id="mthConnectStaticEvent"><title>connectStaticEvent</title>
+<section id="mthConnectStaticEvent" xreflabel="connectStaticEvent"><title>connectStaticEvent</title>
 <indexterm><primary>connectStaticEvent</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectStaticEvent</secondary></indexterm>
 <programlisting>
@@ -6498,7 +6499,7 @@ incorrect.
 </variablelist>
 </section>
 
-<section id="mthConnectTabEvent"><title>connectTabEvent</title>
+<section id="mthConnectTabEvent" xreflabel="connectTabEvent"><title>connectTabEvent</title>
 <indexterm><primary>connectTabEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6510,7 +6511,7 @@ incorrect.
 
 <para>
   The <emphasis role="italic">connectTabEvent</emphasis> method connects a specific
-  event (<xref linkend="ovvEvents" />) notification from a tab control with an event handling method in the Rexx
+  <xref linkend="ovvEvents"/> notification from a tab control with an event handling method in the Rexx
   dialog.
 </para>
 <variablelist>
@@ -6608,7 +6609,7 @@ incorrect.
     Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
     role="italic">connectTabEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />)
     to code event handlers are included in the documentation for the
-    EventNotification (<xref linkend="clsEventNotification" />) class.
+    <xref linkend="clsEventNotification"/> class.
   </para>
   <para>
     The event-handling method for the KEYDOWN event receives two arguments: info about the event, the control ID of the
@@ -6725,7 +6726,7 @@ incorrect.
 
 </section>
 
-<section id="mthConnectTrackBarEvent"><title>connectTrackBarEvent</title>
+<section id="mthConnectTrackBarEvent" xreflabel="connectTrackBarEvent"><title>connectTrackBarEvent</title>
 <indexterm><primary>connectTrackBarEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6847,7 +6848,7 @@ trackbar position by extracting the high-oder word. Example:
 </para></note>
 </section>
 
-<section id="mthConnectTreeViewEvent"><title>connectTreeViewEvent</title>
+<section id="mthConnectTreeViewEvent" xreflabel="connectTreeViewEvent"><title>connectTreeViewEvent</title>
 <indexterm><primary>connectTreeViewEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6859,7 +6860,7 @@ trackbar position by extracting the high-oder word. Example:
 
 <para>
   The <emphasis role="italic">connectTreeViewEvent</emphasis> method connects a method in a Rexx dialog to a particular
-  tree view event (<xref linkend="ovvEvents" />).
+  tree view <xref linkend="ovvEvents"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6880,7 +6881,7 @@ trackbar position by extracting the high-oder word. Example:
         <listitem>
         <para>
           A drag-and-drop operation using the left mouse button was initiated. The documentation for the
-          defTreeDragHandler (<xref linkend="mthDefTreeDragHandler" />)() method contains further information on how to
+ <xref linkend="mthDefTreeDragHandler"/>() method contains further information on how to
           implement a drag-and-drop handler.
         </para>
         </listitem></varlistentry>
@@ -6888,7 +6889,7 @@ trackbar position by extracting the high-oder word. Example:
         <listitem>
         <para>
           A drag-and-drop operation involving the right mouse button was initiated. The documentation for the
-          defTreeDragHandler (<xref linkend="mthDefTreeDragHandler" />)() method contains further information on how to
+ <xref linkend="mthDefTreeDragHandler"/>() method contains further information on how to
           implement a drag-and-drop handler.
         handler.
         </para>
@@ -6977,7 +6978,7 @@ trackbar position by extracting the high-oder word. Example:
     Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
     role="italic">connectTreeViewEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />)
     to code event handlers are included in the documentation for the
-    EventNotification (<xref linkend="clsEventNotification" />) class.
+    <xref linkend="clsEventNotification"/> class.
   </para>
   <orderedlist>
   <listitem>
@@ -7061,7 +7062,7 @@ trackbar position by extracting the high-oder word. Example:
   <listitem>
     <para>
       The <emphasis role="italic">connectTreeViewEvent</emphasis> method is a member of the
-      EventNotification (<xref linkend="clsEventNotification" />) mixin class.
+      <xref linkend="clsEventNotification"/> mixin class.
     </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
@@ -7100,7 +7101,7 @@ trackbar position by extracting the high-oder word. Example:
 
 </section>
 
-<section id="mthConnectUpDownEvent"><title>connectUpDownEvent</title>
+<section id="mthConnectUpDownEvent" xreflabel="connectUpDownEvent"><title>connectUpDownEvent</title>
 <indexterm><primary>connectUpDownEvent</primary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectUpDownEvent</secondary></indexterm>
 <indexterm><primary>EventNotification class</primary><secondary>connectUpDownEvent</secondary></indexterm>
@@ -7112,7 +7113,7 @@ trackbar position by extracting the high-oder word. Example:
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectUpDownEvent</emphasis> method connects an event (<xref linkend="ovvEvents" />)
+  The <emphasis role="italic">connectUpDownEvent</emphasis> method connects an <xref linkend="ovvEvents"/>
   notification message from a up-down (<xref linkend="clsUpDown" />) control to a method in the Rexx dialog.
 </para>
 <variablelist>
@@ -7174,7 +7175,7 @@ trackbar position by extracting the high-oder word. Example:
     Common guidelines on where (<xref linkend="paraWhereToConnectEvents" />) to invoke the <emphasis
     role="italic">connectUpDownEvent</emphasis> method and on how (<xref linkend="sctCodingEventHandlers" />) to
     code event handlers are included in the documentation for the
-    EventNotification (<xref linkend="clsEventNotification" />) class.
+    <xref linkend="clsEventNotification"/> class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -7213,7 +7214,7 @@ trackbar position by extracting the high-oder word. Example:
 </para>
 <para>
   The programmer must return a value from the event handler and the interpreter waits for this return. The
-  deltaPosReply (<xref linkend="mthDeltaPosReply" />) class method of the UpDown (<xref linkend="clsUpDown" />) class is
+ <xref linkend="mthDeltaPosReply"/> class method of the UpDown (<xref linkend="clsUpDown" />) class is
   used to properly construct the return value from the event handler.
 </para>
 <variablelist>
@@ -7255,7 +7256,7 @@ trackbar position by extracting the high-oder word. Example:
   <listitem>
   <para>
     A delta position buffer must be returned by the event handler.  This buffer can only be constructed properly by
-    using the UpDown (<xref linkend="clsUpDown" />) class's deltaPosReply (<xref linkend="mthDeltaPosReply" />)
+    using the UpDown (<xref linkend="clsUpDown" />) class's <xref linkend="mthDeltaPosReply"/>
     method. The arguments to <emphasis role="italic">deltaPosReply</emphasis> allow the programmer to return a value
     that makes no change to the new position, cancels altogether the change in position, or modifies the resulting new
     position.
@@ -7302,7 +7303,7 @@ trackbar position by extracting the high-oder word. Example:
 
 </section>  <!-- End EventNotification::connectUpDownEvent() -->
 
-<section id="mthDefListDragHandler"><title>defListDragHandler</title>
+<section id="mthDefListDragHandler" xreflabel="defListDragHandler"><title>defListDragHandler</title>
 <indexterm><primary>defListDragHandler</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -7314,8 +7315,8 @@ trackbar position by extracting the high-oder word. Example:
 <para>
   A list-view control does not handle a drag-and-drop operation itself. It defers that handling to the programmer by
   sending a BEGINGDRAG, (left mouse drag,) or a BEGINRDRAG, (right mouse drag,) event notification. The programmer can
-  code his own event (<xref linkend="ovvEvents" />) handling method and use
-  connectListViewEvent (<xref linkend="mthConnectListViewEvent" />)() method to connect the method to the drag-and-drop
+  code his own <xref linkend="ovvEvents"/> handling method and use
+ <xref linkend="mthConnectListViewEvent"/>() method to connect the method to the drag-and-drop
   operation.
 </para>
 <para>
@@ -7350,7 +7351,7 @@ trackbar position by extracting the high-oder word. Example:
 </para>
 </section>
 
-<section id="mthDefTreeDragHandler"><title>defTreeDragHandler</title>
+<section id="mthDefTreeDragHandler" xreflabel="defTreeDragHandler"><title>defTreeDragHandler</title>
 <indexterm><primary>defTreeDragHandler</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -7362,8 +7363,8 @@ trackbar position by extracting the high-oder word. Example:
 <para>
   A tree view control does not handle a drag-and-drop operation itself. It defers that handling to the programmer by
   sending a BEGINGDRAG, (left mouse drag,) or a BEGINRDRAG, (right mouse drag,) event notification. The programmer can
-  code his own event (<xref linkend="ovvEvents" />) handling method and use
-  connectTreeViewEvent (<xref linkend="mthConnectTreeViewEvent" />)() method to connect the method to the drag-and-drop
+  code his own <xref linkend="ovvEvents"/> handling method and use
+ <xref linkend="mthConnectTreeViewEvent"/>() method to connect the method to the drag-and-drop
   operation.
 </para>
 <para>
@@ -7399,7 +7400,7 @@ trackbar position by extracting the high-oder word. Example:
 </para>
 </section>
 
-<section id="mthDisconnectKeyPressDialogObject"><title>disconnectKeyPress</title>
+<section id="mthDisconnectKeyPressDialogObject" xreflabel="disconnectKeyPress"><title>disconnectKeyPress</title>
 <indexterm><primary>disconnectKeyPress</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>disconnectKeyPress</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>disconnectFKeyPress</secondary></indexterm>
@@ -7413,8 +7414,8 @@ trackbar position by extracting the high-oder word. Example:
 
 <para>
   The <emphasis role="italic">disconnectKeyPress</emphasis> method disconnects a key press event from a method that was
-  previously connected using connectKeyPress (<xref linkend="mthConnectKeyPressDialogObject" />), or
-  connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogObject" />).
+  previously connected using <xref linkend="mthConnectKeyPressDialogObject"/>, or
+ <xref linkend="mthConnectFKeyPressDialogObject"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7464,13 +7465,13 @@ trackbar position by extracting the high-oder word. Example:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The dialog control object also has a disconnectKeyPress (<xref linkend="mthDisconnectKeyPressDialogControlObject" />)
+    The dialog control object also has a <xref linkend="mthDisconnectKeyPressDialogControlObject"/>
     method. The method of the dialog object (this method) can only disconnect key press events that were set with the
-    dialog object's versions of connectKeyPress (<xref linkend="mthConnectKeyPressDialogObject" />) and
-    connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogObject" />) methods. This method can not disconnect key press
+    dialog object's versions of <xref linkend="mthConnectKeyPressDialogObject"/> and
+ <xref linkend="mthConnectFKeyPressDialogObject"/> methods. This method can not disconnect key press
     events that were set with the dialog control object's versions of
-    connectKeyPress (<xref linkend="mthConnectKeyPressDialogControlObject" />) and
-    connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogControlObject" />) methods.
+ <xref linkend="mthConnectKeyPressDialogControlObject"/> and
+ <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -7483,7 +7484,7 @@ trackbar position by extracting the high-oder word. Example:
   <listitem>
   <para>
     The following example is a variation on the example (<xref linkend="connectKeyPressExample" />) shown for the
-    connectKeyPress (<xref linkend="mthConnectKeyPressDialogObject" />) method. It builds on the fictitious customer
+ <xref linkend="mthConnectKeyPressDialogObject"/> method. It builds on the fictitious customer
     order system.  The F7 key saves the completed invoice into the system and enters a different phase of the companies
     business process. At this point (for whatever fictitious business reason) the fields can no longer be cleared and
     the user is not allowed to look up customer or product information.  But, the user may still need to print the
@@ -7560,7 +7561,7 @@ trackbar position by extracting the high-oder word. Example:
 
 </section>
 
-<section id="mthHasKeyPressConnectionDialogObject"><title>hasKeyPressConnection</title>
+<section id="mthHasKeyPressConnectionDialogObject" xreflabel="hasKeyPressConnection"><title>hasKeyPressConnection</title>
 <indexterm><primary>hasKeyPressConnection</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
 <indexterm><primary>EventNotification</primary><secondary>hasKeyPressConnection</secondary></indexterm>
@@ -7601,13 +7602,13 @@ trackbar position by extracting the high-oder word. Example:
   <listitem>
   <para>
     The dialog control object also has a
-    hasKeyPressConnection (<xref linkend="mthHasKeyPressConnectionDialogControlObject" />) method. The method of the dialog
+ <xref linkend="mthHasKeyPressConnectionDialogControlObject"/> method. The method of the dialog
     object (this method) can only check for connections that were set with the dialog object's versions of
-    connectKeyPress (<xref linkend="mthConnectKeyPressDialogObject" />) and
-    connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogObject" />) methods. This method can not check for connections
+ <xref linkend="mthConnectKeyPressDialogObject"/> and
+ <xref linkend="mthConnectFKeyPressDialogObject"/> methods. This method can not check for connections
     that were set with the dialog control object's versions of
-    connectKeyPress (<xref linkend="mthConnectKeyPressDialogControlObject" />) and
-    connectFKeyPress (<xref linkend="mthConnectFKeyPressDialogControlObject" />) methods.
+ <xref linkend="mthConnectKeyPressDialogControlObject"/> and
+ <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>

@@ -47,14 +47,14 @@
 <indexterm><primary>WindowExtensions Class</primary></indexterm>
 <para>
   WindowExtensions is a mixin class with methods that <emphasis role="italic">should</emphasis> be common to all
-  windows. The class name implies it is meant to be an extension of the WindowBase (xref linkend="clsWindowBase" />)
+  windows. The class name implies it is meant to be an extension of the WindowBase (<xref linkend="clsWindowBase" />)
   class, providing more sophisticated window methods. It is inherited by both the
-  dialog (xref linkend="chpDialogObject" />) and the dialog control (xref linkend="chpDialogControlObject" />) objects.
+  dialog (<xref linkend="chpDialogObject" />) and the dialog control (<xref linkend="chpDialogControlObject" />) objects.
 </para>
 <para>
   Unfortunately, <emphasis role="bold">many</emphasis> of the methods placed in the WindowExtensions class were not
   really <emphasis role="italic">window</emphasis> methods. Rather they were extensions to the ooDialog framework.
-  Otherwise in the effort (xref linkend="sctHistory" />) to simplify ooDialog all the methods would have been moved
+  Otherwise in the effort (<xref linkend="sctHistory" />) to simplify ooDialog all the methods would have been moved
   to the WindowBase class and the WindowExtensions class would have been eliminated. However, the methods remaining in
   WindowExtensions, do not belong in a <emphasis role="italic">window</emphasis> class, so that simplification could not
   be done.
@@ -73,7 +73,7 @@
 </para>
 <table id="tblMethodsWindowExtensions" frame="all"> <title>WindowExtension Method Reference</title>
 <tgroup cols="2">
-<colspec colwidth="1.75in" />
+<colspec colwidth="1*" /><colspec colwidth="3*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -86,139 +86,139 @@
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>createBrush (xref linkend="mthCreateBrush" />)</entry>
+<entry><xref linkend="mthCreateBrush"/></entry>
 <entry>Creates a logical brush that has the specified style, color, and pattern.</entry>
 </row>
 <row>
-<entry>createFont (xref linkend="mthCreateFont" />)</entry>
+<entry><xref linkend="mthCreateFont"/></entry>
 <entry>Returns a handle to a logical font, the implementation is <emphasis role="bold">incorrect</emphasis>.</entry>
 </row>
 <row>
-<entry>createPen (xref linkend="mthCreatePen" />)</entry>
+<entry><xref linkend="mthCreatePen"/></entry>
 <entry>Creates a logical pen that has the specified style, width, and color.</entry>
 </row>
 <row>
-<entry>createFontEx (xref linkend="mthCreateFontEx" />)</entry>
+<entry><xref linkend="mthCreateFontEx"/></entry>
 <entry>Retrieves a handle to a logical font from the system font manager</entry>
 </row>
 <row>
-<entry>deleteFont (xref linkend="mthDeleteFont" />)</entry>
+<entry><xref linkend="mthDeleteFont"/></entry>
 <entry>Deletes a font returned from <emphasis role="italic">createFontEx</emphasis> or <emphasis role="italic">createFont</emphasis>.</entry>
 </row>
 <row>
-<entry>deleteObject (xref linkend="mthDeleteObject" />)</entry>
+<entry><xref linkend="mthDeleteObject"/></entry>
 <entry>Deletes a graphic object,</entry>
 </row>
 <row>
-<entry>drawAngleArc (xref linkend="mthDrawAngleArc" />)</entry>
+<entry><xref linkend="mthDrawAngleArc"/></entry>
 <entry>Draws a partial circle (arc) and a line connecting the start drawing point with the start of the arc.</entry>
 </row>
 <row>
-<entry>drawArc (xref linkend="mthDrawArc" />)</entry>
+<entry><xref linkend="mthDrawArc"/></entry>
 <entry>Draws a circle or ellipse withi the given device context using the active pen.</entry>
 </row>
 <row>
-<entry>drawLine (xref linkend="mthDrawLine" />)</entry>
+<entry><xref linkend="mthDrawLine"/></entry>
 <entry>Draws a line within the device context using the active pen.</entry>
 </row>
 <row>
-<entry>drawPie (xref linkend="mthDrawPie" />)</entry>
+<entry><xref linkend="mthDrawPie"/></entry>
 <entry>Draws and fills a pie of a circle or ellipse within the given device context using the active brush and pen.</entry>
 </row>
 <row>
-<entry>drawPixel (xref linkend="mthDrawPixel" />)</entry>
+<entry><xref linkend="mthDrawPixel"/></entry>
 <entry>Draws a pixel within the device context.</entry>
 </row>
 <row>
-<entry>fillDrawing (xref linkend="mthFillDrawing" />)</entry>
+<entry><xref linkend="mthFillDrawing"/></entry>
 <entry>Fills in an outline figure within the device context using the active brush.</entry>
 </row>
 <row>
-<entry>fontColor (xref linkend="mthFontColor" />)</entry>
+<entry><xref linkend="mthFontColor"/></entry>
 <entry>Sets the font color for a device context.</entry>
 </row>
 <row>
-<entry>fontToDC (xref linkend="mthFontToDC" />)</entry>
+<entry><xref linkend="mthFontToDC"/></entry>
 <entry>Loads a font into a device context and returns the handle of the previous font.</entry>
 </row>
 <row>
-<entry>freeDC (xref linkend="mthFreeDC" />)</entry>
+<entry><xref linkend="mthFreeDC"/></entry>
 <entry>Releases a device context.</entry>
 </row>
 <row>
-<entry>getArcDirection (xref linkend="mthGetArcDirection" />)</entry>
+<entry><xref linkend="mthGetArcDirection"/></entry>
 <entry>Returns the current drawing direction.</entry>
 </row>
 <row>
-<entry>getFont (xref linkend="mthGetFont" />)</entry>
+<entry><xref linkend="mthGetFont"/></entry>
 <entry>Returns the font used by the dialog.</entry>
 </row>
 <row>
-<entry>getPixel (xref linkend="mthGetPixel" />)</entry>
+<entry><xref linkend="mthGetPixel"/></entry>
 <entry>Returns the color number of a pixel within the device context.</entry>
 </row>
 <row>
-<entry>hScrollPos (xref linkend="mthHScrollPos" />)</entry>
+<entry><xref linkend="mthHScrollPos"/></entry>
 <entry>Returns the position of the horizontal scroll bar in the dialog.</entry>
 </row>
 <row>
-<entry>loadBitmap (xref linkend="mthLoadBitmap" />)</entry>
+<entry><xref linkend="mthLoadBitmap"/></entry>
 <entry>Loads a bitmap from a file into memory and returns the handle to the bitmap.</entry>
 </row>
 <row>
-<entry>objectToDC (xref linkend="mthObjectToDC" />)</entry>
+<entry><xref linkend="mthObjectToDC"/></entry>
 <entry>Loads a graphic object into a device context.</entry>
 </row>
 <row>
-<entry>opaqueText (xref linkend="mthOpaqueText" />)</entry>
+<entry><xref linkend="mthOpaqueText"/></entry>
 <entry>Sets the text drawing mode in a device context to opaque, (background is redrawn with the current brush.)</entry>
 </row>
 <row>
-<entry>rectangle (xref linkend="mthRectangle" />)</entry>
+<entry><xref linkend="mthRectangle"/></entry>
 <entry>Draws a rectangle within the given device context.</entry>
 </row>
 <row>
-<entry>removeBitmap (xref linkend="mthRemoveBitmap" />)</entry>
+<entry><xref linkend="mthRemoveBitmap"/></entry>
 <entry>Frees an in-memory bitmap that was loaded through the <emphasis role="italic">loadBitmap</emphasis> method.</entry>
 </row>
 <row>
-<entry>restoreCursorShape (xref linkend="mthRestoreCursorShape" />)</entry>
+<entry><xref linkend="mthRestoreCursorShape"/></entry>
 <entry>Restores the shape of the mouse cursor.</entry>
 </row>
 <row>
-<entry>scroll (xref linkend="mthScrollClsWE" />)</entry>
+<entry><xref linkend="mthScrollClsWE"/></entry>
 <entry>Scrolls the contents of the dialog's client area by the amount specified.</entry>
 </row>
 <row>
-<entry>setArcDirection (xref linkend="mthSetArcDirection" />)</entry>
+<entry><xref linkend="mthSetArcDirection"/></entry>
 <entry>Sets the current drawing direction.</entry>
 </row>
 <row>
-<entry>setFont (xref linkend="mthSetFont" />)</entry>
+<entry><xref linkend="mthSetFont"/></entry>
 <entry>Sets a new font to be used by the dialog.</entry>
 </row>
 <row>
-<entry>setHScrollPos (xref linkend="mthSetHScrollPos" />)</entry>
+<entry><xref linkend="mthSetHScrollPos"/></entry>
 <entry>Sets the thumb position of the horizontal scroll bar contained in the dialog.</entry>
 </row>
 <row>
-<entry>setVScrollPos (xref linkend="mthSetVScrollPos" />)</entry>
+<entry><xref linkend="mthSetVScrollPos"/></entry>
 <entry>Sets the thumb position of the vertical scroll bar contained in the dialog.</entry>
 </row>
 <row>
-<entry>transparentText (xref linkend="mthTransparentText" />)</entry>
+<entry><xref linkend="mthTransparentText"/></entry>
 <entry>Sets the text drawing mode in a device context to transparent, (background is not changed.)</entry>
 </row>
 <row>
-<entry>vScrollPos (xref linkend="mthVScrollPos" />)</entry>
+<entry><xref linkend="mthVScrollPos"/></entry>
 <entry>Returns the position of the vertical scroll bar in the dialog.</entry>
 </row>
 <row>
-<entry>write (xref linkend="mthWrite" />)</entry>
+<entry><xref linkend="mthWrite"/></entry>
 <entry>Writes text in a dialog using the given font, style, and color at the position specified.</entry>
 </row>
 <row>
-<entry>writeDirect (xref linkend="mthWriteDirect" />)</entry>
+<entry><xref linkend="mthWriteDirect"/></entry>
 <entry>Writes text in a dialog at the position specified using a device context.</entry>
 </row>
 </tbody></tgroup>
@@ -226,7 +226,7 @@
 </section>
 
 
-<section id="mthCreateBrush"><title>createBrush</title>
+<section id="mthCreateBrush" xreflabel="createBrush"><title>createBrush</title>
 <indexterm><primary>createBrush</primary><secondary>WindowExtensions</secondary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>createBrush</secondary></indexterm>
 <indexterm><primary>dialog control object</primary><secondary>createBrush</secondary></indexterm>
@@ -252,7 +252,7 @@
     <varlistentry><term>color [optional]</term>
     <listitem>
     <para>
-      The color number (xref linkend="defColor" />). When this argument is omitted and <emphasis
+      The color number (<xref linkend="defColor" />). When this argument is omitted and <emphasis
       role="italic">brushSpecifier</emphasis> is used, the color number defaults to 1.
     </para>
     </listitem></varlistentry>
@@ -321,36 +321,36 @@
   <para>
     A brush is a bitmap that the operating system uses to paint the interiors of filled shapes. After the programmer
     creates a brush, it can then be selected into a device context using the
-    objectToCD (xref linkend="mthObjectToDC" />)() method. When the brush is no longer needed use the
-    deleteObject (xref linkend="mthDeleteObject" />)() method to release the operating resources used by the brush.
+ <xref linkend="mthObjectToDC"/>() method. When the brush is no longer needed use the
+ <xref linkend="mthDeleteObject"/>() method to release the operating resources used by the brush.
   </para>
   <para>
     The <emphasis role="italic">createBrush</emphasis> method here is almost identical to the
-    createBrush (xref linkend="mthCreateBrushClsDialogExtensions" />) method of the
-    DialogExtensions (xref linkend="clsDialogExtensions" />) class. The method documented here is a method of the
-    WindowExtensions (xref linkend="clsWindowExtensions" />) class and is therefore inherited by both the
-    dialog (xref linkend="chpDialogObject" />) and the dialog  control (xref linkend="chpDialogControlObject" />)
+ <xref linkend="mthCreateBrushClsDialogExtensions"/> method of the
+    DialogExtensions (<xref linkend="clsDialogExtensions" />) class. The method documented here is a method of the
+    WindowExtensions (<xref linkend="clsWindowExtensions" />) class and is therefore inherited by both the
+    dialog (<xref linkend="chpDialogObject" />) and the dialog  control (<xref linkend="chpDialogControlObject" />)
     objects.
   </para>
   <para>
     However, in the dialog object, the <emphasis role="italic">createBrush</emphasis> method of the
     <computeroutput>DialogExtensions</computeroutput> class over-rides this method. Therefore, this documentation is
     essentially the dialog control's <emphasis role="italic">createBrush</emphasis> documentation and the
-    createBrush (xref linkend="mthCreateBrushClsDialogExtensions" />) documentation is for the dialog object's <emphasis
+ <xref linkend="mthCreateBrushClsDialogExtensions"/> documentation is for the dialog object's <emphasis
     role="italic">createBrush</emphasis> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
 
-<section id="mthCreateFont"><title>createFont</title>
+<section id="mthCreateFont" xreflabel="createFont"><title>createFont</title>
 <indexterm><primary>createFont</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>createFont</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>createFont</secondary></indexterm>
@@ -368,7 +368,7 @@
 <para>
   <emphasis role="bold">Note</emphasis> the implementation of this method is incorrect. It does not
   return the font specified. The correct method to use is
-  createFontEx (xref linkend="mthCreateFontEx" />)(). <computeroutput>createFont</computeroutput>() is
+ <xref linkend="mthCreateFontEx"/>(). <computeroutput>createFont</computeroutput>() is
   maintained for program compatibility. Some existing programs may rely on using the (incorrect) font
   returned.
 </para>
@@ -423,7 +423,7 @@
 </section>
 
 
-<section id="mthCreateFontEx"><title>createFontEx</title>
+<section id="mthCreateFontEx" xreflabel="createFontEx"><title>createFontEx</title>
 <indexterm><primary>createFontEx</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>createFontEx</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>createFontEx</secondary></indexterm>
@@ -438,14 +438,14 @@
 
 <para>
   Creates a logical font with the characteristics requested. This should be the preferred method to
-  create fonts in ooDialog. The createFont (xref linkend="mthCreateFont" />)() method does <emphasis
+  create fonts in ooDialog. The <xref linkend="mthCreateFont"/>() method does <emphasis
   role="bold">not</emphasis> properly create the font requested.
 </para>
 <para>
   The returned font can be used in any method that takes a font, such as,
-  setFont (xref linkend="mthSetFont" />)(), setControlFont (xref linkend="mthSetControlFont" />)(), or
-  fontToDC (xref linkend="mthFontToDC" />)(). When the programmer is done with the font, the operating system
-  resources used by the font can be released with the deleteFont (xref linkend="mthDeleteFont" />)()
+ <xref linkend="mthSetFont"/>(), <xref linkend="mthSetControlFont"/>(), or
+ <xref linkend="mthFontToDC"/>(). When the programmer is done with the font, the operating system
+  resources used by the font can be released with the <xref linkend="mthDeleteFont"/>()
   method.
 </para>
 <para>
@@ -503,7 +503,7 @@
     <para>
       The indexes are listed below. Each index maps to an argument of the Win32 API,
       <computeroutput>CreateFont()</computeroutput>. As suggested above, the programmer should
-      consult the MSDN library (xref linkend="defWindowsDoc" />) documentation to get complete
+      consult the MSDN library (<xref linkend="defWindowsDoc" />) documentation to get complete
       information on the individual arguments. The value for each index must be either numeric or
       logical, depending on the index.
     </para>
@@ -522,22 +522,22 @@
       </thead>
       <tbody>
       <row>
-        <entry>WIDTH (xref linkend="cfxWidth" />)</entry>
+        <entry><xref linkend="cfxWidth"/></entry>
         <entry>The average width of the characters in the requested font</entry>
         <entry>0</entry>
       </row>
       <row>
-        <entry>ESCARPMENT (xref linkend="cfxEscarpment" />)</entry>
+        <entry><xref linkend="cfxEscarpment"/></entry>
         <entry>The angle between the escapement vector and the x-axis of the device</entry>
         <entry>0</entry>
       </row>
       <row>
-        <entry>ORIENTATION (xref linkend="cfxOrientation" />)</entry>
+        <entry><xref linkend="cfxOrientation"/></entry>
         <entry>The angle between each character's base line and the x-axis of the device</entry>
         <entry>0</entry>
       </row>
       <row>
-        <entry>WEIGHT (xref linkend="cfxWeight" />)</entry>
+        <entry><xref linkend="cfxWeight"/></entry>
         <entry>The weight of the font</entry>
         <entry>FW_NORMAL</entry>
       </row>
@@ -557,27 +557,27 @@
         <entry>false</entry>
       </row>
       <row>
-        <entry>CHARSET (xref linkend="cfxCharset" />)</entry>
+        <entry><xref linkend="cfxCharset"/></entry>
         <entry>Specifies the character set</entry>
         <entry>DEFAULT_CHARSET</entry>
       </row>
       <row>
-        <entry>OUTPUTPRECISION (xref linkend="cfxOutputPrecision" />)</entry>
+        <entry><xref linkend="cfxOutputPrecision"/></entry>
         <entry>Specifies the output precision</entry>
         <entry>OUT_TT_PRECIS</entry>
       </row>
       <row>
-        <entry>CLIPPRECISION (xref linkend="cfxClipPrecision" />)</entry>
+        <entry><xref linkend="cfxClipPrecision"/></entry>
         <entry>Specifies the clipping precision</entry>
         <entry>CLIP_DEFAULT_PRECIS</entry>
       </row>
       <row>
-        <entry>QUALITY (xref linkend="cfxQuality" />)</entry>
+        <entry><xref linkend="cfxQuality"/></entry>
         <entry>Specifies the output quality</entry>
         <entry>DEFAULT_QUALITY</entry>
       </row>
       <row>
-        <entry>PITCHANDFAMILY (xref linkend="cfxPitchAndFamily" />)</entry>
+        <entry><xref linkend="cfxPitchAndFamily"/></entry>
         <entry>Specifies the pitch and family of the font</entry>
         <entry>FF_DONTCARE</entry>
       </row>
@@ -593,11 +593,11 @@
   <listitem>
   <para>
     This method provides an interface to the Win32 API: <computeroutput>CreateFont()</computeroutput>.
-    Use the MSDN library (xref linkend="defWindowsDoc" />) documentation to get more information on the
+    Use the MSDN library (<xref linkend="defWindowsDoc" />) documentation to get more information on the
     arguments to this method.
   </para>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -609,7 +609,7 @@
     The return is a handle to a font that can be used in any ooDialog method that requires a font
     handle. Because of the way the font mapper works, it is hard to conceive of a circustance where
     this method would fail. However, if it were to fail, the
-    .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable would be non-zero.
+    <xref linkend="dotSystemErrorCode" /> variable would be non-zero.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -656,7 +656,7 @@
 <section id="sctFontAttributes"><title>createFontEx Argument Values</title>
 <para>
   The following list is the indexes of the <computeroutput>.Directory</computeroutput> object that can be
-  used for the third argument of the createFontEx (xref linkend="mthCreateFontEx" />)() method. The
+  used for the third argument of the <xref linkend="mthCreateFontEx"/>() method. The
   list provides additional information on the meaning of values that can be assigned to each index.
 </para>
 <variablelist>
@@ -862,7 +862,7 @@
     <para>
       The clipping precision defines how to clip characters that are partially outside the clipping
       region. It can be one or more of the following values. Use
-      .DlgUtil~or (xref linkend="mthOrClsDlgUtil" />) to combine values.
+      .DlgUtil~or (<xref linkend="mthOrClsDlgUtil" />) to combine values.
     </para>
     <informaltable id="tblCfxClipPrecision" frame="all" pgwide="1">
     <tgroup cols="3">
@@ -1005,7 +1005,7 @@
     <para>
       Combine one pitch value with one family value. The values are combined using a boolean or, but in
       this case they could simply be added. The programmer can also use
-      .DlgUtil~or (xref linkend="mthOrClsDlgUtil" />) to combine values.
+      .DlgUtil~or (<xref linkend="mthOrClsDlgUtil" />) to combine values.
     </para>
     <informaltable id="tblCfxPitchAndFamily" frame="all" pgwide="1">
     <tgroup cols="3">
@@ -1071,7 +1071,7 @@
 </section>  <!-- End WindowExtensions::createFontEx() -->
 
 
-<section id="mthCreatePen"><title>createPen</title>
+<section id="mthCreatePen" xreflabel="createPen"><title>createPen</title>
 <indexterm><primary>createPen</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>createPen</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>createPen</secondary></indexterm>
@@ -1157,7 +1157,7 @@
     <varlistentry><term>color [optional]</term>
     <listitem>
     <para>
-      The color number (xref linkend="defColor" />) for the pen. 0 is the default.
+      The color number (<xref linkend="defColor" />) for the pen. 0 is the default.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1167,8 +1167,8 @@
   <listitem>
   <para>
     After a pen is selected into a device context, it can be used to draw lines and curves. It can then be selected into
-    a device context using the objectToCD (xref linkend="mthObjectToDC" />)() method. When the pen is no longer
-    needed use the deleteObject (xref linkend="mthDeleteObject" />)() method to release the operating resources used
+    a device context using the <xref linkend="mthObjectToDC"/>() method. When the pen is no longer
+    needed use the <xref linkend="mthDeleteObject"/>() method to release the operating resources used
     by the brush.
   </para>
   <para>
@@ -1179,7 +1179,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1198,7 +1198,7 @@
 </section>
 
 
-<section id="mthDeleteFont"><title>deleteFont</title>
+<section id="mthDeleteFont" xreflabel="deleteFont"><title>deleteFont</title>
 <indexterm><primary>deleteFont</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>deleteFont</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>deleteFont</secondary></indexterm>
@@ -1212,7 +1212,7 @@
 
 <para>
   The deleteFont method deletes a font. This method is to be used to delete a font created with the
-  createFontEx (xref linkend="mthCreateFontEx" />)() method.
+ <xref linkend="mthCreateFontEx"/>() method.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1227,7 +1227,7 @@
 </section>
 
 
-<section id="mthDeleteObject"><title>deleteObject</title>
+<section id="mthDeleteObject" xreflabel="deleteObject"><title>deleteObject</title>
 <indexterm><primary>deleteObject</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>deleteObject</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>deleteObject</secondary></indexterm>
@@ -1240,7 +1240,7 @@
 </programlisting>
 
 <para>The deleteObject method deletes a graphic object,
-namely a pen or a brush. See createPen (xref linkend="mthCreatePen" />) and createBrush (xref linkend="mthCreateBrush" />) for
+namely a pen or a brush. See <xref linkend="mthCreatePen"/> and <xref linkend="mthCreateBrush"/> for
 information on how to get the handle of a pen or brush. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1255,7 +1255,7 @@ information on how to get the handle of a pen or brush. </para>
 </section>
 
 
-<section id="mthDrawAngleArc"><title>drawAngleArc</title>
+<section id="mthDrawAngleArc" xreflabel="drawAngleArc"><title>drawAngleArc</title>
 <indexterm><primary>drawAngleArc</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>drawAngleArc</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>drawAngleArc</secondary></indexterm>
@@ -1297,7 +1297,7 @@ is the x-axis).
 </section>
 
 
-<section id="mthDrawArc"><title>drawArc</title>
+<section id="mthDrawArc" xreflabel="drawArc"><title>drawArc</title>
 <indexterm><primary>drawArc</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>drawArc</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>drawArc</secondary></indexterm>
@@ -1315,7 +1315,7 @@ the given device context using the active pen for the outline. The circle
 or ellipse is drawn within the boundaries of an imaginary rectangle whose
 coordinates are given. A partial figure can be drawn by giving the end points
 of two radials. By default, the figure is drawn counterclockwise, but the
-direction can be modified using setArcDirection (xref linkend="mthSetArcDirection" />). </para>
+direction can be modified using <xref linkend="mthSetArcDirection"/>. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -1357,7 +1357,7 @@ self~objectToDC(dc,oldp); self~deleteObject(pen)
 </variablelist>
 </section>
 
-<section id="mthDrawLine"><title>drawLine</title>
+<section id="mthDrawLine" xreflabel="drawLine"><title>drawLine</title>
 <indexterm><primary>drawLine</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>drawLine</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>drawLine</secondary></indexterm>
@@ -1392,7 +1392,7 @@ of a line or arc is used.
 </section>
 
 
-<section id="mthDrawPie"><title>drawPie</title>
+<section id="mthDrawPie" xreflabel="drawPie"><title>drawPie</title>
 <indexterm><primary>drawPie</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>drawPie</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>drawPie</secondary></indexterm>
@@ -1409,7 +1409,7 @@ of a line or arc is used.
 on the given device context using the active pen for the outline and the active
 brush to fill the pie. The circle or ellipse is drawn within the boundaries
 of an imaginary rectangle whose coordinates are given. The arc is drawn between
-start and end radials in the direction specified by setArcDirection (xref linkend="mthSetArcDirection" />). </para>
+start and end radials in the direction specified by <xref linkend="mthSetArcDirection"/>. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
@@ -1425,7 +1425,7 @@ pixels.
 <listitem><para>The position of the lower right corner of the imaginary rectangle.
 </para></listitem></varlistentry>
 <varlistentry><term>r1x, r1y, r2x, r2y</term>
-<listitem><para>The end points of the two radials (same as for drawArc (xref linkend="mthDrawArc" />)).
+<listitem><para>The end points of the two radials (same as for <xref linkend="mthDrawArc"/>).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1433,7 +1433,7 @@ pixels.
 </section>
 
 
-<section id="mthDrawPixel"><title>drawPixel</title>
+<section id="mthDrawPixel" xreflabel="drawPixel"><title>drawPixel</title>
 <indexterm><primary>drawPixel</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>drawPixel</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>drawPixel</secondary></indexterm>
@@ -1458,7 +1458,7 @@ context. </para>
 <listitem><para>The position, in pixels.
 </para></listitem></varlistentry>
 <varlistentry><term>color</term>
-<listitem><para>The color number for the pixel. For a list of color numbers, refer to Definition of Terms (xref linkend="sctTermDefs" />).
+<listitem><para>The color number for the pixel. For a list of color numbers, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1466,7 +1466,7 @@ context. </para>
 </section>
 
 
-<section id="mthFillDrawing"><title>fillDrawing</title>
+<section id="mthFillDrawing" xreflabel="fillDrawing"><title>fillDrawing</title>
 <indexterm><primary>fillDrawing</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>fillDrawing</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>fillDrawing</secondary></indexterm>
@@ -1493,7 +1493,7 @@ color of the brush, in pixels.
 </para></listitem></varlistentry>
 <varlistentry><term>color</term>
 <listitem><para>The color number of the outline figure whose inside will be filled.
-For a list of color numbers, refer to Definition of Terms (xref linkend="sctTermDefs" />).
+For a list of color numbers, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1501,7 +1501,7 @@ For a list of color numbers, refer to Definition of Terms (xref linkend="sctTerm
 </section>
 
 
-<section id="mthFreeDC"><title>freeDC</title>
+<section id="mthFreeDC" xreflabel="freeDC"><title>freeDC</title>
 <indexterm><primary>freeDC</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>freeDC</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>freeDC</secondary></indexterm>
@@ -1514,7 +1514,7 @@ For a list of color numbers, refer to Definition of Terms (xref linkend="sctTerm
 </programlisting>
 
 <para>The freeDC method releases the device context resources
-that were reserved for getDC (xref linkend="mthGetDC" />).</para>
+that were reserved for <xref linkend="mthGetDC"/>.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -1532,7 +1532,7 @@ that were reserved for getDC (xref linkend="mthGetDC" />).</para>
 <listitem><para>Releasing the device context resources failed.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See getDC (xref linkend="mthGetDC" />) for an example.
+<listitem><para>See <xref linkend="mthGetDC"/> for an example.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1547,7 +1547,7 @@ context.
 </section>
 
 
-<section id="mthFontColor"><title>fontColor</title>
+<section id="mthFontColor" xreflabel="fontColor"><title>fontColor</title>
 <indexterm><primary>fontColor</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>fontColor</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>fontColor</secondary></indexterm>
@@ -1577,7 +1577,7 @@ device context. </para>
 </section>
 
 
-<section id="mthFontToDC"><title>fontToDC</title>
+<section id="mthFontToDC" xreflabel="fontToDC"><title>fontToDC</title>
 <indexterm><primary>fontToDC</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>fontToDC</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>fontToDC</secondary></indexterm>
@@ -1590,12 +1590,12 @@ device context. </para>
 </programlisting>
 
 <para>The fontToDC method loads a font into a device
-context and returns the handle of the previous font. Use the getWindowDC (xref linkend="mthGetWindowDC" />),
-getDC (xref linkend="mthGetDC" />), or getControlDC (xref linkend="mthGetControlDC" />) method to retrieve a device
-context, and the createFontEx (xref linkend="mthCreateFontEx" />)() method to get a font handle. To reset the font to
+context and returns the handle of the previous font. Use the <xref linkend="mthGetWindowDC"/>,
+getDC (<xref linkend="mthGetDC" />), or <xref linkend="mthGetControlDC"/> method to retrieve a device
+context, and the <xref linkend="mthCreateFontEx"/>() method to get a font handle. To reset the font to
 the original state, use another fontToDC call with the handle of the previous font. To release the device context, use
-the freeWindowDC (xref linkend="mthFreeWindowDC" />), freeDC (xref linkend="mthFreeDC" />), or
-freeControlDC (xref linkend="mthFreeControlDC" />) method.
+the <xref linkend="mthFreeWindowDC"/>, <xref linkend="mthFreeDC"/>, or
+freeControlDC (<xref linkend="mthFreeControlDC" />) method.
 </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1629,7 +1629,7 @@ MyDialog~freeDC(dc)
 </section>
 
 
-<section id="mthGetArcDirection"><title>getArcDirection</title>
+<section id="mthGetArcDirection" xreflabel="getArcDirection"><title>getArcDirection</title>
 <indexterm><primary>getArcDirection</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>getArcDirection</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>getArcDirection</secondary></indexterm>
@@ -1643,7 +1643,7 @@ MyDialog~freeDC(dc)
 
 <para>The getArcDirection method returns the current
 drawing direction for the
-drawArc (xref linkend="mthDrawArc" />) method. </para>
+drawArc (<xref linkend="mthDrawArc" />) method. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -1656,7 +1656,7 @@ drawArc (xref linkend="mthDrawArc" />) method. </para>
 </variablelist>
 </section>
 
-<section id="mthGetDC"><title>getDC</title>
+<section id="mthGetDC" xreflabel="getDC"><title>getDC</title>
 <indexterm><primary>getDC</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>getDC</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>getDC</secondary></indexterm>
@@ -1691,12 +1691,12 @@ obj~freeDC(dc)
 </variablelist>
 
 <note><title>Note</title><para>
-When you have finished with the device context, call freeDC (xref linkend="mthFreeDC" />).
+When you have finished with the device context, call <xref linkend="mthFreeDC"/>.
 </para></note>
 </section>
 
 
-<section id="mthGetFont"><title>getFont</title>
+<section id="mthGetFont" xreflabel="getFont"><title>getFont</title>
 <indexterm><primary>getFont</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>getFont</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>getFont</secondary></indexterm>
@@ -1749,7 +1749,7 @@ When you have finished with the device context, call freeDC (xref linkend="mthFr
 </section>  <!-- End ::getFont() -->
 
 
-<section id="mthGetPixel"><title>getPixel</title>
+<section id="mthGetPixel" xreflabel="getPixel"><title>getPixel</title>
 <indexterm><primary>getPixel</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>getPixel</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>getPixel</secondary></indexterm>
@@ -1779,7 +1779,7 @@ within the device context. </para>
 </section>
 
 
-<section id="mthHScrollPos"><title>hScrollPos</title>
+<section id="mthHScrollPos" xreflabel="hScrollPos"><title>hScrollPos</title>
 <indexterm><primary>hScrollPos</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>hScrollPos</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>hScrollPos</secondary></indexterm>
@@ -1801,7 +1801,7 @@ horizontal scroll bar in the associated dialog or dialog control.</para>
 </section>
 
 
-<section id="mthLoadBitmap"><title>loadBitmap</title>
+<section id="mthLoadBitmap" xreflabel="loadBitmap"><title>loadBitmap</title>
 <indexterm><primary>loadBitmap</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>loadBitmap</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>loadBitmap</secondary></indexterm>
@@ -1819,10 +1819,10 @@ horizontal scroll bar in the associated dialog or dialog control.</para>
   to the bitmap.
 </para>
 <para>
-  In general, the Image (xref linkend="clsImage" />) class should be used when working with bitmaps, if possible. The
-  <emphasis role="italic">loadBitmap</emphasis>() and removeBitmap (xref linkend="mthRemoveBitmap" />)() methods date
+  In general, the Image (<xref linkend="clsImage" />) class should be used when working with bitmaps, if possible. The
+  <emphasis role="italic">loadBitmap</emphasis>() and <xref linkend="mthRemoveBitmap"/>() methods date
   back to the Windows 3.1 ooDialog and use outdated techniques. However, at this time, the bitmap button methods, like
-  installBitmapButton (xref linkend="mthInstallBitmapButton" />)() still require the bitmap handle returned from
+ <xref linkend="mthInstallBitmapButton"/>() still require the bitmap handle returned from
   <emphasis role="italic">loadBitmap</emphasis>() method.
 </para>
 <variablelist>
@@ -1855,17 +1855,17 @@ horizontal scroll bar in the associated dialog or dialog control.</para>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Use the removeBitmap (xref linkend="mthRemoveBitmap" />)() method to free memory when the bitmap is no longer in use.
+    Use the <xref linkend="mthRemoveBitmap"/>() method to free memory when the bitmap is no longer in use.
     Although it does no harm, it is not necessary to free the bitmap if the Rexx program is ending. When the Rexx
     interpreter process ends, the operating system will free the bitmap memory. To use the bitmap in the
-    installBitmapButton (xref linkend="mthInstallBitmapButton" />)() or
-    changeBitmapButton (xref linkend="mthChangeBitmapButton" />)() methods specify the INMEMORY option.
+ <xref linkend="mthInstallBitmapButton"/>() or
+ <xref linkend="mthChangeBitmapButton"/>() methods specify the INMEMORY option.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1885,7 +1885,7 @@ horizontal scroll bar in the associated dialog or dialog control.</para>
 </section>
 
 
-<section id="mthObjectToDC"><title>objectToDC</title>
+<section id="mthObjectToDC" xreflabel="objectToDC"><title>objectToDC</title>
 <indexterm><primary>objectToDC</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>objectToDC</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>objectToDC</secondary></indexterm>
@@ -1933,7 +1933,7 @@ MyDialog~deleteObject(hpen)
 </section>
 
 
-<section id="mthOpaqueText"><title>opaqueText</title>
+<section id="mthOpaqueText" xreflabel="opaqueText"><title>opaqueText</title>
 <indexterm><primary>opaqueText</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>opaqueText</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>opaqueText</secondary></indexterm>
@@ -1948,7 +1948,7 @@ MyDialog~deleteObject(hpen)
 <para>The opaqueText method restores the default text
 mode, that is, with a white background behind the text, which overlays whatever
 is at that position in the dialog or dialog control. Use this method after
-transparent mode was set using transparentText (xref linkend="mthTransparentText" />). </para>
+transparent mode was set using <xref linkend="mthTransparentText"/>. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -1961,7 +1961,7 @@ transparent mode was set using transparentText (xref linkend="mthTransparentText
 </variablelist>
 </section>
 
-<section id="mthRectangle"><title>rectangle</title>
+<section id="mthRectangle" xreflabel="rectangle"><title>rectangle</title>
 <indexterm><primary>rectangle</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>rectangle</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>rectangle</secondary></indexterm>
@@ -2022,7 +2022,7 @@ self~rectangle(dc, 40, 40, 210, 160) /* default */
 </section>
 
 
-<section id="mthRemoveBitmap"><title>removeBitmap</title>
+<section id="mthRemoveBitmap" xreflabel="removeBitmap"><title>removeBitmap</title>
 <indexterm><primary>removeBitmap</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>removeBitmap</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>removeBitmap</secondary></indexterm>
@@ -2036,7 +2036,7 @@ self~rectangle(dc, 40, 40, 210, 160) /* default */
 
 <para>
   Use this method to free an in-memory bitmap that was loaded through the
-  loadBitmap (xref linkend="mthLoadBitmap" />)() method.
+ <xref linkend="mthLoadBitmap"/>() method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2072,7 +2072,7 @@ self~rectangle(dc, 40, 40, 210, 160) /* default */
 </section>
 
 
-<section id="mthRestoreCursorShape"><title>restoreCursorShape</title>
+<section id="mthRestoreCursorShape" xreflabel="restoreCursorShape"><title>restoreCursorShape</title>
 <indexterm><primary>restoreCursorShape</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>restoreCursorShape</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>restoreCursorShape</secondary></indexterm>
@@ -2105,12 +2105,12 @@ its handle when you change its shape.</para>
 used before the cursor was restored to the given shape.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>See setCursorPos (xref linkend="mthSetCursorPos" />) for an example on how to use this method.
+<listitem><para>See <xref linkend="mthSetCursorPos"/> for an example on how to use this method.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthScrollClsWE"><title>scroll</title>
+<section id="mthScrollClsWE" xreflabel="scroll"><title>scroll</title>
 <indexterm><primary>scroll</primary><secondary>WindowExtensions class</secondary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>scroll</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>scroll</secondary></indexterm>
@@ -2153,7 +2153,7 @@ is to be scrolled downward or upward, if negative.
 </section>
 
 
-<section id="mthSetArcDirection"><title>setArcDirection</title>
+<section id="mthSetArcDirection" xreflabel="setArcDirection"><title>setArcDirection</title>
 <indexterm><primary>setArcDirection</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>setArcDirection</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>setArcDirection</secondary></indexterm>
@@ -2167,8 +2167,8 @@ is to be scrolled downward or upward, if negative.
 </programlisting>
 
 <para>
-  The setArcDirection method changes the drawing direction for the drawArc (xref linkend="mthDrawArc" />) and
-  drawPie (xref linkend="mthDrawPie" />) methods. The default direction is counterclockwise.
+  The setArcDirection method changes the drawing direction for the <xref linkend="mthDrawArc"/> and
+ <xref linkend="mthDrawPie"/> methods. The default direction is counterclockwise.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2193,7 +2193,7 @@ is to be scrolled downward or upward, if negative.
 </variablelist>
 </section>
 
-<section id="mthSetFont"><title>setFont</title>
+<section id="mthSetFont" xreflabel="setFont"><title>setFont</title>
 <indexterm><primary>setFont</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>setFont</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>setFont</secondary></indexterm>
@@ -2219,8 +2219,8 @@ is to be scrolled downward or upward, if negative.
     <listitem>
     <para>
       The handle to the font that is to be used by the dialog or dialog control. There are several
-      methods to get the font handle, including createFontEx (xref linkend="mthCreateFontEx" />)() or
-      getFont (xref linkend="mthGetFont" />)().
+      methods to get the font handle, including <xref linkend="mthCreateFontEx"/>() or
+ <xref linkend="mthGetFont"/>().
     </para>
     </listitem></varlistentry>
     <varlistentry><term>redraw</term>
@@ -2256,7 +2256,7 @@ dlg~newTreeView("FILES")~setFont(hfnt, .true)
 </section>
 
 
-<section id="mthSetHScrollPos"><title>setHScrollPos</title>
+<section id="mthSetHScrollPos" xreflabel="setHScrollPos"><title>setHScrollPos</title>
 <indexterm><primary>setHScrollPos</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>setHScrollPos</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>setHScrollPos</secondary></indexterm>
@@ -2293,7 +2293,7 @@ failed.
 </section>
 
 
-<section id="mthSetVScrollPos"><title>setVScrollPos</title>
+<section id="mthSetVScrollPos" xreflabel="setVScrollPos"><title>setVScrollPos</title>
 <indexterm><primary>setVScrollPos</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>setVScrollPos</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>setVScrollPos</secondary></indexterm>
@@ -2329,7 +2329,7 @@ failed.
 </section>
 
 
-<section id="mthTransparentText"><title>transparentText</title>
+<section id="mthTransparentText" xreflabel="transparentText"><title>transparentText</title>
 <indexterm><primary>transparentText</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>transparentText</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>transparentText</secondary></indexterm>
@@ -2342,9 +2342,9 @@ failed.
 </programlisting>
 
 <para>The transparentText method enables you to write
-text to a device context using writeDirect (xref linkend="mthWriteDirect" />) in transparent
+text to a device context using <xref linkend="mthWriteDirect"/> in transparent
 mode, that is, without a white background behind the text. Restore the default
-mode using opaqueText (xref linkend="mthOpaqueText" />). </para>
+mode using <xref linkend="mthOpaqueText"/>. </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The only argument is:
@@ -2357,7 +2357,7 @@ mode using opaqueText (xref linkend="mthOpaqueText" />). </para>
 </variablelist>
 </section>
 
-<section id="mthVScrollPos"><title>vScrollPos</title>
+<section id="mthVScrollPos" xreflabel="vScrollPos"><title>vScrollPos</title>
 <indexterm><primary>vScrollPos</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>vScrollPos</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>vScrollPos</secondary></indexterm>
@@ -2378,7 +2378,7 @@ vertical scroll bar in the associated dialog or dialog control.</para>
 </variablelist>
 </section>
 
-<section id="mthWrite"><title>write</title>
+<section id="mthWrite" xreflabel="write"><title>write</title>
 <indexterm><primary>write</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>write</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>write</secondary></indexterm>
@@ -2470,7 +2470,7 @@ vertical scroll bar in the associated dialog or dialog control.</para>
       <varlistentry><term>CLIENT</term>
       <listitem>
       <para>
-        The position for the text will be relative to the client (xref linkend="defClientArea" />) area of the dialog
+        The position for the text will be relative to the client (<xref linkend="defClientArea" />) area of the dialog
         or dialog control rather than relative to the window itself.
       </para>
       </listitem></varlistentry>
@@ -2583,7 +2583,7 @@ vertical scroll bar in the associated dialog or dialog control.</para>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.  See the remarks above.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.  See the remarks above.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2604,7 +2604,7 @@ vertical scroll bar in the associated dialog or dialog control.</para>
 </section>
 
 
-<section id="mthWriteDirect"><title>writeDirect</title>
+<section id="mthWriteDirect" xreflabel="writeDirect"><title>writeDirect</title>
 <indexterm><primary>writeDirect</primary></indexterm>
 <indexterm><primary>WindowExtensions</primary><secondary>writeDirect</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>writeDirect</secondary></indexterm>

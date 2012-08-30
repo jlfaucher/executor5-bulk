@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsTab"><title>Tab Controls</title>
+<chapter id="clsTab" xreflabel="Tab"><title>Tab Controls</title>
 <indexterm><primary>Tab class</primary></indexterm>
 <para>
   A tab in a tab control is similar to a label in a file cabinet or divider in a notebook. Using a tab control the
@@ -69,7 +69,7 @@
 <para>
   The <computeroutput>Tab</computeroutput> class provides methods to work with and manipulate the underlying
   Windows tab dialog control which it represents. It is a concrete subclass of the dialog control
-  object (xref linkend="chpDialogControlObject" />) and therefore has all methods of the dialog control object.
+  object (<xref linkend="chpDialogControlObject" />) and therefore has all methods of the dialog control object.
 </para>
 <para>
   In addition to the methods of the class itself, the following methods from other classes in the ooDialog framework are
@@ -78,22 +78,22 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newTab (xref linkend="tmthNewTab" />)() method of the
-    dialog (xref linkend="chpDialogObject" />) object to retrieve a new Tab object.
+    Use the newTab (<xref linkend="tmthNewTab" />)() method of the
+    dialog (<xref linkend="chpDialogObject" />) object to retrieve a new Tab object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define a tab in a UserDialog (xref linkend="clsUserDialog" />) class, use the
-    createTab (xref linkend="tmthCreateTab" />) method.
+    To dynamically define a tab in a <xref linkend="clsUserDialog"/> class, use the
+    createTab (<xref linkend="tmthCreateTab" />) method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the event (xref linkend="ovvEvents" />) notifications sent by the underlying tab control to
-    a method in the Rexx dialog object use the connectTabEvent (xref linkend="tmthConnectTabEvent" />)()
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying tab control to
+    a method in the Rexx dialog object use the connectTabEvent (<xref linkend="tmthConnectTabEvent" />)()
     method.
   </para>
   </listitem></varlistentry>
@@ -108,7 +108,8 @@
 <table id="tblTabMethods" frame="all">
 <title>Important Tab Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -121,15 +122,15 @@
 <entry align="center"><emphasis role="bold"> External Methods</emphasis></entry>
 </row>
 <row>
-<entry>newTab (xref linkend="tmthNewTab" />)</entry>
+<entry><xref linkend="tmthNewTab"/></entry>
 <entry>Returns a <computeroutput>Tab</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
-<entry>createTab (xref linkend="tmthCreateTab" />)</entry>
-<entry>Creates a tab control in the dialog template of a UserDialog (xref linkend="clsUserDialog" />)</entry>
+<entry><xref linkend="tmthCreateTab"/></entry>
+<entry>Creates a tab control in the dialog template of a <xref linkend="clsUserDialog"/></entry>
 </row>
 <row>
-<entry>connectTabEvent (xref linkend="tmthConnectTabEvent" />)</entry>
+<entry><xref linkend="tmthConnectTabEvent"/></entry>
 <entry>Connects tab event notifications to a method in the Rexx dialog object</entry>
 </row>
 <row>
@@ -137,111 +138,111 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>addFullSeq (xref linkend="mthAddFullSeq" />)</entry>
+<entry><xref linkend="mthAddFullSeq"/></entry>
 <entry>Inserts a sequence of 1 through N tabs into a tab control. The index for an icon in the imagelist for the tab can be included.</entry>
 </row>
 <row>
-<entry>addSequence (xref linkend="mthAddSequence" />)</entry>
+<entry><xref linkend="mthAddSequence"/></entry>
 <entry>Inserts a sequence of 1 through N tabs into a tab control. The index for an icon can not be included.</entry>
 </row>
 <row>
-<entry>adjustToRectangle (xref linkend="mthAdjustToRectangle" />)</entry>
+<entry><xref linkend="mthAdjustToRectangle"/></entry>
 <entry>Calculates the window rectangle of a tab control that corresponds to the specified display rectangle.</entry>
 </row>
 <row>
-<entry>calcDisplayArea (xref linkend="mthCalcDisplayArea" />)</entry>
+<entry><xref linkend="mthCalcDisplayArea"/></entry>
 <entry>Takes the window rectangle of the tab control, and adjusts the rectangle to that needed for the display rectangle</entry>
 </row>
 <row>
-<entry>calcWindowRect (xref linkend="mthCalcWindowRect" />)</entry>
+<entry><xref linkend="mthCalcWindowRect"/></entry>
 <entry>Takes a display rectangle and adjusts the rectangle to be that needed for tab control to contain the display rectangle.</entry>
 </row>
 <row>
-<entry>delete (xref linkend="mthDeleteTab" />)</entry>
+<entry><xref linkend="mthDeleteTab"/></entry>
 <entry>Removes a tab from a tab control.</entry>
 </row>
 <row>
-<entry>deleteAll (xref linkend="mthDeleteAllTab" />)</entry>
+<entry><xref linkend="mthDeleteAllTab"/></entry>
 <entry>Removes all tabs from a tab control.</entry>
 </row>
 <row>
-<entry>focus (xref linkend="mthFocusTab" />)</entry>
+<entry><xref linkend="mthFocusTab"/></entry>
 <entry>Sets the focus to the specified tab in a tab control.</entry>
 </row>
 <row>
-<entry>focused (xref linkend="mthFocusedTab" />)</entry>
+<entry><xref linkend="mthFocusedTab"/></entry>
 <entry>Returns the index of the tab that has the focus.</entry>
 </row>
 <row>
-<entry>getImageList (xref linkend="mthGetImageListTab" />)</entry>
+<entry><xref linkend="mthGetImageListTab"/></entry>
 <entry>Retrieves the current image list from the tab control, if there is one.</entry>
 </row>
 <row>
-<entry>getItemRect (xref linkend="mthGetItemRect" />)</entry>
+<entry><xref linkend="mthGetItemRect"/></entry>
 <entry>Gets the bounding rectangle for a tab in a tab control.</entry>
 </row>
 <row>
-<entry>insert (xref linkend="mthInsertTab" />)</entry>
+<entry><xref linkend="mthInsertTab"/></entry>
 <entry>Inserts a new tab in a tab control.</entry>
 </row>
 <row>
-<entry>itemInfo (xref linkend="mthIteminfoTab" />)</entry>
+<entry><xref linkend="mthIteminfoTab"/></entry>
 <entry>Retrieves information about a tab in a tab control.</entry>
 </row>
 <row>
-<entry>items (xref linkend="mthItemsTab" />)</entry>
+<entry><xref linkend="mthItemsTab"/></entry>
 <entry>Retrieves the number of tabs in a tab control.</entry>
 </row>
 <row>
-<entry>last (xref linkend="mthLastTab" />)</entry>
+<entry><xref linkend="mthLastTab"/></entry>
 <entry>Retrieves the index of the last tab in a tab control.</entry>
 </row>
 <row>
-<entry>modify (xref linkend="mthModifyTab" />)</entry>
+<entry><xref linkend="mthModifyTab"/></entry>
 <entry>Sets some, or all, of the attributes of a tab.</entry>
 </row>
 <row>
-<entry>posRectangle (xref linkend="mthPosRectangle" />)</entry>
+<entry><xref linkend="mthPosRectangle"/></entry>
 <entry>Retrieves the rectangle around a tab in a tab control.</entry>
 </row>
 <row>
-<entry>requiredWindowSize (xref linkend="mthRequiredWindowSize" />)</entry>
+<entry><xref linkend="mthRequiredWindowSize"/></entry>
 <entry>Calculates the display rectangle of a tab control that corresponds to the specified window rectangle.</entry>
 </row>
 <row>
-<entry>rows (xref linkend="mthRows" />)</entry>
+<entry><xref linkend="mthRows"/></entry>
 <entry>Retrieves the current number of rows of tabs in a tab control.</entry>
 </row>
 <row>
-<entry>select (xref linkend="mthSelectTab" />)</entry>
+<entry><xref linkend="mthSelectTab"/></entry>
 <entry>Selects the tab with the specified label text.</entry>
 </row>
 <row>
-<entry>selected (xref linkend="mthSelectedTab" />)</entry>
+<entry><xref linkend="mthSelectedTab"/></entry>
 <entry>Retrieves the label text of the currently selected tab.</entry>
 </row>
 <row>
-<entry>selectedIndex (xref linkend="mthSelectedIndexTab" />)</entry>
+<entry><xref linkend="mthSelectedIndexTab"/></entry>
 <entry>Retrieves the index of the currently selected tab.</entry>
 </row>
 <row>
-<entry>selectIndex (xref linkend="mthSelectIndexTab" />)</entry>
+<entry><xref linkend="mthSelectIndexTab"/></entry>
 <entry>Selects a tab in the tab control.</entry>
 </row>
 <row>
-<entry>setImageList (xref linkend="mthSetImageListClsTabControl" />)</entry>
+<entry><xref linkend="mthSetImageListClsTabControl"/></entry>
 <entry>Assigns, or removes, an image list for the tab control.</entry>
 </row>
 <row>
-<entry>setItemSize (xref linkend="mthSetItemSize" />)</entry>
+<entry><xref linkend="mthSetItemSize"/></entry>
 <entry>Sets the width and height of the tabs in a fixed-width tab control.</entry>
 </row>
 <row>
-<entry>setPadding (xref linkend="mthSetPadding" />)</entry>
+<entry><xref linkend="mthSetPadding"/></entry>
 <entry>Sets the amount of space (padding) around the icon and the label of a tab.</entry>
 </row>
 <row>
-<entry>setSize (xref linkend="mthSetSize" />)</entry>
+<entry><xref linkend="mthSetSize"/></entry>
 <entry>Sets the width and height of the tabs in a fixed-width tab control.</entry>
 </row>
 </tbody></tgroup>
@@ -252,7 +253,7 @@
 <section id="tmthNewTab"><title>newTab (dialog object method)</title>
 <para>
   Tab objects can not be instantiated by the programmer from Rexx code. Rather a Tab object is obtained by using the
-  newTab (xref linkend="mthNewTab" />)() method of the dialog object (xref linkend="chpDialogObject" />). The
+ <xref linkend="mthNewTab"/>() method of the <xref linkend="chpDialogObject"/> object. The
   syntax is:
 <programlisting>
 <![CDATA[
@@ -266,8 +267,8 @@
 
 <section id="tmthCreateTab"><title>createTab (UserDialog method)</title>
 <para>
-  A tab control can be added to the dialog template for a UserDialog (xref linkend="clsUserDialog" />)
-  dialog through the createTab (xref linkend="mthCreateTab" />)() method. The basic syntax is:
+  A tab control can be added to the dialog template for a <xref linkend="clsUserDialog"/>
+  dialog through the <xref linkend="mthCreateTab"/>() method. The basic syntax is:
 <programlisting> <![CDATA[
 >>--createTab(-id-,--x-,--y-,--cx-,--cy-+---------+--+-----------------+--)---><
                                         +-,-style-+  +-,-attributeName-+
@@ -281,8 +282,8 @@
 <section id="tmthConnectTabEvent"><title>connectTabEvent (dialog object method)</title>
 <para>
   To connect event notifications from an tab control use the
-  connectTabEvent (xref linkend="mthConnectTabEvent" />)() method of the
-  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
+ <xref linkend="mthConnectTabEvent"/>() method of the
+  dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectTabEvent(--id--,--event--+----------------+--+--------------+--)-----><
@@ -293,7 +294,7 @@
 </para>
 </section>  <!-- End connectTabEvent() [EventNotification method] -->
 
-<section id="mthAddFullSeq"><title>addFullSeq</title>
+<section id="mthAddFullSeq" xreflabel="addFullSeq"><title>addFullSeq</title>
 <indexterm><primary>addFullSeq</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>addFullSeq</secondary></indexterm>
 <programlisting>
@@ -323,7 +324,7 @@
     <varlistentry><term>icon1 [optional]</term>
     <listitem>
     <para>The index of the icon in the image list of the tab control, set with the
-    setImageList (xref linkend="mthSetImageListClsTabControl" />)() method.
+ <xref linkend="mthSetImageListClsTabControl"/>() method.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>user1 [optional]</term>
@@ -394,7 +395,7 @@
 </variablelist>
 </section>
 
-<section id="mthAddSequence"><title>addSequence</title>
+<section id="mthAddSequence" xreflabel="addSequence"><title>addSequence</title>
 <indexterm><primary>addSequence</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>addSequence</secondary></indexterm>
 <programlisting>
@@ -466,7 +467,7 @@
 </variablelist>
 </section>
 
-<section id="mthAdjustToRectangle"><title>adjustToRectangle</title>
+<section id="mthAdjustToRectangle" xreflabel="adjustToRectangle"><title>adjustToRectangle</title>
 <indexterm><primary>adjustToRectangle</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>adjustToRectangle</secondary></indexterm>
 <programlisting>
@@ -510,13 +511,13 @@ string. The coordinates are separated by blanks and are in the following order:
 <listitem>
 <para>
   This method is outmoded and retained solely for backwards compatibility. All new code should use the
-  calcWindowRect (xref linkend="mthCalcWindowRect" />) method.
+ <xref linkend="mthCalcWindowRect"/> method.
 </para>
 </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthCalcDisplayArea"><title>calcDisplayArea</title>
+<section id="mthCalcDisplayArea" xreflabel="calcDisplayArea"><title>calcDisplayArea</title>
 <indexterm><primary>calcDisplayArea</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>calcDisplayArea</secondary></indexterm>
 <programlisting>
@@ -527,7 +528,7 @@ string. The coordinates are separated by blanks and are in the following order:
 </programlisting>
 
 <para>
-  Given a rect (xref linkend="clsRect" />) object that specifies the window rectangle of a tab control, calculates
+  Given a rect (<xref linkend="clsRect" />) object that specifies the window rectangle of a tab control, calculates
   the display area of the the tab control. This method should be used when the size of the tab control is fixed and the
   size of the contents of a page in the tab control can be adjusted.
 </para>
@@ -540,7 +541,7 @@ string. The coordinates are separated by blanks and are in the following order:
     <varlistentry><term>rect [required] [in/out]</term>
     <listitem>
     <para>
-      A Rect (xref linkend="clsRect" />) object that specifies the window rect of the tab conrol when the method is
+      A Rect (<xref linkend="clsRect" />) object that specifies the window rect of the tab conrol when the method is
       invoked. On return, the <computeroutput>rect</computeroutput> object will contain the coordinates of the display
       area of the tab control.
     </para>
@@ -576,7 +577,7 @@ string. The coordinates are separated by blanks and are in the following order:
 </variablelist>
 </section>  <!-- End Tab::calcDisplayArea() -->
 
-<section id="mthCalcWindowRect"><title>calcWindowRect</title>
+<section id="mthCalcWindowRect" xreflabel="calcWindowRect"><title>calcWindowRect</title>
 <indexterm><primary>calcWindowRect</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>calcWindowRect</secondary></indexterm>
 <programlisting>
@@ -598,7 +599,7 @@ string. The coordinates are separated by blanks and are in the following order:
     <varlistentry><term>rect [required] [in/out]</term>
     <listitem>
     <para>
-      A Rect (xref linkend="clsRect" />) object that specifies the display area of the tab conrol when the method is
+      A Rect (<xref linkend="clsRect" />) object that specifies the display area of the tab conrol when the method is
       invoked. On return, the <computeroutput>rect</computeroutput> object will contain the coordinates of the window
       rectangle of the tab control.
     </para>
@@ -635,7 +636,7 @@ string. The coordinates are separated by blanks and are in the following order:
 </variablelist>
 </section>  <!-- End Tab::calcWindowRect() -->
 
-<section id="mthDeleteTab"><title>delete</title>
+<section id="mthDeleteTab" xreflabel="delete"><title>delete</title>
 <indexterm><primary>delete</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>delete</secondary></indexterm>
 <programlisting>
@@ -673,7 +674,7 @@ or there is no tab available.
 </variablelist>
 </section>
 
-<section id="mthDeleteAllTab"><title>deleteAll</title>
+<section id="mthDeleteAllTab" xreflabel="deleteAll"><title>deleteAll</title>
 <indexterm><primary>deleteAll</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>deleteAll</secondary></indexterm>
 <programlisting>
@@ -700,7 +701,7 @@ control.</para>
 </variablelist>
 </section>
 
-<section id="mthFocusTab"><title>focus</title>
+<section id="mthFocusTab" xreflabel="focus"><title>focus</title>
 <indexterm><primary>focus</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>focus</secondary></indexterm>
 <programlisting>
@@ -727,7 +728,7 @@ tab in a tab control.</para>
 </variablelist>
 </section>
 
-<section id="mthFocusedTab"><title>focused</title>
+<section id="mthFocusedTab" xreflabel="focused"><title>focused</title>
 <indexterm><primary>focused</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>focused</secondary></indexterm>
 <programlisting>
@@ -746,7 +747,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 </variablelist>
 </section>
 
-<section id="mthGetImageListTab"><title>getImageList</title>
+<section id="mthGetImageListTab" xreflabel="getImageList"><title>getImageList</title>
 <indexterm><primary>getImageList</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>getImageList</secondary></indexterm>
 <programlisting>
@@ -769,7 +770,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method returns the current image list (xref linkend="clsImageList" />), if there is one.
+    This method returns the current image list (<xref linkend="clsImageList" />), if there is one.
     <computeroutput>.nil</computeroutput> is returned if there is no current image list.
   </para>
   </listitem></varlistentry>
@@ -802,7 +803,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 </variablelist>
 </section>  <!-- End TabControl::getImageList() -->
 
-<section id="mthGetItemRect"><title>getItemRect</title>
+<section id="mthGetItemRect" xreflabel="getItemRect"><title>getItemRect</title>
 <indexterm><primary>getItemRect</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>getItemRect</secondary></indexterm>
 <programlisting>
@@ -830,7 +831,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
     <varlistentry><term>rect [required] [in/out]</term>
     <listitem>
     <para>
-      A Rect (xref linkend="clsRect" />) object in which the coordinates of tab are returned.
+      A Rect (<xref linkend="clsRect" />) object in which the coordinates of tab are returned.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -845,7 +846,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 </variablelist>
 </section>  <!-- End Tab::getItemRect() -->
 
-<section id="mthInsertTab"><title>insert</title>
+<section id="mthInsertTab" xreflabel="insert"><title>insert</title>
 <indexterm><primary>insert</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>insert</secondary></indexterm>
 <programlisting>
@@ -883,7 +884,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
       <listitem>
       <para>
         The index of the icon in the image list of the tab control to use with the tab. The image list for the control
-        is set with the setImageList (xref linkend="mthSetImageListClsTabControl" />)() method. If this argument is
+        is set with the <xref linkend="mthSetImageListClsTabControl"/>() method. If this argument is
         omitted, no icon is used for the tab.
       </para>
       </listitem></varlistentry>
@@ -926,7 +927,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
 </variablelist>
 </section>
 
-<section id="mthIteminfoTab"><title>itemInfo</title>
+<section id="mthIteminfoTab" xreflabel="itemInfo"><title>itemInfo</title>
 <indexterm><primary>itemInfo</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>itemInfo</secondary></indexterm>
 <programlisting>
@@ -981,7 +982,7 @@ if the tab does not have an image.
 </variablelist>
 </section>
 
-<section id="mthItemsTab"><title>items</title>
+<section id="mthItemsTab" xreflabel="items"><title>items</title>
 <indexterm><primary>items</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>items</secondary></indexterm>
 <programlisting>
@@ -1012,7 +1013,7 @@ a tab control.</para>
 </variablelist>
 </section>
 
-<section id="mthLastTab"><title>last</title>
+<section id="mthLastTab" xreflabel="last"><title>last</title>
 <indexterm><primary>last</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>last</secondary></indexterm>
 <programlisting>
@@ -1035,7 +1036,7 @@ a tab control.</para>
 </variablelist>
 </section>
 
-<section id="mthModifyTab"><title>modify</title>
+<section id="mthModifyTab" xreflabel="modify"><title>modify</title>
 <indexterm><primary>modify</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>modify</secondary></indexterm>
 <programlisting>
@@ -1072,7 +1073,7 @@ a tab control.</para>
       <listitem>
       <para>
         The new index of the icon in the image list of the tab control to use with the tab. The image list for the
-        control is set with the setImageList (xref linkend="mthSetImageListClsTabControl" />)() method.
+        control is set with the <xref linkend="mthSetImageListClsTabControl"/>() method.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>userData [optiona]</term>
@@ -1094,7 +1095,7 @@ a tab control.</para>
 </variablelist>
 </section>
 
-<section id="mthPosRectangle"><title>posRectangle</title>
+<section id="mthPosRectangle" xreflabel="posRectangle"><title>posRectangle</title>
 <indexterm><primary>posRectangle</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>posRectangle</secondary></indexterm>
 <programlisting>
@@ -1129,7 +1130,7 @@ The coordinates are separated by blanks and are in the following order:
 </variablelist>
 </section>
 
-<section id="mthRequiredWindowSize"><title>requiredWindowSize</title>
+<section id="mthRequiredWindowSize" xreflabel="requiredWindowSize"><title>requiredWindowSize</title>
 <indexterm><primary>requiredWindowSize</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>requiredWindowSize</secondary></indexterm>
 <programlisting>
@@ -1174,13 +1175,13 @@ order:
 <listitem>
 <para>
   This method is outmoded and retained solely for backwards compatibility. All new code should use the
-  calcDispalyArea (xref linkend="mthCalcDisplayArea" />) method.
+ <xref linkend="mthCalcDisplayArea"/> method.
 </para>
 </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthRows"><title>rows</title>
+<section id="mthRows" xreflabel="rows"><title>rows</title>
 <indexterm><primary>rows</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>rows</secondary></indexterm>
 <programlisting>
@@ -1200,7 +1201,7 @@ have several rows of tabs.</para>
 </variablelist>
 </section>
 
-<section id="mthSelectTab"><title>select</title>
+<section id="mthSelectTab" xreflabel="select"><title>select</title>
 <indexterm><primary>select</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>select</secondary></indexterm>
 <programlisting>
@@ -1227,7 +1228,7 @@ label text.</para>
 </variablelist>
 </section>
 
-<section id="mthSelectedTab"><title>selected</title>
+<section id="mthSelectedTab" xreflabel="selected"><title>selected</title>
 <indexterm><primary>selected</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>selected</secondary></indexterm>
 <programlisting>
@@ -1246,7 +1247,7 @@ the currently selected tab.</para>
 </variablelist>
 </section>
 
-<section id="mthSelectedIndexTab"><title>selectedIndex</title>
+<section id="mthSelectedIndexTab" xreflabel="selectedIndex"><title>selectedIndex</title>
 <indexterm><primary>selectedIndex</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>selectedIndex</secondary></indexterm>
 <programlisting>
@@ -1266,7 +1267,7 @@ the currently selected tab.</para>
 </section>
 
 
-<section id="mthSelectIndexTab"><title>selectIndex</title>
+<section id="mthSelectIndexTab" xreflabel="selectIndex"><title>selectIndex</title>
 <indexterm><primary>selectIndex</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>selectIndex</secondary></indexterm>
 <programlisting>
@@ -1303,8 +1304,8 @@ the currently selected tab.</para>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The tab control does not send a SELCHANGING (xref linkend="mthConnectTabEvent" />) or SELCHANGE event
-    notification (xref linkend="ovvEvents" />) when a tab is selected using this method.
+    The tab control does not send a <xref linkend="mthConnectTabEvent"/> or SELCHANGE event
+    notification (<xref linkend="ovvEvents"/>) when a tab is selected using this method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1354,7 +1355,7 @@ the currently selected tab.</para>
 </variablelist>
 </section>  <!-- End Tab::selectIndex() -->
 
-<section id="mthSetImageListClsTabControl"><title>setImageList</title>
+<section id="mthSetImageListClsTabControl" xreflabel="setImageList"><title>setImageList</title>
 <indexterm><primary>setImageList</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>setImageList</secondary></indexterm>
 <programlisting>
@@ -1372,7 +1373,7 @@ the currently selected tab.</para>
   Destroying a tab control does not destroy an image list that is associated with it. The programmer must destroy the
   image list separately, if desired. This is useful if the programmer wants to assign the same image list to multiple
   tab controls. In essence, the ownership of the image list remains with the programmer. The
-  ImageList (xref linkend="clsImageList" />) and Image (xref linkend="clsImage" />) classes are used to manage image
+  ImageList (<xref linkend="clsImageList" />) and Image (<xref linkend="clsImage" />) classes are used to manage image
   lists and images in ooDialog. The documentation on both classes discusses when and why the programmer may want to
   release image lists. The Image class documentation has the most detail on this subject.
 </para>
@@ -1384,7 +1385,7 @@ the currently selected tab.</para>
       <varlistentry><term>newImageList [required]</term>
       <listitem>
       <para>
-        The image list (xref linkend="clsImageList" />) to assign to the tab control. If this argument is
+        The image list (<xref linkend="clsImageList" />) to assign to the tab control. If this argument is
         <computeroutput>.nil</computeroutput> the existing image list, if any, is removed.
       </para>
       </listitem></varlistentry>
@@ -1445,7 +1446,7 @@ the currently selected tab.</para>
 </variablelist>
 </section>  <!-- End TabControl::setImageList() -->
 
-<section id="mthSetItemSize"><title>setItemSize</title>
+<section id="mthSetItemSize" xreflabel="setItemSize"><title>setItemSize</title>
 <indexterm><primary>setItemSize</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>setItemSize</secondary></indexterm>
 <programlisting>
@@ -1480,7 +1481,7 @@ Generic form:
     <listitem>
     <para>
       The new size (height and width) in pixels. The <emphasis role="italic">newSize</emphasis> argument(s) can be
-      specified either as a single Size (xref linkend="clsSize" />) object, or as two separate arguments, width first
+      specified either as a single Size (<xref linkend="clsSize" />) object, or as two separate arguments, width first
       and height second.
     </para>
     </listitem></varlistentry>
@@ -1497,9 +1498,9 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The setSize (xref linkend="mthSetSize" />) and <emphasis role="italic">setItemSize</emphasis> methods are
+    The <xref linkend="mthSetSize"/> and <emphasis role="italic">setItemSize</emphasis> methods are
     identical except that the <emphasis role="italic">setSize</emphasis> method returns the old size a string and the
-    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a size (xref linkend="clsSize" />)
+    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a size (<xref linkend="clsSize" />)
     object.
   </para>
   </listitem></varlistentry>
@@ -1512,7 +1513,7 @@ Generic form:
 </variablelist>
 </section>  <!-- End Tab::setItemSize() -->
 
-<section id="mthSetPadding"><title>setPadding</title>
+<section id="mthSetPadding" xreflabel="setPadding"><title>setPadding</title>
 <indexterm><primary>setPadding</primary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>setPadding</secondary></indexterm>
 <programlisting>
@@ -1549,7 +1550,7 @@ Generic form:
     <listitem>
     <para>
       The new padding (horizontal and vertical padding) in pixels. The <emphasis role="italic">padding</emphasis>
-      argument(s) can be specified either as a single Size (xref linkend="clsSize" />) object, or as two separate
+      argument(s) can be specified either as a single Size (<xref linkend="clsSize" />) object, or as two separate
       arguments, horizontal padding first and vertical padding second.
     </para>
     </listitem></varlistentry>
@@ -1565,7 +1566,7 @@ Generic form:
 </variablelist>
 </section>
 
-<section id="mthSetSize"><title>setSize</title>
+<section id="mthSetSize" xreflabel="setSize"><title>setSize</title>
 <indexterm><primary>setSize</primary><secondary>Tab class</secondary></indexterm>
 <indexterm><primary>Tab class</primary><secondary>setSize</secondary></indexterm>
 <programlisting>
@@ -1600,7 +1601,7 @@ Generic form:
     <listitem>
     <para>
       The new size (height and width) in pixels. The <emphasis role="italic">newSize</emphasis> argument(s) can be
-      specified either as a single Size (xref linkend="clsSize" />) object, or as two separate arguments, width first
+      specified either as a single Size (<xref linkend="clsSize" />) object, or as two separate arguments, width first
       and height second.
     </para>
     </listitem></varlistentry>
@@ -1617,9 +1618,9 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The setItemSize (xref linkend="mthSetItemSize" />) and <emphasis role="italic">setSize</emphasis> methods are
+    The <xref linkend="mthSetItemSize"/> and <emphasis role="italic">setSize</emphasis> methods are
     identical except that the <emphasis role="italic">setSize</emphasis> method returns the old size as a string and the
-    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a size (xref linkend="clsSize" />)
+    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a size (<xref linkend="clsSize" />)
     object.
   </para>
   </listitem></varlistentry>

@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsDateTimePicker"><title>Date Time Picker Controls</title>
+<chapter id="clsDateTimePicker" xreflabel="DateTimePicker"><title>Date Time Picker Controls</title>
 <indexterm><primary>DateTimePicker class</primary></indexterm>
 <para>
    A date and time picker (DTP) control provides a simple interface with which to exchange date and time information
@@ -78,15 +78,15 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newDateTimePicker (<xref linkend="mthNewDateTimePicker" />) method of the dialog (<xref
+    Use the <xref linkend="mthNewDateTimePicker"/> method of the dialog (<xref
     linkend="chpDialogObject" />) to retrieve a date and time picker object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically add a date and time picker to a UserDialog (<xref linkend="clsUserDialog" />) use the
-    createDateTimePicker (<xref linkend="mthCreateDateTimePicker" />) method.
+    To dynamically add a date and time picker to a <xref linkend="clsUserDialog"/> use the
+ <xref linkend="mthCreateDateTimePicker"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -105,13 +105,13 @@
   Date and time picker controls rely on a <emphasis role="italic">format</emphasis> string to display the date and time.
   The format string defines how the date and time is displayed. There are 4 preset format strings that are assigned with
   4 of the date and time styles. If the preset format strings are not adequate, the programmer can define his own format
-  string and assign it to the date and time picker through the setFormat (<xref linkend="mthSetFormat" />) method.
+  string and assign it to the date and time picker through the <xref linkend="mthSetFormat"/> method.
 </para>
 <para>
   The 4 preset format strings and their associated styles are in the following table:
 <table id="tblDTPPresetFormats" frame="all"> <title>DTP Preset Formats</title>
 <tgroup cols="2">
-<colspec colwidth="1.25in" />
+<colspec colwidth="1*" /><colspec colwidth="5*" />
 <thead>
 <row>
 <entry>Style</entry>
@@ -150,7 +150,7 @@
   elements and a description of what they produce:
 <table id="tblDTPPFormatElementss" frame="all"> <title>DTP Format Elements</title>
 <tgroup cols="2">
-<colspec colwidth="1.25in" />
+<colspec colwidth="1*" /><colspec colwidth="5*" />
 <thead>
 <row>
 <entry>Element</entry>
@@ -291,7 +291,7 @@
   the display text in a field will be.
 </para>
 <para>
-  The queries are done through event (<xref linkend="ovvEvents" />) notification messages from the control.
+  The queries are done through <xref linkend="ovvEvents"/> notification messages from the control.
   Specifically, the FORMAT and FORMATQUERY events connected using the connectDataTimePickerEvent (<xref
   linkend="mthConnectDateTimePickerEvent" />). The programmer must respond to the event
   notification to ensure that the custom information is displayed properly. The response comes from the FORMAT (<xref
@@ -317,7 +317,7 @@
 <table id="tblDateTimePickerMethods" frame="all">
 <title>DateTimePicker Methods and Attributes</title>
 <tgroup cols="2">
-<colspec colwidth="1.75in" />
+<colspec colwidth="1*" /><colspec colwidth="3*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -330,15 +330,15 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>newDateTimePicker (<xref linkend="tmthNewDateTimePicker" />)</entry>
+<entry><xref linkend="tmthNewDateTimePicker"/></entry>
 <entry>Obtains a DateTimePicker object that represents a date and time picker control in a dialog.</entry>
 </row>
 <row>
-<entry>createDateTimePicker (<xref linkend="tmthCreateDateTimePicker" />)</entry>
-<entry>Creates a DateTimePicker control in an UserDialog (<xref linkend="clsUserDialog" />).</entry>
+<entry><xref linkend="tmthCreateDateTimePicker"/></entry>
+<entry>Creates a DateTimePicker control in an <xref linkend="clsUserDialog"/>.</entry>
 </row>
 <row>
-<entry>connectDataTimePickerEvent (<xref linkend="tmthConnectDateTimePickerEvent" />)</entry>
+<entry><xref linkend="tmthConnectDateTimePickerEvent"/></entry>
 <entry>Connects DateTimePicker event notifications to a Rexx dialog method.</entry>
 </row>
 <row>
@@ -346,63 +346,63 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>closeMonthCal (<xref linkend="mthCloseMonthCal" />)</entry>
+<entry><xref linkend="mthCloseMonthCal"/></entry>
 <entry>Closes the drop down month calendar if it is dropped down</entry>
 </row>
 <row>
-<entry>getDateTime (<xref linkend="mthGetDateTime" />)</entry>
+<entry><xref linkend="mthGetDateTime"/></entry>
 <entry>Retrieves the currently selected date and time for the DTP and returns it as a <computeroutput>DateTime</computeroutput> object.</entry>
 </row>
 <row>
-<entry>getIdealSixe (<xref linkend="mthGetIdealSizeClsDTP" />)</entry>
+<entry><xref linkend="mthGetIdealSizeClsDTP"/></entry>
 <entry>Gets the size needed to display the date time picker control without clipping.</entry>
 </row>
 <row>
-<entry>getInfo (<xref linkend="mthGetInfo" />)</entry>
+<entry><xref linkend="mthGetInfo"/></entry>
 <entry>Returns a <computeroutput>Directory</computeroutput> object with information about the date time picker.</entry>
 </row>
 <row>
-<entry>getMonthCal (<xref linkend="mthGetMonthCal" />)</entry>
+<entry><xref linkend="mthGetMonthCal"/></entry>
 <entry>Returns the MonthCalendar (<xref linkend="clsMonthCalendar" />) object for a date and time picker's (DTP) child month calendar control.</entry>
 </row>
 <row>
-<entry>getMonthCalColor (<xref linkend="mthGetMonthCalColor" />)</entry>
+<entry><xref linkend="mthGetMonthCalColor"/></entry>
 <entry>Retrieves the color for the given portion of DTP control's child month calendar control.</entry>
 </row>
 <row>
-<entry>getMonthCalFont (<xref linkend="mthGetMonthCalFont" />)</entry>
+<entry><xref linkend="mthGetMonthCalFont"/></entry>
 <entry>Gets the font that the DTP control's child month calendar control is currently using.</entry>
 </row>
 <row>
-<entry>getMonthCalStyle (<xref linkend="mthGetMonthCalStyle" />)</entry>
+<entry><xref linkend="mthGetMonthCalStyle"/></entry>
 <entry>Retrieves the style keywords of the date and time picker's child month calendar control.</entry>
 </row>
 <row>
-<entry>getRange (<xref linkend="mthGetRangeClsDTP" />)</entry>
+<entry><xref linkend="mthGetRangeClsDTP"/></entry>
 <entry>Gets the current minimum and maximum allowable times for a date and time picker (DTP) control.</entry>
 </row>
 <row>
-<entry>setDateTime (<xref linkend="mthSetDateTime" />)</entry>
+<entry><xref linkend="mthSetDateTime"/></entry>
 <entry>Sets the date and time for the DTP control to that specified.</entry>
 </row>
 <row>
-<entry>setFormat (<xref linkend="mthSetFormat" />)</entry>
+<entry><xref linkend="mthSetFormat"/></entry>
 <entry>Sets the display of a date and time picker (DTP) control based the specified format string.</entry>
 </row>
 <row>
-<entry>setMonthCalColor (<xref linkend="mthSetMonthCalColor" />)</entry>
+<entry><xref linkend="mthSetMonthCalColor"/></entry>
 <entry>Sets the color for the specified portion of the DTP control's child month calendar control.</entry>
 </row>
 <row>
-<entry>setMonthCalFont (<xref linkend="mthSetMonthCalFont" />)</entry>
+<entry><xref linkend="mthSetMonthCalFont"/></entry>
 <entry>Sets the font to be used by the date and time picker control's child month calendar control.</entry>
 </row>
 <row>
-<entry>setMonthCalStyle (<xref linkend="mthSetMonthCalStyle" />)</entry>
+<entry><xref linkend="mthSetMonthCalStyle"/></entry>
 <entry>Sets the style for the DTP control's child month calendar control.</entry>
 </row>
 <row>
-<entry>setRange (<xref linkend="mthSetRangeClsDTP" />)</entry>
+<entry><xref linkend="mthSetRangeClsDTP"/></entry>
 <entry>Sets the minimum and maximum allowable dates / times for the date time picker control.</entry>
 </row>
 </tbody></tgroup>
@@ -457,7 +457,7 @@
 </section>  <!-- End EventNotification::connectDateTimePickerEvent() (dialog object method) -->
 
 
-<section id="mthCloseMonthCal"><title>closeMonthCal</title>
+<section id="mthCloseMonthCal" xreflabel="closeMonthCal"><title>closeMonthCal</title>
 <indexterm><primary>closeMonthCal</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>closeMonthCal</secondary></indexterm>
 <programlisting>
@@ -500,7 +500,7 @@
 </variablelist>
 </section>  <!-- End DateTimePicker::closeMonthCal() -->
 
-<section id="mthGetDateTime"><title>getDateTime</title>
+<section id="mthGetDateTime" xreflabel="getDateTime"><title>getDateTime</title>
 <indexterm><primary>getDateTime</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>getDateTime</secondary></indexterm>
 <programlisting>
@@ -540,7 +540,7 @@
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) if an error occurs within the underlying DTP
+    Sets the <xref linkend="dotSystemErrorCode" /> if an error occurs within the underlying DTP
     control. The system error code is set this way by the ooDialog framework:
     <variablelist>
       <varlistentry><term><emphasis role="bold">ERROR_INVALID_MESSAGE (1002)</emphasis></term>
@@ -556,7 +556,7 @@
 </variablelist>
 </section>  <!-- End DateTimePicker::getDateTime() -->
 
-<section id="mthGetIdealSizeClsDTP"><title>getIdealSize</title>
+<section id="mthGetIdealSizeClsDTP" xreflabel="getIdealSize"><title>getIdealSize</title>
 <indexterm><primary>getIdealSize</primary><secondary>>DateTimePicker class</secondary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>getIdealSize</secondary></indexterm>
 <programlisting>
@@ -630,7 +630,7 @@
 </variablelist>
 </section>  <!-- End DateTimePicker::getIdealSize() -->
 
-<section id="mthGetInfo"><title>getInfo</title>
+<section id="mthGetInfo" xreflabel="getInfo"><title>getInfo</title>
 <indexterm><primary>getInfo</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>getInfo</secondary></indexterm>
 <programlisting>
@@ -806,7 +806,7 @@ UpDown:      The NIL object
 </variablelist>
 </section>  <!-- End DateTimePicker::getInfo() -->
 
-<section id="mthGetMonthCal"><title>getMonthCal</title>
+<section id="mthGetMonthCal" xreflabel="getMonthCal"><title>getMonthCal</title>
 <indexterm><primary>getMonthCal</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>getMonthCal</secondary></indexterm>
 <programlisting>
@@ -845,7 +845,7 @@ UpDown:      The NIL object
   </para>
   <para>
     Obtaining the month calendar control allows the programmer to change its style or appearance. For instance the
-    first (<xref linkend="mthSetFirstDayOfWeek" />) day of the week could be changed or the <emphasis
+ <xref linkend="mthSetFirstDayOfWeek"/> day of the week could be changed or the <emphasis
     role="italic">Go To Today</emphasis> could be removed by setting the NOTODAY style.
   </para>
   <para>
@@ -887,7 +887,7 @@ UpDown:      The NIL object
 </variablelist>
 </section>  <!-- End DateTimePicker::getMonthCal() -->
 
-<section id="mthGetMonthCalColor"><title>getMonthCalColor</title>
+<section id="mthGetMonthCalColor" xreflabel="getMonthCalColor"><title>getMonthCalColor</title>
 <indexterm><primary>getMonthCalColor</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>getMonthCalColor</secondary></indexterm>
 <programlisting>
@@ -976,13 +976,13 @@ UpDown:      The NIL object
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    This method is essentially the same as the getColor (<xref linkend="mthGetColor" />) method of the Month Calendar (<xref
+    This method is essentially the same as the <xref linkend="mthGetColor"/> method of the Month Calendar (<xref
     linkend="clsMonthCalendar" />) class, except that DTP control is asked to get the color from its
     child month calendar.
   </para>
   <para>
     The Image (<xref linkend="clsImage" />) class has a number of convenience methods for working with COLORREFs,
-    including the colorRef (<xref linkend="mthColorRef" />) method that explains what a COLORREF is.
+    including the <xref linkend="mthColorRef"/> method that explains what a COLORREF is.
   </para>
   <para>
     The <emphasis role="italic">colorRef</emphasis> method can be used to test the return for error. I.e.:
@@ -1003,7 +1003,7 @@ UpDown:      The NIL object
 </section>  <!-- End DateTimePicker::getMonthCalColor() -->
 
 
-<section id="mthGetMonthCalFont"><title>getMonthCalFont</title>
+<section id="mthGetMonthCalFont" xreflabel="getMonthCalFont"><title>getMonthCalFont</title>
 <indexterm><primary>getMonthCalFont</primary></indexterm>
 <indexterm><primary>DateTimePicker</primary><secondary>getMonthCalFont</secondary></indexterm>
 <programlisting>
@@ -1027,7 +1027,7 @@ UpDown:      The NIL object
   <listitem>
   <para>
     The return is a handle (<xref linkend="defHandle" />) to the font, the same return as the getFont (<xref
-    linkend="mthGetFont" />) or createFontEx (<xref linkend="mthCreateFontEx" />) methods of the dialog (<xref
+    linkend="mthGetFont" />) or <xref linkend="mthCreateFontEx"/> methods of the dialog (<xref
     linkend="chpDialogObject" />) object would return.
   </para>
   </listitem></varlistentry>
@@ -1041,7 +1041,7 @@ UpDown:      The NIL object
 </variablelist>
 </section>  <!-- End DateTimePicker::getMonthCalFont() -->
 
-<section id="mthGetMonthCalStyle"><title>getMonthCalStyle</title>
+<section id="mthGetMonthCalStyle" xreflabel="getMonthCalStyle"><title>getMonthCalStyle</title>
 <indexterm><primary>getMonthCalStyle</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>getMonthCalStyle</secondary></indexterm>
 <programlisting>
@@ -1082,7 +1082,7 @@ UpDown:      The NIL object
       <varlistentry><term>DAYSTATE</term>
       <listitem>
       <para>
-        The month calendar will send the GETDAYSTATE event (<xref linkend="ovvEvents" />) notification to request
+        The month calendar will send the GETDAYSTATE <xref linkend="ovvEvents"/> notification to request
         information about which days should be displayed in bold. For the DTP control's child month calendar, this style
         is not of much interest, and not of much use, to the ooDialog programmer. The ooDialog can not connect an event
         handler to the child month calendar.
@@ -1159,7 +1159,7 @@ UpDown:      The NIL object
   </para>
   <para>
     For an expanded version of this example, see the example (<xref linkend="exampleSetMonthCalStyle" />) for the
-    setMonthCalStyle (<xref linkend="mthSetMonthCalStyle" />) method.
+ <xref linkend="mthSetMonthCalStyle"/> method.
 
 <programlisting>
 <![CDATA[
@@ -1214,7 +1214,7 @@ return 0
 </variablelist>
 </section>  <!-- End DateTimePicker::getMonthCalStyle() -->
 
-<section id="mthGetRangeClsDTP"><title>getRange</title>
+<section id="mthGetRangeClsDTP" xreflabel="getRange"><title>getRange</title>
 <indexterm><primary>getRange</primary><secondary>DateTimePicker class</secondary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>getRange</secondary></indexterm>
 <programlisting>
@@ -1320,7 +1320,7 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
 </variablelist>
 </section>  <!-- End DateTimePicker::getRange() -->
 
-<section id="mthSetDateTime"><title>setDateTime</title>
+<section id="mthSetDateTime" xreflabel="setDateTime"><title>setDateTime</title>
 <indexterm><primary>setDateTime</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>setDateTime</secondary></indexterm>
 <programlisting>
@@ -1396,7 +1396,7 @@ The maximum time for the DTP control is: 2011-12-31T11:59:59.999000.
 </variablelist>
 </section>  <!-- End DateTimePicker::setDateTime() -->
 
-<section id="mthSetFormat"><title>setFormat</title>
+<section id="mthSetFormat" xreflabel="setFormat"><title>setFormat</title>
 <indexterm><primary>setFormat</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>setFormat</secondary></indexterm>
 <programlisting>
@@ -1467,7 +1467,7 @@ Monday October 24, 2011 - 11:52 AM
 </variablelist>
 </section>  <!-- End DateTimePicker::setFormat() -->
 
-<section id="mthSetMonthCalColor"><title>setMonthCalColor</title>
+<section id="mthSetMonthCalColor" xreflabel="setMonthCalColor"><title>setMonthCalColor</title>
 <indexterm><primary>setMonthCalColor</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>setMonthCalColor</secondary></indexterm>
 <programlisting>
@@ -1562,7 +1562,7 @@ Monday October 24, 2011 - 11:52 AM
   <listitem>
   <para>
     The Image (<xref linkend="clsImage" />) class has a number of convenience methods for working with COLORREFs,
-    including the colorRef (<xref linkend="mthColorRef" />) method that explains what a COLORREF is.
+    including the <xref linkend="mthColorRef"/> method that explains what a COLORREF is.
   </para>
   <para>
     The <emphasis role="italic">colorRef</emphasis> method can be used to test the return for error. I.e.:
@@ -1583,7 +1583,7 @@ Monday October 24, 2011 - 11:52 AM
 </section>  <!-- End DateTimePicker::setMonthCalColor() -->
 
 
-<section id="mthSetMonthCalFont"><title>setMonthCalFont</title>
+<section id="mthSetMonthCalFont" xreflabel="setMonthCalFont"><title>setMonthCalFont</title>
 <indexterm><primary>setMonthCalFont</primary></indexterm>
 <indexterm><primary>DateTimePicker</primary><secondary>setMonthCalFont</secondary></indexterm>
 <programlisting>
@@ -1635,7 +1635,7 @@ Monday October 24, 2011 - 11:52 AM
 </variablelist>
 </section>  <!-- End DateTimePicker::setMonthCalFont() -->
 
-<section id="mthSetMonthCalStyle"><title>setMonthCalStyle</title>
+<section id="mthSetMonthCalStyle" xreflabel="setMonthCalStyle"><title>setMonthCalStyle</title>
 <indexterm><primary>setMonthCalStyle</primary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>setMonthCalStyle</secondary></indexterm>
 <programlisting>
@@ -1676,7 +1676,7 @@ Monday October 24, 2011 - 11:52 AM
         <varlistentry><term>DAYSTATE</term>
         <listitem>
         <para>
-          The month calendar will send the GETDAYSTATE event (<xref linkend="ovvEvents" />) notification to request
+          The month calendar will send the GETDAYSTATE <xref linkend="ovvEvents"/> notification to request
           information about which days should be displayed in bold. For the DTP control's child month calendar, this style
           is not of much interest, and not of much use, to the ooDialog programmer. The ooDialog can not connect an event
           handler to the child month calendar.
@@ -1829,7 +1829,7 @@ Style (Windows 2000 or XP): NOCIRCLE NOTODAY
 </variablelist>
 </section>  <!-- End DateTimePicker::setMonthCalStyle() -->
 
-<section id="mthSetRangeClsDTP"><title>setRange</title>
+<section id="mthSetRangeClsDTP" xreflabel="setRange"><title>setRange</title>
 <indexterm><primary>setRange</primary><secondary>DateTimePicker class</secondary></indexterm>
 <indexterm><primary>DateTimePicker class</primary><secondary>setRange</secondary></indexterm>
 <programlisting>

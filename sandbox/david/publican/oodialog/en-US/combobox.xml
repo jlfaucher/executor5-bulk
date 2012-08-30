@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsComboBox"><title>Combo Box Controls</title>
+<chapter id="clsComboBox" xreflabel="ComboBox"><title>Combo Box Controls</title>
 <indexterm><primary>ComboBox class</primary></indexterm>
 <para>
   There are 3 types of combo boxes.
@@ -80,15 +80,15 @@
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically create a combo box in the dialog template of a UserDialog (<xref linkend="clsUserDialog" />) use
-    the createComboBox (<xref linkend="mthCreateComboBox" />) method.
+    To dynamically create a combo box in the dialog template of a <xref linkend="clsUserDialog"/> use
+    the <xref linkend="mthCreateComboBox"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the rvent (<xref linkend="ovvEvents" />) notifications sent by the underlying combo box control to a
-    method in the Rexx dialog object use the connectComboBoxEvent (<xref linkend="mthConnectComboBoxEvent" />)
+    To connect the rvent (<xref linkend="ovvEvents"/>) notifications sent by the underlying combo box control to a
+    method in the Rexx dialog object use the <xref linkend="mthConnectComboBoxEvent"/>
     method.
   </para>
   </listitem></varlistentry>
@@ -103,7 +103,8 @@
 <table id="tblComboBoxMethods" frame="all">
 <title>ComboBox Methods and Attributes</title>
 <tgroup cols="2">
-<colspec colwidth="1.75in" />
+<colspec colwidth="1*" />
+<colspec colwidth="3*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -116,15 +117,15 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>newComboBox (<xref linkend="tmthNewComboBox" />)</entry>
+<entry><xref linkend="tmthNewComboBox"/></entry>
 <entry>Obtains a ComboBox object that represents a combo box control in a dialog.</entry>
 </row>
 <row>
-<entry>createComboBox (<xref linkend="tmthCreateComboBox" />)</entry>
-<entry>Creates a combo box control in an UserDialog (<xref linkend="clsUserDialog" />).</entry>
+<entry><xref linkend="tmthCreateComboBox"/></entry>
+<entry>Creates a combo box control in an <xref linkend="clsUserDialog"/>.</entry>
 </row>
 <row>
-<entry>connectComboBox (<xref linkend="tmthConnectComboBoxEvent" />)</entry>
+<entry><xref linkend="tmthConnectComboBoxEvent"/></entry>
 <entry>Connects ComboBox event notifications to a Rexx dialog method.</entry>
 </row>
 <row>
@@ -132,79 +133,79 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>add (<xref linkend="mthAddClsComboBox" />)</entry>
+<entry><xref linkend="mthAddClsComboBox"/></entry>
 <entry>Adds a new item to the list of the combo box.</entry>
 </row>
 <row>
-<entry>addDirectory (<xref linkend="mthAddDirectoryClsComboBox" />)</entry>
+<entry><xref linkend="mthAddDirectoryClsComboBox"/></entry>
 <entry>Adds file names in a given directory to the items of a combo box.</entry>
 </row>
 <row>
-<entry>closeDropDown (<xref linkend="mthCloseDropDown" />)</entry>
+<entry><xref linkend="mthCloseDropDown"/></entry>
 <entry>Closes the drop-down list of the combo box.</entry>
 </row>
 <row>
-<entry>delete (<xref linkend="mthDeleteClsComboBox" />)</entry>
+<entry><xref linkend="mthDeleteClsComboBox"/></entry>
 <entry>Removes an item from the list of the combo box.</entry>
 </row>
 <row>
-<entry>deleteAll (<xref linkend="mthDeleteAllClsComboBox" />)</entry>
+<entry><xref linkend="mthDeleteAllClsComboBox"/></entry>
 <entry>Removes all list items from the combo box.</entry>
 </row>
 <row>
-<entry>find (<xref linkend="mthFindClsComboBox" />)</entry>
+<entry><xref linkend="mthFindClsComboBox"/></entry>
 <entry>Searches the combo box for a list item containing the specified text or prefix.</entry>
 </row>
 <row>
-<entry>getHorizontalExtent (<xref linkend="mthGetHorizontalExtentClsComboBox" />)</entry>
+<entry><xref linkend="mthGetHorizontalExtentClsComboBox"/></entry>
 <entry>Gets the value of the horizontal extent for the combo box.</entry>
 </row>
 <row>
-<entry>getText (<xref linkend="mthGetTextClsComboBox" />)</entry>
+<entry><xref linkend="mthGetTextClsComboBox"/></entry>
 <entry>Gets the text of the list item at the specified position in the combo box.</entry>
 </row>
 <row>
-<entry>insert (<xref linkend="mthInsertClsComboBox" />)</entry>
+<entry><xref linkend="mthInsertClsComboBox"/></entry>
 <entry>Inserts a new item into the list of the combo box after the specified item.</entry>
 </row>
 <row>
-<entry>isDropDownOpen (<xref linkend="mthIsDropDownOpen" />)</entry>
+<entry><xref linkend="mthIsDropDownOpen"/></entry>
 <entry>Determines if the list of the combo box is dropped down</entry>
 </row>
 <row>
-<entry>items (<xref linkend="mthItemsClsComboBox" />)</entry>
+<entry><xref linkend="mthItemsClsComboBox"/></entry>
 <entry>Retrieves the number of items in the combo box.</entry>
 </row>
 <row>
-<entry>modify (<xref linkend="mthModifyClsComboBox" />)</entry>
+<entry><xref linkend="mthModifyClsComboBox"/></entry>
 <entry>Changes the text of the list item at the specified position in the combo box.</entry>
 </row>
 <row>
-<entry>openDropDown (<xref linkend="mthOpenDropDown" />)</entry>
+<entry><xref linkend="mthOpenDropDown"/></entry>
 <entry>Drops down the list of the combo box.</entry>
 </row>
 <row>
-<entry>select (<xref linkend="mthSelectClsComboBox" />)</entry>
+<entry><xref linkend="mthSelectClsComboBox"/></entry>
 <entry>Selects the list entry that matches the specified text.</entry>
 </row>
 <row>
-<entry>selected (<xref linkend="mthSelectedClsComboBox" />)</entry>
+<entry><xref linkend="mthSelectedClsComboBox"/></entry>
 <entry>Retrieves the text of the currently selected item in the combo box list.</entry>
 </row>
 <row>
-<entry>selectedIndex (<xref linkend="mthSelectedIndexClsComboBox" />)</entry>
+<entry><xref linkend="mthSelectedIndexClsComboBox"/></entry>
 <entry>Retrieves the index of the currently selected item in the combo box list.</entry>
 </row>
 <row>
-<entry>selectIndex (<xref linkend="mthSelectIndexClsComboBox" />)</entry>
+<entry><xref linkend="mthSelectIndexClsComboBox"/></entry>
 <entry>Selects the list item at the specified index.</entry>
 </row>
 <row>
-<entry>setEditSelection (<xref linkend="mthSetEditSelection" />)</entry>
+<entry><xref linkend="mthSetEditSelection"/></entry>
 <entry>Selects the specified text range in the edit control of the combo box.</entry>
 </row>
 <row>
-<entry>setHorizontalExtent (<xref linkend="mthGetHorizontalExtentClsComboBox" />)</entry>
+<entry><xref linkend="mthGetHorizontalExtentClsComboBox"/></entry>
 <entry>Sets the value of the horizontal extent for the combo box.</entry>
 </row>
 </tbody></tgroup>
@@ -231,7 +232,7 @@
 <section id="tmthCreateComboBox"><title>createComboBox (UserDialog method)</title>
 <para>
   A combo box control can be created in the dialog template of a UserDialog I<xref linkend="clsUserDialog" />)
-  through the createComboBox (<xref linkend="mthCreateComboBox" />) method. The basic syntax is:
+  through the <xref linkend="mthCreateComboBox"/> method. The basic syntax is:
 
 <programlisting>
 <![CDATA[
@@ -260,7 +261,7 @@
 </section>  <!-- End EventNotification::connectComboBoxEvent() (dialog object method) -->
 
 
-<section id="mthAddClsComboBox"><title>add</title>
+<section id="mthAddClsComboBox" xreflabel="add"><title>add</title>
 <indexterm><primary>add</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>add</secondary></indexterm>
 <programlisting>
@@ -312,14 +313,14 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The find (<xref linkend="mthFindClsComboBox" />) example (<xref linkend="exampleFindClsComboBox" />) uses the
+    The <xref linkend="mthFindClsComboBox"/> example (<xref linkend="exampleFindClsComboBox" />) uses the
     <emphasis role="italic">add</emphasis> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthAddDirectoryClsComboBox"><title>addDirectory</title>
+<section id="mthAddDirectoryClsComboBox" xreflabel="addDirectory"><title>addDirectory</title>
 <indexterm><primary>addDirectory</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>addDirectory</secondary></indexterm>
 <programlisting>
@@ -467,7 +468,7 @@
 </variablelist>
 </section>
 
-<section id="mthCloseDropDown"><title>closeDropDown</title>
+<section id="mthCloseDropDown" xreflabel="closeDropDown"><title>closeDropDown</title>
 <indexterm><primary>closeDropDown</primary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>closeDropDown</secondary></indexterm>
 <programlisting>
@@ -497,7 +498,7 @@
 </variablelist>
 </section>
 
-<section id="mthDeleteClsComboBox"><title>delete</title>
+<section id="mthDeleteClsComboBox" xreflabel="delete"><title>delete</title>
 <indexterm><primary>delete</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>delete</secondary></indexterm>
 <programlisting>
@@ -543,7 +544,7 @@
 </variablelist>
 </section>
 
-<section id="mthDeleteAllClsComboBox"><title>deleteAll</title>
+<section id="mthDeleteAllClsComboBox" xreflabel="deleteAll"><title>deleteAll</title>
 <indexterm><primary>deleteAll</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>deleteAll</secondary></indexterm>
 <programlisting>
@@ -572,7 +573,7 @@
 </variablelist>
 </section>
 
-<section id="mthFindClsComboBox"><title>find</title>
+<section id="mthFindClsComboBox" xreflabel="find"><title>find</title>
 <indexterm><primary>find</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>find</secondary></indexterm>
 <programlisting>
@@ -689,7 +690,7 @@ new orleans
 </variablelist>
 </section>  <!-- End Edit::find() -->
 
-<section id="mthGetHorizontalExtentClsComboBox"><title>getHorizontalExtent</title>
+<section id="mthGetHorizontalExtentClsComboBox" xreflabel="getHorizontalExtent"><title>getHorizontalExtent</title>
 <indexterm><primary>getHorizontalExtent</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>getHorizontalExtent</secondary></indexterm>
 <programlisting>
@@ -721,7 +722,7 @@ new orleans
     This method is only applicable if the combo box has a horizontal scroll bar. A scroll bar can be added explicitly by
     using the WS_HSCROLL style with the combo box definition in the resource script for a RcDialog (<xref
     linkend="clsRcDialog" />) or a RexDialog (<xref linkend="clsResDialog" />, or by using the HSCROLL
-    style in the createComboBox (<xref linkend="mthCreateComboBox" />) method of a UserDialog (<xref
+    style in the <xref linkend="mthCreateComboBox"/> method of a UserDialog (<xref
     linkend="clsUserDialog" />).
   </para>
   <para>
@@ -730,14 +731,14 @@ new orleans
   </para>
   <para>
     When the underlying (<xref linkend="ovvUnderlying" />) combo box is created, it has its horizontal extend set to
-    0. The setHorizontalExtent (<xref linkend="mthSetHorizontalExtentClsComboBox" />) method can be used to change
+    0. The <xref linkend="mthSetHorizontalExtentClsComboBox"/> method can be used to change
     this value.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End ComboBox::getHorizontalExtent() -->
 
-<section id="mthGetTextClsComboBox"><title>getText</title>
+<section id="mthGetTextClsComboBox" xreflabel="getText"><title>getText</title>
 <indexterm><primary>getText</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>getText</secondary></indexterm>
 <programlisting>
@@ -774,14 +775,14 @@ new orleans
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The find (<xref linkend="mthFindClsComboBox" />) example (<xref linkend="exampleFindClsComboBox" />) uses the
+    The <xref linkend="mthFindClsComboBox"/> example (<xref linkend="exampleFindClsComboBox" />) uses the
     <emphasis role="italic">getText</emphasis> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthIsDropDownOpen"><title>isDropDownOpen</title>
+<section id="mthIsDropDownOpen" xreflabel="isDropDownOpen"><title>isDropDownOpen</title>
 <indexterm><primary>isDropDownOpen</primary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>isDropDownOpen</secondary></indexterm>
 <programlisting>
@@ -812,7 +813,7 @@ new orleans
 </variablelist>
 </section>
 
-<section id="mthInsertClsComboBox"><title>insert</title>
+<section id="mthInsertClsComboBox" xreflabel="insert"><title>insert</title>
 <indexterm><primary>insert</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>insert</secondary></indexterm>
 <programlisting>
@@ -854,7 +855,7 @@ new orleans
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Unlike the add (<xref linkend="mthAddClsComboBox" />) method, if the combo box has the SORT style, the <emphasis
+    Unlike the <xref linkend="mthAddClsComboBox"/> method, if the combo box has the SORT style, the <emphasis
     role="italic">insert</emphasis> method does not cause the combo box to sort the list items.
   </para>
   <para>
@@ -874,7 +875,7 @@ new orleans
 </variablelist>
 </section>
 
-<section id="mthItemsClsComboBox"><title>items</title>
+<section id="mthItemsClsComboBox" xreflabel="items"><title>items</title>
 <indexterm><primary>items</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>items</secondary></indexterm>
 <programlisting>
@@ -905,7 +906,7 @@ new orleans
 </section>
 
 
-<section id="mthModifyClsComboBox"><title>modify</title>
+<section id="mthModifyClsComboBox" xreflabel="modify"><title>modify</title>
 <indexterm><primary>modify</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>modify</secondary></indexterm>
 <programlisting>
@@ -951,7 +952,7 @@ new orleans
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Because this method uses the insert (<xref linkend="mthInsertClsComboBox" />) method to change the text at the
+    Because this method uses the <xref linkend="mthInsertClsComboBox"/> method to change the text at the
     specified index, if the combo box has the SORT style, the <emphasis role="italic">modify</emphasis> method will not
     cause the combo box to insert the new text in its alphabetical order in the list items.
   </para>
@@ -965,7 +966,7 @@ new orleans
 </variablelist>
 </section>  <!-- End ComboBox::modify() -->
 
-<section id="mthOpenDropDown"><title>openDropDown</title>
+<section id="mthOpenDropDown" xreflabel="openDropDown"><title>openDropDown</title>
 <indexterm><primary>openDropDown</primary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>openDropDown</secondary></indexterm>
 <programlisting>
@@ -996,7 +997,7 @@ new orleans
 </variablelist>
 </section>
 
-<section id="mthSelectClsComboBox"><title>select</title>
+<section id="mthSelectClsComboBox" xreflabel="select"><title>select</title>
 <indexterm><primary>select</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>select</secondary></indexterm>
 <programlisting>
@@ -1082,7 +1083,7 @@ new orleans
 </section>  <!-- End ComboBox::select() -->
 
 
-<section id="mthSelectedClsComboBox"><title>selected</title>
+<section id="mthSelectedClsComboBox" xreflabel="selected"><title>selected</title>
 <indexterm><primary>selected</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>selected</secondary></indexterm>
 <programlisting>
@@ -1112,7 +1113,7 @@ new orleans
 </section>
 
 
-<section id="mthSelectedIndexClsComboBox"><title>selectedIndex</title>
+<section id="mthSelectedIndexClsComboBox" xreflabel="selectedIndex"><title>selectedIndex</title>
 <indexterm><primary>selectedIndex</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>selectedIndex</secondary></indexterm>
 <programlisting>
@@ -1141,7 +1142,7 @@ new orleans
 </variablelist>
 </section>
 
-<section id="mthSelectIndexClsComboBox"><title>selectIndex</title>
+<section id="mthSelectIndexClsComboBox" xreflabel="selectIndex"><title>selectIndex</title>
 <indexterm><primary>selectIndex</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>selectIndex</secondary></indexterm>
 <programlisting>
@@ -1196,7 +1197,7 @@ new orleans
 </variablelist>
 </section>  <!-- End ComboBox::selectIndex() -->
 
-<section id="mthSetEditSelection"><title>setEditSelection</title>
+<section id="mthSetEditSelection" xreflabel="setEditSelection"><title>setEditSelection</title>
 <indexterm><primary>setEditSelection</primary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>setEditSelection</secondary></indexterm>
 <programlisting>
@@ -1279,7 +1280,7 @@ new orleans
 </variablelist>
 </section>  <!-- End ComboBox::setEditSelection() -->
 
-<section id="mthSetHorizontalExtentClsComboBox"><title>setHorizontalExtent</title>
+<section id="mthSetHorizontalExtentClsComboBox" xreflabel="setHorizontalExtent"><title>setHorizontalExtent</title>
 <indexterm><primary>setHorizontalExtent</primary><secondary>ComboBox class</secondary></indexterm>
 <indexterm><primary>ComboBox class</primary><secondary>setHorizontalExtent</secondary></indexterm>
 <programlisting>
@@ -1320,7 +1321,7 @@ new orleans
     a scroll bar, the user will see no difference. A scroll bar can be added explicitly by using the WS_HSCROLL style
     with the combo box definition in the resource script for a TcDialog (<xref linkend="clsRcDialog" /> or a RexDialog (<xref
     linkend="clsResDialog" />), or by using the HSCROLL style in the createComboBox (<xref
-    linkend="mthCreateComboBox" />) method of a UserDialog (<xref linkend="clsUserDialog" />).
+    linkend="mthCreateComboBox" />) method of a <xref linkend="clsUserDialog"/>.
   </para>
   <para>
     In addition, a horizontal scroll bar is added implicitly if the CBS_DISABLENOSCROLL style is used in the resource

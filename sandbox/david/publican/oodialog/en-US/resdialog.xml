@@ -46,10 +46,10 @@
 <chapter id="resourcedialogs"><title>Resource File Dialogs</title>
 <indexterm><primary>Resource file dialogs</primary></indexterm>
 <para>
-  The resource definition, or dialog template (xref linkend="ovvDialogTemplate" />), for a dialog can either be
-  constructed manually, (see the UserDialog (xref linkend="clsUserDialog" />) Class,) or read from a file.  ooDialog
+  The resource definition, or dialog template (<xref linkend="ovvDialogTemplate" />), for a dialog can either be
+  constructed manually, (see the <xref linkend="clsUserDialog"/> Class,) or read from a file.  ooDialog
   provides two main dialog classes that read the dialog templates from a file: the
-  ResDialog (xref linkend="clsResDialog" />) class and the RcDialog (xref linkend="clsRcDialog" />) class.
+  ResDialog (<xref linkend="clsResDialog" />) class and the RcDialog (<xref linkend="clsRcDialog" />) class.
 </para>
 <para>
   The <computeroutput>ResDialog</computeroutput> class uses a dialog template from a binary file and a
@@ -60,7 +60,7 @@
   ooDialog.
 </para>
 
-<section id="clsResDialog"><title>ResDialog Class</title>
+<section id="clsResDialog" xreflabel="ResDialog"><title>ResDialog Class</title>
 <indexterm><primary>Resource file dialogs</primary><secondary>ResDialog class</secondary></indexterm>
 <indexterm><primary>ResDialog class</primary></indexterm>
 <para>
@@ -73,12 +73,12 @@
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> the <computeroutput>ResDialog</computeroutput> class is a concrete subclass of
-  the dialog object (xref linkend="chpDialogObject" />) and therefore has all of the methods of the dialog object.
+  the <xref linkend="chpDialogObject"/> object and therefore has all of the methods of the dialog object.
   From the Rexx programmer's perspective, the only difference to be aware of is in the
-  new (xref linkend="mthNewClsResDialog" />) method.
+ <xref linkend="mthNewClsResDialog"/> method.
 </para>
 
-<section id="mthNewClsResDialog"><title>new (Class method)</title>
+<section id="mthNewClsResDialog" xreflabel="new"><title>new (Class method)</title>
 <indexterm><primary>new</primary><secondary>ResDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -108,21 +108,21 @@
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template.  This may be numeric or symbolic (xref linkend="defSymbolicId" />).
+        The resource ID of the dialog template.  This may be numeric or symbolic (<xref linkend="defSymbolicId" />).
         The resource ID is assigned to the dialog template when it was compiled.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>dlgData. [optional]</term>
       <listitem>
       <para>
-        A dialog data stem (xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
+        A dialog data stem (<xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>hFile [optional]</term>
       <listitem>
       <para>
-        The name of a file (xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
+        The name of a file (<xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -180,7 +180,7 @@ end
 </programlisting>
   </para>
   <para>
-    An additional example (xref linkend="exampleDialogObjectnew" />) can be found under the <emphasis
+    An additional example (<xref linkend="exampleDialogObjectnew" />) can be found under the <emphasis
     role="italic">new</emphasis> method of the dialog object that shows the use of the dialog data stem and header file
     arguments in more detail.
   </para>
@@ -191,11 +191,11 @@ end
 
 </section>
 
-<section id="clsRcDialog"><title>RcDialog Class</title>
+<section id="clsRcDialog" xreflabel="RcDialog"><title>RcDialog Class</title>
 <indexterm><primary>Resource file dialogs</primary><secondary>RcDialog class</secondary></indexterm>
 <indexterm><primary>RcDialog class</primary></indexterm>
 <para>
-  The <computeroutput>RcDialog</computeroutput> class gets its dialog template (xref linkend="ovvDialogTemplate" />)
+  The <computeroutput>RcDialog</computeroutput> class gets its dialog template (<xref linkend="ovvDialogTemplate" />)
   from a resource script file. Resource script files are plain text files usually produced by a resource editor. The
   files generally have a file extension of &quot;.rc&quot;, but an extension of &quot;.dlg&quot; is used by some
   resource editors.
@@ -204,20 +204,20 @@ end
   <varlistentry><term><emphasis role="bold">Notes:</emphasis></term>
   <listitem>
   <para>
-    The <computeroutput>RcDialog</computeroutput> class subclasses the UserDialog (xref linkend="clsUserDialog" />)
+    The <computeroutput>RcDialog</computeroutput> class subclasses the <xref linkend="clsUserDialog"/>
     class. The <computeroutput>UserDialog</computeroutput> is a concrete subclass of the
-    dialog object (xref linkend="chpDialogObject" />). Therefore the <computeroutput>RcDialog</computeroutput> has
+    <xref linkend="chpDialogObject"/> object. Therefore the <computeroutput>RcDialog</computeroutput> has
     available all of the methods of the dialog object and the <computeroutput>UserDialog</computeroutput>. For the Rexx
     programmer, there are only a few differences to be aware of between the <computeroutput>UserDialog</computeroutput>
     and the <computeroutput>RcDialog</computeroutput>.
   </para>
   <para>
     The <computeroutput>RcDialog</computeroutput> class is a convenience class that uses the
-    load (xref linkend="mthLoad" />) method of the <computeroutput>UserDialog</computeroutput> to load the dialog
+ <xref linkend="mthLoad"/> method of the <computeroutput>UserDialog</computeroutput> to load the dialog
     template from the
     resource script file.  The programmer then does not need to worry about the details of how and when to load the
-    resource script. There is a slight difference in instantiating (xref linkend="mthNewClsRcDialog" />) the class.
-    The programmer does not need to use the defineDialog (xref linkend="mthDefineDialog" />) method because the
+    resource script. There is a slight difference in <xref linkend="mthNewClsRcDialog"/> the class.
+    The programmer does not need to use the <xref linkend="mthDefineDialog"/> method because the
     dialog is defined in the resource script. Other than that, the <computeroutput>RcDialog</computeroutput> class is
     used in the same manner as the <computeroutput>UserDialog</computeroutput> class.
   </para>
@@ -229,7 +229,7 @@ end
   </listitem></varlistentry>
 </variablelist>
 
-<section id="mthNewClsRcDialog"><title>new (Class method)</title>
+<section id="mthNewClsRcDialog" xreflabel="new"><title>new (Class method)</title>
 <indexterm><primary>new</primary><secondary>RcDialog class</secondary></indexterm>
 <programlisting>
 <![CDATA[
@@ -257,20 +257,20 @@ end
       <varlistentry><term>id [required]</term>
       <listitem>
       <para>
-        The resource ID of the dialog template. This may be numeric or symbolic  (xref linkend="defSymbolicId" />).
+        The resource ID of the dialog template. This may be numeric or symbolic  (<xref linkend="defSymbolicId" />).
       </para>
       </listitem></varlistentry>
       <varlistentry><term>dlgData. [optional]</term>
       <listitem>
       <para>
-        A dialog data stem (xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
+        A dialog data stem (<xref linkend="termDialogDataStem" />) variable (don't forget the trailing period) that
         contains data used to initialize the underlying dialog's controls.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>hFile [optional]</term>
       <listitem>
       <para>
-        The name of a file (xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
+        The name of a file (<xref linkend="termHFile" />) containing symbolic ID defines for resource IDs.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>opts [optional]</term>
@@ -287,9 +287,9 @@ end
         <varlistentry><term>CONNECTBUTTONS</term>
         <listitem>
         <para>
-          Each push button (xref linkend="clsButton" />) in the underlying dialog has the CLICKED
-          event (xref linkend="ovvEvents" />) notification connected automatically to a method in the Rexx dialog object.
-          This is the same as using the connectButtonEvent (xref linkend="mthConnectButtonEvent" />)() method for the
+          Each push button (<xref linkend="clsButton" />) in the underlying dialog has the CLICKED
+          <xref linkend="ovvEvents"/> notification connected automatically to a method in the Rexx dialog object.
+          This is the same as using the <xref linkend="mthConnectButtonEvent"/>() method for the
           CLICKED notification. The name for the method is generated automatically by the ooDialog framework. The method
           name is the button label with all spaces, ampersands, colons, and trailing <emphasis
           role="italic">...</emphasis> characters removed.
@@ -299,7 +299,7 @@ end
         <listitem>
         <para>
           Similar to CONNECTBUTTONS, this option connects the CLICKED event notification from each
-          radio (xref linkend="clsRadioButton" />) button to a method in the Rexx dialog object. Again, this is the same as
+          radio (<xref linkend="clsRadioButton" />) button to a method in the Rexx dialog object. Again, this is the same as
           using the <emphasis role="italic">connectButtonEvent</emphasis> method.  For radio buttons, the generated
           method name is the button label with all spaces, ampersands, colons, and trailing <emphasis
           role="italic">...</emphasis> characters removed. The resulting text is then <emphasis
@@ -309,7 +309,7 @@ end
         <varlistentry><term>CONNECTCHECKS</term>
         <listitem>
         <para>
-          Exactly the same as CONNECTRADIOS, for check box (xref linkend="clsCheckBox" />) controls. The object
+          Exactly the same as CONNECTRADIOS, for check box (<xref linkend="clsCheckBox" />) controls. The object
           method name is generated in the same way as it is for radio buttons. That is, the method name is the button
           label, with all spaces, ampersands, colons, and trailing <emphasis role="italic">...</emphasis> characters
           removed. Which is then <emphasis role="bold"> prepended</emphasis> with the text
@@ -323,7 +323,7 @@ end
       <listitem>
       <para>
         This is the maximum number of dialog controls expected in the dialog template. It serves the same purpose as the
-        <emphasis role="italic">expected</emphasis> argument in the create (xref linkend="mthCreate" />)() method of
+        <emphasis role="italic">expected</emphasis> argument in the <xref linkend="mthCreate"/>() method of
         the <computeroutput>UserDialog</computeroutput>. The default value for this argument is 200.
       </para>
       </listitem></varlistentry>

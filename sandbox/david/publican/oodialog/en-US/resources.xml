@@ -68,7 +68,7 @@
 <para> The classes listed in the following table are documented in this chapter:
 <table id="tblResourcesClasses" frame="all"> <title>ooDialog Resource Classes</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" /><colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Class</entry>
@@ -77,19 +77,19 @@
 </thead>
 <tbody>
 <row>
-<entry>Image Class (xref linkend="clsImage" />)</entry>
+<entry>Image Class (<xref linkend="clsImage" />)</entry>
 <entry>Objects used to work with and manipulate images.</entry>
 </row>
 <row>
-<entry>ImageList Class (xref linkend="clsImageList" />)</entry>
+<entry>ImageList Class (<xref linkend="clsImageList" />)</entry>
 <entry>Objects used to efficiently manage large sets of images.</entry>
 </row>
 <row>
-<entry>Mouse Class (xref linkend="clsMouse" />)</entry>
+<entry>Mouse Class (<xref linkend="clsMouse" />)</entry>
 <entry>Objects used to efficiently manage large sets of images.</entry>
 </row>
 <row>
-<entry>ResourceImage Class (xref linkend="clsResourceImage" />)</entry>
+<entry>ResourceImage Class (<xref linkend="clsResourceImage" />)</entry>
 <entry>Objects used to represent modules that contain resources.</entry>
 </row>
 </tbody></tgroup>
@@ -97,7 +97,7 @@
 </para>
 </section>
 
-<section id="clsImage"><title>Image Class</title>
+<section id="clsImage" xreflabel="Image"><title>Image Class</title>
 <indexterm><primary>Image class</primary></indexterm>
 <para>
   The Image class is used to work with and manipulate images.  Currently, the image types supported include bitmaps,
@@ -121,7 +121,7 @@
 <para id="paraClsImageRelease">
   A loaded image takes up some small part of the systems's resources. It is common to release an image
   when the programmer is done with it.  The .Image class has the
-  release() (xref linkend="mthReleaseClsImage" />) method to allow the programmer to release the image, if
+  release() (<xref linkend="mthReleaseClsImage" />) method to allow the programmer to release the image, if
   desired.  It is <emphasis role="bold">important</emphasis> to note that when the ooDialog program ends,
   that is when the ooRexx interpreter process ends, the Windows operating system cleans up all the system
   resources associated with any images used in the ooDialog program.  Not releasing images does no harm
@@ -155,7 +155,7 @@
 <table id="tblImageMethods" frame="all">
 <title>Methods of the <computeroutput>Image</computeroutput> Class</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" /><colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -168,43 +168,43 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>colorRef (xref linkend="mthColorRef" />)</entry>
+<entry><xref linkend="mthColorRef"/></entry>
 <entry>Provides a way to construct a COLORREF from the red, green, and blue values of a color.</entry>
 </row>
 <row>
-<entry>fromFiles (xref linkend="mthFromFilesClsImage" />)</entry>
+<entry><xref linkend="mthFromFilesClsImage"/></entry>
 <entry>Returns an array of <computeroutput>.Image</computeroutput> objects when given an array of file names.</entry>
 </row>
 <row>
-<entry>fromIDs (xref linkend="mthFromIDsClsImage" />)</entry>
+<entry><xref linkend="mthFromIDsClsImage"/></entry>
 <entry>Uses an array of resource IDs to instantiate and return an array of <computeroutput>.Image</computeroutput> objects.</entry>
 </row>
 <row>
-<entry>getBValue (xref linkend="mthGetBValue" />)</entry>
+<entry><xref linkend="mthGetBValue"/></entry>
 <entry>Returns the blue component of a RGB color.</entry>
 </row>
 <row>
-<entry>getGValue (xref linkend="mthGetGValue" />)</entry>
+<entry><xref linkend="mthGetGValue"/></entry>
 <entry>Returns the green component of a RGB color.</entry>
 </row>
 <row>
-<entry>getImage (xref linkend="mthGetImageClsImage" />)</entry>
+<entry><xref linkend="mthGetImageClsImage"/></entry>
 <entry>Instantiates a new <computeroutput>.Image</computeroutput> object from either an image file or from one of the system images.</entry>
 </row>
 <row>
-<entry>getRValue (xref linkend="mthGetRValue" />)</entry>
+<entry><xref linkend="mthGetRValue"/></entry>
 <entry>Returns the red component of a RGB color.</entry>
 </row>
 <row>
-<entry>new (xref linkend="mthNewClsImage" />)</entry>
+<entry><xref linkend="mthNewClsImage"/></entry>
 <entry>Image objects can not be instantiated from Rexx code using the <emphasis role="italic">new</emphasis>, other class methods are used.</entry>
 </row>
 <row>
-<entry>toID (xref linkend="mthToIDClsImage" />)</entry>
+<entry><xref linkend="mthToIDClsImage"/></entry>
 <entry>Used to translate a symbolic name to its integer value</entry>
 </row>
 <row>
-<entry>userIcon (xref linkend="mthUserIcon" />)</entry>
+<entry><xref linkend="mthUserIcon"/></entry>
 <entry>Returns a new image object from an icon resource added to the Rexx dialog object.</entry>
 </row>
 <row>
@@ -212,19 +212,19 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>handle (xref linkend="mthHandleClsImage" />)</entry>
+<entry><xref linkend="mthHandleClsImage"/></entry>
 <entry>Returns the Windows system handle to the image this object represents.</entry>
 </row>
 <row>
-<entry>isNull (xref linkend="mthIsNullClsImage" />)</entry>
+<entry><xref linkend="mthIsNullClsImage"/></entry>
 <entry>Tests if the image object is valid.</entry>
 </row>
 <row>
-<entry>release (xref linkend="mthReleaseClsImage" />)</entry>
+<entry><xref linkend="mthReleaseClsImage"/></entry>
 <entry>Releases the operating system resources used for the image.</entry>
 </row>
 <row>
-<entry>systemErrorCode (xref linkend="mthSystemErrorCodeClsImage" />)</entry>
+<entry><xref linkend="mthSystemErrorCodeClsImage"/></entry>
 <entry>Reflects any system error codes that are detected while working with an image object.</entry>
 </row>
 </tbody></tgroup>
@@ -232,7 +232,7 @@
 
 </section>
 
-<section id="mthColorRef"><title>colorRef (Class Method)</title>
+<section id="mthColorRef" xreflabel="colorRef"><title>colorRef (Class Method)</title>
 <indexterm><primary>colorRef</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -311,7 +311,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End Image::colorRef() [class method] -->
 
 
-<section id="mthFromFilesClsImage"><title>fromFiles (Class method)</title>
+<section id="mthFromFilesClsImage" xreflabel="fromFiles"><title>fromFiles (Class method)</title>
 <indexterm><primary>fromFiles</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
@@ -348,7 +348,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image, bitmap, icon, or cursor. You can use
-          .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -362,9 +362,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size</term>
       <listitem>
         <para>
-          A .Size (xref linkend="clsSize" />) object that specifies the size of the image.  The default
+          A .Size (<xref linkend="clsSize" />) object that specifies the size of the image.  The default
           is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
-          should be used.  However, the MSDN library (xref linkend="defWindowsDoc" />) documentation should
+          should be used.  However, the MSDN library (<xref linkend="defWindowsDoc" />) documentation should
           be consulted for other meanings.
         </para>
       </listitem></varlistentry>
@@ -372,9 +372,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric
-          value for any of the following symbols.  The or (xref linkend="mthOrClsDlgUtil" />) method of
-          the .DlgUtil (xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
+          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+          value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+          the .DlgUtil (<xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
           symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -400,14 +400,14 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
     </para>
     <para>
       Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
-      MSDN library (xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
       this method.
     </para>
   </listitem></varlistentry>
@@ -423,7 +423,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </variablelist>
 </section>  <!-- End Image::fromFiles() [class method] -->
 
-<section id="mthFromIDsClsImage"><title>fromIDs (Class method)</title>
+<section id="mthFromIDsClsImage" xreflabel="fromIDs"><title>fromIDs (Class method)</title>
 <indexterm><primary>fromIDs</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
@@ -461,7 +461,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use
-          .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -475,9 +475,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size</term>
       <listitem>
         <para>
-          A .Size (xref linkend="clsSize" />) object that specifies the size of the image.  The default
+          A .Size (<xref linkend="clsSize" />) object that specifies the size of the image.  The default
           is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
-          should be used.  However, the MSDN library (xref linkend="defWindowsDoc" />) documentation should
+          should be used.  However, the MSDN library (<xref linkend="defWindowsDoc" />) documentation should
           be consulted for other meanings.
         </para>
       </listitem></varlistentry>
@@ -485,9 +485,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric
-          value for any of the following symbols.  The or (xref linkend="mthOrClsDlgUtil" />) method of
-          the .DlgUtil (xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
+          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+          value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+          the .DlgUtil (<xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
           symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -513,14 +513,14 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
     </para>
     <para>
       Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
-      MSDN library (xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
       this method.
     </para>
   </listitem></varlistentry>
@@ -536,7 +536,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </variablelist>
 </section>  <!-- End Image::fromIDs() [class method] -->
 
-<section id="mthGetBValue"><title>getBValue (Class Method)</title>
+<section id="mthGetBValue" xreflabel="getBValue"><title>getBValue (Class Method)</title>
 <indexterm><primary>getRValue</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -557,7 +557,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>colorRef</term>
       <listitem>
         <para>
-          A RGB color, a COLORREF.  See the colorRef (xref linkend="mthColorRef" />)() method for a
+          A RGB color, a COLORREF.  See the <xref linkend="mthColorRef"/>() method for a
           brief discussion of these terms.
         </para></listitem></varlistentry>
       </variablelist>
@@ -572,12 +572,12 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      See the example for the getRValue (xref linkend="exampleGetRValueClsImage" />)() method.
+      See the example for the getRValue (<xref linkend="exampleGetRValueClsImage" />)() method.
     </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getBValue() [class method] -->
 
-<section id="mthGetGValue"><title>getGValue (Class Method)</title>
+<section id="mthGetGValue" xreflabel="getGValue"><title>getGValue (Class Method)</title>
 <indexterm><primary>getRValue</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -598,7 +598,7 @@ A fancy purple: 16734709 (0x00FF59F5)
         <varlistentry><term>colorRef</term>
         <listitem>
           <para>
-            A RGB color, a COLORREF.  See the colorRef (xref linkend="mthColorRef" />)() method for a
+            A RGB color, a COLORREF.  See the <xref linkend="mthColorRef"/>() method for a
             brief discussion of these terms.
           </para>
         </listitem></varlistentry>
@@ -614,12 +614,12 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
     <para>
-      See the example for the getRValue (xref linkend="exampleGetRValueClsImage" />)() method.
+      See the example for the getRValue (<xref linkend="exampleGetRValueClsImage" />)() method.
     </para></listitem></varlistentry>
 </variablelist>
 </section>  <!-- End Image::getGValue() [class method] -->
 
-<section id="mthGetImageClsImage"><title>getImage (Class method)</title>
+<section id="mthGetImageClsImage" xreflabel="getImage"><title>getImage (Class method)</title>
 <indexterm><primary>getImage</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
@@ -646,7 +646,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <para>
         If id is a number than it is taken to be the resource id of an image provided by the system.  The
         following are the symbolic names for all the system images. You can use
-        .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric value for any of the
+        .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for any of the
         following symbols:
         <simplelist type='vert' columns='4'>
         <member>IDI_APPLICATION</member> <member>IDI_HAND</member> <member>IDI_QUESTION</member>
@@ -679,7 +679,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     <listitem>
       <para>
         A number between 0 and 255 that specifies the type of the image: bitmap, icon, or cursor. You can use
-        .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+        .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
         following symbols:
         <simplelist type='horiz' columns='2'>
         <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -693,11 +693,11 @@ A fancy purple: 16734709 (0x00FF59F5)
     <varlistentry><term>size</term>
     <listitem>
       <para>
-        A .Size (xref linkend="clsSize" />) object that specifies the size of the image.
+        A .Size (<xref linkend="clsSize" />) object that specifies the size of the image.
       </para>
       <para>
         The default is a size of 0x0.  Under most circumstances this indicates that the actual size of
-        the image should be used.  However, the MSDN library (xref linkend="defWindowsDoc" />)
+        the image should be used.  However, the MSDN library (<xref linkend="defWindowsDoc" />)
         documentation should be consulted for other meanings.
       </para>
     </listitem></varlistentry>
@@ -705,9 +705,9 @@ A fancy purple: 16734709 (0x00FF59F5)
     <listitem>
       <para>
         The load resource flags for the LoadImage() API.  The flags are one or more of the following
-        symbols. You can use .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric
-        value for any of the following symbols.  The or (xref linkend="mthOrClsDlgUtil" />) method of
-        the .DlgUtil (xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
+        symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+        value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+        the .DlgUtil (<xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
         symbols if needed.
         <simplelist type='horiz' columns='2'>
         <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -728,22 +728,22 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       A .Image object that represents the image specified.  If an error happened, the object may not be
-      valid.  Use the isNull() (xref linkend="mthIsNullClsImage" />) method to check if the image is
-      valid.  If there was an error, .systemErrorCode (xref linkend="dotSystemErrorCode" />) may help
+      valid.  Use the isNull() (<xref linkend="mthIsNullClsImage" />) method to check if the image is
+      valid.  If there was an error, <xref linkend="dotSystemErrorCode" /> may help
       to determine the error.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
     </para>
     <para>
       Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
-      MSDN library (xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
       this method.
     </para>
   </listitem></varlistentry>
@@ -776,7 +776,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End Image::getImage() [class method] -->
 
 
-<section id="mthGetRValue"><title>getRValue (Class Method)</title>
+<section id="mthGetRValue" xreflabel="getRValue"><title>getRValue (Class Method)</title>
 <indexterm><primary>getRValue</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -797,7 +797,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>colorRef</term>
       <listitem>
         <para>
-          A RGB color, a COLORREF.  See the colorRef (xref linkend="mthColorRef" />)() method for a
+          A RGB color, a COLORREF.  See the <xref linkend="mthColorRef"/>() method for a
           brief discussion of these terms.
         </para>
       </listitem></varlistentry>
@@ -843,7 +843,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </variablelist>
 </section>  <!-- End Image::getRValue() [class method] -->
 
-<section id="mthNewClsImage"><title>new (Class method)</title>
+<section id="mthNewClsImage" xreflabel="new"><title>new (Class method)</title>
 <indexterm><primary>new</primary>
 <secondary>Image class</secondary></indexterm>
 
@@ -855,17 +855,17 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   These methods are used to create new Image object(s).
   <simplelist type='horiz' columns='1'>
-  <member>Image (class) method: getImage() (xref linkend="mthGetImageClsImage" />)</member>
-  <member>Image (class) method: fromFiles() (xref linkend="mthFromFilesClsImage" />)</member>
-  <member>Image (class) method: fromIDs() (xref linkend="mthFromIDsClsImage" />)</member>
-  <member>Image (class) method: userIcon() (xref linkend="mthUserIcon" />)</member>
-  <member>ResourceImage (instance) method: getImage() (xref linkend="mthGetImageClsResourceImage" />)</member>
-  <member>ResourceImage (instance) method: getImages() (xref linkend="mthGetImagesClsResourceImage" />)</member>
+  <member>Image (class) method: getImage() (<xref linkend="mthGetImageClsImage" />)</member>
+  <member>Image (class) method: fromFiles() (<xref linkend="mthFromFilesClsImage" />)</member>
+  <member>Image (class) method: fromIDs() (<xref linkend="mthFromIDsClsImage" />)</member>
+  <member>Image (class) method: userIcon() (<xref linkend="mthUserIcon" />)</member>
+  <member>ResourceImage (instance) method: getImage() (<xref linkend="mthGetImageClsResourceImage" />)</member>
+  <member>ResourceImage (instance) method: getImages() (<xref linkend="mthGetImagesClsResourceImage" />)</member>
   </simplelist>
 </para>
 </section>  <!-- End Image::new() [class method] -->
 
-<section id="mthToIDClsImage"><title>toID (Class method)</title>
+<section id="mthToIDClsImage" xreflabel="toID"><title>toID (Class method)</title>
 <indexterm><primary>id</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
@@ -884,7 +884,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </para>
 <para>
   Take for example the task of retrieving the 'Question' icon resource from the system using the
-  getImage() (xref linkend="mthGetImageClsImage" />) method.  The ooDialog programmer could
+  getImage() (<xref linkend="mthGetImageClsImage" />) method.  The ooDialog programmer could
   either use the numerical value of 32514 or use the <emphasis role="italic">toID</emphasis> method as
   follows.  Note that the two invocations of getImage() are equivalent:
 </para>
@@ -897,7 +897,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   </programlisting>
 <para>
   The symbolic ID keywords are spelled exactly as Microsoft spells them in the
-  MSDN library (xref linkend="defWindowsDoc" />) which allows the ooDialog to easily look up the meaning
+  MSDN library (<xref linkend="defWindowsDoc" />) which allows the ooDialog to easily look up the meaning
   of any single ID while at the same time reducing the documentation task for the ooDialog
   developers.  The keywords are case sensitive and must be all in upper-case.
 </para>
@@ -940,7 +940,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </variablelist>
 </section>  <!-- End Image::id() [class method] -->
 
-<section id="mthUserIcon"><title>userIcon (Class method)</title>
+<section id="mthUserIcon" xreflabel="userIcon"><title>userIcon (Class method)</title>
 <indexterm><primary>userIcon</primary></indexterm>
 <indexterm><primary>userIcon</primary><secondary>Image class</secondary></indexterm>
 <programlisting>
@@ -952,7 +952,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 <para>
   Returns a new <computeroutput>Image</computeroutput> object from an icon resource added to the dialog through the
-  addIconResource (xref linkend="mthAddIconResource" />)() method.
+ <xref linkend="mthAddIconResource"/>() method.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -969,13 +969,13 @@ A fancy purple: 16734709 (0x00FF59F5)
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-       The resource ID of the icon. Can be numeric or symbolic (xref linkend="defSymbolicId" />).
+       The resource ID of the icon. Can be numeric or symbolic (<xref linkend="defSymbolicId" />).
     </para>
     </listitem></varlistentry>
     <varlistentry><term>size [optional]</term>
     <listitem>
     <para>
-      A Size (xref linkend="clsSize" />) object that specifies the size of the image.
+      A Size (<xref linkend="clsSize" />) object that specifies the size of the image.
     </para>
     <para>
       If this argument is omitted, a size of 0 is used. Under most circumstances this indicates that the actual size of
@@ -988,9 +988,9 @@ A fancy purple: 16734709 (0x00FF59F5)
     <listitem>
     <para>
       A whole number that specifies the flags that control how the operating system loads the icon. The flags are one or
-      more of the following symbols. You can use .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct
-      numeric value for any of the following symbols. The or (xref linkend="mthOrClsDlgUtil" />) method of the
-      .DlgUtil (xref linkend="clsDlgUtil" />) class can be used to combine more than one of the symbols if needed.
+      more of the following symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct
+      numeric value for any of the following symbols. The <xref linkend="mthOrClsDlgUtil"/> method of the
+      .DlgUtil (<xref linkend="clsDlgUtil" />) class can be used to combine more than one of the symbols if needed.
       <simplelist type='horiz' columns='2'>
       <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
       <member>LR_DEFAULTSIZE</member>     <member>LR_LOADFROMFILE</member>
@@ -1011,7 +1011,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    An image object, which may be a null (xref linkend="mthIsNullClsImage" />) image on error.
+    An image object, which may be a <xref linkend="mthIsNullClsImage"/> image on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -1041,7 +1041,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   </para>
   <para>
     This method uses the LoadImage() Windows API to actually load the icon image. For more advanced uses of this method,
-    consult the MSDN library (xref linkend="defWindowsDoc" />) documentation.
+    consult the MSDN library (<xref linkend="defWindowsDoc" />) documentation.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -1050,15 +1050,15 @@ A fancy purple: 16734709 (0x00FF59F5)
     Raises syntax errors when incorrect arguments are detected. This includes an invalid sybmbolic ID.
   </para>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
     This example adds an icon resource to the dialog through the
-    addIconResource (xref linkend="mthAddIconResource" />) method and then uses that icon for the image in a
-    static (xref linkend="clsStatic" />) image control.
+ <xref linkend="mthAddIconResource"/> method and then uses that icon for the image in a
+    static (<xref linkend="clsStatic" />) image control.
 <programlisting>
 <![CDATA[
 
@@ -1088,7 +1088,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End Image::userIcon() [class method] -->
 
 
-<section id="mthHandleClsImage"><title>handle</title>
+<section id="mthHandleClsImage" xreflabel="handle"><title>handle</title>
 <indexterm><primary>handle</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
@@ -1140,7 +1140,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End Image::handle() -->
 
 
-<section id="mthReleaseClsImage"><title>release</title>
+<section id="mthReleaseClsImage" xreflabel="release"><title>release</title>
 <indexterm><primary>release</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
@@ -1152,13 +1152,13 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 <para>
   Releases the image.  This will free up operating system resources used for the image.  See the
-  introduction to the .Image class (xref linkend="paraClsImageRelease" />) for some discussion on
+  introduction to the .Image class (<xref linkend="paraClsImageRelease" />) for some discussion on
   releasing an image.
 </para>
 <para>
   Once an image object has been released, it is an error to use the object.  However, the
-  isNull() (xref linkend="mthIsNullClsImage" />) and
-  systemErrorCode() (xref linkend="mthSystemErrorCodeClsImage" />) methods can always be used.  The isNull()
+  isNull() (<xref linkend="mthIsNullClsImage" />) and
+  systemErrorCode() (<xref linkend="mthSystemErrorCodeClsImage" />) methods can always be used.  The isNull()
   method will return <computeroutput>.true</computeroutput> after an image object has been released.
   Shared images should not be released, the operating system manages them.  To prevent the programmer
   from accidentally releasing a shared image, the .Image object tracks which images are loaded as shared
@@ -1194,7 +1194,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1242,7 +1242,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End Image::release() -->
 
 
-<section id="mthIsNullClsImage"><title>isNull</title>
+<section id="mthIsNullClsImage" xreflabel="isNull"><title>isNull</title>
 <indexterm><primary>isNull</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
@@ -1300,7 +1300,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End Image::isNull() -->
 
 
-<section id="mthSystemErrorCodeClsImage"><title>systemErrorCode</title>
+<section id="mthSystemErrorCodeClsImage" xreflabel="systemErrorCode"><title>systemErrorCode</title>
 <indexterm><primary>systemErrorCode</primary>
 <secondary>Image class</secondary></indexterm>
 <programlisting>
@@ -1313,12 +1313,12 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   The systemErrorCode attribute of the image object will reflect any system error codes that are detected
   while working with an image object.  This is the same error code as the
-  .systemErrorCode (xref linkend="dotSystemErrorCode" />) is set to.  This can be useful if the programmer
+  <xref linkend="dotSystemErrorCode" /> is set to.  This can be useful if the programmer
   wants to check for an error code at some point when it is possible that .systemErrorCode has been
   reset.  (See the example below.)
 </para>
 <para>
-   Like the isNull() (xref linkend="mthIsNullClsImage" />) method this method can be invoked even when
+   Like the isNull() (<xref linkend="mthIsNullClsImage" />) method this method can be invoked even when
    the image is not valid.  However, it should not be used to check if the image is valid because it is
    possible for the value to be 0 and the image to be null.
 </para>
@@ -1379,7 +1379,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 </section>  <!--   End Image class -->
 
-<section id="clsImageList"><title>ImageList Class</title>
+<section id="clsImageList" xreflabel="ImageList"><title>ImageList Class</title>
 <indexterm><primary>ImageList class</primary></indexterm>
 <para>
   An image list is a object used to efficiently manage large sets of images.  Either icons or bitmaps.
@@ -1392,15 +1392,15 @@ A fancy purple: 16734709 (0x00FF59F5)
   Microsoft calls a control. Although Microsoft calls the Image List a control and  documents it with the
   other dialog controls, it is not a control in the same sense as button, edit, or list-view controls. It
   is not a window, all dialog controls are windows.  It does not send or receive window messages. Use the
-  MSDN library (xref linkend="defWindowsDoc" />) documentation to get more information on exactly how
+  MSDN library (<xref linkend="defWindowsDoc" />) documentation to get more information on exactly how
   Image Lists work.
 </para>
 <para>
   When an image list is no longer needed, it can be released.  This frees up the system resources used
   for the images and the image list.  The programmer releases an image list by using the
-  release() (xref linkend="mthReleaseClsImageList" />) method.  Once an image list is released it can no
+  release() (<xref linkend="mthReleaseClsImageList" />) method.  Once an image list is released it can no
   longer be used.  It is an error to invoke any method on the released object, except for the
-  isNull() (xref linkend="mthIsNullClsImageList" />) method.  The isNull() method can be invoked any time to
+  isNull() (<xref linkend="mthIsNullClsImageList" />) method.  The isNull() method can be invoked any time to
   test if an image list is valid or not. It should go without saying that a programmer should not release
   an image list that is in use.
 </para>
@@ -1418,7 +1418,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 <table id="tblImageListMethods" frame="all">
 <title>Image Instance Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" /><colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -1431,11 +1431,11 @@ A fancy purple: 16734709 (0x00FF59F5)
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>create (xref linkend="mthCreateClsImageList" />)</entry>
+<entry><xref linkend="mthCreateClsImageList"/></entry>
 <entry>Creates a new empty image list of the type specified.</entry>
 </row>
 <row>
-<entry>new (xref linkend="mthNewClsImageList" />)</entry>
+<entry><xref linkend="mthNewClsImageList"/></entry>
 <entry>Currently it is not intended for the ooDialog programmer to instantiate an image list object directly using the new method.</entry>
 </row>
 <row>
@@ -1443,51 +1443,51 @@ A fancy purple: 16734709 (0x00FF59F5)
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>add (xref linkend="mthAddClsImageList" />)</entry>
+<entry><xref linkend="mthAddClsImageList"/></entry>
 <entry>Adds one or more bitmap images to the image list.</entry>
 </row>
 <row>
-<entry>addIcon (xref linkend="mthAddIcon" />)</entry>
+<entry><xref linkend="mthAddIcon"/></entry>
 <entry>Adds an icon or cursor image to the image list.</entry>
 </row>
 <row>
-<entry>addImages (xref linkend="mthAddImagesClsImageList" />)</entry>
+<entry><xref linkend="mthAddImagesClsImageList"/></entry>
 <entry>Adds a number of images to the image list.</entry>
 </row>
 <row>
-<entry>addMasked (xref linkend="mthAddMaskedClsImageList" />)</entry>
+<entry><xref linkend="mthAddMaskedClsImageList"/></entry>
 <entry>Adds one or more bitmap images, along with a mask to the image list.</entry>
 </row>
 <row>
-<entry>duplicate (xref linkend="mthDuplicateClsImageList" />)</entry>
+<entry><xref linkend="mthDuplicateClsImageList"/></entry>
 <entry>Creates a duplicate image list.</entry>
 </row>
 <row>
-<entry>getCount (xref linkend="mthGetCountClsImageList" />)</entry>
+<entry><xref linkend="mthGetCountClsImageList"/></entry>
 <entry>Determines the number of images in the image list.</entry>
 </row>
 <row>
-<entry>getImageSize (xref linkend="mthGetImageSizeClsImageList" />)</entry>
+<entry><xref linkend="mthGetImageSizeClsImageList"/></entry>
 <entry>Determines the size of the images in the image list.</entry>
 </row>
 <row>
-<entry>handle (xref linkend="mthHandleClsImageList" />)</entry>
+<entry><xref linkend="mthHandleClsImageList"/></entry>
 <entry>Returns the Windows system handle to the image list this object represents.</entry>
 </row>
 <row>
-<entry>isNull (xref linkend="mthIsNullClsImageList" />)</entry>
+<entry><xref linkend="mthIsNullClsImageList"/></entry>
 <entry>Used to check if an image list is valid.</entry>
 </row>
 <row>
-<entry>remove (xref linkend="mthRemoveClsImageList" />)</entry>
+<entry><xref linkend="mthRemoveClsImageList"/></entry>
 <entry>Removes the image at the specified index from the image list.</entry>
 </row>
 <row>
-<entry>removeAll (xref linkend="mthRemoveAllClsImageList" />)</entry>
+<entry><xref linkend="mthRemoveAllClsImageList"/></entry>
 <entry>Removes all images from the image list.</entry>
 </row>
 <row>
-<entry>release (xref linkend="mthReleaseClsImageList" />)</entry>
+<entry><xref linkend="mthReleaseClsImageList"/></entry>
 <entry>Releases the resource module so that the operating system can reclaim the system resources used by the image list.</entry>
 </row>
 </tbody></tgroup>
@@ -1495,7 +1495,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 </section>
 
-<section id="mthCreateClsImageList"><title>create (Class method)</title>
+<section id="mthCreateClsImageList" xreflabel="create"><title>create (Class method)</title>
 <indexterm><primary>create</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -1516,7 +1516,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size [optional]</term>
       <listitem>
         <para>
-          A .Size (xref linkend="clsSize" />) object that specifies the size of a single image in the
+          A .Size (<xref linkend="clsSize" />) object that specifies the size of a single image in the
           image list.  All images in an image list have the same size. The size is specified in pixels.
         </para>
         <para>
@@ -1530,9 +1530,9 @@ A fancy purple: 16734709 (0x00FF59F5)
         <para>
           The flags that specify the type of image list to create. The flags are one or more of the following
           symbols, but can include only one ILC_COLOR* value. You can use
-          .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric value for any of the
-          following symbols.  The or (xref linkend="mthOrClsDlgUtil" />) method of the
-          .DlgUtil (xref linkend="clsDlgUtil" />) class can be used to combine the symbols.
+          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for any of the
+          following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of the
+          .DlgUtil (<xref linkend="clsDlgUtil" />) class can be used to combine the symbols.
         </para>
         <para>
           <simplelist type='horiz' columns='2'>
@@ -1655,13 +1655,13 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_Create()</computeroutput> API. Use the
-      MSDN library (xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
       this method.
     </para>
     <para>
       The ILC_MIRROR and ILC_PERITEMMIRROR flags require
-      Common Control Library (xref linkend="ovvComctl32" />) version 6.0 or later. If necessary use the
-      comCtl32Version (xref linkend="mthComCtl32Version" />)() method to determine the current version of
+      Common Control Library (<xref linkend="ovvComctl32" />) version 6.0 or later. If necessary use the
+      comCtl32Version (<xref linkend="mthComCtl32Version" />)() method to determine the current version of
       the library.
     </para>
   </listitem></varlistentry>
@@ -1681,18 +1681,18 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::create() [class method] -->
 
 
-<section id="mthNewClsImageList"><title>new (Class method)</title>
+<section id="mthNewClsImageList" xreflabel="new"><title>new (Class method)</title>
 <indexterm><primary>new</primary>
 <secondary>ImageList class</secondary></indexterm>
 <para>
   Currently it is not intended for the ooDialog programmer to instantiate an image list object directly
   using the new method.  This may change in the future and will be documented at that time, if the
   intention changes.  .ImageList objects are instantiated using the
-  create() (xref linkend="mthCreateClsImageList" />) method.
+  create() (<xref linkend="mthCreateClsImageList" />) method.
 </para>
 </section>  <!-- End ImageList::new() [class method] -->
 
-<section id="mthAddClsImageList"><title>add</title>
+<section id="mthAddClsImageList" xreflabel="add"><title>add</title>
 <indexterm><primary>add</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -1746,7 +1746,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_Add()</computeroutput> API. The
-      MSDN library (xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1776,7 +1776,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::add() -->
 
 
-<section id="mthAddIcon"><title>addIcon</title>
+<section id="mthAddIcon" xreflabel="addIcon"><title>addIcon</title>
 <indexterm><primary>addIcon</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -1822,7 +1822,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_AddIcon()</computeroutput> API. The
-      MSDN library (xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -1865,7 +1865,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::addIcon() -->
 
 
-<section id="mthAddImagesClsImageList"><title>addImages</title>
+<section id="mthAddImagesClsImageList" xreflabel="addImages"><title>addImages</title>
 <indexterm><primary>addImages</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -1909,9 +1909,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>cRef</term>
       <listitem>
         <para>
-          A COLORREF (xref linkend="mthColorRef" />) that is used to generate the mask if the image
+          A <xref linkend="mthColorRef"/> that is used to generate the mask if the image
           list is a masked image list.  See the
-          addMasked() (xref linkend="mthAddMaskedClsImageList" />) method for more details on this argument.
+          addMasked() (<xref linkend="mthAddMaskedClsImageList" />) method for more details on this argument.
           This argument is ignored if the images are not bitmaps, or if the image list is not masked.
         </para>
       </listitem></varlistentry>
@@ -1991,7 +1991,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::addImages() -->
 
 
-<section id="mthAddMaskedClsImageList"><title>addMasked</title>
+<section id="mthAddMaskedClsImageList" xreflabel="addMasked"><title>addMasked</title>
 <indexterm><primary>addMasked</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2024,7 +2024,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>cRef</term>
       <listitem>
         <para>
-          The color (xref linkend="mthColorRef" />) to use to generate the mask. In the added image,
+          The <xref linkend="mthColorRef"/> to use to generate the mask. In the added image,
           each pixel that matches this color is changed to black, and the corresponding bit in the mask
           is set to 1.
         </para>
@@ -2045,7 +2045,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_AddMasked()</computeroutput> API. The
-      MSDN library (xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2087,7 +2087,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::addMasked() -->
 
 
-<section id="mthDuplicateClsImageList"><title>duplicate</title>
+<section id="mthDuplicateClsImageList" xreflabel="duplicate"><title>duplicate</title>
 <indexterm><primary>duplicate</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2123,7 +2123,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_Duplcate()</computeroutput> API. The
-      MSDN library (xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2153,7 +2153,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::duplicate() -->
 
 
-<section id="mthGetCountClsImageList"><title>getCount</title>
+<section id="mthGetCountClsImageList" xreflabel="getCount"><title>getCount</title>
 <indexterm><primary>getCount</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2186,7 +2186,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_ImageCount()</computeroutput> API. The
-      MSDN library (xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2209,7 +2209,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::getCount() -->
 
 
-<section id="mthGetImageSizeClsImageList"><title>getImageSize</title>
+<section id="mthGetImageSizeClsImageList" xreflabel="getImageSize"><title>getImageSize</title>
 <indexterm><primary>getImageSize</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2232,7 +2232,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The size of the images in the image list is returned in a .Size (xref linkend="clsSize" />)
+      The size of the images in the image list is returned in a .Size (<xref linkend="clsSize" />)
       object.
     </para>
   </listitem></varlistentry>
@@ -2243,7 +2243,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_IconSize()</computeroutput> API. The
-      MSDN library (xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2270,7 +2270,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::getImageSize() -->
 
 
-<section id="mthHandleClsImageList"><title>handle</title>
+<section id="mthHandleClsImageList" xreflabel="handle"><title>handle</title>
 <indexterm><primary>handle</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2321,7 +2321,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::handle() -->
 
 
-<section id="mthIsNullClsImageList"><title>isNull</title>
+<section id="mthIsNullClsImageList" xreflabel="isNull"><title>isNull</title>
 <indexterm><primary>isNull</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2380,7 +2380,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::isNull() -->
 
 
-<section id="mthReleaseClsImageList"><title>release</title>
+<section id="mthReleaseClsImageList" xreflabel="release"><title>release</title>
 <indexterm><primary>release</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2439,7 +2439,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::release() -->
 
 
-<section id="mthRemoveClsImageList"><title>remove</title>
+<section id="mthRemoveClsImageList" xreflabel="remove"><title>remove</title>
 <indexterm><primary>remove</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2481,7 +2481,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_Remove()</computeroutput> API. The
-      MSDN library (xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2518,7 +2518,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ImageList::remove() -->
 
 
-<section id="mthRemoveAllClsImageList"><title>removeAll</title>
+<section id="mthRemoveAllClsImageList" xreflabel="removeAll"><title>removeAll</title>
 <indexterm><primary>removeAll</primary>
 <secondary>ImageList class</secondary></indexterm>
 <programlisting>
@@ -2551,7 +2551,7 @@ A fancy purple: 16734709 (0x00FF59F5)
     </para>
     <para>
       Provides an interface to the <computeroutput>ImageList_RemoveAll()</computeroutput> API. The
-      MSDN library (xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation can provide more information on this method.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2594,7 +2594,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!--   End ImageList class -->
 
 
-<section id="clsResourceImage"><title>ResourceImage Class</title>
+<section id="clsResourceImage" xreflabel="ResourceImage"><title>ResourceImage Class</title>
 <indexterm><primary>ResourceImage class</primary></indexterm>
 <para>
   Resource Images represent modules that contain resources.  These modules are binary executable files,
@@ -2605,22 +2605,22 @@ A fancy purple: 16734709 (0x00FF59F5)
 <para>
   The ResourceImage class contains methods and function to assist in the loading of resources into memory
   and obtaining handles to the desired resources.  ooDialog has always had, limited, access to resources
-  in modules through the ResDialog (xref linkend="clsResDialog" />) class.  The ResourceImage class
+  in modules through the ResDialog (<xref linkend="clsResDialog" />) class.  The ResourceImage class
   expands that access, both improving it and making the access avaiable in any ooDialog program, with or
   without ResDialog objects. The class supports the loading of, and obtaining handles to, resources from
   any binary executable file.
 </para>
 <para>
-  The class provides the release() (xref linkend="mthReleaseClsResourceImage" />) method to free up
+  The class provides the release() (<xref linkend="mthReleaseClsResourceImage" />) method to free up
   system resources if a module containing the resources is no longer needed.  The
-  general remarks (xref linkend="paraClsImageRelease" />) concerning freeing the
-  .Image (xref linkend="clsImage" />) class are applicable here.  The release() method will ignore requests
+  general remarks (<xref linkend="paraClsImageRelease" />) concerning freeing the
+  .Image (<xref linkend="clsImage" />) class are applicable here.  The release() method will ignore requests
   to release the module when it is known absoulutely that the module should not be released, such as in
   the case the module is the <computeroutput>oodialog.dll</computeroutput>. In other cases only the
   programmer can know if the module should or shouldn't be released.  In those cases, the ResourceImage
   class will do as requested.  As with the images that the .Image class represents, the system resources
   used by the module the ResourceImage class represents will be automatically cleaned up when the
-  interpreter process ends.  The comments (xref linkend="paraClsImageRelease" />) about why would a
+  interpreter process ends.  The comments (<xref linkend="paraClsImageRelease" />) about why would a
   programmer want to release resources in the .Image class remarks are equally apropos here.
 </para>
 <para>
@@ -2649,7 +2649,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>new (xref linkend="mthNewClsResourceImage" />)</entry>
+<entry><xref linkend="mthNewClsResourceImage"/></entry>
 <entry>Instantiates a new resource image that represents the module specified by the specified file name.</entry>
 </row>
 <row>
@@ -2657,27 +2657,27 @@ A fancy purple: 16734709 (0x00FF59F5)
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>getImage (xref linkend="mthGetImageClsResourceImage" />)</entry>
+<entry><xref linkend="mthGetImageClsResourceImage"/></entry>
 <entry>Loads the specified image resource in the module and returns a new <computeroutput>.Image</computeroutput> object.</entry>
 </row>
 <row>
-<entry>getImages (xref linkend="mthGetImagesClsResourceImage" />)</entry>
+<entry><xref linkend="mthGetImagesClsResourceImage"/></entry>
 <entry>Loads a number of image resources from the module.</entry>
 </row>
 <row>
-<entry>handle (xref linkend="mthHandleClsResourceImage" />)</entry>
+<entry><xref linkend="mthHandleClsResourceImage"/></entry>
 <entry>Returns the Windows system handle for the resource module.</entry>
 </row>
 <row>
-<entry>isNull (xref linkend="mthIsNullClsResourceImage" />)</entry>
+<entry><xref linkend="mthIsNullClsResourceImage"/></entry>
 <entry>Determines if the resource image is valid.</entry>
 </row>
 <row>
-<entry>release (xref linkend="mthReleaseClsResourceImage" />)</entry>
+<entry><xref linkend="mthReleaseClsResourceImage"/></entry>
 <entry>Releases the resource module so that the operating system can reclaim the system resources.</entry>
 </row>
 <row>
-<entry>systemErrorCode (xref linkend="mthSystemErrorCodeClsResourceImage" />)</entry>
+<entry><xref linkend="mthSystemErrorCodeClsResourceImage"/></entry>
 <entry>Reflects any system error codes that are detected while working with an image object.</entry>
 </row>
 </tbody></tgroup>
@@ -2686,7 +2686,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>
 
 
-<section id="mthNewClsResourceImage"><title>new (Class method)</title>
+<section id="mthNewClsResourceImage" xreflabel="new"><title>new (Class method)</title>
 <indexterm><primary>new</primary>
 <secondary>ResouceImage class</secondary></indexterm>
 <programlisting>
@@ -2722,7 +2722,7 @@ A fancy purple: 16734709 (0x00FF59F5)
           current program.  It specifies that the module containing the resources that the ooDialog
           program wants to acess is one of the modules already avalable to the program.  That is, either
           the <computeroutput>oodialog.dll</computeroutput> module, or the module used for a
-          ResDialog (xref linkend="mthNewClsResDialog" />).
+ <xref linkend="mthNewClsResDialog"/>.
         </para>
         <para>
           To specify the <computeroutput>oodialog.dll</computeroutput> module, the file name must be
@@ -2740,16 +2740,16 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       Returns a new ResourceImage object.  This object may be null if an error occurred.  Use the
-      isNull() (xref linkend="mthIsNullClsResourceImage" />) method to check for this.  Both the
-      .systemErrorCode (xref linkend="dotSystemErrorCode" />) or the
-      systemErrorCode() (xref linkend="mthSystemErrorCodeClsResourceImage" />) method should contain an
+      isNull() (<xref linkend="mthIsNullClsResourceImage" />) method to check for this.  Both the
+      <xref linkend="dotSystemErrorCode" /> or the
+      systemErrorCode() (<xref linkend="mthSystemErrorCodeClsResourceImage" />) method should contain an
       error code if the object is null.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -2804,7 +2804,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </variablelist>
 </section>  <!-- End Resource::new() [class method] -->
 
-<section id="mthGetImageClsResourceImage"><title>getImage</title>
+<section id="mthGetImageClsResourceImage" xreflabel="getImage"><title>getImage</title>
 <indexterm><primary>getImage</primary>
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
@@ -2816,11 +2816,11 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 <para>
   Loads the specified image resource in the module and returns a new
-  .Image (xref linkend="clsImage" />) object.
+  .Image (<xref linkend="clsImage" />) object.
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> <computeroutput>LoadImage()</computeroutput> is the underlying Windows API used
-  here. This method is very similar to the getImage() (xref linkend="mthGetImageClsImage" />) method of the .Image
+  here. This method is very similar to the getImage() (<xref linkend="mthGetImageClsImage" />) method of the .Image
   class. The documentation for that method may provide additional insight.
 </para>
 <variablelist>
@@ -2842,7 +2842,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use
-          .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -2856,9 +2856,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size</term>
       <listitem>
         <para>
-          A .Size (xref linkend="clsSize" />) object that specifies the size of the image.  The default
+          A .Size (<xref linkend="clsSize" />) object that specifies the size of the image.  The default
           is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
-          should be used.  However, the MSDN library (xref linkend="defWindowsDoc" />) documentation for
+          should be used.  However, the MSDN library (<xref linkend="defWindowsDoc" />) documentation for
           <computeroutput>LoadImage()</computeroutput> should be consulted for other meanings.
         </para>
       </listitem></varlistentry>
@@ -2866,9 +2866,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric
-          value for any of the following symbols.  The or (xref linkend="mthOrClsDlgUtil" />) method of
-          the .DlgUtil (xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
+          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+          value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+          the .DlgUtil (<xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
           symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -2898,14 +2898,14 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the resource image is null.
     </para>
     <para>
-      Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
     </para>
     <para>
       Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. Use the
-      MSDN library (xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
+      MSDN library (<xref linkend="defWindowsDoc" />) documentation to get more information on the arguments to
       this method.
     </para>
   </listitem></varlistentry>
@@ -2934,7 +2934,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ResourceImage::getImage() [class method?] -->
 
 
-<section id="mthGetImagesClsResourceImage"><title>getImages</title>
+<section id="mthGetImagesClsResourceImage" xreflabel="getImages"><title>getImages</title>
 <indexterm><primary>getImages</primary>
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
@@ -2953,7 +2953,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </para>
 <para>
   <emphasis role="bold">Note:</emphasis> <computeroutput>LoadImage()</computeroutput> is the underlying Windows API
-    used here.  This method is very similar to the fromIDs() (xref linkend="mthFromIDsClsImage" />) method of the
+    used here.  This method is very similar to the fromIDs() (<xref linkend="mthFromIDsClsImage" />) method of the
     .Image class. The documentation for that method can provide additional information.
 </para>
 <variablelist>
@@ -2979,7 +2979,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           Specifies the type of the image: bitmap, icon, or cursor. You can use
-          .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>IMAGE_BITMAP</member> <member>IMAGE_ICON</member>
@@ -2993,9 +2993,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <varlistentry><term>size</term>
       <listitem>
         <para>
-          A .Size (xref linkend="clsSize" />) object that specifies the size of the image.  The default
+          A .Size (<xref linkend="clsSize" />) object that specifies the size of the image.  The default
           is a size of 0x0.  Under most circumstances this indicates that the actual size of the image
-          should be used.  However, the MSDN library (xref linkend="defWindowsDoc" />) documentation should
+          should be used.  However, the MSDN library (<xref linkend="defWindowsDoc" />) documentation should
           be consulted for other meanings.
         </para>
       </listitem></varlistentry>
@@ -3003,9 +3003,9 @@ A fancy purple: 16734709 (0x00FF59F5)
       <listitem>
         <para>
           The load resource flags for the LoadImage() API.  The flags are one or more of the following
-          symbols. You can use .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric
-          value for any of the following symbols.  The or (xref linkend="mthOrClsDlgUtil" />) method of
-          the .DlgUtil (xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
+          symbols. You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric
+          value for any of the following symbols.  The <xref linkend="mthOrClsDlgUtil"/> method of
+          the .DlgUtil (<xref linkend="clsDlgUtil" />) class can be used to combine more than one of the
           symbols if needed.
           <simplelist type='horiz' columns='2'>
           <member>LR_DEFAULTCOLOR</member>    <member>LR_CREATEDIBSECTION</member>
@@ -3030,8 +3030,8 @@ A fancy purple: 16734709 (0x00FF59F5)
       image of any specified ID, the corresponding index in the returned array will be empty.
     </para>
     <para>
-      If there is an error, both the .systemErrorCode (xref linkend="dotSystemErrorCode" />) and the
-      systemErrorCode (xref linkend="mthSystemErrorCodeClsResourceImage" />) attribute of this
+      If there is an error, both the <xref linkend="dotSystemErrorCode" /> and the
+ <xref linkend="mthSystemErrorCodeClsResourceImage"/> attribute of this
       resource image will be set (to the same code.)  It is conceivable that an error could occur where
       the system does not set an error code, but unlikely.
     </para>
@@ -3042,14 +3042,14 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the resource image is null.
     </para>
     <para>
-      Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
     </para>
     <para>
       Provides an interface to the Win32 API: <computeroutput>LoadImage()</computeroutput>. You can use
-      the MSDN library (xref linkend="defWindowsDoc" />) documentation to get more information on the
+      the MSDN library (<xref linkend="defWindowsDoc" />) documentation to get more information on the
       interaction between the flags, size, and type arguments.
     </para>
   </listitem></varlistentry>
@@ -3129,7 +3129,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ResourceImage::getImages() -->
 
 
-<section id="mthHandleClsResourceImage"><title>handle</title>
+<section id="mthHandleClsResourceImage" xreflabel="handle"><title>handle</title>
 <indexterm><primary>handle</primary>
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
@@ -3187,7 +3187,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ResourceImage::handle() -->
 
 
-<section id="mthIsNullClsResourceImage"><title>isNull</title>
+<section id="mthIsNullClsResourceImage" xreflabel="isNull"><title>isNull</title>
 <indexterm><primary>isNull</primary>
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
@@ -3239,7 +3239,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ResourceImage::isNull() -->
 
 
-<section id="mthReleaseClsResourceImage"><title>release</title>
+<section id="mthReleaseClsResourceImage" xreflabel="release"><title>release</title>
 <indexterm><primary>release</primary>
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
@@ -3269,7 +3269,7 @@ A fancy purple: 16734709 (0x00FF59F5)
   <listitem>
     <para>
       This method return the system error code, which will be zero if there is no error, and non-zero if
-      there is an error. The .systemErrorCode (xref linkend="dotSystemErrorCode" />) is also set to
+      there is an error. The <xref linkend="dotSystemErrorCode" /> is also set to
       this value.
     </para>
   </listitem></varlistentry>
@@ -3279,7 +3279,7 @@ A fancy purple: 16734709 (0x00FF59F5)
       Raises a syntax error if the resource image is null.
     </para>
     <para>
-      Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3314,7 +3314,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </section>  <!-- End ResourceImage::release() -->
 
 
-<section id="mthSystemErrorCodeClsResourceImage"><title>systemErrorCode</title>
+<section id="mthSystemErrorCodeClsResourceImage" xreflabel="systemErrorCode"><title>systemErrorCode</title>
 <indexterm><primary>systemErrorCode</primary>
 <secondary>ResourceImage class</secondary></indexterm>
 <programlisting>
@@ -3326,13 +3326,13 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 <para>
   When a method for a resource image is invoked that sets the
-  .systemErrorCode (xref linkend="dotSystemErrorCode" />), the systemErrorCode attribute of the resource
+  <xref linkend="dotSystemErrorCode" />, the systemErrorCode attribute of the resource
   image object is also set. This can be useful if the programmer wants to check for an error code at some
   point when it is possible that .systemErrorCode has been reset.
 </para>
 <para>
   This method can always be invoked, even if the resource image is null.  It is very similar to the
-  systemErrorCode() (xref linkend="mthSystemErrorCodeClsImage" />) method of the .Image class and the
+  systemErrorCode() (<xref linkend="mthSystemErrorCodeClsImage" />) method of the .Image class and the
   documentation for that method is generally applicable here.
 </para>
 <variablelist>

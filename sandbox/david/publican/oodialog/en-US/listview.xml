@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsListView"><title>List View Controls</title>
+<chapter id="clsListView" xreflabel="ListView"><title>List View Controls</title>
 <indexterm><primary>ListView class</primary></indexterm>
 <para>
   A list-view control is a window that displays a collection of items, with each item consisting of an icon and a label.
@@ -53,26 +53,26 @@
 <para>
   The <computeroutput>ListView</computeroutput> class is the ooDialog interface to the Windows <emphasis
   role="italic">List-View</emphasis> control.  This should not be confused with the Windows <emphasis role="italic">List
-  Box</emphasis> control. The ooDialog ListBox (xref linkend="clsListBox" />) class provides the interface to the
+  Box</emphasis> control. The ooDialog ListBox (<xref linkend="clsListBox" />) class provides the interface to the
   Windows List Box control.  In general, the List-View control is more powerful than the List Box control.
 </para>
 <para id="listControlExtendedStyles">
   List-View <emphasis role="bold">Extended Styles</emphasis>: The List-View control has been updated by Microsoft to
   include a number of <emphasis role="italic">extended</emphasis> styles. These styles are similar to the styles that
-  can be used to create a ListView, (see the createListView (xref linkend="mthCreateListView" />) method,) like the
+  can be used to create a ListView, (see the <xref linkend="mthCreateListView"/> method,) like the
   <computeroutput>NOHEADER</computeroutput> or <computeroutput>SINGLESEL</computeroutput> styles.  However, the way that
   they are added or removed from the ListView is different.  For instance, the extended styles can not be added to a
   ListView at the time of creation.  They can only be added after the underlying Windows control has been created.  For
-  all practical purposes this means in the initDialog (xref linkend="mthInitDialog" />) method, or at some point in
+  all practical purposes this means in the <xref linkend="mthInitDialog"/> method, or at some point in
   the life cycle of the dialog after that.
 </para>
 <para>
   Some of the extended styles are only available on later versions of the Windows OS.  As an example, the
   <computeroutput>LABELTIP</computeroutput> and <computeroutput>SIMPLESELECT</computeroutput> styles are only available
   on Windows XP.  The documentation on the extended styles will note any requirements for each style.  To work with the
-  extended List-View styles, use the addExtendedStyle (xref linkend="mthAddExtendedStyle" />), the
-  removeExtendedStyle (xref linkend="mthRemoveExtendedStyle" />), or the
-  replaceExtendedStyle (xref linkend="mthReplaceExtendedStyle" />) methods.
+  extended List-View styles, use the <xref linkend="mthAddExtendedStyle"/>, the
+ <xref linkend="mthRemoveExtendedStyle"/>, or the
+ <xref linkend="mthReplaceExtendedStyle"/> methods.
 </para>
 <para>
   There are a number of nuances to the behavior of the different extended styles on the different versions of Windows,
@@ -81,7 +81,7 @@
 </para>
 <para>
   If there is a need for detailed information concerning the subtle differences in behavior on earlier versions of
-  Windows, the programmer should consult the Windows documentation. (xref linkend="defWindowsDoc" />)
+  Windows, the programmer should consult the Windows documentation. (<xref linkend="defWindowsDoc" />)
 </para>
 
 <para>
@@ -91,22 +91,22 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newListView (xref linkend="mthNewListView" />) method of the
-    dialog (xref linkend="chpDialogObject" />) object to retrieve a list-view object.
+    Use the <xref linkend="mthNewListView"/> method of the
+    dialog (<xref linkend="chpDialogObject" />) object to retrieve a list-view object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically create a list-view in the dialog template of a UserDialog (xref linkend="clsUserDialog" />) use
-    the createListView (xref linkend="mthCreateListView" />) method.
+    To dynamically create a list-view in the dialog template of a <xref linkend="clsUserDialog"/> use
+    the <xref linkend="mthCreateListView"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the event (xref linkend="ovvEvents" />) notifications sent by the underlying list-view control to a
-    method in the Rexx dialog object use the connectListViewEvent (xref linkend="mthConnectListViewEvent" />)
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying list-view control to a
+    method in the Rexx dialog object use the <xref linkend="mthConnectListViewEvent"/>
     method.
   </para>
   </listitem></varlistentry>
@@ -122,7 +122,7 @@
 <table id="tblListViewMethods" frame="all">
 <title>ListView Instance Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" /><colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -135,15 +135,15 @@
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry>newListView (xref linkend="tmthNewListView" />)</entry>
+<entry><xref linkend="tmthNewListView"/></entry>
 <entry>Returns a <computeroutput>ListView</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
-<entry>createListView (xref linkend="tmthCreateListView" />)</entry>
-<entry>Creates a list-view control in the dialog template of a UserDialog (xref linkend="clsUserDialog" />).</entry>
+<entry><xref linkend="tmthCreateListView"/></entry>
+<entry>Creates a list-view control in the dialog template of a <xref linkend="clsUserDialog"/>.</entry>
 </row>
 <row>
-<entry>connectListViewEvent (xref linkend="tmthConnectListViewEvent" />)</entry>
+<entry><xref linkend="tmthConnectListViewEvent"/></entry>
 <entry>Connects list-view event notifications to a method in the Rexx dialog object.</entry>
 </row>
 <row>
@@ -151,399 +151,399 @@
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>add (xref linkend="mthAddClsListview" />)</entry>
+<entry><xref linkend="mthAddClsListview"/></entry>
 <entry>Adds a new item to a list-view or defines the text for a subitem.</entry>
 </row>
 <row>
-<entry>addExtendedStyle (xref linkend="mthAddExtendedStyle" />)</entry>
+<entry><xref linkend="mthAddExtendedStyle"/></entry>
 <entry>adds one or more of the extended list-view styles to a list-view control.</entry>
 </row>
 <row>
-<entry>addRow (xref linkend="mthAddRow" />)</entry>
+<entry><xref linkend="mthAddRow"/></entry>
 <entry>Adds a new item to a list-view.</entry>
 </row>
 <row>
-<entry>addStyle (xref linkend="mthAddStyleClsListView" />)</entry>
+<entry><xref linkend="mthAddStyleClsListView"/></entry>
 <entry>Adds new window styles to a list-view control.</entry>
 </row>
 <row>
-<entry>alignLeft (xref linkend="mthAlignLeft" />)</entry>
+<entry><xref linkend="mthAlignLeft"/></entry>
 <entry>Aligns items along the left window border.</entry>
 </row>
 <row>
-<entry>alignTop (xref linkend="mthAlignTop" />)</entry>
+<entry><xref linkend="mthAlignTop"/></entry>
 <entry>Aligns items along the upper window border.</entry>
 </row>
 <row>
-<entry>arrange (xref linkend="mthArrange" />)</entry>
+<entry><xref linkend="mthArrange"/></entry>
 <entry>Aligns items according to the current alignment style of the list-view control.</entry>
 </row>
 <row>
-<entry>bkColor (xref linkend="mthBkColor" />)</entry>
+<entry><xref linkend="mthBkColor"/></entry>
 <entry>Retrieves the background color for a list-view control.</entry>
 </row>
 <row>
-<entry>bkColor= (xref linkend="mthBkColorEquals" />)</entry>
+<entry>bkColor= (<xref linkend="mthBkColorEquals" />)</entry>
 <entry>Sets the background color of a list view-control.</entry>
 </row>
 <row>
-<entry>check (xref linkend="mthCheckClsListControl" />)</entry>
+<entry><xref linkend="mthCheckClsListControl"/></entry>
 <entry>Sets the check mark for a list-view item.</entry>
 </row>
 <row>
-<entry>checkAll (xref linkend="mthCheckAll" />)</entry>
+<entry><xref linkend="mthCheckAll"/></entry>
 <entry>Sets the check mark for every list-view item.</entry>
 </row>
 <row>
-<entry>columnInfo (xref linkend="mthColumnInfo" />)</entry>
+<entry><xref linkend="mthColumnInfo"/></entry>
 <entry>Retrieves information for a column of a list-view control in a <computeroutput>Stem</computeroutput> object. <emphasis  role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
-<entry>columnWidth (xref linkend="mthColumnWidth" />)</entry>
+<entry><xref linkend="mthColumnWidth"/></entry>
 <entry>Retrieves the width, in dialog units, of a column in a list-view when it is has the list or report view style. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
-<entry>columnWidthPX (xref linkend="mthColumnWidthPX" />)</entry>
+<entry><xref linkend="mthColumnWidthPX"/></entry>
 <entry>Retrieves the width, in pixels, of a column in a list-view when it is has the list or report view style.</entry>
 </row>
 <row>
-<entry>delete (xref linkend="mthDeleteClsListView" />)</entry>
+<entry><xref linkend="mthDeleteClsListView"/></entry>
 <entry>Removes an item from a list-view control.</entry>
 </row>
 <row>
-<entry>deleteAll (xref linkend="mthDeleteAllClsListview" />)</entry>
+<entry><xref linkend="mthDeleteAllClsListview"/></entry>
 <entry>Removes all times from a list-view control.</entry>
 </row>
 <row>
-<entry>deleteColumn (xref linkend="mthDeleteColumn" />)</entry>
+<entry><xref linkend="mthDeleteColumn"/></entry>
 <entry>Removes a column from a list-view control.</entry>
 </row>
 <row>
-<entry>deselect (xref linkend="mthDeselect" />)</entry>
+<entry><xref linkend="mthDeselect"/></entry>
 <entry>Deselects an item in the list-view.</entry>
 </row>
 <row>
-<entry>deselectAll (xref linkend="mthDeselectAll" />)</entry>
+<entry><xref linkend="mthDeselectAll"/></entry>
 <entry>Deselects all items in the list-view.</entry>
 </row>
 <row>
-<entry>dropHighlighted (xref linkend="mthDropHighLighted" />)</entry>
+<entry><xref linkend="mthDropHighLighted"/></entry>
 <entry>Retrieves the item that is highlighted as a drag-and-drop target.</entry>
 </row>
 <row>
-<entry>edit (xref linkend="mthEdit" />)</entry>
+<entry><xref linkend="mthEdit"/></entry>
 <entry>Begins the editing of the text of the specified list-view item.</entry>
 </row>
 <row>
-<entry>endEdit (xref linkend="mthEndEdit" />)</entry>
+<entry><xref linkend="mthEndEdit"/></entry>
 <entry>Cancels the editing of the list-view item being edited.</entry>
 </row>
 <row>
-<entry>ensureVisible (xref linkend="mthEnsureVisible" />)</entry>
+<entry><xref linkend="mthEnsureVisible"/></entry>
 <entry>Ensures that a list-view item is entirely or partially visible by scrolling the list-view control, if necessary.</entry>
 </row>
 <row>
-<entry>find (xref linkend="mthFindClsListView" />)</entry>
+<entry><xref linkend="mthFindClsListView"/></entry>
 <entry>Searches for a list-view item containing the specified text.</entry>
 </row>
 <row>
-<entry>findNearestXY (xref linkend="mthFindNearestXY" />)</entry>
+<entry><xref linkend="mthFindNearestXY"/></entry>
 <entry>Searches, in the specified direction, for the item nearest to the specified position.</entry>
 </row>
 <row>
-<entry>findPartial (xref linkend="mthFindPartial" />)</entry>
+<entry><xref linkend="mthFindPartial"/></entry>
 <entry>Searches for a list-view item beginning with the specified text.</entry>
 </row>
 <row>
-<entry>firstVisible (xref linkend="mthFirstVisible" />)</entry>
+<entry><xref linkend="mthFirstVisible"/></entry>
 <entry>Retrieves the index of the first item visible in list-view control with the report or list style.</entry>
 </row>
 <row>
-<entry>focus (xref linkend="mthFocus" />)</entry>
+<entry><xref linkend="mthFocus"/></entry>
 <entry>Assigns the focus to the specified item,</entry>
 </row>
 <row>
-<entry>focused (xref linkend="mthFocused" />)</entry>
+<entry><xref linkend="mthFocused"/></entry>
 <entry>Retrieves the index of the item that currently has the focus.</entry>
 </row>
 <row>
-<entry>getCheck (xref linkend="mthGetCheck" />)</entry>
+<entry><xref linkend="mthGetCheck"/></entry>
 <entry>Determines if the item at the specified index has a checked, check box.</entry>
 </row>
 <row>
-<entry>getColumnInfo (xref linkend="mthGetColumnInfo" />)</entry>
+<entry><xref linkend="mthGetColumnInfo"/></entry>
 <entry>Retrieves the attributes of a list-view column in a <computeroutput>Directory</computeroutput> object.</entry>
 </row>
 <row>
-<entry>getColumnCount (xref linkend="mthGetColumnCount" />)</entry>
+<entry><xref linkend="mthGetColumnCount"/></entry>
 <entry>Returns the number of columns in the list-view control when it has the report style.</entry>
 </row>
 <row>
-<entry>getColumnOrder (xref linkend="mthGetColumnOrder" />)</entry>
+<entry><xref linkend="mthGetColumnOrder"/></entry>
 <entry>Retrieves the current column order of the list-view when it has the  report style.</entry>
 </row>
 <row>
-<entry>getColumnText (xref linkend="mthGetColumnText" />)</entry>
+<entry><xref linkend="mthGetColumnText"/></entry>
 <entry>Retrieves the column header text for a list-view when it is in report view.</entry>
 </row>
 <row>
-<entry>getExtendedStyle (xref linkend="mthGetExtendedStyle" />)</entry>
+<entry><xref linkend="mthGetExtendedStyle"/></entry>
 <entry>Returns the extended styles of a list-view control.</entry>
 </row>
 <row>
-<entry>getExtendedStyleRaw (xref linkend="mthGetExtendedStyleRaw" />)</entry>
+<entry><xref linkend="mthGetExtendedStyleRaw"/></entry>
 <entry>Returns the extended styles of a list-view cont control as the numeric value of the extended style flags.</entry>
 </row>
 <row>
-<entry>getHoverTime (xref linkend="mthGetHoverTime" />)</entry>
+<entry><xref linkend="mthGetHoverTime"/></entry>
 <entry>Retrieves the current hover time in milliseconds.</entry>
 </row>
 <row>
-<entry>getImageList (xref linkend="mthGetImageList" />)</entry>
+<entry><xref linkend="mthGetImageList"/></entry>
 <entry>Retrieves the current image list for the image list type specified.</entry>
 </row>
 <row>
-<entry>getItemData (xref linkend="mthGetItemData" />)</entry>
+<entry><xref linkend="mthGetItemData"/></entry>
 <entry>Retrieves the user data associated with the specified list-view item.</entry>
 </row>
 <row>
-<entry>getItemInfo (xref linkend="mthGetItemInfo" />)</entry>
+<entry><xref linkend="mthGetItemInfo"/></entry>
 <entry>Retrieves the attributes of a list-view item in a <computeroutput>Directory</computeroutput> object.</entry>
 </row>
 <row>
-<entry>getItemPos (xref linkend="mthGetItemPos" />)</entry>
+<entry><xref linkend="mthGetItemPos"/></entry>
 <entry>Retrieves the client area coordinates of an item in a list-view control as a <computeroutput>Point</computeroutput> object.</entry>
 </row>
 <row>
-<entry>hasCheckBoxes (xref linkend="mthHasCheckBoxes" />)</entry>
+<entry><xref linkend="mthHasCheckBoxes"/></entry>
 <entry>Determines if a list-view control has the CHECKBOXES extended list-view style.</entry>
 </row>
 <row>
-<entry>hitTestInfo (xref linkend="mthHitTestInfoClsListView" />)</entry>
+<entry><xref linkend="mthHitTestInfoClsListView"/></entry>
 <entry>Determines which list-view item, if any, is at the specified position.</entry>
 </row>
 <row>
-<entry>insert (xref linkend="mthInsertClsListControl" />)</entry>
+<entry><xref linkend="mthInsertClsListControl"/></entry>
 <entry>Inserts a new item into the list-view, or inserts a new subitem into in an existing list-view item.</entry>
 </row>
 <row>
-<entry>insertColumn (xref linkend="mthInsertColumn" />)</entry>
+<entry><xref linkend="mthInsertColumn"/></entry>
 <entry>Inserts a new column into the list-view control using dialog units for the width. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
-<entry>insertColumnPX (xref linkend="mthInsertColumnPX" />)</entry>
+<entry><xref linkend="mthInsertColumnPX"/></entry>
 <entry>Inserts a new column into a list-view control using pixels for the width</entry>
 </row>
 <row>
-<entry>isChecked (xref linkend="mthIsCheckedClsListControl" />)</entry>
+<entry><xref linkend="mthIsCheckedClsListControl"/></entry>
 <entry>Determines if a check box for a list-view item is checked or not.</entry>
 </row>
 <row>
-<entry>itemInfo (xref linkend="mthItemInfo" />)</entry>
+<entry><xref linkend="mthItemInfo"/></entry>
 <entry>Retrieves the attributes of a list-view item in a <computeroutput>Stem</computeroutput> object.</entry>
 </row>
 <row>
-<entry>itemPos (xref linkend="mthItemPos" />)</entry>
+<entry><xref linkend="mthItemPos"/></entry>
 <entry>Retrieves the client area coordinates of an item in a list-view control as a <computeroutput>String</computeroutput> object.</entry>
 </row>
 <row>
-<entry>items (xref linkend="mthItemsClsListView" />)</entry>
+<entry><xref linkend="mthItemsClsListView"/></entry>
 <entry>Retrieves the number of items in a list-view control.</entry>
 </row>
 <row>
-<entry>itemState (xref linkend="mthItemState" />)</entry>
+<entry><xref linkend="mthItemState"/></entry>
 <entry>Retrieves the state of a list-view item, focused, selected, etc.</entry>
 </row>
 <row>
-<entry>itemText (xref linkend="mthItemText" />)</entry>
+<entry><xref linkend="mthItemText"/></entry>
 <entry>Retrieves the text of a list-view item or subitem.</entry>
 </row>
 <row>
-<entry>itemsPerPage (xref linkend="mthItemsPerPage" />)</entry>
+<entry><xref linkend="mthItemsPerPage"/></entry>
 <entry>Calculates the number of items that vertically fit the visible area of a list-view control that has the report or list style.</entry>
 </row>
 <row>
-<entry>last (xref linkend="mthLast" />)</entry>
+<entry><xref linkend="mthLast"/></entry>
 <entry>Retrieves the index of the last item in a list-view control.</entry>
 </row>
 <row>
-<entry>lastSelected (xref linkend="mthLastSelected" />)</entry>
+<entry><xref linkend="mthLastSelected"/></entry>
 <entry>Returns the index of the selected item with the highest index in a list-view control.</entry>
 </row>
 <row>
-<entry>modify (xref linkend="mthModify" />)</entry>
+<entry><xref linkend="mthModify"/></entry>
 <entry>Modifies the text or icon for an item, or the text for a subitem, for a list-view item</entry>
 </row>
 <row>
-<entry>modifyColumn (xref linkend="mthModifyColumn" />)</entry>
+<entry><xref linkend="mthModifyColumn"/></entry>
 <entry>Sets new attributes for a column of a list-view control when it has the report or list style. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
-<entry>modifyColumnPX (xref linkend="mthModifyColumnPX" />)</entry>
+<entry><xref linkend="mthModifyColumnPX"/></entry>
 <entry>Sets new attributes for a column of a list-view control when it has the report or list style.</entry>
 </row>
 <row>
-<entry>next (xref linkend="mthNext" />)</entry>
+<entry><xref linkend="mthNext"/></entry>
 <entry>Retrieves the item that follows, or is to the right of, the specified item.</entry>
 </row>
 <row>
-<entry>nextLeft (xref linkend="mthNextLeft" />)</entry>
+<entry><xref linkend="mthNextLeft"/></entry>
 <entry>Retrieves the item to the left of the specified item.</entry>
 </row>
 <row>
-<entry>nextRight (xref linkend="mthNextRight" />)</entry>
+<entry><xref linkend="mthNextRight"/></entry>
 <entry>Retrieves the item to the right of the specified item.</entry>
 </row>
 <row>
-<entry>nextSelected (xref linkend="mthNextSelected" />)</entry>
+<entry><xref linkend="mthNextSelected"/></entry>
 <entry>Retrieves the next selected item that follows, or is to the right of, the specified item.</entry>
 </row>
 <row>
-<entry>prepare4nItems (xref linkend="mthPrepare4nItems" />)</entry>
+<entry><xref linkend="mthPrepare4nItems"/></entry>
 <entry>Informs the list-view control to prepare for the addition of a large number of items.</entry>
 </row>
 <row>
-<entry>previous (xref linkend="mthPrevious" />)</entry>
+<entry><xref linkend="mthPrevious"/></entry>
 <entry>Retrieves the index of the item that precedes, or is to the left of, the specified item.</entry>
 </row>
 <row>
-<entry>previousSelected (xref linkend="mthPreviousSelected" />)</entry>
+<entry><xref linkend="mthPreviousSelected"/></entry>
 <entry>Retrieves the first selected item that precedes, or is to the left of, the specified item.</entry>
 </row>
 <row>
-<entry>redrawItems (xref linkend="mthRedrawItems" />)</entry>
+<entry><xref linkend="mthRedrawItems"/></entry>
 <entry>Forces a list-view control to redraw a range of items.</entry>
 </row>
 <row>
-<entry>removeItemData (xref linkend="mthRemoveItemData" />)</entry>
+<entry><xref linkend="mthRemoveItemData"/></entry>
 <entry>Removes and returns the user data associated with the specified list-view item.</entry>
 </row>
 <row>
-<entry>removeExtendedStyle (xref linkend="mthRemoveExtendedStyle" />)</entry>
+<entry><xref linkend="mthRemoveExtendedStyle"/></entry>
 <entry>Removes one or more extended styles of a list-view control.</entry>
 </row>
 <row>
-<entry>removeStyle (xref linkend="mthRemoveStyleClsListView" />)</entry>
+<entry><xref linkend="mthRemoveStyleClsListView"/></entry>
 <entry>Removes one or more window styles of a list-view control.</entry>
 </row>
 <row>
-<entry>replaceExtendedStyle (xref linkend="mthReplaceExtendedStyle" />)</entry>
+<entry><xref linkend="mthReplaceExtendedStyle"/></entry>
 <entry>Removes some or all of the list-view control's extended styles and adds new extended styles</entry>
 </row>
 <row>
-<entry>replaceStyle (xref linkend="mthReplaceStyleClsListView" />)</entry>
+<entry><xref linkend="mthReplaceStyleClsListView"/></entry>
 <entry>Removes some of the window styles of a list-view control and sets new styles.</entry>
 </row>
 <row>
-<entry>restoreEditClass (xref linkend="mthRestoreEditClass" />)</entry>
+<entry><xref linkend="mthRestoreEditClass"/></entry>
 <entry>Used internally to correct an operating system problem.</entry>
 </row>
 <row>
-<entry>scroll (xref linkend="mthScrollClsListview" />)</entry>
+<entry><xref linkend="mthScrollClsListview"/></entry>
 <entry>Scrolls the content of a list view control.</entry>
 </row>
 <row>
-<entry>select (xref linkend="mthSelectClsListView" />)</entry>
+<entry><xref linkend="mthSelectClsListView"/></entry>
 <entry>Selects an item.</entry>
 </row>
 <row>
-<entry>selected (xref linkend="mthSelectedClsListView" />)</entry>
+<entry><xref linkend="mthSelectedClsListView"/></entry>
 <entry>Returns the index of the first selected item.</entry>
 </row>
 <row>
-<entry>selectedItems (xref linkend="mthSelectedItemsClsListView" />)</entry>
+<entry><xref linkend="mthSelectedItemsClsListView"/></entry>
 <entry>Determines the count of selected items in a list-view control.</entry>
 </row>
 <row>
-<entry>setColumnOrder (xref linkend="mthSetColumnOrder" />)</entry>
+<entry><xref linkend="mthSetColumnOrder"/></entry>
 <entry>Changes the column order of a list-view control to some other order.</entry>
 </row>
 <row>
-<entry>setColumnWidth (xref linkend="mthSetColumnWidth" />)</entry>
+<entry><xref linkend="mthSetColumnWidth"/></entry>
 <entry>Sets the width, in dialog units, of a column in a list-view control that has the report or list style. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
-<entry>setColumnWidthPX (xref linkend="mthSetColumnWidthPX" />)</entry>
+<entry><xref linkend="mthSetColumnWidthPX"/></entry>
 <entry>Sets the width, in pixels, of a column in a list-view control that has the report or list style.</entry>
 </row>
 <row>
-<entry>setHoverTime (xref linkend="mthSetHoverTime" />)</entry>
+<entry><xref linkend="mthSetHoverTime"/></entry>
 <entry>Used to change the hover time.</entry>
 </row>
 <row>
-<entry>setImageList (xref linkend="mthSetImageListClsListView" />)</entry>
+<entry><xref linkend="mthSetImageListClsListView"/></entry>
 <entry>Assigns, or removes, an image list for the list-view control.</entry>
 </row>
 <row>
-<entry>setItemData (xref linkend="mthSetItemData" />)</entry>
+<entry><xref linkend="mthSetItemData"/></entry>
 <entry>Sets the user data associated for the specified list-view item.</entry>
 </row>
 <row>
-<entry>setItemPos (xref linkend="mthSetItemPos" />)</entry>
+<entry><xref linkend="mthSetItemPos"/></entry>
 <entry>Moves an item to a specified position in a list-view control that has the icon or small-icon style.</entry>
 </row>
 <row>
-<entry>setItemState (xref linkend="mthSetItemState" />)</entry>
+<entry><xref linkend="mthSetItemState"/></entry>
 <entry>Sets the state of a list-view item.</entry>
 </row>
 <row>
-<entry>setItemText (xref linkend="mthSetItemText" />)</entry>
+<entry><xref linkend="mthSetItemText"/></entry>
 <entry>Changes the text of an item, or the text of a subitem, of a list-view item.</entry>
 </row>
 <row>
-<entry>smallSpacing (xref linkend="mthSmalSpacing" />)</entry>
+<entry><xref linkend="mthSmalSpacing"/></entry>
 <entry>Determines the spacing between items in a list-view control when it has the  small-icon style.</entry>
 </row>
 <row>
-<entry>snapToGrid (xref linkend="mthSnapToGrid" />)</entry>
+<entry><xref linkend="mthSnapToGrid"/></entry>
 <entry>Snaps all icons to the nearest grid position.</entry>
 </row>
 <row>
-<entry>sortItems (xref linkend="mthSortItems" />)</entry>
+<entry><xref linkend="mthSortItems"/></entry>
 <entry>The <emphasis role="italic">sortItems</emphasis> method causes the list-view control to sort its items using the specified comparison method in the Rexx dialog.</entry>
 </row>
 <row>
-<entry>spacing (xref linkend="mthSpacing" />)</entry>
+<entry><xref linkend="mthSpacing"/></entry>
 <entry>Determines the spacing between items in an icon list-view control.</entry>
 </row>
 <row>
-<entry>stringWidth (xref linkend="mthStringWidth" />)</entry>
+<entry><xref linkend="mthStringWidth"/></entry>
 <entry>Determines the width, in dialog units, of a specified string using the current font of the list-view control. <emphasis role="bold">(Inaccurate.)</emphasis></entry>
 </row>
 <row>
-<entry>stringWidthPX (xref linkend="mthStringWidthPX" />)</entry>
+<entry><xref linkend="mthStringWidthPX"/></entry>
 <entry>Determines the width, in pixels, of a specified string using the current font of the list-view control.</entry>
 </row>
 <row>
-<entry>subclassEdit (xref linkend="mthSubclassEdit" />)</entry>
+<entry><xref linkend="mthSubclassEdit"/></entry>
 <entry>Used internally to correct an operating system problem.</entry>
 </row>
 <row>
-<entry>textBkColor (xref linkend="mthTextBkColor" />)</entry>
+<entry><xref linkend="mthTextBkColor"/></entry>
 <entry>Retrieves the background color of the text in a list-view control.</entry>
 </row>
 <row>
-<entry>textBkColor= (xref linkend="mthTextBkColorEquals" />)</entry>
+<entry>textBkColor= (<xref linkend="mthTextBkColorEquals" />)</entry>
 <entry>Sets the background color for the text in a list-view control.</entry>
 </row>
 <row>
-<entry>textColor (xref linkend="mthTextColor" />)</entry>
+<entry><xref linkend="mthTextColor"/></entry>
 <entry>Retrieves the text color of a list-view control.</entry>
 </row>
 <row>
-<entry>textColor= (xref linkend="mthTextColorEquals" />)</entry>
+<entry>textColor= (<xref linkend="mthTextColorEquals" />)</entry>
 <entry>Sets the text color of a list-view control.</entry>
 </row>
 <row>
-<entry>uncheck (xref linkend="mthUncheckClsListControl" />)</entry>
+<entry><xref linkend="mthUncheckClsListControl"/></entry>
 <entry>Removes the check mark for the specified list-view item.</entry>
 </row>
 <row>
-<entry>uncheckAll (xref linkend="mthUncheckAll" />)</entry>
+<entry><xref linkend="mthUncheckAll"/></entry>
 <entry>Clears the check mark for every list-view item.</entry>
 </row>
 <row>
-<entry>updateItem (xref linkend="mthUpdateItem" />)</entry>
+<entry><xref linkend="mthUpdateItem"/></entry>
 <entry>Updates a list-view item.</entry>
 </row>
 </tbody></tgroup>
@@ -581,8 +581,8 @@ contain subitems as specified by the application.
 <section id="tmthNewListView"><title>newListView (dialog object method)</title>
 <para>
   List view objects can not be instantiated by the programmer from Rexx code. Rather a list-view object is obtained
-  by using the newListView (xref linkend="mthNewListView" />) method of the dialog
-  object (xref linkend="chpDialogObject" />). The syntax is:
+  by using the <xref linkend="mthNewListView"/> method of the dialog
+  object (<xref linkend="chpDialogObject" />). The syntax is:
 <programlisting>
 <![CDATA[
 >>--newListView(--id--)--------------------------><
@@ -595,8 +595,8 @@ contain subitems as specified by the application.
 
 <section id="tmthCreateListView"><title>createListView (UserDialog method)</title>
 <para>
-  A list-view object can be created in the dialog template for a UserDialog (xref linkend="clsUserDialog" />)
-  dialog through the createListView (xref linkend="mthCreateListView" />) method. The basic syntax is:
+  A list-view object can be created in the dialog template for a <xref linkend="clsUserDialog"/>
+  dialog through the <xref linkend="mthCreateListView"/> method. The basic syntax is:
 <programlisting>
 <![CDATA[
 >>--createListView(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
@@ -611,8 +611,8 @@ contain subitems as specified by the application.
 <section id="tmthConnectListViewEvent"><title>connectListViewEvent (dialog object method)</title>
 <para>
   To connect event notifications from a list-view object use the
-  connectListViewEvent (xref linkend="mthConnectListViewEvent" />) method of the
-  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
+ <xref linkend="mthConnectListViewEvent"/> method of the
+  dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectListViewEvent(--id--,--event--+---------------+--)-------------------><
@@ -623,7 +623,7 @@ contain subitems as specified by the application.
 </para>
 </section>  <!-- End connectListViewEvent() [EventNotification method] -->
 
-<section id="mthAddClsListview"><title>add</title>
+<section id="mthAddClsListview" xreflabel="add"><title>add</title>
 <indexterm><primary>add</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -678,7 +678,7 @@ contain subitems as specified by the application.
 <varlistentry><term>icon</term>
 <listitem><para>
   Specifies the index within the image list for the icon for this item. Image lists are assigned to a
-  list-view by using the setImageList (xref linkend="mthSetImageListClsListView" />)() method. With
+  list-view by using the <xref linkend="mthSetImageListClsListView"/>() method. With
   the <computeroutput>setImageList</computeroutput>() method, use the LVSIL_NORMAL flag for the icon view
   icons and the LVSIL_SMALL flag for the list, report, and small-icon view icons.
 </para>
@@ -749,7 +749,7 @@ contain subitems as specified by the application.
 </variablelist>
 </section>
 
-<section id="mthAddExtendedStyle"><title>addExtendedStyle</title>
+<section id="mthAddExtendedStyle" xreflabel="addExtendedStyle"><title>addExtendedStyle</title>
 <indexterm><primary>addExtendedStyle</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -779,7 +779,7 @@ contain subitems as specified by the application.
 
 <para>The <computeroutput>addExtendedStyle</computeroutput> method adds one or
 more of the
-extended (xref linkend="listControlExtendedStyles" />) List-View styles to a ListControl.
+extended (<xref linkend="listControlExtendedStyles" />) List-View styles to a ListControl.
 These styles can not be added until
 the underlying Windows List-View control has been created.  They can be added in
 the <computeroutput>initDialog</computeroutput> method or any time thereafter.
@@ -858,7 +858,7 @@ the space bar, all the selected items cycle, not just the item with the focus.
 <listitem><para>Enables hot track selection.  The user can select an item by
 leaving the mouse over an item for a certain period of time, the
 &quot;hover&quot; time.  This period of time can be changed from the default by
-using the setHoverTime (xref linkend="mthSetHoverTime" />)  method.
+using the <xref linkend="mthSetHoverTime"/>  method.
 </para></listitem></varlistentry>
 <varlistentry><term>TWOCLICKACTIVATE</term>
 <listitem><para>Enables the list-view control to send an item activate
@@ -936,7 +936,7 @@ first column.
 </variablelist>
 </section>
 
-<section id="mthAddRow"><title>addRow</title>
+<section id="mthAddRow" xreflabel="addRow"><title>addRow</title>
 <indexterm><primary>addRow</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -969,7 +969,7 @@ first column.
 <varlistentry><term>icon</term>
 <listitem><para>
   The index within the image list for the icon for this item. Image lists are assigned to a list-view by
-  using the setImageList (xref linkend="mthSetImageListClsListView" />)() method. With the
+  using the <xref linkend="mthSetImageListClsListView"/>() method. With the
   <computeroutput>setImageList</computeroutput>() method, use the LVSIL_NORMAL flag for the icon view
   icons and the LVSIL_SMALL flag for the list, report, and small-icon views icons.
 </para>
@@ -1003,7 +1003,7 @@ first column.
 </variablelist>
 </section>
 
-<section id="mthAddStyleClsListView"><title>addStyle</title>
+<section id="mthAddStyleClsListView" xreflabel="addStyle"><title>addStyle</title>
 <indexterm><primary>addStyle</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1047,7 +1047,7 @@ list-view control.</para>
 <varlistentry><term>style</term>
 <listitem><para>The window styles to be added, which is one or more of the styles listed
 in the syntax diagram, separated by blanks. For an explanation of the different
-styles, refer to createListView (xref linkend="mthCreateListView" />).
+styles, refer to <xref linkend="mthCreateListView"/>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1057,7 +1057,7 @@ styles, refer to createListView (xref linkend="mthCreateListView" />).
 </variablelist>
 </section>
 
-<section id="mthAlignLeft"><title>alignLeft</title>
+<section id="mthAlignLeft" xreflabel="alignLeft"><title>alignLeft</title>
 <indexterm><primary>alignLeft</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1084,7 +1084,7 @@ window border.</para>
 </variablelist>
 </section>
 
-<section id="mthAlignTop"><title>alignTop</title>
+<section id="mthAlignTop" xreflabel="alignTop"><title>alignTop</title>
 <indexterm><primary>alignTop</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1111,7 +1111,7 @@ window border.</para>
 </variablelist>
 </section>
 
-<section id="mthArrange"><title>arrange</title>
+<section id="mthArrange" xreflabel="arrange"><title>arrange</title>
 <indexterm><primary>arrange</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1138,7 +1138,7 @@ current alignment style of the list-view control.</para>
 </variablelist>
 </section>
 
-<section id="mthBkColor"><title>bkColor</title>
+<section id="mthBkColor" xreflabel="bkColor"><title>bkColor</title>
 <indexterm><primary>bkColor</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1153,7 +1153,7 @@ for a list-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The color-palette index specifier (0 to 18). For more information on
-color palettes, refer to Definition of Terms (xref linkend="sctTermDefs" />).
+color palettes, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -1176,7 +1176,7 @@ a list-view control.</para>
 <variablelist>
 <varlistentry><term>color</term>
 <listitem><para>The new background color. Specify the color-palette index specifier
-(0 to 18).  For more information on color palettes, refer to Definition of Terms (xref linkend="sctTermDefs" />).
+(0 to 18).  For more information on color palettes, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -1195,7 +1195,7 @@ yellow:
 </variablelist>
 </section>
 
-<section id="mthCheckClsListControl"><title>check</title>
+<section id="mthCheckClsListControl" xreflabel="check"><title>check</title>
 <indexterm><primary>check</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1208,7 +1208,7 @@ yellow:
 <para>The <computeroutput>check</computeroutput> method sets the check mark for
 a list-view item.  This method is only valid for list-view controls that have
 the check boxes extended style.  (See the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) method for a description
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) method for a description
 of the check boxes extended style.)
 </para>
 <variablelist>
@@ -1264,7 +1264,7 @@ with a specified zip code.
 </variablelist>
 </section>
 
-<section id="mthCheckAll"><title>checkAll</title>
+<section id="mthCheckAll" xreflabel="checkAll"><title>checkAll</title>
 <indexterm><primary>checkAll</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1276,7 +1276,7 @@ with a specified zip code.
 <para>The <computeroutput>checkAll</computeroutput> method sets the check mark
 for every list-view item.  This method is only valid for list-view controls that
 have the check boxes extended style.  (See the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) method for a description
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) method for a description
 of the check boxes extended style.)
 </para>
 <variablelist>
@@ -1315,7 +1315,7 @@ that allows the user to check all the check boxes:
 </variablelist>
 </section>
 
-<section id="mthColumnInfo"><title>columnInfo</title>
+<section id="mthColumnInfo" xreflabel="columnInfo"><title>columnInfo</title>
 <indexterm><primary>columnInfo</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1359,7 +1359,7 @@ RetStem.!WIDTH variable will be set to 0.
 </variablelist>
 </section>
 
-<section id="mthColumnWidth"><title>columnWidth</title>
+<section id="mthColumnWidth" xreflabel="columnWidth"><title>columnWidth</title>
 <indexterm><primary>columnWidth</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1400,7 +1400,7 @@ when the column is clicked on:
 </variablelist>
 </section>
 
-<section id="mthColumnWidthPX"><title>columnWidthPX</title>
+<section id="mthColumnWidthPX" xreflabel="columnWidthPX"><title>columnWidthPX</title>
 <indexterm><primary>columnWidthPX</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>columnWidthPX</secondary></indexterm>
 <programlisting>
@@ -1443,7 +1443,7 @@ when the column is clicked on:
 </variablelist>
 </section>  <!-- End ListView::columnWidthPX() -->
 
-<section id="mthDeleteClsListView"><title>delete</title>
+<section id="mthDeleteClsListView" xreflabel="delete"><title>delete</title>
 <indexterm><primary>delete</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1492,7 +1492,7 @@ control.</para>
 </variablelist>
 </section>
 
-<section id="mthDeleteAllClsListview"><title>deleteAll</title>
+<section id="mthDeleteAllClsListview" xreflabel="deleteAll"><title>deleteAll</title>
 <indexterm><primary>deleteAll</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1523,7 +1523,7 @@ view control.</para>
 </variablelist>
 </section>
 
-<section id="mthDeleteColumn"><title>deleteColumn</title>
+<section id="mthDeleteColumn" xreflabel="deleteColumn"><title>deleteColumn</title>
 <indexterm><primary>deleteColumn</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1562,7 +1562,7 @@ last.
 </variablelist>
 </section>
 
-<section id="mthDeselect"><title>deselect</title>
+<section id="mthDeselect" xreflabel="deselect"><title>deselect</title>
 <indexterm><primary>deselect</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1599,7 +1599,7 @@ last.
 </variablelist>
 </section>
 
-<section id="mthDeselectAll"><title>deselectAll</title>
+<section id="mthDeselectAll" xreflabel="deselectAll"><title>deselectAll</title>
 <indexterm><primary>deselectAll</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>deselectAll</secondary></indexterm>
 <programlisting>
@@ -1641,7 +1641,7 @@ last.
 </variablelist>
 </section>  <!-- End ListView::deselectAll() -->
 
-<section id="mthDropHighLighted"><title>dropHighlighted</title>
+<section id="mthDropHighLighted" xreflabel="dropHighlighted"><title>dropHighlighted</title>
 <indexterm><primary>dropHighlighted</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1661,7 +1661,7 @@ is highlighted as a drag-and-drop target.</para>
 </variablelist>
 </section>
 
-<section id="mthEdit"><title>edit</title>
+<section id="mthEdit" xreflabel="edit"><title>edit</title>
 <indexterm><primary>edit</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1690,7 +1690,7 @@ other cases.
 </variablelist>
 </section>
 
-<section id="mthEndEdit"><title>endEdit</title>
+<section id="mthEndEdit" xreflabel="endEdit"><title>endEdit</title>
 <indexterm><primary>endEdit</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1705,7 +1705,7 @@ other cases.
 view item that is being edited.</para>
 </section>
 
-<section id="mthEnsureVisible"><title>ensureVisible</title>
+<section id="mthEnsureVisible" xreflabel="ensureVisible"><title>ensureVisible</title>
 <indexterm><primary>ensureVisible</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1760,7 +1760,7 @@ This is the default.
 </variablelist>
 </section>
 
-<section id="mthFindClsListView"><title>find</title>
+<section id="mthFindClsListView" xreflabel="find"><title>find</title>
 <indexterm><primary>find</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1798,7 +1798,7 @@ end of the list.
 </variablelist>
 </section>
 
-<section id="mthFindNearestXY"><title>findNearestXY</title>
+<section id="mthFindNearestXY" xreflabel="findNearestXY"><title>findNearestXY</title>
 <indexterm><primary>findNearestXY</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1835,7 +1835,7 @@ direction, for the item nearest to the specified position.</para>
 </variablelist>
 </section>
 
-<section id="mthFindPartial"><title>findPartial</title>
+<section id="mthFindPartial" xreflabel="findPartial"><title>findPartial</title>
 <indexterm><primary>findPartial</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1873,7 +1873,7 @@ end of the list.
 </variablelist>
 </section>
 
-<section id="mthFirstVisible"><title>firstVisible</title>
+<section id="mthFirstVisible" xreflabel="firstVisible"><title>firstVisible</title>
 <indexterm><primary>firstVisible</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1894,7 +1894,7 @@ is in icon or small-icon view.
 </variablelist>
 </section>
 
-<section id="mthFocus"><title>focus</title>
+<section id="mthFocus" xreflabel="focus"><title>focus</title>
 <indexterm><primary>focus</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1934,7 +1934,7 @@ than one item can be selected, only one item can have the focus.</para>
 </variablelist>
 </section>
 
-<section id="mthFocused"><title>focused</title>
+<section id="mthFocused" xreflabel="focused"><title>focused</title>
 <indexterm><primary>focused</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -1954,7 +1954,7 @@ item that has currently the focus.</para>
 </variablelist>
 </section>
 
-<section id="mthGetCheck"><title>getCheck</title>
+<section id="mthGetCheck" xreflabel="getCheck"><title>getCheck</title>
 <indexterm><primary>getCheck</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -1967,7 +1967,7 @@ item that has currently the focus.</para>
 item at the specified list index has a checked check box. This method will
 return a code indicating that the list-view control does not have the check
 boxes extended style, if appropriate.  (See the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) method for a description
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) method for a description
 of the check boxes extended style.)
 </para>
 <variablelist>
@@ -2022,7 +2022,7 @@ determine if a list-view control currently has the check box extended style.
 </variablelist>
 </section>
 
-<section id="mthGetColumnCount"><title>getColumnCount</title>
+<section id="mthGetColumnCount" xreflabel="getColumnCount"><title>getColumnCount</title>
 <indexterm><primary>getColumnCount</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -2063,7 +2063,7 @@ colCount = list~getColumnCount
 </section>  <!-- End ListControl::getColumnCount() -->
 
 
-<section id="mthGetColumnInfo"><title>getColumnInfo</title>
+<section id="mthGetColumnInfo" xreflabel="getColumnInfo"><title>getColumnInfo</title>
 <indexterm><primary>getColumnInfo</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>getColumnInfo</secondary></indexterm>
 <programlisting>
@@ -2184,7 +2184,7 @@ colCount = list~getColumnCount
 </section>  <!-- End ListView::getColumnInfo() -->
 
 
-<section id="mthGetColumnOrder"><title>getColumnOrder</title>
+<section id="mthGetColumnOrder" xreflabel="getColumnOrder"><title>getColumnOrder</title>
 <indexterm><primary>getColumnOrder</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -2196,21 +2196,21 @@ colCount = list~getColumnCount
 
 <para>
   Retrieves the current column order of the list-view when in report view. The order of the columns can
-  be changed programmatically by using  the setColumnOrder (xref linkend="mthSetColumnOrder" />)()
-  method. In XP and later there is also an extended (xref linkend="mthAddExtendedStyle" />) style
+  be changed programmatically by using  the <xref linkend="mthSetColumnOrder"/>()
+  method. In XP and later there is also an <xref linkend="mthAddExtendedStyle"/> style
   which lets the user rearrange the order of the columns. If the list-view control has not had the
   columns rearranged, then the column order will always be 0, 1, 2, ... of course.
 </para>
 <para>
   One practical use of this method would be in conjunction with the
-  setColumnOrder (xref linkend="mthSetColumnOrder" />)() method. In an application where the user can
+ <xref linkend="mthSetColumnOrder"/>() method. In an application where the user can
   rearrange the column order, the programmer could get the order when a dialog closes, save it, and then
   restore the order to the user's preference when the application is restarted.
 </para>
 <para>
   Note that the list-view control does not have to have the HEADERDRAGDROP style for the get and set
   column order methods to work. That style is only needed to allow the user to rearrange the columns
-  using drag and drop. The programmer can use setColumnOrder (xref linkend="mthSetColumnOrder" />)()
+  using drag and drop. The programmer can use <xref linkend="mthSetColumnOrder"/>()
   to change the order of the columns whether or not the list-view has the HEADERDRAGDROP style, or not.
 </para>
 <variablelist>
@@ -2308,7 +2308,7 @@ Current order:
 </variablelist>
 </section>  <!-- End ListControl::getColumnOrder() -->
 
-<section id="mthGetColumnText"><title>getColumnText</title>
+<section id="mthGetColumnText" xreflabel="getColumnText"><title>getColumnText</title>
 <indexterm><primary>getColumnText</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>getColumnText</secondary></indexterm>
 <programlisting>
@@ -2346,7 +2346,7 @@ Current order:
 </section>  <!-- End ListView::getColumnText() -->
 
 
-<section id="mthGetExtendedStyle"><title>getExtendedStyle</title>
+<section id="mthGetExtendedStyle" xreflabel="getExtendedStyle"><title>getExtendedStyle</title>
 <indexterm><primary>getExtendedStyle</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2356,7 +2356,7 @@ Current order:
 </programlisting>
 
 <para>The <computeroutput>getExtendedStyle</computeroutput> method returns
-the extended (xref linkend="listControlExtendedStyles" />) styles of a
+the extended (<xref linkend="listControlExtendedStyles" />) styles of a
 <computeroutput>ListView</computeroutput>.  The styles are returned as a
 string of blank delimited style keywords.  These are the same keywords as those
 used to set the styles.
@@ -2367,7 +2367,7 @@ used to set the styles.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The returned string can contain one or more of the following
-style keywords. See the addExtendedStyle (xref linkend="mthAddExtendedStyle" />)
+style keywords. See the <xref linkend="mthAddExtendedStyle"/>
 method for the style descriptions:
 <itemizedlist>
 <listitem><para>BORDERSELECT</para></listitem>
@@ -2444,7 +2444,7 @@ view control does have the style.
 </variablelist>
 </section>
 
-<section id="mthGetExtendedStyleRaw"><title>getExtendedStyleRaw</title>
+<section id="mthGetExtendedStyleRaw" xreflabel="getExtendedStyleRaw"><title>getExtendedStyleRaw</title>
 <indexterm><primary>getExtendedStyleRaw</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2454,7 +2454,7 @@ view control does have the style.
 </programlisting>
 
 <para>The <computeroutput>getExtendedStyleRaw</computeroutput> method returns
-the extended (xref linkend="listControlExtendedStyles" />) styles of a
+the extended (<xref linkend="listControlExtendedStyles" />) styles of a
 <computeroutput>ListView</computeroutput> as the numeric value of the
 extended style flags.  This method is provided for programmers familiar with the
 Windows API who may wish to know, or to work with, the actual value of the
@@ -2470,7 +2470,7 @@ flags currently in effect for the list-view control.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
 <listitem><para>The following example is the same example as the
-getExtendedStyle (xref linkend="mthGetExtendedStyle" />) example.  It simply
+getExtendedStyle (<xref linkend="mthGetExtendedStyle" />) example.  It simply
 replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 <computeroutput>getExtendedStyleRaw</computeroutput> invocation.
 <programlisting> <![CDATA[
@@ -2516,7 +2516,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 </variablelist>
 </section>
 
-<section id="mthGetHoverTime"><title>getHoverTime</title>
+<section id="mthGetHoverTime" xreflabel="getHoverTime"><title>getHoverTime</title>
 <indexterm><primary>getHoverTime</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -2529,7 +2529,7 @@ replaces the <computeroutput>getExtendedStyle</computeroutput> invocation with a
 as milliseconds.  The hover time only affects list-view controls that have the
 track select, one click activate, or two click activate extended list-view
 styles. See the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) for a description of these
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) for a description of these
 styles.
 </para>
 <variablelist>
@@ -2578,7 +2578,7 @@ incremented or decremented by .1 of a second.
 </variablelist>
 </section>
 
-<section id="mthGetImageListClsListView"><title>getImageList</title>
+<section id="mthGetImageListClsListView" xreflabel="getImageList"><title>getImageList</title>
 <indexterm><primary>getImageList</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -2590,7 +2590,7 @@ incremented or decremented by .1 of a second.
 
 <para>
   Retrieves the current image list for the type specified. The default is to retrieve the image list for
-  the normal icons. See the setImageList (xref linkend="mthSetImageListClsListView" />) method for information
+  the normal icons. See the <xref linkend="mthSetImageListClsListView"/> method for information
   on assigning an image list to a list-view control.
 </para>
 <variablelist>
@@ -2602,7 +2602,7 @@ incremented or decremented by .1 of a second.
       <listitem>
         <para>
           Optional. Specifies which image list to retrieve. You can use
-          .Image~toID() (xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
+          .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the correct numeric value for one of the
           following symbols:
           <simplelist type='horiz' columns='2'>
           <member>LVSIL_NORMAL</member>
@@ -2622,7 +2622,7 @@ incremented or decremented by .1 of a second.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method returns the current image list (xref linkend="clsImageList" />), if there is one.
+      This method returns the current image list (<xref linkend="clsImageList" />), if there is one.
       <computeroutput>.nil</computeroutput> is returned if there is no current image list of the type
       specified.
     </para>
@@ -2669,7 +2669,7 @@ incremented or decremented by .1 of a second.
 </variablelist>
 </section>  <!-- End ListControl::getImageList() -->
 
-<section id="mthGetItemData"><title>getItemData</title>
+<section id="mthGetItemData" xreflabel="getItemData"><title>getItemData</title>
 <indexterm><primary>getItemData</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>getItemData</secondary></indexterm>
 <programlisting>
@@ -2709,9 +2709,9 @@ incremented or decremented by .1 of a second.
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
     list-view items. The data value can be any ooRexx object. The data value is set using the
-    setItemData (xref linkend="mthSetItemData" />) method. If needed the data value can be removed from a list-view item
-    through the removeItemData (xref linkend="mthRemoveItemData" />) method.  Storing a user value for each item can
-    be useful in any number of ways. One specific use is in the sortItems (xref linkend="mthSortItems" />) method.
+ <xref linkend="mthSetItemData"/> method. If needed the data value can be removed from a list-view item
+    through the <xref linkend="mthRemoveItemData"/> method.  Storing a user value for each item can
+    be useful in any number of ways. One specific use is in the <xref linkend="mthSortItems"/> method.
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
@@ -2719,7 +2719,7 @@ incremented or decremented by .1 of a second.
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2777,7 +2777,7 @@ incremented or decremented by .1 of a second.
 </section>  <!-- End ListView::getItemData() -->
 
 
-<section id="mthGetItemInfo"><title>getItemInfo</title>
+<section id="mthGetItemInfo" xreflabel="getItemInfo"><title>getItemInfo</title>
 <indexterm><primary>getItemInfo</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>getItemInfo</secondary></indexterm>
 <programlisting>
@@ -2927,7 +2927,7 @@ incremented or decremented by .1 of a second.
 </variablelist>
 </section>  <!-- End ListView::getItemInfo() -->
 
-<section id="mthGetItemPos"><title>getItemPos</title>
+<section id="mthGetItemPos" xreflabel="getItemPos"><title>getItemPos</title>
 <indexterm><primary>getItemPos</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>getItemPos</secondary></indexterm>
 <programlisting>
@@ -2938,7 +2938,7 @@ incremented or decremented by .1 of a second.
 </programlisting>
 
 <para>
-  Retrieves the client (xref linkend="defClientArea" />) area coordinates of an item in a list-view control as a
+  Retrieves the client (<xref linkend="defClientArea" />) area coordinates of an item in a list-view control as a
   <computeroutput>Point</computeroutput> object.
 </para>
 <variablelist>
@@ -2959,7 +2959,7 @@ incremented or decremented by .1 of a second.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    On success, returns a point (xref linkend="clsPoint" />) object containing the position of the upper left corner
+    On success, returns a point (<xref linkend="clsPoint" />) object containing the position of the upper left corner
     of the item specified, relative to the client area of the list-view.
   </para>
   <para>
@@ -2987,7 +2987,7 @@ incremented or decremented by .1 of a second.
 </section>  <!-- End ListView::getItemPos() -->
 
 
-<section id="mthHasCheckBoxes"><title>hasCheckBoxes</title>
+<section id="mthHasCheckBoxes" xreflabel="hasCheckBoxes"><title>hasCheckBoxes</title>
 <indexterm><primary>hasCheckBoxes</primary></indexterm>
 <indexterm><primary>Listview class</primary><secondary>hasCheckBoxes</secondary></indexterm>
 <programlisting>
@@ -3017,7 +3017,7 @@ incremented or decremented by .1 of a second.
 </variablelist>
 </section>  <!-- End Listview::hasCheckBoxes() -->
 
-<section id="mthHitTestInfoClsListView"><title>hitTestInfo</title>
+<section id="mthHitTestInfoClsListView" xreflabel="hitTestInfo"><title>hitTestInfo</title>
 <indexterm><primary>hitTestInfo</primary><secondary>ListView class</secondary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>hitTestInfo</secondary></indexterm>
 <programlisting>
@@ -3053,7 +3053,7 @@ Generic Form:
       <varlistentry><term>hitPoint [required]</term>
       <listitem>
       <para>
-        The point, in client (xref linkend="defScreenCoordinates" />) coordinates, to test.
+        The point, in client (<xref linkend="defScreenCoordinates" />) coordinates, to test.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>info [optional in / out]</term>
@@ -3269,7 +3269,7 @@ Generic Form:
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -3296,7 +3296,7 @@ Generic Form:
 </variablelist>
 </section>  <!-- End ListView::hitTestInfo() -->
 
-<section id="mthInsertClsListControl"><title>insert</title>
+<section id="mthInsertClsListControl" xreflabel="insert"><title>insert</title>
 <indexterm><primary>insert</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -3355,7 +3355,7 @@ Generic Form:
 <listitem>
 <para>
   The index of the icon within the image list for this item. Use the
-  setImageList (xref linkend="mthSetImageListClsListView" />)() method to assign an image list to the
+ <xref linkend="mthSetImageListClsListView"/>() method to assign an image list to the
   list-view control. With <computeroutput>setImageList</computeroutput>(), use the LVSIL_SMALL type to
   set the image list for the small icons and the LVSIL_NORMAL type for the normal size icon image list.
 </para>
@@ -3393,7 +3393,7 @@ Generic Form:
 </variablelist>
 </section>
 
-<section id="mthInsertColumn"><title>insertColumn</title>
+<section id="mthInsertColumn" xreflabel="insertColumn"><title>insertColumn</title>
 <indexterm><primary>insertColumn</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3448,7 +3448,7 @@ column. It can be one of the following values:
 </variablelist>
 </section>
 
-<section id="mthInsertColumnPX"><title>insertColumnPX</title>
+<section id="mthInsertColumnPX" xreflabel="insertColumnPX"><title>insertColumnPX</title>
 <indexterm><primary>insertColumnPX</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>insertColumnPX</secondary></indexterm>
 <programlisting>
@@ -3537,10 +3537,10 @@ column. It can be one of the following values:
     list-view is in report view, but, columns can be inserted into the list-view control when it is in any view.
   </para>
   <para>
-    This method and the insertColumn (xref linkend="mthInsertColumn" />) method are virtually the same, except that
+    This method and the <xref linkend="mthInsertColumn"/> method are virtually the same, except that
     in this method the width of the column is specified in pixels. The <emphasis role="italic">insertColumn</emphasis>
     method takes dialog units for the width and then converts them to pixels using
-    factorX (xref linkend="ovvInaccurate" />). This makes the width used by the <emphasis
+    factorX (<xref linkend="ovvInaccurate" />). This makes the width used by the <emphasis
     role="italic">insertColumn</emphasis> method inaccurate.
   </para>
   <para>
@@ -3576,7 +3576,7 @@ column. It can be one of the following values:
 </section>  <!-- End ListView::insertColumnPX() -->
 
 
-<section id="mthIsCheckedClsListControl"><title>isChecked</title>
+<section id="mthIsCheckedClsListControl" xreflabel="isChecked"><title>isChecked</title>
 <indexterm><primary>isChecked</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -3590,7 +3590,7 @@ column. It can be one of the following values:
 check box for a list-view item is checked or not.  This method will always
 return true or false.  It can be used if the list-view control has or does not
 have the check boxes extended style. (See the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) method for a description
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) method for a description
 of the check boxes extended style.)
 </para>
 <variablelist>
@@ -3639,7 +3639,7 @@ has a check mark, then that patient is mailed a statement.
 </variablelist>
 </section>
 
-<section id="mthItemInfo"><title>itemInfo</title>
+<section id="mthItemInfo" xreflabel="itemInfo"><title>itemInfo</title>
 <indexterm><primary>itemInfo</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -3678,7 +3678,7 @@ has a check mark, then that patient is mailed a statement.
 <varlistentry><term>RetStem.!IMAGE</term>
 <listitem><para>
   The index of the icon in the image list this for item. Image lists are assigned to list-views using the
-  setImageList (xref linkend="mthSetImageListClsListView" />)() method.
+ <xref linkend="mthSetImageListClsListView"/>() method.
 </para>
 <para>
   In report view, this index is only used for the icon for the first column. ooDialog does not yet
@@ -3709,7 +3709,7 @@ and on the system colors used for a selection.
 </variablelist>
 </section>
 
-<section id="mthItemPos"><title>itemPos</title>
+<section id="mthItemPos" xreflabel="itemPos"><title>itemPos</title>
 <indexterm><primary>itemPos</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3737,7 +3737,7 @@ if you did not specify <emphasis role="italic">item</emphasis>, or 0 in all othe
 </variablelist>
 
 <note><title>Note</title><para>
-Use defListDragHandler (xref linkend="mthDefListDragHandler" />) to support default dragging:
+Use <xref linkend="mthDefListDragHandler"/> to support default dragging:
 </para></note>
 <programlisting>
 <![CDATA[
@@ -3746,7 +3746,7 @@ self~connectListViewEvent(104,"BEGINDRAG","mthDefListDragHandler")
 </programlisting>
 </section>
 
-<section id="mthItemsClsListView"><title>items</title>
+<section id="mthItemsClsListView" xreflabel="items"><title>items</title>
 <indexterm><primary>items</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -3766,7 +3766,7 @@ in a list-view control.</para>
 </variablelist>
 </section>
 
-<section id="mthItemsPerPage"><title>itemsPerPage</title>
+<section id="mthItemsPerPage" xreflabel="itemsPerPage"><title>itemsPerPage</title>
 <indexterm><primary>itemsPerPage</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3788,7 +3788,7 @@ view control.
 </variablelist>
 </section>
 
-<section id="mthItemState"><title>itemState</title>
+<section id="mthItemState" xreflabel="itemState"><title>itemState</title>
 <indexterm><primary>itemState</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3831,7 +3831,7 @@ and on the system colors used for a selection.
 </variablelist>
 </section>
 
-<section id="mthItemText"><title>itemText</title>
+<section id="mthItemText" xreflabel="itemText"><title>itemText</title>
 <indexterm><primary>itemText</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3863,7 +3863,7 @@ view item or a column.</para>
 </variablelist>
 </section>
 
-<section id="mthLast"><title>last</title>
+<section id="mthLast" xreflabel="last"><title>last</title>
 <indexterm><primary>last</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -3883,7 +3883,7 @@ item in a list-view control.</para>
 </variablelist>
 </section>
 
-<section id="mthLastSelected"><title>lastSelected</title>
+<section id="mthLastSelected" xreflabel="lastSelected"><title>lastSelected</title>
 <indexterm><primary>lastSelected</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -3902,7 +3902,7 @@ item selected last.</para>
 </variablelist>
 </section>
 
-<section id="mthModify"><title>modify</title>
+<section id="mthModify" xreflabel="modify"><title>modify</title>
 <indexterm><primary>modify</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -3930,7 +3930,7 @@ item selected last.</para>
 </para></listitem></varlistentry>
 <varlistentry><term>subitem</term>
 <listitem><para>
-  This method works in a similar manner as the insert (xref linkend="mthInsertClsListControl" />)()
+  This method works in a similar manner as the <xref linkend="mthInsertClsListControl"/>()
   method. The use of the <emphasis role="italic">subitem</emphasis> argument controls whether the
   <emphasis role="italic">text</emphasis> argument applies to the label of the item or the text of a
   subitem. When <emphasis role="italic">subitem</emphasis> is omitted or 0, then the label of the item is
@@ -3945,7 +3945,7 @@ item selected last.</para>
 <varlistentry><term>icon</term>
 <listitem><para>
   The new index of the icon for the item within the image list assigned to the list-view. Image lists are
-  assigned with the setImageList (xref linkend="mthSetImageListClsListView" />)() method. When
+  assigned with the <xref linkend="mthSetImageListClsListView"/>() method. When
   assigning the image list with <computeroutput>setImageList</computeroutput>(), use the LVSIL_NORMAL
   flag for the icon view icons and the LVSIL_SMALL flag for the list, report, and small-icon view icons.
 </para>
@@ -3999,7 +3999,7 @@ item selected last.</para>
 </variablelist>
 </section>
 
-<section id="mthModifyColumn"><title>modifyColumn</title>
+<section id="mthModifyColumn" xreflabel="modifyColumn"><title>modifyColumn</title>
 <indexterm><primary>modifyColumn</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4065,7 +4065,7 @@ column. It can be one of the following values:
 </variablelist>
 </section>
 
-<section id="mthModifyColumnPX"><title>modifyColumnPX</title>
+<section id="mthModifyColumnPX" xreflabel="modifyColumnPX"><title>modifyColumnPX</title>
 <indexterm><primary>modifyColumnPX</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>modifyColumnPX</secondary></indexterm>
 <programlisting>
@@ -4175,7 +4175,7 @@ column. It can be one of the following values:
 </section>  <!-- End ListView::modifyColumnPX() -->
 
 
-<section id="mthNext"><title>next</title>
+<section id="mthNext" xreflabel="next"><title>next</title>
 <indexterm><primary>next</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -4203,7 +4203,7 @@ or is to the right of, <emphasis role="italic">item</emphasis>.</para>
 </variablelist>
 </section>
 
-<section id="mthNextLeft"><title>nextLeft</title>
+<section id="mthNextLeft" xreflabel="nextLeft"><title>nextLeft</title>
 <indexterm><primary>nextLeft</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4230,7 +4230,7 @@ item itself is excluded from the search.
 </variablelist>
 </section>
 
-<section id="mthNextRight"><title>nextRight</title>
+<section id="mthNextRight" xreflabel="nextRight"><title>nextRight</title>
 <indexterm><primary>nextRight</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4257,7 +4257,7 @@ item itself is excluded from the search.
 </variablelist>
 </section>
 
-<section id="mthNextSelected"><title>nextSelected</title>
+<section id="mthNextSelected" xreflabel="nextSelected"><title>nextSelected</title>
 <indexterm><primary>nextSelected</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4285,7 +4285,7 @@ item itself is excluded from the search.
 </variablelist>
 </section>
 
-<section id="mthPrepare4nItems"><title>prepare4nItems</title>
+<section id="mthPrepare4nItems" xreflabel="prepare4nItems"><title>prepare4nItems</title>
 <indexterm><primary>prepare4nItems</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4320,7 +4320,7 @@ control for adding a large number of items.</para>
 </variablelist>
 </section>
 
-<section id="mthPrevious"><title>previous</title>
+<section id="mthPrevious" xreflabel="previous"><title>previous</title>
 <indexterm><primary>previous</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -4348,7 +4348,7 @@ or is to the left of, <emphasis role="italic">item</emphasis>.</para>
 </variablelist>
 </section>
 
-<section id="mthPreviousSelected"><title>previousSelected</title>
+<section id="mthPreviousSelected" xreflabel="previousSelected"><title>previousSelected</title>
 <indexterm><primary>previousSelected</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4376,7 +4376,7 @@ item itself is excluded from the search.
 </variablelist>
 </section>
 
-<section id="mthRedrawItems"><title>redrawItems</title>
+<section id="mthRedrawItems" xreflabel="redrawItems"><title>redrawItems</title>
 <indexterm><primary>redrawItems</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4416,7 +4416,7 @@ to redraw a range of items.</para>
 </variablelist>
 </section>
 
-<section id="mthRemoveItemData"><title>removeItemData</title>
+<section id="mthRemoveItemData" xreflabel="removeItemData"><title>removeItemData</title>
 <indexterm><primary>removeItemData</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>removeItemData</secondary></indexterm>
 <programlisting>
@@ -4456,9 +4456,9 @@ to redraw a range of items.</para>
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
     list-view items. The data value can be any ooRexx object. The data value is set using the
-    setItemData (xref linkend="mthSetItemData" />) method. The data value can be retrieved without removing it from a
-    list-view item through the getItemData (xref linkend="mthGetItemData" />) method.  Storing a user value for each
-    item can be useful in any number of ways. One specific use is in the sortItems (xref linkend="mthSortItems" />)
+ <xref linkend="mthSetItemData"/> method. The data value can be retrieved without removing it from a
+    list-view item through the <xref linkend="mthGetItemData"/> method.  Storing a user value for each
+    item can be useful in any number of ways. One specific use is in the <xref linkend="mthSortItems"/>
     method.
   </para>
   </listitem></varlistentry>
@@ -4468,7 +4468,7 @@ to redraw a range of items.</para>
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -4532,7 +4532,7 @@ return 0
 </section>  <!-- End ListView::removeItemData() -->
 
 
-<section id="mthRemoveExtendedStyle"><title>removeExtendedStyle</title>
+<section id="mthRemoveExtendedStyle" xreflabel="removeExtendedStyle"><title>removeExtendedStyle</title>
 <indexterm><primary>removeExtendedStyle</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4561,7 +4561,7 @@ return 0
 </programlisting>
 
 <para>The <computeroutput>removeExtendedStyle</computeroutput> method removes
-one or more extended (xref linkend="listControlExtendedStyles" />) styles of
+one or more extended (<xref linkend="listControlExtendedStyles" />) styles of
 a List-View control.
 </para>
 <variablelist>
@@ -4572,7 +4572,7 @@ a List-View control.
 <listitem><para>The extended style(s) to be removed.  This is one or more of the
 styles listed in the syntax diagram, separated by blanks. For an explanation
 of the different styles, refer to the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) method.
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) method.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -4608,7 +4608,7 @@ view.
 </variablelist>
 </section>
 
-<section id="mthRemoveStyleClsListView"><title>removeStyle</title>
+<section id="mthRemoveStyleClsListView" xreflabel="removeStyle"><title>removeStyle</title>
 <indexterm><primary>removeStyle</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -4652,7 +4652,7 @@ styles of a list-view control.</para>
 <varlistentry><term>style</term>
 <listitem><para>The window styles to be removed, which is one or more of the styles
 listed in the syntax diagram, separated by blanks. For an explanation of the
-different styles, refer to createListView (xref linkend="mthCreateListView" />).
+different styles, refer to <xref linkend="mthCreateListView"/>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -4662,7 +4662,7 @@ different styles, refer to createListView (xref linkend="mthCreateListView" />).
 </variablelist>
 </section>
 
-<section id="mthReplaceExtendedStyle"><title>replaceExtendedStyle</title>
+<section id="mthReplaceExtendedStyle" xreflabel="replaceExtendedStyle"><title>replaceExtendedStyle</title>
 <indexterm><primary>replaceExtendedStyle</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -4693,7 +4693,7 @@ different styles, refer to createListView (xref linkend="mthCreateListView" />).
 
 <para>The <computeroutput>replaceExtendedStyle</computeroutput> method removes
 some of the List-View control's
-extended (xref linkend="listControlExtendedStyles" />) styles and adds new
+extended (<xref linkend="listControlExtendedStyles" />) styles and adds new
 extended styles. This is the equivalent of first
 using the <computeroutput>RemoveExtendeStyle</computeroutput> method and then
 using the <computeroutput>addExtendedStyle</computeroutput> method.
@@ -4706,12 +4706,12 @@ using the <computeroutput>addExtendedStyle</computeroutput> method.
 <listitem><para>The extended style(s) to be removed.  This is one or more of the
 styles listed in the syntax diagram, separated by blanks. For an explanation
 of the different styles, refer to the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) method.
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) method.
 </para></listitem></varlistentry>
 <varlistentry><term>newStyle</term>
 <listitem><para>The extended style(s) to be added.  Again, this is one or more
 of the styles listed in the syntax diagram, separated by blanks. See the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) method for the style
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) method for the style
 descriptions.
 </para></listitem></varlistentry>
 </variablelist>
@@ -4751,7 +4751,7 @@ adds check boxes to the list view.
 </variablelist>
 </section>
 
-<section id="mthReplaceStyleClsListView"><title>replaceStyle</title>
+<section id="mthReplaceStyleClsListView" xreflabel="replaceStyle"><title>replaceStyle</title>
 <indexterm><primary>replaceStyle</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -4798,7 +4798,7 @@ of a list-view control and sets new styles.</para>
 <varlistentry><term>newStyle</term>
 <listitem><para>The new window styles to be set, which is one or more of the styles
 listed in the syntax diagram, separated by blanks. For an explanation
-of the different styles, refer to createListView (xref linkend="mthCreateListView" />).
+of the different styles, refer to <xref linkend="mthCreateListView"/>.
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -4867,7 +4867,7 @@ of the different styles, refer to createListView (xref linkend="mthCreateListVie
 </variablelist>
 </section>
 
-<section id="mthRestoreEditClass"><title>restoreEditClass</title>
+<section id="mthRestoreEditClass" xreflabel="restoreEditClass"><title>restoreEditClass</title>
 <indexterm><primary>restoreEditClass</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -4883,7 +4883,7 @@ to correct an operating system problem if the Esc or Enter key was pressed
 in an active edit item.</para>
 </section>
 
-<section id="mthScrollClsListview"><title>scroll</title>
+<section id="mthScrollClsListview" xreflabel="scroll"><title>scroll</title>
 <indexterm><primary>scroll</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -4930,7 +4930,7 @@ number of lines to be scrolled. The default value is 0.
 </variablelist>
 </section>
 
-<section id="mthSelectClsListView"><title>select</title>
+<section id="mthSelectClsListView" xreflabel="select"><title>select</title>
 <indexterm><primary>select</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -4968,7 +4968,7 @@ number of lines to be scrolled. The default value is 0.
 </variablelist>
 </section>
 
-<section id="mthSelectedClsListView"><title>selected</title>
+<section id="mthSelectedClsListView" xreflabel="selected"><title>selected</title>
 <indexterm><primary>selected</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -4988,7 +4988,7 @@ item.</para>
 </variablelist>
 </section>
 
-<section id="mthSelectedItemsClsListView"><title>selectedItems</title>
+<section id="mthSelectedItemsClsListView" xreflabel="selectedItems"><title>selectedItems</title>
 <indexterm><primary>selectedItems</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -5008,7 +5008,7 @@ of selected items in a list-view control.</para>
 </variablelist>
 </section>
 
-<section id="mthSetColumnOrder"><title>setColumnOrder</title>
+<section id="mthSetColumnOrder" xreflabel="setColumnOrder"><title>setColumnOrder</title>
 <indexterm><primary>setColumnOrder</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -5020,7 +5020,7 @@ of selected items in a list-view control.</para>
 
 <para>
   Changes the column order of a list-view control to some other order. Typically this method might be
-  used along with the getColumnOrder (xref linkend="mthGetColumnOrder" />)() method to save and
+  used along with the <xref linkend="mthGetColumnOrder"/>() method to save and
   restore the user's column order. But, it can also be used to programmatically change the column order
   for any reason.
 </para>
@@ -5113,7 +5113,7 @@ of selected items in a list-view control.</para>
 </variablelist>
 </section>  <!-- End ListControl::setColumnOrder() -->
 
-<section id="mthSetColumnWidth"><title>setColumnWidth</title>
+<section id="mthSetColumnWidth" xreflabel="setColumnWidth"><title>setColumnWidth</title>
 <indexterm><primary>setColumnWidth</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5168,7 +5168,7 @@ is sized automatically to the widest item in the list.
 </variablelist>
 </section>
 
-<section id="mthSetColumnWidthPX"><title>setColumnWidthPX</title>
+<section id="mthSetColumnWidthPX" xreflabel="setColumnWidthPX"><title>setColumnWidthPX</title>
 <indexterm><primary>setColumnWidth</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>setColumnWidth</secondary></indexterm>
 <programlisting>
@@ -5252,7 +5252,7 @@ is sized automatically to the widest item in the list.
 </section>  <!-- End ListView::setColumnWidthPX() -->
 
 
-<section id="mthSetHoverTime"><title>setHoverTime</title>
+<section id="mthSetHoverTime" xreflabel="setHoverTime"><title>setHoverTime</title>
 <indexterm><primary>setHoverTime</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5265,7 +5265,7 @@ is sized automatically to the widest item in the list.
 <para>This method is used to change the <emphasis role="italic">hover</emphasis>
 time.  The hover time only affects list-view controls that have the track
 select, one click activate, or two click activate extended list-view styles. See
-the addExtendedStyle (xref linkend="mthAddExtendedStyle" />) for a
+the <xref linkend="mthAddExtendedStyle"/> for a
 description of these styles.
 </para>
 <variablelist>
@@ -5305,7 +5305,7 @@ second the row is automatically selected.
 </variablelist>
 </section>
 
-<section id="mthSetImageListClsListView"><title>setImageList</title>
+<section id="mthSetImageListClsListView" xreflabel="setImageList"><title>setImageList</title>
 <indexterm><primary>setImageList</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -5323,7 +5323,7 @@ second the row is automatically selected.
   The list-view control uses image lists for a number of things, the large icons, the small icons, the
   state images, and the group header images. (ooDialog does not yet support list-view groups.) The
   <emphasis role="italic">src</emphasis> argument can be either an
-  ImageList (xref linkend="clsImageList" />) object, or a single bitmap.
+  ImageList (<xref linkend="clsImageList" />) object, or a single bitmap.
 </para>
 <para>
   Using an image list object is the most flexible option. The programmer creates the image list in the
@@ -5337,7 +5337,7 @@ second the row is automatically selected.
   appear in the image list. ooDialog uses this bitmap to create a <emphasis
   role="italic">.ImageList</emphasis> object and assigns it to the list-view. The <emphasis
   role="italic">src</emphasis> argument can be either the file name of the bitmap or a bitmap
-  Image (xref linkend="clsImage" />) object.
+  Image (<xref linkend="clsImage" />) object.
 </para>
 <para>
   Although using a single bitmap will allow the programmer to save a couple of lines of code, it has a
@@ -5350,18 +5350,18 @@ second the row is automatically selected.
   When using a single bitmap, if the system fails to create the image list from the details supplied by
   ooDialog, the method of informing the programmer of the error is not as robust as it is when the
   programmer creates the image list herself. However, ooDialog will set the
-  .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable for any cases where the operating system
+  <xref linkend="dotSystemErrorCode" /> variable for any cases where the operating system
   reports an error. Also note that when using a single bitmap, ooDialog will instantiate a <emphasis
   role="italic">.ImageList</emphasis> object. The programmer can retrieve this object using the
-  getImageList (xref linkend="mthGetImageListClsListView" />)() method and then manipulate it using the
-  methods of the ImageList (xref linkend="clsImageList" />) class.
+ <xref linkend="mthGetImageListClsListView"/>() method and then manipulate it using the
+  methods of the ImageList (<xref linkend="clsImageList" />) class.
 </para>
 <para>
   Unless a list-view has the LVS_SHAREIMAGELISTS style, (corresponds to the SHAREIMAGES style in the
-  addListControl (xref linkend="mthCreateListView" />)() method,) the list-view control will handle
+ <xref linkend="mthCreateListView"/>() method,) the list-view control will handle
   releasing the image list(s). When the share image lists style is used, ownership of the image list
-  remains with the programmer. The ImageList (xref linkend="clsImageList" />) and
-  Image (xref linkend="clsImage" />) classes are used to manage image lists and images in ooDialog. The
+  remains with the programmer. The ImageList (<xref linkend="clsImageList" />) and
+  Image (<xref linkend="clsImage" />) classes are used to manage image lists and images in ooDialog. The
   documentation on both classes discusses when and why the programmer may want to release image lists.
   The Image class documentation has the most detail on this subject.
 </para>
@@ -5369,7 +5369,7 @@ second the row is automatically selected.
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -5383,12 +5383,12 @@ second the row is automatically selected.
       <listitem>
         <para>
           The source for the image list. The most flexible way to use this method is to provide an
-          image list (xref linkend="clsImageList" />) object to assign to the list-view.
+          image list (<xref linkend="clsImageList" />) object to assign to the list-view.
         </para>
         <para>
           However, as explained above, this argument can also be a single bitmap from which the image
           list is to be created. In this case, the argument can be either the file name of the bitmap or
-          a bitmap Image (xref linkend="clsImage" />) object.
+          a bitmap Image (<xref linkend="clsImage" />) object.
         </para>
         <para>
           If this argument is <computeroutput>.nil</computeroutput> the existing image list, if any, is
@@ -5403,7 +5403,7 @@ second the row is automatically selected.
         <para>
           <emphasis role="bold">type</emphasis>: When <emphasis role="italic">src</emphasis> is an
           <computeroutput>ImageList</computeroutput> object, this argument specifies which image list to
-          assign, (or remove.) You can use .Image~toID() (xref linkend="mthToIDClsImage" />) to get the
+          assign, (or remove.) You can use .Image~toID() (<xref linkend="mthToIDClsImage" />) to get the
           correct numeric value for one of the following symbols:
           <simplelist type='horiz' columns='2'>
           <member>LVSIL_NORMAL</member>
@@ -5508,7 +5508,7 @@ second the row is automatically selected.
 </variablelist>
 </section>  <!-- End ListView::setImageList() -->
 
-<section id="mthSetItemData"><title>setItemData</title>
+<section id="mthSetItemData" xreflabel="setItemData"><title>setItemData</title>
 <indexterm><primary>setItemData</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>setItemData</secondary></indexterm>
 <programlisting>
@@ -5554,9 +5554,9 @@ second the row is automatically selected.
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a data value with any, or all, of the
     list-view items. The data value can be any ooRexx object. The data value can be retrieved without removing it from a
-    list-view item through the getItemData (xref linkend="mthGetItemData" />) method, or it can be removed through
-    the removeItemData (xref linkend="mthRemoveItemData" />). Storing a user value for each item can be useful in any
-    number of ways. One specific use is in the sortItems (xref linkend="mthSortItems" />) method.
+    list-view item through the <xref linkend="mthGetItemData"/> method, or it can be removed through
+    the <xref linkend="mthRemoveItemData"/>. Storing a user value for each item can be useful in any
+    number of ways. One specific use is in the <xref linkend="mthSortItems"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -5565,7 +5565,7 @@ second the row is automatically selected.
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -5604,7 +5604,7 @@ second the row is automatically selected.
 </section>  <!-- End ListView::setItemData() -->
 
 
-<section id="mthSetItemPos"><title>setItemPos</title>
+<section id="mthSetItemPos" xreflabel="setItemPos"><title>setItemPos</title>
 <indexterm><primary>setItemPos</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5652,7 +5652,7 @@ item, in view coordinates. The default is 0.
 </variablelist>
 
 <note><title>Note</title><para>
-Use defListDragHandler (xref linkend="mthDefListDragHandler" />) to support default dragging:
+Use <xref linkend="mthDefListDragHandler"/> to support default dragging:
 </para></note>
 <programlisting>
 <![CDATA[
@@ -5661,7 +5661,7 @@ self~connectListViewEvent(104,"BEGINDRAG","mthDefListDragHandler")
 </programlisting>
 </section>
 
-<section id="mthSetItemState"><title>setItemState</title>
+<section id="mthSetItemState" xreflabel="setItemState"><title>setItemState</title>
 <indexterm><primary>setItemState</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5741,7 +5741,7 @@ and on the system colors used for a selection.
 </variablelist>
 </section>
 
-<section id="mthSetItemText"><title>setItemText</title>
+<section id="mthSetItemText" xreflabel="setItemText"><title>setItemText</title>
 <indexterm><primary>setItemText</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5766,7 +5766,7 @@ and on the system colors used for a selection.
 </para></listitem></varlistentry>
 <varlistentry><term>subitem</term>
 <listitem><para>
-  This method works in a similar manner as the insert (xref linkend="mthInsertClsListControl" />)()
+  This method works in a similar manner as the <xref linkend="mthInsertClsListControl"/>()
   method. The use of the <emphasis role="italic">subitem</emphasis> argument controls whether the
   <emphasis role="italic">text</emphasis> argument applies to the label of the item or the text of a
   subitem. When <emphasis role="italic">subitem</emphasis> is omitted or 0, then the label of the item is
@@ -5797,7 +5797,7 @@ and on the system colors used for a selection.
 </variablelist>
 </section>
 
-<section id="mthSmalSpacing"><title>smallSpacing</title>
+<section id="mthSmalSpacing" xreflabel="smallSpacing"><title>smallSpacing</title>
 <indexterm><primary>smallSpacing</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5816,7 +5816,7 @@ between items in a small-icon list-view control.</para>
 </variablelist>
 </section>
 
-<section id="mthSnapToGrid"><title>snapToGrid</title>
+<section id="mthSnapToGrid" xreflabel="snapToGrid"><title>snapToGrid</title>
 <indexterm><primary>snapToGrid</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -5843,7 +5843,7 @@ grid position.</para>
 </variablelist>
 </section>
 
-<section id="mthSortItems"><title>sortItems</title>
+<section id="mthSortItems" xreflabel="sortItems"><title>sortItems</title>
 <indexterm><primary>sortItems</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>sortItems</secondary></indexterm>
 <programlisting>
@@ -5867,7 +5867,7 @@ grid position.</para>
       <listitem>
       <para>
         A comparison method in the Rexx dialog that is used by the list-view to sort its items. The Rexx method is
-        passed the data (xref linkend="mthSetItemData" />) value associated with two list-view items being compared.
+        passed the <xref linkend="mthSetItemData"/> value associated with two list-view items being compared.
         The Rexx method must return a whole number: less than 0 if the first list-view item should precede the second
         item, greater than 0 if the first list-view item should follow the second, or 0 if the two items are equivalent.
       </para>
@@ -5894,7 +5894,7 @@ grid position.</para>
   <listitem>
   <para>
     The list-view control allows the user (the Rexx programmer) to associate a
-    data (xref linkend="mthSetItemData" />) value with any, or all, of the list-view items. The data value can be any
+ <xref linkend="mthSetItemData"/> value with any, or all, of the list-view items. The data value can be any
     ooRexx object. For the <emphasis role="italic">sortItems</emphasis> method to work correctly, the programmer must
     associate a data value with each list-view item.
   </para>
@@ -5965,7 +5965,7 @@ grid position.</para>
     Raises syntax errors when incorrect usage is detected.
   </para>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -6022,7 +6022,7 @@ grid position.</para>
 </section>  <!-- End ListView::sortItems() -->
 
 
-<section id="mthSpacing"><title>spacing</title>
+<section id="mthSpacing" xreflabel="spacing"><title>spacing</title>
 <indexterm><primary>spacing</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6041,7 +6041,7 @@ items in an icon list-view control.</para>
 </variablelist>
 </section>
 
-<section id="mthStringWidth"><title>stringWidth</title>
+<section id="mthStringWidth" xreflabel="stringWidth"><title>stringWidth</title>
 <indexterm><primary>stringWidth</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6069,7 +6069,7 @@ or 0 in all other cases.
 </variablelist>
 </section>
 
-<section id="mthStringWidthPX"><title>stringWidthPX</title>
+<section id="mthStringWidthPX" xreflabel="stringWidthPX"><title>stringWidthPX</title>
 <indexterm><primary>stringWidthPX</primary></indexterm>
 <indexterm><primary>ListView class</primary><secondary>stringWidthPX</secondary></indexterm>
 <programlisting>
@@ -6108,7 +6108,7 @@ or 0 in all other cases.
   <para>
     The <emphasis role="italic">stringWidthPx</emphasis> method returns the exact width, in pixels, of the specified
     string. If the returned width is used as the column width in the
-    setColumnWidthPX (xref linkend="mthSetColumnWidthPX" />) method, the string will be truncated. To get the column width
+ <xref linkend="mthSetColumnWidthPX"/> method, the string will be truncated. To get the column width
     that can contain the string without truncating it, the programmer must add padding to the returned width.
   </para>
   </listitem></varlistentry>
@@ -6116,7 +6116,7 @@ or 0 in all other cases.
 </section>  <!-- End ListView::stringWidthPX() -->
 
 
-<section id="mthSubclassEdit"><title>subclassEdit</title>
+<section id="mthSubclassEdit" xreflabel="subclassEdit"><title>subclassEdit</title>
 <indexterm><primary>subclassEdit</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -6132,7 +6132,7 @@ to correct an operating system problem if the Esc or Enter key was pressed
 in an active edit control.</para>
 </section>
 
-<section id="mthTextBkColor"><title>textBkColor</title>
+<section id="mthTextBkColor" xreflabel="textBkColor"><title>textBkColor</title>
 <indexterm><primary>textBkColor</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6147,7 +6147,7 @@ color of the text in a list-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The color-palette index specifier (0 to 18). For more information on
-color palettes, refer to Definition of Terms (xref linkend="sctTermDefs" />).
+color palettes, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -6170,14 +6170,14 @@ for the text in a list-view control.</para>
 <variablelist>
 <varlistentry><term>color</term>
 <listitem><para>The new background color for text. Specify the color-palette index specifier
-(0 to 18). For more information on color palettes, refer to Definition of Terms (xref linkend="sctTermDefs" />).
+(0 to 18). For more information on color palettes, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthTextColor"><title>textColor</title>
+<section id="mthTextColor" xreflabel="textColor"><title>textColor</title>
 <indexterm><primary>textColor</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6192,7 +6192,7 @@ a list-view control.</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
 <listitem><para>The color-palette index specifier (0 to 18). For more information on
-color palettes, refer to Definition of Terms (xref linkend="sctTermDefs" />).
+color palettes, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -6215,7 +6215,7 @@ list-view control.</para>
 <variablelist>
 <varlistentry><term>color</term>
 <listitem><para>The new text color. Specify the color-palette index specifier (0 to
-18). For more information on color palettes, refer to Definition of Terms (xref linkend="sctTermDefs" />).
+18). For more information on color palettes, refer to Definition of Terms (<xref linkend="sctTermDefs" />).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -6234,7 +6234,7 @@ blue:
 </variablelist>
 </section>
 
-<section id="mthUncheckClsListControl"><title>uncheck</title>
+<section id="mthUncheckClsListControl" xreflabel="uncheck"><title>uncheck</title>
 <indexterm><primary>uncheck</primary>
 <secondary>ListView class</secondary></indexterm>
 <programlisting>
@@ -6247,7 +6247,7 @@ blue:
 <para>The <computeroutput>uncheck</computeroutput> method removes the check mark
 for a list-view item.  This method is only valid for list-view controls that
 have the check boxes extended style.  (See the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) method for a description
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) method for a description
 of the check boxes extended style.)
 </para>
 <variablelist>
@@ -6312,7 +6312,7 @@ dynamically remove some patients from the statement list.
 </variablelist>
 </section>
 
-<section id="mthUncheckAll"><title>uncheckAll</title>
+<section id="mthUncheckAll" xreflabel="uncheckAll"><title>uncheckAll</title>
 <indexterm><primary>uncheckAll</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -6324,7 +6324,7 @@ dynamically remove some patients from the statement list.
 <para>The <computeroutput>uncheckAll</computeroutput> method clears the check
 mark for every list-view item.  This method is only valid for list-view controls
 that have the check boxes extended style.  (See the
-addExtendedStyle (xref linkend="mthAddExtendedStyle" />) method for a description
+addExtendedStyle (<xref linkend="mthAddExtendedStyle" />) method for a description
 of the check boxes extended style.)
 </para>
 <variablelist>
@@ -6363,7 +6363,7 @@ that allows the user to remove the check mark from all the check boxes:
 </variablelist>
 </section>
 
-<section id="mthUpdateItem"><title>updateItem</title>
+<section id="mthUpdateItem" xreflabel="updateItem"><title>updateItem</title>
 <indexterm><primary>updateItem</primary></indexterm>
 <programlisting>
 <![CDATA[

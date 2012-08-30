@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<chapter id="clsMonthCalendar"><title>Month Calendar Controls</title>
+<chapter id="clsMonthCalendar" xreflabel="MonthCalendar"><title>Month Calendar Controls</title>
 <indexterm><primary>MonthCalendar class</primary></indexterm>
 <para>
   A month calendar control provides an easy to use interface that allows users to select or enter dates. The control has
@@ -69,30 +69,28 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newMonthCalendar (xref linkend="mthNewMonthCalendar" />)() method to retrieve an object of
-    the <computeroutput>MonthCalendar</computeroutput> class.
+    Use the <xref linkend="mthNewMonthCalendar"/> method to retrieve an object of the
+    <computeroutput>MonthCalendar</computeroutput> class.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically create a month calendar control in the template of a user
-    dialog (xref linkend="clsUserDialog" />), use the createMonthCalendar (xref linkend="mthCreateMonthCalendar" />)
-    method.
+    To dynamically create a month calendar control in the template of an <xref linkend="clsUserDialog"/>, use the
+    <xref linkend="mthCreateMonthCalendar"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
     To receive notification of month calendar events use the
-    connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />))() method.
+    <xref linkend="mthConnectMonthCalendarEvent"/>) method.
   </para>
   <para>
-    One of the month calendar event notifications, the GETDAYSTATE (xref linkend="evtMonthCalendarGETDAYSTATE" />)
+    One of the month calendar event notifications, the <xref linkend="evtMonthCalendarGETDAYSTATE"/>
     notification, requires that a buffer of day states be returned in reply. The Rexx programmer can not construct the
-    proper buffer in Rexx code. The DayState (xref linkend="clsDayState" />) and
-    DayStates (xref linkend="clsDayStates" />) classes are provided to help manage day states and to construct the proper
-    buffer.
+    proper buffer in Rexx code. The <xref linkend="clsDayState"/> and <xref linkend="clsDayStates"/> classes are
+    provided to help manage day states and to construct the proper buffer.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -107,7 +105,7 @@
 <table id="tblMonthCalendarMethods" frame="all">
 <title>MonthCalendar Methods and Attributes</title>
 <tgroup cols="2">
-<colspec colwidth="1.75in" />
+<colspec colwidth="1*+4pc"/><colspec colwidth="3*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -120,11 +118,11 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>DayState (xref linkend="clsDayState" />)</entry>
+<entry><xref linkend="clsDayState"/></entry>
 <entry>Represents the state of each day in a month.</entry>
 </row>
 <row>
-<entry>DayStates (xref linkend="clsDayStates" />)</entry>
+<entry><xref linkend="clsDayStates"/></entry>
 <entry>Manages <computeroutput>DayState</computeroutput> objects and constructs buffers of day states.</entry>
 </row>
 <row>
@@ -132,15 +130,15 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>newMonthCalendar (xref linkend="tmthNewMonthCalendar" />)</entry>
+<entry><xref linkend="tmthNewMonthCalendar"/></entry>
 <entry>Obtains a MonthCalendar object that represents a control in a dialog.</entry>
 </row>
 <row>
-<entry>createMonthCalendar (xref linkend="tmthCreateMonthCalendar" />)</entry>
-<entry>Creates a MontCalendar control in an UserDialog (xref linkend="clsUserDialog" />)</entry>
+<entry><xref linkend="tmthCreateMonthCalendar"/></entry>
+<entry>Creates a MontCalendar control in an <xref linkend="clsUserDialog"/></entry>
 </row>
 <row>
-<entry>connectMonthCalendarEvent (xref linkend="tmthConnectMonthCalendarEvent" />)</entry>
+<entry><xref linkend="tmthConnectMonthCalendarEvent"/></entry>
 <entry>Connects MonthCalendar event notifications to a Rexx dialog method.</entry>
 </row>
 <row>
@@ -148,7 +146,7 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>date (xref linkend="atrDate" />)</entry>
+<entry><xref linkend="atrDate"/></entry>
 <entry>Reflects the currently selected date in the calendar.</entry>
 </row>
 <row>
@@ -156,135 +154,135 @@
 <entry align="center"><emphasis role="bold"></emphasis></entry>
 </row>
 <row>
-<entry>addStyle (xref linkend="mthAddStyleClsMC" />)</entry>
+<entry><xref linkend="mthAddStyleClsMC"/></entry>
 <entry>Adds the specified month calendar style(s) to the control.</entry>
 </row>
 <row>
-<entry>getCalendarBorder (xref linkend="mthGetCalendarBorder" />)</entry>
+<entry><xref linkend="mthGetCalendarBorder"/></entry>
 <entry>Retrieves the month calendar's border, in pixels.</entry>
 </row>
 <row>
-<entry>getCalendarCount (xref linkend="mthGetCalendarCount" />)</entry>
+<entry><xref linkend="mthGetCalendarCount"/></entry>
 <entry>Gets the number of calendars currently displayed in the month calendar control.</entry>
 </row>
 <row>
-<entry>getCALID (xref linkend="mthGetCALID" />)</entry>
+<entry><xref linkend="mthGetCALID"/></entry>
 <entry>Returns a keyword specifying the current calendar ID for the month calendar control.</entry>
 </row>
 <row>
-<entry>getColor (xref linkend="mthGetColor" />)</entry>
+<entry><xref linkend="mthGetColor"/></entry>
 <entry>Retrieves the color for a given portion of a month calendar control.</entry>
 </row>
 <row>
-<entry>getCurrentView (xref linkend="mthGetCurrentView" />)</entry>
+<entry><xref linkend="mthGetCurrentView"/></entry>
 <entry>Returns a keyword specifying the current view for the month calendar control.</entry>
 </row>
 <row>
-<entry>getFirstDayOfWeek (xref linkend="mthGetFirstDayOfWeek" />)</entry>
+<entry><xref linkend="mthGetFirstDayOfWeek"/></entry>
 <entry>Returns the first day of the week, as a whole number, for the month calendar control.</entry>
 </row>
 <row>
-<entry>getGridInfo (xref linkend="mthGetGridInfo" />)</entry>
+<entry><xref linkend="mthGetGridInfo"/></entry>
 <entry>Gets information about a calendar grid in the month calendar control.</entry>
 </row>
 <row>
-<entry>getMaxSelection (xref linkend="mthGetMaxSelection" />)</entry>
+<entry><xref linkend="mthGetMaxSelection"/></entry>
 <entry>Retrieves the maximum date range that can be selected in the month calendar control.</entry>
 </row>
 <row>
-<entry>getMaxTodayWidth (xref linkend="mthGetMaxTodayWidth" />)</entry>
+<entry><xref linkend="mthGetMaxTodayWidth"/></entry>
 <entry>Retrieves the maximum width of the <emphasis role="italic">today</emphasis> string in the month calendar control</entry>
 </row>
 <row>
-<entry>getMinRect (xref linkend="mthGetMinRect" />)</entry>
-<entry>Fills in a Rect (xref linkend="clsRect" />) object with the minimum size required to display a full month in the month calendar control.</entry>
+<entry><xref linkend="mthGetMinRect"/></entry>
+<entry>Fills in a <xref linkend="clsRect"/> object with the minimum size required to display a full month in the month calendar control.</entry>
 </row>
 <row>
-<entry>getMonthDelta (xref linkend="mthGetMonthDelta" />)</entry>
+<entry><xref linkend="mthGetMonthDelta"/></entry>
 <entry>Returns the scroll rate for the month calendar control.</entry>
 </row>
 <row>
-<entry>getMonthRange (xref linkend="mthGetMonthRange" />)</entry>
+<entry><xref linkend="mthGetMonthRange"/></entry>
 <entry>Retrieves date information that represents the high and low limits of a month calendar control's display.</entry>
 </row>
 <row>
-<entry>getRange (xref linkend="mthGetRangeClsMC" />)</entry>
+<entry><xref linkend="mthGetRangeClsMC"/></entry>
 <entry>Gets the current minimum and maximum allowable dates for the month calendar control.</entry>
 </row>
 <row>
-<entry>getSelectionRange (xref linkend="mthGetSelectionRange" />)</entry>
+<entry><xref linkend="mthGetSelectionRange"/></entry>
 <entry>Retrieves date information for the upper and lower limits of the current range selected by the user in a multi-selection month calendar control.</entry>
 </row>
 <row>
-<entry>getStyle (xref linkend="mthGetStyleClsMC" />)</entry>
+<entry><xref linkend="mthGetStyleClsMC"/></entry>
 <entry>Returns the current style of the specified month calendar control as list of style keywords.</entry>
 </row>
 <row>
-<entry>getToday (xref linkend="mthGetToday" />)</entry>
+<entry><xref linkend="mthGetToday"/></entry>
 <entry>Retrieves the date information for the date specified as <emphasis role="italic">today</emphasis> for the month calendar control.</entry>
 </row>
 <row>
-<entry>hitTest (xref linkend="mthHitTest" />)</entry>
+<entry><xref linkend="mthHitTest"/></entry>
 <entry>Determines which portion of a month calendar control is at a given point on the screen.</entry>
 </row>
 <row>
-<entry>removeStyle (xref linkend="mthRemoveStyleClsMC" />)</entry>
+<entry><xref linkend="mthRemoveStyleClsMC"/></entry>
 <entry>Removes the specified month calendar style(s) from the control.</entry>
 </row>
 <row>
-<entry>replaceStyle (xref linkend="mthReplaceStyleClsMC" />)</entry>
+<entry><xref linkend="mthReplaceStyleClsMC"/></entry>
 <entry>Removes some existing month calendar style(s) and adds some new style(s).</entry>
 </row>
 <row>
-<entry>setCalendarBorder (xref linkend="mthSetCalendarBorder" />)</entry>
+<entry><xref linkend="mthSetCalendarBorder"/></entry>
 <entry>Sets the size, in pixels, of the month calendar  control's border.</entry>
 </row>
 <row>
-<entry>setCALID (xref linkend="mthSetCALID" />)</entry>
+<entry><xref linkend="mthSetCALID"/></entry>
 <entry>Sets the calendar ID for the calendar control.</entry>
 </row>
 <row>
-<entry>setColor (xref linkend="mthSetColorClsMonthCalendar" />)</entry>
+<entry><xref linkend="mthSetColorClsMonthCalendar"/></entry>
 <entry>Sets the color for a given part of a month calendar control.</entry>
 </row>
 <row>
-<entry>setCurrentView (xref linkend="mthSetCurrentView" />)</entry>
+<entry><xref linkend="mthSetCurrentView"/></entry>
 <entry>Sets the view for the month calendar control.</entry>
 </row>
 <row>
-<entry>setDayState (xref linkend="mthSetDayState" />)</entry>
+<entry><xref linkend="mthSetDayState"/></entry>
 <entry>Sets the day states for all months that are currently visible within a month calendar control.</entry>
 </row>
 <row>
-<entry>setDayStateQuick (xref linkend="mthSetDayStateQuick" />)</entry>
+<entry><xref linkend="mthSetDayStateQuick"/></entry>
 <entry>Sets the day states for 3 months that are currently visible within a month calendar control.</entry>
 </row>
 <row>
-<entry>setFirstDayOfWeek (xref linkend="mthSetFirstDayOfWeek" />)</entry>
+<entry><xref linkend="mthSetFirstDayOfWeek"/></entry>
 <entry>Sets the first day of the week for a month calendar control.</entry>
 </row>
 <row>
-<entry>setMaxSelection (xref linkend="mthSetMaxSelection" />)</entry>
+<entry><xref linkend="mthSetMaxSelection"/></entry>
 <entry>Sets the maximum number of days that can be selected in a multi-selection month calendar control</entry>
 </row>
 <row>
-<entry>setMonthDelta (xref linkend="mthSetMonthDelta" />)</entry>
+<entry><xref linkend="mthSetMonthDelta"/></entry>
 <entry>Sets the number of months that the month calendar control moves its display when the user clicks a scroll button.</entry>
 </row>
 <row>
-<entry>setRange (xref linkend="mthSetRangeClsMC" />)</entry>
+<entry><xref linkend="mthSetRangeClsMC"/></entry>
 <entry>Sets the minimum and maximum allowable dates for a month calendar control.</entry>
 </row>
 <row>
-<entry>setSelectionRange (xref linkend="mthSetSelectionRange" />)</entry>
+<entry><xref linkend="mthSetSelectionRange"/></entry>
 <entry>Sets the selection for a month calendar control to a given date range.</entry>
 </row>
 <row>
-<entry>setToday (xref linkend="mthSetToday" />)</entry>
+<entry><xref linkend="mthSetToday"/></entry>
 <entry>Sets the <emphasis role="italic">today</emphasis> selection for a month calendar control.</entry>
 </row>
 <row>
-<entry>sizeRectToMin (xref linkend="mthSizeRectToMin" />)</entry>
+<entry><xref linkend="mthSizeRectToMin"/></entry>
 <entry>Calculates how many calendars will fit in the given rectangle and returns the minimum size a rectangle needs to be to fit the calendars.</entry>
 </row>
 </tbody></tgroup>
@@ -292,12 +290,11 @@
 </section>
 
 
-<section id="tmthNewMonthCalendar"><title>newMonthCalendar (dialog object method)</title>
+<section id="tmthNewMonthCalendar" xreflabel="new"><title>newMonthCalendar (dialog object method)</title>
 <para>
   <computeroutput>MonthCalendar</computeroutput> objects can not be instantiated by the programmer from Rexx code using
   a <emphasis role="italic">new</emphasis>() method. Rather, a month calendar object is obtained by using the
-  newMonthCalendar (xref linkend="mthNewMonthCalendar" />)() method of the dialog (xref linkend="chpDialogObject" />)
-  object. The syntax is:
+  <xref linkend="mthNewMonthCalendar"/> method of the <xref linkend="chpDialogObject"/> object. The syntax is:
 <programlisting>
 <![CDATA[
 >>-newMonthCalendar(--id--+-------------+--)-----><
@@ -309,11 +306,10 @@
 </section>  <!-- End Dialog::newMonthCalendar() (dialog object method) -->
 
 
-<section id="tmthCreateMonthCalendar"><title>createMonthCalendar (UserDialog method)</title>
+<section id="tmthCreateMonthCalendar" xreflabel="createMonthCalendar"><title>createMonthCalendar (UserDialog method)</title>
 <para>
-  A <computeroutput>MonthCalendar</computeroutput> object can be added to the dialog template in a
-  UserDialog (xref linkend="clsUserDialog" />) through the
-  createMonthCalendar (xref linkend="mthCreateMonthCalendar" />) method. The basic syntax is:
+  A <computeroutput>MonthCalendar</computeroutput> object can be added to the dialog template in a <xref
+  linkend="clsUserDialog"/> through the <xref linkend="mthCreateMonthCalendar"/> method. The basic syntax is:
 
 <programlisting>
 <![CDATA[
@@ -326,11 +322,12 @@
 </section>  <!-- End UserDialog::createMonthCalendar() (UserDialog method) -->
 
 
-<section id="tmthConnectMonthCalendarEvent"><title>connectMonthCalendarEvent (dialog object method)</title>
+<section id="tmthConnectMonthCalendarEvent" xreflabel="connectMonthCalendarEvent">
+<title>connectMonthCalendarEvent (dialog object method)</title>
 <para>
   To connect event notifications from a month calendar control use the
-  connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />)() method of the
-  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
+  <xref linkend="mthConnectMonthCalendarEvent"/> method of the
+  <xref linkend="chpDialogObject"/> object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectMonthCalendarEvent(--id--,--event--+----------------+--)-------------><
@@ -341,7 +338,7 @@
 </para>
 </section>  <!-- End EventNotification::ConnectMonthCalendarEvent() (dialog object method) -->
 
-<section id="atrDate"><title>date (Attribute)</title>
+<section id="atrDate" xreflabel="date"><title>date (Attribute)</title>
 <indexterm><primary>date</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>date</secondary></indexterm>
 <programlisting>
@@ -382,8 +379,8 @@
   <listitem>
   <para>
     The <emphasis role="italic">date</emphasis> attribute is most useful when used with single-selection month calendar
-    controls. For multi-selection controls, use the getSelectionRange (xref linkend="mthGetSelectionRange" />) and
-    setSelectionRange (xref linkend="mthSetSelectionRange" />) methods to work with the full range of selected dates.
+    controls. For multi-selection controls, use the <xref linkend="mthGetSelectionRange"/> and
+    <xref linkend="mthSetSelectionRange"/> methods to work with the full range of selected dates.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -413,7 +410,7 @@
 </variablelist>
 </section>  <!-- End MonthCalendar::date() [attribute]  -->
 
-<section id="mthAddStyleClsMC"><title>addStyle</title>
+<section id="mthAddStyleClsMC" xreflabel="addStyle"><title>addStyle</title>
 <indexterm><primary>addStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>addStyle</secondary></indexterm>
 <programlisting>
@@ -452,9 +449,9 @@
         <varlistentry><term>DAYSTATE</term>
         <listitem>
         <para>
-          The month calendar will send the GETDAYSTATE event (xref linkend="ovvEvents" />) notification to request
+          The month calendar will send the GETDAYSTATE <xref linkend="ovvEvents"/> notification to request
           information about which days should be displayed in bold. Use the
-          connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />) method to connect this notification
+          <xref linkend="mthConnectMonthCalendarEvent"/> method to connect this notification
           with a method in the Rexx dialog object.
         </para>
         </listitem></varlistentry>
@@ -463,7 +460,7 @@
         <para>
           This style allows the user to select a range of dates within the control. By default, the maximum range is one
           week. The programmer changes the maximum range that can be selected by using the
-          setMaxSelection (xref linkend="mthSetRangeClsDTP" />) method.
+          <xref linkend="mthSetRangeClsDTP"/> method.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTODAY</term>
@@ -525,7 +522,7 @@
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -551,7 +548,7 @@
 </variablelist>
 </section>  <!-- End MonthCalendar::addStyle() -->
 
-<section id="mthGetCalendarBorder"><title>getCalendarBorder</title>
+<section id="mthGetCalendarBorder" xreflabel="getCalendarBorder"><title>getCalendarBorder</title>
 <indexterm><primary>getCalendarBorder</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getCalendarBorder</secondary></indexterm>
 <programlisting>
@@ -590,7 +587,7 @@
 </section>  <!-- End MonthCalendar::getCalendarBorder() -->
 
 
-<section id="mthGetCalendarCount"><title>getCalendarCount</title>
+<section id="mthGetCalendarCount" xreflabel="getCalendarCount"><title>getCalendarCount</title>
 <indexterm><primary>getCalendarCount</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getCalendarCount</secondary></indexterm>
 <programlisting>
@@ -628,7 +625,7 @@
 </variablelist>
 </section>  <!-- End MonthCalendar::getCalendarCount() -->
 
-<section id="mthGetCALID"><title>getCALID</title>
+<section id="mthGetCALID" xreflabel="getCALID"><title>getCALID</title>
 <indexterm><primary>getCalID</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getCalID</secondary></indexterm>
 <programlisting>
@@ -663,7 +660,8 @@
   <table id="tblCalendarIDs" frame="all">
   <title>Calendar IDs</title>
   <tgroup cols="2">
-  <colspec colwidth="2.50in" />
+  <colspec colwidth="1*" />
+  <colspec colwidth="2*" />
   <thead>
   <row>
   <entry>ID Keyword</entry>
@@ -739,7 +737,7 @@
 </section>  <!-- End MonthCalendar::getCalID() -->
 
 
-<section id="mthGetColor"><title>getColor</title>
+<section id="mthGetColor" xreflabel="getColor"><title>getColor</title>
 <indexterm><primary>getColor</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getColor</secondary></indexterm>
 <programlisting>
@@ -828,8 +826,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The Image (xref linkend="clsImage" />) class has a number of convenience methods for working with COLORREFs,
-    including the colorRef (xref linkend="mthColorRef" />) method that explains what a COLORREF is.
+    The <xref linkend="clsImage"/> class has a number of convenience methods for working with COLORREFs,
+    including the <xref linkend="mthColorRef"/> method that explains what a COLORREF is.
   </para>
   <para>
     The <emphasis role="italic">colorRef</emphasis> method can be used to test the return for error. I.e.:
@@ -869,7 +867,7 @@
 </section>  <!-- End MonthCalendar::getColor() -->
 
 
-<section id="mthGetCurrentView"><title>getCurrentView</title>
+<section id="mthGetCurrentView" xreflabel="getCurrentView"><title>getCurrentView</title>
 <indexterm><primary>getCurrentView</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getCurrentView</secondary></indexterm>
 <programlisting>
@@ -910,7 +908,7 @@
 </section>  <!-- End MonthCalendar::getCurrentView() -->
 
 
-<section id="mthGetFirstDayOfWeek"><title>getFirstDayOfWeek</title>
+<section id="mthGetFirstDayOfWeek" xreflabel="getFirstDayOfWeek"><title>getFirstDayOfWeek</title>
 <indexterm><primary>getFirstDayOfWeek</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getFirstDayOfWeek</secondary></indexterm>
 <programlisting>
@@ -979,7 +977,7 @@
 </section>  <!-- End MonthCalendar::getFirstDayOfWeek() -->
 
 
-<section id="mthGetGridInfo"><title>getGridInfo</title>
+<section id="mthGetGridInfo" xreflabel="getGridInfo"><title>getGridInfo</title>
 <indexterm><primary>getGridInfo</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getGridInfo</secondary></indexterm>
 <programlisting>
@@ -1168,7 +1166,7 @@
         <varlistentry><term>RECT</term>
         <listitem>
         <para>
-          A Rect (xref linkend="clsRect" />) object containing the dimensions of the calendar part specified in the
+          A <xref linkend="clsRect"/> object containing the dimensions of the calendar part specified in the
           PART index. Only set when the WHAT index contains the RECT keyword.
         </para>
         </listitem></varlistentry>
@@ -1264,7 +1262,7 @@
 </section>  <!-- End MonthCalendar::getGridInfo() -->
 
 
-<section id="mthGetMaxSelection"><title>getMaxSelection</title>
+<section id="mthGetMaxSelection" xreflabel="getMaxSelection"><title>getMaxSelection</title>
 <indexterm><primary>getMaxSelection</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getMaxSelection</secondary></indexterm>
 <programlisting>
@@ -1294,14 +1292,14 @@
   <listitem>
   <para>
     The maximum date range that can be selected can be changed by using the
-    setMaxSelection (xref linkend="mthSetMaxSelection" />) .
+    <xref linkend="mthSetMaxSelection"/> method.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End MonthCalendar::getMaxSelection() -->
 
 
-<section id="mthGetMaxTodayWidth"><title>getMaxTodayWidth</title>
+<section id="mthGetMaxTodayWidth" xreflabel="getMaxTodayWidth"><title>getMaxTodayWidth</title>
 <indexterm><primary>getMaxTodayWidth</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getMaxTodayWidth</secondary></indexterm>
 <programlisting>
@@ -1332,7 +1330,7 @@
 </section>  <!-- End MonthCalendar::getMaxTodayWidth() -->
 
 
-<section id="mthGetMinRect"><title>getMinRect</title>
+<section id="mthGetMinRect" xreflabel="getMinRect"><title>getMinRect</title>
 <indexterm><primary>getMinRect</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getMinRect</secondary></indexterm>
 <programlisting>
@@ -1343,7 +1341,7 @@
 </programlisting>
 
 <para>
-  Fills in a Rect (xref linkend="clsRect" />) object with the minimum size required to display a full month in the
+  Fills in a <xref linkend="clsRect"/> object with the minimum size required to display a full month in the
   month calendar control.
 </para>
 <variablelist>
@@ -1379,7 +1377,7 @@
     <emphasis role="bold">Note</emphasis> that the rectangle returned will not include the width of the <emphasis
     role="italic">Today</emphasis> string. If the month calendar does not have the NOTODAY style set, the programmer
     should also get the <emphasis role="italic">Today</emphasis> string width by using the
-    getMaxTodayWidth (xref linkend="mthGetMaxTodayWidth" />) method. For the width portion of the minimum required size,
+    <xref linkend="mthGetMaxTodayWidth"/> method. For the width portion of the minimum required size,
     use the larger of the value reported by <emphasis role="italic">getMaxTodayWidth</emphasis> and the value reported
     by <emphasis role="italic">getMinRect</emphasis>. This will ensure that the <emphasis role="italic">
     Today</emphasis> string is not clipped..
@@ -1419,7 +1417,7 @@
 </section>  <!-- End MonthCalendar::getMinRect() -->
 
 
-<section id="mthGetMonthDelta"><title>getMonthDelta</title>
+<section id="mthGetMonthDelta" xreflabel="getMonthDelta"><title>getMonthDelta</title>
 <indexterm><primary>getMonthDelta</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getMonthDelta</secondary></indexterm>
 <programlisting>
@@ -1443,7 +1441,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    When the scroll rate has been previously set through the setMonthDelta (xref linkend="mthSetMonthDelta" />)
+    When the scroll rate has been previously set through the <xref linkend="mthSetMonthDelta"/>
     method, the return is a whole number specifying the current scroll rate. If, the scroll rate has not been previously
     set, of it it has been reset to the default, the return is a whole number specifying the number of months currently
     being displayed by the month calendar control.
@@ -1453,7 +1451,7 @@
 </section>  <!-- End MonthCalendar::getMonthDelta() -->
 
 
-<section id="mthGetMonthRange"><title>getMonthRange</title>
+<section id="mthGetMonthRange" xreflabel="getMonthRange"><title>getMonthRange</title>
 <indexterm><primary>getMonthRange</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getMonthRange</secondary></indexterm>
 <programlisting>
@@ -1509,7 +1507,7 @@
 </section>  <!-- End MonthCalendar::getMonthRange() -->
 
 
-<section id="mthGetRangeClsMC"><title>getRange</title>
+<section id="mthGetRangeClsMC" xreflabel="getRange"><title>getRange</title>
 <indexterm><primary>getRange</primary><secondary>MonthCalendar class</secondary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getRange</secondary></indexterm>
 <programlisting>
@@ -1634,7 +1632,7 @@
 </section>  <!-- End MonthCalendar::getRange() -->
 
 
-<section id="mthGetSelectionRange"><title>getSelectionRange</title>
+<section id="mthGetSelectionRange" xreflabel="getSelectionRange"><title>getSelectionRange</title>
 <indexterm><primary>getSelectionRange</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getSelectionRange</secondary></indexterm>
 <programlisting>
@@ -1682,8 +1680,8 @@
   <para>
     The <emphasis role="italic">getSelectionRange</emphasis> method is for month calendar controls that have the MULTI
     (multi-selection) style. If the month calendar is a single-selection calendar this method returns
-    <computeroutput>.false</computeroutput>. For a single-selection month calendar the
-    date (xref linkend="atrDate" />) attribute will reflect the current selection.
+    <computeroutput>.false</computeroutput>. For a single-selection month calendar the <xref linkend="atrDate"/>
+    attribute will reflect the current selection.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1696,7 +1694,7 @@
 </section>  <!-- End MonthCalendar::getSelectionRange() -->
 
 
-<section id="mthGetStyleClsMC"><title>getStyle</title>
+<section id="mthGetStyleClsMC" xreflabel="getStyle"><title>getStyle</title>
 <indexterm><primary>getStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getStyle</secondary></indexterm>
 <programlisting>
@@ -1737,18 +1735,17 @@
       <varlistentry><term>DAYSTATE</term>
       <listitem>
       <para>
-        The month calendar will send the GETDAYSTATE event (xref linkend="ovvEvents" />) notification to request
-        information about which days should be displayed in bold. Use the
-        connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />) method to connect this notification
-        with a method in the Rexx dialog object.
+        The month calendar will send the GETDAYSTATE <xref linkend="ovvEvents"/> notification to request
+        information about which days should be displayed in bold. Use the <xref linkend="mthConnectMonthCalendarEvent"/>
+        method to connect this notification with a method in the Rexx dialog object.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>MULTI</term>
       <listitem>
       <para>
         This style allows the user to select a range of dates within the control. By default, the maximum range is one
-        week. The programmer changes the maximum range that can be selected by using the
-        setMaxSelection (xref linkend="mthSetRangeClsDTP" />) method.
+        week. The programmer changes the maximum range that can be selected by using the <xref linkend="mthSetRangeClsDTP"/>
+        method.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>NOTODAY</term>
@@ -1815,7 +1812,7 @@
 </variablelist>
 </section>  <!-- End MonthCalendar::addStyle() -->
 
-<section id="mthGetToday"><title>getToday</title>
+<section id="mthGetToday" xreflabel="getToday"><title>getToday</title>
 <indexterm><primary>getToday</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>getToday</secondary></indexterm>
 <programlisting>
@@ -1848,7 +1845,7 @@
 </section>  <!-- End MonthCalendar::getToday() -->
 
 
-<section id="mthHitTest"><title>hitTest</title>
+<section id="mthHitTest" xreflabel="hitTest"><title>hitTest</title>
 <indexterm><primary>hitTest</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>hitTest</secondary></indexterm>
 <programlisting>
@@ -1870,7 +1867,7 @@
     <varlistentry><term>screenPoint [required]</term>
     <listitem>
     <para>
-      A Point (xref linkend="clsPoint" />) object containing the point to test.
+      A <xref linkend="clsPoint"/> object containing the point to test.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2015,7 +2012,7 @@
       <varlistentry><term>RECT:</term>
       <listitem>
       <para>
-        <emphasis role="bold">Vista or later only:</emphasis> The index will be a Rect (xref linkend="clsRect" />)
+        <emphasis role="bold">Vista or later only:</emphasis> The index will be a <xref linkend="clsRect"/>
         object that specifies the rectangle of the hit-tested location.
       </para>
       </listitem></varlistentry>
@@ -2053,7 +2050,7 @@
   <listitem>
   <para>
     Although the Microsoft documentation calls the point to be tested the point on the screen, experimentation shows
-    that the point must be in client (xref linkend="defScreenCoordinates" />) coordinates of the dialog.
+    that the point must be in <xref linkend="defScreenCoordinates"/> coordinates of the dialog.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2110,7 +2107,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::hitTest() -->
 
 
-<section id="mthRemoveStyleClsMC"><title>removeStyle</title>
+<section id="mthRemoveStyleClsMC" xreflabel="removeStyle"><title>removeStyle</title>
 <indexterm><primary>removeStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>removeStyle</secondary></indexterm>
 <programlisting>
@@ -2149,9 +2146,9 @@ Column: The NIL object
         <varlistentry><term>DAYSTATE</term>
         <listitem>
         <para>
-          The month calendar will send the GETDAYSTATE event (xref linkend="ovvEvents" />) notification to request
+          The month calendar will send the GETDAYSTATE <xref linkend="ovvEvents"/> notification to request
           information about which days should be displayed in bold. Use the
-          connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />) method to connect this notification
+          <xref linkend="mthConnectMonthCalendarEvent"/> method to connect this notification
           with a method in the Rexx dialog object.
         </para>
         </listitem></varlistentry>
@@ -2160,7 +2157,7 @@ Column: The NIL object
         <para>
           This style allows the user to select a range of dates within the control. By default, the maximum range is one
           week. The programmer changes the maximum range that can be selected by using the
-          setMaxSelection (xref linkend="mthSetRangeClsDTP" />) method.
+          <xref linkend="mthSetRangeClsDTP"/> method.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTODAY</term>
@@ -2222,13 +2219,13 @@ Column: The NIL object
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End MonthCalendar::removeStyle() -->
 
-<section id="mthReplaceStyleClsMC"><title>replaceStyle</title>
+<section id="mthReplaceStyleClsMC" xreflabel="replaceStyle"><title>replaceStyle</title>
 <indexterm><primary>replaceStyle</primary><secondary>MonthCalendar class</secondary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>replaceStyle</secondary></indexterm>
 <programlisting>
@@ -2269,9 +2266,9 @@ Column: The NIL object
         <varlistentry><term>DAYSTATE</term>
         <listitem>
         <para>
-          The month calendar will send the GETDAYSTATE event (xref linkend="ovvEvents" />) notification to request
+          The month calendar will send the GETDAYSTATE <xref linkend="ovvEvents"/> notification to request
           information about which days should be displayed in bold. Use the
-          connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />) method to connect this notification
+          <xref linkend="mthConnectMonthCalendarEvent"/> method to connect this notification
           with a method in the Rexx dialog object.
         </para>
         </listitem></varlistentry>
@@ -2280,7 +2277,7 @@ Column: The NIL object
         <para>
           This style allows the user to select a range of dates within the control. By default, the maximum range is one
           week. The programmer changes the maximum range that can be selected by using the
-          setMaxSelection (xref linkend="mthSetRangeClsDTP" />) method.
+          <xref linkend="mthSetRangeClsDTP"/> method.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTODAY</term>
@@ -2351,14 +2348,14 @@ Column: The NIL object
   <listitem>
   <para>
     The <emphasis role="italic">replaceStyle</emphasis> method is essentially a combination of the
-    removeStyle (xref linkend="mthRemoveStyleClsMC" />) and addStyle (xref linkend="mthAddStyleClsMC" />) methods into
+    <xref linkend="mthRemoveStyleClsMC"/> and <xref linkend="mthAddStyleClsMC"/> methods into
     one convenience method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -2385,7 +2382,7 @@ Column: The NIL object
 </variablelist>
 </section>  <!-- End MonthCalendar::replaceStyle() -->
 
-<section id="mthSetCalendarBorder"><title>setCalendarBorder</title>
+<section id="mthSetCalendarBorder" xreflabel="setCalendarBorder"><title>setCalendarBorder</title>
 <indexterm><primary>setCalendarBorder</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setCalendarBorder</secondary></indexterm>
 <programlisting>
@@ -2455,7 +2452,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setCalendarBorder() -->
 
 
-<section id="mthSetCALID"><title>setCALID</title>
+<section id="mthSetCALID" xreflabel="setCALID"><title>setCALID</title>
 <indexterm><primary>setCALID</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setCALID</secondary></indexterm>
 <programlisting>
@@ -2483,7 +2480,8 @@ Column: The NIL object
     <table id="tblCalendarIDKeywords" frame="all">
     <title>Calendar ID Keywords</title>
     <tgroup cols="2">
-    <colspec colwidth="2.50in" />
+    <colspec colwidth="1*" />
+    <colspec colwidth="2*" />
     <thead>
     <row>
     <entry>ID Keyword</entry>
@@ -2568,7 +2566,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setCALID() -->
 
 
-<section id="mthSetColorClsMonthCalendar"><title>setColor</title>
+<section id="mthSetColorClsMonthCalendar" xreflabel="setColor"><title>setColor</title>
 <indexterm><primary>setColor</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setColor</secondary></indexterm>
 <programlisting>
@@ -2662,8 +2660,8 @@ Column: The NIL object
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The Image (xref linkend="clsImage" />) class has a number of convenience methods for working with COLORREFs,
-    including the colorRef (xref linkend="mthColorRef" />) method that explains what a COLORREF is.
+    The <xref linkend="clsImage"/> class has a number of convenience methods for working with COLORREFs,
+    including the <xref linkend="mthColorRef"/> method that explains what a COLORREF is.
   </para>
   <para>
     The <emphasis role="italic">colorRef</emphasis> method can be used to test the return for error. I.e.:
@@ -2714,7 +2712,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setColor() -->
 
 
-<section id="mthSetCurrentView"><title>setCurrentView</title>
+<section id="mthSetCurrentView" xreflabel="setCurrentView"><title>setCurrentView</title>
 <indexterm><primary>setCurrentView</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setCurrentView</secondary></indexterm>
 <programlisting>
@@ -2796,7 +2794,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setCurrentView() -->
 
 
-<section id="mthSetDayState"><title>setDayState</title>
+<section id="mthSetDayState" xreflabel="setDayState"><title>setDayState</title>
 <indexterm><primary>setDayState</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setDayState</secondary></indexterm>
 <programlisting>
@@ -2818,7 +2816,7 @@ Column: The NIL object
     <varlistentry><term>dayStates [required]</term>
     <listitem>
     <para>
-      An array of DayState (xref linkend="clsDayState" />) objects. The array must not be sparse and can not contain
+      An array of <xref linkend="clsDayState"/> objects. The array must not be sparse and can not contain
       more items than the number of currently visible months in the calendar. Index 1 in the array should contain the
       <computeroutput>DayState</computeroutput> object for the first visible month in the calendar. Each consecutive
       index contains the <computeroutput>DayState</computeroutput> object for the next visible month, with the last
@@ -2839,13 +2837,13 @@ Column: The NIL object
   <listitem>
   <para>
     A month calendar uses a day state to determine how to display individual dates in a month. The day state specifies
-    which days should be bolded. The month calendar must have the DAYSTATE (xref linkend="mthCreateMonthCalendar" />)
+    which days should be bolded. The month calendar must have the <xref linkend="mthCreateMonthCalendar"/>
     style or setting the day state has no effect. The programmer must use the
-    DayState (xref linkend="clsDayState" />) class to create the day state objects.
+    <xref linkend="clsDayState"/> class to create the day state objects.
   </para>
   <para>
     The number of elements in <emphasis role="italic">dayStates</emphasis> must equal the return value from
-    getMonthRange (xref linkend="mthGetMonthRange" />) when used with the PARTIALLY keyword argument. That is, <emphasis
+    <xref linkend="mthGetMonthRange"/> when used with the PARTIALLY keyword argument. That is, <emphasis
     role="italic">dayStates</emphasis> must contain values that correspond with all months currently in the control's
     display, in chronological order. This includes the two months that may be partially displayed before the first month
     and after the last month.
@@ -2853,8 +2851,8 @@ Column: The NIL object
   <para>
     Normally in a program using day states with a month calendar, the programmer will not have to continually invoke the
     <emphasis role="italic">setDayState</emphasis> method as the user scrolls through the calendar. Rather he will
-    connect the GETDAYSTATE (xref linkend="mthConnectMonthCalendar" />) event of the month calendar and return an
-    array of day state objects from the event (xref linkend="evtMonthCalendarGETDAYSTATE" />) handler. The month
+    connect the <xref linkend="mthConnectMonthCalendar"/> event of the month calendar and return an
+    array of day state objects from the event (<xref linkend="evtMonthCalendarGETDAYSTATE" />) handler. The month
     calendar then sets the day states internally using the array.
   </para>
   <para>
@@ -2901,7 +2899,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setDayState() -->
 
 
-<section id="mthSetDayStateQuick"><title>setDayStateQuick</title>
+<section id="mthSetDayStateQuick" xreflabel="setDayStateQuick"><title>setDayStateQuick</title>
 <indexterm><primary>setDayStateQuick</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setDayStateQuick</secondary></indexterm>
 <programlisting>
@@ -2914,8 +2912,8 @@ Column: The NIL object
 <para>
   Sets the day states for 3 months that are currently visible (assumed) within a month calendar control. The <emphasis
   role="italic">setDayStateQuick</emphasis> method is almost identical to the
-  setDayStat (xref linkend="mthSetDayState" />) method except that the number of day (xref linkend="clsDayState" />)
-  state objects is fixed at 3.
+  <xref linkend="mthSetDayState"/> method except that the number of day (<xref linkend="clsDayState" />) state objects
+  is fixed at 3.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2926,19 +2924,19 @@ Column: The NIL object
     <varlistentry><term>ds1</term>
     <listitem>
     <para>
-      The DayState (xref linkend="clsDayState" />) object for the first month.
+      The <xref linkend="clsDayState"/> object for the first month.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>ds2</term>
     <listitem>
     <para>
-      The DayState (xref linkend="clsDayState" />) object for the second month.
+      The <xref linkend="clsDayState"/> object for the second month.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>ds3</term>
     <listitem>
     <para>
-      The DayState (xref linkend="clsDayState" />) object for the third month.
+      The <xref linkend="clsDayState"/> object for the third month.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2954,9 +2952,9 @@ Column: The NIL object
   <listitem>
   <para>
     A month calendar uses a day state to determine how to display individual dates in a month. The day state specifies
-    which days should be bolded. The month calendar must have the DAYSTATE (xref linkend="mthCreateMonthCalendar" />)
+    which days should be bolded. The month calendar must have the <xref linkend="mthCreateMonthCalendar"/>
     style or setting the day state has no effect. The programmer must use the
-    DayState (xref linkend="clsDayState" />) class to create the day state objects.
+    <xref linkend="clsDayState"/> class to create the day state objects.
   </para>
   <para>
     The most common use case for a month calendar is to display 1 month. In this case, when setting the day states for
@@ -2995,7 +2993,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setDayStateQuick() -->
 
 
-<section id="mthSetFirstDayOfWeek"><title>setFirstDayOfWeek</title>
+<section id="mthSetFirstDayOfWeek" xreflabel="setFirstDayOfWeek"><title>setFirstDayOfWeek</title>
 <indexterm><primary>setFirstDayOfWeek</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setFirstDayOfWeek</secondary></indexterm>
 <programlisting>
@@ -3028,7 +3026,7 @@ Column: The NIL object
   <listitem>
   <para>
     A <computeroutput>Directory</computeroutput> object with information concerning the previous first day of the week.
-    This is the same information as returned by the getFirstDayOfWeek (xref linkend="mthGetFirstDayOfWeek" />)
+    This is the same information as returned by the <xref linkend="mthGetFirstDayOfWeek"/>
     method.
   </para>
   </listitem></varlistentry>
@@ -3070,14 +3068,14 @@ Column: The NIL object
     Raises syntax errors when incorrect arguments are detected.
   </para>
   <para>
-    Sets the .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End MonthCalendar::setFirstDayOfWeek() -->
 
 
-<section id="mthSetMaxSelection"><title>setMaxSelection</title>
+<section id="mthSetMaxSelection" xreflabel="setMaxSelection"><title>setMaxSelection</title>
 <indexterm><primary>setMaxSelection</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setMaxSelection</secondary></indexterm>
 <programlisting>
@@ -3127,7 +3125,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setMaxSelection() -->
 
 
-<section id="mthSetMonthDelta"><title>setMonthDelta</title>
+<section id="mthSetMonthDelta" xreflabel="setMonthDelta"><title>setMonthDelta</title>
 <indexterm><primary>setMonthDelta</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setMonthDelta</secondary></indexterm>
 <programlisting>
@@ -3167,7 +3165,7 @@ Column: The NIL object
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The PAGE UP and PAGE DOWN keys, (<computeroutput>.VK (xref linkend="clsVK" />)~PRIOR</computeroutput> and
+    The PAGE UP and PAGE DOWN keys, (<computeroutput>.VK~PRIOR</computeroutput> (<xref linkend="clsVK" />) and
     <computeroutput>.VK~NEXT</computeroutput>,) change the selected month by one, regardless of the number of months
     displayed or the value set by <emphasis role="italic">setMonthDelta</emphasis>.
   </para>
@@ -3182,7 +3180,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setMonthDelta() -->
 
 
-<section id="mthSetRangeClsMC"><title>setRange</title>
+<section id="mthSetRangeClsMC" xreflabel="setRange"><title>setRange</title>
 <indexterm><primary>setRange</primary><secondary>MonthCalendar class</secondary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setRange</secondary></indexterm>
 <programlisting>
@@ -3259,7 +3257,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setRange() -->
 
 
-<section id="mthSetSelectionRange"><title>setSelectionRange</title>
+<section id="mthSetSelectionRange" xreflabel="setSelectionRange"><title>setSelectionRange</title>
 <indexterm><primary>setSelectionRange</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setSelectionRange</secondary></indexterm>
 <programlisting>
@@ -3312,7 +3310,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setSelectionRange() -->
 
 
-<section id="mthSetToday"><title>setToday</title>
+<section id="mthSetToday" xreflabel="setToday"><title>setToday</title>
 <indexterm><primary>setToday</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>setToday</secondary></indexterm>
 <programlisting>
@@ -3397,7 +3395,7 @@ Column: The NIL object
 </section>  <!-- End MonthCalendar::setToday() -->
 
 
-<section id="mthSizeRectToMin"><title>sizeRectToMin</title>
+<section id="mthSizeRectToMin" xreflabel="sizeRectToMin"><title>sizeRectToMin</title>
 <indexterm><primary>sizeRectToMin</primary></indexterm>
 <indexterm><primary>MonthCalendar class</primary><secondary>sizeRectToMin</secondary></indexterm>
 <programlisting>
@@ -3420,7 +3418,7 @@ Column: The NIL object
     <varlistentry><term>rext [required] [in / out]</term>
     <listitem>
     <para>
-      A Rect (xref linkend="clsRect" />) object that, on entry, describes a region that is greater than or equal to
+      A <xref linkend="clsRect"/> object that, on entry, describes a region that is greater than or equal to
       the size necessary to fit the desired number of calendars. When this method returns, the
       <computeroutput>rect</computeroutput> object will contain the minimum size needed for this number of calendars.
     </para>

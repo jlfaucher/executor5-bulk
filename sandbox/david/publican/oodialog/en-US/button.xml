@@ -92,7 +92,7 @@
 </row>
 <row>
 <entry>Group Box</entry>
-<entry>GroupBox (<xref linkend="clsGroupBox" />)</entry>
+<entry><xref linkend="clsGroupBox"/></entry>
 </row>
 <row>
 <entry>Owner Drawn Button</entry>
@@ -134,7 +134,7 @@ stored in a stem variable: </para>
 <varlistentry><term>sprite.from</term>
 <listitem><para>Array of in-memory bitmap handles, or a bitmap resource ID in a DLL,
 or the name of an array in the .local directory containing handles to bitmaps
-loaded with loadBitmap (<xref linkend="mthLoadBitmap" />).
+loaded with <xref linkend="mthLoadBitmap"/>.
 The array has to start with 1 and continue in increments by 1.
 </para></listitem></varlistentry>
 <varlistentry><term>sprite.to</term>
@@ -367,7 +367,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
     <para>
-      To dynamically define a check box in a UserDialog (<xref linkend="clsUserDialog" />) class,
+      To dynamically define a check box in a <xref linkend="clsUserDialog"/> class,
       use one of the create button control methods described in <xref linkend="sctCreateButtonControls" />.
       That section also describes methods for creating push buttons, radio buttons,
       etc... All the methods to create check boxes begin with: <emphasis role="italic">createCheck</emphasis>.
@@ -393,7 +393,8 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <table id="tblCheckBoxMethods" frame="all">
 <title>CheckBox Instance Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -410,11 +411,11 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <entry>Returns a <computeroutput>CheckBox</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
-<entry>createCheckBox (<xref linkend="tmthCreateCheckBox" />)</entry>
-<entry>Creates a check box in the dialog template of a UserDialog (<xref linkend="clsUserDialog" />).</entry>
+<entry><xref linkend="tmthCreateCheckBox"/></entry>
+<entry>Creates a check box in the dialog template of a <xref linkend="clsUserDialog"/>.</entry>
 </row>
 <row>
-<entry>connectButtonEvent (<xref linkend="tmthConnectButtonEvent" />)</entry>
+<entry><xref linkend="tmthConnectButtonEvent"/></entry>
 <entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
 </row>
 <row>
@@ -422,15 +423,15 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>isIndeterminate (<xref linkend="mthIsIndeterminate" />)</entry>
+<entry><xref linkend="mthIsIndeterminate"/></entry>
 <entry>Determines if the check box is in indeterminate state, or not.</entry>
 </row>
 <row>
-<entry>getCheckState (<xref linkend="mthGetCheckStateClsCheckBox" />)</entry>
+<entry><xref linkend="mthGetCheckStateClsCheckBox"/></entry>
 <entry>Returns a keyword indicating the check state of the check box, checked, unchecked, or indeterminate.</entry>
 </row>
 <row>
-<entry>setIndeterminate (<xref linkend="mthSetIndeterminate" />)</entry>
+<entry><xref linkend="mthSetIndeterminate"/></entry>
 <entry>Puts the check box in the indeterminate state.</entry>
 </row>
 </tbody></tgroup>
@@ -455,7 +456,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 
 <section id="tmthCreateCheckBox"><title>createCheckBox (UserDialog method)</title>
 <para>
-  A check box object can be created in the dialog template for a UserDialog (<xref linkend="clsUserDialog" />) dialog
+  A check box object can be created in the dialog template for a <xref linkend="clsUserDialog"/> dialog
   through the createCheckBox() (<xref linkend="mthCreateCheckBox" />) method. The basic syntax is:
 <programlisting>
 <![CDATA[
@@ -470,7 +471,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 </section>  <!-- End UserDialog::createCheckBox() [UserDialog method] -->
 
 
-<section id="mthGetCheckStateClsCheckBox"><title>getCheckState</title>
+<section id="mthGetCheckStateClsCheckBox" xreflabel="getCheckState"><title>getCheckState</title>
 <indexterm><primary>getCheckState</primary><secondary>CheckBox class</secondary></indexterm>
 <indexterm><primary>CheckBox class</primary><secondary>getCheckState</secondary></indexterm>
 <programlisting>
@@ -534,7 +535,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 </variablelist>
 </section>  <!-- End CheckBox::getCheckState() -->
 
-<section id="mthIsIndeterminate"><title>isIndeterminate</title>
+<section id="mthIsIndeterminate" xreflabel="isIndeterminate"><title>isIndeterminate</title>
 <indexterm><primary>isIndeterminate</primary></indexterm>
 <indexterm><primary>CheckBox class</primary><secondary>isIndeterminate</secondary></indexterm>
 <programlisting>
@@ -577,7 +578,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 </section>  <!-- End CheckBox::isIndeterminate() -->
 
 
-<section id="mthSetIndeterminate"><title>setIndeterminate</title>
+<section id="mthSetIndeterminate" xreflabel="setIndeterminate"><title>setIndeterminate</title>
 <indexterm><primary>setIndeterminate</primary></indexterm>
 <indexterm><primary>CheckBox class</primary><secondary>setIndeterminate</secondary></indexterm>
 <programlisting>
@@ -635,8 +636,8 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define a group box in the dialog template of a UserDialog (<xref linkend="clsUserDialog" />)
-    class, use the createGroupBox (<xref linkend="mthCreateGroupBox" />) method.
+    To dynamically define a group box in the dialog template of a <xref linkend="clsUserDialog"/>
+    class, use the <xref linkend="mthCreateGroupBox"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -658,7 +659,8 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <table id="tblGroupBoxMethods" frame="all">
 <title>GroupBox Instance Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -671,12 +673,12 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry>newGroupBox (<xref linkend="tmthNewGroupBox" />)</entry>
+<entry><xref linkend="tmthNewGroupBox"/></entry>
 <entry>Returns a <computeroutput>GroupBox</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
-<entry>createGroupBox (<xref linkend="tmthCreateGroupBox" />)</entry>
-<entry>Creates a group box in the dialog template of a UserDialog (<xref linkend="clsUserDialog" />).</entry>
+<entry><xref linkend="tmthCreateGroupBox"/></entry>
+<entry>Creates a group box in the dialog template of a <xref linkend="clsUserDialog"/>.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -708,7 +710,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 
 <section id="tmthCreateGroupBox"><title>createGroupBox (UserDialog method)</title>
 <para>
-  A group box object can be create in the dialog template for a UserDialog (<xref linkend="clsUserDialog" />)
+  A group box object can be create in the dialog template for a <xref linkend="clsUserDialog"/>
   dialog through the createGroupBox() (<xref linkend="mthCreateGroupBox" />) method. The basic syntax is:
 <programlisting>
 <![CDATA[
@@ -816,8 +818,8 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define a radio button in a UserDialog (<xref linkend="clsUserDialog" />) class, use the
-    createRadioButton (<xref linkend="mthCreateRadioButton" />) method. There are also a number of methods that create
+    To dynamically define a radio button in a <xref linkend="clsUserDialog"/> class, use the
+ <xref linkend="mthCreateRadioButton"/> method. There are also a number of methods that create
     groups of radio buttons. These methods are described  described in <xref
     linkend="sctCreateButtonControls" />. That section also describes methods for
     creating push buttons, check boxes, etc..
@@ -826,7 +828,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the event (<xref linkend="ovvEvents" />) notifications sent by the underlying radio button control to a
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying radio button control to a
     method in the Rexx dialog object use the connectButtonEvent() (<xref linkend="mthConnectButtonEvent" />) method.
   </para>
   </listitem></varlistentry>
@@ -842,7 +844,8 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <table id="tblRadioButtonMethods" frame="all">
 <title>RadioButton Class and Instance Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -855,15 +858,15 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry>newRadioButton (<xref linkend="tmthNewRadioButton" />)</entry>
+<entry><xref linkend="tmthNewRadioButton"/></entry>
 <entry>Returns a <computeroutput>RadionButton</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
-<entry>createRadioButton (<xref linkend="tmthCreateRadioButton" />)</entry>
-<entry>Creates a radio button in the dialog template of a UserDialog (<xref linkend="clsUserDialog" />).</entry>
+<entry><xref linkend="tmthCreateRadioButton"/></entry>
+<entry>Creates a radio button in the dialog template of a <xref linkend="clsUserDialog"/>.</entry>
 </row>
 <row>
-<entry>connectButtonEvent (<xref linkend="tmthConnectButtonEvent" />)</entry>
+<entry><xref linkend="tmthConnectButtonEvent"/></entry>
 <entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
 </row>
 <row>
@@ -871,7 +874,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <entry align="center"><emphasis role="bold">Class Methods</emphasis></entry>
 </row>
 <row>
-<entry>checkInGroup (<xref linkend="mthCheckInGroupCls" />)</entry>
+<entry><xref linkend="mthCheckInGroupCls"/></entry>
 <entry>Checks the specified radio button in a group and unchecks all other radio buttons in the group.</entry>
 </row>
 <row>
@@ -879,19 +882,19 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>check (<xref linkend="mthCheck" />)</entry>
+<entry><xref linkend="mthCheck"/></entry>
 <entry>Puts the button in the checked state.</entry>
 </row>
 <row>
-<entry>checked (<xref linkend="mthChecked" />)</entry>
+<entry><xref linkend="mthChecked"/></entry>
 <entry>Determines if the button is checked, or not.</entry>
 </row>
 <row>
-<entry>getCheckState (<xref linkend="mthGetCheckStateClsRadioButton" />)</entry>
+<entry><xref linkend="mthGetCheckStateClsRadioButton"/></entry>
 <entry>Returns a keyword indicating the check state of the radio button.</entry>
 </row>
 <row>
-<entry>uncheck (<xref linkend="mthUncheck" />)</entry>
+<entry><xref linkend="mthUncheck"/></entry>
 <entry>Puts the button in the unchecked state.</entry>
 </row>
 </tbody></tgroup>
@@ -916,7 +919,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 
 <section id="tmthCreateRadioButton"><title>createRadioButton (UserDialog method)</title>
 <para>
-  A radio button object can be created in the dialog template for a UserDialog (<xref linkend="clsUserDialog" />)
+  A radio button object can be created in the dialog template for a <xref linkend="clsUserDialog"/>
   dialog through the createRadioButton() (<xref linkend="mthCreateRadioButton" />) method. The basic syntax is:
 <programlisting>
 <![CDATA[
@@ -932,7 +935,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
 </section>  <!-- End UserDialog::createPushButton() [UserDialog method] -->
 
 
-<section id="mthCheckInGroupCls"><title>checkInGroup (Class)</title>
+<section id="mthCheckInGroupCls" xreflabel="checkInGroup"><title>checkInGroup (Class)</title>
 <indexterm><primary>checkInGroup</primary></indexterm>
 <indexterm><primary>RadioButton class</primary><secondary>checkInGroup</secondary></indexterm>
 <programlisting>
@@ -999,7 +1002,7 @@ size of a move, or the speed) and over-ride actions, such as hitting an edge.</p
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
     <para>
-      Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
+      Sets the <xref linkend="dotSystemErrorCode" /> variable.
     </para>
     <para>
       Raises syntax errors when incorrect arguments are detected.
@@ -1021,7 +1024,7 @@ return 0
 </section>  <!-- End RadioButton::checkInGroup() [class method] -->
 
 
-<section id="mthCheck"><title>check</title>
+<section id="mthCheck" xreflabel="check"><title>check</title>
 <indexterm><primary>check</primary></indexterm>
 <indexterm><primary>RadioButton class</primary><secondary>check</secondary></indexterm>
 <programlisting>
@@ -1051,7 +1054,7 @@ return 0
 </variablelist>
 </section>
 
-<section id="mthChecked"><title>checked</title>
+<section id="mthChecked" xreflabel="checked"><title>checked</title>
 <indexterm><primary>checked</primary></indexterm>
 <indexterm><primary>RadioButton class</primary><secondary>checked</secondary></indexterm>
 <programlisting>
@@ -1101,7 +1104,7 @@ end
 </section>  <!-- End RadioButton::checked() -->
 
 
-<section id="mthGetCheckStateClsRadioButton"><title>getCheckState</title>
+<section id="mthGetCheckStateClsRadioButton" xreflabel="getCheckState"><title>getCheckState</title>
 <indexterm><primary>getCheckState</primary><secondary>RadioButton class</secondary></indexterm>
 <indexterm><primary>RadioButton class</primary><secondary>getCheckState</secondary></indexterm>
 <programlisting>
@@ -1155,7 +1158,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </variablelist>
 </section>  <!-- End RadioButton::getCheckState() -->
 
-<section id="mthUncheck"><title>uncheck</title>
+<section id="mthUncheck" xreflabel="uncheck"><title>uncheck</title>
 <indexterm><primary>uncheck</primary></indexterm>
 <indexterm><primary>RadioButton class</primary><secondary>uncheck</secondary></indexterm>
 <programlisting>
@@ -1223,8 +1226,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define a push button control in a UserDialog (<xref linkend="clsUserDialog" />) class, use the
-    createPushButton (<xref linkend="mthCreatePushButton" />) method. There are also a number of methods that create
+    To dynamically define a push button control in a <xref linkend="clsUserDialog"/> class, use the
+ <xref linkend="mthCreatePushButton"/> method. There are also a number of methods that create
     groups of push buttons. These methods are described  described in (<xref linkend="sctCreateButtonControls" />).
     That section also describes methods for creating radio buttons, check boxes, etc..
   </para>
@@ -1232,7 +1235,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the event (<xref linkend="ovvEvents" />) notifications sent by the underlying push button to a method
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying push button to a method
     in the Rexx dialog object use the connectButtonEvent() (<xref linkend="mthConnectButtonEvent" />) method.
   </para>
 </listitem></varlistentry>
@@ -1247,7 +1250,8 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <table id="tblButtonMethods" frame="all">
 <title>Button Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -1260,15 +1264,15 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <entry align="center"><emphasis role="bold">External Methods</emphasis></entry>
 </row>
 <row>
-<entry>newPushButton (<xref linkend="tmthNewPushButton" />)</entry>
+<entry><xref linkend="tmthNewPushButton"/></entry>
 <entry>Returns a <computeroutput>Button</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
-<entry>createPushButton (<xref linkend="tmthCreatePushButton" />)</entry>
-<entry>Creates a button control in the dialog template of a UserDialog (<xref linkend="clsUserDialog" />).</entry>
+<entry><xref linkend="tmthCreatePushButton"/></entry>
+<entry>Creates a button control in the dialog template of a <xref linkend="clsUserDialog"/>.</entry>
 </row>
 <row>
-<entry>connectButtonEvent (<xref linkend="tmthConnectButtonEvent" />)</entry>
+<entry><xref linkend="tmthConnectButtonEvent"/></entry>
 <entry>Connects button event notifications to a method in the Rexx dialog object.</entry>
 </row>
 <row>
@@ -1280,43 +1284,43 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
 </row>
 <row>
-<entry>click (<xref linkend="mthClick" />)</entry>
+<entry><xref linkend="mthClick"/></entry>
 <entry>Simulates a user clicking on the associated button control.</entry>
 </row>
 <row>
-<entry>getIdealSize (<xref linkend="mthGetIdealSize" />)</entry>
+<entry><xref linkend="mthGetIdealSize"/></entry>
 <entry>Queries the button control for the size that best fits its text or image.</entry>
 </row>
 <row>
-<entry>getImage (<xref linkend="mthGetImage" />)</entry>
+<entry><xref linkend="mthGetImage"/></entry>
 <entry>Retrieves a button's image if one is set.</entry>
 </row>
 <row>
-<entry>getImageList (<xref linkend="mthGetImageList" />)</entry>
+<entry><xref linkend="mthGetImageList"/></entry>
 <entry>Retrieves information describing the image list for the button.</entry>
 </row>
 <row>
-<entry>getTextMargin (<xref linkend="mthGetTextMargin" />)</entry>
+<entry><xref linkend="mthGetTextMargin"/></entry>
 <entry>Retrieves the margins used to draw text within the button.</entry>
 </row>
 <row>
-<entry>push (<xref linkend="mthPush" />)</entry>
+<entry><xref linkend="mthPush"/></entry>
 <entry>Simulates the user pushing the associated button control.</entry>
 </row>
 <row>
-<entry>setImage (<xref linkend="mthSetImage" />)</entry>
+<entry><xref linkend="mthSetImage"/></entry>
 <entry>Sets, or removes, the image associated with a button.</entry>
 </row>
 <row>
-<entry>setImageList (<xref linkend="mthSetImageList" />)</entry>
+<entry><xref linkend="mthSetImageList"/></entry>
 <entry>Sets, or removes the image list for the button.</entry>
 </row>
 <row>
-<entry>setTextMargin (<xref linkend="mthSetTextMargin" />)</entry>
+<entry><xref linkend="mthSetTextMargin"/></entry>
 <entry>Sets the margins for drawing text in the button.</entry>
 </row>
 <row>
-<entry>status (<xref linkend="mthStateClsButton" />)</entry>
+<entry><xref linkend="mthStateClsButton"/></entry>
 <entry>Retrieves the current state of the button.</entry>
 </row>
 <row>
@@ -1348,7 +1352,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 
 <section id="tmthCreatePushButton"><title>createPushButton (UserDialog method)</title>
 <para>
-  A push button object can be created in the dialog template for a UserDialog (<xref linkend="clsUserDialog" />)
+  A push button object can be created in the dialog template for a <xref linkend="clsUserDialog"/>
   dialog through the createPushButton() (<xref linkend="mthCreatePushButton" />) method. The basic syntax is:
 <programlisting>
 <![CDATA[
@@ -1377,7 +1381,7 @@ if rb~getCheckState == "CHECKED" then self~printInItalics()
 </section>  <!-- End connectButtonEvent() [EventNotification method] -->
 
 
-<section id="mthClick"><title>click</title>
+<section id="mthClick" xreflabel="click"><title>click</title>
 <indexterm><primary>click</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>click</secondary></indexterm>
 <programlisting>
@@ -1420,7 +1424,7 @@ self~newPushButton(IDCANCEL)~click
 </section>
 
 
-<section id="mthGetIdealSize"><title>getIdealSize</title>
+<section id="mthGetIdealSize" xreflabel="getIdealSize"><title>getIdealSize</title>
 <indexterm><primary>getIdealSize</primary><secondary>Button class</secondary></indexterm>
 <indexterm><primary>Button class</primary><secondary>getIdealSize</secondary></indexterm>
 <programlisting>
@@ -1491,7 +1495,7 @@ self~newPushButton(IDCANCEL)~click
 </section>
 
 
-<section id="mthGetImage"><title>getImage</title>
+<section id="mthGetImage" xreflabel="getImage"><title>getImage</title>
 <indexterm><primary>getImage</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>getImage</secondary></indexterm>
 <programlisting>
@@ -1545,7 +1549,7 @@ self~newPushButton(IDCANCEL)~click
 </section>  <!-- End ButtonControl::getImage() -->
 
 
-<section id="mthGetImageList"><title>getImageList</title>
+<section id="mthGetImageList" xreflabel="getImageList"><title>getImageList</title>
 <indexterm><primary>getImageList</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>getImageList</secondary></indexterm>
 <programlisting>
@@ -1668,7 +1672,7 @@ self~newPushButton(IDCANCEL)~click
 </section>
 
 
-<section id="mthGetTextMargin"><title>getTextMargin</title>
+<section id="mthGetTextMargin" xreflabel="getTextMargin"><title>getTextMargin</title>
 <indexterm><primary>getTextMargin</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>getTextMargin</secondary></indexterm>
 <programlisting>
@@ -1746,7 +1750,7 @@ self~newPushButton(IDCANCEL)~click
 </variablelist>
 </section>
 
-<section id="mthPush"><title>push</title>
+<section id="mthPush" xreflabel="push"><title>push</title>
 <indexterm><primary>push</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>push</secondary></indexterm>
 <programlisting>
@@ -1798,7 +1802,7 @@ return .true
 </section>
 
 
-<section id="mthSetImage"><title>setImage</title>
+<section id="mthSetImage" xreflabel="setImage"><title>setImage</title>
 <indexterm><primary>setImage</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>setImage</secondary></indexterm>
 <programlisting>
@@ -1866,7 +1870,7 @@ return .true
 </section>  <!-- End ButtonControl::setImage() -->
 
 
-<section id="mthSetImageList"><title>setImageList</title>
+<section id="mthSetImageList" xreflabel="setImageList"><title>setImageList</title>
 <indexterm><primary>setImageList</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>setImageList</secondary></indexterm>
 <programlisting>
@@ -1991,7 +1995,7 @@ return .true
     determine the current version of the library.
   </para>
   <para>
-    Sets the .systemErrorCode (<xref linkend="dotSystemErrorCode" />) variable.
+    Sets the <xref linkend="dotSystemErrorCode" /> variable.
   </para>
   <para>
     Raises syntax errors when incorrect arguments are detected.
@@ -2059,7 +2063,7 @@ return 0
 </section>
 
 
-<section id="mthSetTextMargin"><title>setTextMargin</title>
+<section id="mthSetTextMargin" xreflabel="setTextMargin"><title>setTextMargin</title>
 <indexterm><primary>setTextMargin</primary></indexterm>
 <indexterm><primary>Button class</primary><secondary>setTextMargin</secondary></indexterm>
 <programlisting>
@@ -2135,7 +2139,7 @@ return 0
 </section>
 
 
-<section id="mthStateClsButton"><title>state</title>
+<section id="mthStateClsButton" xreflabel="state"><title>state</title>
 <indexterm><primary>state</primary><secondary>Button class</secondary></indexterm>
 <indexterm><primary>Button class</primary><secondary>state</secondary></indexterm>
 <programlisting>
@@ -2332,8 +2336,8 @@ button~state="FOCUS PUSHED"
     <listitem>
     <para>
       To change a button state to not focused programmatically use one of the ooDialog methods that move the focus:
-      tabToNext (<xref linkend="mthTabToNext" />), tabToPrevious (<xref linkend="mthTabToPrevious" />), setFocus (<xref
-      linkend="mthSetFocus" />), focusControl (<xref linkend="mthFocusControl" />), etc..
+ <xref linkend="mthTabToNext"/>, <xref linkend="mthTabToPrevious"/>, setFocus (<xref
+      linkend="mthSetFocus" />), <xref linkend="mthFocusControl"/>, etc..
     </para>
     </listitem>
     </orderedlist>
@@ -2540,7 +2544,7 @@ button~state="FOCUS PUSHED"
         <varlistentry><term>NOTIFY</term>
         <listitem>
         <para>
-          Enables a button to send the kill focus and set focus event (<xref linkend="ovvEvents" />) notifications.
+          Enables a button to send the kill focus and set focus <xref linkend="ovvEvents"/> notifications.
           See <xref linkend="mthConnectButtonEvent" /> method of the EventNotification (<xref
           linkend="clsEventNotification" />) class.  If the button does not have this style, kill
           and set focus events will not be received, even if the programmer does use the

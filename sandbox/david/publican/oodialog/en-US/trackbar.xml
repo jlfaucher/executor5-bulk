@@ -43,11 +43,11 @@
     #
     #########################################################################
 -->
-<chapter id="clsTrackBar"><title>Trackbar Controls</title>
+<chapter id="clsTrackBar" xreflabel="TrackBar"><title>Trackbar Controls</title>
 <indexterm><primary>Trackbar class</primary></indexterm>
 <para>
   A trackbar is a window that contains a slider and optional tick marks. Prior to the effort to
-  unify (xref linkend="termMethodNameUnification" />) the ooDialog class and method names, a trackbar was called a slider
+  unify (<xref linkend="termMethodNameUnification" />) the ooDialog class and method names, a trackbar was called a slider
   control. This was misnomer, the slider is a part of the the track bar. Trackbars are now called by their correct name
   in this documentation.
 </para>
@@ -78,22 +78,22 @@
   <varlistentry><term><emphasis role="bold">Instantiation:</emphasis></term>
   <listitem>
   <para>
-    Use the newTrackBar (xref linkend="tmthNewTrackBar" />)() method of the
-    dialog (xref linkend="chpDialogObject" />) object to retrieve a new TrackBar object.
+    Use the newTrackBar (<xref linkend="tmthNewTrackBar" />)() method of the
+    dialog (<xref linkend="chpDialogObject" />) object to retrieve a new TrackBar object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define a trackbar in the dialog template of a UserDialog (xref linkend="clsUserDialog" />) class,
-    use the createTrackBar (xref linkend="tmthCreateTrackBar" />) method.
+    To dynamically define a trackbar in the dialog template of a <xref linkend="clsUserDialog"/> class,
+    use the createTrackBar (<xref linkend="tmthCreateTrackBar" />) method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To connect the event (xref linkend="ovvEvents" />) notifications sent by the underlying trackbar control to a
-    method in the Rexx dialog object use the connectTrackBarEvent (xref linkend="tmthConnectTrackBarEvent" />)()
+    To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying trackbar control to a
+    method in the Rexx dialog object use the connectTrackBarEvent (<xref linkend="tmthConnectTrackBarEvent" />)()
     method.
   </para> </listitem></varlistentry>
 </variablelist> </para>
@@ -107,7 +107,8 @@
 <table id="tblTrackBarMethods" frame="all">
 <title>Trackbar Instance Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1.5in" />
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -120,99 +121,99 @@
 <entry align="center"><emphasis role="bold"> External Methods</emphasis></entry>
 </row>
 <row>
-<entry>newTrackBar (xref linkend="tmthNewTrackBar" />)</entry>
+<entry><xref linkend="tmthNewTrackBar"/></entry>
 <entry>Returns a <computeroutput>Trackbar</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
-<entry>createTrackBar (xref linkend="tmthCreateTrackBar" />)</entry>
-<entry>Creates a trackbar control in the dialog template of a UserDialog (xref linkend="clsUserDialog" />)</entry>
+<entry><xref linkend="tmthCreateTrackBar"/></entry>
+<entry>Creates a trackbar control in the dialog template of a <xref linkend="clsUserDialog"/></entry>
 </row>
 <row>
-<entry>connectTrackBarEvent (xref linkend="tmthConnectTrackBarEvent" />)</entry>
+<entry><xref linkend="tmthConnectTrackBarEvent"/></entry>
 <entry>Connects trackbar event notifications to a method in the Rexx dialog object</entry>
 </row>
 <row>
-<entry>clearSelRange (xref linkend="mthClearSelRange" />)</entry>
+<entry><xref linkend="mthClearSelRange"/></entry>
 <entry>Clears the current selection range in a trackbar.</entry>
 </row>
 <row>
-<entry>clearTicks (xref linkend="mthClearTicks" />)</entry>
+<entry><xref linkend="mthClearTicks"/></entry>
 <entry>Removes the current tick marks from a trackbar.</entry>
 </row>
 <row>
-<entry>countTicks (xref linkend="mthCountTicks" />)</entry>
+<entry><xref linkend="mthCountTicks"/></entry>
 <entry>Retrieves the number of tick marks in a trackbar,</entry>
 </row>
 <row>
-<entry>getLineStep (xref linkend="mthGetLineStep" />)</entry>
+<entry><xref linkend="mthGetLineStep"/></entry>
 <entry>Retrieves the number of logical positions that the slider in a trackbar moves in response to keyboard input from the arrow keys.</entry>
 </row>
 <row>
-<entry>getPageStep (xref linkend="mthGetPageStep" />)</entry>
+<entry><xref linkend="mthGetPageStep"/></entry>
 <entry>Retrieves the number of logical positions that the slider in a trackbar moves in response to page up or down keys, or mouse clicks.</entry>
 </row>
 <row>
-<entry>getTick (xref linkend="mthGetTick" />)</entry>
+<entry><xref linkend="mthGetTick"/></entry>
 <entry>Retrieves the logical position of a tick mark in a trackbar.</entry>
 </row>
 <row>
-<entry>initRange (xref linkend="mthInitRange" />)</entry>
+<entry><xref linkend="mthInitRange"/></entry>
 <entry>Sets the minimum and maximum positions of the trackbar and redraws the trackbar, if requested.</entry>
 </row>
 <row>
-<entry>initSelRange (xref linkend="mthInitSelRange" />)</entry>
+<entry><xref linkend="mthInitSelRange"/></entry>
 <entry>Sets the starting and ending logical positions for the current selection range in a trackbar.</entry>
 </row>
 <row>
-<entry>pos (xref linkend="mthPos" />)</entry>
+<entry><xref linkend="mthPos"/></entry>
 <entry>Retrieves the current logical position of the slider in a trackbar.</entry>
 </row>
 <row>
-<entry>pos= (xref linkend="mthPosEquals" />)</entry>
+<entry>pos= (<xref linkend="mthPosEquals" />)</entry>
 <entry>Sets the logical position of the slider in a trackbar, however the trackbar is not redrawn.</entry>
 </row>
 <row>
-<entry>range (xref linkend="mthRangeClsTrackBar" />)</entry>
+<entry><xref linkend="mthRangeClsTrackBar"/></entry>
 <entry>Retrieves the minimum and maximum positions of the trackbar.</entry>
 </row>
 <row>
-<entry>selRange (xref linkend="mthSelRange" />)</entry>
+<entry><xref linkend="mthSelRange"/></entry>
 <entry>Retrieves the starting position of the current selection range in a trackbar.</entry>
 </row>
 <row>
-<entry>setLineStep (xref linkend="mthSetLineStep" />)</entry>
+<entry><xref linkend="mthSetLineStep"/></entry>
 <entry>Sets the number of logical positions that the slider in a trackbar moves in response to keyboard input from the arrow keys.</entry>
 </row>
 <row>
-<entry>setMax (xref linkend="mthSetMax" />)</entry>
+<entry><xref linkend="mthSetMax"/></entry>
 <entry>Sets the maximum logical position for a trackbar and redraws the trackbar, if requested.</entry>
 </row>
 <row>
-<entry>setMin (xref linkend="mthSetMin" />)</entry>
+<entry><xref linkend="mthSetMin"/></entry>
 <entry>Sets the minimum logical position for a trackbar and redraws the trackbar, if requested.</entry>
 </row>
 <row>
-<entry>setPageStep (xref linkend="mthSetPageStep" />)</entry>
+<entry><xref linkend="mthSetPageStep"/></entry>
 <entry>Sets the number of logical positions that the slider in a trackbar moves in response to page up or down keys, or mouse clicks.</entry>
 </row>
 <row>
-<entry>setPos (xref linkend="mthSetPosClsTrackBar" />)</entry>
+<entry><xref linkend="mthSetPosClsTrackBar"/></entry>
 <entry>Sets the new logical position of the slider in a trackbar and redraws the trackbar, if requested.</entry>
 </row>
 <row>
-<entry>setSelEnd (xref linkend="mthSetSelEnd" />)</entry>
+<entry><xref linkend="mthSetSelEnd"/></entry>
 <entry>Sets the logical ending position for the current selection range in a trackbar.</entry>
 </row>
 <row>
-<entry>setSelStart (xref linkend="mthSetSelStart" />)</entry>
+<entry><xref linkend="mthSetSelStart"/></entry>
 <entry>Sets the starting logical position for the current selection range in a trackbar.</entry>
 </row>
 <row>
-<entry>setTickAt (xref linkend="mthSetTickAt" />)</entry>
+<entry><xref linkend="mthSetTickAt"/></entry>
 <entry>Sets a tick mark at the specified logical position in the trackbar.</entry>
 </row>
 <row>
-<entry>setTickFrequency (xref linkend="mthSetTickFrequency" />)</entry>
+<entry><xref linkend="mthSetTickFrequency"/></entry>
 <entry>Sets the interval frequency for tick marks in a trackbar</entry>
 </row>
 </tbody></tgroup>
@@ -222,8 +223,8 @@
 <section id="tmthNewTrackBar"><title>newTrackBar (dialog object method)</title>
 <para>
   Track bar objects can not be instantiated by the programmer from Rexx code. Rather a trackbar object is obtained by
-  using the newTrackBar (xref linkend="mthNewTrackBar" />)() method of the dialog
-  object (xref linkend="chpDialogObject" />). The syntax is:
+  using the <xref linkend="mthNewTrackBar"/>() method of the dialog
+  object (<xref linkend="chpDialogObject" />). The syntax is:
 <programlisting>
 <![CDATA[
 >>-newTrackBar(--id--)---------------------------><
@@ -236,8 +237,8 @@
 
 <section id="tmthCreateTrackBar"><title>createTrackBar (UserDialog method)</title>
 <para>
-  A trackbar control can be added to the dialog template for a UserDialog (xref linkend="clsUserDialog" />) dialog
-  through the createTrackBar (xref linkend="mthCreateTrackBar" />)() method. The basic syntax is:
+  A trackbar control can be added to the dialog template for a <xref linkend="clsUserDialog"/> dialog
+  through the <xref linkend="mthCreateTrackBar"/>() method. The basic syntax is:
 <programlisting>
 <![CDATA[
 >>--createTrackBar(-id-,--x-,--y-,--cx-,--cy-+---------+--+------------+--)----><
@@ -252,8 +253,8 @@
 <section id="tmthConnectTrackBarEvent"><title>connectTrackBarEvent (dialog object method)</title>
 <para>
   To connect event notifications from an trackbar control use the
-  connectTrackBarEvent (xref linkend="mthConnectTrackBarEvent" />)() method of the
-  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
+ <xref linkend="mthConnectTrackBarEvent"/>() method of the
+  dialog (<xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting>
 <![CDATA[
@@ -266,7 +267,7 @@
 </section>  <!-- End connectTrackBarEvent() [EventNotification method] -->
 
 
-<section id="mthClearSelRange"><title>clearSelRange</title>
+<section id="mthClearSelRange" xreflabel="clearSelRange"><title>clearSelRange</title>
 <indexterm><primary>clearSelRange</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -297,7 +298,7 @@ range in a slider.</para>
 </variablelist>
 </section>
 
-<section id="mthClearTicks"><title>clearTicks</title>
+<section id="mthClearTicks" xreflabel="clearTicks"><title>clearTicks</title>
 <indexterm><primary>clearTicks</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -332,7 +333,7 @@ marks because they are created automatically by the slider.</para>
 </variablelist>
 </section>
 
-<section id="mthCountTicks"><title>countTicks</title>
+<section id="mthCountTicks" xreflabel="countTicks"><title>countTicks</title>
 <indexterm><primary>countTicks</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -351,7 +352,7 @@ automatically by the slider.</para>
 </variablelist>
 </section>
 
-<section id="mthGetLineStep"><title>getLineStep</title>
+<section id="mthGetLineStep" xreflabel="getLineStep"><title>getLineStep</title>
 <indexterm><primary>getLineStep</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -372,7 +373,7 @@ of the slider.</para>
 </variablelist>
 </section>
 
-<section id="mthGetPageStep"><title>getPageStep</title>
+<section id="mthGetPageStep" xreflabel="getPageStep"><title>getPageStep</title>
 <indexterm><primary>getPageStep</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -393,7 +394,7 @@ and maximum positions of the slider.</para>
 </variablelist>
 </section>
 
-<section id="mthGetTick"><title>getTick</title>
+<section id="mthGetTick" xreflabel="getTick"><title>getTick</title>
 <indexterm><primary>getTick</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -412,7 +413,7 @@ minimum and maximum positions of the slider.</para>
 <varlistentry><term>tic</term>
 <listitem><para>A zero-based index identifying a tick mark. A valid index is in the
 range of 0 to 2 ticks less than the tick count returned by the countTicks
-method (see countTicks (xref linkend="mthCountTicks" />)).
+method (see <xref linkend="mthCountTicks"/>).
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
@@ -423,7 +424,7 @@ did not specify a valid index for <emphasis role="italic">tic</emphasis>.
 </variablelist>
 </section>
 
-<section id="mthInitRange"><title>initRange</title>
+<section id="mthInitRange" xreflabel="initRange"><title>initRange</title>
 <indexterm><primary>initRange</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -485,7 +486,7 @@ and the tick frequency of the slider:
 </variablelist>
 </section>
 
-<section id="mthInitSelRange"><title>initSelRange</title>
+<section id="mthInitSelRange" xreflabel="initSelRange"><title>initSelRange</title>
 <indexterm><primary>initSelRange</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -533,7 +534,7 @@ trackbar is not redrawn. The default is <computeroutput>.false</computeroutput>.
 </variablelist>
 </section>
 
-<section id="mthPos"><title>pos</title>
+<section id="mthPos" xreflabel="pos"><title>pos</title>
 <indexterm><primary>pos</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -588,7 +589,7 @@ position.
 </variablelist>
 </section>
 
-<section id="mthRangeClsTrackBar"><title>range</title>
+<section id="mthRangeClsTrackBar" xreflabel="range"><title>range</title>
 <indexterm><primary>range</primary>
 <secondary>Trackbar class</secondary></indexterm>
 <programlisting>
@@ -619,7 +620,7 @@ positions of the slider.</para>
 </variablelist>
 </section>
 
-<section id="mthSelRange"><title>selRange</title>
+<section id="mthSelRange" xreflabel="selRange"><title>selRange</title>
 <indexterm><primary>selRange</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -638,7 +639,7 @@ range, separated by a blank.
 </variablelist>
 </section>
 
-<section id="mthSetLineStep"><title>setLineStep</title>
+<section id="mthSetLineStep" xreflabel="setLineStep"><title>setLineStep</title>
 <indexterm><primary>setLineStep</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -684,7 +685,7 @@ and the tick frequency of the slider:
 </variablelist>
 </section>
 
-<section id="mthSetMax"><title>setMax</title>
+<section id="mthSetMax" xreflabel="setMax"><title>setMax</title>
 <indexterm><primary>setMax</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -727,7 +728,7 @@ for a trackbar and redraws the trackbar, if required.</para>
 </variablelist>
 </section>
 
-<section id="mthSetMin"><title>setMin</title>
+<section id="mthSetMin" xreflabel="setMin"><title>setMin</title>
 <indexterm><primary>setMin</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -771,7 +772,7 @@ for a trackbar and redraws the trackbar, if required.</para>
 </variablelist>
 </section>
 
-<section id="mthSetPageStep"><title>setPageStep</title>
+<section id="mthSetPageStep" xreflabel="setPageStep"><title>setPageStep</title>
 <indexterm><primary>setPageStep</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -816,7 +817,7 @@ and the tick frequency of the slider:
 </variablelist>
 </section>
 
-<section id="mthSetPosClsTrackBar"><title>setPos</title>
+<section id="mthSetPosClsTrackBar" xreflabel="setPos"><title>setPos</title>
 <indexterm><primary>setPos</primary>
 <secondary>Trackbar class</secondary></indexterm>
 <programlisting>
@@ -866,7 +867,7 @@ the range of the trackbar already been set to 0 to 100 using the setRange method
 </variablelist>
 </section>
 
-<section id="mthSetSelEnd"><title>setSelEnd</title>
+<section id="mthSetSelEnd" xreflabel="setSelEnd"><title>setSelEnd</title>
 <indexterm><primary>setSelEnd</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -910,7 +911,7 @@ not have a selection range.</para>
 </variablelist>
 </section>
 
-<section id="mthSetSelStart"><title>setSelStart</title>
+<section id="mthSetSelStart" xreflabel="setSelStart"><title>setSelStart</title>
 <indexterm><primary>setSelStart</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -955,7 +956,7 @@ trackbar does not have a selection range.</para>
 </variablelist>
 </section>
 
-<section id="mthSetTickAt"><title>setTickAt</title>
+<section id="mthSetTickAt" xreflabel="setTickAt"><title>setTickAt</title>
 <indexterm><primary>setTickAt</primary></indexterm>
 <programlisting>
 <![CDATA[
@@ -992,7 +993,7 @@ logical position in the slider.</para>
 </variablelist>
 </section>
 
-<section id="mthSetTickFrequency"><title>setTickFrequency</title>
+<section id="mthSetTickFrequency" xreflabel="setTickFrequency"><title>setTickFrequency</title>
 <indexterm><primary>setTickFrequency</primary></indexterm>
 <programlisting>
 <![CDATA[
