@@ -76,22 +76,22 @@
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically create a month calendar control in the template of a user <link
-    linkend="clsUserDialog">dialog</link>, use the createMonthCalendar (xref linkend="mthCreateMonthCalendar" />)
+    To dynamically create a month calendar control in the template of a user
+    dialog (xref linkend="clsUserDialog" />), use the createMonthCalendar (xref linkend="mthCreateMonthCalendar" />)
     method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
   <listitem>
   <para>
-    To receive notification of month calendar events use the <link
-    linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>)() method.
+    To receive notification of month calendar events use the
+    connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />))() method.
   </para>
   <para>
     One of the month calendar event notifications, the GETDAYSTATE (xref linkend="evtMonthCalendarGETDAYSTATE" />)
     notification, requires that a buffer of day states be returned in reply. The Rexx programmer can not construct the
-    proper buffer in Rexx code. The DayState (xref linkend="clsDayState" />) and <link
-    linkend="clsDayStates">DayStates</link> classes are provided to help manage day states and to construct the proper
+    proper buffer in Rexx code. The DayState (xref linkend="clsDayState" />) and
+    DayStates (xref linkend="clsDayStates" />) classes are provided to help manage day states and to construct the proper
     buffer.
   </para>
   </listitem></varlistentry>
@@ -295,8 +295,8 @@
 <section id="tmthNewMonthCalendar"><title>newMonthCalendar (dialog object method)</title>
 <para>
   <computeroutput>MonthCalendar</computeroutput> objects can not be instantiated by the programmer from Rexx code using
-  a <emphasis role="italic">new</emphasis>() method. Rather, a month calendar object is obtained by using the <link
-  linkend="mthNewMonthCalendar">newMonthCalendar</link>() method of the dialog (xref linkend="chpDialogObject" />)
+  a <emphasis role="italic">new</emphasis>() method. Rather, a month calendar object is obtained by using the
+  newMonthCalendar (xref linkend="mthNewMonthCalendar" />)() method of the dialog (xref linkend="chpDialogObject" />)
   object. The syntax is:
 <programlisting>
 <![CDATA[
@@ -311,9 +311,9 @@
 
 <section id="tmthCreateMonthCalendar"><title>createMonthCalendar (UserDialog method)</title>
 <para>
-  A <computeroutput>MonthCalendar</computeroutput> object can be added to the dialog template in a <link
-  linkend="clsUserDialog">UserDialog</link> through the <link
-  linkend="mthCreateMonthCalendar">createMonthCalendar</link> method. The basic syntax is:
+  A <computeroutput>MonthCalendar</computeroutput> object can be added to the dialog template in a
+  UserDialog (xref linkend="clsUserDialog" />) through the
+  createMonthCalendar (xref linkend="mthCreateMonthCalendar" />) method. The basic syntax is:
 
 <programlisting>
 <![CDATA[
@@ -328,9 +328,9 @@
 
 <section id="tmthConnectMonthCalendarEvent"><title>connectMonthCalendarEvent (dialog object method)</title>
 <para>
-  To connect event notifications from a month calendar control use the <link
-  linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link>() method of the <link
-  linkend="chpDialogObject">dialog</link> object. The basic syntax is:
+  To connect event notifications from a month calendar control use the
+  connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />)() method of the
+  dialog (xref linkend="chpDialogObject" />) object. The basic syntax is:
 
 <programlisting> <![CDATA[
 >>-connectMonthCalendarEvent(--id--,--event--+----------------+--)-------------><
@@ -453,8 +453,8 @@
         <listitem>
         <para>
           The month calendar will send the GETDAYSTATE event (xref linkend="ovvEvents" />) notification to request
-          information about which days should be displayed in bold. Use the <link
-          linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method to connect this notification
+          information about which days should be displayed in bold. Use the
+          connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />) method to connect this notification
           with a method in the Rexx dialog object.
         </para>
         </listitem></varlistentry>
@@ -462,8 +462,8 @@
         <listitem>
         <para>
           This style allows the user to select a range of dates within the control. By default, the maximum range is one
-          week. The programmer changes the maximum range that can be selected by using the <link
-          linkend="mthSetRangeClsDTP">setMaxSelection</link> method.
+          week. The programmer changes the maximum range that can be selected by using the
+          setMaxSelection (xref linkend="mthSetRangeClsDTP" />) method.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTODAY</term>
@@ -1293,8 +1293,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The maximum date range that can be selected can be changed by using the <link
-    linkend="mthSetMaxSelection">setMaxSelection</link> .
+    The maximum date range that can be selected can be changed by using the
+    setMaxSelection (xref linkend="mthSetMaxSelection" />) .
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1378,8 +1378,8 @@
   <para>
     <emphasis role="bold">Note</emphasis> that the rectangle returned will not include the width of the <emphasis
     role="italic">Today</emphasis> string. If the month calendar does not have the NOTODAY style set, the programmer
-    should also get the <emphasis role="italic">Today</emphasis> string width by using the <link
-    linkend="mthGetMaxTodayWidth">getMaxTodayWidth</link> method. For the width portion of the minimum required size,
+    should also get the <emphasis role="italic">Today</emphasis> string width by using the
+    getMaxTodayWidth (xref linkend="mthGetMaxTodayWidth" />) method. For the width portion of the minimum required size,
     use the larger of the value reported by <emphasis role="italic">getMaxTodayWidth</emphasis> and the value reported
     by <emphasis role="italic">getMinRect</emphasis>. This will ensure that the <emphasis role="italic">
     Today</emphasis> string is not clipped..
@@ -1682,8 +1682,8 @@
   <para>
     The <emphasis role="italic">getSelectionRange</emphasis> method is for month calendar controls that have the MULTI
     (multi-selection) style. If the month calendar is a single-selection calendar this method returns
-    <computeroutput>.false</computeroutput>. For a single-selection month calendar the <link
-    linkend="atrDate">date</link> attribute will reflect the current selection.
+    <computeroutput>.false</computeroutput>. For a single-selection month calendar the
+    date (xref linkend="atrDate" />) attribute will reflect the current selection.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -1738,8 +1738,8 @@
       <listitem>
       <para>
         The month calendar will send the GETDAYSTATE event (xref linkend="ovvEvents" />) notification to request
-        information about which days should be displayed in bold. Use the <link
-        linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method to connect this notification
+        information about which days should be displayed in bold. Use the
+        connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />) method to connect this notification
         with a method in the Rexx dialog object.
       </para>
       </listitem></varlistentry>
@@ -1747,8 +1747,8 @@
       <listitem>
       <para>
         This style allows the user to select a range of dates within the control. By default, the maximum range is one
-        week. The programmer changes the maximum range that can be selected by using the <link
-        linkend="mthSetRangeClsDTP">setMaxSelection</link> method.
+        week. The programmer changes the maximum range that can be selected by using the
+        setMaxSelection (xref linkend="mthSetRangeClsDTP" />) method.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>NOTODAY</term>
@@ -2150,8 +2150,8 @@ Column: The NIL object
         <listitem>
         <para>
           The month calendar will send the GETDAYSTATE event (xref linkend="ovvEvents" />) notification to request
-          information about which days should be displayed in bold. Use the <link
-          linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method to connect this notification
+          information about which days should be displayed in bold. Use the
+          connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />) method to connect this notification
           with a method in the Rexx dialog object.
         </para>
         </listitem></varlistentry>
@@ -2159,8 +2159,8 @@ Column: The NIL object
         <listitem>
         <para>
           This style allows the user to select a range of dates within the control. By default, the maximum range is one
-          week. The programmer changes the maximum range that can be selected by using the <link
-          linkend="mthSetRangeClsDTP">setMaxSelection</link> method.
+          week. The programmer changes the maximum range that can be selected by using the
+          setMaxSelection (xref linkend="mthSetRangeClsDTP" />) method.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTODAY</term>
@@ -2270,8 +2270,8 @@ Column: The NIL object
         <listitem>
         <para>
           The month calendar will send the GETDAYSTATE event (xref linkend="ovvEvents" />) notification to request
-          information about which days should be displayed in bold. Use the <link
-          linkend="mthConnectMonthCalendarEvent">connectMonthCalendarEvent</link> method to connect this notification
+          information about which days should be displayed in bold. Use the
+          connectMonthCalendarEvent (xref linkend="mthConnectMonthCalendarEvent" />) method to connect this notification
           with a method in the Rexx dialog object.
         </para>
         </listitem></varlistentry>
@@ -2279,8 +2279,8 @@ Column: The NIL object
         <listitem>
         <para>
           This style allows the user to select a range of dates within the control. By default, the maximum range is one
-          week. The programmer changes the maximum range that can be selected by using the <link
-          linkend="mthSetRangeClsDTP">setMaxSelection</link> method.
+          week. The programmer changes the maximum range that can be selected by using the
+          setMaxSelection (xref linkend="mthSetRangeClsDTP" />) method.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>NOTODAY</term>
@@ -2350,8 +2350,8 @@ Column: The NIL object
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The <emphasis role="italic">replaceStyle</emphasis> method is essentially a combination of the <link
-    linkend="mthRemoveStyleClsMC">removeStyle</link> and addStyle (xref linkend="mthAddStyleClsMC" />) methods into
+    The <emphasis role="italic">replaceStyle</emphasis> method is essentially a combination of the
+    removeStyle (xref linkend="mthRemoveStyleClsMC" />) and addStyle (xref linkend="mthAddStyleClsMC" />) methods into
     one convenience method.
   </para>
   </listitem></varlistentry>
@@ -2840,12 +2840,12 @@ Column: The NIL object
   <para>
     A month calendar uses a day state to determine how to display individual dates in a month. The day state specifies
     which days should be bolded. The month calendar must have the DAYSTATE (xref linkend="mthCreateMonthCalendar" />)
-    style or setting the day state has no effect. The programmer must use the <link
-    linkend="clsDayState">DayState</link> class to create the day state objects.
+    style or setting the day state has no effect. The programmer must use the
+    DayState (xref linkend="clsDayState" />) class to create the day state objects.
   </para>
   <para>
-    The number of elements in <emphasis role="italic">dayStates</emphasis> must equal the return value from <link
-    linkend="mthGetMonthRange">getMonthRange</link> when used with the PARTIALLY keyword argument. That is, <emphasis
+    The number of elements in <emphasis role="italic">dayStates</emphasis> must equal the return value from
+    getMonthRange (xref linkend="mthGetMonthRange" />) when used with the PARTIALLY keyword argument. That is, <emphasis
     role="italic">dayStates</emphasis> must contain values that correspond with all months currently in the control's
     display, in chronological order. This includes the two months that may be partially displayed before the first month
     and after the last month.
@@ -2913,8 +2913,8 @@ Column: The NIL object
 
 <para>
   Sets the day states for 3 months that are currently visible (assumed) within a month calendar control. The <emphasis
-  role="italic">setDayStateQuick</emphasis> method is almost identical to the <link
-  linkend="mthSetDayState">setDayStat</link> method except that the number of day (xref linkend="clsDayState" />)
+  role="italic">setDayStateQuick</emphasis> method is almost identical to the
+  setDayStat (xref linkend="mthSetDayState" />) method except that the number of day (xref linkend="clsDayState" />)
   state objects is fixed at 3.
 </para>
 <variablelist>
@@ -2955,8 +2955,8 @@ Column: The NIL object
   <para>
     A month calendar uses a day state to determine how to display individual dates in a month. The day state specifies
     which days should be bolded. The month calendar must have the DAYSTATE (xref linkend="mthCreateMonthCalendar" />)
-    style or setting the day state has no effect. The programmer must use the <link
-    linkend="clsDayState">DayState</link> class to create the day state objects.
+    style or setting the day state has no effect. The programmer must use the
+    DayState (xref linkend="clsDayState" />) class to create the day state objects.
   </para>
   <para>
     The most common use case for a month calendar is to display 1 month. In this case, when setting the day states for

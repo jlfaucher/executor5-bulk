@@ -150,12 +150,12 @@
     All menus assign menu item identifiers to command items and submenus. ooDialog uses what the Windows operating
     system calls <emphasis role="italic">extended</emphasis> menus. Extended menus also assign identifiers to
     separators. Identifiers are used for menu command events (xref linkend="sctMenuCommandEvents" />). In addition, a
-    menu item can be specified using its identifier in method invocations. For example, to <link
-    linkend="mthEnableClsMenu">enable</link> or disable (xref linkend="mthDisableClsMenu" />) a menu item.
+    menu item can be specified using its identifier in method invocations. For example, to
+    enable (xref linkend="mthEnableClsMenu" />) or disable (xref linkend="mthDisableClsMenu" />) a menu item.
   </para>
   <para>
-    Identifiers allow the programmer to specify any menu item anywhere in the menu hiearchy. The <link
-    linkend="mthGetIDClsMenu">getID</link>() method can be used to retrieve the identifier of the menu item at a
+    Identifiers allow the programmer to specify any menu item anywhere in the menu hiearchy. The
+    getID (xref linkend="mthGetIDClsMenu" />)() method can be used to retrieve the identifier of the menu item at a
     specified position
   </para>
   </listitem></varlistentry>
@@ -178,12 +178,12 @@
   <varlistentry id="itmMenuSymbolicIDs"><term><emphasis role="bold">Symbolic Menu Item IDs</emphasis></term>
   <listitem>
   <para>
-    Menu <emphasis role="italic">item identifiers</emphasis> are essentially resource <link
-    linkend="defResourceId">IDs</link>. The programmer can use symbolic IDs (xref linkend="defSymbolicId" />) for
+    Menu <emphasis role="italic">item identifiers</emphasis> are essentially resource
+    IDs (xref linkend="defResourceId" />). The programmer can use symbolic IDs (xref linkend="defSymbolicId" />) for
     menu item identifiers rather than numeric IDs for any argument in a menu object method that uses a menu item
-    identifier. However, to do so, the programmer <emphasis role="italic">must</emphasis> use the global <link
-    linkend="dotConstDir">.constDir</link>. If the global <computeroutput>.constDir</computeroutput> is not used, then
-    all menu item identifier arguments <emphasis role="bold">must</emphasis> be numeric.
+    identifier. However, to do so, the programmer <emphasis role="italic">must</emphasis> use the global
+    .constDir (xref linkend="dotConstDir" />). If the global <computeroutput>.constDir</computeroutput> is not used,
+    then all menu item identifier arguments <emphasis role="bold">must</emphasis> be numeric.
   </para> </listitem></varlistentry>
 </variablelist>
 <para>
@@ -209,9 +209,9 @@
 <para>
   When a user selects a menu command item, an event (xref linkend="ovvEvents" />) is generated and the operating
   system sends a notification to the owner window of the menu. The ooDialog framework provides methods to connect this
-  menu command notification to a method in the Rexx dialog object in a similar manner to connecting dialog control <link
-  linkend="sctConnectingEvents">notifications</link>. The event connection methods are contained within the various menu
-  objects and are similar to the event connection methods of the dialog object.
+  menu command notification to a method in the Rexx dialog object in a similar manner to connecting dialog control
+  notifications (xref linkend="sctConnectingEvents" />). The event connection methods are contained within the
+  various menu objects and are similar to the event connection methods of the dialog object.
 </para>
 <para>
   However, there are some specific details when dealing with menus that should be understood. The menu command event is
@@ -221,17 +221,18 @@
   dialog that the notification is expected to be sent to.
 </para>
 <para>
-  A Rexx dialog control object has one, and only one, underlying dialog. But, a Rexx <link linkend="clsMenuBar">menu bar
-  </link> object can be attached to one dialog, then detached and attached to a different dialog. Likewise, the same
+  A Rexx dialog control object has one, and only one, underlying dialog. But, a Rexx
+  menu bar (xref linkend="clsMenuBar" />) object can be attached to one dialog, then detached and attached to a
+  different dialog. Likewise, the same
   context (xref linkend="clsPopupMenu" />) menu could be used by any number of different dialogs. Because of this, it
   may be necessary to connect a menu command item notification to more than one dialog.
 </para>
 <para>
   For example, the same context menu object could be used by the programmer in several different dialogs. In this case,
   it is not sufficient to connect each of the menu items once, to one dialog. Rather, the menu items need to be
-  connected to each dialog where the context menu is used. When the programmer <link
-  linkend="mthShowClsPopupMenu">shows</link> the context menu, it will have one and only one owner dialog. When the user
-  selects a menu item, the notification is sent to that owner dialog.
+  connected to each dialog where the context menu is used. When the programmer
+  shows (xref linkend="mthShowClsPopupMenu" />) the context menu, it will have one and only one owner dialog. When
+  the user selects a menu item, the notification is sent to that owner dialog.
 </para>
 <para>
   Another example would be a program that shows different dialogs at various times. The dialogs are different, but all
@@ -240,10 +241,11 @@
   menu bar is attached to during the program.
 </para>
 <para>
-  One last point the programmer should be aware of. Both a regular menu item selection and a <link
-  linkend="clsButton">button</link> click generate the same event notification. <emphasis role="bold">Note</emphasis>
-  that a <emphasis role="italic">system</emphasis> menu command event uses a different type of notification than buttons
-  or regular menus. A system menu command event notification will never be the same as a button click notification.
+  One last point the programmer should be aware of. Both a regular menu item selection and a
+  button (xref linkend="clsButton" />) click generate the same event notification. <emphasis
+  role="bold">Note</emphasis> that a <emphasis role="italic">system</emphasis> menu command event uses a different type
+  of notification than buttons or regular menus. A system menu command event notification will never be the same as a
+  button click notification.
 </para>
 <para>
   Sometimes the action to take when a button is clicked and the action to take when a menu item is selected are the
@@ -254,10 +256,10 @@
 <para>
   E.g., take the case of an OK push button and an Exit menu item. Many times the action to take for both is exactly the
   same. Here the ooDialog programmer would use the same resource ID for both the button and the menu item. OK buttons
-  normally use the resource ID of <computeroutput>IDOK</computeroutput>, which the ooDialog framework <link
-  linkend="sctStandardEventMethods">automatically</link> connects to the OK (xref linkend="mthOk" />) method. If the
-  programmer also uses the IDOK id for the Exit menu item, then nothing else need be done. Whether the user selects the
-  Exit menu item, or clicks the OK button, the same method in the Rexx dialog object will be invoked.
+  normally use the resource ID of <computeroutput>IDOK</computeroutput>, which the ooDialog framework
+  automatically (xref linkend="sctStandardEventMethods" />) connects to the OK (xref linkend="mthOk" />) method. If
+  the programmer also uses the IDOK id for the Exit menu item, then nothing else need be done. Whether the user selects
+  the Exit menu item, or clicks the OK button, the same method in the Rexx dialog object will be invoked.
 </para>
 <para>
   Notice that, since a button click and a menu item selection generate the same notification, it is not possible to
@@ -297,10 +299,10 @@
     command items is also in use.
   </para>
   <para>
-    Auto connection can be explicitly turned on by using the <link
-    linkend="mthSetAutoConnection">setAutoConnection</link> <emphasis role="italic">before</emphasis> a menu bar is
-    attached, or a context menu is assigned, to a dialog. <emphasis role="italic">setAutoConnection</emphasis> can also
-    be used to turn auto connection off at any time.
+    Auto connection can be explicitly turned on by using the
+    setAutoConnection (xref linkend="mthSetAutoConnection" />) <emphasis role="italic">before</emphasis> a menu bar
+    is attached, or a context menu is assigned, to a dialog. <emphasis role="italic">setAutoConnection</emphasis> can
+    also be used to turn auto connection off at any time.
   </para>
   <para>
     The following is some specific details regarding auto connection for the different menu classes and menu class
@@ -318,8 +320,9 @@
       <para>
         If auto connection is turned on in the menu bar that the item is inserted into, and the menu bar is already
         attached to a dialog, then the item will be automatically connected. The method name that is used for the
-        connected method is based on the current auto connection status (<link linkend="mthGetAutoConnectStatus">get
-        AutoConnectionStatus</link> can be used to determine the current auto connection status.)
+        connected method is based on the current auto connection status
+        (getAutoConnectionStatus (xref linkend="mthGetAutoConnectStatus" />) can be used to determine the current
+        auto connection status.)
       </para>
       <para>
         This will <emphasis role="italic">only</emphasis> be done if the item is being inserted by item identifier, not
@@ -345,20 +348,19 @@
       </para>
       <para>
         Note that <emphasis role="italic">setAutoConnection</emphasis> has to be invoked on the top-level menu of the
-        context menu. Invoking it on a submenu of the context menu would have no effect. When the <link
-        linkend="mthTrack">track</link> or show (xref linkend="mthShowClsPopupMenu" />) methods are used with a
+        context menu. Invoking it on a submenu of the context menu would have no effect. When the
+        track (xref linkend="mthTrack" />) or show (xref linkend="mthShowClsPopupMenu" />) methods are used with a
         popup menu, auto connection is ignored.
       </para>
       </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">ScriptMenuBar class</emphasis></term>
       <listitem>
       <para>
-        Auto connection can  be turned on explicitly using the <link
-        linkend="mthSetAutoConnection">setAutoConnection</link> method <emphasis role="italic">after</emphasis> the
-        <computeroutput>ScriptMenuBar</computeroutput> is instantiated, but <emphasis role="italic">before</emphasis> it
-        is attached to a dialog.
-      </para>
-      </listitem></varlistentry>
+        Auto connection can  be turned on explicitly using the
+        setAutoConnection (xref linkend="mthSetAutoConnection" />) method <emphasis role="italic">after</emphasis>
+        the <computeroutput>ScriptMenuBar</computeroutput> is instantiated, but <emphasis
+        role="italic">before</emphasis> it is attached to a dialog.
+      </para> </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">UserMenuBar class</emphasis></term>
       <listitem>
       <para>
@@ -366,12 +368,11 @@
         <computeroutput>UserMenuBar</computeroutput>.
       </para>
       <para>
-        Auto connection can  be turned on explicitly using the <link
-        linkend="mthSetAutoConnection">setAutoConnection</link> method <emphasis role="italic">after</emphasis> the
-        <computeroutput>UserMenuBar</computeroutput> is instantiated, but <emphasis role="italic">before</emphasis> it
-        is attached to a dialog.
-      </para>
-      </listitem></varlistentry>
+        Auto connection can  be turned on explicitly using the
+        setAutoConnection (xref linkend="mthSetAutoConnection" />) method <emphasis role="italic">after</emphasis>
+        the <computeroutput>UserMenuBar</computeroutput> is instantiated, but <emphasis role="italic">before</emphasis>
+        it is attached to a dialog.
+      </para> </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -389,8 +390,8 @@
     <computeroutput>UserMenuBar</computeroutput> through the addItem (xref linkend="mthAddItem" />) method, or by
     specifying <computeroutput>.true</computeroutput> for the <emphasis role="italic">connect</emphasis> argument in the
     new (xref linkend="mthNewClsScriptMenuBar" />) method of the <computeroutput>ScriptMenuBar</computeroutput>. The
-    request can also, possibly, be made by specifying a method to invoke when inserting a command item through the <link
-    linkend="mthInsertItem">insertItem</link> method.
+    request can also, possibly, be made by specifying a method to invoke when inserting a command item through the
+    insertItem (xref linkend="mthInsertItem" />) method.
   </para>
   <para>
     The following is some specific details regarding connection requests for the different menu classes and menu class
@@ -429,8 +430,8 @@
       <varlistentry><term><emphasis role="bold">ScriptMenuBar class</emphasis></term>
       <listitem>
       <para>
-        Connection requests are made by using the <emphasis role="italic">connnect</emphasis> argument in the <link
-        linkend="mthNewClsScriptMenuBar">new</link> method of the class. If <emphasis role="italic">connect</emphasis>
+        Connection requests are made by using the <emphasis role="italic">connnect</emphasis> argument in the
+        new (xref linkend="mthNewClsScriptMenuBar" />) method of the class. If <emphasis role="italic">connect</emphasis>
         is true, then a connection request is made for each command item found in the resource script, using a method
         name constructed from the text of the command item.
       </para>
@@ -438,8 +439,8 @@
       <varlistentry><term><emphasis role="bold">UserMenuBar class</emphasis></term>
       <listitem>
       <para>
-        In a <computeroutput>UserMenuBar</computeroutput>, a connection request can be made in the <link
-        linkend="mthAddItem">addItem</link> method by specifying a method name as the last argument, the <emphasis
+        In a <computeroutput>UserMenuBar</computeroutput>, a connection request can be made in the
+        addItem (xref linkend="mthAddItem" />) method by specifying a method name as the last argument, the <emphasis
         role="italic">mName</emphasis> argument.
       </para>
       </listitem></varlistentry>
@@ -764,8 +765,8 @@
 <para>
   All the menu classes in ooDialog are similar. Menus have a large number of methods that are common to all types of
   menus. These common methods are contained in the <computeroutput>Menu</computeroutput> class, a mixin class inherited
-  by all menu classes. This document treats the menu object in the same way it does the dialog <link
-  linkend="chpDialogObject">object</link> and the dialog control object (xref linkend="chpDialogControlObject" />),
+  by all menu classes. This document treats the menu object in the same way it does the dialog
+  object (xref linkend="chpDialogObject" />) and the dialog control object (xref linkend="chpDialogControlObject" />),
   as an abstract concept. However, in this case the abstract menu object and the <computeroutput>Menu</computeroutput>
   mixin class are essentially the same.
 </para>
@@ -1065,8 +1066,8 @@
   </para>
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> class method is used for all types of menus. However, the
-    programmer should be aware of the differences in coding event <link
-    linkend="sctMenuCommandEventHandlers">handlers</link> for SystemMenus (xref linkend="clsSystemMenu" />) and other
+    programmer should be aware of the differences in coding event
+    handlers (xref linkend="sctMenuCommandEventHandlers" />) for SystemMenus (xref linkend="clsSystemMenu" />) and other
     types of menus.
   </para>
   </listitem></varlistentry>
@@ -1239,9 +1240,9 @@
   <listitem>
   <para>
     Although the programmer can not set the <emphasis role="italic">wID</emphasis> attribute directly, it can be set
-    when menu is instantiated, for instance see the <computeroutput>BinaryMenuBar</computeroutput> <link
-    linkend="mthNewClsBinaryMenuBar">new</link> method or the <computeroutput>PopupMenu</computeroutput> <link
-    linkend="mthNewClsPopupMenu">new</link> method. In addition, the setID (xref linkend="mthSetID" />) method can be
+    when menu is instantiated, for instance see the <computeroutput>BinaryMenuBar</computeroutput>
+    new (xref linkend="mthNewClsBinaryMenuBar" />) method or the <computeroutput>PopupMenu</computeroutput>
+    new (xref linkend="mthNewClsPopupMenu" />) method. In addition, the setID (xref linkend="mthSetID" />) method can be
     used to set or change the ID of a <emphasis role="italic">submenu</emphasis>.
   </para>
   </listitem></varlistentry>
@@ -1270,8 +1271,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The item ID(s) (xref linkend="entMenuItemIdentifier" />) to be checked, may be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      The item ID(s) (xref linkend="entMenuItemIdentifier" />) to be checked, may be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -1395,8 +1396,8 @@
     <varlistentry><term>check [required]</term>
     <listitem>
     <para>
-      The resource ID of the menu item in the group that will be checked, may be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+      The resource ID of the menu item in the group that will be checked, may be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>byPosition [optional]</term>
@@ -1522,8 +1523,8 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
-        ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog <link
-        linkend="chpDialogObject">dialog</link> object.
+        ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
+        dialog (xref linkend="chpDialogObject" />) object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -1586,8 +1587,8 @@
       <para>
         A Rexx dialog to connect the notification to. By default, the notification is is connected to the Rexx dialog that
         the menu is attached (xref linkend="mthAttachTo" />) or assinged (xref linkend="mthAssignTo" />) to. If
-        omitted and there is no assigned or attached dialog, no connection is made and the <link
-        linkend="dotSystemErrorCode">.systemErrorCode</link> is set as described in the Details section. (To connect a
+        omitted and there is no assigned or attached dialog, no connection is made and the
+        .systemErrorCode (xref linkend="dotSystemErrorCode" />) is set as described in the Details section. (To connect a
         menu item command event, there must be a dialog to connect it to.)
       </para>
       </listitem></varlistentry>
@@ -1610,8 +1611,8 @@
   </para>
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> method is used for all types of menus. However, the
-    programmer should be aware of the differences in coding event <link
-    linkend="sctMenuCommandEventHandlers">handlers</link> for SystemMenus (xref linkend="clsSystemMenu" />) and other
+    programmer should be aware of the differences in coding event
+    handlers (xref linkend="sctMenuCommandEventHandlers" />) for SystemMenus (xref linkend="clsSystemMenu" />) and other
     types of menus.
   </para>
   </listitem></varlistentry>
@@ -1694,8 +1695,8 @@
 
 <para>
   Connects menu event (xref linkend="ovvEvents" />) notifications to a method in the Rexx dialog. These are menu
-  notifications <emphasis role="italic">other</emphasis> than the menu command <link
-  linkend="sctMenuCommandEvents">event</link> notifications.
+  notifications <emphasis role="italic">other</emphasis> than the menu command
+  event (xref linkend="sctMenuCommandEvents" />) notifications.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1758,8 +1759,8 @@
     <para>
       The Windows handle (xref linkend="defHandle" />) of an object to use to filter the connected notification. The
       use of this filter is specific to the event being connectd. For the CONTEXTMENU event it can be a window handle,
-      in which case only notifications for that specific window are generated. When this menu is a menu <link
-      linkend="clsMenuBar">bar</link>, then for the INITMENUPOPUP event it can be the menu handle of a submenu, in which
+      in which case only notifications for that specific window are generated. When this menu is a menu
+      bar (xref linkend="clsMenuBar" />), then for the INITMENUPOPUP event it can be the menu handle of a submenu, in which
       case only notifications for that specific submenu are generated. When this menu is not a menu bar, the argument is
       ignored. For the INITMENU event, this argument is ignored.
     </para>
@@ -1862,10 +1863,10 @@
 <section id="evtMenuObjectCONTEXTMENU"><title>Context Menu Event Handler</title>
 <indexterm><primary>menu object event</primary><secondary>CONTEXTMENU</secondary></indexterm>
 <para>
-  <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the <link
-  linkend="mthConnectMenuEvent">connectMenuEvent</link>, described in this section, is the same as the event handler
-  described (xref linkend="evtPopupMenuCONTEXT" />) for the CONTEXTMENU event connected through one of the <link
-  linkend="clsPopupMenu">PopupMenu</link> class methods. The event and event handler are the same no matter how the
+  <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the
+  connectMenuEvent (xref linkend="mthConnectMenuEvent" />), described in this section, is the same as the event handler
+  described (xref linkend="evtPopupMenuCONTEXT" />) for the CONTEXTMENU event connected through one of the
+  PopupMenu (xref linkend="clsPopupMenu" />) class methods. The event and event handler are the same no matter how the
   event connection is made.
 </para>
 <para>
@@ -2186,8 +2187,8 @@
     <varlistentry><term>ids [required]</term>
     <listitem>
     <para>
-      A <computeroutput>Collection</computeroutput> object containing the menu item <link
-      linkend="sctMenuItemIDs">IDs</link> to connect.  The IDs can be by position IDs or resource IDs,
+      A <computeroutput>Collection</computeroutput> object containing the menu item
+      IDs (xref linkend="sctMenuItemIDs" />) to connect.  The IDs can be by position IDs or resource IDs,
       depending on the value of the <emphasis role="italic">byPosition</emphasis> argument. However, they must be all
       the same type, all resource IDs or all by position IDs.
     </para>
@@ -2269,8 +2270,8 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
-        ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog <link
-        linkend="chpDialogObject">dialog</link> object.
+        ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
+        dialog (xref linkend="chpDialogObject" />) object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2346,13 +2347,13 @@
   <listitem>
   <para>
     When a popup menu (a submenu) is deleted, the operating system frees all resources used by the popup menu and any
-    references to the popup are no longer valid. To be explicit, this means that any <link
-    linkend="clsPopupMenu">PopupMenu</link> objects that represent this submenu are no longer valid, which would also
+    references to the popup are no longer valid. To be explicit, this means that any
+    PopupMenu (xref linkend="clsPopupMenu" />) objects that represent this submenu are no longer valid, which would also
     include any menu that has this submenu as one of its submenus.
   </para>
   <para>
-    To remove a submenu from a menu, and still use the submenu, use the <link
-    linkend="mthRemovePopup">removePopup</link> method.
+    To remove a submenu from a menu, and still use the submenu, use the
+    removePopup (xref linkend="mthRemovePopup" />) method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2425,8 +2426,8 @@
   <para>
     It is only when a menubar is not attached to a window, or a popup menu is not part of a menubar, that a menu needs
     to be destroyed. This should be done before the application ends, but it could be done at any time if the menu is no
-    longer needed. Do not destroy a submenu of a menubar unless the submenu has been <link
-    linkend="mthRemovePopup">removed</link> from the menubar, when the menubar is attached to a dialog. The results are
+    longer needed. Do not destroy a submenu of a menubar unless the submenu has been
+    removed (xref linkend="mthRemovePopup" />) from the menubar, when the menubar is attached to a dialog. The results are
     unpredictable.
   </para>
   <para>
@@ -2490,8 +2491,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) to be disabled, may be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) to be disabled, may be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -2585,8 +2586,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) to be enabled, may be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) to be enabled, may be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -2670,8 +2671,8 @@
 </programlisting>
 
 <para>
-  Returns a <computeroutput>Directory</computeroutput> object containing the current status of <link
-  linkend="varAutoConnection">autoconnection</link>.
+  Returns a <computeroutput>Directory</computeroutput> object containing the current status of
+  autoconnection (xref linkend="varAutoConnection" />).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2822,15 +2823,15 @@
     which can be used to test if the handle is still valid.
   </para>
   <para>
-    The value returned from <emphasis role="italic">getHandle</emphasis> is identical to the value of the <link
-    linkend="atrHMenu">hMenu</link> attribute.
+    The value returned from <emphasis role="italic">getHandle</emphasis> is identical to the value of the
+    hMenu (xref linkend="atrHMenu" />) attribute.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example gets the handle for an Edit submenu and then uses it as a filter in the <link
-    linkend="mthConnectMenuEvent">connectMenuEvent</link> method:
+    This example gets the handle for an Edit submenu and then uses it as a filter in the
+    connectMenuEvent (xref linkend="mthConnectMenuEvent" />) method:
 <programlisting>
 <![CDATA[
 
@@ -2983,8 +2984,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to get the state of. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to get the state of. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3157,8 +3158,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the popup menu to get the handle for. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the popup menu to get the handle for. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3203,8 +3204,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example gets the handle of a submenu in the menubar in order to use it as a filter in the <link
-    linkend="mthConnectMenuEvent">connectMenuEvent</link> method:
+    This example gets the handle of a submenu in the menubar in order to use it as a filter in the
+    connectMenuEvent (xref linkend="mthConnectMenuEvent" />) method:
 <programlisting>
 <![CDATA[
 
@@ -3244,8 +3245,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the popup menu to get the handle for. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the popup menu to get the handle for. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3342,8 +3343,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to get the text for. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to get the text for. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3391,10 +3392,10 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example comes from some debug code. The programmer has connected all menu command items (<link
-    linkend="mthConnectAllCommandEvents">connectAllCommandEvents</link>), but is having trouble supplying the correct
-    event handling method in the code. The debug code gets the text of the menu item and then uses <link
-    linkend="mthItemTextToMethodName">itemTextToMethodName</link> to determine the correct method name:
+    This example comes from some debug code. The programmer has connected all menu command items (
+    connectAllCommandEvents (xref linkend="mthConnectAllCommandEvents" />)), but is having trouble supplying the correct
+    event handling method in the code. The debug code gets the text of the menu item and then uses
+    itemTextToMethodName (xref linkend="mthItemTextToMethodName" />) to determine the correct method name:
 <programlisting>
 <![CDATA[
 
@@ -3434,8 +3435,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to get the text for. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to get the text for. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -3564,8 +3565,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) to be grayed, may be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) to be grayed, may be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -3660,8 +3661,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) to be high lighted, may be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) to be high lighted, may be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -3752,8 +3753,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to be inserted. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to be inserted. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>text [required]</term>
@@ -3898,9 +3899,9 @@
     <varlistentry><term>connect</term>
     <listitem>
     <para>
-      Whether to automatically connect the command item to a method in the owning dialog. This is a <link
-      linkend="varConnectionRequest">connection request</link> type of connection type. Do not mix this with <link
-      linkend="varAutoConnection">autoconnection</link>. The default is false. If connect is true and the menu is
+      Whether to automatically connect the command item to a method in the owning dialog. This is a
+      connection request (xref linkend="varConnectionRequest" />) type of connection type. Do not mix this with
+      autoconnection (xref linkend="varAutoConnection" />). The default is false. If connect is true and the menu is
       already attached to a dialog the connection is made immediately. Otherwise the request is put in to a queue and
       the connection is made when the menu is first attached to a dialog.
     </para>
@@ -4001,8 +4002,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (xref linkend="sctMenuItemIDs" />) of the submenu to be inserted. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+      The resource ID (xref linkend="sctMenuItemIDs" />) of the submenu to be inserted. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>pop [required]</term>
@@ -4212,16 +4213,16 @@
     <varlistentry><term>idBefore [required]</term>
     <listitem>
     <para>
-      The new separator is inserted before the item with this ID (xref linkend="sctMenuItemIDs" />). May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The new separator is inserted before the item with this ID (xref linkend="sctMenuItemIDs" />). May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPos</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The resource ID (xref linkend="sctMenuItemIDs" />) of the separator to be inserted. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+      The resource ID (xref linkend="sctMenuItemIDs" />) of the separator to be inserted. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>byPosition [optional]</term>
@@ -4303,8 +4304,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine the checked status of. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine the checked status of. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4369,8 +4370,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is a command item. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is a command item. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4434,8 +4435,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is disabled. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is disabled. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4499,8 +4500,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is enabled. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is enabled. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4564,8 +4565,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is grayed. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to determine if it is grayed. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4629,8 +4630,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to be queried. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to be queried. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4695,8 +4696,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to be queried. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item to be queried. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -4751,8 +4752,8 @@
 
 <para>
   Determines if a specific menu item ID (xref linkend="sctMenuItemIDs" />) is valid for this menu and if one of the
-  <emphasis role="italic">is*</emphasis> methods (isChecked (xref linkend="mthIsChecked" />), <link
-  linkend="mthIsPopup">isPopup</link>, etc) is likely to fail.
+  <emphasis role="italic">is*</emphasis> methods (isChecked (xref linkend="mthIsChecked" />),
+  isPopup (xref linkend="mthIsPopup" />), etc) is likely to fail.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4786,8 +4787,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    In most of the methods for the Menu classes, if an invalid item ID is specified, the method will fail and the <link
-    linkend="dotSystemErrorCode">.systemErrorCode</link> variable is set to the failure reason. However, in some methods
+    In most of the methods for the Menu classes, if an invalid item ID is specified, the method will fail and the
+    .systemErrorCode (xref linkend="dotSystemErrorCode" />) variable is set to the failure reason. However, in some methods
     there is no way to indicate that the method failed. For those methods, a syntax error is raised if the item ID is
     not valid.
   </para>
@@ -4813,8 +4814,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example shows a method implemented by an overly-paranoid programmer as a replacement method for the <link
-    linkend="mthIsSeparator">isSeparator</link> method.
+    This example shows a method implemented by an overly-paranoid programmer as a replacement method for the
+    isSeparator (xref linkend="mthIsSeparator" />) method.
 <programlisting>
 <![CDATA[
 
@@ -4859,8 +4860,8 @@
 </programlisting>
 
 <para>
-  Checks if this menu is valid. This menu would not be valid if it has been <link
-  linkend="mthDestroyClsMenu">destroyed</link> or released (xref linkend="mthReleaseMenuHandle" />). In addition, the
+  Checks if this menu is valid. This menu would not be valid if it has been
+  destroyed (xref linkend="mthDestroyClsMenu" />) or released (xref linkend="mthReleaseMenuHandle" />). In addition, the
   menu could no longer be valid for some operating system reason, although this is highly unlikely.
 </para>
 <variablelist>
@@ -4930,8 +4931,8 @@
 <para>
   Converts <emphasis role="italic">text</emphasis> to a method name as if <emphasis role="italic">text</emphasis> were
   the text of a menu command item. This method can be used as a debugging helper if the programmer has difficulty in
-  determining what method name the ooDialog framework is constructing when automatically <link
-  linkend="sctMenuCommandEventConnections">connecting</link> menu command items.
+  determining what method name the ooDialog framework is constructing when automatically
+  connecting (xref linkend="sctMenuCommandEventConnections" />) menu command items.
 </para>
 <para>
   The ooDialog framework constructs a method name from a string in this way: All space, tab, ampersand, colon, and plus
@@ -4962,8 +4963,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    In the menu classes there are a number of methods that connect menu command <link
-    linkend="sctMenuCommandEvents">events</link> to a method in the Rexx dialog. Most of these methods will
+    In the menu classes there are a number of methods that connect menu command
+    events (xref linkend="sctMenuCommandEvents" />) to a method in the Rexx dialog. Most of these methods will
     automatically construct the connected method name if the programmer does not specify a method name. The name is
     constructed based on the text of the menu command item that is being connected.
   </para>
@@ -5021,8 +5022,8 @@
 </programlisting>
 
 <para>
-  Releases (frees) the operating system resources used by a menu. The menu is specified by its Windows <link
-  linkend="defHandle">handle</link>. To release the operating system resources for an ooDialog
+  Releases (frees) the operating system resources used by a menu. The menu is specified by its Windows
+  handle (xref linkend="defHandle" />). To release the operating system resources for an ooDialog
   <computeroutput>Menu</computeroutput> object, use the destroy (xref linkend="mthDestroyClsMenu" />)() method.
 </para>
 <variablelist>
@@ -5090,8 +5091,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu command item to remove. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu command item to remove. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5178,8 +5179,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the submenu to remove. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the submenu to remove. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5276,8 +5277,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the submenu to remove. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the submenu to remove. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5389,8 +5390,8 @@
     </para>
     <para>
       When the autoconnection method name is not set, then when auto connection is done, the name of the connected
-      method for each menu command item is composed from the menu item <link
-      linkend="mthItemTextToMethodName">text</link>. On the other hand, if the autoconnection method name is set, then
+      method for each menu command item is composed from the menu item
+      text (xref linkend="mthItemTextToMethodName" />). On the other hand, if the autoconnection method name is set, then
       each menu command item is connected to the same method, which is the autoconnection method name.
     </para>
     <para>
@@ -5474,8 +5475,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The help ID (xref linkend="sctMenuItemIDs" />) to be set. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+      The help ID (xref linkend="sctMenuItemIDs" />) to be set. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>recurse [optional]</term>
@@ -5497,8 +5498,8 @@
   <listitem>
   <para>
     Associated with each menubar, menu, submenu, and shortcut menu is a help identifier. If the user presses the F1 key
-    while the menu is active, this value is sent to the owner window as part of the Windows <link
-    linkend="mthConnectHelp">HELP</link> event notification. The menu help ID is sent to the event handler as the first
+    while the menu is active, this value is sent to the owner window as part of the Windows
+    HELP (xref linkend="mthConnectHelp" />) event notification. The menu help ID is sent to the event handler as the first
     argument, the <emphasis role="italic">id</emphasis> argument.
   </para>
   </listitem></varlistentry>
@@ -5555,16 +5556,16 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item whose resource ID is to be set. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item whose resource ID is to be set. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>newID [required]</term>
     <listitem>
     <para>
-      The new resource ID for the specified menu item. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric.
+      The new resource ID for the specified menu item. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>byPosition [optional]</term>
@@ -5708,8 +5709,8 @@
     <varlistentry><term>id [required]</term>
     <listitem>
     <para>
-      The ID (xref linkend="sctMenuItemIDs" />) of the menu item whose text is being set. May be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a position ID or a resource ID, depending on
+      The ID (xref linkend="sctMenuItemIDs" />) of the menu item whose text is being set. May be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a position ID or a resource ID, depending on
       the value of <emphasis role="italic">byPosition</emphasis>.
     </para>
     </listitem></varlistentry>
@@ -5778,8 +5779,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The item ID(s) (xref linkend="entMenuItemIdentifier" />) to be unchecked, may be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      The item ID(s) (xref linkend="entMenuItemIdentifier" />) to be unchecked, may be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -5889,8 +5890,8 @@
     <varlistentry><term>IDs [required]</term>
     <listitem>
     <para>
-      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) whose high light is to be removed, may be <link
-      linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. This can be a single ID or a collection of IDs.  The
+      The menu item ID(s) (xref linkend="entMenuItemIdentifier" />) whose high light is to be removed, may be
+      symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. This can be a single ID or a collection of IDs.  The
       ID(s) can be position IDs or resource IDs, depending on the value of <emphasis
       role="italic">byPosition</emphasis>. However, if this is a collection of IDs there must be all the same type, all
       resource IDs or all position IDs.
@@ -5950,8 +5951,8 @@
 <indexterm><primary>menu bar object</primary></indexterm>
 <para>
   A menu bar is often called the top-level menu. It is the bar poisitioned just below the title bar of an application
-  window or a dialog. The menu bar object is used, like the menu (xref linkend="clsMenu" />), <link
-  linkend="chpDialogObject">dialog</link>, and dialog control (xref linkend="chpDialogControlObject" />) objects as an
+  window or a dialog. The menu bar object is used, like the menu (xref linkend="clsMenu" />),
+  dialog (xref linkend="chpDialogObject" />), and dialog control (xref linkend="chpDialogControlObject" />) objects as an
   abstract concept to document the ooDialog menu objects that represent menu bars. The menu bar classes in ooDialog are
   the BinaryMenuBar (xref linkend="clsBinaryMenuBar" />), UserMenuBar (xref linkend="clsUserMenuBar" />), and
   ScriptMenuBar (xref linkend="clsScriptMenuBar" />) classes.
@@ -5960,8 +5961,8 @@
   The menu bar object is implemented through the <computeroutput>MenuBar</computeroutput> mixin classs and all menu bars
   have the methods of the <computeroutput>MenuBar</computeroutput> class. Similar to the the menu object, the menu bar
   object is essentially the <computeroutput>MenuBar</computeroutput> mixin class. Note that menu bars <emphasis
-  role="italic">are</emphasis> menus. All menu bar objects have all the methods of the <link
-  linkend="clsMenu">menu</link> object in addition to the methods specific to the menu bar.
+  role="italic">are</emphasis> menus. All menu bar objects have all the methods of the
+  menu (xref linkend="clsMenu" />) object in addition to the methods specific to the menu bar.
 </para>
 
 <section id="sctMethodsMenuBar"><title>Method Table</title>
@@ -6038,8 +6039,8 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    If auto (xref linkend="sctMenuCommandEventConnections" />) connection is turned on (<link
-    linkend="mthGetAutoConnectStatus">getAutoConnectStatus</link>) then all menu command items are connected to a
+    If auto (xref linkend="sctMenuCommandEventConnections" />) connection is turned on (
+    getAutoConnectStatus (xref linkend="mthGetAutoConnectStatus" />)) then all menu command items are connected to a
     method in the <emphasis role="italic">dlg</emphasis> dialog at this time.
   </para>
   <para>
@@ -6048,8 +6049,8 @@
     these conditions are not met, this method fails.
   </para>
   <para>
-    If this menu bar is already attached to a dialog and needs to be attached to a differnt dialog, first use the <link
-    linkend="mthDetach">detach</link> method to detach it. Then attach it to the other dialog. On the other hand, if the
+    If this menu bar is already attached to a dialog and needs to be attached to a differnt dialog, first use the
+    detach (xref linkend="mthDetach" />) method to detach it. Then attach it to the other dialog. On the other hand, if the
     dialog already has a menu bar attached to it and this menu bar needs to be attached to that dialog get a reference
     to the dialog's current menu bar and use the replace (xref linkend="mthReplace" />) method.
   </para>
@@ -6433,8 +6434,8 @@
 <para>
   When an empty menu bar is instantiated, the programmer can add to the menu dynamically using menu object methods such
   as insertPopup (xref linkend="mthInsertPopup" />), insertItem (xref linkend="mthInsertItem" />), etc..
-  Dynamically constructing a menu in this way is much less error prone than using the <link
-  linkend="clsUserMenuBar">UserMenuBar</link> class.
+  Dynamically constructing a menu in this way is much less error prone than using the
+  UserMenuBar (xref linkend="clsUserMenuBar" />) class.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6475,8 +6476,8 @@
       <para>
         A Rexx <computeroutput>.Pointer</computeroutput> object. If used, this argument must be a
         <computeroutput>.Pointer</computeroutput> object that represents a valid menu handle. Currently this source of
-        the menu template is limited. The only way to get a menu handle is through the <link
-        linkend="mthGetMenuHandle">getMenuHandle</link> method. However, future enhancements to ooDialog will likey have
+        the menu template is limited. The only way to get a menu handle is through the
+        getMenuHandle (xref linkend="mthGetMenuHandle" />) method. However, future enhancements to ooDialog will likey have
         other ways to get a menu handle.
       </para>
       </listitem></varlistentry>
@@ -6512,8 +6513,8 @@
       If true, turn on <emphasis role="italic">auto connection</emphasis>. The default is false. Refer to the
       discussion on command event connections (xref linkend="sctMenuCommandEventConnections" />) to understand the
       details of <emphasis role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
-      role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command <link
-      linkend="sctMenuCommandEvents">events</link> are connected to a method in the dialog.
+      role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command
+      events (xref linkend="sctMenuCommandEvents" />) are connected to a method in the dialog.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>mName [optional]</term>
@@ -6590,10 +6591,10 @@
   template is obtained from a resource script file (xref linkend="defResourceScript" />).
 </para>
 <para>
-  The class has all the methods of the <computeroutput>MenuBar</computeroutput> and the <link
-  linkend="clsMenu">Menu</link> classes.  The only difference between the
-  <computeroutput>ScriptMenuBar</computeroutput> and the other menu bar classes such as the <link
-  linkend="clsBinaryMenuBar">BinaryMenubar</link> or UserMenuBar (xref linkend="clsUserMenuBar" />) is in the
+  The class has all the methods of the <computeroutput>MenuBar</computeroutput> and the
+  Menu (xref linkend="clsMenu" />) classes.  The only difference between the
+  <computeroutput>ScriptMenuBar</computeroutput> and the other menu bar classes such as the
+  BinaryMenubar (xref linkend="clsBinaryMenuBar" />) or UserMenuBar (xref linkend="clsUserMenuBar" />) is in the
   <emphasis role="italic">new</emphasis> method.
 </para>
 
@@ -6673,8 +6674,8 @@
       <varlistentry><term>id [optional]</term>
       <listitem>
       <para>
-        The resource ID of the menu definition in the resource script. May be <link
-        linkend="itmMenuSymbolicIDs">symbolic</link> or numeric. If this argument is omitted, the first menu definition
+        The resource ID of the menu definition in the resource script. May be
+        symbolic (xref linkend="itmMenuSymbolicIDs" />) or numeric. If this argument is omitted, the first menu definition
         found in the resource script is used.
       </para>
       </listitem></varlistentry>
@@ -6702,8 +6703,8 @@
       <listitem>
       <para>
         If true, each menu command item in the menu is connected to a method in a Rexx dialog object the <emphasis
-        role="italic">first</emphasis> time the menu is attached to a dialog. This is a connection <link
-        linkend="sctMenuCommandEventConnections">request</link> type of connection. If the <emphasis
+        role="italic">first</emphasis> time the menu is attached to a dialog. This is a connection
+        request (xref linkend="sctMenuCommandEventConnections" />) type of connection. If the <emphasis
         role="italic">attachTo</emphasis> argument is used, then the menu command items are connected immediately.
         Otherwise the requests for connections are queued and the connections are made when the menu bar is actually
         attached to a dialog. The name of the connected method for each menu command item is composed from the menu item
@@ -6713,8 +6714,8 @@
       <varlistentry><term>attachTo [optional]</term>
       <listitem>
       <para>
-        Specifies a Rexx dialog object for the menu to attach to immediately. This argument must be a <link
-        linkend="chpDialogObject">dialog</link> object, the underlying (xref linkend="ovvUnderlying" />) Windows
+        Specifies a Rexx dialog object for the menu to attach to immediately. This argument must be a
+        dialog (xref linkend="chpDialogObject" />) object, the underlying (xref linkend="ovvUnderlying" />) Windows
         dialog must exist and that dialog must not already have a menu bar attached. If those conditions are not met,
         then a syntax condition is raised.
       </para>
@@ -6792,15 +6793,15 @@
   comes from a compiled binary resource, or the menu template is constructed as an empty menu.
 </para>
 <para>
-  In general it is much easier to dynamically construct the menu template by starting with an empty <link
-  linkend="clsBinaryMenuBar">BinaryMenuBar</link> and inserting the desired menu itmes than it is to define the menu
+  In general it is much easier to dynamically construct the menu template by starting with an empty
+  BinaryMenuBar (xref linkend="clsBinaryMenuBar" />) and inserting the desired menu itmes than it is to define the menu
   template in an <computeroutput>UserMenuBar</computeroutput>.
 </para>
 
 <section id="sctMethodsUserMenuBar"><title>Method Table</title>
 <para>
-  The following table lists the class and instance methods of the <computeroutput>UserMenuBar</computeroutput>. For convenience, the inherited methods from the <link
-  linkend="clsMenuBar">MenuBar</link> mixin class are also listed here. Note that the
+  The following table lists the class and instance methods of the <computeroutput>UserMenuBar</computeroutput>. For convenience, the inherited methods from the
+  MenuBar (xref linkend="clsMenuBar" />) mixin class are also listed here. Note that the
   <computeroutput>UserMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and therefore also contains
   all the methods of the Menu (xref linkend="clsMenu" />) class.
 <table id="tblMethodsUserMenuBar" frame="all"> <title>UserMenuBar Method Reference</title>
@@ -6917,8 +6918,8 @@
       If true, turn on <emphasis role="italic">auto connection</emphasis>. The default is false. Refer to the
       discussion on command event connections (xref linkend="sctMenuCommandEventConnections" />) to understand the
       details of <emphasis role="italic">auto connection</emphasis>. When auto connection is on, <emphasis
-      role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command <link
-      linkend="sctMenuCommandEvents">events</link> are connected to a method in the dialog.
+      role="italic">each</emphasis> time this menu bar is attached to a dialog, all menu command
+      events (xref linkend="sctMenuCommandEvents" />) are connected to a method in the dialog.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>mName [optional]</term>
@@ -6943,8 +6944,8 @@
   <listitem>
   <para>
     Properly constructing a menu template using the <computeroutput>UserMenuBar</computeroutput> is somewhat difficult
-    to do correctly, making it prone to error. It is much simpler to construct the menu template using an empty <link
-    linkend="clsBinaryMenuBar">BinaryMenuBar</link>. ooDialog programmers are encouraged to use the
+    to do correctly, making it prone to error. It is much simpler to construct the menu template using an empty
+    BinaryMenuBar (xref linkend="clsBinaryMenuBar" />). ooDialog programmers are encouraged to use the
     <computeroutput>BinaryMenuBar</computeroutput> class rather than the <computeroutput>UserMenuBar</computeroutput>
     class.
   </para>
@@ -7025,8 +7026,8 @@
 
 <para>
   Adds a menu command item to the menu template. This method is only valid after the
-  <computeroutput>UserMenuBar</computeroutput> has been instantiated and before the menu template is <link
-  linkend="mthComplete">completed</link>.
+  <computeroutput>UserMenuBar</computeroutput> has been instantiated and before the menu template is
+  completed (xref linkend="mthComplete" />).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7164,8 +7165,8 @@
   <listitem>
   <para>
     It is suggested that the ooDialog programmer create an empty BinaryMenuBar (xref linkend="clsBinaryMenuBar" />)
-    and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as <link
-    linkend="mthInsertPopup">insertPopup</link>. This provides all the functionality of the
+    and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as
+    insertPopup (xref linkend="mthInsertPopup" />). This provides all the functionality of the
     <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
   </para>
   </listitem></varlistentry>
@@ -7195,8 +7196,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    There is a good example of using the <emphasis role="italic">addItem</emphasis> method in the <link
-    linkend="exampleNewUserMenuBar">example</link> for the <emphasis role="italic">new</emphasis> method of the
+    There is a good example of using the <emphasis role="italic">addItem</emphasis> method in the
+    example (xref linkend="exampleNewUserMenuBar" />) for the <emphasis role="italic">new</emphasis> method of the
     <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
@@ -7215,8 +7216,8 @@
 
 <para>
   Adds a popup menu, a submenu, to the menu template. This method is only valid after the
-  <computeroutput>UserMenuBar</computeroutput> has been instantiated and before the menu template is <link
-  linkend="mthComplete">completed</link>.
+  <computeroutput>UserMenuBar</computeroutput> has been instantiated and before the menu template is
+  completed (xref linkend="mthComplete" />).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7350,8 +7351,8 @@
   <listitem>
   <para>
     It is suggested that the ooDialog programmer create an empty BinaryMenuBar (xref linkend="clsBinaryMenuBar" />)
-    and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as <link
-    linkend="mthInsertPopup">insertPopup</link>. This provides all the functionality of the
+    and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as
+    insertPopup (xref linkend="mthInsertPopup" />). This provides all the functionality of the
     <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
   </para>
   </listitem></varlistentry>
@@ -7374,8 +7375,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    There is a good example of using the <emphasis role="italic">addPopup</emphasis> method in the <link
-    linkend="exampleNewUserMenuBar">example</link> for the <emphasis role="italic">new</emphasis> method of the
+    There is a good example of using the <emphasis role="italic">addPopup</emphasis> method in the
+    example (xref linkend="exampleNewUserMenuBar" />) for the <emphasis role="italic">new</emphasis> method of the
     <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
@@ -7394,8 +7395,8 @@
 
 <para>
   Adds a separator, which is a horizontal line, to the menu template. This method is only valid after the
-  <computeroutput>UserMenuBar</computeroutput> has been instantiated and before the menu template is <link
-  linkend="mthComplete">completed</link>.
+  <computeroutput>UserMenuBar</computeroutput> has been instantiated and before the menu template is
+  completed (xref linkend="mthComplete" />).
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7479,8 +7480,8 @@
   </para>
   <para>
     It is suggested that the ooDialog programmer create an empty BinaryMenuBar (xref linkend="clsBinaryMenuBar" />)
-    and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as <link
-    linkend="mthInsertPopup">insertPopup</link>. This provides all the functionality of the
+    and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as
+    insertPopup (xref linkend="mthInsertPopup" />). This provides all the functionality of the
     <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
   </para>
   </listitem></varlistentry>
@@ -7503,8 +7504,8 @@
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    There is a good example of using the <emphasis role="italic">addSeparator</emphasis> method in the <link
-    linkend="exampleNewUserMenuBar">example</link> for the <emphasis role="italic">new</emphasis> method of the
+    There is a good example of using the <emphasis role="italic">addSeparator</emphasis> method in the
+    example (xref linkend="exampleNewUserMenuBar" />) for the <emphasis role="italic">new</emphasis> method of the
     <computeroutput>UserMenuBar</computeroutput> class.
   </para>
   </listitem></varlistentry>
@@ -7545,8 +7546,8 @@
     method. Likewise, no menu items can be added to the template using the addItem (xref linkend="mthAddItem" />),
     addPopup (xref linkend="mthAddPopup" />), or addSeparator (xref linkend="mthAddSeparator" />) methods after
     the <emphasis role="italic">complete</emphasis> method is invoked. However, once the menu bar is complete, the
-    <emphasis role="italic">insert</emphasis> methods of the menu object, such as the <link
-    linkend="mthInsertPopup">insertPopup</link> method can all be used to insert menu items.
+    <emphasis role="italic">insert</emphasis> methods of the menu object, such as the
+    insertPopup (xref linkend="mthInsertPopup" />) method can all be used to insert menu items.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -7655,9 +7656,9 @@
 <section id="evtPopupMenuCONTEXT"><title>ContextMenu Event Handler</title>
 <indexterm><primary>PopupMenu Event</primary><secondary>CONTEXTMENU</secondary></indexterm>
 <para>
-  <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the <link
-  linkend="mthConnectContextMenuCls">connectContextMenu</link> class method or the <link
-  linkend="mthConnectContextMenu">connectContextMenu</link> instance method, described in this section, is the same as
+  <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the
+  connectContextMenu (xref linkend="mthConnectContextMenuCls" />) class method or the
+  connectContextMenu (xref linkend="mthConnectContextMenu" />) instance method, described in this section, is the same as
   the event handler described (xref linkend="evtMenuObjectCONTEXTMENU" />) for the CONTEXTMENU event connected
   through the connectMenuEvent (xref linkend="mthConnectMenuEvent" />) method. The event and event handler are the
   same no matter how the event connection is made.
@@ -7665,9 +7666,9 @@
 <para>
   The event handler for the context menu event is invoked when the user right-mouse clicks on a window, types SHIFT-F10
   on the keyboard, or types the VK_APPS key on the keyboard. The VK_APPS key is the <emphasis
-  role="italic">Applications</emphasis> key on a Natural keyboard. Use the <link
-  linkend="mthConnectContextMenuCls">connectContextMenu</link> class method, or the <link
-  linkend="mthConnectContextMenu">connectContextMenu</link> instance method to connect the context menu event.
+  role="italic">Applications</emphasis> key on a Natural keyboard. Use the
+  connectContextMenu (xref linkend="mthConnectContextMenuCls" />) class method, or the
+  connectContextMenu (xref linkend="mthConnectContextMenu" />) instance method to connect the context menu event.
 </para>
 <para>
   The interpreter does not wait for the return from the event handler, so the method does not need to return a value.
@@ -8090,8 +8091,8 @@
   </para>
   <para>
     It is not neccessary to assign a short cut menu to a dialog, it just may be more convenient.  If the shortcut menu
-    does not have an assigned dialog, then the owner dialog must be specified each time the <link
-    linkend="mthTrack">track</link> or show (xref linkend="mthShowClsPopupMenu" />) methods are invoked.
+    does not have an assigned dialog, then the owner dialog must be specified each time the
+    track (xref linkend="mthTrack" />) or show (xref linkend="mthShowClsPopupMenu" />) methods are invoked.
   </para>
   <para>
     A short cut menu can only be assigned to one dialog, if this menu is already assigned to a dialog, the owner dialog
@@ -8350,8 +8351,8 @@
     <varlistentry><term>p [required]</term>
     <listitem>
     <para>
-      A Point (xref linkend="clsPoint" />) object specifying the location for the shortcut menu, in <link
-      linkend="defScreenCoordinates">screen</link> co-ordinates.
+      A Point (xref linkend="clsPoint" />) object specifying the location for the shortcut menu, in
+      screen (xref linkend="defScreenCoordinates" />) co-ordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dlg [optional]</term>
@@ -8523,10 +8524,10 @@
     role="italic">track</emphasis> method directly returns the ID of the menu item selected.
   </para>
   <para>
-    For any animation to occur, the System Parameters Information menu animation must be on. (<link
-    linkend="clsSPI">SPI</link> class, menuAnimation (xref linkend="atrMenuAnimation" />) attribute.) In addition,
-    all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (<link
-    linkend="clsSPI">SPI</link> class, menuFade (xref linkend="atrMenuFade" />) attribute.)
+    For any animation to occur, the System Parameters Information menu animation must be on. (
+    SPI (xref linkend="clsSPI" />) class, menuAnimation (xref linkend="atrMenuAnimation" />) attribute.) In addition,
+    all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (
+    SPI (xref linkend="clsSPI" />) class, menuFade (xref linkend="atrMenuFade" />) attribute.)
   </para>
   <para>
     Microsoft says that it is essential that the System Metric, menu drop alignment (SM (xref linkend="clsSM" />)
@@ -8537,8 +8538,8 @@
   </para>
   <para>
     Microsoft also notes that to display a context menu for a notification icon, the current window must be the
-    foreground window before invoking the <emphasis role="italic">show</emphasis> or <link
-    linkend="mthTrack">track</link> methods. Otherwise, the menu will not disappear when the user clicks outside of the
+    foreground window before invoking the <emphasis role="italic">show</emphasis> or
+    track (xref linkend="mthTrack" />) methods. Otherwise, the menu will not disappear when the user clicks outside of the
     menu or the window that created the menu (if it is visible).
   </para>
   </listitem></varlistentry>
@@ -8576,8 +8577,8 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
-        role="italic">dlg</emphasis> argument was specified, but the object is not a <link
-        linkend="chpDialogObject">dialog</link> object.
+        role="italic">dlg</emphasis> argument was specified, but the object is not a
+        dialog (xref linkend="chpDialogObject" />) object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -8630,8 +8631,8 @@
     <varlistentry><term>p [required]</term>
     <listitem>
     <para>
-      A Point (xref linkend="clsPoint" />) object specifying the location for the shortcut menu, in <link
-      linkend="defScreenCoordinates">screen</link> co-ordinates.
+      A Point (xref linkend="clsPoint" />) object specifying the location for the shortcut menu, in
+      screen (xref linkend="defScreenCoordinates" />) co-ordinates.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>dlg [optional]</term>
@@ -8804,10 +8805,10 @@
     role="italic">track</emphasis> method directly returns the ID of the menu item selected.
   </para>
   <para>
-    For any animation to occur, the System Parameters Information menu animation must be on. (<link
-    linkend="clsSPI">SPI</link> class, menuAnimation (xref linkend="atrMenuAnimation" />) attribute.) In addition,
-    all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (<link
-    linkend="clsSPI">SPI</link> class, menuFade (xref linkend="atrMenuFade" />) attribute.)
+    For any animation to occur, the System Parameters Information menu animation must be on. (
+    SPI (xref linkend="clsSPI" />) class, menuAnimation (xref linkend="atrMenuAnimation" />) attribute.) In addition,
+    all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (
+    SPI (xref linkend="clsSPI" />) class, menuFade (xref linkend="atrMenuFade" />) attribute.)
   </para>
   <para>
     Microsoft says that it is essential that the System Metric, menu drop alignment (SM (xref linkend="clsSM" />)
@@ -8818,8 +8819,8 @@
   </para>
   <para>
     Microsoft also notes that to display a context menu for a notification icon, the current window must be the
-    foreground window before invoking the <emphasis role="italic">show</emphasis> or <link
-    linkend="mthTrack">track</link> methods. Otherwise, the menu will not disappear when the user clicks outside of the
+    foreground window before invoking the <emphasis role="italic">show</emphasis> or
+    track (xref linkend="mthTrack" />) methods. Otherwise, the menu will not disappear when the user clicks outside of the
     menu or the window that created the menu (if it is visible).
   </para>
   </listitem></varlistentry>
@@ -8857,8 +8858,8 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The <emphasis
-        role="italic">dlg</emphasis> argument was specified, but the object is not a <link
-        linkend="chpDialogObject">dialog</link> object.
+        role="italic">dlg</emphasis> argument was specified, but the object is not a
+        dialog (xref linkend="chpDialogObject" />) object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -9236,8 +9237,8 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
-        ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog <link
-        linkend="chpDialogObject">dialog</link> object.
+        ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
+        dialog (xref linkend="chpDialogObject" />) object.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -9302,8 +9303,8 @@
       <para>
         A Rexx dialog to connect the notification to. By default, the notification is is connected to the Rexx dialog that
         the menu is attached (xref linkend="mthAttachTo" />) or assinged (xref linkend="mthAssignTo" />) to. If
-        omitted and there is no assigned or attached dialog, no connection is made and the <link
-        linkend="dotSystemErrorCode">.systemErrorCode</link> is set as described in the Details section. (To connect a
+        omitted and there is no assigned or attached dialog, no connection is made and the
+        .systemErrorCode (xref linkend="dotSystemErrorCode" />) is set as described in the Details section. (To connect a
         menu item command event, there must be a dialog to connect it to.)
       </para>
       </listitem></varlistentry>
@@ -9326,8 +9327,8 @@
   </para>
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> method is used for all types of menus. However, the
-    programmer should be aware of the differences in coding event <link
-    linkend="sctMenuCommandEventHandlers">handlers</link> for <computeroutput>SystemMenu</computeroutput> events and
+    programmer should be aware of the differences in coding event
+    handlers (xref linkend="sctMenuCommandEventHandlers" />) for <computeroutput>SystemMenu</computeroutput> events and
     other types of menus. See the section (xref linkend="sctSystemMenuCommandEventHandler" />) exaplaining the event
     handler for system menu command events.
   </para>
@@ -9468,8 +9469,8 @@
     <varlistentry><term>ids [required]</term>
     <listitem>
     <para>
-      A <computeroutput>Collection</computeroutput> object containing the menu item <link
-      linkend="sctMenuItemIDs">IDs</link> to connect.  The IDs can be by position IDs or resource IDs,
+      A <computeroutput>Collection</computeroutput> object containing the menu item
+      IDs (xref linkend="sctMenuItemIDs" />) to connect.  The IDs can be by position IDs or resource IDs,
       depending on the value of the <emphasis role="italic">byPosition</emphasis> argument. However, they must be all
       the same type, all resource IDs or all by position IDs.
     </para>
@@ -9552,8 +9553,8 @@
       <listitem>
       <para>
         The window is not a valid dialog window. <emphasis role="bold">Meaning:</emphasis> The dialog argument was not
-        ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog <link
-        linkend="chpDialogObject">dialog</link> object.
+        ommitted, but the <emphasis role="italic">dlg</emphasis> is not a dialog
+        dialog (xref linkend="chpDialogObject" />) object.
       </para>
       </listitem></varlistentry>
     </variablelist>
