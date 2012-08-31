@@ -58,7 +58,7 @@
   <emphasis role="bold">getting</emphasis> and <emphasis role="bold">setting</emphasis> the <emphasis
   role="bold">data</emphasis>, and methods to deal with <emphasis role="bold">automatic data detection</emphasis>. These
   data attributes are used to reflect the <emphasis role="bold">values</emphasis> associated with the underlying dialog
-  controls. For instance, the value of an edit (<xref linkend="clsEdit" />) control could be thought of as the text of
+  controls. For instance, the value of an <xref linkend="clsEdit"/> control could be thought of as the text of
   the control.
 </para>
 <para>
@@ -98,7 +98,7 @@
 </para>
 <para>
   Automatic data detection is implemented in all three main classes of dialogs, the UserDialog (<xref
-  linkend="clsUserDialog" />, ResDialog (<xref linkend="clsResDialog" />), and RxDialog (<xref
+  linkend="clsUserDialog" />, <xref linkend="clsResDialog"/>, and RxDialog (<xref
   linkend="clsRcDialog" />), and of course their subclasses. Automatic data detection can be turned on or
   off. By default it is <emphasis role="bold">on</emphasis>. The best way to turn automatic data field detection off for
   a single dialog is to over-ride the initAutoDetection() (<xref linkend="mthInitAutoDetection" />) method in your
@@ -110,7 +110,7 @@
   Some dialog controls are not considered to be <emphasis role="italic">data</emphasis> and therefore data attributes
   are not created for those controls. (This is a quirk going back to the original implementation of of ooDialog.) The
   non-data controls are those, in general, that the user would not change or update in a dialog. Push buttons (<xref
-  linkend="clsButton" />), group boxes (<xref linkend="clsGroupBox" />), and static (<xref
+  linkend="clsButton" />), group <xref linkend="clsGroupBox"/>, and static (<xref
   linkend="clsStatic" />) controls are all considered non-data controls. There are no data attribute methods
   for these controls.
 </para>
@@ -142,7 +142,7 @@
     <varlistentry><term><emphasis role="bold">RcDialog</emphasis></term>
     <listitem>
     <para>
-      A RcDialog (<xref linkend="clsRcDialog" />) is actually a subclass of the
+      A <xref linkend="clsRcDialog"/> is actually a subclass of the
       <computeroutput>UserDialog</computeroutput>. Therefore, when automatic data detection is on, the connect...
       attribute methods are invoked automatically during the creation of each dialog control. The difference is that
       there is no option to specify the attribute name, the name is <emphasis role="bold">always</emphasis> generated
@@ -152,7 +152,7 @@
     <varlistentry><term><emphasis role="bold">ResDialog</emphasis></term>
     <listitem>
     <para>
-      With a ResDialog (<xref linkend="clsResDialog" />) the data connections are made after the underlying dialog is
+      With a <xref linkend="clsResDialog"/> the data connections are made after the underlying dialog is
       created. Internally, the numeric resource ID and text of each control in the dialog is determined. Then, a data
       attribute for each control is created and connected. Again, there is no way for the programmer to specify the data
       attribute name, it is always automatically constructed.
@@ -315,7 +315,7 @@
     </para>
     <para>
       <emphasis role="bold">Note</emphasis> this important detail: every dialog control can have text associated with it
-      when compiled from a resource script (<xref linkend="defResourceScript" />). Although for many controls, text is
+      when compiled from a resource <xref linkend="defResourceScript"/>. Although for many controls, text is
       not usually associated with them, it is always possible that they do have text.
     </para>
     <para>
@@ -588,7 +588,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
       linkend="mthGetDataAttribute" />) methods could also be used.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a check box (<xref linkend="clsCheckBox" />) is defined to be its
+      The <emphasis role="italic">data</emphasis> of a check <xref linkend="clsCheckBox"/> is defined to be its
       check state. For normal check boxes this is 0 for not checked and 1 for checked. Three-state check boxes have the
       additional indeterminate state. The value for the indeterminate state is 2.
     </para>
@@ -681,7 +681,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
       linkend="mthGetDataAttribute" />) methods can also be used.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a combo box (<xref linkend="clsComboBox" />) is defined to be the
+      The <emphasis role="italic">data</emphasis> of a combo <xref linkend="clsComboBox"/> is defined to be the
       text in the selection field or the selected combo box item.
     </para>
     <para>
@@ -773,7 +773,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
       linkend="mthGetDataAttribute" />) methods.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a date time picker (<xref linkend="clsDateTimePicker" />) is
+      The <emphasis role="italic">data</emphasis> of a date time <xref linkend="clsDateTimePicker"/> is
       defined to be a <computeroutput>DateTime</computeroutput> object that represents it currently selected date and
       time.
     </para>
@@ -1395,7 +1395,7 @@ FONT 8, "Ms Shell Dlg 2"
       linkend="mthGetDataAttribute" />) methods.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a list view (<xref linkend="clsListView" />) is defined to be a
+      The <emphasis role="italic">data</emphasis> of a list <xref linkend="clsListView"/> is defined to be a
       string containing the blank seperated index(es) of its selected item(s).
     </para>
     <para>
@@ -1487,7 +1487,7 @@ FONT 8, "Ms Shell Dlg 2"
       linkend="mthGetDataAttribute" />) methods.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a month calendar (<xref linkend="clsMonthCalendar" />) is defined
+      The <emphasis role="italic">data</emphasis> of a month <xref linkend="clsMonthCalendar"/> is defined
       to be a <computeroutput>DateTime</computeroutput> object that specifies the selected date in the month calendar
       control.
     </para>
@@ -1676,7 +1676,7 @@ FONT 8, "Ms Shell Dlg 2"
       linkend="mthGetDataAttribute" />) methods.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a tab (<xref linkend="clsTab" />) control is defined to the text
+      The <emphasis role="italic">data</emphasis> of a <xref linkend="clsTab"/> control is defined to the text
       of its currently selected tab.
     </para>
     <para>
@@ -1769,7 +1769,7 @@ FONT 8, "Ms Shell Dlg 2"
       linkend="mthGetDataAttribute" />) methods.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a trackbar (<xref linkend="clsTab" />) control is defined to be
+      The <emphasis role="italic">data</emphasis> of a <xref linkend="clsTab"/> control is defined to be
       the current logical position of the slider in the trackbar.
     </para>
     <para>
@@ -1858,7 +1858,7 @@ FONT 8, "Ms Shell Dlg 2"
       linkend="mthGetDataAttribute" />) methods.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a tree view (<xref linkend="clsTreeView" />) is defined to be the
+      The <emphasis role="italic">data</emphasis> of a tree <xref linkend="clsTreeView"/> is defined to be the
       text of the selected tree view item.
     </para>
     <para>
@@ -1950,7 +1950,7 @@ FONT 8, "Ms Shell Dlg 2"
       linkend="mthGetDataAttribute" />) methods.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a up down (<xref linkend="clsUpDown" />) control is defined to be
+      The <emphasis role="italic">data</emphasis> of a up <xref linkend="clsUpDown"/> control is defined to be
       the value of its current position.
     </para>
     <para>
@@ -2058,7 +2058,7 @@ FONT 8, "Ms Shell Dlg 2"
   <listitem>
   <para>
     The <emphasis role="italic">data</emphasis> of a combo box is considered to be the text of the selection field in
-    the combo box (<xref linkend="clsComboBox" />). The current text in the selection field is returned, which may be
+    the combo <xref linkend="clsComboBox"/>. The current text in the selection field is returned, which may be
     the empty string if there is no text in the selection field.
   </para>
   </listitem></varlistentry>
@@ -2657,7 +2657,7 @@ end
     <listitem>
     <para>
       The <emphasis role="italic">data</emphasis> to be assigned to the underlying check box. The <emphasis
-      role="italic">data</emphasis> of a check box (<xref linkend="clsCheckBox" />) is defined to be its check state.
+      role="italic">data</emphasis> of a check <xref linkend="clsCheckBox"/> is defined to be its check state.
       For normal check boxes this is 0 for not checked and 1 for checked. Three-state check boxes have the additional
       indeterminate state. The value for the indeterminate state is 2.
     </para>
@@ -2741,7 +2741,7 @@ end
     <listitem>
     <para>
       The <emphasis role="italic">data</emphasis> to be assigned to the underlying combo box control. The <emphasis
-      role="italic">data</emphasis> of a combo box (<xref linkend="clsComboBox" />) is defined to be the text in the
+      role="italic">data</emphasis> of a combo <xref linkend="clsComboBox"/> is defined to be the text in the
       selection field or the selected combo box item.
     </para>
     </listitem></varlistentry>
@@ -3291,7 +3291,7 @@ self~setDataStem(dlgStem.)
     <listitem>
     <para>
       The data that is assigned to the list box. The <emphasis role="italic">data</emphasis> of a <emphasis
-      role="bold">single-selection</emphasis> list box (<xref linkend="clsListBox" />) is defined to be text of the
+      role="bold">single-selection</emphasis> list <xref linkend="clsListBox"/> is defined to be text of the
       selected item in the list box.
     </para>
     <para>
@@ -3406,7 +3406,7 @@ self~setDataStem(dlgStem.)
     <listitem>
     <para>
       The <emphasis role="italic">data</emphasis> to be assigned to the underlying radio button. The <emphasis
-      role="italic">data</emphasis> of a radio button (<xref linkend="clsRadioButton" />) is defined to be the its
+      role="italic">data</emphasis> of a radio <xref linkend="clsRadioButton"/> is defined to be the its
       check state. This is 0 for not checked and 1 for checked.
     </para>
     </listitem></varlistentry>

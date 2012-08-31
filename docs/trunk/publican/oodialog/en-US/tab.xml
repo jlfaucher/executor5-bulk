@@ -528,7 +528,7 @@ string. The coordinates are separated by blanks and are in the following order:
 </programlisting>
 
 <para>
-  Given a rect (<xref linkend="clsRect" />) object that specifies the window rectangle of a tab control, calculates
+  Given a <xref linkend="clsRect"/> object that specifies the window rectangle of a tab control, calculates
   the display area of the the tab control. This method should be used when the size of the tab control is fixed and the
   size of the contents of a page in the tab control can be adjusted.
 </para>
@@ -541,7 +541,7 @@ string. The coordinates are separated by blanks and are in the following order:
     <varlistentry><term>rect [required] [in/out]</term>
     <listitem>
     <para>
-      A Rect (<xref linkend="clsRect" />) object that specifies the window rect of the tab conrol when the method is
+      A <xref linkend="clsRect"/> object that specifies the window rect of the tab conrol when the method is
       invoked. On return, the <computeroutput>rect</computeroutput> object will contain the coordinates of the display
       area of the tab control.
     </para>
@@ -599,7 +599,7 @@ string. The coordinates are separated by blanks and are in the following order:
     <varlistentry><term>rect [required] [in/out]</term>
     <listitem>
     <para>
-      A Rect (<xref linkend="clsRect" />) object that specifies the display area of the tab conrol when the method is
+      A <xref linkend="clsRect"/> object that specifies the display area of the tab conrol when the method is
       invoked. On return, the <computeroutput>rect</computeroutput> object will contain the coordinates of the window
       rectangle of the tab control.
     </para>
@@ -770,7 +770,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    This method returns the current image list (<xref linkend="clsImageList" />), if there is one.
+    This method returns the current image <xref linkend="clsImageList"/>, if there is one.
     <computeroutput>.nil</computeroutput> is returned if there is no current image list.
   </para>
   </listitem></varlistentry>
@@ -831,7 +831,7 @@ that has the focus. The tab with the focus can differ from the selected tab.</pa
     <varlistentry><term>rect [required] [in/out]</term>
     <listitem>
     <para>
-      A Rect (<xref linkend="clsRect" />) object in which the coordinates of tab are returned.
+      A <xref linkend="clsRect"/> object in which the coordinates of tab are returned.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1373,7 +1373,7 @@ the currently selected tab.</para>
   Destroying a tab control does not destroy an image list that is associated with it. The programmer must destroy the
   image list separately, if desired. This is useful if the programmer wants to assign the same image list to multiple
   tab controls. In essence, the ownership of the image list remains with the programmer. The
-  ImageList (<xref linkend="clsImageList" />) and Image (<xref linkend="clsImage" />) classes are used to manage image
+ <xref linkend="clsImageList"/> and <xref linkend="clsImage"/> classes are used to manage image
   lists and images in ooDialog. The documentation on both classes discusses when and why the programmer may want to
   release image lists. The Image class documentation has the most detail on this subject.
 </para>
@@ -1385,7 +1385,7 @@ the currently selected tab.</para>
       <varlistentry><term>newImageList [required]</term>
       <listitem>
       <para>
-        The image list (<xref linkend="clsImageList" />) to assign to the tab control. If this argument is
+        The image <xref linkend="clsImageList"/> to assign to the tab control. If this argument is
         <computeroutput>.nil</computeroutput> the existing image list, if any, is removed.
       </para>
       </listitem></varlistentry>
@@ -1481,7 +1481,7 @@ Generic form:
     <listitem>
     <para>
       The new size (height and width) in pixels. The <emphasis role="italic">newSize</emphasis> argument(s) can be
-      specified either as a single Size (<xref linkend="clsSize" />) object, or as two separate arguments, width first
+      specified either as a single <xref linkend="clsSize"/> object, or as two separate arguments, width first
       and height second.
     </para>
     </listitem></varlistentry>
@@ -1500,7 +1500,7 @@ Generic form:
   <para>
     The <xref linkend="mthSetSize"/> and <emphasis role="italic">setItemSize</emphasis> methods are
     identical except that the <emphasis role="italic">setSize</emphasis> method returns the old size a string and the
-    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a size (<xref linkend="clsSize" />)
+    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a <xref linkend="clsSize"/>
     object.
   </para>
   </listitem></varlistentry>
@@ -1550,7 +1550,7 @@ Generic form:
     <listitem>
     <para>
       The new padding (horizontal and vertical padding) in pixels. The <emphasis role="italic">padding</emphasis>
-      argument(s) can be specified either as a single Size (<xref linkend="clsSize" />) object, or as two separate
+      argument(s) can be specified either as a single <xref linkend="clsSize"/> object, or as two separate
       arguments, horizontal padding first and vertical padding second.
     </para>
     </listitem></varlistentry>
@@ -1601,7 +1601,7 @@ Generic form:
     <listitem>
     <para>
       The new size (height and width) in pixels. The <emphasis role="italic">newSize</emphasis> argument(s) can be
-      specified either as a single Size (<xref linkend="clsSize" />) object, or as two separate arguments, width first
+      specified either as a single <xref linkend="clsSize"/> object, or as two separate arguments, width first
       and height second.
     </para>
     </listitem></varlistentry>
@@ -1620,7 +1620,7 @@ Generic form:
   <para>
     The <xref linkend="mthSetItemSize"/> and <emphasis role="italic">setSize</emphasis> methods are
     identical except that the <emphasis role="italic">setSize</emphasis> method returns the old size as a string and the
-    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a size (<xref linkend="clsSize" />)
+    <emphasis role="italic">setItemSize</emphasis> method returns the old size as a <xref linkend="clsSize"/>
     object.
   </para>
   </listitem></varlistentry>

@@ -53,8 +53,8 @@
 <para>
   The dialog object here is an abstract concept, used to make it simpler to understand the basic concepts. To
   instantiate a dialog object you create a subclass of one of the concrete dialog classes provided by the ooDialog
-  framework, such as the UserDialog Class (<xref linkend="clsUserDialog" />),
-  ResDialog Class (<xref linkend="clsResDialog" />), or RcDialog Class (<xref linkend="clsRcDialog" />). This chapter provides the reference for the
+  framework, such as the UserDialog <xref linkend="clsUserDialog"/>,
+  ResDialog <xref linkend="clsResDialog"/>, or RcDialog <xref linkend="clsRcDialog"/>. This chapter provides the reference for the
   constants, attributes, and methods that are common to all dialog objects. See the specific dialog subclass for methods
   that are unique to the subclass.
 </para>
@@ -1405,7 +1405,7 @@
 <para>
   Recall that the constant methods defined by the <computeroutput>::constant</computeroutput> directive are both class
   and instance methods of the class they are defined in. The constants listed here are defined in the
-  PlainBaseDialog (<xref linkend="clsPlainBaseDialog" />) class. Therefore to access the constant value, the programmer uses
+ <xref linkend="clsPlainBaseDialog"/> class. Therefore to access the constant value, the programmer uses
   either the <computeroutput>PlainBaseDialog</computeroutput> class object, or an instantiated dialog object. An example
   using the class object and the IDOK constant:
 
@@ -1726,7 +1726,7 @@
   <para>
     The dialog object is abstract, the programmer can not directly instantiate a workable dialog object. Rather, the
     programmer instantiates one of the concrete subclasses. Such as a subclass of a
-    RcDialog (<xref linkend="clsRcDialog" />) or a ResDialog (<xref linkend="clsResDialog" />).
+ <xref linkend="clsRcDialog"/> or a <xref linkend="clsResDialog"/>.
   </para>
   </listitem></varlistentry>
   <varlistentry id="exampleDialogObjectnew"><term><emphasis role="bold">Example:</emphasis></term>
@@ -1997,7 +1997,7 @@ ResourceUtils::constDir (<xref linkend="atrConstDir" />)
   <listitem>
   <para>
     Dialog objects also have the hwnd (<xref linkend="atrHwnd" />) attribute which is inherited from the
-    WindoBase (<xref linkend="clsWindowBase" />) class. The two attributes are essentially the same and can be used by the
+ <xref linkend="clsWindowBase"/> class. The two attributes are essentially the same and can be used by the
    programmer interchangeably.
   </para>
   </listitem></varlistentry>
@@ -2064,7 +2064,7 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
   Prior to the creation of the underlying Windows dialog, the font name attribute specifies the name of the font that
   will be used to create the dialog. This font is used in a <xref linkend="clsUserDialog"/> when the font is not
   specified in the <xref linkend="mthCreate"/>() or the
- <xref linkend="mthCreateCenter"/>() methods, or in a RcDialog (<xref linkend="clsRcDialog" />) where the
+ <xref linkend="mthCreateCenter"/>() methods, or in a <xref linkend="clsRcDialog"/> where the
   font is not specified in the resource script file. With a binary compiled dialog resource
   (ResDialog (<xref linkend="clsResDialog" />)) the font has already been specified when the dialog template
   was compiled and can not be changed. Therefore the font name attribute has no effect on a ResDialog prior to the
@@ -2108,7 +2108,7 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
   <listitem>
   <para>
     The <emphasis role="italic">fontName</emphasis> attribute is a member of the
-    PlainBaseDialog (<xref linkend="clsPlainBaseDialog" />) class.
+ <xref linkend="clsPlainBaseDialog"/> class.
   </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
@@ -2212,7 +2212,7 @@ WindowBase::factorY (<xref linkend="atrFactorY" />)
   <listitem>
   <para>
     The <emphasis role="italic">fontSize</emphasis> attribute is a member of the
-    PlainBaseDialog (<xref linkend="clsPlainBaseDialog" />) class.
+ <xref linkend="clsPlainBaseDialog"/> class.
   </para>
   <para>
     Syntax errors are raised when incorrect usage is detected.
@@ -2274,7 +2274,7 @@ WindowBase::initCode (<xref linkend="atrInitCode" />)
 <para>
   In the ooDialog framework, <emphasis role="italic">all</emphasis> control (<xref linkend="sctControlDialogs" />)
   dialogs <emphasis role="italic">must</emphasis> have an owner dialog. Dialogs like the
-  PropertySheetDialog (<xref linkend="clsPropertySheetDialog" />) can <emphasis role="italic">not</emphasis> have an owner
+ <xref linkend="clsPropertySheetDialog"/> can <emphasis role="italic">not</emphasis> have an owner
   dialog. For the most part other dialogs would not have an owner dialog.
 </para>
 <variablelist>
@@ -2289,9 +2289,9 @@ WindowBase::initCode (<xref linkend="atrInitCode" />)
   <listitem>
   <para>
     Sets the Rexx owner dialog for this dialog. There are a number of constraints imposed on setting the owner dialog.
-    The owner dialog can not be a ControlDialog (<xref linkend="clsControlDialog" />), a
-    PropertySheetDialog (<xref linkend="clsPropertySheetDialog" />), or a
-    PropertySheetPage (<xref linkend="clsPropertySheetPage" />) dialog.
+    The owner dialog can not be a <xref linkend="clsControlDialog"/>, a
+ <xref linkend="clsPropertySheetDialog"/>, or a
+ <xref linkend="clsPropertySheetPage"/> dialog.
   </para>
   <para>
     Once set, the owner dialog can not be changed or removed.  The owner dialog can not be set once the
@@ -2865,7 +2865,7 @@ DialogExtensions::executeAsync (<xref linkend="mthExecuteAsync" />)
   <listitem>
   <para>
     This example show how the <emphasis role="italic">initDialog</emphasis> method is used to initialize a
-    list box (<xref linkend="clsListBox" />) by adding items to it.
+    list <xref linkend="clsListBox"/> by adding items to it.
 <programlisting>
 <![CDATA[
 
@@ -3014,8 +3014,8 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
     <xref linkend="clsUserDialog"/> or a subclasses of a <emphasis role="italic">UserDialog</emphasis>.
   </para>
   <para>
-    In a ResDialog (<xref linkend="clsResDialog" />), the font of the compiled binary resource will always be used, and
-    the font set by this method has no effect. In a RcDialog (<xref linkend="clsRcDialog" />), if the resource script
+    In a <xref linkend="clsResDialog"/>, the font of the compiled binary resource will always be used, and
+    the font set by this method has no effect. In a <xref linkend="clsRcDialog"/>, if the resource script
     file specifies the font, that font will be used. Likewise, in a <xref linkend="clsUserDialog"/>, if
     the programmer specifies a font in the <emphasis role="italic">create</emphasis>() method call, (or the <emphasis
     role="italic">createCenter</emphasis>() method call,) the specified font over-rides what is set by this method.
@@ -3030,9 +3030,9 @@ ResourceUtils::resolveSymbolicID (<xref linkend="mthResolveSymbolicID" />)
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example sets the dialog font for a user (<xref linkend="clsUserDialog" />) dialog before the dialog
+    This example sets the dialog font for a <xref linkend="clsUserDialog"/> dialog before the dialog
     template (<xref linkend="ovvDialogTemplate" />) is started. This allows the code to
-    correctly (<xref linkend="ovvInaccurate" />) calculate the size of the bitmap in dialog
+ <xref linkend="ovvInaccurate"/> calculate the size of the bitmap in dialog
     units (<xref linkend="defDialogUnit" />). The size of the bitmap is then used to size the dialog and to place the other
     controls in the dialog.
 
@@ -3104,7 +3104,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newCheckBox</emphasis> method returns an object of the
-  CheckBox (<xref linkend="clsCheckBox" />) control class. This object represents the check box control in the underlying dialog
+ <xref linkend="clsCheckBox"/> control class. This object represents the check box control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3166,7 +3166,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newComboBox</emphasis> method returns an object of the
-  ComboBox (<xref linkend="clsComboBox" />) control class. This object represents the combo box control in the underlying dialog
+ <xref linkend="clsComboBox"/> control class. This object represents the combo box control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3243,7 +3243,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 <para>
   The <emphasis role="italic">newDateTimePicker</emphasis> method returns a date and time picker object that represents
   the date and time picker control with the specified resource ID in the underlying dialog. See the
-  DateTimePicker (<xref linkend="clsDateTimePicker" />) class for details about date and time picker controls.
+ <xref linkend="clsDateTimePicker"/> class for details about date and time picker controls.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3305,7 +3305,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newEdit</emphasis> method returns an object of the
-  Edit (<xref linkend="clsEdit" />) control class. This object represents the edit control in the underlying dialog
+ <xref linkend="clsEdit"/> control class. This object represents the edit control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3363,7 +3363,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newGroupBox</emphasis> method returns an object of the
-  GroupBox (<xref linkend="clsGroupBox" />) control class. This object represents the group box control in the underlying dialog
+ <xref linkend="clsGroupBox"/> control class. This object represents the group box control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3435,7 +3435,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newListBox</emphasis> method returns an object of the
-  ListBox (<xref linkend="clsListBox" />) control class. This object represents the list box control in the underlying dialog
+ <xref linkend="clsListBox"/> control class. This object represents the list box control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3501,7 +3501,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newListView</emphasis> method returns an object of the
-  ListView (<xref linkend="clsListView" />) control class. This object represents the list-view control in the underlying dialog
+ <xref linkend="clsListView"/> control class. This object represents the list-view control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3560,7 +3560,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newMonthCalendar</emphasis> method returns an object of the
-  MonthCalendar (<xref linkend="clsMonthCalendar" />) control class. This object represents the month calendar control in
+ <xref linkend="clsMonthCalendar"/> control class. This object represents the month calendar control in
   the underlying dialog with the specified resource ID.
 </para>
 <variablelist>
@@ -3630,7 +3630,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newProgressBar</emphasis> method returns an object of the
-  ProgressBar (<xref linkend="clsProgressBar" />) control class. This object represents the progress bar control in the underlying dialog
+ <xref linkend="clsProgressBar"/> control class. This object represents the progress bar control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3695,7 +3695,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newPushButton</emphasis> method returns an object of the
-  Button (<xref linkend="clsButton" />) control class. This object represents the push button control in the underlying
+ <xref linkend="clsButton"/> control class. This object represents the push button control in the underlying
   dialog with the specified resource ID.
 </para>
 <variablelist>
@@ -3754,7 +3754,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newRadioButton</emphasis> method returns an object of the
-  RadioButton (<xref linkend="clsRadioButton" />) control class. This object represents the radio button control in the underlying dialog
+ <xref linkend="clsRadioButton"/> control class. This object represents the radio button control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3813,7 +3813,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newScrollBar</emphasis> method returns an object of the
-  ScrollBar (<xref linkend="clsScrollBar" />) control class. This object represents the scroll bar control in the underlying dialog
+ <xref linkend="clsScrollBar"/> control class. This object represents the scroll bar control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3872,7 +3872,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newTab</emphasis> method returns an object of the
-  Tab (<xref linkend="clsTab" />) control class. This object represents the tab control in the underlying dialog
+ <xref linkend="clsTab"/> control class. This object represents the tab control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3929,7 +3929,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newStatic</emphasis> method returns an object of the
-  Static (<xref linkend="clsStatic" />) control class. This object represents the static control in the underlying dialog
+ <xref linkend="clsStatic"/> control class. This object represents the static control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -3999,7 +3999,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newTrackBar</emphasis> method returns an object of the
-  TrackBar (<xref linkend="clsTrackBar" />) control class. This object represents the track bar control in the underlying
+ <xref linkend="clsTrackBar"/> control class. This object represents the track bar control in the underlying
   dialog
   with the specified resource ID.
 </para>
@@ -4079,7 +4079,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newTreeView</emphasis> method returns an object of the
-  TreeView (<xref linkend="clsTreeView" />) control class. This object represents the tree view control in the underlying dialog
+ <xref linkend="clsTreeView"/> control class. This object represents the tree view control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -4147,7 +4147,7 @@ controlObject = dialogObject~new[ControlName](resourceID)
 
 <para>
   The <emphasis role="italic">newUpDown</emphasis> method returns an object of the
-  UpDown (<xref linkend="clsUpDown" />) control class. This object represents the up down control in the underlying dialog
+ <xref linkend="clsUpDown"/> control class. This object represents the up down control in the underlying dialog
   with the specified resource ID.
 </para>
 <variablelist>
@@ -4569,7 +4569,7 @@ EventNotification::hasKeyPressConnection (<xref linkend="mthHasKeyPressConnectio
   The ooDialog framework provides some default command <xref linkend="ovvEvents"/> handling methods. At this time there
   are 3 handlers, one for the <emphasis role="italic">ok</emphasis>, the <emphasis role="italic">cancel</emphasis>, and
   the <emphasis role="italic">help</emphasis> command events. These 3 specific command events are generated when a
-  button (<xref linkend="clsButton" />), with the correct resource ID (<xref linkend="defResourceId" />), is clicked or
+ <xref linkend="clsButton"/>, with the correct resource ID (<xref linkend="defResourceId" />), is clicked or
   pushed. They can also be generated when a
   menu (<xref linkend="chpMenus" />) item, again with the correct resource ID, is selected. The cancel event is also
   generated, in a dialog, when the user closes the dialog using the close icon in the title bar, or presses the escape
@@ -6512,7 +6512,7 @@ Generic form:
   </para>
   <para>
     The <emphasis role="italic">show</emphasis> method over-rides the <xref linkend="mthShowClsWindowBase"/>
-    method of the WindowBase (<xref linkend="clsWindow" />) class, which takes no arguments. The primary purpose of
+    method of the <xref linkend="clsWindow"/> class, which takes no arguments. The primary purpose of
     the dialog object <emphasis role="italic">show</emphasis> method is to allow flexibility in how the dialog is
     initially shown when it is run.
   </para>
@@ -8307,8 +8307,8 @@ var2  "09"x  ,
     <varlistentry><term>du [required] [In/Out]</term>
     <listitem>
     <para>
-      The object to transform, can be either a Point (<xref linkend="clsPoint" />),
-      Size (<xref linkend="clsSize" />), or Rect (<xref linkend="clsRect" />)  On input, the unit of measurement is
+      The object to transform, can be either a <xref linkend="clsPoint"/>,
+ <xref linkend="clsSize"/>, or <xref linkend="clsRect"/>  On input, the unit of measurement is
       assumed to be dialog units and on return the dialog units will have been converted to pixels
     </para>
     </listitem></varlistentry>
@@ -8325,7 +8325,7 @@ var2  "09"x  ,
   <para>
     This method accurately converts dialog units of this dialog to pixels. Do not use
     factorX (<xref linkend="atrFactorX" />) and factorY (<xref linkend="atrFactorY" />) for the conversion as they are
-    inaccurate (<xref linkend="ovvInaccurate" />).
+ <xref linkend="ovvInaccurate"/>.
   </para>
   <para>
     Normally, this method is invoked prior to the creation of the underlying dialog. In order to be accurate, the
@@ -8387,7 +8387,7 @@ var2  "09"x  ,
   <para>
     Below is an example demonstrating these Windows handles and how they are related.  Assume
     <emphasis role="italic">showHandles</emphasis> is a method of a subclass of a
-    RcDialog (<xref linkend="clsRcDialog" />) and that <emphasis role="italic">staticDlg</emphasis> is a saved reference to
+ <xref linkend="clsRcDialog"/> and that <emphasis role="italic">staticDlg</emphasis> is a saved reference to
     another ooDialog object that was just created. The <emphasis role="italic">showHandles</emphasis> method is
     connected to a push button and then displays the handles when the user clicks that button.
 
@@ -8756,7 +8756,7 @@ var2  "09"x  ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      The size needed for the string is returned as a Size (<xref linkend="clsSize" />) object.
+      The size needed for the string is returned as a <xref linkend="clsSize"/> object.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -8898,7 +8898,7 @@ var2  "09"x  ,
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The size needed for the string is returned in a Size (<xref linkend="clsSize" />) object.
+    The size needed for the string is returned in a <xref linkend="clsSize"/> object.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -8927,8 +8927,8 @@ var2  "09"x  ,
     <varlistentry><term>pixels [required] [In/Out]</term>
     <listitem>
     <para>
-      The object to transform, can be either a Point (<xref linkend="clsPoint" />),
-      Size (<xref linkend="clsSize" />), or Rect (<xref linkend="clsRect" />)  On input, the unit of measurement is
+      The object to transform, can be either a <xref linkend="clsPoint"/>,
+ <xref linkend="clsSize"/>, or <xref linkend="clsRect"/>  On input, the unit of measurement is
       assumed to be pixels and on return the pixels will have been converted to dialog units.
     </para>
     </listitem></varlistentry>
@@ -8946,7 +8946,7 @@ var2  "09"x  ,
   <para>
     This method accurately converts pixels to the correct dialog units of this dialog. Do not use
     factorX (<xref linkend="atrFactorX" />) and factorY (<xref linkend="atrFactorY" />) as they are
-    inaccurate (<xref linkend="ovvInaccurate" />).
+ <xref linkend="ovvInaccurate"/>.
   </para>
   <para>
     However, if this method is invoked prior to the creation of the underlying dialog, the
@@ -9335,7 +9335,7 @@ MyDialog~sendMessageToControl(9001, "0x000000F1", 1, 0)
     The following example sets a new font for the date time picker's month calendar and returns the font it was using.
     Note that the same thing can be done by using the <xref linkend="mthGetMonthCalFont"/> and
  <xref linkend="mthSetMonthCalFont"/> methods of the
-    DateTimePicker (<xref linkend="clsDateTimePicker" />) class. In most
+ <xref linkend="clsDateTimePicker"/> class. In most
     cases, there is really no need for the Rexx programmer to use the <emphasis
     role="italic">sendMessageToWindow</emphasis> or <emphasis role="italic">sendMessageToWindowH</emphasis> methods.
 

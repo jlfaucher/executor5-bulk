@@ -53,7 +53,7 @@
 <para>
   The <computeroutput>ListView</computeroutput> class is the ooDialog interface to the Windows <emphasis
   role="italic">List-View</emphasis> control.  This should not be confused with the Windows <emphasis role="italic">List
-  Box</emphasis> control. The ooDialog ListBox (<xref linkend="clsListBox" />) class provides the interface to the
+  Box</emphasis> control. The ooDialog <xref linkend="clsListBox"/> class provides the interface to the
   Windows List Box control.  In general, the List-View control is more powerful than the List Box control.
 </para>
 <para id="listControlExtendedStyles">
@@ -2622,7 +2622,7 @@ incremented or decremented by .1 of a second.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
     <para>
-      This method returns the current image list (<xref linkend="clsImageList" />), if there is one.
+      This method returns the current image <xref linkend="clsImageList"/>, if there is one.
       <computeroutput>.nil</computeroutput> is returned if there is no current image list of the type
       specified.
     </para>
@@ -2959,7 +2959,7 @@ incremented or decremented by .1 of a second.
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    On success, returns a point (<xref linkend="clsPoint" />) object containing the position of the upper left corner
+    On success, returns a <xref linkend="clsPoint"/> object containing the position of the upper left corner
     of the item specified, relative to the client area of the list-view.
   </para>
   <para>
@@ -3540,7 +3540,7 @@ column. It can be one of the following values:
     This method and the <xref linkend="mthInsertColumn"/> method are virtually the same, except that
     in this method the width of the column is specified in pixels. The <emphasis role="italic">insertColumn</emphasis>
     method takes dialog units for the width and then converts them to pixels using
-    factorX (<xref linkend="ovvInaccurate" />). This makes the width used by the <emphasis
+ <xref linkend="ovvInaccurate"/>. This makes the width used by the <emphasis
     role="italic">insertColumn</emphasis> method inaccurate.
   </para>
   <para>
@@ -5323,7 +5323,7 @@ second the row is automatically selected.
   The list-view control uses image lists for a number of things, the large icons, the small icons, the
   state images, and the group header images. (ooDialog does not yet support list-view groups.) The
   <emphasis role="italic">src</emphasis> argument can be either an
-  ImageList (<xref linkend="clsImageList" />) object, or a single bitmap.
+ <xref linkend="clsImageList"/> object, or a single bitmap.
 </para>
 <para>
   Using an image list object is the most flexible option. The programmer creates the image list in the
@@ -5337,7 +5337,7 @@ second the row is automatically selected.
   appear in the image list. ooDialog uses this bitmap to create a <emphasis
   role="italic">.ImageList</emphasis> object and assigns it to the list-view. The <emphasis
   role="italic">src</emphasis> argument can be either the file name of the bitmap or a bitmap
-  Image (<xref linkend="clsImage" />) object.
+ <xref linkend="clsImage"/> object.
 </para>
 <para>
   Although using a single bitmap will allow the programmer to save a couple of lines of code, it has a
@@ -5354,14 +5354,14 @@ second the row is automatically selected.
   reports an error. Also note that when using a single bitmap, ooDialog will instantiate a <emphasis
   role="italic">.ImageList</emphasis> object. The programmer can retrieve this object using the
  <xref linkend="mthGetImageListClsListView"/>() method and then manipulate it using the
-  methods of the ImageList (<xref linkend="clsImageList" />) class.
+  methods of the <xref linkend="clsImageList"/> class.
 </para>
 <para>
   Unless a list-view has the LVS_SHAREIMAGELISTS style, (corresponds to the SHAREIMAGES style in the
  <xref linkend="mthCreateListView"/>() method,) the list-view control will handle
   releasing the image list(s). When the share image lists style is used, ownership of the image list
-  remains with the programmer. The ImageList (<xref linkend="clsImageList" />) and
-  Image (<xref linkend="clsImage" />) classes are used to manage image lists and images in ooDialog. The
+  remains with the programmer. The <xref linkend="clsImageList"/> and
+ <xref linkend="clsImage"/> classes are used to manage image lists and images in ooDialog. The
   documentation on both classes discusses when and why the programmer may want to release image lists.
   The Image class documentation has the most detail on this subject.
 </para>
@@ -5383,12 +5383,12 @@ second the row is automatically selected.
       <listitem>
         <para>
           The source for the image list. The most flexible way to use this method is to provide an
-          image list (<xref linkend="clsImageList" />) object to assign to the list-view.
+          image <xref linkend="clsImageList"/> object to assign to the list-view.
         </para>
         <para>
           However, as explained above, this argument can also be a single bitmap from which the image
           list is to be created. In this case, the argument can be either the file name of the bitmap or
-          a bitmap Image (<xref linkend="clsImage" />) object.
+          a bitmap <xref linkend="clsImage"/> object.
         </para>
         <para>
           If this argument is <computeroutput>.nil</computeroutput> the existing image list, if any, is

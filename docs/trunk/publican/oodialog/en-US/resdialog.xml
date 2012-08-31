@@ -49,7 +49,7 @@
   The resource definition, or dialog template (<xref linkend="ovvDialogTemplate" />), for a dialog can either be
   constructed manually, (see the <xref linkend="clsUserDialog"/> Class,) or read from a file.  ooDialog
   provides two main dialog classes that read the dialog templates from a file: the
-  ResDialog (<xref linkend="clsResDialog" />) class and the RcDialog (<xref linkend="clsRcDialog" />) class.
+ <xref linkend="clsResDialog"/> class and the <xref linkend="clsRcDialog"/> class.
 </para>
 <para>
   The <computeroutput>ResDialog</computeroutput> class uses a dialog template from a binary file and a
@@ -287,7 +287,7 @@ end
         <varlistentry><term>CONNECTBUTTONS</term>
         <listitem>
         <para>
-          Each push button (<xref linkend="clsButton" />) in the underlying dialog has the CLICKED
+          Each push <xref linkend="clsButton"/> in the underlying dialog has the CLICKED
           <xref linkend="ovvEvents"/> notification connected automatically to a method in the Rexx dialog object.
           This is the same as using the <xref linkend="mthConnectButtonEvent"/>() method for the
           CLICKED notification. The name for the method is generated automatically by the ooDialog framework. The method
@@ -299,7 +299,7 @@ end
         <listitem>
         <para>
           Similar to CONNECTBUTTONS, this option connects the CLICKED event notification from each
-          radio (<xref linkend="clsRadioButton" />) button to a method in the Rexx dialog object. Again, this is the same as
+ <xref linkend="clsRadioButton"/> button to a method in the Rexx dialog object. Again, this is the same as
           using the <emphasis role="italic">connectButtonEvent</emphasis> method.  For radio buttons, the generated
           method name is the button label with all spaces, ampersands, colons, and trailing <emphasis
           role="italic">...</emphasis> characters removed. The resulting text is then <emphasis
@@ -309,7 +309,7 @@ end
         <varlistentry><term>CONNECTCHECKS</term>
         <listitem>
         <para>
-          Exactly the same as CONNECTRADIOS, for check box (<xref linkend="clsCheckBox" />) controls. The object
+          Exactly the same as CONNECTRADIOS, for check <xref linkend="clsCheckBox"/> controls. The object
           method name is generated in the same way as it is for radio buttons. That is, the method name is the button
           label, with all spaces, ampersands, colons, and trailing <emphasis role="italic">...</emphasis> characters
           removed. Which is then <emphasis role="bold"> prepended</emphasis> with the text

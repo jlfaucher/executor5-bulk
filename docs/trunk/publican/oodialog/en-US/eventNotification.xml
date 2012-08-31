@@ -169,7 +169,7 @@
 <para>
   All event connections made using event connection methods introduced after ooDialog 4.1.0 assume the programmer wants
   the event handler invoked directly and for the ooDialog framework to wait for the return. These methods will be called
-  new connection methods. For instance, the date time (<xref linkend="clsDateTimePicker" />) picker control did not
+  new connection methods. For instance, the date <xref linkend="clsDateTimePicker"/> picker control did not
   exist in ooDialog 4.1.0, so its event connection method,
  <xref linkend="mthConnectDateTimePickerEvent"/> falls into this category.
 </para>
@@ -275,7 +275,7 @@
   <varlistentry id="exampleEventHandler1"><term><emphasis role="bold">Returning Values</emphasis></term>
   <listitem>
   <para>
-    The month calendar (<xref linkend="clsMonthCalendar" />) control has the
+    The month <xref linkend="clsMonthCalendar"/> control has the
     GETDAYSTATE (<xref linkend="evtMonthCalendarGETDAYSTATE" />) event that is sent to request information on how certain
     days are to be shown. The programmer can customize the calendar by returning a set of days that should be displayed
     in bold. For instance, in a business application paid holidays could be displayed in bold.
@@ -342,7 +342,7 @@
   <varlistentry id="exampleEventHandler2"><term><emphasis role="bold">Event Synchronization</emphasis></term>
   <listitem>
   <para>
-    The DTP (<xref linkend="clsDateTimePicker" />) (date time picker) control has the
+    The <xref linkend="clsDateTimePicker"/> (date time picker) control has the
  <xref linkend="mthConnectDateTimePickerEvent"/> event notification that is sent when the drop down calendar
     is shown. This gives the programmer a chance to customize the month calendar that is shown. Since the month calendar
     is not shown until the event handling method returns, replying directly to the notification allows the programmer to
@@ -401,7 +401,7 @@
   <varlistentry id="exampleEventHandler3"><term><emphasis role="bold">Veto Events</emphasis></term>
   <listitem>
   <para>
-    The tab (<xref linkend="clsTab" />) control has the <xref linkend="mthConnectTabEvent"/> event.
+    The <xref linkend="clsTab"/> control has the <xref linkend="mthConnectTabEvent"/> event.
     It is sent when the user selects a different tab, and is sent <emphasis role="bold">before</emphasis> the selected
     tab is changed. The programmer can <emphasis role="italic">veto</emphasis> the change to a new tab by returning
     <computeroutput>.false</computeroutput> to the event notification, or allow the change by returning
@@ -1199,9 +1199,9 @@
   <listitem>
   <para>
     The following example comes from code ooDialog uses internally to handle a problem with a
-    ListView (<xref linkend="clsListView" />) control when it is used in a Tab (<xref linkend="clsTab" />) control. When
+ <xref linkend="clsListView"/> control when it is used in a <xref linkend="clsTab"/> control. When
     the dialog is being inactivated the handle of the focused control is saved. When it is being activated, the handle
-    of the last focused control is passed on the to ControlDialog (<xref linkend="clsControlDialog" />) that contains
+    of the last focused control is passed on the to <xref linkend="clsControlDialog"/> that contains
     the list-view for processing.
 
 <programlisting>
@@ -1297,7 +1297,7 @@
 
 <para>
   Connects a method in the Rexx dialog to the Windows <xref linkend="ovvEvents"/> notification from a
-  button (<xref linkend="clsButton" />) control. The <emphasis role="italic">connectButtonEvent</emphasis> method is used
+ <xref linkend="clsButton"/> control. The <emphasis role="italic">connectButtonEvent</emphasis> method is used
   for all types of buttons (push button, radio button, or check box.)
 </para>
 <variablelist>
@@ -1806,7 +1806,7 @@ lo word resource ID:       1003
 
 <para>
   The <emphasis role="italic">connectDateTimePickerEvent</emphasis> method connects an
-  <xref linkend="ovvEvents"/> notification message from a date time picker (<xref linkend="clsDateTimePicker" />)
+  <xref linkend="ovvEvents"/> notification message from a date time <xref linkend="clsDateTimePicker"/>
   control to a method in the Rexx dialog.
 </para>
 <para>
@@ -2441,7 +2441,7 @@ lo word resource ID:       1003
   display a string in a call back field (<xref linkend="sctDTPCallback" />).
 </para>
 <para>
-  The programmer must fill in a Size (<xref linkend="clsSize" />) object with the maximum size needed and return a
+  The programmer must fill in a <xref linkend="clsSize"/> object with the maximum size needed and return a
   value from the event handler. The interpreter waits for this return. This behavior can not be changed.
 </para>
 
@@ -2587,7 +2587,7 @@ lo word resource ID:       1003
     <varlistentry><term>vKey</term>
     <listitem>
     <para>
-      The virtual key code of the key the user typed in the call back field. The VK (<xref linkend="clsVK" />) class
+      The virtual key code of the key the user typed in the call back field. The <xref linkend="clsVK"/> class
       can be used to map the numeric key code to a symbol, making it easier to work with the codes.
     </para>
     </listitem></varlistentry>
@@ -3608,7 +3608,7 @@ Help request:
       <para>
         The keys are specified by the numeric value defined by Microsoft for its virtual key set.  These numeric values
         are 0 through 255. There are some integer values between 0 and 255 that do not have a virtual key assigned to
-        them. For example, 0, 7, 10, 11, and 255 are not used. The VK (<xref linkend="clsVK" />) class contains
+        them. For example, 0, 7, 10, 11, and 255 are not used. The <xref linkend="clsVK"/> class contains
         constants for all of the defined virtual keys.
       </para>
       <para>
@@ -4652,8 +4652,8 @@ incorrect.
 <indexterm><primary>ListView Event</primary><secondary>KEYDOWN</secondary></indexterm>
 <para>
   The event-handling method connected to KEYDOWN receives two arguments: the control ID of the list-view control and the
-  virtual key code pressed. Use the key2name (<xref linkend="mthKey2Name" />) method of the
-  VK (<xref linkend="clsVK" />) class to determine which key was pressed.
+  virtual key code pressed. Use the <xref linkend="mthKey2Name"/> method of the
+ <xref linkend="clsVK"/> class to determine which key was pressed.
 </para>
 
 <programlisting>
@@ -4722,7 +4722,7 @@ incorrect.
 
 <para>
   The <emphasis role="italic">connectMonthCalendarEvent</emphasis> method connects an
-  <xref linkend="ovvEvents"/> notification message from a month calendar (<xref linkend="clsMonthCalendar" />)
+  <xref linkend="ovvEvents"/> notification message from a month <xref linkend="clsMonthCalendar"/>
   control to a method in the Rexx dialog.
 </para>
 <variablelist>
@@ -4884,10 +4884,10 @@ incorrect.
   The event handler for the get day state event is invoked when the month calendar control requests information on how
   to display days in the calendar. The notification is only sent when the month calendar has the DAYSTATE style. The
   programmer must reply to this notification and <emphasis role="bold">must</emphasis> use the
-  DayStates (<xref linkend="clsDayStates" />) class to properly construct the reply. The interpreter waits for the reply.
+ <xref linkend="clsDayStates"/> class to properly construct the reply. The interpreter waits for the reply.
 </para>
 <para>
-  The reply is a buffer containing a sequential collection of DayState (<xref linkend="clsDayState" />) values. Each
+  The reply is a buffer containing a sequential collection of <xref linkend="clsDayState"/> values. Each
   individual day state value specifies how each day in a single month should be displayed. If a day in the day state
   value is turned on, the day is displayed in bold. If a day is not turned on, it is displayed with no emphasis. The
   <computeroutput>DayStates</computeroutput> and <computeroutput>DayState</computeroutput> classes provide methods to
@@ -4935,10 +4935,10 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The reply is a buffer containing a sequential collection of DayState (<xref linkend="clsDayState" />) values. Each
+    The reply is a buffer containing a sequential collection of <xref linkend="clsDayState"/> values. Each
     individual day state value specifies how each day in a single month should be displayed. If a day in the day state
     value is turned on, the day is displayed in bold. If a day is not turned on, it is displayed with no emphasis. The
-    returned buffer must be constructed by using the DayStates (<xref linkend="clsDayStates" />) class.
+    returned buffer must be constructed by using the <xref linkend="clsDayStates"/> class.
   </para>
   <para>
     The <computeroutput>DayStates</computeroutput> and <computeroutput>DayState</computeroutput> classes provide methods
@@ -5958,7 +5958,7 @@ incorrect.
 
 <para>
   Connects a method in the Rexx dialog to the Windows <xref linkend="ovvEvents"/> notification from a
-  scroll bar (<xref linkend="clsScrollBar" />) control.
+  scroll <xref linkend="clsScrollBar"/> control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6145,7 +6145,7 @@ incorrect.
 
     The <emphasis role="italic">posInfo</emphasis> argument contains the scroll bar event code in the low word of the
     argument. For the POSITION and the DRAG events, the high word contains the position of the scroll box. For the other
-    events, the high word is not used. When the notification comes from a scroll (<xref linkend="clsScrollBar" />) bar
+    events, the high word is not used. When the notification comes from a <xref linkend="clsScrollBar"/> bar
     control, the <emphasis role="italic">hwnd</emphasis> argument is the window handle of the scroll bar. When the
     notification does not come from a scroll bar control, <emphasis role="italic">hwnd</emphasis> is 0.
   </para>
@@ -6277,7 +6277,7 @@ incorrect.
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example comes from a resizable dialog implemented through the DlgAreaU (<xref linkend="clsDlgAreaU" />)
+    This example comes from a resizable dialog implemented through the <xref linkend="clsDlgAreaU"/>
     class. It turns off forcing the dialog controls to redraw in the <computeroutput>DlgAreaU</computeroutput> object,
     and only has the controls redraw once when the sizing is finished.
 
@@ -6614,7 +6614,7 @@ incorrect.
   <para>
     The event-handling method for the KEYDOWN event receives two arguments: info about the event, the control ID of the
     tab control is in the low order word of this argument. The second argument is the virtual key code that was pressed.
-    Use the the VK (<xref linkend="clsVK" />) class to determine which key was pressed. Example:
+    Use the the <xref linkend="clsVK"/> class to determine which key was pressed. Example:
 
 <programlisting>
 <![CDATA[
@@ -7001,8 +7001,8 @@ trackbar position by extracting the high-oder word. Example:
   <listitem>
   <para>
     The event-handling method connected to KEYDOWN receives two arguments: the control ID of the tree view control and the
-    virtual key code pressed. Use the key2name (<xref linkend="mthKey2Name" />)method of the
-    VK (<xref linkend="clsVK" />) class to determine which key was pressed. Example:
+    virtual key code pressed. Use the <xref linkend="mthKey2Name"/>method of the
+ <xref linkend="clsVK"/> class to determine which key was pressed. Example:
 
 <programlisting>
 <![CDATA[
@@ -7214,7 +7214,7 @@ trackbar position by extracting the high-oder word. Example:
 </para>
 <para>
   The programmer must return a value from the event handler and the interpreter waits for this return. The
- <xref linkend="mthDeltaPosReply"/> class method of the UpDown (<xref linkend="clsUpDown" />) class is
+ <xref linkend="mthDeltaPosReply"/> class method of the <xref linkend="clsUpDown"/> class is
   used to properly construct the return value from the event handler.
 </para>
 <variablelist>
@@ -7256,7 +7256,7 @@ trackbar position by extracting the high-oder word. Example:
   <listitem>
   <para>
     A delta position buffer must be returned by the event handler.  This buffer can only be constructed properly by
-    using the UpDown (<xref linkend="clsUpDown" />) class's <xref linkend="mthDeltaPosReply"/>
+    using the <xref linkend="clsUpDown"/> class's <xref linkend="mthDeltaPosReply"/>
     method. The arguments to <emphasis role="italic">deltaPosReply</emphasis> allow the programmer to return a value
     that makes no change to the new position, cancels altogether the change in position, or modifies the resulting new
     position.

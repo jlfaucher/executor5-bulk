@@ -58,7 +58,7 @@
   strives to be complete enough that a Rexx programmer, knowing very little of the Windows API, can effectively write
   graphical programs in Rexx, it can never be as comprehensive as the actual Microsoft documentation. Therefore, the
   Rexx programmer that needs, or desires, to go beyond the basic dialog and dialog behavior, will benefit greatly by
-  consulting the MSDN Library (<xref linkend="defWindowsDoc" />).
+  consulting the MSDN <xref linkend="defWindowsDoc"/>.
 </para>
 
 <section id="sctGettingStarted"><title>Getting Started</title>
@@ -66,7 +66,7 @@
   The ooDialog documentation should be divided into two parts - a tutorial and a reference. In the original
   documentation accompanying IBM's Object Rexx, the documentation <emphasis role="bold">was</emphasis> in two parts.
   Unfortunately, the tutorial portion mostly described how to use the
-  IBM Resource Workshop (<xref linkend="ovvResourceWorkshop" />). Because the tutorial section was primarily directed towards using the Resource Workshop, it does not
+  IBM Resource <link linkend="ovvResourceWorkshop">Workshop</link>. Because the tutorial section was primarily directed towards using the Resource Workshop, it does not
   make much sense in the current context.
 </para>
 <para>
@@ -76,7 +76,7 @@
   newcomer and will help to get started using ooDialog. In addition to the ooDialog User Guide, the sample ooDialog
   programs that accompany the ooRexx distribution are probably the best additional source of help for learning how to
   use ooDialog. However, there are also numerous snippets of example code in this book. In addition the
-  getting help  (<xref linkend="helpGettingHelp" />) section of this reference lists a number of resources for the
+  getting <link linkend="helpGettingHelp">help</link> section of this reference lists a number of resources for the
   programmer with questions about ooDialog.
 </para>
 </section>
@@ -144,7 +144,6 @@
 </para>
 <programlisting>
 <![CDATA[
-
 -- Acceptable:
 "0xffff"
 "0XFFFF"
@@ -158,7 +157,6 @@
 "000012ab"             -- second character must be x
 "0x0123456789ABCDEF1"  -- 17 characters
 "00x0"                 -- second character must be x, not 0
-
 ]]>
 </programlisting>
 </section>
@@ -173,11 +171,9 @@
 </para>
 <programlisting>
 <![CDATA[
-
 #define   ID_PUSHBUTTON1  413
 #define   ID_EDIT1        511
 #define   ID_LISTBOX1     602
-
 ]]>
 </programlisting>
 </section>
@@ -206,9 +202,9 @@
   resource, a resource script, or by using the <xref linkend="mthAddIconResource"/> method of the
   UserDialog.  The following table shows the pre-defined symbolic IDs of the icon images provided by ooDialog. The
   symbolic ID should always be used in case the numeric value is changed in the future. In addition, the programmer
-  should avoid using any of the pre-defined symbolic IDs reserved (<xref linkend="ovvPreDefinedSymbolicIDs" />) by ooDialog. The
-  IDI_DLG_DEFAULT is a fifth symbolic ID that represents the default dialog icon. This ID can always be used where a
-  dialog icon ID is needed.
+  should avoid using any of the <link linkend="ovvPreDefinedSymbolicIDs"></link>pre-defined symbolic IDs reserved by
+  ooDialog. The IDI_DLG_DEFAULT is a fifth symbolic ID that represents the default dialog icon. This ID can always be
+  used where a dialog icon ID is needed.
 </para>
 <table frame="all">
 <title>ooDialog Supplied Icons</title>
@@ -273,7 +269,7 @@ xPixels = xDialogUnits * self~FactorX
 ]]>
 </programlisting>
   <emphasis role="bold">Note</emphasis> that in the above line of code <computeroutput>xPixels</computeroutput> will not
-  be accurate (<xref linkend="ovvInaccurate" />).
+  be <xref linkend="ovvInaccurate"/>.
 </para>
 </section>
 
@@ -365,7 +361,7 @@ xPixels = xDialogUnits * self~FactorX
   by Microsoft and public knowledge. The format is easily parsable by computer software and is used by resource
   compilers to produce a compiled (binary) file containing the dialog template(s) defined in the script file. The
   ooDialog framework can parse a resource script file and dynamically produce a dialog template in memory. This is the
-  basis of how a RcDialog (<xref linkend="clsRcDialog" />) works.
+  basis of how a <xref linkend="clsRcDialog"/> works.
 </para>
 </section>
 
@@ -618,7 +614,7 @@ xPixels = xDialogUnits * self~FactorX
   The term <emphasis role="italic">system error code</emphasis> refers to an error code set by the Windows operating
   system when an API fails. ooDialog provides an interface to the Windows APIs and when an error is detected many of
   the ooDialog methods have some means of conveying the system error code to the programmer. The ooDialog programmer can
-  look up the meaning of a system error code in the MSDN library (<xref linkend="defWindowsDoc" />) to understand
+  look up the meaning of a system error code in the MSDN <xref linkend="defWindowsDoc"/> to understand
   better the cause of a failure.
 </para>
 <para>
@@ -721,8 +717,8 @@ xPixels = xDialogUnits * self~FactorX
   ooDialog uses three basic constructs that allow the Rexx programmer to supply the dialog template. The programmer can
   use a binary resource, a resource script, or create the template dynamically in the program code. A binary (compiled)
   dialog template is stored in a DLL, (usually a .dll file.) The programmer subclasses a
-  ResDialog (<xref linkend="clsResDialog" />) to use a binary resource. Resource scripts, (usually a .rc file) supply the
-  dialog template in a text file. The programmer subclasses a RcDialog (<xref linkend="clsRcDialog" />) to create a
+ <xref linkend="clsResDialog"/> to use a binary resource. Resource scripts, (usually a .rc file) supply the
+  dialog template in a text file. The programmer subclasses a <xref linkend="clsRcDialog"/> to create a
   dialog from a resource script. To create a dialog template dynamically in the program code, the programmer subclasses
   a <xref linkend="clsUserDialog"/> and then uses the create (<xref linkend="sctCreateMethods" />)
   methods of that class to create the dialog template. The <computeroutput>UserDialog</computeroutput> object translates
@@ -762,7 +758,7 @@ xPixels = xDialogUnits * self~FactorX
   was <emphasis role="bold">no way</emphasis> in ooDialog to <emphasis role="italic">directly</emphasis> reply to the
   notification message. This placed a severe restriction on ooDialog programs. Many of the features of the operating
   system could not be used with this restriction. For instance, when a user selects a new tab in a
-  tab (<xref linkend="clsTab" />) control, the operating system sends a SELCHANGING event notification before the selected
+ <xref linkend="clsTab"/> control, the operating system sends a SELCHANGING event notification before the selected
   tab is changed. The programmer can allow or prevent the change by replying true or false to the notification message.
 </para>
 <para>
@@ -968,7 +964,7 @@ xPixels = xDialogUnits * self~FactorX
 <para>
   Therefore, an ooDialog program running on a Windows 2000 machine will not have available some of the features that are
   available when ooDialog is running on a XP service pack two system.  The DlgUtil class provides a method,
-  comCtl32Version (<xref linkend="mthComCtl32Version" />) that allows the programmer to determine the exact version of
+ <xref linkend="mthComCtl32Version"/> that allows the programmer to determine the exact version of
   the common controls library that ooDialog is using.  In the documentation for the ooDialog dialog control classes,
   features that are not available in all versions of the common control library are noted.  The minimum version of the
   library that is needed is listed.  In general, at this time, all features of ooDialog are available on Windows XP
@@ -978,7 +974,7 @@ xPixels = xDialogUnits * self~FactorX
 
 <section id="ovvRectangleCoordinates" xreflabel="rectangle"><title>Rectangle Coordinates</title>
 <para>
-  The ooDialog framework, and Windows itself, often use a Rect (<xref linkend="clsRect" />) object to specify
+  The ooDialog framework, and Windows itself, often use a <xref linkend="clsRect"/> object to specify
   coordinates of a window, or a portion of a window. However, there are two different ways the rectangle is used. For
   purposes of this documentation, the two types of rectangle are defined as a <emphasis role="bold">bounding</emphasis>
   rectangle and a <emphasis role="bold">point/size</emphasis> rectangle.
@@ -1029,14 +1025,14 @@ xPixels = xDialogUnits * self~FactorX
   versions of the operating system.
 </para>
 <para>
-  For instance, the MonthCalendar (<xref linkend="clsMonthCalendar" />) class has a number of methods that are only
+  For instance, the <xref linkend="clsMonthCalendar"/> class has a number of methods that are only
   available on Vista or later. ooDialog can only use the features available on the system on which it is executing. If
   a method is invoked that is not available on the current operating system, a syntax conditions is raised. Any
   method not available on all the Windows versions which ooRexx supports, have the minimum required Windows version
   noted in their documentation.
 </para>
 <para>
-   The OS (<xref linkend="clsOS" />) class supplies methods that allow the programmer to determine exactly which
+   The <xref linkend="clsOS"/> class supplies methods that allow the programmer to determine exactly which
    operating system version the program is currently executing on. For programs that need to run on all versions of
    Windows, the programmer must either avoid using methods not available on all versions, or test for the current
    version and provide an alternative code path dependent on that version.  The
@@ -1119,8 +1115,8 @@ xPixels = xDialogUnits * self~FactorX
   </para>
   <para>
     However, as enhancements to ooDialog started to be made in version 4.0.0 and later, it became apparent that the
-    constDir attribute was not adequate. Classes such as the Menu (<xref linkend="clsMenu" />) classes and
-    ResourceImage (<xref linkend="clsResourceImage" />) class also used resource IDs, but objects of these classes are
+    constDir attribute was not adequate. Classes such as the <xref linkend="clsMenu"/> classes and
+ <xref linkend="clsResourceImage"/> class also used resource IDs, but objects of these classes are
     independent of any dialog object. Without access to a dialog object, there was no way in those classes to use symbolic
     IDs. To fix this problem, ooDialog 4.2.0 added the global <computeroutput>.constDir</computeroutput> to the
     mechanism for using symbolic IDs.
@@ -1138,7 +1134,7 @@ xPixels = xDialogUnits * self~FactorX
     role="italic">never</emphasis>. The programmer specifies which of these strategies is to be used through one of the
     methods of the .application (<xref linkend="dotApplication" />) object. (The
     <computeroutput>.application</computeroutput> object is an instance of the
-    ApplicationManager (<xref linkend="clsApplicationManager" />) class.)
+ <xref linkend="clsApplicationManager"/> class.)
   </para>
   </listitem></varlistentry>
   <varlistentry id="entConstDirStrategy"><term><emphasis role="bold">Global .constDir Usage
@@ -1186,19 +1182,19 @@ xPixels = xDialogUnits * self~FactorX
   <varlistentry><term><emphasis role="bold">Adding Symbols:</emphasis></term>
   <listitem>
   <para>
-    A few symbolic IDs are pre-defined (<xref linkend="ovvPreDefinedSymbolicIDs" />) by ooDialog and are always
+    A few symbolic IDs are <link linkend="ovvPreDefinedSymbolicIDs">pre-defined</link> by ooDialog and are always
     present in the constant directory. These symbolic IDs can be used in any ooDialog program. Other than the
     pre-defined IDs, the programmer must add symbolic IDs in order to use them in a program.
   </para>
   <para>
     The easiest way to add symbols is to have the ooDialog framework add the symbols itself from a file. Whenever
-    ooDialog parses a resource (<xref linkend="defResourceScript" />) script or a
+    ooDialog parses a resource <xref linkend="defResourceScript"/> or a
     header file (<xref linkend="defHeaderFile" />), it automatically adds any symbol
     definitions (<xref linkend="defPoundDefine" />) it finds to a constant directory. Which constant directory is dependent
     on the global <computeroutput>.constDir</computeroutput> usage strategy in effect.
   </para>
   <para>
-    Resource scripts are parsed whenever a RcDialog (<xref linkend="clsRcDialog" />), or subclass, is instantiated.
+    Resource scripts are parsed whenever a <xref linkend="clsRcDialog"/>, or subclass, is instantiated.
     In addition, all the ooDialog dialog classes accept a header file as an optional parameter when a new instance of a
     dialog object is created. (See for example the <computeroutput>new</computeroutput> method in the
  <xref linkend="mthNewDialogObject"/> object or the <xref linkend="mthNewClsUserDialog"/>
@@ -1214,7 +1210,7 @@ xPixels = xDialogUnits * self~FactorX
     header file argument in the <xref linkend="mthNewDialogObject"/> method of a dialog, the ooDialog framework
     provides some additional methods for reading a file and adding the symbol definitions to a constant directory. The
     dialog object has the <xref linkend="mthParseIncludeFile"/> method. The
-    ApplicationManager (<xref linkend="clsApplicationManager" />) class has several methods, which are accessed through the
+ <xref linkend="clsApplicationManager"/> class has several methods, which are accessed through the
     .application (<xref linkend="dotApplication" />) object. These are: the
  <xref linkend="mthUseGlobalConstDir"/>, <xref linkend="mthAddToConstDir"/>,
  <xref linkend="mthSetDefaults"/>, and <xref linkend="mthParseIncludeFile"/>
@@ -1262,7 +1258,7 @@ xPixels = xDialogUnits * self~FactorX
     programmers to use symbolic IDs for arguments requiring resource IDs in the methods of the
     dialog (<xref linkend="chpDialogObject" />) object and the dialog (<xref linkend="chpDialogControlObject" />) control
     object. However, the ooDialog framework contains other classes with methods requiring resource IDs. The
-    Menu (<xref linkend="clsMenu" />) classes and the ResourceImage (<xref linkend="clsResourceImage" />) class are
+ <xref linkend="clsMenu"/> classes and the <xref linkend="clsResourceImage"/> class are
     examples of these classes. If the programmer wishes to use symbolic IDs in classes other than the dialog and
     dialog control classes, then the global <computeroutput>.constDir</computeroutput> <emphasis
     role="bold">must</emphasis> be used.
@@ -1601,8 +1597,8 @@ xPixels = xDialogUnits * self~FactorX
     part of using a dialog that the programmer should not need to do anything special. The methods to connect events are
     now all methods of the base classes where they are needed. The methods to connect dialog events are part of the base
     dialog (<xref linkend="chpDialogObject" />), methods to connect menu events are part of the
-    Menu (<xref linkend="clsMenu" />) class, methods to connect mouse events are part of the
-    Mouse (<xref linkend="clsMouse" />) class, etc..
+ <xref linkend="clsMenu"/> class, methods to connect mouse events are part of the
+ <xref linkend="clsMouse"/> class, etc..
   </para>
   <para>
     ooDialog 4.2.0 no longer makes a distinction between a <emphasis role="italic">plain</emphasis> dialog and a
@@ -1634,18 +1630,18 @@ xPixels = xDialogUnits * self~FactorX
     The ooDialog framework has always provided the <emphasis role="italic">factorX</emphasis> and <emphasis
     role="italic">factorY</emphasis> attributes, whose intent was to convert between dialog
     units (<xref linkend="defDialogUnit" />) and pixels (<xref linkend="defPixel" />). Unfortunately, the two attributes
-    are based on a fallacy and are inaccurate (<xref linkend="ovvInaccurate" />). To compound the problem, many
+    are based on a fallacy and are <xref linkend="ovvInaccurate"/>. To compound the problem, many
     ooDialog methods internally use the attributes to convert between dialog units and pixels, <emphasis
     role="italic">when no conversion is needed.</emphasis>
   </para>
   <para>
-    To fix this problem new methods, such as dlgUnit2pixel (<xref linkend="mthDlgUnit2pixel" />),
-    pixel2dlgUnit (<xref linkend="mthPixel2dlgUnit" />), etc., have been added that accurately convert between pixels and
+    To fix this problem new methods, such as <xref linkend="mthDlgUnit2pixel"/>,
+ <xref linkend="mthPixel2dlgUnit"/>, etc., have been added that accurately convert between pixels and
     dialog units. Methods that are inaccurate have had, matching, accurate, methods added to the ooDialog framework. The
     accurate <xref linkend="mthGetRealPos"/> is added to match the inaccurate
- <xref linkend="mthGetPos"/> method. The accurate <xref linkend="mthColumnWidthPX"/> is
+    <xref linkend="mthGetPos"/> method. The accurate <xref linkend="mthColumnWidthPX"/> is
     added to match the inaccurate <xref linkend="mthColumnWidth"/>. The accurate
- <xref linkend="mthMoveTo"/> is added to match the inaccurate <xref linkend="mthMove"/> method, and
+    <xref linkend="mthMoveTo"/> is added to match the inaccurate <xref linkend="mthMove"/> method, and
     so on.
   </para>
   </listitem></varlistentry>
@@ -1663,56 +1659,56 @@ xPixels = xDialogUnits * self~FactorX
     <itemizedlist>
     <listitem>
     <para>
-      ControlDialog (<xref linkend="clsControlDialog" />): Control dialogs work well as a dialog within a top-level
+      <xref linkend="clsControlDialog"/>: Control dialogs work well as a dialog within a top-level
       dialog. In essence, a <computeroutput>ControlDialog</computeroutput> functions as a dialog <emphasis
       role="italic">control</emphasis> within the top-level dialog.
     </para>
     </listitem>
     <listitem>
     <para>
-      RcControlDialog (<xref linkend="clsRcControlDialog" />): A <computeroutput>ControlDialog</computeroutput> based
+      <xref linkend="clsRcControlDialog"/>: A <computeroutput>ControlDialog</computeroutput> based
       on the <computeroutput>RcDialog</computeroutput>.
     </para>
     </listitem>
     <listitem>
     <para>
-      ResControlDialog (<xref linkend="clsResControlDialog" />): A <computeroutput>ControlDialog</computeroutput>
+      <xref linkend="clsResControlDialog"/>: A <computeroutput>ControlDialog</computeroutput>
       based on the <computeroutput>ResDialog</computeroutput> dialog.
     </para>
     </listitem>
     <listitem>
     <para>
-      UserControlDialog (<xref linkend="clsUserControlDialog" />): A <computeroutput>ControlDialog</computeroutput>
+ <xref linkend="clsUserControlDialog"/>: A <computeroutput>ControlDialog</computeroutput>
       based on the <computeroutput>UserDialog</computeroutput> dialog.
     </para>
     </listitem>
     <listitem>
     <para>
-      PropertySheetDialog (<xref linkend="clsPropertySheetDialog" />): The
+ <xref linkend="clsPropertySheetDialog"/>: The
       <computeroutput>PropertySheetDialog</computeroutput> is an implementation of the Windows property sheet and the
       Windows wizard. Unlike most ooDialog dialogs, the operating system does most of the management of these dialogs.
     </para>
     </listitem>
     <listitem>
     <para>
-      PropertySheetPage (<xref linkend="clsPropertySheetPage" />): <computeroutput>PropertySheetPage</computeroutput>
+ <xref linkend="clsPropertySheetPage"/>: <computeroutput>PropertySheetPage</computeroutput>
       dialogs are used as the pages of property sheets and wizards.</para>
     </listitem>
     <listitem>
     <para>
-      RcPSPDialog (<xref linkend="clsRcPSPDialog" />): A <computeroutput>PropertySheetPage</computeroutput> based on
+ <xref linkend="clsRcPSPDialog"/>: A <computeroutput>PropertySheetPage</computeroutput> based on
       the <computeroutput>RcDialog</computeroutput> dialog.
     </para>
     </listitem>
     <listitem>
     <para>
-      ResPSPDialog (<xref linkend="clsResPSPDialog" />): A <computeroutput>PropertySheetPage</computeroutput> based on
+ <xref linkend="clsResPSPDialog"/>: A <computeroutput>PropertySheetPage</computeroutput> based on
       the <computeroutput>ResDialog</computeroutput> dialog.
     </para>
     </listitem>
     <listitem>
     <para>
-      UserPSPDialog (<xref linkend="clsUserPSPDialog" />): A <computeroutput>PropertySheetPage</computeroutput> based
+ <xref linkend="clsUserPSPDialog"/>: A <computeroutput>PropertySheetPage</computeroutput> based
       on the <computeroutput>UserDialog</computeroutput> dialog.
     </para>
     </listitem>
@@ -1726,19 +1722,19 @@ xPixels = xDialogUnits * self~FactorX
     <itemizedlist>
     <listitem>
     <para>
-      DateTimePicker (<xref linkend="clsDateTimePicker" />): A control that provides a simple interface with which to
+ <xref linkend="clsDateTimePicker"/>: A control that provides a simple interface with which to
       exchange date and time information with the user.
     </para>
     </listitem>
     <listitem>
     <para>
-      MonthCalendar (<xref linkend="clsMonthCalendar" />): A control that provides an easy to use interface which
+ <xref linkend="clsMonthCalendar"/>: A control that provides an easy to use interface which
       allows users to select or enter dates. The control has the appearance of a typical calendar.
     </para>
     </listitem>
     <listitem>
     <para>
-      UpDown (<xref linkend="clsUpDown" />): A control that consists of a pair of arrow buttons that the user can
+ <xref linkend="clsUpDown"/>: A control that consists of a pair of arrow buttons that the user can
       click to increment or decrement a value, such as a scroll position or a number displayed in a companion control.
     </para>
     </listitem>
@@ -1759,26 +1755,26 @@ xPixels = xDialogUnits * self~FactorX
     <itemizedlist>
     <listitem>
     <para>
-      BinaryMenuBar (<xref linkend="clsBinaryMenuBar" />): A <computeroutput>MenuBar</computeroutput> created from a
+ <xref linkend="clsBinaryMenuBar"/>: A <computeroutput>MenuBar</computeroutput> created from a
       binary resource, or by the programmer with the easy to use menu class methods.
     </para>
     </listitem>
     <listitem>
     <para>
-      Menu (<xref linkend="clsMenu" />): The <computeroutput>Menu</computeroutput> class implements the large number
+ <xref linkend="clsMenu"/>: The <computeroutput>Menu</computeroutput> class implements the large number
       of methods that are the same for all menus.
     </para>
     </listitem>
     <listitem>
     <para>
-      MenuBar (<xref linkend="clsMenuBar" />): A menu bar is often called the top-level menu. It is the bar positioned
+ <xref linkend="clsMenuBar"/>: A menu bar is often called the top-level menu. It is the bar positioned
       just below the title bar of an application window or a dialog. The <computeroutput>MenuBar</computeroutput> class
       implements the methods that are common to all menu bars.
     </para>
     </listitem>
     <listitem>
     <para>
-      PopupMenu (<xref linkend="clsPopupMenu" />): A menu bar contains submenus, and submenus can also contain
+ <xref linkend="clsPopupMenu"/>: A menu bar contains submenus, and submenus can also contain
       submenus. Submenus go by various names, including drop down menus, popup menus, context menus, and shortcut menus.
       The <computeroutput>PopupMenu</computeroutput> class is an implementation of submenus, no matter which name it
       goes by. Popup menus can be inserted into menu bars, or other submenus. They are also used as context menus. The
@@ -1788,21 +1784,21 @@ xPixels = xDialogUnits * self~FactorX
     </listitem>
     <listitem>
     <para>
-      ScriptMenuBar (<xref linkend="clsScriptMenuBar" />): A <computeroutput>MenuBar</computeroutput> whose menu
+ <xref linkend="clsScriptMenuBar"/>: A <computeroutput>MenuBar</computeroutput> whose menu
       template is created by parsing a resource script, (usually a .rc file.) Similar to a
-      RcDialog (<xref linkend="clsRcDialog" />).
+ <xref linkend="clsRcDialog"/>.
     </para>
     </listitem>
     <listitem>
     <para>
-      SystemMenu (<xref linkend="clsSystemMenu" />): The <computeroutput>SystemMenu</computeroutput> class represents
+ <xref linkend="clsSystemMenu"/>: The <computeroutput>SystemMenu</computeroutput> class represents
       the Windows <emphasis role="italic">system</emphasis> menu, which is also known as the <emphasis
       role="italic">window</emphasis> menu or the <emphasis role="italic">control</emphasis> menu.
     </para>
     </listitem>
     <listitem>
     <para>
-      UserMenuBar (<xref linkend="clsUserMenuBar" />): A <computeroutput>MenuBar</computeroutput> whose menu
+ <xref linkend="clsUserMenuBar"/>: A <computeroutput>MenuBar</computeroutput> whose menu
       template is created by the programmer using the methods defined by the class. Similar to a
       <xref linkend="clsUserDialog"/>.
     </para>
@@ -1817,50 +1813,50 @@ xPixels = xDialogUnits * self~FactorX
     <itemizedlist>
     <listitem>
     <para>
-      ApplicationManager (<xref linkend="clsApplicationManager" />): Used to set application wide defaults and to
+ <xref linkend="clsApplicationManager"/>: Used to set application wide defaults and to
       perform tasks that effect the entire ooDialog application.
     </para>
     </listitem>
     <listitem>
     <para>
-      DayState (<xref linkend="clsDayState" />): Represents the state of each day in a month. A helper class for the
-      MonthCalendar (<xref linkend="clsMonthCalendar" />) control.
+ <xref linkend="clsDayState"/>: Represents the state of each day in a month. A helper class for the
+ <xref linkend="clsMonthCalendar"/> control.
     </para>
     </listitem>
     <listitem>
     <para>
-      DayStates (<xref linkend="clsDayStates" />): A sequential collection of
+ <xref linkend="clsDayStates"/>: A sequential collection of
       <computeroutput>DayState</computeroutput> objects. A helper class for the
-      MonthCalendar (<xref linkend="clsMonthCalendar" />) control.
+ <xref linkend="clsMonthCalendar"/> control.
     </para>
     </listitem>
     <listitem>
     <para>
-      Mouse (<xref linkend="clsMouse" />): Provides all the methods to work with and manipulate the mouse and the
+ <xref linkend="clsMouse"/>: Provides all the methods to work with and manipulate the mouse and the
       mouse cursor.
     </para>
     </listitem>
     <listitem>
     <para>
-      OS (<xref linkend="clsOS" />): Provides methods for extracting information about the operating system the
+ <xref linkend="clsOS"/>: Provides methods for extracting information about the operating system the
       program is currently executing on.
     </para>
     </listitem>
     <listitem>
     <para>
-      SM (<xref linkend="clsSM" />): The attributes of this class reflect the system metrics or configuration
+ <xref linkend="clsSM"/>: The attributes of this class reflect the system metrics or configuration
       settings of the computer the Rexx program is running on.
     </para>
     </listitem>
     <listitem>
     <para>
-      SPI (<xref linkend="clsSPI" />): The attributes of this class reflect the system-wide parameters of the
+ <xref linkend="clsSPI"/>: The attributes of this class reflect the system-wide parameters of the
       computer the Rexx program is running on
     </para>
     </listitem>
     <listitem>
     <para>
-      VK (<xref linkend="clsVK" />): The <computeroutput>VK</computeroutput> class allows the programmer to use
+ <xref linkend="clsVK"/>: The <computeroutput>VK</computeroutput> class allows the programmer to use
       symbolic names in a program instead of the numeric value of the virtual key codes. Unlike the
       <computeroutput>VirtualKeyCodes</computeroutput> class in <computeroutput>winsystm.cls</computeroutput> the
       <computeroutput>VK</computeroutput> class has constants for every virtual key code. Another advantage of the
@@ -1870,7 +1866,7 @@ xPixels = xDialogUnits * self~FactorX
     </listitem>
     <listitem>
     <para>
-      Window (<xref linkend="clsWindow" />): The <computeroutput>Window</computeroutput> class allows the invocation
+ <xref linkend="clsWindow"/>: The <computeroutput>Window</computeroutput> class allows the invocation
       of methods common to every window.
     </para>
     </listitem>
@@ -1894,7 +1890,7 @@ xPixels = xDialogUnits * self~FactorX
     <listitem>
     <para>
       .application (<xref linkend="dotApplication" />) object: The <computeroutput>.application</computeroutput>
-      object is an instance of the ApplicationManager (<xref linkend="clsApplicationManager" />) class that is present
+      object is an instance of the <xref linkend="clsApplicationManager"/> class that is present
       in all ooDialog programs. It is used by the programmer to manage application wide settings, behaviour, and
       constants.
     </para>
@@ -1990,7 +1986,7 @@ xPixels = xDialogUnits * self~FactorX
     The ooDialog implementation has been largely rewritten and refactored. Every effort has been made to maintain
     backwards compatibility. If a case is found where backwards compatibility is broken, it is likely that it was not
     intentional, and the case should be brought up with the developers. The <emphasis role="italic">Getting
-    Help (<xref linkend="helpGettingHelp" />) and Submitting Feedback</emphasis> section of this book contains a list of
+    <link linkend="helpGettingHelp">Help</link> and Submitting Feedback</emphasis> section of this book contains a list of
     numerous venues through which feedback can be submitted, or questions raised.
   </para>
   <para>
@@ -2013,7 +2009,7 @@ xPixels = xDialogUnits * self~FactorX
 </para>
 <para>
   There are a number of new classes introduced in ooDialog 4.0.0 through 4.2.0 that are intended to be enhanced in
-  furture releases. The Image (<xref linkend="clsImage" />) and ImageList (<xref linkend="clsImageList" />) classes
+  furture releases. The <xref linkend="clsImage"/> and <xref linkend="clsImageList"/> classes
   to name just a few. Work will continue on extending those types of classes. In addition work will be done on
   implementing features requested by ooDialog programmers.
 </para>

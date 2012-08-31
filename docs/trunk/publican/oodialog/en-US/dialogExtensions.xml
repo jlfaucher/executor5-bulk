@@ -47,7 +47,7 @@
 <indexterm><primary>DialogExtensions Class</primary></indexterm>
 <para>
   The <computeroutput>DialogExtensions</computeroutput> class is a <emphasis role="italic">mixin</emphasis> class
-  inherited by PlainBaseDialog (<xref linkend="clsPlainBaseDialog" />) class. Therefore the methods of this class are
+  inherited by <xref linkend="clsPlainBaseDialog"/> class. Therefore the methods of this class are
   methods of every dialog. The methods of the <computeroutput>DialogExtensions</computeroutput> class are probably
   methods added after the original release of the ooDialog framework, thus the <emphasis
   role="italic">extensions</emphasis> part of the class name.
@@ -488,7 +488,7 @@ MyDialog~addAutoStartMethod("MyAnimatedButton", "ExecuteB")
   <listitem>
   <para>
     The arguments specifying the bitmaps can be a bitmap file name, a bitmap handle (<xref linkend="defHandle" />), or
-    the resource number of a bitmap compiled into the resource DLL of a ResDialog (<xref linkend="clsResDialog" />).
+    the resource number of a bitmap compiled into the resource DLL of a <xref linkend="clsResDialog"/>.
     The bitmap arguments must all be the same type. I.e. all file names, all resource IDs, or all handles. Symbolic
     resource IDs can be used for the bitmap arguments. If the bitmap arguments are handles the style argument must
     contain the INMEMORY keyword.
@@ -641,8 +641,8 @@ Generic form:
       <listitem>
       <para>
         The coordinates of the rectangle to be cleared. The coordinates specify the upper left and lower right corners
-        of the rectangle. The corners can be specified using either a rect (<xref linkend="clsRect" />) object, two
-        point (<xref linkend="clsPoint" />) objects, or the individual x and y coordinates of each corner.
+        of the rectangle. The corners can be specified using either a <xref linkend="clsRect"/> object, two
+ <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
       </para>
       <para>
         The coordinates are specified as client-area (<xref linkend="defClientArea" />) coordinates, in pixels.
@@ -828,7 +828,7 @@ MyDialog~clearWindowRect(hwnd)
     <para>
       If this argument is omitted a solid brush using the color specified is created.  Otherwise, this argument can be
       the name of a bitmap file, the resource ID of a bitmap compiled in the resource only DLL of a
-      ResDialog (<xref linkend="clsResDialog" />), or one of the following keywords. The keywords create a hatched brush. A
+ <xref linkend="clsResDialog"/>, or one of the following keywords. The keywords create a hatched brush. A
       bitmap file name will cause the bitmap to be loaded into memory and then used for the brush. Case is not
       significant in the keywords.
     </para>
@@ -904,8 +904,8 @@ MyDialog~clearWindowRect(hwnd)
   <para>
     The <emphasis role="italic">createBrush</emphasis> method here is almost identical to the
  <xref linkend="mthCreateBrush"/> method of the
-    WindowExtensions (<xref linkend="clsWindowExtensions" />) class. The method documented here is a method of the
-    DialogExtensions (<xref linkend="clsDialogExtensions" />) class and is therefore inherited only by the
+ <xref linkend="clsWindowExtensions"/> class. The method documented here is a method of the
+ <xref linkend="clsDialogExtensions"/> class and is therefore inherited only by the
     dialog (<xref linkend="chpDialogObject" />) object.
   </para>
   <para>
@@ -1606,7 +1606,7 @@ of a window. </para>
     <varlistentry><term>pos</term>
     <listitem>
     <para>
-      A point (<xref linkend="clsPoint" />) object. On a successful return the point object is updated with the
+      A <xref linkend="clsPoint"/> object. On a successful return the point object is updated with the
       position of the bitmap. On an error return, the point object is left unchanged.
     </para>
     </listitem></varlistentry>
@@ -1657,7 +1657,7 @@ of a window. </para>
 </programlisting>
 
 <para>
-  Retrieves the size of the bitmap for a bitmap button as a size (<xref linkend="clsSize" />) object.
+  Retrieves the size of the bitmap for a bitmap button as a <xref linkend="clsSize"/> object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1972,7 +1972,7 @@ the operations (see <xref linkend="mthFreeControlDC"/>). </para>
   dialog units.
 </para>
 <para>
-  The value is usually incorrect (<xref linkend="ovvInaccurate" />) because it is calculated using
+  The value is usually <xref linkend="ovvInaccurate"/> because it is calculated using
   factorX (<xref linkend="atrFactorX" />). The programmer is advised to use the
  <xref linkend="mthGetListItemHeightPx"/> method instead, which will return the correct height of
   a list item.
@@ -2004,7 +2004,7 @@ the operations (see <xref linkend="mthFreeControlDC"/>). </para>
 </programlisting>
 
 <para>
-  Gets the height, in pixels, of an individual item in a ListBox (<xref linkend="clsListBox" />) control.
+  Gets the height, in pixels, of an individual item in a <xref linkend="clsListBox"/> control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2044,7 +2044,7 @@ the operations (see <xref linkend="mthFreeControlDC"/>). </para>
   The getListWidth method returns the scrollable width of a list box, in dialog units.
 </para>
 <para>
-  The value is usually incorrect (<xref linkend="ovvInaccurate" />) because it is calculated using
+  The value is usually <xref linkend="ovvInaccurate"/> because it is calculated using
   factorX (<xref linkend="atrFactorX" />). The programmer is advised to use the
  <xref linkend="mthGetListWidthPx"/> method instead, which will return the correct width in pixels.
 </para>
@@ -2434,7 +2434,7 @@ end
     There are 3 ways to specify the bitmap source for the <emphasis role="italic">bN</emphasis>, <emphasis
     role="italic">bf</emphasis>, <emphasis role="italic">bS</emphasis>, and <emphasis role="italic">bD</emphasis>
     arguments. The arguments can be a bitmap file name, in which case the bitmap is loaded from the file, the arguments
-    can be the resource ID of bitmap compiled into the resource DLL for a ResDialog (<xref linkend="clsResDialog" />),
+    can be the resource ID of bitmap compiled into the resource DLL for a <xref linkend="clsResDialog"/>,
     or the arguments can be a bitmap <emphasis role="italic">handle</emphasis> returned from the
  <xref linkend="mthLoadBitmap"/> method.
   </para>
@@ -2979,8 +2979,8 @@ Generic form:
       <listitem>
       <para>
         The coordinates of the rectangle to be redrawn. The coordinates specify the upper left and lower right corners
-        of the rectangle. The corners can be specified using either a rect (<xref linkend="clsRect" />) object, two
-        point (<xref linkend="clsPoint" />) objects, or the individual x and y coordinates of each corner.
+        of the rectangle. The corners can be specified using either a <xref linkend="clsRect"/> object, two
+ <xref linkend="clsPoint"/> objects, or the individual x and y coordinates of each corner.
       </para>
       <para>
         The coordinates are specified as client-area (<xref linkend="defClientArea" />) coordinates, in pixels.
@@ -3847,7 +3847,7 @@ Generic form:
       <listitem>
       <para>
         The <emphasis role="italic">newPosition</emphasis> argument(s) specify the (x, y) coordinates of the bitmap.
-        These coordinates can be specified either as a object (<xref linkend="clsPoint" />) or as 2 separate whole
+        These coordinates can be specified either as a <xref linkend="clsPoint"/> or as 2 separate whole
         number arguments, as in Form 2.
       </para>
       <para>
@@ -4232,7 +4232,7 @@ self~setControlSysColor(IDC_PB_NEXT, 'MENU')
   dialog units.
 </para>
 <para>
-  The method usually produces incorrect (<xref linkend="ovvInaccurate" />) results because it converts the dialog
+  The method usually produces <xref linkend="ovvInaccurate"/> results because it converts the dialog
   units to pixels using factorX (<xref linkend="atrFactorX" />). The programmer is advised to use the
  <xref linkend="mthSetListColumnWidthPx"/> method instead, which will produce the correct results.
 </para>
@@ -4325,7 +4325,7 @@ self~setControlSysColor(IDC_PB_NEXT, 'MENU')
 units.
 </para>
 <para>
-  The method usually produces incorrect (<xref linkend="ovvInaccurate" />) results because it converts the dialog
+  The method usually produces <xref linkend="ovvInaccurate"/> results because it converts the dialog
   units to pixels using factorX (<xref linkend="atrFactorX" />). The programmer is advised to use the
  <xref linkend="mthSetListItemHeightPx"/> method instead, which will produce the correct results.
 </para>
@@ -4423,7 +4423,7 @@ units.
   The <emphasis role="italic">setListWidth</emphasis> method sets the scrollable width of a list box, in dialog units.
 </para>
 <para>
-  The method usually produces incorrect (<xref linkend="ovvInaccurate" />) results because it converts the dialog
+  The method usually produces <xref linkend="ovvInaccurate"/> results because it converts the dialog
   units to pixels using factorX (<xref linkend="atrFactorX" />). The programmer is advised to use the
  <xref linkend="mthSetListWidthPx"/> method instead, which will produce the correct results.
 </para>
@@ -4549,7 +4549,7 @@ units.
 
 <para>
   The <emphasis role="italic">setSBPos</emphasis> method sets the current position of a
-  scroll (<xref linkend="clsScrollBar" />) bar control.
+ <xref linkend="clsScrollBar"/> bar control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4682,8 +4682,8 @@ Generic form:
         The coordinates for the new size and position of the window as a
         point/size (<xref linkend="ovvRectangleCoordinates" />) rectangle. The coordinates specify the upper left point of
         the the new position, the width of the window and the height of the window. These coordinates can be specified
-        using either a rect (<xref linkend="clsRect" />) object, a point (<xref linkend="clsPoint" />) object and a
-        size (<xref linkend="clsSize" />) objects, or the individual x and y coordinates, width, and height values.
+        using either a <xref linkend="clsRect"/> object, a <xref linkend="clsPoint"/> object and a
+ <xref linkend="clsSize"/> objects, or the individual x and y coordinates, width, and height values.
       </para>
       <para>
         The coordinates are specified as client-area (<xref linkend="defClientArea" />) coordinates, in pixels. All 4

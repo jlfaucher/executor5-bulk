@@ -52,7 +52,7 @@
   <indexterm><primary>Template, Dialog</primary></indexterm>
   The class provides methods to begin the dialog template,
   to create the dialog controls within the dialog dialog template, and to read and parse a resource
-  script (<xref linkend="defResourceScript" />). These methods allow the programmer to create a dialog with any of the
+  <xref linkend="defResourceScript"/>. These methods allow the programmer to create a dialog with any of the
   styles or behaviors supported by the Windows operating system, and to create any of the dialog controls supported by
   ooDialog.
 </para>
@@ -79,7 +79,7 @@
 </para>
 <para>
   It is also possible to combine reading a dialog definition from a resource script and creating controls dynamically.
-  The easiest way to do this would be to start with a RcDialog (<xref linkend="clsRcDialog" />). This would create the
+  The easiest way to do this would be to start with a <xref linkend="clsRcDialog"/>. This would create the
   dialog template and some of the dialog controls using a resource script. Since a
   <computeroutput>RcDialog</computeroutput> is a subclass of the <computeroutput>UserDialog</computeroutput>, it also
   has a <emphasis role="italic">defineDialog</emphasis>() method that is invoked automatically.
@@ -494,7 +494,7 @@
     <listitem>
     <para>
       The icon can be loaded into memory by using the <xref linkend="mthUserIcon"/> method of the
-      Image (<xref linkend="clsImage" />) class.
+ <xref linkend="clsImage"/> class.
     </para>
     </listitem>
     </orderedlist>
@@ -969,7 +969,7 @@ if success then dlg~execute
   The methods listed in this section (all starting with create) are used to help create a dialog
   template (<xref linkend="ovvDialogTemplate" />) dynamically. The methods in this section are used to define the individual
   dialog controls. The methods can also be used in a dialog that is created by loading a resource
-  script (<xref linkend="defResourceScript" />) in a RcDialog (<xref linkend="clsRcDialog" />). The methods will
+  <xref linkend="defResourceScript"/> in a <xref linkend="clsRcDialog"/>. The methods will
   then be used to define controls in addition to the ones defined in the resource script.
 </para>
 <para>
@@ -1230,7 +1230,7 @@ if success then dlg~execute
 </para>
 <para>
   The bitmap arguments can be specified by either a file name, a bitmap handle, or the numeric resource ID of a bitmap
-  in the resource DLL of a ResDialog (<xref linkend="clsResDialog" />). You can retrieve a bitmap handle by loading a
+  in the resource DLL of a <xref linkend="clsResDialog"/>. You can retrieve a bitmap handle by loading a
   bitmap stored in a file into memory, using the <xref linkend="mthLoadBitmap"/> method. If you pass a
   bitmap handle to the method, you must use the INMEMORY option. If you use a resource ID for the bitmaps, the
   underlying dialog must have already been created.
@@ -1481,7 +1481,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
   check box. With the standard check box, the programmer is responsible for managing the check state of the control.
   The 3STATE style, creates the check boxes an automatic three-state check box, also with the AUTOMATIC style. Standard
   and standard three-state check boxes can not be created through this method. See the
-  CheckBox (<xref linkend="clsCheckBox" />) class for more information on check box controls.
+ <xref linkend="clsCheckBox"/> class for more information on check box controls.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1538,7 +1538,7 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
           <para>
             A three-state check box is created. All check box controls have two states, checked and cleared (not
             checked.) A three-state check box also has an indeterminate state. This is represented by a grayed box
-            inside the check box. The programmer can use methods of the CheckBox (<xref linkend="clsCheckBox" />)
+            inside the check box. The programmer can use methods of the <xref linkend="clsCheckBox"/>
             class to determine which of the 3 states a check box is in.
           </para>
           </listitem></varlistentry>
@@ -1710,8 +1710,8 @@ self~createBitmapButton(601, 20, 317, 80, 30, "FRAME USEPAL", , "onBmpPushed", -
       </para>
       <para>
         However, the <emphasis role="italic">createCheckBox</emphasis> method is also used by the
-        RcDialog (<xref linkend="clsRcDialog" />) to create check box controls found in the resource
-        script (<xref linkend="defResourceScript" />) for the dialog. Therefore, if this string contains the word
+ <xref linkend="clsRcDialog"/> to create check box controls found in the resource
+        <xref linkend="defResourceScript"/> for the dialog. Therefore, if this string contains the word
         CONNECTCHECKS, case insignificant, then the method name is generated in the same way as it is by specifying
         CONNECTCHECKS in the <emphasis role="italic">opts</emphasis> argument when
  <xref linkend="mthNewClsRcDialog"/> a <computeroutput>RcDialog</computeroutput>.
@@ -1875,7 +1875,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
           <para>
             A three-state check box is created. All check box controls have two states, checked and cleared (not
             checked.) A three-state check box also has an indeterminate state. This is represented by a grayed box
-            inside the check box. The programmer can use methods of the CheckBox (<xref linkend="clsCheckBox" />)
+            inside the check box. The programmer can use methods of the <xref linkend="clsCheckBox"/>
             class to determine which of the 3 states a check box is in.
           </para>
           </listitem></varlistentry>
@@ -1999,7 +1999,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
           <varlistentry><term>NOBORDER</term>
           <listitem>
           <para>
-            Use this keyword to specify that a group box (<xref linkend="clsGroupBox" />) is not
+            Use this keyword to specify that a group <xref linkend="clsGroupBox"/> is not
             added around the check box group.
           </para>
           </listitem></varlistentry>
@@ -2023,7 +2023,7 @@ self~createCheckBox(IDC_CB_CONDENSED, 125, 19, 30, 20, style, label)
       <listitem>
       <para>
         This argument is used to set the resource ID (<xref linkend="idArgument" />) for the
-        group box (<xref linkend="clsGroupBox" />), if one is used. The argument is ignored if the NOBORDER style is used.
+        group <xref linkend="clsGroupBox"/>, if one is used. The argument is ignored if the NOBORDER style is used.
         If the NOBORDER style is not used and this argument is omitted then -1 is used for the resource ID.
       </para>
       </listitem></varlistentry>
@@ -2159,7 +2159,7 @@ self~objectrexx = 1
           <para>
             A three-state check box is created. All check box controls have two states, checked and cleared (not
             checked.) A three-state check box also has an indeterminate state. This is represented by a grayed box
-            inside the check box. The programmer can use methods of the CheckBox (<xref linkend="clsCheckBox" />)
+            inside the check box. The programmer can use methods of the <xref linkend="clsCheckBox"/>
             class to determine which of the 3 states a check box is in.
           </para>
           </listitem></varlistentry>
@@ -2283,7 +2283,7 @@ self~objectrexx = 1
           <varlistentry><term>NOBORDER</term>
           <listitem>
           <para>
-            Use this keyword to specify that a group box (<xref linkend="clsGroupBox" />) is not added around the
+            Use this keyword to specify that a group <xref linkend="clsGroupBox"/> is not added around the
             check box group.
           </para>
           </listitem></varlistentry>
@@ -2306,7 +2306,7 @@ self~objectrexx = 1
       <listitem>
       <para>
         This argument is used to set the resource ID (<xref linkend="idArgument" />) for the
-        group box (<xref linkend="clsGroupBox" />), if one is used. The argument is ignored if the NOBORDER style is used.
+        group <xref linkend="clsGroupBox"/>, if one is used. The argument is ignored if the NOBORDER style is used.
         If this argument is omitted and the NOBORDER style is not used, then -1 is assigned as the resource ID for the
         group box.
       </para>
@@ -2376,7 +2376,7 @@ self~objectrexx = 1
 </programlisting>
 
 <para>
-  The <emphasis role="italic">createGroupbox</emphasis> method creates a group box (<xref linkend="clsGroupBox" />) in
+  The <emphasis role="italic">createGroupbox</emphasis> method creates a group <xref linkend="clsGroupBox"/> in
   the dialog template.
 </para>
 <variablelist>
@@ -2756,7 +2756,7 @@ self~objectrexx = 1
 
 <para>
   The <emphasis role="italic">createRadionButton</emphasis> method adds a radio button to the dialog template. The radio
-  button is created as an automatic radio button (<xref linkend="clsRadioButton" />). There is no way using this
+  button is created as an automatic radio <xref linkend="clsRadioButton"/>. There is no way using this
   method to create a standard radio button.
 </para>
 <variablelist>
@@ -2975,8 +2975,8 @@ self~objectrexx = 1
       </para>
       <para>
         However, the <emphasis role="italic">createRadioButton</emphasis> method is also used by the
-        RcDialog (<xref linkend="clsRcDialog" />) to create radio button controls found in the resource
-        script (<xref linkend="defResourceScript" />) for the dialog. Therefore, if this string contains the word
+ <xref linkend="clsRcDialog"/> to create radio button controls found in the resource
+        <xref linkend="defResourceScript"/> for the dialog. Therefore, if this string contains the word
         CONNECTRADIOS, case insignificant, then the method name is generated in the same way as it is by specifying
         CONNECTRADIOS in the <emphasis role="italic">opts</emphasis> argument when
  <xref linkend="mthNewClsRcDialog"/> a <computeroutput>RcDialog</computeroutput>.
@@ -3247,7 +3247,7 @@ end
           <varlistentry><term>NOBORDER</term>
           <listitem>
           <para>
-            Use this keyword to specify that a group box (<xref linkend="clsGroupBox" />) is not
+            Use this keyword to specify that a group <xref linkend="clsGroupBox"/> is not
             added around the radio button group.
           </para>
           </listitem></varlistentry>
@@ -3270,7 +3270,7 @@ end
       <listitem>
       <para>
         This argument is used to set the resource ID (<xref linkend="idArgument" />) for the
-        group box (<xref linkend="clsGroupBox" />), if one is used. The argument is ignored if the NOBORDER style is used.
+        group <xref linkend="clsGroupBox"/>, if one is used. The argument is ignored if the NOBORDER style is used.
         If omitted and the NOBORDER style is not used, then -1 is used for the resource ID.
       </para>
       </listitem></varlistentry>
@@ -3518,7 +3518,7 @@ MyDialog~execute
           <varlistentry><term>NOBORDER</term>
           <listitem>
           <para>
-            Use this keyword to specify that a group box (<xref linkend="clsGroupBox" />) is not added around the
+            Use this keyword to specify that a group <xref linkend="clsGroupBox"/> is not added around the
             radio button group.
           </para>
           </listitem></varlistentry>
@@ -3541,7 +3541,7 @@ MyDialog~execute
       <listitem>
       <para>
         This argument is used to set the resource ID (<xref linkend="idArgument" />) for the
-        group box (<xref linkend="clsGroupBox" />), if one is used. The argument is ignored if the NOBORDER style is used.
+        group <xref linkend="clsGroupBox"/>, if one is used. The argument is ignored if the NOBORDER style is used.
         If this argument is omitted and the the NOBORDER style is not used then -1 is used for the resource ID.
       </para>
       </listitem></varlistentry>
@@ -3612,7 +3612,7 @@ MyDialog~execute
 </programlisting>
 
 <para>
-  The <emphasis role="italic">createPushButton</emphasis> method creates a push button (<xref linkend="clsButton" />)
+  The <emphasis role="italic">createPushButton</emphasis> method creates a push <xref linkend="clsButton"/>
   in the dialog template and optionally connects it with a method that is invoked whenever the button is clicked.
 </para>
 <variablelist>
@@ -4120,7 +4120,7 @@ self~createPushButtonGroup(20, 235, , ,              -
 <indexterm><primary>create combo box controls</primary></indexterm>
 <indexterm><primary>UserDialog class</primary><secondary>create combo box controls</secondary></indexterm>
 <para>
-  The methods in this section are all used to create combo box (<xref linkend="clsComboBox" />) controls in the dialog
+  The methods in this section are all used to create combo <xref linkend="clsComboBox"/> controls in the dialog
   template (<xref linkend="ovvDialogTemplate" />).
 </para>
 
@@ -4135,7 +4135,7 @@ self~createPushButtonGroup(20, 235, , ,              -
 </programlisting>
 
 <para>
-  The <emphasis role="italic">createComboBox</emphasis> method creates a combo box (<xref linkend="clsComboBox" />) in
+  The <emphasis role="italic">createComboBox</emphasis> method creates a combo <xref linkend="clsComboBox"/> in
   the dialog template.
 </para>
 <variablelist>
@@ -4238,7 +4238,7 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>NOHSCROLL</term>
         <listitem>
         <para>
-          In combo boxes where the selection (<xref linkend="clsComboBox" />) field is an edit control, the combo box
+          In combo boxes where the <xref linkend="clsComboBox"/> field is an edit control, the combo box
           normally scrolls the text automatically to the right when the user types a character at the end of the line.
           When the NOHSCROLL style is set, automatic horizontal scrolling is disabled and the user can not enter more
           text than fits within the width of the selection field.
@@ -4474,7 +4474,7 @@ self~createPushButtonGroup(20, 235, , ,              -
         <varlistentry><term>NOHSCROLL</term>
         <listitem>
         <para>
-          In combo boxes where the selection (<xref linkend="clsComboBox" />) field is an edit control, the combo box
+          In combo boxes where the <xref linkend="clsComboBox"/> field is an edit control, the combo box
           normally scrolls the text automatically to the right when the user types a character at the end of the line.
           When the NOHSCROLL style is set, automatic horizontal scrolling is disabled and the user can not enter more
           text than fits within the width of the selection field.
@@ -4590,7 +4590,7 @@ self~createPushButtonGroup(20, 235, , ,              -
 </programlisting>
 
 <para>
-  Creates a date time (<xref linkend="clsDateTimePicker" />) picker control in the dialog template and specifies the
+  Creates a date <xref linkend="clsDateTimePicker"/> picker control in the dialog template and specifies the
   resource ID, position, size, style, and attribute name for the control.
 </para>
 <variablelist>
@@ -4695,7 +4695,7 @@ self~createPushButtonGroup(20, 235, , ,              -
           <para>
             This style shows an up-down (<xref linkend="clsUpDown" />) control to the right of the date and time picker.
             The use can modify date and time values using the up-down control. This style can be used in place of the
-            drop-down month (<xref linkend="clsMonthCalendar" />) calendar. The drop-down month calendar is the default
+            drop-down <xref linkend="clsMonthCalendar"/> calendar. The drop-down month calendar is the default
             style.
           </para>
           </listitem></varlistentry>
@@ -4804,7 +4804,7 @@ self~createPushButtonGroup(20, 235, , ,              -
 <indexterm><primary>create edit controls</primary></indexterm>
 <indexterm><primary>UserDialog class</primary><secondary>create edit controls</secondary></indexterm>
 <para>
-  The methods in this section are all used to create edit (<xref linkend="clsEdit" />) controls in the dialog
+  The methods in this section are all used to create <xref linkend="clsEdit"/> controls in the dialog
   template (<xref linkend="ovvDialogTemplate" />).
 </para>
 
@@ -4820,7 +4820,7 @@ self~createPushButtonGroup(20, 235, , ,              -
 </programlisting>
 
 <para>
-  Creates an edit (<xref linkend="clsEdit" />) control in the dialog template and specifies the resource ID,
+  Creates an <xref linkend="clsEdit"/> control in the dialog template and specifies the resource ID,
   position, size, style, and attribute name for the control.
 </para>
 <variablelist>
@@ -4955,7 +4955,7 @@ self~createPushButtonGroup(20, 235, , ,              -
           Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit control
           displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In Windows XP
           the default mask character is a black circle. The default password character can be changed through the
-           passwordChar (<xref linkend="atrPasswordChar" />) attribute of the Edit (<xref linkend="clsEdit" />) control.
+           passwordChar (<xref linkend="atrPasswordChar" />) attribute of the <xref linkend="clsEdit"/> control.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CENTER</term>
@@ -5252,7 +5252,7 @@ dlg~createEdit(201, 12, 14, 150, ,"AUTOSCROLLH", "FIRSTNAME")
           Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit
           control displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In
           Windows XP the default mask character is a black circle. The default password character can be changed through
-          the passwordChar (<xref linkend="atrPasswordChar" />) attribute of the Edit (<xref linkend="clsEdit" />)
+          the passwordChar (<xref linkend="atrPasswordChar" />) attribute of the <xref linkend="clsEdit"/>
           control.
         </para>
         </listitem></varlistentry>
@@ -5429,7 +5429,7 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
   The <emphasis role="italic">createEditInputGroup</emphasis> method creates a group of one or more edit controls and
   their static text labels in the dialog template. The height for each edit control and its label can be calculated
   automatically. The number of labels in the <emphasis role="italic">txt</emphasis> argument determines how many groups
-  are created. A group box (<xref linkend="clsGroupBox" />) is optionally created and placed around the group if
+  are created. A group <xref linkend="clsGroupBox"/> is optionally created and placed around the group if
   controls.
 </para>
 <variablelist>
@@ -5583,7 +5583,7 @@ self~createEditInput(402, 20, 30, , 150, , "Your eMail address")
           Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit
           control displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In
           Windows XP the default mask character is a black circle. The default password character can be changed through
-          the passwordChar (<xref linkend="atrPasswordChar" />) attribute of the edit (<xref linkend="clsEdit" />)
+          the passwordChar (<xref linkend="atrPasswordChar" />) attribute of the <xref linkend="clsEdit"/>
           control.
         </para>
         </listitem></varlistentry>
@@ -5903,7 +5903,7 @@ self~createEditInputGroup(301, 20, 20, , 130, "Name FirstName Street City")
           Characters typed into the edit control are masked.  Rather than displaying the character typed, the edit control
           displays the mask character.  Prior to Windows XP the default mask character was the asterisk.  In Windows XP
           the default mask character is a black circle. The default password character can be changed through the
-          passwordChar (<xref linkend="atrPasswordChar" />) attribute of the Edit (<xref linkend="clsEdit" />) control.
+          passwordChar (<xref linkend="atrPasswordChar" />) attribute of the <xref linkend="clsEdit"/> control.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>CENTER</term>
@@ -6352,7 +6352,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
 </programlisting>
 
 <para>
-  Adds a list box (<xref linkend="clsListBox" />) to the dialog template.
+  Adds a list <xref linkend="clsListBox"/> to the dialog template.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6755,7 +6755,7 @@ self~createEditInputStem(401, 20, 20, , 150, FNames.)
           <listitem>
           <para>
             The list-view does not take ownership of the image lists assigned to it. This option enables an
-            image (<xref linkend="clsImageList" />) list to be used with several list controls.
+ <xref linkend="clsImageList"/> list to be used with several list controls.
           </para>
           </listitem></varlistentry>
           <varlistentry><term>HIDDEN</term>
@@ -6869,7 +6869,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
 </programlisting>
 
 <para>
-  Creates a month calendar (<xref linkend="clsMonthCalendar" />) control in the dialog template.
+  Creates a month <xref linkend="clsMonthCalendar"/> control in the dialog template.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7085,7 +7085,7 @@ self~createListView(555, 100, 80, 40, 120, "REPORT ASCENDING EDIT NOSORTHEADER",
 
 <para>
   The <emphasis role="italic">createProgressBar</emphasis> method creates a
-  progress bar (<xref linkend="clsProgressBar" />) in the dialog template and connects it with a data
+  progress <xref linkend="clsProgressBar"/> in the dialog template and connects it with a data
   attribute (<xref linkend="sctUnderstandingDataAttributes" />).
 </para>
 <variablelist>
@@ -9788,7 +9788,7 @@ return 0
 </programlisting>
 
 <para>
-  Creates a tab (<xref linkend="clsTab" />) control in the dialog template and specifies the resource ID, position,
+  Creates a <xref linkend="clsTab"/> control in the dialog template and specifies the resource ID, position,
   size, style, and data attribute name for the control.
 </para>
 <variablelist>
@@ -10009,7 +10009,7 @@ self~createTab(IDC_tab, 10, 120, 200, 100, "MULTILINE FIXED", "CURRENTPAGE")
 </programlisting>
 
 <para>
-  Creates a trackbar (<xref linkend="clsTrackBar" />) control in the dialog template and specifies the resource ID,
+  Creates a <xref linkend="clsTrackBar"/> control in the dialog template and specifies the resource ID,
   position, size, style, and attribute name for the control.
 </para>
 <variablelist>
@@ -10235,7 +10235,7 @@ self~createTrackbar(IDC_TB_PRESSURE, self~sizeX - 30, 15, 20, self~sizeY - 30, -
 </programlisting>
 
 <para>
-  Creates a tree view (<xref linkend="clsTreeView" />) control in the dialog template and specifies the resource ID,
+  Creates a tree <xref linkend="clsTreeView"/> control in the dialog template and specifies the resource ID,
   position, size, style, and attribute name for the control.
 </para>
 <variablelist>
@@ -10748,13 +10748,13 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
 
 <para>
   The <emphasis role="italic">load</emphasis> method reads the dialog template (<xref linkend="ovvDialogTemplate" />)
-  form a resource script (<xref linkend="defResourceScript" />) file. The method invokes the
+  form a resource <xref linkend="defResourceScript"/> file. The method invokes the
  <xref linkend="mthLoadFrame"/> and <xref linkend="mthLoadItems"/> methods to parse the
   resource script statements create the in-memory form of the dialog template needed by the operating system.
 </para>
 <para>
   An alternative to using the <emphasis role="italic">load</emphasis> method directly is to subclass the
-  RcDialog (<xref linkend="clsRcDialog" />) instead of the <computeroutput>UserDialog</computeroutput>. The
+ <xref linkend="clsRcDialog"/> instead of the <computeroutput>UserDialog</computeroutput>. The
   <computeroutput>RcDialog</computeroutput> handles the details of how and when to invoke the <emphasis
   role="italic">load</emphasis> method automatically.
 </para>
@@ -10873,7 +10873,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
 <para>
   The <emphasis role="italic">loadFrame</emphasis> method starts the creation of the in-memory Windows dialog
   template (<xref linkend="ovvDialogTemplate" />) using a dialog definition from a resource
-  script (<xref linkend="defResourceScript" />) file. It creates the nonclient (<xref linkend="defClientArea" />) area of
+  <xref linkend="defResourceScript"/> file. It creates the nonclient (<xref linkend="defClientArea" />) area of
   the dialog.
 </para>
 <variablelist>
@@ -10964,7 +10964,7 @@ self~createEdit(402, 20, 170, 150, 10, "AUTOSCROLLH", EDIT_1)
 <para>
   The <emphasis role="italic">loadItems</emphasis> method finishes the creation of the in-memory Windows dialog
   template (<xref linkend="ovvDialogTemplate" />) using a dialog definition from a resource
-  script (<xref linkend="defResourceScript" />) file. It creates the dialog controls for the dialog. In essence it defines
+  <xref linkend="defResourceScript"/> file. It creates the dialog controls for the dialog. In essence it defines
   the client (<xref linkend="defClientArea" />) area of the dialog.
 </para>
 <variablelist>

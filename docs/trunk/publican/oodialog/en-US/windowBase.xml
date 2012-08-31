@@ -49,7 +49,7 @@
   WindowBase is a mixin class with methods that are common to all windows. It is inherited by both the
   dialog (<xref linkend="chpDialogObject" />) and dialog control (<xref linkend="chpDialogControlObject" />) objects.
   Every dialog object and every dialog control object have the instance methods of the WindowBase class. In addition,
-  the Window (<xref linkend="clsWindow" />) class inherits the WindowBase class.
+  the <xref linkend="clsWindow"/> class inherits the WindowBase class.
 </para>
 
 <section id="sctMethodsWindowBase"><title>Method Table</title>
@@ -317,12 +317,12 @@
 
 <para>
   <emphasis role="italic">factorX</emphasis> was intended to be the horizontal size of one dialog unit, in pixels.
-  However, the value is not correct (<xref linkend="ovvInaccurate" />) with modern dialogs, except under rare
+  However, the value is not <xref linkend="ovvInaccurate"/> with modern dialogs, except under rare
   circumstances.
 </para>
 <para>
   To accurately convert between dialog units and pixels use the appropriate
-  dlgUnit2pixel (<xref linkend="mthDlgUnit2pixel" />)() or pixel2dlgUnit (<xref linkend="mthPixel2dlgUnit" />)()
+ <xref linkend="mthDlgUnit2pixel"/>() or <xref linkend="mthPixel2dlgUnit"/>()
   method.
 </para>
 </section>  <!-- End WindowBase::factorX() [attribute]  -->
@@ -343,12 +343,12 @@
 
 <para>
   <emphasis role="italic">factorY</emphasis> was intended to be the vertical size of one dialog unit, in pixels.
-  However, the value is not correct (<xref linkend="ovvInaccurate" />) with modern dialogs except under rare
+  However, the value is not <xref linkend="ovvInaccurate"/> with modern dialogs except under rare
   circumstances.
 </para>
 <para>
   To accurately convert between dialog units and pixels use the appropriate
-  dlgUnit2pixel (<xref linkend="mthDlgUnit2pixel" />)() or pixel2dlgUnit (<xref linkend="mthPixel2dlgUnit" />)()
+ <xref linkend="mthDlgUnit2pixel"/>() or <xref linkend="mthPixel2dlgUnit"/>()
   method.
 </para>
 </section>  <!-- End WindowBase::factorX() [attribute]  -->
@@ -507,7 +507,7 @@ Window handeles:
   <para>
     The <emphasis role="italic">pixelCX</emphasis> value is the correct
     width of the window, as opposed to the sizeX (<xref linkend="atrSizeX" />) attribute which is usually
-    incorrect (<xref linkend="ovvInaccurate" />) because it is calculated using factorX (<xref linkend="atrFactorX"
+ <xref linkend="ovvInaccurate"/> because it is calculated using factorX (<xref linkend="atrFactorX"
     />).
   </para>
   </listitem></varlistentry>
@@ -527,7 +527,7 @@ Window handeles:
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    To convert the pixel width of a window to dialog units, the dlgUnit2Pixel (<xref linkend="mthDlgUnit2pixel" />)()
+    To convert the pixel width of a window to dialog units, the <xref linkend="mthDlgUnit2pixel"/>()
     method can be used. Although, once the underlying dialog is created, it is usually more convenient to work with
     pixels.
   </para>
@@ -605,7 +605,7 @@ The dialog unit height of the button is: 14
   <para>
     The <emphasis role="italic">pixelCY</emphasis> value is the correct height of the window, as opposed to the
     sizeY (<xref linkend="atrSizeY" />) attribute which is usually
-    incorrect (<xref linkend="ovvInaccurate" />) because it is calculated using
+ <xref linkend="ovvInaccurate"/> because it is calculated using
     factorY (<xref linkend="atrFactorY" />).
   </para> </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">pixelCY get:</emphasis></term>
@@ -624,7 +624,7 @@ The dialog unit height of the button is: 14
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    To convert the pixel width of a window to dialog units, the dlgUnit2Pixel (<xref linkend="mthDlgUnit2pixel" />)()
+    To convert the pixel width of a window to dialog units, the <xref linkend="mthDlgUnit2pixel"/>()
     method can be used. Although, once the underlying dialog is created, it is usually more convenient to work with
     pixels.
   </para>
@@ -662,9 +662,9 @@ The dialog unit height of the button is: 14
   <para>
     For a dialog control, <emphasis role="italic">sizeX</emphasis> and sizeY (<xref linkend="atrSizeY" />) are
     calculated using factorX (<xref linkend="atrFactorX" />) and factorY (<xref linkend="atrFactorY" />), which
-    inherently makes them incorrect in almost all cases. User (<xref linkend="clsUserDialog" />) dialogs and their
+    inherently makes them incorrect in almost all cases. <xref linkend="clsUserDialog"/> dialogs and their
     subclasses will have the correct values. However, the <emphasis role="italic">sizeX</emphasis> and <emphasis
-    role="italic">sizeY</emphasis> values in a Resource (<xref linkend="clsResDialog" />) dialog are 0.
+    role="italic">sizeY</emphasis> values in a <xref linkend="clsResDialog"/> dialog are 0.
   </para>
   <para>
     These attributes are set one time by the ooDialog framework and not changed by the framework again.
@@ -766,7 +766,7 @@ The dialog unit height of the button is: 11
       <varlistentry><term>point [required]</term>
       <listitem>
       <para>
-        A point (<xref linkend="clsPoint" />) object specifying the point to test for. The point must be in
+        A <xref linkend="clsPoint"/> object specifying the point to test for. The point must be in
         client (<xref linkend="defScreenCoordinates" />) coordinates of the parent window.
       </para> </listitem></varlistentry>
       <varlistentry><term>flags [optional]</term>
@@ -829,7 +829,7 @@ The dialog unit height of the button is: 11
     The search is restricted to immediate child windows. Grandchildren and deeper descendant windows are not searched.
   </para>
   <para>
-    Since this method is a method of the WindowBase (<xref linkend="clsWindowBase" />) class, it is a method of both
+    Since this method is a method of the <xref linkend="clsWindowBase"/> class, it is a method of both
     the dialog (<xref linkend="chpDialogObject" />) object and the dialog
     control (<xref linkend="chpDialogControlObject" />) object. It is of limited use with a dialog control because
     most dialog controls do not have child windows. However, some do. For instance, a list (<xref linkend="clsListView"
@@ -993,7 +993,7 @@ Generic form:
 </programlisting>
 
 <para>
-  Retrieves the coordinates of a window's client area as a Rect (<xref linkend="clsRect" />) object. The coordinates
+  Retrieves the coordinates of a window's client area as a <xref linkend="clsRect"/> object. The coordinates
   are in pixels.
 </para>
 <variablelist>
@@ -1112,7 +1112,7 @@ Generic form:
   <listitem>
   <para>
     This old ooDialog method returns the coordinates as a single string that needs to be parsed. This is often not that
-    convenient. The client2screen (<xref linkend="mthClient2screen" />) method is often easier to use.
+    convenient. The <xref linkend="mthClient2screen"/> method is often easier to use.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1629,7 +1629,7 @@ List control extended style flags:
 
 <para>
   The getPos method returns the coordinates of the upper left corner a window, either a dialog or a dialog control, in
-  dialog units. This method is not accurate (<xref linkend="ovvInaccurate" />) because it uses the incorrect <emphasis
+  dialog units. This method is not <xref linkend="ovvInaccurate"/> because it uses the incorrect <emphasis
   role="italic">factorX</emphasis> and <emphasis role="italic">factorY</emphasis> attributes.
 </para>
 <variablelist>
@@ -1697,7 +1697,7 @@ self~move(px - 10, py - 10)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The position of the window, in pixels, as a Point (<xref linkend="clsPoint" />) object. In the unlikely event of
+    The position of the window, in pixels, as a <xref linkend="clsPoint"/> object. In the unlikely event of
     an error, the x and y coordinates will be 0. Of course those coordinates could be valid, check
     <computeroutput>.systemErrorCode</computeroutput> for a possible error code.
   </para>
@@ -1763,7 +1763,7 @@ self~move(px - 10, py - 10)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The size of the window, in pixels, as a Size (<xref linkend="clsSize" />) object. In the unlikely event of an
+    The size of the window, in pixels, as a <xref linkend="clsSize"/> object. In the unlikely event of an
     error, the width and height will be 0.
   </para>
   </listitem></varlistentry>
@@ -1845,11 +1845,11 @@ height = bottom - top
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    The values returned by this method are usually incorrect (<xref linkend="ovvInaccurate" />) because they are
+    The values returned by this method are usually <xref linkend="ovvInaccurate"/> because they are
     calculated using factorX (<xref linkend="atrFactorX" />) and factorY (<xref linkend="atrFactorY" />). The
  <xref linkend="mthGetRealSize"/>() method returns the correct size in pixels. Normally it is not
     necessary to covert to dialog units. However, if this is desired, use the
-    pixel2dlgUnit (<xref linkend="mthPixel2dlgUnit" />) method to get the correct size.
+ <xref linkend="mthPixel2dlgUnit"/> method to get the correct size.
   </para>
   <para>
     This method can only be used after the underlying Windows dialog (<xref linkend="ovvUnderlying" />) has been
@@ -2081,7 +2081,7 @@ Tree-view Control styles
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The size needed for the string is returned in a Size (<xref linkend="clsSize" />) object.  The size is specified
+    The size needed for the string is returned in a <xref linkend="clsSize"/> object.  The size is specified
     in pixels.
   </para>
   </listitem></varlistentry>
@@ -2220,7 +2220,7 @@ stFont2~setRect(r)
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    The size needed for the string is returned in a Size (<xref linkend="clsSize" />) object.  The
+    The size needed for the string is returned in a <xref linkend="clsSize"/> object.  The
     size is specified in pixels.
   </para>
   </listitem></varlistentry>
@@ -2556,7 +2556,7 @@ Generic form:
   <listitem>
   <para>
     The first argument(s) specify the new position of the window. These coordinates can be specified using either a
-    Point (<xref linkend="clsPoint" />) object, or by using separate x and y coordinates of the window.
+ <xref linkend="clsPoint"/> object, or by using separate x and y coordinates of the window.
   <variablelist>
     <varlistentry><term>newPos [required]</term>
     <listitem>
@@ -2688,7 +2688,7 @@ Generic form:
   <listitem>
   <para>
     The argument(s) after the <emphasis role="italic">hwndBehind</emphasis> argument specify the new position of the
-    window. These coordinates can be specified using either a Point (<xref linkend="clsPoint" />) object, or by using
+    window. These coordinates can be specified using either a <xref linkend="clsPoint"/> object, or by using
     separate x and y coordinates of the window.
   <variablelist>
     <varlistentry><term>hwndBehind [required]</term>
@@ -3082,7 +3082,7 @@ Generic form:
 
 <para>
   The <emphasis role="italic">resize</emphasis> method resizes a dialog or dialog control window. This old method is not
-  accurate (<xref linkend="ovvInaccurate" />).
+ <xref linkend="ovvInaccurate"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3162,7 +3162,7 @@ Generic form:
   <para>
     A window can only be resized once the underlying window has first been created. The size of the window is then
     specified in pixels. What this method does, is take the input values in dialog units and convert them to pixels.
-    Since the conversion is done using factorX (<xref linkend="ovvInaccurate" />) and <emphasis
+    Since the conversion is done using <xref linkend="ovvInaccurate"/> and <emphasis
     role="italic">factorY</emphasis>, the conversion is not correct.
   </para>
   <para>
@@ -3223,7 +3223,7 @@ Generic form:
   <listitem>
   <para>
     The first argument(s) specify the new size of the window. These coordinates can be specified using either a
-    Size (<xref linkend="clsSize" />) object, or by the new width and new height of the window.
+ <xref linkend="clsSize"/> object, or by the new width and new height of the window.
   <variablelist>
     <varlistentry><term>newSize [required]</term>
     <listitem>
@@ -3462,7 +3462,7 @@ Generic form:
   <listitem>
   <para>
     This old ooDialog method returns the coordinates as a single string that needs to be parsed. This is often not that
-    convenient.  The screen2client (<xref linkend="mthScreen2client" />) method is often easier to use.
+    convenient.  The <xref linkend="mthScreen2client"/> method is often easier to use.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -3715,8 +3715,8 @@ Generic form:
   <listitem>
   <para>
     The first argument(s) specify the new coordinates of the window. These coordinates can be specified using either a
-    Rect (<xref linkend="clsRect" />) object, or by using a Point (<xref linkend="clsPoint" />) object followed by a
-    Size (<xref linkend="clsSize" />) object, or by using the x, y coordinates of the upper left point of the window
+ <xref linkend="clsRect"/> object, or by using a <xref linkend="clsPoint"/> object followed by a
+ <xref linkend="clsSize"/> object, or by using the x, y coordinates of the upper left point of the window
     followed by the width and height of the window.
   <variablelist>
     <varlistentry><term>ptSizeRectangle [required]</term>
@@ -4006,8 +4006,8 @@ Generic form:
     specified in pixels.
   </para>
   <para>
-    The arguments can be specified using either a Rect (<xref linkend="clsRect" />) object, or by using a
-    Point (<xref linkend="clsPoint" />) object followed by a Size (<xref linkend="clsSize" />) object, or by using the
+    The arguments can be specified using either a <xref linkend="clsRect"/> object, or by using a
+ <xref linkend="clsPoint"/> object followed by a <xref linkend="clsSize"/> object, or by using the
     x, y coordinates of the upper left point of the window followed by the width and height of the window.
   <variablelist>
     <varlistentry><term>hwndBehind [required]</term>
@@ -4430,7 +4430,7 @@ Generic form:
   <listitem>
   <para>
     The argument(s) after the <emphasis role="italic">hwndBehind</emphasis> argument specify the new size of the window.
-    These coordinates can be specified using either a Size (<xref linkend="clsSize" />) object, or by the new width
+    These coordinates can be specified using either a <xref linkend="clsSize"/> object, or by the new width
     and new height of the window.
   <variablelist>
     <varlistentry><term>hwndBehind [required]</term>
@@ -4810,7 +4810,7 @@ Generic form:
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns the bounding rectangle of the window as a Rect (<xref linkend="clsRect" />) object.
+    Returns the bounding rectangle of the window as a <xref linkend="clsRect"/> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>

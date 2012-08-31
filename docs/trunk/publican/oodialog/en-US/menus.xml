@@ -103,11 +103,11 @@
 <entry>A menu bar created from a menu resource, or created as an empty menu bar.</entry>
 </row>
 <row>
-<entry>Menu (Mixin Class) The Menu Object (<xref linkend="clsMenu" />)</entry>
+<entry>Menu (Mixin Class) The Menu <xref linkend="clsMenu"/></entry>
 <entry>The basis for the menu object.</entry>
 </row>
 <row>
-<entry>MenuBar (Mixin Class) The Menu Bar Object (<xref linkend="clsMenuBar" />)</entry>
+<entry>MenuBar (Mixin Class) The Menu Bar <xref linkend="clsMenuBar"/></entry>
 <entry>The basis for the menu bar object.</entry>
 </row>
 <row>
@@ -223,9 +223,9 @@
 </para>
 <para>
   A Rexx dialog control object has one, and only one, underlying dialog. But, a Rexx
-  menu bar (<xref linkend="clsMenuBar" />) object can be attached to one dialog, then detached and attached to a
+  menu <xref linkend="clsMenuBar"/> object can be attached to one dialog, then detached and attached to a
   different dialog. Likewise, the same
-  context (<xref linkend="clsPopupMenu" />) menu could be used by any number of different dialogs. Because of this, it
+ <xref linkend="clsPopupMenu"/> menu could be used by any number of different dialogs. Because of this, it
   may be necessary to connect a menu command item notification to more than one dialog.
 </para>
 <para>
@@ -243,7 +243,7 @@
 </para>
 <para>
   One last point the programmer should be aware of. Both a regular menu item selection and a
-  button (<xref linkend="clsButton" />) click generate the same event notification. <emphasis
+ <xref linkend="clsButton"/> click generate the same event notification. <emphasis
   role="bold">Note</emphasis> that a <emphasis role="italic">system</emphasis> menu command event uses a different type
   of notification than buttons or regular menus. A system menu command event notification will never be the same as a
   button click notification.
@@ -698,7 +698,7 @@
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example instantiates a SystemMenu (<xref linkend="clsSystemMenu" />) object and uses it to insert
+    The following example instantiates a <xref linkend="clsSystemMenu"/> object and uses it to insert
     an <emphasis role="italic">Edit</emphasis> menu into the system menu for the application. The new menu items are
     connected to appropriate event handlers. Note that the event handlers shown in the example are just stubs. Real code
     to handle the event would need to be added:
@@ -1069,7 +1069,7 @@
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> class method is used for all types of menus. However, the
     programmer should be aware of the differences in coding event
-    handlers (<xref linkend="sctMenuCommandEventHandlers" />) for SystemMenus (<xref linkend="clsSystemMenu" />) and other
+    handlers (<xref linkend="sctMenuCommandEventHandlers" />) for <xref linkend="clsSystemMenu"/> and other
     types of menus.
   </para>
   </listitem></varlistentry>
@@ -1614,7 +1614,7 @@
   <para>
     The <emphasis role="italic">connectCommandEvent</emphasis> method is used for all types of menus. However, the
     programmer should be aware of the differences in coding event
-    handlers (<xref linkend="sctMenuCommandEventHandlers" />) for SystemMenus (<xref linkend="clsSystemMenu" />) and other
+    handlers (<xref linkend="sctMenuCommandEventHandlers" />) for <xref linkend="clsSystemMenu"/> and other
     types of menus.
   </para>
   </listitem></varlistentry>
@@ -1762,7 +1762,7 @@
       The Windows handle (<xref linkend="defHandle" />) of an object to use to filter the connected notification. The
       use of this filter is specific to the event being connectd. For the CONTEXTMENU event it can be a window handle,
       in which case only notifications for that specific window are generated. When this menu is a menu
-      bar (<xref linkend="clsMenuBar" />), then for the INITMENUPOPUP event it can be the menu handle of a submenu, in which
+ <xref linkend="clsMenuBar"/>, then for the INITMENUPOPUP event it can be the menu handle of a submenu, in which
       case only notifications for that specific submenu are generated. When this menu is not a menu bar, the argument is
       ignored. For the INITMENU event, this argument is ignored.
     </para>
@@ -1868,7 +1868,7 @@
   <emphasis role="bold">Note</emphasis> that the event handler for the CONTEXTMENU event connected through the
  <xref linkend="mthConnectMenuEvent"/>, described in this section, is the same as the event handler
   described (<xref linkend="evtPopupMenuCONTEXT" />) for the CONTEXTMENU event connected through one of the
-  PopupMenu (<xref linkend="clsPopupMenu" />) class methods. The event and event handler are the same no matter how the
+ <xref linkend="clsPopupMenu"/> class methods. The event and event handler are the same no matter how the
   event connection is made.
 </para>
 <para>
@@ -2350,7 +2350,7 @@
   <para>
     When a popup menu (a submenu) is deleted, the operating system frees all resources used by the popup menu and any
     references to the popup are no longer valid. To be explicit, this means that any
-    PopupMenu (<xref linkend="clsPopupMenu" />) objects that represent this submenu are no longer valid, which would also
+ <xref linkend="clsPopupMenu"/> objects that represent this submenu are no longer valid, which would also
     include any menu that has this submenu as one of its submenus.
   </para>
   <para>
@@ -4011,7 +4011,7 @@
     <varlistentry><term>pop [required]</term>
     <listitem>
     <para>
-      The PopupMenu (<xref linkend="clsPopupMenu" />) object being inserted.
+      The <xref linkend="clsPopupMenu"/> object being inserted.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>txt [required]</term>
@@ -5953,18 +5953,18 @@
 <indexterm><primary>menu bar object</primary></indexterm>
 <para>
   A menu bar is often called the top-level menu. It is the bar poisitioned just below the title bar of an application
-  window or a dialog. The menu bar object is used, like the menu (<xref linkend="clsMenu" />),
+  window or a dialog. The menu bar object is used, like the <xref linkend="clsMenu"/>,
   dialog (<xref linkend="chpDialogObject" />), and dialog control (<xref linkend="chpDialogControlObject" />) objects as an
   abstract concept to document the ooDialog menu objects that represent menu bars. The menu bar classes in ooDialog are
-  the BinaryMenuBar (<xref linkend="clsBinaryMenuBar" />), UserMenuBar (<xref linkend="clsUserMenuBar" />), and
-  ScriptMenuBar (<xref linkend="clsScriptMenuBar" />) classes.
+  the <xref linkend="clsBinaryMenuBar"/>, <xref linkend="clsUserMenuBar"/>, and
+ <xref linkend="clsScriptMenuBar"/> classes.
 </para>
 <para>
   The menu bar object is implemented through the <computeroutput>MenuBar</computeroutput> mixin classs and all menu bars
   have the methods of the <computeroutput>MenuBar</computeroutput> class. Similar to the the menu object, the menu bar
   object is essentially the <computeroutput>MenuBar</computeroutput> mixin class. Note that menu bars <emphasis
   role="italic">are</emphasis> menus. All menu bar objects have all the methods of the
-  menu (<xref linkend="clsMenu" />) object in addition to the methods specific to the menu bar.
+ <xref linkend="clsMenu"/> object in addition to the methods specific to the menu bar.
 </para>
 
 <section id="sctMethodsMenuBar"><title>Method Table</title>
@@ -6355,15 +6355,15 @@
 <section id="clsBinaryMenuBar" xreflabel="BinaryMenuBar"><title>BinaryMenuBar Class</title>
 <indexterm><primary>BinaryMenuBar class</primary></indexterm>
 <para>
-  A <computeroutput>BinaryMenuBar</computeroutput> is a menu bar (<xref linkend="clsMenuBar" />) whose menu template
+  A <computeroutput>BinaryMenuBar</computeroutput> is a menu <xref linkend="clsMenuBar"/> whose menu template
   comes from a compiled binary resource, or whose menu template is constructed as an empty menu.
 </para>
 <para>
   The ooDialog framework provides three basic types of menu bars. The only difference in the three types is the source
-  of the menu template for the menu bar. In a ScriptMenuBar (<xref linkend="clsScriptMenuBar" />) the source of the
-  menu template is a resource (<xref linkend="defResourceScript" />) file (usually a .rc file) that ooDialog parses
-  and uses to construct the menu template. For an UserMenuBar (<xref linkend="clsUserMenuBar" />), ooDialog constructs
-  the menu template dynamically from method invocations in the program code.
+  of the menu template for the menu bar. In a <xref linkend="clsScriptMenuBar"/> the source of the
+  menu template is a resource <xref linkend="defResourceScript"/> file (usually a .rc file) that ooDialog parses and
+  uses to construct the menu template. For an <xref linkend="clsUserMenuBar"/>, ooDialog constructs the
+  menu template dynamically from method invocations in the program code.
 </para>
 <para>
   In general it is much easier to dynamically construct the menu template by starting with an empty
@@ -6374,9 +6374,9 @@
 <section id="sctMethodsBinaryMenuBar"><title>Method Table</title>
 <para>
   The following table lists the class and instance methods of the <computeroutput>BinaryMenuBar</computeroutput>. For
-  convenience, the inherited methods from the MenuBar (<xref linkend="clsMenuBar" />) mixin class are also listed
+  convenience, the inherited methods from the <xref linkend="clsMenuBar"/> mixin class are also listed
   here. Note that the <computeroutput>BinaryMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and
-  therefore also contains all the methods of the Menu (<xref linkend="clsMenu" />) class.
+  therefore also contains all the methods of the <xref linkend="clsMenu"/> class.
 <table id="tblMethodsBinaryMenuBar" frame="all"> <title>Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1*" />
@@ -6439,7 +6439,7 @@
   When an empty menu bar is instantiated, the programmer can add to the menu dynamically using menu object methods such
   as <xref linkend="mthInsertPopup"/>, <xref linkend="mthInsertItem"/>, etc..
   Dynamically constructing a menu in this way is much less error prone than using the
-  UserMenuBar (<xref linkend="clsUserMenuBar" />) class.
+ <xref linkend="clsUserMenuBar"/> class.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -6463,7 +6463,7 @@
       <varlistentry><term><emphasis role="bold">.ResDialog:</emphasis></term>
       <listitem>
       <para>
-        The menu template is located in the resource only DLL of the ResDialog (<xref linkend="clsResDialog" />)
+        The menu template is located in the resource only DLL of the <xref linkend="clsResDialog"/>
         object specified. In this case, the resource <emphasis role="italic">id</emphasis> argument is required.
       </para>
       </listitem></varlistentry>
@@ -6591,23 +6591,23 @@
 <section id="clsScriptMenuBar" xreflabel="ScriptMenuBar"><title>ScriptMenuBar Class</title>
 <indexterm><primary>ScriptMenuBar class</primary></indexterm>
 <para>
-  The <emphasis role="italic">ScriptMenuBar</emphasis> is a menu bar (<xref linkend="clsMenuBar" />) where the menu
-  template is obtained from a resource script file (<xref linkend="defResourceScript" />).
+  The <emphasis role="italic">ScriptMenuBar</emphasis> is a menu <xref linkend="clsMenuBar"/> where the menu
+  template is obtained from a resource <xref linkend="defResourceScript"/> file.
 </para>
 <para>
   The class has all the methods of the <computeroutput>MenuBar</computeroutput> and the
-  Menu (<xref linkend="clsMenu" />) classes.  The only difference between the
+ <xref linkend="clsMenu"/> classes.  The only difference between the
   <computeroutput>ScriptMenuBar</computeroutput> and the other menu bar classes such as the
-  BinaryMenubar (<xref linkend="clsBinaryMenuBar" />) or UserMenuBar (<xref linkend="clsUserMenuBar" />) is in the
+ <xref linkend="clsBinaryMenuBar"/> or <xref linkend="clsUserMenuBar"/> is in the
   <emphasis role="italic">new</emphasis> method.
 </para>
 
 <section id="sctMethodsScriptMenuBar"><title>Method Table</title>
 <para>
   The following table lists the class and instance methods of the <computeroutput>ScriptMenuBar</computeroutput>. For
-  convenience, the inherited methods from the MenuBar (<xref linkend="clsMenuBar" />) mixin class are also listed
+  convenience, the inherited methods from the <xref linkend="clsMenuBar"/> mixin class are also listed
   here. Note that the <computeroutput>ScriptMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and
-  therefore also contains all the methods of the Menu (<xref linkend="clsMenu" />) class.
+  therefore also contains all the methods of the <xref linkend="clsMenu"/> class.
 <table id="tblMethodsScriptMenuBar" frame="all"> <title>ScriptMenuBar Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1*" />
@@ -6672,8 +6672,7 @@
       <varlistentry><term>rcFile [required]</term>
       <listitem>
       <para>
-        The resource (<xref linkend="defResourceScript" />) script file containing the menu definition for this script menu
-        bar.
+        The resource <xref linkend="defResourceScript"/> file containing the menu definition for this script menu bar.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>id [optional]</term>
@@ -6787,28 +6786,28 @@
 <section id="clsUserMenuBar" xreflabel="UserMenuBar"><title>UserMenuBar Class</title>
 <indexterm><primary>UserMenuBar class</primary></indexterm>
 <para>
-  A <computeroutput>UserMenuBar</computeroutput> is a menu bar (<xref linkend="clsMenuBar" />) whose menu template
-  comes from statements in the program code.
+  A <computeroutput>UserMenuBar</computeroutput> is a <xref linkend="clsMenuBar"/> whose menu template comes from
+  statements in the program code.
 </para>
 <para>
   The ooDialog framework provides three basic types of menu bars. The only difference in the three types is the source
-  of the menu template for the menu bar. In a ScriptMenuBar (<xref linkend="clsScriptMenuBar" />) the source of the
-  menu template is a resource (<xref linkend="defResourceScript" />) file (usually a .rc file) that ooDialog parses
-  and uses to construct the menu template. For a BinaryMenuBar (<xref linkend="clsBinaryMenuBar" />) the menu template
-  comes from a compiled binary resource, or the menu template is constructed as an empty menu.
+  of the menu template for the menu bar. In a <xref linkend="clsScriptMenuBar"/> the source of the menu template is a
+  resource <xref linkend="defResourceScript"/> file (usually a .rc file) that ooDialog parses and uses to construct the
+  menu template. For a <xref linkend="clsBinaryMenuBar"/> the menu template comes from a compiled binary resource, or
+  the menu template is constructed as an empty menu.
 </para>
 <para>
   In general it is much easier to dynamically construct the menu template by starting with an empty
-  BinaryMenuBar (<xref linkend="clsBinaryMenuBar" />) and inserting the desired menu itmes than it is to define the menu
+ <xref linkend="clsBinaryMenuBar"/> and inserting the desired menu itmes than it is to define the menu
   template in an <computeroutput>UserMenuBar</computeroutput>.
 </para>
 
 <section id="sctMethodsUserMenuBar"><title>Method Table</title>
 <para>
-  The following table lists the class and instance methods of the <computeroutput>UserMenuBar</computeroutput>. For convenience, the inherited methods from the
-  MenuBar (<xref linkend="clsMenuBar" />) mixin class are also listed here. Note that the
-  <computeroutput>UserMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and therefore also contains
-  all the methods of the Menu (<xref linkend="clsMenu" />) class.
+  The following table lists the class and instance methods of the <computeroutput>UserMenuBar</computeroutput>. For
+  convenience, the inherited methods from the <xref linkend="clsMenuBar"/> mixin class are also listed here. Note that
+  the <computeroutput>UserMenuBar</computeroutput> <emphasis role="italic">is</emphasis> a menu and therefore also
+  contains all the methods of the <xref linkend="clsMenu"/> class.
 <table id="tblMethodsUserMenuBar" frame="all"> <title>UserMenuBar Method Reference</title>
 <tgroup cols="2">
 <colspec colwidth="1*" />
@@ -6951,7 +6950,7 @@
   <para>
     Properly constructing a menu template using the <computeroutput>UserMenuBar</computeroutput> is somewhat difficult
     to do correctly, making it prone to error. It is much simpler to construct the menu template using an empty
-    BinaryMenuBar (<xref linkend="clsBinaryMenuBar" />). ooDialog programmers are encouraged to use the
+ <xref linkend="clsBinaryMenuBar"/>. ooDialog programmers are encouraged to use the
     <computeroutput>BinaryMenuBar</computeroutput> class rather than the <computeroutput>UserMenuBar</computeroutput>
     class.
   </para>
@@ -7170,7 +7169,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    It is suggested that the ooDialog programmer create an empty BinaryMenuBar (<xref linkend="clsBinaryMenuBar" />)
+    It is suggested that the ooDialog programmer create an empty <xref linkend="clsBinaryMenuBar"/>
     and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as
  <xref linkend="mthInsertPopup"/>. This provides all the functionality of the
     <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
@@ -7356,7 +7355,7 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    It is suggested that the ooDialog programmer create an empty BinaryMenuBar (<xref linkend="clsBinaryMenuBar" />)
+    It is suggested that the ooDialog programmer create an empty <xref linkend="clsBinaryMenuBar"/>
     and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as
  <xref linkend="mthInsertPopup"/>. This provides all the functionality of the
     <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
@@ -7485,7 +7484,7 @@
     separtor is given the RIGHTJUSTIFY type, it and all subsequent menut items are right justified in the menu bar.
   </para>
   <para>
-    It is suggested that the ooDialog programmer create an empty BinaryMenuBar (<xref linkend="clsBinaryMenuBar" />)
+    It is suggested that the ooDialog programmer create an empty <xref linkend="clsBinaryMenuBar"/>
     and add the menu items to the menu bar using the <emphasis role="italic">insert</emphasis> methods, such as
  <xref linkend="mthInsertPopup"/>. This provides all the functionality of the
     <computeroutput>UserMenuBar</computeroutput>, but is easier to use.
@@ -8358,7 +8357,7 @@
     <varlistentry><term>p [required]</term>
     <listitem>
     <para>
-      A Point (<xref linkend="clsPoint" />) object specifying the location for the shortcut menu, in
+      A <xref linkend="clsPoint"/> object specifying the location for the shortcut menu, in
       screen (<xref linkend="defScreenCoordinates" />) co-ordinates.
     </para>
     </listitem></varlistentry>
@@ -8510,7 +8509,7 @@
     <varlistentry><term>excludeRect [optional]</term>
     <listitem>
     <para>
-      A Rect (<xref linkend="clsRect" />) object that specifies an area of the screen the menu should not overlap.
+      A <xref linkend="clsRect"/> object that specifies an area of the screen the menu should not overlap.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8532,9 +8531,9 @@
   </para>
   <para>
     For any animation to occur, the System Parameters Information menu animation must be on. (
-    SPI (<xref linkend="clsSPI" />) class, menuAnimation (<xref linkend="atrMenuAnimation" />) attribute.) In addition,
+ <xref linkend="clsSPI"/> class, menuAnimation (<xref linkend="atrMenuAnimation" />) attribute.) In addition,
     all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (
-    SPI (<xref linkend="clsSPI" />) class, menuFade (<xref linkend="atrMenuFade" />) attribute.)
+ <xref linkend="clsSPI"/> class, menuFade (<xref linkend="atrMenuFade" />) attribute.)
   </para>
   <para>
     Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM" />)
@@ -8638,7 +8637,7 @@
     <varlistentry><term>p [required]</term>
     <listitem>
     <para>
-      A Point (<xref linkend="clsPoint" />) object specifying the location for the shortcut menu, in
+      A <xref linkend="clsPoint"/> object specifying the location for the shortcut menu, in
       screen (<xref linkend="defScreenCoordinates" />) co-ordinates.
     </para>
     </listitem></varlistentry>
@@ -8790,7 +8789,7 @@
     <varlistentry><term>excludeRect [optional]</term>
     <listitem>
     <para>
-      A Rect (<xref linkend="clsRect" />) object that specifies an area of the screen the menu should not overlap.
+      A <xref linkend="clsRect"/> object that specifies an area of the screen the menu should not overlap.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8813,9 +8812,9 @@
   </para>
   <para>
     For any animation to occur, the System Parameters Information menu animation must be on. (
-    SPI (<xref linkend="clsSPI" />) class, menuAnimation (<xref linkend="atrMenuAnimation" />) attribute.) In addition,
+ <xref linkend="clsSPI"/> class, menuAnimation (<xref linkend="atrMenuAnimation" />) attribute.) In addition,
     all the animation flags, except NOANIMATION, are ignored if menu fade animation is on. (
-    SPI (<xref linkend="clsSPI" />) class, menuFade (<xref linkend="atrMenuFade" />) attribute.)
+ <xref linkend="clsSPI"/> class, menuFade (<xref linkend="atrMenuFade" />) attribute.)
   </para>
   <para>
     Microsoft says that it is essential that the System Metric, menu drop alignment (SM (<xref linkend="clsSM" />)
