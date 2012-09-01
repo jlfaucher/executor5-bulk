@@ -50,7 +50,7 @@
 <indexterm><primary>dialog object</primary><secondary>data attributes</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>get and set data methods</secondary></indexterm>
 
-<section id="sctUnderstandingDataAttributes"><title>Understanding Data Attributes</title>
+<section id="sctUnderstandingDataAttributes" xreflabel="attribute"><title>Understanding Data Attributes</title>
 <indexterm><primary>dialog object</primary><secondary>understanding data attributes</secondary></indexterm>
 <para>
   This section contains methods for working with <emphasis role="bold">data attributes</emphasis>. It contains methods
@@ -88,7 +88,7 @@
   of the attribute in the Rexx dialog object to match the state of the corresponding dialog control in the underlying
   dialog.
 </para>
-<para id="paraAutomaticDataDetection">
+<para id="paraAutomaticDataDetection" xreflabel="automatic data detection">
   The term <emphasis role="italic">automatic data field detection</emphasis> is used for this process of creating and
   connecting data attributes. In addition to creating and connecting the data attributes, if automatic data field
   detection is on, when the underling dialog is created, the state of its controls are automatically set to the values
@@ -183,7 +183,8 @@
   following list is intended to be complete description of the rules in all circumstances.
 
   <variablelist>
-    <varlistentry id="termConnectAutoNames"><term><emphasis role="bold">connect... data attribute methods:</emphasis></term>
+    <varlistentry id="termConnectAutoNames" xreflabel="generated automatically">
+    <term><emphasis role="bold">connect... data attribute methods:</emphasis></term>
     <listitem>
     <para>
       When the programmer uses one of the <xref linkend="sctConnectDataMethods"/> methods, the attribute name can be
@@ -479,8 +480,8 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 </programlisting>
 
 <para>
-  When the <emphasis role="italic">autoDetection</emphasis> method is invoked, it switches on <link
-  linkend="paraAutomaticDataDetection">automatic</link> data detection.
+  When the <emphasis role="italic">autoDetection</emphasis> method is invoked, it switches on
+  <xref linkend="paraAutomaticDataDetection"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -540,7 +541,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated <link linkend="termConnectAutoNames">automatically</link>/>.
+      <link linkend="termConnectAutoNames">automatically</link>/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -572,24 +573,24 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the check box control manually. This can be done globally with the <xref
-      linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the
-      <xref linkend="mthSetCheckBoxData"/> or <xref linkend="mthGetCheckBoxData"/> methods. The <xref
-      linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods could also be used.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a check <xref linkend="clsCheckBox"/> is defined to be its
-      check state. For normal check boxes this is 0 for not checked and 1 for checked. Three-state check boxes have the
-      additional indeterminate state. The value for the indeterminate state is 2.
-    </para>
-    <para>
-      The <emphasis role="italic" >connectCheckBox</emphasis> method should only be used when <link
-      linkend="paraAutomaticDataDetection">automatic</link> data detection is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the check box control manually. This can be done globally with the <xref
+    linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the
+    <xref linkend="mthSetCheckBoxData"/> or <xref linkend="mthGetCheckBoxData"/> methods. The <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods could also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a check <xref linkend="clsCheckBox"/> is defined to be its
+    check state. For normal check boxes this is 0 for not checked and 1 for checked. Three-state check boxes have the
+    additional indeterminate state. The value for the indeterminate state is 2.
+  </para>
+  <para>
+    The <emphasis role="italic" >connectCheckBox</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection"/> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -632,7 +633,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated  <link linkend="termConnectAutoNames">automatically</link>.
+      <link linkend="termConnectAutoNames">automatically</link>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -663,29 +664,29 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the combo box control manually. This can be done globally with the <xref
-      linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
-      linkend="mthSetComboBoxData"/> or <xref linkend="mthGetComboBoxData" />) methods. The <xref
-      linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods can also be used.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a combo <xref linkend="clsComboBox"/> is defined to be the
-      text in the selection field or the selected combo box item.
-    </para>
-    <para>
-      The <emphasis role="italic">connectComboBox</emphasis> should only be used when <link
-      linkend="paraAutomaticDataDetection">automatic</link> data detection is off.
-    </para>
-    </listitem></varlistentry>
+  <vrarlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the combo box control manually. This can be done globally with the <xref
+    linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetComboBoxData"/> or <xref linkend="mthGetComboBoxData" />) methods. The <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods can also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a combo <xref linkend="clsComboBox"/> is defined to be the
+    text in the selection field or the selected combo box item.
+  </para>
+  <para>
+    The <emphasis role="italic">connectComboBox</emphasis> should only be used when
+    <xref linkend="paraAutomaticDataDetection"/> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleConnectEdit"/>) for the <emphasis role="italic">connectEdit</emphasis> method
-    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
-    substitute a combo box for the edit control.
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a combo box for the edit control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -704,7 +705,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 
 <para>
   The <emphasis role="italic">connectDateTimePicker</emphasis> method connects a date time picker control in the
-  underlying dialog, through its resource ID, to a newly created data attribute (<xref linkend="sctUnderstandingDataAttributes"/>)
+  underlying dialog, through its resource ID, to a newly created data <xref linkend="sctUnderstandingDataAttributes"/>
   in the Rexx dialog object.
 </para>
 <variablelist>
@@ -723,7 +724,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -755,23 +756,23 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the date time control manually. This can be done globally with the
-      <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer
-      grain of control use the <xref linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a date time <xref linkend="clsDateTimePicker"/> is
-      defined to be a <computeroutput>DateTime</computeroutput> object that represents it currently selected date and
-      time.
-    </para>
-    <para>
-      The <emphasis role="italic">connectDateTimePicker</emphasis> method should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the date time control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer
+    grain of control use the <xref linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a date time <xref linkend="clsDateTimePicker"/> is
+    defined to be a <computeroutput>DateTime</computeroutput> object that represents it currently selected date and
+    time.
+  </para>
+  <para>
+    The <emphasis role="italic">connectDateTimePicker</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection"/> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -796,9 +797,9 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectEdit</emphasis> method creates a new data (<xref
-  linkend="sctUnderstandingDataAttributes" />) attribute in the Rexx dialog object and connects it to the
-  underlying edit control using its resource id.
+  The <emphasis role="italic">connectEdit</emphasis> method creates a new data
+  <xref linkend="sctUnderstandingDataAttributes"/> attribute in the Rexx dialog object and connects it to the underlying
+  edit control using its resource id.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -816,7 +817,7 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -848,23 +849,23 @@ FONT 8, "MS Shell Dlg 2", 400, 0, 1
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the edit control manually. This can be done globally with the <xref
-      linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
-      linkend="mthSetEditData"/> or <xref linkend="mthGetEditData"/> methods. The <xref linkend="mthSetDataAttribute"/> or
-      <xref linkend="mthGetDataAttribute"/> methods can also be used.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of an edit control is defined to be the text entered in the control.
-      If there is no text, the data is the empty string.
-    </para>
-    <para>
-      The <emphasis role="italic">connectEdit</emphasis> should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the edit control manually. This can be done globally with the <xref
+    linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetEditData"/> or <xref linkend="mthGetEditData"/> methods. The <xref linkend="mthSetDataAttribute"/> or
+    <xref linkend="mthGetDataAttribute"/> methods can also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of an edit control is defined to be the text entered in the control.
+    If there is no text, the data is the empty string.
+  </para>
+  <para>
+    The <emphasis role="italic">connectEdit</emphasis> should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry id="exampleConnectEdit"><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
@@ -932,7 +933,7 @@ return 0
 
 <para>
   The <emphasis role="italic">connectListBox</emphasis> method uses the resource ID of the control to connect a list box
-  in the underlying dialog to a newly created data attribute (<xref linkend="sctUnderstandingDataAttributes"/>) in
+  in the underlying dialog to a newly created data <xref linkend="sctUnderstandingDataAttributes"/> in
   the Rexx dialog object.
 </para>
 <variablelist>
@@ -951,7 +952,7 @@ return 0
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -983,30 +984,30 @@ return 0
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the list box manually. This can be done globally with the
- <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
-      of control use the <xref linkend="mthSetListBoxData"/> or the <xref linkend="mthGetListBoxData"/>. The <xref
-      linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods could also be used.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">single-selection</emphasis> list box (<xref
-      linkend="clsListBox" /> is defined to be text of the selected item in the list box.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">multi-selection</emphasis> <xref
-      linkend="clsListBox"/> is defined to be a string containing the item numbers of its selected items,
-      separated by a blank. For a multi-selection list box the string could contain any number of list items depending
-      on what the user has selected, (for getting data,) or what the programmer is setting to be selected, (for setting
-      data.)
-    </para>
-    <para>
-      The <emphasis role="italic">connectListBox</emphasis> method should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the list box manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetListBoxData"/> or the <xref linkend="mthGetListBoxData"/>. The <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods could also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">single-selection</emphasis> <xref
+    linkend="clsListBox"/> is defined to be text of the selected item in the list box.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">multi-selection</emphasis> <xref
+    linkend="clsListBox"/> is defined to be a string containing the item numbers of its selected items,
+    separated by a blank. For a multi-selection list box the string could contain any number of list items depending
+    on what the user has selected, (for getting data,) or what the programmer is setting to be selected, (for setting
+    data.)
+  </para>
+  <para>
+    The <emphasis role="italic">connectListBox</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry id="exampleConnectListBoxSingle"><term><emphasis role="bold">Example Single Selection:</emphasis></term>
   <listitem>
   <para>
@@ -1321,7 +1322,7 @@ FONT 8, "Ms Shell Dlg 2"
 
 <para>
   The <emphasis role="italic">connectListView</emphasis> method connects a list view in the underlying dialog, through
-  its resource ID, to a newly created data attribute (<xref linkend="sctUnderstandingDataAttributes"/>) in the Rexx
+  its resource ID, to a newly created data <xref linkend="sctUnderstandingDataAttributes"/> in the Rexx
   dialog object.
 </para>
 <variablelist>
@@ -1340,7 +1341,7 @@ FONT 8, "Ms Shell Dlg 2"
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1372,28 +1373,28 @@ FONT 8, "Ms Shell Dlg 2"
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the list view control manually. This can be done globally with the <xref
-      linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
-      linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a list <xref linkend="clsListView"/> is defined to be a
-      string containing the blank seperated index(es) of its selected item(s).
-    </para>
-    <para>
-      The <emphasis role="italic">connectCheckBox</emphasis> method should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the list view control manually. This can be done globally with the <xref
+    linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a list <xref linkend="clsListView"/> is defined to be a
+    string containing the blank seperated index(es) of its selected item(s).
+  </para>
+  <para>
+    The <emphasis role="italic">connectCheckBox</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleConnectEdit"/>) for the <emphasis role="italic">connectEdit</emphasis> method
-    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
-    substitute a list view for the edit control.
+    The <link linkend="exampleConnectEdit">example</link>/> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a list view for the edit control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1412,7 +1413,7 @@ FONT 8, "Ms Shell Dlg 2"
 
 <para>
   The <emphasis role="italic">connectMonthCalendar</emphasis> method connects a month calendar control in the underlying
-  dialog, through its resource ID, to a newly created data attribute (<xref linkend="sctUnderstandingDataAttributes"/>)
+  dialog, through its resource ID, to a newly created data <xref linkend="sctUnderstandingDataAttributes"/>
   in the Rexx dialog object.
 </para>
 <variablelist>
@@ -1431,7 +1432,7 @@ FONT 8, "Ms Shell Dlg 2"
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1463,30 +1464,28 @@ FONT 8, "Ms Shell Dlg 2"
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the month calendar control manually. This can be done globally with the
- <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
-      of control use the <xref linkend="mthSetDataAttribute"/> or getDataAttribute (<xref
-      linkend="mthGetDataAttribute" />) methods.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a month <xref linkend="clsMonthCalendar"/> is defined
-      to be a <computeroutput>DateTime</computeroutput> object that specifies the selected date in the month calendar
-      control.
-    </para>
-    <para>
-      The <emphasis role="italic">connectMonthCalendar</emphasis> method should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the month calendar control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <xref linkend="clsMonthCalendar"/> is defined to be a
+    <computeroutput>DateTime</computeroutput> object that specifies the selected date in the month calendar control.
+  </para>
+  <para>
+    The <emphasis role="italic">connectMonthCalendar</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleConnectEdit"/>) for the <emphasis role="italic">connectEdit</emphasis> method
-    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
-    substitute a month calendar control for the edit control.
+    The <link linkend="exampleConnectEdit">example</link>/> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a month calendar control for the edit control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1506,8 +1505,8 @@ FONT 8, "Ms Shell Dlg 2"
 
 <para>
   The <emphasis role="italic">connectRadioButton</emphasis> method uses the resource id of a radio button control to
-  connect the control in the underlying dialog to a newly created data attribute (<xref
-  linkend="sctUnderstandingDataAttributes" />) in the Rexx dialog object.
+  connect the control in the underlying dialog to a newly created data<xref linkend="sctUnderstandingDataAttributes"/> in
+  the Rexx dialog object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1525,7 +1524,7 @@ FONT 8, "Ms Shell Dlg 2"
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1557,31 +1556,29 @@ FONT 8, "Ms Shell Dlg 2"
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the radio button control manually. This can be done globally with the
- <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
-      of control use the <xref linkend="mthSetRadioButtonData"/> or getRadioButtonData (<xref
-      linkend="mthGetRadioButtonData" />) methods. The setDataAttribute (<xref
-      linkend="mthSetDataAttribute" />) or getDataAttribute (<xref
-      linkend="mthGetDataAttribute" />) methods can also be used.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a radio button (<xref linkend="clsRadioButton"/>} is defined to
-      be the its check state. This is 0 for not checked and 1 for checked.
-    </para>
-    <para>
-      The <emphasis role="italic">connectRadioButton</emphasis> method should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the radio button control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetRadioButtonData"/> or <xref linkend="mthGetRadioButtonData"/> methods. The
+    <xref linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods can also be used.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <xref linkend="clsRadioButton"/> is defined to be the its check state.
+    This is 0 for not checked and 1 for checked.
+  </para>
+  <para>
+    The <emphasis role="italic">connectRadioButton</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleConnectEdit"/>) for the <emphasis role="italic">connectEdit</emphasis> method
-    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
-    substitute a radio button control for the edit control.
+    The <link linkend="exampleConnectEdit">example</link>/> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a radio button control for the edit control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1601,7 +1598,7 @@ FONT 8, "Ms Shell Dlg 2"
 
 <para>
   The <emphasis role="italic">connectTab</emphasis> method uses the resource id of a tab control to connect the control
-  in the underlying dialog to a newly created data attribute (<xref linkend="sctUnderstandingDataAttributes"/>) in
+  in the underlying dialog to a newly created data <xref linkend="sctUnderstandingDataAttributes"/> in
   the Rexx dialog object.
 </para>
 <variablelist>
@@ -1620,7 +1617,7 @@ FONT 8, "Ms Shell Dlg 2"
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1652,29 +1649,28 @@ FONT 8, "Ms Shell Dlg 2"
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the tab control manually. This can be done globally with the
- <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
-      of control use the <xref linkend="mthSetDataAttribute"/> or getDataAttribute (<xref
-      linkend="mthGetDataAttribute" />) methods.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a <xref linkend="clsTab"/> control is defined to the text
-      of its currently selected tab.
-    </para>
-    <para>
-      The <emphasis role="italic">connectTab</emphasis> method should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the tab control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetDataAttribute"/> or<xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <xref linkend="clsTab"/> control is defined to the text
+    of its currently selected tab.
+  </para>
+  <para>
+    The <emphasis role="italic">connectTab</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleConnectEdit"/>) for the <emphasis role="italic">connectEdit</emphasis> method
-    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
-    substitute a tab control for the edit control.
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a tab control for the edit control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1694,7 +1690,7 @@ FONT 8, "Ms Shell Dlg 2"
 
 <para>
   The <emphasis role="italic">connectTrackBar</emphasis> method uses the resource id of a trackbar control to connect
-  the control in the underlying dialog to a newly created data attribute (<xref linkend="sctUnderstandingDataAttributes"/>)
+  the control in the underlying dialog to a newly created data <xref linkend="sctUnderstandingDataAttributes"/>
   in the Rexx dialog object.
 </para>
 <variablelist>
@@ -1713,7 +1709,7 @@ FONT 8, "Ms Shell Dlg 2"
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1745,29 +1741,28 @@ FONT 8, "Ms Shell Dlg 2"
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the trackbar control manually. This can be done globally with the setData (<xref
-      linkend="mthSetData" /> and getData (<xref linkend="mthGetData"/> methods. For a finer grain of
-      control use the <xref linkend="mthSetDataAttribute"/> or getDataAttribute (<xref
-      linkend="mthGetDataAttribute" />) methods.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a <xref linkend="clsTab"/> control is defined to be
-      the current logical position of the slider in the trackbar.
-    </para>
-    <para>
-      The <emphasis role="italic">connectTab</emphasis> method should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the trackbar control manually. This can be done globally with the <xref
+    linkend="mthSetData" /> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a <xref linkend="clsTab"/> control is defined to be
+    the current logical position of the slider in the trackbar.
+  </para>
+  <para>
+    The <emphasis role="italic">connectTab</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleConnectEdit"/>) for the <emphasis role="italic">connectEdit</emphasis> method
-    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
-    substitute a trackbar control for the edit control.
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a trackbar control for the edit control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1785,9 +1780,9 @@ FONT 8, "Ms Shell Dlg 2"
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectTreeView</emphasis> method creates a data attribute (<xref
-  linkend="sctUnderstandingDataAttributes" />) in the Rexx dialog object and connects it to a tree
-  view control in the underlying dialog using its resource id.
+  The <emphasis role="italic">connectTreeView</emphasis> method creates a data <xref
+  linkend="sctUnderstandingDataAttributes"/> in the Rexx dialog object and connects it to a tree view control in the
+  underlying dialog using its resource id.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -1803,7 +1798,7 @@ FONT 8, "Ms Shell Dlg 2"
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1834,29 +1829,28 @@ FONT 8, "Ms Shell Dlg 2"
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the tree view control manually. This can be done globally with the setData (<xref
-      linkend="mthSetData" /> and <xref linkend="mthGetData"/> methods. For a finer grain of
-      control use the <xref linkend="mthSetDataAttribute"/> or getDataAttribute (<xref
-      linkend="mthGetDataAttribute" />) methods.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a tree <xref linkend="clsTreeView"/> is defined to be the
-      text of the selected tree view item.
-    </para>
-    <para>
-      The <emphasis role="italic">connectTreeview</emphasis> should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the tree view control manually. This can be done globally with the <xref
+    linkend="mthSetData" /> and <xref linkend="mthGetData"/> methods. For a finer grain of control use the <xref
+    linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a tree <xref linkend="clsTreeView"/> is defined to be the
+    text of the selected tree view item.
+  </para>
+  <para>
+    The <emphasis role="italic">connectTreeview</emphasis> should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleConnectEdit"/>) for the <emphasis role="italic">connectEdit</emphasis> method
-    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
-    substitute a tree view for the edit control.
+    The <link linkend="exampleConnectEdit">example</link>/> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    a tree view for the edit control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1875,7 +1869,7 @@ FONT 8, "Ms Shell Dlg 2"
 
 <para>
   The <emphasis role="italic">connectUpDown</emphasis> method connects an up down control in the underlying dialog,
-  through its resource ID, to a newly created data attribute (<xref linkend="sctUnderstandingDataAttributes"/>) in
+  through its resource ID, to a newly created data <xref linkend="sctUnderstandingDataAttributes"/> in
   the Rexx dialog object.
 </para>
 <variablelist>
@@ -1894,7 +1888,7 @@ FONT 8, "Ms Shell Dlg 2"
     <listitem>
     <para>
       The name of the data attribute to be created. If this argument is omitted or invalid, the attribute name is
-      generated automatically (<xref linkend="termConnectAutoNames"/>).
+      <xref linkend="termConnectAutoNames"/>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1926,29 +1920,28 @@ FONT 8, "Ms Shell Dlg 2"
   </variablelist>
   </para>
   </listitem></varlistentry>
-    <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-    <listitem>
-    <para>
-      The attribute has to be synchronized with the up down control manually. This can be done globally with the
- <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
-      of control use the <xref linkend="mthSetDataAttribute"/> or getDataAttribute (<xref
-      linkend="mthGetDataAttribute" />) methods.
-    </para>
-    <para>
-      The <emphasis role="italic">data</emphasis> of a up <xref linkend="clsUpDown"/> control is defined to be
-      the value of its current position.
-    </para>
-    <para>
-      The <emphasis role="italic">connectUpDown</emphasis> method should only be used when automatic data detection (<xref
-      linkend="paraAutomaticDataDetection" />) is off.
-    </para>
-    </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The attribute has to be synchronized with the up down control manually. This can be done globally with the
+    <xref linkend="mthSetData"/> and <xref linkend="mthGetData"/> methods. For a finer grain
+    of control use the <xref linkend="mthSetDataAttribute"/> or <xref linkend="mthGetDataAttribute"/> methods.
+  </para>
+  <para>
+    The <emphasis role="italic">data</emphasis> of a up <xref linkend="clsUpDown"/> control is defined to be
+    the value of its current position.
+  </para>
+  <para>
+    The <emphasis role="italic">connectUpDown</emphasis> method should only be used when
+    <xref linkend="paraAutomaticDataDetection" /> is off.
+  </para>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    The example (<xref linkend="exampleConnectEdit"/>) for the <emphasis role="italic">connectEdit</emphasis> method
-    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply
-    substitute an up down control for the edit control.
+    The <link linkend="exampleConnectEdit">example</link> for the <emphasis role="italic">connectEdit</emphasis> method
+    demonstrates all the pertinent steps to manually connect and use a data attribute for a dialog control. Simply substitute
+    an up down control for the edit control.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -1968,8 +1961,8 @@ FONT 8, "Ms Shell Dlg 2"
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getCheckBoxData</emphasis> method gets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of a a check box.
+  The <emphasis role="italic">getCheckBoxData</emphasis> method gets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a check box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2021,8 +2014,8 @@ FONT 8, "Ms Shell Dlg 2"
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getComboBoxData</emphasis> method gets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of a combo box.
+  The <emphasis role="italic">getComboBoxData</emphasis> method gets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a combo box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2088,9 +2081,9 @@ FONT 8, "Ms Shell Dlg 2"
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getControlData</emphasis> method gets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of a dialog control, regardless of the type of the control. The
-  control <emphasis role="bold">should</emphasis> have been previously connected to a data attribute.
+  The <emphasis role="italic">getControlData</emphasis> method gets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a dialog control, regardless of the type of the control. The control
+  <emphasis role="bold">should</emphasis> have been previously connected to a data attribute.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2133,14 +2126,13 @@ FONT 8, "Ms Shell Dlg 2"
   </para>
   <para>
     A better method to use, if the programmer is insistent on thinking in terms of data attributes, is probably to use
-    the <xref linkend="mthData"/> method of the dialog control object (<xref
-    linkend="chpDialogControlObject" />).
+    the <xref linkend="mthData"/> method of the dialog <xref linkend="chpDialogControlObject"/> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
-    This method can only be invoked after the underlying Windows dialog has been created.  A syntax condition is raised if
+    This method can only be invoked after the underlying Windows dialog has been created. A syntax condition is raised if
     the underlying dialog does not exist.
   </para>
   </listitem></varlistentry>
@@ -2159,8 +2151,8 @@ FONT 8, "Ms Shell Dlg 2"
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getData</emphasis> method sets the Rexx dialog data (<xref
-  linkend="sctUnderstandingDataAttributes" />) attribute values to the state of the underlying, connected,
+  The <emphasis role="italic">getData</emphasis> method sets the Rexx dialog data <xref
+  linkend="sctUnderstandingDataAttributes"/> values to the state of the underlying, connected,
   dialog controls.
 </para>
 <variablelist>
@@ -2233,7 +2225,7 @@ say dialog~LISTBOX_DAYS
 
 <para>
   The <emphasis role="italic">getDataAttribute</emphasis> method transfers the data of a dialog control to the
-  connected data attribute (<xref linkend="sctUnderstandingDataAttributes"/>) of the Rexx dialog object.
+  connected data <xref linkend="sctUnderstandingDataAttributes"/> of the Rexx dialog object.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2254,10 +2246,9 @@ say dialog~LISTBOX_DAYS
   <listitem>
   <para>
     The terms <emphasis role="italic">transfers</emphasis> and <emphasis role="italic">receives</emphasis> the data are
-    holdovers from the original documentation and the original data attribute abstraction (<xref
-    linkend="sctUnderstandingDataAttributes" />). What the <emphasis
-    role="italic">getDataAttribute</emphasis> method actually does is to set the value of the connected data attribute
-    to the defined value of the underlying dialog control. The defined value for the <emphasis
+    holdovers from the original documentation and the original data <xref linkend="sctUnderstandingDataAttributes"/>
+    abstraction. What the <emphasis role="italic">getDataAttribute</emphasis> method actually does is to set the value of the
+    connected data attribute to the defined value of the underlying dialog control. The defined value for the <emphasis
     role="italic">data</emphasis> of any dialog control is documented in the <xref linkend="sctConnectDataMethods"/> method
     for the control.
   </para>
@@ -2298,11 +2289,10 @@ say dialog~LISTBOX_DAYS
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getDataStem</emphasis>() method is the reverse of the setDataStem (<xref
-  linkend="mthSetDataStem" />) method.  The method gets the <emphasis role="italic">data</emphasis> of
-  all the dialog controls in the underlying dialog that have been connected to a data attribute (<xref
-  linkend="sctUnderstandingDataAttributes" />) of the Rexx dialog object. The data of each control is
-  copied to the specified stem.
+  The <emphasis role="italic">getDataStem</emphasis> method is the reverse of the <xref linkend="mthSetDataStem"/> method.
+  The method gets the <emphasis role="italic">data</emphasis> of all the dialog controls in the underlying dialog that have
+  been connected to a data <xref linkend="sctUnderstandingDataAttributes"/> of the Rexx dialog object. The data of each
+  control is copied to the specified stem.
 </para>
 <para>
   A stem index for each  connected control is set.  The stem index is the numeric ID for the control.  The value at that
@@ -2349,8 +2339,8 @@ say dialog~LISTBOX_DAYS
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getEditData</emphasis> method gets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of an edit control.
+  The <emphasis role="italic">getEditData</emphasis> method gets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of an edit control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2404,8 +2394,8 @@ say dialog~LISTBOX_DAYS
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getListBoxData</emphasis> method gets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of a list box.
+  The <emphasis role="italic">getListBoxData</emphasis> method gets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of a list box.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2483,8 +2473,8 @@ end
 </programlisting>
 
 <para>
-  The <emphasis role="italic">getRadioButtonData</emphasis> method gets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of a a radio button.
+  The <emphasis role="italic">getRadioButtonData</emphasis> method gets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a a radio button.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2539,8 +2529,7 @@ end
 <para>
   The <emphasis role="italic">initAutoDetection</emphasis> method is invoked automatically by the ooDialog framework
   when any dialog is first instantiated. The default implementation of <emphasis
-  role="italic">initAutoDetection</emphasis> turns automatically (<xref linkend="paraAutomaticDataDetection"/>) data field
-  detection on.
+  role="italic">initAutoDetection</emphasis> turns <xref linkend="paraAutomaticDataDetection"/> on.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2592,8 +2581,8 @@ end
 </programlisting>
 
 <para>
-  When the <emphasis role="italic">noAutoDetection</emphasis> method is invoked, it switches off automatic (<xref
-  linkend="paraAutomaticDataDetection" />) data detection.
+  When the <emphasis role="italic">noAutoDetection</emphasis> method is invoked, it switches off
+  <xref linkend="paraAutomaticDataDetection"/>.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2623,8 +2612,8 @@ end
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setCheckBoxData</emphasis> method sets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of a check box control.
+  The <emphasis role="italic">setCheckBoxData</emphasis> method sets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a check box control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2707,8 +2696,8 @@ end
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setComboBoxData</emphasis> method sets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of a combo box control.
+  The <emphasis role="italic">setComboBoxData</emphasis> method sets the data <xref
+  linkend="sctUnderstandingDataAttributes"/> of a combo box control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2790,9 +2779,8 @@ end
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setControlData</emphasis> method sets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of a dialog control. The programmer does not have to know what
-  kind of control it is.
+  The <emphasis role="italic">setControlData</emphasis> method sets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of a dialog control. The programmer does not have to know what kind of control it is.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2861,8 +2849,7 @@ end
   </para>
   <para>
     A better method to use, if the programmer is insistent on thinking in terms of data attributes, is probably to use
-    the data= (<xref linkend="mthDataEquals"/>) method of the dialog control object (<xref
-    linkend="chpDialogControlObject" />).
+    the <xref linkend="mthDataEquals"/> method of the dialog <xref linkend="chpDialogControlObject"/> object.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2903,7 +2890,7 @@ MyDialog~setControlData(123, "1 2 3")
 
 <para>
   The <emphasis role="italic">setData</emphasis> method sets the state of all underlying, connected, dialog controls to
-  the values of the matching dialog object data (<xref linkend="sctUnderstandingDataAttributes"/>) attributes.
+  the values of the matching dialog object data <xref linkend="sctUnderstandingDataAttributes"/>s.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -2923,9 +2910,9 @@ MyDialog~setControlData(123, "1 2 3")
   <para>
     <emphasis role="bold">Note</emphasis> that this method sets the state for every connected attribute. This may not
     always be desirable. For instance the focused node of a tree-view control may be changed. For finely grained control
-    of which dialog controls have their state set, the programmer should use the setControlData (<xref
-    linkend="mthSetControlData" />) or <xref linkend="mthSetDataAttribute"/>
-    methods. Both of these methods transfer the value of a single object attribute that is specified by the programmer.
+    of which dialog controls have their state set, the programmer should use the <xref linkend="mthSetControlData"/> or
+    <xref linkend="mthSetDataAttribute"/> methods. Both of these methods transfer the value of a single object attribute that
+  is specified by the programmer.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2978,8 +2965,8 @@ dialog~setData
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setDataAttribute</emphasis> method transfers the value of a connected data attribute (<xref
-  linkend="sctUnderstandingDataAttributes" />) of the Rexx dialog object to the underlying dialog
+  The <emphasis role="italic">setDataAttribute</emphasis> method transfers the value of a connected data <xref
+  linkend="sctUnderstandingDataAttributes"/> of the Rexx dialog object to the underlying dialog
   control.
 </para>
 <variablelist>
@@ -3027,11 +3014,11 @@ dialog~setData
   <listitem>
   <para>
     The terms <emphasis role="italic">transfers</emphasis> and <emphasis role="italic">receives</emphasis> the data are
-    holdovers from the original documentation and the original data attribute abstraction (<xref
-    linkend="sctUnderstandingDataAttributes" />). What the <emphasis
-    role="italic">setDataAttribute</emphasis> method actually does is to set the state of the underyling dialog control
-    to the value of the connected data attribute. The defined value for the <emphasis role="italic">data</emphasis> of
-    any dialog control is documented in the <xref linkend="sctConnectDataMethods"/> method for the control.
+    holdovers from the original documentation and the original data <xref linkend="sctUnderstandingDataAttributes"/>
+    abstraction. What the <emphasis role="italic">setDataAttribute</emphasis> method actually does is to set the state of the
+    underyling dialog control to the value of the connected data attribute. The defined value for the <emphasis
+    role="italic">data</emphasis> of any dialog control is documented in the <xref linkend="sctConnectDataMethods"/> method
+    for the control.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -3075,8 +3062,8 @@ dialog~setData
 </para>
 <para>
   This method only works for controls that have been connected to a <link
-  linkend="sctUnderstandingDataAttributes">data</link> attributue. Either by <link
-  linkend="paraAutomaticDataDetection">automatic</link> data detection, or through one of the
+  linkend="sctUnderstandingDataAttributes">data</link> attributue. Either by <xref
+  linkend="paraAutomaticDataDetection"/>, or through one of the
   <xref linkend="sctConnectDataMethods"/>) methods. Every connected control has its state set when this method is invoked.
   If the data stem, <emphasis role="italic">data.</emphasis> has no matching index for a connected control, that control's
   state is set to the empty string. Any indexes in the data stem that do not match the resource ID of a registered control
@@ -3147,8 +3134,8 @@ self~setDataStem(dlgStem.)
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setEditData</emphasis> method sets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of an edit control.
+  The <emphasis role="italic">setEditData</emphasis> method sets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of an edit control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3256,8 +3243,8 @@ self~setDataStem(dlgStem.)
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setListBoxData</emphasis> method sets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of the underly list box to the value specified.
+  The <emphasis role="italic">setListBoxData</emphasis> method sets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of the underly list box to the value specified.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3279,8 +3266,8 @@ self~setDataStem(dlgStem.)
       selected item in the list box.
     </para>
     <para>
-      The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">multi-selection</emphasis> list box (<xref
-      linkend="clsListBox" />) is defined to be a string containing the item numbers of its selected items,
+      The <emphasis role="italic">data</emphasis> of a <emphasis role="bold">multi-selection</emphasis> <xref
+      linkend="clsListBox"/> is defined to be a string containing the item numbers of its selected items,
       separated by a blank. For a multi-selection list box the string could contain any number of list items depending
       on what the programmer is setting to be selected.
     </para>
@@ -3371,8 +3358,8 @@ self~setDataStem(dlgStem.)
 </programlisting>
 
 <para>
-  The <emphasis role="italic">setRadioData</emphasis> method sets the data (<xref
-  linkend="sctUnderstandingDataAttributes" />) of a radio button control.
+  The <emphasis role="italic">setRadioData</emphasis> method sets the data <xref linkend="sctUnderstandingDataAttributes"/>
+  of a radio button control.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
